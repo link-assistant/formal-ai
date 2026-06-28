@@ -170,17 +170,23 @@ pub const ROLE_RULE_LISTING_SCOPE: &str = "rule_listing_scope";
 /// Matched as a raw substring, independent of the compositional dimensions;
 /// carried by `behavior_rule_set_phrase`.
 pub const ROLE_RULE_LISTING_PHRASE: &str = "rule_listing_phrase";
-/// Semantic role: an interrogative or noun asking for the count of rules.
+/// Semantic role: a quantity cue asking for the number of behavior rules.
 ///
-/// Surface cues "how many"/"count", "сколько", "कितने", "多少"; the count
-/// recognizer combines this with the rule subject and either a count scope,
-/// behavior-rule scope, or prior rule-list context.
+/// Surface cues "how many"/"count"/"number of", "сколько", "कितने", and
+/// "多少"; combined with the rule subject and either an explicit count scope,
+/// behavior scope, or a previous rule-list answer by the behavior-rules handler.
 pub const ROLE_RULE_COUNT_REQUEST: &str = "rule_count_request";
 /// Semantic role: a count-scoping cue that asks for the whole behavior-rule set.
 ///
-/// Surface cues "current"/"existing", "всего", "कुल", "总共"; carried by
+/// Surface cues "total"/"current"/"existing", "всего", "कुल", "总共"; carried by
 /// `rule_count_scope`.
 pub const ROLE_RULE_COUNT_SCOPE: &str = "rule_count_scope";
+/// Semantic role: a brevity cue asking to compress the previous behavior-rule
+/// listing instead of repeating the full catalog.
+///
+/// Surface cues "brief"/"short", "кратко"/"коротко", "संक्षेप", and "简短";
+/// used only when the preceding assistant message was the behavior-rule list.
+pub const ROLE_RULE_BRIEF_REQUEST: &str = "rule_brief_request";
 /// Semantic role: a bare imperative verb that, clause-initially, requests a proof.
 ///
 /// "prove", "proof", "докажи", "доказать", … — detected at the very start of the

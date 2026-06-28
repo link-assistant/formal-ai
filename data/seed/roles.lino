@@ -301,6 +301,8 @@ roles
     kind meaning
   response_language_marker
     kind predicate
+  rule_brief_request
+    kind meaning
   rule_count_request
     kind meaning
   rule_count_scope

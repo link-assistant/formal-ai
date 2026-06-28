@@ -1,4 +1,19 @@
 meanings
+  pattern_concept_context_delimiter_v_oblasti_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v oblasti ru"
+  pattern_concept_context_delimiter_v_ramkakh_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v ramkakh ru"
+  pattern_concept_context_delimiter_v_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter v ru"
   pattern_concept_context_delimiter_vo_ru
     defined-by prompt_pattern
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response unknown ru"
-  response_unknown_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown zh"
-  reverse_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse lines"
-  reverse_sort
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse sort"

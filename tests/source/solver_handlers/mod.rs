@@ -5,6 +5,8 @@
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
 
 mod agent_workspace;
+mod behavior_rule_followups;
+mod behavior_rule_matching;
 mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
