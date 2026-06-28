@@ -10,6 +10,8 @@
 //! grammar is recognized in English, Russian, Hindi, and Chinese by
 //! `skill_compiler`.
 
+mod behavior_rule_counts;
+
 use std::collections::BTreeMap;
 
 use crate::engine::{
@@ -22,6 +24,9 @@ use crate::language::detect as detect_language;
 use crate::seed;
 use crate::skill_compiler::{compile_natural_language_skill, CompiledSkillPackage};
 
+use self::behavior_rule_counts::{
+    built_in_rule_count, is_behavior_rules_count, render_behavior_rule_count,
+};
 use super::finalize_simple;
 use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
@@ -58,6 +63,28 @@ pub fn try_behavior_rules_with_runtime(
             log,
             "behavior_rule_update",
             "response:behavior_rule_update",
+            &body,
+            1.0,
+        ));
+    }
+
+    if is_behavior_rules_count(normalized, log) {
+        let runtime_rules = collect_runtime_rules(log);
+        log.append("behavior_rules:count", "all".to_owned());
+        log.append(
+            "behavior_rules:count:built_in",
+            built_in_rule_count().to_string(),
+        );
+        log.append(
+            "behavior_rules:count:dialog_local",
+            runtime_rules.len().to_string(),
+        );
+        let body = render_behavior_rule_count(runtime_rules.len(), language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "behavior_rules_count",
+            "response:behavior_rules_count",
             &body,
             1.0,
         ));

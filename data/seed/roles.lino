@@ -301,6 +301,10 @@ roles
     kind meaning
   response_language_marker
     kind predicate
+  rule_count_request
+    kind meaning
+  rule_count_scope
+    kind meaning
   rule_listing_phrase
     kind predicate
   rule_listing_request

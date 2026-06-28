@@ -181,3 +181,51 @@ meanings
         text 显示规则
       surface
         text 列出行为规则
+  rule_count_request
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_request
+    lexeme en
+      surface
+        text "how many"
+      surface
+        text "number of"
+      surface
+        text count
+    lexeme ru
+      surface
+        text сколько
+    lexeme hi
+      surface
+        text कितने
+    lexeme zh
+      surface
+        text 多少
+  rule_count_scope
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_scope
+    lexeme en
+      surface
+        text existing
+      surface
+        text current
+    lexeme ru
+      surface
+        text всего
+      surface
+        text все
+      surface
+        text текущих
+    lexeme hi
+      surface
+        text कुल
+      surface
+        text सभी
+    lexeme zh
+      surface
+        text 总共
+      surface
+        text 总共有
+      surface
+        text 所有

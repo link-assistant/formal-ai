@@ -4278,6 +4278,37 @@ function renderBehaviorRuleList(runtimeRules, language = "en") {
   return lines.join("\n");
 }
 
+function renderBehaviorRuleCount(runtimeRules, language = "en") {
+  const runtimeRuleCount = Array.isArray(runtimeRules) ? runtimeRules.length : 0;
+  const builtInCount = behaviorRuleRecords().length;
+  const total = builtInCount + runtimeRuleCount;
+  const summary = localizedText(language, {
+    en: `Total behavior rules: ${total} (built-in: ${builtInCount}; dialog-local: ${runtimeRuleCount}).`,
+    ru: `Всего правил: ${total} (встроенных: ${builtInCount}; изученных в этом диалоге: ${runtimeRuleCount}).`,
+    hi: `कुल व्यवहार नियम: ${total} (built-in: ${builtInCount}; dialog-local: ${runtimeRuleCount}).`,
+    zh: `行为规则总数：${total}（内置：${builtInCount}；本对话：${runtimeRuleCount}）。`,
+  });
+  const reasoning = localizedText(language, {
+    en: "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.",
+    ru: "Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.",
+    hi: "Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.",
+    zh: "Reasoning：我统计内置行为规则目录，并加上从此前用户消息编译出的本对话规则。",
+  });
+  return [
+    summary,
+    "",
+    reasoning,
+    "",
+    "```links",
+    "behavior_rules_count",
+    `  built_in_rules "${builtInCount}"`,
+    `  dialog_local_rules "${runtimeRuleCount}"`,
+    `  total_rules "${total}"`,
+    '  algorithm "behavior_rule_records + collect_runtime_rules(prior_turn:user)"',
+    "```",
+  ].join("\n");
+}
+
 function renderBehaviorRuleDetail(rule, language = "en") {
   const label = localizedRuleLabel(rule, language);
   const whenThen = localizedRuleWhenThen(rule, language);
@@ -4541,6 +4572,38 @@ function isBehaviorRulesList(normalized) {
     lexiconMentionsRoleSubstring(ROLE_RULE_LISTING_PHRASE, normalized) ||
     isSupportedLanguageBehaviorRulesListQuery(normalized)
   );
+}
+
+function isBehaviorRulesCount(normalized, history) {
+  const priorRuleListContext = priorBehaviorRulesListContext(history);
+  const present = (role, language) =>
+    wordsForRoleInLanguages(role, [language]).some((word) =>
+      normalized.includes(word),
+    );
+  return ["en", "ru", "hi", "zh"].some(
+    (language) =>
+      present(ROLE_RULE_LISTING_SUBJECT, language) &&
+      present(ROLE_RULE_COUNT_REQUEST, language) &&
+      (present(ROLE_RULE_COUNT_SCOPE, language) ||
+        present(ROLE_RULE_LISTING_SCOPE, language) ||
+        priorRuleListContext),
+  );
+}
+
+function priorBehaviorRulesListContext(history) {
+  const turns = Array.isArray(history) ? history : [];
+  return turns.some((turn) => {
+    const role = String((turn || {}).role || "").toLowerCase();
+    const content = String((turn || {}).content || "");
+    if (role === "user") {
+      return isBehaviorRulesList(normalizePrompt(content));
+    }
+    return (
+      role === "assistant" &&
+      content.includes("rule_greeting") &&
+      content.includes("rule_unknown")
+    );
+  });
 }
 
 function matchesBehaviorRulesListSeedPattern(normalized) {
@@ -4850,10 +4913,25 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     };
   }
 
+  const runtimeRules = collectRuntimeRules(history);
+  if (isBehaviorRulesCount(normalized, history)) {
+    const builtInCount = behaviorRuleRecords().length;
+    return {
+      intent: "behavior_rules_count",
+      content: renderBehaviorRuleCount(runtimeRules, language),
+      confidence: 1.0,
+      evidence: [
+        "behavior_rules:count",
+        `behavior_rules:count:built_in:${builtInCount}`,
+        `behavior_rules:count:dialog_local:${runtimeRules.length}`,
+      ],
+    };
+  }
+
   if (isBehaviorRulesList(normalized)) {
     return {
       intent: "behavior_rules_list",
-      content: renderBehaviorRuleList(collectRuntimeRules(history), language),
+      content: renderBehaviorRuleList(runtimeRules, language),
       confidence: 1.0,
       evidence: ["behavior_rules:list", "all"],
     };
@@ -27992,6 +28070,54 @@ const MEANINGS_LINO = [
   "        text 显示规则",
   "      surface",
   "        text 列出行为规则",
+  "  rule_count_request",
+  "    defined-by inquiry",
+  "    defined-by quantity",
+  "    role rule_count_request",
+  "    lexeme en",
+  "      surface",
+  '        text "how many"',
+  "      surface",
+  '        text "number of"',
+  "      surface",
+  "        text count",
+  "    lexeme ru",
+  "      surface",
+  "        text сколько",
+  "    lexeme hi",
+  "      surface",
+  "        text कितने",
+  "    lexeme zh",
+  "      surface",
+  "        text 多少",
+  "  rule_count_scope",
+  "    defined-by inquiry",
+  "    defined-by quantity",
+  "    role rule_count_scope",
+  "    lexeme en",
+  "      surface",
+  "        text existing",
+  "      surface",
+  "        text current",
+  "    lexeme ru",
+  "      surface",
+  "        text всего",
+  "      surface",
+  "        text все",
+  "      surface",
+  "        text текущих",
+  "    lexeme hi",
+  "      surface",
+  "        text कुल",
+  "      surface",
+  "        text सभी",
+  "    lexeme zh",
+  "      surface",
+  "        text 总共",
+  "      surface",
+  "        text 总共有",
+  "      surface",
+  "        text 所有",
   "meanings",
   "  prove",
   "    defined-by inquiry",
@@ -31641,12 +31767,16 @@ const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION = "software_followup_demonstration";
 // in src/seed/roles.rs. Their surface words live in
 // data/seed/meanings-behavior-rules.lino (embedded in MEANINGS_LINO above).
 // isBehaviorRulesList ANDs the three compositional dimensions within one
-// language (subject + request + scope) and ORs the standalone phrase role,
-// matching every surface as a raw substring exactly like the Rust recogniser.
+// language (subject + request + scope) and ORs the standalone phrase role.
+// isBehaviorRulesCount reuses the subject/scope roles plus count-specific
+// request/scope roles, matching every surface as a raw substring exactly like
+// the Rust recogniser.
 const ROLE_RULE_LISTING_SUBJECT = "rule_listing_subject";
 const ROLE_RULE_LISTING_REQUEST = "rule_listing_request";
 const ROLE_RULE_LISTING_SCOPE = "rule_listing_scope";
 const ROLE_RULE_LISTING_PHRASE = "rule_listing_phrase";
+const ROLE_RULE_COUNT_REQUEST = "rule_count_request";
+const ROLE_RULE_COUNT_SCOPE = "rule_count_scope";
 
 // Does `normalized` contain any surface word of any meaning carrying `role`,
 // matched as a raw substring? Unlike lexiconMentionsRole (whole-token, via
