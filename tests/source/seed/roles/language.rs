@@ -172,10 +172,15 @@ pub const ROLE_RULE_LISTING_SCOPE: &str = "rule_listing_scope";
 pub const ROLE_RULE_LISTING_PHRASE: &str = "rule_listing_phrase";
 /// Semantic role: a quantity cue asking for the number of behavior rules.
 ///
-/// Surface cues "how many"/"count"/"total", "сколько"/"всего", "कितने"/"कुल",
-/// and "多少"/"一共"; combined with the rule subject and either explicit
-/// behavior scope or a previous rule-list answer by the behavior-rules handler.
+/// Surface cues "how many"/"count"/"number of", "сколько", "कितने", and
+/// "多少"; combined with the rule subject and either an explicit count scope,
+/// behavior scope, or a previous rule-list answer by the behavior-rules handler.
 pub const ROLE_RULE_COUNT_REQUEST: &str = "rule_count_request";
+/// Semantic role: a count-scoping cue that asks for the whole behavior-rule set.
+///
+/// Surface cues "total"/"current"/"existing", "всего", "कुल", "总共"; carried by
+/// `rule_count_scope`.
+pub const ROLE_RULE_COUNT_SCOPE: &str = "rule_count_scope";
 /// Semantic role: a brevity cue asking to compress the previous behavior-rule
 /// listing instead of repeating the full catalog.
 ///

@@ -14,20 +14,27 @@ pub(super) fn render_behavior_rule_count(
     language: &str,
 ) -> String {
     let total = built_in + runtime;
-    match language {
+    let summary = match language {
         "ru" => format!(
-            "Всего правил поведения в этом диалоге: {total}. Встроенных: {built_in}; правил, изученных в диалоге: {runtime}. Я посчитал записи каталога правил и добавил правила из истории диалога."
+            "Всего правил: {total} (встроенных: {built_in}; изученных в этом диалоге: {runtime})."
         ),
-        "hi" => format!(
-            "इस संवाद में कुल {total} व्यवहार नियम हैं. Built-in: {built_in}; संवाद में सिखाए गए नियम: {runtime}. मैंने rule catalog की entries गिनीं और dialog history से मिले rules जोड़े."
-        ),
-        "zh" => format!(
-            "这个对话里共有 {total} 条行为规则。内置规则：{built_in}；本对话学到的规则：{runtime}。我统计了规则目录记录，并加上对话历史中的规则。"
-        ),
+        "hi" => format!("कुल व्यवहार नियम: {total} (built-in: {built_in}; dialog-local: {runtime})."),
+        "zh" => format!("行为规则总数：{total}（内置：{built_in}；本对话：{runtime}）。"),
         _ => format!(
-            "There are {total} behavior rules in this dialog: {built_in} built-in and {runtime} dialog-local. I counted the behavior-rule catalog entries and added rules learned from the dialog history."
+            "Total behavior rules: {total} (built-in: {built_in}; dialog-local: {runtime})."
         ),
-    }
+    };
+    let reasoning = localized_text(
+        language,
+        "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.",
+        "Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.",
+        "Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.",
+        "Reasoning：我统计内置行为规则目录，并加上从此前用户消息编译出的本对话规则。",
+    );
+
+    format!(
+        "{summary}\n\n{reasoning}\n\n```links\nbehavior_rules_count\n  built_in_rules \"{built_in}\"\n  dialog_local_rules \"{runtime}\"\n  total_rules \"{total}\"\n  algorithm \"behavior_rule_records + collect_runtime_rules(prior_turn:user)\"\n```\n"
+    )
 }
 
 pub(super) fn render_behavior_rules_brief(

@@ -83,38 +83,60 @@ meanings
       surface
         text "how many"
       surface
+        text "number of"
+      surface
         text count
-      surface
-        text total
-      surface
-        text number
     lexeme ru
       surface
         text сколько
-      surface
-        text всего
       surface
         text количество
     lexeme hi
       surface
         text कितने
       surface
-        text कुल
-      surface
         text संख्या
     lexeme zh
       surface
         text 多少
       surface
+        text 几条
+      surface
+        text 幾條
+  rule_count_scope
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_scope
+    lexeme en
+      surface
+        text total
+      surface
+        text existing
+      surface
+        text current
+    lexeme ru
+      surface
+        text всего
+      surface
+        text все
+      surface
+        text текущих
+    lexeme hi
+      surface
+        text कुल
+      surface
+        text सभी
+    lexeme zh
+      surface
         text 总共
       surface
         text 總共
       surface
+        text 总共有
+      surface
         text 一共
       surface
-        text 几条
-      surface
-        text 幾條
+        text 所有
   rule_brief_request
     defined-by action
     defined-by property

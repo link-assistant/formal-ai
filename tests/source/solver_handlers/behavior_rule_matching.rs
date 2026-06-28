@@ -18,6 +18,7 @@ pub(super) fn is_behavior_rules_count_query(normalized: &str, log: &EventLog) ->
             && role_present_in_language(seed::ROLE_RULE_LISTING_SUBJECT, language, normalized)
             && (has_prior_rule_list
                 || has_phrase_scope
+                || role_present_in_language(seed::ROLE_RULE_COUNT_SCOPE, language, normalized)
                 || role_present_in_language(seed::ROLE_RULE_LISTING_SCOPE, language, normalized))
     })
 }

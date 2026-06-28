@@ -3994,12 +3994,31 @@ function behaviorRuleCounts(runtimeRules) {
 
 function renderBehaviorRuleCount(runtimeRules, language = "en") {
   const { builtIn, runtime, total } = behaviorRuleCounts(runtimeRules);
-  return localizedText(language, {
-    en: `There are ${total} behavior rules in this dialog: ${builtIn} built-in and ${runtime} dialog-local. I counted the behavior-rule catalog entries and added rules learned from the dialog history.`,
-    ru: `Всего правил поведения в этом диалоге: ${total}. Встроенных: ${builtIn}; правил, изученных в диалоге: ${runtime}. Я посчитал записи каталога правил и добавил правила из истории диалога.`,
-    hi: `इस संवाद में कुल ${total} व्यवहार नियम हैं. Built-in: ${builtIn}; संवाद में सिखाए गए नियम: ${runtime}. मैंने rule catalog की entries गिनीं और dialog history से मिले rules जोड़े.`,
-    zh: `这个对话里共有 ${total} 条行为规则。内置规则：${builtIn}；本对话学到的规则：${runtime}。我统计了规则目录记录，并加上对话历史中的规则。`,
+  const summary = localizedText(language, {
+    en: `Total behavior rules: ${total} (built-in: ${builtIn}; dialog-local: ${runtime}).`,
+    ru: `Всего правил: ${total} (встроенных: ${builtIn}; изученных в этом диалоге: ${runtime}).`,
+    hi: `कुल व्यवहार नियम: ${total} (built-in: ${builtIn}; dialog-local: ${runtime}).`,
+    zh: `行为规则总数：${total}（内置：${builtIn}；本对话：${runtime}）。`,
   });
+  const reasoning = localizedText(language, {
+    en: "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.",
+    ru: "Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.",
+    hi: "Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.",
+    zh: "Reasoning：我统计内置行为规则目录，并加上从此前用户消息编译出的本对话规则。",
+  });
+  return [
+    summary,
+    "",
+    reasoning,
+    "",
+    "```links",
+    "behavior_rules_count",
+    `  built_in_rules "${builtIn}"`,
+    `  dialog_local_rules "${runtime}"`,
+    `  total_rules "${total}"`,
+    '  algorithm "behavior_rule_records + collect_runtime_rules(prior_turn:user)"',
+    "```",
+  ].join("\n");
 }
 
 function renderBehaviorRulesBrief(runtimeRules, language = "en") {
@@ -4591,6 +4610,7 @@ function isBehaviorRulesCountQuery(normalized, history) {
       present(ROLE_RULE_LISTING_SUBJECT, language) &&
       (hasPriorRuleList ||
         hasPhraseScope ||
+        present(ROLE_RULE_COUNT_SCOPE, language) ||
         present(ROLE_RULE_LISTING_SCOPE, language)),
   );
 }
@@ -28012,38 +28032,60 @@ const MEANINGS_LINO = [
   "      surface",
   "        text \"how many\"",
   "      surface",
+  "        text \"number of\"",
+  "      surface",
   "        text count",
-  "      surface",
-  "        text total",
-  "      surface",
-  "        text number",
   "    lexeme ru",
   "      surface",
   "        text сколько",
-  "      surface",
-  "        text всего",
   "      surface",
   "        text количество",
   "    lexeme hi",
   "      surface",
   "        text कितने",
   "      surface",
-  "        text कुल",
-  "      surface",
   "        text संख्या",
   "    lexeme zh",
   "      surface",
   "        text 多少",
   "      surface",
+  "        text 几条",
+  "      surface",
+  "        text 幾條",
+  "  rule_count_scope",
+  "    defined-by inquiry",
+  "    defined-by quantity",
+  "    role rule_count_scope",
+  "    lexeme en",
+  "      surface",
+  "        text total",
+  "      surface",
+  "        text existing",
+  "      surface",
+  "        text current",
+  "    lexeme ru",
+  "      surface",
+  "        text всего",
+  "      surface",
+  "        text все",
+  "      surface",
+  "        text текущих",
+  "    lexeme hi",
+  "      surface",
+  "        text कुल",
+  "      surface",
+  "        text सभी",
+  "    lexeme zh",
+  "      surface",
   "        text 总共",
   "      surface",
   "        text 總共",
   "      surface",
+  "        text 总共有",
+  "      surface",
   "        text 一共",
   "      surface",
-  "        text 几条",
-  "      surface",
-  "        text 幾條",
+  "        text 所有",
   "  rule_brief_request",
   "    defined-by action",
   "    defined-by property",
@@ -31837,13 +31879,16 @@ const ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION = "software_followup_demonstration";
 // in src/seed/roles.rs. Their surface words live in
 // data/seed/meanings-behavior-rules.lino (embedded in MEANINGS_LINO above).
 // isBehaviorRulesList ANDs the three compositional dimensions within one
-// language (subject + request + scope) and ORs the standalone phrase role,
-// matching every surface as a raw substring exactly like the Rust recogniser.
+// language (subject + request + scope) and ORs the standalone phrase role.
+// isBehaviorRulesCount reuses the subject/scope roles plus count-specific
+// request/scope roles, matching every surface as a raw substring exactly like
+// the Rust recogniser.
 const ROLE_RULE_LISTING_SUBJECT = "rule_listing_subject";
 const ROLE_RULE_LISTING_REQUEST = "rule_listing_request";
 const ROLE_RULE_LISTING_SCOPE = "rule_listing_scope";
 const ROLE_RULE_LISTING_PHRASE = "rule_listing_phrase";
 const ROLE_RULE_COUNT_REQUEST = "rule_count_request";
+const ROLE_RULE_COUNT_SCOPE = "rule_count_scope";
 const ROLE_RULE_BRIEF_REQUEST = "rule_brief_request";
 
 // Does `normalized` contain any surface word of any meaning carrying `role`,

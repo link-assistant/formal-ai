@@ -504,10 +504,17 @@ fn refresh_worker_meanings(worker_path: &Path) -> io::Result<()> {
 }
 
 fn js_string(value: &str) -> String {
-    let mut out = String::from("\"");
+    let quote = if value.contains('"') && !value.contains('\'') {
+        '\''
+    } else {
+        '"'
+    };
+    let mut out = String::new();
+    out.push(quote);
     for character in value.chars() {
         match character {
-            '"' => out.push_str("\\\""),
+            '"' if quote == '"' => out.push_str("\\\""),
+            '\'' if quote == '\'' => out.push_str("\\'"),
             '\\' => out.push_str("\\\\"),
             '\n' => out.push_str("\\n"),
             '\r' => out.push_str("\\r"),
@@ -518,6 +525,6 @@ fn js_string(value: &str) -> String {
             character => out.push(character),
         }
     }
-    out.push('"');
+    out.push(quote);
     out
 }

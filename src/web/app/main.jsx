@@ -3720,6 +3720,37 @@ function localBehaviorRulesList(runtimeRules, language = "en") {
   return lines.join("\n");
 }
 
+function localBehaviorRulesCount(runtimeRules, language = "en") {
+  const runtimeRuleCount = Array.isArray(runtimeRules) ? runtimeRules.length : 0;
+  const builtInCount = localBehaviorRuleRecords().length;
+  const total = builtInCount + runtimeRuleCount;
+  const summary = localLocalizedText(language, {
+    en: `Total behavior rules: ${total} (built-in: ${builtInCount}; dialog-local: ${runtimeRuleCount}).`,
+    ru: `Всего правил: ${total} (встроенных: ${builtInCount}; изученных в этом диалоге: ${runtimeRuleCount}).`,
+    hi: `कुल व्यवहार नियम: ${total} (built-in: ${builtInCount}; dialog-local: ${runtimeRuleCount}).`,
+    zh: `行为规则总数：${total}（内置：${builtInCount}；本对话：${runtimeRuleCount}）。`,
+  });
+  const reasoning = localLocalizedText(language, {
+    en: "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.",
+    ru: "Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.",
+    hi: "Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.",
+    zh: "Reasoning：我统计内置行为规则目录，并加上从此前用户消息编译出的本对话规则。",
+  });
+  return [
+    summary,
+    "",
+    reasoning,
+    "",
+    "```links",
+    "behavior_rules_count",
+    `  built_in_rules "${builtInCount}"`,
+    `  dialog_local_rules "${runtimeRuleCount}"`,
+    `  total_rules "${total}"`,
+    '  algorithm "localBehaviorRuleRecords + localCollectRuntimeRules(history:user)"',
+    "```",
+  ].join("\n");
+}
+
 function localBehaviorRuleDetail(rule, language = "en") {
   const label = localRuleLabel(rule, language);
   const whenThen = localRuleWhenThen(rule, language);
@@ -4158,6 +4189,21 @@ function localRuntimeRuleForPrompt(prompt, history) {
   return null;
 }
 
+function localCollectRuntimeRules(history) {
+  const turns = Array.isArray(history) ? history : [];
+  const seen = new Set();
+  const rules = [];
+  for (const turn of turns) {
+    if (String((turn || {}).role || "").toLowerCase() !== "user") continue;
+    const rule = localRuntimeRuleFromText((turn || {}).content);
+    if (rule && !seen.has(rule.id)) {
+      seen.add(rule.id);
+      rules.push(rule);
+    }
+  }
+  return rules;
+}
+
 function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
   const language = localSelfAwarenessLanguage(prompt, normalized);
   const updateRule = localRuntimeRuleFromText(prompt);
@@ -4197,15 +4243,15 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
       ].join("\n"),
     };
   }
-  if (
-    matchesLocalBehaviorRulesListPattern(normalized) ||
-    normalized.includes("list behavior rules") ||
-    normalized.includes("list all behavior rules") ||
-    normalized.includes("show behavior rules") ||
-    isSupportedLanguageBehaviorRulesListQuery(normalized) ||
-    normalized.includes("список правил поведения")
-  ) {
-    return { intent: "behavior_rules_list", content: localBehaviorRulesList([], language) };
+  const runtimeRules = localCollectRuntimeRules(history);
+  if (localIsBehaviorRulesCount(normalized, history)) {
+    return {
+      intent: "behavior_rules_count",
+      content: localBehaviorRulesCount(runtimeRules, language),
+    };
+  }
+  if (localIsBehaviorRulesList(normalized)) {
+    return { intent: "behavior_rules_list", content: localBehaviorRulesList(runtimeRules, language) };
   }
   const query = localDetailQuery(prompt);
   if (query) {
@@ -4263,6 +4309,56 @@ function matchesLocalBehaviorRulesListPattern(normalized) {
   return LOCAL_BEHAVIOR_RULES_LIST_PATTERNS.some((pattern) => {
     const text = normalizePrompt(pattern);
     return text && (normalized === text || normalized.includes(text));
+  });
+}
+
+function localIsBehaviorRulesList(normalized) {
+  return (
+    matchesLocalBehaviorRulesListPattern(normalized) ||
+    normalized.includes("list behavior rules") ||
+    normalized.includes("list all behavior rules") ||
+    normalized.includes("show behavior rules") ||
+    isSupportedLanguageBehaviorRulesListQuery(normalized) ||
+    normalized.includes("список правил поведения")
+  );
+}
+
+function localIsBehaviorRulesCount(normalized, history) {
+  const priorRuleListContext = localPriorBehaviorRulesListContext(history);
+  const english =
+    localContainsAny(normalized, ["rules", "rule list", "rules list"]) &&
+    localContainsAny(normalized, ["how many", "number of", "count"]) &&
+    (localContainsAny(normalized, ["all", "total", "there", "existing", "current", "behavior"]) ||
+      priorRuleListContext);
+  const russian =
+    localContainsAny(normalized, ["правил", "правила"]) &&
+    normalized.includes("сколько") &&
+    (localContainsAny(normalized, ["всего", "все", "текущих", "поведения"]) ||
+      priorRuleListContext);
+  const hindi =
+    localContainsAny(normalized, ["नियम", "नियमों"]) &&
+    normalized.includes("कितने") &&
+    (localContainsAny(normalized, ["कुल", "सभी", "व्यवहार"]) || priorRuleListContext);
+  const chinese =
+    localContainsAny(normalized, ["规则", "規則"]) &&
+    normalized.includes("多少") &&
+    (localContainsAny(normalized, ["总共", "总共有", "所有", "行为", "行為"]) ||
+      priorRuleListContext);
+
+  return english || russian || hindi || chinese;
+}
+
+function localPriorBehaviorRulesListContext(history) {
+  const turns = Array.isArray(history) ? history : [];
+  return turns.some((turn) => {
+    const role = String((turn || {}).role || "").toLowerCase();
+    const content = String((turn || {}).content || "");
+    if (role === "user") return localIsBehaviorRulesList(normalizePrompt(content));
+    return (
+      role === "assistant" &&
+      content.includes("rule_greeting") &&
+      content.includes("rule_unknown")
+    );
   });
 }
 
