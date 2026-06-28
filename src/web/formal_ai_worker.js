@@ -24238,6 +24238,12 @@ const MEANINGS_LINO = [
   "        text \"look up info on …\"",
   "      surface",
   "        text \"look up online …\"",
+  "      surface",
+  "        text \"interested in …\"",
+  "      surface",
+  "        text \"i am interested in …\"",
+  "      surface",
+  "        text \"… interests me\"",
   "    lexeme ru",
   "      surface",
   "        text \"найди в интернете …\"",
@@ -24305,6 +24311,10 @@ const MEANINGS_LINO = [
   "        text \"поищи материалы о …\"",
   "      surface",
   "        text \"поищи материалы об …\"",
+  "      surface",
+  "        text \"интересует …\"",
+  "      surface",
+  "        text \"меня интересует …\"",
   "    lexeme hi",
   "      surface",
   "        text \"इंटरनेट पर खोजें …\"",
@@ -24314,6 +24324,14 @@ const MEANINGS_LINO = [
   "        text \"ऑनलाइन खोजें …\"",
   "      surface",
   "        text \"विकिपीडिया पर खोजें …\"",
+  "      surface",
+  "        text \"मुझे … में रुचि है\"",
+  "      surface",
+  "        text \"मुझे … में दिलचस्पी है\"",
+  "      surface",
+  "        text \"… में रुचि है\"",
+  "      surface",
+  "        text \"… में दिलचस्पी है\"",
   "    lexeme zh",
   "      surface",
   "        text 在网上搜索…",
@@ -24323,6 +24341,10 @@ const MEANINGS_LINO = [
   "        text 在维基百科上搜索…",
   "      surface",
   "        text 上网查找…",
+  "      surface",
+  "        text 对…感兴趣",
+  "      surface",
+  "        text 我对…感兴趣",
   "  topic_connective",
   "    defined-by relation",
   "    role web_search_topic_marker",
@@ -35459,6 +35481,23 @@ function stripSearchPrefix(prompt, prefix) {
   return "";
 }
 
+function stripSearchSuffix(prompt, suffix) {
+  const text = cleanSearchQuery(prompt);
+  if (text.toLowerCase().endsWith(suffix)) {
+    return validSearchQuery(text.slice(0, text.length - suffix.length));
+  }
+  return "";
+}
+
+function stripSearchCircumfix(prompt, prefix, suffix) {
+  const text = cleanSearchQuery(prompt);
+  const lower = text.toLowerCase();
+  if (lower.startsWith(prefix) && lower.endsWith(suffix)) {
+    return validSearchQuery(text.slice(prefix.length, text.length - suffix.length));
+  }
+  return "";
+}
+
 // Issue #386: every surface cue the web-search recogniser reasons about — the
 // explicit command prefixes, the action/source/signal vocabulary, the topic
 // connectives, the query noise, the follow-up instruction verbs and clause
@@ -35600,6 +35639,13 @@ function suffixLiterals(role) {
     .filter((form) => form.slot === "suffix")
     .map((form) => form.after);
 }
+// The literal pair around every circumfix-slot form of a role. Mirrors
+// circumfix_literals.
+function circumfixLiterals(role) {
+  return roleWordForms(role)
+    .filter((form) => form.slot === "circumfix")
+    .map((form) => ({ before: form.before, after: form.after }));
+}
 // The surface text of every bare-slot form of a role (drop any prefix/suffix
 // surfaces the same meaning also owns). Mirrors bare_literals.
 function bareLiterals(role) {
@@ -35629,6 +35675,8 @@ function webSearchMarkers() {
   if (WEB_SEARCH_MARKERS_CACHE) return WEB_SEARCH_MARKERS_CACHE;
   WEB_SEARCH_MARKERS_CACHE = {
     explicitPrefixes: prefixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+    explicitSuffixes: suffixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+    explicitCircumfixes: circumfixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
     actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
     strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
     signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
@@ -35908,6 +35956,23 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
   return "";
 }
 
+function extractExplicitWebSearchQuery(prompt) {
+  const markers = webSearchMarkers();
+  for (const prefix of markers.explicitPrefixes) {
+    const query = stripSearchPrefix(prompt, prefix);
+    if (query) return query;
+  }
+  for (const { before, after } of markers.explicitCircumfixes) {
+    const query = stripSearchCircumfix(prompt, before, after);
+    if (query) return query;
+  }
+  for (const suffix of markers.explicitSuffixes) {
+    const query = stripSearchSuffix(prompt, suffix);
+    if (query) return query;
+  }
+  return "";
+}
+
 function extractLatestNewsSearchRequest(normalized) {
   const markers = webSearchMarkers();
   const text = String(normalized || "");
@@ -36009,15 +36074,10 @@ function extractWebSearchRequest(prompt, normalized) {
   ) {
     return "";
   }
-  for (const prefix of webSearchMarkers().explicitPrefixes) {
-    const rawQuery = stripSearchPrefix(prompt, prefix);
-    const normalizedQuery = normalized.startsWith(prefix)
-      ? validSearchQuery(normalized.slice(prefix.length))
-      : "";
-    const query = rawQuery || normalizedQuery;
-    if (query) {
-      return { query, kind: "explicit_prefix" };
-    }
+  const explicitQuery =
+    extractExplicitWebSearchQuery(prompt) || extractExplicitWebSearchQuery(normalized);
+  if (explicitQuery) {
+    return { query: explicitQuery, kind: "explicit_prefix" };
   }
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {
