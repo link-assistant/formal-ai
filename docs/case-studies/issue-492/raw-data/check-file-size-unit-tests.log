@@ -1,0 +1,14 @@
+   Compiling formal-ai v0.237.0 (/tmp/gh-issue-solver-1782666925345)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.54s
+     Running tests/unit/mod.rs (target/debug/deps/unit-08553f446a255b90)
+
+running 6 tests
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::check_file_size::tests::check_directory_skips_generated_wikidata_cache ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 1180 filtered out; finished in 0.00s
+

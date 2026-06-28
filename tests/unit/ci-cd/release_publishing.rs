@@ -281,6 +281,33 @@ fn crate_package_manifest_uses_publish_allowlist() {
 }
 
 #[test]
+fn readme_keeps_traditional_ci_and_artifact_badges() {
+    let readme = fs::read_to_string(format!("{}/README.md", env!("CARGO_MANIFEST_DIR")))
+        .unwrap()
+        .replace("\r\n", "\n");
+
+    for required in [
+        "actions/workflows/release.yml/badge.svg?branch=main",
+        "actions/workflows/desktop-release.yml/badge.svg?branch=main",
+        "img.shields.io/crates/v/formal-ai?label=crates.io&style=flat",
+        "img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat",
+        "img.shields.io/badge/rust-1.96%2B-blue.svg",
+        "codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg",
+        "img.shields.io/badge/license-Unlicense-blue.svg",
+    ] {
+        assert!(
+            readme.contains(required),
+            "README.md should keep the traditional project badge `{required}`"
+        );
+    }
+
+    assert!(
+        !readme.contains("example-sum-package-name"),
+        "README.md badges should use formal-ai, not the template placeholder package"
+    );
+}
+
+#[test]
 fn build_job_checks_generated_crate_archive_size() {
     let workflow = release_workflow();
     let build = job_block(&workflow, "build");
