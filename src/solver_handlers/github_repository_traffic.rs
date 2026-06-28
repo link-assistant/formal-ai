@@ -14,6 +14,9 @@ use crate::solver_handlers::finalize_simple;
 const TRAFFIC_UI_DOC: &str = "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository";
 const TRAFFIC_API_DOC: &str = "https://docs.github.com/en/rest/metrics/traffic";
 const DEFAULT_REPOSITORY: &str = "link-assistant/formal-ai";
+const REPOSITORY_PLACEHOLDER: &str = concat!("{", "repository", "}");
+const TRAFFIC_UI_DOCS_PLACEHOLDER: &str = concat!("{", "traffic_ui_docs", "}");
+const TRAFFIC_API_DOCS_PLACEHOLDER: &str = concat!("{", "traffic_api_docs", "}");
 
 pub fn try_github_repository_traffic(
     prompt: &str,
@@ -94,11 +97,16 @@ fn is_github_repository_traffic_question(normalized: &str, language: &str) -> bo
 }
 
 fn github_repository_traffic_body(language: &str, repository: &str) -> String {
-    let fallback = "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.";
+    let fallback = format!(
+        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}.",
+        repository = repository,
+        traffic_ui_doc = TRAFFIC_UI_DOC,
+        traffic_api_doc = TRAFFIC_API_DOC
+    );
     response_for("github_repository_traffic", language)
         .or_else(|| response_for("github_repository_traffic", "en"))
-        .unwrap_or_else(|| fallback.to_owned())
-        .replace("{repository}", repository)
-        .replace("{traffic_ui_docs}", TRAFFIC_UI_DOC)
-        .replace("{traffic_api_docs}", TRAFFIC_API_DOC)
+        .unwrap_or(fallback)
+        .replace(REPOSITORY_PLACEHOLDER, repository)
+        .replace(TRAFFIC_UI_DOCS_PLACEHOLDER, TRAFFIC_UI_DOC)
+        .replace(TRAFFIC_API_DOCS_PLACEHOLDER, TRAFFIC_API_DOC)
 }
