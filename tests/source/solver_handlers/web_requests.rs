@@ -160,19 +160,19 @@ pub fn try_web_search(
     let request = extract_web_search_request(prompt, normalized)?;
     Some(answer_web_search_query(
         prompt,
-        request.query,
+        &request.query,
         request.kind,
         log,
     ))
 }
 
-pub(crate) fn answer_web_search_query(
+pub fn answer_web_search_query(
     prompt: &str,
-    query: String,
+    query: &str,
     query_kind: WebSearchQueryKind,
     log: &mut EventLog,
 ) -> SymbolicAnswer {
-    log.append("web_search:request", query.clone());
+    log.append("web_search:request", query.to_owned());
     log.append("web_search:query_kind", query_kind.as_str());
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider", (*provider).to_owned());

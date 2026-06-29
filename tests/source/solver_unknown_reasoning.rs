@@ -82,7 +82,7 @@ pub fn answer_unknown_prompt(
             log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
             return answer_web_search_query(
                 prompt,
-                focus.to_owned(),
+                focus,
                 WebSearchQueryKind::UnresolvedBareTerm,
                 log,
             );
@@ -391,7 +391,7 @@ fn is_unresolved_bare_term_prompt(prompt: &str, focus: &str) -> bool {
         return false;
     }
     let has_letter = trimmed.chars().any(char::is_alphabetic);
-    let enough_surface = trimmed.chars().count() >= 2 || trimmed.chars().any(|ch| !ch.is_ascii());
+    let enough_surface = trimmed.chars().count() >= 2 || !trimmed.is_ascii();
     has_letter && enough_surface
 }
 

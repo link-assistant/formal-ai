@@ -35,7 +35,7 @@ use crate::seed::{
 use super::web_requests::normalize_url_candidate;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum WebSearchQueryKind {
+pub enum WebSearchQueryKind {
     ExplicitPrefix,
     SemanticAction,
     LatestNews,
@@ -46,7 +46,7 @@ pub(crate) enum WebSearchQueryKind {
 }
 
 impl WebSearchQueryKind {
-    pub(crate) const fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::ExplicitPrefix => "explicit_prefix",
             Self::SemanticAction => "semantic_action",
