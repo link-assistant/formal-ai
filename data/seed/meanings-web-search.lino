@@ -311,6 +311,88 @@ meanings
         text 统计
       surface
         text 統計
+  reference_public_events
+    defined-by web_resource
+    defined-by concept
+    role web_search_signal
+    lexeme en
+      surface
+        text " event "
+      surface
+        text " events "
+      surface
+        text " hackathon"
+      surface
+        text " conference"
+      surface
+        text " meetup"
+      surface
+        text " workshop"
+      surface
+        text " competition"
+      surface
+        text " webinar"
+    lexeme ru
+      surface
+        text " событ"
+      surface
+        text " мероприят"
+      surface
+        text " хакатон"
+      surface
+        text " конференц"
+      surface
+        text " митап"
+      surface
+        text " конкурс"
+      surface
+        text " вебинар"
+    lexeme hi
+      surface
+        text इवेंट
+      surface
+        text कार्यक्रम
+      surface
+        text हैकाथॉन
+      surface
+        text सम्मेलन
+      surface
+        text मीटअप
+      surface
+        text प्रतियोगिता
+      surface
+        text वेबिनार
+    lexeme zh
+      surface
+        text 活动
+      surface
+        text 活動
+      surface
+        text 黑客松
+      surface
+        text 会议
+      surface
+        text 會議
+      surface
+        text 大会
+      surface
+        text 大會
+      surface
+        text 见面会
+      surface
+        text 見面會
+      surface
+        text 比赛
+      surface
+        text 比賽
+      surface
+        text 竞赛
+      surface
+        text 競賽
+      surface
+        text 网络研讨会
+      surface
+        text 網路研討會
   act_search_strong
     defined-by inquiry
     defined-by action
@@ -414,7 +496,15 @@ meanings
       surface
         text " find "
       surface
+        text " see "
+      surface
+        text " view "
+      surface
         text "find …"
+      surface
+        text "see …"
+      surface
+        text "view …"
     lexeme ru
       surface
         text " найди "
@@ -425,6 +515,10 @@ meanings
       surface
         text " узнай "
       surface
+        text " посмотреть "
+      surface
+        text " смотреть "
+      surface
         text "найди …"
       surface
         text "найти …"
@@ -432,16 +526,32 @@ meanings
         text "разыщи …"
       surface
         text "узнай …"
+      surface
+        text "посмотреть …"
+      surface
+        text "смотреть …"
     lexeme hi
       surface
         text "पता लगाओ"
       surface
         text "पता लगाओ …"
+      surface
+        text देखो
+      surface
+        text "देखो …"
+      surface
+        text देखें
+      surface
+        text "देखें …"
     lexeme zh
       surface
         text 找到
       surface
         text 找到…
+      surface
+        text 查看
+      surface
+        text 查看…
   web_search_mention
     defined-by web_search
     role web_search_history_signal

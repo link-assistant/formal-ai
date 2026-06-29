@@ -1,5 +1,5 @@
-// Issue #505: verify the browser worker mirror routes topic-interest prompts
-// such as "Интересует Cursor AI" to the web-search recognizer.
+// Issue #506: verify the browser worker mirror routes multilingual
+// event-listing prompts such as "Найди мне хакатоны" to web search.
 import { readdirSync, readFileSync } from "node:fs";
 import vm from "node:vm";
 import { TextDecoder, TextEncoder } from "node:util";
@@ -48,11 +48,12 @@ if (typeof extractWebSearchRequest !== "function") {
 }
 
 const CASES = [
-  ["en", "Interested in Cursor AI", "Cursor AI"],
-  ["en-suffix", "Cursor AI interests me", "Cursor AI"],
-  ["ru", "Интересует Cursor AI", "Cursor AI"],
-  ["hi", "मुझे Cursor AI में रुचि है", "Cursor AI"],
-  ["zh", "我对Cursor AI感兴趣", "Cursor AI"],
+  ["en", "Where can I find hackathons?", "hackathons"],
+  ["ru", "Найди мне хакатоны", "хакатоны"],
+  ["hi", "देखो hackathons", "hackathons"],
+  ["zh", "查看黑客松", "黑客松"],
+  ["en-current", "Where can I find current hackathons?", "hackathons"],
+  ["ru-current", "Где посмотреть актуальные хакатоны?", "хакатоны"],
 ];
 
 let failures = 0;
@@ -60,7 +61,7 @@ for (const [language, prompt, expectedQuery] of CASES) {
   const request = extractWebSearchRequest(prompt, normalizePrompt(prompt));
   const ok =
     request &&
-    request.kind === "explicit_prefix" &&
+    request.kind === "semantic_action" &&
     request.query === expectedQuery;
   console.log(
     `${ok ? "PASS" : "FAIL"} ${language}: ${JSON.stringify(prompt)} -> ${
@@ -74,4 +75,4 @@ if (failures) {
   console.error(`\n${failures} check(s) failed`);
   process.exit(1);
 }
-console.log("\nAll issue #505 JS worker routing checks passed");
+console.log("\nAll issue #506 JS worker routing checks passed");
