@@ -893,6 +893,7 @@ const ROLE_WEB_SEARCH_HISTORY_SIGNAL = "web_search_history_signal";
 const ROLE_FOLLOWUP_INSTRUCTION_VERB = "followup_instruction_verb";
 const ROLE_CLAUSE_CONTINUATION_MARKER = "clause_continuation_marker";
 const ROLE_RESEARCH_QUESTION_OPENER = "research_question_opener";
+const ROLE_TERM_INFORMATION_REQUEST_OPENER = "term_information_request_opener";
 const ROLE_RESEARCH_SUPERLATIVE_MODIFIER = "research_superlative_modifier";
 const ROLE_RESEARCH_EVIDENCE_DOMAIN = "research_evidence_domain";
 const ROLE_RESEARCH_EVALUATION_DOMAIN = "research_evaluation_domain";
@@ -1056,6 +1057,7 @@ function webSearchMarkers() {
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
+    termInformationPrefixes: prefixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
     researchModifiers: bareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
     researchEvidenceDomains: bareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),

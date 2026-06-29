@@ -1,4 +1,34 @@
 meanings
+  term_information_request_opener
+    defined-by inquiry
+    defined-by concept
+    role term_information_request_opener
+    lexeme en
+      surface
+        text "tell me about …"
+      surface
+        text "can you tell me about …"
+      surface
+        text "could you tell me about …"
+    lexeme ru
+      surface
+        text "расскажи мне об …"
+      surface
+        text "расскажи мне о …"
+      surface
+        text "расскажи мне про …"
+      surface
+        text "расскажи об …"
+      surface
+        text "расскажи о …"
+      surface
+        text "расскажи про …"
+    lexeme hi
+      surface
+        text "बताओ …"
+    lexeme zh
+      surface
+        text 告诉我…
   research_question_opener
     defined-by inquiry
     role research_question_opener
