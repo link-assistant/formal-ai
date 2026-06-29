@@ -229,6 +229,32 @@ meanings
     lexeme en
       surface
         text order
+  procedural_action_install
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text install
+        action install
+    lexeme ru
+      surface
+        text установить
+        action install
+      surface
+        text устанавливать
+        action install
+    lexeme hi
+      surface
+        text "इंस्टॉल करें"
+        action install
+      surface
+        text "स्थापित करें"
+        action install
+    lexeme zh
+      surface
+        text 安装
+        action install
   connect
     defined-by action
     defined-by procedural_request

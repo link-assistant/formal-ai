@@ -2,44 +2,6 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
-const MEANING_SEED_FILES: &[&str] = &[
-    "data/seed/meanings.lino",
-    "data/seed/meanings-units.lino",
-    "data/seed/meanings-calendar.lino",
-    "data/seed/meanings-calculator.lino",
-    "data/seed/meanings-facts.lino",
-    "data/seed/meanings-software-project.lino",
-    "data/seed/meanings-program-synthesis.lino",
-    "data/seed/meanings-intent.lino",
-    "data/seed/meanings-how.lino",
-    "data/seed/meanings-meta.lino",
-    "data/seed/meanings-web-navigation.lino",
-    "data/seed/meanings-web-search.lino",
-    "data/seed/meanings-web-search-query.lino",
-    "data/seed/meanings-web-research.lino",
-    "data/seed/meanings-web-followup.lino",
-    "data/seed/meanings-translation.lino",
-    "data/seed/meanings-ontology.lino",
-    "data/seed/meanings-semantic-meta.lino",
-    "data/seed/meanings-lexical-meta.lino",
-    "data/seed/meanings-links-root.lino",
-    "data/seed/meanings-wikidata.lino",
-    "data/seed/meanings-behavior-rules.lino",
-    "data/seed/meanings-proof.lino",
-    "data/seed/meanings-policy.lino",
-    "data/seed/meanings-docs.lino",
-    "data/seed/meanings-skill-compiler.lino",
-    "data/seed/meanings-finance.lino",
-    "data/seed/meanings-definition-merge.lino",
-    "data/seed/meanings-tool-access.lino",
-    "data/seed/meanings-feature-capability.lino",
-    "data/seed/meanings-playwright.lino",
-    "data/seed/meanings-research-table.lino",
-    "data/seed/meanings-conversation.lino",
-    "data/seed/meanings-summary.lino",
-    "data/seed/meanings-coding-catalog.lino",
-];
-
 fn main() -> io::Result<()> {
     let seed_dir = Path::new("data/seed");
     for path in lino_files(seed_dir)? {
@@ -53,65 +15,7 @@ fn main() -> io::Result<()> {
             fs::write(&path, migrated)?;
         }
     }
-    refresh_worker_meanings(Path::new("src/web/formal_ai_worker.js"))?;
     Ok(())
-}
-
-fn refresh_worker_meanings(worker_path: &Path) -> io::Result<()> {
-    if !worker_path.exists() {
-        return Ok(());
-    }
-    let mut seed_lines = Vec::new();
-    for file in MEANING_SEED_FILES {
-        let content = fs::read_to_string(file)?;
-        let content = content.strip_suffix('\n').unwrap_or(&content);
-        seed_lines.extend(content.lines().map(ToOwned::to_owned));
-    }
-
-    let mut replacement = String::from("const MEANINGS_LINO = [\n");
-    for line in seed_lines {
-        replacement.push_str("  ");
-        replacement.push_str(&js_string(&line));
-        replacement.push_str(",\n");
-    }
-    replacement.push_str("].join(\"\\n\");");
-
-    let original = fs::read_to_string(worker_path)?;
-    let start = original
-        .find("const MEANINGS_LINO = [")
-        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO start not found"))?;
-    let end_marker = "].join(\"\\n\");";
-    let end = original[start..]
-        .find(end_marker)
-        .map(|offset| start + offset + end_marker.len())
-        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO end not found"))?;
-    let mut next = String::new();
-    next.push_str(&original[..start]);
-    next.push_str(&replacement);
-    next.push_str(&original[end..]);
-    if next != original {
-        fs::write(worker_path, next)?;
-    }
-    Ok(())
-}
-
-fn js_string(value: &str) -> String {
-    let mut out = String::from("\"");
-    for character in value.chars() {
-        match character {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            character if character.is_control() => {
-                out.push_str(&format!("\\u{:04x}", character as u32));
-            }
-            character => out.push(character),
-        }
-    }
-    out.push('"');
-    out
 }
 
 fn lino_files(dir: &Path) -> io::Result<Vec<PathBuf>> {
@@ -138,7 +42,10 @@ fn is_meaning_file(path: &Path) -> bool {
 fn migrate_meaning_file(content: &str) -> String {
     let mut out = String::new();
     for line in content.lines() {
-        let indent_len = line.chars().take_while(|character| *character == ' ').count();
+        let indent_len = line
+            .chars()
+            .take_while(|character| *character == ' ')
+            .count();
         let indent = &line[..indent_len];
         let trimmed = line[indent_len..].trim_end();
         if trimmed.is_empty() {
@@ -158,7 +65,13 @@ fn migrate_meaning_file(content: &str) -> String {
         {
             continue;
         } else if let Some(value) = quoted_value(trimmed, "defined_by") {
-            write_safe_value_line(&mut out, indent, "defined-by", &value, Some("definition-link"));
+            write_safe_value_line(
+                &mut out,
+                indent,
+                "defined-by",
+                &value,
+                Some("definition-link"),
+            );
         } else if let Some(value) = quoted_value(trimmed, "wikidata") {
             write_safe_value_line(&mut out, indent, "grounded-in", &value, Some("source-id"));
         } else if let Some(value) = quoted_value(trimmed, "role") {
@@ -166,7 +79,13 @@ fn migrate_meaning_file(content: &str) -> String {
         } else if let Some(value) = quoted_value(trimmed, "lexeme") {
             write_safe_value_line(&mut out, indent, "lexeme", &value, Some("language"));
         } else if let Some(value) = quoted_value(trimmed, "word") {
-            write_raw_line(&mut out, indent, "surface", &value, Some("unresolved-surface"));
+            write_raw_line(
+                &mut out,
+                indent,
+                "surface",
+                &value,
+                Some("unresolved-surface"),
+            );
         } else if let Some(value) = quoted_value(trimmed, "facet") {
             write_safe_value_line(&mut out, indent, "facet", &value, Some("facet"));
         } else if let Some(value) = quoted_value(trimmed, "action") {
@@ -189,7 +108,10 @@ fn migrate_scalar_file(content: &str) -> String {
 }
 
 fn migrate_scalar_line(line: &str) -> String {
-    let indent_len = line.chars().take_while(|character| *character == ' ').count();
+    let indent_len = line
+        .chars()
+        .take_while(|character| *character == ' ')
+        .count();
     let indent = &line[..indent_len];
     let trimmed = line[indent_len..].trim_end();
     if trimmed.is_empty() {
@@ -197,7 +119,12 @@ fn migrate_scalar_line(line: &str) -> String {
     }
     if let Some((name, value)) = split_quoted_scalar(trimmed, '"') {
         let mut out = String::new();
-        write_scalar_value(&mut out, indent, migrated_scalar_name(name), &unescape_double(&value));
+        write_scalar_value(
+            &mut out,
+            indent,
+            migrated_scalar_name(name),
+            &unescape_double(&value),
+        );
         return out;
     }
     if let Some((name, value)) = split_quoted_scalar(trimmed, '\'') {
@@ -398,9 +325,9 @@ fn unescape_single(value: &str) -> String {
 
 fn is_safe_reference(value: &str) -> bool {
     !value.is_empty()
-        && value
-            .chars()
-            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '|'))
+        && value.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '|')
+        })
 }
 
 fn comment_text(value: &str) -> String {

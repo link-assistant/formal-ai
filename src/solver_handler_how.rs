@@ -44,7 +44,9 @@ pub fn try_how_to_procedure(
             format!("{}->{}", correction.from, correction.to),
         );
     }
-    let query = format!("how to {}", task.task);
+    let is_install_procedure = task.action == "install";
+    let fallback_query = format!("how to {}", task.task);
+    let search_query = procedural_search_query(&task);
     let wikihow_candidate = wikihow_page_title(&task.task);
     let wikihow_api_url = format!(
         "https://www.wikihow.com/api.php?action=parse&page={wikihow_candidate}\
@@ -56,6 +58,16 @@ pub fn try_how_to_procedure(
     if !task.object.is_empty() {
         log.append("procedural_how_to:object", task.object.clone());
     }
+    if is_install_procedure {
+        log.append(
+            "procedural_how_to:stage",
+            "official_documentation".to_owned(),
+        );
+        log.append(
+            "procedural_how_to:source_gate",
+            "official_documentation_first".to_owned(),
+        );
+    }
     log.append("procedural_how_to:stage", "wikipedia".to_owned());
     log.append("procedural_how_to:stage", "wikidata".to_owned());
     log.append("procedural_how_to:stage", "wikihow_api".to_owned());
@@ -65,7 +77,10 @@ pub fn try_how_to_procedure(
     );
     log.append("http_fetch:request", wikihow_api_url.clone());
     log.append("procedural_how_to:stage", "web_search".to_owned());
-    log.append("web_search:request", query.clone());
+    log.append("web_search:request", search_query.clone());
+    if is_install_procedure && search_query != fallback_query {
+        log.append("web_search:request", fallback_query.clone());
+    }
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider", (*provider).to_owned());
     }
@@ -84,7 +99,8 @@ pub fn try_how_to_procedure(
         &task,
         &wikihow_candidate,
         &wikihow_api_url,
-        &query,
+        &search_query,
+        &fallback_query,
         &provider_summary,
         detect_language(prompt),
     );
@@ -531,6 +547,18 @@ fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<Procedura
     None
 }
 
+fn procedural_search_query(task: &ProceduralHowToTask) -> String {
+    if task.action == "install" {
+        let target = if task.object.is_empty() {
+            task.task.as_str()
+        } else {
+            task.object.as_str()
+        };
+        return format!("{target} install official documentation");
+    }
+    format!("how to {}", task.task)
+}
+
 fn split_known_procedural_action_object(task: &str) -> Option<(String, String)> {
     let mut forms = seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB);
     forms.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
@@ -658,14 +686,28 @@ fn render_procedural_how_to_body(
     task: &ProceduralHowToTask,
     wikihow_candidate: &str,
     wikihow_api_url: &str,
-    query: &str,
+    search_query: &str,
+    fallback_query: &str,
     provider_summary: &str,
     language: Language,
 ) -> String {
-    if language == Language::Russian {
-        return format!(
-            "План поиска процедуры для `{}` (действие `{}`, объект `{}`).\n\n\
-             Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет \
+    let is_install_procedure = task.action == "install";
+    match language {
+        Language::Russian => {
+            let official_docs_gate = if is_install_procedure {
+                format!(
+                    "Для задач установки первый source gate ищет официальную \
+                     документацию продукта или официальную страницу установки в \
+                     репозитории, а уже потом переходит к общим how-to источникам. \
+                     Он начинает с web search запроса `{search_query}` и держит \
+                     общий how-to запрос `{fallback_query}` как fallback. "
+                )
+            } else {
+                String::new()
+            };
+            format!(
+                "План поиска процедуры для `{}` (действие `{}`, объект `{}`).\n\n\
+             {}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет \
              Wikipedia для контекста темы и Wikidata для подсказок сущности, действия \
              и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow \
              для кандидата `{}` через `{}`. Если эти источники не дают пригодные шаги, \
@@ -673,21 +715,100 @@ fn render_procedural_how_to_body(
              результаты reciprocal rank fusion (k = {}). Финальная recursive fetch \
              check принимает только страницы с явными упорядоченными или \
              инструкционными шагами для `{}`.",
-            task.task,
-            task.action,
-            task.object,
-            wikihow_candidate,
-            wikihow_api_url,
-            query,
-            provider_summary,
-            WEB_SEARCH_RRF_K,
-            task.task,
-        );
-    }
-
-    format!(
-        "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
-         I do not answer this from a memoized recipe. The solver first checks \
+                task.task,
+                task.action,
+                task.object,
+                official_docs_gate,
+                wikihow_candidate,
+                wikihow_api_url,
+                search_query,
+                provider_summary,
+                WEB_SEARCH_RRF_K,
+                task.task,
+            )
+        }
+        Language::Hindi => {
+            let official_docs_gate = if is_install_procedure {
+                format!(
+                    "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक \
+                     documentation या official repository install page को प्राथमिकता \
+                     देता है; उसके बाद ही community how-to sources देखे जाते हैं. \
+                     Solver official-source web search query `{search_query}` \
+                     पहले चलाता है और general how-to query `{fallback_query}` \
+                     को fallback रखता है. "
+                )
+            } else {
+                String::new()
+            };
+            format!(
+                "`{}` के लिए procedural discovery plan (action `{}`, object `{}`).\n\n\
+                 {}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic \
+                 context के लिए Wikipedia और entity/action/object hints के लिए \
+                 Wikidata जांचता है. फिर वह candidate `{}` के लिए wikiHow का \
+                 CORS-readable MediaWiki parse API `{}` से आजमाता है. अगर ये \
+                 sources usable steps नहीं देते, fallback `{}` के लिए {} पर \
+                 web search चलाता है और top results को reciprocal rank fusion \
+                 (k = {}) से merge करता है. अंतिम recursive fetch check केवल \
+                 उन pages को स्वीकार करता है जिनमें `{}` के explicit ordered \
+                 या instructional steps हों.",
+                task.task,
+                task.action,
+                task.object,
+                official_docs_gate,
+                wikihow_candidate,
+                wikihow_api_url,
+                search_query,
+                provider_summary,
+                WEB_SEARCH_RRF_K,
+                task.task,
+            )
+        }
+        Language::Chinese => {
+            let official_docs_gate = if is_install_procedure {
+                format!(
+                    "对于安装类任务，第一个 source gate 优先查找产品官方 documentation \
+                     或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 \
+                     web search query `{search_query}`，并把通用 how-to query \
+                     `{fallback_query}` 保留为 fallback。"
+                )
+            } else {
+                String::new()
+            };
+            format!(
+                "`{}` 的过程发现计划（action `{}`, object `{}`）。\n\n\
+                 {}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia \
+                 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 \
+                 wikiHow 的 CORS-readable MediaWiki parse API candidate `{}`，URL 为 `{}`。\
+                 如果这些来源没有可用步骤，fallback 会对 `{}` 通过 {} 运行 web search，\
+                 并用 reciprocal rank fusion (k = {}) 合并顶部结果。最后的 recursive \
+                 fetch check 只接受真正包含 `{}` 的明确有序步骤或 instructional steps 的页面。",
+                task.task,
+                task.action,
+                task.object,
+                official_docs_gate,
+                wikihow_candidate,
+                wikihow_api_url,
+                search_query,
+                provider_summary,
+                WEB_SEARCH_RRF_K,
+                task.task,
+            )
+        }
+        Language::English | Language::Unknown => {
+            let official_docs_gate = if is_install_procedure {
+                format!(
+                    "For install tasks, the first source gate prefers the product's \
+                     official documentation or official repository install page \
+                     before community how-to sources. It starts with the \
+                     official-source web search query `{search_query}` and keeps \
+                     the general how-to query `{fallback_query}` as fallback. "
+                )
+            } else {
+                String::new()
+            };
+            format!(
+                "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
+         {}I do not answer this from a memoized recipe. The solver first checks \
          Wikipedia for topic context and Wikidata for entity/action/object hints. \
          It then tries wikiHow's CORS-readable MediaWiki parse API candidate \
          `{}` via `{}`. If those sources do not expose usable steps, the fallback \
@@ -695,16 +816,19 @@ fn render_procedural_how_to_body(
          reciprocal rank fusion (k = {}). The final recursive fetch check only \
          accepts pages that actually contain explicit ordered or instructional \
          steps for `{}`.",
-        task.task,
-        task.action,
-        task.object,
-        wikihow_candidate,
-        wikihow_api_url,
-        query,
-        provider_summary,
-        WEB_SEARCH_RRF_K,
-        task.task,
-    )
+                task.task,
+                task.action,
+                task.object,
+                official_docs_gate,
+                wikihow_candidate,
+                wikihow_api_url,
+                search_query,
+                provider_summary,
+                WEB_SEARCH_RRF_K,
+                task.task,
+            )
+        }
+    }
 }
 
 fn capitalize_word(word: &str) -> String {

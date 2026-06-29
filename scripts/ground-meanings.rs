@@ -23,8 +23,9 @@
 //!   4. Inserts `grounded-in <qid>` as the first child of the meaning block in
 //!      `data/seed/**/meanings*.lino` (idempotent — re-running is a no-op).
 //!
-//! Finally it regenerates the embedded browser-worker seed so the web runtime
-//! keeps identical bytes.
+//! Browser builds read the canonical seed via `scripts/sync-seed.sh` and
+//! `src/web/seed_loader.js`, so this script only updates `data/seed` and the
+//! checked-in Wikidata cache.
 //!
 //! Network access is only needed the first time an id is fetched; afterwards the
 //! checked-in cache satisfies the closure tests offline. Run with
@@ -198,46 +199,11 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("politeness", "Q281287", "politeness"),
     ("calendar_today", "Q3151690", "today"),
     ("calendar_tomorrow", "Q1209716", "tomorrow"),
-    ("calendar_day_after_tomorrow", "Q1036448", "day after tomorrow"),
-];
-
-/// Meaning seed files mirrored into the browser worker fallback, in load order.
-const MEANING_SEED_FILES: &[&str] = &[
-    "data/seed/meanings.lino",
-    "data/seed/meanings-units.lino",
-    "data/seed/meanings-calendar.lino",
-    "data/seed/meanings-calculator.lino",
-    "data/seed/meanings-facts.lino",
-    "data/seed/meanings-software-project.lino",
-    "data/seed/meanings-program-synthesis.lino",
-    "data/seed/meanings-intent.lino",
-    "data/seed/meanings-how.lino",
-    "data/seed/meanings-meta.lino",
-    "data/seed/meanings-web-navigation.lino",
-    "data/seed/meanings-web-search.lino",
-    "data/seed/meanings-web-search-query.lino",
-    "data/seed/meanings-web-research.lino",
-    "data/seed/meanings-web-followup.lino",
-    "data/seed/meanings-translation.lino",
-    "data/seed/meanings-ontology.lino",
-    "data/seed/meanings-semantic-meta.lino",
-    "data/seed/meanings-lexical-meta.lino",
-    "data/seed/meanings-links-root.lino",
-    "data/seed/meanings-wikidata.lino",
-    "data/seed/meanings-behavior-rules.lino",
-    "data/seed/meanings-proof.lino",
-    "data/seed/meanings-policy.lino",
-    "data/seed/meanings-docs.lino",
-    "data/seed/meanings-skill-compiler.lino",
-    "data/seed/meanings-finance.lino",
-    "data/seed/meanings-definition-merge.lino",
-    "data/seed/meanings-tool-access.lino",
-    "data/seed/meanings-feature-capability.lino",
-    "data/seed/meanings-playwright.lino",
-    "data/seed/meanings-research-table.lino",
-    "data/seed/meanings-conversation.lino",
-    "data/seed/meanings-summary.lino",
-    "data/seed/meanings-coding-catalog.lino",
+    (
+        "calendar_day_after_tomorrow",
+        "Q1036448",
+        "day after tomorrow",
+    ),
 ];
 
 /// `curl | python3` trim+verify program. Reads the full EntityData JSON on
@@ -316,8 +282,6 @@ fn main() -> io::Result<()> {
             }
         }
     }
-
-    refresh_worker_meanings(Path::new("src/web/formal_ai_worker.js"))?;
 
     println!("grounded {grounded} meaning(s) to verified Wikidata ids");
     if !skipped.is_empty() {
@@ -463,68 +427,4 @@ fn collect_seed_files(dir: &Path) -> io::Result<Vec<PathBuf>> {
     }
     out.sort();
     Ok(out)
-}
-
-fn refresh_worker_meanings(worker_path: &Path) -> io::Result<()> {
-    if !worker_path.exists() {
-        return Ok(());
-    }
-    let mut seed_lines = Vec::new();
-    for file in MEANING_SEED_FILES {
-        let content = fs::read_to_string(file)?;
-        let content = content.strip_suffix('\n').unwrap_or(&content);
-        seed_lines.extend(content.lines().map(ToOwned::to_owned));
-    }
-
-    let mut replacement = String::from("const MEANINGS_LINO = [\n");
-    for line in seed_lines {
-        replacement.push_str("  ");
-        replacement.push_str(&js_string(&line));
-        replacement.push_str(",\n");
-    }
-    replacement.push_str("].join(\"\\n\");");
-
-    let original = fs::read_to_string(worker_path)?;
-    let start = original.find("const MEANINGS_LINO = [").ok_or_else(|| {
-        io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO start not found")
-    })?;
-    let end_marker = "].join(\"\\n\");";
-    let end = original[start..]
-        .find(end_marker)
-        .map(|offset| start + offset + end_marker.len())
-        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO end not found"))?;
-    let mut next = String::new();
-    next.push_str(&original[..start]);
-    next.push_str(&replacement);
-    next.push_str(&original[end..]);
-    if next != original {
-        fs::write(worker_path, next)?;
-    }
-    Ok(())
-}
-
-fn js_string(value: &str) -> String {
-    let quote = if value.contains('"') && !value.contains('\'') {
-        '\''
-    } else {
-        '"'
-    };
-    let mut out = String::new();
-    out.push(quote);
-    for character in value.chars() {
-        match character {
-            '"' if quote == '"' => out.push_str("\\\""),
-            '\'' if quote == '\'' => out.push_str("\\'"),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            character if character.is_control() => {
-                out.push_str(&format!("\\u{:04x}", character as u32));
-            }
-            character => out.push(character),
-        }
-    }
-    out.push(quote);
-    out
 }

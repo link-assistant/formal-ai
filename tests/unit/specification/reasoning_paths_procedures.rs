@@ -233,6 +233,85 @@ fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
 }
 
 #[test]
+fn telegraphic_install_prompts_use_official_docs_procedure_plan() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        task_fragment: &'static str,
+        object_fragment: &'static str,
+        official_marker: &'static str,
+    }
+
+    for case in [
+        Case {
+            language: "en",
+            prompt: "how install cursor",
+            task_fragment: "install cursor",
+            object_fragment: "cursor",
+            official_marker: "official documentation",
+        },
+        Case {
+            language: "ru",
+            prompt: "как установить cursor",
+            task_fragment: "установить cursor",
+            object_fragment: "cursor",
+            official_marker: "официальн",
+        },
+        Case {
+            language: "hi",
+            prompt: "कैसे इंस्टॉल करें cursor",
+            task_fragment: "इंस्टॉल करें cursor",
+            object_fragment: "cursor",
+            official_marker: "आधिकारिक",
+        },
+        Case {
+            language: "zh",
+            prompt: "如何安装 cursor",
+            task_fragment: "安装 cursor",
+            object_fragment: "cursor",
+            official_marker: "官方",
+        },
+    ] {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "procedural_how_to",
+            "{} install prompt must use the procedural handler; answer={}",
+            case.language, response.answer,
+        );
+
+        let answer = response.answer.to_lowercase();
+        for expected in ["install", case.official_marker, "web search"] {
+            assert!(
+                answer.contains(expected),
+                "{} procedural install answer should mention {expected:?}; answer={}",
+                case.language,
+                response.answer,
+            );
+        }
+
+        for expected in [
+            &format!("language:{}", case.language),
+            &format!("procedural_how_to:request:{}", case.task_fragment),
+            "procedural_how_to:action:install",
+            &format!("procedural_how_to:object:{}", case.object_fragment),
+            &format!(
+                "web_search:request:{} install official documentation",
+                case.object_fragment
+            ),
+            &format!("web_search:request:how to {}", case.task_fragment),
+            "procedural_how_to:source_gate:official_documentation_first",
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{} missing evidence prefix {expected:?}: {:?}",
+                case.language,
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
 fn telegraphic_how_requires_a_known_procedural_action() {
     let response = answer("how glorp widgets?");
     assert_ne!(

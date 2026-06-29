@@ -32,6 +32,7 @@ const languageFacingPrefixes = [
   'data/seed/',
   'src/solver_handlers/',
   'src/translation/',
+  'src/web/worker/',
 ];
 
 const languageFacingFiles = new Set([

@@ -21,6 +21,21 @@ function readRepoFile(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function readWorkerSource() {
+  const wrapperPath = path.join(repoRoot, 'src/web/formal_ai_worker.js');
+  const workerDir = path.join(repoRoot, 'src/web/worker');
+  const sources = [fs.readFileSync(wrapperPath, 'utf8')];
+  if (fs.existsSync(workerDir)) {
+    const modules = fs.readdirSync(workerDir)
+      .filter((file) => file.endsWith('.js'))
+      .sort();
+    for (const module of modules) {
+      sources.push(fs.readFileSync(path.join(workerDir, module), 'utf8'));
+    }
+  }
+  return sources.join('\n');
+}
+
 function parseSupportedLanguages() {
   const agentInfo = readRepoFile('data/seed/agent-info.lino');
   return parseSupportedLanguagesFromAgentInfo(agentInfo);
@@ -253,12 +268,12 @@ function parseFeatureCapabilityTestMatrix() {
 }
 
 function parseBrowserTranslationRegistry() {
-  const source = readRepoFile('src/web/formal_ai_worker.js');
+  const source = readWorkerSource();
   const match = source.match(
     /const TRANSLATION_MEANING_REGISTRY = (\[[\s\S]*?\n\]);/,
   );
   if (!match) {
-    throw new Error('src/web/formal_ai_worker.js is missing TRANSLATION_MEANING_REGISTRY');
+    throw new Error('the split web worker source is missing TRANSLATION_MEANING_REGISTRY');
   }
   return vm.runInNewContext(`(${match[1]})`);
 }

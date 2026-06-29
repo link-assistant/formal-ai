@@ -3,9 +3,33 @@
 //! `workflow_fixtures`.
 
 use std::fs;
+use std::path::PathBuf;
 use std::process::Command;
 
 use super::workflow_fixtures::*;
+
+fn read_worker_source(manifest_dir: &str) -> String {
+    let mut source =
+        fs::read_to_string(format!("{manifest_dir}/src/web/formal_ai_worker.js")).unwrap();
+    let worker_dir = PathBuf::from(format!("{manifest_dir}/src/web/worker"));
+    if !worker_dir.exists() {
+        return source;
+    }
+
+    let mut modules: Vec<PathBuf> = fs::read_dir(&worker_dir)
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("js"))
+        .collect();
+    modules.sort();
+
+    for module in modules {
+        source.push('\n');
+        source.push_str(&fs::read_to_string(module).unwrap());
+    }
+
+    source
+}
 
 #[test]
 fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
@@ -180,8 +204,7 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app/main.jsx")).unwrap();
     let seed_loader_js =
         fs::read_to_string(format!("{manifest_dir}/src/web/seed_loader.js")).unwrap();
-    let worker_js =
-        fs::read_to_string(format!("{manifest_dir}/src/web/formal_ai_worker.js")).unwrap();
+    let worker_js = read_worker_source(manifest_dir);
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let wait_script = fs::read_to_string(format!(
@@ -222,6 +245,7 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
+    assert!(worker_js.contains("importScripts(withAssetVersion(modulePath))"));
     assert!(worker_js.contains("fetch(withAssetVersion(\"formal_ai_worker.wasm\"))"));
     for asset in [
         "connectivity.css?v=__FORMAL_AI_ASSET_VERSION__",

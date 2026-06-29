@@ -51,7 +51,7 @@ This is why a behavioural change is a seed edit plus a lookup, not a new branch
 on a string. It is also why the same prompt is answered identically by the CLI,
 the library, the HTTP server, the Telegram bot, and the website: they all read
 the same seed (the Rust crate via `include_str!`, the browser via the
-`src/web/seed/` deployment mirror or a byte-identical inline mirror).
+`src/web/seed/` deployment mirror).
 
 ## Enforcement (CI, not just convention)
 
@@ -70,16 +70,16 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    python3 scripts/audit-total-closure.py  # must report unresolved_distinct: 0
    ```
 
-2. **Worker-mirror parity.** Where the JS worker embeds a byte-identical inline
-   mirror of a seed vocabulary (the operation vocabulary, #386; the terminal
-   vocabulary, #513), a `--check` guard fails the build on drift. For the
-   terminal vocabulary the CI step runs:
+2. **Worker seed parity.** Where the JS worker consumes a generated web seed
+   copy, a `--check` guard fails the build on loader regressions and on drift in
+   a present mirror. For the terminal vocabulary the CI step runs:
 
    ```sh
    node experiments/issue-513-sync-worker-terminal.mjs --check
    ```
 
-   Regenerate the mirror by running the same script without `--check`.
+   Refresh the web seed copy with `scripts/sync-seed.sh` or by running the same
+   script without `--check`.
 
 3. **Roles are declared, then generated.** A new `role` is declared as a
    `ROLE_*` constant in `src/seed/roles/*.rs`, re-exported from `src/seed.rs`,
@@ -122,7 +122,8 @@ suggestion. Nothing about it is hardcoded:
   and leading shell tokens (`ls`, `git`, `cargo`, …) — lives in
   `data/seed/terminal-commands.lino`. Rust parses it via
   `src/seed/terminal_commands.rs` (`seed::terminal_command_vocabulary()`); the
-  worker embeds an inline mirror kept in lockstep by
+  worker loads the synced `src/web/seed/terminal-commands.lino` deployment copy
+  via `src/web/seed_loader.js`, guarded by
   `experiments/issue-513-sync-worker-terminal.mjs`.
 - **Response prose** for all four languages lives in
   `data/seed/multilingual-responses.lino` under the `agent_suggestion` and

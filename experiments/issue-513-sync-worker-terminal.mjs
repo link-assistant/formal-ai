@@ -1,63 +1,111 @@
-// Issue #513 — keep the worker's inline terminal-command trigger vocabulary in
+// Issue #513: keep the worker's terminal-command trigger vocabulary in
 // lockstep with the canonical seed file.
 //
 // `data/seed/terminal-commands.lino` is the single source of truth for the
 // natural-language triggers (terminal/shell phrases, run verbs, Chinese run
 // verbs, leading shell tokens) that classify a prompt as a terminal command.
 // The Rust solver reads it via `src/seed/terminal_commands.rs`; the JS worker
-// embeds a byte-identical inline mirror so detection works without an async
-// seed fetch (the same convention as the operation vocabulary, issue #386).
+// reads the synced `src/web/seed/terminal-commands.lino` deployment copy via
+// `src/web/seed_loader.js`.
 //
 // Run after editing the seed:
 //   node experiments/issue-513-sync-worker-terminal.mjs
 // Verify in CI (non-zero exit on drift):
 //   node experiments/issue-513-sync-worker-terminal.mjs --check
 //
-// It regenerates the inline `TERMINAL_COMMANDS_LINO` array byte-identically from
-// the seed, using the shared house quote style so the worker body stays stable.
+// It refreshes the web seed copy byte-identically from the canonical seed. In
+// `--check` mode it verifies a present web seed copy has not drifted, and that
+// the worker still hydrates `TERMINAL_COMMANDS_LINO` from loaded seed text
+// instead of reintroducing inline natural-language data.
 
 import fs from "node:fs";
-
-import { serializeMeaningLine } from "./issue-386-meaning-files.mjs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 const root = new URL("..", import.meta.url);
 const seedPath = new URL("data/seed/terminal-commands.lino", root);
-const workerPath = new URL("src/web/formal_ai_worker.js", root);
+const webSeedDirPath = new URL("src/web/seed/", root);
+const webSeedPath = new URL("src/web/seed/terminal-commands.lino", root);
+const seedLoaderPath = new URL("src/web/seed_loader.js", root);
+const workerDirPath = new URL("src/web/worker/", root);
+const workerDir = fileURLToPath(workerDirPath);
 
 const checkOnly = process.argv.includes("--check");
+const canonicalSeed = fs.readFileSync(seedPath, "utf8");
+let failed = false;
 
-const lino = fs.readFileSync(seedPath, "utf8").replace(/\n+$/, "");
-const lines = lino.split("\n");
-while (lines.length && lines[lines.length - 1] === "") lines.pop();
-const arrayBody = lines.map((l) => "  " + serializeMeaningLine(l)).join(",\n");
-const newBlock = `const TERMINAL_COMMANDS_LINO = [\n${arrayBody},\n].join("\\n");`;
-
-const blockRe = /const TERMINAL_COMMANDS_LINO = \[\n[\s\S]*?\n\]\.join\("\\n"\);/;
-const worker = fs.readFileSync(workerPath, "utf8");
-if (!blockRe.test(worker)) {
-  throw new Error("anchor not found: TERMINAL_COMMANDS_LINO inline block");
+function reportFailure(message) {
+  failed = true;
+  console.error(`[issue-513] ${message}`);
 }
-const updated = worker.replace(blockRe, newBlock);
 
-if (checkOnly) {
-  if (updated !== worker) {
-    console.error(
-      "[issue-513] src/web/formal_ai_worker.js is out of sync with " +
-        "data/seed/terminal-commands.lino.\n" +
-        "Run: node experiments/issue-513-sync-worker-terminal.mjs",
+function workerSource() {
+  const workerFiles = fs
+    .readdirSync(workerDirPath, { withFileTypes: true })
+    .filter(
+      (entry) =>
+        entry.isFile() && /^formal_ai_worker_\d+\.js$/.test(entry.name),
+    )
+    .map((entry) => path.join(workerDir, entry.name))
+    .sort();
+  return workerFiles
+    .map((file) => fs.readFileSync(file, "utf8"))
+    .join("\n");
+}
+
+if (!fs.existsSync(webSeedPath)) {
+  if (checkOnly) {
+    console.log(
+      "[issue-513] src/web/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.",
     );
-    process.exit(1);
+  } else {
+    fs.mkdirSync(webSeedDirPath, { recursive: true });
+    fs.writeFileSync(webSeedPath, canonicalSeed);
+    console.log(
+      "[issue-513] created src/web/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
+    );
   }
-  console.log("[issue-513] worker terminal vocabulary is in sync with seed.");
-  process.exit(0);
+} else {
+  const webSeed = fs.readFileSync(webSeedPath, "utf8");
+  if (webSeed !== canonicalSeed) {
+    if (checkOnly) {
+      reportFailure(
+        "src/web/seed/terminal-commands.lino is out of sync with data/seed/terminal-commands.lino. Run scripts/sync-seed.sh.",
+      );
+    } else {
+      fs.writeFileSync(webSeedPath, canonicalSeed);
+      console.log(
+        "[issue-513] refreshed src/web/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",
+      );
+    }
+  }
 }
 
-if (updated !== worker) {
-  fs.writeFileSync(workerPath, updated);
-  console.log(
-    "[issue-513] regenerated TERMINAL_COMMANDS_LINO in " +
-      "src/web/formal_ai_worker.js from data/seed/terminal-commands.lino.",
+const seedLoader = fs.readFileSync(seedLoaderPath, "utf8");
+if (!seedLoader.includes('"seed/terminal-commands.lino"')) {
+  reportFailure(
+    "src/web/seed_loader.js does not include seed/terminal-commands.lino in DEFAULT_FILES.",
   );
-} else {
-  console.log("[issue-513] worker terminal vocabulary already in sync.");
 }
+
+const worker = workerSource();
+if (
+  !/TERMINAL_COMMANDS_LINO\s*=\s*seedRawText\(raw,\s*"terminal-commands\.lino"\s*\)/.test(
+    worker,
+  )
+) {
+  reportFailure(
+    "worker does not hydrate TERMINAL_COMMANDS_LINO from terminal-commands.lino seed text.",
+  );
+}
+if (/TERMINAL_COMMANDS_LINO\s*=\s*\[\s*[\r\n]/.test(worker)) {
+  reportFailure(
+    "worker still embeds TERMINAL_COMMANDS_LINO inline data instead of loading seed text.",
+  );
+}
+
+if (failed) {
+  process.exit(1);
+}
+
+console.log("[issue-513] worker terminal vocabulary is in sync with seed.");
