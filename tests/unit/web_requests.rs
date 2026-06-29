@@ -32,6 +32,21 @@ const WEB_SEARCH_ENUMERATION_RESEARCH_CASES: &[(&str, &str, &str)] = &[
     ),
 ];
 
+const WEB_SEARCH_TERM_INFORMATION_CASES: &[(&str, &str, &str)] = &[
+    ("Russian", "расскажи мне об языке Rust", "языке rust"),
+    (
+        "English",
+        "Tell me about ferrocene catalysis",
+        "ferrocene catalysis",
+    ),
+    ("Hindi", "बताओ Rust borrow checker", "rust borrow checker"),
+    (
+        "Chinese",
+        "告诉我Rust borrow checker",
+        "rust borrow checker",
+    ),
+];
+
 struct InterestTopicCase {
     language: &'static str,
     prompt: &'static str,
@@ -795,6 +810,53 @@ fn implicit_research_question_routes_to_web_search_handler() {
         response.evidence_links,
     );
     assert_ne!(response.intent, "unknown");
+}
+
+#[test]
+fn term_information_request_routes_to_web_search_when_concept_lookup_misses() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_TERM_INFORMATION_CASES {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} term-information request should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} web_search should extract the requested public term: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:implicit_research_question"),
+            "{language} web_search should record the term-information request as implicit research: {:?}",
+            response.evidence_links,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn term_information_request_preserves_seeded_concept_lookup() {
+    for prompt in [
+        "What is Rust?",
+        "Tell me about Links Notation",
+        "Что такое Rust?",
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "seeded concept prompt {prompt:?} should stay on concept_lookup, got {} with answer {}",
+            response.intent, response.answer,
+        );
+    }
 }
 
 #[test]
