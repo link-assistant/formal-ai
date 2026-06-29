@@ -307,6 +307,28 @@ function extractWebSearchQuery(prompt, normalized) {
   return request ? request.query : "";
 }
 
+// Mirrors is_unresolved_bare_term_prompt in src/solver_unknown_reasoning.rs.
+function extractUnresolvedBareTermSearchQuery(prompt) {
+  const trimmed = cleanBareTermSearchFocus(prompt);
+  if (!trimmed) return "";
+  const normalized = normalizePrompt(trimmed);
+  if (normalized.split(/\s+/u).filter(Boolean).length !== 1) return "";
+  const characters = Array.from(trimmed);
+  const hasLetter = characters.some((character) => /\p{L}/u.test(character));
+  const enoughSurface =
+    characters.length >= 2 || characters.some((character) => character.charCodeAt(0) > 0x7f);
+  return hasLetter && enoughSurface ? trimmed : "";
+}
+
+function cleanBareTermSearchFocus(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^[`"'\u201c\u201d\u2018\u2019\u00ab\u00bb]+/u, "")
+    .replace(/[`"'\u201c\u201d\u2018\u2019\u00ab\u00bb]+$/u, "")
+    .replace(/[?!.。,;:]+$/u, "")
+    .trim();
+}
+
 function cleanProceduralFragment(value) {
   let clean = String(value || "")
     .trim()

@@ -68,6 +68,55 @@ fn unknown_reasoning_retries_public_knowledge_cache() {
 }
 
 #[test]
+fn unresolved_bare_term_routes_to_web_search_after_local_sources_miss() {
+    let cases = [
+        ("English", "cursor"),
+        ("Russian", "курсор"),
+        ("Hindi", "कर्सर"),
+        ("Chinese", "光标"),
+    ];
+
+    for (language, prompt) in cases {
+        let response = answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} bare unresolved term should search instead of returning unknown: {}",
+            response.answer,
+        );
+        assert!(
+            has_evidence(&response, &format!("web_search:request:{prompt}")),
+            "{language} web search should use the term itself as the query: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            has_evidence(&response, "web_search:query_kind:unresolved_bare_term"),
+            "{language} trace should explain why the fallback searched: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("reasoning:gather_result public_knowledge_cache:miss"),
+            "{language} local/public cache misses should precede the search handoff: {}",
+            response.links_notation,
+        );
+    }
+}
+
+#[test]
+fn seed_backed_bare_terms_still_use_public_knowledge_cache() {
+    let response = answer("Rust");
+
+    assert_eq!(response.intent, "concept_lookup");
+    assert!(
+        has_evidence(&response, "concept_lookup:hit:"),
+        "known concept terms should not be stolen by bare-term web search: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
 fn unknown_reasoning_uses_one_minimal_question_when_unreachable() {
     let response = answer("How should snorflax be calibrated for teal silence");
 

@@ -779,6 +779,33 @@ async function solve(prompt, history, prefs, userContext = {}) {
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
 
+  const bareTermQuery = extractUnresolvedBareTermSearchQuery(prompt);
+  if (bareTermQuery) {
+    steps.push({ step: "invoke_tool", detail: "web_search_unresolved_bare_term" });
+    const bareTermSearch = await runWebSearchQuery(
+      bareTermQuery,
+      language,
+      "unresolved_bare_term",
+    );
+    if (bareTermSearch) {
+      events.push(`handler:${bareTermSearch.intent}`);
+      steps.push({
+        step: "dispatch_handler",
+        detail: "tryUnresolvedBareTermWebSearch",
+      });
+      toolCalls.push({
+        tool: "web_search",
+        inputs: { prompt, language, query: bareTermQuery },
+        outputs: {
+          intent: bareTermSearch.intent,
+          confidence: bareTermSearch.confidence,
+          formalizedObject: bareTermSearch.formalizedObject || "",
+        },
+      });
+      return finalize(events, steps, toolCalls, bareTermSearch, formalizationContext);
+    }
+  }
+
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {

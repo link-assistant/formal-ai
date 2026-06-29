@@ -12,7 +12,7 @@ use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::seed::{self, response_for, ConceptRecord};
-use crate::solver_handlers::finalize_simple;
+use crate::solver_handlers::{answer_web_search_query, finalize_simple, WebSearchQueryKind};
 use crate::solver_helpers::humanize_url;
 use crate::unknown_opener::language_aware_unknown_answer;
 
@@ -75,6 +75,19 @@ pub fn answer_unknown_prompt(
         "reasoning:gather_result",
         "public_knowledge_cache:miss".to_owned(),
     );
+
+    if let Some(focus) = focus.as_deref() {
+        if !config.offline && is_unresolved_bare_term_prompt(prompt, focus) {
+            log.append("reasoning:candidate_source", "web_search".to_owned());
+            log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
+            return answer_web_search_query(
+                prompt,
+                focus,
+                WebSearchQueryKind::UnresolvedBareTerm,
+                log,
+            );
+        }
+    }
 
     log.append(
         "reasoning:candidate_source",
@@ -366,6 +379,20 @@ fn infer_missing_focus(prompt: &str) -> Option<String> {
         return Some(subject);
     }
     Some(trimmed.to_owned())
+}
+
+fn is_unresolved_bare_term_prompt(prompt: &str, focus: &str) -> bool {
+    let trimmed = clean_focus(prompt);
+    if !trimmed.eq_ignore_ascii_case(clean_focus(focus)) {
+        return false;
+    }
+    let words = normalize_search_surface(trimmed);
+    if words.split_whitespace().count() != 1 {
+        return false;
+    }
+    let has_letter = trimmed.chars().any(char::is_alphabetic);
+    let enough_surface = trimmed.chars().count() >= 2 || !trimmed.is_ascii();
+    has_letter && enough_surface
 }
 
 fn extract_question_subject(prompt: &str) -> Option<String> {

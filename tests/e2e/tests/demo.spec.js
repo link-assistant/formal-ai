@@ -876,7 +876,9 @@ test.describe('Issue #94: theme, localization, and report context', () => {
 
     for (let i = 0; i < 12; i += 1) {
       const baseline = await messages.count();
-      await input.fill('ва');
+      // Keep this as a multi-token unknown prompt so issue #500's bare-term
+      // web-search fallback does not turn the report-link fixture into search.
+      await input.fill('ва ва');
       await page.locator('[data-testid="chat-composer-submit"]').click();
       await expect(messages).toHaveCount(baseline + 2, { timeout: 15_000 });
     }

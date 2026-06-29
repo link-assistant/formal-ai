@@ -38,17 +38,18 @@ use crate::seed::{
 use super::web_requests::normalize_url_candidate;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum WebSearchQueryKind {
+pub enum WebSearchQueryKind {
     ExplicitPrefix,
     SemanticAction,
     LatestNews,
     RecordsInformationRequest,
     ImplicitResearchQuestion,
     EnumerationResearchRequest,
+    UnresolvedBareTerm,
 }
 
 impl WebSearchQueryKind {
-    pub(super) const fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
             Self::ExplicitPrefix => "explicit_prefix",
             Self::SemanticAction => "semantic_action",
@@ -56,6 +57,7 @@ impl WebSearchQueryKind {
             Self::RecordsInformationRequest => "records_information_request",
             Self::ImplicitResearchQuestion => "implicit_research_question",
             Self::EnumerationResearchRequest => "enumeration_research_request",
+            Self::UnresolvedBareTerm => "unresolved_bare_term",
         }
     }
 }
