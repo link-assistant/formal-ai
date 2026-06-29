@@ -158,18 +158,31 @@ pub fn try_web_search(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let request = extract_web_search_request(prompt, normalized)?;
-    let query = request.query;
+    Some(answer_web_search_query(
+        prompt,
+        request.query,
+        request.kind,
+        log,
+    ))
+}
+
+pub(crate) fn answer_web_search_query(
+    prompt: &str,
+    query: String,
+    query_kind: WebSearchQueryKind,
+    log: &mut EventLog,
+) -> SymbolicAnswer {
     log.append("web_search:request", query.clone());
-    log.append("web_search:query_kind", request.kind.as_str());
+    log.append("web_search:query_kind", query_kind.as_str());
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider", (*provider).to_owned());
     }
     log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let language = detect_language(prompt).slug();
-    let is_latest_news_request = matches!(request.kind, WebSearchQueryKind::LatestNews);
+    let is_latest_news_request = matches!(query_kind, WebSearchQueryKind::LatestNews);
     let is_research_request = matches!(
-        request.kind,
+        query_kind,
         WebSearchQueryKind::ImplicitResearchQuestion
             | WebSearchQueryKind::EnumerationResearchRequest
     );
@@ -265,14 +278,7 @@ pub fn try_web_search(
              Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
         ),
     };
-    Some(finalize_simple(
-        prompt,
-        log,
-        "web_search",
-        "response:web_search",
-        &body,
-        0.8,
-    ))
+    finalize_simple(prompt, log, "web_search", "response:web_search", &body, 0.8)
 }
 
 const PROMOTED_PROJECT_ORGS: &[&str] = &["link-assistant", "link-foundation", "linksplatform"];
