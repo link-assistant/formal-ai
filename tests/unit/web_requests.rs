@@ -61,6 +61,18 @@ const WEB_SEARCH_INTEREST_TOPIC_CASES: &[InterestTopicCase] = &[
     },
 ];
 
+const WEB_SEARCH_EVENT_LISTING_CASES: &[(&str, &str, &str)] = &[
+    ("en", "Where can I find hackathons?", "hackathons"),
+    ("ru", "Найди мне хакатоны", "хакатоны"),
+    ("hi", "देखो hackathons", "hackathons"),
+    ("zh", "查看黑客松", "黑客松"),
+];
+
+const WEB_SEARCH_CURRENT_EVENT_LISTING_CASES: &[(&str, &str, &str)] = &[
+    ("en", "Where can I find current hackathons?", "hackathons"),
+    ("ru", "Где посмотреть актуальные хакатоны?", "хакатоны"),
+];
+
 const WEB_SEARCH_LATEST_NEWS_CASES: &[(&str, &str, &str)] = &[
     ("English", "latest news", "latest news"),
     ("Russian", "последние новости", "последние новости"),
@@ -291,6 +303,28 @@ fn web_search_interest_topic_cases_cover_every_supported_language() {
 }
 
 #[test]
+fn web_search_event_listing_cases_cover_every_supported_language() {
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut case_languages = BTreeMap::<&str, usize>::new();
+    for &(language, _, _) in WEB_SEARCH_EVENT_LISTING_CASES {
+        *case_languages.entry(language).or_insert(0) += 1;
+    }
+    assert_eq!(
+        case_languages.keys().copied().collect::<BTreeSet<_>>(),
+        supported_languages,
+        "event-listing web-search prompts must cover every supported language",
+    );
+    assert!(
+        case_languages.values().all(|count| *count == 1),
+        "event-listing prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
 fn web_search_source_marker_prompts_extract_query_without_source_marker() {
     for &(language, prompt, expected_query) in WEB_SEARCH_SOURCE_MARKER_CASES {
         let response = FormalAiEngine.answer(prompt);
@@ -312,6 +346,39 @@ fn web_search_source_marker_prompts_extract_query_without_source_marker() {
             response.answer.contains(&format!("`{expected_query}`")),
             "{language} web-search answer should echo the extracted query, got: {}",
             response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn event_listing_prompts_route_to_web_search_handler() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_EVENT_LISTING_CASES
+        .iter()
+        .chain(WEB_SEARCH_CURRENT_EVENT_LISTING_CASES.iter())
+    {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} event-listing prompt should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} web_search should extract only the event category {expected_query:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:semantic_action"),
+            "{language} event-listing prompt should record semantic-action routing: {:?}",
+            response.evidence_links,
         );
         assert_ne!(response.intent, "unknown");
     }

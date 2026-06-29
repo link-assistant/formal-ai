@@ -235,6 +235,8 @@ meanings
       surface
         text "latest …"
       surface
+        text "upcoming …"
+      surface
         text "information about …"
       surface
         text "information on …"
@@ -251,6 +253,20 @@ meanings
       surface
         text "data on …"
     lexeme ru
+      surface
+        text "мне …"
+      surface
+        text "актуальные …"
+      surface
+        text "актуальных …"
+      surface
+        text "предстоящие …"
+      surface
+        text "предстоящих …"
+      surface
+        text "свежие …"
+      surface
+        text "свежих …"
       surface
         text "подробные …"
       surface
@@ -287,6 +303,12 @@ meanings
       surface
         text "कृपया …"
       surface
+        text "मेरे लिए …"
+      surface
+        text "नवीनतम …"
+      surface
+        text "आगामी …"
+      surface
         text "जानकारी …"
       surface
         text "सूचना …"
@@ -295,6 +317,14 @@ meanings
       surface
         text "सामग्री …"
     lexeme zh
+      surface
+        text 最新…
+      surface
+        text 当前…
+      surface
+        text 近期…
+      surface
+        text 即将举行的…
       surface
         text 关于…
       surface
