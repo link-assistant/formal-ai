@@ -91,4 +91,4 @@ Regression and seed verification:
 - `cargo test --test unit -- --nocapture`
   (`raw-data/unit-full.log`)
 
-Final result: full unit target passed with 1205 passed, 0 failed, 1 ignored.
+Final result: full unit target passed with 1207 passed, 0 failed, 1 ignored.

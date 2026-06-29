@@ -13,7 +13,7 @@ fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
 }
 
 #[test]
-fn solve_with_history_searches_dialog_history_by_term() {
+fn solve_with_history_searches_english_dialog_history_by_term() {
     let history = [
         ConversationTurn::user("What is Rust?"),
         ConversationTurn::assistant("Rust is a systems programming language."),
@@ -83,6 +83,58 @@ fn solve_with_history_searches_dialog_history_in_russian() {
     );
     assert!(
         !response.answer.contains("Что такое Rust?"),
+        "{}",
+        response.answer
+    );
+}
+
+#[test]
+fn solve_with_history_searches_dialog_history_in_hindi() {
+    let history = [
+        ConversationTurn::user("विकिपीडिया क्या है?"),
+        ConversationTurn::assistant("विकिपीडिया एक मुक्त ज्ञानकोश है."),
+        ConversationTurn::user("Rust क्या है?"),
+    ];
+
+    let response = solve_with_history("मेरी बातचीत में खोजो विकिपीडिया", &history);
+
+    assert_eq!(response.intent, "conversation_recall");
+    assert!(
+        response.answer.contains("विकिपीडिया"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("user: विकिपीडिया क्या है?"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Rust क्या है?"),
+        "{}",
+        response.answer
+    );
+}
+
+#[test]
+fn solve_with_history_searches_dialog_history_in_chinese() {
+    let history = [
+        ConversationTurn::user("维基百科是什么?"),
+        ConversationTurn::assistant("维基百科是一个自由百科全书."),
+        ConversationTurn::user("Rust 是什么?"),
+    ];
+
+    let response = solve_with_history("我什么时候提到维基百科?", &history);
+
+    assert_eq!(response.intent, "conversation_recall");
+    assert!(response.answer.contains("维基百科"), "{}", response.answer);
+    assert!(
+        response.answer.contains("user: 维基百科是什么?"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Rust 是什么?"),
         "{}",
         response.answer
     );
