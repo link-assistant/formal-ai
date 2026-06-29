@@ -61,16 +61,46 @@ const WEB_SEARCH_INTEREST_TOPIC_CASES: &[InterestTopicCase] = &[
     },
 ];
 
-const WEB_SEARCH_EVENT_LISTING_CASES: &[(&str, &str, &str)] = &[
-    ("en", "Where can I find hackathons?", "hackathons"),
-    ("ru", "Найди мне хакатоны", "хакатоны"),
-    ("hi", "देखो hackathons", "hackathons"),
-    ("zh", "查看黑客松", "黑客松"),
+struct EventListingCase {
+    language: &'static str,
+    prompt: &'static str,
+    expected_query: &'static str,
+}
+
+const WEB_SEARCH_EVENT_LISTING_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Where can I find hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Найди мне хакатоны",
+        expected_query: "хакатоны",
+    },
+    EventListingCase {
+        language: "hi",
+        prompt: "देखो hackathons",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "zh",
+        prompt: "查看黑客松",
+        expected_query: "黑客松",
+    },
 ];
 
-const WEB_SEARCH_CURRENT_EVENT_LISTING_CASES: &[(&str, &str, &str)] = &[
-    ("en", "Where can I find current hackathons?", "hackathons"),
-    ("ru", "Где посмотреть актуальные хакатоны?", "хакатоны"),
+const WEB_SEARCH_CURRENT_EVENT_LISTING_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Where can I find current hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Где посмотреть актуальные хакатоны?",
+        expected_query: "хакатоны",
+    },
 ];
 
 const WEB_SEARCH_LATEST_NEWS_CASES: &[(&str, &str, &str)] = &[
@@ -310,8 +340,8 @@ fn web_search_event_listing_cases_cover_every_supported_language() {
         .map(String::as_str)
         .collect::<BTreeSet<_>>();
     let mut case_languages = BTreeMap::<&str, usize>::new();
-    for &(language, _, _) in WEB_SEARCH_EVENT_LISTING_CASES {
-        *case_languages.entry(language).or_insert(0) += 1;
+    for case in WEB_SEARCH_EVENT_LISTING_CASES {
+        *case_languages.entry(case.language).or_insert(0) += 1;
     }
     assert_eq!(
         case_languages.keys().copied().collect::<BTreeSet<_>>(),
@@ -353,24 +383,29 @@ fn web_search_source_marker_prompts_extract_query_without_source_marker() {
 
 #[test]
 fn event_listing_prompts_route_to_web_search_handler() {
-    for &(language, prompt, expected_query) in WEB_SEARCH_EVENT_LISTING_CASES
+    for case in WEB_SEARCH_EVENT_LISTING_CASES
         .iter()
-        .chain(WEB_SEARCH_CURRENT_EVENT_LISTING_CASES.iter())
+        .chain(WEB_SEARCH_CURRENT_EVENT_LISTING_CASES)
     {
-        let response = FormalAiEngine.answer(prompt);
+        let response = FormalAiEngine.answer(case.prompt);
 
         assert_eq!(
-            response.intent, "web_search",
+            response.intent,
+            "web_search",
             "{language} event-listing prompt should route to web_search, got {} with answer {}",
-            response.intent, response.answer,
+            response.intent,
+            response.answer,
+            language = case.language,
         );
         assert!(
             response
                 .evidence_links
                 .iter()
-                .any(|link| link == &format!("web_search:request:{expected_query}")),
+                .any(|link| link == &format!("web_search:request:{}", case.expected_query)),
             "{language} web_search should extract only the event category {expected_query:?}: {:?}",
             response.evidence_links,
+            language = case.language,
+            expected_query = case.expected_query,
         );
         assert!(
             response
@@ -379,6 +414,7 @@ fn event_listing_prompts_route_to_web_search_handler() {
                 .any(|link| link == "web_search:query_kind:semantic_action"),
             "{language} event-listing prompt should record semantic-action routing: {:?}",
             response.evidence_links,
+            language = case.language,
         );
         assert_ne!(response.intent, "unknown");
     }
