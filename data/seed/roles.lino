@@ -389,6 +389,8 @@ roles
     kind meaning
   tabletop_game_tracker
     kind meaning
+  term_information_request_opener
+    kind meaning
   time_duration_cue
     kind predicate
   tool_argument_marker

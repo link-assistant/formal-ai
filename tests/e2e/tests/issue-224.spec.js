@@ -2,6 +2,7 @@
 const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
+const RUSSIAN_UNKNOWN_ANSWER_MARKER = 'Я пока не могу ответить на это по локальным правилам';
 
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
@@ -39,7 +40,23 @@ async function sendPrompt(page, text) {
 }
 
 async function mockResearchSearchProviders(page) {
+  const isRustQuery = (url) => String(url || '').toLowerCase().includes('rust');
+
   await page.route('**://api.duckduckgo.com/**', async (route) => {
+    if (isRustQuery(route.request().url())) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          Heading: 'Rust Programming Language',
+          AbstractText:
+            'Rust is a systems programming language focused on memory safety, performance, and concurrency.',
+          AbstractURL: 'https://www.rust-lang.org/',
+          RelatedTopics: [],
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -54,6 +71,25 @@ async function mockResearchSearchProviders(page) {
   });
 
   await page.route('**://archive.org/advancedsearch.php**', async (route) => {
+    if (isRustQuery(route.request().url())) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          response: {
+            docs: [
+              {
+                identifier: 'rust-programming-language',
+                title: 'Rust Programming Language',
+                description:
+                  'Materials about Rust, a systems programming language focused on safety and performance.',
+              },
+            ],
+          },
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -73,6 +109,25 @@ async function mockResearchSearchProviders(page) {
   });
 
   await page.route('**://*.wikipedia.org/w/rest.php/v1/search/page**', async (route) => {
+    if (isRustQuery(route.request().url())) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          pages: [
+            {
+              id: 2,
+              key: 'Rust_(programming_language)',
+              title: 'Rust (programming language)',
+              excerpt:
+                'Rust is a multi-paradigm, general-purpose programming language emphasizing performance, type safety, and concurrency.',
+              description: 'systems programming language',
+            },
+          ],
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -92,6 +147,23 @@ async function mockResearchSearchProviders(page) {
   });
 
   await page.route('**://www.wikidata.org/w/api.php**', async (route) => {
+    if (isRustQuery(route.request().url())) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          search: [
+            {
+              id: 'Q575650',
+              label: 'Rust',
+              description: 'systems programming language',
+              concepturi: 'https://www.wikidata.org/wiki/Q575650',
+            },
+          ],
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -109,6 +181,19 @@ async function mockResearchSearchProviders(page) {
   });
 
   await page.route('**://*.wiktionary.org/w/api.php**', async (route) => {
+    if (isRustQuery(route.request().url())) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          'Rust',
+          ['Rust'],
+          ['A programming language focused on safety and performance.'],
+          ['https://en.wiktionary.org/wiki/Rust'],
+        ]),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -145,6 +230,22 @@ test.describe('Issue #224 — implicit research questions use web search', () =>
     await expect(last.locator('.intent')).toContainText('intent:web_search');
     await expect(last.locator('.evidence-list')).toContainText(
       'web_search:request:most popular dataset for translation quality validation',
+    );
+    await expect(last.locator('.evidence-list')).toContainText(
+      'web_search:query_kind:implicit_research_question',
+    );
+  });
+
+  test('Russian tell-me-about term prompt routes to web_search', async ({ page }) => {
+    await page.locator('.diagnostics-toggle').click();
+
+    const last = await sendPrompt(page, 'расскажи мне об языке Rust');
+
+    await expect(last).toContainText('Rust Programming Language');
+    await expect(last).not.toContainText(RUSSIAN_UNKNOWN_ANSWER_MARKER);
+    await expect(last.locator('.intent')).toContainText('intent:web_search');
+    await expect(last.locator('.evidence-list')).toContainText(
+      'web_search:request:языке rust',
     );
     await expect(last.locator('.evidence-list')).toContainText(
       'web_search:query_kind:implicit_research_question',

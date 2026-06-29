@@ -165,6 +165,44 @@ function extractRecordsInformationRequest(normalized) {
   return validNewsSearchQuery(text);
 }
 
+function conceptLookupResolves(prompt) {
+  const query = extractConceptQuery(prompt);
+  return !!(query && lookupConceptQuery(query));
+}
+
+function termInformationPromptIsLocalContext(normalized) {
+  const text = String(normalized || "");
+  return (
+    lexiconMentionsRole(ROLE_SELF_INTRODUCTION_REQUEST, text) ||
+    lexiconMentionsRole(ROLE_CAPABILITY_QUERY, text) ||
+    lexiconMentionsRole(ROLE_CAPABILITY_QUERY_MORE, text)
+  );
+}
+
+function termInformationQueryIsLocalContext(query) {
+  const text = cleanSearchQuery(query).toLowerCase();
+  return (
+    lexiconMentionsRole(ROLE_NON_REFERENTIAL_SUBJECT, text) ||
+    lexiconMentionsRole(ROLE_ASSISTANT_SELF_REFERENCE, text)
+  );
+}
+
+function extractTermInformationRequest(prompt, normalized) {
+  if (conceptLookupResolves(prompt) || termInformationPromptIsLocalContext(normalized)) {
+    return "";
+  }
+  const text = String(normalized || "");
+  for (const prefix of webSearchMarkers().termInformationPrefixes) {
+    if (text.startsWith(prefix)) {
+      const candidate = text.slice(prefix.length);
+      if (termInformationQueryIsLocalContext(candidate)) return "";
+      const query = validSearchQuery(candidate);
+      if (query) return query;
+    }
+  }
+  return "";
+}
+
 function stripImplicitResearchPrefix(value) {
   const text = String(value || "");
   for (const prefix of webSearchMarkers().researchQuestionPrefixes) {
@@ -253,6 +291,10 @@ function extractWebSearchRequest(prompt, normalized) {
   const enumerationQuery = extractEnumerationResearchRequest(prompt, normalized);
   if (enumerationQuery) {
     return { query: enumerationQuery, kind: "enumeration_research_request" };
+  }
+  const termInformationQuery = extractTermInformationRequest(prompt, normalized);
+  if (termInformationQuery) {
+    return { query: termInformationQuery, kind: "implicit_research_question" };
   }
   const researchQuery = extractImplicitResearchQuestion(normalized);
   return researchQuery

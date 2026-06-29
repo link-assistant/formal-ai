@@ -354,6 +354,13 @@ pub const ROLE_CLAUSE_CONTINUATION_MARKER: &str = "clause_continuation_marker";
 /// [`ROLE_RESEARCH_SUPERLATIVE_MODIFIER`] or with both a
 /// [`ROLE_RESEARCH_EVIDENCE_DOMAIN`] and a [`ROLE_RESEARCH_EVALUATION_DOMAIN`].
 pub const ROLE_RESEARCH_QUESTION_OPENER: &str = "research_question_opener";
+/// Semantic role: a "tell me about" opener whose object is a public term.
+///
+/// "tell me about …", "расскажи мне об …", "बताओ …", "告诉我…" and their
+/// translations. The web-search recogniser only uses this role after seeded
+/// concept lookup cannot answer, so known local concepts keep their direct
+/// explanation path while unknown public terms fall through to external search.
+pub const ROLE_TERM_INFORMATION_REQUEST_OPENER: &str = "term_information_request_opener";
 /// Semantic role: a superlative or recommendation modifier marking research.
 ///
 /// "most", "best", "leading", "recommended", "state of the art", … — the

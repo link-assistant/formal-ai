@@ -20,12 +20,15 @@
 use std::sync::OnceLock;
 
 use crate::coding::contains_cjk;
+use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
-    self, Slot, WordForm, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT,
-    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB,
+    self, Slot, WordForm, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY,
+    ROLE_CAPABILITY_QUERY_MORE, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT,
+    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT,
     ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
-    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
+    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
+    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
     ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
     ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
     ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
@@ -126,6 +129,12 @@ pub(super) fn extract_web_search_request(
             kind: WebSearchQueryKind::EnumerationResearchRequest,
         });
     }
+    if let Some(query) = extract_term_information_request(prompt, &normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        });
+    }
     extract_implicit_research_question(&normalized_words).map(|query| WebSearchRequest {
         query,
         kind: WebSearchQueryKind::ImplicitResearchQuestion,
@@ -205,6 +214,8 @@ struct WebSearchMarkers {
     followup_verbs: Vec<&'static str>,
     /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
     continuation_markers: Vec<&'static str>,
+    /// Tell-me-about openers whose object is a public term.
+    term_information_prefixes: Vec<&'static str>,
     /// Question openers of an implicit research request ("what is the …").
     research_question_prefixes: Vec<&'static str>,
     /// Superlative/recency modifiers that make a question researchable.
@@ -238,6 +249,7 @@ fn markers() -> &'static WebSearchMarkers {
         records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
         followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
         continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
+        term_information_prefixes: prefix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
         research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
         research_modifiers: bare_literals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
         research_evidence_domains: bare_literals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
@@ -369,6 +381,43 @@ fn extract_records_information_request(normalized: &str) -> Option<String> {
         return None;
     }
     valid_news_search_query(normalized)
+}
+
+fn extract_term_information_request(prompt: &str, normalized: &str) -> Option<String> {
+    if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) {
+        return None;
+    }
+    for &prefix in &markers().term_information_prefixes {
+        if let Some(query) = normalized.strip_prefix(prefix) {
+            if term_information_query_is_local_context(query) {
+                return None;
+            }
+            if let Some(query) = valid_search_query(query) {
+                return Some(query);
+            }
+        }
+    }
+    None
+}
+
+fn concept_lookup_resolves(prompt: &str) -> bool {
+    extract_concept_query(prompt)
+        .as_ref()
+        .is_some_and(|query| lookup_concept_query(query).is_some())
+}
+
+fn term_information_prompt_is_local_context(normalized: &str) -> bool {
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(ROLE_SELF_INTRODUCTION_REQUEST, normalized)
+        || lexicon.mentions_role(ROLE_CAPABILITY_QUERY, normalized)
+        || lexicon.mentions_role(ROLE_CAPABILITY_QUERY_MORE, normalized)
+}
+
+fn term_information_query_is_local_context(query: &str) -> bool {
+    let query = clean_search_query(query).to_lowercase();
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role(ROLE_NON_REFERENTIAL_SUBJECT, &query)
+        || lexicon.mentions_role(ROLE_ASSISTANT_SELF_REFERENCE, &query)
 }
 
 fn extract_implicit_research_question(normalized: &str) -> Option<String> {
