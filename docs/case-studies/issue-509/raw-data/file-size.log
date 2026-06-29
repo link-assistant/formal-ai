@@ -1,0 +1,20 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.245.0 (/tmp/gh-issue-solver-1782763761002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.63s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0e84ec09dade51f)
+
+running 9 tests
+test ci_cd::check_file_size::tests::check_directory_does_not_apply_worker_limit_to_legacy_js ... ok
+test ci_cd::check_file_size::tests::check_directory_rejects_embedded_worker_lino_data ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+test ci_cd::check_file_size::tests::check_directory_skips_generated_wikidata_cache ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_split_worker_js_limit ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1196 filtered out; finished in 0.01s

@@ -1,0 +1,17 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling formal-ai v0.245.0 (/tmp/gh-issue-solver-1782763761002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.33s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0e84ec09dade51f)
+
+running 7 tests
+test total_closure::sources_registry_lists_every_ingested_source ... ok
+test total_closure::external_trusted_services_are_registered_with_settings_toggles ... ok
+test total_closure::wordnet_cache_is_present_and_used ... ok
+test total_closure::view_layer_has_real_multi_source_entities ... ok
+test total_closure::closure_resolver_sees_a_populated_seed ... ok
+test total_closure::seed_has_total_reference_closure ... ok
+test total_closure::multi_source_view_is_present_and_consistent ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 1198 filtered out; finished in 0.70s
