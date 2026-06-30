@@ -59,6 +59,7 @@ mod issue_465;
 mod issue_467;
 mod issue_595;
 mod links_network;
+mod memory_query;
 mod meta_algorithm;
 mod meta_construction;
 mod meta_frame;

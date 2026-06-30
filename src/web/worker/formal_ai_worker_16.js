@@ -342,6 +342,11 @@ function tryHistorical(prompt, history) {
     const hit = tryRecallName(history);
     if (hit) return hit;
   }
+  // Issue #529: recognise "what was written in the previous message?" across
+  // every supported language via the conversation_recall_previous_message seed
+  // role before the English-only last-question phrases below.
+  const previousMessage = tryRecallPreviousMessage(prompt, history);
+  if (previousMessage) return previousMessage;
   if (
     normalized === "what was my previous question" ||
     normalized === "what was the previous question" ||

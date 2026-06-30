@@ -170,6 +170,43 @@ impl MemoryStore {
         &self.events
     }
 
+    /// Rewrite every textual field of every stored event, replacing each
+    /// occurrence of `old` with `new`. This is the *write* half of the
+    /// natural-language substitution primitive (issue #529): a recall reads the
+    /// associative memory, a substitution transforms it in place — together they
+    /// give the user full, link-cli-style read+write control over memory through
+    /// ordinary language.
+    ///
+    /// Returns the total number of textual occurrences replaced across the
+    /// store. Structural keys are never touched: only the value-bearing fields
+    /// (`content`, `inputs`, `outputs`, `conversation_title`, `demo_label`) and
+    /// free-form `evidence` entries are rewritten, so a substitution can never
+    /// corrupt the document shape.
+    pub fn apply_substitution(&mut self, old: &str, new: &str) -> usize {
+        if old.is_empty() {
+            return 0;
+        }
+        let mut replacements = 0;
+        for event in &mut self.events {
+            for value in [
+                &mut event.content,
+                &mut event.inputs,
+                &mut event.outputs,
+                &mut event.conversation_title,
+                &mut event.demo_label,
+            ]
+            .into_iter()
+            .flatten()
+            {
+                replacements += replace_counting(value, old, new);
+            }
+            for entry in &mut event.evidence {
+                replacements += replace_counting(entry, old, new);
+            }
+        }
+        replacements
+    }
+
     #[must_use]
     pub const fn len(&self) -> usize {
         self.events.len()
@@ -220,6 +257,17 @@ impl MemoryStore {
         }
         fs::write(path, self.export_links_notation())
     }
+}
+
+/// Replace every occurrence of `old` with `new` inside `value`, rewriting it in
+/// place and returning the number of replacements made.
+fn replace_counting(value: &mut String, old: &str, new: &str) -> usize {
+    if old.is_empty() || !value.contains(old) {
+        return 0;
+    }
+    let count = value.matches(old).count();
+    *value = value.replace(old, new);
+    count
 }
 
 /// Serialize a slice of events as a `demo_memory` Links Notation document.

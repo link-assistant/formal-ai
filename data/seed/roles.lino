@@ -91,6 +91,8 @@ roles
     kind predicate
   conversation_recall_other_query
     kind meaning
+  conversation_recall_previous_message
+    kind meaning
   conversation_recall_query
     kind meaning
   conversation_reference
@@ -208,6 +210,14 @@ roles
   mechanism_inquiry
     kind meaning
   mechanism_predicate
+    kind meaning
+  memory_append_directive
+    kind meaning
+  memory_scope
+    kind meaning
+  memory_substitution_connector
+    kind meaning
+  memory_substitution_directive
     kind meaning
   monetary_concept
     kind predicate

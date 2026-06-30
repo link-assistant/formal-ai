@@ -85,7 +85,7 @@ fn cli_memory_query_records_substitution_style_memory_write() {
     assert!(output.status.success(), "substitution stderr: {stderr}");
     let stdout = String::from_utf8_lossy(&output.stdout);
     assert!(
-        stdout.contains("Recorded memory substitution: replace \"alpha\" with \"beta\""),
+        stdout.contains("Replaced \"alpha\" with \"beta\" in memory (1 occurrence(s) updated)."),
         "substitution output: {stdout}"
     );
 
@@ -93,7 +93,17 @@ fn cli_memory_query_records_substitution_style_memory_write() {
     assert!(memory_text.contains("kind \"memory_substitution\""));
     assert!(memory_text.contains("inputs \"replace:alpha\""));
     assert!(memory_text.contains("outputs \"with:beta\""));
-    assert!(memory_text.contains("evidence \"substitution_event:update|substitution:append_only\""));
+    assert!(memory_text.contains("evidence \"substitution_event:update|substitution:applied=1\""));
+    // The transform is a real read+write: the *original* event's content must
+    // have been rewritten in place from "alpha" to "beta".
+    assert!(
+        memory_text.contains("content \"beta\""),
+        "original content should be rewritten: {memory_text}"
+    );
+    assert!(
+        !memory_text.contains("content \"alpha\""),
+        "original content should no longer hold the old value: {memory_text}"
+    );
 
     let recall_output = memory_query(&memory_path, "recall beta");
     let recall_stderr = String::from_utf8_lossy(&recall_output.stderr);
@@ -105,6 +115,10 @@ fn cli_memory_query_records_substitution_style_memory_write() {
     assert!(
         recall_stdout.contains("outputs: with:beta"),
         "substitution recall output: {recall_stdout}"
+    );
+    assert!(
+        recall_stdout.contains("user: beta"),
+        "rewritten original event should surface in recall: {recall_stdout}"
     );
 
     let _ = std::fs::remove_dir_all(&dir);

@@ -322,6 +322,13 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #529 previous-message recall role — mirrors
+// ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
+// bare surface phrases ("what was written in the previous message", "что было
+// написано в прошлом сообщении", …) live in data/seed/meanings-conversation.lino
+// (loaded into MEANINGS_LINO); tryRecallPreviousMessage composes this role via
+// lexiconMentionsRole instead of matching per-language phrases in JS.
+const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE = "conversation_recall_previous_message";
 // Issue #386 conversation-opener role — mirrors ROLE_CONVERSATION_TOPIC_OPENER
 // in src/seed/roles.rs. Its slot-marked surface words live in
 // data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO);

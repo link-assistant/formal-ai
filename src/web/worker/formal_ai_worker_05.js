@@ -705,6 +705,73 @@ function tryRecallLastQuestion(history) {
   return null;
 }
 
+// Issue #529: recall the content of the immediately preceding message. The
+// recogniser composes the conversation_recall_previous_message seed role across
+// every supported language (see ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE), so a
+// Russian "что было написано в прошлом сообщении?" no longer falls through to the
+// unknown intent. Unlike tryRecallLastQuestion (the user's own last question),
+// this replays the last prior turn regardless of role — for the issue scenario,
+// the assistant's previous reply. Mirror of try_recall_previous_message in
+// src/solver_handlers/conversation_memory.rs.
+function localizedTurnRole(role, language) {
+  if (role === "assistant") {
+    if (language === "ru") return "ассистент";
+    if (language === "hi") return "सहायक";
+    if (language === "zh") return "助手";
+    return "assistant";
+  }
+  if (language === "ru") return "пользователь";
+  if (language === "hi") return "उपयोगकर्ता";
+  if (language === "zh") return "用户";
+  return "user";
+}
+
+function renderPreviousMessage(role, content, language) {
+  const label = localizedTurnRole(role, language);
+  if (language === "ru") return `В прошлом сообщении (${label}) было написано: "${content}"`;
+  if (language === "zh") return `上一条消息（${label}）写道:"${content}"`;
+  if (language === "hi") return `पिछले संदेश (${label}) में लिखा था: "${content}"`;
+  return `The previous message (${label}) was: "${content}"`;
+}
+
+function renderNoPreviousMessage(language) {
+  if (language === "ru") return "Прошлого сообщения пока нет.";
+  if (language === "zh") return "还没有上一条消息。";
+  if (language === "hi") return "अभी तक कोई पिछला संदेश नहीं है.";
+  return "There is no previous message yet.";
+}
+
+function tryRecallPreviousMessage(prompt, history) {
+  const normalized = normalizePrompt(prompt);
+  if (!lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, normalized)) {
+    return null;
+  }
+  const language = detectLanguage(prompt);
+  let previous = null;
+  if (Array.isArray(history)) {
+    for (let i = history.length - 1; i >= 0; i -= 1) {
+      const turn = history[i];
+      const content = turn && String(turn.content || "").trim();
+      if (content) {
+        previous = { role: turn.role === "assistant" ? "assistant" : "user", content };
+        break;
+      }
+    }
+  }
+  const content = previous
+    ? renderPreviousMessage(previous.role, previous.content, language)
+    : renderNoPreviousMessage(language);
+  return {
+    intent: "recall_previous_message",
+    content,
+    confidence: 0.9,
+    evidence: [
+      "recall_previous_message",
+      previous ? `prior_turn:${previous.role}` : "prior_turn:none",
+    ],
+  };
+}
+
 // Issue #27: deterministic, logical summarisation — no neural net. We
 // project the conversation onto a small set of features (turn counts, intents,
 // concepts, languages, unanswered questions) and render them as a structured

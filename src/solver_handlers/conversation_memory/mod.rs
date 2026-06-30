@@ -1,15 +1,20 @@
 use std::fmt::Write as _;
 
+mod memory_write;
+use memory_write::try_memory_write;
+
 use super::finalize_simple;
 
 use crate::coding::contains_cjk;
-use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
+use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::link_store::memory_events_to_link_records;
 use crate::memory::{MemoryEvent, MemoryStore};
 use crate::seed::{self, Slot, WordForm};
-use crate::solver_helpers::{extract_introduced_name, last_user_turn, recall_name_from_history};
+use crate::solver_helpers::{
+    extract_introduced_name, last_turn, last_user_turn, recall_name_from_history,
+};
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
@@ -71,6 +76,9 @@ pub fn try_conversation_memory(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     if let Some(answer) = try_recall_name(prompt, normalized, log) {
+        return Some(answer);
+    }
+    if let Some(answer) = try_recall_previous_message(prompt, normalized, log) {
         return Some(answer);
     }
     if let Some(answer) = try_recall_last_question(prompt, normalized, log) {
@@ -178,6 +186,77 @@ fn try_recall_last_question(
     ))
 }
 
+/// Recall the content of the immediately preceding message (issue #529).
+///
+/// Recognizes language-agnostic "what was written in the previous message?"
+/// phrasings via the `conversation_recall_previous_message` seed role and
+/// replays the last prior turn regardless of role. Unlike
+/// [`try_recall_last_question`], which returns the user's own last question,
+/// this returns whatever message came immediately before the current prompt —
+/// for the issue's scenario, the assistant's previous reply.
+fn try_recall_previous_message(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !seed::lexicon().mentions_role(
+        seed::ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE,
+        &normalize_prompt(normalized),
+    ) {
+        return None;
+    }
+    let language = detect_language(prompt).slug();
+    let previous = last_turn(log).map(|(role, content)| (role, content.to_owned()));
+    let body = if let Some((role, content)) = previous {
+        log.append("filter:user", format!("previous_message role={role}"));
+        render_previous_message(role, &content, language)
+    } else {
+        log.append("filter:user", "previous_message:none".to_owned());
+        render_no_previous_message(language)
+    };
+    Some(finalize_simple(
+        prompt,
+        log,
+        "recall_previous_message",
+        "response:recall_previous_message",
+        &body,
+        0.9,
+    ))
+}
+
+/// Localize the role of a recalled message ("user"/"assistant").
+fn localized_role(role: &str, language: &str) -> &'static str {
+    match (role, language) {
+        ("assistant", "ru") => "ассистент",
+        ("assistant", "hi") => "सहायक",
+        ("assistant", "zh") => "助手",
+        ("assistant", _) => "assistant",
+        (_, "ru") => "пользователь",
+        (_, "hi") => "उपयोगकर्ता",
+        (_, "zh") => "用户",
+        (_, _) => "user",
+    }
+}
+
+fn render_previous_message(role: &str, content: &str, language: &str) -> String {
+    let role_label = localized_role(role, language);
+    match language {
+        "ru" => format!("В прошлом сообщении ({role_label}) было написано: \"{content}\""),
+        "zh" => format!("上一条消息（{role_label}）写道:\"{content}\""),
+        "hi" => format!("पिछले संदेश ({role_label}) में लिखा था: \"{content}\""),
+        _ => format!("The previous message ({role_label}) was: \"{content}\""),
+    }
+}
+
+fn render_no_previous_message(language: &str) -> String {
+    match language {
+        "ru" => String::from("Прошлого сообщения пока нет."),
+        "zh" => String::from("还没有上一条消息。"),
+        "hi" => String::from("अभी तक कोई पिछला संदेश नहीं है."),
+        _ => String::from("There is no previous message yet."),
+    }
+}
+
 fn try_conversation_recall(
     prompt: &str,
     normalized: &str,
@@ -249,164 +328,6 @@ fn try_memory_recall(
         &body,
         0.9,
     ))
-}
-
-fn try_memory_write(
-    prompt: &str,
-    normalized: &str,
-    store: &mut MemoryStore,
-    current_conversation_id: Option<&str>,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let request = recognize_memory_write(prompt, normalized)?;
-    let event = request.memory_event(store.len(), current_conversation_id);
-    let body = request.answer();
-    log.append("memory_write", request.log_value());
-    log.append("memory_write_event", event.id.clone());
-    store.append(event);
-    Some(finalize_simple(
-        prompt,
-        log,
-        request.intent(),
-        request.response_link(),
-        &body,
-        0.9,
-    ))
-}
-
-#[derive(Debug, Clone)]
-enum MemoryWriteRequest {
-    Append(String),
-    Substitute(String, String),
-}
-
-impl MemoryWriteRequest {
-    fn memory_event(&self, sequence: usize, current_conversation_id: Option<&str>) -> MemoryEvent {
-        let conversation_id = current_conversation_id.unwrap_or("memory_query");
-        match self {
-            Self::Append(statement) => MemoryEvent {
-                id: stable_id("memory_write", &format!("{sequence}:{statement}")),
-                kind: Some(String::from("message")),
-                role: Some(String::from("user")),
-                intent: Some(String::from("memory_write")),
-                content: Some(statement.clone()),
-                conversation_id: Some(conversation_id.to_owned()),
-                conversation_title: Some(String::from("Memory query")),
-                evidence: vec![String::from("memory_write:natural_language")],
-                ..MemoryEvent::default()
-            },
-            Self::Substitute(old_value, new_value) => MemoryEvent {
-                id: stable_id(
-                    "memory_substitution",
-                    &format!("{sequence}:{old_value}->{new_value}"),
-                ),
-                kind: Some(String::from("memory_substitution")),
-                role: Some(String::from("user")),
-                intent: Some(String::from("memory_substitution")),
-                inputs: Some(format!("replace:{old_value}")),
-                outputs: Some(format!("with:{new_value}")),
-                content: Some(format!("replace {old_value} with {new_value} in memory")),
-                conversation_id: Some(conversation_id.to_owned()),
-                conversation_title: Some(String::from("Memory query")),
-                evidence: vec![
-                    String::from("substitution_event:update"),
-                    String::from("substitution:append_only"),
-                ],
-                ..MemoryEvent::default()
-            },
-        }
-    }
-
-    fn answer(&self) -> String {
-        match self {
-            Self::Append(statement) => format!("Recorded memory: {statement}"),
-            Self::Substitute(old_value, new_value) => format!(
-                "Recorded memory substitution: replace \"{old_value}\" with \"{new_value}\"."
-            ),
-        }
-    }
-
-    const fn intent(&self) -> &'static str {
-        match self {
-            Self::Append(_) => "memory_write",
-            Self::Substitute(_, _) => "memory_substitution",
-        }
-    }
-
-    const fn response_link(&self) -> &'static str {
-        match self {
-            Self::Append(_) => "response:memory_write",
-            Self::Substitute(_, _) => "response:memory_substitution",
-        }
-    }
-
-    fn log_value(&self) -> String {
-        match self {
-            Self::Append(statement) => format!("append content={statement}"),
-            Self::Substitute(old_value, new_value) => {
-                format!("substitute old={old_value} new={new_value}")
-            }
-        }
-    }
-}
-
-fn recognize_memory_write(prompt: &str, normalized: &str) -> Option<MemoryWriteRequest> {
-    if let Some((old_value, new_value)) = recognize_memory_substitution(normalized) {
-        return Some(MemoryWriteRequest::Substitute(old_value, new_value));
-    }
-
-    for prefix in [
-        "remember that ",
-        "remember ",
-        "record memory ",
-        "append memory ",
-    ] {
-        let Some(raw_statement) = strip_prefix_ignore_ascii_case(prompt, prefix) else {
-            continue;
-        };
-        let Some(statement) = clean_memory_write_text(raw_statement) else {
-            continue;
-        };
-        return Some(MemoryWriteRequest::Append(statement));
-    }
-    None
-}
-
-fn recognize_memory_substitution(normalized: &str) -> Option<(String, String)> {
-    let rest = normalized
-        .strip_prefix("replace ")?
-        .strip_suffix(" in memory")?;
-    let (old_value, new_value) = rest.split_once(" with ")?;
-    Some((
-        clean_memory_write_text(old_value)?,
-        clean_memory_write_text(new_value)?,
-    ))
-}
-
-fn strip_prefix_ignore_ascii_case<'a>(text: &'a str, prefix: &str) -> Option<&'a str> {
-    let trimmed = text.trim_start();
-    if trimmed.len() < prefix.len() {
-        return None;
-    }
-    let head = trimmed.get(..prefix.len())?;
-    let tail = trimmed.get(prefix.len()..)?;
-    head.eq_ignore_ascii_case(prefix).then_some(tail)
-}
-
-fn clean_memory_write_text(raw: &str) -> Option<String> {
-    let text = raw
-        .trim()
-        .trim_matches(|ch: char| {
-            ch.is_whitespace()
-                || matches!(
-                    ch,
-                    '`' | '"' | '\'' | ':' | '-' | '_' | '.' | ',' | '?' | '!' | '(' | ')'
-                )
-        })
-        .split_whitespace()
-        .collect::<Vec<_>>()
-        .join(" ");
-    (!text.is_empty()).then_some(text)
 }
 
 fn recognize_recall_query(normalized: &str) -> Option<RecallQuery> {
