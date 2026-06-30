@@ -110,6 +110,45 @@ pub const ROLE_CONVERSATION_RECALL_QUERY: &str = "conversation_recall_query";
 /// receive conversation identifiers record the requested scope as metadata and
 /// search the provided prior turns.
 pub const ROLE_CONVERSATION_RECALL_OTHER_QUERY: &str = "conversation_recall_other_query";
+/// Semantic role: a query asking for the content of the immediately preceding
+/// message.
+///
+/// This role recognizes prompts such as "what was written in the previous
+/// message", "что было написано в прошлом сообщении", "पिछले संदेश में क्या लिखा
+/// था", or "上一条消息写了什么". Unlike [`ROLE_CONVERSATION_RECALL_QUERY`], it carries
+/// no search term: the handler simply replays the last prior turn (any role)
+/// that immediately precedes the current prompt. Surfaces are bare phrases
+/// matched anywhere in the prompt via [`crate::seed::Lexicon::mentions_role`].
+pub const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE: &str = "conversation_recall_previous_message";
+/// Semantic role: a natural-language directive that appends a statement to the
+/// associative memory.
+///
+/// Recognizes the leading verb phrase of an append request ("remember …",
+/// "запомни …", "याद रखो …", "记住…") as a [`crate::seed::Slot::Prefix`] whose
+/// ellipsis slot carries the statement to store. This is the *write* half of the
+/// natural-language memory primitive: a recall reads memory, an append extends
+/// it. Surfaces live in `data/seed/meanings-conversation.lino`.
+pub const ROLE_MEMORY_APPEND_DIRECTIVE: &str = "memory_append_directive";
+/// Semantic role: a phrase that scopes an operation to the associative memory
+/// ("in memory", "в памяти", "स्मृति में", "在记忆中").
+///
+/// A substitution request must name this scope so a bare "replace X with Y"
+/// (which is a coding request) is never mistaken for a memory rewrite. Surfaces
+/// are bare phrases matched anywhere via [`crate::seed::Lexicon::mentions_role`].
+pub const ROLE_MEMORY_SCOPE: &str = "memory_scope";
+/// Semantic role: the connector word that separates the old value from the new
+/// value in a memory substitution ("with"/"by", "на", "की जगह", "换成").
+///
+/// The substitution parser splits the operand span on this connector to recover
+/// `(old, new)`. Surfaces live in `data/seed/meanings-conversation.lino`.
+pub const ROLE_MEMORY_SUBSTITUTION_CONNECTOR: &str = "memory_substitution_connector";
+/// Semantic role: the verb that marks a memory substitution ("replace",
+/// "замени", "बदलो"/"रखो", "把"/"替换").
+///
+/// Stripped (at either edge — SVO languages lead with it, Hindi trails) before
+/// the operand span is split on the connector. Surfaces live in
+/// `data/seed/meanings-conversation.lino`.
+pub const ROLE_MEMORY_SUBSTITUTION_DIRECTIVE: &str = "memory_substitution_directive";
 /// Semantic role: a conversational opener that proposes a topic to discuss.
 ///
 /// The let-us-talk-about-X phrasing that introduces a subject for open

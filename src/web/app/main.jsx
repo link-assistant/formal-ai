@@ -7305,8 +7305,20 @@ function App() {
     desktopStatusRef.current = desktopStatus;
   }, [desktopStatus]);
 
-  const requestAnswer = useCallback((text, history = []) => {
+  const requestAnswer = useCallback(async (text, history = []) => {
     const worker = workerRef.current;
+    // Issue #529: snapshot every searchable persistent-memory value so the
+    // worker can report how many occurrences a natural-language substitution
+    // rewrites. The actual read+write transform is applied back to IndexedDB
+    // when the answer returns (see handleMemoryOperation).
+    let memory = [];
+    if (typeof window !== "undefined" && window.FormalAiMemory) {
+      try {
+        memory = await window.FormalAiMemory.collectSearchableValues();
+      } catch (_error) {
+        memory = [];
+      }
+    }
     const prefs = {
       greetingVariations: greetingVariationsRef.current,
       diagnosticsMode: diagnosticsModeRef.current,
@@ -7349,6 +7361,7 @@ function App() {
             history,
             prefs,
             userContext: userContextRef.current,
+            memory,
           });
         });
       });
@@ -7366,6 +7379,7 @@ function App() {
         history,
         prefs,
         userContext: userContextRef.current,
+        memory,
       });
     });
   }, []);
@@ -7612,6 +7626,67 @@ function App() {
       refreshConversations();
     });
   }, [ensureConversation, refreshConversations, t, thinkingDetailLevel]);
+
+  // Issue #529: apply a natural-language memory write returned by the worker to
+  // the persistent associative memory. This is the *write* half of the
+  // Turing-complete memory primitive, the browser mirror of try_memory_write in
+  // the Rust runtime: an append stores the bare statement as a new, queryable
+  // memory event; a substitution rewrites every matching stored value in place
+  // (an explicit, user-initiated departure from the passive append-only log) and
+  // records an audit event. The user thereby has full read+write control over
+  // the associative memory through ordinary chat messages.
+  const handleMemoryOperation = useCallback(async (operation) => {
+    if (
+      !operation ||
+      typeof window === "undefined" ||
+      !window.FormalAiMemory
+    ) {
+      return;
+    }
+    const { conversationId, conversationTitle, isDemo } = ensureConversation("");
+    const sentAt = new Date().toISOString();
+    const demoFlag = isDemo ? true : undefined;
+    if (operation.action === "append" && operation.statement) {
+      await recordMemoryEvent({
+        kind: "message",
+        role: "user",
+        intent: "memory_write",
+        content: operation.statement,
+        evidence: ["memory_write:natural_language"],
+        sentAt,
+        conversationId,
+        conversationTitle,
+        isDemo: demoFlag,
+      });
+      refreshConversations();
+      return;
+    }
+    if (operation.action === "substitute" && operation.oldValue) {
+      let applied = 0;
+      try {
+        applied = await window.FormalAiMemory.applySubstitution(
+          operation.oldValue,
+          operation.newValue,
+        );
+      } catch (_error) {
+        applied = 0;
+      }
+      await recordMemoryEvent({
+        kind: "memory_substitution",
+        role: "user",
+        intent: "memory_substitution",
+        inputs: `replace:${operation.oldValue}`,
+        outputs: `with:${operation.newValue}`,
+        content: `replace ${operation.oldValue} with ${operation.newValue} in memory`,
+        evidence: ["substitution_event:update", `substitution:applied=${applied}`],
+        sentAt,
+        conversationId,
+        conversationTitle,
+        isDemo: demoFlag,
+      });
+      refreshConversations();
+    }
+  }, [ensureConversation, refreshConversations]);
 
   const executeTerminalCommand = useCallback(async (command, executionMode = "agent") => {
     const bridge = desktopBridge();
@@ -8213,6 +8288,12 @@ function App() {
       return;
     }
     appendAssistantMessage(answer);
+    // Issue #529: persist any natural-language memory write (append/substitution)
+    // the worker recognised, giving the user full read+write control over the
+    // associative memory through chat.
+    if (answer.memoryOperation) {
+      await handleMemoryOperation(answer.memoryOperation);
+    }
     setPending(false);
   }
 

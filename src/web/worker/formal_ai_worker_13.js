@@ -322,6 +322,26 @@ const ROLE_CONVERSATION_SUMMARY_DIRECTIVE = "conversation_summary_directive";
 const ROLE_CONVERSATION_REFERENCE = "conversation_reference";
 const ROLE_CONVERSATION_SUMMARY_PHRASE = "conversation_summary_phrase";
 const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
+// Issue #529 previous-message recall role — mirrors
+// ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE in src/seed/roles/intent.rs. Its
+// bare surface phrases ("what was written in the previous message", "что было
+// написано в прошлом сообщении", …) live in data/seed/meanings-conversation.lino
+// (loaded into MEANINGS_LINO); tryRecallPreviousMessage composes this role via
+// lexiconMentionsRole instead of matching per-language phrases in JS.
+const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE = "conversation_recall_previous_message";
+// Issue #529 whole-memory write roles — mirror ROLE_MEMORY_* in
+// src/seed/roles/intent.rs. Their surfaces live in
+// data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO) and drive the
+// Turing-complete read+write memory primitive in tryMemoryWrite: a
+// Slot::Prefix append directive ("remember …"/"запомни …"/"याद रखो …"/"记住…"),
+// a memory scope phrase that distinguishes a memory rewrite from a plain coding
+// request ("in memory"/"в памяти"/"स्मृति में"/"在记忆中"), the substitution
+// verb ("replace"/"замени"/"बदलो"/"把"), and the old→new connector
+// ("with"/"на"/"की जगह"/"换成").
+const ROLE_MEMORY_APPEND_DIRECTIVE = "memory_append_directive";
+const ROLE_MEMORY_SCOPE = "memory_scope";
+const ROLE_MEMORY_SUBSTITUTION_CONNECTOR = "memory_substitution_connector";
+const ROLE_MEMORY_SUBSTITUTION_DIRECTIVE = "memory_substitution_directive";
 // Issue #386 conversation-opener role — mirrors ROLE_CONVERSATION_TOPIC_OPENER
 // in src/seed/roles.rs. Its slot-marked surface words live in
 // data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO);
@@ -729,6 +749,89 @@ function wordsForRole(role) {
     }
   }
   return words;
+}
+
+// Issue #529 memory-write surface utilities. They mirror the boundary-aware
+// span helpers in src/solver_handlers/conversation_memory/memory_write.rs so the
+// browser worker recognises append + substitution requests from the same seed
+// vocabulary the Rust runtime uses.
+
+// Leftmost boundary-aware [start, end) span of `surface` within `haystack`, or
+// null. Mirrors surface_span: a CJK surface matches as a substring (no
+// inter-word spaces); a space-delimited surface must be a whole whitespace token
+// or phrase bounded by the string ends or by spaces.
+function memorySurfaceSpan(haystack, surface) {
+  if (!surface) return null;
+  if (containsCjk(surface)) {
+    const start = haystack.indexOf(surface);
+    return start === -1 ? null : [start, start + surface.length];
+  }
+  let search = 0;
+  while (search <= haystack.length) {
+    const rel = haystack.slice(search).indexOf(surface);
+    if (rel === -1) return null;
+    const start = search + rel;
+    const end = start + surface.length;
+    const leftOk = start === 0 || haystack[start - 1] === " ";
+    const rightOk = end === haystack.length || haystack[end] === " ";
+    if (leftOk && rightOk) return [start, end];
+    search = start + 1;
+  }
+  return null;
+}
+
+// Leftmost boundary-aware span of any surface word of `role` in `haystack`. On a
+// tie at the same start offset the longest surface wins. Mirrors
+// best_surface_span in memory_write.rs.
+function bestMemorySurfaceSpan(haystack, role) {
+  let best = null;
+  for (const surface of wordsForRole(role)) {
+    const span = memorySurfaceSpan(haystack, surface);
+    if (!span) continue;
+    if (
+      !best ||
+      span[0] < best[0] ||
+      (span[0] === best[0] && span[1] > best[1])
+    ) {
+      best = span;
+    }
+  }
+  return best;
+}
+
+function collapseMemoryWs(text) {
+  return String(text || "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .join(" ");
+}
+
+// Remove the leftmost occurrence of any surface word of `role`, returning the
+// remaining text with surrounding whitespace collapsed. Mirrors
+// strip_first_surface in memory_write.rs.
+function stripFirstMemorySurface(haystack, role) {
+  const span = bestMemorySurfaceSpan(haystack, role);
+  if (!span) return null;
+  return collapseMemoryWs(`${haystack.slice(0, span[0])} ${haystack.slice(span[1])}`);
+}
+
+// Split `span` once on the leftmost surface word of `role`, returning the
+// [before, after] operands around the connector. Mirrors split_once_surface.
+function splitOnceMemorySurface(span, role) {
+  const found = bestMemorySurfaceSpan(span, role);
+  if (!found) return null;
+  return [span.slice(0, found[0]), span.slice(found[1])];
+}
+
+// Trim wrapping punctuation/quotes and collapse whitespace, returning null when
+// nothing remains. Mirrors clean_memory_write_text in memory_write.rs.
+function cleanMemoryWriteText(raw) {
+  const stripped = String(raw || "").replace(
+    /^[\s`"':\-_.,?!()]+|[\s`"':\-_.,?!()]+$/gu,
+    "",
+  );
+  const text = collapseMemoryWs(stripped);
+  return text ? text : null;
 }
 
 // Issue #386 translation-command role — mirrors ROLE_TRANSLATION_ACTION in

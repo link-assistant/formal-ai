@@ -98,6 +98,74 @@ meanings
         text 搜索我的对话…
       surface
         text 在对话中搜索…
+  conversation_recall_previous_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_message
+    lexeme en
+      surface
+        text "what was written in the previous message"
+      surface
+        text "what was in the previous message"
+      surface
+        text "what did the previous message say"
+      surface
+        text "what was the previous message"
+      surface
+        text "what was the last message"
+      surface
+        text "what was written before"
+      surface
+        text "show the previous message"
+      surface
+        text "the previous message"
+      surface
+        text "previous message"
+    lexeme ru
+      surface
+        text "что было написано в прошлом сообщении"
+      surface
+        text "что было в прошлом сообщении"
+      surface
+        text "что было написано в предыдущем сообщении"
+      surface
+        text "что было в предыдущем сообщении"
+      surface
+        text "в прошлом сообщении"
+      surface
+        text "в предыдущем сообщении"
+      surface
+        text "покажи прошлое сообщение"
+      surface
+        text "прошлое сообщение"
+      surface
+        text "предыдущее сообщение"
+    lexeme hi
+      surface
+        text "पिछले संदेश में क्या लिखा था"
+      surface
+        text "पिछले संदेश में क्या था"
+      surface
+        text "पिछला संदेश क्या था"
+      surface
+        text "पिछला संदेश दिखाओ"
+      surface
+        text "पिछले संदेश में"
+      surface
+        text "पिछला संदेश"
+    lexeme zh
+      surface
+        text 上一条消息写了什么
+      surface
+        text 上一条消息是什么
+      surface
+        text 显示上一条消息
+      surface
+        text 上一条消息
+      surface
+        text 前一条消息
+      surface
+        text 上条消息
   conversation_recall_other_query
     defined-by inquiry
     defined-by conversation_reference
@@ -142,3 +210,157 @@ meanings
         text 搜索…在其他对话中
       surface
         text 查找…在另一个对话中
+  memory_append_directive
+    defined-by action
+    defined-by answer
+    role memory_append_directive
+    lexeme en
+      surface
+        text "remember that …"
+      surface
+        text "remember …"
+      surface
+        text "record memory …"
+      surface
+        text "record that …"
+      surface
+        text "append memory …"
+      surface
+        text "note that …"
+      surface
+        text "save to memory …"
+      surface
+        text "memorize …"
+    lexeme ru
+      surface
+        text "запомни что …"
+      surface
+        text "запомни …"
+      surface
+        text "запиши в память …"
+      surface
+        text "запиши что …"
+      surface
+        text "запиши …"
+      surface
+        text "сохрани в память …"
+      surface
+        text "заметь что …"
+    lexeme hi
+      surface
+        text "याद रखो कि …"
+      surface
+        text "याद रखो …"
+      surface
+        text "याद रखना …"
+      surface
+        text "स्मृति में सहेजो …"
+      surface
+        text "नोट करो कि …"
+      surface
+        text "नोट करो …"
+    lexeme zh
+      surface
+        text 记住…
+      surface
+        text 记下…
+      surface
+        text 记录…
+      surface
+        text 存入记忆…
+  memory_scope
+    defined-by action
+    defined-by answer
+    role memory_scope
+    lexeme en
+      surface
+        text "in memory"
+      surface
+        text "into memory"
+      surface
+        text "to memory"
+      surface
+        text "in the memory"
+    lexeme ru
+      surface
+        text "в памяти"
+      surface
+        text "в память"
+    lexeme hi
+      surface
+        text "स्मृति में"
+      surface
+        text "मेमोरी में"
+      surface
+        text "याद में"
+    lexeme zh
+      surface
+        text 在记忆中
+      surface
+        text 记忆中
+      surface
+        text 在内存中
+  memory_substitution_connector
+    defined-by action
+    defined-by answer
+    role memory_substitution_connector
+    lexeme en
+      surface
+        text with
+      surface
+        text by
+    lexeme ru
+      surface
+        text на
+    lexeme hi
+      surface
+        text "की जगह"
+      surface
+        text "के बजाय"
+      surface
+        text "की बजाय"
+    lexeme zh
+      surface
+        text 换成
+      surface
+        text 替换为
+      surface
+        text 替换成
+      surface
+        text 更换为
+  memory_substitution_directive
+    defined-by action
+    defined-by answer
+    role memory_substitution_directive
+    lexeme en
+      surface
+        text replace
+      surface
+        text substitute
+    lexeme ru
+      surface
+        text замени
+      surface
+        text заменить
+      surface
+        text замените
+      surface
+        text поменяй
+    lexeme hi
+      surface
+        text बदलो
+      surface
+        text "बदल दो"
+      surface
+        text रखो
+      surface
+        text लिखो
+    lexeme zh
+      surface
+        text 把
+      surface
+        text 将
+      surface
+        text 替换
+      surface
+        text 更换

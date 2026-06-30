@@ -367,6 +367,21 @@ pub fn last_assistant_turn(log: &EventLog) -> Option<&str> {
         .map(|event| event.payload.as_str())
 }
 
+/// Return the most recent prior turn (regardless of role) together with its
+/// role label, ignoring the current impulse. Used by the "what was written in
+/// the previous message?" recall handler, which replays the immediately
+/// preceding message whether it came from the user or the assistant.
+pub fn last_turn(log: &EventLog) -> Option<(&'static str, &str)> {
+    log.events()
+        .iter()
+        .rev()
+        .find_map(|event| match event.kind {
+            "prior_turn:user" => Some(("user", event.payload.as_str())),
+            "prior_turn:assistant" => Some(("assistant", event.payload.as_str())),
+            _ => None,
+        })
+}
+
 pub fn extract_introduced_name(prompt: &str) -> Option<String> {
     let needles = ["my name is", "i am called", "call me", "i'm", "i am "];
     let lower = prompt.to_lowercase();

@@ -420,6 +420,111 @@
     });
   }
 
+  // Issue #529: the searchable string fields of a stored event — the same set
+  // MemoryStore::apply_substitution rewrites in the Rust runtime (content,
+  // inputs, outputs, conversationTitle, demoLabel, and each evidence entry).
+  // Both the read snapshot fed to the worker and the in-place rewrite below use
+  // this list so the worker's reported occurrence count matches the rewrite.
+  var SUBSTITUTION_FIELDS = [
+    "content",
+    "inputs",
+    "outputs",
+    "conversationTitle",
+    "demoLabel",
+  ];
+
+  function countOccurrences(value, oldValue) {
+    if (!oldValue || typeof value !== "string" || value.indexOf(oldValue) < 0) {
+      return 0;
+    }
+    return value.split(oldValue).length - 1;
+  }
+
+  // Every searchable string value across all stored events, flattened. The app
+  // passes this snapshot into the worker so a natural-language substitution can
+  // report how many occurrences it will rewrite (issue #529).
+  function collectSearchableValues() {
+    return listEvents().then(function (events) {
+      var values = [];
+      for (var i = 0; i < events.length; i += 1) {
+        var event = events[i] || {};
+        for (var f = 0; f < SUBSTITUTION_FIELDS.length; f += 1) {
+          var field = event[SUBSTITUTION_FIELDS[f]];
+          if (typeof field === "string" && field) values.push(field);
+        }
+        if (Array.isArray(event.evidence)) {
+          for (var e = 0; e < event.evidence.length; e += 1) {
+            var entry = event.evidence[e];
+            if (typeof entry === "string" && entry) values.push(entry);
+          }
+        }
+      }
+      return values;
+    });
+  }
+
+  // Issue #529: the *write* half of natural-language memory control. Unlike the
+  // passive append-only turn log, a substitution is an explicit, user-initiated
+  // read+write transform — it rewrites every matching value already stored, in
+  // place, mirroring MemoryStore::apply_substitution in the Rust runtime. The
+  // matching audit event is appended separately by the caller. Returns the
+  // number of occurrences rewritten across all events.
+  function applySubstitution(oldValue, newValue) {
+    var oldText = String(oldValue || "");
+    var newText = String(newValue || "");
+    if (!oldText) return Promise.resolve(0);
+    return withStore("readwrite", function (store, setResult) {
+      var replaced = 0;
+      var request = store.openCursor();
+      request.onsuccess = function () {
+        var cursor = request.result;
+        if (!cursor) {
+          setResult(replaced);
+          return;
+        }
+        var value = cursor.value || {};
+        var changed = false;
+        for (var f = 0; f < SUBSTITUTION_FIELDS.length; f += 1) {
+          var field = SUBSTITUTION_FIELDS[f];
+          var current = value[field];
+          var hits = countOccurrences(current, oldText);
+          if (hits > 0) {
+            value[field] = current.split(oldText).join(newText);
+            replaced += hits;
+            changed = true;
+          }
+        }
+        if (Array.isArray(value.evidence)) {
+          for (var e = 0; e < value.evidence.length; e += 1) {
+            var entry = value.evidence[e];
+            var entryHits = countOccurrences(entry, oldText);
+            if (entryHits > 0) {
+              value.evidence[e] = entry.split(oldText).join(newText);
+              replaced += entryHits;
+              changed = true;
+            }
+          }
+        }
+        if (changed) {
+          var update = cursor.update(value);
+          update.onsuccess = function () {
+            cursor.continue();
+          };
+          update.onerror = function () {
+            cursor.continue();
+          };
+          return;
+        }
+        cursor.continue();
+      };
+      request.onerror = function () {
+        setResult(replaced);
+      };
+    }).then(function (value) {
+      return typeof value === "number" ? value : 0;
+    });
+  }
+
   function deleteWhere(predicate) {
     if (typeof predicate !== "function") return Promise.resolve(0);
     return withStore("readwrite", function (store, setResult) {
@@ -805,6 +910,8 @@
   global.FormalAiMemory = {
     appendEvent: appendEvent,
     listEvents: listEvents,
+    collectSearchableValues: collectSearchableValues,
+    applySubstitution: applySubstitution,
     listDoubletRecords: listDoubletRecords,
     importEvents: importEvents,
     deleteEventsByConversationId: deleteEventsByConversationId,

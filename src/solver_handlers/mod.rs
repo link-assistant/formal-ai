@@ -42,7 +42,9 @@ pub use benchmark_prompts::{
 };
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
-pub use conversation_memory::{answer_memory_recall, try_conversation_memory};
+pub use conversation_memory::{
+    answer_memory_recall, execute_memory_query, try_conversation_memory, MemoryQueryExecution,
+};
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_request::try_document_request;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};

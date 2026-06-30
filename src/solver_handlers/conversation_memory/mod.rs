@@ -1,14 +1,20 @@
 use std::fmt::Write as _;
 
+mod memory_write;
+use memory_write::try_memory_write;
+
 use super::finalize_simple;
 
 use crate::coding::contains_cjk;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::memory::MemoryEvent;
+use crate::link_store::memory_events_to_link_records;
+use crate::memory::{MemoryEvent, MemoryStore};
 use crate::seed::{self, Slot, WordForm};
-use crate::solver_helpers::{extract_introduced_name, last_user_turn, recall_name_from_history};
+use crate::solver_helpers::{
+    extract_introduced_name, last_turn, last_user_turn, recall_name_from_history,
+};
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
@@ -45,10 +51,23 @@ struct RecallMatch {
 struct MemoryRecallMatch {
     event_index: usize,
     role: String,
-    content: String,
     conversation_id: String,
     conversation_title: String,
     sent_at: String,
+    detail: MemoryRecallDetail,
+}
+
+#[derive(Debug)]
+enum MemoryRecallDetail {
+    Field { name: &'static str, value: String },
+    Link { from: String, to: String },
+}
+
+/// Result of executing a natural-language memory query against a mutable store.
+#[derive(Debug, Clone)]
+pub struct MemoryQueryExecution {
+    pub answer: SymbolicAnswer,
+    pub changed: bool,
 }
 
 pub fn try_conversation_memory(
@@ -57,6 +76,9 @@ pub fn try_conversation_memory(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     if let Some(answer) = try_recall_name(prompt, normalized, log) {
+        return Some(answer);
+    }
+    if let Some(answer) = try_recall_previous_message(prompt, normalized, log) {
         return Some(answer);
     }
     if let Some(answer) = try_recall_last_question(prompt, normalized, log) {
@@ -87,6 +109,35 @@ pub fn answer_memory_recall(
         current_conversation_id,
         &mut log,
     )
+}
+
+#[must_use]
+pub fn execute_memory_query(
+    prompt: &str,
+    store: &mut MemoryStore,
+    current_conversation_id: Option<&str>,
+) -> Option<MemoryQueryExecution> {
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    log.append("impulse", prompt.to_owned());
+    if let Some(answer) = try_memory_write(
+        prompt,
+        &normalized,
+        store,
+        current_conversation_id,
+        &mut log,
+    ) {
+        return Some(MemoryQueryExecution {
+            answer,
+            changed: true,
+        });
+    }
+    answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
+        MemoryQueryExecution {
+            answer,
+            changed: false,
+        }
+    })
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -133,6 +184,77 @@ fn try_recall_last_question(
         &body,
         0.9,
     ))
+}
+
+/// Recall the content of the immediately preceding message (issue #529).
+///
+/// Recognizes language-agnostic "what was written in the previous message?"
+/// phrasings via the `conversation_recall_previous_message` seed role and
+/// replays the last prior turn regardless of role. Unlike
+/// [`try_recall_last_question`], which returns the user's own last question,
+/// this returns whatever message came immediately before the current prompt —
+/// for the issue's scenario, the assistant's previous reply.
+fn try_recall_previous_message(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !seed::lexicon().mentions_role(
+        seed::ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE,
+        &normalize_prompt(normalized),
+    ) {
+        return None;
+    }
+    let language = detect_language(prompt).slug();
+    let previous = last_turn(log).map(|(role, content)| (role, content.to_owned()));
+    let body = if let Some((role, content)) = previous {
+        log.append("filter:user", format!("previous_message role={role}"));
+        render_previous_message(role, &content, language)
+    } else {
+        log.append("filter:user", "previous_message:none".to_owned());
+        render_no_previous_message(language)
+    };
+    Some(finalize_simple(
+        prompt,
+        log,
+        "recall_previous_message",
+        "response:recall_previous_message",
+        &body,
+        0.9,
+    ))
+}
+
+/// Localize the role of a recalled message ("user"/"assistant").
+fn localized_role(role: &str, language: &str) -> &'static str {
+    match (role, language) {
+        ("assistant", "ru") => "ассистент",
+        ("assistant", "hi") => "सहायक",
+        ("assistant", "zh") => "助手",
+        ("assistant", _) => "assistant",
+        (_, "ru") => "пользователь",
+        (_, "hi") => "उपयोगकर्ता",
+        (_, "zh") => "用户",
+        (_, _) => "user",
+    }
+}
+
+fn render_previous_message(role: &str, content: &str, language: &str) -> String {
+    let role_label = localized_role(role, language);
+    match language {
+        "ru" => format!("В прошлом сообщении ({role_label}) было написано: \"{content}\""),
+        "zh" => format!("上一条消息（{role_label}）写道:\"{content}\""),
+        "hi" => format!("पिछले संदेश ({role_label}) में लिखा था: \"{content}\""),
+        _ => format!("The previous message ({role_label}) was: \"{content}\""),
+    }
+}
+
+fn render_no_previous_message(language: &str) -> String {
+    match language {
+        "ru" => String::from("Прошлого сообщения пока нет."),
+        "zh" => String::from("还没有上一条消息。"),
+        "hi" => String::from("अभी तक कोई पिछला संदेश नहीं है."),
+        _ => String::from("There is no previous message yet."),
+    }
 }
 
 fn try_conversation_recall(
@@ -187,12 +309,12 @@ fn try_memory_recall(
         log.append(
             "memory_match",
             format!(
-                "event={} conversation={} title={} role={} content={}",
+                "event={} conversation={} title={} role={} {}",
                 matched.event_index,
                 matched.conversation_id,
                 matched.conversation_title,
                 matched.role,
-                matched.content
+                matched.log_fragment()
             ),
         );
     }
@@ -295,48 +417,173 @@ fn memory_recall_matches(
         return Vec::new();
     }
     let trigger = normalize_prompt(trigger_text);
-    events
-        .iter()
-        .enumerate()
-        .filter_map(|(index, event)| {
-            if event.kind.as_deref().is_some_and(|kind| kind != "message") {
-                return None;
+    let mut matches = Vec::new();
+    for (index, event) in events.iter().enumerate() {
+        if !event_in_recall_scope(event, query, current_conversation_id) {
+            continue;
+        }
+        for (name, value) in memory_event_field_values(event) {
+            let value = value.trim();
+            if value.is_empty() {
+                continue;
             }
-            let role = event.role.as_deref()?;
-            if !role.eq_ignore_ascii_case("user") && !role.eq_ignore_ascii_case("assistant") {
-                return None;
-            }
-            let content = event.content.as_deref()?.trim();
-            if content.is_empty() {
-                return None;
-            }
-            let haystack = normalize_prompt(content);
+            let haystack = normalize_prompt(value);
             if !haystack.contains(&needle) {
-                return None;
+                continue;
             }
-            if !trigger.is_empty() && haystack == trigger {
-                return None;
+            if name == "content" && !trigger.is_empty() && haystack == trigger {
+                continue;
             }
-            let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
-            if query.scope == RecallScope::OtherConversations
-                && current_conversation_id.is_some_and(|current| current == conversation_id)
-            {
-                return None;
+            matches.push(memory_field_match(index, event, name, value));
+        }
+    }
+
+    for (index, (event, record)) in events
+        .iter()
+        .zip(memory_events_to_link_records(events))
+        .enumerate()
+    {
+        if !event_in_recall_scope(event, query, current_conversation_id) {
+            continue;
+        }
+        for link in record.links {
+            let haystack = normalize_prompt(&format!("{} {}", link.from, link.to));
+            if !haystack.contains(&needle) {
+                continue;
             }
-            Some(MemoryRecallMatch {
-                event_index: index + 1,
-                role: role.to_ascii_lowercase(),
-                content: content.to_owned(),
-                conversation_id: conversation_id.to_owned(),
-                conversation_title: event
-                    .conversation_title
-                    .as_deref()
-                    .unwrap_or_default()
-                    .to_owned(),
-                sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
-            })
-        })
-        .collect()
+            matches.push(memory_link_match(index, event, &link.from, &link.to));
+        }
+    }
+
+    matches
+}
+
+fn event_in_recall_scope(
+    event: &MemoryEvent,
+    query: &RecallQuery,
+    current_conversation_id: Option<&str>,
+) -> bool {
+    let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
+    query.scope != RecallScope::OtherConversations
+        || current_conversation_id.is_none_or(|current| current != conversation_id)
+}
+
+fn memory_event_field_values(event: &MemoryEvent) -> Vec<(&'static str, &str)> {
+    let mut fields = Vec::new();
+    push_memory_field(&mut fields, "id", Some(event.id.as_str()));
+    push_memory_field(&mut fields, "kind", event.kind.as_deref());
+    push_memory_field(&mut fields, "role", event.role.as_deref());
+    push_memory_field(&mut fields, "intent", event.intent.as_deref());
+    push_memory_field(&mut fields, "tool", event.tool.as_deref());
+    push_memory_field(&mut fields, "inputs", event.inputs.as_deref());
+    push_memory_field(&mut fields, "outputs", event.outputs.as_deref());
+    push_memory_field(&mut fields, "content", event.content.as_deref());
+    push_memory_field(&mut fields, "sentAt", event.sent_at.as_deref());
+    push_memory_field(&mut fields, "demoLabel", event.demo_label.as_deref());
+    push_memory_field(
+        &mut fields,
+        "conversationId",
+        event.conversation_id.as_deref(),
+    );
+    push_memory_field(
+        &mut fields,
+        "conversationTitle",
+        event.conversation_title.as_deref(),
+    );
+    for evidence in &event.evidence {
+        push_memory_field(&mut fields, "evidence", Some(evidence.as_str()));
+    }
+    fields
+}
+
+fn push_memory_field<'a>(
+    fields: &mut Vec<(&'static str, &'a str)>,
+    name: &'static str,
+    value: Option<&'a str>,
+) {
+    if let Some(value) = value.filter(|value| !value.trim().is_empty()) {
+        fields.push((name, value));
+    }
+}
+
+fn memory_field_match(
+    index: usize,
+    event: &MemoryEvent,
+    name: &'static str,
+    value: &str,
+) -> MemoryRecallMatch {
+    memory_match(
+        index,
+        event,
+        MemoryRecallDetail::Field {
+            name,
+            value: value.to_owned(),
+        },
+    )
+}
+
+fn memory_link_match(index: usize, event: &MemoryEvent, from: &str, to: &str) -> MemoryRecallMatch {
+    memory_match(
+        index,
+        event,
+        MemoryRecallDetail::Link {
+            from: from.to_owned(),
+            to: to.to_owned(),
+        },
+    )
+}
+
+fn memory_match(
+    index: usize,
+    event: &MemoryEvent,
+    detail: MemoryRecallDetail,
+) -> MemoryRecallMatch {
+    let role = event
+        .role
+        .as_deref()
+        .or(event.kind.as_deref())
+        .or(event.intent.as_deref())
+        .unwrap_or("event");
+    MemoryRecallMatch {
+        event_index: index + 1,
+        role: role.to_ascii_lowercase(),
+        conversation_id: event
+            .conversation_id
+            .as_deref()
+            .unwrap_or("legacy")
+            .to_owned(),
+        conversation_title: event
+            .conversation_title
+            .as_deref()
+            .unwrap_or_default()
+            .to_owned(),
+        sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
+        detail,
+    }
+}
+
+impl MemoryRecallMatch {
+    fn log_fragment(&self) -> String {
+        match &self.detail {
+            MemoryRecallDetail::Field { name, value } => format!("field={name} value={value}"),
+            MemoryRecallDetail::Link { from, to } => format!("link={from}->{to}"),
+        }
+    }
+
+    fn render_line(&self) -> String {
+        let stamp = if self.sent_at.is_empty() {
+            String::new()
+        } else {
+            format!(" [{}]", self.sent_at)
+        };
+        match &self.detail {
+            MemoryRecallDetail::Field { name, value } if *name == "content" => {
+                format!("{}{}: {}", self.role, stamp, value)
+            }
+            MemoryRecallDetail::Field { name, value } => format!("{name}{stamp}: {value}"),
+            MemoryRecallDetail::Link { from, to } => format!("link{stamp}: {from} -> {to}"),
+        }
+    }
 }
 
 fn memory_conversation_count(matches: &[MemoryRecallMatch]) -> usize {
@@ -463,13 +710,7 @@ fn render_memory_recall_report(
             .iter()
             .filter(|matched| matched.conversation_id == conversation_id)
         {
-            let stamp = if matched.sent_at.is_empty() {
-                String::new()
-            } else {
-                format!(" [{}]", matched.sent_at)
-            };
-            writeln!(body, "  - {}{}: {}", matched.role, stamp, matched.content)
-                .expect("string write is infallible");
+            writeln!(body, "  - {}", matched.render_line()).expect("string write is infallible");
         }
     }
     body.trim_end().to_owned()

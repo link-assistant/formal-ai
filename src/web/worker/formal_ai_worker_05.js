@@ -705,6 +705,217 @@ function tryRecallLastQuestion(history) {
   return null;
 }
 
+// Issue #529: recall the content of the immediately preceding message. The
+// recogniser composes the conversation_recall_previous_message seed role across
+// every supported language (see ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE), so a
+// Russian "что было написано в прошлом сообщении?" no longer falls through to the
+// unknown intent. Unlike tryRecallLastQuestion (the user's own last question),
+// this replays the last prior turn regardless of role — for the issue scenario,
+// the assistant's previous reply. Mirror of try_recall_previous_message in
+// src/solver_handlers/conversation_memory.rs.
+function localizedTurnRole(role, language) {
+  if (role === "assistant") {
+    if (language === "ru") return "ассистент";
+    if (language === "hi") return "सहायक";
+    if (language === "zh") return "助手";
+    return "assistant";
+  }
+  if (language === "ru") return "пользователь";
+  if (language === "hi") return "उपयोगकर्ता";
+  if (language === "zh") return "用户";
+  return "user";
+}
+
+function renderPreviousMessage(role, content, language) {
+  const label = localizedTurnRole(role, language);
+  if (language === "ru") return `В прошлом сообщении (${label}) было написано: "${content}"`;
+  if (language === "zh") return `上一条消息（${label}）写道:"${content}"`;
+  if (language === "hi") return `पिछले संदेश (${label}) में लिखा था: "${content}"`;
+  return `The previous message (${label}) was: "${content}"`;
+}
+
+function renderNoPreviousMessage(language) {
+  if (language === "ru") return "Прошлого сообщения пока нет.";
+  if (language === "zh") return "还没有上一条消息。";
+  if (language === "hi") return "अभी तक कोई पिछला संदेश नहीं है.";
+  return "There is no previous message yet.";
+}
+
+function tryRecallPreviousMessage(prompt, history) {
+  const normalized = normalizePrompt(prompt);
+  if (!lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, normalized)) {
+    return null;
+  }
+  const language = detectLanguage(prompt);
+  let previous = null;
+  if (Array.isArray(history)) {
+    for (let i = history.length - 1; i >= 0; i -= 1) {
+      const turn = history[i];
+      const content = turn && String(turn.content || "").trim();
+      if (content) {
+        previous = { role: turn.role === "assistant" ? "assistant" : "user", content };
+        break;
+      }
+    }
+  }
+  const content = previous
+    ? renderPreviousMessage(previous.role, previous.content, language)
+    : renderNoPreviousMessage(language);
+  return {
+    intent: "recall_previous_message",
+    content,
+    confidence: 0.9,
+    evidence: [
+      "recall_previous_message",
+      previous ? `prior_turn:${previous.role}` : "prior_turn:none",
+    ],
+  };
+}
+
+// Issue #529: natural-language *writes* to the entire associative memory. This
+// is the browser mirror of src/solver_handlers/conversation_memory/memory_write.rs
+// — the write half of the Turing-complete memory primitive (a recall reads, an
+// append extends, a substitution rewrites). Both recognisers are driven by the
+// seed lexicon (ROLE_MEMORY_*), so they extend to every supported language
+// automatically. The actual persistence happens in the app (main.jsx applies the
+// returned memoryOperation to IndexedDB); the worker stays pure by computing the
+// substitution count over a memory snapshot the app passes in.
+
+// Recognise a "remember …" append directive in any language. The surfaces are
+// Slot::Prefix forms (trailing …), so each form's literal-before-the-slot is the
+// matchable prefix. Matching runs on a lowercased copy of the raw prompt and
+// longer prefixes win first, so "remember that X" beats "remember X". Mirrors
+// recognize_memory_append.
+function recognizeMemoryAppend(prompt) {
+  const trimmed = String(prompt || "").replace(/^\s+/, "");
+  const lowered = trimmed.toLowerCase();
+  const prefixes = roleWordForms(ROLE_MEMORY_APPEND_DIRECTIVE)
+    .filter((form) => form.slot === "prefix")
+    .map((form) => form.before)
+    .filter((prefix) => prefix.length > 0);
+  prefixes.sort((a, b) => b.length - a.length);
+  for (const prefix of prefixes) {
+    if (lowered.startsWith(prefix)) {
+      const statement = cleanMemoryWriteText(trimmed.slice(prefix.length));
+      if (statement) return statement;
+    }
+  }
+  return null;
+}
+
+// Recognise a memory substitution (a read+write transform) in any language. A
+// bare "replace X with Y" is an ordinary coding request, so a memory *scope*
+// phrase must be present to claim the prompt. We then strip the scope and the
+// substitution directive (position-independent: SVO languages lead, Hindi
+// trails) and split the operand span on the connector to recover (old, new).
+// Mirrors recognize_memory_substitution.
+function recognizeMemorySubstitution(normalized) {
+  if (!lexiconMentionsRole(ROLE_MEMORY_SCOPE, normalized)) return null;
+  const withoutScope = stripFirstMemorySurface(normalized, ROLE_MEMORY_SCOPE);
+  if (withoutScope === null) return null;
+  const operands = stripFirstMemorySurface(
+    withoutScope,
+    ROLE_MEMORY_SUBSTITUTION_DIRECTIVE,
+  );
+  if (operands === null) return null;
+  const split = splitOnceMemorySurface(
+    operands,
+    ROLE_MEMORY_SUBSTITUTION_CONNECTOR,
+  );
+  if (!split) return null;
+  const oldValue = cleanMemoryWriteText(split[0]);
+  const newValue = cleanMemoryWriteText(split[1]);
+  if (!oldValue || !newValue) return null;
+  return { oldValue, newValue };
+}
+
+// Total substring occurrences of `old` across every searchable value in the
+// memory snapshot. Mirrors MemoryStore::apply_substitution's count, which sums
+// replace_counting over each event's content/inputs/outputs/title/label and
+// every evidence entry. The app builds the snapshot from those same fields, so
+// the worker's reported count matches the rewrite the app applies to IndexedDB.
+function countMemoryOccurrences(memory, old) {
+  if (!old) return 0;
+  const values = Array.isArray(memory) ? memory : [];
+  let count = 0;
+  for (const value of values) {
+    const text = String(value || "");
+    if (!text.includes(old)) continue;
+    count += text.split(old).length - 1;
+  }
+  return count;
+}
+
+function renderMemoryAppendAnswer(statement, language) {
+  if (language === "ru") return `Запомнил: ${statement}`;
+  if (language === "zh") return `已记住:${statement}`;
+  if (language === "hi") return `स्मृति में सहेजा गया: ${statement}`;
+  return `Recorded memory: ${statement}`;
+}
+
+function renderMemorySubstitutionAnswer(oldValue, newValue, applied, language) {
+  if (language === "ru") {
+    return `Заменил "${oldValue}" на "${newValue}" в памяти (обновлено вхождений: ${applied}).`;
+  }
+  if (language === "zh") {
+    return `已在记忆中将"${oldValue}"替换为"${newValue}"(更新 ${applied} 处)。`;
+  }
+  if (language === "hi") {
+    return `स्मृति में "${oldValue}" को "${newValue}" से बदला (${applied})।`;
+  }
+  return `Replaced "${oldValue}" with "${newValue}" in memory (${applied} occurrence(s) updated).`;
+}
+
+// Recognise a natural-language memory write and return an answer carrying a
+// structured `memoryOperation` for the app to persist. Substitution is tried
+// before append because a substitution prompt also begins with a directive verb.
+// Mirrors try_memory_write + recognize_memory_write.
+function tryMemoryWrite(prompt, normalized, memory) {
+  const substitution = recognizeMemorySubstitution(normalized);
+  if (substitution) {
+    const language = detectLanguage(prompt);
+    const applied = countMemoryOccurrences(memory, substitution.oldValue);
+    return {
+      intent: "memory_substitution",
+      content: renderMemorySubstitutionAnswer(
+        substitution.oldValue,
+        substitution.newValue,
+        applied,
+        language,
+      ),
+      confidence: 0.9,
+      evidence: [
+        "memory_substitution",
+        "substitution_event:update",
+        `substitution:applied=${applied}`,
+        "response:memory_substitution",
+      ],
+      memoryOperation: {
+        action: "substitute",
+        oldValue: substitution.oldValue,
+        newValue: substitution.newValue,
+        applied,
+      },
+    };
+  }
+  const statement = recognizeMemoryAppend(prompt);
+  if (statement) {
+    const language = detectLanguage(prompt);
+    return {
+      intent: "memory_write",
+      content: renderMemoryAppendAnswer(statement, language),
+      confidence: 0.9,
+      evidence: [
+        "memory_write",
+        "memory_write:natural_language",
+        "response:memory_write",
+      ],
+      memoryOperation: { action: "append", statement },
+    };
+  }
+  return null;
+}
+
 // Issue #27: deterministic, logical summarisation — no neural net. We
 // project the conversation onto a small set of features (turn counts, intents,
 // concepts, languages, unanswered questions) and render them as a structured
