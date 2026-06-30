@@ -11,11 +11,12 @@ dialog history and the broader associative memory, using natural-language access
 rather than SQL-like query languages.
 
 The browser already had a local IndexedDB recall path for cross-conversation
-queries, but the Rust solver path used by the library, CLI, and OpenAI-compatible
-chat-completion adapter only handled narrow conversation memory requests: user
-name recall, previous-question recall, and conversation summaries. Prompts such
-as "When did I mention Rust?" therefore fell through to concept lookup or the
-unknown fallback.
+queries, but the Rust solver path used by the library, CLI, and API adapters only
+handled narrow conversation memory requests: user name recall, previous-question
+recall, and conversation summaries. Prompts such as "When did I mention Rust?"
+therefore fell through to concept lookup or the unknown fallback, and the local
+HTTP server did not consult the persisted `FORMAL_AI_MEMORY_PATH` event log for
+natural-language memory queries.
 
 ## 2. Collected Data
 
@@ -33,9 +34,13 @@ unknown fallback.
 
 `solve_with_history` records prior chat messages as `prior_turn:user` and
 `prior_turn:assistant` events, but no handler interpreted a natural-language
-search request against those events. Because the current prompt still looked
-like a concept question, the router could answer from the static Rust concept
-record instead of the dialog history supplied by the caller.
+search request against those events. The HTTP server also opened the same
+`SyncStore` used by `/v1/memory`, yet `/v1/chat/completions`, `/v1/responses`,
+and `/v1/messages` routed requests directly through the solver without passing
+those persisted `MemoryEvent`s into recall. Because the current prompt still
+looked like a concept question, the router could answer from the static Rust
+concept record instead of the dialog history or persisted memory supplied by the
+caller.
 
 ## 4. Implemented Design
 
@@ -55,11 +60,18 @@ The new `conversation_recall` branch:
 - returns role-labelled matching turns, or a no-match answer, before concept
   lookup can claim the prompt.
 
-The Rust adapter does not receive cross-conversation IDs, so "other
-conversation" query forms are accepted and recorded as `other_conversations`
-scope while searching the provided prior dialog turns. The browser keeps its
-existing persisted IndexedDB search behavior for actual cross-conversation
-memory.
+The same recall recognizer now also has a persisted-memory path:
+
+- `answer_memory_recall` scans portable `MemoryEvent` records from `demo_memory`
+  or full-memory bundles, grouped by `conversationId` / `conversationTitle`;
+- trigger prompts are skipped so a recalled search never matches itself;
+- `other_conversations` excludes the current request-history group when the
+  caller supplies one, while still searching the persisted memory store;
+- `/v1/chat/completions`, `/v1/responses`, and `/v1/messages` pass
+  `SyncStore::open().events()` into memory-aware protocol helpers before falling
+  back to the normal solver;
+- `formal-ai memory query --prompt ...` exposes the same natural-language recall
+  directly over saved memory files.
 
 ## 5. Verification
 
@@ -76,19 +88,26 @@ Focused verification after the fix:
 - Saved output: `raw-data/focused-after-fix.log`
 - Result: passed.
 
+Persisted-memory verification after the expansion:
+
+- `cargo test --test unit persisted_memory -- --nocapture`
+- `cargo test --test integration cli_memory_query_answers_natural_language_recall_from_persisted_memory -- --nocapture`
+- Result: passed. Coverage includes the reusable memory helper,
+  `/v1/chat/completions`, `/v1/responses`, `/v1/messages`, and the CLI
+  `memory query` command.
+
 Regression and seed verification:
 
-- `cargo test --test unit solve_with_history_ -- --nocapture`
-  (`raw-data/history-regression-after-fix.log`)
+- `cargo test --test unit conversation_history -- --nocapture`
 - `cargo test --test unit reference_closure -- --nocapture`
-  (`raw-data/reference-closure.log`)
 - `cargo test --test unit total_closure -- --nocapture`
-  (`raw-data/total-closure.log`)
 - `cargo test --test unit data_files -- --nocapture`
-  (`raw-data/data-files.log`)
 - `cargo test --test unit check_file_size -- --nocapture`
-  (`raw-data/file-size.log`)
-- `cargo test --test unit -- --nocapture`
-  (`raw-data/unit-full.log`)
+- `npm --prefix tests/e2e run check:language-test-coverage`
+- `npm --prefix tests/e2e run check:language-parity`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --all-features --verbose`
 
-Final result: full unit target passed with 1209 passed, 0 failed, 1 ignored.
+Final result: full all-features test target passed with 1213 passed, 0 failed,
+1 ignored.

@@ -5,14 +5,15 @@ use serde::Serialize;
 use serde_json::json;
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessagesRequest,
+    anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
+    AnthropicMessagesRequest,
 };
 use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
-    create_chat_completion_with_solver, create_response_with_solver, ChatCompletionRequest,
-    ResponsesRequest,
+    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
+    ChatCompletionRequest, ResponsesRequest,
 };
 use crate::seed::merged_bundle;
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
@@ -138,10 +139,22 @@ pub fn handle_api_request_with_auth(
             match serde_json::from_str::<ChatCompletionRequest>(body) {
                 Ok(request) => {
                     let solver = http_solver();
+                    let store = SyncStore::open();
                     if request.stream {
-                        sse_response(&create_chat_completion_with_solver(&request, &solver))
+                        sse_response(&create_chat_completion_with_solver_and_memory(
+                            &request,
+                            &solver,
+                            store.events(),
+                        ))
                     } else {
-                        json_response(200, &create_chat_completion_with_solver(&request, &solver))
+                        json_response(
+                            200,
+                            &create_chat_completion_with_solver_and_memory(
+                                &request,
+                                &solver,
+                                store.events(),
+                            ),
+                        )
                     }
                 }
                 Err(error) => error_response(400, &format!("invalid chat request: {error}")),
@@ -150,7 +163,11 @@ pub fn handle_api_request_with_auth(
         ("POST", "/v1/responses") => match serde_json::from_str::<ResponsesRequest>(body) {
             Ok(request) => {
                 let solver = http_solver();
-                json_response(200, &create_response_with_solver(&request, &solver))
+                let store = SyncStore::open();
+                json_response(
+                    200,
+                    &create_response_with_solver_and_memory(&request, &solver, store.events()),
+                )
             }
             Err(error) => error_response(400, &format!("invalid responses request: {error}")),
         },
@@ -257,7 +274,9 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
     match serde_json::from_str::<AnthropicMessagesRequest>(body) {
         Ok(request) => {
             let solver = http_solver();
-            let message = create_anthropic_message_with_solver(&request, &solver);
+            let store = SyncStore::open();
+            let message =
+                create_anthropic_message_with_solver_and_memory(&request, &solver, store.events());
             if request.stream {
                 ApiHttpResponse {
                     status_code: 200,

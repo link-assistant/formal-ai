@@ -40,6 +40,8 @@ pub(crate) mod program_coreference;
 pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
+pub(crate) mod protocol_memory;
+pub(crate) mod protocol_policy;
 pub mod recipe_interpreter;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
@@ -81,8 +83,9 @@ pub use agent::{
     PlannedAgentAction,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicContentBlock,
-    AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
+    anthropic_message_sse, create_anthropic_message_with_solver,
+    create_anthropic_message_with_solver_and_memory, AnthropicContentBlock, AnthropicMessage,
+    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
 };
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
@@ -142,11 +145,12 @@ pub use probability::{
     RankedProbabilityCandidate, SimilarEvidence,
 };
 pub use protocol::{
-    create_chat_completion, create_chat_completion_with_solver, create_response,
-    create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall, ResponseObject,
-    ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage, ResponseUsage,
-    ResponsesRequest, TokenUsage, ToolCall,
+    create_chat_completion, create_chat_completion_with_solver,
+    create_chat_completion_with_solver_and_memory, create_response, create_response_with_solver,
+    create_response_with_solver_and_memory, ChatChoice, ChatCompletion, ChatCompletionRequest,
+    ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall,
+    ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage,
+    ResponseUsage, ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
@@ -177,6 +181,7 @@ pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
+pub use solver_handlers::answer_memory_recall;
 pub use solver_helpers::humanize_url;
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,

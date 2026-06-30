@@ -1,8 +1,8 @@
 //! Natural-language access to prior dialog turns (issue #509).
 
 use formal_ai::{
-    create_chat_completion, solve_with_history, ChatCompletionRequest, ChatMessage,
-    ConversationTurn, SymbolicAnswer,
+    answer_memory_recall, create_chat_completion, solve_with_history, ChatCompletionRequest,
+    ChatMessage, ConversationTurn, MemoryEvent, SymbolicAnswer,
 };
 
 fn has_evidence(response: &SymbolicAnswer, expected: &str) -> bool {
@@ -182,4 +182,76 @@ fn chat_completion_supports_natural_language_history_search() {
         !content.contains("Wikipedia is an encyclopedia."),
         "{content}"
     );
+}
+
+#[test]
+fn natural_language_query_searches_persisted_memory_events() {
+    let events = vec![
+        memory_event("a1", "user", "conv-a", "Rust Notes", "What is Rust?"),
+        memory_event(
+            "a2",
+            "assistant",
+            "conv-a",
+            "Rust Notes",
+            "Rust is a systems programming language.",
+        ),
+        memory_event(
+            "b1",
+            "user",
+            "conv-b",
+            "Wikipedia Notes",
+            "What is Wikipedia?",
+        ),
+    ];
+
+    let response = answer_memory_recall(
+        "Find Rust in another conversation",
+        &events,
+        Some("current-conversation"),
+    )
+    .expect("recall query should be recognized");
+
+    assert_eq!(response.intent, "conversation_recall");
+    assert!(
+        response.answer.contains("Rust Notes"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("user: What is Rust?"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("assistant: Rust is a systems programming language."),
+        "{}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("What is Wikipedia?"),
+        "{}",
+        response.answer
+    );
+    assert!(has_evidence(&response, "filter:memory_conversations"));
+    assert!(has_evidence(&response, "memory_match"));
+}
+
+fn memory_event(
+    id: &str,
+    role: &str,
+    conversation_id: &str,
+    conversation_title: &str,
+    content: &str,
+) -> MemoryEvent {
+    MemoryEvent {
+        id: id.to_owned(),
+        kind: Some(String::from("message")),
+        role: Some(role.to_owned()),
+        content: Some(content.to_owned()),
+        conversation_id: Some(conversation_id.to_owned()),
+        conversation_title: Some(conversation_title.to_owned()),
+        ..MemoryEvent::default()
+    }
 }

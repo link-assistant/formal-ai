@@ -424,6 +424,56 @@ fn cli_memory_export_import_show_round_trips_events() {
 }
 
 #[test]
+fn cli_memory_query_answers_natural_language_recall_from_persisted_memory() {
+    let dir = tmpdir();
+    let memory_path = dir.join("memory.lino");
+    std::fs::write(
+        &memory_path,
+        "demo_memory\n\
+         \x20\x20event \"a1\"\n\
+         \x20\x20\x20\x20kind \"message\"\n\
+         \x20\x20\x20\x20role \"user\"\n\
+         \x20\x20\x20\x20content \"What is Rust?\"\n\
+         \x20\x20\x20\x20conversationId \"conv-a\"\n\
+         \x20\x20\x20\x20conversationTitle \"Rust Notes\"\n\
+         \x20\x20event \"b1\"\n\
+         \x20\x20\x20\x20kind \"message\"\n\
+         \x20\x20\x20\x20role \"user\"\n\
+         \x20\x20\x20\x20content \"What is Wikipedia?\"\n\
+         \x20\x20\x20\x20conversationId \"conv-b\"\n\
+         \x20\x20\x20\x20conversationTitle \"Wikipedia Notes\"\n",
+    )
+    .expect("seed memory file");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "memory",
+            "query",
+            "--path",
+            memory_path.to_str().unwrap(),
+            "--prompt",
+            "Find Rust in another conversation",
+        ])
+        .output()
+        .expect("memory query");
+
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(output.status.success(), "query stderr: {stderr}");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("Rust Notes"), "query output: {stdout}");
+    assert!(
+        stdout.contains("user: What is Rust?"),
+        "query output: {stdout}"
+    );
+    assert!(
+        !stdout.contains("What is Wikipedia?"),
+        "query should not include unrelated memory: {stdout}"
+    );
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn cli_memory_purge_deleted_requires_confirmation_and_can_backup() {
     let dir = tmpdir();
     let memory_path = dir.join("memory.lino");

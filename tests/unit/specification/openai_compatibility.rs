@@ -5,9 +5,12 @@
 //! Responses dialects so that existing tooling can call `formal-ai` as a
 //! drop-in symbolic engine.
 
+use std::sync::{Mutex, MutexGuard, OnceLock};
+
 use formal_ai::{
-    create_chat_completion, create_response, handle_api_request, handle_api_request_with_auth,
-    ApiAuthConfig, ChatCompletionRequest, ChatMessage, ResponsesRequest,
+    create_chat_completion, create_response, export_memory_links_notation, handle_api_request,
+    handle_api_request_with_auth, ApiAuthConfig, ChatCompletionRequest, ChatMessage, MemoryEvent,
+    ResponsesRequest,
 };
 
 // ---------------------------------------------------------------------------
@@ -203,6 +206,30 @@ fn http_chat_completions_route_returns_completion_object() {
 }
 
 #[test]
+fn http_chat_completion_queries_persisted_memory_with_natural_language() {
+    let response = with_recall_memory(|| {
+        let body = serde_json::json!({
+            "model": "formal-symbolic-production",
+            "messages": [{"role": "user", "content": "Find Rust in another conversation"}]
+        })
+        .to_string();
+        handle_api_request("POST", "/v1/chat/completions", &body)
+    });
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    let content = json["choices"][0]["message"]["content"]
+        .as_str()
+        .unwrap_or_default();
+    assert!(content.contains("Rust Notes"), "{content}");
+    assert!(content.contains("user: What is Rust?"), "{content}");
+    assert!(
+        !content.contains("What is Wikipedia?"),
+        "query should not include unrelated memory: {content}"
+    );
+}
+
+#[test]
 fn http_responses_route_returns_response_object() {
     let body = serde_json::json!({
         "model": "formal-symbolic-production",
@@ -213,6 +240,99 @@ fn http_responses_route_returns_response_object() {
     assert_eq!(response.status_code, 200);
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "response");
+}
+
+#[test]
+fn http_responses_route_queries_persisted_memory_with_natural_language() {
+    let response = with_recall_memory(|| {
+        let body = serde_json::json!({
+            "model": "formal-symbolic-production",
+            "input": "Find Rust in another conversation"
+        })
+        .to_string();
+        handle_api_request("POST", "/v1/responses", &body)
+    });
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    let content = json["output"][0]["content"][0]["text"]
+        .as_str()
+        .unwrap_or_default();
+    assert!(content.contains("Rust Notes"), "{content}");
+    assert!(content.contains("user: What is Rust?"), "{content}");
+    assert!(
+        !content.contains("What is Wikipedia?"),
+        "query should not include unrelated memory: {content}"
+    );
+}
+
+fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
+    let _guard = memory_env_lock();
+    let dir = std::env::temp_dir().join(format!("formal-ai-memory-query-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    let path = dir.join("memory.lino");
+    let memory = export_memory_links_notation(&[
+        memory_event(
+            "a1",
+            "message",
+            "user",
+            "conv-a",
+            "Rust Notes",
+            "What is Rust?",
+        ),
+        memory_event(
+            "a2",
+            "message",
+            "assistant",
+            "conv-a",
+            "Rust Notes",
+            "Rust is a systems programming language.",
+        ),
+        memory_event(
+            "b1",
+            "message",
+            "user",
+            "conv-b",
+            "Wikipedia Notes",
+            "What is Wikipedia?",
+        ),
+    ]);
+    std::fs::write(&path, memory).expect("write memory");
+
+    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
+    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
+    let result = run();
+    match previous {
+        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
+        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+    result
+}
+
+fn memory_event(
+    id: &str,
+    kind: &str,
+    role: &str,
+    conversation_id: &str,
+    conversation_title: &str,
+    content: &str,
+) -> MemoryEvent {
+    MemoryEvent {
+        id: id.to_owned(),
+        kind: Some(kind.to_owned()),
+        role: Some(role.to_owned()),
+        content: Some(content.to_owned()),
+        conversation_id: Some(conversation_id.to_owned()),
+        conversation_title: Some(conversation_title.to_owned()),
+        ..MemoryEvent::default()
+    }
+}
+
+fn memory_env_lock() -> MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
 }
 
 #[test]

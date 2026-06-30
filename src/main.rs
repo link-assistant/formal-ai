@@ -11,7 +11,7 @@ mod cli_shared_dialog;
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    agent_info, collect_github_logs, create_chat_completion_with_solver,
+    agent_info, answer_memory_recall, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
     import_memory_full, knowledge_links_notation, merged_bundle, naturalize_thinking_step,
     parse_bundle, render_github_log_plan, run_telegram_polling, run_telegram_webhook_server,
@@ -202,6 +202,19 @@ enum MemoryAction {
             default_value = "formal-ai-memory.lino"
         )]
         path: PathBuf,
+    },
+    /// Answer a natural-language recall query against the persisted memory log.
+    Query {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+
+        /// Natural-language memory query, for example "Find Rust in another conversation".
+        #[arg(long)]
+        prompt: String,
     },
     /// Permanently remove every event attached to conversations that were
     /// already soft-deleted in the browser conversation list. Irreversible:
@@ -636,6 +649,13 @@ fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 let content = event.content.as_deref().unwrap_or("");
                 let stamp = event.sent_at.as_deref().unwrap_or("");
                 println!("{index:>3}. [{role}] {intent:<12} {stamp}  {content}");
+            }
+        }
+        MemoryAction::Query { path, prompt } => {
+            let store = load_memory_or_empty(&path)?;
+            match answer_memory_recall(&prompt, store.events(), None) {
+                Some(answer) => println!("{}", answer.answer),
+                None => println!("No natural-language memory query recognized."),
             }
         }
         MemoryAction::PurgeDeleted {

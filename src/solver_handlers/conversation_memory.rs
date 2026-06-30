@@ -6,13 +6,14 @@ use crate::coding::contains_cjk;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::memory::MemoryEvent;
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{extract_introduced_name, last_user_turn, recall_name_from_history};
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
 };
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum RecallScope {
     Conversation,
     OtherConversations,
@@ -40,6 +41,16 @@ struct RecallMatch {
     content: String,
 }
 
+#[derive(Debug)]
+struct MemoryRecallMatch {
+    event_index: usize,
+    role: String,
+    content: String,
+    conversation_id: String,
+    conversation_title: String,
+    sent_at: String,
+}
+
 pub fn try_conversation_memory(
     prompt: &str,
     normalized: &str,
@@ -58,6 +69,24 @@ pub fn try_conversation_memory(
         return Some(answer);
     }
     None
+}
+
+#[must_use]
+pub fn answer_memory_recall(
+    prompt: &str,
+    events: &[MemoryEvent],
+    current_conversation_id: Option<&str>,
+) -> Option<SymbolicAnswer> {
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    log.append("impulse", prompt.to_owned());
+    try_memory_recall(
+        prompt,
+        &normalized,
+        events,
+        current_conversation_id,
+        &mut log,
+    )
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -127,6 +156,48 @@ fn try_conversation_recall(
     }
     let language = detect_language(prompt).slug();
     let body = render_recall_report(&query, &matches, language);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "conversation_recall",
+        "response:conversation_recall",
+        &body,
+        0.9,
+    ))
+}
+
+fn try_memory_recall(
+    prompt: &str,
+    normalized: &str,
+    events: &[MemoryEvent],
+    current_conversation_id: Option<&str>,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let query = recognize_recall_query(normalized)?;
+    let matches = memory_recall_matches(events, &query, current_conversation_id, prompt);
+    let conversation_count = memory_conversation_count(&matches);
+    log.append("filter:memory_query", query.term.clone());
+    log.append("filter:memory_scope", query.scope.as_str());
+    log.append("filter:memory_matches", matches.len().to_string());
+    log.append(
+        "filter:memory_conversations",
+        conversation_count.to_string(),
+    );
+    for matched in &matches {
+        log.append(
+            "memory_match",
+            format!(
+                "event={} conversation={} title={} role={} content={}",
+                matched.event_index,
+                matched.conversation_id,
+                matched.conversation_title,
+                matched.role,
+                matched.content
+            ),
+        );
+    }
+    let language = detect_language(prompt).slug();
+    let body = render_memory_recall_report(&query, &matches, language);
     Some(finalize_simple(
         prompt,
         log,
@@ -213,6 +284,71 @@ fn recall_matches(log: &EventLog, term: &str) -> Vec<RecallMatch> {
         .collect()
 }
 
+fn memory_recall_matches(
+    events: &[MemoryEvent],
+    query: &RecallQuery,
+    current_conversation_id: Option<&str>,
+    trigger_text: &str,
+) -> Vec<MemoryRecallMatch> {
+    let needle = normalize_prompt(&query.term);
+    if needle.is_empty() {
+        return Vec::new();
+    }
+    let trigger = normalize_prompt(trigger_text);
+    events
+        .iter()
+        .enumerate()
+        .filter_map(|(index, event)| {
+            if event.kind.as_deref().is_some_and(|kind| kind != "message") {
+                return None;
+            }
+            let role = event.role.as_deref()?;
+            if !role.eq_ignore_ascii_case("user") && !role.eq_ignore_ascii_case("assistant") {
+                return None;
+            }
+            let content = event.content.as_deref()?.trim();
+            if content.is_empty() {
+                return None;
+            }
+            let haystack = normalize_prompt(content);
+            if !haystack.contains(&needle) {
+                return None;
+            }
+            if !trigger.is_empty() && haystack == trigger {
+                return None;
+            }
+            let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
+            if query.scope == RecallScope::OtherConversations
+                && current_conversation_id.is_some_and(|current| current == conversation_id)
+            {
+                return None;
+            }
+            Some(MemoryRecallMatch {
+                event_index: index + 1,
+                role: role.to_ascii_lowercase(),
+                content: content.to_owned(),
+                conversation_id: conversation_id.to_owned(),
+                conversation_title: event
+                    .conversation_title
+                    .as_deref()
+                    .unwrap_or_default()
+                    .to_owned(),
+                sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
+            })
+        })
+        .collect()
+}
+
+fn memory_conversation_count(matches: &[MemoryRecallMatch]) -> usize {
+    let mut ids: Vec<&str> = Vec::new();
+    for matched in matches {
+        if !ids.contains(&matched.conversation_id.as_str()) {
+            ids.push(matched.conversation_id.as_str());
+        }
+    }
+    ids.len()
+}
+
 fn render_recall_report(query: &RecallQuery, matches: &[RecallMatch], language: &str) -> String {
     if matches.is_empty() {
         return match language {
@@ -258,6 +394,83 @@ fn render_recall_report(query: &RecallQuery, matches: &[RecallMatch], language: 
             matched.turn_index, matched.role, matched.content
         )
         .expect("string write is infallible");
+    }
+    body.trim_end().to_owned()
+}
+
+fn render_memory_recall_report(
+    query: &RecallQuery,
+    matches: &[MemoryRecallMatch],
+    language: &str,
+) -> String {
+    if matches.is_empty() {
+        return match language {
+            "ru" => format!("Упоминаний \"{}\" в памяти не найдено.", query.term),
+            "zh" => format!("在记忆中没有找到 \"{}\"。", query.term),
+            "hi" => format!("स्मृति में \"{}\" नहीं मिला.", query.term),
+            _ => format!("No mentions of \"{}\" found in memory.", query.term),
+        };
+    }
+
+    let conversation_count = memory_conversation_count(matches);
+    let mut body = match language {
+        "ru" => format!(
+            "Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n",
+            query.term,
+            matches.len(),
+            conversation_count
+        ),
+        "zh" => format!(
+            "在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n",
+            query.term,
+            matches.len(),
+            conversation_count
+        ),
+        "hi" => format!(
+            "स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n",
+            query.term,
+            matches.len(),
+            conversation_count
+        ),
+        _ => format!(
+            "Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n",
+            matches.len(),
+            query.term,
+            conversation_count
+        ),
+    };
+
+    let mut conversation_ids: Vec<&str> = Vec::new();
+    for matched in matches {
+        if !conversation_ids.contains(&matched.conversation_id.as_str()) {
+            conversation_ids.push(matched.conversation_id.as_str());
+        }
+    }
+    for conversation_id in conversation_ids {
+        let title = matches
+            .iter()
+            .find(|matched| {
+                matched.conversation_id == conversation_id && !matched.conversation_title.is_empty()
+            })
+            .map_or("", |matched| matched.conversation_title.as_str());
+        let label = if title.is_empty() || title == conversation_id {
+            conversation_id.to_owned()
+        } else {
+            format!("{title} ({conversation_id})")
+        };
+        writeln!(body, "- conversation {label}").expect("string write is infallible");
+        for matched in matches
+            .iter()
+            .filter(|matched| matched.conversation_id == conversation_id)
+        {
+            let stamp = if matched.sent_at.is_empty() {
+                String::new()
+            } else {
+                format!(" [{}]", matched.sent_at)
+            };
+            writeln!(body, "  - {}{}: {}", matched.role, stamp, matched.content)
+                .expect("string write is infallible");
+        }
     }
     body.trim_end().to_owned()
 }
