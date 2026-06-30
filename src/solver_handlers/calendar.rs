@@ -565,11 +565,6 @@ pub fn try_calendar_create_event(
         log.append("calendar:parsed_via", "day_number".to_owned());
     }
 
-    // Real, portable calendar artifacts (issue #404): a universal RFC 5545
-    // `.ics` document any calendar app can import, plus a Google Calendar
-    // "render" template link that pre-fills the event with no login required.
-    // These are emitted as evidence so every environment (CLI, HTTP server,
-    // browser worker) can surface whichever is simplest for the user.
     let ics = event.to_ics();
     let google_url = event.to_google_calendar_url();
     log.append("calendar:ics", ics.clone());
@@ -601,38 +596,25 @@ fn default_title(language: &str) -> &'static str {
 
 fn mentions_calendar_create_request(normalized: &str) -> bool {
     let lex = lexicon();
-    // Must mention a day/date reference (we already have "число", "дата", "день", "date", "day" etc.).
     let has_day_ref = lex
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
         .any(|w| contains_term(normalized, w));
-    // A clock time anchors the event just as well as a day word; the lexicon
-    // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
-    // std scanner covers any bare "HH:MM"/"в HH".
     let has_clock = lex
         .words_for_role(ROLE_CALENDAR_TIME)
         .iter()
         .any(|w| contains_term(normalized, w))
         || extract_clock_time(normalized).is_some();
-    // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
-    // anchors the event to a specific day just as well as a day number or a
-    // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
-    // digit at all). The surfaces live in data/seed/meanings-calendar.lino.
     let has_relative_date = lex
         .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
         .iter()
         .any(|w| contains_term(normalized, w));
-    // A genuine scheduling request anchors to a concrete date/time cue: a
-    // day-reference word, a clock time, or a relative-date word. Bare digits
-    // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
-    // date signal — they were the source of false positives that hijacked
-    // installation-conversion prompts such as
-    // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
     let has_date_signal = has_day_ref || has_clock || has_relative_date;
     if !has_date_signal {
         return false;
     }
-    // Strong schedule/create signal via the new role (data-driven).
+    let has_timezone = mentions_timezone_alias(normalized);
+    let has_participant = extract_participant_title(normalized).is_some();
     let has_action = lex
         .words_for_role(ROLE_CALENDAR_SCHEDULE_ACTION)
         .iter()
@@ -644,9 +626,9 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     if has_action {
         return true;
     }
-    // Fallback heuristic for classic patterns (RU "забей/поставь ... число", EN "schedule ... 18th").
-    // Match on word boundaries so unrelated text such as "free-programming-books"
-    // (the word "book" embedded in "books") never masquerades as a schedule verb.
+    if has_clock && has_timezone && has_participant {
+        return true;
+    }
     let has_schedule_verb = [
         "забей",
         "поставь",
@@ -658,8 +640,6 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
     ]
     .iter()
     .any(|verb| contains_term(normalized, verb));
-    // The date/time anchor is already guaranteed by `has_date_signal` above, so
-    // a recognized schedule verb is enough to confirm a create request here.
     has_schedule_verb
 }
 
@@ -669,10 +649,8 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
         if !contains_term(normalized, &word) {
             continue;
         }
-        // Look for an ascii digit run immediately before the matched surface in the raw normalized text.
         if let Some(pos) = normalized.find(&word) {
             let prefix = &normalized[..pos];
-            // Walk backwards for the last digit sequence.
             let mut digits = String::new();
             for ch in prefix.chars().rev() {
                 if ch.is_ascii_digit() {
@@ -688,13 +666,14 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
             }
         }
     }
-    // Also accept a bare leading number when a day-ref role word is present anywhere.
     let mut num = String::new();
-    for ch in normalized.chars() {
+    for ch in normalized.trim_start().chars() {
         if ch.is_ascii_digit() {
             num.push(ch);
         } else if !num.is_empty() {
             break;
+        } else {
+            return None;
         }
     }
     if let Ok(n) = num.parse::<u32>() {
@@ -705,14 +684,6 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
     None
 }
 
-/// Resolve a relative-date word in the prompt to a whole-day offset from today.
-///
-/// The surfaces ("завтра", "tomorrow", "послезавтра", "后天", …) and their
-/// languages live in `data/seed/meanings-calendar.lino`; this code knows only
-/// the role and the stable English meaning slugs that name the offset
-/// (`calendar_tomorrow` → +1 day, `calendar_day_after_tomorrow` → +2 days).
-/// Adding "the day after the day after tomorrow" to another language is a pure
-/// data edit plus one slug arm here (issue #386 + #435).
 fn relative_date_offset(normalized: &str) -> Option<i64> {
     let lex = lexicon();
     for meaning in lex.meanings_with_role(ROLE_CALENDAR_RELATIVE_DATE) {
@@ -728,11 +699,6 @@ fn relative_date_offset(normalized: &str) -> Option<i64> {
     None
 }
 
-/// Fallback title built from the matched event noun ("созвон" → "Созвон",
-/// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
-/// phrase was given. Lets a title-less request such as issue #435's
-/// "поставь мне созвон ... на завтра" still propose a meaningful event instead
-/// of the bare localized default. The surfaces live in the lexicon (#386).
 fn extract_event_title(normalized: &str) -> Option<String> {
     let lex = lexicon();
     for word in lex.words_for_role(ROLE_CALENDAR_EVENT) {
@@ -748,14 +714,12 @@ const fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32
     let mut m = base.month;
     let mut d = day;
     if d < base.day {
-        // "18 число" spoken later in the month → treat as next month.
         m += 1;
         if m > 12 {
             m = 1;
             y += 1;
         }
     }
-    // Clamp obviously-invalid days (a simple policy; full calendar math is unnecessary here).
     let max_day = match m {
         2 => 28, // ignore leap for the assistant trace; user can correct
         4 | 6 | 9 | 11 => 30,
@@ -768,7 +732,6 @@ const fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32
 }
 
 fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
-    // Minimal std-only scanner for HH:MM or HH.MM (covers "17:00", "17.00", "в 17:00").
     let bytes = normalized.as_bytes();
     for i in 0..bytes.len().saturating_sub(3) {
         if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
@@ -787,7 +750,6 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
                     if hour == 0 {
                         hour = 24; // treat 00:xx as end of previous day? keep as 0 for simplicity
                     }
-                    // Normalize 24 -> 00 for ISO later if needed; here we keep 0-23.
                     if hour == 24 {
                         hour = 0;
                     }
@@ -796,7 +758,9 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
             }
         }
     }
-    // Spoken shorthand "в 17" → assume :00.
+    if let Some(time) = extract_spoken_hour_time(normalized) {
+        return Some(time);
+    }
     if let Some(pos) = normalized.find("в ") {
         let tail = &normalized[pos + 2..];
         let mut num = String::new();
@@ -816,24 +780,56 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
     None
 }
 
-fn resolve_timezone(normalized: &str) -> Option<&'static str> {
-    let lex = lexicon();
-    let hit = lex
+fn extract_spoken_hour_time(normalized: &str) -> Option<(u32, u32)> {
+    for marker in ["часов", "часа", "час", "часу"] {
+        for (pos, _) in normalized.match_indices(marker) {
+            let before = normalized[..pos].chars().next_back();
+            let after = normalized[pos + marker.len()..].chars().next();
+            if before.is_some_and(is_word_character) || after.is_some_and(is_word_character) {
+                continue;
+            }
+            let prefix_end = normalized[..pos].trim_end().len();
+            let prefix = &normalized[..prefix_end];
+            let start = prefix
+                .char_indices()
+                .rev()
+                .find(|(_, ch)| !ch.is_ascii_digit())
+                .map_or(0, |(idx, ch)| idx + ch.len_utf8());
+            let marker = normalized[..start].trim_end();
+            let allowed_marker = marker
+                .split_whitespace()
+                .next_back()
+                .is_none_or(|word| matches!(word, "в" | "на" | "к"));
+            if start == prefix_end || !allowed_marker {
+                continue;
+            }
+            if let Ok(hour) = prefix[start..].parse::<u32>() {
+                if hour <= 23 {
+                    return Some((hour, 0));
+                }
+            }
+        }
+    }
+    None
+}
+
+fn mentions_timezone_alias(normalized: &str) -> bool {
+    lexicon()
         .words_for_role(ROLE_CALENDAR_TIMEZONE_ALIAS)
         .iter()
-        .any(|w| contains_term(normalized, w));
-    if hit {
-        return Some("Asia/Tbilisi");
-    }
-    // Direct IANA surface also accepted.
-    if normalized.contains("asia/tbilisi") || normalized.contains("tbilisi") {
+        .any(|w| contains_term(normalized, w))
+        || normalized.contains("asia/tbilisi")
+        || normalized.contains("tbilisi")
+}
+
+fn resolve_timezone(normalized: &str) -> Option<&'static str> {
+    if mentions_timezone_alias(normalized) {
         return Some("Asia/Tbilisi");
     }
     None
 }
 
 fn extract_title(normalized: &str) -> Option<String> {
-    // Prefer "на <title>" / "for <title>" / "встречу с ..." style (safe, marker.len() is char boundary).
     for marker in [
         "на ",
         "for ",
@@ -850,7 +846,9 @@ fn extract_title(normalized: &str) -> Option<String> {
             }
         }
     }
-    // Fallback (avoid hard +5 on Russian verbs; use verb length or the "на " path above).
+    if let Some(title) = extract_participant_title(normalized) {
+        return Some(title);
+    }
     for verb in ["забей", "поставь", "создай", "добавь"] {
         if let Some(pos) = normalized.find(verb) {
             let after = normalized[pos + verb.len()..].trim_start();
@@ -864,12 +862,16 @@ fn extract_title(normalized: &str) -> Option<String> {
     None
 }
 
-/// Trim a candidate title down to its meaningful subject: stop at the first
-/// time/date/timezone boundary or sentence punctuation, drop a leading day
-/// number, and capitalize the first character so the `.ics` SUMMARY reads well.
+fn extract_participant_title(normalized: &str) -> Option<String> {
+    let start = normalized
+        .find(" с ")
+        .map(|pos| pos + 1)
+        .or_else(|| normalized.starts_with("с ").then_some(0))?;
+    tidy_title(&normalized[start..])
+}
+
 fn tidy_title(candidate: &str) -> Option<String> {
     let mut end = candidate.len();
-    // Boundary phrases that introduce the time, date, or zone rather than the title.
     for boundary in [
         " on the ",
         " on ",
@@ -887,11 +889,9 @@ fn tidy_title(candidate: &str) -> Option<String> {
             end = end.min(pos);
         }
     }
-    // Sentence punctuation also ends the title.
     if let Some(pos) = candidate.find(['.', '!', '?', ',']) {
         end = end.min(pos);
     }
-    // A standalone ascii digit run (a day number or clock time) ends it too.
     if let Some(pos) = candidate.find(|c: char| c.is_ascii_digit()) {
         end = end.min(pos);
     }
@@ -901,8 +901,12 @@ fn tidy_title(candidate: &str) -> Option<String> {
     if trimmed.is_empty() {
         return None;
     }
-    // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
-    // title — reject it so the caller falls back to the event noun (issue #435).
+    if matches!(
+        trimmed,
+        "на" | "в" | "во" | "по" | "к" | "for" | "on" | "at"
+    ) {
+        return None;
+    }
     if lexicon()
         .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
         .iter()
@@ -913,10 +917,6 @@ fn tidy_title(candidate: &str) -> Option<String> {
     Some(capitalize_first(trimmed))
 }
 
-/// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
-/// or lead (Chinese has no word spaces) the subject so the `.ics` SUMMARY keeps
-/// only the event and its participant — e.g. "मीटिंग शेड्यूल करें" → "मीटिंग",
-/// "Levan安排会议" → "Levan会议". Leaves Latin/Cyrillic titles untouched.
 fn strip_action_words(value: &str) -> String {
     let mut out = value.to_string();
     for fragment in [
@@ -930,7 +930,6 @@ fn strip_action_words(value: &str) -> String {
     ] {
         out = out.replace(fragment, "");
     }
-    // Collapse any whitespace the removals left behind.
     out.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 

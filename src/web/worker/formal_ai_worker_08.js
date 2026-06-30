@@ -505,6 +505,8 @@ function mentionsCalendarCreateRequest(normalized) {
   // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
   const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
   if (!hasDateSignal) return false;
+  const hasTimezone = mentionsTimezoneAlias(normalized);
+  const hasParticipant = extractParticipantTitle(normalized) !== null;
   const hasAction =
     wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
       containsCalendarTerm(normalized, w),
@@ -513,6 +515,11 @@ function mentionsCalendarCreateRequest(normalized) {
       containsCalendarTerm(normalized, w),
     );
   if (hasAction) return true;
+  // Elliptical Russian follow-ups such as "А можешь на 10 часов по Грузии с
+  // Марией?" carry no explicit schedule verb or event noun. The spoken clock +
+  // timezone + participant trio is narrow enough to route to calendar creation
+  // without claiming generic numbered questions.
+  if (hasClock && hasTimezone && hasParticipant) return true;
   // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
   // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
   const hasScheduleVerb = [
@@ -547,9 +554,10 @@ function extractDayNumber(normalized) {
   }
   // bare leading number
   let num = "";
-  for (const ch of normalized) {
+  for (const ch of normalized.trimStart()) {
     if (/\d/.test(ch)) num += ch;
     else if (num) break;
+    else return null;
   }
   const n = parseInt(num, 10);
   if (n >= 1 && n <= 31) return n;
@@ -624,6 +632,8 @@ function extractClockTime(normalized) {
       }
     }
   }
+  const spoken = extractSpokenHourTime(normalized);
+  if (spoken) return spoken;
   const vPos = normalized.indexOf("в ");
   if (vPos !== -1) {
     const tail = normalized.slice(vPos + 2);
@@ -638,17 +648,55 @@ function extractClockTime(normalized) {
   return null;
 }
 
-function resolveTimezone(normalized) {
-  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
-    containsCalendarTerm(normalized, w),
-  );
-  if (hit) return "Asia/Tbilisi";
-  if (
+function extractSpokenHourTime(normalized) {
+  for (const marker of ["часов", "часа", "час", "часу"]) {
+    let pos = normalized.indexOf(marker);
+    while (pos !== -1) {
+      const before = pos > 0 ? Array.from(normalized.slice(0, pos)).pop() : "";
+      const after = Array.from(normalized.slice(pos + marker.length))[0] || "";
+      if (
+        (!before || !isCalendarWordCharacter(before)) &&
+        (!after || !isCalendarWordCharacter(after))
+      ) {
+        const prefixEnd = normalized.slice(0, pos).trimEnd().length;
+        let start = prefixEnd;
+        while (start > 0 && /\d/.test(normalized[start - 1])) {
+          start -= 1;
+        }
+        if (
+          start !== prefixEnd &&
+          hasSpokenHourPrefix(normalized, start)
+        ) {
+          const hour = parseInt(normalized.slice(start, prefixEnd), 10);
+          if (hour >= 0 && hour <= 23) return [hour, 0];
+        }
+      }
+      pos = normalized.indexOf(marker, pos + marker.length);
+    }
+  }
+  return null;
+}
+
+function hasSpokenHourPrefix(normalized, digitStart) {
+  const prefix = normalized.slice(0, digitStart).trimEnd();
+  if (!prefix) return true;
+  const words = prefix.split(/\s+/).filter(Boolean);
+  const last = words[words.length - 1];
+  return ["в", "на", "к"].includes(last);
+}
+
+function mentionsTimezoneAlias(normalized) {
+  return (
+    wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
     normalized.includes("asia/tbilisi") ||
-    normalized.includes("tbilisi") ||
-    normalized.includes("по грузии")
-  )
-    return "Asia/Tbilisi";
+    normalized.includes("tbilisi")
+  );
+}
+
+function resolveTimezone(normalized) {
+  if (mentionsTimezoneAlias(normalized)) return "Asia/Tbilisi";
   return null;
 }
 
@@ -691,6 +739,9 @@ function tidyTitle(candidate) {
   if (digit !== -1) end = Math.min(end, digit);
   const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
   if (!trimmed) return null;
+  if (["на", "в", "во", "по", "к", "for", "on", "at"].includes(trimmed)) {
+    return null;
+  }
   // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
   // title — reject it so the caller falls back to the event noun (issue #435).
   if (
@@ -738,6 +789,8 @@ function extractTitle(normalized) {
       if (title) return title;
     }
   }
+  const participantTitle = extractParticipantTitle(normalized);
+  if (participantTitle) return participantTitle;
   for (const verb of ["забей", "поставь", "создай", "добавь"]) {
     const pos = normalized.indexOf(verb);
     if (pos !== -1) {
@@ -747,6 +800,15 @@ function extractTitle(normalized) {
     }
   }
   return null;
+}
+
+function extractParticipantTitle(normalized) {
+  let start = null;
+  const inner = normalized.indexOf(" с ");
+  if (inner !== -1) start = inner + 1;
+  else if (normalized.startsWith("с ")) start = 0;
+  if (start === null) return null;
+  return tidyTitle(normalized.slice(start));
 }
 
 // --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
