@@ -286,6 +286,15 @@ pub const ROLE_WEB_SEARCH_NEWS_RECENCY: &str = "web_search_news_recency";
 /// *о* …") it routes a verbless "records about a subject" request to web search
 /// without requiring an imperative search verb.
 pub const ROLE_WEB_SEARCH_RECORDS_SUBJECT: &str = "web_search_records_subject";
+/// Semantic role: a public-event subject marker for web search.
+///
+/// "event", "hackathon", "conference", "хакатон", "黑客松", … name event
+/// categories whose active/current instances are normally external and
+/// time-sensitive. Paired with [`ROLE_RESEARCH_QUESTION_OPENER`] and
+/// [`ROLE_WEB_SEARCH_NEWS_RECENCY`], this routes questions such as "Какие
+/// хакатоны сейчас проходят?" to web search without requiring an imperative
+/// search verb.
+pub const ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT: &str = "web_search_public_event_subject";
 /// Semantic role: a connective that delimits the search topic.
 ///
 /// Carried by a single meaning whose slot encodes the direction: a

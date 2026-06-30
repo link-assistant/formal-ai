@@ -118,6 +118,29 @@ const WEB_SEARCH_CURRENT_EVENT_LISTING_CASES: &[EventListingCase] = &[
     },
 ];
 
+const WEB_SEARCH_CURRENT_EVENT_QUESTION_CASES: &[EventListingCase] = &[
+    EventListingCase {
+        language: "en",
+        prompt: "Which current hackathons?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "ru",
+        prompt: "Какие хакатоны сейчас проходят?",
+        expected_query: "хакатоны",
+    },
+    EventListingCase {
+        language: "hi",
+        prompt: "कौन से hackathons अभी हो रहे हैं?",
+        expected_query: "hackathons",
+    },
+    EventListingCase {
+        language: "zh",
+        prompt: "哪些黑客松现在举行？",
+        expected_query: "黑客松",
+    },
+];
+
 const WEB_SEARCH_LATEST_NEWS_CASES: &[(&str, &str, &str)] = &[
     ("English", "latest news", "latest news"),
     ("Russian", "последние новости", "последние новости"),
@@ -476,6 +499,42 @@ fn issue_507_russian_hackathon_dialog_routes_to_web_search() {
         second_response.evidence_links,
     );
     assert_ne!(second_response.intent, "unknown");
+}
+
+#[test]
+fn current_event_questions_route_to_web_search_handler() {
+    for case in WEB_SEARCH_CURRENT_EVENT_QUESTION_CASES {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent,
+            "web_search",
+            "{language} current-event question should route to web_search, got {} with answer {}",
+            response.intent,
+            response.answer,
+            language = case.language,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{}", case.expected_query)),
+            "{language} web_search should extract only the event category {expected_query:?}: {:?}",
+            response.evidence_links,
+            language = case.language,
+            expected_query = case.expected_query,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:implicit_research_question"),
+            "{language} current-event question should record implicit-research routing: {:?}",
+            response.evidence_links,
+            language = case.language,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
 }
 
 #[test]

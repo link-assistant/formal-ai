@@ -886,6 +886,7 @@ const ROLE_WEB_SEARCH_SOURCE_ONLY = "web_search_source_only";
 const ROLE_WEB_SEARCH_NEWS_SUBJECT = "web_search_news_subject";
 const ROLE_WEB_SEARCH_NEWS_RECENCY = "web_search_news_recency";
 const ROLE_WEB_SEARCH_RECORDS_SUBJECT = "web_search_records_subject";
+const ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT = "web_search_public_event_subject";
 // Mention of web search inside a *prior* conversation turn (raw lowercased
 // substring of the turn text, not the normalised prompt). Mirrors
 // ROLE_WEB_SEARCH_HISTORY_SIGNAL in src/seed/roles.rs.
@@ -1055,6 +1056,7 @@ function webSearchMarkers() {
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
+    publicEventSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT),
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
     termInformationPrefixes: prefixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),

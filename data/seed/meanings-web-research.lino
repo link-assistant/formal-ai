@@ -140,6 +140,8 @@ meanings
       surface
         text "क्या है …"
       surface
+        text "कौन से …"
+      surface
         text "कौन है …"
       surface
         text "कौन …"
@@ -164,6 +166,8 @@ meanings
         text 哪里是…
       surface
         text 哪里…
+      surface
+        text 哪些…
       surface
         text 哪个…
       surface

@@ -443,6 +443,8 @@ roles
     kind predicate
   web_search_news_subject
     kind predicate
+  web_search_public_event_subject
+    kind predicate
   web_search_query_leading_noise
     kind predicate
   web_search_query_trailing_noise

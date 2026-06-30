@@ -30,9 +30,9 @@ use crate::seed::{
     ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
     ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
     ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
-    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
-    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
-    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+    ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
+    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL,
+    ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -121,6 +121,12 @@ pub(super) fn extract_web_search_request(
             kind: WebSearchQueryKind::EnumerationResearchRequest,
         });
     }
+    if let Some(query) = extract_current_public_event_question(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        });
+    }
     if let Some(query) = extract_term_information_request(prompt, &normalized_words) {
         return Some(WebSearchRequest {
             query,
@@ -206,6 +212,8 @@ struct WebSearchMarkers {
     news_recency_markers: Vec<&'static str>,
     /// Records/documents subject nouns for verbless "records about X" requests.
     records_subject_markers: Vec<&'static str>,
+    /// Public event category nouns for current-event research questions.
+    public_event_subject_markers: Vec<&'static str>,
     /// Verbs that open a follow-up instruction clause ("compare", "summarize").
     followup_verbs: Vec<&'static str>,
     /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
@@ -245,6 +253,7 @@ fn markers() -> &'static WebSearchMarkers {
         news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
         news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
         records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
+        public_event_subject_markers: bare_literals(ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT),
         followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
         continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
         term_information_prefixes: prefix_literals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
@@ -425,6 +434,26 @@ fn extract_records_information_request(normalized: &str) -> Option<String> {
         return None;
     }
     valid_news_search_query(normalized)
+}
+
+/// A question asking which public events are currently active — "which current
+/// hackathons", "Какие хакатоны сейчас проходят?", "哪些黑客松现在举行".
+///
+/// It fires only when a research-question opener combines with a public-event
+/// subject ([`ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT`]) and a freshness marker
+/// ([`ROLE_WEB_SEARCH_NEWS_RECENCY`]). The subject term is then cleaned with the
+/// same query-noise rules as semantic web searches.
+fn extract_current_public_event_question(normalized: &str) -> Option<String> {
+    let markers = markers();
+    if !starts_with_any(normalized, &markers.research_question_prefixes) {
+        return None;
+    }
+    if !contains_any_search_marker(normalized, &markers.public_event_subject_markers)
+        || !contains_any_search_marker(normalized, &markers.news_recency_markers)
+    {
+        return None;
+    }
+    valid_search_query(strip_implicit_research_prefix(normalized))
 }
 
 fn extract_term_information_request(prompt: &str, normalized: &str) -> Option<String> {
