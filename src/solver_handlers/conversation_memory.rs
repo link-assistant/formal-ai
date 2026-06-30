@@ -580,11 +580,9 @@ fn push_memory_field<'a>(
     name: &'static str,
     value: Option<&'a str>,
 ) {
-    let Some(value) = value else { return };
-    if value.trim().is_empty() {
-        return;
+    if let Some(value) = value.filter(|value| !value.trim().is_empty()) {
+        fields.push((name, value));
     }
-    fields.push((name, value));
 }
 
 fn memory_field_match(

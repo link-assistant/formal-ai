@@ -279,6 +279,53 @@ fn natural_language_query_searches_whole_memory_event_fields() {
 }
 
 #[test]
+fn natural_language_whole_memory_field_recall_covers_supported_languages() {
+    struct RecallCase {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let events = vec![tool_memory_event(
+        "tool-1",
+        "conv-tools",
+        "Tool Trace",
+        "web_search",
+        "{\"query\":\"rust memory\"}",
+        "Found Rust memory references.",
+    )];
+
+    for case in [
+        RecallCase {
+            language: "en",
+            prompt: "recall web_search",
+        },
+        RecallCase {
+            language: "ru",
+            prompt: "Когда я спрашивал про web_search?",
+        },
+        RecallCase {
+            language: "hi",
+            prompt: "मेरी बातचीत में खोजो web_search",
+        },
+        RecallCase {
+            language: "zh",
+            prompt: "我什么时候提到web_search?",
+        },
+    ] {
+        let response = answer_memory_recall(case.prompt, &events, None)
+            .unwrap_or_else(|| panic!("{} recall query should be recognized", case.language));
+
+        assert_eq!(response.intent, "conversation_recall", "{}", case.language);
+        assert!(
+            response.answer.contains("tool: web_search"),
+            "{} answer: {}",
+            case.language,
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn natural_language_query_searches_memory_link_projection() {
     let events = vec![tool_memory_event(
         "tool-1",
