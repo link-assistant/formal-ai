@@ -4,9 +4,15 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
-use crate::associative_package::{default_package_store, PackagePermissionDecision};
 use crate::engine::{
     estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
+use crate::memory::MemoryEvent;
+use crate::protocol_memory::answer_from_memory_if_requested;
+use crate::protocol_policy::{
+    first_tool_permission_denial, is_tool_choice_request, matches_tool_choice_none,
+    tool_call_refusal_answer, tool_choice_function_name, tool_definition_name,
+    tool_permission_refusal_answer,
 };
 use crate::solver::{ConversationTurn, UniversalSolver};
 
@@ -520,6 +526,15 @@ pub fn create_chat_completion_with_solver(
     request: &ChatCompletionRequest,
     solver: &UniversalSolver,
 ) -> ChatCompletion {
+    create_chat_completion_with_solver_and_memory(request, solver, &[])
+}
+
+#[must_use]
+pub fn create_chat_completion_with_solver_and_memory(
+    request: &ChatCompletionRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
 
     match agentic_outcome(request, solver.config.agent_mode) {
@@ -528,6 +543,11 @@ pub fn create_chat_completion_with_solver(
         }
         AgenticOutcome::Planned(plan) => return chat_completion_from_plan(request, &prompt, plan),
         AgenticOutcome::Fallthrough => {}
+    }
+
+    if let Some(symbolic_answer) = answer_from_memory_if_requested(&prompt, &history, memory_events)
+    {
+        return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
     }
 
     let symbolic_answer = solver.solve_with_history(&prompt, &history);
@@ -560,13 +580,13 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     if !agent_mode {
         return AgenticOutcome::Refused(tool_call_refusal_answer());
     }
-    if let Some(denial) = first_tool_permission_denial(request) {
+    let owned_names = request.requested_tool_names();
+    if let Some(denial) = first_tool_permission_denial(&owned_names) {
         return AgenticOutcome::Refused(tool_permission_refusal_answer(&denial));
     }
     // Agent mode with tools permitted: the deterministic agentic planner drives
     // the loop, emitting `tool_calls` or a final answer. An unrecognised task
     // yields `None` and falls through to the solver.
-    let owned_names = request.requested_tool_names();
     let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
     plan_chat_step(&request.messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned)
@@ -681,12 +701,32 @@ pub fn create_response_with_solver(
     request: &ResponsesRequest,
     solver: &UniversalSolver,
 ) -> ResponseObject {
+    create_response_with_solver_and_memory(request, solver, &[])
+}
+
+#[must_use]
+pub fn create_response_with_solver_and_memory(
+    request: &ResponsesRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+) -> ResponseObject {
     let prompt = response_prompt(request);
     let chat_request = request.to_chat_completion_request();
     match agentic_outcome(&chat_request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
         AgenticOutcome::Planned(plan) => return response_from_plan(request, &prompt, plan),
         AgenticOutcome::Fallthrough => {}
+    }
+    let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
+    let memory_prompt = if memory_prompt.trim().is_empty() {
+        prompt.as_str()
+    } else {
+        memory_prompt.as_str()
+    };
+    if let Some(symbolic_answer) =
+        answer_from_memory_if_requested(memory_prompt, &history, memory_events)
+    {
+        return response_from_symbolic(request, &prompt, symbolic_answer);
     }
     let symbolic_answer = solver.solve(&prompt);
     response_from_symbolic(request, &prompt, symbolic_answer)
@@ -827,106 +867,6 @@ fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
         return Some(ConversationTurn::assistant(content));
     }
     None
-}
-
-fn tool_call_refusal_answer() -> SymbolicAnswer {
-    SymbolicAnswer {
-        intent: String::from("tool_call_refused"),
-        answer: String::from(
-            "Tool calls and function execution are not allowed without explicit agent mode. \
-             Enable agent mode only for an isolated execution environment.",
-        ),
-        confidence: 1.0,
-        evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
-        thinking_steps: policy_thinking_steps("agent_mode_required_for_tools"),
-        links_notation: String::from(
-            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n  thinking_step \"policy_refusal agent_mode_required_for_tools\"\n",
-        ),
-    }
-}
-
-fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> SymbolicAnswer {
-    let PackagePermissionDecision::Denied { capability, reason } = decision else {
-        return tool_call_refusal_answer();
-    };
-    SymbolicAnswer {
-        intent: String::from("tool_call_refused"),
-        answer: format!(
-            "Tool calls are not allowed for `{capability}`: {reason}. Install or import an \
-             associative package that grants this capability before enabling the tool."
-        ),
-        confidence: 1.0,
-        evidence_links: vec![format!("policy:package_permission_required:{capability}")],
-        thinking_steps: policy_thinking_steps(format!("package_permission_required:{capability}")),
-        links_notation: format!(
-            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n  thinking_step \"policy_refusal package_permission_required:{capability}\"\n"
-        ),
-    }
-}
-
-fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
-    vec![ThinkingStep::new(
-        0,
-        "policy_refusal",
-        detail,
-        "high",
-        "policy",
-    )]
-}
-
-fn first_tool_permission_denial(
-    request: &ChatCompletionRequest,
-) -> Option<PackagePermissionDecision> {
-    let store = default_package_store();
-    let names = request.requested_tool_names();
-    if names.is_empty() {
-        let decision = store.permission_for_capability("tool:*");
-        return matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision);
-    }
-    names.into_iter().find_map(|name| {
-        let decision = store.permission_for_tool(&name);
-        matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision)
-    })
-}
-
-fn is_tool_choice_request(value: &Value) -> bool {
-    !matches_tool_choice_none(value)
-}
-
-fn tool_choice_function_name(value: &Value) -> Option<String> {
-    match value {
-        Value::Object(object) => object
-            .get("function")
-            .and_then(|function| function.get("name"))
-            .or_else(|| object.get("name"))
-            .and_then(Value::as_str)
-            .map(ToOwned::to_owned),
-        _ => None,
-    }
-}
-
-fn tool_definition_name(value: &Value) -> Option<String> {
-    match value {
-        Value::Object(object) => object
-            .get("function")
-            .and_then(|function| function.get("name"))
-            .or_else(|| object.get("name"))
-            .and_then(Value::as_str)
-            .map(ToOwned::to_owned),
-        _ => None,
-    }
-}
-
-fn matches_tool_choice_none(value: &Value) -> bool {
-    match value {
-        Value::Null => true,
-        Value::String(choice) => choice.eq_ignore_ascii_case("none"),
-        Value::Object(object) => object
-            .get("type")
-            .and_then(Value::as_str)
-            .is_some_and(|kind| kind.eq_ignore_ascii_case("none")),
-        _ => false,
-    }
 }
 
 fn response_prompt(request: &ResponsesRequest) -> String {

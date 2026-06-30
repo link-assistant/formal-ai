@@ -1,0 +1,18 @@
+   Compiling formal-ai v0.245.0 (/tmp/gh-issue-solver-1782763761002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.33s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0e84ec09dade51f)
+
+running 11 tests
+test specification::conversation_history::solve_with_history_reports_no_dialog_history_matches ... ok
+test specification::conversation_history::solve_with_history_searches_dialog_history_in_russian ... ok
+test specification::reasoning_paths::solve_with_history_recalls_name_across_turns ... ok
+test specification::reasoning_paths::solve_with_history_recalls_last_question ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation ... ok
+test specification::reasoning_paths::solve_with_history_falls_through_for_unrelated_prompts ... ok
+test specification::conversation_history::solve_with_history_searches_dialog_history_by_term ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_in_chinese ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_in_russian ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_single_word_summarize ... ok
+test specification::reasoning_paths::solve_with_history_summarizes_conversation_rezyume_besedy ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 1194 filtered out; finished in 0.31s

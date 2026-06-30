@@ -5,7 +5,12 @@
 //! These exercise the HTTP handler directly so the routes documented in
 //! `docs/desktop/server-api.md` are verified end-to-end without a live socket.
 
-use formal_ai::{handle_api_request, parse_bundle, run_links_query, SyncStore};
+use std::sync::{Mutex, MutexGuard, OnceLock};
+
+use formal_ai::{
+    export_memory_links_notation, handle_api_request, parse_bundle, run_links_query, MemoryEvent,
+    SyncStore,
+};
 
 // --- D4 (R4): bundled Anthropic Messages adapter ---------------------------
 
@@ -29,6 +34,29 @@ fn anthropic_messages_route_returns_anthropic_envelope() {
     assert_eq!(json["content"][0]["text"], "Hi, how may I help you?");
     assert_eq!(json["stop_reason"], "end_turn");
     assert!(json["usage"]["input_tokens"].is_number());
+}
+
+#[test]
+fn anthropic_messages_route_queries_persisted_memory_with_natural_language() {
+    let response = with_recall_memory(|| {
+        let body = serde_json::json!({
+            "model": "claude-sonnet-4-5",
+            "messages": [{"role": "user", "content": "Find Rust in another conversation"}]
+        })
+        .to_string();
+        handle_api_request("POST", "/v1/messages", &body)
+    });
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value =
+        serde_json::from_str(&response.body).expect("response should be JSON");
+    let content = json["content"][0]["text"].as_str().unwrap_or_default();
+    assert!(content.contains("Rust Notes"), "{content}");
+    assert!(content.contains("user: What is Rust?"), "{content}");
+    assert!(
+        !content.contains("What is Wikipedia?"),
+        "query should not include unrelated memory: {content}"
+    );
 }
 
 #[test]
@@ -162,4 +190,66 @@ fn sample_event(id: &str, content: &str) -> formal_ai::MemoryEvent {
         content: Some(content.to_owned()),
         ..formal_ai::MemoryEvent::default()
     }
+}
+
+fn with_recall_memory<T>(run: impl FnOnce() -> T) -> T {
+    let _guard = memory_env_lock();
+    let dir = std::env::temp_dir().join(format!(
+        "formal-ai-local-surface-memory-query-{}",
+        std::process::id()
+    ));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    let path = dir.join("memory.lino");
+    let memory = export_memory_links_notation(&[
+        recall_event("a1", "user", "conv-a", "Rust Notes", "What is Rust?"),
+        recall_event(
+            "a2",
+            "assistant",
+            "conv-a",
+            "Rust Notes",
+            "Rust is a systems programming language.",
+        ),
+        recall_event(
+            "b1",
+            "user",
+            "conv-b",
+            "Wikipedia Notes",
+            "What is Wikipedia?",
+        ),
+    ]);
+    std::fs::write(&path, memory).expect("write memory");
+
+    let previous = std::env::var_os("FORMAL_AI_MEMORY_PATH");
+    std::env::set_var("FORMAL_AI_MEMORY_PATH", &path);
+    let result = run();
+    match previous {
+        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
+        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+    result
+}
+
+fn recall_event(
+    id: &str,
+    role: &str,
+    conversation_id: &str,
+    conversation_title: &str,
+    content: &str,
+) -> MemoryEvent {
+    MemoryEvent {
+        id: id.to_owned(),
+        kind: Some(String::from("message")),
+        role: Some(role.to_owned()),
+        content: Some(content.to_owned()),
+        conversation_id: Some(conversation_id.to_owned()),
+        conversation_title: Some(conversation_title.to_owned()),
+        ..MemoryEvent::default()
+    }
+}
+
+fn memory_env_lock() -> MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
 }

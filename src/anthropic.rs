@@ -32,9 +32,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::engine::{naturalize_thinking_step, stable_id, ThinkingStep, DEFAULT_MODEL};
+use crate::memory::MemoryEvent;
 use crate::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, MessageContent,
-    ToolCall,
+    create_chat_completion_with_solver, create_chat_completion_with_solver_and_memory,
+    ChatCompletion, ChatCompletionRequest, ChatMessage, MessageContent, ToolCall,
 };
 use crate::solver::UniversalSolver;
 
@@ -342,6 +343,25 @@ pub fn create_anthropic_message_with_solver(
 ) -> AnthropicMessage {
     let chat_request = request.to_chat_completion_request();
     let completion = create_chat_completion_with_solver(&chat_request, solver);
+    anthropic_message_from_chat_completion(request, &completion)
+}
+
+#[must_use]
+pub fn create_anthropic_message_with_solver_and_memory(
+    request: &AnthropicMessagesRequest,
+    solver: &UniversalSolver,
+    memory_events: &[MemoryEvent],
+) -> AnthropicMessage {
+    let chat_request = request.to_chat_completion_request();
+    let completion =
+        create_chat_completion_with_solver_and_memory(&chat_request, solver, memory_events);
+    anthropic_message_from_chat_completion(request, &completion)
+}
+
+fn anthropic_message_from_chat_completion(
+    request: &AnthropicMessagesRequest,
+    completion: &ChatCompletion,
+) -> AnthropicMessage {
     let model = request
         .model
         .clone()

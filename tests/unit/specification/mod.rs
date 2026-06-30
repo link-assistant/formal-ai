@@ -43,6 +43,7 @@ mod code_generation_blueprint;
 mod code_generation_coreference;
 mod code_generation_program_modifiers;
 mod coding_modification_benchmarks;
+mod conversation_history;
 mod cue_lexicon;
 mod definition_fusion;
 mod desktop_surface;

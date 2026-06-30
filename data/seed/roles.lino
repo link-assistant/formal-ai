@@ -89,6 +89,10 @@ roles
     kind predicate
   compounding_frequency_cue
     kind predicate
+  conversation_recall_other_query
+    kind meaning
+  conversation_recall_query
+    kind meaning
   conversation_reference
     kind meaning
   conversation_summary_courtesy

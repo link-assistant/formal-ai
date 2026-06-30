@@ -1,0 +1,13 @@
+   Compiling formal-ai v0.245.0 (/tmp/gh-issue-solver-1782763761002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.34s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0e84ec09dade51f)
+
+running 6 tests
+test specification::conversation_history::solve_with_history_searches_dialog_history_in_russian ... ok
+test specification::conversation_history::solve_with_history_searches_dialog_history_by_term ... ok
+test specification::conversation_history::chat_completion_supports_natural_language_history_search ... ok
+test specification::conversation_history::solve_with_history_accepts_other_conversation_query_forms ... ok
+test specification::conversation_history::solve_with_history_reports_no_dialog_history_matches ... ok
+test specification::chat_surface::behavior_rules_can_be_updated_through_conversation_history ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 1200 filtered out; finished in 0.29s

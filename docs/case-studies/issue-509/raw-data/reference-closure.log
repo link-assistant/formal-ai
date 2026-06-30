@@ -1,0 +1,14 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling formal-ai v0.245.0 (/tmp/gh-issue-solver-1782763761002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.28s
+     Running tests/unit/mod.rs (target/debug/deps/unit-a0e84ec09dade51f)
+
+running 4 tests
+test reference_closure::every_role_value_is_declared_in_the_registry ... ok
+test reference_closure::meaning_definition_references_resolve_to_defined_meanings ... ok
+test reference_closure::role_registry_is_in_lockstep_with_usage ... ok
+test total_closure::seed_has_total_reference_closure ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 1201 filtered out; finished in 0.30s

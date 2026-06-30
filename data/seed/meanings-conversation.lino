@@ -38,3 +38,107 @@ meanings
         text 聊聊…
       surface
         text 谈谈…
+  conversation_recall_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_query
+    lexeme en
+      surface
+        text "when did i ask about …"
+      surface
+        text "when did i ask …"
+      surface
+        text "when did i mention …"
+      surface
+        text "when did i talk about …"
+      surface
+        text "have i asked about …"
+      surface
+        text "have i mentioned …"
+      surface
+        text "did i ask about …"
+      surface
+        text "did i mention …"
+      surface
+        text "search my conversations for …"
+      surface
+        text "search conversations for …"
+      surface
+        text "search my chats for …"
+      surface
+        text "recall …"
+    lexeme ru
+      surface
+        text "когда я спрашивал про …"
+      surface
+        text "когда я спрашивал о …"
+      surface
+        text "когда я спрашивал …"
+      surface
+        text "когда я упоминал …"
+      surface
+        text "поиск по беседам …"
+      surface
+        text "поиск в беседах …"
+      surface
+        text "найди в беседах …"
+    lexeme hi
+      surface
+        text "मेरी बातचीत में खोजो …"
+      surface
+        text "मेरी चैट में खोजो …"
+      surface
+        text "याद करो …"
+    lexeme zh
+      surface
+        text 我什么时候问过…
+      surface
+        text 我什么时候提到…
+      surface
+        text 搜索我的对话…
+      surface
+        text 在对话中搜索…
+  conversation_recall_other_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_other_query
+    lexeme en
+      surface
+        text "find … in another conversation"
+      surface
+        text "find … in other conversations"
+      surface
+        text "find … in my other conversations"
+      surface
+        text "find … in my conversations"
+      surface
+        text "find … in another chat"
+      surface
+        text "find … in other chats"
+      surface
+        text "search for … in another conversation"
+      surface
+        text "search for … in other conversations"
+    lexeme ru
+      surface
+        text "найди … в другой беседе"
+      surface
+        text "найди … в других беседах"
+      surface
+        text "найди … в другом чате"
+      surface
+        text "найди … в других чатах"
+      surface
+        text "поищи … в других беседах"
+    lexeme hi
+      surface
+        text "… दूसरी बातचीत में खोजो"
+      surface
+        text "… दूसरी चैट में खोजो"
+    lexeme zh
+      surface
+        text 查找…在其他对话中
+      surface
+        text 搜索…在其他对话中
+      surface
+        text 查找…在另一个对话中

@@ -94,6 +94,22 @@ pub const ROLE_CONVERSATION_SUMMARY_PHRASE: &str = "conversation_summary_phrase"
 /// `inquiry` and `conversation_summary_directive` concepts, and matches on its
 /// own without the directive/reference conjunction.
 pub const ROLE_CONVERSATION_SUMMARY_COURTESY: &str = "conversation_summary_courtesy";
+/// Semantic role: a natural-language query that searches prior dialog turns.
+///
+/// The phrase asks for mentions of a subject in the conversation history
+/// ("when did I mention X", "search conversations for X", "когда я спрашивал
+/// про X", …). Every surface marks the search term with the ellipsis slot so
+/// the handler can extract the term from seed data instead of hardcoding cue
+/// phrases in Rust.
+pub const ROLE_CONVERSATION_RECALL_QUERY: &str = "conversation_recall_query";
+/// Semantic role: a recall query scoped to other conversations or chats.
+///
+/// This role mirrors the browser memory-search affordance for prompts such as
+/// "find X in another conversation" or "найди X в других беседах". Surfaces
+/// still expose the searched term with the ellipsis slot; runtimes that do not
+/// receive conversation identifiers record the requested scope as metadata and
+/// search the provided prior turns.
+pub const ROLE_CONVERSATION_RECALL_OTHER_QUERY: &str = "conversation_recall_other_query";
 /// Semantic role: a conversational opener that proposes a topic to discuss.
 ///
 /// The let-us-talk-about-X phrasing that introduces a subject for open
