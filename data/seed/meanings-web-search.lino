@@ -216,6 +216,8 @@ meanings
       surface
         text " current "
       surface
+        text " now "
+      surface
         text " breaking "
       surface
         text " today "
@@ -227,6 +229,8 @@ meanings
       surface
         text " актуальн"
       surface
+        text " сейчас"
+      surface
         text " сегодня"
     lexeme hi
       surface
@@ -236,10 +240,16 @@ meanings
       surface
         text ताजा
       surface
+        text अभी
+      surface
         text आज
     lexeme zh
       surface
         text 最新
+      surface
+        text 当前
+      surface
+        text 现在
       surface
         text 今日
       surface
@@ -315,6 +325,7 @@ meanings
     defined-by web_resource
     defined-by concept
     role web_search_signal
+    role web_search_public_event_subject
     lexeme en
       surface
         text " event "

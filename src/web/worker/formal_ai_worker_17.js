@@ -165,6 +165,23 @@ function extractRecordsInformationRequest(normalized) {
   return validNewsSearchQuery(text);
 }
 
+// A question asking which public events are currently active, such as
+// "Какие хакатоны сейчас проходят?". Mirrors
+// extract_current_public_event_question in
+// src/solver_handlers/web_search_intent.rs.
+function extractCurrentPublicEventQuestion(normalized) {
+  const markers = webSearchMarkers();
+  const text = String(normalized || "");
+  if (!startsWithAny(text, markers.researchQuestionPrefixes)) return "";
+  if (
+    !containsAnySearchMarker(text, markers.publicEventSubjectMarkers) ||
+    !containsAnySearchMarker(text, markers.newsRecencyMarkers)
+  ) {
+    return "";
+  }
+  return validSearchQuery(stripImplicitResearchPrefix(text));
+}
+
 function conceptLookupResolves(prompt) {
   const query = extractConceptQuery(prompt);
   return !!(query && lookupConceptQuery(query));
@@ -291,6 +308,10 @@ function extractWebSearchRequest(prompt, normalized) {
   const enumerationQuery = extractEnumerationResearchRequest(prompt, normalized);
   if (enumerationQuery) {
     return { query: enumerationQuery, kind: "enumeration_research_request" };
+  }
+  const currentEventQuery = extractCurrentPublicEventQuestion(normalized);
+  if (currentEventQuery) {
+    return { query: currentEventQuery, kind: "implicit_research_question" };
   }
   const termInformationQuery = extractTermInformationRequest(prompt, normalized);
   if (termInformationQuery) {

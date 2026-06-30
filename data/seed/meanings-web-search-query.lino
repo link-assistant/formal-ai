@@ -388,6 +388,10 @@ meanings
         text "… материалы"
       surface
         text "… данные"
+      surface
+        text "… сейчас проходят"
+      surface
+        text "… проходят сейчас"
     lexeme hi
       surface
         text "… के बारे में"
@@ -431,6 +435,10 @@ meanings
         text "… ढूंढें"
       surface
         text "… ढूँढें"
+      surface
+        text "… अभी हो रहे हैं"
+      surface
+        text "… अभी चल रहे हैं"
     lexeme zh
       surface
         text …的信息
@@ -452,6 +460,10 @@ meanings
         text …在维基百科上
       surface
         text …在維基百科上
+      surface
+        text …现在举行
+      surface
+        text …正在举行
       surface
         text …维基百科
       surface
