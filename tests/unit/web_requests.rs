@@ -436,6 +436,49 @@ fn event_listing_prompts_route_to_web_search_handler() {
 }
 
 #[test]
+fn issue_507_russian_hackathon_dialog_routes_to_web_search() {
+    let solver = UniversalSolver::default();
+    let first_prompt = "Где посмотреть актуальные хакатоны?";
+    let first_response = solver.solve(first_prompt);
+
+    assert_eq!(
+        first_response.intent, "web_search",
+        "reported Russian current-hackathon prompt should route to web_search, got {} with answer {}",
+        first_response.intent, first_response.answer,
+    );
+    assert!(
+        first_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:хакатоны"),
+        "current-hackathon search should extract only the event category: {:?}",
+        first_response.evidence_links,
+    );
+    assert_ne!(first_response.intent, "unknown");
+
+    let history = [
+        ConversationTurn::user(first_prompt),
+        ConversationTurn::assistant(first_response.answer),
+    ];
+    let second_response = solver.solve_with_history("Найди мне хакатоны", &history);
+
+    assert_eq!(
+        second_response.intent, "web_search",
+        "reported follow-up hackathon prompt should route to web_search, got {} with answer {}",
+        second_response.intent, second_response.answer,
+    );
+    assert!(
+        second_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:хакатоны"),
+        "follow-up hackathon search should preserve the event category: {:?}",
+        second_response.evidence_links,
+    );
+    assert_ne!(second_response.intent, "unknown");
+}
+
+#[test]
 fn interest_topic_prompts_route_to_web_search_handler() {
     for case in WEB_SEARCH_INTEREST_TOPIC_CASES {
         let response = FormalAiEngine.answer(case.prompt);
