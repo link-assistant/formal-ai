@@ -3,10 +3,11 @@ use std::fmt::Write as _;
 use super::finalize_simple;
 
 use crate::coding::contains_cjk;
-use crate::engine::{normalize_prompt, SymbolicAnswer};
+use crate::engine::{normalize_prompt, stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
-use crate::memory::MemoryEvent;
+use crate::link_store::memory_events_to_link_records;
+use crate::memory::{MemoryEvent, MemoryStore};
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{extract_introduced_name, last_user_turn, recall_name_from_history};
 use crate::summarization::{
@@ -45,10 +46,23 @@ struct RecallMatch {
 struct MemoryRecallMatch {
     event_index: usize,
     role: String,
-    content: String,
     conversation_id: String,
     conversation_title: String,
     sent_at: String,
+    detail: MemoryRecallDetail,
+}
+
+#[derive(Debug)]
+enum MemoryRecallDetail {
+    Field { name: &'static str, value: String },
+    Link { from: String, to: String },
+}
+
+/// Result of executing a natural-language memory query against a mutable store.
+#[derive(Debug, Clone)]
+pub struct MemoryQueryExecution {
+    pub answer: SymbolicAnswer,
+    pub changed: bool,
 }
 
 pub fn try_conversation_memory(
@@ -87,6 +101,35 @@ pub fn answer_memory_recall(
         current_conversation_id,
         &mut log,
     )
+}
+
+#[must_use]
+pub fn execute_memory_query(
+    prompt: &str,
+    store: &mut MemoryStore,
+    current_conversation_id: Option<&str>,
+) -> Option<MemoryQueryExecution> {
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    log.append("impulse", prompt.to_owned());
+    if let Some(answer) = try_memory_write(
+        prompt,
+        &normalized,
+        store,
+        current_conversation_id,
+        &mut log,
+    ) {
+        return Some(MemoryQueryExecution {
+            answer,
+            changed: true,
+        });
+    }
+    answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
+        MemoryQueryExecution {
+            answer,
+            changed: false,
+        }
+    })
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -187,12 +230,12 @@ fn try_memory_recall(
         log.append(
             "memory_match",
             format!(
-                "event={} conversation={} title={} role={} content={}",
+                "event={} conversation={} title={} role={} {}",
                 matched.event_index,
                 matched.conversation_id,
                 matched.conversation_title,
                 matched.role,
-                matched.content
+                matched.log_fragment()
             ),
         );
     }
@@ -206,6 +249,164 @@ fn try_memory_recall(
         &body,
         0.9,
     ))
+}
+
+fn try_memory_write(
+    prompt: &str,
+    normalized: &str,
+    store: &mut MemoryStore,
+    current_conversation_id: Option<&str>,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let request = recognize_memory_write(prompt, normalized)?;
+    let event = request.memory_event(store.len(), current_conversation_id);
+    let body = request.answer();
+    log.append("memory_write", request.log_value());
+    log.append("memory_write_event", event.id.clone());
+    store.append(event);
+    Some(finalize_simple(
+        prompt,
+        log,
+        request.intent(),
+        request.response_link(),
+        &body,
+        0.9,
+    ))
+}
+
+#[derive(Debug, Clone)]
+enum MemoryWriteRequest {
+    Append(String),
+    Substitute(String, String),
+}
+
+impl MemoryWriteRequest {
+    fn memory_event(&self, sequence: usize, current_conversation_id: Option<&str>) -> MemoryEvent {
+        let conversation_id = current_conversation_id.unwrap_or("memory_query");
+        match self {
+            Self::Append(statement) => MemoryEvent {
+                id: stable_id("memory_write", &format!("{sequence}:{statement}")),
+                kind: Some(String::from("message")),
+                role: Some(String::from("user")),
+                intent: Some(String::from("memory_write")),
+                content: Some(statement.clone()),
+                conversation_id: Some(conversation_id.to_owned()),
+                conversation_title: Some(String::from("Memory query")),
+                evidence: vec![String::from("memory_write:natural_language")],
+                ..MemoryEvent::default()
+            },
+            Self::Substitute(old_value, new_value) => MemoryEvent {
+                id: stable_id(
+                    "memory_substitution",
+                    &format!("{sequence}:{old_value}->{new_value}"),
+                ),
+                kind: Some(String::from("memory_substitution")),
+                role: Some(String::from("user")),
+                intent: Some(String::from("memory_substitution")),
+                inputs: Some(format!("replace:{old_value}")),
+                outputs: Some(format!("with:{new_value}")),
+                content: Some(format!("replace {old_value} with {new_value} in memory")),
+                conversation_id: Some(conversation_id.to_owned()),
+                conversation_title: Some(String::from("Memory query")),
+                evidence: vec![
+                    String::from("substitution_event:update"),
+                    String::from("substitution:append_only"),
+                ],
+                ..MemoryEvent::default()
+            },
+        }
+    }
+
+    fn answer(&self) -> String {
+        match self {
+            Self::Append(statement) => format!("Recorded memory: {statement}"),
+            Self::Substitute(old_value, new_value) => format!(
+                "Recorded memory substitution: replace \"{old_value}\" with \"{new_value}\"."
+            ),
+        }
+    }
+
+    const fn intent(&self) -> &'static str {
+        match self {
+            Self::Append(_) => "memory_write",
+            Self::Substitute(_, _) => "memory_substitution",
+        }
+    }
+
+    const fn response_link(&self) -> &'static str {
+        match self {
+            Self::Append(_) => "response:memory_write",
+            Self::Substitute(_, _) => "response:memory_substitution",
+        }
+    }
+
+    fn log_value(&self) -> String {
+        match self {
+            Self::Append(statement) => format!("append content={statement}"),
+            Self::Substitute(old_value, new_value) => {
+                format!("substitute old={old_value} new={new_value}")
+            }
+        }
+    }
+}
+
+fn recognize_memory_write(prompt: &str, normalized: &str) -> Option<MemoryWriteRequest> {
+    if let Some((old_value, new_value)) = recognize_memory_substitution(normalized) {
+        return Some(MemoryWriteRequest::Substitute(old_value, new_value));
+    }
+
+    for prefix in [
+        "remember that ",
+        "remember ",
+        "record memory ",
+        "append memory ",
+    ] {
+        let Some(raw_statement) = strip_prefix_ignore_ascii_case(prompt, prefix) else {
+            continue;
+        };
+        let Some(statement) = clean_memory_write_text(raw_statement) else {
+            continue;
+        };
+        return Some(MemoryWriteRequest::Append(statement));
+    }
+    None
+}
+
+fn recognize_memory_substitution(normalized: &str) -> Option<(String, String)> {
+    let rest = normalized
+        .strip_prefix("replace ")?
+        .strip_suffix(" in memory")?;
+    let (old_value, new_value) = rest.split_once(" with ")?;
+    Some((
+        clean_memory_write_text(old_value)?,
+        clean_memory_write_text(new_value)?,
+    ))
+}
+
+fn strip_prefix_ignore_ascii_case<'a>(text: &'a str, prefix: &str) -> Option<&'a str> {
+    let trimmed = text.trim_start();
+    if trimmed.len() < prefix.len() {
+        return None;
+    }
+    let head = trimmed.get(..prefix.len())?;
+    let tail = trimmed.get(prefix.len()..)?;
+    head.eq_ignore_ascii_case(prefix).then_some(tail)
+}
+
+fn clean_memory_write_text(raw: &str) -> Option<String> {
+    let text = raw
+        .trim()
+        .trim_matches(|ch: char| {
+            ch.is_whitespace()
+                || matches!(
+                    ch,
+                    '`' | '"' | '\'' | ':' | '-' | '_' | '.' | ',' | '?' | '!' | '(' | ')'
+                )
+        })
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ");
+    (!text.is_empty()).then_some(text)
 }
 
 fn recognize_recall_query(normalized: &str) -> Option<RecallQuery> {
@@ -295,48 +496,175 @@ fn memory_recall_matches(
         return Vec::new();
     }
     let trigger = normalize_prompt(trigger_text);
-    events
-        .iter()
-        .enumerate()
-        .filter_map(|(index, event)| {
-            if event.kind.as_deref().is_some_and(|kind| kind != "message") {
-                return None;
+    let mut matches = Vec::new();
+    for (index, event) in events.iter().enumerate() {
+        if !event_in_recall_scope(event, query, current_conversation_id) {
+            continue;
+        }
+        for (name, value) in memory_event_field_values(event) {
+            let value = value.trim();
+            if value.is_empty() {
+                continue;
             }
-            let role = event.role.as_deref()?;
-            if !role.eq_ignore_ascii_case("user") && !role.eq_ignore_ascii_case("assistant") {
-                return None;
-            }
-            let content = event.content.as_deref()?.trim();
-            if content.is_empty() {
-                return None;
-            }
-            let haystack = normalize_prompt(content);
+            let haystack = normalize_prompt(value);
             if !haystack.contains(&needle) {
-                return None;
+                continue;
             }
-            if !trigger.is_empty() && haystack == trigger {
-                return None;
+            if name == "content" && !trigger.is_empty() && haystack == trigger {
+                continue;
             }
-            let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
-            if query.scope == RecallScope::OtherConversations
-                && current_conversation_id.is_some_and(|current| current == conversation_id)
-            {
-                return None;
+            matches.push(memory_field_match(index, event, name, value));
+        }
+    }
+
+    for (index, (event, record)) in events
+        .iter()
+        .zip(memory_events_to_link_records(events))
+        .enumerate()
+    {
+        if !event_in_recall_scope(event, query, current_conversation_id) {
+            continue;
+        }
+        for link in record.links {
+            let haystack = normalize_prompt(&format!("{} {}", link.from, link.to));
+            if !haystack.contains(&needle) {
+                continue;
             }
-            Some(MemoryRecallMatch {
-                event_index: index + 1,
-                role: role.to_ascii_lowercase(),
-                content: content.to_owned(),
-                conversation_id: conversation_id.to_owned(),
-                conversation_title: event
-                    .conversation_title
-                    .as_deref()
-                    .unwrap_or_default()
-                    .to_owned(),
-                sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
-            })
-        })
-        .collect()
+            matches.push(memory_link_match(index, event, &link.from, &link.to));
+        }
+    }
+
+    matches
+}
+
+fn event_in_recall_scope(
+    event: &MemoryEvent,
+    query: &RecallQuery,
+    current_conversation_id: Option<&str>,
+) -> bool {
+    let conversation_id = event.conversation_id.as_deref().unwrap_or("legacy");
+    query.scope != RecallScope::OtherConversations
+        || current_conversation_id.is_none_or(|current| current != conversation_id)
+}
+
+fn memory_event_field_values(event: &MemoryEvent) -> Vec<(&'static str, &str)> {
+    let mut fields = Vec::new();
+    push_memory_field(&mut fields, "id", Some(event.id.as_str()));
+    push_memory_field(&mut fields, "kind", event.kind.as_deref());
+    push_memory_field(&mut fields, "role", event.role.as_deref());
+    push_memory_field(&mut fields, "intent", event.intent.as_deref());
+    push_memory_field(&mut fields, "tool", event.tool.as_deref());
+    push_memory_field(&mut fields, "inputs", event.inputs.as_deref());
+    push_memory_field(&mut fields, "outputs", event.outputs.as_deref());
+    push_memory_field(&mut fields, "content", event.content.as_deref());
+    push_memory_field(&mut fields, "sentAt", event.sent_at.as_deref());
+    push_memory_field(&mut fields, "demoLabel", event.demo_label.as_deref());
+    push_memory_field(
+        &mut fields,
+        "conversationId",
+        event.conversation_id.as_deref(),
+    );
+    push_memory_field(
+        &mut fields,
+        "conversationTitle",
+        event.conversation_title.as_deref(),
+    );
+    for evidence in &event.evidence {
+        push_memory_field(&mut fields, "evidence", Some(evidence.as_str()));
+    }
+    fields
+}
+
+fn push_memory_field<'a>(
+    fields: &mut Vec<(&'static str, &'a str)>,
+    name: &'static str,
+    value: Option<&'a str>,
+) {
+    let Some(value) = value else { return };
+    if value.trim().is_empty() {
+        return;
+    }
+    fields.push((name, value));
+}
+
+fn memory_field_match(
+    index: usize,
+    event: &MemoryEvent,
+    name: &'static str,
+    value: &str,
+) -> MemoryRecallMatch {
+    memory_match(
+        index,
+        event,
+        MemoryRecallDetail::Field {
+            name,
+            value: value.to_owned(),
+        },
+    )
+}
+
+fn memory_link_match(index: usize, event: &MemoryEvent, from: &str, to: &str) -> MemoryRecallMatch {
+    memory_match(
+        index,
+        event,
+        MemoryRecallDetail::Link {
+            from: from.to_owned(),
+            to: to.to_owned(),
+        },
+    )
+}
+
+fn memory_match(
+    index: usize,
+    event: &MemoryEvent,
+    detail: MemoryRecallDetail,
+) -> MemoryRecallMatch {
+    let role = event
+        .role
+        .as_deref()
+        .or(event.kind.as_deref())
+        .or(event.intent.as_deref())
+        .unwrap_or("event");
+    MemoryRecallMatch {
+        event_index: index + 1,
+        role: role.to_ascii_lowercase(),
+        conversation_id: event
+            .conversation_id
+            .as_deref()
+            .unwrap_or("legacy")
+            .to_owned(),
+        conversation_title: event
+            .conversation_title
+            .as_deref()
+            .unwrap_or_default()
+            .to_owned(),
+        sent_at: event.sent_at.as_deref().unwrap_or_default().to_owned(),
+        detail,
+    }
+}
+
+impl MemoryRecallMatch {
+    fn log_fragment(&self) -> String {
+        match &self.detail {
+            MemoryRecallDetail::Field { name, value } => format!("field={name} value={value}"),
+            MemoryRecallDetail::Link { from, to } => format!("link={from}->{to}"),
+        }
+    }
+
+    fn render_line(&self) -> String {
+        let stamp = if self.sent_at.is_empty() {
+            String::new()
+        } else {
+            format!(" [{}]", self.sent_at)
+        };
+        match &self.detail {
+            MemoryRecallDetail::Field { name, value } if *name == "content" => {
+                format!("{}{}: {}", self.role, stamp, value)
+            }
+            MemoryRecallDetail::Field { name, value } => format!("{name}{stamp}: {value}"),
+            MemoryRecallDetail::Link { from, to } => format!("link{stamp}: {from} -> {to}"),
+        }
+    }
 }
 
 fn memory_conversation_count(matches: &[MemoryRecallMatch]) -> usize {
@@ -463,13 +791,7 @@ fn render_memory_recall_report(
             .iter()
             .filter(|matched| matched.conversation_id == conversation_id)
         {
-            let stamp = if matched.sent_at.is_empty() {
-                String::new()
-            } else {
-                format!(" [{}]", matched.sent_at)
-            };
-            writeln!(body, "  - {}{}: {}", matched.role, stamp, matched.content)
-                .expect("string write is infallible");
+            writeln!(body, "  - {}", matched.render_line()).expect("string write is infallible");
         }
     }
     body.trim_end().to_owned()

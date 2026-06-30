@@ -181,7 +181,7 @@ pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
-pub use solver_handlers::answer_memory_recall;
+pub use solver_handlers::{answer_memory_recall, execute_memory_query, MemoryQueryExecution};
 pub use solver_helpers::humanize_url;
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,

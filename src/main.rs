@@ -11,13 +11,14 @@ mod cli_shared_dialog;
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    agent_info, answer_memory_recall, collect_github_logs, create_chat_completion_with_solver,
-    create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
-    import_memory_full, knowledge_links_notation, merged_bundle, naturalize_thinking_step,
-    parse_bundle, render_github_log_plan, run_telegram_polling, run_telegram_webhook_server,
-    seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
-    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
+    agent_info, collect_github_logs, create_chat_completion_with_solver,
+    create_response_with_solver, environment_records, execute_memory_query, export_memory_bundle,
+    export_memory_full, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_telegram_polling,
+    run_telegram_webhook_server, seed_files, suggest_memory_migrations, BundleInfo,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore,
+    ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver,
+    DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -652,9 +653,14 @@ fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             }
         }
         MemoryAction::Query { path, prompt } => {
-            let store = load_memory_or_empty(&path)?;
-            match answer_memory_recall(&prompt, store.events(), None) {
-                Some(answer) => println!("{}", answer.answer),
+            let mut store = load_memory_or_empty(&path)?;
+            match execute_memory_query(&prompt, &mut store, None) {
+                Some(execution) => {
+                    if execution.changed {
+                        store.save_to_file(&path)?;
+                    }
+                    println!("{}", execution.answer.answer);
+                }
                 None => println!("No natural-language memory query recognized."),
             }
         }

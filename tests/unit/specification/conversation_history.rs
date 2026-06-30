@@ -238,6 +238,75 @@ fn natural_language_query_searches_persisted_memory_events() {
     assert!(has_evidence(&response, "memory_match"));
 }
 
+#[test]
+fn natural_language_query_searches_whole_memory_event_fields() {
+    let events = vec![
+        memory_event("a1", "user", "conv-a", "Rust Notes", "What is Rust?"),
+        tool_memory_event(
+            "tool-1",
+            "conv-tools",
+            "Tool Trace",
+            "web_search",
+            "{\"query\":\"rust memory\"}",
+            "Found Rust memory references.",
+        ),
+    ];
+
+    let response = answer_memory_recall("recall web_search", &events, Some("current-conversation"))
+        .expect("recall query should be recognized");
+
+    assert_eq!(response.intent, "conversation_recall");
+    assert!(
+        response.answer.contains("Tool Trace"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("tool: web_search"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("intent: web_search"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("What is Rust?"),
+        "{}",
+        response.answer
+    );
+}
+
+#[test]
+fn natural_language_query_searches_memory_link_projection() {
+    let events = vec![tool_memory_event(
+        "tool-1",
+        "conv-tools",
+        "Tool Trace",
+        "web_search",
+        "{\"query\":\"rust memory\"}",
+        "Found Rust memory references.",
+    )];
+
+    let response = answer_memory_recall("recall field:tool", &events, None)
+        .expect("recall query should be recognized");
+
+    assert_eq!(response.intent, "conversation_recall");
+    assert!(
+        response.answer.contains("Tool Trace"),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("link: field:tool -> value:web_search"),
+        "{}",
+        response.answer
+    );
+}
+
 fn memory_event(
     id: &str,
     role: &str,
@@ -252,6 +321,29 @@ fn memory_event(
         content: Some(content.to_owned()),
         conversation_id: Some(conversation_id.to_owned()),
         conversation_title: Some(conversation_title.to_owned()),
+        ..MemoryEvent::default()
+    }
+}
+
+fn tool_memory_event(
+    id: &str,
+    conversation_id: &str,
+    conversation_title: &str,
+    tool: &str,
+    inputs: &str,
+    outputs: &str,
+) -> MemoryEvent {
+    MemoryEvent {
+        id: id.to_owned(),
+        kind: Some(String::from("tool_call")),
+        role: Some(String::from("assistant")),
+        intent: Some(tool.to_owned()),
+        tool: Some(tool.to_owned()),
+        inputs: Some(inputs.to_owned()),
+        outputs: Some(outputs.to_owned()),
+        conversation_id: Some(conversation_id.to_owned()),
+        conversation_title: Some(conversation_title.to_owned()),
+        evidence: vec![format!("tool:{tool}")],
         ..MemoryEvent::default()
     }
 }
