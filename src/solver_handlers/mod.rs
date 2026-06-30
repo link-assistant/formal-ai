@@ -23,6 +23,7 @@ mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
 mod research_table;
+mod response_language_followup;
 mod self_awareness;
 mod shell_command_transform;
 mod software_project;
@@ -58,6 +59,7 @@ pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
+pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
@@ -70,7 +72,10 @@ pub use user_intent::{
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
     try_who_is_question,
 };
-pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
+pub use web_requests::{
+    try_explicit_repository_lookup, try_http_fetch, try_project_lookup, try_url_navigate,
+    try_web_search,
+};
 pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
 
 use crate::calculation::{

@@ -24,12 +24,12 @@ use crate::solver_handlers::{
     try_meta_explanation_with_runtime, try_network_query, try_number_riddle, try_numeric_list,
     try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
-    try_research_result_followup, try_roleplay_request, try_shell_command_transform,
-    try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
-    SelfAwarenessRuntime,
+    try_research_result_followup, try_response_language_followup, try_roleplay_request,
+    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
+    try_software_project_followup, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -61,6 +61,36 @@ fn handle_concept_lookup(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     try_concept_lookup(prompt, log)
+}
+
+const fn response_language_followup_noop(
+    _prompt: &str,
+    _normalized: &str,
+    _log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    None
+}
+
+#[derive(Clone, Copy)]
+pub struct ContextualRuntime {
+    promote_associative_repositories: bool,
+    proof_render_config: ProofRenderConfig,
+    self_awareness_runtime: SelfAwarenessRuntime,
+}
+
+impl ContextualRuntime {
+    #[must_use]
+    pub const fn new(
+        promote_associative_repositories: bool,
+        proof_render_config: ProofRenderConfig,
+        self_awareness_runtime: SelfAwarenessRuntime,
+    ) -> Self {
+        Self {
+            promote_associative_repositories,
+            proof_render_config,
+            self_awareness_runtime,
+        }
+    }
 }
 
 /// Outcome of routing a handler name through [`try_contextual_override`].
@@ -96,6 +126,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "numeric_list",
     "shell_command_transform",
     "text_manipulation",
+    "response_language_followup",
 ];
 
 /// Method names that run before the regular handler table.
@@ -117,22 +148,31 @@ pub fn try_contextual_override(
     prompt: &str,
     normalized: &str,
     history: &[ConversationTurn],
-    proof_render_config: ProofRenderConfig,
-    self_awareness_runtime: SelfAwarenessRuntime,
+    runtime: ContextualRuntime,
     log: &mut EventLog,
 ) -> ContextualOutcome {
     let answer = match name {
         "proof_request" => {
-            try_proof_request_with_config(prompt, normalized, log, proof_render_config)
+            try_proof_request_with_config(prompt, normalized, log, runtime.proof_render_config)
         }
-        "meta_explanation" => {
-            try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
-        }
+        "meta_explanation" => try_meta_explanation_with_runtime(
+            prompt,
+            normalized,
+            log,
+            runtime.self_awareness_runtime,
+        ),
         "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
         "shell_command_transform" => {
             try_shell_command_transform_with_history(prompt, normalized, log, history)
         }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
+        "response_language_followup" => try_response_language_followup(
+            prompt,
+            normalized,
+            log,
+            history,
+            runtime.promote_associative_repositories,
+        ),
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)
@@ -177,6 +217,10 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("coreference", try_coreference_request),
     ("roleplay", try_roleplay_request),
     ("translation", try_translation),
+    (
+        "response_language_followup",
+        response_language_followup_noop,
+    ),
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("calendar_create_event", try_calendar_create_event),

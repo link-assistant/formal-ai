@@ -15,11 +15,13 @@ use crate::method_registry::MethodRegistry;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::{handler_for_method, try_contextual_override, ContextualOutcome};
+use crate::solver_dispatch::{
+    handler_for_method, try_contextual_override, ContextualOutcome, ContextualRuntime,
+};
 use crate::solver_handlers::{
-    try_behavior_rules_with_runtime, try_definition_merge_by_default, try_feature_capability,
-    try_natural_language_tool_request, try_playwright_script, try_project_lookup,
-    CapabilityRuntime, SelfAwarenessRuntime,
+    try_behavior_rules_with_runtime, try_definition_merge_by_default,
+    try_explicit_repository_lookup, try_feature_capability, try_natural_language_tool_request,
+    try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -36,6 +38,17 @@ pub fn try_dispatch(
     let runtime = MethodRuntime::new(solver.config);
 
     for name in method_names {
+        if matches!(name.as_str(), "feature_capability" | "capabilities") {
+            if let Some(answer) = try_explicit_repository_lookup(
+                prompt,
+                &normalized,
+                log,
+                solver.config.associative_project_promotion,
+                intent_formalization.route.as_deref() == Some("identity"),
+            ) {
+                return Some(record_method_answer(prompt, log, answer, "project_lookup"));
+            }
+        }
         if let Some(answer) = try_prelude_method(solver, &name, prompt, &normalized, log, runtime) {
             return Some(answer);
         }
@@ -54,8 +67,11 @@ pub fn try_dispatch(
             prompt,
             &normalized,
             history,
-            runtime.proof_render_config,
-            runtime.self_awareness_runtime,
+            ContextualRuntime::new(
+                solver.config.associative_project_promotion,
+                runtime.proof_render_config,
+                runtime.self_awareness_runtime,
+            ),
             log,
         ) {
             ContextualOutcome::Answer(answer) => {

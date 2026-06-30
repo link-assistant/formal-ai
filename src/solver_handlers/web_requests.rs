@@ -336,10 +336,80 @@ pub fn try_project_lookup(
     promote_associative_repositories: bool,
     suppress_identity_route: bool,
 ) -> Option<SymbolicAnswer> {
-    if let Some(repo) = repository_from_prompt(prompt) {
+    try_project_lookup_internal(
+        prompt,
+        prompt,
+        log,
+        promote_associative_repositories,
+        suppress_identity_route,
+        None,
+    )
+}
+
+pub fn try_explicit_repository_lookup(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    promote_associative_repositories: bool,
+    suppress_identity_route: bool,
+) -> Option<SymbolicAnswer> {
+    if is_text_url_extraction_prompt(normalized) {
+        return None;
+    }
+    if extract_http_fetch_url(prompt, normalized).is_some()
+        || extract_url_navigate_url(prompt, normalized).is_some()
+    {
+        return None;
+    }
+    repository_from_prompt(prompt)?;
+    try_project_lookup_internal(
+        prompt,
+        prompt,
+        log,
+        promote_associative_repositories,
+        suppress_identity_route,
+        None,
+    )
+}
+
+pub fn try_project_lookup_with_response_language(
+    prompt: &str,
+    lookup_prompt: &str,
+    log: &mut EventLog,
+    promote_associative_repositories: bool,
+    suppress_identity_route: bool,
+    response_language: &str,
+) -> Option<SymbolicAnswer> {
+    try_project_lookup_internal(
+        prompt,
+        lookup_prompt,
+        log,
+        promote_associative_repositories,
+        suppress_identity_route,
+        Some(response_language),
+    )
+}
+
+fn try_project_lookup_internal(
+    prompt: &str,
+    lookup_prompt: &str,
+    log: &mut EventLog,
+    promote_associative_repositories: bool,
+    suppress_identity_route: bool,
+    response_language: Option<&str>,
+) -> Option<SymbolicAnswer> {
+    if is_text_url_extraction_prompt(lookup_prompt) {
+        return None;
+    }
+    if let Some(repo) = repository_from_prompt(lookup_prompt) {
         if promote_associative_repositories {
             if let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name) {
-                return Some(render_project_lookup(prompt, log, project));
+                return Some(render_project_lookup(
+                    prompt,
+                    log,
+                    project,
+                    response_language,
+                ));
             }
         }
         return Some(render_generic_repository_lookup(
@@ -347,15 +417,21 @@ pub fn try_project_lookup(
             log,
             Some(&repo),
             promote_associative_repositories,
+            response_language,
         ));
     }
     if suppress_identity_route {
         return None;
     }
 
-    let project = matched_project(prompt)?;
+    let project = matched_project(lookup_prompt)?;
     if promote_associative_repositories && is_promoted_project(project) {
-        return Some(render_project_lookup(prompt, log, project));
+        return Some(render_project_lookup(
+            prompt,
+            log,
+            project,
+            response_language,
+        ));
     }
 
     Some(render_generic_repository_lookup(
@@ -363,6 +439,7 @@ pub fn try_project_lookup(
         log,
         None,
         promote_associative_repositories,
+        response_language,
     ))
 }
 
@@ -370,8 +447,9 @@ fn render_project_lookup(
     prompt: &str,
     log: &mut EventLog,
     project: &ProjectRecord,
+    response_language: Option<&str>,
 ) -> SymbolicAnswer {
-    let language = detect_language(prompt).slug();
+    let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
     let config = SummarizationConfig::default()
         .with_mode(SummarizationMode::Short)
         .with_language(language);
@@ -403,6 +481,24 @@ fn render_project_lookup(
              можно отключить, тогда ответ пойдет по обычному поиску GitHub, \
              GitLab и Bitbucket."
         ),
+        "hi" => format!(
+            "{promoted_orgs} repository context में `{display_name}` से मेरा पहला \
+             मतलब [{repo_slug}]({project_url}) है — {description}\n\n\
+             दूसरे matching repositories और entities browser demo में \
+             `{display_name}` web search से दिखाए जाते हैं. Providers: \
+             {provider_summary}. Combined ranking: reciprocal rank fusion \
+             (k = {WEB_SEARCH_RRF_K}). Associative repository promotion बंद \
+             करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup \
+             path से जाता है."
+        ),
+        "zh" => format!(
+            "在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 \
+             [{repo_slug}]({project_url}) — {description}\n\n\
+             浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。\
+             Providers: {provider_summary}. Combined ranking: reciprocal rank fusion \
+             (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，\
+             回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。"
+        ),
         _ => format!(
             "In the {promoted_orgs} repository context, `{display_name}` should first mean \
              [{repo_slug}]({project_url}) — {description}\n\n\
@@ -429,8 +525,9 @@ fn render_generic_repository_lookup(
     log: &mut EventLog,
     repository: Option<&RepositoryReference>,
     promotion_enabled: bool,
+    response_language: Option<&str>,
 ) -> SymbolicAnswer {
-    let language = detect_language(prompt).slug();
+    let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
     let provider_summary = ["GitHub", "GitLab", "Bitbucket"].join(", ");
     if !promotion_enabled {
         log.append("project_lookup:promotion", "disabled".to_owned());
@@ -447,6 +544,22 @@ fn render_generic_repository_lookup(
                  проекта на GitHub, GitLab и Bitbucket без особого правила для \
                  отдельного названия. Если репозиторий находится в продвигаемых \
                  организациях и продвижение включено, он будет показан первым.",
+                url = repo.url
+            ),
+            "hi" => format!(
+                "यह {label} पर रिपॉजिटरी [{slug}]({url}) के लिए lookup है.\n\n\
+                 Generic project_lookup path GitHub, GitLab, और Bitbucket पर \
+                 README या project descriptions summarize कर सकता है, किसी \
+                 single name के लिए special case के बिना. अगर repository \
+                 promoted organizations में है और promotion enabled है, तो वह \
+                 पहले दिखाई जाएगी.",
+                url = repo.url
+            ),
+            "zh" => format!(
+                "这是 {label} 上的仓库查询：[{slug}]({url})。\n\n\
+                 通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 \
+                 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted \
+                 organizations 且 promotion 已开启，它会优先显示。",
                 url = repo.url
             ),
             _ => format!(
@@ -477,6 +590,17 @@ fn render_generic_repository_lookup(
              ассоциативных репозиториев отключено. Дальше следует искать и \
              резюмировать подходящие проекты на {provider_summary} и похожих \
              хостингах."
+        ),
+        "hi" => format!(
+            "यह project या repository के लिए generic project_lookup request है.\n\n\
+             मैं किसी specific repository को प्राथमिकता नहीं दे रहा हूँ क्योंकि \
+             associative repository promotion disabled है. अगला step {provider_summary} \
+             और similar hosts पर matching projects खोजना और summarize करना है."
+        ),
+        "zh" => format!(
+            "这是一个关于项目或仓库的通用 project_lookup 请求。\n\n\
+             我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。\
+             下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。"
         ),
         _ => format!(
             "This is a generic project_lookup request for a project or repository.\n\n\
@@ -564,6 +688,9 @@ fn repository_from_slug(term: &str) -> Option<RepositoryReference> {
     if segments.next().is_some() {
         return None;
     }
+    if owner.chars().all(|ch| ch.is_ascii_digit()) && name.chars().all(|ch| ch.is_ascii_digit()) {
+        return None;
+    }
     Some(RepositoryReference {
         platform: RepositoryPlatform::GitHub,
         url: format!("https://github.com/{owner}/{name}"),
@@ -614,6 +741,12 @@ fn clean_repository_segment(segment: &str) -> Option<String> {
         return None;
     }
     Some(trimmed.to_owned())
+}
+
+fn is_text_url_extraction_prompt(normalized: &str) -> bool {
+    let normalized = normalized.trim_start().to_ascii_lowercase();
+    (normalized.starts_with("extract url ") || normalized.starts_with("extract urls "))
+        && normalized.contains(" from ")
 }
 
 fn normalize_concept_term(value: &str) -> String {

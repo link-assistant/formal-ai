@@ -218,6 +218,56 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
     return finalize(events, steps, toolCalls, translation, formalizationContext);
   }
 
+  steps.push({ step: "invoke_tool", detail: "response_language_followup" });
+  const responseLanguageFollowup = await tryResponseLanguageFollowup(
+    prompt,
+    normalized,
+    history,
+    preferences,
+  );
+  if (responseLanguageFollowup) {
+    events.push(`handler:${responseLanguageFollowup.intent}`);
+    events.push("handler:response_language_followup");
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryResponseLanguageFollowup",
+    });
+    toolCalls.push({
+      tool: "project_lookup",
+      inputs: {
+        prompt,
+        requestedLanguage: detectResponseLanguage(normalized) || "",
+      },
+      outputs: {
+        intent: responseLanguageFollowup.intent,
+        confidence: responseLanguageFollowup.confidence,
+      },
+    });
+    return finalize(
+      events,
+      steps,
+      toolCalls,
+      responseLanguageFollowup,
+      formalizationContext,
+    );
+  }
+
+  steps.push({ step: "invoke_tool", detail: "project_lookup" });
+  const projectLookup = await tryProjectLookup(prompt, language, preferences);
+  if (projectLookup) {
+    events.push(`handler:${projectLookup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProjectLookup" });
+    toolCalls.push({
+      tool: "project_lookup",
+      inputs: { prompt, language },
+      outputs: {
+        intent: projectLookup.intent,
+        confidence: projectLookup.confidence,
+      },
+    });
+    return finalize(events, steps, toolCalls, projectLookup, formalizationContext);
+  }
+
   steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
   const earlyWikiArticleQuestion = await tryWikipediaArticleQuestion(
     prompt,
@@ -609,22 +659,6 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
-  }
-
-  steps.push({ step: "invoke_tool", detail: "project_lookup" });
-  const projectLookup = await tryProjectLookup(prompt, language, preferences);
-  if (projectLookup) {
-    events.push(`handler:${projectLookup.intent}`);
-    steps.push({ step: "dispatch_handler", detail: "tryProjectLookup" });
-    toolCalls.push({
-      tool: "project_lookup",
-      inputs: { prompt, language },
-      outputs: {
-        intent: projectLookup.intent,
-        confidence: projectLookup.confidence,
-      },
-    });
-    return finalize(events, steps, toolCalls, projectLookup);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });

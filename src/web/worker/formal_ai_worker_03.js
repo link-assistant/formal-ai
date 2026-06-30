@@ -66,6 +66,10 @@ function detectTranslationMarkerLanguage(role, normalized) {
   return null;
 }
 
+function detectResponseLanguage(normalized) {
+  return detectTranslationMarkerLanguage(ROLE_RESPONSE_LANGUAGE_MARKER, normalized);
+}
+
 let cachedTranslationMarkers = null;
 // Project the translation-extraction markers out of the meaning lexicon, once.
 // Each field is a semantic role narrowed to the slot and script its strategy
