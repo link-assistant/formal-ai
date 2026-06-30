@@ -19,13 +19,15 @@ sandbox.self = sandbox;
 sandbox.globalThis = sandbox;
 sandbox.console = console;
 sandbox.WebAssembly = WebAssembly;
-sandbox.importScripts = () => {
-  throw new Error("no importScripts in node");
-};
 sandbox.postMessage = () => {};
 sandbox.setTimeout = setTimeout;
-sandbox.fetch = async () => {
-  throw new Error("no fetch");
+sandbox.fetch = async (url) => {
+  const cleanUrl = String(url).split("?")[0];
+  if (cleanUrl.startsWith("seed/")) {
+    const body = fs.readFileSync(new URL(`../data/${cleanUrl}`, import.meta.url), "utf8");
+    return { ok: true, status: 200, text: async () => body };
+  }
+  throw new Error(`no fetch for ${url}`);
 };
 sandbox.location = { search: "", origin: "http://localhost" };
 sandbox.TextEncoder = TextEncoder;
@@ -33,7 +35,17 @@ sandbox.TextDecoder = TextDecoder;
 sandbox.crypto = globalThis.crypto;
 sandbox.URL = URL;
 vm.createContext(sandbox);
+sandbox.importScripts = (...urls) => {
+  for (const url of urls) {
+    const workerSource = fs.readFileSync(
+      new URL(`../src/web/${url}`, import.meta.url),
+      "utf8",
+    );
+    vm.runInContext(workerSource, sandbox, { filename: url });
+  }
+};
 vm.runInContext(src, sandbox, { filename: "formal_ai_worker.js" });
+await sandbox.loadSeed();
 
 const failures = [];
 function check(name, condition, detail = "") {
@@ -90,6 +102,63 @@ check(
   "russian: full VCALENDAR wrapper present",
   create(russian)?.content?.includes("BEGIN:VCALENDAR"),
 );
+
+// --- Issue #595: Russian spoken-hour prompts from the calendar-events parent.
+const issue595 = [
+  [
+    "#502 elliptical follow-up",
+    "А можешь на 10 часов по Грузии с Марией?",
+    "С марией",
+    "10:00",
+    "Asia/Tbilisi",
+  ],
+  [
+    "#503 reordered meeting",
+    "Создай встречу на 10 часов с Марией",
+    "С марией",
+    "10:00",
+    "UTC",
+  ],
+  [
+    "#504 event noun only",
+    "Встречу с Марией на 10 часов",
+    "С марией",
+    "10:00",
+    "UTC",
+  ],
+  [
+    "#522 Georgia spoken hour",
+    "Поставь мне встречу с Леваном на 5 часов по Грузии",
+    "С леваном",
+    "05:00",
+    "Asia/Tbilisi",
+  ],
+];
+for (const [label, prompt, expectedTitle, expectedTime, expectedTimezone] of issue595) {
+  check(`${label}: gate recognizes spoken-hour create`, gate(prompt) === true);
+  const hit = create(prompt);
+  check(
+    `${label}: routes to calendar_create_event`,
+    hit?.intent === "calendar_create_event",
+    hit?.intent,
+  );
+  check(
+    `${label}: title preserves participant "${expectedTitle}"`,
+    hit?.content?.includes(`«${expectedTitle}»`) ||
+      hit?.content?.includes(`SUMMARY:${expectedTitle}`),
+    hit?.content?.slice(0, 120),
+  );
+  check(
+    `${label}: spoken hour becomes ${expectedTime}`,
+    hit?.content?.includes(expectedTime),
+    hit?.content?.slice(0, 120),
+  );
+  check(
+    `${label}: timezone is ${expectedTimezone}`,
+    hit?.content?.includes(expectedTimezone),
+    hit?.content?.slice(0, 120),
+  );
+}
 
 // --- Negative: installation-conversion prompts that embed "book"/"books" must NOT
 // be hijacked by the calendar create gate (the original false positive).
