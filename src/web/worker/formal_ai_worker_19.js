@@ -270,6 +270,41 @@ function webSearchTexts(language) {
   return WEB_SEARCH_TEXTS[code] || WEB_SEARCH_TEXTS.en;
 }
 
+function normalizeBareTermResultLabel(value) {
+  let text = cleanBareTermSearchFocus(value);
+  if (!text) return "";
+  if (typeof text.normalize === "function") {
+    text = text.normalize("NFKC");
+  }
+  text = text
+    .replace(/\s*\([^)]*\)\s*$/gu, "")
+    .replace(/\s*（[^）]*）\s*$/gu, "")
+    .replace(/\s+[-–—]\s+(?:wikipedia|wiktionary)\s*$/iu, "")
+    .trim();
+  return normalizePrompt(text).replace(/\s+/gu, " ").trim();
+}
+
+function unresolvedBareTermResultLabels(entry) {
+  if (!entry) return [];
+  const labels = [entry.title, entry.wikipediaKey, entry.wiktionaryKey];
+  if (Array.isArray(entry.alternateUrls)) {
+    for (const alternate of entry.alternateUrls) {
+      labels.push(alternate && alternate.title);
+    }
+  }
+  return labels.filter(Boolean);
+}
+
+function hasGroundedUnresolvedBareTermResult(query, results) {
+  const normalizedQuery = normalizeBareTermResultLabel(query);
+  if (!normalizedQuery || !Array.isArray(results)) return false;
+  return results.some((entry) =>
+    unresolvedBareTermResultLabels(entry).some(
+      (label) => normalizeBareTermResultLabel(label) === normalizedQuery,
+    ),
+  );
+}
+
 async function tryWebSearch(prompt, language) {
   const normalized = normalizePrompt(prompt);
   const request = extractWebSearchRequest(prompt, normalized);
@@ -334,6 +369,7 @@ async function runWebSearchQuery(query, language, queryKind) {
   }
 
   if (active.length === 0) {
+    if (queryKind === "unresolved_bare_term") return null;
     return {
       intent: "web_search",
       content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
@@ -399,6 +435,13 @@ async function runWebSearchQuery(query, language, queryKind) {
       keys: entry.keys || [],
     })),
   };
+
+  if (
+    queryKind === "unresolved_bare_term" &&
+    !hasGroundedUnresolvedBareTermResult(query, top)
+  ) {
+    return null;
+  }
 
   if (top.length === 0) {
     return {

@@ -1,6 +1,5 @@
-//! Specialized free-function handlers extracted from the universal solver in
-//! `solver.rs`: each receives the prompt, normalized prompt, and mutable event
-//! log, then returns `Some(SymbolicAnswer)` when it claims the impulse.
+//! Specialized free-function handlers extracted from `solver.rs`: each receives
+//! the prompt, normalized prompt, and event log, then returns `Some` on a match.
 mod agent_workspace;
 mod behavior_rule_followups;
 mod behavior_rule_matching;
@@ -70,6 +69,7 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
+pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
 
 use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
