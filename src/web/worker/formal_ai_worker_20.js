@@ -720,6 +720,37 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
     return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
 
+  steps.push({ step: "invoke_tool", detail: "document_originality_check" });
+  const originality = tryDocumentOriginalityCheck(prompt, language);
+  if (originality) {
+    events.push(`handler:${originality.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryDocumentOriginalityCheck" });
+    if (Array.isArray(originality.attachments)) {
+      for (const attachment of originality.attachments) {
+        toolCalls.push({
+          tool: "read_local_file",
+          inputs: { name: attachment },
+          outputs: { intent: originality.intent },
+        });
+      }
+    }
+    toolCalls.push({
+      tool: "web_search",
+      inputs: {
+        prompt,
+        language,
+        query: originality.query || "",
+        queryKind: "document_originality_check",
+      },
+      outputs: {
+        intent: originality.intent,
+        confidence: originality.confidence,
+        formalizedObject: originality.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, originality, formalizationContext);
+  }
+
   steps.push({ step: "invoke_tool", detail: "web_search" });
   const webSearch = await tryWebSearch(prompt, language);
   if (webSearch) {

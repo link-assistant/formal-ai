@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "ai orchestration"
+  analyze
+    defined-by word_surface
+    lexeme en
+      surface
+        text "analyze"
   answer_
     defined-by identifier
     lexeme en
@@ -139,6 +144,11 @@ meanings
     lexeme en
       surface
         text "append text"
+  article
+    defined-by word_surface
+    lexeme en
+      surface
+        text "article"
   assistant_free_time
     defined-by intent
     lexeme en
@@ -149,6 +159,16 @@ meanings
     lexeme en
       surface
         text "assistant name"
+  attached
+    defined-by word_surface
+    lexeme en
+      surface
+        text "attached"
+  attachment
+    defined-by word_surface
+    lexeme en
+      surface
+        text "attachment"
   awk
     defined-by token
     lexeme en
@@ -399,6 +419,11 @@ meanings
     lexeme en
       surface
         text "cooldowns"
+  copied
+    defined-by word_surface
+    lexeme en
+      surface
+        text "copied"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -549,6 +574,21 @@ meanings
     lexeme en
       surface
         text "docker microservice"
+  document
+    defined-by word_surface
+    lexeme en
+      surface
+        text "document"
+  document_originality_check_sample_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "document originality check sample missing"
+  document_originality_check_sample_present
+    defined-by intent
+    lexeme en
+      surface
+        text "document originality check sample present"
   dotnet
     defined-by word_surface
     lexeme en
@@ -564,6 +604,11 @@ meanings
     lexeme en
       surface
         text "duckduckgo"
+  duplicate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "duplicate"
   echo
     defined-by token
     lexeme en
@@ -1034,6 +1079,11 @@ meanings
     lexeme en
       surface
         text "ls"
+  manuscript
+    defined-by word_surface
+    lexeme en
+      surface
+        text "manuscript"
   mathematical-logic
     defined-by category
     lexeme en
@@ -1149,6 +1199,11 @@ meanings
     lexeme en
       surface
         text "openai"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
   outdent
     defined-by concept
     lexeme en
@@ -1339,58 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list vyavahar niyam suchibaddh hi"
-  pattern_behavior_rules_list_xianshi_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi guize zh"
-  pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi nide guize liebiao zh"
-  pattern_concept_context_delimiter_dlya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter dlya ru"
-  pattern_concept_context_delimiter_for_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter for en"
-  pattern_concept_context_delimiter_in_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter in en"
-  pattern_concept_context_delimiter_ke_liye_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke liye hi"
-  pattern_concept_context_delimiter_ke_sandarbh_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke sandarbh men hi"
-  pattern_concept_context_delimiter_li_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter li de zh"
-  pattern_concept_context_delimiter_lingyu_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu de zh"
-  pattern_concept_context_delimiter_lingyu_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu zh"
-  pattern_concept_context_delimiter_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter men hi"

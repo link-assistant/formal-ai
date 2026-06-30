@@ -444,3 +444,35 @@ multilingual_responses
     intent github_repository_traffic
     language zh
     text "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_document_originality_check_sample_present_en
+    intent document_originality_check_sample_present
+    language en
+    text "Recognized an originality and plagiarism check for `{target}`.\n\nWorkflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_en
+    intent document_originality_check_sample_missing
+    language en
+    text "Recognized an originality and plagiarism check for `{target}`.\n\nWorkflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.\n\nClient text sample: read from attachment."
+  response response_document_originality_check_sample_present_ru
+    intent document_originality_check_sample_present
+    language ru
+    text "Распознал проверку текста на уникальность и плагиат для `{target}`.\n\nРабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.\n\nТекстовый фрагмент от клиента: получен."
+  response response_document_originality_check_sample_missing_ru
+    intent document_originality_check_sample_missing
+    language ru
+    text "Распознал проверку текста на уникальность и плагиат для `{target}`.\n\nРабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.\n\nТекстовый фрагмент от клиента: нужно прочитать из вложения."
+  response response_document_originality_check_sample_present_hi
+    intent document_originality_check_sample_present
+    language hi
+    text "`{target}` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\nयोजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_hi
+    intent document_originality_check_sample_missing
+    language hi
+    text "`{target}` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\nयोजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.\n\nClient text sample: read from attachment."
+  response response_document_originality_check_sample_present_zh
+    intent document_originality_check_sample_present
+    language zh
+    text "已识别 `{target}` 的原创性/抄袭检查请求。\n\n计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。\n\nClient text sample: present."
+  response response_document_originality_check_sample_missing_zh
+    intent document_originality_check_sample_missing
+    language zh
+    text "已识别 `{target}` 的原创性/抄袭检查请求。\n\n计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。\n\nClient text sample: read from attachment."

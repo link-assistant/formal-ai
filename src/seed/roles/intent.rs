@@ -276,6 +276,25 @@ pub const ROLE_HTTP_FETCH: &str = "http_fetch";
 /// bare URL on its own also counts. Like [`ROLE_HTTP_FETCH`] it is URL-gated and
 /// `defined_by` the `inquiry`, `action`, and `web_resource` concepts.
 pub const ROLE_URL_NAVIGATE: &str = "url_navigate";
+/// Semantic role: an action that requests an originality/plagiarism check.
+///
+/// "check", "verify", "проверь", "जांचें", "检查", ... name the operation.
+/// The document-originality handler combines this role with a plagiarism or
+/// originality subject role and a text/document/attachment role, so generic
+/// "check this" prompts are not routed as web-grounded originality checks.
+pub const ROLE_DOCUMENT_ORIGINALITY_CHECK_ACTION: &str = "document_originality_check_action";
+/// Semantic role: a subject signal for originality/plagiarism checking.
+///
+/// Surfaces are intentionally read with the raw-substring sibling of the
+/// lexicon matcher because supported languages inflect these stems heavily
+/// ("уникальность", "уникальный", "plagiarism", "plagiarized", ...).
+pub const ROLE_DOCUMENT_ORIGINALITY_SUBJECT: &str = "document_originality_subject";
+/// Semantic role: the document/text/attachment being checked for originality.
+///
+/// This role marks the task as operating on supplied text, an attached file, or
+/// a document-like artifact. Attachment metadata can also satisfy this gate
+/// when the prompt was composed by a client surface.
+pub const ROLE_DOCUMENT_ORIGINALITY_DOCUMENT: &str = "document_originality_document";
 /// Semantic role: an explicit "search the web for …" lead-in.
 ///
 /// A [`crate::seed::Slot::Prefix`] surface whose literal, once stripped, leaves

@@ -483,6 +483,16 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "web_search:rank" => format!("web_search:rank:{}", event.payload),
             "web_search:fused" => format!("web_search:fused:{}", event.payload),
             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
+            "document_originality_check:request" => {
+                format!("document_originality_check:request:{}", event.payload)
+            }
+            "document_originality_check:attachment" => {
+                format!("document_originality_check:attachment:{}", event.payload)
+            }
+            "document_originality_check:text_sample" => {
+                format!("document_originality_check:text_sample:{}", event.payload)
+            }
+            "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
             "docs_method:request" => format!("docs_method:request:{}", event.id),
             "docs_method:project" => format!("docs_method:project:{}", event.payload),

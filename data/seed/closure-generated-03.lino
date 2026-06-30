@@ -1,4 +1,109 @@
 meanings
+  response_inappropriate_content_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response inappropriate content zh"
+  response_kupi_slona_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona en"
+  response_kupi_slona_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona hi"
+  response_kupi_slona_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona ru"
+  response_kupi_slona_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response kupi slona zh"
+  response_meta_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation en"
+  response_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation hi"
+  response_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation ru"
+  response_meta_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation zh"
+  response_physical_action_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question en"
+  response_physical_action_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question hi"
+  response_physical_action_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question ru"
+  response_physical_action_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question zh"
+  response_test_status_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status en"
+  response_test_status_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status hi"
+  response_test_status_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status ru"
+  response_test_status_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status zh"
+  response_unknown_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown en"
+  response_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown hi"
+  response_unknown_reasoning_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question en"
+  response_unknown_reasoning_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question hi"
   response_unknown_reasoning_question_ru
     defined-by response_template
     lexeme en
@@ -474,6 +579,11 @@ meanings
     lexeme en
       surface
         text "uncomment lines"
+  uniqueness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "uniqueness"
   unknown_reasoning_question
     defined-by intent
     lexeme en

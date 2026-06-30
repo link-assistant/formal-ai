@@ -182,6 +182,186 @@ meanings
         text 告诉我…
       surface
         text 你知道…
+  document_originality_check_action
+    defined-by inquiry
+    defined-by action
+    role document_originality_check_action
+    lexeme en
+      surface
+        text check
+      surface
+        text verify
+      surface
+        text scan
+      surface
+        text analyze
+      surface
+        text "check …"
+      surface
+        text "verify …"
+      surface
+        text "scan …"
+      surface
+        text "analyze …"
+    lexeme ru
+      surface
+        text проверь
+      surface
+        text проверить
+      surface
+        text проверьте
+      surface
+        text проверка
+      surface
+        text "проверь …"
+      surface
+        text "проверить …"
+      surface
+        text "проверьте …"
+    lexeme hi
+      surface
+        text जांच
+      surface
+        text जाँच
+      surface
+        text जांचें
+      surface
+        text जाँचें
+      surface
+        text जांचो
+      surface
+        text जाँचो
+      surface
+        text "जांचें …"
+      surface
+        text "जाँचें …"
+    lexeme zh
+      surface
+        text 检查
+      surface
+        text 檢查
+      surface
+        text 检测
+      surface
+        text 檢測
+      surface
+        text 查重
+      surface
+        text 检查…
+      surface
+        text 檢查…
+      surface
+        text 查重…
+  document_originality_subject
+    defined-by inquiry
+    role document_originality_subject
+    lexeme en
+      surface
+        text plagiaris
+      surface
+        text plagiarism
+      surface
+        text originality
+      surface
+        text uniqueness
+      surface
+        text copied
+      surface
+        text duplicate
+    lexeme ru
+      surface
+        text плагиат
+      surface
+        text уникальн
+      surface
+        text оригинальн
+      surface
+        text заимствован
+    lexeme hi
+      surface
+        text plagiarism
+      surface
+        text मौलिकता
+      surface
+        text नकल
+      surface
+        text "साहित्यिक चोरी"
+    lexeme zh
+      surface
+        text 原创
+      surface
+        text 原創
+      surface
+        text 抄袭
+      surface
+        text 抄襲
+      surface
+        text 查重
+      surface
+        text 重复率
+      surface
+        text 重複率
+  document_originality_document
+    defined-by inquiry
+    role document_originality_document
+    lexeme en
+      surface
+        text text
+      surface
+        text document
+      surface
+        text file
+      surface
+        text attached
+      surface
+        text attachment
+      surface
+        text manuscript
+      surface
+        text article
+      surface
+        text "attached text"
+      surface
+        text "this text"
+    lexeme ru
+      surface
+        text текст
+      surface
+        text документ
+      surface
+        text файл
+      surface
+        text вложение
+      surface
+        text вложенный
+      surface
+        text приложенный
+      surface
+        text "данный текст"
+    lexeme hi
+      surface
+        text पाठ
+      surface
+        text दस्तावेज
+      surface
+        text दस्तावेज़
+      surface
+        text फ़ाइल
+      surface
+        text फाइल
+      surface
+        text संलग्न
+    lexeme zh
+      surface
+        text 文本
+      surface
+        text 文档
+      surface
+        text 文件
+      surface
+        text 附件
+      surface
+        text 稿件
   research_superlative_modifier
     defined-by property
     role research_superlative_modifier

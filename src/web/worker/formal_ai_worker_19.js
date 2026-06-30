@@ -312,6 +312,131 @@ async function tryWebSearch(prompt, language) {
   return runWebSearchQuery(request.query, language, request.kind);
 }
 
+function extractDocumentOriginalityAttachmentNames(prompt) {
+  const names = [];
+  let inSection = false;
+  for (const rawLine of String(prompt || "").split(/\r?\n/u)) {
+    const line = rawLine.trim();
+    if (/^attached files:$/iu.test(line)) {
+      inSection = true;
+      continue;
+    }
+    if (!inSection || !line) continue;
+    if (
+      line.startsWith("OCR text:") ||
+      line.startsWith("Text excerpt:") ||
+      line.startsWith("Text sample:") ||
+      line.startsWith("Text omitted:")
+    ) {
+      continue;
+    }
+    const match = line.match(/^\d+\.\s+(.+?)\s+\([^)]*\)$/u);
+    if (match && match[1]) names.push(match[1].trim());
+  }
+  return names.filter(Boolean);
+}
+
+function hasDocumentOriginalityTextSample(prompt) {
+  return String(prompt || "")
+    .split(/\r?\n/u)
+    .some((rawLine) => {
+      const line = rawLine.trim();
+      return (
+        line.startsWith("OCR text:") ||
+        line.startsWith("Text excerpt:") ||
+        line.startsWith("Text sample:")
+      );
+    });
+}
+
+function documentOriginalityTextSample(prompt) {
+  for (const rawLine of String(prompt || "").split(/\r?\n/u)) {
+    const line = rawLine.trim();
+    for (const prefix of ["Text excerpt:", "Text sample:", "OCR text:"]) {
+      if (!line.startsWith(prefix)) continue;
+      const sample = line
+        .slice(prefix.length)
+        .trim()
+        .split(/\s+/u)
+        .filter(Boolean)
+        .slice(0, 14)
+        .join(" ");
+      if (sample) return sample;
+    }
+  }
+  return "";
+}
+
+function documentOriginalityQuery(prompt, attachments) {
+  const sample = documentOriginalityTextSample(prompt);
+  if (sample) return `"${sample}" plagiarism originality`;
+  if (attachments.length > 0) {
+    return `${attachments[0]} plagiarism originality uniqueness`;
+  }
+  return "document plagiarism originality uniqueness";
+}
+
+function documentOriginalityContent(language, attachments, samplePresent) {
+  const target = attachments.length > 0 ? attachments.join(", ") : "provided text";
+  const templateIntent = samplePresent
+    ? "document_originality_check_sample_present"
+    : "document_originality_check_sample_missing";
+  return answerFor(templateIntent, language).split("{target}").join(target);
+}
+
+function tryDocumentOriginalityCheck(prompt, language) {
+  const normalized = normalizePrompt(prompt);
+  const attachments = extractDocumentOriginalityAttachmentNames(prompt);
+  const hasAction = lexiconMentionsRole(
+    ROLE_DOCUMENT_ORIGINALITY_CHECK_ACTION,
+    normalized,
+  ) || lexiconMentionsRoleSubstring(
+    ROLE_DOCUMENT_ORIGINALITY_CHECK_ACTION,
+    normalized,
+  );
+  const hasSubject =
+    lexiconMentionsRole(ROLE_DOCUMENT_ORIGINALITY_SUBJECT, normalized) ||
+    lexiconMentionsRoleSubstring(
+      ROLE_DOCUMENT_ORIGINALITY_SUBJECT,
+      normalized,
+    );
+  const hasDocument =
+    attachments.length > 0 ||
+    lexiconMentionsRole(ROLE_DOCUMENT_ORIGINALITY_DOCUMENT, normalized) ||
+    lexiconMentionsRoleSubstring(ROLE_DOCUMENT_ORIGINALITY_DOCUMENT, normalized);
+
+  if (!(hasAction && hasSubject && hasDocument)) return null;
+
+  const query = documentOriginalityQuery(prompt, attachments);
+  const samplePresent = hasDocumentOriginalityTextSample(prompt);
+  const evidence = [
+    `language:${language || ""}`,
+    `document_originality_check:request:${query}`,
+  ];
+  for (const attachment of attachments) {
+    evidence.push(`document_originality_check:attachment:${attachment}`);
+    evidence.push(`read_local_file:request:${attachment}`);
+  }
+  if (samplePresent) evidence.push("document_originality_check:text_sample:present");
+  evidence.push(`web_search:request:${query}`);
+  if (language) evidence.push(`web_search:language:${language}`);
+  for (const provider of WEB_SEARCH_PROVIDERS) {
+    evidence.push(`web_search:provider:${provider.id}`);
+  }
+  evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+  evidence.push("web_search:query_kind:document_originality_check");
+
+  return {
+    intent: "document_originality_check",
+    content: documentOriginalityContent(language, attachments, samplePresent),
+    confidence: 0.84,
+    evidence,
+    query,
+    attachments,
+    formalizedObject: attachments.length > 0 ? attachments.join(", ") : "provided text",
+  };
+}
+
 async function runWebSearchQuery(query, language, queryKind) {
   query = String(query || "").trim();
   if (!query) return null;
