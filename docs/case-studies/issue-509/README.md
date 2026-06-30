@@ -109,5 +109,5 @@ Regression and seed verification:
 - `cargo clippy --all-targets --all-features`
 - `cargo test --all-features --verbose`
 
-Final result: full all-features test target passed with 1213 passed, 0 failed,
+Final result: full all-features test target passed with 1215 passed, 0 failed,
 1 ignored.
