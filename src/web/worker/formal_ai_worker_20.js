@@ -103,7 +103,7 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   return next;
 }
 
-async function solve(prompt, history, prefs, userContext = {}) {
+async function solve(prompt, history, prefs, userContext = {}, memory = []) {
   const preferences = prefs || {};
   const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
@@ -436,6 +436,12 @@ async function solve(prompt, history, prefs, userContext = {}) {
     return writeProgramResult;
   };
   const syncHandlers = [
+    // Issue #529: a natural-language memory write (append/substitution) is a
+    // specific, scope-gated request, so it runs ahead of the historical recall
+    // and generic handlers. It needs the persistent-memory snapshot the app
+    // passes in to count substitution occurrences. Mirrors try_memory_write
+    // running inside the conversation-memory path in the Rust runtime.
+    { name: "tryMemoryWrite", run: () => tryMemoryWrite(prompt, normalized, memory) },
     { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     {
@@ -986,6 +992,11 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   if (answer.diagnostics) {
     result.diagnostics = answer.diagnostics;
   }
+  // Issue #529: carry a natural-language memory write (append/substitution) out
+  // to the app so it can apply the read+write transform to persistent storage.
+  if (answer.memoryOperation) {
+    result.memoryOperation = answer.memoryOperation;
+  }
   return result;
 }
 
@@ -1183,8 +1194,12 @@ self.onmessage = async (event) => {
     data.userContext && typeof data.userContext === "object"
       ? data.userContext
       : {};
+  // Issue #529: the app passes a snapshot of every searchable persistent-memory
+  // value so a natural-language substitution can report how many occurrences it
+  // rewrites; the worker stays pure and the app applies the write.
+  const memory = Array.isArray(data.memory) ? data.memory : [];
   const answer = attachUserContext(
-    await solve(prompt, history, prefs, userContext),
+    await solve(prompt, history, prefs, userContext, memory),
     userContext,
   );
   postMessage({
@@ -1198,6 +1213,7 @@ self.onmessage = async (event) => {
     toolCalls: answer.toolCalls,
     iframeUrl: answer.iframeUrl || null,
     diagnostics: answer.diagnostics || null,
+    memoryOperation: answer.memoryOperation || null,
   });
 };
 
