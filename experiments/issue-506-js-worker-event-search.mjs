@@ -54,6 +54,10 @@ const CASES = [
   ["zh", "查看黑客松", "黑客松"],
   ["en-current", "Where can I find current hackathons?", "hackathons"],
   ["ru-current", "Где посмотреть актуальные хакатоны?", "хакатоны"],
+  ["en-current-question", "Which current hackathons?", "hackathons"],
+  ["ru-current-question", "Какие хакатоны сейчас проходят?", "хакатоны"],
+  ["hi-current-question", "कौन से hackathons अभी हो रहे हैं?", "hackathons"],
+  ["zh-current-question", "哪些黑客松现在举行？", "黑客松"],
 ];
 
 let failures = 0;
@@ -61,7 +65,8 @@ for (const [language, prompt, expectedQuery] of CASES) {
   const request = extractWebSearchRequest(prompt, normalizePrompt(prompt));
   const ok =
     request &&
-    request.kind === "semantic_action" &&
+    (request.kind === "semantic_action" ||
+      request.kind === "implicit_research_question") &&
     request.query === expectedQuery;
   console.log(
     `${ok ? "PASS" : "FAIL"} ${language}: ${JSON.stringify(prompt)} -> ${
