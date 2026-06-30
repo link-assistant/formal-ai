@@ -50,7 +50,7 @@ pub fn try_document_originality_check(
             "present".to_owned(),
         );
     }
-    log.append("web_search:request", query.clone());
+    log.append("web_search:request", query);
     log.append(
         "web_search:query_kind",
         WebSearchQueryKind::DocumentOriginalityCheck.as_str(),
