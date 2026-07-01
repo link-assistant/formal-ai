@@ -1133,6 +1133,9 @@ async function tryProjectLookup(prompt, language, preferences) {
 
 async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, preferences) {
   if (isTextUrlExtractionPrompt(lookupPrompt)) return null;
+  if (githubRepositoryInfoRequest(lookupPrompt, String(lookupPrompt || "").toLowerCase())) {
+    return null;
+  }
   const promotionEnabled = projectPromotionEnabled(preferences);
   const repo = repositoryFromPrompt(lookupPrompt);
   if (repo) {
