@@ -94,6 +94,7 @@ mod synthesis;
 mod telegram_surface;
 mod text_manipulation;
 mod text_manipulation_benchmarks;
+mod translation_round_trip;
 mod translation_via_links;
 mod transparent_state;
 mod unit_incompatibility;
