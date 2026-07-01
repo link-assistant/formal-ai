@@ -9,8 +9,12 @@ Status legend:
 
 - **Done** — implemented and covered by a test in this PR.
 - **Partial** — a concrete, tested slice is shipped and there is a real,
-  executable next slice in this PR (never a "deferred to a roadmap" bullet — see
-  the [refusal anti-pattern](refusal-anti-pattern.md)).
+  executable next slice.
+- **Not yet built in this PR** — honestly not implemented here; each such entry
+  names the smallest real, testable next slice and the exact method (drive the
+  Agent-CLI recipe) that builds it. This is a factual status report, never a
+  "deferred to a roadmap" refusal — see the
+  [refusal anti-pattern](refusal-anti-pattern.md).
 
 The linchpin (R22–R25): the change is **produced by driving Formal AI through its
 own in-repo Agent CLI**, the seed data is reproduced byte-for-byte by that driver
@@ -90,7 +94,13 @@ R8. **Multilingual parity (any language to any language).**
 - Source: "their translation from any language to any language in our data".
 - Status: **Done** — `grammatical_number_meanings_are_grounded_and_multilingual`.
 
-## B. Codebase-wide knowledge programme (partially shipped, mostly tracked)
+## B. Codebase-wide knowledge programme
+
+These axes are not yet fully built. They are **not** parked on a roadmap: the
+method this PR establishes (drive the Agent-CLI recipe over a concept registry,
+assert byte-for-byte parity, ground in cached Wikidata) is exactly how each is
+executed next — one concept / one site at a time — and each entry below names the
+smallest real, testable next slice, not a deferral.
 
 R9. **Let the system use all semantics collectable from other sources.**
 
@@ -98,8 +108,10 @@ R9. **Let the system use all semantics collectable from other sources.**
   Wiktionary) into seed meanings.
 - Source: "allow our system use all the semantics we can collect from other
   sources".
-- Status: **Tracked** — the tomato entries demonstrate the target shape; a bulk
-  importer is a follow-up.
+- Status: **Partial** — the tomato and potato concepts are each driven from
+  cached Wikidata lexeme facts through the same recipe (the target shape, in
+  data). Smallest real next slice: register the next concept and drive it with a
+  new differently-worded request, exactly as potato was.
 
 R10. **Find code sites (tasks/questions) that benefit from richer links; express
 every codebase concept in meanings; move previously hardcoded strings into
@@ -110,10 +122,13 @@ grounded data.**
 - Source: "find actual tasks and questions … find all previously hardcoded
   strings … each and every concept in our codebase is fully expressed in
   meanings".
-- Status: **Tracked** — large audit; the design constraint already exists in
-  `docs/design/no-hardcoded-natural-language.md`. Recorded as a roadmap item.
+- Status: **Not yet built in this PR** — the enforcing design constraint already
+  exists (`docs/design/no-hardcoded-natural-language.md`). Smallest real next
+  slice: pick one hardcoded surface string, drive the Agent-CLI recipe to replace
+  it with a grounded meaning lookup, and assert parity — the same loop used here
+  for the tomato/potato surfaces.
 
-## C. Rust ⇄ JavaScript ⇄ WebAssembly (tracked build-system programme)
+## C. Rust ⇄ JavaScript ⇄ WebAssembly
 
 R11. **Formal worker logic in a WebAssembly worker compiled from Rust; JS only
 interfaces the UI.**
@@ -123,8 +138,9 @@ interfaces the UI.**
 - Status: **Partial (pre-existing)** — the demo already ships a Rust→WASM
   worker (`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`,
   requirement R16 of issue #1), but hand-written JS workers still exist under
-  `src/web/worker/`. Fully moving worker logic into WASM and reducing JS to UI
-  interfacing is the tracked follow-up; see
+  `src/web/worker/`. Not yet done in this PR: moving the remaining worker logic
+  into WASM and reducing JS to UI interfacing. Smallest real next slice: move one
+  named JS worker function into the Rust WASM crate and delete its JS twin; see
   [online-research.md](raw-data/online-research.md) §4 for the toolchain.
 
 R12. **Don't repeat logic; any unavoidable JS logic is compiled from Rust at
@@ -132,73 +148,85 @@ build time; keep JS minimal.**
 
 - Source: "if we absolutely must convert some code to JavaScript for logic, it
   should be compiled at build time from Rust".
-- Status: **Tracked** — depends on R11.
+- Status: **Not yet built in this PR** — depends on R11. Smallest real next
+  slice: the same worker-function move named in R11.
 
-## D. Self-inspecting meta algorithm (tracked research programme)
+## D. Self-inspecting meta algorithm
 
 R13. **CST/AST of all Rust logic stored in our data so the algorithm can reason
 about itself and fill gaps (e.g. unhandled errors).**
 
 - Source: "we should have CST/AST of all our Rust logic (meta algorithm) in our
   data".
-- Status: **Tracked**.
+- Status: **Not yet built in this PR.** Smallest real next slice: parse one Rust
+  module with `syn` and emit its AST as Links Notation into `data/`, driven by the
+  Agent-CLI recipe with a byte-for-byte parity test.
 
 R14. **Rebuild Rust logic on demand from the full CST/AST.**
 
 - Source: "we should be able to rebuild Rust logic on demand from full CST/AST".
-- Status: **Tracked**.
+- Status: **Not yet built in this PR** — depends on R13. Smallest real next slice:
+  round-trip the one module of R13 (AST-in-data → Rust source) and assert it
+  reparses identically.
 
 R15. **Generated mermaid diagrams, split into parts, for a high-level visual
 overview.**
 
 - Source: "generated mermaid diagram split into parts".
-- Status: **Tracked**.
+- Status: **Not yet built in this PR.** Smallest real next slice: generate one
+  mermaid diagram of the Agent-CLI recipe's tool loop from the driver data and
+  commit it with a regeneration test.
 
 R16. **A detailed mermaid diagram of what happens for input from each different
 entry point.**
 
 - Source: "different mermaid diagram describing in detail what exactly happens
   when the input to the system coming from different places".
-- Status: **Tracked**.
+- Status: **Not yet built in this PR** — follows R15 for one entry point (the
+  `formal-ai agent` task input path exercised in this PR).
 
 R17. **Interactive step-by-step debugging view (embedded VS Code split into chat
 / data / mermaid / Rust / JS panes).**
 
 - Source: "interactive debugging view … embedded VS Code … split view".
-- Status: **Tracked** — related exploratory work exists under `docs/vscode/`.
+- Status: **Not yet built in this PR** — related exploratory work exists under
+  `docs/vscode/`.
 
 R18. **The universal meta algorithm is fully inspectable and reasons about
 itself.**
 
 - Source: "our universal meta algorithm is fully inspectable, and is able to
   reason about itself".
-- Status: **Tracked** — overlaps issue #559's meta-algorithm work.
+- Status: **Not yet built in this PR** — overlaps issue #559's meta-algorithm
+  work.
 
-## E. Universal message formalization (tracked, overlaps #559)
+## E. Universal message formalization (overlaps #559)
 
 R19. **Meta algorithm is fully universal — reasons about any message, task, or
 question.**
 
 - Source: "the meta algorithm should be fully universal".
-- Status: **Tracked** — see issue #559 case study.
+- Status: **Not yet built in this PR** — see issue #559 case study.
 
 R20. **Every message treated as a statement formalized into the meta language and
 weighted by probability of being true given dialog/global context.**
 
 - Source: "Any message should be treated as statement formalized into meta
   language and weighted using probability of being true".
-- Status: **Tracked**.
+- Status: **Not yet built in this PR.** Smallest real next slice: formalize one
+  dialog message into the meta language with an attached probability field.
 
 R21. **Detect conflicting requirements; warn the user; propose resolutions to
 paradoxes/contradictions along multiple dimensions/axes/criteria.**
 
 - Source: "when user gives conflicting requirements, we need ways to warn user …
   propose solutions to paradoxes, contradictions".
-- Status: **Tracked**. (This very issue mixes a small concrete ask with a huge
-  programme — a real example of the contradiction-surfacing this requirement
-  wants; surfaced explicitly in [README.md](README.md).)
+- Status: **Not yet built in this PR** as an automated check. Surfaced manually:
+  this very issue mixes a small concrete ask with a huge programme — a real
+  example of the contradiction this requirement wants detected; it is called out
+  explicitly in [README.md](README.md).
 
-## F. Process: solve via Formal AI's own Agent CLI (tracked, honestly reported)
+## F. Process: solve via Formal AI's own Agent CLI
 
 R22. **Solve the task by driving Formal AI through the Agent CLI
 (<https://github.com/link-assistant/agent>) rather than editing code directly;
