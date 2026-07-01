@@ -86,7 +86,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(plan_formalization_step(messages, tool_names));
     }
     if meaning_detail::is_meaning_detail_task(&task) {
-        return Some(plan_meaning_detail_step(messages, tool_names));
+        return Some(plan_meaning_detail_step(&task, messages, tool_names));
     }
     None
 }
@@ -142,9 +142,19 @@ fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> Age
 
 /// The issue-#538 recipe: search → fetch (Wikidata lexemes) → write the enriched
 /// meaning block → verify → final. Mirrors the formalization recipe but re-derives
-/// the enriched tomato block from the fetched lexeme facts instead of formalizing
-/// prose. Steps whose tool the CLI did not advertise are skipped.
-fn plan_meaning_detail_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+/// the enriched meaning block from the fetched lexeme facts instead of formalizing
+/// prose. The concept to enrich is routed from the request itself
+/// ([`meaning_detail::concept_for_task`]), so the *same* recipe makes tomato,
+/// potato, or any registered concept more detailed. Steps whose tool the CLI did
+/// not advertise are skipped.
+fn plan_meaning_detail_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    // Route to the concept the request names (default: tomato — the canonical task).
+    let concept = meaning_detail::concept_for_task(task).unwrap_or(&meaning_detail::TOMATO);
+
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
     let write_tool = tool_for(tool_names, Capability::Write);
@@ -155,30 +165,24 @@ fn plan_meaning_detail_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
     // Step 1: search for the Wikidata lexeme data.
     if let Some(tool) = search_tool {
         if !progress.done(Capability::Search) {
-            return plan_one(
-                tool,
-                json!({ "query": meaning_detail::SEARCH_QUERY }).to_string(),
-            );
+            return plan_one(tool, json!({ "query": concept.search_query }).to_string());
         }
     }
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
     if let Some(tool) = fetch_tool {
         if !progress.done(Capability::Fetch) {
-            return plan_one(
-                tool,
-                json!({ "url": meaning_detail::SOURCE_URL }).to_string(),
-            );
+            return plan_one(tool, json!({ "url": concept.source_url }).to_string());
         }
     }
 
     // Re-derive the enriched block from the fetched lexeme facts (or the canonical
     // fallback when the fetch errored), exactly as the formalization recipe does.
-    let block = meaning_detail::enrich_tomato_block(progress.fetched_text.as_deref());
+    let block = meaning_detail::enrich_block(concept, progress.fetched_text.as_deref());
 
     // Step 3: write the enriched meaning block.
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
-            let arguments = json!({ "path": meaning_detail::KB_PATH, "content": block });
+            let arguments = json!({ "path": concept.kb_path, "content": block });
             return plan_one(tool, arguments.to_string());
         }
     }
@@ -186,13 +190,13 @@ fn plan_meaning_detail_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).
     if let Some(tool) = run_tool {
         if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", meaning_detail::KB_PATH) });
+            let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
             return plan_one(tool, arguments.to_string());
         }
     }
 
     // Step 5: nothing left to do — answer with the enriched block inline.
-    AgenticPlan::Final(meaning_detail::final_answer(&block))
+    AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

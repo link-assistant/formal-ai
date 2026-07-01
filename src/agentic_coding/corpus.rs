@@ -13,54 +13,56 @@
 use std::fmt::Write as _;
 
 use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
-use super::meaning_detail::{CANONICAL_TOMATO_LEXEMES, SOURCE_URL as TOMATO_LEXEME_URL};
+use super::meaning_detail::CONCEPTS;
 use super::planner::CANONICAL_SOURCE_URL;
 
-/// One page in the offline corpus.
+/// One page in the offline corpus. Fields are owned so pages can be built from the
+/// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
 struct CorpusPage {
-    url: &'static str,
-    title: &'static str,
+    url: String,
+    title: String,
     /// Lowercased keywords a search query is matched against.
-    keywords: &'static [&'static str],
-    body: &'static str,
+    keywords: Vec<String>,
+    body: String,
 }
 
-/// The corpus pages, in search-ranking order. One canonical page per agentic
-/// recipe: the fisherman tale (issue #468) and the tomato Wikidata lexemes
-/// (issue #538). The shape generalises to more.
-const fn pages() -> [CorpusPage; 2] {
-    [
-        CorpusPage {
-            url: CANONICAL_SOURCE_URL,
-            title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)",
-            keywords: &[
-                "рыбак",
-                "рыбке",
-                "рыбка",
-                "пушкин",
-                "сказка",
-                "fisherman",
-                "fish",
-                "pushkin",
-            ],
-            body: CANONICAL_FISHERMAN_SYNOPSIS,
-        },
-        CorpusPage {
-            url: TOMATO_LEXEME_URL,
-            title: "Lexeme:L170542 (томат) and related tomato lexemes — Wikidata",
-            keywords: &[
-                "wikidata",
-                "lexeme",
-                "tomato",
-                "помидор",
-                "томат",
-                "grammatical",
-                "singular",
-                "plural",
-            ],
-            body: CANONICAL_TOMATO_LEXEMES,
-        },
-    ]
+/// The corpus pages, in search-ranking order: the fisherman tale (issue #468)
+/// first, then one Wikidata-lexeme page per registered concept (issue #538). Each
+/// concept contributes its own page automatically, so registering a new concept in
+/// [`CONCEPTS`] makes it web-searchable and web-fetchable with no change here.
+fn pages() -> Vec<CorpusPage> {
+    let mut pages = vec![CorpusPage {
+        url: CANONICAL_SOURCE_URL.to_owned(),
+        title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)".to_owned(),
+        keywords: [
+            "рыбак", "рыбке", "рыбка", "пушкин", "сказка", "fisherman", "fish", "pushkin",
+        ]
+        .iter()
+        .map(|keyword| (*keyword).to_owned())
+        .collect(),
+        body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
+    }];
+    for concept in CONCEPTS {
+        // The concept's own routing keywords plus the shared lexeme vocabulary, so
+        // both a concept-specific query and a generic "wikidata lexeme …" query hit.
+        let mut keywords: Vec<String> =
+            concept.keywords.iter().map(|k| k.to_lowercase()).collect();
+        keywords.extend(
+            ["wikidata", "lexeme", "grammatical", "singular", "plural"]
+                .iter()
+                .map(|k| (*k).to_owned()),
+        );
+        pages.push(CorpusPage {
+            url: concept.source_url.to_owned(),
+            title: format!(
+                "Wikidata lexemes for the {} concept ({}) — Wikidata",
+                concept.name, concept.grounded_in
+            ),
+            keywords,
+            body: concept.canonical_lexemes.to_owned(),
+        });
+    }
+    pages
 }
 
 /// Resolve a `web_search` query into deterministic results text.
@@ -75,7 +77,11 @@ pub fn web_search(query: &str) -> String {
     let all = pages();
     let hits: Vec<&CorpusPage> = all
         .iter()
-        .filter(|page| page.keywords.iter().any(|keyword| lower.contains(keyword)))
+        .filter(|page| {
+            page.keywords
+                .iter()
+                .any(|keyword| lower.contains(keyword.as_str()))
+        })
         .collect();
     if hits.is_empty() {
         return format!("web_search: no results for {query:?}");
