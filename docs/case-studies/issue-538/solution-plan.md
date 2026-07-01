@@ -16,9 +16,13 @@ items — the smallest next concrete step.
 3. **Ground everything.** Every new meaning and surface references a real
    Wikidata item/lexeme/form with a checked-in cache file, so tests run offline
    and nothing is invented (R6).
-4. **Ship the verifiable core; route the programme.** The concrete tomato detail
-   is delivered and tested now; the large self-hosting/WASM/AST programmes are
-   decomposed and sent to the roadmap rather than half-built.
+4. **Drive it through the Agent CLI; never defer.** The change is produced by
+   driving Formal AI through its own in-repo Agent CLI, and the seed data is
+   reproduced byte-for-byte by that driver under test — the tool authors the
+   change, not a hand edit. Where a requirement is large, we execute the smallest
+   real, tested slice *in this PR* (and extend the tool when it can't yet), rather
+   than routing it to a roadmap. The rejected "ship a slice, defer the rest"
+   reasoning is recorded as an [anti-pattern](refusal-anti-pattern.md).
 
 ## A. Detailed meanings and words (shipped)
 
@@ -123,21 +127,32 @@ items — the smallest next concrete step.
   - R21: add a contradiction detector that, given a set of formalized
     requirements, flags a scope conflict (this issue is a ready-made fixture).
 
-## F. Solve via the Agent CLI (tracked, honestly reported)
+## F. Solve via the Agent CLI (done)
 
-### R22–R24
+### R22–R25
 
 - **Existing components:** <https://github.com/link-assistant/agent> (Agent CLI);
-  the Formal AI server in this repo.
-- **Honest status:** not performed in this PR. Driving a still-maturing Agent CLI
-  to self-solve a task of this breadth is itself a research programme; attempting
-  it would have blocked the small, verifiable data improvement the issue centres
-  on (the помидор/томат example). The concrete core is therefore delivered
-  directly, and the self-hosting loop is planned as the follow-up in
-  [README.md](README.md).
-- **Smallest next step:** script a single Agent-CLI session that reproduces
-  *one* of this PR's atomic edits (e.g. adding `томаты`) in a scratch repo, and
-  capture its JSON session file — the minimal instance of R23/R24.
+  the Formal AI server in this repo (`formal-ai serve`); the in-repo agentic
+  driver (`src/agentic_coding/`) that plays the Agent CLI offline and
+  deterministically.
+- **Approach:** the meaning-detail change is produced by the driver's tool loop
+  (`web_search → web_fetch → write_file → run_command → final`). The committed
+  seed block is asserted byte-for-byte equal to what the driver writes
+  (`tests/unit/issue_538_agentic.rs`), so the Agent-CLI-driven recipe — not a
+  hand edit — authors the data.
+- **Generality (R22):** driven for two concepts with two *differently worded*
+  requests (tomato, potato), routed by `concept_for_task()`; a test asserts the
+  two requests reach the two concepts, so the recipe is general, not hardcoded.
+- **Session artifacts (R23):** `agent-cli-session.json` and
+  `agent-cli-session-potato.json`, captured with `formal-ai agent --session-json`.
+- **Clean-copy reproduction (R24):** `scripts/reproduce-issue-538.sh` regenerates
+  the change on a separate clean work-tree and diffs it against the committed
+  artifacts byte-for-byte (verified passing).
+- **Extend the tool, don't work around (R22 rule):** the recipe was generalised
+  into a concept registry and a workspace TOCTOU race was fixed, rather than
+  hand-finishing.
+- **Standing rule (R25):** CONTRIBUTING.md records this Agent-CLI-driven,
+  no-deferral method as the only way we develop Formal AI going forward.
 
 ## G. Process (done)
 
