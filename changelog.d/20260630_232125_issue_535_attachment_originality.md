@@ -11,3 +11,4 @@ bump: minor
 - Routed multilingual text-attachment originality and plagiarism checks through a grounded attachment workflow instead of falling back to unknown.
 - Included sampled text/plain attachment content in Web app solver context so browser uploads can be inspected by deterministic handlers.
 - Folded Telegram document attachments into the shared attachment-context builder so forwarded files reach the same originality/verification handler.
+- Classified `.lino` seed and language-resource changes as code in `detect-code-changes.rs` so editing files the language-change-parity guard watches (e.g. `src/web/i18n-catalog.lino`) now triggers lint/test instead of silently skipping them.
