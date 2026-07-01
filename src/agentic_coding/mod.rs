@@ -35,7 +35,7 @@ pub use formalize::{
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
 };
 pub use meaning_detail::{
-    enrich_tomato_block, is_meaning_detail_task, CANONICAL_TOMATO_LEXEMES, MEANING_DETAIL_TASK,
+    concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
 };
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,

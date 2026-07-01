@@ -11,10 +11,17 @@
 //! change the issue asked for — not a hand-authored approximation.
 
 use formal_ai::agentic_coding::{
-    corpus, diagram, enrich_tomato_block, is_meaning_detail_task, meaning_detail, plan_chat_step,
-    run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
+    corpus, diagram, is_meaning_detail_task, meaning_detail, plan_chat_step, run_agentic_task,
+    AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
 };
 use formal_ai::{ChatMessage, ToolCall};
+
+/// Derive the enriched tomato block from the given fetched text (or the embedded
+/// real Wikidata cache when `None`) — the recipe under test, pinned to the tomato
+/// concept for the tomato-specific assertions.
+fn enrich_tomato_block(fetched: Option<&str>) -> String {
+    meaning_detail::enrich_block(&meaning_detail::TOMATO, fetched)
+}
 
 /// Extract the enriched tomato meaning block from the seed file — everything from
 /// the `  tomato` lemma head up to (but not including) the next lemma `  cucumber`.
@@ -82,8 +89,9 @@ fn fetch_and_canonical_fallback_yield_the_same_block() {
     // Whether the fetch "succeeds" (returns the corpus body) or errors (falls back
     // to the canonical facts), the loop derives an identical block — the
     // determinism invariant the planner relies on.
-    let from_fetch =
-        enrich_tomato_block(Some(corpus::web_fetch(meaning_detail::SOURCE_URL).as_str()));
+    let from_fetch = enrich_tomato_block(Some(
+        corpus::web_fetch(meaning_detail::TOMATO.source_url).as_str(),
+    ));
     let from_fallback = enrich_tomato_block(Some("web_fetch error: 404 not found"));
     let from_none = enrich_tomato_block(None);
     assert_eq!(from_fetch, from_none);
@@ -120,27 +128,27 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     // Step 1: search for the Wikidata lexeme data.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_search");
-    assert!(call.arguments.contains(meaning_detail::SEARCH_QUERY));
+    assert!(call.arguments.contains(meaning_detail::TOMATO.search_query));
     answer_tool_call(
         &mut messages,
         &call,
-        &corpus::web_search(meaning_detail::SEARCH_QUERY),
+        &corpus::web_search(meaning_detail::TOMATO.search_query),
     );
 
     // Step 2: fetch the tomato lexemes.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_fetch");
-    assert!(call.arguments.contains(meaning_detail::SOURCE_URL));
+    assert!(call.arguments.contains(meaning_detail::TOMATO.source_url));
     answer_tool_call(
         &mut messages,
         &call,
-        &corpus::web_fetch(meaning_detail::SOURCE_URL),
+        &corpus::web_fetch(meaning_detail::TOMATO.source_url),
     );
 
     // Step 3: write the enriched meaning block — byte-for-byte the seed block.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "write_file");
-    assert!(call.arguments.contains(meaning_detail::KB_PATH));
+    assert!(call.arguments.contains(meaning_detail::TOMATO.kb_path));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
     assert_eq!(written["content"], seed_tomato_block());
     answer_tool_call(&mut messages, &call, "wrote meanings-tomato-detail.lino");
@@ -148,7 +156,7 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     // Step 4: verify by reading the file back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
-    assert!(call.arguments.contains(meaning_detail::KB_PATH));
+    assert!(call.arguments.contains(meaning_detail::TOMATO.kb_path));
     answer_tool_call(&mut messages, &call, &seed_tomato_block());
 
     // Step 5: the recipe is exhausted — the final answer carries the block inline.
@@ -156,7 +164,7 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
         Some(AgenticPlan::Final(answer)) => {
             assert!(answer.contains("more detailed"));
             assert!(answer.contains("томаты"));
-            assert!(answer.contains(meaning_detail::KB_PATH));
+            assert!(answer.contains(meaning_detail::TOMATO.kb_path));
         }
         other => panic!("expected a final answer, got {other:?}"),
     }
@@ -166,11 +174,18 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
 fn corpus_serves_the_tomato_lexemes_for_search_and_fetch() {
     // A tomato-lexeme query surfaces the Wikidata page and its url…
     let results = corpus::web_search("wikidata lexeme tomato помидор томат grammatical number");
-    assert!(results.contains(meaning_detail::SOURCE_URL));
+    assert!(results.contains(meaning_detail::TOMATO.source_url));
     // …and fetching that url returns the canonical lexeme facts (with the plural).
-    let body = corpus::web_fetch(meaning_detail::SOURCE_URL);
-    assert!(body.contains("L170542"));
-    assert!(body.contains("form F7 томаты plural Q146786"));
+    let body = corpus::web_fetch(meaning_detail::TOMATO.source_url);
+    // The body is the real Wikidata lexeme JSON (the linguistic core): the plural
+    // form `томаты` (L170542-F7, feature Q146786) is present to be derived from.
+    assert!(body.contains("\"L170542\""));
+    assert!(body.contains("L170542-F7"));
+    assert!(body.contains("томаты"));
+    assert!(body.contains("Q146786"));
+    // It really is JSON we can parse back, not a bespoke compact fixture.
+    let parsed: serde_json::Value = serde_json::from_str(&body).expect("web_fetch body is JSON");
+    assert!(parsed["entities"]["L170542"].is_object());
 }
 
 #[test]
@@ -202,7 +217,9 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
 
     // The final answer summarises the change with the block inline.
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(outcome.final_answer.contains(meaning_detail::KB_PATH));
+    assert!(outcome
+        .final_answer
+        .contains(meaning_detail::TOMATO.kb_path));
 }
 
 #[test]

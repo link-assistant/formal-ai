@@ -8,14 +8,14 @@
       "arguments": {
         "query": "Wikidata lexemes potato картофель картошка grammatical number forms"
       },
-      "result": "1. Wikidata lexemes for the tomato concept (Q23501) — Wikidata\n   https://www.wikidata.org/wiki/Lexeme:L170542\n   Wikidata lexemes for the tomato concept (Q23501)\nlexeme L7993 en Q1860 Q1084 sen…\n2. Wikidata lexemes for the potato concept (Q10998) — Wikidata\n   https://www.wikidata.org/wiki/Lexeme:L3784\n   Wikidata lexemes for the potato concept (Q10998)\nlexeme L3784 en Q1860 Q1084 sen…",
+      "result": "1. Wikidata lexemes for the tomato concept (Q23501) — Wikidata\n   https://www.wikidata.org/wiki/Lexeme:L170542\n   {\"entities\":{\"L170542\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\",\"Q131105\"],\"i…\n2. Wikidata lexemes for the potato concept (Q10998) — Wikidata\n   https://www.wikidata.org/wiki/Lexeme:L3784\n   {\"entities\":{\"L3784\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\"],\"id\":\"L3784-F1…",
       "tool": "web_search"
     },
     {
       "arguments": {
         "url": "https://www.wikidata.org/wiki/Lexeme:L3784"
       },
-      "result": "Wikidata lexemes for the potato concept (Q10998)\nlexeme L3784 en Q1860 Q1084 sense=L3784-S1\n  form F1 potato singular Q110786\n  form F2 potatoes plural Q146786\nextra ru картофель\nextra ru картошка\nextra hi आलू\nextra zh 土豆\nextra zh 马铃薯\n",
+      "result": "{\"entities\":{\"L3784\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\"],\"id\":\"L3784-F1\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"potato\"}}},{\"grammaticalFeatures\":[\"Q146786\"],\"id\":\"L3784-F2\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"potatoes\"}}}],\"id\":\"L3784\",\"language\":\"Q1860\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"potato\"}},\"lexicalCategory\":\"Q1084\",\"senses\":[{\"id\":\"L3784-S1\"},{\"id\":\"L3784-S2\"}]}}}",
       "tool": "web_fetch"
     },
     {

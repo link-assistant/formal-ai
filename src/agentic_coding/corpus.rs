@@ -13,7 +13,7 @@
 use std::fmt::Write as _;
 
 use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
-use super::meaning_detail::CONCEPTS;
+use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
 
 /// One page in the offline corpus. Fields are owned so pages can be built from the
@@ -65,7 +65,7 @@ fn pages() -> Vec<CorpusPage> {
                 concept.name, concept.grounded_in
             ),
             keywords,
-            body: concept.canonical_lexemes.to_owned(),
+            body: meaning_detail::source_bundle(concept),
         });
     }
     pages
