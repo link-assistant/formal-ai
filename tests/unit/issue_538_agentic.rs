@@ -195,3 +195,25 @@ fn driver_is_deterministic_for_the_meaning_detail_task() {
     assert_eq!(first.final_answer, second.final_answer);
     assert_eq!(first.turns, second.turns);
 }
+
+#[test]
+fn committed_agent_cli_session_matches_a_fresh_run() {
+    // The committed artifact (docs/case-studies/issue-538/agent-cli-session.json)
+    // is the reproducible record the maintainer asked for: "the json file with the
+    // Agent CLI session that fully solved this exact task." Because the loop is
+    // deterministic, a fresh run must reproduce it byte-for-byte — so the artifact
+    // can never silently drift from what the code actually does. Regenerate with:
+    //   formal-ai agent --task "<MEANING_DETAIL_TASK>" \
+    //       --session-json docs/case-studies/issue-538/agent-cli-session.json
+    let committed = include_str!("../../docs/case-studies/issue-538/agent-cli-session.json");
+    let fresh = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed Agent CLI session is stale — regenerate it with `formal-ai agent \
+         --session-json …`"
+    );
+}

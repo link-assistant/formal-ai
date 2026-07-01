@@ -19,6 +19,7 @@
 
 use std::fmt::Write as _;
 
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use super::corpus;
@@ -37,7 +38,7 @@ pub const DRIVER_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file", "r
 const MAX_TURNS: usize = 12;
 
 /// One executed tool call, recorded for the transcript.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DriverToolStep {
     /// The tool name the server requested.
     pub tool: String,
@@ -48,7 +49,7 @@ pub struct DriverToolStep {
 }
 
 /// The outcome of an agentic run.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DriverOutcome {
     /// The task the driver was asked to solve.
     pub task: String,
@@ -82,6 +83,31 @@ impl DriverOutcome {
             let _ = writeln!(out, "(stopped at the {MAX_TURNS}-turn safety cap)");
         }
         out
+    }
+
+    /// A stable, replayable JSON record of the whole agentic session — the task,
+    /// the tools the CLI advertised, every executed tool call with its arguments
+    /// and result, the turn count, and the final answer. This is the "Agent CLI
+    /// session that solved the task" artifact: it is deterministic (no clock, no
+    /// randomness, no network), so committing it to the repo documents exactly how
+    /// Formal AI drove its own CLI to the solution.
+    #[must_use]
+    pub fn session_json(&self) -> Value {
+        json!({
+            "task": self.task,
+            "driver": "formal-ai in-repo agentic CLI",
+            "server": "formal-ai OpenAI-compatible chat completions",
+            "tools_advertised": DRIVER_TOOLS,
+            "turns": self.turns,
+            "hit_turn_cap": self.hit_turn_cap,
+            "steps": self.steps.iter().map(|step| json!({
+                "tool": step.tool,
+                "arguments": serde_json::from_str::<Value>(&step.arguments)
+                    .unwrap_or_else(|_| Value::String(step.arguments.clone())),
+                "result": step.result,
+            })).collect::<Vec<_>>(),
+            "final_answer": self.final_answer,
+        })
     }
 }
 
