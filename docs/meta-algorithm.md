@@ -170,3 +170,81 @@ cargo test --test unit specification::agentic_meta_algorithm -- --nocapture
 Because this recipe is checked against the source too, the agentic loop and its
 recipe can never silently diverge — the loop is itself a reproducible artifact of
 the meta-algorithm.
+
+## The response-language follow-up meta-algorithm (issue #556)
+
+The same grounded-recipe discipline records a third meta-algorithm: the
+**deterministic response-language follow-up** that re-answers the *whole class*
+of prior requests in a newly requested language. The maintainer's framing for
+issue #556 was that we must "generalize to all similar requests (the whole class
+of similar questions) in all languages … using our general and universal meta
+algorithm and actual recursive reasoning steps, expressed in meta language",
+with "all meanings … grounded in external data sources" and "every finest detail
+… tested". Its recipe lives at
+[`data/meta/response-language-followup-recipe.lino`](../data/meta/response-language-followup-recipe.lino)
+and is grounded by
+[`tests/unit/specification/response_language_meta_algorithm.rs`](../tests/unit/specification/response_language_meta_algorithm.rs).
+
+The key move is that a bare turn such as *"I do not understand English, write in
+Russian"* is **not a new question** — it asks the assistant to re-answer the
+previous request in a named language. Rather than localizing one handler, the
+follow-up replays the previous user request through the **whole solver** with the
+target language forced at a single detection seam, so the retarget generalizes
+across every answerable intent family (project lookup, capabilities, identity,
+concept lookup, …) at once. This is the universal recursive-reasoning step: the
+solver re-derives the prior answer, now constrained to speak the requested
+language. The trigger vocabulary is seed data grounded in Wikidata
+(`understanding` Q46744; the languages English Q1860, Russian Q7737, Hindi
+Q1568, Chinese Q7850) recognised by role — never a hardcoded phrase table
+(issue #386). Because translation passes through the language-neutral meta
+language, the retarget round-trips (issue #526): an answer produced in one
+language replays back into English on request.
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *re-answer the previous turn under a new constraint* behaviour:
+
+1. **Detect the requested response language by meaning** — `detect_response_language`
+   queries the `response_language_marker` role from the seed lexicon.
+2. **Confirm this is a re-answer, not a new question** — a seed-grounded
+   comprehension-failure marker or a terse (≤ 4 word) language switch with no
+   fresh subject.
+3. **Recover the previous user request from history** so the replay sees the same
+   context the original answer did.
+4. **Force the target language at the single detection seam** — `set_forced_language`
+   installs a thread-local override consulted at the top of `language::detect`,
+   restored by an RAII guard.
+5. **Replay the previous request through the whole solver** — the universal
+   recursive-reasoning step that generalizes across every intent family.
+6. **Guard recursion and inconclusive replays** — a replay already carries a
+   forced language (so it can never re-enter), and unknown/ill-formed/clarify
+   replays fall through.
+7. **Splice re-answer provenance** onto the replayed answer's evidence
+   (`response_language_followup:target:<lang>`, `language_to:<lang>`,
+   `response_language_followup:handler:<intent>`).
+8. **Mirror the handler in the JS worker** so the WASM/browser surface stays in
+   parity (R15).
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
+| `meta_role` | `pub const <CONST>: &str = "<role>";` in `src/seed/roles/language.rs` and `role <role>` in the seed |
+| `meta_grounding` | a cached Wikidata entity at `data/cache/wikidata/entity/Q<id>.lino`, and the Q-id present in the seed |
+| `meta_function` | `fn <name>` in the named source file |
+| `meta_seam` | the forced-language token in both `src/language.rs` and the JS worker |
+| `meta_parity` | `fn <rust>` in Rust and `function <js>` in the JS worker |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the response-language recipe still matches the live source:
+cargo test --test unit specification::response_language_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the response-language
+follow-up and its recipe can never silently diverge — the retarget is itself a
+reproducible artifact of the meta-algorithm.
