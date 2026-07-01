@@ -5,6 +5,7 @@ pub mod agentic_coding;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
+pub mod attachment_context;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;

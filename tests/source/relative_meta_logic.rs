@@ -421,3 +421,6 @@ fn round_decimal(value: f64) -> f64 {
     let scale = 10f64.powi(TRUTH_VALUE_DECIMALS as i32);
     (value * scale).round() / scale
 }
+
+#[path = "source_tests/relative_meta_logic/tests.rs"]
+mod tests;

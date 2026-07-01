@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::FormalAiEngine;
+use formal_ai::{handle_telegram_webhook, FormalAiEngine};
 
 const ISSUE_535_REPORTED_PROMPT: &str = "Проверь данный текст на уникальность и на плагиат\n\n\
 Attached files:\n\
@@ -112,6 +112,74 @@ fn document_originality_check_cases_cover_every_supported_language() {
     assert!(
         case_languages.values().all(|count| *count == 1),
         "document-originality prompts should add one case per supported language: {case_languages:?}",
+    );
+}
+
+#[test]
+fn telegram_document_attachment_routes_to_originality_check() {
+    // A Telegram user forwards a file with a Russian caption asking for an
+    // originality check — the shared attachment-context builder must fold the
+    // document into an `Attached files:` block so the same handler fires.
+    let body = r#"{
+        "update_id": 1,
+        "message": {
+            "message_id": 10,
+            "chat": {"id": 42, "type": "private"},
+            "caption": "Проверь этот файл на уникальность и на плагиат",
+            "document": {
+                "file_name": "variation-tech-model-manual.txt",
+                "mime_type": "text/plain",
+                "file_size": 164096
+            }
+        }
+    }"#;
+
+    let reply = handle_telegram_webhook(body)
+        .expect("valid webhook body")
+        .expect("private message should get a reply");
+    assert!(
+        reply.text.contains("уникаль") && reply.text.contains("плагиат"),
+        "Telegram document attachment should route to the originality workflow: {}",
+        reply.text,
+    );
+    assert!(
+        reply.text.contains("variation-tech-model-manual.txt"),
+        "the attached filename should survive into the Telegram reply: {}",
+        reply.text,
+    );
+}
+
+#[test]
+fn telegram_attachment_only_message_still_reaches_the_solver() {
+    // Even with no caption, an attached file must reach the solver rather than
+    // hitting the text-only fallback message.
+    let body = r#"{
+        "update_id": 2,
+        "message": {
+            "message_id": 11,
+            "chat": {"id": 42, "type": "private"},
+            "document": {
+                "file_name": "notes.txt",
+                "mime_type": "text/plain",
+                "file_size": 2048
+            }
+        }
+    }"#;
+
+    let reply = handle_telegram_webhook(body)
+        .expect("valid webhook body")
+        .expect("private message should get a reply");
+    assert!(
+        !reply
+            .text
+            .contains("I can only process Telegram text messages"),
+        "an attachment-only message must not hit the text-only fallback: {}",
+        reply.text,
+    );
+    assert!(
+        reply.text.contains("notes.txt"),
+        "the attachment name should reach the solver context: {}",
+        reply.text,
     );
 }
 

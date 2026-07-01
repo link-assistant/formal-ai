@@ -166,3 +166,6 @@ pub const fn stance_for_agreement(agrees: bool) -> Stance {
         Stance::Contradicts
     }
 }
+
+#[path = "source_tests/statement_verification/tests.rs"]
+mod tests;
