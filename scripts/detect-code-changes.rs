@@ -177,10 +177,14 @@ fn main() {
     }
     println!();
 
-    // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .yml, .yaml, or
-    // workflow files). .cjs covers the Electron desktop and VS Code extension host
-    // sources (extension.*.cjs, lib/*.cjs) so changes there still trigger lint/test.
-    let code_pattern = Regex::new(r"\.(rs|toml|mjs|cjs|js|yml|yaml)$|\.github/workflows/").unwrap();
+    // Check if any code files changed (.rs, .toml, .mjs, .cjs, .js, .lino, .yml,
+    // .yaml, or workflow files). .cjs covers the Electron desktop and VS Code
+    // extension host sources (extension.*.cjs, lib/*.cjs) so changes there still
+    // trigger lint/test. .lino covers seed lexicons and language resources such
+    // as src/web/i18n-catalog.lino: the language-change-parity guard watches
+    // those files, so editing one must run lint/test that enforces the guard.
+    let code_pattern =
+        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
     let code_changed = code_changed_files.iter().any(|f| code_pattern.is_match(f));
     set_output("any-code-changed", if code_changed { "true" } else { "false" });
 

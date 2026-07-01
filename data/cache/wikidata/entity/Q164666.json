@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q164666": {
+      "type": "item",
+      "id": "Q164666",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "плагиат"
+        },
+        "en": {
+          "language": "en",
+          "value": "plagiarism"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "साहित्यिक चोरी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "抄袭"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "using another author's work as if it was one's own original work"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "剽竊他人作品為己作"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी दूसरे की भाषा, विचार, उपाय, शैली आदि का अधिकांशतः नकल करते हुए अपने मौलिक कृति के रूप में प्रकाशन करना साहित्यिक चोरी (Plagiarism) कहलाती है। यूरोप में अट्ठारहवीं शती के बाद ही इस तरह का व्यवहार अनैतिक व्यवहार माना जाने लगा। इसके पूर्व की शताब्द"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "剽竊"
+          },
+          {
+            "language": "zh",
+            "value": "學術剽竊"
+          },
+          {
+            "language": "zh",
+            "value": "學術誠信"
+          },
+          {
+            "language": "zh",
+            "value": "抄襲"
+          },
+          {
+            "language": "zh",
+            "value": "剽竊行為"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "rip-off"
+          },
+          {
+            "language": "en",
+            "value": "ripoff"
+          },
+          {
+            "language": "en",
+            "value": "ripping off"
+          },
+          {
+            "language": "en",
+            "value": "plagiarizing"
+          },
+          {
+            "language": "en",
+            "value": "plagiarising"
+          },
+          {
+            "language": "en",
+            "value": "plagiarise"
+          },
+          {
+            "language": "en",
+            "value": "plagiarize"
+          },
+          {
+            "language": "en",
+            "value": "plagiary"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -168,6 +168,9 @@ fn external_trusted_services_are_registered_with_settings_toggles() {
         ("wikiversity", "externalServiceMediawikiFamily"),
         ("wikivoyage", "externalServiceMediawikiFamily"),
         ("github", "externalServiceGithub"),
+        // Issue #535: the original-journalism source the document-verification
+        // handler weighs statements against, opt-out-able via the same toggle.
+        ("wikinews", "externalServiceMediawikiFamily"),
     ];
 
     for (source, settings_key) in services {

@@ -133,6 +133,12 @@ roles
     kind meaning
   detail_modifier
     kind meaning
+  document_originality_check_action
+    kind meaning
+  document_originality_document
+    kind meaning
+  document_originality_subject
+    kind meaning
   enumeration_constraint
     kind meaning
   enumeration_request_opener

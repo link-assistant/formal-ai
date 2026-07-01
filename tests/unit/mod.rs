@@ -19,6 +19,7 @@ mod issue_403;
 mod issue_425;
 mod issue_484;
 mod issue_513;
+mod issue_535;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;

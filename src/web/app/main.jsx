@@ -1261,6 +1261,30 @@ function isImageAttachment(file) {
   return /\.(png|jpe?g|webp|gif|bmp|tiff?)$/i.test(String(file.name || ""));
 }
 
+const TEXT_ATTACHMENT_CONTEXT_LIMIT = 12000;
+
+function isTextAttachment(file) {
+  if (!file) return false;
+  const type = String(file.type || "").toLowerCase();
+  if (type.startsWith("text/")) return true;
+  if (
+    [
+      "application/json",
+      "application/ld+json",
+      "application/javascript",
+      "application/xml",
+      "application/x-ndjson",
+      "application/yaml",
+      "application/x-yaml",
+    ].includes(type)
+  ) {
+    return true;
+  }
+  return /\.(txt|md|markdown|csv|tsv|json|jsonl|lino|log|xml|html?|css|js|jsx|ts|tsx|rs|py|java|c|cc|cpp|h|hpp|go|rb|php|sh|ps1|sql|ya?ml|toml|ini|tex|rtf)$/i.test(
+    String(file.name || ""),
+  );
+}
+
 function formatFileSize(bytes) {
   const value = Number(bytes);
   if (!Number.isFinite(value) || value <= 0) return "0 B";
@@ -1276,6 +1300,37 @@ function readFileAsDataUrl(file) {
     reader.onerror = () => reject(reader.error || new Error("Unable to read file"));
     reader.readAsDataURL(file);
   });
+}
+
+function readFileAsText(file) {
+  if (file && typeof file.text === "function") {
+    return file.text();
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(reader.error || new Error("Unable to read file"));
+    reader.readAsText(file);
+  });
+}
+
+function sampleTextAttachmentContent(text, limit = TEXT_ATTACHMENT_CONTEXT_LIMIT) {
+  const normalized = String(text || "").replace(/\r\n?/g, "\n").trim();
+  if (normalized.length <= limit) {
+    return { text: normalized, truncated: false };
+  }
+  const segment = Math.max(1000, Math.floor(limit / 3));
+  const middleStart = Math.max(0, Math.floor((normalized.length - segment) / 2));
+  return {
+    text: [
+      normalized.slice(0, segment).trim(),
+      "[... omitted middle of text attachment ...]",
+      normalized.slice(middleStart, middleStart + segment).trim(),
+      "[... omitted middle of text attachment ...]",
+      normalized.slice(normalized.length - segment).trim(),
+    ].join("\n\n"),
+    truncated: true,
+  };
 }
 
 function loadOcrBundle() {
@@ -1320,6 +1375,9 @@ function attachmentMemoryRecord(attachment) {
     kind: attachment.isImage ? "image" : "file",
   };
   if (attachment.dataUrl) record.dataUrl = attachment.dataUrl;
+  if (attachment.text) record.text = attachment.text;
+  if (attachment.textTruncated) record.textTruncated = true;
+  if (attachment.textError) record.textError = attachment.textError;
   if (attachment.ocrText) record.ocrText = attachment.ocrText;
   if (attachment.ocrConfidence !== undefined && attachment.ocrConfidence !== null) {
     record.ocrConfidence = attachment.ocrConfidence;
@@ -1343,7 +1401,14 @@ function attachmentContextText(attachments) {
     lines.push(
       `${index + 1}. ${attachment.name} (${attachment.type}, ${formatFileSize(attachment.size)})`,
     );
-    if (attachment.ocrText) {
+    if (attachment.text) {
+      lines.push(`Text excerpt: ${attachment.text}`);
+      if (attachment.textTruncated) {
+        lines.push("Text omitted: attachment excerpt was truncated before solver context.");
+      }
+    } else if (attachment.textError) {
+      lines.push(`Text unavailable: ${attachment.textError}`);
+    } else if (attachment.ocrText) {
       lines.push(`OCR text: ${attachment.ocrText}`);
     } else if (attachment.ocrError) {
       lines.push(`OCR unavailable: ${attachment.ocrError}`);
@@ -6936,6 +7001,16 @@ function App() {
             }
           } catch (error) {
             next.ocrError = error && error.message ? error.message : "File read failed";
+          }
+        }
+        if (!next.isImage && attachment.sourceFile && isTextAttachment(attachment.sourceFile)) {
+          try {
+            const fullText = await readFileAsText(attachment.sourceFile);
+            const sample = sampleTextAttachmentContent(fullText);
+            next.text = sample.text;
+            next.textTruncated = sample.truncated;
+          } catch (error) {
+            next.textError = error && error.message ? error.message : "File read failed";
           }
         }
         prepared.push(next);

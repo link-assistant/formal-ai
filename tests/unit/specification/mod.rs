@@ -47,6 +47,7 @@ mod conversation_history;
 mod cue_lexicon;
 mod definition_fusion;
 mod desktop_surface;
+mod document_verification_meta_algorithm;
 mod formalization;
 mod github_repository_traffic;
 mod intent_formalization;

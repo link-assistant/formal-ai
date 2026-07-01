@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
+use crate::attachment_context::{compose_prompt_with_attachments, Attachment};
 use crate::engine::{naturalize_thinking_step, ThinkingStep};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
@@ -140,6 +141,95 @@ struct TelegramMessage {
     reply_to_message: Option<Box<Self>>,
     #[serde(default)]
     from: Option<TelegramUser>,
+    #[serde(default)]
+    document: Option<TelegramDocument>,
+    #[serde(default)]
+    photo: Vec<TelegramPhotoSize>,
+    #[serde(default)]
+    audio: Option<TelegramDocument>,
+    #[serde(default)]
+    voice: Option<TelegramDocument>,
+    #[serde(default)]
+    video: Option<TelegramDocument>,
+}
+
+/// A Telegram `document` attachment (any uploaded file).
+#[derive(Debug, Deserialize)]
+struct TelegramDocument {
+    #[serde(default)]
+    file_name: Option<String>,
+    #[serde(default)]
+    mime_type: Option<String>,
+    #[serde(default)]
+    file_size: Option<u64>,
+}
+
+/// One size of a Telegram `photo`. Photos arrive as an array of increasing
+/// resolutions; the largest carries the most representative size metadata.
+#[derive(Debug, Deserialize)]
+struct TelegramPhotoSize {
+    #[serde(default)]
+    file_size: Option<u64>,
+}
+
+impl TelegramMessage {
+    /// Collect every attached file on this message as shared
+    /// [`Attachment`](crate::attachment_context::Attachment) metadata, so the
+    /// solver receives the same `Attached files:` context every other surface
+    /// builds. Telegram delivers the file's own caption separately, so no text
+    /// excerpt is available here — the solver still recognises the attachment by
+    /// name and MIME type and requests the local file text.
+    fn attachments(&self) -> Vec<Attachment> {
+        let mut attachments = Vec::new();
+        if let Some(document) = &self.document {
+            attachments.push(document.as_attachment("document", self.message_id, ""));
+        }
+        if let Some(audio) = &self.audio {
+            attachments.push(audio.as_attachment("audio", self.message_id, "audio/mpeg"));
+        }
+        if let Some(voice) = &self.voice {
+            attachments.push(voice.as_attachment("voice", self.message_id, "audio/ogg"));
+        }
+        if let Some(video) = &self.video {
+            attachments.push(video.as_attachment("video", self.message_id, "video/mp4"));
+        }
+        if !self.photo.is_empty() {
+            let largest = self
+                .photo
+                .iter()
+                .max_by_key(|size| size.file_size.unwrap_or(0));
+            let mut attachment =
+                Attachment::new(format!("photo_{}.jpg", self.message_id), "image/jpeg");
+            if let Some(size) = largest.and_then(|size| size.file_size) {
+                attachment = attachment.with_size(size);
+            }
+            attachments.push(attachment);
+        }
+        attachments
+    }
+}
+
+impl TelegramDocument {
+    /// Convert a Telegram file object into a shared [`Attachment`], defaulting a
+    /// missing name to `<kind>_<message_id>` and a missing MIME type to
+    /// `fallback_mime` (or octet-stream when that is empty too).
+    fn as_attachment(&self, kind: &str, message_id: i64, fallback_mime: &str) -> Attachment {
+        let name = self
+            .file_name
+            .clone()
+            .filter(|name| !name.trim().is_empty())
+            .unwrap_or_else(|| format!("{kind}_{message_id}"));
+        let mime = self
+            .mime_type
+            .clone()
+            .filter(|mime| !mime.trim().is_empty())
+            .unwrap_or_else(|| fallback_mime.to_owned());
+        let mut attachment = Attachment::new(name, mime);
+        if let Some(size) = self.file_size {
+            attachment = attachment.with_size(size);
+        }
+        attachment
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -224,9 +314,14 @@ struct TelegramReplyBundle {
 
 fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
     let raw_text = message.text.as_deref().or(message.caption.as_deref());
+    // Fold any attached document/photo/media into the same `Attached files:`
+    // context every other surface builds, so an attachment-only message (or a
+    // caption plus a file) reaches the solver as a grounded prompt (issue #535).
+    let attachments = message.attachments();
+    let prompt = compose_prompt_with_attachments(raw_text, &attachments);
 
     let (reply_text, trace_id, thinking, steps) =
-        raw_text.filter(|text| !text.trim().is_empty()).map_or_else(
+        prompt.filter(|text| !text.trim().is_empty()).map_or_else(
             || (String::from(TEXT_ONLY_MESSAGE), None, None, Vec::new()),
             |prompt| {
                 let trimmed = prompt.trim();

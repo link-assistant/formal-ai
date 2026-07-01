@@ -248,3 +248,92 @@ cargo test --test unit specification::response_language_meta_algorithm -- --noca
 Because this recipe is checked against the source too, the response-language
 follow-up and its recipe can never silently diverge — the retarget is itself a
 reproducible artifact of the meta-algorithm.
+
+## The document verification meta-algorithm (issue #535)
+
+The same grounded-recipe discipline records a fourth meta-algorithm: the
+**deterministic document verification** handler that checks an attached
+document's originality, authenticity, and facts. The maintainer's framing for
+issue #535 was that a request such as *"Проверь данный текст на уникальность и
+на плагиат"* ("Check this text for uniqueness and plagiarism") with a text file
+attached must not answer `intent: unknown`; that we must "fully support attached
+files … in Desktop, Telegram bot, and Web app, and in other interface surfaces",
+"generalize to all similar requests (the whole class of similar questions) in
+all languages … expressed recursively through meanings (meta language)", ground
+"all meanings … in external data sources", and "fully use
+github.com/link-foundation/relative-meta-logic for relative statements
+probability" — trusting original first sources, using "newspapers/journals for
+their original content", and ignoring "any unoriginal content or reposting",
+with "every finest detail … tested". Its recipe lives at
+[`data/meta/document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino)
+and is grounded by
+[`tests/unit/specification/document_verification_meta_algorithm.rs`](../tests/unit/specification/document_verification_meta_algorithm.rs).
+
+The key move is that the request is recognised **by meaning, not by phrase**: it
+asks the assistant to verify the attached document. Three seed roles must fire —
+the check/verify action, the subject (plagiarism / originality / uniqueness /
+authenticity / veracity), and the document (text / article / file, or an
+attachment on its own). All three are seed data grounded in Wikidata
+(`verification and validation` Q953429, `plagiarism` Q164666, `originality`
+Q2914681, `authentication` Q2360032, `fact-checking` Q59555084, `document`
+Q49848) recognised by role — never a hardcoded per-language phrase table
+(issue #386). Because the vocabulary is data, the handler generalises across the
+whole verification class in every supported language (en/ru/hi/zh) at once. The
+attachment arrives through the **shared attachment context**, so Desktop, the
+Telegram bot, the Web app, and the HTTP/CLI boundary all deliver the same
+verifiable content to one handler.
+
+Each atomic statement in the document is then weighed under
+**relative-meta-logic**: `StatementAssessment::assess` starts every user
+statement at the assumed-true prior (`ASSUMED_TRUE_PRIOR = 0.6`) and moves it
+only under evidence, aggregating by `SourceTier` — original first parties (1.0)
+and original journalism (0.85) are trusted, independent corroboration is weaker,
+and unoriginal reposts contribute nothing and are ignored. Wikinews is the
+registered original-journalism tier, opt-out-able via the
+`externalServiceMediawikiFamily` settings toggle. The whole path is mirrored in
+the JS worker so the WASM/browser surface stays in parity (R15).
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *verify the attached content* behaviour:
+
+1. **Recognise the verification request by meaning, not phrase** — all three
+   seed roles must fire, queried from the lexicon.
+2. **Ingest the attached document or inline text sample** through the shared
+   attachment context, so every interface surface reaches one handler.
+3. **Split the content into atomic statements** so each claim is verified on its
+   own rather than the document as a whole.
+4. **Ground each statement in a web-search fact-check query** so the fusion
+   layer surfaces original first sources for or against it.
+5. **Weigh the evidence under relative-meta-logic** with the trusted-source tier
+   policy (original first sources trusted, unoriginal reposts ignored).
+6. **Consult the registered original-journalism source** (Wikinews), opt-out-able
+   from settings.
+7. **Splice the grounded verdict onto the evidence trace** so the trace names
+   exactly why each statement was trusted or doubted and which sources moved it.
+8. **Mirror the handler in the JS worker** so the WASM/browser surface stays in
+   parity (R15).
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
+| `meta_role` | `pub const <CONST>: &str = "<role>";` in `src/seed/roles/intent.rs` and `role <role>` in the seed |
+| `meta_grounding` | a cached Wikidata entity at `data/cache/wikidata/entity/Q<id>.lino`, and the Q-id present in the seed |
+| `meta_function` | `fn <name>` in the named source file; the handler is wired into `src/solver_dispatch.rs` |
+| `meta_parity` | `fn <rust>` in Rust and `function <js>` in the JS worker |
+| `meta_external_service` | `source` + `settings_key` in `data/seed/sources-registry.lino` |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the document-verification recipe still matches the live source:
+cargo test --test unit specification::document_verification_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, document verification and
+its recipe can never silently diverge — the handler is itself a reproducible
+artifact of the meta-algorithm.

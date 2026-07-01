@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "Q49848": {
+      "type": "item",
+      "id": "Q49848",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "document"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "документ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "文献"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दस्तावेज़"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "form for preservation of structured and identified information"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "форма хранения упорядоченной и идентифицированной информации"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "具结构且可辨识信息之保存型式"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संरक्षित जानकारी"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "doc"
+          },
+          {
+            "language": "en",
+            "value": "record"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "文稿"
+          },
+          {
+            "language": "zh",
+            "value": "文书"
+          },
+          {
+            "language": "zh",
+            "value": "档案"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
+

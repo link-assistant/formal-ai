@@ -84,6 +84,11 @@ meanings
     lexeme en
       surface
         text "term"
+  accuracy
+    defined-by word_surface
+    lexeme en
+      surface
+        text "accuracy"
   addon
     defined-by word_surface
     lexeme en
@@ -109,6 +114,11 @@ meanings
     lexeme en
       surface
         text "ai orchestration"
+  analyze
+    defined-by word_surface
+    lexeme en
+      surface
+        text "analyze"
   answer_
     defined-by identifier
     lexeme en
@@ -139,6 +149,11 @@ meanings
     lexeme en
       surface
         text "append text"
+  article
+    defined-by word_surface
+    lexeme en
+      surface
+        text "article"
   assistant_free_time
     defined-by intent
     lexeme en
@@ -149,6 +164,31 @@ meanings
     lexeme en
       surface
         text "assistant name"
+  attached
+    defined-by word_surface
+    lexeme en
+      surface
+        text "attached"
+  attachment
+    defined-by word_surface
+    lexeme en
+      surface
+        text "attachment"
+  authentic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "authentic"
+  authenticate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "authenticate"
+  authenticity
+    defined-by word_surface
+    lexeme en
+      surface
+        text "authenticity"
   awk
     defined-by token
     lexeme en
@@ -274,6 +314,11 @@ meanings
     lexeme en
       surface
         text "chown"
+  claim
+    defined-by word_surface
+    lexeme en
+      surface
+        text "claim"
   class-library
     defined-by category
     lexeme en
@@ -399,6 +444,11 @@ meanings
     lexeme en
       surface
         text "cooldowns"
+  copied
+    defined-by word_surface
+    lexeme en
+      surface
+        text "copied"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -464,6 +514,11 @@ meanings
     lexeme en
       surface
         text "cpp"
+  credibility
+    defined-by word_surface
+    lexeme en
+      surface
+        text "credibility"
   csharp
     defined-by programming_language
     lexeme en
@@ -529,6 +584,11 @@ meanings
     lexeme en
       surface
         text "dirven"
+  disinformation
+    defined-by word_surface
+    lexeme en
+      surface
+        text "disinformation"
   distinct_numbers
     defined-by operation
     lexeme en
@@ -549,6 +609,21 @@ meanings
     lexeme en
       surface
         text "docker microservice"
+  document
+    defined-by word_surface
+    lexeme en
+      surface
+        text "document"
+  document_originality_check_sample_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "document originality check sample missing"
+  document_originality_check_sample_present
+    defined-by intent
+    lexeme en
+      surface
+        text "document originality check sample present"
   dotnet
     defined-by word_surface
     lexeme en
@@ -564,6 +639,11 @@ meanings
     lexeme en
       surface
         text "duckduckgo"
+  duplicate
+    defined-by word_surface
+    lexeme en
+      surface
+        text "duplicate"
   echo
     defined-by token
     lexeme en
@@ -574,6 +654,11 @@ meanings
     lexeme en
       surface
         text "enumerate possessive"
+  essay
+    defined-by word_surface
+    lexeme en
+      surface
+        text "essay"
   eur
     defined-by word_surface
     lexeme en
@@ -619,11 +704,21 @@ meanings
     lexeme en
       surface
         text "extract url"
+  fabricated
+    defined-by word_surface
+    lexeme en
+      surface
+        text "fabricated"
   fact_lookup
     defined-by intent
     lexeme en
       surface
         text "fact lookup"
+  factual
+    defined-by word_surface
+    lexeme en
+      surface
+        text "factual"
   fastapi
     defined-by word_surface
     lexeme en
@@ -674,6 +769,11 @@ meanings
     lexeme en
       surface
         text "func"
+  genuine
+    defined-by word_surface
+    lexeme en
+      surface
+        text "genuine"
   git
     defined-by token
     lexeme en
@@ -1034,6 +1134,11 @@ meanings
     lexeme en
       surface
         text "ls"
+  manuscript
+    defined-by word_surface
+    lexeme en
+      surface
+        text "manuscript"
   mathematical-logic
     defined-by category
     lexeme en
@@ -1064,6 +1169,11 @@ meanings
     lexeme en
       surface
         text "meta explanation"
+  misinformation
+    defined-by word_surface
+    lexeme en
+      surface
+        text "misinformation"
   mkdir
     defined-by token
     lexeme en
@@ -1149,6 +1259,16 @@ meanings
     lexeme en
       surface
         text "openai"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
   outdent
     defined-by concept
     lexeme en
@@ -1169,6 +1289,11 @@ meanings
     lexeme en
       surface
         text "package management"
+  paper
+    defined-by word_surface
+    lexeme en
+      surface
+        text "paper"
   pascal
     defined-by concept
     lexeme en
@@ -1179,6 +1304,11 @@ meanings
     lexeme en
       surface
         text "pascal case"
+  passage
+    defined-by word_surface
+    lexeme en
+      surface
+        text "passage"
   path_argument
     defined-by operation
     lexeme en
@@ -1264,133 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase what do you do in your free time en"
-  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase what do you do when you are not working en"
-  pattern_behavior_rules_list_apne_niyam_ginao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyam ginao hi"
-  pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list apne niyamon ki suchi dikhao hi"
-  pattern_behavior_rules_list_liechu_nide_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu nide guize zh"
-  pattern_behavior_rules_list_liechu_xingwei_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list liechu xingwei guize zh"
-  pattern_behavior_rules_list_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list list your rules en"
-  pattern_behavior_rules_list_niyam_dikhao_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list niyam dikhao hi"
-  pattern_behavior_rules_list_perechisli_svoi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list perechisli svoi pravila ru"
-  pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila povedeniya ru"
-  pattern_behavior_rules_list_pokazhi_pravila_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi pravila ru"
-  pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list pokazhi spisok svoih pravil ru"
-  pattern_behavior_rules_list_show_behavior_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show behavior rules en"
-  pattern_behavior_rules_list_show_list_your_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show list your rules en"
-  pattern_behavior_rules_list_show_rules_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list show rules en"
-  pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list vyavahar niyam suchibaddh hi"
-  pattern_behavior_rules_list_xianshi_guize_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi guize zh"
-  pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern behavior rules list xianshi nide guize liebiao zh"
-  pattern_concept_context_delimiter_dlya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter dlya ru"
-  pattern_concept_context_delimiter_for_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter for en"
-  pattern_concept_context_delimiter_in_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter in en"
-  pattern_concept_context_delimiter_ke_liye_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke liye hi"
-  pattern_concept_context_delimiter_ke_sandarbh_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter ke sandarbh men hi"
-  pattern_concept_context_delimiter_li_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter li de zh"
-  pattern_concept_context_delimiter_lingyu_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu de zh"
-  pattern_concept_context_delimiter_lingyu_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter lingyu zh"
-  pattern_concept_context_delimiter_men_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter men hi"
