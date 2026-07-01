@@ -76,7 +76,7 @@ this PR makes it explicit and *tested* for every tomato surface via
 test, and lets a surface additionally denote grammatical values
 (`singular`/`plural`) that are themselves grounded meanings.
 
-## 4. Rust → WebAssembly (aspirational follow-up R7)
+## 4. Rust → WebAssembly (R7 — not yet built in this PR)
 
 The issue's larger vision includes moving formal-worker logic out of hand-written
 JavaScript into a WebAssembly worker compiled from Rust at build time, keeping JS
@@ -91,13 +91,15 @@ to UI interfacing only. Research confirms the standard toolchain:
   worker owning its own WASM instance — matching the issue's "WebAssembly web
   worker" phrasing.
 
-This confirms the follow-up is feasible with a mainstream toolchain and no
-neural runtime. Note the repo **already** has a Rust→WASM demo worker
+This confirms the work is feasible with a mainstream toolchain and no neural
+runtime. Note the repo **already** has a Rust→WASM demo worker
 (`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`, issue #1
 R16), so the remaining work is widening that surface to absorb the hand-written
-JS workers under `src/web/worker/` rather than introducing the toolchain from
-scratch. It stays a build-system programme tracked on the roadmap rather than
-part of this data-focused PR.
+JS workers under `src/web/worker/`. That widening is **not built in this PR**;
+the smallest real next slice is to port one hand-written worker in
+`src/web/worker/` to a `wasm-pack`-built module and assert byte-for-byte output
+parity with the JS version under test — the same "drive it through a test that
+goes red on regression" discipline this PR applies to the data.
 
 Sources:
 - <https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm>

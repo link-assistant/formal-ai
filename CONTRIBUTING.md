@@ -364,19 +364,23 @@ hardcoded prompt→answer tables.
     generality by phrasing the same request different ways and by reproducing the
     change in a clean repository copy driven by the Agent CLI.
 
-    **Honest current status.** This is the stated direction, **not yet the
-    enforced default.** The self-hosting loop (spawn a Formal AI server, hand it
-    the issue, capture the Agent-CLI session JSON that reproduces the change) is a
-    tracked programme — see `docs/case-studies/issue-538` (requirements R378–R386)
-    and `ROADMAP.md`. Until it is wired up, contributors still make the change
-    directly, but should: (a) express new knowledge as grounded seed *data* and
-    reuse the existing meta-algorithm mechanisms rather than adding bespoke
-    branches (conventions 2–3 above); (b) record any capability the Agent-CLI loop
-    could not yet perform as a follow-up so the meta algorithm's gaps stay
-    visible; and (c) when a task's requirements conflict (as issue #538's small
-    concrete ask conflicts with its sweeping vision), surface the contradiction
-    and separate the verifiable core from the tracked programme instead of
-    silently doing part of everything.
+    **Honest current status.** This is not aspirational: from issue #538 forward
+    it is how changes are produced (see the top-of-file rules 1–5). The Agent CLI
+    drives real, byte-for-byte-reproducible changes today — the self-hosting loop
+    (spawn a Formal AI server, hand it the task, capture the Agent-CLI session JSON
+    that reproduces the change) is what wrote the #538 seed data, the potato
+    enrichment, and the generated recipe diagrams; `scripts/reproduce-issue-538.sh`
+    regenerates all three on a clean checkout. What is honestly *not yet built* is
+    autonomous handling of the sweeping, open-ended axes (e.g. a full CST/AST-in-
+    data round trip, or one-shot handling of an arbitrary unseen issue). Those are
+    **not** parked on a roadmap: each names its smallest real, testable next slice
+    in [`docs/case-studies/issue-538/requirements.md`](docs/case-studies/issue-538/requirements.md)
+    and is executed the same way — by extending Formal AI / the Agent CLI until the
+    tool can do it and a test goes red on regression (rule 3), never by hand-editing
+    and deferring. When a task's requirements genuinely conflict (as issue #538's
+    small concrete ask sits inside a much larger vision), surface the contradiction
+    explicitly and still deliver a real, tested slice of *each* axis — never dress
+    "did part of everything" as an honest scope cut.
 
 ## Pull Request Process
 
