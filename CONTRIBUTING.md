@@ -315,6 +315,31 @@ hardcoded prompt→answer tables.
     pull request; commit atomic, individually useful steps so interrupted work
     stays preserved.
 
+11. **Prefer the meta algorithm; drive Formal AI to solve its own tasks
+    (direction set by issue #538).** The long-term way we develop this project is
+    to treat every task as a message formalized into the meta language and to let
+    Formal AI — driven through its own Agent CLI
+    (<https://github.com/link-assistant/agent>) — reason about and solve the task
+    by editing its own data (memory) and meta algorithm (reasoning), rather than
+    a human hand-coding each answer. When Formal AI cannot yet perform a step,
+    the goal is to improve the meta algorithm just enough that it can, verifying
+    generality by phrasing the same request different ways and by reproducing the
+    change in a clean repository copy driven by the Agent CLI.
+
+    **Honest current status.** This is the stated direction, **not yet the
+    enforced default.** The self-hosting loop (spawn a Formal AI server, hand it
+    the issue, capture the Agent-CLI session JSON that reproduces the change) is a
+    tracked programme — see `docs/case-studies/issue-538` (requirements R378–R386)
+    and `ROADMAP.md`. Until it is wired up, contributors still make the change
+    directly, but should: (a) express new knowledge as grounded seed *data* and
+    reuse the existing meta-algorithm mechanisms rather than adding bespoke
+    branches (conventions 2–3 above); (b) record any capability the Agent-CLI loop
+    could not yet perform as a follow-up so the meta algorithm's gaps stay
+    visible; and (c) when a task's requirements conflict (as issue #538's small
+    concrete ask conflicts with its sweeping vision), surface the contradiction
+    and separate the verifiable core from the tracked programme instead of
+    silently doing part of everything.
+
 ## Pull Request Process
 
 1. Ensure all tests pass locally
