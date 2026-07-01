@@ -45,3 +45,10 @@ bump: minor
 - Split the meaning-lexicon seed parser into `src/seed/meanings/parse.rs` so both
   `meanings.rs` and the new module stay under the Rust file-size guard after the
   grammatical-detail additions (mirrors the existing `roles.rs` split).
+- Reworked the meaning-detail recipe (`src/agentic_coding/meaning_detail.rs`) to
+  **derive** every enriched surface from real, checked-in Wikidata lexeme JSON
+  (parsed by a general serde_json algorithm) instead of hardcoded answer tables:
+  the singular form is anchored to the lexeme's lemma and the plural is paired by
+  matching non-number grammatical features, so the logic is general for any case
+  paradigm and references no hardcoded case id. Hardcoded strings now live only in
+  tests; the four seed blocks are reproduced byte-for-byte from the source JSON.
