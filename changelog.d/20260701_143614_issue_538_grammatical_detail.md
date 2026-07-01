@@ -23,3 +23,6 @@ bump: minor
   workflow as the intended direction in `CONTRIBUTING.md`, `ROADMAP.md`, and
   `REQUIREMENTS.md`, with the aspirational parts of issue #538 recorded as
   tracked follow-ups.
+- Split the meaning-lexicon seed parser into `src/seed/meanings/parse.rs` so both
+  `meanings.rs` and the new module stay under the Rust file-size guard after the
+  grammatical-detail additions (mirrors the existing `roles.rs` split).
