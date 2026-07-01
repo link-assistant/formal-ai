@@ -1,0 +1,12 @@
+import fs from "node:fs";import path from "node:path";import vm from "node:vm";import {fileURLToPath} from "node:url";import {TextEncoder,TextDecoder} from "node:util";
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");const webDir=path.join(root,"src","web");
+const s={};s.self=s;s.globalThis=s;s.console=console;s.postMessage=()=>{};s.fetch=async(u)=>{const c=String(u).split("?")[0];return{ok:true,status:200,async text(){return fs.readFileSync(path.join(webDir,c),"utf8");}};};s.WebAssembly={instantiate:async()=>{throw new Error("x");}};s.location={search:""};s.setTimeout=setTimeout;s.clearTimeout=clearTimeout;s.TextEncoder=TextEncoder;s.TextDecoder=TextDecoder;s.URL=URL;s.URLSearchParams=URLSearchParams;
+vm.createContext(s);const run=(f)=>vm.runInContext(fs.readFileSync(f,"utf8"),s,{filename:f});
+run(path.join(webDir,"seed_loader.js"));for(let i=0;i<=20;i++)run(path.join(webDir,"worker",`formal_ai_worker_${String(i).padStart(2,"0")}.js`));
+await vm.runInContext("loadSeed()",s);const g=s;
+const native=await g.solve("что ты умеешь",[],{},{},[],{});
+console.log("native RU capabilities intent=",native.intent);
+console.log("native content:",String(native.content||"").slice(0,120).replace(/\n/g," "));
+const forced=await g.solve("what can you do",[],{},{},[],{forcedResponseLanguage:"ru"});
+console.log("\nforced RU capabilities intent=",forced.intent);
+console.log("forced content:",String(forced.content||"").slice(0,120).replace(/\n/g," "));

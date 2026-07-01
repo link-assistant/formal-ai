@@ -70,6 +70,24 @@ function detectResponseLanguage(normalized) {
   return detectTranslationMarkerLanguage(ROLE_RESPONSE_LANGUAGE_MARKER, normalized);
 }
 
+// The role naming every "I cannot understand this" surface. Its phrase table
+// lives in data/seed/meanings-translation.lino; only the role name stays in
+// code. Mirrors ROLE_COMPREHENSION_FAILURE_MARKER in
+// src/translation/language_markers.rs (issue #556).
+const ROLE_COMPREHENSION_FAILURE_MARKER = "comprehension_failure_marker";
+
+// True when the user reports they cannot understand the prior answer — any
+// seeded surface ("do not understand", "не понимаю", "समझ नहीं", "不懂", …)
+// appears in `normalized`. Plain substring matching mirrors
+// detect_comprehension_failure in src/translation/language_markers.rs, so a
+// CJK marker with no word spaces still matches inside a longer sentence.
+function detectComprehensionFailure(normalized) {
+  const text = String(normalized || "").toLowerCase();
+  return meaningsWithRole(ROLE_COMPREHENSION_FAILURE_MARKER).some((meaning) =>
+    meaning.words.some((word) => text.includes(word)),
+  );
+}
+
 let cachedTranslationMarkers = null;
 // Project the translation-extraction markers out of the meaning lexicon, once.
 // Each field is a semantic role narrowed to the slot and script its strategy

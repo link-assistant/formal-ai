@@ -1158,83 +1158,86 @@ async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, prefere
   return genericProjectLookupAnswer(prompt, language, null, promotionEnabled);
 }
 
+// A follow-up fires when the user reports they cannot understand the prior
+// answer (seed-grounded detectComprehensionFailure) or when the prompt is a
+// terse language-switch request. In the terse case the caller has already
+// confirmed a seed-grounded response-language marker is present, so a short
+// prompt with no fresh subject of its own is treated as a retarget of the
+// previous turn. Mirrors is_language_reanswer_followup in
+// src/solver_handlers/response_language_followup.rs — the whole phrase table
+// lives in data/seed/meanings-translation.lino, not here (issue #556).
 function isLanguageReanswerFollowup(normalized) {
   const text = String(normalized || "").trim().toLowerCase();
   if (!text) return false;
-  if (
-    text.includes("do not understand") ||
-    text.includes("don't understand") ||
-    text.includes("dont understand") ||
-    text.includes("can't understand") ||
-    text.includes("cant understand") ||
-    text.includes("cannot understand") ||
-    text.includes("не понимаю") ||
-    text.includes("не понял") ||
-    text.includes("не поняла") ||
-    text.includes("समझ नहीं") ||
-    text.includes("नहीं आती") ||
-    text.includes("不懂") ||
-    text.includes("看不懂") ||
-    text.includes("听不懂")
-  ) {
-    return true;
-  }
+  if (detectComprehensionFailure(text)) return true;
+  // CJK markers carry no inter-word spaces, so a bare "用中文" counts as one
+  // word here — still terse, still a switch.
   const wordCount = text.split(/\s+/u).filter(Boolean).length;
+  return wordCount <= 4;
+}
+
+// Intents that mean the replay never reached a concrete answer, so the
+// retarget is not a useful re-answer and we fall through to the normal
+// handlers. Mirrors is_inconclusive in
+// src/solver_handlers/response_language_followup.rs.
+function isInconclusiveReplayIntent(intent) {
+  const value = String(intent || "");
   return (
-    wordCount <= 4 &&
-    (text.includes("in english") ||
-      text.includes("in russian") ||
-      text.includes("in hindi") ||
-      text.includes("in chinese") ||
-      text.includes("на английском") ||
-      text.includes("по-английски") ||
-      text.includes("на русском") ||
-      text.includes("по-русски") ||
-      text.includes("по русски") ||
-      text.includes("на хинди") ||
-      text.includes("на китайском") ||
-      text.includes("अंग्रेजी में") ||
-      text.includes("अंग्रेज़ी में") ||
-      text.includes("रूसी में") ||
-      text.includes("हिंदी में") ||
-      text.includes("हिन्दी में") ||
-      text.includes("चीनी में") ||
-      text.includes("用英文") ||
-      text.includes("用英语") ||
-      text.includes("用英語") ||
-      text.includes("用俄语") ||
-      text.includes("用俄語") ||
-      text.includes("用印地语") ||
-      text.includes("用印地文") ||
-      text.includes("用中文") ||
-      text.includes("用汉语") ||
-      text.includes("用漢語"))
+    value === "unknown" ||
+    value === "ill_formed" ||
+    value === "punctuation_only_prompt" ||
+    value.startsWith("clarify")
   );
 }
 
+// Issue #556: a response-language follow-up ("I do not understand English,
+// write in Russian") is not a new question. It replays the previous request
+// through the *whole* solver with the requested language forced onto every
+// localizable handler, so the retarget covers the entire answerable class —
+// not just project lookups. Mirrors try_response_language_followup in
+// src/solver_handlers/response_language_followup.rs.
 async function tryResponseLanguageFollowup(prompt, normalized, history, preferences) {
   const targetLanguage = detectResponseLanguage(normalized);
   if (!targetLanguage) return null;
   if (!isLanguageReanswerFollowup(normalized)) return null;
-  const previousUser = lastHistoryTurn(history, "user");
-  if (!String(previousUser || "").trim()) return null;
 
-  const answer = await tryProjectLookupForPrompt(
-    prompt,
-    previousUser,
-    targetLanguage,
-    preferences,
-  );
-  if (!answer) return null;
-  return {
-    ...answer,
-    evidence: [
-      `response_language_followup:target:${targetLanguage}`,
-      `language_to:${targetLanguage}`,
-      "response_language_followup:handler:project_lookup",
-      ...(Array.isArray(answer.evidence) ? answer.evidence : []),
-    ],
-  };
+  // Recover the most recent user request and the history that preceded it, so
+  // the replay sees the same context the original answer did.
+  if (!Array.isArray(history)) return null;
+  let previousIndex = -1;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (turn && turn.role === "user" && turn.content) {
+      previousIndex = index;
+      break;
+    }
+  }
+  if (previousIndex < 0) return null;
+  const previousUser = String(history[previousIndex].content || "").trim();
+  if (!previousUser) return null;
+  const priorHistory = history.slice(0, previousIndex);
+
+  // Replay through the whole solver with the requested language forced. The
+  // forced language doubles as the recursion guard inside solve().
+  const replay = await solve(previousUser, priorHistory, preferences, {}, [], {
+    forcedResponseLanguage: targetLanguage,
+  });
+  if (!replay || isInconclusiveReplayIntent(replay.intent)) return null;
+
+  // Splice the follow-up provenance onto the replayed answer; the answer's own
+  // evidence (repository slug, sources, language_to:<code>) already comes from
+  // the replay, so these markers only name *why* it was produced.
+  const followupEvidence = [
+    `response_language_followup:target:${targetLanguage}`,
+    `language_to:${targetLanguage}`,
+    `response_language_followup:handler:${replay.intent}`,
+  ];
+  const existing = Array.isArray(replay.evidence) ? replay.evidence : [];
+  const merged = existing.slice();
+  for (const marker of followupEvidence) {
+    if (!merged.includes(marker)) merged.push(marker);
+  }
+  return { ...replay, evidence: merged };
 }
 
 function pickPrimaryProviderId(providers, sourceKind) {

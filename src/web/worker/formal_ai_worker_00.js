@@ -791,7 +791,23 @@ function definitionFusionByDefault(preferences) {
 // that could not instantiate the worker — they must stay byte-for-byte
 // compatible with the Rust path so the offline trace and the live answer
 // agree (PR #134 feedback 4489651616).
+// Issue #556: during a response-language follow-up the solver replays the
+// previous request with a language forced onto every localizable handler. The
+// handlers derive their output language from detectLanguage(prompt), so the
+// forced language is applied here — a single seam that every handler already
+// reads, mirroring how SolverConfig.forced_response_language flows through the
+// Rust dispatch. solve() sets this via setForcedResponseLanguage() and always
+// restores the previous value, so nested replays remain balanced.
+let FORCED_RESPONSE_LANGUAGE = null;
+
+function setForcedResponseLanguage(language) {
+  const previous = FORCED_RESPONSE_LANGUAGE;
+  FORCED_RESPONSE_LANGUAGE = isKnownResponseLanguage(language) ? language : null;
+  return previous;
+}
+
 function detectLanguage(prompt) {
+  if (FORCED_RESPONSE_LANGUAGE) return FORCED_RESPONSE_LANGUAGE;
   const text = String(prompt || "");
   const fromWasm = wasmDetectLanguage(text);
   if (fromWasm !== null) {
