@@ -397,6 +397,16 @@ impl UniversalSolver {
     ) -> SymbolicAnswer {
         let mut log = EventLog::new();
 
+        // Issue #556: when this solve is a forced-language replay, force
+        // detection so every localizable handler renders in the requested
+        // language. The guard restores the previous value when this function
+        // returns, keeping nested replays balanced.
+        let _forced_language_guard = crate::language::set_forced_language(
+            self.config
+                .forced_response_language
+                .and_then(crate::language::from_slug),
+        );
+
         for turn in history {
             let kind: &'static str = match turn.role {
                 ConversationRole::User => "prior_turn:user",
