@@ -2,6 +2,44 @@
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
+## How we develop Formal AI: drive the Agent CLI, never defer
+
+**From issue #538 forward, this is the only way we develop the Formal AI
+system.** We do not solve a task by editing code and data by hand and we do not
+solve it partway and defer the rest to a roadmap. We solve it by **driving Formal
+AI through its own [Agent CLI](https://github.com/link-assistant/agent)** (the
+in-repo agentic driver in `src/agentic_coding/`, running against the
+OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
+in the same pull request.
+
+Concretely, every change must follow these rules:
+
+1. **The tool authors the change, not you.** Drive the Agent CLI + Formal AI to
+   produce the change. Where the output lands in the repo (e.g. seed data), a
+   test must assert that the committed artifact is **byte-for-byte** what the
+   Agent-CLI-driven recipe produces, so the tool — not a hand-edit — is the
+   author and cannot silently regress. See the issue #538 case study
+   ([`docs/case-studies/issue-538/`](docs/case-studies/issue-538/)) for the
+   pattern and the committed `agent-cli-session*.json` sessions.
+2. **No pre-emptive deferral, no refusals, no follow-ups.** "This is large or
+   hard" is never a reason to ship a slice and route the rest to a roadmap. Find
+   the smallest real, tested, reproducible slice of *each* requirement and
+   execute it now, in this PR. Read
+   [`docs/case-studies/issue-538/refusal-anti-pattern.md`](docs/case-studies/issue-538/refusal-anti-pattern.md)
+   before opening a PR — it is the failed reasoning we do not repeat, and we do
+   not teach Formal AI to refuse or defer like that.
+3. **When the tool can't do it, extend the tool, then retry.** Falling back to a
+   manual edit is allowed only after you have proven the Agent CLI / Formal AI
+   cannot yet do it — and then you must immediately improve the Agent CLI /
+   Formal AI so it *can* in general, and re-run through the tool.
+4. **Prove generality with different words each time.** Use a *different* natural
+   language request for each case so a passing run proves the solution is truly
+   general, not hardcoded to one phrasing (issue #538 drives tomato and potato
+   with two differently-worded requests).
+5. **Report faithfully.** State what is done and verified plainly. Honesty means
+   reporting results accurately; it is never a license to stop early or to dress
+   a refusal as an "honest scope" section.
+
 ## Development Setup
 
 1. **Fork and clone the repository**
