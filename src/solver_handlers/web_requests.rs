@@ -352,6 +352,7 @@ pub fn try_explicit_repository_lookup(
     log: &mut EventLog,
     promote_associative_repositories: bool,
     suppress_identity_route: bool,
+    response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
     if is_text_url_extraction_prompt(normalized) {
         return None;
@@ -368,7 +369,7 @@ pub fn try_explicit_repository_lookup(
         log,
         promote_associative_repositories,
         suppress_identity_route,
-        None,
+        response_language,
     )
 }
 
@@ -450,6 +451,12 @@ fn render_project_lookup(
     response_language: Option<&str>,
 ) -> SymbolicAnswer {
     let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
+    // Issue #556: record the forced target language so a response-language
+    // replay's trace and evidence carry `language_to:<code>` even though the
+    // localized surface itself is produced by the summarizer below.
+    if response_language.is_some() {
+        log.append("language_to", language.to_owned());
+    }
     let config = SummarizationConfig::default()
         .with_mode(SummarizationMode::Short)
         .with_language(language);
@@ -528,6 +535,12 @@ fn render_generic_repository_lookup(
     response_language: Option<&str>,
 ) -> SymbolicAnswer {
     let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
+    // Issue #556: mirror the promoted-project renderer — a forced response
+    // language is recorded on the trace so the whole answerable class, not just
+    // promoted projects, carries `language_to:<code>` when replayed.
+    if response_language.is_some() {
+        log.append("language_to", language.to_owned());
+    }
     let provider_summary = ["GitHub", "GitLab", "Bitbucket"].join(", ");
     if !promotion_enabled {
         log.append("project_lookup:promotion", "disabled".to_owned());

@@ -89,6 +89,8 @@ roles
     kind predicate
   compounding_frequency_cue
     kind predicate
+  comprehension_failure_marker
+    kind predicate
   conversation_recall_other_query
     kind meaning
   conversation_recall_previous_message

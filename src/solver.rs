@@ -223,6 +223,17 @@ pub struct SolverConfig {
     /// the additive exact-evidence behaviour the solver shipped before the
     /// policy existed, so every existing surface is unaffected unless it opts in.
     pub probability_policy: ProbabilityDecisionPolicy,
+    /// Response language forced onto every localizable handler for one replay
+    /// (issue #556). `None` is the normal case: each handler renders in the
+    /// language detected from the prompt. When a response-language follow-up
+    /// ("I do not understand English, write in Russian") replays the previous
+    /// request through the whole solver, it sets this to the requested ISO
+    /// 639-1 code so *every* answer family that can localize — concept lookup,
+    /// repository/project lookup, … — re-renders in that language rather than
+    /// only a single hardcoded handler. It also serves as the recursion guard:
+    /// a solve whose config already carries a forced language never fires the
+    /// follow-up again.
+    pub forced_response_language: Option<&'static str>,
 }
 
 impl Default for SolverConfig {
@@ -246,6 +257,7 @@ impl Default for SolverConfig {
             execution_surface: ExecutionSurface::default(),
             blueprint_composition: BlueprintComposition::default(),
             probability_policy: ProbabilityDecisionPolicy::default(),
+            forced_response_language: None,
         }
     }
 }

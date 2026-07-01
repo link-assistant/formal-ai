@@ -8,7 +8,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::proof_engine::ProofRenderConfig;
-use crate::solver::ConversationTurn;
+use crate::solver::{ConversationTurn, SolverConfig};
 use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{
     try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
@@ -73,22 +73,25 @@ const fn response_language_followup_noop(
 
 #[derive(Clone, Copy)]
 pub struct ContextualRuntime {
-    promote_associative_repositories: bool,
     proof_render_config: ProofRenderConfig,
     self_awareness_runtime: SelfAwarenessRuntime,
+    /// Full solver config, so the response-language follow-up can replay the
+    /// previous request through a fresh [`crate::solver::UniversalSolver`] with
+    /// the requested language forced (issue #556).
+    solver_config: SolverConfig,
 }
 
 impl ContextualRuntime {
     #[must_use]
     pub const fn new(
-        promote_associative_repositories: bool,
         proof_render_config: ProofRenderConfig,
         self_awareness_runtime: SelfAwarenessRuntime,
+        solver_config: SolverConfig,
     ) -> Self {
         Self {
-            promote_associative_repositories,
             proof_render_config,
             self_awareness_runtime,
+            solver_config,
         }
     }
 }
@@ -166,13 +169,9 @@ pub fn try_contextual_override(
             try_shell_command_transform_with_history(prompt, normalized, log, history)
         }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
-        "response_language_followup" => try_response_language_followup(
-            prompt,
-            normalized,
-            log,
-            history,
-            runtime.promote_associative_repositories,
-        ),
+        "response_language_followup" => {
+            try_response_language_followup(prompt, normalized, log, history, runtime.solver_config)
+        }
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)

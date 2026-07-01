@@ -17,8 +17,8 @@
 //! preserves the original first-match priority.
 
 use crate::seed::{
-    self, Meaning, ROLE_RESPONSE_LANGUAGE_MARKER, ROLE_TRANSLATION_SOURCE_MARKER,
-    ROLE_TRANSLATION_TARGET_MARKER,
+    self, Meaning, ROLE_COMPREHENSION_FAILURE_MARKER, ROLE_RESPONSE_LANGUAGE_MARKER,
+    ROLE_TRANSLATION_SOURCE_MARKER, ROLE_TRANSLATION_TARGET_MARKER,
 };
 
 /// Detect the language a translation reads *from*, or `None`.
@@ -45,6 +45,21 @@ pub fn detect_target_language(normalized: &str) -> Option<&'static str> {
 /// application to callers that have enough context to rerender the answer.
 pub fn detect_response_language(normalized: &str) -> Option<&'static str> {
     detect_marker_language(ROLE_RESPONSE_LANGUAGE_MARKER, normalized)
+}
+
+/// Detect whether the user reports they cannot understand the prior answer's
+/// language (issue #556).
+///
+/// Walks every meaning carrying [`ROLE_COMPREHENSION_FAILURE_MARKER`] and
+/// reports `true` when any of its seeded surfaces — "do not understand",
+/// "не понимаю", "समझ नहीं", "不懂", … — appears in `normalized`. The phrase
+/// table lives entirely in `data/seed/meanings-translation.lino`; this routine
+/// only names the language-independent role, so widening the vocabulary is a
+/// pure data edit.
+pub fn detect_comprehension_failure(normalized: &str) -> bool {
+    seed::lexicon()
+        .meanings_with_role(ROLE_COMPREHENSION_FAILURE_MARKER)
+        .any(|meaning| meaning.words().any(|word| normalized.contains(word)))
 }
 
 /// The shared recogniser: the first marker meaning of `role` (in declaration
