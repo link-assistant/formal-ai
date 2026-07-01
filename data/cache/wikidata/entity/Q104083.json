@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q104083": {
+      "type": "item",
+      "id": "Q104083",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "grammatical number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическое число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वचन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "数"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "use of grammar in a language to express number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическая категория на основе счёта"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "number"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "число (грамматика)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "數"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

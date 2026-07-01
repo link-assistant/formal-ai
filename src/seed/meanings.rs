@@ -126,6 +126,31 @@ impl WordForm {
             .filter(move |facet| facet.kind == kind)
             .flat_map(|facet| facet.meanings.iter().map(String::as_str))
     }
+
+    /// The part-of-speech meaning slug this form is tagged with (`noun`,
+    /// `verb`, …), if any. Sourced from the `part_of_speech` facet so callers
+    /// read the composition of the word from data, not from a hardcoded table.
+    #[must_use]
+    pub fn part_of_speech(&self) -> Option<&str> {
+        self.semantic_facet_targets("part_of_speech").next()
+    }
+
+    /// The grammatical-number meaning slug this form lexicalises (`singular`
+    /// or `plural`), if the seed pins it. Issue #538: this is what lets the
+    /// system answer whether `помидор` is singular and `помидоры` is plural of
+    /// the same meaning, rather than treating them as opaque synonyms.
+    #[must_use]
+    pub fn grammatical_number(&self) -> Option<&str> {
+        self.semantic_facet_targets("grammatical_number").next()
+    }
+
+    /// The meaning slugs this form denotes — the "direct dictionary" direction
+    /// of issue #538, where a word points back at the meanings it can express.
+    /// The parser always attaches the parent meaning as a `denotation` facet, so
+    /// this is never empty for a seeded surface.
+    pub fn denotations(&self) -> impl Iterator<Item = &str> {
+        self.semantic_facet_targets("denotation")
+    }
 }
 
 /// Surface forms that evidence a meaning in one language.
@@ -867,6 +892,11 @@ const FACET_KINDS: &[&str] = &[
     "denotation",
     "connotation",
     "part_of_speech",
+    // Issue #538: a surface may pin the grammatical number it lexicalises
+    // (`grammatical_number singular` / `grammatical_number plural`), so a word
+    // form records whether it is the singular or plural way to express its
+    // meaning rather than leaving the seed to guess from the spelling.
+    "grammatical_number",
     "self-equation",
 ];
 

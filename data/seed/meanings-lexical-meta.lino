@@ -196,3 +196,101 @@ meanings
         notation word_surface
         denotation noun_phrase
         part_of_speech noun_phrase
+  grammatical_number
+    grounded-in Q104083
+    defined-by semantic_facet
+    defined-by lexical_form
+    role semantic_facet_kind
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation lexical_form
+    lexeme en
+      surface
+        text "grammatical number"
+        notation word_surface
+        denotation grammatical_number
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "грамматическое число"
+        notation word_surface
+        denotation grammatical_number
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "व्याकरणिक संख्या"
+        notation word_surface
+        denotation grammatical_number
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 语法数
+        notation word_surface
+        denotation grammatical_number
+        part_of_speech noun
+  singular
+    grounded-in Q110786
+    defined-by grammatical_number
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation grammatical_number
+    connotation lexical_form
+    lexeme en
+      surface
+        text singular
+        notation word_surface
+        denotation singular
+        part_of_speech noun
+    lexeme ru
+      surface
+        text "единственное число"
+        notation word_surface
+        denotation singular
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text एकवचन
+        notation word_surface
+        denotation singular
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 单数
+        notation word_surface
+        denotation singular
+        part_of_speech noun
+  plural
+    grounded-in Q146786
+    defined-by grammatical_number
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation grammatical_number
+    connotation lexical_form
+    lexeme en
+      surface
+        text plural
+        notation word_surface
+        denotation plural
+        part_of_speech noun
+    lexeme ru
+      surface
+        text "множественное число"
+        notation word_surface
+        denotation plural
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text बहुवचन
+        notation word_surface
+        denotation plural
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 复数
+        notation word_surface
+        denotation plural
+        part_of_speech noun

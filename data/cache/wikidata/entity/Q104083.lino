@@ -1,0 +1,16 @@
+Q104083
+  aliases
+    en (number)
+    ru ("число (грамматика)")
+    zh ("數")
+  descriptions
+    en "use of grammar in a language to express number"
+    ru "грамматическая категория на основе счёта"
+  id Q104083
+  labels
+    en "grammatical number"
+    hi "वचन"
+    ru "грамматическое число"
+    zh "数"
+  type item
+success 1
