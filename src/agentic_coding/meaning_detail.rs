@@ -31,10 +31,11 @@
 
 use std::fmt::Write as _;
 
-/// A concept the meaning-detail recipe knows how to enrich. Everything the
-/// planner, corpus, and driver need for one concept lives here, so adding a new
-/// concept is a matter of adding one [`Concept`] to [`CONCEPTS`] plus its
-/// canonical lexeme facts — no code branches per concept.
+/// A concept the meaning-detail recipe knows how to enrich.
+///
+/// Everything the planner, corpus, and driver need for one concept lives here, so
+/// adding a new concept is a matter of adding one [`Concept`] to [`CONCEPTS`] plus
+/// its canonical lexeme facts — no code branches per concept.
 #[derive(Debug, Clone, Copy)]
 pub struct Concept {
     /// The meaning-block lemma head as it appears in the seed (`tomato`/`potato`).
@@ -59,9 +60,10 @@ pub const MEANING_DETAIL_TASK: &str = "Make the tomato meaning more detailed: pi
                                        part of speech and grammatical number, ground it in Wikidata, \
                                        and add the missing plural to томат.";
 
-/// A *differently worded* request for the second concept (potato). Using distinct
-/// natural language for each concept is the maintainer's generality check: the
-/// recipe must not depend on the exact phrasing of the tomato task.
+/// A *differently worded* request for the second concept (potato).
+///
+/// Using distinct natural language for each concept is the maintainer's generality
+/// check: the recipe must not depend on the exact phrasing of the tomato task.
 pub const POTATO_DETAIL_TASK: &str = "Please make the potato word and meaning richer — record the \
                                       singular/plural of each surface, add the missing plural form \
                                       potatoes, and keep it grounded in Wikidata.";
@@ -118,15 +120,12 @@ const DETAIL_KEYWORDS: [&str; 6] = [
 #[must_use]
 pub fn concept_for_task(prompt: &str) -> Option<&'static Concept> {
     let lower = prompt.to_lowercase();
-    CONCEPTS
-        .iter()
-        .copied()
-        .find(|concept| {
-            concept
-                .keywords
-                .iter()
-                .any(|keyword| lower.contains(&keyword.to_lowercase()))
-        })
+    CONCEPTS.iter().copied().find(|concept| {
+        concept
+            .keywords
+            .iter()
+            .any(|keyword| lower.contains(&keyword.to_lowercase()))
+    })
 }
 
 /// Whether `prompt` asks to make a meaning more detailed (issue #538): either it
@@ -134,7 +133,9 @@ pub fn concept_for_task(prompt: &str) -> Option<&'static Concept> {
 #[must_use]
 pub fn is_meaning_detail_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
-    DETAIL_KEYWORDS.iter().any(|keyword| lower.contains(keyword))
+    DETAIL_KEYWORDS
+        .iter()
+        .any(|keyword| lower.contains(keyword))
         || concept_for_task(prompt).is_some()
 }
 
@@ -186,11 +187,13 @@ pub struct ConceptLexemes {
     pub extras: Vec<ExtraSurface>,
 }
 
-/// The deterministic fallback fetch body for tomato: a faithful, human-readable
-/// rendering of the tomato lexeme facts. The offline corpus serves exactly this
-/// text for [`TOMATO`]'s `source_url`, and [`parse_lexemes`] round-trips it, so the
-/// loop produces a stable block whether the fetch "succeeds" or falls back.
-/// Compare [`super::formalize::CANONICAL_FISHERMAN_SYNOPSIS`].
+/// The deterministic fallback fetch body for tomato.
+///
+/// A faithful, human-readable rendering of the tomato lexeme facts. The offline
+/// corpus serves exactly this text for [`TOMATO`]'s `source_url`, and
+/// [`parse_lexemes`] round-trips it, so the loop produces a stable block whether
+/// the fetch "succeeds" or falls back. Compare
+/// [`super::formalize::CANONICAL_FISHERMAN_SYNOPSIS`].
 pub const CANONICAL_TOMATO_LEXEMES: &str = "\
 Wikidata lexemes for the tomato concept (Q23501)
 lexeme L7993 en Q1860 Q1084 sense=L7993-S1
@@ -207,9 +210,11 @@ extra zh 番茄
 extra zh 西红柿
 ";
 
-/// The deterministic fallback fetch body for potato. The English lexeme `L3784`
-/// carries the singular/plural forms grounded in Wikidata; the Russian, Hindi, and
-/// Chinese surfaces ride along as non-grounded extras (as the seed authors them).
+/// The deterministic fallback fetch body for potato.
+///
+/// The English lexeme `L3784` carries the singular/plural forms grounded in
+/// Wikidata; the Russian, Hindi, and Chinese surfaces ride along as non-grounded
+/// extras (as the seed authors them).
 pub const CANONICAL_POTATO_LEXEMES: &str = "\
 Wikidata lexemes for the potato concept (Q10998)
 lexeme L3784 en Q1860 Q1084 sense=L3784-S1
@@ -290,9 +295,9 @@ pub fn parse_lexemes(text: &str) -> Option<ConceptLexemes> {
 /// else from the concept's canonical fallback.
 #[must_use]
 pub fn concept_lexemes(concept: &Concept, fetched: Option<&str>) -> ConceptLexemes {
-    fetched.and_then(parse_lexemes).unwrap_or_else(|| {
-        parse_lexemes(concept.canonical_lexemes).expect("canonical facts parse")
-    })
+    fetched
+        .and_then(parse_lexemes)
+        .unwrap_or_else(|| parse_lexemes(concept.canonical_lexemes).expect("canonical facts parse"))
 }
 
 /// The tomato lexeme facts (thin wrapper over [`concept_lexemes`] for [`TOMATO`]).

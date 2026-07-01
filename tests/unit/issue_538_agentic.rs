@@ -21,12 +21,12 @@ use formal_ai::{ChatMessage, ToolCall};
 /// This is the ground truth the agentic loop must reproduce.
 fn seed_tomato_block() -> String {
     let seed = include_str!("../../data/seed/meanings-translation.lino");
-    let start = seed
-        .find("\n  tomato\n")
-        .expect("seed has a tomato lemma")
-        + 1; // skip the leading newline so the block starts at `  tomato`
+    let start = seed.find("\n  tomato\n").expect("seed has a tomato lemma") + 1; // skip the leading newline so the block starts at `  tomato`
     let rest = &seed[start..];
-    let end = rest.find("\n  cucumber\n").expect("cucumber follows tomato") + 1;
+    let end = rest
+        .find("\n  cucumber\n")
+        .expect("cucumber follows tomato")
+        + 1;
     rest[..end].to_owned()
 }
 
@@ -82,7 +82,8 @@ fn fetch_and_canonical_fallback_yield_the_same_block() {
     // Whether the fetch "succeeds" (returns the corpus body) or errors (falls back
     // to the canonical facts), the loop derives an identical block — the
     // determinism invariant the planner relies on.
-    let from_fetch = enrich_tomato_block(Some(corpus::web_fetch(meaning_detail::SOURCE_URL).as_str()));
+    let from_fetch =
+        enrich_tomato_block(Some(corpus::web_fetch(meaning_detail::SOURCE_URL).as_str()));
     let from_fallback = enrich_tomato_block(Some("web_fetch error: 404 not found"));
     let from_none = enrich_tomato_block(None);
     assert_eq!(from_fetch, from_none);
@@ -120,13 +121,21 @@ fn planner_walks_the_full_recipe_for_the_meaning_detail_task() {
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_search");
     assert!(call.arguments.contains(meaning_detail::SEARCH_QUERY));
-    answer_tool_call(&mut messages, &call, &corpus::web_search(meaning_detail::SEARCH_QUERY));
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &corpus::web_search(meaning_detail::SEARCH_QUERY),
+    );
 
     // Step 2: fetch the tomato lexemes.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "web_fetch");
     assert!(call.arguments.contains(meaning_detail::SOURCE_URL));
-    answer_tool_call(&mut messages, &call, &corpus::web_fetch(meaning_detail::SOURCE_URL));
+    answer_tool_call(
+        &mut messages,
+        &call,
+        &corpus::web_fetch(meaning_detail::SOURCE_URL),
+    );
 
     // Step 3: write the enriched meaning block — byte-for-byte the seed block.
     let call = expect_single_call(&messages, &tools);
@@ -170,8 +179,7 @@ fn driver_runs_the_meaning_detail_loop_and_writes_the_seed_block() {
     // and the file it writes into the sandbox is byte-for-byte the enriched seed
     // block — Formal AI making its own meaning more detailed, offline and
     // deterministically.
-    let outcome =
-        run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("sandbox workspace");
+    let outcome = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("sandbox workspace");
 
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
@@ -265,7 +273,9 @@ fn driver_runs_the_potato_recipe_with_a_different_request() {
     assert!(run.result.contains("grammatical_number plural"));
 
     assert!(outcome.final_answer.contains("more detailed"));
-    assert!(outcome.final_answer.contains(meaning_detail::POTATO.kb_path));
+    assert!(outcome
+        .final_answer
+        .contains(meaning_detail::POTATO.kb_path));
 }
 
 #[test]
@@ -274,8 +284,7 @@ fn committed_potato_session_matches_a_fresh_run() {
     // request solving a *different* concept with the same recipe). Regenerate with:
     //   formal-ai agent --task "<POTATO_DETAIL_TASK>" \
     //       --session-json docs/case-studies/issue-538/agent-cli-session-potato.json
-    let committed =
-        include_str!("../../docs/case-studies/issue-538/agent-cli-session-potato.json");
+    let committed = include_str!("../../docs/case-studies/issue-538/agent-cli-session-potato.json");
     let fresh = run_agentic_task(meaning_detail::POTATO_DETAIL_TASK).expect("workspace");
     let rendered = format!(
         "{}\n",

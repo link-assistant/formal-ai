@@ -35,7 +35,14 @@ fn pages() -> Vec<CorpusPage> {
         url: CANONICAL_SOURCE_URL.to_owned(),
         title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)".to_owned(),
         keywords: [
-            "рыбак", "рыбке", "рыбка", "пушкин", "сказка", "fisherman", "fish", "pushkin",
+            "рыбак",
+            "рыбке",
+            "рыбка",
+            "пушкин",
+            "сказка",
+            "fisherman",
+            "fish",
+            "pushkin",
         ]
         .iter()
         .map(|keyword| (*keyword).to_owned())
@@ -45,8 +52,7 @@ fn pages() -> Vec<CorpusPage> {
     for concept in CONCEPTS {
         // The concept's own routing keywords plus the shared lexeme vocabulary, so
         // both a concept-specific query and a generic "wikidata lexeme …" query hit.
-        let mut keywords: Vec<String> =
-            concept.keywords.iter().map(|k| k.to_lowercase()).collect();
+        let mut keywords: Vec<String> = concept.keywords.iter().map(|k| k.to_lowercase()).collect();
         keywords.extend(
             ["wikidata", "lexeme", "grammatical", "singular", "plural"]
                 .iter()
@@ -111,6 +117,6 @@ pub fn web_search(query: &str) -> String {
 pub fn web_fetch(url: &str) -> String {
     pages().iter().find(|page| page.url == url).map_or_else(
         || format!("web_fetch error: 404 not found for {url}"),
-        |page| page.body.to_owned(),
+        |page| page.body.clone(),
     )
 }
