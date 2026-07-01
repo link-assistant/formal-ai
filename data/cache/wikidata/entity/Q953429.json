@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q953429": {
+      "type": "item",
+      "id": "Q953429",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "верификация"
+        },
+        "en": {
+          "language": "en",
+          "value": "verification"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "验证"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सत्यापन"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "доказуемость, проверяемость объяснений (моделей) объектов/явлений, которая в зависимости от степени подтверждаемости реальностью (эмпирически, фактами), образует понятия: гипотеза, концепция, теория"
+        },
+        "en": {
+          "language": "en",
+          "value": "process of validating something, e.g. that a suspected fact is true"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी तथ्य को प्रमाणित करना"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "проверяемость"
+          },
+          {
+            "language": "ru",
+            "value": "верифицируемость"
+          },
+          {
+            "language": "ru",
+            "value": "принцип верификации"
+          },
+          {
+            "language": "ru",
+            "value": "доказуемость"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

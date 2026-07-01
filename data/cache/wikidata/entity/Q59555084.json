@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q59555084": {
+      "type": "item",
+      "id": "Q59555084",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "fact-checking"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "事實查核"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "проверка фактов"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "process of verifying information in non-fictional text in order to determine its veracity and factual correctness"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "针对非虚构作品中声称是事实的内容，为了确认真实性及正确性而进行的确认"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "процесс проверки информации в нехудожественном тексте с целью определения её правдивости и фактической корректности"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "фактчекинг"
+          },
+          {
+            "language": "ru",
+            "value": "факт-чекинг"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "fact checking"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "事实核查"
+          },
+          {
+            "language": "zh",
+            "value": "事实查核"
+          },
+          {
+            "language": "zh",
+            "value": "事实审查"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -183,6 +183,7 @@ meanings
       surface
         text 你知道…
   document_originality_check_action
+    grounded-in Q953429
     defined-by inquiry
     defined-by action
     role document_originality_check_action
@@ -293,6 +294,10 @@ meanings
       surface
         text 查重…
   document_originality_subject
+    grounded-in Q2914681
+    grounded-in Q2360032
+    grounded-in Q59555084
+    grounded-in Q164666
     defined-by inquiry
     role document_originality_subject
     lexeme en
@@ -418,6 +423,7 @@ meanings
       surface
         text 謠言
   document_originality_document
+    grounded-in Q49848
     defined-by inquiry
     role document_originality_document
     lexeme en

@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "Q2360032": {
+      "type": "item",
+      "id": "Q2360032",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Конгруэнтность"
+        },
+        "en": {
+          "language": "en",
+          "value": "authenticity"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "本真"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "concept in existential psychology and philosophy"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,16 @@
+Q59555084
+  aliases
+    en ("fact checking")
+    ru ("фактчекинг" "факт-чекинг")
+    zh ("事实核查" "事实查核" "事实审查")
+  descriptions
+    en "process of verifying information in non-fictional text in order to determine its veracity and factual correctness"
+    ru "процесс проверки информации в нехудожественном тексте с целью определения её правдивости и фактической корректности"
+    zh "针对非虚构作品中声称是事实的内容，为了确认真实性及正确性而进行的确认"
+  id Q59555084
+  labels
+    en fact-checking
+    ru "проверка фактов"
+    zh "事實查核"
+  type item
+success 1

@@ -1,0 +1,17 @@
+Q49848
+  aliases
+    en (doc record)
+    zh ("文稿" "文书" "档案")
+  descriptions
+    en "form for preservation of structured and identified information"
+    hi "संरक्षित जानकारी"
+    ru "форма хранения упорядоченной и идентифицированной информации"
+    zh "具结构且可辨识信息之保存型式"
+  id Q49848
+  labels
+    en document
+    hi "दस्तावेज़"
+    ru "документ"
+    zh "文献"
+  type item
+success 1

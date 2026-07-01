@@ -1,0 +1,37 @@
+{
+  "entities": {
+    "Q2914681": {
+      "type": "item",
+      "id": "Q2914681",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "originality"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原创"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "оригинальность"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "aspect of created or invented works as being new or novel, and thus distinguishable from reproductions, clones, forgeries, or derivative works"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "独创性"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
