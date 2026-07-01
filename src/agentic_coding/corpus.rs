@@ -13,6 +13,7 @@
 use std::fmt::Write as _;
 
 use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
+use super::meaning_detail::{CANONICAL_TOMATO_LEXEMES, SOURCE_URL as TOMATO_LEXEME_URL};
 use super::planner::CANONICAL_SOURCE_URL;
 
 /// One page in the offline corpus.
@@ -24,24 +25,42 @@ struct CorpusPage {
     body: &'static str,
 }
 
-/// The corpus pages, in search-ranking order. A single canonical page is enough
-/// for the issue-#468 task; the shape generalises to more.
-const fn pages() -> [CorpusPage; 1] {
-    [CorpusPage {
-        url: CANONICAL_SOURCE_URL,
-        title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)",
-        keywords: &[
-            "рыбак",
-            "рыбке",
-            "рыбка",
-            "пушкин",
-            "сказка",
-            "fisherman",
-            "fish",
-            "pushkin",
-        ],
-        body: CANONICAL_FISHERMAN_SYNOPSIS,
-    }]
+/// The corpus pages, in search-ranking order. One canonical page per agentic
+/// recipe: the fisherman tale (issue #468) and the tomato Wikidata lexemes
+/// (issue #538). The shape generalises to more.
+const fn pages() -> [CorpusPage; 2] {
+    [
+        CorpusPage {
+            url: CANONICAL_SOURCE_URL,
+            title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)",
+            keywords: &[
+                "рыбак",
+                "рыбке",
+                "рыбка",
+                "пушкин",
+                "сказка",
+                "fisherman",
+                "fish",
+                "pushkin",
+            ],
+            body: CANONICAL_FISHERMAN_SYNOPSIS,
+        },
+        CorpusPage {
+            url: TOMATO_LEXEME_URL,
+            title: "Lexeme:L170542 (томат) and related tomato lexemes — Wikidata",
+            keywords: &[
+                "wikidata",
+                "lexeme",
+                "tomato",
+                "помидор",
+                "томат",
+                "grammatical",
+                "singular",
+                "plural",
+            ],
+            body: CANONICAL_TOMATO_LEXEMES,
+        },
+    ]
 }
 
 /// Resolve a `web_search` query into deterministic results text.

@@ -32,6 +32,7 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::meaning_detail;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -74,16 +75,24 @@ enum Capability {
 /// Plan the next agentic step from the conversation so far and the tool names the
 /// CLI advertised.
 ///
-/// Returns [`None`] when the latest user turn is not a formalization task — the
-/// server then falls back to its ordinary solver text, so non-agentic-coding
-/// requests are untouched.
+/// Returns [`None`] when the latest user turn is neither of the recipes the
+/// planner knows (formalize a text — issue #468, or make a meaning more detailed
+/// — issue #538) — the server then falls back to its ordinary solver text, so
+/// unrelated requests are untouched.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    if !is_formalization_task(&task) {
-        return None;
+    if is_formalization_task(&task) {
+        return Some(plan_formalization_step(messages, tool_names));
     }
+    if meaning_detail::is_meaning_detail_task(&task) {
+        return Some(plan_meaning_detail_step(messages, tool_names));
+    }
+    None
+}
 
+/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
     let write_tool = tool_for(tool_names, Capability::Write);
@@ -94,16 +103,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Step 1: search for the source text.
     if let Some(tool) = search_tool {
         if !progress.done(Capability::Search) {
-            return Some(plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string()));
+            return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
         }
     }
     // Step 2: fetch the source text.
     if let Some(tool) = fetch_tool {
         if !progress.done(Capability::Fetch) {
-            return Some(plan_one(
-                tool,
-                json!({ "url": CANONICAL_SOURCE_URL }).to_string(),
-            ));
+            return plan_one(tool, json!({ "url": CANONICAL_SOURCE_URL }).to_string());
         }
     }
 
@@ -119,19 +125,74 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
             let arguments = json!({ "path": KB_PATH, "content": formalized.links_notation });
-            return Some(plan_one(tool, arguments.to_string()));
+            return plan_one(tool, arguments.to_string());
         }
     }
     // Step 4: verify by reading the file back.
     if let Some(tool) = run_tool {
         if !progress.done(Capability::Run) {
             let arguments = json!({ "command": format!("cat {KB_PATH}") });
-            return Some(plan_one(tool, arguments.to_string()));
+            return plan_one(tool, arguments.to_string());
         }
     }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
-    Some(AgenticPlan::Final(final_answer(&formalized)))
+    AgenticPlan::Final(final_answer(&formalized))
+}
+
+/// The issue-#538 recipe: search → fetch (Wikidata lexemes) → write the enriched
+/// meaning block → verify → final. Mirrors the formalization recipe but re-derives
+/// the enriched tomato block from the fetched lexeme facts instead of formalizing
+/// prose. Steps whose tool the CLI did not advertise are skipped.
+fn plan_meaning_detail_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let search_tool = tool_for(tool_names, Capability::Search);
+    let fetch_tool = tool_for(tool_names, Capability::Fetch);
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+
+    // Step 1: search for the Wikidata lexeme data.
+    if let Some(tool) = search_tool {
+        if !progress.done(Capability::Search) {
+            return plan_one(
+                tool,
+                json!({ "query": meaning_detail::SEARCH_QUERY }).to_string(),
+            );
+        }
+    }
+    // Step 2: fetch the lexeme forms (where the missing plural is recovered).
+    if let Some(tool) = fetch_tool {
+        if !progress.done(Capability::Fetch) {
+            return plan_one(
+                tool,
+                json!({ "url": meaning_detail::SOURCE_URL }).to_string(),
+            );
+        }
+    }
+
+    // Re-derive the enriched block from the fetched lexeme facts (or the canonical
+    // fallback when the fetch errored), exactly as the formalization recipe does.
+    let block = meaning_detail::enrich_tomato_block(progress.fetched_text.as_deref());
+
+    // Step 3: write the enriched meaning block.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            let arguments = json!({ "path": meaning_detail::KB_PATH, "content": block });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+    // Step 4: verify by reading the enriched block back (mirrors the formalization
+    // recipe; `cat` is the allowlisted read the sandbox workspace supports).
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", meaning_detail::KB_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 5: nothing left to do — answer with the enriched block inline.
+    AgenticPlan::Final(meaning_detail::final_answer(&block))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
