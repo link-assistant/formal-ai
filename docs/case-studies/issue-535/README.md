@@ -50,6 +50,31 @@ The seed corpus now declares multilingual meanings for originality/plagiarism
 actions and document subjects in English, Russian, Hindi, and Chinese, and the
 role registry was regenerated from those meanings.
 
+Following the maintainer's clarification in
+[comment 4754747438](https://github.com/link-assistant/formal-ai/issues/535#issuecomment-4754747438),
+the handler was generalized from plagiarism-only into a full **verification
+class**. The action/subject/document cues were broadened to authenticity,
+factual-accuracy, and veracity requests (`verify`, `authenticate`, `fact-check`,
+`достоверность`, `सत्यता`, `真实性`, …) so the whole class of similar questions
+routes to the same grounded workflow in every supported language.
+
+Each statement in an attached document is now weighed with **relative-meta-logic**
+(modelled on
+[link-foundation/relative-meta-logic](https://github.com/link-foundation/relative-meta-logic)):
+a statement starts from an assumed-true prior (0.6), its probability is *raised*
+by trusted original-first sources (government/first-party at weight 1.0, original
+journalism at 0.85, independent corroboration at 0.5) and *lowered* by
+contradicting originals, while unoriginal reposts contribute no mass and are
+recorded as ignored. The handler splits the sampled text into checkable
+statements across scripts, builds a dedicated fact-check web-search query for
+each, and replays the assessment into the append-only event log. This plan is
+mirrored byte-for-byte into the Web app worker so the browser and the Rust engine
+emit identical evidence.
+
+Telegram document attachments are folded into the shared attachment-context
+builder, so a forwarded file (with or without a caption) reaches the same
+verification handler as the Desktop and Web surfaces.
+
 ## Evidence
 
 Raw GitHub snapshots are preserved in [`raw-data/`](raw-data/):
@@ -70,20 +95,35 @@ the reported unknown path. After implementation, the focused checks passed:
 
 ```text
 cargo test issue_535 --test unit
-2 passed; 0 failed
+8 passed; 0 failed
 
 cargo test document_originality --test unit
-2 passed; 0 failed
+3 passed; 0 failed
 
 npx playwright test tests/issue-535.spec.js --config=playwright.local.config.js
 1 passed
 ```
 
+The unit suite now covers the reported prompt, one document-originality case per
+supported language, the generalized verification class (authenticity/veracity in
+every language), Telegram attachment routing, and per-statement
+relative-meta-logic grounding
+(`document_originality_grounds_each_statement_with_relative_meta_logic`).
+
 The Playwright regression uploads a text/plain attachment, sends the Russian
 prompt, and asserts that the answer is not unknown, keeps Russian output, emits
 `intent:document_originality_check`, records the attachment and local-file read
-evidence, records `document_originality_check:text_sample:present`, and marks
-the web-search query kind as `document_originality_check`.
+evidence, records `document_originality_check:text_sample:present`, marks the
+web-search query kind as `document_originality_check`, and confirms the browser
+worker emits the relative-meta-logic evidence
+(`relative_meta_logic:assumed_prior:0.600000`,
+`relative_meta_logic:trusted_source_tier:original_first_party:weight=1.000000`,
+`relative_meta_logic:ignored_source_tier:unoriginal`, and the per-statement
+`statement_verification:*` links).
+
+The `examples/issue_535_statement_verification.rs` example demonstrates the whole
+plan end to end — statement extraction across scripts, grounding queries, and how
+the assumed-true prior moves under each source tier.
 
 Additional seed integrity checks passed:
 
@@ -92,10 +132,18 @@ cargo test meaning_definition_references_resolve_to_defined_meanings --test unit
 cargo test every_role_value_is_declared_in_the_registry --test unit
 ```
 
-## Remaining Scope
+## Scope
 
-This PR implements the deterministic routing, attachment-text visibility, and
-grounded search workflow for the reported class of requests. Full claim-level
-plagiarism scoring against external corpora and future relative-meta-logic
-probability updates remain larger follow-up work beyond this unknown-response
-bug.
+This PR implements the deterministic routing, attachment-text visibility, the
+generalized verification class across every supported language, per-statement
+relative-meta-logic probability weighing, and the grounded search workflow — on
+the CLI/HTTP, Telegram, and Web app surfaces, with the Rust engine and the
+browser worker kept byte-for-byte identical.
+
+The solver runs offline and deterministically, so the relative-meta-logic plan
+records exactly *what* would be checked for each statement and *how* the
+resulting evidence would move its probability, rather than performing live
+network calls. Wiring real grounding results into `RelativeEvidence` (turning the
+planned queries into fetched original-first sources at request time) is the
+natural next increment; the probability machinery, source-trust taxonomy, and
+per-statement query plan it consumes are all in place and tested here.
