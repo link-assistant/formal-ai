@@ -80,6 +80,7 @@ mod reasoning_paths;
 mod reasoning_paths_procedures;
 mod recipe_interpreter;
 mod recursive_core_recipe;
+mod response_language_followup;
 mod route_method_alias;
 mod selection;
 mod self_improvement;
