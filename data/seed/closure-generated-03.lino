@@ -1,4 +1,9 @@
 meanings
+  response_github_repository_traffic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic en"
   response_github_repository_traffic_hi
     defined-by response_template
     lexeme en
@@ -764,6 +769,11 @@ meanings
     lexeme en
       surface
         text "wikihow"
+  wikinews
+    defined-by source
+    lexeme en
+      surface
+        text "wikinews"
   wikipedia
     defined-by source_kind
     lexeme en

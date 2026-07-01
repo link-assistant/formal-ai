@@ -1259,6 +1259,11 @@ meanings
     lexeme en
       surface
         text "openai"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
   originality
     defined-by word_surface
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase what do you do in your free time en"
-  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase what do you do when you are not working en"

@@ -98,3 +98,14 @@ sources_registry
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
     cache_path data/cache/github/
     note "Project READMEs and docs/ trees for software 'how to' questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
+  source wikinews
+    name "Wikinews"
+    kind original_journalism
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://en.wikinews.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY 2.5"
+    license_url "https://creativecommons.org/licenses/by/2.5/"
+    cache_path data/cache/wikinews/
+    note "Original journalism — events reported first-hand by Wikinews reporters. This is the original-first-source / original-journalism tier the document-verification handler weighs statements against (issue #535): reposts and unoriginal aggregations are ignored, original coverage is trusted. Reuses the Wikipedia action=parse path and shares the MediaWiki-family settings toggle."

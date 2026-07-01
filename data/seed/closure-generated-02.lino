@@ -1,4 +1,9 @@
 meanings
+  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do when you are not working en"
   pattern_behavior_rules_list_apne_niyam_ginao_hi
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response farewell zh"
-  response_github_repository_traffic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic en"

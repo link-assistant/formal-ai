@@ -264,7 +264,7 @@ en
       warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
     externalServices
       label "External trusted services"
-      note "Choose which trusted services the assistant may consult for procedural how-to answers and project lookups. Each one is on by default; turn off any you would rather not contact."
+      note "Choose which trusted services the assistant may consult for procedural how-to answers, project lookups, and document originality / fact-check verification. Each one is on by default; turn off any you would rather not contact."
     externalServiceWikihow
       label "wikiHow procedures"
     externalServiceStackExchange
