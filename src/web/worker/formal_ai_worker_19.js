@@ -754,6 +754,15 @@ function cleanRepositorySegment(segment) {
   return trimmed;
 }
 
+function isTextUrlExtractionPrompt(prompt) {
+  const normalized = normalizePrompt(prompt).trimStart().toLowerCase();
+  return (
+    (normalized.startsWith("extract url ") ||
+      normalized.startsWith("extract urls ")) &&
+    normalized.includes(" from ")
+  );
+}
+
 function repositoryFromUrl(url) {
   let parsed;
   try {
@@ -789,6 +798,7 @@ function repositoryFromSlug(term) {
   const owner = cleanRepositorySegment(parts[0]);
   const name = cleanRepositorySegment(parts[1]);
   if (!owner || !name) return null;
+  if (/^\d+$/.test(owner) && /^\d+$/.test(name)) return null;
   return {
     platform: { slug: "github", label: "GitHub", host: "github.com" },
     owner,
@@ -1153,17 +1163,29 @@ function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
     const slug = repositorySlug(repo);
     evidence.push(`project_lookup:repository:${repo.platform.slug}:${slug}`);
     evidence.push(`source:${repo.url}`);
-    const content =
-      language === "ru"
-        ? `Это запрос о репозитории [${slug}](${repo.url}) на ${repo.platform.label}.\n\nОбычный путь project_lookup ищет и резюмирует README или описание проекта на GitHub, GitLab и Bitbucket без особого правила для отдельного названия. Если репозиторий находится в продвигаемых организациях и продвижение включено, он будет показан первым.`
-        : `This is a repository lookup for [${slug}](${repo.url}) on ${repo.platform.label}.\n\nThe generic project_lookup path can summarize README or project descriptions from GitHub, GitLab, and Bitbucket without a special case for any single name. If the repository belongs to a promoted organization and promotion is enabled, that repository is listed first.`;
+    let content;
+    if (language === "ru") {
+      content = `Это запрос о репозитории [${slug}](${repo.url}) на ${repo.platform.label}.\n\nОбычный путь project_lookup ищет и резюмирует README или описание проекта на GitHub, GitLab и Bitbucket без особого правила для отдельного названия. Если репозиторий находится в продвигаемых организациях и продвижение включено, он будет показан первым.`;
+    } else if (language === "hi") {
+      content = `यह ${repo.platform.label} पर रिपॉजिटरी [${slug}](${repo.url}) के लिए lookup है.\n\nGeneric project_lookup path GitHub, GitLab, और Bitbucket पर README या project descriptions summarize कर सकता है, किसी single name के लिए special case के बिना. अगर repository promoted organizations में है और promotion enabled है, तो वह पहले दिखाई जाएगी.`;
+    } else if (language === "zh") {
+      content = `这是 ${repo.platform.label} 上的仓库查询： [${slug}](${repo.url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。`;
+    } else {
+      content = `This is a repository lookup for [${slug}](${repo.url}) on ${repo.platform.label}.\n\nThe generic project_lookup path can summarize README or project descriptions from GitHub, GitLab, and Bitbucket without a special case for any single name. If the repository belongs to a promoted organization and promotion is enabled, that repository is listed first.`;
+    }
     return { intent: "project_lookup", content, confidence: 0.82, evidence };
   }
   evidence.push("project_lookup:repository_hosts:GitHub,GitLab,Bitbucket");
-  const content =
-    language === "ru"
-      ? "Это обычный запрос project_lookup о проекте или репозитории.\n\nЯ не выделяю специальный репозиторий, потому что продвижение ассоциативных репозиториев отключено. Дальше следует искать и резюмировать подходящие проекты на GitHub, GitLab и Bitbucket и похожих хостингах."
-      : "This is a generic project_lookup request for a project or repository.\n\nI am not privileging a specific repository because associative repository promotion is disabled. The next step is to search and summarize matching projects across GitHub, GitLab, Bitbucket, and similar hosts.";
+  let content;
+  if (language === "ru") {
+    content = "Это обычный запрос project_lookup о проекте или репозитории.\n\nЯ не выделяю специальный репозиторий, потому что продвижение ассоциативных репозиториев отключено. Дальше следует искать и резюмировать подходящие проекты на GitHub, GitLab и Bitbucket и похожих хостингах.";
+  } else if (language === "hi") {
+    content = "यह project या repository के लिए generic project_lookup request है.\n\nमैं किसी specific repository को प्राथमिकता नहीं दे रहा हूँ क्योंकि associative repository promotion disabled है. अगला step GitHub, GitLab, Bitbucket और similar hosts पर matching projects खोजना और summarize करना है.";
+  } else if (language === "zh") {
+    content = "这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 GitHub、GitLab、Bitbucket 和类似托管平台中搜索并汇总匹配项目。";
+  } else {
+    content = "This is a generic project_lookup request for a project or repository.\n\nI am not privileging a specific repository because associative repository promotion is disabled. The next step is to search and summarize matching projects across GitHub, GitLab, Bitbucket, and similar hosts.";
+  }
   return { intent: "project_lookup", content, confidence: 0.72, evidence };
 }
 
@@ -1173,10 +1195,16 @@ async function renderPromotedProjectLookup(prompt, language, project) {
   const url = project.url || `https://github.com/${repo}`;
   const description = describeProjectRecord(project, language);
   const orgs = PROMOTED_PROJECT_ORGS.join(", ");
-  const preferredLine =
-    language === "ru"
-      ? `В контексте репозиториев ${orgs} под \`${displayName}\` я прежде всего имею в виду [${repo}](${url}) — ${description}`
-      : `In the ${orgs} repository context, \`${displayName}\` should first mean [${repo}](${url}) — ${description}`;
+  let preferredLine;
+  if (language === "ru") {
+    preferredLine = `В контексте репозиториев ${orgs} под \`${displayName}\` я прежде всего имею в виду [${repo}](${url}) — ${description}`;
+  } else if (language === "hi") {
+    preferredLine = `${orgs} repository context में \`${displayName}\` से मेरा पहला मतलब [${repo}](${url}) है — ${description}`;
+  } else if (language === "zh") {
+    preferredLine = `在 ${orgs} 仓库上下文中，\`${displayName}\` 首先指 [${repo}](${url}) — ${description}`;
+  } else {
+    preferredLine = `In the ${orgs} repository context, \`${displayName}\` should first mean [${repo}](${url}) — ${description}`;
+  }
 
   const search = await runWebSearchQuery(displayName, language);
   const evidence = [
@@ -1197,7 +1225,11 @@ async function renderPromotedProjectLookup(prompt, language, project) {
     lines.push(
       language === "ru"
         ? "Другие найденные в интернете репозитории и сущности:"
-        : "Other repositories and entities found online:",
+        : language === "hi"
+          ? "Internet पर मिले दूसरे repositories और entities:"
+          : language === "zh"
+            ? "互联网上找到的其他仓库和实体："
+            : "Other repositories and entities found online:",
     );
     lines.push("");
     lines.push(search.content);
@@ -1206,7 +1238,11 @@ async function renderPromotedProjectLookup(prompt, language, project) {
     lines.push(
       language === "ru"
         ? "Интернет-поиск по другим совпадениям не вернул результатов через доступные CORS-провайдеры."
-        : "Web search for other matches returned no results through the available CORS providers.",
+        : language === "hi"
+          ? "दूसरे matches के लिए web search उपलब्ध CORS providers से results नहीं लौटा."
+          : language === "zh"
+            ? "通过可用的 CORS providers 搜索其他匹配项没有返回结果。"
+            : "Web search for other matches returned no results through the available CORS providers.",
     );
   }
 
@@ -1219,8 +1255,16 @@ async function renderPromotedProjectLookup(prompt, language, project) {
 }
 
 async function tryProjectLookup(prompt, language, preferences) {
+  return tryProjectLookupForPrompt(prompt, prompt, language, preferences);
+}
+
+async function tryProjectLookupForPrompt(prompt, lookupPrompt, language, preferences) {
+  if (isTextUrlExtractionPrompt(lookupPrompt)) return null;
+  if (githubRepositoryInfoRequest(lookupPrompt, String(lookupPrompt || "").toLowerCase())) {
+    return null;
+  }
   const promotionEnabled = projectPromotionEnabled(preferences);
-  const repo = repositoryFromPrompt(prompt);
+  const repo = repositoryFromPrompt(lookupPrompt);
   if (repo) {
     const promoted = promotionEnabled
       ? promotedProjectByRepo(repo.owner, repo.name)
@@ -1231,7 +1275,7 @@ async function tryProjectLookup(prompt, language, preferences) {
     return genericProjectLookupAnswer(prompt, language, repo, promotionEnabled);
   }
 
-  const query = extractConceptQuery(prompt);
+  const query = extractConceptQuery(lookupPrompt);
   if (!query) return null;
   const project = projectByAlias(query.termOriginal || query.term);
   if (!project) return null;
@@ -1239,6 +1283,88 @@ async function tryProjectLookup(prompt, language, preferences) {
     return renderPromotedProjectLookup(prompt, language, project);
   }
   return genericProjectLookupAnswer(prompt, language, null, promotionEnabled);
+}
+
+// A follow-up fires when the user reports they cannot understand the prior
+// answer (seed-grounded detectComprehensionFailure) or when the prompt is a
+// terse language-switch request. In the terse case the caller has already
+// confirmed a seed-grounded response-language marker is present, so a short
+// prompt with no fresh subject of its own is treated as a retarget of the
+// previous turn. Mirrors is_language_reanswer_followup in
+// src/solver_handlers/response_language_followup.rs — the whole phrase table
+// lives in data/seed/meanings-translation.lino, not here (issue #556).
+function isLanguageReanswerFollowup(normalized) {
+  const text = String(normalized || "").trim().toLowerCase();
+  if (!text) return false;
+  if (detectComprehensionFailure(text)) return true;
+  // CJK markers carry no inter-word spaces, so a bare "用中文" counts as one
+  // word here — still terse, still a switch.
+  const wordCount = text.split(/\s+/u).filter(Boolean).length;
+  return wordCount <= 4;
+}
+
+// Intents that mean the replay never reached a concrete answer, so the
+// retarget is not a useful re-answer and we fall through to the normal
+// handlers. Mirrors is_inconclusive in
+// src/solver_handlers/response_language_followup.rs.
+function isInconclusiveReplayIntent(intent) {
+  const value = String(intent || "");
+  return (
+    value === "unknown" ||
+    value === "ill_formed" ||
+    value === "punctuation_only_prompt" ||
+    value.startsWith("clarify")
+  );
+}
+
+// Issue #556: a response-language follow-up ("I do not understand English,
+// write in Russian") is not a new question. It replays the previous request
+// through the *whole* solver with the requested language forced onto every
+// localizable handler, so the retarget covers the entire answerable class —
+// not just project lookups. Mirrors try_response_language_followup in
+// src/solver_handlers/response_language_followup.rs.
+async function tryResponseLanguageFollowup(prompt, normalized, history, preferences) {
+  const targetLanguage = detectResponseLanguage(normalized);
+  if (!targetLanguage) return null;
+  if (!isLanguageReanswerFollowup(normalized)) return null;
+
+  // Recover the most recent user request and the history that preceded it, so
+  // the replay sees the same context the original answer did.
+  if (!Array.isArray(history)) return null;
+  let previousIndex = -1;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (turn && turn.role === "user" && turn.content) {
+      previousIndex = index;
+      break;
+    }
+  }
+  if (previousIndex < 0) return null;
+  const previousUser = String(history[previousIndex].content || "").trim();
+  if (!previousUser) return null;
+  const priorHistory = history.slice(0, previousIndex);
+
+  // Replay through the whole solver with the requested language forced. The
+  // forced language doubles as the recursion guard inside solve().
+  const replay = await solve(previousUser, priorHistory, preferences, {}, [], {
+    forcedResponseLanguage: targetLanguage,
+  });
+  if (!replay || isInconclusiveReplayIntent(replay.intent)) return null;
+
+  // Splice the follow-up provenance onto the replayed answer; the answer's own
+  // evidence (repository slug, sources, language_to:<code>) already comes from
+  // the replay, so these markers only name *why* it was produced.
+  const followupEvidence = [
+    `response_language_followup:target:${targetLanguage}`,
+    `language_to:${targetLanguage}`,
+    `response_language_followup:handler:${replay.intent}`,
+  ];
+  const existing = Array.isArray(replay.evidence) ? replay.evidence : [];
+  const merged = existing.slice();
+  for (const marker of followupEvidence) {
+    if (!merged.includes(marker)) merged.push(marker);
+  }
+  return { ...replay, evidence: merged };
 }
 
 function pickPrimaryProviderId(providers, sourceKind) {

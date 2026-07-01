@@ -28,6 +28,17 @@ pub const ROLE_TRANSLATION_TARGET_MARKER: &str = "translation_target_marker";
 /// the handler resolves the response language by walking the seed graph rather
 /// than by hardcoding multilingual suffix phrases.
 pub const ROLE_RESPONSE_LANGUAGE_MARKER: &str = "response_language_marker";
+/// Semantic role: a phrase in which the user reports they cannot understand the
+/// prior answer's language (issue #556).
+///
+/// "do not understand", "не понимаю", "समझ नहीं", "不懂", … — the comprehension
+/// barrier that, together with a [`ROLE_RESPONSE_LANGUAGE_MARKER`] target,
+/// signals a "re-answer the previous request in this language" follow-up. The
+/// history-aware follow-up handler reads this role instead of a hardcoded phrase
+/// table, so adding a new way of saying "I don't understand" — or a whole new
+/// language — is a pure data edit in `data/seed/meanings-translation.lino`.
+/// Carried by the `comprehension_failure` meaning; queried as raw substrings.
+pub const ROLE_COMPREHENSION_FAILURE_MARKER: &str = "comprehension_failure_marker";
 /// Semantic role: the target-direction relation of a translation (the "into" side).
 ///
 /// Its surfaces are the bare directional markers ("to", "на", "में", and the

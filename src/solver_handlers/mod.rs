@@ -24,6 +24,7 @@ mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
 mod research_table;
+mod response_language_followup;
 mod self_awareness;
 mod shell_command_transform;
 mod software_project;
@@ -60,6 +61,7 @@ pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
 pub use research_table::{try_research_comparison_table, try_research_result_followup};
+pub use response_language_followup::try_response_language_followup;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
@@ -72,7 +74,10 @@ pub use user_intent::{
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
     try_who_is_question,
 };
-pub use web_requests::{try_http_fetch, try_project_lookup, try_url_navigate, try_web_search};
+pub use web_requests::{
+    try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
+    try_project_lookup_with_response_language, try_url_navigate, try_web_search,
+};
 pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
 
 use crate::calculation::{
@@ -227,7 +232,27 @@ fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
 }
 
 pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    let query = extract_concept_query(prompt)?;
+    try_concept_lookup_with_response_language(prompt, log, None)
+}
+
+/// Concept lookup that can be forced to render in a specific response language.
+///
+/// Issue #556: a response-language follow-up replays the previous request with
+/// a forced target language so the whole answerable class re-renders in the
+/// requested language. When `forced_response_language` is `Some`, it is used
+/// unless the prompt already carries its own explicit response-language marker
+/// (e.g. "what is X in Russian"), which stays authoritative.
+pub fn try_concept_lookup_with_response_language(
+    prompt: &str,
+    log: &mut EventLog,
+    forced_response_language: Option<&str>,
+) -> Option<SymbolicAnswer> {
+    let mut query = extract_concept_query(prompt)?;
+    if query.response_language.is_none() {
+        if let Some(forced) = forced_response_language {
+            query.response_language = Some(forced.to_owned());
+        }
+    }
     log.append("concept_lookup:request", query.term.clone());
     if let Some(context) = query.context.as_deref() {
         log.append("concept_lookup:context", context.to_owned());

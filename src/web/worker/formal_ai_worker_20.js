@@ -103,8 +103,35 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   return next;
 }
 
-async function solve(prompt, history, prefs, userContext = {}, memory = []) {
+async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
+  // Issue #556: activate the forced response language for the whole replay and
+  // always restore the previous value, so a nested follow-up replay never
+  // leaks its forced language onto the outer turn's remaining handlers.
+  const forced =
+    options && isKnownResponseLanguage(options.forcedResponseLanguage)
+      ? options.forcedResponseLanguage
+      : null;
+  const previousForced = setForcedResponseLanguage(forced);
+  try {
+    return await solveImpl(prompt, history, prefs, userContext, memory, options);
+  } finally {
+    setForcedResponseLanguage(previousForced);
+  }
+}
+
+async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   const preferences = prefs || {};
+  // Issue #556: a response-language follow-up replays the previous request
+  // through this whole solver with the requested language forced onto every
+  // localizable handler. `forcedResponseLanguage` is the JS mirror of
+  // SolverConfig.forced_response_language; when set it overrides the detected
+  // message language and doubles as the recursion guard so the replay never
+  // re-enters the follow-up handler.
+  const forcedResponseLanguage = isKnownResponseLanguage(
+    options && options.forcedResponseLanguage,
+  )
+    ? options.forcedResponseLanguage
+    : null;
   const autoDefinitionFusion = definitionFusionByDefault(preferences);
   const steps = [];
   const toolCalls = [];
@@ -125,9 +152,13 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
       interpretations: formalization.interpretations || [],
     },
   });
-  const language = detectLanguage(prompt);
+  const language = forcedResponseLanguage || detectLanguage(prompt);
   events.push(`language:${language}`);
   steps.push({ step: "detect_language", detail: language });
+  if (forcedResponseLanguage) {
+    events.push(`language_to:${forcedResponseLanguage}`);
+    steps.push({ step: "force_response_language", detail: forcedResponseLanguage });
+  }
   // Issue #324: resolve which language should drive natural-language responses
   // (defaults to the detected message language).
   const responseLanguage = responseLanguageFor(language, preferences, userContext);
@@ -216,6 +247,60 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
     events.push(`handler:${translation.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTranslation" });
     return finalize(events, steps, toolCalls, translation, formalizationContext);
+  }
+
+  // Skip the response-language follow-up during a forced-language replay: the
+  // replay IS the follow-up's body, so re-entering here would recurse forever.
+  if (!forcedResponseLanguage) {
+    steps.push({ step: "invoke_tool", detail: "response_language_followup" });
+    const responseLanguageFollowup = await tryResponseLanguageFollowup(
+      prompt,
+      normalized,
+      history,
+      preferences,
+    );
+    if (responseLanguageFollowup) {
+      events.push(`handler:${responseLanguageFollowup.intent}`);
+      events.push("handler:response_language_followup");
+      steps.push({
+        step: "dispatch_handler",
+        detail: "tryResponseLanguageFollowup",
+      });
+      toolCalls.push({
+        tool: "response_language_followup",
+        inputs: {
+          prompt,
+          requestedLanguage: detectResponseLanguage(normalized) || "",
+        },
+        outputs: {
+          intent: responseLanguageFollowup.intent,
+          confidence: responseLanguageFollowup.confidence,
+        },
+      });
+      return finalize(
+        events,
+        steps,
+        toolCalls,
+        responseLanguageFollowup,
+        formalizationContext,
+      );
+    }
+  }
+
+  steps.push({ step: "invoke_tool", detail: "project_lookup" });
+  const projectLookup = await tryProjectLookup(prompt, language, preferences);
+  if (projectLookup) {
+    events.push(`handler:${projectLookup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProjectLookup" });
+    toolCalls.push({
+      tool: "project_lookup",
+      inputs: { prompt, language },
+      outputs: {
+        intent: projectLookup.intent,
+        confidence: projectLookup.confidence,
+      },
+    });
+    return finalize(events, steps, toolCalls, projectLookup, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "wikipedia_article_question" });
@@ -609,22 +694,6 @@ async function solve(prompt, history, prefs, userContext = {}, memory = []) {
     events.push(`handler:${legacyFact.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryFactLookup" });
     return finalize(events, steps, toolCalls, legacyFact, formalizationContext);
-  }
-
-  steps.push({ step: "invoke_tool", detail: "project_lookup" });
-  const projectLookup = await tryProjectLookup(prompt, language, preferences);
-  if (projectLookup) {
-    events.push(`handler:${projectLookup.intent}`);
-    steps.push({ step: "dispatch_handler", detail: "tryProjectLookup" });
-    toolCalls.push({
-      tool: "project_lookup",
-      inputs: { prompt, language },
-      outputs: {
-        intent: projectLookup.intent,
-        confidence: projectLookup.confidence,
-      },
-    });
-    return finalize(events, steps, toolCalls, projectLookup);
   }
 
   steps.push({ step: "invoke_tool", detail: "http_fetch" });

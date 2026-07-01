@@ -67,7 +67,10 @@ pub use formalization::{
 };
 pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
-pub(crate) use language_markers::{detect_source_language, detect_target_language};
+pub(crate) use language_markers::{
+    detect_comprehension_failure, detect_response_language, detect_source_language,
+    detect_target_language,
+};
 pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;

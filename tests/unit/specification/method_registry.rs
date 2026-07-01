@@ -37,8 +37,8 @@ fn registry_covers_all_dispatch_surfaces() {
     );
     assert_eq!(
         registry.count_on(MethodSurface::Contextual),
-        5,
-        "there are exactly five contextual override handlers"
+        6,
+        "there are exactly six contextual override handlers"
     );
     assert_eq!(
         registry.method_count(),
@@ -70,9 +70,10 @@ fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
         .filter(|m| m.surface == MethodSurface::Specialized)
     {
         // Each specialized handler appears as a `("name", try_...)` table entry.
-        let needle = format!("(\"{}\",", method.name);
+        let inline_needle = format!("(\"{}\",", method.name);
+        let multiline_needle = format!("(\n        \"{}\",", method.name);
         assert!(
-            source.contains(&needle),
+            source.contains(&inline_needle) || source.contains(&multiline_needle),
             "specialized method `{}` must be a real entry in SPECIALIZED_HANDLERS",
             method.name
         );
