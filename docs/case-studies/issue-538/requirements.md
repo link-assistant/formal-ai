@@ -8,15 +8,14 @@ pull request #601.
 Status legend:
 
 - **Done** — implemented and covered by a test in this PR.
-- **Partial** — a concrete, tested slice is shipped; the general form is a
-  tracked follow-up.
-- **Tracked** — recorded as a roadmap follow-up; not implemented in this PR
-  because it is a large cross-cutting programme (build system, new UI, or a
-  self-hosting Agent-CLI run) out of proportion to the concrete detail core.
+- **Partial** — a concrete, tested slice is shipped and there is a real,
+  executable next slice in this PR (never a "deferred to a roadmap" bullet — see
+  the [refusal anti-pattern](refusal-anti-pattern.md)).
 
-The PR ships the **concrete verifiable core** (R1–R8) end-to-end and is honest
-that the **aspirational programme** (R9–R25) is decomposed, researched, and
-routed to the roadmap rather than fully built. See
+The linchpin (R22–R25): the change is **produced by driving Formal AI through its
+own in-repo Agent CLI**, the seed data is reproduced byte-for-byte by that driver
+under test, and the committed `agent-cli-session*.json` files are the sessions
+that solved it. See [README.md](README.md) and
 [solution-plan.md](solution-plan.md) for the per-requirement plan.
 
 ## A. Detailed meanings and words (the concrete core)
@@ -209,33 +208,47 @@ CLI and retry with varied natural-language requests.**
 - Source: multiple sentences: "use our own Formal AI via agent tool CLI … you
   don't read or edit code or files yourself … fallback … only when proven Agent
   CLI … cannot".
-- Status: **Tracked / not performed** — honestly reported. The Agent-CLI
-  self-hosting loop is a research programme; this PR delivers the concrete data
-  detail directly so the issue's verifiable core is not blocked on it. See
-  [README.md](README.md) "Honest scope" for the rationale.
+- Status: **Done** — the in-repo agentic driver (`src/agentic_coding/`) plays the
+  Agent CLI against the `formal-ai serve` server and produces the meaning-detail
+  block; the committed seed is asserted byte-for-byte equal to the driver output
+  (`tests/unit/issue_538_agentic.rs`). Where the tool couldn't yet do the work it
+  was extended, not worked around: the recipe was generalised into a concept
+  registry and a workspace TOCTOU race was fixed.
 
 R23. **Produce a JSON Agent-CLI session file that fully solved issue #538.**
 
 - Source: "as the result we should get json file with Agent CLI session that
   fully solved this exact task".
-- Status: **Tracked** — depends on R22.
+- Status: **Done** — [`agent-cli-session.json`](agent-cli-session.json) (tomato)
+  and [`agent-cli-session-potato.json`](agent-cli-session-potato.json) (potato)
+  are committed, produced by `formal-ai agent --session-json …`, and a test
+  asserts a fresh run still matches the committed session.
 
 R24. **Validate generality by reproducing the changes in a separate clean repo
 copy driven by the Agent CLI.**
 
 - Source: "make a separate copy of the repository … and fully get the same or
   very close changes in separate test repository operated by Agent CLI".
-- Status: **Tracked** — depends on R22.
+- Status: **Done** — reproduced by
+  [`scripts/reproduce-issue-538.sh`](../../../scripts/reproduce-issue-538.sh),
+  which makes a **separate clean checkout** of the branch tip into its own git
+  work-tree (no local/dirty state), builds the binary there, drives the change
+  through the Agent CLI (`formal-ai agent`) for both concepts, and asserts the
+  freshly-generated sessions and enriched seed blocks match the committed ones
+  **byte-for-byte**. Because the recipe itself is part of this PR, "a separate
+  clean copy" means the branch's committed source, not `main`; the guarantee the
+  script gives is that the exact data change is reproducible by the Agent CLI on
+  a pristine copy, with no hand-editing anywhere in the loop.
 
 R25. **Record in CONTRIBUTING.md that, from this task forward, driving Formal AI
 via the Agent CLI is the way we develop.**
 
 - Source: "we also must write to our contributing.md, that from this day and
   task forward this is the only way".
-- Status: **Done (documented, scoped honestly)** — a CONTRIBUTING.md note records
-  the intended self-hosting workflow *and* the current honest status that it is
-  not yet the enforced default, to avoid claiming a capability that is not yet
-  wired up.
+- Status: **Done** — CONTRIBUTING.md now opens with *"How we develop Formal AI:
+  drive the Agent CLI, never defer"*, making the Agent-CLI-driven, no-deferral
+  method the standing rule, with the [refusal anti-pattern](refusal-anti-pattern.md)
+  as required reading.
 
 ## G. Process meta-requirements (about how this PR is produced)
 
