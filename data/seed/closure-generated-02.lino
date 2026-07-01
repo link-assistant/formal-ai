@@ -1,4 +1,74 @@
 meanings
+  pattern_behavior_rules_list_apne_niyam_ginao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list apne niyam ginao hi"
+  pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list apne niyamon ki suchi dikhao hi"
+  pattern_behavior_rules_list_liechu_nide_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list liechu nide guize zh"
+  pattern_behavior_rules_list_liechu_xingwei_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list liechu xingwei guize zh"
+  pattern_behavior_rules_list_list_your_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list list your rules en"
+  pattern_behavior_rules_list_niyam_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list niyam dikhao hi"
+  pattern_behavior_rules_list_perechisli_svoi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list perechisli svoi pravila ru"
+  pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila povedeniya ru"
+  pattern_behavior_rules_list_pokazhi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila ru"
+  pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi spisok svoih pravil ru"
+  pattern_behavior_rules_list_show_behavior_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show behavior rules en"
+  pattern_behavior_rules_list_show_list_your_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show list your rules en"
+  pattern_behavior_rules_list_show_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show rules en"
+  pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list vyavahar niyam suchibaddh hi"
   pattern_behavior_rules_list_xianshi_guize_zh
     defined-by prompt_pattern
     lexeme en
@@ -1324,73 +1394,3 @@ meanings
     lexeme en
       surface
         text "response github repository traffic en"
-  response_github_repository_traffic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic hi"
-  response_github_repository_traffic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic ru"
-  response_github_repository_traffic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic zh"
-  response_greeting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting en"
-  response_greeting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting hi"
-  response_greeting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting ru"
-  response_greeting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting zh"
-  response_identity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity en"
-  response_identity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity hi"
-  response_identity_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity ru"
-  response_identity_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity zh"
-  response_inappropriate_content_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content en"
-  response_inappropriate_content_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content hi"
-  response_inappropriate_content_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content ru"

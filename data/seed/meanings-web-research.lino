@@ -196,6 +196,16 @@ meanings
       surface
         text analyze
       surface
+        text validate
+      surface
+        text authenticate
+      surface
+        text "fact-check"
+      surface
+        text "fact check"
+      surface
+        text "cross-check"
+      surface
         text "check …"
       surface
         text "verify …"
@@ -203,6 +213,8 @@ meanings
         text "scan …"
       surface
         text "analyze …"
+      surface
+        text "fact-check …"
     lexeme ru
       surface
         text проверь
@@ -212,6 +224,14 @@ meanings
         text проверьте
       surface
         text проверка
+      surface
+        text сверь
+      surface
+        text сверить
+      surface
+        text подтверди
+      surface
+        text подтвердить
       surface
         text "проверь …"
       surface
@@ -232,6 +252,10 @@ meanings
       surface
         text जाँचो
       surface
+        text सत्यापित
+      surface
+        text परखें
+      surface
         text "जांचें …"
       surface
         text "जाँचें …"
@@ -246,6 +270,22 @@ meanings
         text 檢測
       surface
         text 查重
+      surface
+        text 核实
+      surface
+        text 核實
+      surface
+        text 核对
+      surface
+        text 核對
+      surface
+        text 核查
+      surface
+        text 验证
+      surface
+        text 驗證
+      surface
+        text 甄别
       surface
         text 检查…
       surface
@@ -268,6 +308,32 @@ meanings
         text copied
       surface
         text duplicate
+      surface
+        text authentic
+      surface
+        text authenticity
+      surface
+        text genuine
+      surface
+        text "fact-check"
+      surface
+        text "fact check"
+      surface
+        text factual
+      surface
+        text truthfulness
+      surface
+        text veracity
+      surface
+        text accuracy
+      surface
+        text credibility
+      surface
+        text misinformation
+      surface
+        text disinformation
+      surface
+        text fabricated
     lexeme ru
       surface
         text плагиат
@@ -277,6 +343,22 @@ meanings
         text оригинальн
       surface
         text заимствован
+      surface
+        text подлинность
+      surface
+        text подлинн
+      surface
+        text достоверн
+      surface
+        text правдивость
+      surface
+        text точность
+      surface
+        text фейк
+      surface
+        text дезинформац
+      surface
+        text фальсификац
     lexeme hi
       surface
         text plagiarism
@@ -286,6 +368,16 @@ meanings
         text नकल
       surface
         text "साहित्यिक चोरी"
+      surface
+        text प्रामाणिकता
+      surface
+        text सत्यता
+      surface
+        text तथ्य
+      surface
+        text विश्वसनीयता
+      surface
+        text सच्चाई
     lexeme zh
       surface
         text 原创
@@ -301,6 +393,30 @@ meanings
         text 重复率
       surface
         text 重複率
+      surface
+        text 真实性
+      surface
+        text 真實性
+      surface
+        text 真伪
+      surface
+        text 真偽
+      surface
+        text 事实核查
+      surface
+        text 事實查核
+      surface
+        text 可信度
+      surface
+        text 可靠性
+      surface
+        text 真假
+      surface
+        text 虚假
+      surface
+        text 谣言
+      surface
+        text 謠言
   document_originality_document
     defined-by inquiry
     role document_originality_document
@@ -320,6 +436,20 @@ meanings
       surface
         text article
       surface
+        text essay
+      surface
+        text paper
+      surface
+        text passage
+      surface
+        text submission
+      surface
+        text writing
+      surface
+        text statement
+      surface
+        text claim
+      surface
         text "attached text"
       surface
         text "this text"
@@ -337,6 +467,18 @@ meanings
       surface
         text приложенный
       surface
+        text статья
+      surface
+        text статью
+      surface
+        text рукопись
+      surface
+        text сочинение
+      surface
+        text утверждение
+      surface
+        text заявление
+      surface
         text "данный текст"
     lexeme hi
       surface
@@ -351,6 +493,14 @@ meanings
         text फाइल
       surface
         text संलग्न
+      surface
+        text लेख
+      surface
+        text निबंध
+      surface
+        text कथन
+      surface
+        text दावा
     lexeme zh
       surface
         text 文本
@@ -362,6 +512,26 @@ meanings
         text 附件
       surface
         text 稿件
+      surface
+        text 论文
+      surface
+        text 論文
+      surface
+        text 文章
+      surface
+        text 段落
+      surface
+        text 陈述
+      surface
+        text 陳述
+      surface
+        text 声明
+      surface
+        text 聲明
+      surface
+        text 说法
+      surface
+        text 說法
   research_superlative_modifier
     defined-by property
     role research_superlative_modifier

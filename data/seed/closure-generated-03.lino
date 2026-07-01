@@ -1,4 +1,74 @@
 meanings
+  response_github_repository_traffic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic hi"
+  response_github_repository_traffic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic ru"
+  response_github_repository_traffic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response github repository traffic zh"
+  response_greeting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting en"
+  response_greeting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting hi"
+  response_greeting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting ru"
+  response_greeting_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting zh"
+  response_identity_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response identity en"
+  response_identity_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response identity hi"
+  response_identity_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response identity ru"
+  response_identity_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response identity zh"
+  response_inappropriate_content_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response inappropriate content en"
+  response_inappropriate_content_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response inappropriate content hi"
+  response_inappropriate_content_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response inappropriate content ru"
   response_inappropriate_content_zh
     defined-by response_template
     lexeme en
@@ -334,6 +404,11 @@ meanings
     lexeme en
       surface
         text "stackexchange"
+  statement
+    defined-by word_surface
+    lexeme en
+      surface
+        text "statement"
   strip_empty_lines
     defined-by operation
     lexeme en
@@ -349,6 +424,11 @@ meanings
     lexeme en
       surface
         text "structured knowledge"
+  submission
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submission"
   substitute
     defined-by word_surface
     lexeme en
@@ -554,6 +634,11 @@ meanings
     lexeme en
       surface
         text "true"
+  truthfulness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "truthfulness"
   ts
     defined-by word_surface
     lexeme en
@@ -599,6 +684,11 @@ meanings
     lexeme en
       surface
         text "usd"
+  veracity
+    defined-by word_surface
+    lexeme en
+      surface
+        text "veracity"
   views
     defined-by word_surface
     lexeme en
@@ -729,6 +819,11 @@ meanings
     lexeme en
       surface
         text "write program"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
   your
     defined-by word_surface
     lexeme en

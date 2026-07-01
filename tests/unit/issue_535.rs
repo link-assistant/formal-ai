@@ -6,6 +6,43 @@ const ISSUE_535_REPORTED_PROMPT: &str = "Проверь данный текст 
 Attached files:\n\
 1. variation-tech-model-manual.txt (text/plain, 160.3 KB)";
 
+/// The generalized verification class: comment 4754747438 asks us to cover the
+/// *whole class of similar questions* — not only plagiarism/originality, but
+/// authenticity, factual accuracy, and veracity checks — in every supported
+/// language. Each prompt uses the broadened action/subject cues (verify /
+/// authenticity / factual accuracy / достоверность / सत्यता / 真实性) rather than
+/// the plagiarism stems, and must still route to the same grounded workflow.
+const VERIFICATION_CLASS_CASES: &[(&str, &str, &str)] = &[
+    (
+        "en",
+        "Verify the authenticity and factual accuracy of this attached document\n\n\
+Attached files:\n\
+1. claim.txt (text/plain, 3.0 KB)",
+        "claim.txt",
+    ),
+    (
+        "ru",
+        "Проверь достоверность этого приложенного материала\n\n\
+Attached files:\n\
+1. novost.txt (text/plain, 4.0 KB)",
+        "novost.txt",
+    ),
+    (
+        "hi",
+        "इस संलग्न दस्तावेज़ की सत्यता जांचें\n\n\
+Attached files:\n\
+1. lekh.txt (text/plain, 5.0 KB)",
+        "lekh.txt",
+    ),
+    (
+        "zh",
+        "核实这篇附件文章的真实性\n\n\
+Attached files:\n\
+1. news.txt (text/plain, 6.0 KB)",
+        "news.txt",
+    ),
+];
+
 const DOCUMENT_ORIGINALITY_CHECK_CASES: &[(&str, &str, &str)] = &[
     (
         "en",
@@ -267,5 +304,59 @@ fn document_originality_requests_route_to_grounded_attachment_workflow() {
             response.evidence_links,
         );
         assert_ne!(response.intent, "unknown");
+    }
+}
+
+#[test]
+fn verification_class_generalizes_beyond_plagiarism_in_every_language() {
+    // The class must recognize authenticity / factual-accuracy / veracity
+    // requests (not only plagiarism) and ground them the same way.
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let case_languages = VERIFICATION_CLASS_CASES
+        .iter()
+        .map(|&(language, _, _)| language)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        case_languages, supported_languages,
+        "the generalized verification class must cover every supported language",
+    );
+
+    for &(language, prompt, file_name) in VERIFICATION_CLASS_CASES {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "document_originality_check",
+            "{language} authenticity/veracity prompt should route to the grounded \
+             verification workflow, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("document_originality_check:attachment:{file_name}")),
+            "{language} prompt should preserve the attachment name {file_name:?}: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:document_originality_check"),
+            "{language} prompt should record web-search grounding: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("language:{language}")),
+            "{language} prompt should stay localized: {:?}",
+            response.evidence_links,
+        );
     }
 }
