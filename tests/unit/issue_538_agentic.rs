@@ -30,6 +30,16 @@ fn seed_tomato_block() -> String {
     rest[..end].to_owned()
 }
 
+/// Extract the enriched potato meaning block from the seed file — everything from
+/// the `  potato` lemma head up to (but not including) the next lemma `  carrot`.
+fn seed_potato_block() -> String {
+    let seed = include_str!("../../data/seed/meanings-translation.lino");
+    let start = seed.find("\n  potato\n").expect("seed has a potato lemma") + 1;
+    let rest = &seed[start..];
+    let end = rest.find("\n  carrot\n").expect("carrot follows potato") + 1;
+    rest[..end].to_owned()
+}
+
 #[test]
 fn recognises_the_meaning_detail_task() {
     // The canonical task string and its keywords route to the #538 recipe…
@@ -194,6 +204,88 @@ fn driver_is_deterministic_for_the_meaning_detail_task() {
     assert_eq!(first.steps, second.steps);
     assert_eq!(first.final_answer, second.final_answer);
     assert_eq!(first.turns, second.turns);
+}
+
+#[test]
+fn routes_different_requests_to_different_concepts() {
+    // The maintainer's generality check: *"each time you should use different
+    // natural language requests, so we test that solutions are never hardcoded but
+    // truly general."* Two differently worded requests route to two different
+    // concepts — the recipe is parameterized, not tomato-hardcoded.
+    let tomato = meaning_detail::concept_for_task(meaning_detail::MEANING_DETAIL_TASK)
+        .expect("tomato request routes");
+    let potato = meaning_detail::concept_for_task(meaning_detail::POTATO_DETAIL_TASK)
+        .expect("potato request routes");
+    assert_eq!(tomato.name, "tomato");
+    assert_eq!(potato.name, "potato");
+    assert_ne!(tomato.kb_path, potato.kb_path);
+    // Both requests are recognised as the #538 meaning-detail task…
+    assert!(is_meaning_detail_task(meaning_detail::POTATO_DETAIL_TASK));
+    // …and the potato request uses *none* of the tomato task's wording.
+    assert!(!meaning_detail::POTATO_DETAIL_TASK.contains("tomato"));
+    assert!(!meaning_detail::POTATO_DETAIL_TASK.contains("томат"));
+}
+
+#[test]
+fn enriched_potato_block_matches_the_seed_byte_for_byte() {
+    // The same recipe, a different concept: the block re-derived for potato from
+    // its Wikidata lexeme facts is exactly the enriched seed potato block. This is
+    // the missing English plural `potatoes` (form L3784-F2) recovered, every
+    // surface pinned to part of speech and grammatical number, byte-for-byte.
+    let produced = meaning_detail::enrich_block(&meaning_detail::POTATO, None);
+    assert_eq!(produced, seed_potato_block());
+    // Proof it is a real enrichment: the plural surface and its number are present.
+    assert!(produced.contains("surface L3784-F2 # wikidata english plural surface"));
+    assert!(produced.contains("text potatoes"));
+    assert!(produced.contains("grammatical_number plural"));
+    assert!(produced.contains("grounded-in Q10998"));
+}
+
+#[test]
+fn driver_runs_the_potato_recipe_with_a_different_request() {
+    // End-to-end proof of generality: the *same* in-repo agentic CLI, driven by a
+    // *differently worded* request, enriches the potato meaning and writes
+    // byte-for-byte the enriched seed potato block into the sandbox.
+    let outcome = run_agentic_task(meaning_detail::POTATO_DETAIL_TASK).expect("workspace");
+    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+
+    let executed: Vec<&str> = outcome.steps.iter().map(|s| s.tool.as_str()).collect();
+    assert_eq!(executed, DRIVER_TOOLS.to_vec());
+
+    let write = &outcome.steps[2];
+    assert_eq!(write.tool, "write_file");
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    assert_eq!(written["content"], seed_potato_block());
+    // It writes to the potato KB path, not the tomato one.
+    assert_eq!(written["path"], meaning_detail::POTATO.kb_path);
+
+    // The verify step reads the enriched block back and observes the added plural.
+    let run = &outcome.steps[3];
+    assert!(run.result.contains("potatoes"));
+    assert!(run.result.contains("grammatical_number plural"));
+
+    assert!(outcome.final_answer.contains("more detailed"));
+    assert!(outcome.final_answer.contains(meaning_detail::POTATO.kb_path));
+}
+
+#[test]
+fn committed_potato_session_matches_a_fresh_run() {
+    // The second committed Agent CLI session (a *different* natural-language
+    // request solving a *different* concept with the same recipe). Regenerate with:
+    //   formal-ai agent --task "<POTATO_DETAIL_TASK>" \
+    //       --session-json docs/case-studies/issue-538/agent-cli-session-potato.json
+    let committed =
+        include_str!("../../docs/case-studies/issue-538/agent-cli-session-potato.json");
+    let fresh = run_agentic_task(meaning_detail::POTATO_DETAIL_TASK).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed potato Agent CLI session is stale — regenerate it with \
+         `formal-ai agent --session-json …`"
+    );
 }
 
 #[test]

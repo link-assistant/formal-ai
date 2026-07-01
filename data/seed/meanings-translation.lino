@@ -804,27 +804,40 @@ meanings
       language Q1860 # wikidata language english
       lexical-category Q1084 # wikidata category noun
       form L3784-F1 # wikidata form potato
-        feature Q110786 # wikidata grammatical feature
+        feature Q110786 # wikidata grammatical feature singular
       form L3784-F2 # wikidata form potatoes
-        feature Q146786 # wikidata grammatical feature
+        feature Q146786 # wikidata grammatical feature plural
       sense L3784-S1 # wikidata grounded sense
-    surface L3784-F1 # wikidata english surface
+    surface L3784-F1 # wikidata english singular surface
       text potato
       language en
+      part_of_speech noun
+      grammatical_number singular
+      sense L3784-S1 # wikidata grounded sense
+    surface L3784-F2 # wikidata english plural surface
+      text potatoes
+      language en
+      part_of_speech noun
+      grammatical_number plural
       sense L3784-S1 # wikidata grounded sense
     lexeme ru
       surface
         text картофель
+        part_of_speech noun
       surface
         text картошка
+        part_of_speech noun
     lexeme hi
       surface
         text आलू
+        part_of_speech noun
     lexeme zh
       surface
         text 土豆
+        part_of_speech noun
       surface
         text 马铃薯
+        part_of_speech noun
   carrot
     grounded-in Q81
     defined-by entity
