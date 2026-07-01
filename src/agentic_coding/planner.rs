@@ -28,6 +28,7 @@
 
 use serde_json::json;
 
+use super::diagram;
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
@@ -87,6 +88,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if meaning_detail::is_meaning_detail_task(&task) {
         return Some(plan_meaning_detail_step(&task, messages, tool_names));
+    }
+    if diagram::is_diagram_task(&task) {
+        return Some(plan_diagram_step(messages, tool_names));
     }
     None
 }
@@ -197,6 +201,37 @@ fn plan_meaning_detail_step(
 
     // Step 5: nothing left to do — answer with the enriched block inline.
     AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
+}
+
+/// The issue-#538 diagram recipe: write the generated mermaid document → verify →
+/// final. Unlike the other two recipes it needs no web step — the diagrams are a
+/// pure function of the planner's own recipe table ([`diagram::render_document`]),
+/// so the loop *documents itself*. Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = diagram::render_document();
+
+    // Step 1: write the generated diagram document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            let arguments = json!({ "path": diagram::DIAGRAM_PATH, "content": document });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", diagram::DIAGRAM_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(diagram::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

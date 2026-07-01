@@ -11,7 +11,7 @@
 //! change the issue asked for — not a hand-authored approximation.
 
 use formal_ai::agentic_coding::{
-    corpus, enrich_tomato_block, is_meaning_detail_task, meaning_detail, plan_chat_step,
+    corpus, diagram, enrich_tomato_block, is_meaning_detail_task, meaning_detail, plan_chat_step,
     run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
 };
 use formal_ai::{ChatMessage, ToolCall};
@@ -293,6 +293,104 @@ fn committed_potato_session_matches_a_fresh_run() {
     assert_eq!(
         committed, rendered,
         "the committed potato Agent CLI session is stale — regenerate it with \
+         `formal-ai agent --session-json …`"
+    );
+}
+
+#[test]
+fn recognises_the_diagram_task() {
+    // A *third* recipe on a *non-lexeme* axis (issue #538's "generated mermaid
+    // diagram split into parts"), driven by a differently worded request.
+    assert!(diagram::is_diagram_task(diagram::DIAGRAM_TASK));
+    assert!(diagram::is_diagram_task(
+        "please draw a mermaid flowchart of the recipes"
+    ));
+    // It does not steal the meaning-detail request or unrelated turns.
+    assert!(!diagram::is_diagram_task(
+        "make the tomato meaning more detailed"
+    ));
+    assert!(!diagram::is_diagram_task("What is the capital of France?"));
+    // The diagram request uses none of the tomato/potato task wording.
+    assert!(!diagram::DIAGRAM_TASK.contains("tomato"));
+    assert!(!diagram::DIAGRAM_TASK.contains("grammatical"));
+}
+
+#[test]
+fn committed_diagram_is_generated_and_written_by_the_driver() {
+    // The heart of this axis: the committed diagram document is *generated* from
+    // the planner's own recipe table (not hand-drawn), so it can never drift from
+    // the code — and it is byte-for-byte what the Agent CLI writes.
+    let committed = include_str!("../../docs/diagrams/agentic-recipes.md");
+    assert_eq!(
+        committed,
+        diagram::render_document(),
+        "the committed diagram is stale — regenerate it from the recipe table"
+    );
+    // It really is split into parts, each a mermaid flowchart.
+    assert_eq!(committed.matches("```mermaid").count(), 4);
+    assert!(committed.contains("## Part 1 — Overview"));
+
+    // End-to-end: the in-repo Agent CLI writes exactly this document.
+    let outcome = run_agentic_task(diagram::DIAGRAM_TASK).expect("workspace");
+    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+    let write = outcome
+        .steps
+        .iter()
+        .find(|step| step.tool == "write_file")
+        .expect("a write step");
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    assert_eq!(written["content"], diagram::render_document());
+    assert_eq!(written["path"], diagram::DIAGRAM_PATH);
+    assert!(outcome.final_answer.contains(diagram::DIAGRAM_PATH));
+}
+
+#[test]
+fn planner_walks_the_diagram_recipe() {
+    let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(diagram::DIAGRAM_TASK)];
+
+    // Step 1: no web step — the diagrams are a pure function of the recipe table,
+    // so the planner goes straight to writing the generated document.
+    let call = expect_single_call(&messages, &tools);
+    assert_eq!(call.tool, "write_file");
+    assert!(call.arguments.contains(diagram::DIAGRAM_PATH));
+    let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+    assert_eq!(written["content"], diagram::render_document());
+    answer_tool_call(&mut messages, &call, "wrote agentic-recipes.md");
+
+    // Step 2: verify by reading the document back.
+    let call = expect_single_call(&messages, &tools);
+    assert_eq!(call.tool, "run_command");
+    assert!(call.arguments.contains(diagram::DIAGRAM_PATH));
+    answer_tool_call(&mut messages, &call, &diagram::render_document());
+
+    // Step 3: the recipe is exhausted — the final answer carries the diagrams.
+    match plan_chat_step(&messages, &tools) {
+        Some(AgenticPlan::Final(answer)) => {
+            assert!(answer.contains("```mermaid"));
+            assert!(answer.contains("## Part 1 — Overview"));
+            assert!(answer.contains(diagram::DIAGRAM_PATH));
+        }
+        other => panic!("expected a final answer, got {other:?}"),
+    }
+}
+
+#[test]
+fn committed_diagram_session_matches_a_fresh_run() {
+    // The third committed Agent CLI session (a different request, a different axis,
+    // the same recipe machinery). Regenerate with:
+    //   formal-ai agent --task "<DIAGRAM_TASK>" \
+    //       --session-json docs/case-studies/issue-538/agent-cli-session-diagram.json
+    let committed =
+        include_str!("../../docs/case-studies/issue-538/agent-cli-session-diagram.json");
+    let fresh = run_agentic_task(diagram::DIAGRAM_TASK).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed diagram Agent CLI session is stale — regenerate it with \
          `formal-ai agent --session-json …`"
     );
 }

@@ -19,12 +19,14 @@
 //! a pure, deterministic function of the message history.
 
 pub mod corpus;
+pub mod diagram;
 pub mod driver;
 pub mod formalize;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
 
+pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
 };
