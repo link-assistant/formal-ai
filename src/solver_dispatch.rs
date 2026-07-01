@@ -25,10 +25,9 @@ use crate::solver_handlers::{
     try_numeric_list, try_numeric_list_with_history, try_opinion_question, try_program_synthesis,
     try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
     try_research_comparison_table, try_research_result_followup, try_response_language_followup,
-    try_roleplay_request,
-    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
-    try_software_project_followup, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_roleplay_request, try_shell_command_transform, try_shell_command_transform_with_history,
+    try_shell_refusal, try_software_project_followup, try_software_project_request,
+    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
     try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
