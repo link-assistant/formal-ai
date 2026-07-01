@@ -94,7 +94,8 @@ translation tests (issue #221) stay green.
 
 The following are recorded as roadmap follow-ups with research and a smallest
 next step in [solution-plan.md](solution-plan.md): bulk semantics import (R9),
-hardcoded-string audit (R10), Rust→WASM worker (R11–R12), CST/AST-in-data and
+hardcoded-string audit (R10), widening the **already-existing** Rust→WASM demo
+worker to absorb the remaining JS worker logic (R11–R12), CST/AST-in-data and
 on-demand rebuild (R13–R14), generated mermaid diagrams (R15–R16), interactive
 debug view (R17), full self-inspecting universal meta algorithm (R18–R20),
 contradiction detection (R21), and solving the task by driving the Agent CLI to

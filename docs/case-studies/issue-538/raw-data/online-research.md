@@ -92,8 +92,12 @@ to UI interfacing only. Research confirms the standard toolchain:
   worker" phrasing.
 
 This confirms the follow-up is feasible with a mainstream toolchain and no
-neural runtime, but it is a substantial build-system change tracked as a roadmap
-item rather than implemented in this data-focused PR.
+neural runtime. Note the repo **already** has a Rust→WASM demo worker
+(`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`, issue #1
+R16), so the remaining work is widening that surface to absorb the hand-written
+JS workers under `src/web/worker/` rather than introducing the toolchain from
+scratch. It stays a build-system programme tracked on the roadmap rather than
+part of this data-focused PR.
 
 Sources:
 - <https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm>

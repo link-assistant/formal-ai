@@ -121,8 +121,12 @@ interfaces the UI.**
 
 - Source: "I expected for us to have WebAssembly web worker, and JavaScript
   should solve only interfacing with the UI".
-- Status: **Tracked** — see [online-research.md](raw-data/online-research.md)
-  §4 for the confirmed `wasm-pack`/`wasm-bindgen`/Web-Worker toolchain.
+- Status: **Partial (pre-existing)** — the demo already ships a Rust→WASM
+  worker (`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`,
+  requirement R16 of issue #1), but hand-written JS workers still exist under
+  `src/web/worker/`. Fully moving worker logic into WASM and reducing JS to UI
+  interfacing is the tracked follow-up; see
+  [online-research.md](raw-data/online-research.md) §4 for the toolchain.
 
 R12. **Don't repeat logic; any unavoidable JS logic is compiled from Rust at
 build time; keep JS minimal.**

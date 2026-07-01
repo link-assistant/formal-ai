@@ -97,11 +97,15 @@ items — the smallest next concrete step.
 
 ### R11/R12
 
-- **Existing components:** `wasm-pack` + `wasm-bindgen` + Web Workers (research
-  §4). The Rust crate is already the source of truth for logic.
-- **Smallest next step:** add a `wasm32-unknown-unknown` build target for the
-  core solver crate and a single smoke test that the compiled module loads in a
-  worker, before migrating any JS logic. Keep it behind a feature flag.
+- **Existing components:** the demo **already** compiles Rust to a WASM worker
+  (`src/web/wasm-worker/src/lib.rs` + `build.sh` → `src/web/formal_ai_worker.wasm`,
+  issue #1 R16). The gap is the hand-written JS workers under `src/web/worker/`
+  that still carry logic. `wasm-pack` + `wasm-bindgen` + Web Workers (research §4)
+  are the standard path to widen the WASM surface.
+- **Smallest next step:** pick one behaviour currently implemented in a
+  `src/web/worker/*.js` file, move it behind the existing `wasm-worker` crate,
+  and assert parity with a single test — proving the migration pattern before
+  scaling it. The build target already exists, so no new toolchain is required.
 
 ## D/E. Self-inspecting universal meta algorithm (tracked, overlaps #559)
 
