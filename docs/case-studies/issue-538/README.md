@@ -20,7 +20,10 @@ explicit anti-pattern (see below) so we never repeat it.
   [refusal-anti-pattern.md](refusal-anti-pattern.md)
 - Committed Agent CLI sessions that produced the change:
   [agent-cli-session.json](agent-cli-session.json) (tomato),
-  [agent-cli-session-potato.json](agent-cli-session-potato.json) (potato)
+  [agent-cli-session-potato.json](agent-cli-session-potato.json) (potato),
+  [agent-cli-session-diagram.json](agent-cli-session-diagram.json) (recipe diagrams)
+- Generated architecture diagrams:
+  [../../diagrams/agentic-recipes.md](../../diagrams/agentic-recipes.md)
 
 ## The issue in one sentence
 
@@ -75,15 +78,31 @@ enriches any registered concept, routed from the request's own wording by
 `concept_for_task()`. We prove this by driving **two different concepts with two
 differently-worded requests**:
 
-| Concept | Request wording (abridged)                                             | Session artifact                     |
-| ------- | --------------------------------------------------------------------- | ------------------------------------ |
-| tomato  | "…pin every surface's part of speech and grammatical number…"         | `agent-cli-session.json`             |
-| potato  | "…record the singular/plural of each surface, add the missing plural…"| `agent-cli-session-potato.json`      |
+| Axis          | Request wording (abridged)                                             | Session artifact                     |
+| ------------- | --------------------------------------------------------------------- | ------------------------------------ |
+| tomato meaning| "…pin every surface's part of speech and grammatical number…"         | `agent-cli-session.json`             |
+| potato meaning| "…record the singular/plural of each surface, add the missing plural…"| `agent-cli-session-potato.json`      |
+| recipe diagram| "…generate the mermaid diagrams of our agentic recipes, split into parts…"| `agent-cli-session-diagram.json` |
 
 A test (`routes_different_requests_to_different_concepts`) asserts the two
-distinct requests route to the two distinct concepts, so a passing run is
+meaning requests route to the two distinct concepts, and the third request drives
+an entirely different, **non-lexeme** axis (see below), so a passing run is
 evidence the recipe generalises rather than pattern-matching one hardcoded
 answer.
+
+## Beyond meanings: the same method generates architecture diagrams
+
+To show the "drive the Agent CLI" method is not special-cased to editing meaning
+data, a third recipe (`src/agentic_coding/diagram.rs`) makes the *same* Agent CLI
+**generate the mermaid diagrams of its own agentic recipes** — the issue's
+*"generated mermaid diagram split into parts"* axis (R15/R16). The diagrams are
+rendered from the planner's own recipe table (not hand-drawn), so they cannot
+drift from the code; the Agent CLI writes
+[`docs/diagrams/agentic-recipes.md`](../../diagrams/agentic-recipes.md) from a
+differently-worded request, and both the document and its
+[session JSON](agent-cli-session-diagram.json) are reproduced byte-for-byte under
+test. This is the strongest generality evidence in the PR: the loop authored a
+different *kind* of artifact from a different *kind* of request.
 
 ## What the enriched data looks like
 

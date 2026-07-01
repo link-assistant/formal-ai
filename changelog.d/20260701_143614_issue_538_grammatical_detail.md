@@ -21,6 +21,12 @@ bump: minor
   requests. The Agent-CLI sessions that solved the task are committed
   (`docs/case-studies/issue-538/agent-cli-session*.json`), and
   `scripts/reproduce-issue-538.sh` regenerates the change on a clean checkout.
+- Generated agentic-recipe **mermaid diagrams**, split into parts
+  (`docs/diagrams/agentic-recipes.md`), rendered from the planner's own recipe
+  table by `src/agentic_coding/diagram.rs` — a non-lexeme axis (issue #538
+  R15/R16) proving the Agent-CLI method generalises beyond meaning data. The Agent
+  CLI writes the document from a *third* differently worded request; the document
+  and its session JSON are reproduced byte-for-byte under test.
 - `formal-ai agent --session-json <path>` to capture a replayable Agent-CLI
   session as JSON.
 - Case study `docs/case-studies/issue-538` with a requirements decomposition,
