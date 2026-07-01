@@ -43,6 +43,7 @@ pub mod protocol;
 pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub mod recipe_interpreter;
+pub mod relative_meta_logic;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
