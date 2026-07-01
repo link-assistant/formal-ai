@@ -173,17 +173,24 @@ R15. **Generated mermaid diagrams, split into parts, for a high-level visual
 overview.**
 
 - Source: "generated mermaid diagram split into parts".
-- Status: **Not yet built in this PR.** Smallest real next slice: generate one
-  mermaid diagram of the Agent-CLI recipe's tool loop from the driver data and
-  commit it with a regeneration test.
+- Status: **Partial** — `src/agentic_coding/diagram.rs` generates
+  [`docs/diagrams/agentic-recipes.md`](../../diagrams/agentic-recipes.md), a
+  split-into-parts (one mermaid flowchart per part) overview of the agentic
+  recipes, **from the planner's own recipe table** (not hand-drawn). The Agent CLI
+  writes it (session
+  [`agent-cli-session-diagram.json`](agent-cli-session-diagram.json)) and it is
+  reproduced byte-for-byte under test. Smallest real next slice: generate the
+  analogous diagram for another subsystem (e.g. the solver pipeline) the same way.
 
 R16. **A detailed mermaid diagram of what happens for input from each different
 entry point.**
 
 - Source: "different mermaid diagram describing in detail what exactly happens
   when the input to the system coming from different places".
-- Status: **Not yet built in this PR** — follows R15 for one entry point (the
-  `formal-ai agent` task input path exercised in this PR).
+- Status: **Partial** — the generated document's per-recipe parts already show
+  what happens for input routed to each recipe (search → fetch → write → verify →
+  final). Smallest real next slice: add the non-agentic entry points (HTTP chat,
+  CLI solve) as further generated parts.
 
 R17. **Interactive step-by-step debugging view (embedded VS Code split into chat
 / data / mermaid / Rust / JS panes).**

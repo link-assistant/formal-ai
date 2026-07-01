@@ -6,9 +6,10 @@
 #
 # What it proves:
 #   * A pristine git work-tree of the branch tip (no local or dirty state)…
-#   * …builds the `formal-ai` binary and drives the meaning-detail change through
-#     the Agent CLI with the *same task wording* recorded in the committed
-#     sessions, for BOTH concepts (tomato, potato)…
+#   * …builds the `formal-ai` binary and drives three changes through the Agent
+#     CLI with the *same task wording* recorded in the committed sessions — the
+#     meaning-detail enrichment for BOTH concepts (tomato, potato) and the
+#     generated agentic-recipe mermaid diagrams (a non-lexeme axis)…
 #   * …and the freshly-generated Agent-CLI sessions match the committed
 #     `docs/case-studies/issue-538/agent-cli-session*.json` byte-for-byte, and the
 #     byte-for-byte seed-parity tests pass on the clean copy.
@@ -28,6 +29,7 @@ cd "$REPO_ROOT"
 
 TOMATO_TASK="Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат."
 POTATO_TASK="Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
+DIAGRAM_TASK="Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
 
 WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/issue-538-repro.XXXXXX")"
 # Share the build cache with the main checkout so a second full target/ dir does
@@ -71,6 +73,7 @@ reproduce_one() {
 
 reproduce_one tomato "$TOMATO_TASK" docs/case-studies/issue-538/agent-cli-session.json
 reproduce_one potato "$POTATO_TASK" docs/case-studies/issue-538/agent-cli-session-potato.json
+reproduce_one diagram "$DIAGRAM_TASK" docs/case-studies/issue-538/agent-cli-session-diagram.json
 
 echo "==> Asserting byte-for-byte seed parity on the clean copy"
 if cargo test --quiet --test unit -- issue_538_agentic >/dev/null 2>&1; then
