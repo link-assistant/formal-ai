@@ -1,0 +1,80 @@
+  tomato
+    grounded-in Q23501
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L7993 # wikidata english source lexeme
+      language Q1860 # wikidata language english
+      lexical-category Q1084 # wikidata category noun
+      form L7993-F1 # wikidata form tomato
+        feature Q110786 # wikidata grammatical feature singular
+      form L7993-F2 # wikidata form tomatoes
+        feature Q146786 # wikidata grammatical feature plural
+      sense L7993-S1 # wikidata grounded sense
+    surface L7993-F1 # wikidata english singular surface
+      text tomato
+      language en
+      part_of_speech noun
+      grammatical_number singular
+      sense L7993-S1 # wikidata grounded sense
+    surface L7993-F2 # wikidata english plural surface
+      text tomatoes
+      language en
+      part_of_speech noun
+      grammatical_number plural
+      sense L7993-S1 # wikidata grounded sense
+    source-lexeme L3526 # wikidata russian source lexeme помидор
+      language Q7737 # wikidata language russian
+      lexical-category Q1084 # wikidata category noun
+      form L3526-F1 # wikidata form помидор
+        feature Q110786 # wikidata grammatical feature singular
+      form L3526-F3 # wikidata form помидоры
+        feature Q146786 # wikidata grammatical feature plural
+      sense L3526-S1 # wikidata grounded sense
+    surface L3526-F1 # wikidata russian singular surface помидор
+      text помидор
+      language ru
+      part_of_speech noun
+      grammatical_number singular
+      sense L3526-S1 # wikidata grounded sense
+    surface L3526-F3 # wikidata russian plural surface помидоры
+      text помидоры
+      language ru
+      part_of_speech noun
+      grammatical_number plural
+      sense L3526-S1 # wikidata grounded sense
+    source-lexeme L170542 # wikidata russian source lexeme томат
+      language Q7737 # wikidata language russian
+      lexical-category Q1084 # wikidata category noun
+      form L170542-F1 # wikidata form томат
+        feature Q110786 # wikidata grammatical feature singular
+      form L170542-F7 # wikidata form томаты
+        feature Q146786 # wikidata grammatical feature plural
+    surface L170542-F1 # wikidata russian singular surface томат
+      text томат
+      language ru
+      part_of_speech noun
+      grammatical_number singular
+    surface L170542-F7 # wikidata russian plural surface томаты
+      text томаты
+      language ru
+      part_of_speech noun
+      grammatical_number plural
+    lexeme hi
+      surface
+        text टमाटर
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 番茄
+        part_of_speech noun
+      surface
+        text 西红柿
+        part_of_speech noun
+  cucumber
+    grounded-in Q2735883
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
+        text cucumber
+    lexeme ru
