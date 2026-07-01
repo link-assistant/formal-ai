@@ -15,11 +15,14 @@ use crate::method_registry::MethodRegistry;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::{handler_for_method, try_contextual_override, ContextualOutcome};
+use crate::solver_dispatch::{
+    handler_for_method, try_contextual_override, ContextualOutcome, ContextualRuntime,
+};
 use crate::solver_handlers::{
-    try_behavior_rules_with_runtime, try_definition_merge_by_default, try_feature_capability,
+    try_behavior_rules_with_runtime, try_concept_lookup_with_response_language,
+    try_definition_merge_by_default, try_explicit_repository_lookup, try_feature_capability,
     try_natural_language_tool_request, try_playwright_script, try_project_lookup,
-    CapabilityRuntime, SelfAwarenessRuntime,
+    try_project_lookup_with_response_language, CapabilityRuntime, SelfAwarenessRuntime,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -35,7 +38,23 @@ pub fn try_dispatch(
     let method_names = registry.ordered_method_names_for_relevants(&intent_formalization.relevants);
     let runtime = MethodRuntime::new(solver.config);
 
+    // Issue #556: a response-language follow-up replays the previous request
+    // through the whole solver with this language forced onto every localizable
+    // answer family, so the retarget generalizes beyond a single handler.
+    let forced_response_language = solver.config.forced_response_language;
     for name in method_names {
+        if matches!(name.as_str(), "feature_capability" | "capabilities") {
+            if let Some(answer) = try_explicit_repository_lookup(
+                prompt,
+                &normalized,
+                log,
+                solver.config.associative_project_promotion,
+                intent_formalization.route.as_deref() == Some("identity"),
+                forced_response_language,
+            ) {
+                return Some(record_method_answer(prompt, log, answer, "project_lookup"));
+            }
+        }
         if let Some(answer) = try_prelude_method(solver, &name, prompt, &normalized, log, runtime) {
             return Some(answer);
         }
@@ -54,8 +73,11 @@ pub fn try_dispatch(
             prompt,
             &normalized,
             history,
-            runtime.proof_render_config,
-            runtime.self_awareness_runtime,
+            ContextualRuntime::new(
+                runtime.proof_render_config,
+                runtime.self_awareness_runtime,
+                solver.config,
+            ),
             log,
         ) {
             ContextualOutcome::Answer(answer) => {
@@ -64,19 +86,44 @@ pub fn try_dispatch(
             ContextualOutcome::Skip => continue,
             ContextualOutcome::NotHandled => {}
         }
+        // Issue #556: when a language is forced, route the concept-lookup family
+        // through its response-language variant so a replayed definitional
+        // request re-renders in the requested language before the plain handler
+        // (which localizes only to the detected prompt language) can claim it.
+        if name == "concept_lookup" {
+            if let Some(language) = forced_response_language {
+                if let Some(answer) =
+                    try_concept_lookup_with_response_language(prompt, log, Some(language))
+                {
+                    return Some(record_method_answer(prompt, log, answer, "concept_lookup"));
+                }
+            }
+        }
         if let Some(handler) = handler_for_method(&name) {
             if let Some(answer) = handler(prompt, &normalized, log) {
                 return Some(record_method_answer(prompt, log, answer, &name));
             }
         }
         if name == "concept_lookup" {
-            if let Some(answer) = try_project_lookup(
-                prompt,
-                &normalized,
-                log,
-                solver.config.associative_project_promotion,
-                intent_formalization.route.as_deref() == Some("identity"),
-            ) {
+            let answer = if let Some(language) = forced_response_language {
+                try_project_lookup_with_response_language(
+                    prompt,
+                    prompt,
+                    log,
+                    solver.config.associative_project_promotion,
+                    intent_formalization.route.as_deref() == Some("identity"),
+                    language,
+                )
+            } else {
+                try_project_lookup(
+                    prompt,
+                    &normalized,
+                    log,
+                    solver.config.associative_project_promotion,
+                    intent_formalization.route.as_deref() == Some("identity"),
+                )
+            };
+            if let Some(answer) = answer {
                 return Some(record_method_answer(prompt, log, answer, "project_lookup"));
             }
         }

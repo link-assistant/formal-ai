@@ -7,7 +7,7 @@
 //! Splitting them out of `prompt_variations.rs` keeps each test file under
 //! the repository's 1000-line cap (see `scripts/check-file-size.rs`).
 
-use formal_ai::{FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -203,6 +203,168 @@ fn github_repository_url_routes_to_generic_project_lookup() {
             .any(|link| link.starts_with("project_lookup:repository:github:rust-lang/rust")),
         "expected GitHub repository evidence, got {:?}",
         response.evidence_links,
+    );
+}
+
+#[test]
+fn repository_url_review_request_beats_capability_question_prefix() {
+    let response = answer("ты можешь сделать кодревью https://github.com/netkeep80/anum_docs ?");
+    assert_eq!(
+        response.intent, "project_lookup",
+        "explicit repository review requests should not be swallowed by capability phrasing, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(response.answer.contains("netkeep80/anum_docs"));
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("project_lookup:repository:github:netkeep80/anum_docs")),
+        "expected GitHub repository evidence, got {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
+fn issue_556_repository_lookup_language_followup_reanswers_in_russian() {
+    let solver = UniversalSolver::default();
+    let previous_prompt = "ты можешь сделать кодревью https://github.com/netkeep80/anum_docs ?";
+    let history = [
+        ConversationTurn::user(previous_prompt),
+        ConversationTurn::assistant(
+            "This is a repository lookup for \
+             [netkeep80/anum_docs](https://github.com/netkeep80/anum_docs) on GitHub.",
+        ),
+    ];
+
+    let response =
+        solver.solve_with_history("я не понимаю по английски, напиши по русски", &history);
+
+    assert_eq!(
+        response.intent, "project_lookup",
+        "language retarget follow-up should replay the previous repository lookup, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("Это запрос о репозитории"),
+        "Russian retarget should render the generic repository lookup in Russian, got {}",
+        response.answer,
+    );
+    assert!(response.answer.contains("netkeep80/anum_docs"));
+    assert!(
+        !response.answer.contains("This is a repository lookup"),
+        "reported English answer should not be repeated verbatim: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("project_lookup:repository:github netkeep80/anum_docs"),
+        "retargeted answer should preserve repository evidence, got {}",
+        response.links_notation,
+    );
+    assert!(
+        response.links_notation.contains("language_to ru"),
+        "retargeted answer should record the requested language, got {}",
+        response.links_notation,
+    );
+}
+
+#[test]
+fn issue_556_repository_lookup_language_followup_supports_seeded_languages() {
+    let solver = UniversalSolver::default();
+    let previous_prompt = "ты можешь сделать кодревью https://github.com/netkeep80/anum_docs ?";
+    let history = [
+        ConversationTurn::user(previous_prompt),
+        ConversationTurn::assistant(
+            "This is a repository lookup for \
+             [netkeep80/anum_docs](https://github.com/netkeep80/anum_docs) on GitHub.",
+        ),
+    ];
+    let cases = [
+        (
+            "I do not understand Russian, write in English",
+            "This is a repository lookup",
+            "language_to en",
+        ),
+        (
+            "я не понимаю по английски, напиши по русски",
+            "Это запрос о репозитории",
+            "language_to ru",
+        ),
+        (
+            "मुझे अंग्रेजी समझ नहीं आती, हिंदी में लिखो",
+            "यह GitHub पर रिपॉजिटरी",
+            "language_to hi",
+        ),
+        (
+            "我不懂英语，用中文",
+            "这是 GitHub 上的仓库查询",
+            "language_to zh",
+        ),
+    ];
+
+    for (follow_up, expected_fragment, language_trace) in cases {
+        let response = solver.solve_with_history(follow_up, &history);
+        assert_eq!(
+            response.intent, "project_lookup",
+            "follow-up {follow_up:?} should replay project_lookup, got {} -> {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response.answer.contains(expected_fragment),
+            "follow-up {follow_up:?} should render requested language fragment {expected_fragment:?}, got {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains("netkeep80/anum_docs"),
+            "follow-up {follow_up:?} should preserve the repository slug, got {}",
+            response.answer,
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("project_lookup:repository:github netkeep80/anum_docs"),
+            "follow-up {follow_up:?} should preserve repository evidence, got {}",
+            response.links_notation,
+        );
+        assert!(
+            response.links_notation.contains(language_trace),
+            "follow-up {follow_up:?} should record {language_trace}, got {}",
+            response.links_notation,
+        );
+    }
+}
+
+#[test]
+fn response_language_marker_with_current_object_does_not_replay_prior_repository_lookup() {
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user(
+            "ты можешь сделать кодревью https://github.com/netkeep80/anum_docs ?",
+        ),
+        ConversationTurn::assistant(
+            "This is a repository lookup for \
+             [netkeep80/anum_docs](https://github.com/netkeep80/anum_docs) on GitHub.",
+        ),
+    ];
+
+    let response = solver.solve_with_history("Tell me about Telegram Ads in Russian", &history);
+
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "a current-turn concept request with a response-language marker should not replay history, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("Реклама в Telegram"),
+        "expected the current concept answer in Russian, got {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("netkeep80/anum_docs"),
+        "current-turn concept request should not preserve prior repository slug, got {}",
+        response.answer,
     );
 }
 

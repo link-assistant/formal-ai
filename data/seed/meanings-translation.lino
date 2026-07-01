@@ -245,6 +245,52 @@ meanings
         text 用汉语
       surface
         text 用漢語
+  comprehension_failure
+    grounded-in Q46744 # wikidata understanding
+    defined-by concept
+    role comprehension_failure_marker
+    lexeme en
+      surface
+        text "do not understand"
+      surface
+        text "don't understand"
+      surface
+        text "dont understand"
+      surface
+        text "can't understand"
+      surface
+        text "cant understand"
+      surface
+        text "cannot understand"
+      surface
+        text "do not speak"
+      surface
+        text "don't speak"
+    lexeme ru
+      surface
+        text "не понимаю"
+      surface
+        text "не понял"
+      surface
+        text "не поняла"
+      surface
+        text "ничего не понятно"
+    lexeme hi
+      surface
+        text "समझ नहीं"
+      surface
+        text "नहीं आती"
+      surface
+        text "समझ में नहीं"
+    lexeme zh
+      surface
+        text 不懂
+      surface
+        text 看不懂
+      surface
+        text 听不懂
+      surface
+        text 聽不懂
   translate_from_english
     defined-by language_english
     defined-by translation_direction_source

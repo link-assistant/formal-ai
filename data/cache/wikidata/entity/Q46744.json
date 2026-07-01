@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q46744": {
+      "type": "item",
+      "id": "Q46744",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "understanding"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "понимание"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "समझ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "理解"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "ability to think about and use concepts to deal adequately with an object"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "встраивание нового знания в имеющееся"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "understand"
+          },
+          {
+            "language": "en",
+            "value": "comprehension"
+          },
+          {
+            "language": "en",
+            "value": "grasp"
+          },
+          {
+            "language": "en",
+            "value": "Verstand"
+          },
+          {
+            "language": "en",
+            "value": "the understanding"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
