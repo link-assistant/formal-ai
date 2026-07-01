@@ -40,8 +40,8 @@ fn assert_round_trip(surface: &str, source: &str, target: &str) {
         "forward {surface:?} {source}->{target} should change the surface, got {target_surface:?}",
     );
 
-    let backward = translate_via_default_pipeline(target_surface, target, source)
-        .unwrap_or_else(|error| {
+    let backward =
+        translate_via_default_pipeline(target_surface, target, source).unwrap_or_else(|error| {
             panic!(
                 "backward {target_surface:?} {target}->{source} should translate offline, \
                  got {error:?}"

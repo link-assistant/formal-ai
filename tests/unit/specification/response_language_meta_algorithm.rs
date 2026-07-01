@@ -251,7 +251,10 @@ fn meta_recipe_functions_exist_in_named_source() {
 fn meta_recipe_seam_tokens_exist_in_both_runtimes() {
     let records = records();
     let seams = of_kind(&records, "meta_seam");
-    assert!(!seams.is_empty(), "the forced-language seam must be recorded");
+    assert!(
+        !seams.is_empty(),
+        "the forced-language seam must be recorded"
+    );
     let worker = read_worker_source();
     for seam in seams {
         let rust = read(seam.require("rust_file"));

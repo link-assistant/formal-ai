@@ -52,9 +52,9 @@ fn assert_generalized(case: &GeneralizedCase) {
             response.evidence_links,
         );
         assert!(
-            response
-                .evidence_links
-                .contains(&format!("response_language_followup:target:{language_slug}")),
+            response.evidence_links.contains(&format!(
+                "response_language_followup:target:{language_slug}"
+            )),
             "follow-up {follow_up:?} should carry response-language-followup provenance, got {:?}",
             response.evidence_links,
         );
@@ -83,11 +83,7 @@ fn capabilities_answer_reanswers_in_every_seeded_language() {
                 "ru",
                 "Вот что я умею",
             ),
-            (
-                "मुझे अंग्रेजी समझ नहीं आती, हिंदी में लिखो",
-                "hi",
-                "मैं यह कर सकता हूँ",
-            ),
+            ("मुझे अंग्रेजी समझ नहीं आती, हिंदी में लिखो", "hi", "मैं यह कर सकता हूँ"),
             ("我不懂英语，用中文", "zh", "以下是我的功能"),
         ],
     });
@@ -146,7 +142,9 @@ fn capabilities_follow_up_returns_to_english_on_request() {
         response.answer,
     );
     assert!(
-        response.evidence_links.contains(&"language_to:en".to_owned()),
+        response
+            .evidence_links
+            .contains(&"language_to:en".to_owned()),
         "English retarget should record language_to:en, got {:?}",
         response.evidence_links,
     );
@@ -181,7 +179,9 @@ fn identity_follow_up_retargets_between_non_english_languages() {
         response.answer,
     );
     assert!(
-        response.evidence_links.contains(&"language_to:zh".to_owned()),
+        response
+            .evidence_links
+            .contains(&"language_to:zh".to_owned()),
         "Russian→Chinese retarget should record language_to:zh, got {:?}",
         response.evidence_links,
     );

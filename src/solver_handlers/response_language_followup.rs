@@ -57,7 +57,8 @@ pub fn try_response_language_followup(
     // the retarget generalizes across the answerable class.
     let mut replay_config = config;
     replay_config.forced_response_language = Some(target_language);
-    let replay = UniversalSolver::new(replay_config).solve_with_history(&previous_user, prior_history);
+    let replay =
+        UniversalSolver::new(replay_config).solve_with_history(&previous_user, prior_history);
 
     // A replay that could not reconstruct a concrete answer is not a useful
     // re-answer; fall through so the normal handlers see the follow-up.
@@ -74,10 +75,7 @@ pub fn try_response_language_followup(
     );
     log.append("language_to", target_language.to_owned());
     log.append("response_language_followup:prior_user", previous_user);
-    log.append(
-        "response_language_followup:handler",
-        replay.intent.clone(),
-    );
+    log.append("response_language_followup:handler", replay.intent.clone());
 
     // Splice the follow-up provenance onto the replayed answer so it survives
     // even though the outer projection is rebuilt from the replay (which does
