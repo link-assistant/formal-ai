@@ -426,6 +426,8 @@ function tryDocumentOriginalityCheck(prompt, language) {
   evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
   evidence.push("web_search:query_kind:document_originality_check");
 
+  pushStatementVerificationEvidence(prompt, language, evidence);
+
   return {
     intent: "document_originality_check",
     content: documentOriginalityContent(language, attachments, samplePresent),

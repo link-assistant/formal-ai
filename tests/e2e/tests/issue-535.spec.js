@@ -81,5 +81,23 @@ test.describe('Issue #535 - text attachment originality checks', () => {
     );
     await expect(evidence).toContainText('document_originality_check:text_sample:present');
     await expect(evidence).toContainText('web_search:query_kind:document_originality_check');
+
+    // Issue #535 comment 4754747438: every statement is weighed with
+    // relative-meta-logic — assumed true, raised by trusted original-first
+    // sources, reposts ignored. The web worker replays the same deterministic
+    // offline plan the Rust engine records, so these links must appear too.
+    await expect(evidence).toContainText('relative_meta_logic:assumed_prior:0.600000');
+    await expect(evidence).toContainText(
+      'relative_meta_logic:trusted_source_tier:original_first_party:weight=1.000000',
+    );
+    await expect(evidence).toContainText(
+      'relative_meta_logic:trusted_source_tier:original_journalism:weight=0.850000',
+    );
+    await expect(evidence).toContainText('relative_meta_logic:ignored_source_tier:unoriginal');
+    await expect(evidence).toContainText('statement_verification:statement_count:');
+    await expect(evidence).toContainText('statement_verification:query:');
+    await expect(evidence).toContainText(
+      'statement_verification:assessment:prior=0.600000 support=0.000000 contradiction=0.000000 posterior=0.600000 ignored=0',
+    );
   });
 });
