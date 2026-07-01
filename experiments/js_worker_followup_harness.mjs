@@ -110,6 +110,16 @@ async function main() {
       wantIntent: "capabilities",
       mustContain: "मैं यह कर सकता हूँ",
     },
+    {
+      // Non-English context retargeted to a third language: the forced-language
+      // seam is target-driven, it does not assume an English source.
+      label: "RU context retargets identity to Chinese",
+      first: "что ты такое",
+      followup: "用中文",
+      wantLang: "zh",
+      wantIntent: "identity",
+      mustContain: "确定性的符号化 AI",
+    },
   ];
 
   let failures = 0;

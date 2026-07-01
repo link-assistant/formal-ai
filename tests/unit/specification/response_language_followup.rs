@@ -151,3 +151,38 @@ fn capabilities_follow_up_returns_to_english_on_request() {
         response.evidence_links,
     );
 }
+
+/// The forced-language seam must be language-agnostic: it forces the *target*
+/// onto the whole solver regardless of the language the prior context was in.
+/// A Russian-context conversation retargeted to Chinese proves the follow-up
+/// does not assume an English source, closing the cross-language matrix.
+#[test]
+fn identity_follow_up_retargets_between_non_english_languages() {
+    let solver = UniversalSolver::default();
+    let history = [
+        ConversationTurn::user("что ты такое"),
+        ConversationTurn::assistant(
+            "Я formal-ai — детерминированный символьный ИИ, отвечающий по локальным правилам \
+             Links Notation.",
+        ),
+    ];
+
+    // Terse Chinese switch — no fresh subject, so it must be read as a re-answer.
+    let response = solver.solve_with_history("用中文", &history);
+
+    assert_eq!(
+        response.intent, "identity",
+        "Russian→Chinese follow-up should replay the identity answer, got {} -> {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response.answer.contains("确定性的符号化 AI"),
+        "Russian→Chinese retarget should render identity in Chinese, got {}",
+        response.answer,
+    );
+    assert!(
+        response.evidence_links.contains(&"language_to:zh".to_owned()),
+        "Russian→Chinese retarget should record language_to:zh, got {:?}",
+        response.evidence_links,
+    );
+}
