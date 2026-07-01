@@ -492,6 +492,33 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "document_originality_check:text_sample" => {
                 format!("document_originality_check:text_sample:{}", event.payload)
             }
+            // Relative-meta-logic statement probability trace (issue #535):
+            // preserve the assumed-true prior, the trusted-source tier weights,
+            // and the ignored (unoriginal) tier verbatim so consumers can
+            // reconstruct how each statement's probability would move.
+            "relative_meta_logic:assumed_prior" => {
+                format!("relative_meta_logic:assumed_prior:{}", event.payload)
+            }
+            "relative_meta_logic:trusted_source_tier" => {
+                format!("relative_meta_logic:trusted_source_tier:{}", event.payload)
+            }
+            "relative_meta_logic:ignored_source_tier" => {
+                format!("relative_meta_logic:ignored_source_tier:{}", event.payload)
+            }
+            // Per-statement web-search grounding plan (issue #535): each
+            // extracted statement, its grounding query, and its assessment.
+            "statement_verification:statement_count" => {
+                format!("statement_verification:statement_count:{}", event.payload)
+            }
+            "statement_verification:statement" => {
+                format!("statement_verification:statement:{}", event.payload)
+            }
+            "statement_verification:query" => {
+                format!("statement_verification:query:{}", event.payload)
+            }
+            "statement_verification:assessment" => {
+                format!("statement_verification:assessment:{}", event.payload)
+            }
             "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
             "docs_method:request" => format!("docs_method:request:{}", event.id),

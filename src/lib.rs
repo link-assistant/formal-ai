@@ -68,6 +68,7 @@ pub(crate) mod solver_helpers;
 pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
+pub mod statement_verification;
 pub mod substitution;
 pub mod summarization;
 pub mod telegram;

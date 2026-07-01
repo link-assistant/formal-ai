@@ -6,7 +6,9 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::relative_meta_logic::{SourceTier, ASSUMED_TRUE_PRIOR};
 use crate::seed::{self, response_for};
+use crate::statement_verification::{StatementVerificationPlan, TRUSTED_SOURCE_POLICY};
 
 use super::finalize_simple;
 use super::web_requests::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
@@ -59,6 +61,8 @@ pub fn try_document_originality_check(
         log.append("web_search:provider", (*provider).to_owned());
     }
     log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+
+    log_statement_verification(prompt, log);
 
     let body = document_originality_body(language, &attachments, sample_present);
     Some(finalize_simple(
@@ -133,6 +137,69 @@ fn text_sample(prompt: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Extract the full (untruncated) text excerpt supplied with the prompt, used
+/// to split individual statements for grounding.
+fn full_text_sample(prompt: &str) -> Option<String> {
+    for line in prompt.lines() {
+        let trimmed = line.trim();
+        for prefix in ["Text excerpt:", "Text sample:", "OCR text:"] {
+            if let Some(value) = trimmed.strip_prefix(prefix) {
+                let sample = value.trim();
+                if !sample.is_empty() {
+                    return Some(sample.to_owned());
+                }
+            }
+        }
+    }
+    None
+}
+
+/// Replay the per-statement relative-meta-logic verification plan into the
+/// append-only event log. Each statement is assumed true, grounded by a
+/// dedicated web-search query, and weighed under the trusted-source policy —
+/// original first sources first, reposts ignored.
+fn log_statement_verification(prompt: &str, log: &mut EventLog) {
+    log.append(
+        "relative_meta_logic:assumed_prior",
+        format!("{ASSUMED_TRUE_PRIOR:.6}"),
+    );
+    for tier in TRUSTED_SOURCE_POLICY {
+        log.append(
+            "relative_meta_logic:trusted_source_tier",
+            format!("{}:weight={:.6}", tier.slug(), tier.weight()),
+        );
+    }
+    log.append(
+        "relative_meta_logic:ignored_source_tier",
+        SourceTier::Unoriginal.slug().to_owned(),
+    );
+
+    let Some(sample) = full_text_sample(prompt) else {
+        return;
+    };
+    let plan = StatementVerificationPlan::from_sample(&sample);
+    log.append(
+        "statement_verification:statement_count",
+        plan.len().to_string(),
+    );
+    for statement_plan in &plan.statements {
+        log.append(
+            "statement_verification:statement",
+            statement_plan.statement.clone(),
+        );
+        log.append("statement_verification:query", statement_plan.query.clone());
+        log.append("web_search:request", statement_plan.query.clone());
+        log.append(
+            "web_search:query_kind",
+            WebSearchQueryKind::DocumentOriginalityCheck.as_str(),
+        );
+        log.append(
+            "statement_verification:assessment",
+            statement_plan.assessment.trace_payload(),
+        );
+    }
 }
 
 fn document_originality_query(prompt: &str, attachments: &[String]) -> String {

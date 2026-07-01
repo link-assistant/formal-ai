@@ -116,6 +116,55 @@ fn document_originality_check_cases_cover_every_supported_language() {
 }
 
 #[test]
+fn document_originality_grounds_each_statement_with_relative_meta_logic() {
+    let prompt = "Check this attached text for uniqueness and plagiarism\n\n\
+Attached files:\n\
+1. article.txt (text/plain, 12.0 KB)\n\
+Text excerpt: The tower opened in 1889. It stands 300 metres tall.";
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(response.intent, "document_originality_check");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "statement_verification:statement_count:2"),
+        "each statement in the excerpt should be planned for grounding: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("statement_verification:statement:The tower opened")),
+        "individual statements should be recorded for verification: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("relative_meta_logic:assumed_prior:")),
+        "statements should start from an assumed-true relative-meta-logic prior: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response.evidence_links.iter().any(|link| link
+            == "relative_meta_logic:trusted_source_tier:original_first_party:weight=1.000000"),
+        "the trusted-source policy must rank original first sources highest: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "relative_meta_logic:ignored_source_tier:unoriginal"),
+        "unoriginal reposts must be recorded as ignored: {:?}",
+        response.evidence_links,
+    );
+}
+
+#[test]
 fn document_originality_requests_route_to_grounded_attachment_workflow() {
     for &(language, prompt, file_name) in DOCUMENT_ORIGINALITY_CHECK_CASES {
         let response = FormalAiEngine.answer(prompt);
