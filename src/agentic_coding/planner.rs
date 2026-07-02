@@ -65,12 +65,44 @@ pub struct PlannedToolCall {
 }
 
 /// The tool capabilities the planner's recipe relies on.
+///
+/// This is the single source of truth for "what kind of thing a tool does". Both
+/// the planner (to pick which advertised tool to call for each recipe step) and
+/// the server's permission gate (to decide whether an agentic client may drive a
+/// tool of this kind) classify tool names through [`tool_capability`] — so the
+/// two never drift and no per-tool-name special cases accumulate.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Capability {
+pub enum Capability {
     Search,
     Fetch,
     Write,
     Run,
+}
+
+impl Capability {
+    /// The associative-package capability key that grants an agentic client the
+    /// right to drive a tool of this kind, e.g. `tool:capability:write`. Grants
+    /// are by *capability class*, not by tool name, so any CLI's naming
+    /// (`write`, `write_file`, `edit`, `patch`, …) maps to the same permission.
+    #[must_use]
+    pub const fn permission_key(self) -> &'static str {
+        match self {
+            Self::Search => "tool:capability:search",
+            Self::Fetch => "tool:capability:fetch",
+            Self::Write => "tool:capability:write",
+            Self::Run => "tool:capability:run",
+        }
+    }
+}
+
+/// Classify an advertised tool name into the [`Capability`] it provides.
+///
+/// Returns [`None`] when the planner's recipe has no use for it
+/// (read/list/grep/todo/…). Public so the permission gate classifies through the
+/// *same* function the planner uses.
+#[must_use]
+pub fn tool_capability(name: &str) -> Option<Capability> {
+    classify_tool(name)
 }
 
 /// Plan the next agentic step from the conversation so far and the tool names the
@@ -128,8 +160,7 @@ fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> Age
     // Step 3: write the formalized knowledge base.
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
-            let arguments = json!({ "path": KB_PATH, "content": formalized.links_notation });
-            return plan_one(tool, arguments.to_string());
+            return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
         }
     }
     // Step 4: verify by reading the file back.
@@ -186,8 +217,7 @@ fn plan_meaning_detail_step(
     // Step 3: write the enriched meaning block.
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
-            let arguments = json!({ "path": concept.kb_path, "content": block });
-            return plan_one(tool, arguments.to_string());
+            return plan_one(tool, write_arguments(concept.kb_path, &block));
         }
     }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
@@ -218,8 +248,7 @@ fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
     // Step 1: write the generated diagram document.
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
-            let arguments = json!({ "path": diagram::DIAGRAM_PATH, "content": document });
-            return plan_one(tool, arguments.to_string());
+            return plan_one(tool, write_arguments(diagram::DIAGRAM_PATH, &document));
         }
     }
     // Step 2: verify by reading the document back.
@@ -282,6 +311,22 @@ fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     }])
 }
 
+/// Arguments for a write step that satisfy whichever key the advertised write
+/// tool expects. Agentic CLIs disagree on the parameter name — the in-repo driver
+/// reads `path`, the `@link-assistant/agent` CLI's `write` tool wants `filePath`,
+/// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
+/// it declared and strips the rest, so the same plan drives any of them without a
+/// per-CLI special case.
+fn write_arguments(path: &str, content: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+        "content": content,
+    })
+    .to_string()
+}
+
 /// The first advertised tool name that provides `capability`, if any.
 fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
@@ -292,11 +337,24 @@ fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a st
 
 /// Classify a tool name into a [`Capability`] by substring, mirroring the naming
 /// conventions agentic CLIs use (`web_search`, `web_fetch`, `write_file`,
-/// `run_command`, `bash`, …).
+/// `run_command`, `bash`, `websearch`, `webfetch`, …).
+///
+/// The recipe only wants four kinds of tool, and real CLIs expose *lookalikes*
+/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
+/// writer, a `codesearch` is not a web search, and a plain `read`/`edit`/`patch`
+/// is not a create-file. Those are ruled out first so that — even though
+/// [`requested_tool_names`](super::super::protocol) hands the planner an
+/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
+/// nor `codesearch` ahead of `websearch`.
 fn classify_tool(name: &str) -> Option<Capability> {
     let lower = name.to_ascii_lowercase();
+    // Scratchpad / navigation tools that merely *look* like recipe tools.
+    if lower.contains("todo") {
+        return None;
+    }
     if lower.contains("search") {
-        Some(Capability::Search)
+        // A code search is not the web search the recipe issues its query to.
+        (!lower.contains("code")).then_some(Capability::Search)
     } else if lower.contains("fetch")
         || lower.contains("open")
         || lower.contains("browse")
@@ -304,7 +362,10 @@ fn classify_tool(name: &str) -> Option<Capability> {
         || lower.contains("read_url")
     {
         Some(Capability::Fetch)
-    } else if lower.contains("write") {
+    } else if lower.contains("write") || lower.contains("create_file") {
+        // `write` / `write_file` create a file from scratch; `edit`/`patch`
+        // mutate an existing one and take different arguments, so they are not
+        // interchangeable with the recipe's write step and stay unclassified.
         Some(Capability::Write)
     } else if lower.contains("run")
         || lower.contains("bash")

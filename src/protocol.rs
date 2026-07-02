@@ -10,7 +10,7 @@ use crate::engine::{
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
-    first_tool_permission_denial, is_tool_choice_request, matches_tool_choice_none,
+    agentic_tool_permission_denial, is_tool_choice_request, matches_tool_choice_none,
     tool_call_refusal_answer, tool_choice_function_name, tool_definition_name,
     tool_permission_refusal_answer,
 };
@@ -581,7 +581,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         return AgenticOutcome::Refused(tool_call_refusal_answer());
     }
     let owned_names = request.requested_tool_names();
-    if let Some(denial) = first_tool_permission_denial(&owned_names) {
+    if let Some(denial) = agentic_tool_permission_denial(&owned_names) {
         return AgenticOutcome::Refused(tool_permission_refusal_answer(&denial));
     }
     // Agent mode with tools permitted: the deterministic agentic planner drives

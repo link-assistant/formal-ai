@@ -48,14 +48,31 @@ fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
     )]
 }
 
-pub fn first_tool_permission_denial(names: &[String]) -> Option<PackagePermissionDecision> {
+/// Permission gate for the *agentic* path — an external CLI driving the server
+/// over the OpenAI-compatible surface.
+///
+/// An agentic client executes tools in its own isolated sandbox and advertises
+/// its *whole* toolset (often a dozen tools with CLI-specific names). Authorising
+/// that by exact tool name would require an ever-growing per-CLI allowlist.
+/// Instead each advertised tool is classified into a
+/// [`Capability`](crate::agentic_coding::planner::Capability) — the same
+/// classifier the planner uses to pick tools — and only the *capability class* is
+/// checked. Tools the recipe never drives (read/list/grep/todo/…) are
+/// unclassified and simply ignored: the client owns them. Returns the first
+/// denial for a class no installed package grants, or [`None`] when every
+/// classified tool's class is permitted. When no tools are advertised at all the
+/// wildcard `tool:*` capability is consulted, matching the prior gate's behaviour.
+#[must_use]
+pub fn agentic_tool_permission_denial(names: &[String]) -> Option<PackagePermissionDecision> {
+    use crate::agentic_coding::planner::tool_capability;
     let store = default_package_store();
     if names.is_empty() {
         let decision = store.permission_for_capability("tool:*");
         return matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision);
     }
     names.iter().find_map(|name| {
-        let decision = store.permission_for_tool(name);
+        let capability = tool_capability(name)?;
+        let decision = store.permission_for_capability(capability.permission_key());
         matches!(decision, PackagePermissionDecision::Denied { .. }).then_some(decision)
     })
 }
