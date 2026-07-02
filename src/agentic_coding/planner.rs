@@ -29,6 +29,7 @@
 use serde_json::json;
 
 use super::diagram;
+use super::self_ast;
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
@@ -123,6 +124,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
+    }
+    if self_ast::is_self_ast_task(&task) {
+        return Some(plan_self_ast_step(messages, tool_names));
     }
     None
 }
@@ -261,6 +265,36 @@ fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(diagram::final_answer(&document))
+}
+
+/// The issue-#538 self-AST recipe: write the generated CST/AST-in-data document →
+/// verify → final. Like the diagram recipe it needs no web step — the document is a
+/// pure function of the planner's own source parsed through the meta-language links
+/// network ([`self_ast::render_document`]), so the loop *inspects itself*. Steps
+/// whose tool the CLI did not advertise are skipped.
+fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = self_ast::render_document();
+
+    // Step 1: write the generated CST/AST document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(self_ast::AST_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", self_ast::AST_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(self_ast::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

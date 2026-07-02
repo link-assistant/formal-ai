@@ -110,6 +110,22 @@ const RECIPES: &[Recipe] = &[
             },
         ],
     },
+    Recipe {
+        key: "self_ast",
+        title: "Store the CST/AST of the meta algorithm",
+        issue: "#538",
+        route: "cst/ast / abstract-syntax / reason about itself",
+        steps: &[
+            RecipeStep {
+                tool: "write_file",
+                note: "parse the planner via meta-language; write the AST node census",
+            },
+            RecipeStep {
+                tool: "run_command",
+                note: "cat the census to verify",
+            },
+        ],
+    },
 ];
 
 /// A *differently worded* request for the diagram recipe.

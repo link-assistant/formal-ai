@@ -16,6 +16,7 @@ flowchart TD
     router -->|"formaliz / knowledge base / fisherman"| formalize["Formalize a text into a knowledge base (#468)"]
     router -->|"more detailed / grammatical number / a known concept"| meaning["Make a meaning more detailed (#538)"]
     router -->|"mermaid / diagram / visual overview"| diagram["Generate these diagrams (#538)"]
+    router -->|"cst/ast / abstract-syntax / reason about itself"| self_ast["Store the CST/AST of the meta algorithm (#538)"]
     router -->|"otherwise"| solver["ordinary solver text"]
 ```
 
@@ -51,4 +52,14 @@ flowchart LR
     diagram_task --> diagram_0["1. write_file<br/>render the mermaid parts from the recipe table"]
     diagram_0 --> diagram_1["2. run_command<br/>cat the document to verify"]
     diagram_1 --> diagram_final(["final answer<br/>the artifact inline"])
+```
+
+## Part 5 — Recipe: Store the CST/AST of the meta algorithm (#538)
+
+```mermaid
+flowchart LR
+    self_ast_task["user task<br/>(cst/ast / abstract-syntax / reason about itself)"]
+    self_ast_task --> self_ast_0["1. write_file<br/>parse the planner via meta-language; write the AST node census"]
+    self_ast_0 --> self_ast_1["2. run_command<br/>cat the census to verify"]
+    self_ast_1 --> self_ast_final(["final answer<br/>the artifact inline"])
 ```

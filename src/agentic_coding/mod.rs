@@ -25,6 +25,7 @@ pub mod formalize;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+pub mod self_ast;
 
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
@@ -40,3 +41,4 @@ pub use meaning_detail::{
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
+pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};

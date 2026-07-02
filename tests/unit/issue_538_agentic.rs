@@ -343,9 +343,11 @@ fn committed_diagram_is_generated_and_written_by_the_driver() {
         diagram::render_document(),
         "the committed diagram is stale — regenerate it from the recipe table"
     );
-    // It really is split into parts, each a mermaid flowchart.
-    assert_eq!(committed.matches("```mermaid").count(), 4);
+    // It really is split into parts, each a mermaid flowchart: one overview plus
+    // one per recipe in the planner's recipe table.
+    assert_eq!(committed.matches("```mermaid").count(), 5);
     assert!(committed.contains("## Part 1 — Overview"));
+    assert!(committed.contains("## Part 5 — Recipe: Store the CST/AST of the meta algorithm"));
 
     // End-to-end: the in-repo Agent CLI writes exactly this document.
     let outcome = run_agentic_task(diagram::DIAGRAM_TASK).expect("workspace");
