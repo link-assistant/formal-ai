@@ -145,7 +145,7 @@ fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> Age
     // Step 2: fetch the source text.
     if let Some(tool) = fetch_tool {
         if !progress.done(Capability::Fetch) {
-            return plan_one(tool, json!({ "url": CANONICAL_SOURCE_URL }).to_string());
+            return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
         }
     }
 
@@ -206,7 +206,7 @@ fn plan_meaning_detail_step(
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
     if let Some(tool) = fetch_tool {
         if !progress.done(Capability::Fetch) {
-            return plan_one(tool, json!({ "url": concept.source_url }).to_string());
+            return plan_one(tool, fetch_arguments(concept.source_url));
         }
     }
 
@@ -323,6 +323,21 @@ fn write_arguments(path: &str, content: &str) -> String {
         "filePath": path,
         "file_path": path,
         "content": content,
+    })
+    .to_string()
+}
+
+/// Arguments for a fetch step. Emits `url` (the universal key) plus `format`
+/// set to `"text"` — the `@link-assistant/agent` CLI's `webfetch` tool declares
+/// a required `format` enum (`"text" | "markdown" | "html"`) and zod refuses the
+/// call otherwise (observed live: *"Invalid option: expected one of
+/// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
+/// CLIs whose schemas don't declare `format` strip it, so one shape drives all
+/// of them without a per-CLI special case.
+fn fetch_arguments(url: &str) -> String {
+    json!({
+        "url": url,
+        "format": "text",
     })
     .to_string()
 }
