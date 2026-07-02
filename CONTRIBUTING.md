@@ -39,6 +39,33 @@ Concretely, every change must follow these rules:
 5. **Report faithfully.** State what is done and verified plainly. Honesty means
    reporting results accurately; it is never a license to stop early or to dress
    a refusal as an "honest scope" section.
+6. **Real Agent-CLI E2E tests in CI, plus a per-requirement test and a
+   whole-task test.** Every change that touches the agentic path must add (or
+   update) a real end-to-end test that boots `formal-ai serve` and drives it
+   with the actual `@link-assistant/agent` CLI over the OpenAI-compatible
+   endpoint — no mocks or in-process shortcuts. Keep the round-trip green in CI
+   (see `test-agent-cli-e2e` in `.github/workflows/release.yml` and the driver
+   script `experiments/agent_cli_e2e/run_agent_cli.sh`). In addition, ship one
+   unit/integration test **per requirement in the issue** and one test that
+   exercises the **whole task** end-to-end so a regression on any single
+   requirement — or on the composition of all of them — breaks the build.
+7. **Hardcoded cases only in tests; production code stays general.** A test may
+   hardcode inputs and expected outputs (that is what a test is *for*), but the
+   engine, planner, seed loader, and Agent-CLI-driven recipes never branch on a
+   specific concept, phrase, or URL. If the only way to make a green case pass
+   is a match-on-literal in `src/`, extend the general routing table (`concept
+   registry`, `capability classifier`, `plan_chat_step`) so future concepts get
+   the same treatment for free.
+8. **Real logs in the case study, not synthesized ones.** When a case study
+   claims the Agent CLI drove the change, it must ship the real captured log of
+   the round-trip (see `docs/case-studies/issue-538/agent-cli-e2e-run.log`), and
+   the committed session JSON must be reproducible byte-for-byte by
+   `cargo test`.
+9. **Commit in small, atomic steps.** Every commit should be independently
+   useful and reviewable — one logical change per commit, buildable in
+   isolation. Interrupted work stays preserved in the PR because each commit
+   already stands on its own; do not batch a day of unrelated edits into one
+   commit.
 
 ## Development Setup
 

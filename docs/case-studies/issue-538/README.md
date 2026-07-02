@@ -69,6 +69,40 @@ and the exact sessions that produced the committed data are saved as
 file with Agent CLI session that fully solved this exact task"* the issue asks
 for.
 
+### Real Agent CLI logs from the live E2E round-trip
+
+The maintainer asked for **real logs** of the Agent CLI ↔ Formal AI round-trip,
+not just the committed session JSON. The captured log at
+[`agent-cli-e2e-run.log`](agent-cli-e2e-run.log) is the exact console output of
+booting `formal-ai serve`, driving it with the *external*
+[`@link-assistant/agent`](https://github.com/link-assistant/agent) CLI (Vercel
+AI SDK's `@ai-sdk/openai-compatible` provider), and observing the five
+`/v1/chat/completions` POSTs the planner walks:
+
+| Round | Planner outcome | POST body size |
+| ----- | --------------- | -------------- |
+| 1     | `websearch`     | 48,713 B       |
+| 2     | `webfetch`      | 60,550 B       |
+| 3     | `write`         | 100,893 B      |
+| 4     | `bash` (verify) | 104,161 B      |
+| 5     | `Final`         | 107,255 B      |
+
+The script asserts four invariants and prints `E2E OK: meanings-tomato-detail.lino
+written, contains "томаты", 5 chat rounds`. The same script is now the
+`test-agent-cli-e2e` CI job in
+[`.github/workflows/release.yml`](../../../.github/workflows/release.yml), so a
+regression in the SSE frame, planner recipe, permission gate, capability
+classifier, or fetch-argument shape breaks the build on every commit rather
+than silently rotting.
+
+Reproduce the log locally:
+
+```sh
+cargo build --release --bin formal-ai
+bun add -g @link-assistant/agent
+experiments/agent_cli_e2e/run_agent_cli.sh
+```
+
 ## Generality: different words each time, never hardcoded
 
 The issue insists the solution be *"truly general, not hardcoded"* and that
