@@ -6,7 +6,7 @@ fn cli_serve_streams_chat_completion_chunks_over_loopback_http() {
     let _server = spawn_formal_ai_server(port);
 
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}],
         "stream": true,
         "stream_options": {"include_usage": true}

@@ -40,7 +40,7 @@ use crate::language::Language;
 use crate::links_format::{format_lino_record, sanitize_lino_value};
 use crate::seed;
 
-pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
+pub const DEFAULT_MODEL: &str = "formal-ai";
 
 // Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.

@@ -70,7 +70,7 @@ cat > opencode.json <<EOF
         "apiKey": "local"
       },
       "models": {
-        "formal-symbolic-production": { "name": "Formal AI Symbolic Production" }
+        "formal-ai": { "name": "Formal AI Symbolic Production" }
       }
     }
   }
@@ -103,7 +103,7 @@ echo "== server up on $PORT =="
 timeout 180 "$AGENT" run \
   --prompt "$TASK" \
   --disable-stdin \
-  --model "formal-ai/formal-symbolic-production" \
+  --model "formal-ai/formal-ai" \
   > "$AGENT_LOG" 2>&1
 RC=$?
 echo "== agent exit: $RC =="

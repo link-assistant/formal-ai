@@ -15,6 +15,7 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
 pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../../data/seed/facts.lino");
+pub const MODEL_ALIASES_LINO: &str = include_str!("../../../data/seed/model-aliases.lino");
 pub const BRAINSTORM_SEEDS_LINO: &str = include_str!("../../../data/seed/brainstorm-seeds.lino");
 pub const PERSONAS_LINO: &str = include_str!("../../../data/seed/personas.lino");
 pub const SUMMARY_TOPICS_LINO: &str = include_str!("../../../data/seed/summary-topics.lino");
@@ -112,6 +113,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
         ("data/seed/facts.lino", FACTS_LINO),
+        ("data/seed/model-aliases.lino", MODEL_ALIASES_LINO),
         ("data/seed/brainstorm-seeds.lino", BRAINSTORM_SEEDS_LINO),
         ("data/seed/personas.lino", PERSONAS_LINO),
         ("data/seed/summary-topics.lino", SUMMARY_TOPICS_LINO),

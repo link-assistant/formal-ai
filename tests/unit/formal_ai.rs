@@ -392,7 +392,7 @@ fn software_project_approval_returns_implementation_starter() {
 #[test]
 fn chat_completion_has_openai_compatible_shape() {
     let request = ChatCompletionRequest {
-        model: Some(String::from("formal-symbolic-production")),
+        model: Some(String::from("formal-ai")),
         messages: vec![ChatMessage::user("Hello")],
         temperature: None,
         stream: false,
@@ -406,7 +406,7 @@ fn chat_completion_has_openai_compatible_shape() {
     let completion = create_chat_completion(&request);
 
     assert_eq!(completion.object, "chat.completion");
-    assert_eq!(completion.model, "formal-symbolic-production");
+    assert_eq!(completion.model, "formal-ai");
     assert_eq!(completion.choices[0].finish_reason, "stop");
     assert_eq!(
         completion.choices[0].message.content.plain_text(),
@@ -418,7 +418,7 @@ fn chat_completion_has_openai_compatible_shape() {
 #[test]
 fn responses_api_shape_contains_output_text() {
     let request = ResponsesRequest {
-        model: Some(String::from("formal-symbolic-production")),
+        model: Some(String::from("formal-ai")),
         input: serde_json::Value::String(String::from("Write hello world in Rust")),
         instructions: None,
         temperature: None,
@@ -443,10 +443,7 @@ fn knowledge_export_is_valid_links_notation() {
     let (id, root) = parse_indented(records[0]).expect("root record should parse");
 
     assert_eq!(id, "formal_ai_knowledge");
-    assert_eq!(
-        root.get("model").map(String::as_str),
-        Some("formal-symbolic-production")
-    );
+    assert_eq!(root.get("model").map(String::as_str), Some("formal-ai"));
     assert!(records.iter().any(|record| {
         let Ok((_id, parsed)) = parse_indented(record) else {
             return false;
@@ -461,7 +458,7 @@ fn knowledge_export_is_valid_links_notation() {
 #[test]
 fn server_handler_supports_chat_completions_route() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();

@@ -197,7 +197,7 @@ test("commander provider defaults to the org-owned agent backend through agent-c
     agentProvider: {
       apiBase: "http://127.0.0.1:19191",
       openAiBaseUrl: "http://127.0.0.1:19191/v1",
-      model: "formal-symbolic-production",
+      model: "formal-ai",
     },
   });
 

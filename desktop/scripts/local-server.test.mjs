@@ -42,7 +42,7 @@ test("ensure starts the local OpenAI-compatible server and exposes provider apiB
     type: "local-openai-compatible",
     apiBase: "http://127.0.0.1:19191",
     openAiBaseUrl: "http://127.0.0.1:19191/v1",
-    model: "formal-symbolic-production",
+    model: "formal-ai",
   });
   assert.deepEqual(starts, [19191]);
   assert.deepEqual(healthChecks, []);

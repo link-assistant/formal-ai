@@ -31,7 +31,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::engine::{naturalize_thinking_step, stable_id, ThinkingStep, DEFAULT_MODEL};
+use crate::engine::{naturalize_thinking_step, stable_id, ThinkingStep};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
     create_chat_completion_with_solver, create_chat_completion_with_solver_and_memory,
@@ -363,10 +363,7 @@ fn anthropic_message_from_chat_completion(
     request: &AnthropicMessagesRequest,
     completion: &ChatCompletion,
 ) -> AnthropicMessage {
-    let model = request
-        .model
-        .clone()
-        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let model = crate::seed::resolve_model_id(request.model.as_deref());
     let choice = completion.choices.first();
     let requests_tools = choice.is_some_and(|choice| choice.finish_reason == "tool_calls");
 

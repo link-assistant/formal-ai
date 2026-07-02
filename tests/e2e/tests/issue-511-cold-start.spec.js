@@ -93,7 +93,7 @@ async function installColdStartBridge(page, options = {}) {
               type: 'local-openai-compatible',
               apiBase: baseUrl,
               openAiBaseUrl: `${baseUrl}/v1`,
-              model: 'formal-symbolic-production',
+              model: 'formal-ai',
             }
           : null,
       });
@@ -303,7 +303,7 @@ test.describe('Issue #511/#519: cold-start ls home journey', () => {
         agentProvider: {
           apiBase,
           openAiBaseUrl: `${apiBase.replace(/\/+$/, '')}/v1`,
-          model: 'formal-symbolic-production',
+          model: 'formal-ai',
         },
         containerName,
         workingDirectory: repoRoot,

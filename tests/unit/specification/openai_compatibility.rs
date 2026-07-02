@@ -9,8 +9,8 @@ use std::sync::{Mutex, MutexGuard, OnceLock};
 
 use formal_ai::{
     create_chat_completion, create_response, export_memory_links_notation, handle_api_request,
-    handle_api_request_with_auth, ApiAuthConfig, ChatCompletionRequest, ChatMessage, MemoryEvent,
-    ResponsesRequest,
+    handle_api_request_with_auth, model_aliases, resolve_model_id, ApiAuthConfig,
+    ChatCompletionRequest, ChatMessage, MemoryEvent, ResponsesRequest, DEFAULT_MODEL,
 };
 
 // ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ use formal_ai::{
 #[test]
 fn chat_completion_round_trips_user_prompt_to_assistant_response() {
     let request = ChatCompletionRequest {
-        model: Some(String::from("formal-symbolic-production")),
+        model: Some(String::from("formal-ai")),
         messages: vec![ChatMessage::user("Hi")],
         temperature: Some(0.0),
         stream: false,
@@ -164,7 +164,7 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
 #[test]
 fn openai_requests_accept_temperature_parameter() {
     let chat: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}],
         "temperature": 0.0
     }))
@@ -172,7 +172,7 @@ fn openai_requests_accept_temperature_parameter() {
     assert_eq!(chat.temperature, Some(0.0));
 
     let response: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": "Hi",
         "temperature": 0.25
     }))
@@ -197,9 +197,191 @@ fn http_models_endpoint_lists_at_least_one_model() {
 }
 
 #[test]
+fn canonical_model_id_is_formal_ai() {
+    assert_eq!(DEFAULT_MODEL, "formal-ai");
+}
+
+#[test]
+fn model_aliases_are_loaded_from_seed_data() {
+    let registry = model_aliases();
+    assert_eq!(registry.canonical_id, DEFAULT_MODEL);
+    assert_eq!(
+        registry.aliases,
+        vec![
+            "formal-ai",
+            "@link-assistant/formal-ai",
+            "link-assistant/formal-ai",
+            "formal-ai-latest",
+            "latest",
+        ]
+    );
+    assert_eq!(
+        resolve_model_id(Some("@LINK-ASSISTANT/FORMAL-AI")),
+        DEFAULT_MODEL
+    );
+    assert_eq!(resolve_model_id(Some("latest")), DEFAULT_MODEL);
+}
+
+#[test]
+fn http_models_endpoint_advertises_only_formal_ai() {
+    let response = handle_api_request("GET", "/v1/models", "");
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    let ids: Vec<&str> = json["data"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|model| model["id"].as_str().unwrap())
+        .collect();
+    assert_eq!(ids, vec!["formal-ai"]);
+    let retired_model_id = ["formal", "symbolic", "production"].join("-");
+    assert!(!response.body.contains(&retired_model_id));
+}
+
+#[test]
+fn http_openai_surfaces_accept_model_aliases_and_return_canonical_model() {
+    let aliases = [
+        "formal-ai",
+        "FORMAL-AI",
+        "@link-assistant/formal-ai",
+        "@LINK-ASSISTANT/FORMAL-AI",
+        "link-assistant/formal-ai",
+        "formal-ai-latest",
+        "latest",
+    ];
+
+    for alias in aliases {
+        assert_chat_alias_resolves_to_formal_ai(alias);
+        assert_response_alias_resolves_to_formal_ai(alias);
+        assert_anthropic_alias_resolves_to_formal_ai(alias);
+    }
+}
+
+#[test]
+fn http_openai_surfaces_reject_unsupported_explicit_model_ids() {
+    let requests = [
+        (
+            "/v1/chat/completions",
+            serde_json::json!({
+                "model": "unsupported-model",
+                "messages": [{"role": "user", "content": "Hi"}]
+            }),
+        ),
+        (
+            "/v1/responses",
+            serde_json::json!({
+                "model": "unsupported-model",
+                "input": "Hi"
+            }),
+        ),
+        (
+            "/v1/messages",
+            serde_json::json!({
+                "model": "unsupported-model",
+                "messages": [{"role": "user", "content": "Hi"}]
+            }),
+        ),
+    ];
+
+    for (path, body) in requests {
+        let response = handle_api_request("POST", path, &body.to_string());
+        assert_eq!(response.status_code, 400, "{path}");
+        assert!(response.body.contains("unsupported model"), "{path}");
+        assert!(response.body.contains(DEFAULT_MODEL), "{path}");
+    }
+}
+
+#[test]
+fn http_chat_completion_returns_canonical_model_for_multilingual_prompts() {
+    struct PromptCase<'a> {
+        language: &'a str,
+        prompt: &'a str,
+    }
+
+    let cases = [
+        PromptCase {
+            language: "en",
+            prompt: "Say hello.",
+        },
+        PromptCase {
+            language: "ru",
+            prompt: "Скажи привет.",
+        },
+        PromptCase {
+            language: "hi",
+            prompt: "नमस्ते कहो.",
+        },
+        PromptCase {
+            language: "zh",
+            prompt: "说你好。",
+        },
+    ];
+
+    for case in cases {
+        let body = serde_json::json!({
+            "model": "formal-ai",
+            "messages": [{"role": "user", "content": case.prompt}]
+        })
+        .to_string();
+        let response = handle_api_request("POST", "/v1/chat/completions", &body);
+        assert_eq!(response.status_code, 200, "{}", case.language);
+        let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+        assert_eq!(json["model"], "formal-ai", "{}", case.language);
+    }
+}
+
+fn assert_chat_alias_resolves_to_formal_ai(alias: &str) {
+    let body = serde_json::json!({
+        "model": alias,
+        "messages": [{"role": "user", "content": "Hi"}]
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/chat/completions", &body);
+    assert_eq!(response.status_code, 200, "chat alias {alias}");
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    assert_eq!(json["model"], "formal-ai", "chat alias {alias}");
+    assert_eq!(
+        json["choices"][0]["message"]["content"], "Hi, how may I help you?",
+        "chat alias {alias}"
+    );
+}
+
+fn assert_response_alias_resolves_to_formal_ai(alias: &str) {
+    let body = serde_json::json!({
+        "model": alias,
+        "input": "Hi"
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/responses", &body);
+    assert_eq!(response.status_code, 200, "responses alias {alias}");
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    assert_eq!(json["model"], "formal-ai", "responses alias {alias}");
+    assert_eq!(
+        json["output"][0]["content"][0]["text"], "Hi, how may I help you?",
+        "responses alias {alias}"
+    );
+}
+
+fn assert_anthropic_alias_resolves_to_formal_ai(alias: &str) {
+    let body = serde_json::json!({
+        "model": alias,
+        "messages": [{"role": "user", "content": "Hi"}]
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/messages", &body);
+    assert_eq!(response.status_code, 200, "messages alias {alias}");
+    let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
+    assert_eq!(json["model"], "formal-ai", "messages alias {alias}");
+    assert_eq!(
+        json["content"][0]["text"], "Hi, how may I help you?",
+        "messages alias {alias}"
+    );
+}
+
+#[test]
 fn http_chat_completions_route_returns_completion_object() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -213,7 +395,7 @@ fn http_chat_completions_route_returns_completion_object() {
 fn http_chat_completion_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
         let body = serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "messages": [{"role": "user", "content": "Find Rust in another conversation"}]
         })
         .to_string();
@@ -236,7 +418,7 @@ fn http_chat_completion_queries_persisted_memory_with_natural_language() {
 #[test]
 fn http_responses_route_returns_response_object() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": "Hi"
     })
     .to_string();
@@ -250,7 +432,7 @@ fn http_responses_route_returns_response_object() {
 fn http_responses_route_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
         let body = serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "input": "Find Rust in another conversation"
         })
         .to_string();
@@ -425,7 +607,7 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
 #[test]
 fn streaming_chat_completion_emits_server_sent_events() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}],
         "stream": true
     })
@@ -443,7 +625,7 @@ fn streaming_chat_completion_emits_server_sent_events() {
 #[test]
 fn authenticated_routes_accept_bearer_token() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -463,7 +645,7 @@ fn authenticated_routes_accept_bearer_token() {
 #[test]
 fn authenticated_routes_reject_missing_bearer_token() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -503,7 +685,7 @@ fn responses_api_attaches_trace_link() {
 #[test]
 fn chat_completion_refuses_tool_call_without_agent_mode() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{
             "role": "user",
             "content": "Use the provided local_shell tool to list the working directory"
@@ -538,7 +720,7 @@ fn chat_completion_refuses_tool_call_without_agent_mode() {
 #[test]
 fn chat_completion_allows_declared_tools_when_tool_choice_is_none() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{
             "role": "user",
             "content": "Say hello"

@@ -119,8 +119,12 @@ Example API call:
 ```bash
 curl -s http://127.0.0.1:8080/v1/chat/completions \
   -H 'content-type: application/json' \
-  -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}'
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
 ```
+
+The canonical model id is `formal-ai`. The API also accepts
+`@link-assistant/formal-ai`, `link-assistant/formal-ai`, `formal-ai-latest`,
+and `latest` as case-insensitive aliases, and responses return `formal-ai`.
 
 To require bearer authentication on `/v1/*` routes, set
 `FORMAL_AI_API_BEARER_TOKEN` before starting the server and send the matching
@@ -162,7 +166,7 @@ server's `/v1` base URL and keep `wire_api = "responses"` in
 
 ```toml
 model_provider = "formal-ai"
-model = "formal-symbolic-production"
+model = "formal-ai"
 
 [model_providers.formal-ai]
 name = "formal-ai local server"
@@ -191,7 +195,7 @@ claude
 OpenCode can call formal-ai through its OpenAI-compatible provider package,
 which targets `/v1/chat/completions`. Add a local provider in
 `~/.config/opencode/opencode.json`. This example uses the provider id
-`formalai`, so the model selector is `formalai/formal-symbolic-production`:
+`formalai`, so the model selector is `formalai/formal-ai`:
 
 ```json
 {
@@ -205,19 +209,19 @@ which targets `/v1/chat/completions`. Add a local provider in
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formalai/formal-symbolic-production"
+  "model": "formalai/formal-ai"
 }
 ```
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-opencode run -m formalai/formal-symbolic-production "hi"
+opencode run -m formalai/formal-ai "hi"
 # Hi, how may I help you?
 ```
 
@@ -226,7 +230,7 @@ opencode run -m formalai/formal-symbolic-production "hi"
 The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
 Start the local OpenAI-compatible server with agent-mode enabled, then use the
 same provider shape in `~/.config/link-assistant-agent/opencode.json` and select
-the `formal-ai/formal-symbolic-production` model:
+the `formal-ai/formal-ai` model:
 
 ```bash
 formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
@@ -244,19 +248,19 @@ formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formal-ai/formal-ai"
 }
 ```
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-agent --model formal-ai/formal-symbolic-production --permission-mode plan -p \
+agent --model formal-ai/formal-ai --permission-mode plan -p \
   "run ls to list files here"
 ```
 

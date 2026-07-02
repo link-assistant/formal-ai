@@ -283,7 +283,7 @@ fn responses_emits_function_call_in_agent_mode() {
     // surface answer with a `function_call` output item (the flat Responses tool
     // shape), not an assistant message.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
         "tools": [{
             "type": "function",
@@ -315,7 +315,7 @@ fn responses_function_call_output_advances_the_loop() {
     // adapter must translate it into a `tool`-role message (labelled with the tool
     // that produced it) so the planner sees search as done and advances to fetch.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": [
             {"type": "message", "role": "user",
              "content": "Formalize the fisherman tale into links notation."},
@@ -351,7 +351,7 @@ fn responses_returns_final_message_once_recipe_is_exhausted() {
     // has nothing left to call, so the Responses surface completes with the
     // knowledge base inline as an assistant message and no function call.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": [
             {"type": "message", "role": "user",
              "content": "Formalize the fisherman tale into links notation."},
@@ -381,7 +381,7 @@ fn responses_refuses_tools_without_agent_mode() {
     // Without agent mode the Responses surface refuses tools too, answering with a
     // policy message and no function call.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "input": "Formalize the fisherman tale into links notation.",
         "tools": [{"type": "function", "name": "web_search", "parameters": {"type": "object"}}]
     }))

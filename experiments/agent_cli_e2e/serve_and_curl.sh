@@ -22,5 +22,5 @@ echo "== server up =="
 
 curl -sS "http://127.0.0.1:$PORT/v1/chat/completions" \
   -H 'content-type: application/json' -H 'authorization: Bearer x' \
-  -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"Create a file hi.txt with content hello"}],"tools":[{"type":"function","function":{"name":"write","description":"Write a file","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}}}}}]}'
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Create a file hi.txt with content hello"}],"tools":[{"type":"function","function":{"name":"write","description":"Write a file","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}}}}}]}'
 echo

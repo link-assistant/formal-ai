@@ -27,6 +27,7 @@ mod embedded;
 mod facts;
 mod grounding_overrides;
 mod meanings;
+mod model_aliases;
 mod operation_vocabulary;
 pub(crate) mod parser;
 mod personas;
@@ -50,16 +51,19 @@ pub use embedded::{
     GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO,
     LANGUAGE_DETECTION_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO,
     MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
-    MEANINGS_UNITS_LINO, MEANING_FILES, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
-    OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO,
-    PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
-    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO,
+    NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
+    PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
+    SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
 };
 pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
+pub use model_aliases::{
+    canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id, ModelAliasRegistry,
+};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };

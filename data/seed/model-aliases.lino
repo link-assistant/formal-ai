@@ -1,0 +1,7 @@
+model_aliases
+  canonical "formal-ai"
+  alias "formal-ai"
+  alias "@link-assistant/formal-ai"
+  alias "link-assistant/formal-ai"
+  alias "formal-ai-latest"
+  alias "latest"

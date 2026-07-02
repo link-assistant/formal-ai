@@ -7,7 +7,7 @@ const net = require("node:net");
 const path = require("node:path");
 
 const SERVER_OPT_IN_ENV = "FORMAL_AI_DESKTOP_SERVER";
-const MODEL_ID = "formal-symbolic-production";
+const MODEL_ID = "formal-ai";
 const API_AUTH_ENV_KEYS = [
   "FORMAL_AI_API_BEARER_TOKEN",
   "FORMAL_AI_HTTP_BEARER_TOKEN",

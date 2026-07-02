@@ -143,14 +143,14 @@ fn cli_serve_exposes_agentic_tool_protocols_over_loopback() {
         .as_array()
         .expect("models data should be an array")
         .iter()
-        .any(|model| model["id"] == "formal-symbolic-production"));
+        .any(|model| model["id"] == "formal-ai"));
 
     let codex_response = http_post_json(
         port,
         "/v1/responses",
         Some("sk-local-agentic-tools"),
         &serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "input": [
                 {
                     "role": "user",
@@ -174,7 +174,7 @@ fn cli_serve_exposes_agentic_tool_protocols_over_loopback() {
         "/v1/chat/completions",
         Some("sk-local-agentic-tools"),
         &serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "messages": [
                 {"role": "system", "content": "Answer concisely."},
                 {"role": "user", "content": "Hi"}
@@ -193,7 +193,7 @@ fn cli_serve_exposes_agentic_tool_protocols_over_loopback() {
         "/v1/messages",
         Some("sk-local-agentic-tools"),
         &serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "max_tokens": 128,
             "messages": [{"role": "user", "content": "Hi"}],
             "stream": false
