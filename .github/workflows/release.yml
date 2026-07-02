@@ -953,6 +953,85 @@ jobs:
             src/web/download/assets/app-preview*.png
           retention-days: 14
 
+  # === E2E: Agent CLI ↔ formal-ai OpenAI-compatible server ===
+  # Boot `formal-ai serve`, drive it with the real `@link-assistant/agent` CLI
+  # (talking over its OpenAI-compatible endpoint) and prove the CLI writes the
+  # requested Links Notation file end-to-end. This is the maintainer's
+  # requirement for issue #538: no hardcoded meaning answers, no deferral —
+  # the real toolchain must produce the enriched meaning on every commit.
+  test-agent-cli-e2e:
+    name: E2E Tests (agent CLI ↔ formal-ai)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [detect-changes]
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-agentcli-e2e-
+            ${{ runner.os }}-cargo-
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install @link-assistant/agent CLI
+        # The E2E script talks to formal-ai through the same CLI users install
+        # locally. `bun add -g` puts the `agent` binary on PATH under
+        # ~/.bun/bin — the script's default AGENT="agent" picks it up.
+        run: |
+          bun add -g @link-assistant/agent
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Build formal-ai (release)
+        # The E2E script runs against target/release/formal-ai — that's the
+        # binary users invoke as `formal-ai serve`. Release mode also matches
+        # the local-dev instructions in the case study.
+        run: cargo build --release --bin formal-ai
+
+      - name: Run agent CLI E2E round-trip
+        # Uses a distinct port from other jobs (8768) to avoid port collisions
+        # if multiple E2E jobs ever share a runner. The script boots the server,
+        # drives the CLI, and asserts:
+        #   1. agent CLI exits 0
+        #   2. meanings-tomato-detail.lino is written in workdir
+        #   3. The Russian plural `томаты` appears in the file (issue #538 canary)
+        #   4. ≥4 /v1/chat/completions POSTs (search → fetch → write → verify loop)
+        env:
+          PORT: 8768
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Upload E2E logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-cli-e2e-logs
+          path: |
+            /tmp/formal-ai-serve-*.log
+            /tmp/agent-out-*.log
+          retention-days: 7
+
   # === DEPLOY DEMO ===
   # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
   deploy-demo:

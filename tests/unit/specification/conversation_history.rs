@@ -171,6 +171,7 @@ fn chat_completion_supports_natural_language_history_search() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
 
     let completion = create_chat_completion(&request);

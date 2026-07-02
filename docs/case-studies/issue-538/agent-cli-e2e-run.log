@@ -1,0 +1,51 @@
+# Real Agent CLI ↔ formal-ai E2E round-trip — captured log
+#
+# Command: PORT=8769 experiments/agent_cli_e2e/run_agent_cli.sh
+# Runner:  Linux, formal-ai 0.254.0 (--version), agent 0.24.0 (--version)
+# Task:    Make the tomato meaning more detailed: pin every surface's
+#          part of speech and grammatical number, ground it in Wikidata,
+#          and add the missing plural to томат.
+# Result:  E2E OK — 2765-byte meanings-tomato-detail.lino written,
+#          contains томаты (previously missing Russian plural),
+#          5 chat completion POSTs (search → fetch → write → verify → final).
+
+== Server startup ==
+formal-ai server listening on http://127.0.0.1:8769
+[trace] GET /health (0 byte body)
+
+== 5 chat completion round-trips (bodies elided) ==
+49:[trace] POST /v1/chat/completions (48713 byte body)
+53:[trace] POST /v1/chat/completions (60550 byte body)
+57:[trace] POST /v1/chat/completions (100893 byte body)
+61:[trace] POST /v1/chat/completions (104161 byte body)
+65:[trace] POST /v1/chat/completions (107255 byte body)
+
+== Planner outcomes per round (from [trace] agentic_outcome) ==
+# Round 1 → websearch (planner picks Search when no cached page)
+# Round 2 → webfetch (fetch the Wikidata lexeme JSON at raw.githubusercontent.com/…/L170542.json)
+# Round 3 → write   (emit meanings-tomato-detail.lino)
+# Round 4 → bash    (run `cat` to verify the file was written)
+# Round 5 → Final   (planner returns a natural-language summary and stops)
+
+agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "websearch"
+agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "webfetch"
+agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "write"
+agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "bash"
+agentic_outcome: planned Final("Made the tomato meaning more detailed: every surface now pins its part of
+
+== Tool advertised by the agent CLI on every round ==
+14 advertised tools: ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"]
+
+== Assertion output (script tail) ==
+== files in workdir ==
+total 16
+drwx------ 2 box  box  4096 Jul  2 01:45 .
+drwxrwxrwt 1 root root 4096 Jul  2 01:45 ..
+-rw-r--r-- 1 box  box  2765 Jul  2 01:45 meanings-tomato-detail.lino
+-rw-r--r-- 1 box  box   375 Jul  2 01:45 opencode.json
+== E2E OK: meanings-tomato-detail.lino written, contains "томаты", 5 chat rounds ==
+  tomato
+    grounded-in Q23501
+    defined-by entity
+    role compositional_lemma
+    source-lexeme L7993 # wikidata english source lexeme

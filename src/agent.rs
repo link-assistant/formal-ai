@@ -12,10 +12,15 @@ use std::fs;
 use std::io;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::thread;
 use std::time::{Duration, Instant};
 
 use crate::engine::stable_id;
+
+/// Monotonic counter making every workspace directory unique within a process, so
+/// two agent runs with the *same* prompt never share (and race on) one directory.
+static WORKSPACE_SEQ: AtomicU64 = AtomicU64::new(0);
 
 const DEFAULT_AGENT_TIME_BUDGET: Duration = Duration::from_secs(2);
 const WINDOWS_PYTHON_TIME_BUDGET_FLOOR: Duration = Duration::from_secs(15);
@@ -156,7 +161,14 @@ pub struct AgentWorkspace {
 
 impl AgentWorkspace {
     pub fn for_prompt(prompt: &str, config: &AgentWorkspaceConfig) -> Result<Self, AgentError> {
-        let workspace_id = stable_id("agent_workspace", prompt);
+        // A stable, human-readable prefix (for debugging) plus a process id and a
+        // monotonic sequence number, so concurrent runs of the *same* prompt each
+        // get their own directory instead of racing on one shared path. The
+        // workspace path is never asserted on — only its contents are — so the
+        // suffix does not affect determinism of the agentic loop.
+        let prefix = stable_id("agent_workspace", prompt);
+        let seq = WORKSPACE_SEQ.fetch_add(1, Ordering::Relaxed);
+        let workspace_id = format!("{prefix}-{}-{seq}", std::process::id());
         let root = config.base_dir.join(workspace_id);
         if root.exists() {
             fs::remove_dir_all(&root)?;

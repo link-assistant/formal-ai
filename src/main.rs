@@ -108,6 +108,11 @@ enum Command {
         /// Print the full tool-call transcript before the final answer.
         #[arg(long, default_value_t = false)]
         transcript: bool,
+
+        /// Write the full, replayable Agent-CLI session as JSON to this path (the
+        /// task, every executed tool call, and the final answer).
+        #[arg(long, value_name = "PATH")]
+        session_json: Option<PathBuf>,
     },
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
@@ -401,7 +406,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
-        Command::Agent { task, transcript } => run_agent(&task, transcript)?,
+        Command::Agent {
+            task,
+            transcript,
+            session_json,
+        } => run_agent(&task, transcript, session_json.as_deref())?,
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -450,11 +459,20 @@ fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run_agent(task: &str, transcript: bool) -> Result<(), Box<dyn Error>> {
+fn run_agent(
+    task: &str,
+    transcript: bool,
+    session_json: Option<&std::path::Path>,
+) -> Result<(), Box<dyn Error>> {
     let outcome = run_agentic_task(task)?;
     if transcript {
         print!("{}", outcome.transcript());
         println!();
+    }
+    if let Some(path) = session_json {
+        let rendered = serde_json::to_string_pretty(&outcome.session_json())?;
+        std::fs::write(path, format!("{rendered}\n"))?;
+        eprintln!("wrote agent session to {}", path.display());
     }
     if outcome.hit_turn_cap {
         return Err(format!(
@@ -555,6 +573,7 @@ fn run_chat(
                 tool_choice: None,
                 functions: Vec::new(),
                 function_call: None,
+                stream_options: None,
             };
             println!(
                 "{}",

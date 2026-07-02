@@ -61,6 +61,10 @@ node_modules/
 logs/
 ci-logs/
 
+# Real Agent CLI ↔ formal-ai E2E capture, committed as case-study evidence
+# (see CONTRIBUTING.md rule 8 — "Real logs in the case study, not synthesized").
+!docs/case-studies/**/*.log
+
 # Playwright MCP scratch output (browser cache snapshots, etc.)
 .playwright-mcp/
 
