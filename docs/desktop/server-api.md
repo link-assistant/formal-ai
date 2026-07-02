@@ -268,8 +268,10 @@ provider/model selection. Put the same provider record in
 ```
 
 ```bash
+formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-agent --model formal-ai/formal-symbolic-production -p "explain the last trace"
+agent --model formal-ai/formal-symbolic-production --permission-mode plan -p \
+  "run ls to list files here"
 ```
 
 `agent` documents its provider/model selection in
@@ -277,7 +279,11 @@ agent --model formal-ai/formal-symbolic-production -p "explain the last trace"
 its [README](https://github.com/link-assistant/agent#readme). Run autonomous
 agent clients only in a workspace where their file and shell actions are
 acceptable; formal-ai serves model responses but does not sandbox the client
-process.
+process. In agent mode, a directory-listing prompt like the example above makes
+formal-ai return `bash` / `shell` / `run_command` `tool_calls` with
+`{"command":"ls"}`. Use `--permission-mode plan` when read-only shell commands
+such as `ls` may run, and use hard `--read-only` when the Agent CLI should
+disable shell execution entirely.
 
 ### 4d. `claude` (Anthropic Claude Code) - first-party adapter
 
@@ -332,8 +338,9 @@ server:
   with `stop_reason: "tool_use"`; the CLI replies with a `tool_result` block on a
   `user` message.
 
-**Strictly opt-in.** Tools are refused unless the request opts into agent mode
-*and* each requested tool passes a per-tool permission gate
+**Strictly opt-in.** Tools are refused unless the server is started with
+`formal-ai serve --agent-mode` or `FORMAL_AI_AGENT_MODE=1`, *and* each requested
+tool passes a per-tool permission gate
 ([`src/associative_package.rs`](../../src/associative_package.rs),
 `pkg_agentic_coding`). Without agent mode the server answers with a plain policy
 message and calls nothing — there is no hidden autonomous action. A non-agentic

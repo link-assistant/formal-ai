@@ -168,8 +168,8 @@ pub use self_improvement::{
     LearningRejection, LearningRun, UnknownTrace,
 };
 pub use server::{
-    handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
-    ApiAuthConfig, ApiHttpResponse,
+    enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,
+    handle_api_request_with_headers, serve, ApiAuthConfig, ApiHttpResponse,
 };
 pub use shared_dialog::{
     convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,

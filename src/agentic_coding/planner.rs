@@ -123,6 +123,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
     }
+    if let Some(command) = shell_command_for_task(&task) {
+        return Some(plan_shell_step(messages, tool_names, &command));
+    }
     if is_formalization_task(&task) {
         return Some(plan_formalization_step(messages, tool_names));
     }
@@ -133,6 +136,28 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(plan_diagram_step(messages, tool_names));
     }
     None
+}
+
+/// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
+/// directory listing, then summarize the tool result. Execution still happens in
+/// the client-side agent workspace/permission model; this server only emits the
+/// OpenAI-compatible `tool_calls` turn.
+fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Run) {
+        return AgenticPlan::Final(shell_final_answer(
+            command,
+            progress.run_output.as_deref().unwrap_or_default(),
+        ));
+    }
+
+    if let Some(tool) = tool_for(tool_names, Capability::Run) {
+        return plan_one(tool, json!({ "command": command }).to_string());
+    }
+
+    AgenticPlan::Final(format!(
+        "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
+    ))
 }
 
 /// The issue-#468 recipe: search → fetch → formalize → verify → final.
@@ -307,12 +332,15 @@ struct Progress {
     completed: Vec<Capability>,
     /// The latest non-errored fetch result's text, if any.
     fetched_text: Option<String>,
+    /// The latest run/shell result's text, if any.
+    run_output: Option<String>,
 }
 
 impl Progress {
     fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
+        let mut run_output = None;
         for (index, message) in messages.iter().enumerate() {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
@@ -326,6 +354,9 @@ impl Progress {
                     fetched_text = Some(text);
                 }
             }
+            if capability == Capability::Run {
+                run_output = Some(message.content.plain_text());
+            }
             if !completed.contains(&capability) {
                 completed.push(capability);
             }
@@ -333,6 +364,7 @@ impl Progress {
         Self {
             completed,
             fetched_text,
+            run_output,
         }
     }
 
@@ -478,6 +510,59 @@ fn is_formalization_task(prompt: &str) -> bool {
         .any(|keyword| lower.contains(keyword))
 }
 
+/// Whether `prompt` asks the CLI to run `ls` / list the current workspace.
+///
+/// This intentionally starts narrow: it resolves only read-only directory-listing
+/// language to `ls`. Broader shell synthesis belongs in a richer command parser,
+/// not in a one-off fallback that might accidentally execute an invented command.
+fn shell_command_for_task(prompt: &str) -> Option<String> {
+    let lower = prompt.to_ascii_lowercase();
+    let mentions_ls = contains_word(&lower, "ls");
+    let run_context = ["run", "execute", "command", "terminal", "shell"]
+        .iter()
+        .any(|word| contains_word(&lower, word));
+    let listing_context = [
+        "list files",
+        "list the files",
+        "list local files",
+        "list directory",
+        "files here",
+        "current directory",
+        "working directory",
+    ]
+    .iter()
+    .any(|phrase| lower.contains(phrase));
+
+    if mentions_ls && (run_context || listing_context) {
+        return Some(String::from("ls"));
+    }
+
+    let asks_for_listing = [
+        "list files",
+        "list the files",
+        "list local files",
+        "list directory",
+    ]
+    .iter()
+    .any(|phrase| lower.contains(phrase));
+    let local_scope = [
+        "here",
+        "current directory",
+        "working directory",
+        "this directory",
+        "local files",
+    ]
+    .iter()
+    .any(|phrase| lower.contains(phrase));
+
+    (asks_for_listing && local_scope).then(|| String::from("ls"))
+}
+
+fn contains_word(text: &str, word: &str) -> bool {
+    text.split(|character: char| !character.is_ascii_alphanumeric())
+        .any(|part| part == word)
+}
+
 /// Whether a tool result looks like an error the planner should not trust.
 fn looks_like_error(text: &str) -> bool {
     let lower = text.to_lowercase();
@@ -502,4 +587,13 @@ fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
         coverage = coverage_line(summary),
         kb = formalized.links_notation.trim_end(),
     )
+}
+
+fn shell_final_answer(command: &str, output: &str) -> String {
+    let trimmed = output.trim_end();
+    if trimmed.is_empty() {
+        format!("The `{command}` command completed with no output.")
+    } else {
+        format!("The `{command}` command completed. Output:\n\n```text\n{trimmed}\n```")
+    }
 }
