@@ -603,7 +603,10 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     }
     let owned_names = request.requested_tool_names();
     if trace {
-        eprintln!("[trace] agentic_outcome: {} advertised tools: {owned_names:?}", owned_names.len());
+        eprintln!(
+            "[trace] agentic_outcome: {} advertised tools: {owned_names:?}",
+            owned_names.len()
+        );
     }
     if let Some(denial) = agentic_tool_permission_denial(&owned_names) {
         if trace {
@@ -620,7 +623,9 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     if trace {
         match &outcome {
             AgenticOutcome::Planned(plan) => eprintln!("[trace] agentic_outcome: planned {plan:?}"),
-            AgenticOutcome::Fallthrough => eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)"),
+            AgenticOutcome::Fallthrough => {
+                eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)")
+            }
             AgenticOutcome::Refused(_) => {}
         }
     }
