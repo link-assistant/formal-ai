@@ -30,6 +30,7 @@ use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration
 const RUST_GRAMMAR_LABEL: &str = "rust";
 
 /// The self-inspection target: a real module of our own reasoning meta algorithm.
+///
 /// Embedded at compile time so the recipe is self-contained (no filesystem read at
 /// run time — it works from the Agent CLI's sandbox workdir), and so the committed
 /// artifact tracks the real planner source, regenerated like any other seed data.
@@ -44,14 +45,20 @@ pub const AST_PATH: &str = "self-ast.lino";
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
 /// hardcoded string.
-pub const AST_TASK: &str = "Store the CST/AST of our Rust meta algorithm in our data so the system \
+pub const AST_TASK: &str =
+    "Store the CST/AST of our Rust meta algorithm in our data so the system \
                             can reason about itself: parse the planner module and record its \
                             abstract-syntax node census in Links Notation.";
 
 /// Keywords that mark a user turn as the self-AST recipe. Kept distinct from the
 /// diagram keywords (`mermaid`/`diagram`) so the two self-inspection recipes never
 /// collide.
-const AST_KEYWORDS: [&str; 4] = ["cst/ast", "cst / ast", "abstract-syntax", "reason about itself"];
+const AST_KEYWORDS: [&str; 4] = [
+    "cst/ast",
+    "cst / ast",
+    "abstract-syntax",
+    "reason about itself",
+];
 
 /// Whether `prompt` asks to store the CST/AST of the meta algorithm (issue #538).
 #[must_use]
@@ -169,6 +176,14 @@ pub fn render_document() -> String {
     render_ast_document(TARGET_MODULE_PATH, TARGET_MODULE_SOURCE)
 }
 
+/// The census of the pinned self-inspection target (the planner module). Exposed so
+/// tests can assert the target is real, well-formed logic without re-embedding the
+/// source.
+#[must_use]
+pub fn target_census() -> AstCensus {
+    ast_census(TARGET_MODULE_SOURCE)
+}
+
 /// The self-contained final answer: a natural-language summary plus the generated
 /// CST/AST document inline.
 #[must_use]
@@ -180,78 +195,4 @@ pub fn final_answer(document: &str) -> String {
          Generated document ({AST_PATH}):\n\n{document}",
         document = document.trim_end(),
     )
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn census_is_real_and_deterministic() {
-        let src = "pub fn add(a: i32, b: i32) -> i32 {\n    a + b\n}\n";
-        let a = ast_census(src);
-        let b = ast_census(src);
-        assert_eq!(a, b, "the census must be a deterministic function of the source");
-        assert!(a.text_preserved, "the lossless network must reconstruct the source");
-        assert!(a.clean, "a well-formed function must parse without error nodes");
-        assert!(a.named_node_count > 0, "expected named AST nodes");
-        assert!(
-            a.node_kinds.iter().any(|n| n.kind == "function_item"),
-            "expected a function_item node, got: {:?}",
-            a.node_kinds
-        );
-    }
-
-    #[test]
-    fn census_generalises_to_different_sources() {
-        // A struct-only source yields a different census than a function-only one,
-        // proving the census reflects the actual source, not a hardcoded answer.
-        let func = ast_census("fn f() {}\n");
-        let strukt = ast_census("struct S {\n    field: i32,\n}\n");
-        assert_ne!(func.node_kinds, strukt.node_kinds);
-        assert!(strukt.node_kinds.iter().any(|n| n.kind == "struct_item"));
-        assert!(!func.node_kinds.iter().any(|n| n.kind == "struct_item"));
-    }
-
-    #[test]
-    fn node_kinds_are_sorted_for_determinism() {
-        let census = render_document();
-        // Extract the node-kind lines (four-space indented) and check they are sorted.
-        let kinds: Vec<&str> = census
-            .lines()
-            .filter_map(|line| line.strip_prefix("    "))
-            .map(|line| line.split_whitespace().next().unwrap_or(""))
-            .collect();
-        let mut sorted = kinds.clone();
-        sorted.sort_unstable();
-        assert_eq!(kinds, sorted, "node kinds must be emitted in sorted order");
-    }
-
-    #[test]
-    fn document_has_single_trailing_newline() {
-        let document = render_document();
-        assert!(document.ends_with('\n'));
-        assert!(!document.ends_with("\n\n"));
-    }
-
-    #[test]
-    fn target_is_a_real_module_of_the_meta_algorithm() {
-        // The pinned target parses cleanly and reconstructs — proving we stored the
-        // AST of real, well-formed logic, not a toy snippet.
-        let census = ast_census(TARGET_MODULE_SOURCE);
-        assert!(census.text_preserved);
-        assert!(census.clean);
-        assert!(census.named_node_count > 100, "the planner is a substantial module");
-    }
-
-    #[test]
-    fn task_router_recognises_the_request() {
-        assert!(is_self_ast_task(AST_TASK));
-        assert!(is_self_ast_task(
-            "Please record the abstract-syntax of our planner in data."
-        ));
-        // Unrelated requests must not route here.
-        assert!(!is_self_ast_task("Make the tomato meaning more detailed."));
-        assert!(!is_self_ast_task("Generate the mermaid diagrams."));
-    }
 }

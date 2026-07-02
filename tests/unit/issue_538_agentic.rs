@@ -12,7 +12,7 @@
 
 use formal_ai::agentic_coding::{
     corpus, diagram, is_meaning_detail_task, meaning_detail, plan_chat_step, run_agentic_task,
-    AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
+    self_ast, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
 };
 use formal_ai::{ChatMessage, ToolCall};
 
@@ -433,5 +433,198 @@ fn committed_agent_cli_session_matches_a_fresh_run() {
         committed, rendered,
         "the committed Agent CLI session is stale — regenerate it with `formal-ai agent \
          --session-json …`"
+    );
+}
+
+// --- Fourth axis (issue #538): store the CST/AST of the meta algorithm itself ---
+
+#[test]
+fn recognises_the_self_ast_task() {
+    // The self-AST recipe is reached from a *differently worded* request, and the
+    // router recognises the intent from the words (AST/CST + self-reference), not a
+    // hardcoded string.
+    assert!(self_ast::is_self_ast_task(self_ast::AST_TASK));
+    assert!(self_ast::is_self_ast_task(
+        "record the abstract-syntax of our planner in our data"
+    ));
+    // It does not steal the other recipes' requests or unrelated turns.
+    assert!(!self_ast::is_self_ast_task(
+        "make the tomato meaning more detailed"
+    ));
+    assert!(!self_ast::is_self_ast_task(
+        "generate the mermaid diagrams of our recipes"
+    ));
+    assert!(!self_ast::is_self_ast_task("What is the capital of France?"));
+    // The task uses none of the other axes' distinctive wording.
+    assert!(!self_ast::AST_TASK.contains("tomato"));
+    assert!(!self_ast::AST_TASK.contains("mermaid"));
+}
+
+#[test]
+fn self_ast_task_wins_over_the_formalization_keyword() {
+    // Regression pin: the self-AST task legitimately says "in Links Notation" (its
+    // output format), which the broad formalization router also matches. The more
+    // specific self-AST router must win, so the loop parses the planner rather than
+    // formalizing the fisherman tale.
+    assert!(self_ast::AST_TASK.to_lowercase().contains("links notation"));
+    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let write = outcome
+        .steps
+        .iter()
+        .find(|step| step.tool == "write_file")
+        .expect("a write step");
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    assert_eq!(written["path"], self_ast::AST_PATH);
+    assert!(outcome.final_answer.contains("CST/AST"));
+    assert!(!outcome.final_answer.contains("fisherman"));
+}
+
+#[test]
+fn committed_self_ast_is_generated_and_written_by_the_driver() {
+    // The committed CST/AST-in-data artifact is *generated* by parsing a real module
+    // of our own meta algorithm through the meta-language links network — never hand
+    // written — so it can never drift from the code, and it is byte-for-byte what the
+    // Agent CLI writes.
+    let committed = include_str!("../../data/meta/self-ast.lino");
+    assert_eq!(
+        committed,
+        self_ast::render_document(),
+        "the committed self-AST census is stale — regenerate it from the planner source"
+    );
+    // It really is a real abstract-syntax census: named nodes and node kinds.
+    assert!(committed.contains("named_node_count "));
+    assert!(committed.contains("distinct_node_kinds "));
+    assert!(committed.contains("text_preserved true"));
+    assert!(committed.contains("clean true"));
+    assert!(committed.contains("function_item "));
+
+    // End-to-end: the in-repo Agent CLI writes exactly this document.
+    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+    let write = outcome
+        .steps
+        .iter()
+        .find(|step| step.tool == "write_file")
+        .expect("a write step");
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    assert_eq!(written["content"], self_ast::render_document());
+    assert_eq!(written["path"], self_ast::AST_PATH);
+    assert!(outcome.final_answer.contains(self_ast::AST_PATH));
+}
+
+#[test]
+fn planner_walks_the_self_ast_recipe() {
+    let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(self_ast::AST_TASK)];
+
+    // Step 1: no web step — the census is a pure function of the source, so the
+    // planner goes straight to writing the generated document.
+    let call = expect_single_call(&messages, &tools);
+    assert_eq!(call.tool, "write_file");
+    assert!(call.arguments.contains(self_ast::AST_PATH));
+    let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+    assert_eq!(written["content"], self_ast::render_document());
+    answer_tool_call(&mut messages, &call, "wrote self-ast.lino");
+
+    // Step 2: verify by reading the document back.
+    let call = expect_single_call(&messages, &tools);
+    assert_eq!(call.tool, "run_command");
+    assert!(call.arguments.contains(self_ast::AST_PATH));
+    answer_tool_call(&mut messages, &call, &self_ast::render_document());
+
+    // Step 3: the recipe is exhausted — the final answer carries the census.
+    match plan_chat_step(&messages, &tools) {
+        Some(AgenticPlan::Final(answer)) => {
+            assert!(answer.contains("named_node_count "));
+            assert!(answer.contains(self_ast::AST_PATH));
+        }
+        other => panic!("expected a final answer, got {other:?}"),
+    }
+}
+
+#[test]
+fn self_ast_census_is_real_and_deterministic() {
+    let src = "pub fn add(a: i32, b: i32) -> i32 {\n    a + b\n}\n";
+    let a = self_ast::ast_census(src);
+    let b = self_ast::ast_census(src);
+    assert_eq!(
+        a, b,
+        "the census must be a deterministic function of the source"
+    );
+    assert!(
+        a.text_preserved,
+        "the lossless network must reconstruct the source"
+    );
+    assert!(a.clean, "a well-formed function must parse without errors");
+    assert!(a.named_node_count > 0, "expected named AST nodes");
+    assert!(
+        a.node_kinds.iter().any(|n| n.kind == "function_item"),
+        "expected a function_item node, got: {:?}",
+        a.node_kinds
+    );
+}
+
+#[test]
+fn self_ast_census_generalises_to_different_sources() {
+    // A struct-only source yields a different census than a function-only one,
+    // proving the census reflects the actual source, not a hardcoded answer.
+    let func = self_ast::ast_census("fn f() {}\n");
+    let strukt = self_ast::ast_census("struct S {\n    field: i32,\n}\n");
+    assert_ne!(func.node_kinds, strukt.node_kinds);
+    assert!(strukt.node_kinds.iter().any(|n| n.kind == "struct_item"));
+    assert!(!func.node_kinds.iter().any(|n| n.kind == "struct_item"));
+}
+
+#[test]
+fn self_ast_node_kinds_are_sorted_for_determinism() {
+    let census = self_ast::render_document();
+    // Extract the node-kind lines (four-space indented) and check they are sorted.
+    let kinds: Vec<&str> = census
+        .lines()
+        .filter_map(|line| line.strip_prefix("    "))
+        .map(|line| line.split_whitespace().next().unwrap_or(""))
+        .collect();
+    let mut sorted = kinds.clone();
+    sorted.sort_unstable();
+    assert_eq!(kinds, sorted, "node kinds must be emitted in sorted order");
+}
+
+#[test]
+fn self_ast_document_has_single_trailing_newline() {
+    let document = self_ast::render_document();
+    assert!(document.ends_with('\n'));
+    assert!(!document.ends_with("\n\n"));
+}
+
+#[test]
+fn self_ast_target_is_a_real_module_of_the_meta_algorithm() {
+    // The pinned target parses cleanly and reconstructs — proving we stored the AST
+    // of real, well-formed logic, not a toy snippet.
+    let census = self_ast::target_census();
+    assert!(census.text_preserved);
+    assert!(census.clean);
+    assert!(
+        census.named_node_count > 100,
+        "the planner is a substantial module"
+    );
+}
+
+#[test]
+fn committed_self_ast_session_matches_a_fresh_run() {
+    // The fourth committed Agent CLI session (a different request, a self-inspection
+    // axis, the same recipe machinery). Regenerate with:
+    //   formal-ai agent --task "<AST_TASK>" \
+    //       --session-json docs/case-studies/issue-538/agent-cli-session-self-ast.json
+    let committed =
+        include_str!("../../docs/case-studies/issue-538/agent-cli-session-self-ast.json");
+    let fresh = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed self-AST Agent CLI session is stale — regenerate it with \
+         `formal-ai agent --session-json …`"
     );
 }

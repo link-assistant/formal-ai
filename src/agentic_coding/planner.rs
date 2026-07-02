@@ -29,12 +29,12 @@
 use serde_json::json;
 
 use super::diagram;
-use super::self_ast;
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
 use super::meaning_detail;
+use super::self_ast;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -116,6 +116,13 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    // The self-AST recipe is checked first because it is the most specific router
+    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
+    // request legitimately mentions "Links Notation" as its output format, which
+    // would otherwise be captured by the broad formalization keyword match below.
+    if self_ast::is_self_ast_task(&task) {
+        return Some(plan_self_ast_step(messages, tool_names));
+    }
     if is_formalization_task(&task) {
         return Some(plan_formalization_step(messages, tool_names));
     }
@@ -124,9 +131,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
-    }
-    if self_ast::is_self_ast_task(&task) {
-        return Some(plan_self_ast_step(messages, tool_names));
     }
     None
 }
