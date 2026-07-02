@@ -190,13 +190,14 @@ claude
 
 OpenCode can call formal-ai through its OpenAI-compatible provider package,
 which targets `/v1/chat/completions`. Add a local provider in
-`~/.config/opencode/opencode.json`:
+`~/.config/opencode/opencode.json`. This example uses the provider id
+`formalai`, so the model selector is `formalai/formal-symbolic-production`:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "formal-ai": {
+    "formalai": {
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
@@ -210,14 +211,14 @@ which targets `/v1/chat/completions`. Add a local provider in
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formalai/formal-symbolic-production"
 }
 ```
 
 ```bash
-opencode
-opencode run --model formal-ai/formal-symbolic-production --format json \
-  "summarize the local graph"
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+opencode run -m formalai/formal-symbolic-production "hi"
+# Hi, how may I help you?
 ```
 
 ### Link Assistant Agent CLI

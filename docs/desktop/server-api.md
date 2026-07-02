@@ -204,13 +204,14 @@ for the full `model_providers` schema.
 
 OpenCode supports custom providers in `~/.config/opencode/opencode.json`. Use
 `@ai-sdk/openai-compatible` because formal-ai exposes the Chat Completions
-endpoint at `/v1/chat/completions`:
+endpoint at `/v1/chat/completions`. This example uses the provider id
+`formalai`, so the model selector is `formalai/formal-symbolic-production`:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "formal-ai": {
+    "formalai": {
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
@@ -224,15 +225,14 @@ endpoint at `/v1/chat/completions`:
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formalai/formal-symbolic-production"
 }
 ```
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-opencode
-opencode run --model formal-ai/formal-symbolic-production --format json \
-  "summarise the reasoning graph for a greeting"
+opencode run -m formalai/formal-symbolic-production "hi"
+# Hi, how may I help you?
 ```
 
 See the upstream [OpenCode provider documentation](https://opencode.ai/docs/providers/)

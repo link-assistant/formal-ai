@@ -1,4 +1,5 @@
 mod formal_ai_cli;
+mod http_server;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
 mod issue_395_sort_numbers;
@@ -9,3 +10,4 @@ mod issue_457_self_source_metrics;
 mod issue_458_crypto_portfolio;
 mod issue_461_php_followup;
 mod memory_query;
+mod openai_chat_streaming;
