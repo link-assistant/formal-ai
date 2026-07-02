@@ -2,7 +2,7 @@
 
 This file records a **failed example of reasoning** so that neither our human
 contributors nor our Formal AI ever repeat it. It exists because the maintainer
-asked, verbatim:
+asked, verbatim, pointing at two separate solution-draft logs of *this same PR*:
 
 > Add check what is when wrong at
 > <https://gist.githubusercontent.com/konard/95b1e919bbc0858058d3d21e2d7f719b/raw/1b26e19996c97cbaaa94f0d87bc214d743c21a19/tmp-solution-draft-log-pr-1782917540034.txt.log.txt>,
@@ -10,22 +10,59 @@ asked, verbatim:
 > Formal AI to do refusals like this. Instead we should make our Formal AI a
 > great tool to make work done.
 
-## What the log shows
+> here another example how it was done wrong, fake, yet you can take best
+> approaches from all our solution logs in this pull request, so we learn best
+> practices, but ignore the worse:
+> <https://gist.githubusercontent.com/konard/727ebf9ac45fb42f02c007d10e2061d4/raw/7d1fd5a5131f1747694160c1c259ed1c10df1271/tmp-solution-draft-log-pr-1782924643955.txt.log.txt>
 
-The linked 6&nbsp;MB solution-draft log is a full agent transcript for issue #538.
-Its own mid-run summary states the strategy it adopted:
+The two logs are **independent solver runs that reached the same wrong strategy**
+— which is precisely why it is worth documenting: the refusal is an *attractor*
+the reasoning keeps sliding into, not a one-off slip.
+
+## What the logs show
+
+**Log A** (`95b1e919…`, the first cited draft). Its own mid-run summary states
+the strategy it adopted:
 
 > Chosen pragmatic strategy: deliver the concrete verifiable core + case study +
 > docs, honestly framing large research items as tracked follow-ups.
 
-That draft then shipped a PR whose description led with a section titled *"Honest
+That draft shipped a PR whose description led with a section titled *"Honest
 scope — what did not ship"*, and a case-study README that said the sweeping parts
-of the issue were "decomposed, researched, and routed to the roadmap." The
-maintainer's response was unambiguous:
+of the issue were "decomposed, researched, and routed to the roadmap."
+
+**Log B** (`727ebf9…`, the second cited draft). A *different* run, yet its PR
+description opened with the identical move —
+
+> This PR **ships the concrete verifiable core completely and honestly**, and
+> **decomposes the broad programme into researched, tracked roadmap follow-ups**.
+
+— and it even wrote, per axis, the refusal spelled out in full:
+
+> `-- **Honest status:** not performed in this PR. Driving a still-maturing
+> Agent CLI …`
+
+So both runs (a) solved the *small* concrete data task, then (b) declared the
+issue's central method — *drive Formal AI through its own Agent CLI* — and every
+sweeping axis a "tracked follow-up / research programme," and (c) dressed that
+refusal up as "honest scope." The maintainer's response to both was unambiguous:
 
 > That is opposite of my requirements. Re-read [issue #538]. And actually do it,
 > no refusals, no delays, no deferral, no follow ups. Everything is done here,
 > now, in this pull request, you have all the tools for that.
+
+## What the *correct* run did instead (contrast)
+
+The run that this PR keeps did the opposite of both drafts on the linchpin axis:
+it installed the **real** `@link-assistant/agent` CLI, booted `formal-ai serve`,
+and drove the change through the live OpenAI-compatible loop — not an in-repo
+simulation and not a "not performed" note. That live round-trip is captured in
+[`agent-cli-e2e-run.log`](agent-cli-e2e-run.log), runs on every commit in CI for
+**all three** recipe axes (tomato, potato, diagrams), and is reproducible locally
+via [`experiments/agent_cli_e2e/run_agent_cli.sh`](../../../experiments/agent_cli_e2e/run_agent_cli.sh).
+The lesson the two failed logs teach — *when the method is hard, do the method
+anyway and extend the tool until it works* — is therefore not just asserted here
+but enforced by a red-on-regression test.
 
 ## Why it is an anti-pattern
 

@@ -40,6 +40,12 @@ DEFAULT_TASK="Make the tomato meaning more detailed: pin every surface's part of
 TASK="${TASK:-$DEFAULT_TASK}"
 EXPECT_FILE="${EXPECT_FILE:-meanings-tomato-detail.lino}"
 EXPECT_TEXT="${EXPECT_TEXT:-томаты}"
+# Minimum /v1/chat/completions round-trips the recipe must drive. The default (4)
+# fits the web recipes (search → fetch → write → verify → final = 5 posts). A
+# no-web recipe (e.g. the diagram task: write → verify → final = 3 posts) sets
+# MIN_POSTS=3, so the same harness validates every recipe axis live rather than
+# only the web ones.
+MIN_POSTS="${MIN_POSTS:-4}"
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
@@ -122,11 +128,12 @@ fail() {
 grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
   || fail "expected text \"$EXPECT_TEXT\" missing from $EXPECT_FILE"
 
-# One extra structural check: the server must have seen more than one
-# /v1/chat/completions post — a single post would mean the loop stopped after
+# One extra structural check: the server must have seen at least MIN_POSTS
+# /v1/chat/completions posts — a single post would mean the loop stopped after
 # the first turn without walking the recipe (search → fetch → write → verify).
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
-[ "$posts" -ge 4 ] || fail "expected ≥4 chat completions, got $posts (loop stalled?)"
+[ "$posts" -ge "$MIN_POSTS" ] \
+  || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
 
 echo "== E2E OK: $EXPECT_FILE written, contains \"$EXPECT_TEXT\", $posts chat rounds =="
 head -5 "$WORKDIR/$EXPECT_FILE"
