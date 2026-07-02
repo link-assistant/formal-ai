@@ -28,10 +28,13 @@
 
 use serde_json::json;
 
+use super::diagram;
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::meaning_detail;
+use super::self_ast;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -63,27 +66,77 @@ pub struct PlannedToolCall {
 }
 
 /// The tool capabilities the planner's recipe relies on.
+///
+/// This is the single source of truth for "what kind of thing a tool does". Both
+/// the planner (to pick which advertised tool to call for each recipe step) and
+/// the server's permission gate (to decide whether an agentic client may drive a
+/// tool of this kind) classify tool names through [`tool_capability`] — so the
+/// two never drift and no per-tool-name special cases accumulate.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Capability {
+pub enum Capability {
     Search,
     Fetch,
     Write,
     Run,
 }
 
+impl Capability {
+    /// The associative-package capability key that grants an agentic client the
+    /// right to drive a tool of this kind, e.g. `tool:capability:write`. Grants
+    /// are by *capability class*, not by tool name, so any CLI's naming
+    /// (`write`, `write_file`, `edit`, `patch`, …) maps to the same permission.
+    #[must_use]
+    pub const fn permission_key(self) -> &'static str {
+        match self {
+            Self::Search => "tool:capability:search",
+            Self::Fetch => "tool:capability:fetch",
+            Self::Write => "tool:capability:write",
+            Self::Run => "tool:capability:run",
+        }
+    }
+}
+
+/// Classify an advertised tool name into the [`Capability`] it provides.
+///
+/// Returns [`None`] when the planner's recipe has no use for it
+/// (read/list/grep/todo/…). Public so the permission gate classifies through the
+/// *same* function the planner uses.
+#[must_use]
+pub fn tool_capability(name: &str) -> Option<Capability> {
+    classify_tool(name)
+}
+
 /// Plan the next agentic step from the conversation so far and the tool names the
 /// CLI advertised.
 ///
-/// Returns [`None`] when the latest user turn is not a formalization task — the
-/// server then falls back to its ordinary solver text, so non-agentic-coding
-/// requests are untouched.
+/// Returns [`None`] when the latest user turn is neither of the recipes the
+/// planner knows (formalize a text — issue #468, or make a meaning more detailed
+/// — issue #538) — the server then falls back to its ordinary solver text, so
+/// unrelated requests are untouched.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    if !is_formalization_task(&task) {
-        return None;
+    // The self-AST recipe is checked first because it is the most specific router
+    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
+    // request legitimately mentions "Links Notation" as its output format, which
+    // would otherwise be captured by the broad formalization keyword match below.
+    if self_ast::is_self_ast_task(&task) {
+        return Some(plan_self_ast_step(messages, tool_names));
     }
+    if is_formalization_task(&task) {
+        return Some(plan_formalization_step(messages, tool_names));
+    }
+    if meaning_detail::is_meaning_detail_task(&task) {
+        return Some(plan_meaning_detail_step(&task, messages, tool_names));
+    }
+    if diagram::is_diagram_task(&task) {
+        return Some(plan_diagram_step(messages, tool_names));
+    }
+    None
+}
 
+/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
     let write_tool = tool_for(tool_names, Capability::Write);
@@ -94,16 +147,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Step 1: search for the source text.
     if let Some(tool) = search_tool {
         if !progress.done(Capability::Search) {
-            return Some(plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string()));
+            return plan_one(tool, json!({ "query": SEARCH_QUERY }).to_string());
         }
     }
     // Step 2: fetch the source text.
     if let Some(tool) = fetch_tool {
         if !progress.done(Capability::Fetch) {
-            return Some(plan_one(
-                tool,
-                json!({ "url": CANONICAL_SOURCE_URL }).to_string(),
-            ));
+            return plan_one(tool, fetch_arguments(CANONICAL_SOURCE_URL));
         }
     }
 
@@ -118,20 +168,137 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Step 3: write the formalized knowledge base.
     if let Some(tool) = write_tool {
         if !progress.done(Capability::Write) {
-            let arguments = json!({ "path": KB_PATH, "content": formalized.links_notation });
-            return Some(plan_one(tool, arguments.to_string()));
+            return plan_one(tool, write_arguments(KB_PATH, &formalized.links_notation));
         }
     }
     // Step 4: verify by reading the file back.
     if let Some(tool) = run_tool {
         if !progress.done(Capability::Run) {
             let arguments = json!({ "command": format!("cat {KB_PATH}") });
-            return Some(plan_one(tool, arguments.to_string()));
+            return plan_one(tool, arguments.to_string());
         }
     }
 
     // Step 5: nothing left to do — answer with the knowledge base inline.
-    Some(AgenticPlan::Final(final_answer(&formalized)))
+    AgenticPlan::Final(final_answer(&formalized))
+}
+
+/// The issue-#538 recipe: search → fetch (Wikidata lexemes) → write the enriched
+/// meaning block → verify → final. Mirrors the formalization recipe but re-derives
+/// the enriched meaning block from the fetched lexeme facts instead of formalizing
+/// prose. The concept to enrich is routed from the request itself
+/// ([`meaning_detail::concept_for_task`]), so the *same* recipe makes tomato,
+/// potato, or any registered concept more detailed. Steps whose tool the CLI did
+/// not advertise are skipped.
+fn plan_meaning_detail_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
+    // Route to the concept the request names (default: tomato — the canonical task).
+    let concept = meaning_detail::concept_for_task(task).unwrap_or(&meaning_detail::TOMATO);
+
+    let search_tool = tool_for(tool_names, Capability::Search);
+    let fetch_tool = tool_for(tool_names, Capability::Fetch);
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+
+    // Step 1: search for the Wikidata lexeme data.
+    if let Some(tool) = search_tool {
+        if !progress.done(Capability::Search) {
+            return plan_one(tool, json!({ "query": concept.search_query }).to_string());
+        }
+    }
+    // Step 2: fetch the lexeme forms (where the missing plural is recovered).
+    if let Some(tool) = fetch_tool {
+        if !progress.done(Capability::Fetch) {
+            return plan_one(tool, fetch_arguments(concept.source_url));
+        }
+    }
+
+    // Re-derive the enriched block from the fetched lexeme facts (or the canonical
+    // fallback when the fetch errored), exactly as the formalization recipe does.
+    let block = meaning_detail::enrich_block(concept, progress.fetched_text.as_deref());
+
+    // Step 3: write the enriched meaning block.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(concept.kb_path, &block));
+        }
+    }
+    // Step 4: verify by reading the enriched block back (mirrors the formalization
+    // recipe; `cat` is the allowlisted read the sandbox workspace supports).
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 5: nothing left to do — answer with the enriched block inline.
+    AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
+}
+
+/// The issue-#538 diagram recipe: write the generated mermaid document → verify →
+/// final. Unlike the other two recipes it needs no web step — the diagrams are a
+/// pure function of the planner's own recipe table ([`diagram::render_document`]),
+/// so the loop *documents itself*. Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = diagram::render_document();
+
+    // Step 1: write the generated diagram document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(diagram::DIAGRAM_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", diagram::DIAGRAM_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(diagram::final_answer(&document))
+}
+
+/// The issue-#538 self-AST recipe: write the generated CST/AST-in-data document →
+/// verify → final. Like the diagram recipe it needs no web step — the document is a
+/// pure function of the planner's own source parsed through the meta-language links
+/// network ([`self_ast::render_document`]), so the loop *inspects itself*. Steps
+/// whose tool the CLI did not advertise are skipped.
+fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = self_ast::render_document();
+
+    // Step 1: write the generated CST/AST document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(self_ast::AST_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", self_ast::AST_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(self_ast::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
@@ -182,6 +349,37 @@ fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     }])
 }
 
+/// Arguments for a write step that satisfy whichever key the advertised write
+/// tool expects. Agentic CLIs disagree on the parameter name — the in-repo driver
+/// reads `path`, the `@link-assistant/agent` CLI's `write` tool wants `filePath`,
+/// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
+/// it declared and strips the rest, so the same plan drives any of them without a
+/// per-CLI special case.
+fn write_arguments(path: &str, content: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+        "content": content,
+    })
+    .to_string()
+}
+
+/// Arguments for a fetch step. Emits `url` (the universal key) plus `format`
+/// set to `"text"` — the `@link-assistant/agent` CLI's `webfetch` tool declares
+/// a required `format` enum (`"text" | "markdown" | "html"`) and zod refuses the
+/// call otherwise (observed live: *"Invalid option: expected one of
+/// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
+/// CLIs whose schemas don't declare `format` strip it, so one shape drives all
+/// of them without a per-CLI special case.
+fn fetch_arguments(url: &str) -> String {
+    json!({
+        "url": url,
+        "format": "text",
+    })
+    .to_string()
+}
+
 /// The first advertised tool name that provides `capability`, if any.
 fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
@@ -192,11 +390,24 @@ fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a st
 
 /// Classify a tool name into a [`Capability`] by substring, mirroring the naming
 /// conventions agentic CLIs use (`web_search`, `web_fetch`, `write_file`,
-/// `run_command`, `bash`, …).
+/// `run_command`, `bash`, `websearch`, `webfetch`, …).
+///
+/// The recipe only wants four kinds of tool, and real CLIs expose *lookalikes*
+/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
+/// writer, a `codesearch` is not a web search, and a plain `read`/`edit`/`patch`
+/// is not a create-file. Those are ruled out first so that — even though
+/// [`requested_tool_names`](super::super::protocol) hands the planner an
+/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
+/// nor `codesearch` ahead of `websearch`.
 fn classify_tool(name: &str) -> Option<Capability> {
     let lower = name.to_ascii_lowercase();
+    // Scratchpad / navigation tools that merely *look* like recipe tools.
+    if lower.contains("todo") {
+        return None;
+    }
     if lower.contains("search") {
-        Some(Capability::Search)
+        // A code search is not the web search the recipe issues its query to.
+        (!lower.contains("code")).then_some(Capability::Search)
     } else if lower.contains("fetch")
         || lower.contains("open")
         || lower.contains("browse")
@@ -204,7 +415,10 @@ fn classify_tool(name: &str) -> Option<Capability> {
         || lower.contains("read_url")
     {
         Some(Capability::Fetch)
-    } else if lower.contains("write") {
+    } else if lower.contains("write") || lower.contains("create_file") {
+        // `write` / `write_file` create a file from scratch; `edit`/`patch`
+        // mutate an existing one and take different arguments, so they are not
+        // interchangeable with the recipe's write step and stay unclassified.
         Some(Capability::Write)
     } else if lower.contains("run")
         || lower.contains("bash")

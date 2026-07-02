@@ -263,6 +263,46 @@ checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. Each of the
 the stronger ratchet requires 30/30 per source, so the benchmark work requested
 for #408 is closed in this PR.
 
+## Issue #538 Detailed Meanings and Words - current PR
+
+PR [#601](https://github.com/link-assistant/formal-ai/pull/601) answers the
+concrete, verifiable core of issue
+[#538](https://github.com/link-assistant/formal-ai/issues/538): the tomato
+meaning now records, from the seed data, whether each surface
+(`tomato`/`tomatoes`, `помидор`/`помидоры`, `томат`/`томаты`) is singular or
+plural and what part of speech it is; every surface denotes its meaning
+(bidirectional word ⇄ meaning); the previously missing plural `томаты` is added
+so both Russian synonyms are symmetric; and the grammatical values are grounded
+in Wikidata (`Q104083`/`Q110786`/`Q146786`) and lexicalised in en/ru/hi/zh. This
+is captured by `REQUIREMENTS.md` rows R370–R377 and `tests/unit/issue_538.rs`.
+
+The issue also states a large aspirational programme. Rather than half-build it,
+this PR decomposes it into tracked follow-ups (`REQUIREMENTS.md` R378–R386,
+detailed in `docs/case-studies/issue-538/solution-plan.md`), each with a smallest
+next step:
+
+- **Bulk semantics import** (R378) — generalize `scripts/ground-meanings.rs` into
+  a batch importer that emits the enriched-surface template the tomato block now
+  shows by hand.
+- **Hardcoded-string audit** (R379) — a CI lint over `src/` that burns down an
+  allowlist of user-facing literals not routed through the lexicon, building on
+  `docs/design/no-hardcoded-natural-language.md`.
+- **Rust→WASM worker** (R380) — widen the existing demo WASM worker
+  (`src/web/wasm-worker/`, issue #1 R16) to absorb the remaining
+  `src/web/worker/*.js` logic; the build target already exists.
+- **CST/AST in data** (R381) — round-trip one module's `syn` AST into `.lino`
+  before scaling to the whole crate.
+- **Mermaid diagrams** (R382) — generate one diagram from the existing method
+  registry as a build artifact.
+- **Interactive debug view** (R383) — extend the exploratory notes under
+  `docs/vscode/`.
+- **Self-inspecting universal meta algorithm & contradiction warnings** (R384) —
+  overlaps issue #559; this issue's own mixed scope is a ready contradiction
+  fixture.
+- **Agent-CLI self-hosting** (R385) — script a single Agent-CLI session that
+  reproduces one atomic edit (e.g. adding `томаты`) in a scratch repo and capture
+  its session JSON; documented as the way-forward in `CONTRIBUTING.md`.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

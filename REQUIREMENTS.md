@@ -906,3 +906,39 @@ template regression upstream as
 | R367 | If the same release-badge issue exists in a template, it must be reported upstream and linked from the case study. | Implemented by reporting [rust-ai-driven-development-pipeline-template#85](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85) and preserving `reported-rust-template-issue-85.json`. |
 | R368 | The release badge and README badge behavior must be protected by automated regression tests. | Implemented by `crate_release_badges_use_static_artifact_links_not_live_status`, `readme_keeps_traditional_ci_and_artifact_badges`, and `issue_492_release_badge_documents_are_traceable`. |
 | R369 | The issue #492 fix, documentation, test coverage, and PR metadata must land in the prepared PR #583 branch. | Implemented on branch `issue-492-c714d50efef8` and tracked by PR [#583](https://github.com/link-assistant/formal-ai/pull/583). |
+
+## Issue #538 Detailed Meanings and Words
+
+Issue [#538](https://github.com/link-assistant/formal-ai/issues/538) starts from
+a concrete gap — the tomato meaning lists Russian surfaces `помидор`, `помидоры`,
+`томат` without saying which is singular or plural, and `помидор` has a plural
+while its synonym `томат` does not — and asks to make both meanings (reverse
+dictionary) and words (direct dictionary) much more detailed, grounded in real
+data, and bidirectionally linked. It then expands into a large aspirational
+programme (self-inspecting universal meta algorithm, Rust→WASM worker,
+CST/AST-in-data, mermaid diagrams, an embedded-VS-Code debug view, and solving
+the task by driving Formal AI through its own Agent CLI). PR
+[#601](https://github.com/link-assistant/formal-ai/pull/601) ships the concrete,
+verifiable core (R370–R377) and records the aspirational programme as tracked
+follow-ups (R378–R386). The full decomposition, per-requirement solution plan,
+and online research are in `docs/case-studies/issue-538`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R370 | Each word surface of the tomato meaning must record whether it is singular or plural, from the seed data. | Implemented by the `grammatical_number` facet on every tomato surface in `data/seed/meanings-translation.lino` and `WordForm::grammatical_number()` in `src/seed/meanings.rs`; covered by `tests/unit/issue_538.rs::tomato_surfaces_pin_their_grammatical_number`. |
+| R371 | Each word surface must record its part of speech (its composition). | Implemented by the `part_of_speech noun` facet on every tomato surface and `WordForm::part_of_speech()`; covered by `tests/unit/issue_538.rs::tomato_surfaces_expose_part_of_speech_from_data`. |
+| R372 | Words must reference the meanings they express (bidirectional word ⇄ meaning), not only meanings referencing words. | Implemented by the parser's auto-attached `denotation` facet and `WordForm::denotations()`; covered by `tests/unit/issue_538.rs::every_tomato_surface_denotes_the_tomato_meaning`. |
+| R373 | The помидор-has-a-plural-but-томат-does-not asymmetry must be closed. | Implemented by adding the plural `томаты` (`L170542-F7`) so both Russian synonyms carry a distinct singular and plural; covered by `tests/unit/issue_538.rs::tomato_singular_and_plural_are_distinct_forms_in_each_language`. |
+| R374 | The added grammatical detail must be grounded in real external data, precached for offline tests. | Implemented by grounding `grammatical_number`/`singular`/`plural` in Wikidata `Q104083`/`Q110786`/`Q146786` and referencing real lexeme forms of `L7993`/`L3526`/`L170542`, with cache files under `data/cache/wikidata/`; covered by `tests/unit/semantic_grounding.rs` closure tests. |
+| R375 | The new detail must use one normalized representation per link type, reusing existing mechanisms. | Implemented by adding a single `grammatical_number` kind to the closed `FACET_KINDS` vocabulary and reusing `SemanticFacet`, `part_of_speech`, `denotation`, and `source-lexeme`; no parallel structure was introduced. |
+| R376 | The grammatical values must be multilingual (any language to any language). | Implemented by lexicalising `grammatical_number`/`singular`/`plural` in en/ru/hi/zh in `data/seed/meanings-lexical-meta.lino` and tagging the tomato hi/zh surfaces with part of speech; covered by `tests/unit/issue_538.rs::grammatical_number_meanings_are_grounded_and_multilingual`. |
+| R377 | Issue data, a requirements decomposition, per-requirement solution plans, and online research must be preserved under `docs/case-studies/issue-538`. | Implemented by `docs/case-studies/issue-538/{README,requirements,solution-plan}.md` and `raw-data/`. |
+| R378 | The system should be able to import all semantics collectable from external lexical sources, not only the curated tomato entry. | Tracked follow-up: the tomato block is the target template; a batch importer generalizing `scripts/ground-meanings.rs` is the next step (see `docs/case-studies/issue-538/solution-plan.md` R9). |
+| R379 | Previously hardcoded natural-language strings must be migrated into grounded meanings, and every codebase concept expressed as meanings. | Tracked follow-up building on `docs/design/no-hardcoded-natural-language.md`; a CI lint that burns down an allowlist is the proposed next step (solution-plan R10). |
+| R380 | Formal-worker logic should run in a WebAssembly worker compiled from Rust, with JavaScript limited to UI interfacing. | Partially pre-existing: the demo already ships a Rust→WASM worker (`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`, issue #1 R16); absorbing the remaining `src/web/worker/*.js` logic is the tracked follow-up (solution-plan R11/R12). |
+| R381 | The Rust logic's CST/AST should be stored in data so the algorithm can reason about and rebuild itself. | Tracked follow-up; the proposed first slice is a `syn`-based round-trip of a single module into `.lino` (solution-plan R13/R14). |
+| R382 | Generated, split mermaid diagrams should give a high-level and per-entry-point view of the system. | Tracked follow-up; the proposed first slice generates one diagram from the existing method registry (solution-plan R15/R16). |
+| R383 | An interactive, step-by-step debugging view (embedded VS Code, split into chat/data/mermaid/Rust/JS panes) should exist. | Tracked follow-up; related exploratory notes live under `docs/vscode/` (solution-plan R17). |
+| R384 | The universal meta algorithm should be fully inspectable, formalize every message as a probability-weighted statement, and warn about contradictory requirements with proposed resolutions. | Tracked follow-up overlapping issue #559; this issue's own mixed scope is used as a contradiction fixture (solution-plan R18–R21). |
+| R385 | The task should be solved by driving Formal AI through its own Agent CLI, producing a session JSON that reproduces the change in a clean repo, and CONTRIBUTING.md should record this as the way forward. | Tracked / not performed for the solve itself; honestly reported in `docs/case-studies/issue-538/README.md`. The intended workflow and its current status are documented in `CONTRIBUTING.md` (solution-plan R22–R25). |
+| R386 | The work must land in the single prepared PR #601 with the smallest practical commits. | Implemented on branch `issue-538-eca4a11c39c6` as a sequence of small atomic commits tracked by PR [#601](https://github.com/link-assistant/formal-ai/pull/601). |

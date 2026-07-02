@@ -1,0 +1,473 @@
+L3526
+  claims
+    P11138
+      entry
+        id L3526$14D5E2A8-B228-4E86-9757-7CF3A0A43006
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "483923"
+          hash 6e64d196e8596932234cfba428e7300deb0c52f1
+          property P11138
+          snaktype value
+        rank normal
+        type statement
+    P11319
+      entry
+        id L3526$E4347CC1-80D2-44EA-8517-D2CC89D36BB3
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "16/ma328209"
+          hash 4cea73c70aa3dd50aa12d92b7a45c558ce997f53
+          property P11319
+          snaktype value
+        rank normal
+        type statement
+    P11536
+      entry
+        id L3526$973CDA00-F278-4671-9946-0CCAA29E2BB2
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "16/us356406"
+          hash 7885669eb0cced99a4365094469e0ee41bfb745c
+          property P11536
+          snaktype value
+        rank normal
+        type statement
+    P13131
+      entry
+        id L3526$28e30888-4de3-0226-7cf4-1afd359d9cad
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "16#e1396"
+          hash 3d49a41cc96907a28f9033ac55b5747c87034eb2
+          property P13131
+          snaktype value
+        qualifiers
+          P1810
+            entry
+              datatype string
+              datavalue
+                type string
+                value "pam'idór"
+              hash 6c04e48ef7dc033bedd2b0c26acfd25fea8bbe0b
+              property P1810
+              snaktype value
+        qualifiers-order (P1810)
+        rank normal
+        type statement
+    P1552
+      entry
+        id L3526$34421f81-40cb-ac46-3dd3-9028a1df97f1
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q51927539
+              numeric-id 51927539
+          hash 4a8a9c18866f69b289d57a6e908b0e4ca7270049
+          property P1552
+          snaktype value
+        rank normal
+        type statement
+    P5185
+      entry
+        id L3526$659c8f62-4db4-fbeb-2dee-fb6b23128fc1
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q499327
+              numeric-id 499327
+          hash 432320b20cb3975ff4969b6ade525ca6bd81ca47
+          property P5185
+          snaktype value
+        rank normal
+        type statement
+    P5911
+      entry
+        id L3526$a1f2fca8-46e9-5c8b-ccd6-e159fd3cd2ef
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q66689134
+              numeric-id 66689134
+          hash eb84868970597368b16237b23eae9f1807db980c
+          property P5911
+          snaktype value
+        rank normal
+        type statement
+      entry
+        id L3526$a6a46189-401e-d367-5272-157f7fbec57d
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q66311515
+              numeric-id 66311515
+          hash e8867852bfb03227e9420f3838785ea1ef42f969
+          property P5911
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3526-F1$d01b489e-facb-435d-88a6-46d76475cc03
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидор.wav"
+              hash ca4f9b0baa03771174322396358898a0b34fce0b
+              property P443
+              snaktype value
+            rank normal
+            references
+              entry
+                hash fa8ef11b7b7b41d9f130547137b1065b5575d287
+                snaks
+                  P854
+                    entry
+                      datatype url
+                      datavalue
+                        type string
+                        value "https://lingualibre.fr/wiki/Q63233"
+                      hash f6a3b57f46e63e892b2368ee4168c344bc5f2fe9
+                      property P854
+                      snaktype value
+                snaks-order (P854)
+            type statement
+          entry
+            id L3526-F1$402D1883-9185-4018-A5AC-7D355662AF8F
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Ru-помидор.ogg"
+              hash 1525a55e4f4d9142ef6a12d442e6f5e2c3a0c1d4
+              property P443
+              snaktype value
+            rank normal
+            type statement
+        P898
+          entry
+            id L3526-F1$58221d9e-442a-14ce-751a-6823b252e1e1
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "pəmʲɪˈdor"
+              hash 58440cc32fa5d08936acd55d7ab22f5decb84c85
+              property P898
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q131105 Q146078)
+      id L3526-F1
+      representations
+        ru
+          language ru
+          value "помидор"
+    entry
+      claims
+        P443
+          entry
+            id L3526-F2$6114224f-9f6d-4436-83ec-939c1a985495
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидора.wav"
+              hash 08193bbe6f08a846f9799faf02a53112c943c2e4
+              property P443
+              snaktype value
+            rank normal
+            references
+              entry
+                hash 780d5cdc8abc81f4171ffd5b830d233a587779cb
+                snaks
+                  P854
+                    entry
+                      datatype url
+                      datavalue
+                        type string
+                        value "https://lingualibre.fr/wiki/Q63234"
+                      hash d76745c20b2cffab165d3d9cc22ea628d7a2ccc1
+                      property P854
+                      snaktype value
+                snaks-order (P854)
+            type statement
+      grammaticalFeatures (Q110786 Q146233)
+      id L3526-F2
+      representations
+        ru
+          language ru
+          value "помидора"
+    entry
+      claims
+        P443
+          entry
+            id L3526-F3$5edc2882-12fa-418e-b7a6-387b60abe560
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидоры.wav"
+              hash 0e1dd745bc158baec42d6424787a84a48a2768e6
+              property P443
+              snaktype value
+            rank normal
+            references
+              entry
+                hash c80346fb208f1ce60b890085b157543522bacde6
+                snaks
+                  P854
+                    entry
+                      datatype url
+                      datavalue
+                        type string
+                        value "https://lingualibre.fr/wiki/Q63235"
+                      hash 41a55ee54196b946d1d5fe3f9dda48369d2adcbb
+                      property P854
+                      snaktype value
+                snaks-order (P854)
+            type statement
+      grammaticalFeatures (Q131105 Q146078 Q146786)
+      id L3526-F3
+      representations
+        ru
+          language ru
+          value "помидоры"
+    entry
+      claims
+        P443
+          entry
+            id L3526-F4$a596e58b-4bda-00e3-87d1-70e1dacaaf99
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидора.wav"
+              hash 08193bbe6f08a846f9799faf02a53112c943c2e4
+              property P443
+              snaktype value
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786 Q146233)
+      id L3526-F4
+      representations
+        ru
+          language ru
+          value "помидора"
+    entry
+      grammaticalFeatures (Q110786 Q145599)
+      id L3526-F5
+      representations
+        ru
+          language ru
+          value "помидору"
+    entry
+      claims
+        P443
+          entry
+            id L3526-F6$1823aa57-4276-94b0-be11-b18aef5283f9
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидор.wav"
+              hash ca4f9b0baa03771174322396358898a0b34fce0b
+              property P443
+              snaktype value
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786 Q146078)
+      id L3526-F6
+      representations
+        ru
+          language ru
+          value "помидор"
+    entry
+      grammaticalFeatures (Q110786 Q192997)
+      id L3526-F7
+      representations
+        ru
+          language ru
+          value "помидором"
+    entry
+      grammaticalFeatures (Q110786 Q2114906)
+      id L3526-F8
+      representations
+        ru
+          language ru
+          value "помидоре"
+    entry
+      grammaticalFeatures (Q146233 Q146786)
+      id L3526-F9
+      representations
+        ru
+          language ru
+          value "помидоров"
+    entry
+      grammaticalFeatures (Q145599 Q146786)
+      id L3526-F10
+      representations
+        ru
+          language ru
+          value "помидорам"
+    entry
+      claims
+        P443
+          entry
+            id L3526-F11$a475538f-4466-6457-2cde-f2c6d483dae1
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q7737 (rus)-Infovarius-помидоры.wav"
+              hash 0e1dd745bc158baec42d6424787a84a48a2768e6
+              property P443
+              snaktype value
+            rank normal
+            type statement
+      grammaticalFeatures (Q146078 Q146786)
+      id L3526-F11
+      representations
+        ru
+          language ru
+          value "помидоры"
+    entry
+      grammaticalFeatures (Q146786 Q192997)
+      id L3526-F12
+      representations
+        ru
+          language ru
+          value "помидорами"
+    entry
+      grammaticalFeatures (Q146786 Q2114906)
+      id L3526-F13
+      representations
+        ru
+          language ru
+          value "помидорах"
+  id L3526
+  language Q7737
+  lastrevid 2337336180
+  lemmas
+    ru "помидор"
+  lexicalCategory Q1084
+  modified "2025-04-12T19:31:36Z"
+  ns 146
+  pageid 55175628
+  senses
+    entry
+      claims
+        P18
+          entry
+            id L3526-S1$f773f603-4b84-d6ab-23cc-818288e12502
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Tomato je.jpg"
+              hash c6d6d0724dcaf6d741e1cc1675885481bbfab291
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3526-S1$56d7a3eb-4973-1748-d98c-b9c5d23827f9
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q20638126
+                  numeric-id 20638126
+              hash 9e61e964a3a433fbf49312b69245d3e60ed3a4d4
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        ru
+          language ru
+          value "плод растения"
+      id L3526-S1
+    entry
+      claims
+        P18
+          entry
+            id L3526-S2$60b7c9b5-4b15-4689-c0b0-cc1890d06932
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Rajče1.jpg"
+              hash 89050b86c44803397d0ff2b3298f08ccb3d4e883
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3526-S2$b85dc72c-4f7c-86f8-e2ad-a7e405313379
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q23501
+                  numeric-id 23501
+              hash c318db72d30dabf5155fdbd023c2f15be83366a3
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        ru
+          language ru
+          value "вид растений семейства паслёновых"
+      id L3526-S2
+  title "Lexeme:L3526"
+  type lexeme
+success 1

@@ -13,24 +13,28 @@
 use std::fmt::Write as _;
 
 use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
+use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
 
-/// One page in the offline corpus.
+/// One page in the offline corpus. Fields are owned so pages can be built from the
+/// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
 struct CorpusPage {
-    url: &'static str,
-    title: &'static str,
+    url: String,
+    title: String,
     /// Lowercased keywords a search query is matched against.
-    keywords: &'static [&'static str],
-    body: &'static str,
+    keywords: Vec<String>,
+    body: String,
 }
 
-/// The corpus pages, in search-ranking order. A single canonical page is enough
-/// for the issue-#468 task; the shape generalises to more.
-const fn pages() -> [CorpusPage; 1] {
-    [CorpusPage {
-        url: CANONICAL_SOURCE_URL,
-        title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)",
-        keywords: &[
+/// The corpus pages, in search-ranking order: the fisherman tale (issue #468)
+/// first, then one Wikidata-lexeme page per registered concept (issue #538). Each
+/// concept contributes its own page automatically, so registering a new concept in
+/// [`CONCEPTS`] makes it web-searchable and web-fetchable with no change here.
+fn pages() -> Vec<CorpusPage> {
+    let mut pages = vec![CorpusPage {
+        url: CANONICAL_SOURCE_URL.to_owned(),
+        title: "Сказка о рыбаке и рыбке — Александр Пушкин (Викитека)".to_owned(),
+        keywords: [
             "рыбак",
             "рыбке",
             "рыбка",
@@ -39,9 +43,32 @@ const fn pages() -> [CorpusPage; 1] {
             "fisherman",
             "fish",
             "pushkin",
-        ],
-        body: CANONICAL_FISHERMAN_SYNOPSIS,
-    }]
+        ]
+        .iter()
+        .map(|keyword| (*keyword).to_owned())
+        .collect(),
+        body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
+    }];
+    for concept in CONCEPTS {
+        // The concept's own routing keywords plus the shared lexeme vocabulary, so
+        // both a concept-specific query and a generic "wikidata lexeme …" query hit.
+        let mut keywords: Vec<String> = concept.keywords.iter().map(|k| k.to_lowercase()).collect();
+        keywords.extend(
+            ["wikidata", "lexeme", "grammatical", "singular", "plural"]
+                .iter()
+                .map(|k| (*k).to_owned()),
+        );
+        pages.push(CorpusPage {
+            url: concept.source_url.to_owned(),
+            title: format!(
+                "Wikidata lexemes for the {} concept ({}) — Wikidata",
+                concept.name, concept.grounded_in
+            ),
+            keywords,
+            body: meaning_detail::source_bundle(concept),
+        });
+    }
+    pages
 }
 
 /// Resolve a `web_search` query into deterministic results text.
@@ -56,7 +83,11 @@ pub fn web_search(query: &str) -> String {
     let all = pages();
     let hits: Vec<&CorpusPage> = all
         .iter()
-        .filter(|page| page.keywords.iter().any(|keyword| lower.contains(keyword)))
+        .filter(|page| {
+            page.keywords
+                .iter()
+                .any(|keyword| lower.contains(keyword.as_str()))
+        })
         .collect();
     if hits.is_empty() {
         return format!("web_search: no results for {query:?}");
@@ -86,6 +117,6 @@ pub fn web_search(query: &str) -> String {
 pub fn web_fetch(url: &str) -> String {
     pages().iter().find(|page| page.url == url).map_or_else(
         || format!("web_fetch error: 404 not found for {url}"),
-        |page| page.body.to_owned(),
+        |page| page.body.clone(),
     )
 }

@@ -2,6 +2,71 @@
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
+## How we develop Formal AI: drive the Agent CLI, never defer
+
+**From issue #538 forward, this is the only way we develop the Formal AI
+system.** We do not solve a task by editing code and data by hand and we do not
+solve it partway and defer the rest to a roadmap. We solve it by **driving Formal
+AI through its own [Agent CLI](https://github.com/link-assistant/agent)** (the
+in-repo agentic driver in `src/agentic_coding/`, running against the
+OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
+in the same pull request.
+
+Concretely, every change must follow these rules:
+
+1. **The tool authors the change, not you.** Drive the Agent CLI + Formal AI to
+   produce the change. Where the output lands in the repo (e.g. seed data), a
+   test must assert that the committed artifact is **byte-for-byte** what the
+   Agent-CLI-driven recipe produces, so the tool — not a hand-edit — is the
+   author and cannot silently regress. See the issue #538 case study
+   ([`docs/case-studies/issue-538/`](docs/case-studies/issue-538/)) for the
+   pattern and the committed `agent-cli-session*.json` sessions.
+2. **No pre-emptive deferral, no refusals, no follow-ups.** "This is large or
+   hard" is never a reason to ship a slice and route the rest to a roadmap. Find
+   the smallest real, tested, reproducible slice of *each* requirement and
+   execute it now, in this PR. Read
+   [`docs/case-studies/issue-538/refusal-anti-pattern.md`](docs/case-studies/issue-538/refusal-anti-pattern.md)
+   before opening a PR — it is the failed reasoning we do not repeat, and we do
+   not teach Formal AI to refuse or defer like that.
+3. **When the tool can't do it, extend the tool, then retry.** Falling back to a
+   manual edit is allowed only after you have proven the Agent CLI / Formal AI
+   cannot yet do it — and then you must immediately improve the Agent CLI /
+   Formal AI so it *can* in general, and re-run through the tool.
+4. **Prove generality with different words each time.** Use a *different* natural
+   language request for each case so a passing run proves the solution is truly
+   general, not hardcoded to one phrasing (issue #538 drives tomato and potato
+   with two differently-worded requests).
+5. **Report faithfully.** State what is done and verified plainly. Honesty means
+   reporting results accurately; it is never a license to stop early or to dress
+   a refusal as an "honest scope" section.
+6. **Real Agent-CLI E2E tests in CI, plus a per-requirement test and a
+   whole-task test.** Every change that touches the agentic path must add (or
+   update) a real end-to-end test that boots `formal-ai serve` and drives it
+   with the actual `@link-assistant/agent` CLI over the OpenAI-compatible
+   endpoint — no mocks or in-process shortcuts. Keep the round-trip green in CI
+   (see `test-agent-cli-e2e` in `.github/workflows/release.yml` and the driver
+   script `experiments/agent_cli_e2e/run_agent_cli.sh`). In addition, ship one
+   unit/integration test **per requirement in the issue** and one test that
+   exercises the **whole task** end-to-end so a regression on any single
+   requirement — or on the composition of all of them — breaks the build.
+7. **Hardcoded cases only in tests; production code stays general.** A test may
+   hardcode inputs and expected outputs (that is what a test is *for*), but the
+   engine, planner, seed loader, and Agent-CLI-driven recipes never branch on a
+   specific concept, phrase, or URL. If the only way to make a green case pass
+   is a match-on-literal in `src/`, extend the general routing table (`concept
+   registry`, `capability classifier`, `plan_chat_step`) so future concepts get
+   the same treatment for free.
+8. **Real logs in the case study, not synthesized ones.** When a case study
+   claims the Agent CLI drove the change, it must ship the real captured log of
+   the round-trip (see `docs/case-studies/issue-538/agent-cli-e2e-run.log`), and
+   the committed session JSON must be reproducible byte-for-byte by
+   `cargo test`.
+9. **Commit in small, atomic steps.** Every commit should be independently
+   useful and reviewable — one logical change per commit, buildable in
+   isolation. Interrupted work stays preserved in the PR because each commit
+   already stands on its own; do not batch a day of unrelated edits into one
+   commit.
+
 ## Development Setup
 
 1. **Fork and clone the repository**
@@ -314,6 +379,35 @@ hardcoded prompt→answer tables.
 10. **One PR per issue.** Plan and execute everything for an issue in a single
     pull request; commit atomic, individually useful steps so interrupted work
     stays preserved.
+
+11. **Prefer the meta algorithm; drive Formal AI to solve its own tasks
+    (direction set by issue #538).** The long-term way we develop this project is
+    to treat every task as a message formalized into the meta language and to let
+    Formal AI — driven through its own Agent CLI
+    (<https://github.com/link-assistant/agent>) — reason about and solve the task
+    by editing its own data (memory) and meta algorithm (reasoning), rather than
+    a human hand-coding each answer. When Formal AI cannot yet perform a step,
+    the goal is to improve the meta algorithm just enough that it can, verifying
+    generality by phrasing the same request different ways and by reproducing the
+    change in a clean repository copy driven by the Agent CLI.
+
+    **Honest current status.** This is not aspirational: from issue #538 forward
+    it is how changes are produced (see the top-of-file rules 1–5). The Agent CLI
+    drives real, byte-for-byte-reproducible changes today — the self-hosting loop
+    (spawn a Formal AI server, hand it the task, capture the Agent-CLI session JSON
+    that reproduces the change) is what wrote the #538 seed data, the potato
+    enrichment, and the generated recipe diagrams; `scripts/reproduce-issue-538.sh`
+    regenerates all three on a clean checkout. What is honestly *not yet built* is
+    autonomous handling of the sweeping, open-ended axes (e.g. a full CST/AST-in-
+    data round trip, or one-shot handling of an arbitrary unseen issue). Those are
+    **not** parked on a roadmap: each names its smallest real, testable next slice
+    in [`docs/case-studies/issue-538/requirements.md`](docs/case-studies/issue-538/requirements.md)
+    and is executed the same way — by extending Formal AI / the Agent CLI until the
+    tool can do it and a test goes red on regression (rule 3), never by hand-editing
+    and deferring. When a task's requirements genuinely conflict (as issue #538's
+    small concrete ask sits inside a much larger vision), surface the contradiction
+    explicitly and still deliver a real, tested slice of *each* axis — never dress
+    "did part of everything" as an honest scope cut.
 
 ## Pull Request Process
 

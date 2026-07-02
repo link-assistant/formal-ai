@@ -182,6 +182,7 @@ impl AnthropicMessagesRequest {
                 .map(anthropic_tool_choice_to_openai),
             functions: Vec::new(),
             function_call: None,
+            stream_options: None,
         }
     }
 }

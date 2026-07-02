@@ -953,6 +953,123 @@ jobs:
             src/web/download/assets/app-preview*.png
           retention-days: 14
 
+  # === E2E: Agent CLI ↔ formal-ai OpenAI-compatible server ===
+  # Boot `formal-ai serve`, drive it with the real `@link-assistant/agent` CLI
+  # (talking over its OpenAI-compatible endpoint) and prove the CLI writes the
+  # requested Links Notation file end-to-end. This is the maintainer's
+  # requirement for issue #538: no hardcoded meaning answers, no deferral —
+  # the real toolchain must produce the enriched meaning on every commit.
+  test-agent-cli-e2e:
+    name: E2E Tests (agent CLI ↔ formal-ai)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [detect-changes]
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-agentcli-e2e-
+            ${{ runner.os }}-cargo-
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install @link-assistant/agent CLI
+        # The E2E script talks to formal-ai through the same CLI users install
+        # locally. `bun add -g` puts the `agent` binary on PATH under
+        # ~/.bun/bin — the script's default AGENT="agent" picks it up.
+        run: |
+          bun add -g @link-assistant/agent
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+
+      - name: Build formal-ai (release)
+        # The E2E script runs against target/release/formal-ai — that's the
+        # binary users invoke as `formal-ai serve`. Release mode also matches
+        # the local-dev instructions in the case study.
+        run: cargo build --release --bin formal-ai
+
+      # Each recipe axis of issue #538 is driven live through the real Agent CLI
+      # against the real formal-ai server — no in-repo simulation. Every step
+      # boots the server, drives the CLI with a *differently worded* request, and
+      # asserts the CLI exits 0, wrote the expected file, the file carries the
+      # requirement's canary string, and the loop walked ≥MIN_POSTS chat rounds.
+      # Running all three (two meaning concepts + one non-lexeme diagram axis)
+      # proves the recipe generalises live, not just for the tomato answer.
+      - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+        # Distinct port per step to avoid collisions if a runner is shared.
+        # Canary: the Russian plural `томаты`, previously missing from `томат`.
+        env:
+          PORT: 8768
+          EXPECT_FILE: meanings-tomato-detail.lino
+          EXPECT_TEXT: томаты
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
+        # A differently-worded request routed to a different concept proves the
+        # recipe is general, not pattern-matched to the tomato phrasing.
+        env:
+          PORT: 8769
+          TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
+          EXPECT_FILE: meanings-potato-detail.lino
+          EXPECT_TEXT: potatoes
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+        # A no-web recipe (write → verify → final = 3 rounds) driven by the same
+        # CLI, proving the loop generalises beyond the meaning-detail axis.
+        env:
+          PORT: 8770
+          TASK: "Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools."
+          EXPECT_FILE: agentic-recipes.md
+          EXPECT_TEXT: flowchart
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
+        # A self-referential no-web recipe (write → verify → final = 3 rounds): the
+        # server parses a real module of its own meta algorithm through the
+        # meta-language links network and writes the abstract-syntax node census,
+        # proving the loop can reason about itself over the live Agent CLI.
+        env:
+          PORT: 8771
+          TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
+          EXPECT_FILE: self-ast.lino
+          EXPECT_TEXT: named_node_count
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Upload E2E logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: agent-cli-e2e-logs
+          path: |
+            /tmp/formal-ai-serve-*.log
+            /tmp/agent-out-*.log
+          retention-days: 7
+
   # === DEPLOY DEMO ===
   # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
   deploy-demo:

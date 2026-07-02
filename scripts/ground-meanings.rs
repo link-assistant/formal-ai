@@ -165,6 +165,11 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("noun_phrase", "Q1401131", "noun phrase"),
     ("lexical_form", "Q4147654", "grammatical form"),
     ("lexical_sense", "Q1570700", "word sense"),
+    // grammatical number and its values (issue #538): so a word form can pin
+    // whether it lexicalises the singular or the plural of its meaning.
+    ("grammatical_number", "Q104083", "grammatical number"),
+    ("singular", "Q110786", "singular"),
+    ("plural", "Q146786", "plural"),
     // translation vocabulary and common concepts
     ("translate", "Q7553", "translation"),
     ("synonym", "Q42106", "synonym"),

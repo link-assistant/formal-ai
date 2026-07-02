@@ -1,0 +1,749 @@
+L170542
+  claims
+    P11138
+      entry
+        id L170542$8A1702D5-6DAB-4939-8C00-5E7CAE8C46EE
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "483922"
+          hash 9285ba6c0154f884d998b1da3a7cce11b5e5c50e
+          property P11138
+          snaktype value
+        rank normal
+        type statement
+    P11319
+      entry
+        id L170542$BB0401C0-AFC5-4C8E-8518-2F231E06488E
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "19/ma437808"
+          hash f5d109d4487c082073987b5e52917d5602ed9db3
+          property P11319
+          snaktype value
+        rank normal
+        type statement
+    P11536
+      entry
+        id L170542$BA43F438-D6B0-4E3D-8E7F-AD7F21834430
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "19/us473605"
+          hash 175ae0cce2a4a6f0fb3b53096b3ec1b13e055920
+          property P11536
+          snaktype value
+        rank normal
+        type statement
+    P1552
+      entry
+        id L170542$F3697974-379D-4DC5-821E-3F3C402AD68D
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q51927539
+              numeric-id 51927539
+          hash 4a8a9c18866f69b289d57a6e908b0e4ca7270049
+          property P1552
+          snaktype value
+        rank normal
+        references
+          entry
+            hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+            snaks
+              P143
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q22116890
+                      numeric-id 22116890
+                  hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                  property P143
+                  snaktype value
+            snaks-order (P143)
+        type statement
+    P5185
+      entry
+        id L170542$390ED0B8-1C6F-4810-A377-4C57202DC353
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q499327
+              numeric-id 499327
+          hash 432320b20cb3975ff4969b6ade525ca6bd81ca47
+          property P5185
+          snaktype value
+        rank normal
+        references
+          entry
+            hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+            snaks
+              P143
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q22116890
+                      numeric-id 22116890
+                  hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                  property P143
+                  snaktype value
+            snaks-order (P143)
+        type statement
+    P5187
+      entry
+        id L170542$ECE65F22-1AE4-4787-B60B-C338B47C8487
+        mainsnak
+          datatype monolingualtext
+          datavalue
+            type monolingualtext
+            value
+              language ru
+              text "томат"
+          hash d810e47b53007adb1c61dd52ea4d02efb3cbddf6
+          property P5187
+          snaktype value
+        rank normal
+        references
+          entry
+            hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+            snaks
+              P143
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q22116890
+                      numeric-id 22116890
+                  hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                  property P143
+                  snaktype value
+            snaks-order (P143)
+        type statement
+    P5911
+      entry
+        id L170542$15CE575A-2EF4-465A-A4FF-89ED6A123540
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q66689134
+              numeric-id 66689134
+          hash eb84868970597368b16237b23eae9f1807db980c
+          property P5911
+          snaktype value
+        rank normal
+        references
+          entry
+            hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+            snaks
+              P143
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q22116890
+                      numeric-id 22116890
+                  hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                  property P143
+                  snaktype value
+            snaks-order (P143)
+        type statement
+      entry
+        id L170542$F6AC9BC8-3013-4B83-819D-8659576444D5
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q66311515
+              numeric-id 66311515
+          hash e8867852bfb03227e9420f3838785ea1ef42f969
+          property P5911
+          snaktype value
+        rank normal
+        references
+          entry
+            hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+            snaks
+              P143
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q22116890
+                      numeric-id 22116890
+                  hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                  property P143
+                  snaktype value
+            snaks-order (P143)
+        type statement
+  forms
+    entry
+      claims
+        P5279
+          entry
+            id L170542-F1$57428602-41CC-4EB0-8E1D-BA162F3A70F4
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "то‧мат"
+              hash 6faefc7c912354985d841225c15e04b382fc040f
+              property P5279
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+        P7243
+          entry
+            id L170542-F1$F0A044D4-700B-4E53-96C1-1C166B3ABA81
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́т"
+              hash 9ba7e0b0ed777eb693f94132213237a6075c3caa
+              property P7243
+              snaktype value
+            qualifiers
+              P898
+                entry
+                  datatype string
+                  datavalue
+                    type string
+                    value "tɐˈmat"
+                  hash 6185509e51a85e06aaeafa486056361b30368236
+                  property P898
+                  snaktype value
+            qualifiers-order (P898)
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q131105)
+      id L170542-F1
+      representations
+        ru
+          language ru
+          value "томат"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F2$2F5A6C27-84EC-4C81-9B06-06D62C515883
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́та"
+              hash f05c2f7402614fa7778c8d296f7399f18e84dc2d
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q146233)
+      id L170542-F2
+      representations
+        ru
+          language ru
+          value "томата"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F3$D207A5EE-296E-43E0-964B-D63979FC30C4
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́ту"
+              hash 6647e05212f1cfe8c7c734089fb5c9eead80186a
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q145599)
+      id L170542-F3
+      representations
+        ru
+          language ru
+          value "томату"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F4$62BE7793-152C-4E54-84A0-D1E3A1207002
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́т"
+              hash 9ba7e0b0ed777eb693f94132213237a6075c3caa
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q146078)
+      id L170542-F4
+      representations
+        ru
+          language ru
+          value "томат"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F5$833CCD13-BC40-4095-A6BC-48102D94517D
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́том"
+              hash 70468f24135160bb5cb8f62d15b4ea8854c197d6
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q192997)
+      id L170542-F5
+      representations
+        ru
+          language ru
+          value "томатом"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F6$53DADE0B-D0EC-45BF-A6AB-F8EC1069B869
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́те"
+              hash 03d9196a01e20280e009d2d281bff40338ec4aab
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q110786 Q2114906)
+      id L170542-F6
+      representations
+        ru
+          language ru
+          value "томате"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F7$EF450027-AE22-4AE1-A34C-4D2CEB7E1323
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́ты"
+              hash 95124051ed329c7949df6cbdaecf6acd73465462
+              property P7243
+              snaktype value
+            qualifiers
+              P898
+                entry
+                  datatype string
+                  datavalue
+                    type string
+                    value "tɐˈmatɨ"
+                  hash edc4e1e49b67e43a51ebcb1a4a7e1c6cebf807d0
+                  property P898
+                  snaktype value
+            qualifiers-order (P898)
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q131105 Q146786)
+      id L170542-F7
+      representations
+        ru
+          language ru
+          value "томаты"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F8$DF20972A-A4BC-4293-8FCE-9FB3F7CE45F6
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́тов"
+              hash 93c326ebd691a8b9f77d80304e147217f0c0af12
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q146233 Q146786)
+      id L170542-F8
+      representations
+        ru
+          language ru
+          value "томатов"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F9$12C279AE-299A-46C1-9B99-2375A39EE350
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́там"
+              hash dc6bacdb952039fba97cd75a42dca7f6e0d2efe2
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q145599 Q146786)
+      id L170542-F9
+      representations
+        ru
+          language ru
+          value "томатам"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F10$6E527F7D-1B5C-4C5C-8BD5-AAF9793FB6E3
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́ты"
+              hash 95124051ed329c7949df6cbdaecf6acd73465462
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q146078 Q146786)
+      id L170542-F10
+      representations
+        ru
+          language ru
+          value "томаты"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F11$19D1A9D7-9F3D-4E95-8D5E-99E94825F09C
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́тами"
+              hash 5f3daff12ffdbc0de78dc70096c7d077aa687160
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q146786 Q192997)
+      id L170542-F11
+      representations
+        ru
+          language ru
+          value "томатами"
+    entry
+      claims
+        P7243
+          entry
+            id L170542-F12$F6C64243-E142-414F-B9E9-5D14EDE4A1B0
+            mainsnak
+              datatype monolingualtext
+              datavalue
+                type monolingualtext
+                value
+                  language ru
+                  text "тома́тах"
+              hash 8ba4129c6bbde7a1707d4ce6e617c0c4c24dd8d4
+              property P7243
+              snaktype value
+            rank normal
+            references
+              entry
+                hash eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5
+                snaks
+                  P143
+                    entry
+                      datatype wikibase-item
+                      datavalue
+                        type wikibase-entityid
+                        value
+                          entity-type item
+                          id Q22116890
+                          numeric-id 22116890
+                      hash 3229fb16bc3564064e40e98db7ff1d0bc7935f2f
+                      property P143
+                      snaktype value
+                snaks-order (P143)
+            type statement
+      grammaticalFeatures (Q146786 Q2114906)
+      id L170542-F12
+      representations
+        ru
+          language ru
+          value "томатах"
+  id L170542
+  language Q7737
+  lastrevid 2237307594
+  lemmas
+    ru "томат"
+  lexicalCategory Q1084
+  modified "2024-08-27T06:50:35Z"
+  ns 146
+  pageid 67335958
+  title "Lexeme:L170542"
+  type lexeme
+success 1

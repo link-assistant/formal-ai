@@ -19,11 +19,15 @@
 //! a pure, deterministic function of the message history.
 
 pub mod corpus;
+pub mod diagram;
 pub mod driver;
 pub mod formalize;
 pub(crate) mod lexicon;
+pub mod meaning_detail;
 pub mod planner;
+pub mod self_ast;
 
+pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
 };
@@ -31,6 +35,10 @@ pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
 };
+pub use meaning_detail::{
+    concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
+};
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
+pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
