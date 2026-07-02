@@ -1,5 +1,6 @@
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use serde::Serialize;
 use serde_json::{json, Value};
@@ -18,6 +19,8 @@ use crate::protocol::{
 use crate::seed::merged_bundle;
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
+
+static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApiHttpResponse {
@@ -240,8 +243,20 @@ fn parse_bearer_token(value: &str) -> Option<&str> {
     Some(token)
 }
 
+/// Enable agent-mode tool calls for HTTP solver instances created by this
+/// process, independent of `FORMAL_AI_AGENT_MODE`.
+///
+/// This is used by `formal-ai serve --agent-mode` so operators have an explicit
+/// command-line opt-in instead of relying only on an environment variable.
+pub fn enable_http_agent_mode_for_current_process() {
+    HTTP_AGENT_MODE_FORCED.store(true, Ordering::Relaxed);
+}
+
 fn http_solver() -> UniversalSolver {
     let mut config = SolverConfig::from_env();
+    if HTTP_AGENT_MODE_FORCED.load(Ordering::Relaxed) {
+        config.agent_mode = true;
+    }
     config.execution_surface = ExecutionSurface::HttpServer;
     UniversalSolver::new(config)
 }

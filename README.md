@@ -223,9 +223,13 @@ opencode run --model formal-ai/formal-symbolic-production --format json \
 ### Link Assistant Agent CLI
 
 The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
-Use the same OpenAI-compatible provider shape in
-`~/.config/link-assistant-agent/opencode.json`, then select the
-`formal-ai/formal-symbolic-production` model:
+Start the local OpenAI-compatible server with agent-mode enabled, then use the
+same provider shape in `~/.config/link-assistant-agent/opencode.json` and select
+the `formal-ai/formal-symbolic-production` model:
+
+```bash
+formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
+```
 
 ```json
 {
@@ -250,13 +254,20 @@ Use the same OpenAI-compatible provider shape in
 ```
 
 ```bash
-agent --model formal-ai/formal-symbolic-production -p \
-  "explain the last formal-ai trace"
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+agent --model formal-ai/formal-symbolic-production --permission-mode plan -p \
+  "run ls to list files here"
 ```
 
 Run autonomous coding CLIs only in a repository, VM, or container where their
 file and shell actions are acceptable. formal-ai's local server answers model
-requests; it does not sandbox the client process that is driving tools.
+requests; it does not sandbox the client process that is driving tools. In
+agent mode, a directory-listing request like the example above makes the server
+emit a `bash` / `shell` / `run_command` `tool_calls` turn with
+`{"command":"ls"}`; the Agent CLI executes or refuses that command according to
+its own permission mode. Use `--permission-mode plan` when read-only shell
+commands such as `ls` may run, and use hard `--read-only` when shell execution
+should be disabled entirely.
 
 Example Telegram webhook update:
 

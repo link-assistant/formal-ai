@@ -184,6 +184,124 @@ fn planner_ignores_non_formalization_tasks() {
 }
 
 #[test]
+fn issue_607_planner_maps_shell_tools_to_ls_command() {
+    for tool in ["bash", "shell", "run_command"] {
+        let messages = vec![ChatMessage::user(
+            "Run the ls command to list files in the current directory.",
+        )];
+
+        let call = expect_single_call(&messages, &[tool]);
+        assert_eq!(call.tool, tool);
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(arguments["command"], "ls");
+    }
+}
+
+#[test]
+fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
+    for tool in ["bash", "shell", "run_command"] {
+        let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+            "model": "formal-symbolic-production",
+            "messages": [{
+                "role": "user",
+                "content": "Run the ls command to list files in the current directory."
+            }],
+            "tools": [{
+                "type": "function",
+                "function": {
+                    "name": tool,
+                    "description": "Run a shell command",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "command": {"type": "string"}
+                        },
+                        "required": ["command"]
+                    }
+                }
+            }]
+        }))
+        .unwrap();
+
+        let solver = UniversalSolver::new(SolverConfig {
+            agent_mode: true,
+            ..SolverConfig::default()
+        });
+        let completion = create_chat_completion_with_solver(&request, &solver);
+        let choice = &completion.choices[0];
+        assert_eq!(choice.finish_reason, "tool_calls");
+        assert_eq!(choice.message.tool_calls.len(), 1);
+        let call = &choice.message.tool_calls[0];
+        assert_eq!(call.function.name, tool);
+        let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
+        assert_eq!(arguments["command"], "ls");
+        assert!(choice.message.content.plain_text().is_empty());
+    }
+}
+
+#[test]
+fn issue_607_server_summarizes_shell_tool_result_after_ls_runs() {
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-symbolic-production",
+        "messages": [
+            {
+                "role": "user",
+                "content": "Run the ls command to list files in the current directory."
+            },
+            {
+                "role": "assistant",
+                "tool_calls": [{
+                    "id": "call_1",
+                    "type": "function",
+                    "function": {"name": "bash", "arguments": "{\"command\":\"ls\"}"}
+                }]
+            },
+            {
+                "role": "tool",
+                "tool_call_id": "call_1",
+                "name": "bash",
+                "content": "Cargo.toml\nsrc\n"
+            }
+        ],
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "bash",
+                "parameters": {"type": "object"}
+            }
+        }]
+    }))
+    .unwrap();
+
+    let solver = UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    });
+    let completion = create_chat_completion_with_solver(&request, &solver);
+    let choice = &completion.choices[0];
+    assert_eq!(choice.finish_reason, "stop");
+    assert!(choice.message.tool_calls.is_empty());
+    let body = choice.message.content.plain_text();
+    assert!(body.contains("`ls`"));
+    assert!(body.contains("Cargo.toml"));
+    assert!(body.contains("src"));
+}
+
+#[test]
+fn issue_607_driver_executes_ls_inside_the_sandbox_workspace() {
+    let outcome = run_agentic_task("Run the ls command to list files here.")
+        .expect("the sandbox workspace should be created");
+
+    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+    assert_eq!(outcome.steps.len(), 1);
+    let step = &outcome.steps[0];
+    assert_eq!(step.tool, "run_command");
+    let arguments: serde_json::Value = serde_json::from_str(&step.arguments).unwrap();
+    assert_eq!(arguments["command"], "ls");
+    assert!(outcome.final_answer.contains("`ls`"));
+}
+
+#[test]
 fn planner_walks_the_full_search_fetch_write_run_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
     let mut messages = vec![ChatMessage::user(

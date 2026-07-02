@@ -786,7 +786,8 @@ fn issue_368_readme_documents_agentic_cli_setup() {
             "@ai-sdk/openai-compatible",
             "/v1/chat/completions",
             "~/.config/link-assistant-agent/opencode.json",
-            "agent --model formal-ai/formal-symbolic-production -p",
+            "formal-ai serve --agent-mode --host 127.0.0.1 --port 8080",
+            "agent --model formal-ai/formal-symbolic-production --permission-mode plan",
             "/v1/responses",
         ],
     );
