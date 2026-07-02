@@ -261,7 +261,7 @@ fn desktop_environment_is_declared_in_seed_directory() {
 #[test]
 fn desktop_chat_path_reuses_openai_http_completion_endpoint() {
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}],
         "stream": false
     })

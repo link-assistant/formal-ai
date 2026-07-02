@@ -75,7 +75,7 @@
   "id": "chatcmpl_be49f46e200f8aa4",
   "object": "chat.completion",
   "created": 0,
-  "model": "formal-symbolic-production",
+  "model": "formal-ai",
   "choices": [
     {
       "index": 0,

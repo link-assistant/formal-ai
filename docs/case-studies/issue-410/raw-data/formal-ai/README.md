@@ -72,7 +72,7 @@ Example API call:
 ```bash
 curl -s http://127.0.0.1:8080/v1/chat/completions \
   -H 'content-type: application/json' \
-  -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"Hi"}]}'
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
 ```
 
 To require bearer authentication on `/v1/*` routes, set
@@ -115,7 +115,7 @@ server's `/v1` base URL and keep `wire_api = "responses"` in
 
 ```toml
 model_provider = "formal-ai"
-model = "formal-symbolic-production"
+model = "formal-ai"
 
 [model_providers.formal-ai]
 name = "formal-ai local server"
@@ -157,19 +157,19 @@ which targets `/v1/chat/completions`. Add a local provider in
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formal-ai/formal-ai"
 }
 ```
 
 ```bash
 opencode
-opencode run --model formal-ai/formal-symbolic-production --format json \
+opencode run --model formal-ai/formal-ai --format json \
   "summarize the local graph"
 ```
 
@@ -178,7 +178,7 @@ opencode run --model formal-ai/formal-symbolic-production --format json \
 The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
 Use the same OpenAI-compatible provider shape in
 `~/.config/link-assistant-agent/opencode.json`, then select the
-`formal-ai/formal-symbolic-production` model:
+`formal-ai/formal-ai` model:
 
 ```json
 {
@@ -192,18 +192,18 @@ Use the same OpenAI-compatible provider shape in
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formal-ai/formal-ai"
 }
 ```
 
 ```bash
-agent --model formal-ai/formal-symbolic-production -p \
+agent --model formal-ai/formal-ai -p \
   "explain the last formal-ai trace"
 ```
 

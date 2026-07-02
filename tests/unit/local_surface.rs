@@ -17,7 +17,7 @@ use formal_ai::{
 #[test]
 fn anthropic_messages_route_returns_anthropic_envelope() {
     let body = serde_json::json!({
-        "model": "claude-sonnet-4-5",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}]
     })
     .to_string();
@@ -29,7 +29,7 @@ fn anthropic_messages_route_returns_anthropic_envelope() {
         serde_json::from_str(&response.body).expect("response should be JSON");
     assert_eq!(json["type"], "message");
     assert_eq!(json["role"], "assistant");
-    assert_eq!(json["model"], "claude-sonnet-4-5");
+    assert_eq!(json["model"], "formal-ai");
     assert_eq!(json["content"][0]["type"], "text");
     assert_eq!(json["content"][0]["text"], "Hi, how may I help you?");
     assert_eq!(json["stop_reason"], "end_turn");
@@ -40,7 +40,7 @@ fn anthropic_messages_route_returns_anthropic_envelope() {
 fn anthropic_messages_route_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
         let body = serde_json::json!({
-            "model": "claude-sonnet-4-5",
+            "model": "formal-ai",
             "messages": [{"role": "user", "content": "Find Rust in another conversation"}]
         })
         .to_string();
@@ -62,7 +62,7 @@ fn anthropic_messages_route_queries_persisted_memory_with_natural_language() {
 #[test]
 fn anthropic_messages_route_streams_sse_when_requested() {
     let body = serde_json::json!({
-        "model": "claude-sonnet-4-5",
+        "model": "formal-ai",
         "stream": true,
         "messages": [{"role": "user", "content": "Hi"}]
     })

@@ -11,7 +11,7 @@ fn issue_607_agent_cli_shell_docs_are_traceable() {
         &readme,
         &[
             "formal-ai serve --agent-mode --host 127.0.0.1 --port 8080",
-            "agent --model formal-ai/formal-symbolic-production --permission-mode plan",
+            "agent --model formal-ai/formal-ai --permission-mode plan",
             "run ls to list files here",
             "`bash` / `shell` / `run_command` `tool_calls`",
             "{\"command\":\"ls\"}",
@@ -26,7 +26,7 @@ fn issue_607_agent_cli_shell_docs_are_traceable() {
         &[
             "formal-ai serve --agent-mode --host 127.0.0.1 --port 8080",
             "FORMAL_AI_AGENT_MODE=1",
-            "agent --model formal-ai/formal-symbolic-production --permission-mode plan",
+            "agent --model formal-ai/formal-ai --permission-mode plan",
             "`bash` / `shell` / `run_command` `tool_calls`",
             "{\"command\":\"ls\"}",
             "disable shell execution entirely",

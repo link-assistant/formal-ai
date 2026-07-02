@@ -136,7 +136,7 @@ fn permission_gate_denies_tools_without_package_grant() {
 #[test]
 fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{
             "role": "user",
             "content": "What is 2 + 2?"
@@ -180,7 +180,7 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     // `pkg_agentic_coding` — so the gate admits it under agent mode. This
     // documents the intentional shift away from per-tool-name allowlisting.
     let shell_request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{
             "role": "user",
             "content": "List local files"

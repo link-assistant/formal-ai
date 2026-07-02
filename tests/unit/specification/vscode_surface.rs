@@ -369,7 +369,7 @@ fn vscode_chat_path_reuses_openai_http_completion_endpoint() {
     // The Node host routes chat to the very same /v1/chat/completions the web and
     // desktop surfaces use, so the feature set is identical.
     let body = serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{"role": "user", "content": "Hi"}],
         "stream": false
     })

@@ -618,7 +618,7 @@ test.describe('formal-ai demo UI', () => {
 
     const traceList = page.locator('.trace-list');
     await expect(traceList).toBeVisible();
-    await expect(traceList).toContainText('formal-symbolic-production');
+    await expect(traceList).toContainText('formal-ai');
     await expect(traceList).toContainText('Intent');
 
     const assistantMessage = page.locator('[data-testid="chat-message"].assistant').first();

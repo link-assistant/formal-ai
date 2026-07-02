@@ -201,7 +201,7 @@ fn issue_607_planner_maps_shell_tools_to_ls_command() {
 fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
     for tool in ["bash", "shell", "run_command"] {
         let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-            "model": "formal-symbolic-production",
+            "model": "formal-ai",
             "messages": [{
                 "role": "user",
                 "content": "Run the ls command to list files in the current directory."
@@ -242,7 +242,7 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
 #[test]
 fn issue_607_server_summarizes_shell_tool_result_after_ls_runs() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [
             {
                 "role": "user",
@@ -444,7 +444,7 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
     // `tool_calls` assistant turn rather than plain text. `web_search` is granted
     // by the default associative package, so the permission gate lets it through.
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [{
             "role": "user",
             "content": "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base."
@@ -481,7 +481,7 @@ fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
     // planner has nothing left to call, so the server completes with the
     // knowledge base inline and finish_reason "stop".
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
-        "model": "formal-symbolic-production",
+        "model": "formal-ai",
         "messages": [
             {"role": "user", "content": "Formalize the fisherman tale into links notation."},
             {"role": "assistant", "tool_calls": [{

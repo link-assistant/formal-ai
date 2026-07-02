@@ -4,9 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
-use crate::engine::{
-    estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
-};
+use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep};
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
@@ -15,6 +13,10 @@ use crate::protocol_policy::{
     tool_permission_refusal_answer,
 };
 use crate::solver::{ConversationTurn, UniversalSolver};
+
+fn resolved_request_model(model: Option<&str>) -> String {
+    crate::seed::resolve_model_id(model)
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChatCompletionRequest {
@@ -641,10 +643,7 @@ fn chat_completion_from_plan(
     prompt: &str,
     plan: AgenticPlan,
 ) -> ChatCompletion {
-    let model = request
-        .model
-        .clone()
-        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = estimate_tokens(prompt);
 
     let (message, finish_reason, completion_tokens) = match plan {
@@ -702,10 +701,7 @@ fn chat_completion_from_symbolic(
     prompt: &str,
     symbolic_answer: SymbolicAnswer,
 ) -> ChatCompletion {
-    let model = request
-        .model
-        .clone()
-        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = estimate_tokens(prompt);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
@@ -781,10 +777,7 @@ fn response_from_plan(
     prompt: &str,
     plan: AgenticPlan,
 ) -> ResponseObject {
-    let model = request
-        .model
-        .clone()
-        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let model = resolved_request_model(request.model.as_deref());
     let input_tokens = estimate_tokens(prompt);
 
     let (output, output_tokens) = match plan {
@@ -845,10 +838,7 @@ fn response_from_symbolic(
     prompt: &str,
     symbolic_answer: SymbolicAnswer,
 ) -> ResponseObject {
-    let model = request
-        .model
-        .clone()
-        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let model = resolved_request_model(request.model.as_deref());
     let input_tokens = estimate_tokens(prompt);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
     let thinking_steps = symbolic_answer.thinking_steps.clone();

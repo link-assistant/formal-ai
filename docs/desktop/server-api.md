@@ -91,7 +91,7 @@ Verify it is up:
 
 ```bash
 curl http://127.0.0.1:8080/health
-# {"status":"ok","model":"formal-symbolic-production"}
+# {"status":"ok","model":"formal-ai"}
 ```
 
 ### Endpoints
@@ -106,8 +106,11 @@ curl http://127.0.0.1:8080/health
 | `POST`   | `/v1/messages`         | Anthropic Messages adapter for `claude` ([§4c](#4c-claude-anthropic-claude-code--first-party-adapter)) |
 | `OPTIONS`| *(any)*                | CORS preflight → `204 No Content`                |
 
-The single model id is **`formal-symbolic-production`**. `/v1/models` advertises
-a rate limit of 60 requests/min and 60,000 tokens/min.
+The single advertised model id is **`formal-ai`**. `/v1/models` lists only that
+id and advertises a rate limit of 60 requests/min and 60,000 tokens/min. Chat
+Completions, Responses, and Messages also accept `@link-assistant/formal-ai`,
+`link-assistant/formal-ai`, `formal-ai-latest`, and `latest` as case-insensitive
+aliases; response payloads return the canonical `formal-ai` id.
 
 #### Links-Notation REST + LinksQL (R6)
 
@@ -179,7 +182,7 @@ and use the server's `/v1` base URL:
 ```toml
 # ~/.codex/config.toml
 model_provider = "formal-ai"
-model = "formal-symbolic-production"
+model = "formal-ai"
 
 [model_providers.formal-ai]
 name = "formal-ai local server"
@@ -194,7 +197,7 @@ codex "summarise the reasoning graph for a greeting"
 ```
 
 You can also select the provider per-invocation without editing the file:
-`codex --config model_provider=formal-ai --config model=formal-symbolic-production`.
+`codex --config model_provider=formal-ai --config model=formal-ai`.
 
 See the upstream
 [Codex configuration reference](https://developers.openai.com/codex/config-reference)
@@ -205,7 +208,7 @@ for the full `model_providers` schema.
 OpenCode supports custom providers in `~/.config/opencode/opencode.json`. Use
 `@ai-sdk/openai-compatible` because formal-ai exposes the Chat Completions
 endpoint at `/v1/chat/completions`. This example uses the provider id
-`formalai`, so the model selector is `formalai/formal-symbolic-production`:
+`formalai`, so the model selector is `formalai/formal-ai`:
 
 ```json
 {
@@ -219,19 +222,19 @@ endpoint at `/v1/chat/completions`. This example uses the provider id
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formalai/formal-symbolic-production"
+  "model": "formalai/formal-ai"
 }
 ```
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-opencode run -m formalai/formal-symbolic-production "hi"
+opencode run -m formalai/formal-ai "hi"
 # Hi, how may I help you?
 ```
 
@@ -257,20 +260,20 @@ provider/model selection. Put the same provider record in
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
-        "formal-symbolic-production": {
-          "name": "formal-symbolic-production"
+        "formal-ai": {
+          "name": "formal-ai"
         }
       }
     }
   },
-  "model": "formal-ai/formal-symbolic-production"
+  "model": "formal-ai/formal-ai"
 }
 ```
 
 ```bash
 formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-agent --model formal-ai/formal-symbolic-production --permission-mode plan -p \
+agent --model formal-ai/formal-ai --permission-mode plan -p \
   "run ls to list files here"
 ```
 

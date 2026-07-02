@@ -165,7 +165,7 @@ fn self_facts_can_be_listed_through_chat() {
     let response = answer("List all facts you know about yourself");
     assert_eq!(response.intent, "self_facts");
     assert!(response.answer.contains("self_fact"));
-    assert!(response.answer.contains("formal-symbolic-production"));
+    assert!(response.answer.contains("formal-ai"));
     assert!(response.answer.contains("local links rules"));
 }
 

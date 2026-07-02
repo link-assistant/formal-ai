@@ -9,14 +9,14 @@ use crate::anthropic::{
     anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
     AnthropicMessagesRequest,
 };
-use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot, DEFAULT_MODEL};
+use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot};
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
     ChatCompletion, ChatCompletionRequest, ResponsesRequest,
 };
-use crate::seed::merged_bundle;
+use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
@@ -123,7 +123,7 @@ pub fn handle_api_request_with_auth(
             200,
             &json!({
                 "status": "ok",
-                "model": DEFAULT_MODEL,
+                "model": canonical_model_id(),
             }),
         ),
         ("GET", "/v1/models") => json_response(
@@ -131,7 +131,7 @@ pub fn handle_api_request_with_auth(
             &json!({
                 "object": "list",
                 "data": [{
-                    "id": DEFAULT_MODEL,
+                    "id": canonical_model_id(),
                     "object": "model",
                     "created": 0,
                     "owned_by": "link-assistant"
@@ -155,6 +155,9 @@ pub fn handle_api_request_with_auth(
         ("POST", "/v1/chat/completions") => {
             match serde_json::from_str::<ChatCompletionRequest>(body) {
                 Ok(request) => {
+                    if let Some(response) = unsupported_model_response(request.model.as_deref()) {
+                        return response;
+                    }
                     let solver = http_solver();
                     let store = SyncStore::open();
                     if request.stream {
@@ -185,6 +188,9 @@ pub fn handle_api_request_with_auth(
         }
         ("POST", "/v1/responses") => match serde_json::from_str::<ResponsesRequest>(body) {
             Ok(request) => {
+                if let Some(response) = unsupported_model_response(request.model.as_deref()) {
+                    return response;
+                }
                 let solver = http_solver();
                 let store = SyncStore::open();
                 json_response(
@@ -241,6 +247,21 @@ fn parse_bearer_token(value: &str) -> Option<&str> {
         return None;
     }
     Some(token)
+}
+
+fn unsupported_model_response(model: Option<&str>) -> Option<ApiHttpResponse> {
+    let model = model.map(str::trim).filter(|model| !model.is_empty())?;
+    if try_resolve_model_id(Some(model)).is_some() {
+        None
+    } else {
+        Some(error_response(
+            400,
+            &format!(
+                "unsupported model `{model}`; use `{}` or a configured alias",
+                canonical_model_id()
+            ),
+        ))
+    }
 }
 
 /// Enable agent-mode tool calls for HTTP solver instances created by this
@@ -417,6 +438,9 @@ fn sse_chunk(base: &Value, choice: &Value) -> String {
 fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
     match serde_json::from_str::<AnthropicMessagesRequest>(body) {
         Ok(request) => {
+            if let Some(response) = unsupported_model_response(request.model.as_deref()) {
+                return response;
+            }
             let solver = http_solver();
             let store = SyncStore::open();
             let message =
