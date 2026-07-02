@@ -307,6 +307,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("manual-release", 30),
         ("changelog-pr", 10),
         ("test-e2e-local", 15),
+        // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
+        // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
+        // asserts the CLI writes the enriched meaning file. The extra headroom
+        // over test-e2e-local absorbs a cold cargo build of the release binary.
+        ("test-agent-cli-e2e", 20),
         // deploy-demo also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
         ("deploy-demo", 20),
