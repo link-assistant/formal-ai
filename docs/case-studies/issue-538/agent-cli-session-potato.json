@@ -21,6 +21,8 @@
     {
       "arguments": {
         "content": "  potato\n    grounded-in Q10998\n    defined-by entity\n    role compositional_lemma\n    source-lexeme L3784 # wikidata english source lexeme\n      language Q1860 # wikidata language english\n      lexical-category Q1084 # wikidata category noun\n      form L3784-F1 # wikidata form potato\n        feature Q110786 # wikidata grammatical feature singular\n      form L3784-F2 # wikidata form potatoes\n        feature Q146786 # wikidata grammatical feature plural\n      sense L3784-S1 # wikidata grounded sense\n    surface L3784-F1 # wikidata english singular surface\n      text potato\n      language en\n      part_of_speech noun\n      grammatical_number singular\n      sense L3784-S1 # wikidata grounded sense\n    surface L3784-F2 # wikidata english plural surface\n      text potatoes\n      language en\n      part_of_speech noun\n      grammatical_number plural\n      sense L3784-S1 # wikidata grounded sense\n    lexeme ru\n      surface\n        text картофель\n        part_of_speech noun\n      surface\n        text картошка\n        part_of_speech noun\n    lexeme hi\n      surface\n        text आलू\n        part_of_speech noun\n    lexeme zh\n      surface\n        text 土豆\n        part_of_speech noun\n      surface\n        text 马铃薯\n        part_of_speech noun\n",
+        "filePath": "meanings-potato-detail.lino",
+        "file_path": "meanings-potato-detail.lino",
         "path": "meanings-potato-detail.lino"
       },
       "result": "wrote 1282 byte(s) to meanings-potato-detail.lino",
