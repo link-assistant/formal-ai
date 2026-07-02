@@ -454,7 +454,9 @@ fn recognises_the_self_ast_task() {
     assert!(!self_ast::is_self_ast_task(
         "generate the mermaid diagrams of our recipes"
     ));
-    assert!(!self_ast::is_self_ast_task("What is the capital of France?"));
+    assert!(!self_ast::is_self_ast_task(
+        "What is the capital of France?"
+    ));
     // The task uses none of the other axes' distinctive wording.
     assert!(!self_ast::AST_TASK.contains("tomato"));
     assert!(!self_ast::AST_TASK.contains("mermaid"));
