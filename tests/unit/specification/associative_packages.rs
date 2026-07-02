@@ -172,6 +172,13 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     assert!(body.contains('4'));
     assert!(!body.contains("not allowed"));
 
+    // The agentic gate now permission-checks by *capability class* (search /
+    // fetch / write / run), not by tool name — an external agentic CLI executes
+    // tools in its own sandbox, so what the server authorises is the *kind* of
+    // action, not the CLI-specific naming. `local_shell` classifies as Run
+    // (contains "shell"), and `tool:capability:run` is granted by
+    // `pkg_agentic_coding` — so the gate admits it under agent mode. This
+    // documents the intentional shift away from per-tool-name allowlisting.
     let shell_request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-symbolic-production",
         "messages": [{
@@ -192,10 +199,17 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
         }
     }))
     .unwrap();
-    let denied_by_package = create_chat_completion_with_solver(&shell_request, &solver);
-    let denial = denied_by_package.choices[0].message.content.plain_text();
-    assert!(denial.contains("tool:local_shell"));
-    assert!(denial.contains("associative package"));
+    let admitted = create_chat_completion_with_solver(&shell_request, &solver);
+    let admitted_body = admitted.choices[0].message.content.plain_text();
+    assert!(
+        !admitted_body.contains("associative package"),
+        "capability-class Run grant should admit `local_shell` under agent mode; got: {admitted_body}"
+    );
+
+    // Store-level denial (a package that grants no capability refuses the tool)
+    // is covered directly by `permission_gate_denies_tools_without_package_grant`
+    // above, which drives `PackageStore::permission_for_capability` without the
+    // default packages installed.
 }
 
 #[test]

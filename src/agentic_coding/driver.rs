@@ -163,6 +163,7 @@ pub fn run_agentic_task_in(
             tool_choice: None,
             functions: Vec::new(),
             function_call: None,
+            stream_options: None,
         };
         let completion = create_chat_completion_with_solver(&request, &solver);
         let Some(choice) = completion.choices.into_iter().next() else {

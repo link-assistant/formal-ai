@@ -28,6 +28,7 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -60,6 +61,7 @@ fn chat_completion_accepts_multipart_content() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -81,6 +83,7 @@ fn chat_completion_reports_token_usage() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
     let completion = create_chat_completion(&request);
     assert!(completion.usage.prompt_tokens > 0);
@@ -102,6 +105,7 @@ fn chat_completion_includes_ordered_thinking_steps() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
 
     let completion = create_chat_completion(&request);
@@ -377,6 +381,7 @@ fn chat_completion_supports_multi_turn_conversation() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
     let completion = create_chat_completion(&request);
     assert!(
@@ -407,6 +412,7 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
         tool_choice: None,
         functions: Vec::new(),
         function_call: None,
+        stream_options: None,
     };
 
     let completion = create_chat_completion(&request);

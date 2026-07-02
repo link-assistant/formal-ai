@@ -573,6 +573,7 @@ fn run_chat(
                 tool_choice: None,
                 functions: Vec::new(),
                 function_call: None,
+                stream_options: None,
             };
             println!(
                 "{}",

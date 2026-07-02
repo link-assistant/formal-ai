@@ -34,6 +34,19 @@ pub struct ChatCompletionRequest {
     pub functions: Vec<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub function_call: Option<Value>,
+    /// OpenAI streaming knobs — most relevantly `include_usage`, which asks the
+    /// server to emit a final chunk carrying the `usage` block. The AI SDK's
+    /// openai-compatible provider ships this and drops token counts if it's
+    /// missing (see issue link-assistant/agent#249).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stream_options: Option<StreamOptions>,
+}
+
+/// OpenAI-compatible `stream_options` field.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+pub struct StreamOptions {
+    #[serde(default)]
+    pub include_usage: bool,
 }
 
 impl ChatCompletionRequest {
@@ -317,6 +330,7 @@ impl ResponsesRequest {
             tool_choice: self.tool_choice.clone(),
             functions: Vec::new(),
             function_call: None,
+            stream_options: None,
         }
     }
 }
@@ -574,22 +588,43 @@ enum AgenticOutcome {
 /// [`plan_chat_step`] drive the loop. An unrecognised task yields
 /// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
+    let trace = std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1");
     if !request.requests_tool_execution() {
+        if trace {
+            eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
+        }
         return AgenticOutcome::Fallthrough;
     }
     if !agent_mode {
+        if trace {
+            eprintln!("[trace] agentic_outcome: refused (agent_mode off)");
+        }
         return AgenticOutcome::Refused(tool_call_refusal_answer());
     }
     let owned_names = request.requested_tool_names();
+    if trace {
+        eprintln!("[trace] agentic_outcome: {} advertised tools: {owned_names:?}", owned_names.len());
+    }
     if let Some(denial) = agentic_tool_permission_denial(&owned_names) {
+        if trace {
+            eprintln!("[trace] agentic_outcome: refused by permission gate: {denial:?}");
+        }
         return AgenticOutcome::Refused(tool_permission_refusal_answer(&denial));
     }
     // Agent mode with tools permitted: the deterministic agentic planner drives
     // the loop, emitting `tool_calls` or a final answer. An unrecognised task
     // yields `None` and falls through to the solver.
     let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
-    plan_chat_step(&request.messages, &tool_names)
-        .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned)
+    let outcome = plan_chat_step(&request.messages, &tool_names)
+        .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
+    if trace {
+        match &outcome {
+            AgenticOutcome::Planned(plan) => eprintln!("[trace] agentic_outcome: planned {plan:?}"),
+            AgenticOutcome::Fallthrough => eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)"),
+            AgenticOutcome::Refused(_) => {}
+        }
+    }
+    outcome
 }
 
 /// Build a chat completion from a deterministic [`AgenticPlan`]. A
