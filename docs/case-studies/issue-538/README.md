@@ -21,9 +21,12 @@ explicit anti-pattern (see below) so we never repeat it.
 - Committed Agent CLI sessions that produced the change:
   [agent-cli-session.json](agent-cli-session.json) (tomato),
   [agent-cli-session-potato.json](agent-cli-session-potato.json) (potato),
-  [agent-cli-session-diagram.json](agent-cli-session-diagram.json) (recipe diagrams)
+  [agent-cli-session-diagram.json](agent-cli-session-diagram.json) (recipe diagrams),
+  [agent-cli-session-self-ast.json](agent-cli-session-self-ast.json) (self-AST census)
 - Generated architecture diagrams:
   [../../diagrams/agentic-recipes.md](../../diagrams/agentic-recipes.md)
+- Self-inspection CST/AST census in data:
+  [../../../data/meta/self-ast.lino](../../../data/meta/self-ast.lino)
 
 ## The issue in one sentence
 
@@ -110,18 +113,20 @@ The issue insists the solution be *"truly general, not hardcoded"* and that
 **concept registry** (`src/agentic_coding/meaning_detail.rs`): the same loop
 enriches any registered concept, routed from the request's own wording by
 `concept_for_task()`. We prove this by driving **two different concepts with two
-differently-worded requests**:
+differently-worded requests**, plus **two non-lexeme axes** proving the method is
+not special-cased to meaning data:
 
 | Axis          | Request wording (abridged)                                             | Session artifact                     |
 | ------------- | --------------------------------------------------------------------- | ------------------------------------ |
 | tomato meaning| "…pin every surface's part of speech and grammatical number…"         | `agent-cli-session.json`             |
 | potato meaning| "…record the singular/plural of each surface, add the missing plural…"| `agent-cli-session-potato.json`      |
 | recipe diagram| "…generate the mermaid diagrams of our agentic recipes, split into parts…"| `agent-cli-session-diagram.json` |
+| self-AST census| "…store the CST/AST of our Rust meta algorithm… record its abstract-syntax node census…"| `agent-cli-session-self-ast.json` |
 
 A test (`routes_different_requests_to_different_concepts`) asserts the two
-meaning requests route to the two distinct concepts, and the third request drives
-an entirely different, **non-lexeme** axis (see below), so a passing run is
-evidence the recipe generalises rather than pattern-matching one hardcoded
+meaning requests route to the two distinct concepts, and the third and fourth
+requests drive entirely different, **non-lexeme** axes (see below), so a passing
+run is evidence the recipe generalises rather than pattern-matching one hardcoded
 answer.
 
 ## Beyond meanings: the same method generates architecture diagrams
@@ -135,8 +140,25 @@ drift from the code; the Agent CLI writes
 [`docs/diagrams/agentic-recipes.md`](../../diagrams/agentic-recipes.md) from a
 differently-worded request, and both the document and its
 [session JSON](agent-cli-session-diagram.json) are reproduced byte-for-byte under
-test. This is the strongest generality evidence in the PR: the loop authored a
-different *kind* of artifact from a different *kind* of request.
+test. This is strong generality evidence: the loop authored a different *kind* of
+artifact from a different *kind* of request.
+
+## Self-inspection: the meta algorithm stores its own CST/AST (R13)
+
+The fourth axis makes the meta algorithm reason about **itself**. A recipe
+(`src/agentic_coding/self_ast.rs`) drives the Agent CLI to parse one of its own
+Rust modules — the deterministic planner `src/agentic_coding/planner.rs` — through
+the repo's **sole** CST/AST engine, the link-foundation `meta-language` links
+network (the same `LinkNetwork::parse` path as `src/coding/cst.rs`, *not* a
+parallel `syn` structure), and store the abstract-syntax node census in our data
+as Links Notation at
+[`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (2259 named nodes,
+80 distinct kinds, `text_preserved`/`clean` verified). The census logic is general
+— tests parse several different Rust sources through it — so nothing is hardcoded
+to one answer. The Agent CLI writes the artifact from a fourth differently-worded
+request ([session JSON](agent-cli-session-self-ast.json)), it is reproduced
+byte-for-byte under test, and the live CI E2E job reruns it against the real
+server (recipe 4/4 in [agent-cli-e2e-run.log](agent-cli-e2e-run.log)).
 
 ## What the enriched data looks like
 

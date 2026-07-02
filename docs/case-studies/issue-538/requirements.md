@@ -158,9 +158,24 @@ about itself and fill gaps (e.g. unhandled errors).**
 
 - Source: "we should have CST/AST of all our Rust logic (meta algorithm) in our
   data".
-- Status: **Not yet built in this PR.** Smallest real next slice: parse one Rust
-  module with `syn` and emit its AST as Links Notation into `data/`, driven by the
-  Agent-CLI recipe with a byte-for-byte parity test.
+- Status: **Done (slice).** A real module of the meta algorithm (the deterministic
+  planner, `src/agentic_coding/planner.rs`) is parsed through the repo's **sole**
+  CST/AST engine — the link-foundation `meta-language` links network, the same
+  `LinkNetwork::parse` path as `src/coding/cst.rs`, not a parallel `syn` structure
+  — and its abstract-syntax node census is stored in our data as Links Notation at
+  [`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (2259 named nodes,
+  80 distinct kinds, `text_preserved`/`clean` verified). The census logic
+  ([`self_ast::ast_census`](../../../src/agentic_coding/self_ast.rs)) is general —
+  it works on any Rust source, proven by tests that parse several different
+  sources — so nothing is hardcoded to one answer. The Agent CLI drives it end to
+  end (session
+  [`agent-cli-session-self-ast.json`](agent-cli-session-self-ast.json), and the
+  live round-trip in [`agent-cli-e2e-run.log`](agent-cli-e2e-run.log), recipe 4/4),
+  the committed artifact is reproduced byte-for-byte under test
+  (`committed_self_ast_is_generated_and_written_by_the_driver`), and a CI E2E step
+  (port 8771) reruns it against the real server on every commit. Smallest real next
+  slice: extend the pinned target from one module to a directory census so "all our
+  Rust logic" is covered module by module.
 
 R14. **Rebuild Rust logic on demand from the full CST/AST.**
 

@@ -27,6 +27,15 @@ bump: minor
   R15/R16) proving the Agent-CLI method generalises beyond meaning data. The Agent
   CLI writes the document from a *third* differently worded request; the document
   and its session JSON are reproduced byte-for-byte under test.
+- Self-inspection **CST/AST census** recipe (`src/agentic_coding/self_ast.rs`,
+  issue #538 R13): the meta algorithm parses one of its own Rust modules (the
+  deterministic planner) through the repo's sole CST/AST engine — the
+  link-foundation `meta-language` links network — and stores the abstract-syntax
+  node census in our data as Links Notation (`data/meta/self-ast.lino`). The
+  census logic is general (works on any Rust source, proven by tests over several
+  sources), the Agent CLI drives it from a *fourth* differently worded request
+  (`docs/case-studies/issue-538/agent-cli-session-self-ast.json`), and the
+  committed artifact is reproduced byte-for-byte under test.
 - `formal-ai agent --session-json <path>` to capture a replayable Agent-CLI
   session as JSON.
 - Case study `docs/case-studies/issue-538` with a requirements decomposition,
@@ -36,9 +45,11 @@ bump: minor
   (`experiments/agent_cli_e2e/run_agent_cli.sh`) that boots `formal-ai serve`
   and drives it with the **external** `@link-assistant/agent` CLI over the
   OpenAI-compatible endpoint — no mocks. Wired as the new `test-agent-cli-e2e`
-  CI job in `.github/workflows/release.yml`, and the real captured console log
-  is committed at `docs/case-studies/issue-538/agent-cli-e2e-run.log` so the
-  round-trip evidence is inspectable, not synthesised.
+  CI job in `.github/workflows/release.yml` (running all four recipe axes —
+  tomato, potato, diagrams, and the self-AST census — against the real server),
+  and the real captured console log is committed at
+  `docs/case-studies/issue-538/agent-cli-e2e-run.log` so the round-trip evidence
+  is inspectable, not synthesised.
 
 ### Changed
 
