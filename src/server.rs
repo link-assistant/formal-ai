@@ -345,9 +345,10 @@ fn chat_completion_sse_response(
     }
 
     // Final chunk: finish_reason.
-    let finish_reason = choice
-        .map(|choice| choice.finish_reason.clone())
-        .unwrap_or_else(|| String::from("stop"));
+    let finish_reason = choice.map_or_else(
+        || String::from("stop"),
+        |choice| choice.finish_reason.clone(),
+    );
     let final_chunk = json!({
         "index": 0,
         "delta": {},
@@ -370,7 +371,9 @@ fn chat_completion_sse_response(
                 "total_tokens": completion.usage.total_tokens,
             }
         });
-        body.push_str(&format!("data: {usage_payload}\n\n"));
+        body.push_str("data: ");
+        body.push_str(&usage_payload.to_string());
+        body.push_str("\n\n");
     }
 
     body.push_str("data: [DONE]\n\n");

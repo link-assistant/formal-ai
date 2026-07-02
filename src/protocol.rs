@@ -624,7 +624,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         match &outcome {
             AgenticOutcome::Planned(plan) => eprintln!("[trace] agentic_outcome: planned {plan:?}"),
             AgenticOutcome::Fallthrough => {
-                eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)")
+                eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)");
             }
             AgenticOutcome::Refused(_) => {}
         }
