@@ -32,13 +32,23 @@ bump: minor
 - Case study `docs/case-studies/issue-538` with a requirements decomposition,
   per-requirement solution plan, online research, and a `refusal-anti-pattern.md`
   recording the rejected "ship a slice, defer the rest" reasoning.
+- Real Agent CLI ↔ formal-ai E2E round-trip test
+  (`experiments/agent_cli_e2e/run_agent_cli.sh`) that boots `formal-ai serve`
+  and drives it with the **external** `@link-assistant/agent` CLI over the
+  OpenAI-compatible endpoint — no mocks. Wired as the new `test-agent-cli-e2e`
+  CI job in `.github/workflows/release.yml`, and the real captured console log
+  is committed at `docs/case-studies/issue-538/agent-cli-e2e-run.log` so the
+  round-trip evidence is inspectable, not synthesised.
 
 ### Changed
 
 - Made the Agent-CLI-driven, no-deferral development workflow the **standing
   rule** in `CONTRIBUTING.md`: from this task forward Formal AI changes are
   produced by driving the Agent CLI (never hand-editing, never deferring to
-  follow-ups), with the tool extended when it cannot yet do the work.
+  follow-ups), with the tool extended when it cannot yet do the work. Added
+  four further standing rules covering the real Agent-CLI E2E requirement,
+  hardcoded cases only in tests, real captured logs in case studies, and small
+  atomic commits.
 - Fixed a TOCTOU race in `AgentWorkspace::for_prompt` (parallel runs with the
   same prompt shared a deterministic temp dir) via a per-instance unique
   workspace id.
