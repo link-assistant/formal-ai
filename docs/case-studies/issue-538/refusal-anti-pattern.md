@@ -58,8 +58,11 @@ it installed the **real** `@link-assistant/agent` CLI, booted `formal-ai serve`,
 and drove the change through the live OpenAI-compatible loop — not an in-repo
 simulation and not a "not performed" note. That live round-trip is captured in
 [`agent-cli-e2e-run.log`](agent-cli-e2e-run.log), runs on every commit in CI for
-**all three** recipe axes (tomato, potato, diagrams), and is reproducible locally
-via [`experiments/agent_cli_e2e/run_agent_cli.sh`](../../../experiments/agent_cli_e2e/run_agent_cli.sh).
+**all four** recipe axes (tomato, potato, diagrams, and the self-inspection
+CST/AST census of the meta algorithm), and is reproducible locally via
+[`experiments/agent_cli_e2e/run_agent_cli.sh`](../../../experiments/agent_cli_e2e/run_agent_cli.sh)
+(or all axes at once with
+[`capture_all.sh`](../../../experiments/agent_cli_e2e/capture_all.sh)).
 The lesson the two failed logs teach — *when the method is hard, do the method
 anyway and extend the tool until it works* — is therefore not just asserted here
 but enforced by a red-on-regression test.
