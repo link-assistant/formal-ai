@@ -79,7 +79,12 @@ client_integrations
     api_key_default "formal-ai"
     ephemeral
       env "GEMINI_API_KEY={api_key}"
+      env "GEMINI_DEFAULT_AUTH_TYPE={google_auth_type}"
+      env "GEMINI_CLI_TRUST_WORKSPACE=true"
       env "{protocol_base_env}={endpoint_base_url}"
+      temp_home_env "GEMINI_CLI_HOME"
+      temp_home_config_path ".gemini/settings.json"
+      temp_home_json_set "security.auth.selectedType={google_auth_type}"
       model_arg "-m"
       model_arg_position "before_args"
     global
@@ -87,4 +92,6 @@ client_integrations
       path ".profile"
       backup_suffix ".formal-ai.bak"
       shell_env "GEMINI_API_KEY=${FORMAL_AI_API_KEY:-formal-ai}"
+      shell_env "GEMINI_DEFAULT_AUTH_TYPE={google_auth_type}"
+      shell_env "GEMINI_CLI_TRUST_WORKSPACE=true"
       shell_env "{protocol_base_env}={endpoint_base_url}"

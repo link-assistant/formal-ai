@@ -53,6 +53,26 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         .expect("gemini integration");
     assert_eq!(gemini.global_config.format, ConfigFormat::ShellEnv);
     assert!(gemini.supported_protocols.contains(&String::from("vertex")));
+    assert_eq!(gemini.invocation.temp_home_env, "GEMINI_CLI_HOME");
+    assert_eq!(
+        gemini.invocation.temp_home_config_path,
+        ".gemini/settings.json"
+    );
+    assert!(gemini
+        .invocation
+        .env
+        .iter()
+        .any(|env| env.key == "GEMINI_DEFAULT_AUTH_TYPE" && env.value == "{google_auth_type}"));
+    assert!(gemini
+        .invocation
+        .env
+        .iter()
+        .any(|env| env.key == "GEMINI_CLI_TRUST_WORKSPACE" && env.value == "true"));
+    assert!(gemini
+        .invocation
+        .temp_home_json_settings
+        .iter()
+        .any(|(key, value)| key == "security.auth.selectedType" && value == "{google_auth_type}"));
 
     let seed = read(root.join("data/seed/client-integrations.lino"));
     assert_contains_all(
@@ -79,6 +99,9 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
             "formal-ai with --start-server codex \"hi\"",
             "formal-ai with opencode run \"hi\"",
             "formal-ai with gemini -p \"hi\"",
+            "GEMINI_CLI_HOME",
+            "GEMINI_DEFAULT_AUTH_TYPE",
+            "GEMINI_CLI_TRUST_WORKSPACE",
             "with-formal-ai -g codex",
             "with-formal-ai -g --all",
             "with-formal-ai -g --undo codex",
@@ -94,6 +117,9 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
             "with-formal-ai codex \"hi\"",
             "with-formal-ai opencode run \"hi\"",
             "with-formal-ai gemini -p \"hi\"",
+            "GEMINI_CLI_HOME",
+            "GEMINI_DEFAULT_AUTH_TYPE",
+            "GEMINI_CLI_TRUST_WORKSPACE",
             "with-formal-ai -g codex",
             "with-formal-ai -g --all",
             "with-formal-ai -g --undo codex",
