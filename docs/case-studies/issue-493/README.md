@@ -70,6 +70,7 @@ This case study tracks the requirements from the issue and prepared work order:
 | [`raw-data/cargo-clippy.log`](raw-data/cargo-clippy.log) | Clippy output. |
 | [`raw-data/cargo-test-all-features.log`](raw-data/cargo-test-all-features.log) | Full `cargo test --all-features --verbose` output. |
 | [`raw-data/cargo-test-doc.log`](raw-data/cargo-test-doc.log) | `cargo test --doc --verbose` output. |
+| [`raw-data/language-test-coverage.log`](raw-data/language-test-coverage.log) | Diff-aware language coverage guard confirming tests cover English, Russian, Hindi, and Chinese. |
 | [`raw-data/manual-file-size-check.log`](raw-data/manual-file-size-check.log) | Direct line-count scan used because `rust-script` was not installed in this container; it reports warning-band files but no hard-limit violations. |
 
 ## Screenshot Transcription
@@ -170,6 +171,7 @@ The regression covers:
 - Extraction of repeated ETH/year/price claims from multi-line OCR text.
 - Extraction when the asset ticker itself uses a dollar marker, such as
   `Buy $ETH in 2024 at $1,700`.
+- Extraction of localized ETH aliases in English, Russian, Hindi, and Chinese.
 - Assessment of `ETH in 2024: $1,700` as contradicted by Binance ETHUSDT 2024
   klines.
 - Event-log evidence preserving the market-data range and lowered posterior.
@@ -186,6 +188,7 @@ cargo test --test unit document_originality -- --nocapture
 cargo test --test unit issue_535 -- --nocapture
 cargo test --test source statement_verification -- --nocapture
 node --check src/web/worker/formal_ai_worker_21.js
+node tests/e2e/scripts/check-language-test-coverage.mjs
 bun run build:web
 npx playwright test tests/issue-493.spec.js --config=playwright.local.config.js
 npx playwright test tests/issue-535.spec.js --config=playwright.local.config.js

@@ -45,6 +45,46 @@ fn market_price_claim_parser_handles_asset_symbol_before_price_symbol() {
 }
 
 #[test]
+fn market_price_claim_parser_accepts_supported_language_eth_aliases() {
+    struct Case {
+        language: &'static str,
+        sample: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            sample: "Ethereum in 2024: $1,700",
+        },
+        Case {
+            language: "ru",
+            sample: "эфириум в 2024: $1,700",
+        },
+        Case {
+            language: "hi",
+            sample: "एथेरियम 2024: $1,700",
+        },
+        Case {
+            language: "zh",
+            sample: "以太坊 2024: $1,700",
+        },
+    ];
+
+    for case in cases {
+        let claims = extract_market_price_claims(case.sample);
+
+        assert!(
+            claims.iter().any(|claim| claim.asset == "ETH"
+                && claim.period == "2024"
+                && (claim.claimed_price - 1700.0).abs() < f64::EPSILON),
+            "{} should extract the localized ETH 2024 price claim: {:?}",
+            case.language,
+            claims,
+        );
+    }
+}
+
+#[test]
 fn market_price_assessment_contradicts_eth_2024_1700_claim_with_market_data() {
     let claims = extract_market_price_claims(ISSUE_493_OCR_TEXT);
     let assessments = assess_market_price_claims(&claims);
