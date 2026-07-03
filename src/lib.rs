@@ -19,6 +19,7 @@ pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
 pub(crate) mod fuzzy;
+pub mod gemini;
 pub mod github_logs;
 pub mod intent_formalization;
 pub mod json_lino;
