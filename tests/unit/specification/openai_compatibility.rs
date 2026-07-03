@@ -122,6 +122,35 @@ fn chat_completion_includes_ordered_thinking_steps() {
 }
 
 #[test]
+fn chat_completion_includes_standard_reasoning_content() {
+    let request = ChatCompletionRequest {
+        model: None,
+        messages: vec![ChatMessage::user("Hi")],
+        temperature: None,
+        stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
+        stream_options: None,
+    };
+
+    let completion = create_chat_completion(&request);
+    let message = &completion.choices[0].message;
+
+    assert!(
+        !message.reasoning_content.is_empty(),
+        "assistant message should expose standard reasoning_content"
+    );
+    assert_eq!(message.reasoning, message.reasoning_content);
+    assert!(
+        message.reasoning_content.contains("Read the request"),
+        "reasoning_content should render concrete thinking, got: {}",
+        message.reasoning_content
+    );
+}
+
+#[test]
 fn responses_endpoint_returns_completed_response() {
     let request = ResponsesRequest {
         model: None,
@@ -159,6 +188,37 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
         .thinking_steps
         .iter()
         .any(|step| step.source_event == "response"));
+}
+
+#[test]
+fn responses_endpoint_includes_standard_reasoning_output_item() {
+    let request = ResponsesRequest {
+        model: None,
+        input: serde_json::Value::String(String::from("Hi")),
+        instructions: None,
+        temperature: Some(0.0),
+        stream: false,
+        ..ResponsesRequest::default()
+    };
+
+    let response = create_response(&request);
+    let serialized = serde_json::to_value(&response).unwrap();
+    let output = serialized["output"]
+        .as_array()
+        .expect("Responses output should be an array");
+    let reasoning = output
+        .iter()
+        .find(|item| item["type"] == "reasoning")
+        .expect("Responses output should include a reasoning item");
+
+    assert_eq!(reasoning["summary"][0]["type"], "summary_text");
+    assert!(
+        reasoning["summary"][0]["text"]
+            .as_str()
+            .unwrap_or_default()
+            .contains("Read the request"),
+        "reasoning summary should render concrete thinking, got: {reasoning}"
+    );
 }
 
 #[test]
@@ -620,6 +680,88 @@ fn streaming_chat_completion_emits_server_sent_events() {
     );
     assert!(response.body.contains("data: "));
     assert!(response.body.contains("[DONE]"));
+}
+
+#[test]
+fn streaming_chat_completion_emits_reasoning_content_delta() {
+    let body = serde_json::json!({
+        "model": "formal-ai",
+        "messages": [{"role": "user", "content": "Hi"}],
+        "stream": true
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/chat/completions", &body);
+
+    assert_eq!(response.status_code, 200);
+    assert!(
+        response.body.contains("\"reasoning_content\""),
+        "streaming chat should emit delta.reasoning_content, got: {}",
+        response.body
+    );
+    assert!(
+        response.body.contains("Read the request"),
+        "reasoning delta should include concrete thinking, got: {}",
+        response.body
+    );
+    let reasoning_index = response
+        .body
+        .find("\"reasoning_content\"")
+        .expect("reasoning_content delta should be present");
+    let content_index = response
+        .body
+        .find("\"content\"")
+        .expect("content delta should be present");
+    assert!(
+        reasoning_index < content_index,
+        "reasoning should stream before answer content"
+    );
+}
+
+#[test]
+fn streaming_responses_emit_reasoning_summary_events() {
+    let body = serde_json::json!({
+        "model": "formal-ai",
+        "input": "Hi",
+        "stream": true
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/v1/responses", &body);
+
+    assert_eq!(response.status_code, 200);
+    assert!(
+        response.content_type.contains("text/event-stream"),
+        "streaming Responses must use SSE content-type, got: {}",
+        response.content_type
+    );
+    assert!(
+        response
+            .body
+            .contains("event: response.reasoning_summary_text.delta"),
+        "Responses stream should emit reasoning summary deltas, got: {}",
+        response.body
+    );
+    assert!(
+        response.body.contains("Read the request"),
+        "reasoning summary should include concrete thinking, got: {}",
+        response.body
+    );
+    assert!(
+        response.body.contains("event: response.output_text.delta"),
+        "Responses stream should emit output_text deltas, got: {}",
+        response.body
+    );
+    let reasoning_index = response
+        .body
+        .find("event: response.reasoning_summary_text.delta")
+        .expect("reasoning summary delta should be present");
+    let text_index = response
+        .body
+        .find("event: response.output_text.delta")
+        .expect("output_text delta should be present");
+    assert!(
+        reasoning_index < text_index,
+        "Responses reasoning summary should stream before output text"
+    );
 }
 
 #[test]

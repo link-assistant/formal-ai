@@ -103,7 +103,8 @@ pub use document_formats::{
 };
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    render_thinking_steps, thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep,
+    DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use github_logs::{

@@ -9,12 +9,15 @@ use crate::anthropic::{
     anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
     AnthropicMessagesRequest,
 };
-use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot};
+use crate::engine::{
+    is_known_trace_id, knowledge_graph, knowledge_graph_dot, render_thinking_steps,
+};
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    ChatCompletion, ChatCompletionRequest, ResponsesRequest,
+    ChatCompletion, ChatCompletionRequest, ResponseFunctionToolCall, ResponseObject,
+    ResponseOutputItem, ResponseOutputMessage, ResponseReasoningItem, ResponsesRequest,
 };
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
@@ -193,10 +196,13 @@ pub fn handle_api_request_with_auth(
                 }
                 let solver = http_solver();
                 let store = SyncStore::open();
-                json_response(
-                    200,
-                    &create_response_with_solver_and_memory(&request, &solver, store.events()),
-                )
+                let response =
+                    create_response_with_solver_and_memory(&request, &solver, store.events());
+                if request.stream {
+                    responses_sse_response(&response)
+                } else {
+                    json_response(200, &response)
+                }
             }
             Err(error) => error_response(400, &format!("invalid responses request: {error}")),
         },
@@ -349,8 +355,24 @@ fn chat_completion_sse_response(
     });
     body.push_str(&sse_chunk(&base, &role_delta));
 
-    // Chunk 2..N: content or tool_call deltas.
+    // Chunk 2..N: reasoning, content, or tool_call deltas.
     if let Some(choice) = choice {
+        let reasoning = if choice.message.reasoning_content.is_empty() {
+            render_thinking_steps(&choice.message.thinking_steps)
+        } else {
+            choice.message.reasoning_content.clone()
+        };
+        if !reasoning.is_empty() {
+            let delta = json!({
+                "index": 0,
+                "delta": {
+                    "reasoning_content": reasoning,
+                    "reasoning": reasoning,
+                },
+                "finish_reason": null,
+            });
+            body.push_str(&sse_chunk(&base, &delta));
+        }
         let text = choice.message.content.plain_text();
         if !text.is_empty() {
             let delta = json!({
@@ -419,6 +441,287 @@ fn chat_completion_sse_response(
         content_type: "text/event-stream",
         body,
     }
+}
+
+fn responses_sse_response(response: &ResponseObject) -> ApiHttpResponse {
+    let mut body = String::new();
+    let mut sequence_number = 0u64;
+
+    push_response_stream_event(
+        &mut body,
+        "response.created",
+        &json!({
+            "type": "response.created",
+            "sequence_number": next_response_sequence(&mut sequence_number),
+            "response": response_snapshot(response, "in_progress", false),
+        }),
+    );
+    push_response_stream_event(
+        &mut body,
+        "response.in_progress",
+        &json!({
+            "type": "response.in_progress",
+            "sequence_number": next_response_sequence(&mut sequence_number),
+            "response": response_snapshot(response, "in_progress", false),
+        }),
+    );
+
+    for (output_index, item) in response.output.iter().enumerate() {
+        if matches!(item, ResponseOutputItem::Reasoning(_)) {
+            push_response_output_item_events(&mut body, &mut sequence_number, output_index, item);
+        }
+    }
+    for (output_index, item) in response.output.iter().enumerate() {
+        if !matches!(item, ResponseOutputItem::Reasoning(_)) {
+            push_response_output_item_events(&mut body, &mut sequence_number, output_index, item);
+        }
+    }
+
+    push_response_stream_event(
+        &mut body,
+        "response.completed",
+        &json!({
+            "type": "response.completed",
+            "sequence_number": next_response_sequence(&mut sequence_number),
+            "response": response_snapshot(response, "completed", true),
+        }),
+    );
+
+    ApiHttpResponse {
+        status_code: 200,
+        content_type: "text/event-stream",
+        body,
+    }
+}
+
+fn push_response_output_item_events(
+    body: &mut String,
+    sequence_number: &mut u64,
+    output_index: usize,
+    item: &ResponseOutputItem,
+) {
+    push_response_stream_event(
+        body,
+        "response.output_item.added",
+        &json!({
+            "type": "response.output_item.added",
+            "sequence_number": next_response_sequence(sequence_number),
+            "output_index": output_index,
+            "item": response_output_item_started(item),
+        }),
+    );
+
+    match item {
+        ResponseOutputItem::Message(message) => {
+            push_response_message_events(body, sequence_number, output_index, message);
+        }
+        ResponseOutputItem::FunctionCall(call) => {
+            push_response_function_call_events(body, sequence_number, output_index, call);
+        }
+        ResponseOutputItem::Reasoning(reasoning) => {
+            push_response_reasoning_events(body, sequence_number, output_index, reasoning);
+        }
+    }
+
+    push_response_stream_event(
+        body,
+        "response.output_item.done",
+        &json!({
+            "type": "response.output_item.done",
+            "sequence_number": next_response_sequence(sequence_number),
+            "output_index": output_index,
+            "item": item,
+        }),
+    );
+}
+
+fn push_response_message_events(
+    body: &mut String,
+    sequence_number: &mut u64,
+    output_index: usize,
+    message: &ResponseOutputMessage,
+) {
+    for (content_index, content) in message.content.iter().enumerate() {
+        push_response_stream_event(
+            body,
+            "response.content_part.added",
+            &json!({
+                "type": "response.content_part.added",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &message.id,
+                "output_index": output_index,
+                "content_index": content_index,
+                "part": {"type": &content.kind, "text": ""},
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.output_text.delta",
+            &json!({
+                "type": "response.output_text.delta",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &message.id,
+                "output_index": output_index,
+                "content_index": content_index,
+                "delta": &content.text,
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.output_text.done",
+            &json!({
+                "type": "response.output_text.done",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &message.id,
+                "output_index": output_index,
+                "content_index": content_index,
+                "text": &content.text,
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.content_part.done",
+            &json!({
+                "type": "response.content_part.done",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &message.id,
+                "output_index": output_index,
+                "content_index": content_index,
+                "part": content,
+            }),
+        );
+    }
+}
+
+fn push_response_function_call_events(
+    body: &mut String,
+    sequence_number: &mut u64,
+    output_index: usize,
+    call: &ResponseFunctionToolCall,
+) {
+    push_response_stream_event(
+        body,
+        "response.function_call_arguments.delta",
+        &json!({
+            "type": "response.function_call_arguments.delta",
+            "sequence_number": next_response_sequence(sequence_number),
+            "item_id": &call.id,
+            "output_index": output_index,
+            "delta": &call.arguments,
+        }),
+    );
+    push_response_stream_event(
+        body,
+        "response.function_call_arguments.done",
+        &json!({
+            "type": "response.function_call_arguments.done",
+            "sequence_number": next_response_sequence(sequence_number),
+            "item_id": &call.id,
+            "output_index": output_index,
+            "arguments": &call.arguments,
+        }),
+    );
+}
+
+fn push_response_reasoning_events(
+    body: &mut String,
+    sequence_number: &mut u64,
+    output_index: usize,
+    reasoning: &ResponseReasoningItem,
+) {
+    for (summary_index, summary) in reasoning.summary.iter().enumerate() {
+        push_response_stream_event(
+            body,
+            "response.reasoning_summary_part.added",
+            &json!({
+                "type": "response.reasoning_summary_part.added",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &reasoning.id,
+                "output_index": output_index,
+                "summary_index": summary_index,
+                "part": {"type": &summary.kind, "text": ""},
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.reasoning_summary_text.delta",
+            &json!({
+                "type": "response.reasoning_summary_text.delta",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &reasoning.id,
+                "output_index": output_index,
+                "summary_index": summary_index,
+                "delta": &summary.text,
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.reasoning_summary_text.done",
+            &json!({
+                "type": "response.reasoning_summary_text.done",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &reasoning.id,
+                "output_index": output_index,
+                "summary_index": summary_index,
+                "text": &summary.text,
+            }),
+        );
+        push_response_stream_event(
+            body,
+            "response.reasoning_summary_part.done",
+            &json!({
+                "type": "response.reasoning_summary_part.done",
+                "sequence_number": next_response_sequence(sequence_number),
+                "item_id": &reasoning.id,
+                "output_index": output_index,
+                "summary_index": summary_index,
+                "part": summary,
+            }),
+        );
+    }
+}
+
+fn response_output_item_started(item: &ResponseOutputItem) -> Value {
+    match item {
+        ResponseOutputItem::Message(message) => json!({
+            "id": &message.id,
+            "type": &message.kind,
+            "role": &message.role,
+            "content": [],
+        }),
+        ResponseOutputItem::FunctionCall(call) => json!(call),
+        ResponseOutputItem::Reasoning(reasoning) => json!({
+            "id": &reasoning.id,
+            "type": &reasoning.kind,
+            "summary": [],
+        }),
+    }
+}
+
+fn response_snapshot(response: &ResponseObject, status: &str, include_output: bool) -> Value {
+    let mut snapshot = serde_json::to_value(response).unwrap_or_else(|_| json!({}));
+    if let Value::Object(map) = &mut snapshot {
+        map.insert(String::from("status"), Value::String(status.to_owned()));
+        if !include_output {
+            map.insert(String::from("output"), Value::Array(Vec::new()));
+        }
+    }
+    snapshot
+}
+
+const fn next_response_sequence(sequence_number: &mut u64) -> u64 {
+    let current = *sequence_number;
+    *sequence_number = current.saturating_add(1);
+    current
+}
+
+fn push_response_stream_event(body: &mut String, event: &str, data: &Value) {
+    body.push_str("event: ");
+    body.push_str(event);
+    body.push('\n');
+    body.push_str("data: ");
+    body.push_str(&data.to_string());
+    body.push_str("\n\n");
 }
 
 /// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)

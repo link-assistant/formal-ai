@@ -31,7 +31,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::engine::{naturalize_thinking_step, stable_id, ThinkingStep};
+use crate::engine::{render_thinking_steps, stable_id, ThinkingStep};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
     create_chat_completion_with_solver, create_chat_completion_with_solver_and_memory,
@@ -422,23 +422,10 @@ fn anthropic_message_from_chat_completion(
 /// `↳` marker so the recursively composite structure survives into the Anthropic
 /// surface. The deterministic `signature` is a stable hash of the trace.
 fn anthropic_thinking_block(steps: &[ThinkingStep]) -> Option<AnthropicContentBlock> {
-    if steps.is_empty() {
+    let text = render_thinking_steps(steps);
+    if text.is_empty() {
         return None;
     }
-    let mut lines = Vec::with_capacity(steps.len());
-    for step in steps {
-        let sentence = if step.summary.is_empty() {
-            naturalize_thinking_step(&step.step, &step.detail)
-        } else {
-            step.summary.clone()
-        };
-        if step.parent_id.is_some() {
-            lines.push(format!("  ↳ {sentence}"));
-        } else {
-            lines.push(sentence);
-        }
-    }
-    let text = lines.join("\n");
     let signature = stable_id("thinking_signature", &text);
     Some(AnthropicContentBlock::thinking(text, signature))
 }

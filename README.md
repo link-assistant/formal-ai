@@ -136,6 +136,51 @@ curl -s http://127.0.0.1:8080/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
 
+### Reasoning traces over the API
+
+Every symbolic answer still includes the structured `thinking_steps` trace. The
+OpenAI-compatible surfaces also project the same trace into the standard fields
+most clients display:
+
+```bash
+# Chat Completions, non-streaming: assistant reasoning_content
+curl -s http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}' \
+  | jq -r '.choices[0].message.reasoning_content'
+```
+
+```bash
+# Chat Completions, streaming: choices[].delta.reasoning_content
+curl -N http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}],"stream":true}' \
+  | grep '"reasoning_content"'
+```
+
+```bash
+# Responses, streaming: reasoning summary events before output text events
+curl -N http://127.0.0.1:8080/v1/responses \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","input":"Hi","stream":true}' \
+  | grep -E 'response.reasoning_summary_text.delta|response.output_text.delta'
+```
+
+Anthropic extended thinking remains opt-in, matching Anthropic's request shape:
+
+```bash
+curl -s http://127.0.0.1:8080/v1/messages \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","max_tokens":128,"thinking":{"type":"enabled","budget_tokens":1024},"messages":[{"role":"user","content":"Hi"}]}' \
+  | jq '.content[0]'
+```
+
+The native CLI also has a visible thinking mode:
+
+```bash
+cargo run -- chat --thinking --prompt "Hi"
+```
+
 ## Agentic AI Tools
 
 Run the local HTTP server before connecting terminal agents. The server binds
