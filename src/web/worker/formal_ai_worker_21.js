@@ -36,33 +36,79 @@ const RML_MIN_STATEMENT_WORDS = 3;
 const RML_MIN_STATEMENT_CHARS = 6;
 const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED = "contradicted";
 const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE = "within_recorded_range";
-const MARKET_PRICE_ETH_ALIASES = [
-  "$eth",
-  "eth",
-  "ethereum",
-  "etherium",
-  "эфириум",
-  "эфир",
-  "以太坊",
-  "एथेरियम",
-];
-const MARKET_PRICE_REFERENCES = [
-  {
-    asset: "ETH",
-    assetLabel: "Ethereum",
-    aliases: MARKET_PRICE_ETH_ALIASES,
-    quoteCurrency: "USDT",
-    period: "2024",
-    sourceId: "binance_ethusdt_1d_2024",
-    sourceLabel: "Binance ETHUSDT daily klines",
-    sourceUrl:
-      "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1704067200000&endTime=1735689599999&limit=1000",
-    observedMinPrice: 2100.0,
-    observedMinDate: "2024-01-03",
-    observedMaxPrice: 4107.8,
-    observedMaxDate: "2024-12-16",
-  },
-];
+
+// Market-price references are data-driven, mirroring `market_price_assets()` in
+// `src/seed/market_price_references.rs`. Every asset alias (across every
+// language) and every observed price range lives in
+// `data/seed/market-price-references.lino`, so issue #493's fact check covers
+// the whole class of assets/periods/languages with no per-language phrase list
+// baked into JavaScript (issue #386 convention). The registry is parsed once
+// from `MARKET_PRICE_REFERENCES_LINO` (hydrated from the seed bundle in
+// `formal_ai_worker_00.js`) and flattened to one entry per asset-period so the
+// lookup shape matches the Rust `MarketPricePeriod` slice.
+let cachedMarketPriceReferences = null;
+
+function marketPriceLinoChildValue(node, name) {
+  for (const child of node.children) {
+    if (child.name === name) return child.value || "";
+  }
+  return "";
+}
+
+function marketPriceAssetAliases(assetNode) {
+  const aliases = [];
+  for (const lexeme of assetNode.children) {
+    if (lexeme.name !== "lexeme") continue;
+    for (const surface of lexeme.children) {
+      if (surface.name !== "surface") continue;
+      const text = marketPriceLinoChildValue(surface, "text");
+      if (text && !aliases.includes(text)) aliases.push(text);
+    }
+  }
+  return aliases;
+}
+
+function parseMarketPriceReferences() {
+  const references = [];
+  if (!MARKET_PRICE_REFERENCES_LINO) return references;
+  const root = parseLinoTree(MARKET_PRICE_REFERENCES_LINO);
+  const registry =
+    root.children.find((child) => child.name === "market_price_references") || root;
+  for (const assetNode of registry.children) {
+    if (assetNode.name !== "asset") continue;
+    const asset = assetNode.value || "";
+    const assetLabel = marketPriceLinoChildValue(assetNode, "label");
+    const quoteCurrency = marketPriceLinoChildValue(assetNode, "quote-currency");
+    const aliases = marketPriceAssetAliases(assetNode);
+    for (const reference of assetNode.children) {
+      if (reference.name !== "reference") continue;
+      references.push({
+        asset,
+        assetLabel,
+        aliases,
+        quoteCurrency,
+        period: reference.value || "",
+        sourceId: marketPriceLinoChildValue(reference, "source-id"),
+        sourceLabel: marketPriceLinoChildValue(reference, "source-label"),
+        sourceUrl: marketPriceLinoChildValue(reference, "source-url"),
+        observedMinPrice:
+          Number.parseFloat(marketPriceLinoChildValue(reference, "observed-min-price")) || 0,
+        observedMinDate: marketPriceLinoChildValue(reference, "observed-min-date"),
+        observedMaxPrice:
+          Number.parseFloat(marketPriceLinoChildValue(reference, "observed-max-price")) || 0,
+        observedMaxDate: marketPriceLinoChildValue(reference, "observed-max-date"),
+      });
+    }
+  }
+  return references;
+}
+
+function marketPriceReferences() {
+  if (!cachedMarketPriceReferences) {
+    cachedMarketPriceReferences = parseMarketPriceReferences();
+  }
+  return cachedMarketPriceReferences;
+}
 
 function rmlDecimal(value) {
   // Match Rust's fixed 6-decimal grid so identical inputs serialise identically.
@@ -212,14 +258,30 @@ function aliasOccurs(fragment, alias) {
   return String(fragment || "").includes(alias);
 }
 
-function asciiAssetPositions(line) {
-  const lower = String(line || "").toLocaleLowerCase("en-US");
+function assetPositions(line) {
+  // Mirror `asset_positions` in `src/statement_verification.rs`: scan every
+  // alias of every asset so a line naming two assets splits into one fragment
+  // per asset. ASCII aliases match case-insensitively with a word boundary;
+  // non-ASCII aliases match as substrings against the original line.
+  const original = String(line || "");
+  const lower = original.toLocaleLowerCase("en-US");
   const positions = [];
-  for (const alias of ["$eth", "ethereum", "etherium", "eth"]) {
-    let position = lower.indexOf(alias);
-    while (position >= 0) {
-      if (aliasOccursAt(lower, alias, position)) positions.push(position);
-      position = lower.indexOf(alias, position + 1);
+  for (const reference of marketPriceReferences()) {
+    for (const alias of reference.aliases) {
+      if (/^[\x00-\x7F]*$/u.test(alias)) {
+        const needle = alias.toLocaleLowerCase("en-US");
+        let position = lower.indexOf(needle);
+        while (position >= 0) {
+          if (aliasOccursAt(lower, needle, position)) positions.push(position);
+          position = lower.indexOf(needle, position + 1);
+        }
+      } else {
+        let position = original.indexOf(alias);
+        while (position >= 0) {
+          positions.push(position);
+          position = original.indexOf(alias, position + 1);
+        }
+      }
     }
   }
   return Array.from(new Set(positions)).sort((left, right) => left - right);
@@ -230,7 +292,7 @@ function marketPriceFragments(sample) {
   for (const rawLine of String(sample || "").split(/\r?\n/u)) {
     const line = rawLine.split(/\s+/u).filter(Boolean).join(" ");
     if (!line) continue;
-    const positions = asciiAssetPositions(line);
+    const positions = assetPositions(line);
     if (positions.length <= 1) {
       fragments.push(line);
       continue;
@@ -322,7 +384,7 @@ function extractCurrencyAmount(fragment, period) {
 function extractMarketPriceClaims(sample) {
   const claims = [];
   for (const fragment of marketPriceFragments(sample)) {
-    const reference = MARKET_PRICE_REFERENCES.find((item) =>
+    const reference = marketPriceReferences().find((item) =>
       item.aliases.some((alias) => aliasOccurs(fragment, alias)),
     );
     if (!reference) continue;
@@ -356,7 +418,7 @@ function extractMarketPriceClaims(sample) {
 function assessMarketPriceClaims(claims) {
   return claims
     .map((claim) => {
-      const reference = MARKET_PRICE_REFERENCES.find(
+      const reference = marketPriceReferences().find(
         (item) => item.asset === claim.asset && item.period === claim.period,
       );
       if (!reference) return null;

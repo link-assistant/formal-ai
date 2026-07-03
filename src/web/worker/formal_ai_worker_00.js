@@ -178,6 +178,7 @@ let CODING_IDIOMS_LINO = "";
 let TERMINAL_COMMANDS_LINO = "";
 let PROGRAM_PLAN_RULES_LINO = "";
 let OPERATION_VOCABULARY_LINO = "";
+let MARKET_PRICE_REFERENCES_LINO = "";
 let MEANINGS_LINO = "";
 let AGENT_INFO = {};
 let LANGUAGE_RULES = [
@@ -212,6 +213,7 @@ function hydrateLinoSeedText(raw) {
   TERMINAL_COMMANDS_LINO = seedRawText(raw, "terminal-commands.lino");
   PROGRAM_PLAN_RULES_LINO = seedRawText(raw, "program-plan-rules.lino");
   OPERATION_VOCABULARY_LINO = seedRawText(raw, "operation-vocabulary.lino");
+  MARKET_PRICE_REFERENCES_LINO = seedRawText(raw, "market-price-references.lino");
   MEANINGS_LINO = seedRawTexts(
     raw,
     (fileName) => fileName === "meanings.lino" || /^meanings-[a-z0-9-]+\.lino$/.test(fileName),
@@ -223,6 +225,7 @@ function hydrateLinoSeedText(raw) {
   cachedOperationVocabulary = null;
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
+  cachedMarketPriceAssets = null;
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser

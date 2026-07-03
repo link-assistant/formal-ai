@@ -1,0 +1,47 @@
+[
+  {
+    "symbol": "ETHUSDT",
+    "year": 2021,
+    "candles": 365,
+    "observed_min_price": 714.29,
+    "observed_min_date": "2021-01-01",
+    "observed_max_price": 4868,
+    "observed_max_date": "2021-11-10"
+  },
+  {
+    "symbol": "ETHUSDT",
+    "year": 2022,
+    "candles": 365,
+    "observed_min_price": 881.56,
+    "observed_min_date": "2022-06-18",
+    "observed_max_price": 3900.73,
+    "observed_max_date": "2022-01-04"
+  },
+  {
+    "symbol": "ETHUSDT",
+    "year": 2023,
+    "candles": 365,
+    "observed_min_price": 1190.57,
+    "observed_min_date": "2023-01-01",
+    "observed_max_price": 2445.8,
+    "observed_max_date": "2023-12-28"
+  },
+  {
+    "symbol": "ETHUSDT",
+    "year": 2024,
+    "candles": 366,
+    "observed_min_price": 2100,
+    "observed_min_date": "2024-01-03",
+    "observed_max_price": 4107.8,
+    "observed_max_date": "2024-12-16"
+  },
+  {
+    "symbol": "BTCUSDT",
+    "year": 2024,
+    "candles": 366,
+    "observed_min_price": 38555,
+    "observed_min_date": "2024-01-23",
+    "observed_max_price": 108353,
+    "observed_max_date": "2024-12-17"
+  }
+]

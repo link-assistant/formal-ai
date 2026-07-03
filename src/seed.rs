@@ -27,6 +27,7 @@ mod coreference;
 mod embedded;
 mod facts;
 mod grounding_overrides;
+mod market_price_references;
 mod meanings;
 mod model_aliases;
 mod operation_vocabulary;
@@ -56,7 +57,8 @@ pub use embedded::{
     ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
     INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
     MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
-    MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
+    MARKET_PRICE_REFERENCES_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
+    MEANING_FILES, MODEL_ALIASES_LINO,
     MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
     PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
     PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
@@ -65,6 +67,9 @@ pub use embedded::{
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
+};
+pub use market_price_references::{
+    market_price_assets, MarketPriceAsset, MarketPricePeriod,
 };
 pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
 pub use model_aliases::{

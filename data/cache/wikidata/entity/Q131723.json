@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q131723": {
+      "type": "item",
+      "id": "Q131723",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Биткоин"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "比特幣"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बिटकाइन"
+        },
+        "en": {
+          "language": "en",
+          "value": "Bitcoin"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "digital cash system and associated currency"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "система электронной наличности и используемая ей валютная единица"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "去中心化虛擬加密數位貨幣"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "डिजिटल मुद्रा"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Биткойн"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "位元幣"
+          },
+          {
+            "language": "zh",
+            "value": "比特币"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

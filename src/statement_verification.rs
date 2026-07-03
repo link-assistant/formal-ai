@@ -19,6 +19,7 @@
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
+use crate::seed::market_price_assets;
 
 /// Sentence terminators across the scripts the solver recognises: ASCII stops,
 /// CJK full stop / exclamation / question, the Devanagari danda and double
@@ -50,32 +51,6 @@ pub const TRUSTED_SOURCE_POLICY: &[SourceTier] = &[
 const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED: &str = "contradicted";
 const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE: &str = "within_recorded_range";
 
-const ETH_ALIASES: &[&str] = &[
-    "$eth",
-    "eth",
-    "ethereum",
-    "etherium",
-    "эфириум",
-    "эфир",
-    "以太坊",
-    "एथेरियम",
-];
-
-const MARKET_PRICE_REFERENCES: &[MarketPriceReference] = &[MarketPriceReference {
-    asset: "ETH",
-    asset_label: "Ethereum",
-    aliases: ETH_ALIASES,
-    quote_currency: "USDT",
-    period: "2024",
-    source_id: "binance_ethusdt_1d_2024",
-    source_label: "Binance ETHUSDT daily klines",
-    source_url: "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1704067200000&endTime=1735689599999&limit=1000",
-    observed_min_price: 2100.0,
-    observed_min_date: "2024-01-03",
-    observed_max_price: 4107.8,
-    observed_max_date: "2024-12-16",
-}];
-
 /// A single checkable statement with its grounding query and assumed-true
 /// assessment.
 #[derive(Debug, Clone, PartialEq)]
@@ -103,35 +78,6 @@ pub struct MarketPriceClaim {
     pub currency: String,
     /// Original statement fragment.
     pub statement: String,
-}
-
-/// A versioned external market-data range used to check extracted claims.
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct MarketPriceReference {
-    /// Canonical asset ticker.
-    pub asset: &'static str,
-    /// Human label for the asset.
-    pub asset_label: &'static str,
-    /// Natural-language and ticker aliases accepted for this asset.
-    pub aliases: &'static [&'static str],
-    /// Quote currency used by the source.
-    pub quote_currency: &'static str,
-    /// Covered period.
-    pub period: &'static str,
-    /// Stable source slug for trace logs.
-    pub source_id: &'static str,
-    /// Human-readable source label.
-    pub source_label: &'static str,
-    /// Source URL used for the captured raw data.
-    pub source_url: &'static str,
-    /// Minimum observed price in the covered period.
-    pub observed_min_price: f64,
-    /// Date of the minimum observed price.
-    pub observed_min_date: &'static str,
-    /// Maximum observed price in the covered period.
-    pub observed_max_price: f64,
-    /// Date of the maximum observed price.
-    pub observed_max_date: &'static str,
 }
 
 /// A market-price claim assessed with relative-meta-logic evidence.
@@ -211,10 +157,15 @@ impl MarketPriceAssessment {
     }
 
     fn source_quote_currency(&self) -> &'static str {
-        MARKET_PRICE_REFERENCES
+        market_price_assets()
             .iter()
-            .find(|reference| reference.source_id == self.source_id)
-            .map_or("USD", |reference| reference.quote_currency)
+            .find(|asset| {
+                asset
+                    .references
+                    .iter()
+                    .any(|reference| reference.source_id == self.source_id)
+            })
+            .map_or("USD", |asset| asset.quote_currency.as_str())
     }
 }
 
@@ -323,9 +274,11 @@ pub fn assess_market_price_claims(claims: &[MarketPriceClaim]) -> Vec<MarketPric
 }
 
 fn assess_market_price_claim(claim: &MarketPriceClaim) -> Option<MarketPriceAssessment> {
-    let reference = MARKET_PRICE_REFERENCES
+    let reference = market_price_assets()
         .iter()
-        .find(|reference| reference.asset == claim.asset && reference.period == claim.period)?;
+        .filter(|asset| asset.ticker == claim.asset)
+        .flat_map(|asset| asset.references.iter())
+        .find(|reference| reference.period == claim.period)?;
     let status = if claim.claimed_price < reference.observed_min_price
         || claim.claimed_price > reference.observed_max_price
     {
@@ -339,7 +292,7 @@ fn assess_market_price_claim(claim: &MarketPriceClaim) -> Option<MarketPriceAsse
         Stance::Supports
     };
     let evidence = [RelativeEvidence::new(
-        reference.source_label,
+        reference.source_label.as_str(),
         SourceTier::OriginalFirstParty,
         stance,
         0.95,
@@ -348,13 +301,13 @@ fn assess_market_price_claim(claim: &MarketPriceClaim) -> Option<MarketPriceAsse
     Some(MarketPriceAssessment {
         claim: claim.clone(),
         status,
-        source_id: reference.source_id,
-        source_label: reference.source_label,
-        source_url: reference.source_url,
+        source_id: reference.source_id.as_str(),
+        source_label: reference.source_label.as_str(),
+        source_url: reference.source_url.as_str(),
         observed_min_price: reference.observed_min_price,
-        observed_min_date: reference.observed_min_date,
+        observed_min_date: reference.observed_min_date.as_str(),
         observed_max_price: reference.observed_max_price,
-        observed_max_date: reference.observed_max_date,
+        observed_max_date: reference.observed_max_date.as_str(),
         statement_plan,
     })
 }
@@ -366,7 +319,7 @@ fn market_price_fragments(sample: &str) -> Vec<String> {
         if line.is_empty() {
             continue;
         }
-        let positions = ascii_asset_positions(&line);
+        let positions = asset_positions(&line);
         if positions.len() <= 1 {
             fragments.push(line);
             continue;
@@ -382,13 +335,28 @@ fn market_price_fragments(sample: &str) -> Vec<String> {
     fragments
 }
 
-fn ascii_asset_positions(line: &str) -> Vec<usize> {
+/// Byte positions in `line` where any known asset alias begins, across every
+/// asset and language in the registry. Used to split a single line that mentions
+/// more than one asset into per-asset fragments. ASCII aliases match under a
+/// case-insensitive word boundary; non-ASCII aliases (which do not carry ASCII
+/// word boundaries) match as substrings. `to_ascii_lowercase` preserves byte
+/// length, so both branches yield valid byte offsets into `line`.
+fn asset_positions(line: &str) -> Vec<usize> {
     let lower = line.to_ascii_lowercase();
     let mut positions = Vec::new();
-    for alias in ["$eth", "ethereum", "etherium", "eth"] {
-        for (position, _) in lower.match_indices(alias) {
-            if alias_occurs_at(&lower, alias, position) {
-                positions.push(position);
+    for asset in market_price_assets() {
+        for alias in &asset.aliases {
+            if alias.is_ascii() {
+                let alias_lower = alias.to_ascii_lowercase();
+                for (position, _) in lower.match_indices(&alias_lower) {
+                    if alias_occurs_at(&lower, &alias_lower, position) {
+                        positions.push(position);
+                    }
+                }
+            } else {
+                for (position, _) in line.match_indices(alias.as_str()) {
+                    positions.push(position);
+                }
             }
         }
     }
@@ -398,17 +366,14 @@ fn ascii_asset_positions(line: &str) -> Vec<usize> {
 }
 
 fn parse_market_price_claim(fragment: &str) -> Option<MarketPriceClaim> {
-    let reference = MARKET_PRICE_REFERENCES.iter().find(|reference| {
-        reference
-            .aliases
-            .iter()
-            .any(|alias| alias_occurs(fragment, alias))
-    })?;
+    let asset = market_price_assets()
+        .iter()
+        .find(|asset| asset.aliases.iter().any(|alias| alias_occurs(fragment, alias)))?;
     let period = extract_year(fragment)?;
     let claimed_price = extract_currency_amount(fragment, &period)?;
     Some(MarketPriceClaim {
-        asset: reference.asset.to_owned(),
-        asset_label: reference.asset_label.to_owned(),
+        asset: asset.ticker.clone(),
+        asset_label: asset.label.clone(),
         period,
         claimed_price,
         currency: "USD".to_owned(),

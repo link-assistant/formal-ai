@@ -137,6 +137,86 @@ OCR text: {ISSUE_493_OCR_TEXT}"
 }
 
 #[test]
+fn market_price_assessment_keeps_within_range_eth_years_uncontradicted() {
+    // The screenshot repeats $1,700 for 2021-2024, but $1,700 is inside the
+    // recorded daily range for 2021, 2022, and 2023 — only 2024 is false. A
+    // faithful fact check must not over-claim by flagging the earlier years.
+    let claims = extract_market_price_claims(ISSUE_493_OCR_TEXT);
+    let assessments = assess_market_price_claims(&claims);
+
+    for period in ["2021", "2022", "2023"] {
+        let assessment = assessments
+            .iter()
+            .find(|assessment| assessment.claim.asset == "ETH" && assessment.claim.period == period)
+            .unwrap_or_else(|| panic!("ETH {period} claim should have an assessment"));
+        assert_eq!(
+            assessment.status, "within_recorded_range",
+            "ETH {period} $1,700 is inside the recorded range and must not be contradicted",
+        );
+    }
+}
+
+#[test]
+fn market_price_assessment_contradicts_btc_2024_1700_claim() {
+    // Cross-asset generalization: the same machinery flags an impossible BTC
+    // price using the BTCUSDT 2024 reference, with no ETH-specific code path.
+    let claims = extract_market_price_claims("BTC in 2024: $1,700");
+    let assessments = assess_market_price_claims(&claims);
+    let btc_2024 = assessments
+        .iter()
+        .find(|assessment| assessment.claim.asset == "BTC" && assessment.claim.period == "2024")
+        .expect("BTC 2024 claim should have a market-data assessment");
+
+    assert_eq!(btc_2024.status, "contradicted");
+    assert_eq!(btc_2024.source_label, "Binance BTCUSDT daily klines");
+    assert!(
+        (btc_2024.observed_min_price - 38555.0).abs() < f64::EPSILON,
+        "expected 2024 BTC minimum of 38555.0, got {}",
+        btc_2024.observed_min_price,
+    );
+}
+
+#[test]
+fn market_price_claim_parser_accepts_supported_language_btc_aliases() {
+    let cases = [
+        ("en", "Bitcoin in 2024: $1,700"),
+        ("ru", "биткоин в 2024: $1,700"),
+        ("hi", "बिटकॉइन 2024: $1,700"),
+        ("zh", "比特币 2024: $1,700"),
+    ];
+
+    for (language, sample) in cases {
+        let claims = extract_market_price_claims(sample);
+        assert!(
+            claims.iter().any(|claim| claim.asset == "BTC"
+                && claim.period == "2024"
+                && (claim.claimed_price - 1700.0).abs() < f64::EPSILON),
+            "{language} should extract the localized BTC 2024 price claim: {claims:?}",
+        );
+    }
+}
+
+#[test]
+fn market_price_parser_splits_a_line_mentioning_two_assets() {
+    // A single line naming two assets must yield one claim per asset, proving the
+    // fragment splitter is driven by the whole alias registry, not one ticker.
+    let claims = extract_market_price_claims("ETH in 2024: $1,700 BTC in 2024: $40,000");
+
+    assert!(
+        claims
+            .iter()
+            .any(|claim| claim.asset == "ETH" && claim.period == "2024"),
+        "the ETH fragment should produce a claim: {claims:?}",
+    );
+    assert!(
+        claims
+            .iter()
+            .any(|claim| claim.asset == "BTC" && claim.period == "2024"),
+        "the BTC fragment should produce a claim: {claims:?}",
+    );
+}
+
+#[test]
 fn issue_493_tesseract_ocr_result_contains_the_key_price_claim() {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("docs/case-studies/issue-493/raw-data/tesseract-issue-screenshot-ocr.json");

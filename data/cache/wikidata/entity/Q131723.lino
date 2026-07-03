@@ -1,0 +1,17 @@
+Q131723
+  aliases
+    ru ("Биткойн")
+    zh ("位元幣" "比特币")
+  descriptions
+    en "digital cash system and associated currency"
+    hi "डिजिटल मुद्रा"
+    ru "система электронной наличности и используемая ей валютная единица"
+    zh "去中心化虛擬加密數位貨幣"
+  id Q131723
+  labels
+    en Bitcoin
+    hi "बिटकाइन"
+    ru "Биткоин"
+    zh "比特幣"
+  type item
+success 1

@@ -1,0 +1,135 @@
+{
+  "entities": {
+    "Q16783523": {
+      "type": "item",
+      "id": "Q16783523",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Ethereum"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Ethereum"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "以太坊"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "Ethereum"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "платформа для создания децентрализованных онлайн-сервисов на базе блокчейна"
+        },
+        "en": {
+          "language": "en",
+          "value": "public blockchain platform with programmable transaction functionality"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公共區塊鏈平台"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्राम करने योग्य लेनदेन कार्यक्षमता के साथ ब्लॉकचैन प्लेटफॉर्म"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ETH"
+          },
+          {
+            "language": "en",
+            "value": "Ξ"
+          },
+          {
+            "language": "en",
+            "value": "ethereum.org"
+          },
+          {
+            "language": "en",
+            "value": "Ethereum blockchain"
+          },
+          {
+            "language": "en",
+            "value": "Ether"
+          },
+          {
+            "language": "en",
+            "value": "Ethereum network"
+          },
+          {
+            "language": "en",
+            "value": "Ethereum platform"
+          },
+          {
+            "language": "en",
+            "value": "ETH blockchain"
+          },
+          {
+            "language": "en",
+            "value": "ETH Network"
+          },
+          {
+            "language": "en",
+            "value": "Ethereum Chain"
+          },
+          {
+            "language": "en",
+            "value": "ETH Mainnet"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Эфириум"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "ETH"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "ETH"
+          },
+          {
+            "language": "zh",
+            "value": "以太幣"
+          },
+          {
+            "language": "zh",
+            "value": "以太坊平台"
+          },
+          {
+            "language": "zh",
+            "value": "ETH区块链"
+          },
+          {
+            "language": "zh",
+            "value": "以太坊区块链"
+          },
+          {
+            "language": "zh",
+            "value": "以太币"
+          },
+          {
+            "language": "zh",
+            "value": "ETH主网"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,19 @@
+Q16783523
+  aliases
+    en (ETH "Ξ" ethereum.org "Ethereum blockchain" Ether "Ethereum network" "Ethereum platform" "ETH blockchain" "ETH Network" "Ethereum Chain" "ETH Mainnet")
+    hi (ETH)
+    ru ("Эфириум")
+    zh (ETH "以太幣" "以太坊平台" "ETH区块链" "以太坊区块链" "以太币" "ETH主网")
+  descriptions
+    en "public blockchain platform with programmable transaction functionality"
+    hi "प्रोग्राम करने योग्य लेनदेन कार्यक्षमता के साथ ब्लॉकचैन प्लेटफॉर्म"
+    ru "платформа для создания децентрализованных онлайн-сервисов на базе блокчейна"
+    zh "公共區塊鏈平台"
+  id Q16783523
+  labels
+    en Ethereum
+    hi Ethereum
+    ru Ethereum
+    zh "以太坊"
+  type item
+success 1
