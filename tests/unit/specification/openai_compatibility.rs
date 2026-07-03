@@ -16,7 +16,6 @@ use formal_ai::{
 // ---------------------------------------------------------------------------
 // Active expectations: the OpenAI surfaces already implemented today.
 // ---------------------------------------------------------------------------
-
 #[test]
 fn chat_completion_round_trips_user_prompt_to_assistant_response() {
     let request = ChatCompletionRequest {
@@ -42,7 +41,6 @@ fn chat_completion_round_trips_user_prompt_to_assistant_response() {
         "Hi, how may I help you?"
     );
 }
-
 #[test]
 fn chat_completion_accepts_multipart_content() {
     let parts = serde_json::json!([
@@ -71,7 +69,6 @@ fn chat_completion_accepts_multipart_content() {
         .plain_text()
         .contains("```rust"));
 }
-
 #[test]
 fn chat_completion_reports_token_usage() {
     let request = ChatCompletionRequest {
@@ -93,7 +90,6 @@ fn chat_completion_reports_token_usage() {
         completion.usage.prompt_tokens + completion.usage.completion_tokens
     );
 }
-
 #[test]
 fn chat_completion_includes_ordered_thinking_steps() {
     let request = ChatCompletionRequest {
@@ -120,7 +116,6 @@ fn chat_completion_includes_ordered_thinking_steps() {
     assert!(steps.iter().any(|step| step.step == "formalize"));
     assert!(steps.iter().any(|step| step.step == "deformalize"));
 }
-
 #[test]
 fn chat_completion_includes_standard_reasoning_content() {
     let request = ChatCompletionRequest {
@@ -145,7 +140,6 @@ fn chat_completion_includes_standard_reasoning_content() {
         "reasoning_content should render concrete thinking"
     );
 }
-
 #[test]
 fn responses_endpoint_returns_completed_response() {
     let request = ResponsesRequest {
@@ -163,7 +157,6 @@ fn responses_endpoint_returns_completed_response() {
     assert_eq!(messages[0].role, "assistant");
     assert_eq!(messages[0].content[0].kind, "output_text");
 }
-
 #[test]
 fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
     let request = ResponsesRequest {
@@ -185,7 +178,6 @@ fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
         .iter()
         .any(|step| step.source_event == "response"));
 }
-
 #[test]
 fn responses_endpoint_includes_standard_reasoning_output_item() {
     let request = ResponsesRequest {
@@ -216,7 +208,6 @@ fn responses_endpoint_includes_standard_reasoning_output_item() {
         "reasoning summary should render concrete thinking, got: {reasoning}"
     );
 }
-
 #[test]
 fn openai_requests_accept_temperature_parameter() {
     let chat: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
@@ -235,14 +226,12 @@ fn openai_requests_accept_temperature_parameter() {
     .unwrap();
     assert_eq!(response.temperature, Some(0.25));
 }
-
 #[test]
 fn http_health_endpoint_returns_ok() {
     let response = handle_api_request("GET", "/health", "");
     assert_eq!(response.status_code, 200);
     assert!(response.body.contains("ok") || response.body.contains("healthy"));
 }
-
 #[test]
 fn http_models_endpoint_lists_at_least_one_model() {
     let response = handle_api_request("GET", "/v1/models", "");
@@ -255,12 +244,10 @@ fn http_models_endpoint_lists_at_least_one_model() {
         "model list should also expose Codex-compatible `models` metadata"
     );
 }
-
 #[test]
 fn canonical_model_id_is_formal_ai() {
     assert_eq!(DEFAULT_MODEL, "formal-ai");
 }
-
 #[test]
 fn model_aliases_are_loaded_from_seed_data() {
     let registry = model_aliases();
@@ -281,7 +268,6 @@ fn model_aliases_are_loaded_from_seed_data() {
     );
     assert_eq!(resolve_model_id(Some("latest")), DEFAULT_MODEL);
 }
-
 #[test]
 fn http_models_endpoint_advertises_only_formal_ai() {
     let response = handle_api_request("GET", "/v1/models", "");
@@ -297,7 +283,6 @@ fn http_models_endpoint_advertises_only_formal_ai() {
     let retired_model_id = ["formal", "symbolic", "production"].join("-");
     assert!(!response.body.contains(&retired_model_id));
 }
-
 #[test]
 fn http_openai_surfaces_accept_model_aliases_and_return_canonical_model() {
     let aliases = [
@@ -316,7 +301,6 @@ fn http_openai_surfaces_accept_model_aliases_and_return_canonical_model() {
         assert_anthropic_alias_resolves_to_formal_ai(alias);
     }
 }
-
 #[test]
 fn http_openai_surfaces_reject_unsupported_explicit_model_ids() {
     let requests = [
@@ -350,7 +334,6 @@ fn http_openai_surfaces_reject_unsupported_explicit_model_ids() {
         assert!(response.body.contains(DEFAULT_MODEL), "{path}");
     }
 }
-
 #[test]
 fn http_chat_completion_returns_canonical_model_for_multilingual_prompts() {
     struct PromptCase<'a> {
@@ -437,7 +420,6 @@ fn assert_anthropic_alias_resolves_to_formal_ai(alias: &str) {
         "messages alias {alias}"
     );
 }
-
 #[test]
 fn http_chat_completions_route_returns_completion_object() {
     let body = serde_json::json!({
@@ -450,7 +432,6 @@ fn http_chat_completions_route_returns_completion_object() {
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "chat.completion");
 }
-
 #[test]
 fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
     let openai_models = handle_api_request("GET", "/api/openai/v1/models", "");
@@ -469,7 +450,6 @@ fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
         "Formal AI native graph should be available under /api/formal-ai/v1"
     );
 }
-
 #[test]
 fn responses_stream_true_emits_responses_sse_protocol_on_openai_routes() {
     let body = serde_json::json!({
@@ -508,7 +488,6 @@ fn responses_stream_true_emits_responses_sse_protocol_on_openai_routes() {
         );
     }
 }
-
 #[test]
 fn gemini_and_vertex_protocols_share_the_solver_with_native_model_lists() {
     let gemini_models = handle_api_request("GET", "/api/gemini/v1beta/models", "");
@@ -561,7 +540,6 @@ fn gemini_and_vertex_protocols_share_the_solver_with_native_model_lists() {
         "Hi, how may I help you?"
     );
 }
-
 #[test]
 fn http_chat_completion_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
@@ -585,7 +563,6 @@ fn http_chat_completion_queries_persisted_memory_with_natural_language() {
         "query should not include unrelated memory: {content}"
     );
 }
-
 #[test]
 fn http_responses_route_returns_response_object() {
     let body = serde_json::json!({
@@ -598,7 +575,6 @@ fn http_responses_route_returns_response_object() {
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "response");
 }
-
 #[test]
 fn http_responses_route_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
@@ -697,20 +673,17 @@ fn sse_event_names(body: &str) -> Vec<&str> {
         .filter_map(|line| line.strip_prefix("event: "))
         .collect()
 }
-
 #[test]
 fn http_unknown_route_returns_404() {
     let response = handle_api_request("GET", "/this-route-does-not-exist", "");
     assert_eq!(response.status_code, 404);
 }
-
 #[test]
 fn http_chat_completions_route_rejects_invalid_json() {
     let response = handle_api_request("POST", "/v1/chat/completions", "{not json");
     assert!(response.status_code >= 400);
     assert!(response.status_code < 500);
 }
-
 #[test]
 fn http_responses_declare_a_content_type() {
     let response = handle_api_request("GET", "/v1/models", "");
@@ -724,7 +697,6 @@ fn http_responses_declare_a_content_type() {
 // full-scope expectations: behaviors documented in VISION.md/GOALS.md/REQUIREMENTS.md
 // that are not yet implemented.
 // ---------------------------------------------------------------------------
-
 #[test]
 fn chat_completion_supports_multi_turn_conversation() {
     let request = ChatCompletionRequest {
@@ -753,7 +725,6 @@ fn chat_completion_supports_multi_turn_conversation() {
         "multi-turn chat should remember names introduced earlier in the conversation"
     );
 }
-
 #[test]
 fn chat_completion_applies_behavior_rule_from_prior_messages() {
     let request = ChatCompletionRequest {
@@ -780,7 +751,6 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
         "У меня символьная модель личности."
     );
 }
-
 #[test]
 fn streaming_chat_completion_emits_server_sent_events() {
     let body = serde_json::json!({
@@ -798,7 +768,6 @@ fn streaming_chat_completion_emits_server_sent_events() {
     assert!(response.body.contains("data: "));
     assert!(response.body.contains("[DONE]"));
 }
-
 #[test]
 fn streaming_chat_completion_emits_reasoning_content_delta() {
     let body = serde_json::json!({
@@ -833,7 +802,6 @@ fn streaming_chat_completion_emits_reasoning_content_delta() {
         "reasoning should stream before answer content"
     );
 }
-
 #[test]
 fn streaming_responses_emit_reasoning_summary_events() {
     let body = serde_json::json!({
@@ -880,7 +848,6 @@ fn streaming_responses_emit_reasoning_summary_events() {
         "Responses reasoning summary should stream before output text"
     );
 }
-
 #[test]
 fn authenticated_routes_accept_bearer_token() {
     let body = serde_json::json!({
@@ -900,7 +867,6 @@ fn authenticated_routes_accept_bearer_token() {
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "chat.completion");
 }
-
 #[test]
 fn authenticated_routes_reject_missing_bearer_token() {
     let body = serde_json::json!({
@@ -913,7 +879,6 @@ fn authenticated_routes_reject_missing_bearer_token() {
     assert_eq!(response.status_code, 401);
     assert!(response.body.to_lowercase().contains("bearer"));
 }
-
 #[test]
 fn rate_limit_metadata_is_exposed() {
     let response = handle_api_request("GET", "/v1/models", "");
@@ -922,7 +887,6 @@ fn rate_limit_metadata_is_exposed() {
         "full-scope API should publish RateLimit metadata for fair use"
     );
 }
-
 #[test]
 fn responses_api_attaches_trace_link() {
     let request = ResponsesRequest {
@@ -940,7 +904,6 @@ fn responses_api_attaches_trace_link() {
         "Responses payload should carry a trace link in evidence_links"
     );
 }
-
 #[test]
 fn chat_completion_refuses_tool_call_without_agent_mode() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
@@ -975,7 +938,6 @@ fn chat_completion_refuses_tool_call_without_agent_mode() {
         "chat surface must refuse autonomous shell execution by default, got: {body}"
     );
 }
-
 #[test]
 fn chat_completion_allows_declared_tools_when_tool_choice_is_none() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({

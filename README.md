@@ -211,6 +211,40 @@ When no bearer token is configured, any non-empty API key value is enough for
 clients that require one. Keep the server on `127.0.0.1` unless you are
 deliberately exposing it behind your own authentication boundary.
 
+### `formal-ai with` / `with-formal-ai`
+
+The wrapper command reads client templates from
+`data/seed/client-integrations.lino`, adds the right per-tool environment or
+config, and then runs the external CLI with the remaining arguments unchanged:
+
+```bash
+formal-ai with --start-server codex "hi"
+formal-ai with opencode run "hi"
+formal-ai with gemini -p "hi"
+# Hi, how may I help you?
+```
+
+Use `--base-url` when the server is not on `http://127.0.0.1:8080`; the wrapper
+adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
+seed data. `--protocol vertex` switches Gemini-shaped setup to
+`GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+For permanent setup, use the standalone wrapper or the subcommand with `-g`.
+It backs up the original file next to the edited config, merges the Formal AI
+provider without removing unrelated settings, and can restore the backup:
+
+```bash
+with-formal-ai -g codex
+with-formal-ai -g opencode
+with-formal-ai -g gemini
+with-formal-ai -g --all
+with-formal-ai -g --undo codex
+```
+
+Persistent targets are `~/.codex/config.toml`,
+`~/.config/opencode/opencode.json`, and a managed block in `~/.profile` for
+Gemini environment variables. Re-running `-g` is idempotent.
+
 ### Codex CLI
 
 Codex 0.142+ does not support `wire_api = "chat"`. Custom providers use the

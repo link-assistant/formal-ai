@@ -15,10 +15,10 @@ use formal_ai::{
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
     execute_memory_query, export_memory_bundle, export_memory_full, import_memory_full,
     knowledge_links_notation, merged_bundle, naturalize_thinking_step, parse_bundle,
-    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
-    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig, SymbolicAnswer,
-    TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
+    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai,
+    seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
+    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig,
+    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -99,6 +99,8 @@ enum Command {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Run or permanently configure external CLIs against a local Formal AI server.
+    With(WithFormalAiArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
@@ -411,6 +413,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
             task,
             transcript,

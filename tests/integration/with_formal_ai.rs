@@ -1,0 +1,367 @@
+use std::os::unix::fs::PermissionsExt;
+use std::path::{Path, PathBuf};
+use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
+
+fn tmpdir() -> PathBuf {
+    let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
+    let thread_id = format!("{:?}", std::thread::current().id())
+        .replace(|c: char| !c.is_ascii_alphanumeric(), "");
+    let dir = std::env::temp_dir().join(format!(
+        "formal-ai-with-{}-{}-{seq}",
+        std::process::id(),
+        thread_id,
+    ));
+    std::fs::create_dir_all(&dir).expect("create tmp dir");
+    dir
+}
+
+fn write_fake_cli(bin_dir: &Path, name: &str) {
+    let path = bin_dir.join(name);
+    std::fs::write(
+        &path,
+        r#"#!/bin/sh
+{
+  echo "tool=$0"
+  i=0
+  for arg in "$@"; do
+    echo "arg[$i]=$arg"
+    i=$((i + 1))
+  done
+  echo "FORMAL_AI_API_KEY=$FORMAL_AI_API_KEY"
+  echo "OPENCODE_CONFIG=$OPENCODE_CONFIG"
+  echo "OPENCODE_CONFIG_DIR=$OPENCODE_CONFIG_DIR"
+  echo "GEMINI_API_KEY=$GEMINI_API_KEY"
+  echo "GOOGLE_GEMINI_BASE_URL=$GOOGLE_GEMINI_BASE_URL"
+  echo "GOOGLE_VERTEX_BASE_URL=$GOOGLE_VERTEX_BASE_URL"
+  if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
+    echo "---OPENCODE_CONFIG---"
+    cat "$OPENCODE_CONFIG"
+  fi
+} > "$FORMAL_AI_CAPTURE"
+printf 'Hi, how may I help you?\n'
+"#,
+    )
+    .expect("write fake cli");
+    let mut permissions = std::fs::metadata(&path).expect("metadata").permissions();
+    permissions.set_mode(0o755);
+    std::fs::set_permissions(&path, permissions).expect("chmod fake cli");
+}
+
+fn path_with_fake_clis(bin_dir: &Path) -> String {
+    let existing = std::env::var_os("PATH").unwrap_or_default();
+    format!("{}:{}", bin_dir.display(), existing.to_string_lossy())
+}
+
+fn run_with_capture(
+    home: &Path,
+    bin_dir: &Path,
+    capture: &Path,
+    args: &[&str],
+) -> std::process::Output {
+    Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(args)
+        .env("HOME", home)
+        .env("PATH", path_with_fake_clis(bin_dir))
+        .env("FORMAL_AI_CAPTURE", capture)
+        .env_remove("FORMAL_AI_API_KEY")
+        .env_remove("OPENCODE_CONFIG")
+        .env_remove("OPENCODE_CONFIG_DIR")
+        .env_remove("GEMINI_API_KEY")
+        .env_remove("GOOGLE_GEMINI_BASE_URL")
+        .env_remove("GOOGLE_VERTEX_BASE_URL")
+        .output()
+        .expect("run formal-ai with")
+}
+
+#[test]
+fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "codex");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &[
+            "with",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "codex",
+            "hi",
+        ],
+    );
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout).trim(),
+        "Hi, how may I help you?"
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(captured.contains("arg[0]=exec"), "capture:\n{captured}");
+    assert!(captured.contains("model_provider=\"formalai\""));
+    assert!(captured.contains("model=\"formal-ai\""));
+    assert!(captured.contains("wire_api=\"responses\""));
+    assert!(captured.contains("base_url=\"http://127.0.0.1:18080/api/openai/v1\""));
+    assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "opencode");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &[
+            "with",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "opencode",
+            "run",
+            "hi",
+        ],
+    );
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(captured.contains("arg[0]=run"), "capture:\n{captured}");
+    assert!(captured.contains("arg[1]=-m"), "capture:\n{captured}");
+    assert!(
+        captured.contains("arg[2]=formalai/formal-ai"),
+        "capture:\n{captured}"
+    );
+    assert!(captured.contains("arg[3]=hi"), "capture:\n{captured}");
+    assert!(
+        captured.contains("OPENCODE_CONFIG="),
+        "capture:\n{captured}"
+    );
+    assert!(captured.contains("\"provider\""), "capture:\n{captured}");
+    assert!(captured.contains("\"formalai\""), "capture:\n{captured}");
+    assert!(captured.contains("\"baseURL\": \"http://127.0.0.1:18080/api/openai/v1\""));
+    assert!(captured.contains("\"model\": \"formalai/formal-ai\""));
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_gemini_ephemeral_sets_native_protocol_environment() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "gemini");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &[
+            "with",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "gemini",
+            "-p",
+            "hi",
+        ],
+    );
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(captured.contains("arg[0]=-m"), "capture:\n{captured}");
+    assert!(
+        captured.contains("arg[1]=formal-ai"),
+        "capture:\n{captured}"
+    );
+    assert!(captured.contains("arg[2]=-p"), "capture:\n{captured}");
+    assert!(captured.contains("GEMINI_API_KEY=formal-ai"));
+    assert!(captured.contains("GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:18080/api/gemini"));
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "gemini");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &[
+            "with",
+            "--protocol",
+            "vertex",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "gemini",
+            "-p",
+            "hi",
+        ],
+    );
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(captured.contains("GOOGLE_GEMINI_BASE_URL="));
+    assert!(captured.contains("GOOGLE_VERTEX_BASE_URL=http://127.0.0.1:18080/api/vertex"));
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    std::fs::create_dir_all(home.join(".codex")).expect("codex dir");
+    std::fs::write(
+        home.join(".codex/config.toml"),
+        "approval_policy = \"never\"\n",
+    )
+    .expect("seed codex config");
+
+    let first = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "--global",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "--all",
+        ])
+        .env("HOME", &home)
+        .output()
+        .expect("global configure");
+    assert!(
+        first.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&first.stderr)
+    );
+
+    let codex_config = std::fs::read_to_string(home.join(".codex/config.toml")).expect("codex");
+    assert!(codex_config.contains("approval_policy = \"never\""));
+    assert!(codex_config.contains("model_provider = \"formalai\""));
+    assert!(codex_config.contains("model = \"formal-ai\""));
+    assert!(codex_config.contains("[model_providers.formalai]"));
+    assert!(codex_config.contains("base_url = \"http://127.0.0.1:18080/api/openai/v1\""));
+    assert!(home.join(".codex/config.toml.formal-ai.bak").exists());
+
+    let opencode_config =
+        std::fs::read_to_string(home.join(".config/opencode/opencode.json")).expect("opencode");
+    assert!(opencode_config.contains("\"formalai\""));
+    assert!(opencode_config.contains("\"model\": \"formalai/formal-ai\""));
+    assert!(home
+        .join(".config/opencode/opencode.json.formal-ai.bak")
+        .exists());
+
+    let profile = std::fs::read_to_string(home.join(".profile")).expect("profile");
+    assert_eq!(profile.matches("formal-ai gemini").count(), 2);
+    assert!(profile.contains("GOOGLE_GEMINI_BASE_URL=\"http://127.0.0.1:18080/api/gemini\""));
+    assert!(home.join(".profile.formal-ai.bak").exists());
+
+    let second = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "-g",
+            "--base-url",
+            "http://127.0.0.1:18080",
+            "--all",
+        ])
+        .env("HOME", &home)
+        .output()
+        .expect("global configure again");
+    assert!(
+        second.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&second.stderr)
+    );
+    let profile_again = std::fs::read_to_string(home.join(".profile")).expect("profile again");
+    assert_eq!(profile_again.matches("formal-ai gemini").count(), 2);
+
+    let undo = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["with", "--global", "--undo", "--all"])
+        .env("HOME", &home)
+        .output()
+        .expect("global undo");
+    assert!(
+        undo.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&undo.stderr)
+    );
+    assert_eq!(
+        std::fs::read_to_string(home.join(".codex/config.toml")).expect("restored codex"),
+        "approval_policy = \"never\"\n"
+    );
+    assert!(!home.join(".config/opencode/opencode.json").exists());
+    assert!(!home.join(".profile").exists());
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn standalone_with_formal_ai_binary_uses_same_wrapper() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "gemini");
+    let capture = dir.join("capture.txt");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_with-formal-ai"))
+        .args(["--base-url", "http://127.0.0.1:18080", "gemini", "-p", "hi"])
+        .env("HOME", &home)
+        .env("PATH", path_with_fake_clis(&bin_dir))
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run standalone wrapper");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(captured.contains("GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:18080/api/gemini"));
+    assert!(captured.contains("arg[1]=formal-ai"));
+
+    let _ = std::fs::remove_dir_all(&dir);
+}

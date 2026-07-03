@@ -9,6 +9,7 @@ pub mod attachment_context;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
+pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
@@ -97,6 +98,7 @@ pub use associative_package::{
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
 };
+pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,

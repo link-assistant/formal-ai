@@ -28,6 +28,10 @@ const scriptMarkers = {
   zh: /\p{Script=Han}/u,
 };
 
+const languageNeutralFiles = new Set([
+  'data/seed/client-integrations.lino',
+]);
+
 const languageFacingPrefixes = [
   'data/seed/',
   'src/solver_handlers/',
@@ -99,6 +103,7 @@ function changedFiles(baseRef) {
 }
 
 function isLanguageFacingChange(relativePath) {
+  if (languageNeutralFiles.has(relativePath)) return false;
   if (languageFacingFiles.has(relativePath)) return true;
   return languageFacingPrefixes.some((prefix) => relativePath.startsWith(prefix));
 }
