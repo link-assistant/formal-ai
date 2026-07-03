@@ -17,7 +17,18 @@ impl Drop for FormalAiServer {
 pub struct HttpResponse {
     pub status_code: u16,
     pub content_type: String,
+    pub headers: Vec<(String, String)>,
     pub body: String,
+}
+
+impl HttpResponse {
+    pub fn header(&self, name: &str) -> Option<&str> {
+        self.headers.iter().find_map(|(header_name, value)| {
+            header_name
+                .eq_ignore_ascii_case(name)
+                .then_some(value.as_str())
+        })
+    }
 }
 
 pub fn reserve_loopback_port() -> u16 {
@@ -155,9 +166,18 @@ fn parse_http_response(raw: &str) -> HttpResponse {
                 .then(|| value.trim().to_owned())
         })
         .unwrap_or_default();
+    let headers = head
+        .lines()
+        .skip(1)
+        .filter_map(|line| {
+            let (name, value) = line.split_once(':')?;
+            Some((name.trim().to_owned(), value.trim().to_owned()))
+        })
+        .collect();
     HttpResponse {
         status_code,
         content_type,
+        headers,
         body: body.to_owned(),
     }
 }
