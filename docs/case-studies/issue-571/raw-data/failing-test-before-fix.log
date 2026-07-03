@@ -1,0 +1,28 @@
+ Downloading crates ...
+  Downloaded same-file v1.0.6
+  Downloaded walkdir v2.5.0
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783074984461)
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.49s
+     Running tests/unit/mod.rs (target/debug/deps/unit-07594e216d449525)
+
+running 1 test
+
+thread 'web_requests::commercial_subscription_discount_questions_route_to_web_search_handler' (12367) panicked at tests/unit/web_requests.rs:945:9:
+assertion `left == right` failed: Russian commercial subscription discount question should route to web_search, got unknown with answer Я не смог определить `есть ли скидка если брать подписки $200 Claude MAX и ChatGPT Pro не помесячно, а на год` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.
+
+Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.
+  left: "unknown"
+ right: "web_search"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test web_requests::commercial_subscription_discount_questions_route_to_web_search_handler ... FAILED
+
+failures:
+
+failures:
+    web_requests::commercial_subscription_discount_questions_route_to_web_search_handler
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1318 filtered out; finished in 0.21s
+
+error: test failed, to rerun pass `--test unit`

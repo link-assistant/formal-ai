@@ -425,8 +425,8 @@ pub const ROLE_FOLLOWUP_INSTRUCTION_VERB: &str = "followup_instruction_verb";
 pub const ROLE_CLAUSE_CONTINUATION_MARKER: &str = "clause_continuation_marker";
 /// Semantic role: an interrogative that opens an implicit research question.
 ///
-/// "what is the …", "which …", "who …", "how …" and their translations. A
-/// research question is recognised when an opener combines with a
+/// "what is the …", "which …", "is there …", "есть ли …" and their
+/// translations. A research question is recognised when an opener combines with a
 /// [`ROLE_RESEARCH_SUPERLATIVE_MODIFIER`] or with both a
 /// [`ROLE_RESEARCH_EVIDENCE_DOMAIN`] and a [`ROLE_RESEARCH_EVALUATION_DOMAIN`].
 pub const ROLE_RESEARCH_QUESTION_OPENER: &str = "research_question_opener";
@@ -445,13 +445,13 @@ pub const ROLE_TERM_INFORMATION_REQUEST_OPENER: &str = "term_information_request
 pub const ROLE_RESEARCH_SUPERLATIVE_MODIFIER: &str = "research_superlative_modifier";
 /// Semantic role: a research-evidence noun.
 ///
-/// "dataset", "benchmark", "corpus", "metric", "framework", "paper", "study", …
-/// — the kind of artifact a research question asks the web to find.
+/// "dataset", "paper", "subscription", "pricing", "annual", … — the kind of
+/// artifact or source-backed domain a research question asks the web to find.
 pub const ROLE_RESEARCH_EVIDENCE_DOMAIN: &str = "research_evidence_domain";
 /// Semantic role: an evaluation noun that pairs with evidence to mark research.
 ///
-/// "evaluation", "validation", "quality", "translation", "comparison", … — the
-/// assessment a research question is framed around.
+/// "evaluation", "comparison", "discount", "price", "cost", … — the assessment
+/// a research question is framed around.
 pub const ROLE_RESEARCH_EVALUATION_DOMAIN: &str = "research_evaluation_domain";
 /// Semantic role: an opener that asks to list every member of a set.
 ///

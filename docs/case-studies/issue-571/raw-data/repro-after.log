@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783074984461)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.12s
+     Running `target/debug/formal-ai chat --prompt 'есть ли скидка если брать подписки $200 Claude MAX и ChatGPT Pro не помесячно, а на год?'`
+Распознан исследовательский вопрос для `скидка если брать подписки 200 claude max и chatgpt pro не помесячно а на год`.
+
+Чтобы ответить на такой вопрос без локального правила, браузерная демо-версия formal-ai ищет проверяемые источники: по умолчанию DuckDuckGo Instant Answer (CORS-совместимый, без ключа), затем Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews в указанном порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются через reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение и итоговые ссылки, чтобы рассуждение можно было проверить.
+
+Provider: duckduckgo (default)
+Providers considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews
+Combined ranking: reciprocal rank fusion (k = 60)

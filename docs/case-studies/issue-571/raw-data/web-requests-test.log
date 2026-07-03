@@ -1,0 +1,32 @@
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783074984461)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.14s
+     Running tests/unit/mod.rs (target/debug/deps/unit-07594e216d449525)
+
+running 24 tests
+test web_requests::generic_navigation_uses_same_frame_policy_path_as_github ... ok
+test web_requests::implicit_research_question_routes_to_web_search_handler ... ok
+test web_requests::current_event_questions_route_to_web_search_handler ... ok
+test web_requests::issue_507_russian_hackathon_dialog_routes_to_web_search ... ok
+test web_requests::enumeration_research_request_routes_to_web_search_handler ... ok
+test web_requests::navigation_describes_frame_policy_check_before_iframe_preview ... ok
+test web_requests::interest_topic_prompts_route_to_web_search_handler ... ok
+test web_requests::event_listing_prompts_route_to_web_search_handler ... ok
+test web_requests::latest_news_routes_to_wikinews_search_across_supported_languages ... ok
+test web_requests::research_result_followup_reports_prior_search_failure_instead_of_defining_result ... ok
+test web_requests::research_comparison_table_change_preserves_supported_language_web_search_routing ... ok
+test web_requests::research_result_followup_accepts_supported_language_research_contexts ... ok
+test web_requests::standalone_result_question_does_not_claim_research_followup ... ok
+test web_requests::source_search_prompts_still_cover_supported_languages ... ok
+test web_requests::web_search_enumeration_research_cases_cover_every_supported_language ... ok
+test web_requests::web_search_event_listing_cases_cover_every_supported_language ... ok
+test web_requests::web_search_interest_topic_cases_cover_every_supported_language ... ok
+test web_requests::web_search_source_marker_cases_cover_every_supported_language ... ok
+test web_requests::information_search_variants_route_to_web_search_handler ... ok
+test web_requests::term_information_request_preserves_seeded_concept_lookup ... ok
+test web_requests::research_comparison_table_followup_uses_prior_search_topics ... ok
+test web_requests::term_information_request_routes_to_web_search_when_concept_lookup_misses ... ok
+test web_requests::web_search_source_marker_prompts_extract_query_without_source_marker ... ok
+test web_requests::source_search_prompts_drop_follow_up_instruction_clauses ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 1295 filtered out; finished in 0.87s
+

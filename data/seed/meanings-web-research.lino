@@ -66,6 +66,12 @@ meanings
       surface
         text "which …"
       surface
+        text "is there …"
+      surface
+        text "are there …"
+      surface
+        text "does …"
+      surface
         text "who is the …"
       surface
         text "who are the …"
@@ -101,11 +107,21 @@ meanings
         text "could you tell me …"
       surface
         text "do you know …"
+      surface
+        text "do …"
     lexeme ru
       surface
         text "что такое …"
       surface
         text "что за …"
+      surface
+        text "есть ли …"
+      surface
+        text "бывает ли …"
+      surface
+        text "предлагает ли …"
+      surface
+        text "имеет ли …"
       surface
         text "какие …"
       surface
@@ -136,6 +152,8 @@ meanings
         text "ты знаешь …"
     lexeme hi
       surface
+        text "क्या …"
+      surface
         text "क्या होता है …"
       surface
         text "क्या है …"
@@ -158,6 +176,10 @@ meanings
       surface
         text "बताओ …"
     lexeme zh
+      surface
+        text 有没有…
+      surface
+        text 是否…
       surface
         text 什么是…
       surface
@@ -726,6 +748,99 @@ meanings
         text 论文
       surface
         text 研究
+  commercial_subscription_evidence
+    defined-by entity
+    role research_evidence_domain
+    lexeme en
+      surface
+        text " subscription "
+      surface
+        text " subscriptions "
+      surface
+        text " plan "
+      surface
+        text " plans "
+      surface
+        text " tier "
+      surface
+        text " tiers "
+      surface
+        text " pricing "
+      surface
+        text " billing "
+      surface
+        text " monthly "
+      surface
+        text " annual "
+      surface
+        text " yearly "
+    lexeme ru
+      surface
+        text " подписк"
+      surface
+        text " тариф"
+      surface
+        text " план "
+      surface
+        text " планы "
+      surface
+        text " прайс"
+      surface
+        text " оплат"
+      surface
+        text " биллинг"
+      surface
+        text " помесячн"
+      surface
+        text " ежемесячн"
+      surface
+        text " год "
+      surface
+        text " годов"
+    lexeme hi
+      surface
+        text " subscription "
+      surface
+        text " subscriptions "
+      surface
+        text " सदस्यता "
+      surface
+        text " योजना "
+      surface
+        text " प्लान "
+      surface
+        text " मूल्य "
+      surface
+        text " कीमत "
+      surface
+        text " मासिक "
+      surface
+        text " वार्षिक "
+      surface
+        text " सालाना "
+    lexeme zh
+      surface
+        text 订阅
+      surface
+        text 訂閱
+      surface
+        text 套餐
+      surface
+        text 方案
+      surface
+        text 价格
+      surface
+        text 價格
+      surface
+        text 月付
+      surface
+        text 年付
+      surface
+        text 年度
+      surface
+        text 每月
+      surface
+        text 每年
   research_evaluation_domain
     defined-by concept
     role research_evaluation_domain
@@ -787,6 +902,83 @@ meanings
         text 翻译
       surface
         text 比较
+  commercial_pricing_evaluation
+    defined-by concept
+    role research_evaluation_domain
+    lexeme en
+      surface
+        text " discount "
+      surface
+        text " discounts "
+      surface
+        text " price "
+      surface
+        text " prices "
+      surface
+        text " cost "
+      surface
+        text " costs "
+      surface
+        text " cheaper "
+      surface
+        text " savings "
+      surface
+        text " deal "
+      surface
+        text " deals "
+      surface
+        text " offer "
+      surface
+        text " offers "
+    lexeme ru
+      surface
+        text " скидк"
+      surface
+        text " цен"
+      surface
+        text " стоимост"
+      surface
+        text " дешев"
+      surface
+        text " выгод"
+      surface
+        text " предложени"
+    lexeme hi
+      surface
+        text " discount "
+      surface
+        text " छूट "
+      surface
+        text " कीमत "
+      surface
+        text " मूल्य "
+      surface
+        text " लागत "
+      surface
+        text " सस्ता "
+      surface
+        text " बचत "
+      surface
+        text " ऑफर "
+    lexeme zh
+      surface
+        text 折扣
+      surface
+        text 优惠
+      surface
+        text 優惠
+      surface
+        text 价格
+      surface
+        text 價格
+      surface
+        text 成本
+      surface
+        text 费用
+      surface
+        text 費用
+      surface
+        text 便宜
   enumeration_request_opener
     defined-by inquiry
     defined-by action
