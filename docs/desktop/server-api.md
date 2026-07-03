@@ -245,12 +245,14 @@ does not require a key.
 `formal-ai with` and the standalone `with-formal-ai` binary apply the provider
 templates from `data/seed/client-integrations.lino` before launching the
 external CLI. That keeps Codex TOML, OpenCode JSON, and Gemini environment
-variables in seed data instead of hardcoded command text:
+variables plus Agent CLI inline config in seed data instead of hardcoded
+command text:
 
 ```bash
 formal-ai serve --host 127.0.0.1 --port 8080
 with-formal-ai codex "hi"
 with-formal-ai opencode run "hi"
+with-formal-ai agent -p "hi"
 with-formal-ai gemini -p "hi"
 # Hi, how may I help you?
 ```
@@ -274,14 +276,16 @@ settings:
 ```bash
 with-formal-ai -g codex
 with-formal-ai -g opencode
+with-formal-ai -g agent
 with-formal-ai -g gemini
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
 
 The persistent files are `~/.codex/config.toml`,
-`~/.config/opencode/opencode.json`, and a managed Formal AI block in
-`~/.profile` for Gemini. Re-running `-g` is idempotent.
+`~/.config/opencode/opencode.json`,
+`~/.config/link-assistant-agent/opencode.json`, and a managed Formal AI block
+in `~/.profile` for Gemini. Re-running `-g` is idempotent.
 
 ### 4a. `codex` (OpenAI Codex CLI) - Responses API
 
@@ -376,7 +380,7 @@ provider/model selection. Put the same provider record in
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "formal-ai": {
+    "formalai": {
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
@@ -390,14 +394,14 @@ provider/model selection. Put the same provider record in
       }
     }
   },
-  "model": "formal-ai/formal-ai"
+  "model": "formalai/formal-ai"
 }
 ```
 
 ```bash
 formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-agent --model formal-ai/formal-ai --permission-mode plan -p \
+agent --model formalai/formal-ai --permission-mode plan -p \
   "run ls to list files here"
 ```
 

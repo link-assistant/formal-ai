@@ -74,7 +74,7 @@ pub struct WithFormalAiArgs {
     #[arg(long, default_value = DEFAULT_MODEL)]
     pub model: String,
 
-    /// External CLI to run or configure: codex, opencode, gemini.
+    /// External CLI to run or configure: codex, opencode, gemini, agent.
     #[arg(value_name = "TOOL")]
     pub tool: Option<String>,
 
@@ -153,7 +153,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let tool = args
         .tool
         .as_deref()
-        .ok_or("missing tool; expected codex, opencode, or gemini")?;
+        .ok_or("missing tool; expected codex, opencode, gemini, or agent")?;
     let integration = find_integration(tool, &integrations)?;
     let context = render_context(integration, args)?;
     let _server = if args.start_server {
@@ -271,19 +271,25 @@ fn run_ephemeral(
         );
     }
     if !invocation.config_json_settings.is_empty() {
-        let temp = TempConfigDir::new(&integration.id)?;
-        let config_path = temp.path.join(format!("{}.json", integration.id));
-        fs::write(
-            &config_path,
-            render_json_settings(&invocation.config_json_settings, context)?,
-        )?;
-        if !invocation.config_env.is_empty() {
-            command.env(&invocation.config_env, &config_path);
+        let config_json = render_json_settings(&invocation.config_json_settings, context)?;
+        if !invocation.config_content_env.is_empty() {
+            command.env(
+                render_template(&invocation.config_content_env, context),
+                &config_json,
+            );
         }
-        if !invocation.config_dir_env.is_empty() {
-            command.env(&invocation.config_dir_env, &temp.path);
+        if !invocation.config_env.is_empty() || !invocation.config_dir_env.is_empty() {
+            let temp = TempConfigDir::new(&integration.id)?;
+            let config_path = temp.path.join(format!("{}.json", integration.id));
+            fs::write(&config_path, config_json)?;
+            if !invocation.config_env.is_empty() {
+                command.env(&invocation.config_env, &config_path);
+            }
+            if !invocation.config_dir_env.is_empty() {
+                command.env(&invocation.config_dir_env, &temp.path);
+            }
+            temp_dirs.push(temp);
         }
-        temp_dirs.push(temp);
     }
     if !invocation.temp_home_env.is_empty() {
         let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
