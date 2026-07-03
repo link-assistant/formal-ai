@@ -33,6 +33,11 @@ fn issue_606_with_formal_ai_docs_and_seed_templates_are_traceable() {
         .args
         .iter()
         .any(|arg| arg.contains("wire_api")));
+    assert!(codex
+        .invocation
+        .args
+        .iter()
+        .any(|arg| arg == "--skip-git-repo-check"));
 
     let opencode = integrations
         .iter()

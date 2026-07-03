@@ -124,6 +124,10 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(captured.contains("arg[0]=exec"), "capture:\n{captured}");
+    assert!(
+        captured.contains("arg[1]=--skip-git-repo-check"),
+        "capture:\n{captured}"
+    );
     assert!(captured.contains("model_provider=\"formalai\""));
     assert!(captured.contains("model=\"formal-ai\""));
     assert!(captured.contains("wire_api=\"responses\""));

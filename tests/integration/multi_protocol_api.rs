@@ -33,12 +33,12 @@ fn cli_serve_exposes_namespaced_protocols_over_loopback_http() {
         .as_array()
         .expect("OpenAI model data should be an array")
         .iter()
-        .any(|model| model["id"] == "formal-ai"));
+        .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai"));
     assert!(openai_models["models"]
         .as_array()
         .expect("Codex-compatible models should be an array")
         .iter()
-        .any(|model| model["id"] == "formal-ai"));
+        .any(|model| model["id"] == "formal-ai" && model["slug"] == "formal-ai"));
 
     let responses_body = serde_json::json!({
         "model": "formal-ai",

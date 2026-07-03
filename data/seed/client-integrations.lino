@@ -10,6 +10,7 @@ client_integrations
     api_key_default "formal-ai"
     ephemeral
       prepend_arg "exec"
+      arg "--skip-git-repo-check"
       arg "-c"
       arg "model_providers.{provider_id}.name=\"formal-ai server\""
       arg "-c"
