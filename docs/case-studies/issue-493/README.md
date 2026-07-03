@@ -19,9 +19,34 @@ ETH in 2024: $1,700
 ```
 
 The fix adds a deterministic market-price claim layer on top of the existing
-document-verification path. Multi-line OCR text is preserved, ETH/year/price
-claims are extracted from the sample, and the 2024 ETH claim is assessed against
-captured Binance ETHUSDT daily kline data.
+document-verification path. Multi-line OCR text is preserved, asset/year/price
+claims are extracted from the sample, and each claim is assessed against captured
+Binance daily kline data.
+
+The maintainer's follow-up on PR #619 asked us to support the *entire class* of
+similar questions, not just the single ETH 2024 example. The implementation is
+therefore data-driven and meaning-grounded:
+
+- **Multi-asset.** The reference registry
+  [`data/seed/market-price-references.lino`](../../../data/seed/market-price-references.lino)
+  covers ETH (grounded in Wikidata `Q16783523`) and BTC (`Q131723`), and grows by
+  adding assets/periods to seed data — no Rust or JS change is needed to cover a
+  new asset.
+- **Multi-period.** ETH carries 2021–2024 references; BTC carries 2024. The
+  parser accepts any four-digit year present in the registry.
+- **Multilingual, meaning-grounded.** Asset aliases live in the seed data per
+  language (English, Russian, Hindi, Chinese) following issue #386's convention
+  that no per-language phrase list ever lives in Rust. The Chinese `以太坊` and
+  Russian `эфириум` surfaces resolve to the same grounded ETH asset.
+- **Within-range vs contradicted.** A claim is only contradicted when the price
+  falls outside the observed daily-candle range for that asset and period. The
+  false `$1,700` is *within* the recorded ETH range for 2021–2023 (so those lines
+  are not over-claimed) but *below* the 2024 minimum, so only 2024 is flagged as
+  contradicted. BTC `$1,700` in 2024 is caught by the same cross-asset machinery.
+
+The procedure is recorded as a grounded meta-algorithm so the whole class stays
+reproducible and the recipe cannot silently drift from the code — see
+[The meta-algorithm](#the-meta-algorithm-recipe) below.
 
 ## Requirements
 
@@ -33,8 +58,9 @@ This case study tracks the requirements from the issue and prepared work order:
 | Work with text inside an image. | The screenshot is preserved and a Tesseract.js OCR experiment is saved in [`raw-data/tesseract-issue-screenshot-ocr.json`](raw-data/tesseract-issue-screenshot-ocr.json). |
 | Catch the false price statement. | The unit regression asserts that `ETH in 2024: $1,700` is contradicted. |
 | Search online and compare external data. | Binance API data and CoinGecko API/page captures are preserved in [`raw-data/`](raw-data/). |
-| Use the meta algorithm, recursive reasoning, and relative-meta-logic. | The handler logs per-statement verification, source-tier priors, market-source evidence, and the lowered posterior for contradicted claims. |
-| Generalize beyond one screenshot. | The parser accepts asset aliases, year periods, and currency-marked amounts in OCR/text samples, with aliases for English, Russian, Hindi, and Chinese ETH mentions. |
+| Use the meta algorithm, recursive reasoning, and relative-meta-logic. | The handler logs per-statement verification, source-tier priors, market-source evidence, and the lowered posterior for contradicted claims. The whole procedure is recorded as a grounded recipe in [`data/meta/market-price-verification-recipe.lino`](../../../data/meta/market-price-verification-recipe.lino) with a specification test that keeps it grounded in live source. |
+| Generalize to the entire class in all languages. | The verifier is driven by the data-driven registry [`data/seed/market-price-references.lino`](../../../data/seed/market-price-references.lino): multiple assets (ETH, BTC), multiple periods (2021–2024), currency-marked amounts, and per-language aliases (English, Russian, Hindi, Chinese). New assets/periods/languages are added in seed data with no Rust or JS change. Recognition is by grounded meaning (Wikidata Q-ids), following issue #386. |
+| Distinguish within-range claims from contradicted ones. | Only prices outside an asset's observed daily-candle range are contradicted; ETH `$1,700` stays within range for 2021–2023 and is contradicted only for 2024, cross-checked in unit and e2e tests. |
 | Propose and compare solutions. | Alternatives considered are documented below. |
 | Implement and test in PR #619. | Regression tests live in [`tests/unit/issue_493.rs`](../../../tests/unit/issue_493.rs) and [`tests/e2e/tests/issue-493.spec.js`](../../../tests/e2e/tests/issue-493.spec.js). |
 
@@ -53,6 +79,12 @@ This case study tracks the requirements from the issue and prepared work order:
 | [`raw-data/binance-ethusdt-2024-daily-klines.json`](raw-data/binance-ethusdt-2024-daily-klines.json) | Binance ETHUSDT 1d klines for 2024. |
 | [`raw-data/binance-vision-ethusdt-2024-daily-klines.json`](raw-data/binance-vision-ethusdt-2024-daily-klines.json) | Binance Vision mirror of the same 2024 ETHUSDT kline range. |
 | [`raw-data/binance-ethusdt-2024-summary.json`](raw-data/binance-ethusdt-2024-summary.json) | Parsed min/max summary used in the implementation. |
+| [`raw-data/ethusdt-2021-daily-klines.json`](raw-data/ethusdt-2021-daily-klines.json) | Binance ETHUSDT 1d klines for 2021, used for the within-range reference. |
+| [`raw-data/ethusdt-2022-daily-klines.json`](raw-data/ethusdt-2022-daily-klines.json) | Binance ETHUSDT 1d klines for 2022, used for the within-range reference. |
+| [`raw-data/ethusdt-2023-daily-klines.json`](raw-data/ethusdt-2023-daily-klines.json) | Binance ETHUSDT 1d klines for 2023, used for the within-range reference. |
+| [`raw-data/ethusdt-2024-daily-klines.json`](raw-data/ethusdt-2024-daily-klines.json) | Binance ETHUSDT 1d klines for 2024, used for the contradicted reference. |
+| [`raw-data/btcusdt-2024-daily-klines.json`](raw-data/btcusdt-2024-daily-klines.json) | Binance BTCUSDT 1d klines for 2024, used for the cross-asset reference. |
+| [`raw-data/market-price-references-summary.json`](raw-data/market-price-references-summary.json) | Parsed per-asset/per-period min/max ranges compiled into the seed registry. |
 | [`raw-data/coingecko-ethereum-2024-market-chart-range.json`](raw-data/coingecko-ethereum-2024-market-chart-range.json) | CoinGecko public API rejection showing the historical public range limit. |
 | [`raw-data/coingecko-ethereum-historical-data-page.html`](raw-data/coingecko-ethereum-historical-data-page.html) | Captured CoinGecko Ethereum historical page fallback. |
 | [`raw-data/online-research.md`](raw-data/online-research.md) | Source URLs and notes for the online research step. |
@@ -99,16 +131,22 @@ Performance of $ETH is an absolute joke.
 
 ## External Data Check
 
-The Binance ETHUSDT 2024 daily kline capture contains 366 UTC daily candles.
-The parsed range is:
+The registry captures the observed daily-candle range per asset and period from
+first-party Binance kline data. The covered ranges are:
 
-| Metric | Date | Price |
-|---|---:|---:|
-| Minimum daily low | 2024-01-03 | 2100.00 |
-| Maximum daily high | 2024-12-16 | 4107.80 |
+| Asset | Period | Min daily low | on | Max daily high | on |
+|---|---|---:|---|---:|---|
+| ETH | 2021 | 714.29 | 2021-01-01 | 4868.00 | 2021-11-10 |
+| ETH | 2022 | 881.56 | 2022-06-18 | 3900.73 | 2022-01-04 |
+| ETH | 2023 | 1190.57 | 2023-01-01 | 2445.80 | 2023-12-28 |
+| ETH | 2024 | 2100.00 | 2024-01-03 | 4107.80 | 2024-12-16 |
+| BTC | 2024 | 38555.00 | 2024-01-23 | 108353.00 | 2024-12-17 |
 
-Since USD 1,700 is below the minimum recorded daily low, the statement
-`ETH in 2024: $1,700` is contradicted by the captured market data.
+`$1,700` sits inside the ETH range for 2021, 2022, and 2023, so those claims are
+assessed as **within the recorded range** rather than false. It is below the ETH
+2024 minimum of `2100.00`, so `ETH in 2024: $1,700` is **contradicted**. `$1,700`
+is far below the BTC 2024 minimum of `38555.00`, so `BTC in 2024: $1,700` is
+contradicted too — proving the check generalises across assets.
 
 ## Root Cause
 
@@ -129,9 +167,15 @@ The implementation changes are intentionally small and reusable:
   `Text excerpt:`, and `Text sample:` blocks for statement verification.
 - `statement_verification` now extracts market-price claims from OCR/text
   fragments by matching asset aliases, a four-digit year, and a currency-marked
-  amount.
-- Extracted claims are checked against a versioned market-data reference. For
-  this issue, the reference is Binance ETHUSDT daily klines for 2024.
+  amount. Aliases and ranges come from the seed registry, so the extractor is
+  data-driven and covers every asset/period/language in the registry.
+- A new `src/seed/market_price_references.rs` loads the registry from
+  `data/seed/market-price-references.lino` once, grounding each asset in a
+  Wikidata entity and carrying one reference (observed daily-candle min/max) per
+  covered period.
+- Extracted claims are checked against these versioned references. A price inside
+  the observed range is recorded as `within_recorded_range`; a price outside it is
+  `contradicted`.
 - Contradicting market data is represented as original-first relative evidence,
   lowering the statement posterior and preserving the full trace in
   `market_price_claim:*` event-log links.
@@ -140,13 +184,44 @@ The implementation changes are intentionally small and reusable:
 - The browser worker mirrors the Rust path so uploaded image/OCR checks surface
   the same contradiction in the web UI.
 
+## The meta-algorithm recipe
+
+Issue #493 explicitly asks the solver to use the *meta-algorithm* and recursive
+reasoning. To keep the market-price fact check reproducible for the whole class,
+the procedure that produced it is recorded as a grounded recipe, modelled on the
+existing document-verification meta-algorithm:
+
+- [`data/meta/market-price-verification-recipe.lino`](../../../data/meta/market-price-verification-recipe.lino)
+  names every ordered step (register reference data → ground each asset →
+  recognise assets by alias → split per asset → parse period and price → weigh
+  against the recorded range → splice the verdict → mirror the worker), each
+  external Wikidata grounding, the data source, the handler functions, the
+  Rust↔JS parity targets, and the tests that pin the behaviour.
+- [`tests/unit/specification/market_price_verification_meta_algorithm.rs`](../../../tests/unit/specification/market_price_verification_meta_algorithm.rs)
+  loads the recipe and asserts the live source still matches it: the steps are
+  contiguously ordered, the groundings resolve to cached Wikidata entities and
+  the seed grounds each asset in that Q-id, the data file declares the registry,
+  every named function exists in Rust, every parity target exists in both the
+  Rust source and the JS worker, and the doc links the recipe and test. If the
+  recipe and the code drift apart, CI fails, so the recipe stays an accurate,
+  executable description of how the code was produced.
+- [`docs/meta-algorithm.md`](../../../docs/meta-algorithm.md) documents the eight
+  steps and how to run the grounding test.
+
+Run the grounding test with:
+
+```text
+cargo test --test unit specification::market_price_verification_meta_algorithm -- --nocapture
+```
+
 ## Alternatives Considered
 
 | Option | Result |
 |---|---|
 | Leave the generic web-search plan only. | Insufficient, because the issue asks for a concrete answer on whether the claim is false. |
 | Hardcode a response for this image. | Rejected because it would not generalize to similar OCR/text claims or other supported languages. |
-| Add a structured market-data verifier. | Chosen. It keeps the deterministic solver offline, records source evidence, and extends by adding new market references. |
+| Add a structured, data-driven market-data verifier. | Chosen. It keeps the deterministic solver offline, records source evidence, grounds recognition in Wikidata meaning, and extends to new assets/periods/languages purely by adding seed data. |
+| Hardcode per-language ETH phrase lists in Rust/JS. | Rejected per issue #386: no per-language phrase list lives in code. Aliases live in seed data and recognition is by grounded meaning. |
 | Build live multi-source price fetching in the request path. | Useful future extension, but not required for this deterministic regression. The captured source data and registry make the result reproducible. |
 
 ## Verification
@@ -172,10 +247,15 @@ The regression covers:
 - Extraction when the asset ticker itself uses a dollar marker, such as
   `Buy $ETH in 2024 at $1,700`.
 - Extraction of localized ETH aliases in English, Russian, Hindi, and Chinese.
+- Cross-asset generalization: `BTC in 2024: $1,700` is contradicted by the
+  Binance BTCUSDT 2024 reference through the same machinery.
+- The within-range vs contradicted distinction: `$1,700` is assessed as within
+  the recorded ETH range for 2021–2023 and contradicted only for 2024.
 - Assessment of `ETH in 2024: $1,700` as contradicted by Binance ETHUSDT 2024
   klines.
 - Event-log evidence preserving the market-data range and lowered posterior.
-- The answer body summarizing the contradicted price claim.
+- The answer body summarizing only the contradicted price claims.
+- The grounding specification test keeping the recipe aligned with live source.
 
 Additional verification commands saved in `raw-data/`:
 
@@ -184,6 +264,7 @@ cargo fmt --all -- --check
 cargo clippy --all-targets --all-features
 cargo test --all-features --verbose
 cargo test --doc --verbose
+cargo test --test unit specification::market_price_verification_meta_algorithm -- --nocapture
 cargo test --test unit document_originality -- --nocapture
 cargo test --test unit issue_535 -- --nocapture
 cargo test --test source statement_verification -- --nocapture
