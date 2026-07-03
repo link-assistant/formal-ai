@@ -225,7 +225,7 @@ function hydrateLinoSeedText(raw) {
   cachedOperationVocabulary = null;
   cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
-  cachedMarketPriceAssets = null;
+  cachedMarketPriceReferences = null;
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser

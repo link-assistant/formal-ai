@@ -75,9 +75,8 @@ fn parse_market_price_assets() -> Vec<MarketPriceAsset> {
 }
 
 fn parse_asset(node: &LinoNode) -> MarketPriceAsset {
-    let ticker = node.id.clone();
     MarketPriceAsset {
-        ticker: ticker.clone(),
+        ticker: node.id.clone(),
         label: node.find_child_value("label").to_owned(),
         grounded_in: node.find_child_value("grounded-in").to_owned(),
         quote_currency: node.find_child_value("quote-currency").to_owned(),
@@ -98,7 +97,11 @@ fn parse_asset(node: &LinoNode) -> MarketPriceAsset {
 fn parse_asset_aliases(node: &LinoNode) -> Vec<String> {
     let mut aliases = Vec::new();
     for lexeme in node.children.iter().filter(|child| child.name == "lexeme") {
-        for surface in lexeme.children.iter().filter(|child| child.name == "surface") {
+        for surface in lexeme
+            .children
+            .iter()
+            .filter(|child| child.name == "surface")
+        {
             let text = surface.find_child_value("text");
             if !text.is_empty() && !aliases.iter().any(|existing| existing == text) {
                 aliases.push(text.to_owned());

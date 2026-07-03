@@ -8,8 +8,13 @@ fn main() {
         for r in &asset.references {
             println!(
                 "  {} {} min={} ({}) max={} ({}) url={}",
-                r.period, r.source_id, r.observed_min_price, r.observed_min_date,
-                r.observed_max_price, r.observed_max_date, r.source_url
+                r.period,
+                r.source_id,
+                r.observed_min_price,
+                r.observed_min_date,
+                r.observed_max_price,
+                r.observed_max_date,
+                r.source_url
             );
         }
     }

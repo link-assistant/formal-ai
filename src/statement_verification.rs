@@ -366,9 +366,12 @@ fn asset_positions(line: &str) -> Vec<usize> {
 }
 
 fn parse_market_price_claim(fragment: &str) -> Option<MarketPriceClaim> {
-    let asset = market_price_assets()
-        .iter()
-        .find(|asset| asset.aliases.iter().any(|alias| alias_occurs(fragment, alias)))?;
+    let asset = market_price_assets().iter().find(|asset| {
+        asset
+            .aliases
+            .iter()
+            .any(|alias| alias_occurs(fragment, alias))
+    })?;
     let period = extract_year(fragment)?;
     let claimed_price = extract_currency_amount(fragment, &period)?;
     Some(MarketPriceClaim {
