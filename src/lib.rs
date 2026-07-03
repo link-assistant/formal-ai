@@ -45,6 +45,7 @@ pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
+pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
