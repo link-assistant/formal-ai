@@ -43,8 +43,8 @@ issue.
 
 ## Root Cause
 
-The web-search recognizer already had a seed-driven `implicit_research_question`
-path for prompts that combine:
+The web-search recognizer had a seed-driven `implicit_research_question` path
+for prompts that combine:
 
 - a research question opener;
 - either a research modifier or an evidence-domain plus evaluation-domain pair.
@@ -55,20 +55,48 @@ commercial subscription/pricing terms such as `подписки`, `год`, and 
 were not present in the evidence/evaluation domains. With no handler claiming
 the prompt, it fell through to unknown reasoning.
 
+The deeper problem the maintainer raised is that this path is still
+*vocabulary-driven*: it can only ever recognise the specific topic words that
+have been seeded. It therefore cannot, on its own, cover the open-ended *class*
+the issue asks for — any question about a real-world product, service, or
+organisation whose current facts live on the public web.
+
 ## Implementation
 
-The fix extends `data/seed/meanings-web-research.lino` instead of adding a
-product-specific answer table:
+The fix has two complementary layers.
 
-- add yes/no research-question openers across English, Russian, Hindi, and
-  Chinese;
-- add commercial subscription/pricing/billing-period terms as
-  `research_evidence_domain`;
-- add discount/price/cost/deal terms as `research_evaluation_domain`.
+1. **Seed vocabulary (specific example).** `data/seed/meanings-web-research.lino`
+   gains yes/no research-question openers across English, Russian, Hindi, and
+   Chinese, plus commercial subscription/pricing/billing-period terms as
+   `research_evidence_domain` and discount/price/cost/deal terms as
+   `research_evaluation_domain`. This routes the exact reported prompt through
+   the existing generic recognizer without a product-specific answer table.
 
-The existing Rust and browser-worker logic reads these roles from the seed
-lexicon, so the same generic recognizer now routes this class of questions to
-the source-gathering web research plan.
+2. **Reasoning rule (entire class).** `extract_externally_verifiable_question`
+   in `src/solver_handlers/web_search_intent.rs` closes the generalisation gap by
+   reasoning about the *referent* rather than the topic vocabulary. It routes a
+   prompt to web research when three structural conditions all hold:
+
+   - the prompt is *interrogative* — it opens with a seeded question opener (any
+     language) or ends with a question mark (`?` / fullwidth `？`);
+   - it names a *referential external entity* — a Latin token written with
+     interior capitalisation (`ChatGPT`, `OpenAI`, `GitHub`, `iPhone`,
+     `TypeScript`), the orthographic signature of an engineered brand/product
+     name; and
+   - the solver cannot answer it locally — it is neither a seeded concept lookup
+     nor a self-introduction / capability / non-referential-subject question.
+
+   Because interior capitalisation is a property of the Latin brand token itself,
+   the rule fires identically whether that token sits in English, Cyrillic,
+   Devanagari, or CJK context, and across any topic (pricing, release dates,
+   hardware specs, features). All-caps acronyms (`BSD`, `ML`, `USD`), plain
+   capitalised proper nouns (`Claude`, `Tesla`, `Wikipedia`), and Title-Cased
+   phrases (`Hive Mind`) deliberately do not match, so concept-lookup, coding,
+   and unknown-reasoning prompts keep their own handlers.
+
+The reasoning rule is a pure structural test with no per-product or per-language
+word list to maintain, so the Russian annual-discount prompt is handled as one
+instance of the general class rather than a special case.
 
 ## Verification
 
