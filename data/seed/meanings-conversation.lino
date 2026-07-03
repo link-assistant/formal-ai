@@ -166,6 +166,66 @@ meanings
         text 前一条消息
       surface
         text 上条消息
+  conversation_recall_previous_user_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_user_message
+    lexeme en
+      surface
+        text "what did i ask"
+      surface
+        text "what did i ask in the previous message"
+      surface
+        text "what did i ask in the last message"
+      surface
+        text "what was my previous question"
+      surface
+        text "what was the previous question"
+      surface
+        text "what was my last question"
+      surface
+        text "what was my previous message"
+      surface
+        text "repeat my last message"
+      surface
+        text "what did i say"
+    lexeme ru
+      surface
+        text "что я спрашивал"
+      surface
+        text "я что спрашивал"
+      surface
+        text "а я что спрашивал"
+      surface
+        text "а что я спрашивал"
+      surface
+        text "что я спрашивал в прошлом сообщении"
+      surface
+        text "что я спрашивал в предыдущем сообщении"
+      surface
+        text "что я спросил"
+      surface
+        text "что я просил"
+      surface
+        text "что я писал"
+      surface
+        text "какой был мой прошлый вопрос"
+      surface
+        text "какой был мой предыдущий вопрос"
+    lexeme hi
+      surface
+        text "मैंने क्या पूछा था"
+      surface
+        text "मेरा पिछला सवाल क्या था"
+      surface
+        text "मैंने पिछले संदेश में क्या पूछा था"
+    lexeme zh
+      surface
+        text 我刚才问了什么
+      surface
+        text 我之前问了什么
+      surface
+        text 我的上一个问题是什么
   conversation_recall_other_query
     defined-by inquiry
     defined-by conversation_reference

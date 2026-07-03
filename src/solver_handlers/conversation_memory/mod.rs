@@ -78,10 +78,10 @@ pub fn try_conversation_memory(
     if let Some(answer) = try_recall_name(prompt, normalized, log) {
         return Some(answer);
     }
-    if let Some(answer) = try_recall_previous_message(prompt, normalized, log) {
+    if let Some(answer) = try_recall_last_question(prompt, normalized, log) {
         return Some(answer);
     }
-    if let Some(answer) = try_recall_last_question(prompt, normalized, log) {
+    if let Some(answer) = try_recall_previous_message(prompt, normalized, log) {
         return Some(answer);
     }
     if let Some(answer) = try_conversation_recall(prompt, normalized, log) {
@@ -166,15 +166,17 @@ fn try_recall_last_question(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let asks = normalized.contains("what did i ask")
-        || normalized.contains("what was my last question")
-        || normalized.contains("what was my previous question")
-        || normalized.contains("repeat my last message");
+    let cleaned = normalize_prompt(normalized);
+    let asks = seed::lexicon().mentions_role(
+        seed::ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE,
+        &cleaned,
+    );
     if !asks {
         return None;
     }
-    let previous = last_user_turn(log)?;
-    let body = format!("Your previous message was: \"{previous}\"");
+    let previous = previous_user_request_turn(log)?;
+    let language = detect_language(prompt).slug();
+    let body = render_previous_user_message(&previous, language);
     log.append("filter:user", "previous_turn".to_owned());
     Some(finalize_simple(
         prompt,
@@ -184,6 +186,39 @@ fn try_recall_last_question(
         &body,
         0.9,
     ))
+}
+
+fn previous_user_request_turn(log: &EventLog) -> Option<String> {
+    let latest_user = last_user_turn(log).map(ToOwned::to_owned);
+    log.events()
+        .iter()
+        .rev()
+        .filter(|event| event.kind == "prior_turn:user")
+        .filter_map(|event| {
+            let content = event.payload.trim();
+            (!content.is_empty()).then_some(content)
+        })
+        .find(|content| !is_recall_meta_prompt(content))
+        .map(ToOwned::to_owned)
+        .or(latest_user)
+}
+
+fn is_recall_meta_prompt(prompt: &str) -> bool {
+    let normalized = normalize_prompt(prompt);
+    seed::lexicon().mentions_role(
+        seed::ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE,
+        &normalized,
+    ) || seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, &normalized)
+        || recognize_recall_query(&normalized).is_some()
+}
+
+fn render_previous_user_message(content: &str, language: &str) -> String {
+    match language {
+        "ru" => format!("Вы спрашивали: \"{content}\""),
+        "zh" => format!("你之前问的是:\"{content}\""),
+        "hi" => format!("आपने पूछा था: \"{content}\""),
+        _ => format!("Your previous question was: {content}"),
+    }
 }
 
 /// Recall the content of the immediately preceding message (issue #529).

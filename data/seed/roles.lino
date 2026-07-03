@@ -95,6 +95,8 @@ roles
     kind meaning
   conversation_recall_previous_message
     kind meaning
+  conversation_recall_previous_user_message
+    kind meaning
   conversation_recall_query
     kind meaning
   conversation_reference

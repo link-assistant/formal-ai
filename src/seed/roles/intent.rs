@@ -120,6 +120,15 @@ pub const ROLE_CONVERSATION_RECALL_OTHER_QUERY: &str = "conversation_recall_othe
 /// that immediately precedes the current prompt. Surfaces are bare phrases
 /// matched anywhere in the prompt via [`crate::seed::Lexicon::mentions_role`].
 pub const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE: &str = "conversation_recall_previous_message";
+/// Semantic role: a query asking for the user's previous non-meta message or question.
+///
+/// This role recognizes prompts such as "what did I ask", "что я спрашивал", or
+/// "मैंने क्या पूछा था". It differs from
+/// [`ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE`]: the target role is always the
+/// user's own prior turn, and recall/meta questions are skipped when a more
+/// substantive earlier user turn exists.
+pub const ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE: &str =
+    "conversation_recall_previous_user_message";
 /// Semantic role: a natural-language directive that appends a statement to the
 /// associative memory.
 ///

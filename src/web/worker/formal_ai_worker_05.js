@@ -686,21 +686,51 @@ function tryRecallName(history) {
   return null;
 }
 
-function tryRecallLastQuestion(history) {
+function isRecallMetaPrompt(prompt) {
+  const normalized = normalizePrompt(prompt);
+  return (
+    lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE, normalized) ||
+    lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, normalized) ||
+    lexiconMentionsRole(ROLE_CONVERSATION_RECALL_QUERY, normalized) ||
+    lexiconMentionsRole(ROLE_CONVERSATION_RECALL_OTHER_QUERY, normalized)
+  );
+}
+
+function renderPreviousUserMessage(content, language) {
+  if (language === "ru") return `Вы спрашивали: "${content}"`;
+  if (language === "zh") return `你之前问的是:"${content}"`;
+  if (language === "hi") return `आपने पूछा था: "${content}"`;
+  return `Your previous question was: ${content}`;
+}
+
+function tryRecallLastQuestion(prompt, history) {
   if (!Array.isArray(history) || history.length === 0) return null;
+  const language = detectLanguage(prompt);
+  let latestUser = "";
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const turn = history[i];
     if (turn && turn.role === "user") {
       const content = String(turn.content || "").trim();
       if (content) {
-        return {
-          intent: "recall_last_question",
-          content: `Your previous question was: ${content}`,
-          confidence: 0.9,
-          evidence: ["recall_last_question", "prior_turn:user"],
-        };
+        if (!latestUser) latestUser = content;
+        if (!isRecallMetaPrompt(content)) {
+          return {
+            intent: "recall_last_question",
+            content: renderPreviousUserMessage(content, language),
+            confidence: 0.9,
+            evidence: ["recall_last_question", "prior_turn:user"],
+          };
+        }
       }
     }
+  }
+  if (latestUser) {
+    return {
+      intent: "recall_last_question",
+      content: renderPreviousUserMessage(latestUser, language),
+      confidence: 0.9,
+      evidence: ["recall_last_question", "prior_turn:user"],
+    };
   }
   return null;
 }
