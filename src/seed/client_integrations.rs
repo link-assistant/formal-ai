@@ -49,6 +49,9 @@ pub struct ClientIntegrationInvocation {
     pub config_env: String,
     pub config_dir_env: String,
     pub config_json_settings: Vec<(String, String)>,
+    pub temp_home_env: String,
+    pub temp_home_config_path: String,
+    pub temp_home_json_settings: Vec<(String, String)>,
     pub model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
 }
@@ -168,6 +171,13 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "config_json_set" => {
                 if let Some((key, value)) = split_once_equals(&child.id) {
                     invocation.config_json_settings.push((key, value));
+                }
+            }
+            "temp_home_env" => invocation.temp_home_env.clone_from(&child.id),
+            "temp_home_config_path" => invocation.temp_home_config_path.clone_from(&child.id),
+            "temp_home_json_set" => {
+                if let Some((key, value)) = split_once_equals(&child.id) {
+                    invocation.temp_home_json_settings.push((key, value));
                 }
             }
             "model_arg" => invocation.model_arg.clone_from(&child.id),

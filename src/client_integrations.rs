@@ -2,7 +2,7 @@ use std::error::Error;
 use std::fmt::Write as _;
 use std::fs;
 use std::net::TcpStream;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
@@ -97,6 +97,7 @@ struct RenderContext {
     api_key_env: String,
     api_key: String,
     protocol_base_env: String,
+    google_auth_type: String,
 }
 
 struct TempConfigDir {
@@ -229,6 +230,12 @@ fn render_context(
         _ => "FORMAL_AI_BASE_URL",
     }
     .to_string();
+    let google_auth_type = match protocol {
+        "vertex" => "vertex-ai",
+        "gemini" => "gemini-api-key",
+        _ => "",
+    }
+    .to_string();
 
     let mut context = RenderContext {
         base_url,
@@ -239,6 +246,7 @@ fn render_context(
         api_key_env: integration.api_key_env.clone(),
         api_key,
         protocol_base_env,
+        google_auth_type,
     };
     context.model_selector = if integration.model_selector.is_empty() {
         context.model.clone()
@@ -254,7 +262,7 @@ fn run_ephemeral(
     context: &RenderContext,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
-    let mut temp_config: Option<TempConfigDir> = None;
+    let mut temp_dirs = Vec::new();
     let mut command = Command::new(&integration.command);
     for env in &invocation.env {
         command.env(
@@ -275,13 +283,32 @@ fn run_ephemeral(
         if !invocation.config_dir_env.is_empty() {
             command.env(&invocation.config_dir_env, &temp.path);
         }
-        temp_config = Some(temp);
+        temp_dirs.push(temp);
+    }
+    if !invocation.temp_home_env.is_empty() {
+        let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
+        if !invocation.temp_home_config_path.is_empty() {
+            let relative_config_path = render_template(&invocation.temp_home_config_path, context);
+            let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
+            if let Some(parent) = config_path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            fs::write(
+                &config_path,
+                render_json_settings(&invocation.temp_home_json_settings, context)?,
+            )?;
+        }
+        command.env(
+            render_template(&invocation.temp_home_env, context),
+            &temp.path,
+        );
+        temp_dirs.push(temp);
     }
 
     let final_args = build_invocation_args(integration, user_args, context);
     command.args(final_args);
     let status = command.status()?;
-    drop(temp_config);
+    drop(temp_dirs);
     if status.success() {
         return Ok(());
     }
@@ -293,6 +320,22 @@ fn run_ephemeral(
             .map_or_else(|| String::from("signal"), |code| code.to_string())
     )
     .into())
+}
+
+fn temp_scoped_path(root: &Path, relative: &str) -> Result<PathBuf, Box<dyn Error>> {
+    let path = Path::new(relative);
+    if path.as_os_str().is_empty() || path.is_absolute() {
+        return Err(format!("temporary config path must be relative: {relative}").into());
+    }
+    for component in path.components() {
+        match component {
+            Component::Normal(_) | Component::CurDir => {}
+            Component::ParentDir | Component::RootDir | Component::Prefix(_) => {
+                return Err(format!("temporary config path escapes its root: {relative}").into());
+            }
+        }
+    }
+    Ok(root.join(path))
 }
 
 fn build_invocation_args(
@@ -596,6 +639,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{api_key_env}", &context.api_key_env)
         .replace("{api_key}", &context.api_key)
         .replace("{protocol_base_env}", &context.protocol_base_env)
+        .replace("{google_auth_type}", &context.google_auth_type)
 }
 
 fn global_config_path(relative: &str) -> Result<PathBuf, Box<dyn Error>> {

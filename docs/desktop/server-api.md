@@ -255,6 +255,11 @@ with-formal-ai gemini -p "hi"
 # Hi, how may I help you?
 ```
 
+For one-shot Gemini runs, the wrapper also points `GEMINI_CLI_HOME` at a
+temporary directory, writes `.gemini/settings.json` with API-key auth selected,
+and enables workspace trust. That prevents cached OAuth settings in
+`~/.gemini` from overriding the Formal AI endpoint.
+
 If the server is not already running, the wrapper can start it for the duration
 of the invocation:
 
@@ -445,7 +450,13 @@ The Gemini namespace exposes native `models`, `generateContent`, and
 `streamGenerateContent` routes:
 
 ```bash
+export GEMINI_CLI_HOME="$(mktemp -d)"
+mkdir -p "${GEMINI_CLI_HOME}/.gemini"
+printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}}}' \
+  > "${GEMINI_CLI_HOME}/.gemini/settings.json"
 export GEMINI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
+export GEMINI_CLI_TRUST_WORKSPACE="true"
 export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:8080/api/gemini"
 gemini -m formal-ai -p "hi"
 ```

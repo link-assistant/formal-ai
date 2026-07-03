@@ -229,6 +229,10 @@ adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
 
+For one-shot Gemini runs, the wrapper also uses a temporary `GEMINI_CLI_HOME`
+with API-key auth selected and workspace trust enabled. That keeps cached
+OAuth settings from `~/.gemini` from taking over the invocation.
+
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
@@ -338,7 +342,13 @@ Gemini-compatible clients can use the native Gemini `generateContent` and
 `streamGenerateContent` routes under `/api/gemini/v1beta`:
 
 ```bash
+export GEMINI_CLI_HOME="$(mktemp -d)"
+mkdir -p "${GEMINI_CLI_HOME}/.gemini"
+printf '%s\n' '{"security":{"auth":{"selectedType":"gemini-api-key"}}}' \
+  > "${GEMINI_CLI_HOME}/.gemini/settings.json"
 export GEMINI_API_KEY="${FORMAL_AI_API_KEY:-local-test-token}"
+export GEMINI_DEFAULT_AUTH_TYPE="gemini-api-key"
+export GEMINI_CLI_TRUST_WORKSPACE="true"
 export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:8080/api/gemini"
 gemini -m formal-ai -p "hi"
 ```

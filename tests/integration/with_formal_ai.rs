@@ -34,11 +34,22 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "OPENCODE_CONFIG=$OPENCODE_CONFIG"
   echo "OPENCODE_CONFIG_DIR=$OPENCODE_CONFIG_DIR"
   echo "GEMINI_API_KEY=$GEMINI_API_KEY"
+  echo "GEMINI_DEFAULT_AUTH_TYPE=$GEMINI_DEFAULT_AUTH_TYPE"
+  echo "GEMINI_CLI_TRUST_WORKSPACE=$GEMINI_CLI_TRUST_WORKSPACE"
+  echo "GEMINI_CLI_HOME=$GEMINI_CLI_HOME"
   echo "GOOGLE_GEMINI_BASE_URL=$GOOGLE_GEMINI_BASE_URL"
   echo "GOOGLE_VERTEX_BASE_URL=$GOOGLE_VERTEX_BASE_URL"
   if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
     echo "---OPENCODE_CONFIG---"
     cat "$OPENCODE_CONFIG"
+  fi
+  if [ -n "$GEMINI_CLI_HOME" ] && [ -f "$GEMINI_CLI_HOME/.gemini/settings.json" ]; then
+    echo "---GEMINI_CLI_SETTINGS---"
+    cat "$GEMINI_CLI_HOME/.gemini/settings.json"
+  fi
+  if [ -f "$HOME/.gemini/settings.json" ]; then
+    echo "---HOME_GEMINI_SETTINGS---"
+    cat "$HOME/.gemini/settings.json"
   fi
 } > "$FORMAL_AI_CAPTURE"
 printf 'Hi, how may I help you?\n'
@@ -70,6 +81,9 @@ fn run_with_capture(
         .env_remove("OPENCODE_CONFIG")
         .env_remove("OPENCODE_CONFIG_DIR")
         .env_remove("GEMINI_API_KEY")
+        .env_remove("GEMINI_DEFAULT_AUTH_TYPE")
+        .env_remove("GEMINI_CLI_TRUST_WORKSPACE")
+        .env_remove("GEMINI_CLI_HOME")
         .env_remove("GOOGLE_GEMINI_BASE_URL")
         .env_remove("GOOGLE_VERTEX_BASE_URL")
         .output()
@@ -173,8 +187,14 @@ fn with_formal_ai_gemini_ephemeral_sets_native_protocol_environment() {
     let dir = tmpdir();
     let home = dir.join("home");
     let bin_dir = dir.join("bin");
-    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(home.join(".gemini")).expect("home");
     std::fs::create_dir_all(&bin_dir).expect("bin");
+    std::fs::write(
+        home.join(".gemini/settings.json"),
+        r#"{"security":{"auth":{"selectedType":"oauth-personal"}}}"#,
+    )
+    .expect("seed gemini oauth settings");
+    std::fs::write(home.join(".gemini/oauth_creds.json"), "{}\n").expect("seed gemini oauth creds");
     write_fake_cli(&bin_dir, "gemini");
     let capture = dir.join("capture.txt");
 
@@ -205,6 +225,13 @@ fn with_formal_ai_gemini_ephemeral_sets_native_protocol_environment() {
     );
     assert!(captured.contains("arg[2]=-p"), "capture:\n{captured}");
     assert!(captured.contains("GEMINI_API_KEY=formal-ai"));
+    assert!(captured.contains("GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key"));
+    assert!(captured.contains("GEMINI_CLI_TRUST_WORKSPACE=true"));
+    assert!(captured.contains("GEMINI_CLI_HOME="));
+    assert!(captured.contains("---GEMINI_CLI_SETTINGS---"));
+    assert!(captured.contains("\"selectedType\": \"gemini-api-key\""));
+    assert!(captured.contains("---HOME_GEMINI_SETTINGS---"));
+    assert!(captured.contains("oauth-personal"));
     assert!(captured.contains("GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:18080/api/gemini"));
 
     let _ = std::fs::remove_dir_all(&dir);
