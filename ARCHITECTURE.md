@@ -718,8 +718,8 @@ trigger/handler links, and queried by the tool-call gate for capabilities such
 as `tool:calculator`. Compiled skills can be wrapped as packages and imported
 back without hand-editing Rust code; structured expected tests become package
 triggers/handlers and structured permissions become package permission grants.
-The `/v1/graph` projection includes the package, handler, trigger, and
-permission links so the permission path is inspectable alongside ordinary
+The `/api/formal-ai/v1/graph` projection includes the package, handler, trigger,
+and permission links so the permission path is inspectable alongside ordinary
 rules.
 
 The compilation chain (NL → code → binary) is the long-term path. The
@@ -889,9 +889,12 @@ The same `FormalAiEngine` answers prompts in every surface:
 - **CLI binary** — `formal-ai chat`, `formal-ai memory ...`,
   `formal-ai bundle ...`, operator commands such as
   `formal-ai github-logs ...`, `formal-ai telegram`, `formal-ai serve`.
-- **HTTP server** — `POST /v1/chat/completions`, `POST /v1/responses`,
-  `GET /health`, `GET /v1/graph` (with `?trace=` filter and
-  `?format=dot`).
+- **HTTP server** - a local gateway with OpenAI routes under
+  `/api/openai/v1`, Anthropic under `/api/anthropic/v1`, Gemini under
+  `/api/gemini/v1beta`, Vertex under `/api/vertex/v1`, and native formal-ai
+  routes under `/api/formal-ai/v1`. The legacy `/v1/chat/completions`,
+  `/v1/responses`, `/v1/messages`, and `/v1/graph` aliases remain for existing
+  desktop and CLI configs.
 - **Desktop shell** — `desktop/main.cjs` starts the same local
   `formal-ai serve` API on loopback, serves the existing `src/web` chat, and
   exposes a preload bridge for API, graph, full-memory, and permission status.
@@ -935,8 +938,9 @@ WASM cannot be instantiated.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
-through `/v1/chat/completions`, links graph inspection to `/v1/graph`, and uses
-the browser memory import/export path for `formal_ai_bundle` round-trips.
+through the local chat-completions route, links graph inspection to the native
+graph route, and uses the browser memory import/export path for
+`formal_ai_bundle` round-trips.
 
 ---
 

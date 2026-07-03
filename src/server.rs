@@ -10,11 +10,15 @@ use crate::anthropic::{
     AnthropicMessagesRequest,
 };
 use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot};
+use crate::gemini::{
+    create_gemini_generate_content_response_with_solver_and_memory, gemini_model_list,
+    gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
+};
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    ChatCompletion, ChatCompletionRequest, ResponsesRequest,
+    ChatCompletion, ChatCompletionRequest, ResponseObject, ResponseOutputItem, ResponsesRequest,
 };
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
@@ -66,6 +70,7 @@ impl ApiAuthConfig {
             return true;
         };
         bearer_token_from_headers(headers).is_some_and(|actual| actual == expected)
+            || api_key_from_headers(headers).is_some_and(|actual| actual == expected)
     }
 }
 
@@ -113,6 +118,10 @@ pub fn handle_api_request_with_auth(
 
     trace_request(method, normalized_path, body);
 
+    if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, body) {
+        return response;
+    }
+
     match (method, normalized_path) {
         ("OPTIONS", _) => ApiHttpResponse {
             status_code: 204,
@@ -126,33 +135,30 @@ pub fn handle_api_request_with_auth(
                 "model": canonical_model_id(),
             }),
         ),
-        ("GET", "/v1/models") => json_response(
-            200,
-            &json!({
-                "object": "list",
-                "data": [{
-                    "id": canonical_model_id(),
-                    "object": "model",
-                    "created": 0,
-                    "owned_by": "link-assistant"
-                }],
-                "rate_limit": {
-                    "requests_per_minute": 60,
-                    "tokens_per_minute": 60_000
-                }
-            }),
-        ),
-        ("GET", "/v1/graph") => handle_graph_request(query),
-        ("GET", "/v1/bundle") => links_notation_response(200, merged_bundle()),
-        ("GET", "/v1/links") => links_notation_response(200, knowledge_graph().to_links_notation()),
-        ("POST", "/v1/links/query") => handle_links_query_request(body),
-        ("GET", "/v1/memory") => {
+        ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
+        ("GET", "/v1/graph" | "/api/formal-ai/v1/graph") => handle_graph_request(query),
+        ("GET", "/v1/bundle" | "/api/formal-ai/v1/bundle") => {
+            links_notation_response(200, merged_bundle())
+        }
+        ("GET", "/v1/links" | "/api/formal-ai/v1/links") => {
+            links_notation_response(200, knowledge_graph().to_links_notation())
+        }
+        ("POST", "/v1/links/query" | "/api/formal-ai/v1/links/query") => {
+            handle_links_query_request(body)
+        }
+        ("GET", "/v1/memory" | "/api/formal-ai/v1/memory") => {
             links_notation_response(200, SyncStore::open().to_links_notation())
         }
-        ("GET", "/v1/memory/since") => handle_memory_since_request(query),
-        ("POST", "/v1/memory/import") => handle_memory_import_request(body),
-        ("POST", "/v1/messages") => handle_anthropic_messages_request(body),
-        ("POST", "/v1/chat/completions") => {
+        ("GET", "/v1/memory/since" | "/api/formal-ai/v1/memory/since") => {
+            handle_memory_since_request(query)
+        }
+        ("POST", "/v1/memory/import" | "/api/formal-ai/v1/memory/import") => {
+            handle_memory_import_request(body)
+        }
+        ("POST", "/v1/messages" | "/api/anthropic/v1/messages") => {
+            handle_anthropic_messages_request(body)
+        }
+        ("POST", "/v1/chat/completions" | "/api/openai/v1/chat/completions") => {
             match serde_json::from_str::<ChatCompletionRequest>(body) {
                 Ok(request) => {
                     if let Some(response) = unsupported_model_response(request.model.as_deref()) {
@@ -186,20 +192,25 @@ pub fn handle_api_request_with_auth(
                 Err(error) => error_response(400, &format!("invalid chat request: {error}")),
             }
         }
-        ("POST", "/v1/responses") => match serde_json::from_str::<ResponsesRequest>(body) {
-            Ok(request) => {
-                if let Some(response) = unsupported_model_response(request.model.as_deref()) {
-                    return response;
+        ("POST", "/v1/responses" | "/api/openai/v1/responses") => {
+            match serde_json::from_str::<ResponsesRequest>(body) {
+                Ok(request) => {
+                    if let Some(response) = unsupported_model_response(request.model.as_deref()) {
+                        return response;
+                    }
+                    let solver = http_solver();
+                    let store = SyncStore::open();
+                    let response =
+                        create_response_with_solver_and_memory(&request, &solver, store.events());
+                    if request.stream {
+                        response_sse_response(&response)
+                    } else {
+                        json_response(200, &response)
+                    }
                 }
-                let solver = http_solver();
-                let store = SyncStore::open();
-                json_response(
-                    200,
-                    &create_response_with_solver_and_memory(&request, &solver, store.events()),
-                )
+                Err(error) => error_response(400, &format!("invalid responses request: {error}")),
             }
-            Err(error) => error_response(400, &format!("invalid responses request: {error}")),
-        },
+        }
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
             Ok(None) => ApiHttpResponse {
@@ -214,7 +225,154 @@ pub fn handle_api_request_with_auth(
 }
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
-    method != "OPTIONS" && normalized_path.starts_with("/v1/")
+    method != "OPTIONS"
+        && (normalized_path.starts_with("/v1/") || normalized_path.starts_with("/api/"))
+}
+
+fn handle_dynamic_protocol_route(
+    method: &str,
+    normalized_path: &str,
+    body: &str,
+) -> Option<ApiHttpResponse> {
+    if method == "GET" && normalized_path == "/api/gemini/v1beta/models" {
+        return Some(json_response(200, &gemini_model_list()));
+    }
+    if method == "GET" {
+        if let Some(model) = gemini_model_metadata_path(normalized_path) {
+            return Some(json_response(
+                200,
+                &gemini_model_metadata(&format!("models/{model}")),
+            ));
+        }
+        if let Some((project, location)) = vertex_models_path(normalized_path) {
+            return Some(json_response(200, &vertex_model_list(&project, &location)));
+        }
+    }
+    if method == "POST" {
+        if let Some(model) = gemini_model_action_path(normalized_path, "generateContent") {
+            return Some(handle_gemini_generate_content_request(&model, false, body));
+        }
+        if let Some(model) = gemini_model_action_path(normalized_path, "streamGenerateContent") {
+            return Some(handle_gemini_generate_content_request(&model, true, body));
+        }
+        if let Some(route) = vertex_model_action_path(normalized_path, "generateContent") {
+            return Some(handle_gemini_generate_content_request(
+                &route.model,
+                false,
+                body,
+            ));
+        }
+        if let Some(route) = vertex_model_action_path(normalized_path, "streamGenerateContent") {
+            return Some(handle_gemini_generate_content_request(
+                &route.model,
+                true,
+                body,
+            ));
+        }
+    }
+    None
+}
+
+fn handle_openai_models_request() -> ApiHttpResponse {
+    let model_id = canonical_model_id();
+    json_response(
+        200,
+        &json!({
+            "object": "list",
+            "data": [{
+                "id": model_id,
+                "object": "model",
+                "created": 0,
+                "owned_by": "link-assistant"
+            }],
+            "models": [{
+                "id": model_id,
+                "name": model_id,
+                "context_window": 60_000,
+                "max_output_tokens": 8_192
+            }],
+            "rate_limit": {
+                "requests_per_minute": 60,
+                "tokens_per_minute": 60_000
+            }
+        }),
+    )
+}
+
+fn handle_gemini_generate_content_request(
+    model: &str,
+    stream: bool,
+    body: &str,
+) -> ApiHttpResponse {
+    let model = normalize_protocol_model_id(model);
+    if let Some(response) = unsupported_model_response(Some(&model)) {
+        return response;
+    }
+    match serde_json::from_str::<GeminiGenerateContentRequest>(body) {
+        Ok(request) => {
+            let solver = http_solver();
+            let store = SyncStore::open();
+            let response = create_gemini_generate_content_response_with_solver_and_memory(
+                &request,
+                &model,
+                &solver,
+                store.events(),
+            );
+            if stream {
+                ApiHttpResponse {
+                    status_code: 200,
+                    content_type: "text/event-stream",
+                    body: gemini_response_sse(&response),
+                }
+            } else {
+                json_response(200, &response)
+            }
+        }
+        Err(error) => error_response(400, &format!("invalid generateContent request: {error}")),
+    }
+}
+
+fn normalize_protocol_model_id(model: &str) -> String {
+    model
+        .strip_prefix("models/")
+        .unwrap_or(model)
+        .trim()
+        .to_owned()
+}
+
+fn gemini_model_metadata_path(path: &str) -> Option<String> {
+    let model = path.strip_prefix("/api/gemini/v1beta/models/")?;
+    (!model.contains(':')).then(|| normalize_protocol_model_id(model))
+}
+
+fn gemini_model_action_path(path: &str, action: &str) -> Option<String> {
+    let model = path.strip_prefix("/api/gemini/v1beta/models/")?;
+    let suffix = format!(":{action}");
+    model.strip_suffix(&suffix).map(normalize_protocol_model_id)
+}
+
+fn vertex_models_path(path: &str) -> Option<(String, String)> {
+    let route = path.strip_prefix("/api/vertex/v1/projects/")?;
+    let (project, route) = route.split_once("/locations/")?;
+    let (location, tail) = route.split_once("/publishers/google/models")?;
+    tail.is_empty()
+        .then(|| (project.to_owned(), location.to_owned()))
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct VertexModelRoute {
+    model: String,
+}
+
+fn vertex_model_action_path(path: &str, action: &str) -> Option<VertexModelRoute> {
+    let route = path.strip_prefix("/api/vertex/v1/projects/")?;
+    let (_project, route) = route.split_once("/locations/")?;
+    let (_location, model) = route.split_once("/publishers/google/models/")?;
+    let suffix = format!(":{action}");
+    let model = model.strip_suffix(&suffix)?;
+    Some(VertexModelRoute {
+        model: normalize_protocol_model_id(model),
+    })
 }
 
 fn first_non_empty_env(names: &[&str]) -> Option<String> {
@@ -236,6 +394,16 @@ fn bearer_token_from_headers<'a>(headers: &'a [(&str, &str)]) -> Option<&'a str>
         } else {
             None
         }
+    })
+}
+
+fn api_key_from_headers<'a>(headers: &'a [(&str, &str)]) -> Option<&'a str> {
+    headers.iter().find_map(|(name, value)| {
+        (name.eq_ignore_ascii_case("x-api-key")
+            || name.eq_ignore_ascii_case("x-goog-api-key")
+            || name.eq_ignore_ascii_case("anthropic-api-key"))
+        .then(|| value.trim())
+        .filter(|value| !value.is_empty())
     })
 }
 
@@ -421,6 +589,126 @@ fn chat_completion_sse_response(
     }
 }
 
+/// Serialise a completed OpenAI Responses object as the Responses SSE protocol.
+///
+/// Codex consumes named `response.*` events and treats a closed socket before
+/// `response.completed` as a transport failure. The solver is still
+/// non-incremental, so this emits one deterministic delta per completed output
+/// item while preserving the protocol event sequence expected by streaming
+/// clients.
+fn response_sse_response(response: &ResponseObject) -> ApiHttpResponse {
+    let mut body = String::new();
+    let mut created_response = response.clone();
+    created_response.status = String::from("in_progress");
+    created_response.output.clear();
+
+    push_sse_event(
+        &mut body,
+        "response.created",
+        &json!({
+            "type": "response.created",
+            "response": created_response
+        }),
+    );
+
+    for (output_index, item) in response.output.iter().enumerate() {
+        push_sse_event(
+            &mut body,
+            "response.output_item.added",
+            &json!({
+                "type": "response.output_item.added",
+                "response_id": response.id,
+                "output_index": output_index,
+                "item": item
+            }),
+        );
+        match item {
+            ResponseOutputItem::Message(message) => {
+                for (content_index, content) in message.content.iter().enumerate() {
+                    if content.text.is_empty() {
+                        continue;
+                    }
+                    push_sse_event(
+                        &mut body,
+                        "response.output_text.delta",
+                        &json!({
+                            "type": "response.output_text.delta",
+                            "response_id": response.id,
+                            "item_id": message.id,
+                            "output_index": output_index,
+                            "content_index": content_index,
+                            "delta": &content.text
+                        }),
+                    );
+                    push_sse_event(
+                        &mut body,
+                        "response.output_text.done",
+                        &json!({
+                            "type": "response.output_text.done",
+                            "response_id": response.id,
+                            "item_id": message.id,
+                            "output_index": output_index,
+                            "content_index": content_index,
+                            "text": &content.text
+                        }),
+                    );
+                }
+            }
+            ResponseOutputItem::FunctionCall(call) => {
+                if !call.arguments.is_empty() {
+                    push_sse_event(
+                        &mut body,
+                        "response.function_call_arguments.delta",
+                        &json!({
+                            "type": "response.function_call_arguments.delta",
+                            "response_id": response.id,
+                            "item_id": call.id,
+                            "output_index": output_index,
+                            "delta": &call.arguments
+                        }),
+                    );
+                    push_sse_event(
+                        &mut body,
+                        "response.function_call_arguments.done",
+                        &json!({
+                            "type": "response.function_call_arguments.done",
+                            "response_id": response.id,
+                            "item_id": call.id,
+                            "output_index": output_index,
+                            "arguments": &call.arguments
+                        }),
+                    );
+                }
+            }
+        }
+        push_sse_event(
+            &mut body,
+            "response.output_item.done",
+            &json!({
+                "type": "response.output_item.done",
+                "response_id": response.id,
+                "output_index": output_index,
+                "item": item
+            }),
+        );
+    }
+
+    push_sse_event(
+        &mut body,
+        "response.completed",
+        &json!({
+            "type": "response.completed",
+            "response": response
+        }),
+    );
+
+    ApiHttpResponse {
+        status_code: 200,
+        content_type: "text/event-stream",
+        body,
+    }
+}
+
 /// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)
 /// with a `choices` entry and emit it as an SSE `data:` frame.
 fn sse_chunk(base: &Value, choice: &Value) -> String {
@@ -429,6 +717,15 @@ fn sse_chunk(base: &Value, choice: &Value) -> String {
         map.insert(String::from("choices"), Value::Array(vec![choice.clone()]));
     }
     format!("data: {merged}\n\n")
+}
+
+fn push_sse_event(body: &mut String, event: &str, data: &Value) {
+    body.push_str("event: ");
+    body.push_str(event);
+    body.push('\n');
+    body.push_str("data: ");
+    body.push_str(&data.to_string());
+    body.push_str("\n\n");
 }
 
 /// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`
@@ -635,7 +932,7 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
          content-length: {}\r\n\
          access-control-allow-origin: *\r\n\
          access-control-allow-methods: GET,POST,OPTIONS\r\n\
-         access-control-allow-headers: content-type,authorization\r\n\
+         access-control-allow-headers: content-type,authorization,x-api-key,x-goog-api-key,anthropic-api-key\r\n\
          connection: close\r\n\
          \r\n{}",
         response.content_type,

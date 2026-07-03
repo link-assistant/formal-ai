@@ -16,7 +16,8 @@ The current implementation covers the surface area requested in issue #1:
 
 - library API for symbolic prompt handling
 - CLI chat command
-- HTTP API server with `/v1/chat/completions` and `/v1/responses`
+- HTTP API server with protocol namespaces under `/api/openai/v1`,
+  `/api/anthropic/v1`, `/api/gemini/v1beta`, and `/api/vertex/v1`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
 - Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.1.1`
@@ -117,7 +118,7 @@ experiments/verify-hello-world-examples.sh
 Example API call:
 
 ```bash
-curl -s http://127.0.0.1:8080/v1/chat/completions \
+curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
   -H 'content-type: application/json' \
   -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
 ```
@@ -126,27 +127,34 @@ The canonical model id is `formal-ai`. The API also accepts
 `@link-assistant/formal-ai`, `link-assistant/formal-ai`, `formal-ai-latest`,
 and `latest` as case-insensitive aliases, and responses return `formal-ai`.
 
-To require bearer authentication on `/v1/*` routes, set
+To require bearer authentication on `/api/*` and `/v1/*` routes, set
 `FORMAL_AI_API_BEARER_TOKEN` before starting the server and send the matching
-header:
+bearer token or protocol API-key header:
 
 ```bash
 FORMAL_AI_API_BEARER_TOKEN=local-test-token cargo run -- serve --host 127.0.0.1 --port 8080
-curl -s http://127.0.0.1:8080/v1/models \
+curl -s http://127.0.0.1:8080/api/openai/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
 
 ## Agentic AI Tools
 
-Run the local HTTP server before connecting terminal agents. The server binds
-to loopback in these examples and exposes the same symbolic engine through the
-OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages envelopes:
+Run the local HTTP server before connecting terminal agents. The server binds to
+loopback in these examples and exposes the same symbolic engine through
+protocol-specific API namespaces:
 
 ```bash
 cargo run -- serve --host 127.0.0.1 --port 8080
 curl -s http://127.0.0.1:8080/health
-curl -s http://127.0.0.1:8080/v1/models
+curl -s http://127.0.0.1:8080/api/openai/v1/models
+curl -s http://127.0.0.1:8080/api/gemini/v1beta/models
 ```
+
+Primary routes live under `/api/<protocol>/...`: OpenAI at
+`/api/openai/v1`, Anthropic at `/api/anthropic/v1`, Gemini at
+`/api/gemini/v1beta`, and Vertex at `/api/vertex/v1`. Existing `/v1/models`,
+`/v1/chat/completions`, `/v1/responses`, and `/v1/messages` aliases remain for
+older local configs.
 
 If you enabled bearer auth, export the same value for the CLI you connect:
 
@@ -161,7 +169,7 @@ deliberately exposing it behind your own authentication boundary.
 ### Codex CLI
 
 Codex custom providers use the Responses wire API, so point Codex at the
-server's `/v1` base URL and keep `wire_api = "responses"` in
+server's `/api/openai/v1` base URL and keep `wire_api = "responses"` in
 `~/.codex/config.toml`:
 
 ```toml
@@ -170,7 +178,7 @@ model = "formal-ai"
 
 [model_providers.formal-ai]
 name = "formal-ai local server"
-base_url = "http://127.0.0.1:8080/v1"
+base_url = "http://127.0.0.1:8080/api/openai/v1"
 env_key = "FORMAL_AI_API_KEY"
 wire_api = "responses"
 ```
@@ -182,10 +190,11 @@ codex "summarize the local reasoning trace"
 ### Claude Code
 
 Claude Code talks to the Anthropic Messages API. formal-ai serves that adapter
-at `/v1/messages`, so use the server root as `ANTHROPIC_BASE_URL`:
+at `/api/anthropic/v1/messages`, so use the Anthropic namespace as
+`ANTHROPIC_BASE_URL`:
 
 ```bash
-export ANTHROPIC_BASE_URL="http://127.0.0.1:8080"
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8080/api/anthropic"
 export ANTHROPIC_API_KEY="${FORMAL_AI_API_KEY:-local-test-token}"
 claude
 ```
@@ -193,7 +202,7 @@ claude
 ### OpenCode
 
 OpenCode can call formal-ai through its OpenAI-compatible provider package,
-which targets `/v1/chat/completions`. Add a local provider in
+which targets `/api/openai/v1/chat/completions`. Add a local provider in
 `~/.config/opencode/opencode.json`. This example uses the provider id
 `formalai`, so the model selector is `formalai/formal-ai`:
 
@@ -205,7 +214,7 @@ which targets `/v1/chat/completions`. Add a local provider in
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://127.0.0.1:8080/v1",
+        "baseURL": "http://127.0.0.1:8080/api/openai/v1",
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {
@@ -223,6 +232,39 @@ which targets `/v1/chat/completions`. Add a local provider in
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
 opencode run -m formalai/formal-ai "hi"
 # Hi, how may I help you?
+```
+
+### Gemini CLI
+
+Gemini-compatible clients can use the native Gemini `generateContent` and
+`streamGenerateContent` routes under `/api/gemini/v1beta`:
+
+```bash
+export GEMINI_API_KEY="${FORMAL_AI_API_KEY:-local-test-token}"
+export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:8080/api/gemini"
+gemini -m formal-ai -p "hi"
+```
+
+Equivalent raw request:
+
+```bash
+curl -s http://127.0.0.1:8080/api/gemini/v1beta/models/formal-ai:generateContent \
+  -H 'content-type: application/json' \
+  -d '{"contents":[{"role":"user","parts":[{"text":"hi"}]}]}'
+```
+
+### Vertex AI Clients
+
+Vertex-shaped clients can use the Google publisher-model route under
+`/api/vertex/v1`:
+
+```bash
+export GOOGLE_VERTEX_BASE_URL="http://127.0.0.1:8080/api/vertex"
+curl -s \
+  http://127.0.0.1:8080/api/vertex/v1/projects/local/locations/us-central1/publishers/google/models/formal-ai:generateContent \
+  -H 'content-type: application/json' \
+  -H "x-goog-api-key: ${FORMAL_AI_API_KEY:-local-test-token}" \
+  -d '{"contents":[{"role":"user","parts":[{"text":"hi"}]}]}'
 ```
 
 ### Link Assistant Agent CLI
@@ -244,7 +286,7 @@ formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://127.0.0.1:8080/v1",
+        "baseURL": "http://127.0.0.1:8080/api/openai/v1",
         "apiKey": "{env:FORMAL_AI_API_KEY}"
       },
       "models": {

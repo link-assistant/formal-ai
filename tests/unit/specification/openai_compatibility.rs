@@ -194,6 +194,10 @@ fn http_models_endpoint_lists_at_least_one_model() {
     let json: serde_json::Value = serde_json::from_str(&response.body).unwrap();
     assert_eq!(json["object"], "list");
     assert!(json["data"].as_array().map_or(0, Vec::len) >= 1);
+    assert!(
+        json["models"].as_array().map_or(0, Vec::len) >= 1,
+        "model list should also expose Codex-compatible `models` metadata"
+    );
 }
 
 #[test]
@@ -392,6 +396,106 @@ fn http_chat_completions_route_returns_completion_object() {
 }
 
 #[test]
+fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
+    let openai_models = handle_api_request("GET", "/api/openai/v1/models", "");
+    assert_eq!(openai_models.status_code, 200);
+    let openai_json: serde_json::Value = serde_json::from_str(&openai_models.body).unwrap();
+    assert_eq!(openai_json["data"][0]["id"], "formal-ai");
+
+    let legacy_models = handle_api_request("GET", "/v1/models", "");
+    assert_eq!(legacy_models.status_code, 200);
+    assert_eq!(openai_models.body, legacy_models.body);
+
+    let graph = handle_api_request("GET", "/api/formal-ai/v1/graph", "");
+    assert_eq!(graph.status_code, 200);
+    assert!(
+        graph.body.contains("nodes"),
+        "Formal AI native graph should be available under /api/formal-ai/v1"
+    );
+}
+
+#[test]
+fn responses_stream_true_emits_responses_sse_protocol() {
+    let body = serde_json::json!({
+        "model": "formal-ai",
+        "input": "Hi",
+        "stream": true
+    })
+    .to_string();
+    let response = handle_api_request("POST", "/api/openai/v1/responses", &body);
+    assert_eq!(response.status_code, 200);
+    assert!(
+        response.content_type.contains("text/event-stream"),
+        "streaming Responses must use SSE content-type, got: {}",
+        response.content_type
+    );
+    let events = sse_event_names(&response.body);
+    assert_eq!(events.first().copied(), Some("response.created"));
+    assert!(events.contains(&"response.output_item.added"));
+    assert!(events.contains(&"response.output_text.delta"));
+    assert!(events.contains(&"response.output_item.done"));
+    assert_eq!(events.last().copied(), Some("response.completed"));
+    assert!(
+        response.body.contains("Hi, how may I help you?"),
+        "stream should contain output_text delta data: {}",
+        response.body
+    );
+}
+
+#[test]
+fn gemini_and_vertex_protocols_share_the_solver_with_native_model_lists() {
+    let gemini_models = handle_api_request("GET", "/api/gemini/v1beta/models", "");
+    assert_eq!(gemini_models.status_code, 200);
+    let gemini_json: serde_json::Value = serde_json::from_str(&gemini_models.body).unwrap();
+    assert_eq!(gemini_json["models"][0]["name"], "models/formal-ai");
+    assert!(gemini_json["models"][0]["supportedGenerationMethods"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|method| method == "generateContent"));
+
+    let gemini_body = serde_json::json!({
+        "contents": [{"role": "user", "parts": [{"text": "Hi"}]}]
+    })
+    .to_string();
+    let gemini_response = handle_api_request(
+        "POST",
+        "/api/gemini/v1beta/models/formal-ai:generateContent",
+        &gemini_body,
+    );
+    assert_eq!(gemini_response.status_code, 200);
+    let gemini: serde_json::Value = serde_json::from_str(&gemini_response.body).unwrap();
+    assert_eq!(
+        gemini["candidates"][0]["content"]["parts"][0]["text"],
+        "Hi, how may I help you?"
+    );
+
+    let vertex_models = handle_api_request(
+        "GET",
+        "/api/vertex/v1/projects/local/locations/us-central1/publishers/google/models",
+        "",
+    );
+    assert_eq!(vertex_models.status_code, 200);
+    let vertex_json: serde_json::Value = serde_json::from_str(&vertex_models.body).unwrap();
+    assert_eq!(
+        vertex_json["publisherModels"][0]["name"],
+        "projects/local/locations/us-central1/publishers/google/models/formal-ai"
+    );
+
+    let vertex_response = handle_api_request(
+        "POST",
+        "/api/vertex/v1/projects/local/locations/us-central1/publishers/google/models/formal-ai:generateContent",
+        &gemini_body,
+    );
+    assert_eq!(vertex_response.status_code, 200);
+    let vertex: serde_json::Value = serde_json::from_str(&vertex_response.body).unwrap();
+    assert_eq!(
+        vertex["candidates"][0]["content"]["parts"][0]["text"],
+        "Hi, how may I help you?"
+    );
+}
+
+#[test]
 fn http_chat_completion_queries_persisted_memory_with_natural_language() {
     let response = with_recall_memory(|| {
         let body = serde_json::json!({
@@ -519,6 +623,12 @@ fn memory_event(
 fn memory_env_lock() -> MutexGuard<'static, ()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
+}
+
+fn sse_event_names(body: &str) -> Vec<&str> {
+    body.lines()
+        .filter_map(|line| line.strip_prefix("event: "))
+        .collect()
 }
 
 #[test]
