@@ -519,6 +519,30 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "statement_verification:assessment" => {
                 format!("statement_verification:assessment:{}", event.payload)
             }
+            "market_price_claim:claim_count" => {
+                format!("market_price_claim:claim_count:{}", event.payload)
+            }
+            "market_price_claim:claim" => {
+                format!("market_price_claim:claim:{}", event.payload)
+            }
+            "market_price_claim:asset" => {
+                format!("market_price_claim:asset:{}", event.payload)
+            }
+            "market_price_claim:period" => {
+                format!("market_price_claim:period:{}", event.payload)
+            }
+            "market_price_claim:claimed_price" => {
+                format!("market_price_claim:claimed_price:{}", event.payload)
+            }
+            "market_price_claim:source" => {
+                format!("market_price_claim:source:{}", event.payload)
+            }
+            "market_price_claim:range" => {
+                format!("market_price_claim:range:{}", event.payload)
+            }
+            "market_price_claim:assessment" => {
+                format!("market_price_claim:assessment:{}", event.payload)
+            }
             "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
             "docs_method:request" => format!("docs_method:request:{}", event.id),

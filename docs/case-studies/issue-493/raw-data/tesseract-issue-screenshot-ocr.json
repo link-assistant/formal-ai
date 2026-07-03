@@ -1,0 +1,11 @@
+{
+  "image": "docs/case-studies/issue-493/assets/issue-493-screenshot.jpg",
+  "language": "eng",
+  "tesseract": "7.0.0",
+  "confidence": 90,
+  "text": "@-: o-\n@TedPillows (GR\n$ETH 2\n\nETH in 2021: $1,700\n\nETH in 2022: $1,700\n\nETH in 2023: $1,700\n\nETH in 2024: $1,700\n\nETH in 2025: $1,700\n\nETH in 2026: $1,700\n\nETH before BitMine buying: $1,700\n\nETH after BitMine buying: $1,700\n\nETH before ETF approval: $1,700\n\nETH after ETF approval: $1,700\n\nETH during anti-crypto President: $1,700\n\nETH during pro-crypto President: $1,700\n\nETH before US-Iran war: $1,700\n\nETH after US-Iran war: $1,700\n\nPerformance of $ETH is an absolute joke.",
+  "checks": {
+    "containsEth2024Claim": true,
+    "containsRepeatedEthClaims": true
+  }
+}

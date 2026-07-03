@@ -34,22 +34,96 @@ const RML_SENTENCE_TERMINATORS = new Set([
 ]);
 const RML_MIN_STATEMENT_WORDS = 3;
 const RML_MIN_STATEMENT_CHARS = 6;
+const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED = "contradicted";
+const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE = "within_recorded_range";
+const MARKET_PRICE_ETH_ALIASES = [
+  "$eth",
+  "eth",
+  "ethereum",
+  "etherium",
+  "эфириум",
+  "эфир",
+  "以太坊",
+  "एथेरियम",
+];
+const MARKET_PRICE_REFERENCES = [
+  {
+    asset: "ETH",
+    assetLabel: "Ethereum",
+    aliases: MARKET_PRICE_ETH_ALIASES,
+    quoteCurrency: "USDT",
+    period: "2024",
+    sourceId: "binance_ethusdt_1d_2024",
+    sourceLabel: "Binance ETHUSDT daily klines",
+    sourceUrl:
+      "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=1d&startTime=1704067200000&endTime=1735689599999&limit=1000",
+    observedMinPrice: 2100.0,
+    observedMinDate: "2024-01-03",
+    observedMaxPrice: 4107.8,
+    observedMaxDate: "2024-12-16",
+  },
+];
 
 function rmlDecimal(value) {
   // Match Rust's fixed 6-decimal grid so identical inputs serialise identically.
   return Number(value).toFixed(6);
 }
 
-function documentOriginalityFullTextSample(prompt) {
+function marketPriceDecimal(value) {
+  return Number(value).toFixed(2);
+}
+
+function documentOriginalityTextSamplePrefixValue(line) {
+  for (const prefix of ["Text excerpt:", "Text sample:", "OCR text:"]) {
+    if (line.startsWith(prefix)) return line.slice(prefix.length);
+  }
+  return null;
+}
+
+function isDocumentOriginalityAttachmentFileLine(line) {
+  return /^\d+\.\s+.+?\s+\([^)]*\)$/u.test(line);
+}
+
+function isDocumentOriginalityContextBoundary(line) {
+  return (
+    /^attached files:$/iu.test(line) ||
+    isDocumentOriginalityAttachmentFileLine(line) ||
+    line.startsWith("Text omitted:") ||
+    line.startsWith("Text unavailable:") ||
+    line.startsWith("OCR unavailable:")
+  );
+}
+
+function documentOriginalityFullTextSamples(prompt) {
+  const samples = [];
+  let current = null;
+  const pushCurrent = () => {
+    if (typeof current !== "string") return;
+    const sample = current.trim();
+    if (sample) samples.push(sample);
+    current = null;
+  };
   for (const rawLine of String(prompt || "").split(/\r?\n/u)) {
     const line = rawLine.trim();
-    for (const prefix of ["Text excerpt:", "Text sample:", "OCR text:"]) {
-      if (!line.startsWith(prefix)) continue;
-      const sample = line.slice(prefix.length).trim();
-      if (sample) return sample;
+    const prefixValue = documentOriginalityTextSamplePrefixValue(line);
+    if (prefixValue !== null) {
+      pushCurrent();
+      current = prefixValue.trim();
+      continue;
     }
+    if (typeof current !== "string") continue;
+    if (!line || isDocumentOriginalityContextBoundary(line)) {
+      pushCurrent();
+      continue;
+    }
+    current = current ? `${current}\n${line}` : line;
   }
-  return "";
+  pushCurrent();
+  return samples;
+}
+
+function documentOriginalityFullTextSample(prompt) {
+  return documentOriginalityFullTextSamples(prompt).join("\n\n");
 }
 
 function extractVerificationStatements(sample) {
@@ -94,11 +168,250 @@ function verificationAssessmentTrace() {
   const prior = RML_ASSUMED_TRUE_PRIOR;
   const support = 0;
   const contradiction = 0;
+  return verificationAssessmentTraceWithMasses(support, contradiction);
+}
+
+function verificationAssessmentTraceWithMasses(support, contradiction) {
+  const prior = RML_ASSUMED_TRUE_PRIOR;
   const raised = 1 - (1 - prior) * (1 - support);
   const posterior = raised * (1 - contradiction);
   return (
     `prior=${rmlDecimal(prior)} support=${rmlDecimal(support)} ` +
     `contradiction=${rmlDecimal(contradiction)} posterior=${rmlDecimal(posterior)} ignored=0`
+  );
+}
+
+function isAsciiAlnum(character) {
+  return /^[0-9a-z]$/iu.test(character || "");
+}
+
+function aliasOccursAt(lower, alias, position) {
+  const before = position > 0 ? lower.charAt(position - 1) : "";
+  const after = lower.charAt(position + alias.length);
+  const first = alias.charAt(0);
+  const last = alias.charAt(alias.length - 1);
+  const startsWithWord = isAsciiAlnum(first);
+  const endsWithWord = isAsciiAlnum(last);
+  return (
+    (!startsWithWord || !isAsciiAlnum(before)) &&
+    (!endsWithWord || !isAsciiAlnum(after))
+  );
+}
+
+function aliasOccurs(fragment, alias) {
+  if (/^[\x00-\x7F]*$/u.test(alias)) {
+    const lower = String(fragment || "").toLocaleLowerCase("en-US");
+    const needle = alias.toLocaleLowerCase("en-US");
+    let position = lower.indexOf(needle);
+    while (position >= 0) {
+      if (aliasOccursAt(lower, needle, position)) return true;
+      position = lower.indexOf(needle, position + 1);
+    }
+    return false;
+  }
+  return String(fragment || "").includes(alias);
+}
+
+function asciiAssetPositions(line) {
+  const lower = String(line || "").toLocaleLowerCase("en-US");
+  const positions = [];
+  for (const alias of ["$eth", "ethereum", "etherium", "eth"]) {
+    let position = lower.indexOf(alias);
+    while (position >= 0) {
+      if (aliasOccursAt(lower, alias, position)) positions.push(position);
+      position = lower.indexOf(alias, position + 1);
+    }
+  }
+  return Array.from(new Set(positions)).sort((left, right) => left - right);
+}
+
+function marketPriceFragments(sample) {
+  const fragments = [];
+  for (const rawLine of String(sample || "").split(/\r?\n/u)) {
+    const line = rawLine.split(/\s+/u).filter(Boolean).join(" ");
+    if (!line) continue;
+    const positions = asciiAssetPositions(line);
+    if (positions.length <= 1) {
+      fragments.push(line);
+      continue;
+    }
+    for (let index = 0; index < positions.length; index += 1) {
+      const start = positions[index];
+      const end = index + 1 < positions.length ? positions[index + 1] : line.length;
+      const fragment = line.slice(start, end).trim();
+      if (fragment) fragments.push(fragment);
+    }
+  }
+  return fragments;
+}
+
+function extractMarketPriceYear(fragment) {
+  const matches = String(fragment || "").match(/[0-9]+/gu) || [];
+  for (const candidate of matches) {
+    if (candidate.length !== 4) continue;
+    const year = Number.parseInt(candidate, 10);
+    if (year >= 1900 && year <= 2100) return candidate;
+  }
+  return "";
+}
+
+function parseNumberFromStart(value) {
+  let normalized = "";
+  let sawDigit = false;
+  for (const character of Array.from(String(value || "").trimStart())) {
+    if (/[0-9]/u.test(character)) {
+      sawDigit = true;
+      normalized += character;
+    } else if (character === ".") {
+      normalized += character;
+    } else if (character === "," || character === "_" || character === " " || character === "\u00a0") {
+      continue;
+    } else {
+      break;
+    }
+  }
+  if (!sawDigit) return null;
+  const parsed = Number.parseFloat(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function parseNumberBefore(value) {
+  const characters = Array.from(String(value || "").trimEnd()).reverse();
+  const kept = [];
+  for (const character of characters) {
+    if (
+      /[0-9]/u.test(character) ||
+      character === "," ||
+      character === "." ||
+      character === "_" ||
+      character === " " ||
+      character === "\u00a0"
+    ) {
+      kept.push(character);
+    } else {
+      break;
+    }
+  }
+  return parseNumberFromStart(kept.reverse().join(""));
+}
+
+function extractCurrencyAmount(fragment, period) {
+  const text = String(fragment || "");
+  let searchStart = 0;
+  while (searchStart < text.length) {
+    const dollar = text.indexOf("$", searchStart);
+    if (dollar < 0) break;
+    const price = parseNumberFromStart(text.slice(dollar + 1));
+    if (price !== null && Math.abs(price - Number(period)) > Number.EPSILON) {
+      return price;
+    }
+    searchStart = dollar + 1;
+  }
+  const lower = text.toLocaleLowerCase();
+  for (const marker of ["usd", "usdt", "доллар", "美元", "डॉलर"]) {
+    const position = lower.indexOf(marker);
+    if (position < 0) continue;
+    const after = parseNumberFromStart(text.slice(position + marker.length));
+    if (after !== null) return after;
+    const before = parseNumberBefore(text.slice(0, position));
+    if (before !== null) return before;
+  }
+  return null;
+}
+
+function extractMarketPriceClaims(sample) {
+  const claims = [];
+  for (const fragment of marketPriceFragments(sample)) {
+    const reference = MARKET_PRICE_REFERENCES.find((item) =>
+      item.aliases.some((alias) => aliasOccurs(fragment, alias)),
+    );
+    if (!reference) continue;
+    const period = extractMarketPriceYear(fragment);
+    if (!period) continue;
+    const claimedPrice = extractCurrencyAmount(fragment, period);
+    if (claimedPrice === null) continue;
+    const claim = {
+      asset: reference.asset,
+      assetLabel: reference.assetLabel,
+      period,
+      claimedPrice,
+      currency: "USD",
+      statement: fragment.trim(),
+    };
+    if (
+      !claims.some(
+        (existing) =>
+          existing.asset === claim.asset &&
+          existing.period === claim.period &&
+          Math.abs(existing.claimedPrice - claim.claimedPrice) < Number.EPSILON &&
+          existing.statement === claim.statement,
+      )
+    ) {
+      claims.push(claim);
+    }
+  }
+  return claims;
+}
+
+function assessMarketPriceClaims(claims) {
+  return claims
+    .map((claim) => {
+      const reference = MARKET_PRICE_REFERENCES.find(
+        (item) => item.asset === claim.asset && item.period === claim.period,
+      );
+      if (!reference) return null;
+      const status =
+        claim.claimedPrice < reference.observedMinPrice ||
+        claim.claimedPrice > reference.observedMaxPrice
+          ? MARKET_PRICE_CLAIM_STATUS_CONTRADICTED
+          : MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE;
+      const contradiction = status === MARKET_PRICE_CLAIM_STATUS_CONTRADICTED ? 0.95 : 0;
+      const support = status === MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE ? 0.95 : 0;
+      return {
+        claim,
+        status,
+        sourceId: reference.sourceId,
+        sourceLabel: reference.sourceLabel,
+        sourceUrl: reference.sourceUrl,
+        quoteCurrency: reference.quoteCurrency,
+        observedMinPrice: reference.observedMinPrice,
+        observedMinDate: reference.observedMinDate,
+        observedMaxPrice: reference.observedMaxPrice,
+        observedMaxDate: reference.observedMaxDate,
+        posterior: verificationAssessmentTraceWithMasses(support, contradiction)
+          .match(/posterior=([0-9.]+)/u)?.[1] || rmlDecimal(0),
+      };
+    })
+    .filter(Boolean);
+}
+
+function marketPriceAssessmentTrace(assessment) {
+  return (
+    `asset=${assessment.claim.asset} period=${assessment.claim.period} ` +
+    `claimed=${marketPriceDecimal(assessment.claim.claimedPrice)} ` +
+    `status=${assessment.status} source=${assessment.sourceId} ` +
+    `min=${marketPriceDecimal(assessment.observedMinPrice)} ` +
+    `min_date=${assessment.observedMinDate} ` +
+    `max=${marketPriceDecimal(assessment.observedMaxPrice)} ` +
+    `max_date=${assessment.observedMaxDate} posterior=${assessment.posterior}`
+  );
+}
+
+function marketPriceSummarySentence(assessment) {
+  if (assessment.status === MARKET_PRICE_CLAIM_STATUS_CONTRADICTED) {
+    return (
+      `${assessment.claim.statement} is contradicted: ${assessment.sourceLabel} reports ` +
+      `${assessment.claim.asset} ${assessment.quoteCurrency} daily candles in ` +
+      `${assessment.claim.period} stayed between ` +
+      `$${marketPriceDecimal(assessment.observedMinPrice)} on ${assessment.observedMinDate} ` +
+      `and $${marketPriceDecimal(assessment.observedMaxPrice)} on ${assessment.observedMaxDate}.`
+    );
+  }
+  return (
+    `${assessment.claim.statement} is within the recorded ` +
+    `${assessment.claim.asset} ${assessment.quoteCurrency} daily candle range for ` +
+    `${assessment.claim.period} ($${marketPriceDecimal(assessment.observedMinPrice)} ` +
+    `to $${marketPriceDecimal(assessment.observedMaxPrice)}).`
   );
 }
 
@@ -116,7 +429,7 @@ function pushStatementVerificationEvidence(prompt, language, evidence) {
   evidence.push("relative_meta_logic:ignored_source_tier:unoriginal");
 
   const sample = documentOriginalityFullTextSample(prompt);
-  if (!sample) return;
+  if (!sample) return [];
   const statements = extractVerificationStatements(sample);
   evidence.push(`statement_verification:statement_count:${statements.length}`);
   for (const statement of statements) {
@@ -127,6 +440,34 @@ function pushStatementVerificationEvidence(prompt, language, evidence) {
     evidence.push("web_search:query_kind:document_originality_check");
     evidence.push(`statement_verification:assessment:${verificationAssessmentTrace()}`);
   }
+  const claims = extractMarketPriceClaims(sample);
+  const marketAssessments = assessMarketPriceClaims(claims);
+  if (claims.length > 0) {
+    evidence.push(`market_price_claim:claim_count:${claims.length}`);
+  }
+  for (const claim of claims) {
+    evidence.push(`market_price_claim:claim:${claim.statement}`);
+    evidence.push(`market_price_claim:asset:${claim.asset} (${claim.assetLabel})`);
+    evidence.push(`market_price_claim:period:${claim.period}`);
+    evidence.push(
+      `market_price_claim:claimed_price:${claim.currency} ${marketPriceDecimal(claim.claimedPrice)}`,
+    );
+  }
+  for (const assessment of marketAssessments) {
+    evidence.push(
+      `market_price_claim:source:${assessment.sourceId} ${assessment.sourceUrl}`,
+    );
+    evidence.push(
+      `market_price_claim:range:asset=${assessment.claim.asset} ` +
+        `period=${assessment.claim.period} source=${assessment.sourceId} ` +
+        `min=${marketPriceDecimal(assessment.observedMinPrice)} ` +
+        `min_date=${assessment.observedMinDate} ` +
+        `max=${marketPriceDecimal(assessment.observedMaxPrice)} ` +
+        `max_date=${assessment.observedMaxDate}`,
+    );
+    evidence.push(`market_price_claim:assessment:${marketPriceAssessmentTrace(assessment)}`);
+  }
+  return marketAssessments;
 }
 
 // --- Document-verification handler (issue #535) -----------------------------
@@ -173,21 +514,11 @@ function hasDocumentOriginalityTextSample(prompt) {
 }
 
 function documentOriginalityTextSample(prompt) {
-  for (const rawLine of String(prompt || "").split(/\r?\n/u)) {
-    const line = rawLine.trim();
-    for (const prefix of ["Text excerpt:", "Text sample:", "OCR text:"]) {
-      if (!line.startsWith(prefix)) continue;
-      const sample = line
-        .slice(prefix.length)
-        .trim()
-        .split(/\s+/u)
-        .filter(Boolean)
-        .slice(0, 14)
-        .join(" ");
-      if (sample) return sample;
-    }
-  }
-  return "";
+  return documentOriginalityFullTextSample(prompt)
+    .split(/\s+/u)
+    .filter(Boolean)
+    .slice(0, 14)
+    .join(" ");
 }
 
 function documentOriginalityQuery(prompt, attachments) {
@@ -199,12 +530,30 @@ function documentOriginalityQuery(prompt, attachments) {
   return "document plagiarism originality uniqueness";
 }
 
-function documentOriginalityContent(language, attachments, samplePresent) {
+function documentOriginalityContent(language, attachments, samplePresent, marketAssessments) {
   const target = attachments.length > 0 ? attachments.join(", ") : "provided text";
   const templateIntent = samplePresent
     ? "document_originality_check_sample_present"
     : "document_originality_check_sample_missing";
-  return answerFor(templateIntent, language).split("{target}").join(target);
+  let body = answerFor(templateIntent, language).split("{target}").join(target);
+  const contradicted = marketAssessments.filter(
+    (assessment) => assessment.status === MARKET_PRICE_CLAIM_STATUS_CONTRADICTED,
+  );
+  if (contradicted.length > 0) {
+    const heading =
+      language === "ru"
+        ? "Проверка ценовых утверждений"
+        : language === "hi"
+          ? "मूल्य दावों की जांच"
+          : language === "zh"
+            ? "价格声明核查"
+            : "Price claim check";
+    const summaries = contradicted
+      .map((assessment) => `- ${marketPriceSummarySentence(assessment)}`)
+      .join("\n");
+    body = `${body}\n\n${heading}:\n${summaries}`;
+  }
+  return body;
 }
 
 function tryDocumentOriginalityCheck(prompt, language) {
@@ -249,11 +598,16 @@ function tryDocumentOriginalityCheck(prompt, language) {
   evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
   evidence.push("web_search:query_kind:document_originality_check");
 
-  pushStatementVerificationEvidence(prompt, language, evidence);
+  const marketAssessments = pushStatementVerificationEvidence(prompt, language, evidence);
 
   return {
     intent: "document_originality_check",
-    content: documentOriginalityContent(language, attachments, samplePresent),
+    content: documentOriginalityContent(
+      language,
+      attachments,
+      samplePresent,
+      marketAssessments,
+    ),
     confidence: 0.84,
     evidence,
     query,
