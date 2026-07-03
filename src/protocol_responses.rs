@@ -3,7 +3,7 @@ use serde_json::Value;
 use crate::agentic_coding::planner::{tool_capability, Capability};
 use crate::protocol_policy::tool_definition_name;
 
-pub(crate) fn response_arguments_for_tool(
+pub(super) fn response_arguments_for_tool(
     tools: &[Value],
     tool_name: &str,
     arguments: String,
