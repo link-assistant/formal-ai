@@ -193,16 +193,17 @@ does not require a key.
 
 ### 4a. `codex` (OpenAI Codex CLI) - Responses API
 
-`codex` configures providers in `~/.codex/config.toml`. Current Codex provider
-configuration supports the Responses wire API, so keep `wire_api = "responses"`
-and use the server's `/api/openai/v1` base URL:
+`codex` configures providers in `~/.codex/config.toml`. Codex 0.142+ does not
+support `wire_api = "chat"`. Custom providers use the Responses wire API and
+Codex always streams, so keep `wire_api = "responses"` and use the server's
+`/api/openai/v1` base URL:
 
 ```toml
 # ~/.codex/config.toml
-model_provider = "formal-ai"
+model_provider = "formalai"
 model = "formal-ai"
 
-[model_providers.formal-ai]
+[model_providers.formalai]
 name = "formal-ai local server"
 base_url = "http://127.0.0.1:8080/api/openai/v1"
 env_key = "FORMAL_AI_API_KEY"
@@ -211,11 +212,24 @@ wire_api = "responses"
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-codex "summarise the reasoning graph for a greeting"
+codex exec --skip-git-repo-check --sandbox read-only "hi"
+# Hi, how may I help you?
 ```
 
-You can also select the provider per-invocation without editing the file:
-`codex --config model_provider=formal-ai --config model=formal-ai`.
+You can also select the provider per invocation without editing the file:
+
+```bash
+FORMAL_AI_API_KEY="sk-local-demo" codex exec \
+  -c 'model_providers.formalai.name="formal-ai local server"' \
+  -c 'model_providers.formalai.base_url="http://127.0.0.1:8080/api/openai/v1"' \
+  -c 'model_providers.formalai.env_key="FORMAL_AI_API_KEY"' \
+  -c 'model_providers.formalai.wire_api="responses"' \
+  -c 'model_provider="formalai"' \
+  -c 'model="formal-ai"' \
+  --skip-git-repo-check --sandbox read-only \
+  "hi"
+# Hi, how may I help you?
+```
 
 See the upstream
 [Codex configuration reference](https://developers.openai.com/codex/config-reference)

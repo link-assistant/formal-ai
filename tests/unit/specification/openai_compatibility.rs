@@ -415,31 +415,42 @@ fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
 }
 
 #[test]
-fn responses_stream_true_emits_responses_sse_protocol() {
+fn responses_stream_true_emits_responses_sse_protocol_on_openai_routes() {
     let body = serde_json::json!({
         "model": "formal-ai",
         "input": "Hi",
         "stream": true
     })
     .to_string();
-    let response = handle_api_request("POST", "/api/openai/v1/responses", &body);
-    assert_eq!(response.status_code, 200);
-    assert!(
-        response.content_type.contains("text/event-stream"),
-        "streaming Responses must use SSE content-type, got: {}",
-        response.content_type
-    );
-    let events = sse_event_names(&response.body);
-    assert_eq!(events.first().copied(), Some("response.created"));
-    assert!(events.contains(&"response.output_item.added"));
-    assert!(events.contains(&"response.output_text.delta"));
-    assert!(events.contains(&"response.output_item.done"));
-    assert_eq!(events.last().copied(), Some("response.completed"));
-    assert!(
-        response.body.contains("Hi, how may I help you?"),
-        "stream should contain output_text delta data: {}",
-        response.body
-    );
+    for path in ["/v1/responses", "/api/openai/v1/responses"] {
+        let response = handle_api_request("POST", path, &body);
+        assert_eq!(response.status_code, 200, "{path}");
+        assert!(
+            response.content_type.contains("text/event-stream"),
+            "streaming Responses must use SSE content-type on {path}, got: {}",
+            response.content_type
+        );
+        let events = sse_event_names(&response.body);
+        assert_eq!(events.first().copied(), Some("response.created"), "{path}");
+        assert!(
+            events.contains(&"response.output_item.added"),
+            "{path}: {events:?}"
+        );
+        assert!(
+            events.contains(&"response.output_text.delta"),
+            "{path}: {events:?}"
+        );
+        assert!(
+            events.contains(&"response.output_item.done"),
+            "{path}: {events:?}"
+        );
+        assert_eq!(events.last().copied(), Some("response.completed"), "{path}");
+        assert!(
+            response.body.contains("Hi, how may I help you?"),
+            "stream should contain output_text delta data on {path}: {}",
+            response.body
+        );
+    }
 }
 
 #[test]

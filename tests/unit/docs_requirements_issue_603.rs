@@ -61,8 +61,8 @@ fn issue_603_multi_protocol_gateway_docs_are_traceable() {
         ],
     );
     assert!(
-        !server_api.contains("wire_api = \"chat\""),
-        "Codex docs must stay on the Responses wire API"
+        !server_api.contains("\nwire_api = \"chat\"\n"),
+        "Codex config examples must stay on the Responses wire API"
     );
     assert!(
         !server_api.contains("export OPENAI_BASE_URL=\"http://127.0.0.1:8080/v1\""),

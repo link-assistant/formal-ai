@@ -168,15 +168,16 @@ deliberately exposing it behind your own authentication boundary.
 
 ### Codex CLI
 
-Codex custom providers use the Responses wire API, so point Codex at the
-server's `/api/openai/v1` base URL and keep `wire_api = "responses"` in
+Codex 0.142+ does not support `wire_api = "chat"`. Custom providers use the
+Responses wire API and Codex always streams, so keep `wire_api = "responses"`
+and point Codex at the server's `/api/openai/v1` base URL in
 `~/.codex/config.toml`:
 
 ```toml
-model_provider = "formal-ai"
+model_provider = "formalai"
 model = "formal-ai"
 
-[model_providers.formal-ai]
+[model_providers.formalai]
 name = "formal-ai local server"
 base_url = "http://127.0.0.1:8080/api/openai/v1"
 env_key = "FORMAL_AI_API_KEY"
@@ -184,7 +185,25 @@ wire_api = "responses"
 ```
 
 ```bash
-codex "summarize the local reasoning trace"
+export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
+codex exec --skip-git-repo-check --sandbox read-only "hi"
+# Hi, how may I help you?
+```
+
+For a one-shot invocation without editing `~/.codex/config.toml`, pass the same
+provider block through `-c`:
+
+```bash
+FORMAL_AI_API_KEY="sk-local-demo" codex exec \
+  -c 'model_providers.formalai.name="formal-ai local server"' \
+  -c 'model_providers.formalai.base_url="http://127.0.0.1:8080/api/openai/v1"' \
+  -c 'model_providers.formalai.env_key="FORMAL_AI_API_KEY"' \
+  -c 'model_providers.formalai.wire_api="responses"' \
+  -c 'model_provider="formalai"' \
+  -c 'model="formal-ai"' \
+  --skip-git-repo-check --sandbox read-only \
+  "hi"
+# Hi, how may I help you?
 ```
 
 ### Claude Code
