@@ -1,0 +1,15 @@
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783082618044)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.43s
+     Running tests/unit/mod.rs (target/debug/deps/unit-07594e216d449525)
+
+running 8 tests
+test issue_535::issue_535_russian_attachment_prompt_keeps_russian_language ... ok
+test issue_535::document_originality_check_cases_cover_every_supported_language ... ok
+test issue_535::issue_535_russian_attachment_originality_request_is_not_unknown ... ok
+test issue_535::telegram_document_attachment_routes_to_originality_check ... ok
+test issue_535::telegram_attachment_only_message_still_reaches_the_solver ... ok
+test issue_535::document_originality_grounds_each_statement_with_relative_meta_logic ... ok
+test issue_535::document_originality_requests_route_to_grounded_attachment_workflow ... ok
+test issue_535::verification_class_generalizes_beyond_plagiarism_in_every_language ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 1317 filtered out; finished in 0.90s

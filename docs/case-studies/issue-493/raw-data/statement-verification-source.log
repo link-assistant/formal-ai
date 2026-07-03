@@ -1,0 +1,16 @@
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783082618044)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.28s
+     Running tests/source/mod.rs (target/debug/deps/source-12a7b310227fee6e)
+
+running 9 tests
+test statement_verification::tests::grounding_query_condenses_whitespace ... ok
+test statement_verification::tests::drops_short_fragments ... ok
+test statement_verification::tests::extracts_multiscript_statements ... ok
+test statement_verification::tests::grounding_query_quotes_and_adds_intent ... ok
+test statement_verification::tests::empty_sample_yields_no_statements ... ok
+test statement_verification::tests::plan_weighs_supplied_evidence ... ok
+test statement_verification::tests::plan_assumes_statements_true_before_evidence ... ok
+test statement_verification::tests::stance_for_agreement_maps_both_directions ... ok
+test statement_verification::tests::trusted_source_policy_orders_original_first ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 466 filtered out; finished in 0.00s

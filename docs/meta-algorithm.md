@@ -337,3 +337,89 @@ cargo test --test unit specification::document_verification_meta_algorithm -- --
 Because this recipe is checked against the source too, document verification and
 its recipe can never silently diverge — the handler is itself a reproducible
 artifact of the meta-algorithm.
+
+## The market-price verification meta-algorithm (issue #493)
+
+The same grounded-recipe discipline records a fifth meta-algorithm, a
+**sub-algorithm of document verification** aimed at a specific, high-value class
+of statements: the **deterministic market-price fact check**. Issue #493 showed a
+screenshot that repeats *"ETH in 2024: $1,700"* across many years and scenarios,
+and the maintainer's framing was that we must not just catch that one line but
+"support the entire class of similar questions, not just the specific example" —
+any checkable numeric claim about a traded asset's price in a period, generalised
+across assets, years, and every supported language, grounded in external data.
+Its recipe lives at
+[`data/meta/market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino)
+and is grounded by
+[`tests/unit/specification/market_price_verification_meta_algorithm.rs`](../tests/unit/specification/market_price_verification_meta_algorithm.rs).
+
+The key move is that the check is **data-driven, not example-driven**. A single
+registry,
+[`data/seed/market-price-references.lino`](../data/seed/market-price-references.lino),
+declares one `asset` per traded instrument, each carrying its external
+`grounded-in` Wikidata entity (Ethereum `Q16783523`, Bitcoin `Q131723`), a
+`quote-currency`, per-language `lexeme`/`surface` aliases (`$ETH`, `ethereum`,
+`etherium`, `эфириум`, `एथेरियम`, `以太坊`, …), and one `reference <period>` per
+checkable period holding the recorded daily-candle `observed-min-price` /
+`observed-max-price` and their dates from a named first-party source. Adding an
+asset or a year is a seed edit — never a new code path.
+
+Every line of the sample is then run through the same chain: `asset_positions`
+recognises assets by scanning the whole alias registry (issue #386: no hardcoded
+per-language phrase table in Rust), `market_price_fragments` splits a line into
+one fragment per asset it names, `parse_market_price_claim` reads the period and
+the currency-marked amount, and `assess_market_price_claim` looks up the recorded
+range and marks the claim `contradicted` **only** when its price is below the
+recorded minimum or above the recorded maximum — otherwise `within_recorded_range`.
+The verdict is a `RelativeEvidence` at `SourceTier::OriginalFirstParty` fed into
+`StatementAssessment::assess`, so a price the asset actually reached in the period
+is never flagged. This is why the screenshot's 2021–2023 lines stay uncontradicted
+(\$1,700 was inside those ranges) while only the false 2024 line is caught, and why
+the very same machinery flags an impossible `BTC in 2024: $1,700` with no
+ETH-specific or year-specific code. The whole path is mirrored in the JS worker
+so the WASM/browser surface stays in parity (R15).
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *is this numeric market claim true?* behaviour:
+
+1. **Register verifiable assets and recorded price ranges as seed data** in
+   `data/seed/market-price-references.lino` — the single source of truth.
+2. **Ground each asset in an external entity** (Wikidata), so every alias of an
+   asset resolves to one language-independent meaning.
+3. **Recognise assets by alias across languages**, scanning the whole registry
+   rather than any single ticker (no per-language phrase table in Rust).
+4. **Split each line into one fragment per named asset**, so two assets on one
+   line yield one claim each.
+5. **Parse the claimed period and numeric price** from each fragment into a
+   structured claim independent of the surface wording.
+6. **Weigh each claim against the recorded range under relative-meta-logic** —
+   contradict only outside `[observed-min, observed-max]`, never over-claiming.
+7. **Splice the grounded verdict onto the evidence trace** with `market_price_claim:*`
+   markers naming status, source, range, and posterior.
+8. **Mirror the whole path in the JS worker** so the WASM/browser surface stays
+   in parity (R15).
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering is contiguous from 1; each has a `detail` and an existing `seed_file` |
+| `meta_grounding` | a cached Wikidata entity at `data/cache/wikidata/entity/Q<id>.lino`, and the Q-id present in the seed registry |
+| `meta_data` | the registry `data_file` exists and declares its root node |
+| `meta_function` | `fn <name>` in the named source file |
+| `meta_parity` | `fn <rust>` in Rust and `function <js>` in the JS worker |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the market-price-verification recipe still matches the live source:
+cargo test --test unit specification::market_price_verification_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the market-price fact
+check and its recipe can never silently diverge — catching false numeric claims
+is itself a reproducible, data-driven artifact of the meta-algorithm that scales
+to the whole class of assets, periods, and languages by editing seed data alone.

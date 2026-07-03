@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.262.0 (/tmp/gh-issue-solver-1783082618044)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.40s
+     Running tests/unit/mod.rs (target/debug/deps/unit-07594e216d449525)
+
+running 3 tests
+test issue_535::document_originality_check_cases_cover_every_supported_language ... ok
+test issue_535::document_originality_grounds_each_statement_with_relative_meta_logic ... ok
+test issue_535::document_originality_requests_route_to_grounded_attachment_workflow ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1322 filtered out; finished in 0.79s

@@ -19,6 +19,7 @@
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
+use crate::seed::market_price_assets;
 
 /// Sentence terminators across the scripts the solver recognises: ASCII stops,
 /// CJK full stop / exclamation / question, the Devanagari danda and double
@@ -47,6 +48,9 @@ pub const TRUSTED_SOURCE_POLICY: &[SourceTier] = &[
     SourceTier::Unoriginal,
 ];
 
+const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED: &str = "contradicted";
+const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE: &str = "within_recorded_range";
+
 /// A single checkable statement with its grounding query and assumed-true
 /// assessment.
 #[derive(Debug, Clone, PartialEq)]
@@ -57,6 +61,112 @@ pub struct StatementPlan {
     pub query: String,
     /// The relative-meta-logic assessment given the evidence weighed so far.
     pub assessment: StatementAssessment,
+}
+
+/// A structured market-price claim extracted from OCR or attached text.
+#[derive(Debug, Clone, PartialEq)]
+pub struct MarketPriceClaim {
+    /// Canonical asset ticker, e.g. `ETH`.
+    pub asset: String,
+    /// Human label for the asset, e.g. `Ethereum`.
+    pub asset_label: String,
+    /// The year or period the claim talks about.
+    pub period: String,
+    /// Claimed spot price.
+    pub claimed_price: f64,
+    /// Claimed quote currency. `$` is normalized to `USD`.
+    pub currency: String,
+    /// Original statement fragment.
+    pub statement: String,
+}
+
+/// A market-price claim assessed with relative-meta-logic evidence.
+#[derive(Debug, Clone, PartialEq)]
+pub struct MarketPriceAssessment {
+    /// The extracted claim.
+    pub claim: MarketPriceClaim,
+    /// Stable status slug: `contradicted` or `within_recorded_range`.
+    pub status: &'static str,
+    /// Stable source slug.
+    pub source_id: &'static str,
+    /// Human-readable source label.
+    pub source_label: &'static str,
+    /// Source URL used for the captured raw data.
+    pub source_url: &'static str,
+    /// Minimum observed price in the period.
+    pub observed_min_price: f64,
+    /// Date of the minimum observed price.
+    pub observed_min_date: &'static str,
+    /// Maximum observed price in the period.
+    pub observed_max_price: f64,
+    /// Date of the maximum observed price.
+    pub observed_max_date: &'static str,
+    /// The relative-meta-logic statement plan after source evidence is weighed.
+    pub statement_plan: StatementPlan,
+}
+
+impl MarketPriceAssessment {
+    /// Stable one-line trace payload for append-only evidence logs.
+    #[must_use]
+    pub fn trace_payload(&self) -> String {
+        format!(
+            "asset={} period={} claimed={:.2} status={} source={} min={:.2} \
+             min_date={} max={:.2} max_date={} posterior={}",
+            self.claim.asset,
+            self.claim.period,
+            self.claim.claimed_price,
+            self.status,
+            self.source_id,
+            self.observed_min_price,
+            self.observed_min_date,
+            self.observed_max_price,
+            self.observed_max_date,
+            self.statement_plan.assessment.posterior,
+        )
+    }
+
+    /// Human-readable summary for the chat answer.
+    #[must_use]
+    pub fn summary_sentence(&self) -> String {
+        if self.status == MARKET_PRICE_CLAIM_STATUS_CONTRADICTED {
+            format!(
+                "{} is contradicted: {} reports {} {} daily candles in {} \
+                 stayed between ${:.2} on {} and ${:.2} on {}.",
+                self.claim.statement,
+                self.source_label,
+                self.claim.asset,
+                self.source_quote_currency(),
+                self.claim.period,
+                self.observed_min_price,
+                self.observed_min_date,
+                self.observed_max_price,
+                self.observed_max_date,
+            )
+        } else {
+            format!(
+                "{} is within the recorded {} {} daily candle range for {} \
+                 (${:.2} to ${:.2}).",
+                self.claim.statement,
+                self.claim.asset,
+                self.source_quote_currency(),
+                self.claim.period,
+                self.observed_min_price,
+                self.observed_max_price,
+            )
+        }
+    }
+
+    fn source_quote_currency(&self) -> &'static str {
+        market_price_assets()
+            .iter()
+            .find(|asset| {
+                asset
+                    .references
+                    .iter()
+                    .any(|reference| reference.source_id == self.source_id)
+            })
+            .map_or("USD", |asset| asset.quote_currency.as_str())
+    }
 }
 
 impl StatementPlan {
@@ -128,6 +238,262 @@ pub fn extract_statements(sample: &str) -> Vec<String> {
     }
     push_statement(&mut statements, &current);
     statements
+}
+
+/// Extract market-price claims such as `ETH in 2024: $1,700` from OCR or text.
+///
+/// The extractor is pattern-based rather than example-based: it looks for a
+/// known asset alias, a four-digit period year, and a currency-marked amount in
+/// the same fragment. Additional assets can be added by extending the market
+/// reference registry without changing the parser.
+#[must_use]
+pub fn extract_market_price_claims(sample: &str) -> Vec<MarketPriceClaim> {
+    let mut claims: Vec<MarketPriceClaim> = Vec::new();
+    for fragment in market_price_fragments(sample) {
+        if let Some(claim) = parse_market_price_claim(&fragment) {
+            if !claims.iter().any(|existing| {
+                existing.asset == claim.asset
+                    && existing.period == claim.period
+                    && (existing.claimed_price - claim.claimed_price).abs() < f64::EPSILON
+                    && existing.statement == claim.statement
+            }) {
+                claims.push(claim);
+            }
+        }
+    }
+    claims
+}
+
+/// Assess extracted market-price claims against the built-in market-data facts.
+#[must_use]
+pub fn assess_market_price_claims(claims: &[MarketPriceClaim]) -> Vec<MarketPriceAssessment> {
+    claims
+        .iter()
+        .filter_map(assess_market_price_claim)
+        .collect()
+}
+
+fn assess_market_price_claim(claim: &MarketPriceClaim) -> Option<MarketPriceAssessment> {
+    let reference = market_price_assets()
+        .iter()
+        .filter(|asset| asset.ticker == claim.asset)
+        .flat_map(|asset| asset.references.iter())
+        .find(|reference| reference.period == claim.period)?;
+    let status = if claim.claimed_price < reference.observed_min_price
+        || claim.claimed_price > reference.observed_max_price
+    {
+        MARKET_PRICE_CLAIM_STATUS_CONTRADICTED
+    } else {
+        MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE
+    };
+    let stance = if status == MARKET_PRICE_CLAIM_STATUS_CONTRADICTED {
+        Stance::Contradicts
+    } else {
+        Stance::Supports
+    };
+    let evidence = [RelativeEvidence::new(
+        reference.source_label.as_str(),
+        SourceTier::OriginalFirstParty,
+        stance,
+        0.95,
+    )];
+    let statement_plan = StatementPlan::new(claim.statement.clone(), &evidence);
+    Some(MarketPriceAssessment {
+        claim: claim.clone(),
+        status,
+        source_id: reference.source_id.as_str(),
+        source_label: reference.source_label.as_str(),
+        source_url: reference.source_url.as_str(),
+        observed_min_price: reference.observed_min_price,
+        observed_min_date: reference.observed_min_date.as_str(),
+        observed_max_price: reference.observed_max_price,
+        observed_max_date: reference.observed_max_date.as_str(),
+        statement_plan,
+    })
+}
+
+fn market_price_fragments(sample: &str) -> Vec<String> {
+    let mut fragments = Vec::new();
+    for line in sample.lines() {
+        let line = line.split_whitespace().collect::<Vec<_>>().join(" ");
+        if line.is_empty() {
+            continue;
+        }
+        let positions = asset_positions(&line);
+        if positions.len() <= 1 {
+            fragments.push(line);
+            continue;
+        }
+        for (index, start) in positions.iter().copied().enumerate() {
+            let end = positions.get(index + 1).copied().unwrap_or(line.len());
+            let fragment = line[start..end].trim();
+            if !fragment.is_empty() {
+                fragments.push(fragment.to_owned());
+            }
+        }
+    }
+    fragments
+}
+
+/// Byte positions in `line` where any known asset alias begins, across every
+/// asset and language in the registry. Used to split a single line that mentions
+/// more than one asset into per-asset fragments. ASCII aliases match under a
+/// case-insensitive word boundary; non-ASCII aliases (which do not carry ASCII
+/// word boundaries) match as substrings. `to_ascii_lowercase` preserves byte
+/// length, so both branches yield valid byte offsets into `line`.
+fn asset_positions(line: &str) -> Vec<usize> {
+    let lower = line.to_ascii_lowercase();
+    let mut positions = Vec::new();
+    for asset in market_price_assets() {
+        for alias in &asset.aliases {
+            if alias.is_ascii() {
+                let alias_lower = alias.to_ascii_lowercase();
+                for (position, _) in lower.match_indices(&alias_lower) {
+                    if alias_occurs_at(&lower, &alias_lower, position) {
+                        positions.push(position);
+                    }
+                }
+            } else {
+                for (position, _) in line.match_indices(alias.as_str()) {
+                    positions.push(position);
+                }
+            }
+        }
+    }
+    positions.sort_unstable();
+    positions.dedup();
+    positions
+}
+
+fn parse_market_price_claim(fragment: &str) -> Option<MarketPriceClaim> {
+    let asset = market_price_assets().iter().find(|asset| {
+        asset
+            .aliases
+            .iter()
+            .any(|alias| alias_occurs(fragment, alias))
+    })?;
+    let period = extract_year(fragment)?;
+    let claimed_price = extract_currency_amount(fragment, &period)?;
+    Some(MarketPriceClaim {
+        asset: asset.ticker.clone(),
+        asset_label: asset.label.clone(),
+        period,
+        claimed_price,
+        currency: "USD".to_owned(),
+        statement: fragment.trim().to_owned(),
+    })
+}
+
+fn alias_occurs(fragment: &str, alias: &str) -> bool {
+    if alias.is_ascii() {
+        let lower = fragment.to_ascii_lowercase();
+        let alias = alias.to_ascii_lowercase();
+        return lower
+            .match_indices(&alias)
+            .any(|(position, _)| alias_occurs_at(&lower, &alias, position));
+    }
+    fragment.contains(alias)
+}
+
+fn alias_occurs_at(lower: &str, alias: &str, position: usize) -> bool {
+    let before = position
+        .checked_sub(1)
+        .and_then(|index| lower.as_bytes().get(index))
+        .copied();
+    let after = lower.as_bytes().get(position + alias.len()).copied();
+    let alias_starts_with_word = alias
+        .as_bytes()
+        .first()
+        .is_some_and(u8::is_ascii_alphanumeric);
+    let alias_ends_with_word = alias
+        .as_bytes()
+        .last()
+        .is_some_and(u8::is_ascii_alphanumeric);
+    (!alias_starts_with_word || before.is_none_or(|byte| !byte.is_ascii_alphanumeric()))
+        && (!alias_ends_with_word || after.is_none_or(|byte| !byte.is_ascii_alphanumeric()))
+}
+
+fn extract_year(fragment: &str) -> Option<String> {
+    let bytes = fragment.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if !bytes[index].is_ascii_digit() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        while index < bytes.len() && bytes[index].is_ascii_digit() {
+            index += 1;
+        }
+        if index - start == 4 {
+            let candidate = &fragment[start..index];
+            if (1900..=2100).contains(&candidate.parse::<u16>().ok()?) {
+                return Some(candidate.to_owned());
+            }
+        }
+    }
+    None
+}
+
+fn extract_currency_amount(fragment: &str, period: &str) -> Option<f64> {
+    let mut search_start = 0;
+    while let Some(relative_dollar) = fragment[search_start..].find('$') {
+        let dollar = search_start + relative_dollar;
+        if let Some(price) = parse_number_after(&fragment[dollar + 1..]).filter(|price| {
+            (*price - period.parse::<f64>().unwrap_or_default()).abs() > f64::EPSILON
+        }) {
+            return Some(price);
+        }
+        search_start = dollar + 1;
+    }
+    let lower = fragment.to_lowercase();
+    for marker in ["usd", "usdt", "доллар", "美元", "डॉलर"] {
+        if let Some(position) = lower.find(marker) {
+            if let Some(price) = parse_number_after(&fragment[position + marker.len()..]) {
+                return Some(price);
+            }
+            if let Some(price) = parse_number_before(&fragment[..position]) {
+                return Some(price);
+            }
+        }
+    }
+    None
+}
+
+fn parse_number_after(value: &str) -> Option<f64> {
+    parse_number(value.trim_start().chars())
+}
+
+fn parse_number_before(value: &str) -> Option<f64> {
+    let reversed = value
+        .trim_end()
+        .chars()
+        .rev()
+        .take_while(|character| {
+            character.is_ascii_digit() || matches!(character, ',' | '.' | '_' | ' ' | '\u{00a0}')
+        })
+        .collect::<String>();
+    let number = reversed.chars().rev().collect::<String>();
+    parse_number(number.chars())
+}
+
+fn parse_number(characters: impl IntoIterator<Item = char>) -> Option<f64> {
+    let mut normalized = String::new();
+    let mut saw_digit = false;
+    for character in characters {
+        if character.is_ascii_digit() {
+            saw_digit = true;
+            normalized.push(character);
+        } else if character == '.' {
+            normalized.push(character);
+        } else if !matches!(character, ',' | '_' | ' ' | '\u{00a0}') {
+            break;
+        }
+    }
+    if !saw_digit {
+        return None;
+    }
+    normalized.parse::<f64>().ok()
 }
 
 fn push_statement(statements: &mut Vec<String>, candidate: &str) {

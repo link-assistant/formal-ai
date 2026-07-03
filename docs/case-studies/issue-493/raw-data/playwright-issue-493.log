@@ -1,0 +1,8 @@
+[2m[WebServer] [22m(node:31440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/issue-493.spec.js:71:3 › Issue #493 - OCR market-price fact checking › uses OCR text to flag the false ETH 2024 price claim (1.2s)
+
+  1 passed (3.8s)

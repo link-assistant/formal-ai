@@ -8,7 +8,10 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::relative_meta_logic::{SourceTier, ASSUMED_TRUE_PRIOR};
 use crate::seed::{self, response_for};
-use crate::statement_verification::{StatementVerificationPlan, TRUSTED_SOURCE_POLICY};
+use crate::statement_verification::{
+    assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
+    StatementVerificationPlan, TRUSTED_SOURCE_POLICY,
+};
 
 use super::finalize_simple;
 use super::web_requests::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
@@ -62,9 +65,10 @@ pub fn try_document_originality_check(
     }
     log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
 
-    log_statement_verification(prompt, log);
+    let market_assessments = log_statement_verification(prompt, log);
 
-    let body = document_originality_body(language, &attachments, sample_present);
+    let body =
+        document_originality_body(language, &attachments, sample_present, &market_assessments);
     Some(finalize_simple(
         prompt,
         log,
@@ -121,46 +125,94 @@ fn has_text_sample(prompt: &str) -> bool {
 }
 
 fn text_sample(prompt: &str) -> Option<String> {
-    for line in prompt.lines() {
-        let trimmed = line.trim();
-        for prefix in ["Text excerpt:", "Text sample:", "OCR text:"] {
-            if let Some(value) = trimmed.strip_prefix(prefix) {
-                let sample = value
-                    .split_whitespace()
-                    .take(14)
-                    .collect::<Vec<_>>()
-                    .join(" ");
-                if !sample.is_empty() {
-                    return Some(sample);
-                }
-            }
+    full_text_sample(prompt).and_then(|sample| {
+        let sample = sample
+            .split_whitespace()
+            .take(14)
+            .collect::<Vec<_>>()
+            .join(" ");
+        if sample.is_empty() {
+            None
+        } else {
+            Some(sample)
         }
-    }
-    None
+    })
 }
 
 /// Extract the full (untruncated) text excerpt supplied with the prompt, used
 /// to split individual statements for grounding.
 fn full_text_sample(prompt: &str) -> Option<String> {
+    let samples = full_text_samples(prompt);
+    if samples.is_empty() {
+        None
+    } else {
+        Some(samples.join("\n\n"))
+    }
+}
+
+fn full_text_samples(prompt: &str) -> Vec<String> {
+    let mut samples = Vec::new();
+    let mut current: Option<String> = None;
     for line in prompt.lines() {
         let trimmed = line.trim();
-        for prefix in ["Text excerpt:", "Text sample:", "OCR text:"] {
-            if let Some(value) = trimmed.strip_prefix(prefix) {
-                let sample = value.trim();
-                if !sample.is_empty() {
-                    return Some(sample.to_owned());
-                }
-            }
+        if let Some(value) = text_sample_prefix_value(trimmed) {
+            push_current_text_sample(&mut samples, &mut current);
+            current = Some(value.trim().to_owned());
+            continue;
+        }
+        let Some(sample) = current.as_mut() else {
+            continue;
+        };
+        if trimmed.is_empty() || is_attachment_context_boundary(trimmed) {
+            push_current_text_sample(&mut samples, &mut current);
+            continue;
+        }
+        if !sample.is_empty() {
+            sample.push('\n');
+        }
+        sample.push_str(trimmed);
+    }
+    push_current_text_sample(&mut samples, &mut current);
+    samples
+}
+
+fn push_current_text_sample(samples: &mut Vec<String>, current: &mut Option<String>) {
+    if let Some(sample) = current.take() {
+        let sample = sample.trim();
+        if !sample.is_empty() {
+            samples.push(sample.to_owned());
         }
     }
-    None
+}
+
+fn text_sample_prefix_value(trimmed: &str) -> Option<&str> {
+    ["Text excerpt:", "Text sample:", "OCR text:"]
+        .into_iter()
+        .find_map(|prefix| trimmed.strip_prefix(prefix))
+}
+
+fn is_attachment_context_boundary(trimmed: &str) -> bool {
+    trimmed.eq_ignore_ascii_case("Attached files:")
+        || is_attachment_file_line(trimmed)
+        || trimmed.starts_with("Text omitted:")
+        || trimmed.starts_with("Text unavailable:")
+        || trimmed.starts_with("OCR unavailable:")
+}
+
+fn is_attachment_file_line(trimmed: &str) -> bool {
+    let Some((index, rest)) = trimmed.split_once(". ") else {
+        return false;
+    };
+    !index.is_empty()
+        && index.chars().all(|character| character.is_ascii_digit())
+        && rest.contains(" (")
 }
 
 /// Replay the per-statement relative-meta-logic verification plan into the
 /// append-only event log. Each statement is assumed true, grounded by a
 /// dedicated web-search query, and weighed under the trusted-source policy —
 /// original first sources first, reposts ignored.
-fn log_statement_verification(prompt: &str, log: &mut EventLog) {
+fn log_statement_verification(prompt: &str, log: &mut EventLog) -> Vec<MarketPriceAssessment> {
     log.append(
         "relative_meta_logic:assumed_prior",
         format!("{ASSUMED_TRUE_PRIOR:.6}"),
@@ -177,7 +229,7 @@ fn log_statement_verification(prompt: &str, log: &mut EventLog) {
     );
 
     let Some(sample) = full_text_sample(prompt) else {
-        return;
+        return Vec::new();
     };
     let plan = StatementVerificationPlan::from_sample(&sample);
     log.append(
@@ -200,6 +252,45 @@ fn log_statement_verification(prompt: &str, log: &mut EventLog) {
             statement_plan.assessment.trace_payload(),
         );
     }
+
+    let claims = extract_market_price_claims(&sample);
+    let market_assessments = assess_market_price_claims(&claims);
+    if !claims.is_empty() {
+        log.append("market_price_claim:claim_count", claims.len().to_string());
+    }
+    for claim in &claims {
+        log.append("market_price_claim:claim", claim.statement.clone());
+        log.append(
+            "market_price_claim:asset",
+            format!("{} ({})", claim.asset, claim.asset_label),
+        );
+        log.append("market_price_claim:period", claim.period.clone());
+        log.append(
+            "market_price_claim:claimed_price",
+            format!("{} {:.2}", claim.currency, claim.claimed_price),
+        );
+    }
+    for assessment in &market_assessments {
+        log.append(
+            "market_price_claim:source",
+            format!("{} {}", assessment.source_id, assessment.source_url),
+        );
+        log.append(
+            "market_price_claim:range",
+            format!(
+                "asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}",
+                assessment.claim.asset,
+                assessment.claim.period,
+                assessment.source_id,
+                assessment.observed_min_price,
+                assessment.observed_min_date,
+                assessment.observed_max_price,
+                assessment.observed_max_date,
+            ),
+        );
+        log.append("market_price_claim:assessment", assessment.trace_payload());
+    }
+    market_assessments
 }
 
 fn document_originality_query(prompt: &str, attachments: &[String]) -> String {
@@ -216,6 +307,7 @@ fn document_originality_body(
     language: &str,
     attachments: &[String],
     sample_present: bool,
+    market_assessments: &[MarketPriceAssessment],
 ) -> String {
     let target = if attachments.is_empty() {
         "provided text".to_owned()
@@ -232,5 +324,24 @@ fn document_originality_body(
         .unwrap_or_else(|| {
             "Recognized an originality and plagiarism check for `{target}`.".to_owned()
         });
-    template.replace(TARGET_PLACEHOLDER, &target)
+    let mut body = template.replace(TARGET_PLACEHOLDER, &target);
+    let contradicted = market_assessments
+        .iter()
+        .filter(|assessment| assessment.status == "contradicted")
+        .collect::<Vec<_>>();
+    if !contradicted.is_empty() {
+        let heading = match language {
+            "ru" => "Проверка ценовых утверждений",
+            "hi" => "मूल्य दावों की जांच",
+            "zh" => "价格声明核查",
+            _ => "Price claim check",
+        };
+        let summaries = contradicted
+            .into_iter()
+            .map(|assessment| format!("- {}", assessment.summary_sentence()))
+            .collect::<Vec<_>>()
+            .join("\n");
+        body = format!("{body}\n\n{heading}:\n{summaries}");
+    }
+    body
 }

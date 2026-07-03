@@ -1,0 +1,13 @@
+   Compiling formal-ai v0.263.0 (/tmp/gh-issue-solver-1783082618044)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.46s
+     Running tests/unit/mod.rs (target/debug/deps/unit-076b4958783882fb)
+
+running 6 tests
+test issue_493::issue_493_tesseract_ocr_result_contains_the_key_price_claim ... ok
+test issue_493::market_price_claim_parser_handles_asset_symbol_before_price_symbol ... ok
+test issue_493::market_price_claim_parser_accepts_supported_language_eth_aliases ... ok
+test issue_493::market_price_claim_parser_extracts_repeated_eth_year_claims_from_ocr_text ... ok
+test issue_493::market_price_assessment_contradicts_eth_2024_1700_claim_with_market_data ... ok
+test issue_493::issue_493_multiline_ocr_fact_check_catches_false_eth_2024_price_claim ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 1320 filtered out; finished in 0.47s

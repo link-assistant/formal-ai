@@ -1,0 +1,37 @@
+No hard-limit violations found.
+
+Warning-band files:
+src/main.rs 912 lines warn=900 max=1000
+src/protocol.rs 983 lines warn=900 max=1000
+src/intent_formalization.rs 961 lines warn=900 max=1000
+src/solver_handlers/calendar.rs 981 lines warn=900 max=1000
+src/solver_handlers/software_project.rs 915 lines warn=900 max=1000
+src/solver_handlers/web_requests.rs 952 lines warn=900 max=1000
+src/solver_handlers/installation_conversion.rs 996 lines warn=900 max=1000
+src/solver_handlers/behavior_rules.rs 952 lines warn=900 max=1000
+src/calculation.rs 914 lines warn=900 max=1000
+src/coding/catalog/templates_core.rs 961 lines warn=900 max=1000
+src/web/i18n-catalog.lino 1408 lines warn=1400 max=1500
+src/web/worker/formal_ai_worker_19.js 1418 lines warn=1400 max=1500
+src/web/worker/formal_ai_worker_05.js 1428 lines warn=1400 max=1500
+src/engine.rs 901 lines warn=900 max=1000
+tests/unit/formal_ai.rs 997 lines warn=900 max=1000
+tests/unit/ci-cd/release_publishing.rs 917 lines warn=900 max=1000
+tests/unit/docs_requirements.rs 938 lines warn=900 max=1000
+tests/unit/web_requests.rs 992 lines warn=900 max=1000
+tests/unit/specification/prompt_variations.rs 965 lines warn=900 max=1000
+tests/unit/specification/chat_surface.rs 995 lines warn=900 max=1000
+tests/unit/specification/reasoning_paths.rs 945 lines warn=900 max=1000
+tests/unit/specification/multilingual.rs 998 lines warn=900 max=1000
+tests/unit/specification/openai_compatibility.rs 971 lines warn=900 max=1000
+tests/unit/data_files.rs 959 lines warn=900 max=1000
+tests/source/solver.rs 1000 lines warn=900 max=1000
+tests/source/intent_formalization.rs 989 lines warn=900 max=1000
+tests/source/seed/meanings.rs 947 lines warn=900 max=1000
+tests/source/solver_handlers/calendar.rs 981 lines warn=900 max=1000
+tests/source/solver_handlers/software_project.rs 915 lines warn=900 max=1000
+tests/source/solver_handlers/mod.rs 990 lines warn=900 max=1000
+tests/source/solver_handlers/installation_conversion.rs 999 lines warn=900 max=1000
+tests/source/solver_handlers/behavior_rules.rs 952 lines warn=900 max=1000
+tests/source/calculation.rs 923 lines warn=900 max=1000
+tests/source/coding/catalog/templates_core.rs 961 lines warn=900 max=1000

@@ -192,6 +192,10 @@ pub use solver::{
 };
 pub use solver_handlers::{answer_memory_recall, execute_memory_query, MemoryQueryExecution};
 pub use solver_helpers::humanize_url;
+pub use statement_verification::{
+    assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
+    MarketPriceClaim,
+};
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
     SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,

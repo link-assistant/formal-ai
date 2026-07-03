@@ -1,0 +1,16 @@
+{
+  "source": "Binance spot API /api/v3/klines",
+  "symbol": "ETHUSDT",
+  "interval": "1d",
+  "period": "2024-01-01..2024-12-31",
+  "rows": 366,
+  "min": {
+    "date": "2024-01-03",
+    "price": 2100
+  },
+  "max": {
+    "date": "2024-12-16",
+    "price": 4107.8
+  },
+  "contradicts_claim": "ETH in 2024: $1,700"
+}

@@ -38,6 +38,7 @@
     "seed/coding-idioms.lino",
     "seed/terminal-commands.lino",
     "seed/program-plan-rules.lino",
+    "seed/market-price-references.lino",
     "seed/meanings.lino",
     "seed/meanings-behavior-rules.lino",
     "seed/meanings-calculator.lino",
