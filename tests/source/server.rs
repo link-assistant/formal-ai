@@ -114,6 +114,7 @@ pub fn handle_api_request_with_auth(
                 "object": "list",
                 "data": [{
                     "id": DEFAULT_MODEL,
+                    "slug": DEFAULT_MODEL,
                     "object": "model",
                     "created": 0,
                     "owned_by": "link-assistant"

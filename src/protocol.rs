@@ -14,6 +14,7 @@ use crate::protocol_policy::{
     tool_call_refusal_answer, tool_choice_function_name, tool_definition_name,
     tool_permission_refusal_answer,
 };
+use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::{ConversationTurn, UniversalSolver};
 
 fn resolved_request_model(model: Option<&str>) -> String {
@@ -818,16 +819,20 @@ fn response_from_plan(
             let mut items = Vec::with_capacity(calls.len());
             let mut output_tokens = 0u32;
             for (index, call) in calls.into_iter().enumerate() {
+                let tool = call.tool;
+                let planned_arguments = call.arguments;
+                let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
+                let arguments =
+                    response_arguments_for_tool(&request.tools, &tool, planned_arguments);
                 output_tokens = output_tokens.saturating_add(
-                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments)),
+                    estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
-                let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
                 items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
                     id: stable_id("fc", &seed),
                     kind: function_call_kind(),
                     call_id: stable_id("call", &seed),
-                    name: call.tool,
-                    arguments: call.arguments,
+                    name: tool,
+                    arguments,
                     status: String::from("completed"),
                 }));
             }

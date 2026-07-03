@@ -284,12 +284,14 @@ fn handle_openai_models_request() -> ApiHttpResponse {
             "object": "list",
             "data": [{
                 "id": model_id,
+                "slug": model_id,
                 "object": "model",
                 "created": 0,
                 "owned_by": "link-assistant"
             }],
             "models": [{
                 "id": model_id,
+                "slug": model_id,
                 "name": model_id,
                 "context_window": 60_000,
                 "max_output_tokens": 8_192

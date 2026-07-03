@@ -346,6 +346,73 @@ fn responses_function_call_output_advances_the_loop() {
 }
 
 #[test]
+fn responses_shell_call_uses_cmd_when_the_advertised_schema_requires_cmd() {
+    // Codex's Responses shell tool schema uses `cmd`, not `command`. The shared
+    // planner still produces the canonical `command` shape for chat/completions,
+    // so the Responses surface must adapt to the schema the client advertised.
+    let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "input": "Run the ls command to list files in the current directory.",
+        "tools": [{
+            "type": "function",
+            "name": "shell",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "cmd": {"type": "string"}
+                },
+                "required": ["cmd"]
+            }
+        }]
+    }))
+    .unwrap();
+
+    let response = create_response_with_solver(&request, &agent_solver());
+
+    let calls = response.function_calls();
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].name, "shell");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(arguments["cmd"], "ls");
+    assert!(
+        arguments.get("command").is_none(),
+        "Codex-compatible Responses args must not use `command`: {arguments}"
+    );
+}
+
+#[test]
+fn responses_shell_call_keeps_command_when_the_advertised_schema_uses_command() {
+    let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "input": "Run the ls command to list files in the current directory.",
+        "tools": [{
+            "type": "function",
+            "name": "bash",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "command": {"type": "string"}
+                },
+                "required": ["command"]
+            }
+        }]
+    }))
+    .unwrap();
+
+    let response = create_response_with_solver(&request, &agent_solver());
+
+    let calls = response.function_calls();
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].name, "bash");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(arguments["command"], "ls");
+    assert!(
+        arguments.get("cmd").is_none(),
+        "command-schema tools should not be rewritten to `cmd`: {arguments}"
+    );
+}
+
+#[test]
 fn responses_returns_final_message_once_recipe_is_exhausted() {
     // With only web_search advertised and its result already fed back, the planner
     // has nothing left to call, so the Responses surface completes with the
