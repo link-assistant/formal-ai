@@ -329,6 +329,13 @@ const ROLE_CONVERSATION_SUMMARY_COURTESY = "conversation_summary_courtesy";
 // (loaded into MEANINGS_LINO); tryRecallPreviousMessage composes this role via
 // lexiconMentionsRole instead of matching per-language phrases in JS.
 const ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE = "conversation_recall_previous_message";
+// Previous-user and recall-search roles share the conversation seed file; the
+// history recall handlers use them to distinguish "what did I ask?" from
+// "what was written in the previous message?" without per-language literals.
+const ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE =
+  "conversation_recall_previous_user_message";
+const ROLE_CONVERSATION_RECALL_QUERY = "conversation_recall_query";
+const ROLE_CONVERSATION_RECALL_OTHER_QUERY = "conversation_recall_other_query";
 // Issue #529 whole-memory write roles — mirror ROLE_MEMORY_* in
 // src/seed/roles/intent.rs. Their surfaces live in
 // data/seed/meanings-conversation.lino (loaded into MEANINGS_LINO) and drive the

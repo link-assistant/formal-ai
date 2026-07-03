@@ -342,18 +342,15 @@ function tryHistorical(prompt, history) {
     const hit = tryRecallName(history);
     if (hit) return hit;
   }
+  if (lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE, normalized)) {
+    return tryRecallLastQuestion(prompt, history);
+  }
   // Issue #529: recognise "what was written in the previous message?" across
   // every supported language via the conversation_recall_previous_message seed
-  // role before the English-only last-question phrases below.
+  // role after the user-message recall above, so "what did I ask in the
+  // previous message" targets the user's prior turn rather than the assistant's.
   const previousMessage = tryRecallPreviousMessage(prompt, history);
   if (previousMessage) return previousMessage;
-  if (
-    normalized === "what was my previous question" ||
-    normalized === "what was the previous question" ||
-    normalized === "what was my last question"
-  ) {
-    return tryRecallLastQuestion(history);
-  }
   return null;
 }
 

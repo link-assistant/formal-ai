@@ -2940,4 +2940,17 @@ test.describe('Issue #27: cross-conversation recall', () => {
     // The earlier conversation header should be present.
     await expect(last).toContainText('Что такое');
   });
+
+  test('Russian "what did I ask" recalls the previous user request', async ({ page }) => {
+    await sendPrompt(page, 'Поставь мне встречу с мамукой на 10:00');
+    const firstRecall = await sendPrompt(page, 'Что я спрашивал в прошлом сообщении?');
+    await expect(firstRecall).toHaveClass(/assistant/);
+    await expect(firstRecall).toContainText('Поставь мне встречу с мамукой на 10:00');
+    await expect(firstRecall).not.toContainText(UNKNOWN_ANSWER_MARKER);
+
+    const followup = await sendPrompt(page, 'а я что спрашивал?');
+    await expect(followup).toHaveClass(/assistant/);
+    await expect(followup).toContainText('Поставь мне встречу с мамукой на 10:00');
+    await expect(followup).not.toContainText('Что я спрашивал в прошлом сообщении?');
+  });
 });

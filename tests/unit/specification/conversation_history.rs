@@ -89,6 +89,140 @@ fn solve_with_history_searches_dialog_history_in_russian() {
 }
 
 #[test]
+fn russian_previous_user_question_skips_assistant_and_meta_recall_turns() {
+    let unknown = "Я не уверен, как на это ответить.";
+    let first_history = [
+        ConversationTurn::user("Поставь мне встречу с мамукой на 10:00"),
+        ConversationTurn::assistant(unknown),
+    ];
+
+    let first = solve_with_history("Что я спрашивал в прошлом сообщении?", &first_history);
+
+    assert_eq!(first.intent, "recall_last_question");
+    assert!(
+        first
+            .answer
+            .contains("Поставь мне встречу с мамукой на 10:00"),
+        "{}",
+        first.answer
+    );
+    assert!(!first.answer.contains(unknown), "{}", first.answer);
+
+    let followup_history = [
+        ConversationTurn::user("Поставь мне встречу с мамукой на 10:00"),
+        ConversationTurn::assistant(unknown),
+        ConversationTurn::user("Что я спрашивал в прошлом сообщении?"),
+        ConversationTurn::assistant(&first.answer),
+    ];
+
+    let followup = solve_with_history("а я что спрашивал?", &followup_history);
+
+    assert_eq!(followup.intent, "recall_last_question");
+    assert!(
+        followup
+            .answer
+            .contains("Поставь мне встречу с мамукой на 10:00"),
+        "{}",
+        followup.answer
+    );
+    assert!(
+        !followup
+            .answer
+            .contains("Что я спрашивал в прошлом сообщении?"),
+        "{}",
+        followup.answer
+    );
+}
+
+#[test]
+fn previous_user_question_recall_skips_meta_turns_in_supported_languages() {
+    struct RecallCase<'a> {
+        language: &'a str,
+        request: &'a str,
+        unknown: &'a str,
+        first_prompt: &'a str,
+        followup_prompt: &'a str,
+    }
+
+    let cases = [
+        RecallCase {
+            language: "en",
+            request: "Schedule a meeting with Mamuka at 10:00",
+            unknown: "I do not know how to answer that.",
+            first_prompt: "What did I ask in the previous message?",
+            followup_prompt: "What did I ask?",
+        },
+        RecallCase {
+            language: "ru",
+            request: "Поставь мне встречу с мамукой на 10:00",
+            unknown: "Я не уверен, как на это ответить.",
+            first_prompt: "Что я спрашивал в прошлом сообщении?",
+            followup_prompt: "а я что спрашивал?",
+        },
+        RecallCase {
+            language: "hi",
+            request: "कल 10:00 बजे मामूका के साथ मीटिंग रखो",
+            unknown: "मुझे नहीं पता कि इसका उत्तर कैसे दूं.",
+            first_prompt: "मैंने पिछले संदेश में क्या पूछा था",
+            followup_prompt: "मैंने क्या पूछा था",
+        },
+        RecallCase {
+            language: "zh",
+            request: "明天10点安排和妈妈的会议",
+            unknown: "我不知道该怎么回答.",
+            first_prompt: "我之前问了什么",
+            followup_prompt: "我刚才问了什么",
+        },
+    ];
+
+    for case in cases {
+        let first_history = [
+            ConversationTurn::user(case.request),
+            ConversationTurn::assistant(case.unknown),
+        ];
+
+        let first = solve_with_history(case.first_prompt, &first_history);
+
+        assert_eq!(first.intent, "recall_last_question", "{}", case.language);
+        assert!(
+            first.answer.contains(case.request),
+            "{}: {}",
+            case.language,
+            first.answer
+        );
+        assert!(
+            !first.answer.contains(case.unknown),
+            "{}: {}",
+            case.language,
+            first.answer
+        );
+
+        let followup_history = [
+            ConversationTurn::user(case.request),
+            ConversationTurn::assistant(case.unknown),
+            ConversationTurn::user(case.first_prompt),
+            ConversationTurn::assistant(&first.answer),
+        ];
+
+        let followup = solve_with_history(case.followup_prompt, &followup_history);
+
+        assert_eq!(followup.intent, "recall_last_question", "{}", case.language);
+        assert!(
+            followup.answer.contains(case.request),
+            "{}: {}",
+            case.language,
+            followup.answer
+        );
+        assert!(
+            !followup.answer.contains(case.first_prompt),
+            "{}: {}",
+            case.language,
+            followup.answer
+        );
+    }
+}
+
+#[test]
 fn solve_with_history_searches_dialog_history_in_hindi() {
     let history = [
         ConversationTurn::user("विकिपीडिया क्या है?"),
