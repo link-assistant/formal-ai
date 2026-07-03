@@ -220,6 +220,7 @@ config, and then runs the external CLI with the remaining arguments unchanged:
 ```bash
 formal-ai with --start-server codex "hi"
 formal-ai with opencode run "hi"
+formal-ai with agent -p "hi"
 formal-ai with gemini -p "hi"
 # Hi, how may I help you?
 ```
@@ -233,6 +234,10 @@ For one-shot Gemini runs, the wrapper also uses a temporary `GEMINI_CLI_HOME`
 with API-key auth selected and workspace trust enabled. That keeps cached
 OAuth settings from `~/.gemini` from taking over the invocation.
 
+For one-shot Agent CLI runs, the wrapper injects the OpenCode-compatible
+provider JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so no temporary
+config file is needed.
+
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
@@ -240,14 +245,16 @@ provider without removing unrelated settings, and can restore the backup:
 ```bash
 with-formal-ai -g codex
 with-formal-ai -g opencode
+with-formal-ai -g agent
 with-formal-ai -g gemini
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
 
 Persistent targets are `~/.codex/config.toml`,
-`~/.config/opencode/opencode.json`, and a managed block in `~/.profile` for
-Gemini environment variables. Re-running `-g` is idempotent.
+`~/.config/opencode/opencode.json`,
+`~/.config/link-assistant-agent/opencode.json`, and a managed block in
+`~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.
 
 ### Codex CLI
 
@@ -380,7 +387,7 @@ curl -s \
 The Link Assistant Agent CLI accepts OpenCode-style provider/model selection.
 Start the local OpenAI-compatible server with agent-mode enabled, then use the
 same provider shape in `~/.config/link-assistant-agent/opencode.json` and select
-the `formal-ai/formal-ai` model:
+the `formalai/formal-ai` model:
 
 ```bash
 formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
@@ -390,7 +397,7 @@ formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
-    "formal-ai": {
+    "formalai": {
       "name": "formal-ai local server",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
@@ -404,13 +411,13 @@ formal-ai serve --agent-mode --host 127.0.0.1 --port 8080
       }
     }
   },
-  "model": "formal-ai/formal-ai"
+  "model": "formalai/formal-ai"
 }
 ```
 
 ```bash
 export FORMAL_AI_API_KEY="sk-local-demo"   # match your bearer token, or any non-empty value
-agent --model formal-ai/formal-ai --permission-mode plan -p \
+agent --model formalai/formal-ai --permission-mode plan -p \
   "run ls to list files here"
 ```
 

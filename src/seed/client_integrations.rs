@@ -46,6 +46,7 @@ pub struct ClientIntegrationInvocation {
     pub prepend_args: Vec<String>,
     pub args: Vec<String>,
     pub env: Vec<TemplateEnv>,
+    pub config_content_env: String,
     pub config_env: String,
     pub config_dir_env: String,
     pub config_json_settings: Vec<(String, String)>,
@@ -166,6 +167,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                     invocation.env.push(TemplateEnv { key, value });
                 }
             }
+            "config_content_env" => invocation.config_content_env.clone_from(&child.id),
             "config_env" => invocation.config_env.clone_from(&child.id),
             "config_dir_env" => invocation.config_dir_env.clone_from(&child.id),
             "config_json_set" => {
