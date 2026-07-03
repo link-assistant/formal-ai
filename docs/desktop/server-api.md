@@ -240,6 +240,44 @@ at `http://127.0.0.1:8080`. If you set a bearer token, use the same value as the
 API key; otherwise any non-empty placeholder works because the loopback server
 does not require a key.
 
+### `with-formal-ai` wrapper
+
+`formal-ai with` and the standalone `with-formal-ai` binary apply the provider
+templates from `data/seed/client-integrations.lino` before launching the
+external CLI. That keeps Codex TOML, OpenCode JSON, and Gemini environment
+variables in seed data instead of hardcoded command text:
+
+```bash
+formal-ai serve --host 127.0.0.1 --port 8080
+with-formal-ai codex "hi"
+with-formal-ai opencode run "hi"
+with-formal-ai gemini -p "hi"
+# Hi, how may I help you?
+```
+
+If the server is not already running, the wrapper can start it for the duration
+of the invocation:
+
+```bash
+formal-ai with --start-server codex "hi"
+```
+
+Permanent setup uses the same seed templates, creates a `*.formal-ai.bak`
+backup next to the edited config, and merges without removing unrelated user
+settings:
+
+```bash
+with-formal-ai -g codex
+with-formal-ai -g opencode
+with-formal-ai -g gemini
+with-formal-ai -g --all
+with-formal-ai -g --undo codex
+```
+
+The persistent files are `~/.codex/config.toml`,
+`~/.config/opencode/opencode.json`, and a managed Formal AI block in
+`~/.profile` for Gemini. Re-running `-g` is idempotent.
+
 ### 4a. `codex` (OpenAI Codex CLI) - Responses API
 
 `codex` configures providers in `~/.codex/config.toml`. Codex 0.142+ does not

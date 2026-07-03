@@ -13,3 +13,4 @@ mod memory_query;
 mod multi_protocol_api;
 mod openai_chat_streaming;
 mod openai_responses_streaming;
+mod with_formal_ai;
