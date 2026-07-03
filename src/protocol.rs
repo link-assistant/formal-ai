@@ -4,7 +4,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
-use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep};
+use crate::engine::{
+    estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
+};
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
@@ -132,6 +134,14 @@ pub struct ChatMessage {
     /// Ordered solver-thinking projection attached to assistant answers.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
+    /// OpenAI-compatible reasoning text used by clients that display assistant
+    /// reasoning in a standard message field.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reasoning_content: String,
+    /// Alias consumed by some OpenAI-compatible clients for the same reasoning
+    /// text as `reasoning_content`.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub reasoning: String,
 }
 
 impl ChatMessage {
@@ -455,7 +465,7 @@ impl ResponseObject {
             .iter()
             .filter_map(|item| match item {
                 ResponseOutputItem::Message(message) => Some(message),
-                ResponseOutputItem::FunctionCall(_) => None,
+                ResponseOutputItem::FunctionCall(_) | ResponseOutputItem::Reasoning(_) => None,
             })
             .collect()
     }
@@ -468,17 +478,19 @@ impl ResponseObject {
             .iter()
             .filter_map(|item| match item {
                 ResponseOutputItem::FunctionCall(call) => Some(call),
-                ResponseOutputItem::Message(_) => None,
+                ResponseOutputItem::Message(_) | ResponseOutputItem::Reasoning(_) => None,
             })
             .collect()
     }
 }
 
-/// One item in a Responses `output` array: an assistant message or a tool call.
+/// One item in a Responses `output` array: an assistant message, a tool call, or
+/// a reasoning summary.
 ///
 /// A `FunctionCall` is a tool the client must execute (issue #468). Serialized
 /// untagged so each item keeps its native OpenAI shape — a message carries
-/// `type:"message"` and a call carries `type:"function_call"`.
+/// `type:"message"`, a call carries `type:"function_call"`, and reasoning
+/// carries `type:"reasoning"`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum ResponseOutputItem {
@@ -486,6 +498,8 @@ pub enum ResponseOutputItem {
     FunctionCall(ResponseFunctionToolCall),
     /// An assistant message (`type:"message"`).
     Message(ResponseOutputMessage),
+    /// A reasoning summary (`type:"reasoning"`).
+    Reasoning(ResponseReasoningItem),
 }
 
 /// A function tool call emitted on the Responses surface (`type:"function_call"`).
@@ -520,6 +534,21 @@ pub struct ResponseOutputMessage {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ResponseOutputContent {
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub text: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseReasoningItem {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub summary: Vec<ResponseReasoningSummaryText>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseReasoningSummaryText {
     #[serde(rename = "type")]
     pub kind: String,
     pub text: String,
@@ -704,8 +733,12 @@ fn chat_completion_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = estimate_tokens(prompt);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
+    let thinking_steps = symbolic_answer.thinking_steps;
+    let reasoning = render_thinking_steps(&thinking_steps);
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
-    message.thinking_steps = symbolic_answer.thinking_steps;
+    message.thinking_steps = thinking_steps;
+    message.reasoning_content.clone_from(&reasoning);
+    message.reasoning = reasoning;
 
     ChatCompletion {
         id: stable_id("chatcmpl", prompt),
@@ -841,7 +874,21 @@ fn response_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = estimate_tokens(prompt);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
-    let thinking_steps = symbolic_answer.thinking_steps.clone();
+    let answer = symbolic_answer.answer;
+    let thinking_steps = symbolic_answer.thinking_steps;
+    let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
+        id: stable_id("msg", &answer),
+        kind: String::from("message"),
+        role: String::from("assistant"),
+        content: vec![ResponseOutputContent {
+            kind: String::from("output_text"),
+            text: answer,
+        }],
+        thinking_steps: thinking_steps.clone(),
+    })];
+    if let Some(reasoning) = response_reasoning_item(prompt, &thinking_steps) {
+        output.push(reasoning);
+    }
 
     ResponseObject {
         id: stable_id("resp", prompt),
@@ -849,16 +896,7 @@ fn response_from_symbolic(
         created_at: 0,
         status: String::from("completed"),
         model,
-        output: vec![ResponseOutputItem::Message(ResponseOutputMessage {
-            id: stable_id("msg", &symbolic_answer.answer),
-            kind: String::from("message"),
-            role: String::from("assistant"),
-            content: vec![ResponseOutputContent {
-                kind: String::from("output_text"),
-                text: symbolic_answer.answer,
-            }],
-            thinking_steps: thinking_steps.clone(),
-        })],
+        output,
         usage: ResponseUsage {
             input_tokens,
             output_tokens,
@@ -867,6 +905,24 @@ fn response_from_symbolic(
         evidence_links: symbolic_answer.evidence_links,
         thinking_steps,
     }
+}
+
+fn response_reasoning_item(
+    prompt: &str,
+    thinking_steps: &[ThinkingStep],
+) -> Option<ResponseOutputItem> {
+    let text = render_thinking_steps(thinking_steps);
+    if text.is_empty() {
+        return None;
+    }
+    Some(ResponseOutputItem::Reasoning(ResponseReasoningItem {
+        id: stable_id("rs", prompt),
+        kind: String::from("reasoning"),
+        summary: vec![ResponseReasoningSummaryText {
+            kind: String::from("summary_text"),
+            text,
+        }],
+    }))
 }
 
 fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {

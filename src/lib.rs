@@ -46,6 +46,7 @@ pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
+pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
@@ -104,7 +105,8 @@ pub use document_formats::{
 };
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    render_thinking_steps, thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep,
+    DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use github_logs::{

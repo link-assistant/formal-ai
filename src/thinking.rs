@@ -114,6 +114,26 @@ pub fn humanize_meta_identifier(value: &str) -> String {
     collapsed.trim().to_ascii_lowercase()
 }
 
+/// Render a full reasoning trace as the plain-text form expected by protocol
+/// surfaces that expose a single thinking/reasoning string.
+#[must_use]
+pub fn render_thinking_steps(steps: &[ThinkingStep]) -> String {
+    let mut lines = Vec::with_capacity(steps.len());
+    for step in steps {
+        let sentence = if step.summary.is_empty() {
+            naturalize_thinking_step(&step.step, &step.detail)
+        } else {
+            step.summary.clone()
+        };
+        if step.parent_id.is_some() {
+            lines.push(format!("  ↳ {sentence}"));
+        } else {
+            lines.push(sentence);
+        }
+    }
+    lines.join("\n")
+}
+
 /// Pick the English indefinite article (`a`/`an`) for the following phrase based
 /// on its first letter, so naturalized steps read grammatically ("an arithmetic
 /// task", "a greeting task").

@@ -9,7 +9,9 @@ use crate::anthropic::{
     anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
     AnthropicMessagesRequest,
 };
-use crate::engine::{is_known_trace_id, knowledge_graph, knowledge_graph_dot};
+use crate::engine::{
+    is_known_trace_id, knowledge_graph, knowledge_graph_dot, render_thinking_steps,
+};
 use crate::gemini::{
     create_gemini_generate_content_response_with_solver_and_memory, gemini_model_list,
     gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
@@ -18,8 +20,9 @@ use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    ChatCompletion, ChatCompletionRequest, ResponseObject, ResponseOutputItem, ResponsesRequest,
+    ChatCompletion, ChatCompletionRequest, ResponsesRequest,
 };
+use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
@@ -203,7 +206,7 @@ pub fn handle_api_request_with_auth(
                     let response =
                         create_response_with_solver_and_memory(&request, &solver, store.events());
                     if request.stream {
-                        response_sse_response(&response)
+                        responses_sse_response(&response)
                     } else {
                         json_response(200, &response)
                     }
@@ -517,8 +520,24 @@ fn chat_completion_sse_response(
     });
     body.push_str(&sse_chunk(&base, &role_delta));
 
-    // Chunk 2..N: content or tool_call deltas.
+    // Chunk 2..N: reasoning, content, or tool_call deltas.
     if let Some(choice) = choice {
+        let reasoning = if choice.message.reasoning_content.is_empty() {
+            render_thinking_steps(&choice.message.thinking_steps)
+        } else {
+            choice.message.reasoning_content.clone()
+        };
+        if !reasoning.is_empty() {
+            let delta = json!({
+                "index": 0,
+                "delta": {
+                    "reasoning_content": reasoning,
+                    "reasoning": reasoning,
+                },
+                "finish_reason": null,
+            });
+            body.push_str(&sse_chunk(&base, &delta));
+        }
         let text = choice.message.content.plain_text();
         if !text.is_empty() {
             let delta = json!({
@@ -589,126 +608,6 @@ fn chat_completion_sse_response(
     }
 }
 
-/// Serialise a completed OpenAI Responses object as the Responses SSE protocol.
-///
-/// Codex consumes named `response.*` events and treats a closed socket before
-/// `response.completed` as a transport failure. The solver is still
-/// non-incremental, so this emits one deterministic delta per completed output
-/// item while preserving the protocol event sequence expected by streaming
-/// clients.
-fn response_sse_response(response: &ResponseObject) -> ApiHttpResponse {
-    let mut body = String::new();
-    let mut created_response = response.clone();
-    created_response.status = String::from("in_progress");
-    created_response.output.clear();
-
-    push_sse_event(
-        &mut body,
-        "response.created",
-        &json!({
-            "type": "response.created",
-            "response": created_response
-        }),
-    );
-
-    for (output_index, item) in response.output.iter().enumerate() {
-        push_sse_event(
-            &mut body,
-            "response.output_item.added",
-            &json!({
-                "type": "response.output_item.added",
-                "response_id": response.id,
-                "output_index": output_index,
-                "item": item
-            }),
-        );
-        match item {
-            ResponseOutputItem::Message(message) => {
-                for (content_index, content) in message.content.iter().enumerate() {
-                    if content.text.is_empty() {
-                        continue;
-                    }
-                    push_sse_event(
-                        &mut body,
-                        "response.output_text.delta",
-                        &json!({
-                            "type": "response.output_text.delta",
-                            "response_id": response.id,
-                            "item_id": message.id,
-                            "output_index": output_index,
-                            "content_index": content_index,
-                            "delta": &content.text
-                        }),
-                    );
-                    push_sse_event(
-                        &mut body,
-                        "response.output_text.done",
-                        &json!({
-                            "type": "response.output_text.done",
-                            "response_id": response.id,
-                            "item_id": message.id,
-                            "output_index": output_index,
-                            "content_index": content_index,
-                            "text": &content.text
-                        }),
-                    );
-                }
-            }
-            ResponseOutputItem::FunctionCall(call) => {
-                if !call.arguments.is_empty() {
-                    push_sse_event(
-                        &mut body,
-                        "response.function_call_arguments.delta",
-                        &json!({
-                            "type": "response.function_call_arguments.delta",
-                            "response_id": response.id,
-                            "item_id": call.id,
-                            "output_index": output_index,
-                            "delta": &call.arguments
-                        }),
-                    );
-                    push_sse_event(
-                        &mut body,
-                        "response.function_call_arguments.done",
-                        &json!({
-                            "type": "response.function_call_arguments.done",
-                            "response_id": response.id,
-                            "item_id": call.id,
-                            "output_index": output_index,
-                            "arguments": &call.arguments
-                        }),
-                    );
-                }
-            }
-        }
-        push_sse_event(
-            &mut body,
-            "response.output_item.done",
-            &json!({
-                "type": "response.output_item.done",
-                "response_id": response.id,
-                "output_index": output_index,
-                "item": item
-            }),
-        );
-    }
-
-    push_sse_event(
-        &mut body,
-        "response.completed",
-        &json!({
-            "type": "response.completed",
-            "response": response
-        }),
-    );
-
-    ApiHttpResponse {
-        status_code: 200,
-        content_type: "text/event-stream",
-        body,
-    }
-}
-
 /// Serialise a single OpenAI streaming chunk: merge `base` (id/object/created/model)
 /// with a `choices` entry and emit it as an SSE `data:` frame.
 fn sse_chunk(base: &Value, choice: &Value) -> String {
@@ -717,15 +616,6 @@ fn sse_chunk(base: &Value, choice: &Value) -> String {
         map.insert(String::from("choices"), Value::Array(vec![choice.clone()]));
     }
     format!("data: {merged}\n\n")
-}
-
-fn push_sse_event(body: &mut String, event: &str, data: &Value) {
-    body.push_str("event: ");
-    body.push_str(event);
-    body.push('\n');
-    body.push_str("data: ");
-    body.push_str(&data.to_string());
-    body.push_str("\n\n");
 }
 
 /// Translate an Anthropic Messages request (`POST /v1/messages`) so the `claude`

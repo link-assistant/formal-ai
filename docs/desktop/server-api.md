@@ -123,6 +123,55 @@ Gemini, and Vertex also accept `@link-assistant/formal-ai`,
 `link-assistant/formal-ai`, `formal-ai-latest`, and `latest` as
 case-insensitive aliases; response payloads return the canonical `formal-ai` id.
 
+### Reasoning Fields
+
+The solver records structured `thinking_steps` for every symbolic answer. The
+server also exposes the same trace through client-standard reasoning fields so
+terminal agents can render it without knowing formal-ai's legacy extension:
+
+- Chat Completions JSON returns
+  `.choices[0].message.reasoning_content` and the compatibility alias
+  `.choices[0].message.reasoning`.
+- Chat Completions SSE emits `choices[0].delta.reasoning_content` before answer
+  `content`.
+- Responses JSON includes a `{"type":"reasoning"}` output item whose
+  `summary[0]` is `{"type":"summary_text","text":...}`.
+- Responses SSE emits `response.reasoning_summary_text.delta` before
+  `response.output_text.delta`.
+- Anthropic Messages emits a `thinking` content block and streamed
+  `thinking_delta` only when the request includes
+  `"thinking":{"type":"enabled",...}`.
+
+Copy-paste checks while the server is running:
+
+```bash
+curl -s http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}' \
+  | jq -r '.choices[0].message.reasoning_content'
+```
+
+```bash
+curl -N http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}],"stream":true}' \
+  | grep '"reasoning_content"'
+```
+
+```bash
+curl -N http://127.0.0.1:8080/v1/responses \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","input":"Hi","stream":true}' \
+  | grep -E 'response.reasoning_summary_text.delta|response.output_text.delta'
+```
+
+```bash
+curl -s http://127.0.0.1:8080/v1/messages \
+  -H 'content-type: application/json' \
+  -d '{"model":"formal-ai","max_tokens":128,"thinking":{"type":"enabled","budget_tokens":1024},"messages":[{"role":"user","content":"Hi"}]}' \
+  | jq '.content[0]'
+```
+
 #### Links-Notation REST + LinksQL (R6)
 
 These endpoints speak [Links Notation](https://github.com/link-foundation/lino)

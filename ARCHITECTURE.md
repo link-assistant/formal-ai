@@ -924,6 +924,15 @@ The same `FormalAiEngine` answers prompts in every surface:
   inner-Docker volume (`formal-ai-telegram-docker`, `formal-ai-server-docker`)
   because two DinD daemons cannot share one `/var/lib/docker`. See
   [docs/desktop/service-control.md](docs/desktop/service-control.md).
+- **Reasoning projection for client protocols** — the solver's ordered
+  `thinking_steps` remain the canonical internal trace. The OpenAI Chat surface
+  also emits the rendered trace as `message.reasoning_content` and streaming
+  `delta.reasoning_content`; the OpenAI Responses surface emits a
+  `type:"reasoning"` output item and `response.reasoning_summary_*` stream
+  events; the Anthropic adapter emits `thinking` blocks and `thinking_delta`
+  events only for requests that enable extended thinking. This keeps
+  thinking-capable CLIs on their native protocol fields without inventing a
+  separate display contract.
 - **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
