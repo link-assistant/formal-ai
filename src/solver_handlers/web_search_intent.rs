@@ -135,9 +135,17 @@ pub(super) fn extract_web_search_request(
             kind: WebSearchQueryKind::ImplicitResearchQuestion,
         });
     }
-    extract_implicit_research_question(&normalized_words).map(|query| WebSearchRequest {
-        query,
-        kind: WebSearchQueryKind::ImplicitResearchQuestion,
+    if let Some(query) = extract_implicit_research_question(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        });
+    }
+    extract_externally_verifiable_question(prompt, &normalized_words).map(|query| {
+        WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        }
     })
 }
 
@@ -222,13 +230,13 @@ struct WebSearchMarkers {
     continuation_markers: Vec<&'static str>,
     /// Tell-me-about openers whose object is a public term.
     term_information_prefixes: Vec<&'static str>,
-    /// Question openers of an implicit research request ("what is the …").
+    /// Question openers of an implicit research request ("what is …", "is there …").
     research_question_prefixes: Vec<&'static str>,
     /// Superlative/recency modifiers that make a question researchable.
     research_modifiers: Vec<&'static str>,
-    /// Evidence nouns (dataset, benchmark, paper …) of a research question.
+    /// Evidence nouns (dataset, paper, subscription, pricing …) of a research question.
     research_evidence_domains: Vec<&'static str>,
-    /// Evaluation nouns (validation, quality, comparison …) of a question.
+    /// Evaluation nouns (validation, comparison, discount, price …) of a question.
     research_evaluation_domains: Vec<&'static str>,
     /// Openers of an enumeration research request ("list all …").
     enumeration_prefixes: Vec<&'static str>,
@@ -518,6 +526,90 @@ fn extract_implicit_research_question(normalized: &str) -> Option<String> {
     }
     let query = strip_implicit_research_prefix(normalized);
     valid_search_query(query)
+}
+
+/// Reasoning-driven fallback for the *class* of externally verifiable questions.
+///
+/// The seed-vocabulary path above ([`extract_implicit_research_question`]) only
+/// fires when a question happens to combine a research opener with a memorised
+/// research modifier or evidence/evaluation domain. That still leans on a stored
+/// word list, so it cannot, on its own, cover the open-ended class the maintainer
+/// asked for: *any* question about a real-world product, service, or organisation
+/// whose current facts (pricing, availability, features, history) live on the
+/// public web rather than in the solver's seed memory.
+///
+/// This recogniser closes that gap by reasoning about the *referent* instead of
+/// the topic vocabulary. It routes a prompt to external research when three
+/// structural conditions all hold:
+///
+/// 1. the prompt is *interrogative* — it opens with a seeded question opener
+///    (any language) or ends with a question mark (`?` / fullwidth `？`);
+/// 2. it names a *referential external entity* — a Latin token written with
+///    interior capitalisation ([`prompt_names_engineered_brand`]), the
+///    orthographic signature of an engineered brand/product name (`ChatGPT`,
+///    `OpenAI`, `GitHub`, `iPhone`, `TypeScript`); and
+/// 3. the solver cannot answer it from local memory — it is neither a seeded
+///    concept lookup nor a self-introduction / capability / non-referential
+///    subject question.
+///
+/// Because interior capitalisation is a property of the Latin brand token itself,
+/// the rule fires identically whether that token is embedded in English,
+/// Cyrillic, Devanagari, or CJK context — so the entire multilingual class is
+/// covered by one language-independent structural test, with no per-product or
+/// per-language vocabulary to maintain.
+fn extract_externally_verifiable_question(prompt: &str, normalized: &str) -> Option<String> {
+    if !question_is_interrogative(prompt, normalized) {
+        return None;
+    }
+    if !prompt_names_engineered_brand(prompt) {
+        return None;
+    }
+    // Never poach a prompt the solver can already resolve locally: a seeded
+    // concept or a self-introduction / capability question stays with its own
+    // handler.
+    if concept_lookup_resolves(prompt) || term_information_prompt_is_local_context(normalized) {
+        return None;
+    }
+    // The residual subject, once the question opener is removed, must be a real
+    // external topic — not the assistant itself or a non-referential pronoun
+    // ("does it …", "do you …").
+    let query = strip_implicit_research_prefix(normalized);
+    if term_information_query_is_local_context(query) {
+        return None;
+    }
+    valid_search_query(query)
+}
+
+/// A prompt is interrogative when it opens with any seeded research question
+/// opener (matched on the punctuation-stripped `normalized` form) or the raw
+/// prompt ends with a question mark — the ASCII `?` or the fullwidth `？` a CJK
+/// prompt uses.
+fn question_is_interrogative(prompt: &str, normalized: &str) -> bool {
+    starts_with_any(normalized, &markers().research_question_prefixes)
+        || prompt.trim_end().ends_with(['?', '？'])
+}
+
+/// True when the prompt contains a Latin token written with *interior*
+/// capitalisation: a lower-case Latin letter immediately followed by an
+/// upper-case Latin letter within a single token. That adjacency is the
+/// orthographic signature of an engineered brand/product name — `ChatGPT`,
+/// `OpenAI`, `GitHub`, `iPhone`, `TypeScript`, `macOS`.
+///
+/// The test is deliberately narrow. All-caps acronyms (`BSD`, `ML`, `IIR`,
+/// `USD`), plain capitalised proper nouns (`Claude`, `Tesla`, `Wikipedia`), and
+/// Title-Cased word sequences (`Hive Mind`) do *not* match — matching them would
+/// poach concept-lookup, coding, and unknown-reasoning prompts. Those relevant to
+/// external research are already reached by the seed commercial vocabulary or by
+/// their own local handlers.
+fn prompt_names_engineered_brand(prompt: &str) -> bool {
+    let mut prev_is_lower_latin = false;
+    for character in prompt.chars() {
+        if prev_is_lower_latin && character.is_ascii_uppercase() {
+            return true;
+        }
+        prev_is_lower_latin = character.is_ascii_lowercase();
+    }
+    false
 }
 
 fn extract_enumeration_research_request(normalized: &str) -> Option<String> {

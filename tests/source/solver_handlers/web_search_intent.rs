@@ -218,13 +218,13 @@ struct WebSearchMarkers {
     continuation_markers: Vec<&'static str>,
     /// Tell-me-about openers whose object is a public term.
     term_information_prefixes: Vec<&'static str>,
-    /// Question openers of an implicit research request ("what is the …").
+    /// Question openers of an implicit research request ("what is …", "is there …").
     research_question_prefixes: Vec<&'static str>,
     /// Superlative/recency modifiers that make a question researchable.
     research_modifiers: Vec<&'static str>,
-    /// Evidence nouns (dataset, benchmark, paper …) of a research question.
+    /// Evidence nouns (dataset, paper, subscription, pricing …) of a research question.
     research_evidence_domains: Vec<&'static str>,
-    /// Evaluation nouns (validation, quality, comparison …) of a question.
+    /// Evaluation nouns (validation, comparison, discount, price …) of a question.
     research_evaluation_domains: Vec<&'static str>,
     /// Openers of an enumeration research request ("list all …").
     enumeration_prefixes: Vec<&'static str>,
