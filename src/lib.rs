@@ -45,6 +45,7 @@ pub mod proof_engine;
 pub mod protocol;
 pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
+pub(crate) mod protocol_responses;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
 pub(crate) mod responses_stream;
