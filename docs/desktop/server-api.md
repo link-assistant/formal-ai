@@ -262,6 +262,14 @@ temporary directory, writes `.gemini/settings.json` with API-key auth selected,
 and enables workspace trust. That prevents cached OAuth settings in
 `~/.gemini` from overriding the Formal AI endpoint.
 
+For one-shot Agent CLI runs, the wrapper passes the OpenCode-compatible provider
+JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so it does not have to write
+the Agent config file before launching the command.
+
+For one-shot Codex runs, the wrapper starts from
+`codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
+provider overrides through `-c` before appending your remaining arguments.
+
 If the server is not already running, the wrapper can start it for the duration
 of the invocation:
 

@@ -238,6 +238,10 @@ For one-shot Agent CLI runs, the wrapper injects the OpenCode-compatible
 provider JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so no temporary
 config file is needed.
 
+For one-shot Codex runs, the wrapper starts from
+`codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
+provider overrides through `-c` before appending your remaining arguments.
+
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:

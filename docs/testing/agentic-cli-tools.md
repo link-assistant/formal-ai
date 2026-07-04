@@ -111,12 +111,15 @@ Expected protocol path: OpenAI `chat/completions`.
 ### Codex
 
 Codex uses the OpenAI Responses wire API. Always include
-`--skip-git-repo-check` for direct Codex invocations so fixture directories do
-not have to be Git worktrees.
+`--skip-git-repo-check --sandbox read-only` for direct Codex invocations so
+fixture directories do not have to be Git worktrees and the client uses the
+same read-only tool sandbox as the wrapper.
 
 ```bash
 with-formal-ai --base-url http://127.0.0.1:8090 codex "run ls" </dev/null
 ```
+
+The wrapper adds `--skip-git-repo-check --sandbox read-only` automatically.
 
 For direct Codex runs:
 
