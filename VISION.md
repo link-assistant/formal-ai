@@ -187,6 +187,15 @@ Natural languages and programming languages should be translated through link-na
 
 Cross-language translation should also preserve the source's surface signal: the leading capitalization and the terminal punctuation a user typed are part of the meaning, not noise. A lowercase `как у тебя дела?` should round-trip to lowercase `how are you?`, and a source fragment with no terminal mark should not gain one in the target language. The pipeline is `formalize → meaning → deformalize → match_source_formatting`, and the meaning ID, source language, and target language remain in the Links Notation trace so the translation stays inspectable.
 
+Issue #526 makes round-trip survival the translation quality contract. Every
+supported language must pass a language-to-meta-to-same-language check with no
+data loss, and every supported language pair must translate through the shared
+meaning before rendering a target surface. Direct pair-specific translation can
+only be an implementation detail below that contract; it is not acceptable as a
+quality path when it bypasses the meta language. The same rule applies to code:
+a Rust <-> JavaScript translation must preserve the code meaning link, not only
+produce syntax that looks plausible.
+
 ## Data Is The Interface
 
 The shell code should be about *interfacing* (rendering chat, dispatching tools, persisting events) and not about *logic*. The agent's identity, its multilingual responses, its concept table, and its registered tools should all live in seeded Links Notation files inside an associative store, so a user can fully reconfigure the agent — add a new language, retire an answer, register a new tool, change a rule — by editing data, not by rewriting code. The same principle applies to executable knowledge: precompiled handlers can be seeded, and dynamically-compiled Rust, JavaScript, and WebAssembly snippets can be linked into the store on demand, so the data graph itself defines what the agent can do.

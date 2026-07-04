@@ -25,6 +25,31 @@
 
 use formal_ai::translation::translate_via_default_pipeline;
 
+#[derive(Clone, Copy)]
+struct SurfaceCase {
+    language: &'static str,
+    surface: &'static str,
+}
+
+const APPLE_SURFACES: &[SurfaceCase] = &[
+    SurfaceCase {
+        language: "en",
+        surface: "apple",
+    },
+    SurfaceCase {
+        language: "ru",
+        surface: "яблоко",
+    },
+    SurfaceCase {
+        language: "hi",
+        surface: "सेब",
+    },
+    SurfaceCase {
+        language: "zh",
+        surface: "苹果",
+    },
+];
+
 /// Assert the full #526 round-trip for one surface across one language pair:
 /// `source --A→B--> target --B→A--> source`, preserving meaning and surface.
 fn assert_round_trip(surface: &str, source: &str, target: &str) {
@@ -70,6 +95,14 @@ fn assert_round_trip(surface: &str, source: &str, target: &str) {
     );
 }
 
+fn assert_surface_eq(left: &str, right: &str, message: &str) {
+    assert_eq!(
+        left.to_lowercase(),
+        right.to_lowercase(),
+        "{message}: expected {right:?}, got {left:?}",
+    );
+}
+
 #[test]
 fn english_russian_vocabulary_survives_round_trip() {
     for surface in ["hello", "apple", "thank you", "water", "bread"] {
@@ -88,6 +121,101 @@ fn english_hindi_vocabulary_survives_round_trip() {
 fn english_chinese_vocabulary_survives_round_trip() {
     for surface in ["hello", "apple"] {
         assert_round_trip(surface, "en", "zh");
+    }
+}
+
+#[test]
+fn supported_language_surfaces_survive_meta_language_round_trip() {
+    for case in APPLE_SURFACES {
+        let round_trip = translate_via_default_pipeline(case.surface, case.language, case.language)
+            .unwrap_or_else(|error| {
+                panic!(
+                    "#526: {:?} ({}) should formalize to the meta language and deformalize \
+                     back without data loss, got {error:?}",
+                    case.surface, case.language
+                )
+            });
+        let surface = round_trip.primary_surface().unwrap_or_else(|| {
+            panic!(
+                "#526: {:?} ({}) should deformalize from the meta language",
+                case.surface, case.language
+            )
+        });
+        assert_surface_eq(
+            surface,
+            case.surface,
+            "#526: language-to-meta-to-same-language must be lossless",
+        );
+        assert_ne!(
+            round_trip.meaning.slug(),
+            "meaning:unknown",
+            "#526: {:?} ({}) must carry a traceable meta-language meaning",
+            case.surface,
+            case.language,
+        );
+    }
+}
+
+#[test]
+fn every_supported_language_pair_round_trips_via_meta_language() {
+    for source in APPLE_SURFACES {
+        for target in APPLE_SURFACES {
+            if source.language == target.language {
+                continue;
+            }
+
+            let forward =
+                translate_via_default_pipeline(source.surface, source.language, target.language)
+                    .unwrap_or_else(|error| {
+                        panic!(
+                            "#526: forward {:?} {}->{} should translate through the meta \
+                             language, got {error:?}",
+                            source.surface, source.language, target.language
+                        )
+                    });
+            let target_surface = forward.primary_surface().unwrap_or_else(|| {
+                panic!(
+                    "#526: forward {:?} {}->{} should yield a target surface",
+                    source.surface, source.language, target.language
+                )
+            });
+            assert_surface_eq(
+                target_surface,
+                target.surface,
+                "#526: forward translation should render the target-language surface",
+            );
+
+            let backward =
+                translate_via_default_pipeline(target_surface, target.language, source.language)
+                    .unwrap_or_else(|error| {
+                        panic!(
+                            "#526: backward {:?} {}->{} should translate through the meta \
+                             language, got {error:?}",
+                            target_surface, target.language, source.language
+                        )
+                    });
+            let round_tripped = backward.primary_surface().unwrap_or_else(|| {
+                panic!(
+                    "#526: backward {:?} {}->{} should yield the original-language surface",
+                    target_surface, target.language, source.language
+                )
+            });
+
+            assert_eq!(
+                forward.meaning.slug(),
+                backward.meaning.slug(),
+                "#526: meaning id must survive {}->{}->{} for {:?}",
+                source.language,
+                target.language,
+                source.language,
+                source.surface,
+            );
+            assert_surface_eq(
+                round_tripped,
+                source.surface,
+                "#526: every supported language pair must round-trip through the meta language",
+            );
+        }
     }
 }
 

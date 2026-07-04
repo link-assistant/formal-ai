@@ -8,6 +8,7 @@ mod docs_requirements;
 mod docs_requirements_issue_451;
 mod docs_requirements_issue_468;
 mod docs_requirements_issue_492;
+mod docs_requirements_issue_526;
 mod docs_requirements_issue_559;
 mod docs_requirements_issue_563;
 mod docs_requirements_issue_602;

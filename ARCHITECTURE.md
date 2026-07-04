@@ -824,6 +824,19 @@ the user-facing body is just the deformalized surface.
 6. Upgrading the meaning id to a Wikidata Q-item or sense id when the
    lexeme join returns one.
 
+Issue #526 promotes that round-trip confirmation from a ranking heuristic into
+the testable quality contract. The active matrix requires
+language-to-meta-to-same-language survival for every supported natural language
+and a directed pair round trip across en, ru, hi, and zh. Code translation uses
+the same shape and the same anti-`N * N` rule: `translate_program` never matches
+on a `(source, target)` pair. It formalizes source code into a language-neutral
+`CodeMeaning` (`src/solver_helpers.rs::formalize_code_meaning`) and renders that
+meaning into the target (`render_code_meaning`), so adding a language is one
+formalizer plus one renderer, not a new pair. Because the source language never
+enters the formalizer, any pair — including ones with no hardcoded arm, such as
+Python -> JavaScript — shares one meaning, and Rust <-> JavaScript returns to the
+same `meaning:` link.
+
 The Rust pipeline is the canonical implementation. The browser worker
 (`src/web/formal_ai_worker.js`) cannot reach Wiktionary or Wikidata
 directly because of browser CORS restrictions, so it keeps a small

@@ -363,6 +363,12 @@ hardcoded prompt→answer tables.
 4. **Supported-language coverage.** New conversational cues should cover the
    project's supported languages (currently en, ru, hi, zh). The
    `tests/e2e/scripts/check-*.mjs` guards fail a one-language change.
+   Translation changes have the stricter issue #526 rule: add or update
+   round-trip tests that prove language-to-meta-to-same-language survival and
+   every supported language-pair path through the meta language. Code
+   translation changes must preserve a `meaning:` link across the source ->
+   target -> source round trip (for example Rust <-> JavaScript), not just render
+   plausible syntax.
 
 5. **Fix everywhere, not just the reported spot.** If a defect has more than one
    site (most do, because of mirror parity), fix all of them in the one PR.

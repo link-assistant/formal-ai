@@ -118,8 +118,8 @@ Status legend:
 | 3 | Formalization to Wikidata P-ids/Q-ids with fallback sources | Built | `src/translation/formalization.rs`, `src/translation/pipeline.rs`, active `formalization` specs | Future ranking improvements feed into [#279](https://github.com/link-assistant/formal-ai/issues/279). |
 | 4 | Temperature-based interpretation selection plus clarify-vs-guess | Built | `src/translation/selection.rs`, `SolverConfig::temperature`, active tests | None in the E1-E14 backlog. |
 | 5 | Public knowledge as a cache with provenance | Built | `src/solver.rs` and `src/solver_handlers/mod.rs` source-cache handling, active `source_cache` specs; `src/knowledge.rs` adds the coding oracle that treats Rosetta Code / Wikifunctions / the Hello World Collection / Stack Overflow as cached external APIs under a `min(1%, 512)` per-source cap ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | None in the E1-E14 backlog; the oracle's gated live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline. |
-| 6 | Translation through link-native meanings | Built | `src/translation/`, active `translation_via_links` specs | None in the E1-E14 backlog. |
-| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | A task-agnostic meta-builder ("algorithm that builds algorithms", R7) is the tracked next step in [`docs/case-studies/issue-412`](docs/case-studies/issue-412/README.md). |
+| 6 | Translation through link-native meanings | Built | `src/translation/`, active `translation_via_links` specs, issue #526 `translation_round_trip` matrix, and `docs/case-studies/issue-526/` | None in the E1-E14 backlog; issue #526 now pins round-trip survival as the quality guard. |
+| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs, Rust <-> JavaScript code-meaning round-trip coverage in `translation_via_links`; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | A task-agnostic meta-builder ("algorithm that builds algorithms", R7) is the tracked next step in [`docs/case-studies/issue-412`](docs/case-studies/issue-412/README.md). |
 | 8 | Formal reasoning beyond a fixed answer table | Built | `src/proof_engine/decision.rs`, boolean and linear decision modules | Optional future backends can build on this, but #253 closed the planned requirement. |
 | 9 | Chat over experience: why, facts, export, retraction | Built | `src/event_log.rs`, active `transparent_state` specs | None in the E1-E14 backlog. |
 | 10 | Links-network invariants and dynamic type system | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | Native physical-store default is tracked separately in [#278](https://github.com/link-assistant/formal-ai/issues/278). |
@@ -302,6 +302,18 @@ next step:
 - **Agent-CLI self-hosting** (R385) — script a single Agent-CLI session that
   reproduces one atomic edit (e.g. adding `томаты`) in a scratch repo and capture
   its session JSON; documented as the way-forward in `CONTRIBUTING.md`.
+
+## Issue #526 Translation Quality - current PR
+
+PR [#635](https://github.com/link-assistant/formal-ai/pull/635) closes the
+translation-quality gap from issue
+[#526](https://github.com/link-assistant/formal-ai/issues/526): round-trip
+survival is now the regression contract. Natural-language tests cover
+language-to-meta-to-same-language survival and every directed pair across en,
+ru, hi, and zh using the seeded apple meaning. Code translation now normalizes
+the simple add-function slice to one code meaning and verifies Rust ->
+JavaScript -> Rust preserves the same `meaning:` evidence link. The case study
+and online research live in `docs/case-studies/issue-526/`.
 
 ## Verification Contract
 
