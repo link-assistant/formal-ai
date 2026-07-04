@@ -40,8 +40,17 @@ pub fn reserve_loopback_port() -> u16 {
 }
 
 pub fn spawn_formal_ai_server(port: u16) -> FormalAiServer {
+    spawn_formal_ai_server_with_args(port, &[])
+}
+
+pub fn spawn_formal_ai_server_agent_mode(port: u16) -> FormalAiServer {
+    spawn_formal_ai_server_with_args(port, &["--agent-mode"])
+}
+
+fn spawn_formal_ai_server_with_args(port: u16, extra_args: &[&str]) -> FormalAiServer {
     let child = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args(["serve", "--host", "127.0.0.1", "--port", &port.to_string()])
+        .args(extra_args)
         .env("FORMAL_AI_API_BEARER_TOKEN", "sk-local-agentic-tools")
         .env_remove("FORMAL_AI_HTTP_BEARER_TOKEN")
         .env_remove("FORMAL_AI_API_TOKEN")

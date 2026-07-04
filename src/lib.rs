@@ -46,6 +46,7 @@ pub mod protocol;
 pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub(crate) mod protocol_responses;
+pub mod proxy;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
 pub(crate) mod responses_stream;
@@ -160,6 +161,9 @@ pub use protocol::{
     ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall,
     ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage,
     ResponseUsage, ResponsesRequest, TokenUsage, ToolCall,
+};
+pub use proxy::{
+    run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
 };
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
