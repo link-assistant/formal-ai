@@ -29,6 +29,7 @@
 use serde_json::json;
 
 use super::diagram;
+use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
@@ -76,6 +77,7 @@ pub struct PlannedToolCall {
 pub enum Capability {
     Search,
     Fetch,
+    Read,
     Write,
     Run,
 }
@@ -90,6 +92,7 @@ impl Capability {
         match self {
             Self::Search => "tool:capability:search",
             Self::Fetch => "tool:capability:fetch",
+            Self::Read => "tool:capability:read",
             Self::Write => "tool:capability:write",
             Self::Run => "tool:capability:run",
         }
@@ -99,7 +102,7 @@ impl Capability {
 /// Classify an advertised tool name into the [`Capability`] it provides.
 ///
 /// Returns [`None`] when the planner's recipe has no use for it
-/// (read/list/grep/todo/…). Public so the permission gate classifies through the
+/// (list/grep/todo/…). Public so the permission gate classifies through the
 /// *same* function the planner uses.
 #[must_use]
 pub fn tool_capability(name: &str) -> Option<Capability> {
@@ -122,6 +125,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // would otherwise be captured by the broad formalization keyword match below.
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
+    }
+    if let Some(file_task) = file_read_task_for(&task) {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
     if let Some(command) = shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
@@ -421,13 +427,13 @@ fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a st
 }
 
 /// Classify a tool name into a [`Capability`] by substring, mirroring the naming
-/// conventions agentic CLIs use (`web_search`, `web_fetch`, `write_file`,
+/// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
 /// `run_command`, `bash`, `websearch`, `webfetch`, …).
 ///
-/// The recipe only wants four kinds of tool, and real CLIs expose *lookalikes*
+/// The recipe only wants five kinds of tool, and real CLIs expose *lookalikes*
 /// that must not be mistaken for them: a `todowrite` scratchpad is not a file
-/// writer, a `codesearch` is not a web search, and a plain `read`/`edit`/`patch`
-/// is not a create-file. Those are ruled out first so that — even though
+/// writer, a `codesearch` is not a web search, and `edit`/`patch`
+/// are not create-file tools. Those are ruled out first so that — even though
 /// [`requested_tool_names`](super::super::protocol) hands the planner an
 /// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
 /// nor `codesearch` ahead of `websearch`.
@@ -440,6 +446,14 @@ fn classify_tool(name: &str) -> Option<Capability> {
     if lower.contains("search") {
         // A code search is not the web search the recipe issues its query to.
         (!lower.contains("code")).then_some(Capability::Search)
+    } else if lower == "read"
+        || lower.contains("read_file")
+        || lower.contains("read_local_file")
+        || lower.contains("file_read")
+        || lower.contains("open_file")
+        || lower.contains("view_file")
+    {
+        Some(Capability::Read)
     } else if lower.contains("fetch")
         || lower.contains("open")
         || lower.contains("browse")

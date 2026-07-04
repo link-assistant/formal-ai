@@ -28,6 +28,7 @@ mod issue_535;
 mod issue_538;
 mod issue_538_agentic;
 mod issue_571;
+mod issue_627;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;

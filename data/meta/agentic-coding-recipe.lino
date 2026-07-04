@@ -23,7 +23,7 @@ step_classify_tools
   order "3"
   id "classify_tools"
   title "Classify advertised tools into capabilities by substring"
-  detail "classify_tool maps whatever tool names the agentic CLI advertised onto the Capability enum (Search/Fetch/Write/Run) by substring, mirroring the naming conventions agentic CLIs use (web_search, web_fetch, write_file, run_command, bash, …). The planner therefore adapts to any subset of tools a given CLI exposes."
+  detail "classify_tool maps whatever tool names the agentic CLI advertised onto the Capability enum (Search/Fetch/Read/Write/Run) by substring, mirroring the naming conventions agentic CLIs use (web_search, web_fetch, read, write_file, run_command, bash, …). The planner therefore adapts to any subset of tools a given CLI exposes."
   seed_file "src/agentic_coding/planner.rs"
 step_plan_each_step
   record_type "meta_step"
@@ -51,7 +51,7 @@ step_grant_capabilities
   order "7"
   id "grant_capabilities"
   title "Grant the client-executed tool capabilities through an associative package"
-  detail "default_associative_packages installs pkg_agentic_coding, a permission-only package granting the client-executed web_fetch, write_file, and run_command capabilities (web_search comes from the core package). agent_mode remains the real guard, so granting these by default enables no hidden autonomous action."
+  detail "default_associative_packages installs pkg_agentic_coding, a permission-only package granting the client-executed web_fetch, read, write_file, and run_command capabilities (web_search comes from the core package). agent_mode remains the real guard, so granting these by default enables no hidden autonomous action."
   seed_file "src/associative_package.rs"
 step_execute_loop
   record_type "meta_step"

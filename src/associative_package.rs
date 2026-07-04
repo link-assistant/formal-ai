@@ -641,11 +641,12 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         // Capability-*class* grants: an agentic client executes tools in its own
         // isolated sandbox, so what the server authorises is a *kind* of action,
         // not a specific tool name. Any CLI's naming for a class — `web_search`
-        // / `websearch`, `write` / `write_file`, `bash` / `run_command` — maps to
-        // the same grant (see `planner::Capability::permission_key`), so the gate
-        // admits every real agentic CLI's toolset without a per-name allowlist.
-        // The `agent_mode` opt-in remains the real guard on whether tools run at
-        // all; these grants only say *which kinds* an opted-in client may drive.
+        // / `websearch`, `read` / `read_file`, `write` / `write_file`, `bash` /
+        // `run_command` — maps to the same grant (see
+        // `planner::Capability::permission_key`), so the gate admits every real
+        // agentic CLI's toolset without a per-name allowlist. The `agent_mode`
+        // opt-in remains the real guard on whether tools run at all; these grants
+        // only say *which kinds* an opted-in client may drive.
         .with_permission(
             "tool:capability:search",
             "agentic-coding web search (any CLI naming, client-executed)",
@@ -653,6 +654,10 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         .with_permission(
             "tool:capability:fetch",
             "agentic-coding source fetch (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:read",
+            "agentic-coding file read (any CLI naming, client-executed)",
         )
         .with_permission(
             "tool:capability:write",

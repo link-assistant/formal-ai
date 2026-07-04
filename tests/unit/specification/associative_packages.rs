@@ -5,9 +5,9 @@
 //! Notation rather than one-off Rust edits.
 
 use formal_ai::{
-    compile_natural_language_skill, create_chat_completion_with_solver, handle_api_request,
-    AssociativePackage, ChatCompletionRequest, PackagePermissionDecision, PackageStore,
-    SolverConfig, UniversalSolver,
+    compile_natural_language_skill, create_chat_completion_with_solver,
+    default_associative_packages, handle_api_request, AssociativePackage, ChatCompletionRequest,
+    PackagePermissionDecision, PackageStore, SolverConfig, UniversalSolver,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -173,7 +173,7 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     assert!(!body.contains("not allowed"));
 
     // The agentic gate now permission-checks by *capability class* (search /
-    // fetch / write / run), not by tool name — an external agentic CLI executes
+    // fetch / read / write / run), not by tool name — an external agentic CLI executes
     // tools in its own sandbox, so what the server authorises is the *kind* of
     // action, not the CLI-specific naming. `local_shell` classifies as Run
     // (contains "shell"), and `tool:capability:run` is granted by
@@ -204,6 +204,18 @@ fn chat_tool_gate_requires_agent_mode_and_package_permission() {
     assert!(
         !admitted_body.contains("associative package"),
         "capability-class Run grant should admit `local_shell` under agent mode; got: {admitted_body}"
+    );
+
+    let agentic_package = default_associative_packages()
+        .into_iter()
+        .find(|package| package.id == "pkg_agentic_coding")
+        .expect("agentic package is installed by default");
+    assert!(
+        agentic_package
+            .permissions
+            .iter()
+            .any(|permission| permission.capability == "tool:capability:read"),
+        "pkg_agentic_coding must grant the file-read capability class"
     );
 
     // Store-level denial (a package that grants no capability refuses the tool)
