@@ -15,10 +15,11 @@ use formal_ai::{
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
     execute_memory_query, export_memory_bundle, export_memory_full, import_memory_full,
     knowledge_links_notation, merged_bundle, naturalize_thinking_step, parse_bundle,
-    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai,
-    seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
-    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig,
-    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
+    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
+    run_with_formal_ai, seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest,
+    ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ProxyConfig,
+    ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver,
+    WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -70,6 +71,21 @@ enum Command {
         /// to `FORMAL_AI_AGENT_MODE=1`.
         #[arg(long, default_value_t = false)]
         agent_mode: bool,
+    },
+    /// Run a logging reverse proxy in front of a Formal AI HTTP server.
+    Proxy {
+        #[arg(long, env = "FORMAL_AI_PROXY_LISTEN", default_value = "127.0.0.1:8090")]
+        listen: String,
+
+        #[arg(long, env = "FORMAL_AI_PROXY_UPSTREAM")]
+        upstream: String,
+
+        #[arg(long, env = "FORMAL_AI_PROXY_LOG", default_value = "proxy.jsonl")]
+        log: PathBuf,
+
+        /// Include complete request and response bodies in each JSONL row.
+        #[arg(long, default_value_t = false)]
+        body: bool,
     },
     /// Export or import the agent's append-only memory log as a portable
     /// `demo_memory` Links Notation file. Round-trips with the browser demo.
@@ -429,6 +445,17 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             run_telegram_webhook_server(&format!("{host}:{port}"))?;
         }
+        Command::Proxy {
+            listen,
+            upstream,
+            log,
+            body,
+        } => run_proxy(&ProxyConfig {
+            listen,
+            upstream,
+            log_path: log,
+            log_bodies: body,
+        })?,
         Command::Telegram {
             mode,
             token,
