@@ -1,0 +1,41 @@
+Captured 2026-07-04 with:
+gh search code --owner link-assistant "Agent CLI" --limit 20
+
+link-assistant/hive-mind:docs/OPENROUTER.md: - [Agent CLI with OpenRouter](#agent-cli-with-openrouter)
+link-assistant/hive-mind:docs/OPENROUTER.md: ## Agent CLI with OpenRouter
+link-assistant/agent:rust/src/lib.rs: //! Agent CLI library - A minimal, public domain AI CLI agent compatible with OpenCode's JSON interface
+link-assistant/agent:rust/src/lib.rs: //! This is the Rust implementation of the @link-assistant/agent CLI tool.
+link-assistant/formal-ai:CONTRIBUTING.md: ## How we develop Formal AI: drive the Agent CLI, never defer
+link-assistant/formal-ai:CONTRIBUTING.md: AI through its own [Agent CLI](https://github.com/link-assistant/agent)** (the
+link-assistant/hive-mind:docs/FREE_MODELS.md: > - [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) - Upstream free models list (canonical source)
+link-assistant/hive-mind:docs/FREE_MODELS.md: > **Note:** See [OpenCode Zen Documentation](https://opencode.ai/docs/zen/) and [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) for the current list of free models.
+link-assistant/agent:rust/src/main.rs: //! Agent CLI - A minimal, public domain AI CLI agent compatible with OpenCode's JSON interface
+link-assistant/agent:rust/src/main.rs: //! This is the Rust implementation of the @link-assistant/agent CLI tool.
+link-assistant/formal-ai:scripts/reproduce-issue-538.sh: # driven by the Agent CLI (`formal-ai agent`) — the issue's final acceptance
+link-assistant/formal-ai:scripts/reproduce-issue-538.sh: # change is reproducible by the Agent CLI on a pristine checkout, with no hand
+link-assistant/hive-mind:docs/OPENROUTER.hi.md: - [OpenRouter के साथ Agent CLI](#agent-cli-with-openrouter)
+link-assistant/hive-mind:docs/OPENROUTER.hi.md: ## OpenRouter के साथ Agent CLI
+link-assistant/agent:rust/src/util/mod.rs: //! Utility modules for the Agent CLI
+link-assistant/formal-ai:desktop/scripts/smoke.mjs: // switched to the agent-commander provider without spawning host agent CLIs.
+link-assistant/formal-ai:desktop/scripts/smoke.mjs: // Issue #518 / E6: agent CLI NDJSON transcripts render through the same answer,
+link-assistant/hive-mind:docs/OPENROUTER.zh.md: - [Agent CLI 与 OpenRouter](#agent-cli-with-openrouter)
+link-assistant/hive-mind:docs/OPENROUTER.zh.md: ## Agent CLI 与 OpenRouter
+link-assistant/agent:examples/stdin-mode-examples.sh: # Examples for Agent CLI stdin mode functionality
+link-assistant/agent:examples/stdin-mode-examples.sh: echo "=== Agent CLI Stdin Mode Examples ==="
+link-assistant/formal-ai:experiments/agent_cli_e2e/capture_all.sh: echo "# Real Agent CLI ↔ formal-ai E2E — live multi-recipe run"
+link-assistant/formal-ai:experiments/agent_cli_e2e/capture_all.sh: echo "# Four recipe axes driven by the REAL @link-assistant/agent CLI over the OpenAI-compatible endpoint."
+link-assistant/hive-mind:docs/OPENROUTER.ru.md: - [Agent CLI с OpenRouter](#agent-cli-с-openrouter)
+link-assistant/hive-mind:docs/OPENROUTER.ru.md: ## Agent CLI с OpenRouter
+link-assistant/agent:docs/case-studies/issue-177/data/execution-log.txt: "message": "Agent CLI in continuous listening mode. Accepts JSON and plain text input.",
+link-assistant/formal-ai:docs/case-studies/issue-538/README.md: Status: **delivered in PR #601 and driven by the Agent CLI + Formal AI**, not
+link-assistant/formal-ai:docs/case-studies/issue-538/README.md: Formal AI through its own Agent CLI, not by hand-editing files* — is how the
+link-assistant/hive-mind:docs/FREE_MODELS.zh.md: > - [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) - 上游免费模型列表（权威来源）
+link-assistant/hive-mind:docs/FREE_MODELS.zh.md: > **注意：** 请参阅 [OpenCode Zen 文档](https://opencode.ai/docs/zen/) 和 [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) 获取当前的免费模型列表。
+link-assistant/agent:rust/src/error.rs: //! Error types for the Agent CLI
+link-assistant/agent:rust/src/error.rs: /// Main result type for the agent CLI
+link-assistant/formal-ai:experiments/agent_cli_e2e/serve_and_curl.sh: # Sibling of run_agent_cli.sh: this one skips the agent CLI and just POSTs a
+link-assistant/hive-mind:docs/FREE_MODELS.hi.md: > - [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) - Upstream free models सूची (canonical source)
+link-assistant/hive-mind:docs/FREE_MODELS.hi.md: > **नोट:** Free models की वर्तमान सूची के लिए [OpenCode Zen Documentation](https://opencode.ai/docs/zen/) और [Agent CLI FREE_MODELS.md](https://github.com/link-assistant/agent/blob/main/FREE_MODELS.md) देखें।
+link-assistant/agent:examples/interactive-mode-output.txt: "message": "Agent CLI in interactive terminal mode. Type your message and press Enter.",
+
+exit=0
