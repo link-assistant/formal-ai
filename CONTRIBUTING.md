@@ -67,6 +67,15 @@ Concretely, every change must follow these rules:
    already stands on its own; do not batch a day of unrelated edits into one
    commit.
 
+### Testing external agentic CLIs
+
+When validating `codex`, `opencode`, `gemini`, or the `agent` CLI against a
+local Formal AI server, follow
+[`docs/testing/agentic-cli-tools.md`](docs/testing/agentic-cli-tools.md). The
+guide defines the fixture markers, logging proxy assertions, phrasing matrices,
+and CI shape needed to prove that a result came from Formal AI and that the
+client actually executed the expected tools.
+
 ## Development Setup
 
 1. **Fork and clone the repository**
