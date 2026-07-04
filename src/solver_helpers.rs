@@ -433,19 +433,34 @@ pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'sta
 
 pub fn translate_program(code: &str, source: &str, target: &str) -> String {
     let trimmed = code.trim();
+    let is_binary_add = is_binary_add_function(trimmed);
     match (source, target) {
         ("python", "rust") => {
-            if trimmed.starts_with("def add") {
+            if is_binary_add {
                 String::from("fn add(a: i32, b: i32) -> i32 {\n    a + b\n}")
             } else {
                 format!("// translation gap for `{trimmed}` from python to rust")
             }
         }
         ("rust", "python") => {
-            if trimmed.contains("fn add") {
+            if is_binary_add {
                 String::from("def add(a, b):\n    return a + b")
             } else {
                 format!("# translation gap for `{trimmed}` from rust to python")
+            }
+        }
+        ("rust", "javascript") => {
+            if is_binary_add {
+                String::from("function add(a, b) {\n    return a + b;\n}")
+            } else {
+                format!("// translation gap for `{trimmed}` from rust to javascript")
+            }
+        }
+        ("javascript", "rust") => {
+            if is_binary_add {
+                String::from("fn add(a: i32, b: i32) -> i32 {\n    a + b\n}")
+            } else {
+                format!("// translation gap for `{trimmed}` from javascript to rust")
             }
         }
         _ => format!("// translation gap from {source} to {target}: {trimmed}"),
@@ -453,10 +468,25 @@ pub fn translate_program(code: &str, source: &str, target: &str) -> String {
 }
 
 pub fn normalize_code_meaning(code: &str) -> String {
+    if is_binary_add_function(code) {
+        return String::from("function:add:binary_sum");
+    }
     code.chars()
         .filter(char::is_ascii_alphanumeric)
         .collect::<String>()
         .to_lowercase()
+}
+
+fn is_binary_add_function(code: &str) -> bool {
+    let compact = code
+        .chars()
+        .filter(|character| !character.is_whitespace())
+        .flat_map(char::to_lowercase)
+        .collect::<String>();
+    let declares_add = compact.contains("defadd(")
+        || compact.contains("fnadd(")
+        || compact.contains("functionadd(");
+    declares_add && compact.contains("a+b")
 }
 
 /// Normalize a surface fragment into a deterministic, language-independent

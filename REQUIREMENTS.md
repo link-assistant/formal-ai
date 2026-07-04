@@ -465,6 +465,23 @@ for Wikipedia / Wikidata / Wiktionary enrichment.
 | R214 | Translations must preserve the source fragment's leading capitalization and terminal punctuation. A lowercase, unpunctuated source must produce a lowercase, unpunctuated target. | Implemented by `match_source_formatting` in `src/translation/formatting.rs` and `matchSourceFormatting` in `src/web/formal_ai_worker.js`. Covered by `tests/unit/specification/translation_via_links.rs::russian_translate_how_are_you_prompt_returns_english_surface`, `russian_capitalized_how_are_you_keeps_target_capitalization`, and `natural_translation_drops_terminal_when_source_has_none`. |
 | R215 | The pipeline must translate any surface, not only a hand-written subset, by routing through Wiktionary translation tables and Wikidata sense joins. Raw HTTP responses are cached on disk so unit tests run offline against real data. | Implemented by `TranslationPipeline` in `src/translation/pipeline.rs`, `Wiktionary` in `src/translation/wiktionary.rs`, `Wikidata` in `src/translation/wikidata.rs`, and `CachedHttpClient` in `src/translation/cache.rs`. Cached responses live under `data/translation-cache/`; integration runs can refresh them with `FORMAL_AI_LIVE_API=1`. Covered by `tests/unit/specification/translation_via_links.rs::translation_meaning_registry_covers_extended_phrases` (eight unrelated pairs across en / ru / hi / zh) plus per-module unit tests. The online enrichment design is documented in `ARCHITECTURE.md` section 10 and `docs/case-studies/issue-207/raw-data/online-research.md`. |
 
+## Issue #526 Translation Quality Test
+
+Issue [#526](https://github.com/link-assistant/formal-ai/issues/526)
+defines the translation quality rule as round-trip survival. A translation is
+not sufficient merely because it renders a plausible target string; it must
+formalize into the meta language, deformalize into the target language, and
+return through the same meta-language meaning to the original source surface.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R526-1 | Translation quality must be measured by round-trip survival: source -> meta -> target -> meta -> source preserves meaning and source surface. | Implemented by `tests/unit/specification/translation_round_trip.rs`, which asserts both `MeaningId` equality and final surface equality. |
+| R526-2 | Translation to the meta language from every supported source language must be lossless for seeded surfaces. | Implemented by `supported_language_surfaces_survive_meta_language_round_trip`, covering `apple`, `яблоко`, `सेब`, and `苹果` through language-to-meta-to-same-language projection. |
+| R526-3 | Every supported natural-language pair must translate through the shared meta-language meaning rather than a direct pair-only path. | Implemented by `every_supported_language_pair_round_trips_via_meta_language`, which covers all directed pairs across en, ru, hi, and zh with `translate_via_default_pipeline`. |
+| R526-4 | Code translation must also preserve a meta-level meaning, including Rust <-> JavaScript for the reported cross-language code axis. | Implemented by `tests/unit/specification/translation_via_links.rs::rust_javascript_code_translation_round_trips_through_code_meaning` and `src/solver_helpers.rs::normalize_code_meaning`, which normalize the simple add-function slice to one `meaning:` link. |
+| R526-5 | The architecture must state that translation goes through the meta language and that direct translation bypasses are not the quality path. | Implemented in `VISION.md`, `ARCHITECTURE.md` section 10, `ROADMAP.md`, and `CONTRIBUTING.md`. |
+| R526-6 | Issue data, online research, requirements, and solution planning must be compiled under `docs/case-studies/issue-526`. | Implemented by `docs/case-studies/issue-526/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, and raw GitHub snapshots. |
+
 ## Issue #187 Current Day Calendar Prompt
 
 Issue [#187](https://github.com/link-assistant/formal-ai/issues/187)

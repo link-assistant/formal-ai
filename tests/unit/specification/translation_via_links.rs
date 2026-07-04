@@ -11,6 +11,14 @@ fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
 }
 
+fn meaning_link(response: &SymbolicAnswer) -> &str {
+    response
+        .evidence_links
+        .iter()
+        .find(|link| link.starts_with("meaning:"))
+        .unwrap_or_else(|| panic!("expected a meaning link, got {:?}", response.evidence_links))
+}
+
 // ---------------------------------------------------------------------------
 // Active expectations: implementation already returns a Links Notation trace.
 // ---------------------------------------------------------------------------
@@ -744,6 +752,86 @@ fn cross_language_code_translation_preserves_semantics() {
     assert!(response.intent.starts_with("translate_"));
     assert!(response.answer.contains("fn add"));
     assert!(response.answer.contains("a + b"));
+}
+
+#[test]
+fn rust_javascript_code_translation_round_trips_through_code_meaning() {
+    let rust_source = "fn add(a: i32, b: i32) -> i32 { a + b }";
+    let rust_to_js = answer(&format!(
+        "Translate `{rust_source}` from Rust to JavaScript"
+    ));
+    assert_eq!(
+        rust_to_js.intent, "translate_rust_to_javascript",
+        "Rust->JavaScript code translation should route through the translation handler, got {}: {}",
+        rust_to_js.intent, rust_to_js.answer,
+    );
+    assert!(
+        rust_to_js.answer.contains("function add"),
+        "Rust->JavaScript should render an add function, got: {}",
+        rust_to_js.answer,
+    );
+    assert!(
+        rust_to_js.answer.contains("return a + b"),
+        "Rust->JavaScript should preserve add semantics, got: {}",
+        rust_to_js.answer,
+    );
+    assert!(
+        rust_to_js
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:rust"),
+        "Rust->JavaScript should record source language, got {:?}",
+        rust_to_js.evidence_links,
+    );
+    assert!(
+        rust_to_js
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:javascript"),
+        "Rust->JavaScript should record target language, got {:?}",
+        rust_to_js.evidence_links,
+    );
+
+    let javascript_source = "function add(a, b) { return a + b; }";
+    let js_to_rust = answer(&format!(
+        "Translate `{javascript_source}` from JavaScript to Rust"
+    ));
+    assert_eq!(
+        js_to_rust.intent, "translate_javascript_to_rust",
+        "JavaScript->Rust code translation should route through the translation handler, got {}: {}",
+        js_to_rust.intent, js_to_rust.answer,
+    );
+    assert!(
+        js_to_rust.answer.contains("fn add"),
+        "JavaScript->Rust should render an add function, got: {}",
+        js_to_rust.answer,
+    );
+    assert!(
+        js_to_rust.answer.contains("a + b"),
+        "JavaScript->Rust should preserve add semantics, got: {}",
+        js_to_rust.answer,
+    );
+    assert!(
+        js_to_rust
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_from:javascript"),
+        "JavaScript->Rust should record source language, got {:?}",
+        js_to_rust.evidence_links,
+    );
+    assert!(
+        js_to_rust
+            .evidence_links
+            .iter()
+            .any(|link| link == "language_to:rust"),
+        "JavaScript->Rust should record target language, got {:?}",
+        js_to_rust.evidence_links,
+    );
+    assert_eq!(
+        meaning_link(&rust_to_js),
+        meaning_link(&js_to_rust),
+        "#526: Rust->JavaScript->Rust must preserve the same code meaning link",
+    );
 }
 
 #[test]
