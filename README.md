@@ -427,7 +427,9 @@ requests; it does not sandbox the client process that is driving tools. In
 agent mode, a directory-listing request like the example above makes the server
 emit a `bash` / `shell` / `run_command` `tool_calls` turn with
 `{"command":"ls"}`; the Agent CLI executes or refuses that command according to
-its own permission mode. Use `--permission-mode plan` when read-only shell
+its own permission mode. Natural-language paraphrases such as "what files are
+in this folder?" and "show me the contents of this directory" route to the same
+read-only listing command. Use `--permission-mode plan` when read-only shell
 commands such as `ls` may run, and use hard `--read-only` when shell execution
 should be disabled entirely.
 

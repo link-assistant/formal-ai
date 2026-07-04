@@ -240,6 +240,70 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
 }
 
 #[test]
+fn issue_624_planner_maps_natural_language_directory_listing_to_ls() {
+    for prompt in [
+        "what files are in this folder?",
+        "show me the contents of this directory",
+        "can you check which files exist in the current folder?",
+        "print a directory listing of the current working directory",
+    ] {
+        let messages = vec![ChatMessage::user(prompt)];
+        let call = expect_single_call(&messages, &["bash"]);
+
+        assert_eq!(call.tool, "bash", "{prompt}");
+        let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+        assert_eq!(arguments["command"], "ls", "{prompt}");
+    }
+}
+
+#[test]
+fn issue_624_server_emits_tool_calls_for_natural_language_directory_listing() {
+    for prompt in [
+        "what files are in this folder?",
+        "show me the contents of this directory",
+        "can you check which files exist in the current folder?",
+        "print a directory listing of the current working directory",
+    ] {
+        let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+            "model": "formal-ai",
+            "messages": [{
+                "role": "user",
+                "content": prompt
+            }],
+            "tools": [{
+                "type": "function",
+                "function": {
+                    "name": "bash",
+                    "description": "Execute a shell command",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "command": {"type": "string"}
+                        },
+                        "required": ["command"]
+                    }
+                }
+            }]
+        }))
+        .unwrap();
+
+        let solver = UniversalSolver::new(SolverConfig {
+            agent_mode: true,
+            ..SolverConfig::default()
+        });
+        let completion = create_chat_completion_with_solver(&request, &solver);
+        let choice = &completion.choices[0];
+        assert_eq!(choice.finish_reason, "tool_calls", "{prompt}");
+        assert_eq!(choice.message.tool_calls.len(), 1, "{prompt}");
+        let call = &choice.message.tool_calls[0];
+        assert_eq!(call.function.name, "bash", "{prompt}");
+        let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
+        assert_eq!(arguments["command"], "ls", "{prompt}");
+        assert!(choice.message.content.plain_text().is_empty(), "{prompt}");
+    }
+}
+
+#[test]
 fn issue_607_server_summarizes_shell_tool_result_after_ls_runs() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",

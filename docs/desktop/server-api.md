@@ -412,9 +412,11 @@ agent clients only in a workspace where their file and shell actions are
 acceptable; formal-ai serves model responses but does not sandbox the client
 process. In agent mode, a directory-listing prompt like the example above makes
 formal-ai return `bash` / `shell` / `run_command` `tool_calls` with
-`{"command":"ls"}`. Use `--permission-mode plan` when read-only shell commands
-such as `ls` may run, and use hard `--read-only` when the Agent CLI should
-disable shell execution entirely.
+`{"command":"ls"}`. Natural-language paraphrases such as "what files are in this
+folder?" and "show me the contents of this directory" route to the same
+read-only listing command. Use `--permission-mode plan` when read-only shell
+commands such as `ls` may run, and use hard `--read-only` when the Agent CLI
+should disable shell execution entirely.
 
 ### 4d. `claude` (Anthropic Claude Code) - first-party adapter
 
