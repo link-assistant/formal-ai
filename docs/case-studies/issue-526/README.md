@@ -41,9 +41,14 @@ trips. That left two gaps:
 2. The full pair matrix across en, ru, hi, and zh was not required to preserve
    the same meta-language meaning.
 
-The code-translation path had a separate gap: it handled Python <-> Rust add
-functions with pair-specific string checks, but Rust <-> JavaScript returned a
-translation gap and the code meaning hash was lexical rather than semantic.
+The code-translation path had a separate, deeper gap. `translate_program`
+matched on `(source, target)` pairs directly — a Python -> Rust arm, a
+Rust -> Python arm, and so on. This is the exact `N * N` direct-translation
+practice issue #526 forbids ("we should never support direct translation without
+meta language"): every new language pair needed its own arm, and every new
+language multiplied the arms. Adding Rust <-> JavaScript to that table only made
+the anti-pattern larger, and the code meaning hash was lexical rather than a
+shared semantic identity.
 
 ## 4. Implemented Design
 
@@ -59,10 +64,21 @@ The tests call the real offline `translate_via_default_pipeline` path, so they
 exercise `formalize -> meaning -> deformalize` rather than a direct pair table.
 The pair matrix asserts both the target surface and the shared `MeaningId`.
 
-The code translation fix recognizes a simple binary add function as the shared
-code meaning `function:add:binary_sum`, then renders that meaning into Rust,
-Python, or JavaScript for the supported add-function examples. Unknown programs
-still return explicit translation gaps.
+The code translation fix removes the direct `(source, target)` table entirely
+and gives code its own meta language, mirroring the natural-language pipeline.
+`formalize_code_meaning` collapses a fragment into a language-neutral
+`CodeMeaning` (currently `CodeMeaning::BinaryAddFunction`, slug
+`function:add:binary_sum`), and `render_code_meaning` renders that meaning into
+the requested target (Python, Rust, JavaScript, TypeScript, or Go). Thus
+`translate_program` is just `render(formalize(code), target)`: `N` formalizers
+plus `N` renderers, never `N * N` pairs. Because the source language never
+enters `formalize_code_meaning`, the same add function written in any source
+language collapses to one meaning, so any pair — including pairs that never had
+a hardcoded arm, such as Python -> JavaScript or Rust -> Go — translates and
+shares the same `meaning:` link. `normalize_code_meaning` now delegates to the
+same formalizer, so the meaning a fragment translates *through* is exactly the
+meaning its trace records. Unknown programs, and targets with no seeded
+rendering, still return explicit, language-appropriate translation gaps.
 
 ## 5. Prior Art And Existing Components
 
@@ -79,7 +95,9 @@ Existing components reused:
 - `src/translation/pipeline.rs::select_best_block` for round-trip-confirmed
   sense selection.
 - `src/solver_handlers/mod.rs` for traceable code translation evidence links.
-- `src/solver_helpers.rs::normalize_code_meaning` for code meaning IDs.
+- `src/solver_helpers.rs::{CodeMeaning, formalize_code_meaning,
+  render_code_meaning, normalize_code_meaning}` for the code meta language:
+  `source -> CodeMeaning -> target` with a shared meaning slug.
 
 ## 6. Verification
 

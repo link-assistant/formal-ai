@@ -18,14 +18,20 @@ target rather than a one-way display table.
 
 ## R526-5: Rust <-> JavaScript Code Meaning
 
-Keep the code slice deliberately narrow and semantic:
+Give code its own meta language instead of a direct pair table, so the code path
+obeys the same `N` formalizers + `N` renderers rule as natural language:
 
 1. Add a failing test for `fn add(a, b)` translated Rust -> JavaScript -> Rust.
 2. Require evidence links for `language_from`, `language_to`, and `meaning`.
-3. Normalize simple add-function implementations to one code meaning,
-   `function:add:binary_sum`.
-4. Render that meaning to JavaScript and Rust in `translate_program`.
-5. Leave unknown code as explicit translation gaps.
+3. Formalize simple add-function implementations to one language-neutral code
+   meaning, `CodeMeaning::BinaryAddFunction` (slug `function:add:binary_sum`),
+   in `formalize_code_meaning` — the source language must not affect the result.
+4. Render that meaning to any target in `render_code_meaning`, and define
+   `translate_program` as `render(formalize(code), target)` so no direct
+   `(source, target)` arm survives. Pairs that never had a hardcoded arm (for
+   example Python -> JavaScript, Rust -> Go) then work for free.
+5. Leave unknown code, and targets without a seeded rendering, as explicit
+   translation gaps.
 
 ## R526-6 to R526-8: Documentation And Governance
 

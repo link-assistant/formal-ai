@@ -431,50 +431,115 @@ pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'sta
     }
 }
 
-pub fn translate_program(code: &str, source: &str, target: &str) -> String {
-    let trimmed = code.trim();
-    let is_binary_add = is_binary_add_function(trimmed);
-    match (source, target) {
-        ("python", "rust") => {
-            if is_binary_add {
-                String::from("fn add(a: i32, b: i32) -> i32 {\n    a + b\n}")
-            } else {
-                format!("// translation gap for `{trimmed}` from python to rust")
-            }
+/// Language-neutral meta representation of a code fragment — the code meta
+/// language.
+///
+/// Issue #526 forbids direct pair-specific translation: with `N` languages a
+/// direct table needs `N * N` translators, which is computationally
+/// intractable. Code translation therefore mirrors the natural-language
+/// pipeline. A fragment is first *formalized* into a `CodeMeaning` and then
+/// *rendered* into the requested target, so the translator stays at `N`
+/// formalizers plus `N` renderers instead of `N * N` hardcoded pairs. Adding a
+/// language is one new [`formalize_code_meaning`] recognizer and one new
+/// [`render_code_meaning`] arm — never a new `(source, target)` pair.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CodeMeaning {
+    /// A binary function `add(a, b)` that returns the sum of its two
+    /// parameters. This is the currently seeded code meaning; widen coverage by
+    /// adding variants here rather than by adding direct language pairs.
+    BinaryAddFunction,
+    /// The fragment has not been formalized into a known code meaning. Carries
+    /// the trimmed source so callers render a traceable gap instead of
+    /// manufacturing an incorrect translation.
+    Unformalized(String),
+}
+
+impl CodeMeaning {
+    /// Stable, language-neutral slug for this code meaning. Two fragments that
+    /// share a meaning (e.g. the same add function written in Rust and in
+    /// JavaScript) collapse to the same slug, which is what lets a round trip
+    /// preserve its `meaning:` link.
+    pub fn slug(&self) -> String {
+        match self {
+            Self::BinaryAddFunction => String::from("function:add:binary_sum"),
+            Self::Unformalized(source) => source
+                .chars()
+                .filter(char::is_ascii_alphanumeric)
+                .collect::<String>()
+                .to_lowercase(),
         }
-        ("rust", "python") => {
-            if is_binary_add {
-                String::from("def add(a, b):\n    return a + b")
-            } else {
-                format!("# translation gap for `{trimmed}` from rust to python")
-            }
-        }
-        ("rust", "javascript") => {
-            if is_binary_add {
-                String::from("function add(a, b) {\n    return a + b;\n}")
-            } else {
-                format!("// translation gap for `{trimmed}` from rust to javascript")
-            }
-        }
-        ("javascript", "rust") => {
-            if is_binary_add {
-                String::from("fn add(a: i32, b: i32) -> i32 {\n    a + b\n}")
-            } else {
-                format!("// translation gap for `{trimmed}` from javascript to rust")
-            }
-        }
-        _ => format!("// translation gap from {source} to {target}: {trimmed}"),
     }
 }
 
-pub fn normalize_code_meaning(code: &str) -> String {
+/// Formalize a source-language code fragment into the language-neutral code
+/// meta language. The source language is irrelevant to the result: `add`
+/// written in Rust, Python, or JavaScript all collapse to the same
+/// [`CodeMeaning::BinaryAddFunction`], which is exactly why the round trip
+/// preserves meaning.
+pub fn formalize_code_meaning(code: &str) -> CodeMeaning {
     if is_binary_add_function(code) {
-        return String::from("function:add:binary_sum");
+        CodeMeaning::BinaryAddFunction
+    } else {
+        CodeMeaning::Unformalized(code.trim().to_owned())
     }
-    code.chars()
-        .filter(char::is_ascii_alphanumeric)
-        .collect::<String>()
-        .to_lowercase()
+}
+
+/// Render a [`CodeMeaning`] into `target`'s surface syntax. When the meaning is
+/// unknown, or the target language has no seeded rendering yet, this returns a
+/// traceable, language-appropriate translation-gap comment rather than
+/// inventing plausible-but-wrong code.
+pub fn render_code_meaning(meaning: &CodeMeaning, source: &str, target: &str) -> String {
+    if matches!(meaning, CodeMeaning::BinaryAddFunction) {
+        if let Some(rendered) = render_binary_add(target) {
+            return rendered;
+        }
+    }
+    let subject = match meaning {
+        CodeMeaning::BinaryAddFunction => "add function",
+        CodeMeaning::Unformalized(source_code) => source_code.as_str(),
+    };
+    format!(
+        "{} translation gap for `{subject}` from {source} to {target}",
+        code_comment_prefix(target)
+    )
+}
+
+/// Render the seeded [`CodeMeaning::BinaryAddFunction`] into `target`. Returns
+/// `None` when `target` has no seeded rendering, so the caller can emit a gap.
+fn render_binary_add(target: &str) -> Option<String> {
+    let rendered = match target {
+        "python" => "def add(a, b):\n    return a + b",
+        "rust" => "fn add(a: i32, b: i32) -> i32 {\n    a + b\n}",
+        "javascript" => "function add(a, b) {\n    return a + b;\n}",
+        "typescript" => "function add(a: number, b: number): number {\n    return a + b;\n}",
+        "go" => "func add(a int, b int) int {\n    return a + b\n}",
+        _ => return None,
+    };
+    Some(String::from(rendered))
+}
+
+/// Comment prefix used to render a translation gap in `language`'s own syntax.
+fn code_comment_prefix(language: &str) -> &'static str {
+    match language {
+        "python" | "ruby" => "#",
+        _ => "//",
+    }
+}
+
+/// Translate a code fragment from `source` to `target` by routing through the
+/// code meta language: `source -> CodeMeaning -> target`. There is no direct
+/// `(source, target)` path — see [`CodeMeaning`] for why.
+pub fn translate_program(code: &str, source: &str, target: &str) -> String {
+    let meaning = formalize_code_meaning(code);
+    render_code_meaning(&meaning, source, target)
+}
+
+/// Language-neutral meaning slug for a code fragment, used to key its
+/// `meaning:` evidence link. Delegates to [`formalize_code_meaning`] so the
+/// meaning a fragment translates *through* is the same meaning its trace
+/// records — that shared identity is the #526 round-trip invariant.
+pub fn normalize_code_meaning(code: &str) -> String {
+    formalize_code_meaning(code).slug()
 }
 
 fn is_binary_add_function(code: &str) -> bool {
