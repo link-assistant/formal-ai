@@ -14,6 +14,7 @@ mod docs_requirements_issue_602;
 mod docs_requirements_issue_603;
 mod docs_requirements_issue_606;
 mod docs_requirements_issue_607;
+mod docs_requirements_issue_628;
 mod formal_ai;
 mod github_logs;
 mod installation_conversion;
