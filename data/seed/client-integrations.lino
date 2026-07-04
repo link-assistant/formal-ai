@@ -11,6 +11,8 @@ client_integrations
     ephemeral
       prepend_arg "exec"
       arg "--skip-git-repo-check"
+      arg "--sandbox"
+      arg "read-only"
       arg "-c"
       arg "model_providers.{provider_id}.name=\"formal-ai server\""
       arg "-c"
