@@ -535,41 +535,68 @@ fn shell_command_for_task(prompt: &str) -> Option<String> {
     let run_context = ["run", "execute", "command", "terminal", "shell"]
         .iter()
         .any(|word| contains_word(&lower, word));
-    let listing_context = [
-        "list files",
-        "list the files",
-        "list local files",
-        "list directory",
-        "files here",
-        "current directory",
-        "working directory",
-    ]
-    .iter()
-    .any(|phrase| lower.contains(phrase));
+    let listing_context = contains_any(
+        &lower,
+        &[
+            "list files",
+            "list the files",
+            "list local files",
+            "list directory",
+            "files here",
+            "current directory",
+            "working directory",
+        ],
+    );
 
     if mentions_ls && (run_context || listing_context) {
         return Some(String::from("ls"));
     }
 
-    let asks_for_listing = [
-        "list files",
-        "list the files",
-        "list local files",
-        "list directory",
-    ]
-    .iter()
-    .any(|phrase| lower.contains(phrase));
-    let local_scope = [
-        "here",
-        "current directory",
-        "working directory",
-        "this directory",
-        "local files",
-    ]
-    .iter()
-    .any(|phrase| lower.contains(phrase));
+    let asks_for_listing = contains_any(
+        &lower,
+        &[
+            "list files",
+            "list the files",
+            "list local files",
+            "list directory",
+            "directory listing",
+            "directory contents",
+            "folder contents",
+            "contents of this directory",
+            "contents of the current directory",
+            "contents of this folder",
+            "contents of the current folder",
+        ],
+    );
+    let asks_which_files = contains_any(
+        &lower,
+        &[
+            "what files",
+            "which files",
+            "files are in",
+            "files exist",
+            "files are here",
+        ],
+    );
+    let local_scope = contains_any(
+        &lower,
+        &[
+            "here",
+            "current directory",
+            "working directory",
+            "current working directory",
+            "this directory",
+            "current folder",
+            "this folder",
+            "local files",
+        ],
+    );
 
-    (asks_for_listing && local_scope).then(|| String::from("ls"))
+    ((asks_for_listing || asks_which_files) && local_scope).then(|| String::from("ls"))
+}
+
+fn contains_any(text: &str, phrases: &[&str]) -> bool {
+    phrases.iter().any(|phrase| text.contains(phrase))
 }
 
 fn contains_word(text: &str, word: &str) -> bool {
