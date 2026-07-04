@@ -21,6 +21,7 @@
 pub mod corpus;
 pub mod diagram;
 pub mod driver;
+mod file_read;
 pub mod formalize;
 pub(crate) mod lexicon;
 pub mod meaning_detail;

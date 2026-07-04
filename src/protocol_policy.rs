@@ -57,7 +57,7 @@ fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
 /// Instead each advertised tool is classified into a
 /// [`Capability`](crate::agentic_coding::planner::Capability) — the same
 /// classifier the planner uses to pick tools — and only the *capability class* is
-/// checked. Tools the recipe never drives (read/list/grep/todo/…) are
+/// checked. Tools the recipe never drives (list/grep/todo/…) are
 /// unclassified and simply ignored: the client owns them. Returns the first
 /// denial for a class no installed package grants, or [`None`] when every
 /// classified tool's class is permitted. When no tools are advertised at all the
