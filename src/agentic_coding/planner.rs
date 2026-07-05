@@ -38,6 +38,7 @@ use super::formalize::{
 };
 use super::ledger;
 use super::meaning_detail;
+use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
 use super::source_graph;
@@ -164,6 +165,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // since its request legitimately names "Links Notation" as the output format.
     if change_request::is_change_request_task(&task) {
         return Some(plan_change_request_step(messages, tool_names));
+    }
+    // The general repair-classification recipe: given an arbitrary failure trace, decide
+    // whether the repair is a solver method, a data record, or a test, and compose the
+    // grounded, human-gated strategy for each class. Checked alongside the other
+    // self-referential recipes and before formalization, since its request legitimately
+    // names "Links Notation" as the output format its strategies are rendered in. Its
+    // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
+    // so ordering only guards a request that somehow names both.
+    if repair_strategy::is_repair_strategy_task(&task) {
+        return Some(plan_repair_strategy_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -528,6 +539,41 @@ fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(change_request::final_answer(&document))
+}
+
+/// The issue-#558 general repair-classification recipe: write the generated
+/// repair-strategies document → verify → final. Like the other self-referential recipes
+/// it needs no web step — the document is a deterministic function of the three
+/// self-contained canonical failure traces ([`repair_strategy::render_document`]), so
+/// the loop decides *which part* of itself to repair for every failure class. Steps
+/// whose tool the CLI did not advertise are skipped.
+fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = repair_strategy::render_document();
+
+    // Step 1: write the generated repair-strategies document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(repair_strategy::REPAIR_STRATEGY_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments =
+                json!({ "command": format!("cat {}", repair_strategy::REPAIR_STRATEGY_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(repair_strategy::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
