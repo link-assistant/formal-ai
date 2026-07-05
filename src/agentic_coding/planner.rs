@@ -34,6 +34,7 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::ledger;
 use super::meaning_detail;
 use super::self_ast;
 use super::self_heal;
@@ -141,6 +142,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // formalization keyword match below would otherwise capture.
     if source_graph::is_source_graph_task(&task) {
         return Some(plan_source_graph_step(messages, tool_names));
+    }
+    // The learning-ledger recipe: the promotion step that follows an approved repair
+    // case. Checked after self-healing (which owns the "auto learning" keywords) and
+    // before formalization, since its request legitimately names "Links Notation".
+    if ledger::is_ledger_task(&task) {
+        return Some(plan_ledger_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -411,6 +418,36 @@ fn plan_source_graph_step(messages: &[ChatMessage], tool_names: &[&str]) -> Agen
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(source_graph::final_answer(&document))
+}
+
+/// The issue-#558 learning-ledger recipe: write the generated approved-lesson ledger
+/// document → verify → final. Like the other self-inspection recipes it needs no web
+/// step — the document is a pure function of the canonical, human-approved ledger
+/// ([`ledger::render_document`]). Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = ledger::render_document();
+
+    // Step 1: write the generated ledger document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(ledger::LEDGER_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", ledger::LEDGER_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(ledger::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
