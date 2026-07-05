@@ -56,6 +56,7 @@ pub mod seed;
 pub mod selection;
 pub mod self_healing;
 pub mod self_improvement;
+pub mod self_source_graph;
 pub mod server;
 pub mod shared_dialog;
 pub mod skill_compiler;
@@ -181,6 +182,10 @@ pub use self_healing::{
 pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
     LearningRejection, LearningRun, UnknownTrace,
+};
+pub use self_source_graph::{
+    owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
+    owned_source_files, owned_total_bytes, SourceGraph, SourceModuleDigest, SourceModuleProjection,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,

@@ -28,6 +28,7 @@ pub mod meaning_detail;
 pub mod planner;
 pub mod self_ast;
 pub mod self_heal;
+pub mod source_graph;
 
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
@@ -45,3 +46,4 @@ pub use planner::{
 };
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};
