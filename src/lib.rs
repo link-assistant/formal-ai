@@ -55,6 +55,7 @@ pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod selection;
+pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
 pub mod self_source_graph;
@@ -179,6 +180,9 @@ pub use seed::{
     EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
     ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
     ProjectRecord, ProjectStatement, ProjectsRegistry,
+};
+pub use self_explanation::{
+    canonical_explanation, Citation, CitationKind, ExplanationSection, SystemExplanation,
 };
 pub use self_healing::{
     canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
