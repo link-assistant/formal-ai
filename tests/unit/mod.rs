@@ -32,6 +32,7 @@ mod issue_535;
 mod issue_538;
 mod issue_538_agentic;
 mod issue_558_self_healing;
+mod issue_558_source_graph;
 mod issue_571;
 mod issue_627;
 mod local_surface;
