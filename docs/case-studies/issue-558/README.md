@@ -252,11 +252,45 @@ PR #637 additionally closes the general failure-to-repair gap (`R558-02`):
   `tests/integration/issue_558_repair_strategy.rs` proves three paraphrases route
   through the agent-mode server to a reviewable write.
 
-What remains for later slices (still human-gated by design): driving accepted
-Links-to-source *edits* back through the round-trip with rebuild tests (`G4`) and
-the rebuild/UI-reattach step (`G6`/`R558-06`). The `RepairCase`, `SourceGraph`,
-`LearningLedger`, `SystemExplanation`, `ChangeRequest`, and `RepairStrategy` are the
-anchors those slices attach to.
+PR #637 additionally closes the rebuild-and-reattach gap (`G6`/`R558-06`):
+
+- **Recompile and reattach, derived from an accepted change** — `src/rebuild_plan.rs`
+  composes the final step of the self-change loop as a deterministic, human-gated
+  `RebuildPlan`. `RebuildPlan::for_accepted_change` takes an `AcceptedChange` — which
+  only exists after a green benchmark gate *and* an explicit human approval — so a
+  rebuild can never precede acceptance.
+- **Grounded UI artifacts, never fabricated** — every artifact the rebuild reattaches is
+  content-addressed from the real repository bytes: the crate manifest, the server/CLI
+  entry (`src/main.rs`, resolved through the owned manifest and panicking if absent), the
+  worker glue (`src/web/formal_ai_worker.js`), and the UI entry (`src/web/index.html`).
+  The regenerated `formal_ai_worker.wasm` is deliberately the rebuild's *output*,
+  referenced in the pipeline steps rather than pinned as an input.
+- **An ordered, observable, reversible pipeline** — recompile the crate → regenerate the
+  WebAssembly worker → reattach it to the UI → hot-swap the local server → verify the UI
+  uses the accepted version. Every step records what proves it happened (observable) and
+  how to roll it back (reversible), so keeping the swap stays a reviewable human
+  decision. Nothing is rebuilt or restarted — the plan is the reviewable product, and
+  neural inference stays a NON-GOAL: the plan is a deterministic function of the accepted
+  change and the embedded artifacts.
+- **Eleventh agentic recipe** — `src/agentic_coding/rebuild_plan.rs` makes the plan
+  reachable through the agentic interface, keyed on "reattach" (disjoint from the
+  source-graph recipe's "recompile"). The deterministic planner walks a write → verify →
+  final recipe that emits the plan as `rebuild-and-reattach.lino`. Like the source-graph,
+  explain, and change-request recipes it is asserted *live* (never pinned), because the
+  grounded artifacts' content ids change with every source edit.
+- **Tests** — `tests/unit/issue_558_rebuild_plan.rs` pins that the plan is derived from
+  an accepted change, that every reattached artifact is grounded (the server entry's id
+  matches the owned manifest and the wasm output is absent), that the pipeline is
+  ordered/observable/reversible, deterministic content addressing, Links Notation
+  validity, and the non-colliding planner/driver walk;
+  `tests/integration/issue_558_rebuild_plan.rs` proves three paraphrases route through
+  the agent-mode server to a reviewable write.
+
+What remains for a later slice (still human-gated by design): driving accepted
+Links-to-source *edits* back through the byte-for-byte round-trip with rebuild tests
+(`G4`) before that rebuild-and-reattach plan runs. The `RepairCase`, `SourceGraph`,
+`LearningLedger`, `SystemExplanation`, `ChangeRequest`, `RepairStrategy`, and
+`RebuildPlan` are the anchors those slices attach to.
 
 ## Related Existing Pieces
 
@@ -301,3 +335,9 @@ classifier (tenth recipe): an arbitrary failure trace is deterministically mappe
 onto a solver-method, data-record, or test repair, each carries a grounded
 human-gated plan, the committed `data/meta/repair-strategies.lino` matches a fresh
 render, and the recipe is reachable through the agent-mode server.
+`tests/unit/issue_558_rebuild_plan.rs` and
+`tests/integration/issue_558_rebuild_plan.rs` verify the rebuild-and-reattach plan
+(eleventh recipe): the plan is derived from an accepted change, every reattached UI
+artifact is grounded against the owned manifest (with the regenerated wasm absent as
+the rebuild's output), the pipeline is ordered/observable/reversible, and the recipe
+is reachable through the agent-mode server.
