@@ -29,6 +29,7 @@
 use serde_json::json;
 
 use super::diagram;
+use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
@@ -148,6 +149,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // before formalization, since its request legitimately names "Links Notation".
     if ledger::is_ledger_task(&task) {
         return Some(plan_ledger_step(messages, tool_names));
+    }
+    // The grounded self-explanation recipe: answers "how does Formal AI work?" from
+    // real source/data/test artifacts. Checked alongside the other self-inspection
+    // recipes and before formalization, since its request legitimately names "Links
+    // Notation" as the output format its document is rendered in.
+    if explain::is_explain_task(&task) {
+        return Some(plan_explain_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -448,6 +456,36 @@ fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPla
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(ledger::final_answer(&document))
+}
+
+/// The issue-#558 self-explanation recipe: write the generated grounded-explanation
+/// document → verify → final. Like the other self-inspection recipes it needs no web
+/// step — the document is a pure function of the system's own embedded source cited
+/// through the owned manifest ([`explain::render_document`]), so the loop *explains
+/// itself*. Steps whose tool the CLI did not advertise are skipped.
+fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = explain::render_document();
+
+    // Step 1: write the generated grounded-explanation document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(explain::EXPLAIN_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", explain::EXPLAIN_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(explain::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
