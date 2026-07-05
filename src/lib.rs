@@ -51,6 +51,7 @@ pub(crate) mod protocol_responses;
 pub mod proxy;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
+pub mod repair_strategy;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
@@ -174,6 +175,7 @@ pub use protocol::{
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
 };
+pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
