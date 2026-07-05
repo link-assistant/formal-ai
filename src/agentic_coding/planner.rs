@@ -38,6 +38,7 @@ use super::formalize::{
 };
 use super::ledger;
 use super::meaning_detail;
+use super::rebuild_plan;
 use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
@@ -175,6 +176,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // so ordering only guards a request that somehow names both.
     if repair_strategy::is_repair_strategy_task(&task) {
         return Some(plan_repair_strategy_step(messages, tool_names));
+    }
+    // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
+    // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
+    // Checked alongside the other self-referential recipes and before formalization,
+    // since its request legitimately names "Links Notation" as the output format its plan
+    // is rendered in. Its keywords key on "reattach" and are disjoint from the
+    // source-graph recipe's "recompile", so ordering only guards a request that somehow
+    // names both.
+    if rebuild_plan::is_rebuild_task(&task) {
+        return Some(plan_rebuild_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -574,6 +585,38 @@ fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> A
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(repair_strategy::final_answer(&document))
+}
+
+/// The issue-#558 rebuild-and-reattach recipe: write the generated
+/// rebuild-and-reattach plan → verify → final. Like the change-request and source-graph
+/// recipes it needs no web step — the plan is a deterministic function of the accepted
+/// change and the grounded UI artifacts ([`rebuild_plan::render_document`]), so the loop
+/// turns an accepted change into the ordered, reversible plan to recompile Formal AI and
+/// reattach the improved worker to the UI. Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = rebuild_plan::render_document();
+
+    // Step 1: write the generated rebuild-and-reattach plan.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(rebuild_plan::REBUILD_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", rebuild_plan::REBUILD_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated plan inline.
+    AgenticPlan::Final(rebuild_plan::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
