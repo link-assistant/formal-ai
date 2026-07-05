@@ -112,11 +112,35 @@ it into the agentic interface:
   boots the agent-mode server and proves a self-healing request over the wire
   routes to a `write_file` tool call carrying the generated repair case.
 
-What remains for later slices (still human-gated by design): projecting the
-*whole* repository to source-to-links data (`G3`), Links-to-source regeneration
-with rebuild tests (`G4`), a durable promotion ledger (`G5`), and the
-rebuild/UI-reattach step (`G6`). The `RepairCase` is the anchor those slices
-attach to.
+PR #637 additionally closes the whole-repository source-to-links gap (`G3`/`G4`):
+
+- **Whole-repository source ↔ links projection** — `build.rs` embeds *every*
+  owned `src/*.rs` file (the `OWNED_SOURCE_FILES` manifest), so the entire source
+  tree is present in our data as content-addressed links. `src/self_source_graph.rs`
+  content-addresses the whole tree (`owned_manifest`) and projects modules through
+  the sole CST/AST engine; `SourceGraph::owned` is the exhaustive projection in
+  which **every** owned module round-trips byte-for-byte
+  (`source → links → source`, `is_fully_faithful`, `coverage_permille == 1000`).
+  This lifts the single-module round-trip (`R558-05`) to the whole repository
+  (`R558-04`), still writing no source back.
+- **Sixth agentic recipe** — `src/agentic_coding/source_graph.rs` makes the
+  whole-repository projection reachable through the agentic interface. The
+  deterministic planner walks a write → verify → final recipe that emits the
+  projection as a read-only Links Notation document (`self-source-graph.lino`):
+  a cheap `entire_source` header content-addressing every file plus a lossless
+  `round_trip_proof` over a representative slice, keeping the live loop responsive
+  while the exhaustive proof stays the library invariant.
+- **Tests** — `tests/unit/issue_558_source_graph.rs` pins the manifest, the
+  lossless slice round-trip, the coverage math, the Links Notation validity, and
+  the planner/driver walk, with an ignored-by-default exhaustive all-file
+  round-trip; `tests/integration/issue_558_source_graph.rs` proves the recipe is
+  reachable through the agent-mode server. Regenerate the exhaustive projection
+  with `cargo run --example project_source_graph`.
+
+What remains for later slices (still human-gated by design): driving accepted
+Links-to-source *edits* back through the round-trip with rebuild tests (`G4`), a
+durable promotion ledger (`G5`), and the rebuild/UI-reattach step (`G6`). The
+`RepairCase` and `SourceGraph` are the anchors those slices attach to.
 
 ## Related Existing Pieces
 
