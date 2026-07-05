@@ -220,11 +220,43 @@ PR #637 additionally closes the user-driven self-change gap (`R558-07`):
   id, and the non-colliding planner/driver walk; `tests/integration/issue_558_change_request.rs`
   proves three paraphrases route through the agent-mode server to a reviewable write.
 
+PR #637 additionally closes the general failure-to-repair gap (`R558-02`):
+
+- **Classify any failure → grounded repair strategy** — the self-healing slice
+  repairs one canonical failure by synthesising a solver method; `src/repair_strategy.rs`
+  generalises the *front* of the loop. `RepairStrategy::classify` reads an arbitrary
+  `UnknownTrace` — the same trace the self-healing loop reasons about — and, purely
+  deterministically from the trace's own prompt and event signals, maps it onto exactly
+  one of the three targets issue #558 names (`RepairTarget::SolverMethod` / `DataRecord`
+  / `Test`). The loop is *total*: every failure is classified, and an unclassified
+  failure falls back to a solver-method strategy because it means the meta algorithm
+  still lacks a way to resolve it.
+- **A reviewable plan, never applied** — for each trace the classifier composes a
+  rationale (the signal it keyed on), a proposed change scoped to the target class, and
+  the automated verification that must be green before any human promotion. It stays
+  proposal-only and human-gated, and neural inference stays a NON-GOAL: the
+  classification and plan are deterministic functions of the trace, and the "change" is
+  a plan a human or Agent CLI executes, never generated code applied automatically.
+- **Tenth agentic recipe** — `src/agentic_coding/repair_strategy.rs` makes the
+  classifier reachable through the agentic interface. The deterministic planner walks a
+  write → verify → final recipe that emits the three canonical strategies (one per
+  target class) as a Links Notation document (`repair-strategies.lino`). Unlike the
+  source-graph, explain, and change-request recipes, the document depends only on the
+  three self-contained canonical traces, so it is committed byte-for-byte as
+  `data/meta/repair-strategies.lino` and asserted against a fresh render — like the
+  self-healing repair case.
+- **Tests** — `tests/unit/issue_558_repair_strategy.rs` pins the classification of
+  every failure class onto the right target, deterministic content addressing, Links
+  Notation validity, coverage of all three classes, the committed artifact matching a
+  fresh render, and the non-colliding planner/driver walk;
+  `tests/integration/issue_558_repair_strategy.rs` proves three paraphrases route
+  through the agent-mode server to a reviewable write.
+
 What remains for later slices (still human-gated by design): driving accepted
 Links-to-source *edits* back through the round-trip with rebuild tests (`G4`) and
-the rebuild/UI-reattach step (`G6`). The `RepairCase`, `SourceGraph`,
-`LearningLedger`, `SystemExplanation`, and `ChangeRequest` are the anchors those
-slices attach to.
+the rebuild/UI-reattach step (`G6`/`R558-06`). The `RepairCase`, `SourceGraph`,
+`LearningLedger`, `SystemExplanation`, `ChangeRequest`, and `RepairStrategy` are the
+anchors those slices attach to.
 
 ## Related Existing Pieces
 
@@ -263,3 +295,9 @@ disk, and the recipe is reachable through the agent-mode server.
 (ninth recipe): a change request grounds its target in the owned manifest, derives
 a requirement/test/patch plan, merges only through a green benchmark gate plus an
 explicit human approval, and is reachable through the agent-mode server.
+`tests/unit/issue_558_repair_strategy.rs` and
+`tests/integration/issue_558_repair_strategy.rs` verify the general failure-to-repair
+classifier (tenth recipe): an arbitrary failure trace is deterministically mapped
+onto a solver-method, data-record, or test repair, each carries a grounded
+human-gated plan, the committed `data/meta/repair-strategies.lino` matches a fresh
+render, and the recipe is reachable through the agent-mode server.
