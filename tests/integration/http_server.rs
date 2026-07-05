@@ -118,6 +118,32 @@ pub fn http_post_json(
     serde_json::from_str(&response.body).expect("POST response should be JSON")
 }
 
+/// POST a JSON body but allow the server a longer read window than the default 2s.
+///
+/// Used by recipes whose *first* response performs genuinely heavy deterministic
+/// work — e.g. the issue-#558 self-healing recipe parses a real module through the
+/// CST/AST engine (a source → links round-trip) to build its repair case. That first
+/// parse takes a few seconds in a debug build; subsequent responses are memoised and
+/// instant.
+pub fn http_post_json_with_read_timeout(
+    port: u16,
+    path: &str,
+    bearer_token: Option<&str>,
+    body: &serde_json::Value,
+    read_timeout: Duration,
+) -> serde_json::Value {
+    let body = body.to_string();
+    let response =
+        http_request_with_timeout("POST", port, path, bearer_token, Some(&body), read_timeout)
+            .expect("POST should complete");
+    assert_eq!(
+        response.status_code, 200,
+        "POST {path} should return 200, got {} with body {}",
+        response.status_code, response.body
+    );
+    serde_json::from_str(&response.body).expect("POST response should be JSON")
+}
+
 pub fn http_request(
     method: &str,
     port: u16,
@@ -125,12 +151,30 @@ pub fn http_request(
     bearer_token: Option<&str>,
     body: Option<&str>,
 ) -> std::io::Result<HttpResponse> {
+    http_request_with_timeout(
+        method,
+        port,
+        path,
+        bearer_token,
+        body,
+        Duration::from_secs(2),
+    )
+}
+
+fn http_request_with_timeout(
+    method: &str,
+    port: u16,
+    path: &str,
+    bearer_token: Option<&str>,
+    body: Option<&str>,
+    read_timeout: Duration,
+) -> std::io::Result<HttpResponse> {
     let address = format!("127.0.0.1:{port}");
     let mut stream = TcpStream::connect_timeout(
         &address.parse().expect("loopback address should parse"),
         Duration::from_secs(2),
     )?;
-    stream.set_read_timeout(Some(Duration::from_secs(2)))?;
+    stream.set_read_timeout(Some(read_timeout))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
 
     let body = body.unwrap_or_default();
