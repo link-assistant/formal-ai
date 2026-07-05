@@ -28,14 +28,21 @@
 
 use serde_json::json;
 
+use super::change_request;
 use super::diagram;
+use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::ledger;
 use super::meaning_detail;
+use super::rebuild_plan;
+use super::repair_strategy;
 use super::self_ast;
+use super::self_heal;
+use super::source_graph;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -123,8 +130,62 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
     // request legitimately mentions "Links Notation" as its output format, which
     // would otherwise be captured by the broad formalization keyword match below.
+    // The self-healing recipe is checked before self-AST: both are self-inspection
+    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
+    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
+    // guards against a request that names both.
+    if self_heal::is_self_heal_task(&task) {
+        return Some(plan_self_heal_step(messages, tool_names));
+    }
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
+    }
+    // The whole-repository source-graph recipe: checked alongside the other
+    // self-inspection recipes and before formalization, because its request
+    // legitimately names "links" (its output format), which the broad
+    // formalization keyword match below would otherwise capture.
+    if source_graph::is_source_graph_task(&task) {
+        return Some(plan_source_graph_step(messages, tool_names));
+    }
+    // The learning-ledger recipe: the promotion step that follows an approved repair
+    // case. Checked after self-healing (which owns the "auto learning" keywords) and
+    // before formalization, since its request legitimately names "Links Notation".
+    if ledger::is_ledger_task(&task) {
+        return Some(plan_ledger_step(messages, tool_names));
+    }
+    // The grounded self-explanation recipe: answers "how does Formal AI work?" from
+    // real source/data/test artifacts. Checked alongside the other self-inspection
+    // recipes and before formalization, since its request legitimately names "Links
+    // Notation" as the output format its document is rendered in.
+    if explain::is_explain_task(&task) {
+        return Some(plan_explain_step(messages, tool_names));
+    }
+    // The user-initiated self-change recipe: turns a natural-language "change Formal AI
+    // itself" request into a reviewable pull request through the same human-gated loop.
+    // Checked alongside the other self-referential recipes and before formalization,
+    // since its request legitimately names "Links Notation" as the output format.
+    if change_request::is_change_request_task(&task) {
+        return Some(plan_change_request_step(messages, tool_names));
+    }
+    // The general repair-classification recipe: given an arbitrary failure trace, decide
+    // whether the repair is a solver method, a data record, or a test, and compose the
+    // grounded, human-gated strategy for each class. Checked alongside the other
+    // self-referential recipes and before formalization, since its request legitimately
+    // names "Links Notation" as the output format its strategies are rendered in. Its
+    // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
+    // so ordering only guards a request that somehow names both.
+    if repair_strategy::is_repair_strategy_task(&task) {
+        return Some(plan_repair_strategy_step(messages, tool_names));
+    }
+    // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
+    // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
+    // Checked alongside the other self-referential recipes and before formalization,
+    // since its request legitimately names "Links Notation" as the output format its plan
+    // is rendered in. Its keywords key on "reattach" and are disjoint from the
+    // source-graph recipe's "recompile", so ordering only guards a request that somehow
+    // names both.
+    if rebuild_plan::is_rebuild_task(&task) {
+        return Some(plan_rebuild_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -330,6 +391,232 @@ fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticP
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(self_ast::final_answer(&document))
+}
+
+/// The issue-#558 self-healing recipe: write the generated repair-case document →
+/// verify → final. Like the diagram and self-AST recipes it needs no web step — the
+/// document is a pure function of the canonical self-healing case
+/// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
+/// the CLI did not advertise are skipped.
+fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = self_heal::render_document();
+
+    // Step 1: write the generated repair-case document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(self_heal::SELF_HEAL_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", self_heal::SELF_HEAL_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(self_heal::final_answer(&document))
+}
+
+/// The issue-#558 source-graph recipe: write the generated whole-repository
+/// source ↔ links projection document → verify → final. Like the diagram, self-AST,
+/// and self-healing recipes it needs no web step — the document is a pure function
+/// of the system's own embedded source projected through the meta-language links
+/// network ([`source_graph::render_document`]), so the loop *translates itself*.
+/// Steps whose tool the CLI did not advertise are skipped.
+fn plan_source_graph_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = source_graph::render_document();
+
+    // Step 1: write the generated projection document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(source_graph::SOURCE_GRAPH_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments =
+                json!({ "command": format!("cat {}", source_graph::SOURCE_GRAPH_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(source_graph::final_answer(&document))
+}
+
+/// The issue-#558 learning-ledger recipe: write the generated approved-lesson ledger
+/// document → verify → final. Like the other self-inspection recipes it needs no web
+/// step — the document is a pure function of the canonical, human-approved ledger
+/// ([`ledger::render_document`]). Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = ledger::render_document();
+
+    // Step 1: write the generated ledger document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(ledger::LEDGER_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", ledger::LEDGER_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(ledger::final_answer(&document))
+}
+
+/// The issue-#558 self-explanation recipe: write the generated grounded-explanation
+/// document → verify → final. Like the other self-inspection recipes it needs no web
+/// step — the document is a pure function of the system's own embedded source cited
+/// through the owned manifest ([`explain::render_document`]), so the loop *explains
+/// itself*. Steps whose tool the CLI did not advertise are skipped.
+fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = explain::render_document();
+
+    // Step 1: write the generated grounded-explanation document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(explain::EXPLAIN_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", explain::EXPLAIN_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(explain::final_answer(&document))
+}
+
+/// The issue-#558 self-change recipe: write the generated reviewable pull-request
+/// document → verify → final. Like the other self-referential recipes it needs no web
+/// step — the document is a deterministic function of the request and its grounded
+/// target ([`change_request::render_document`]), so the loop turns a user's request to
+/// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
+/// advertise are skipped.
+fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = change_request::render_document();
+
+    // Step 1: write the generated reviewable pull-request document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(change_request::CHANGE_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", change_request::CHANGE_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(change_request::final_answer(&document))
+}
+
+/// The issue-#558 general repair-classification recipe: write the generated
+/// repair-strategies document → verify → final. Like the other self-referential recipes
+/// it needs no web step — the document is a deterministic function of the three
+/// self-contained canonical failure traces ([`repair_strategy::render_document`]), so
+/// the loop decides *which part* of itself to repair for every failure class. Steps
+/// whose tool the CLI did not advertise are skipped.
+fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = repair_strategy::render_document();
+
+    // Step 1: write the generated repair-strategies document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(repair_strategy::REPAIR_STRATEGY_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments =
+                json!({ "command": format!("cat {}", repair_strategy::REPAIR_STRATEGY_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(repair_strategy::final_answer(&document))
+}
+
+/// The issue-#558 rebuild-and-reattach recipe: write the generated
+/// rebuild-and-reattach plan → verify → final. Like the change-request and source-graph
+/// recipes it needs no web step — the plan is a deterministic function of the accepted
+/// change and the grounded UI artifacts ([`rebuild_plan::render_document`]), so the loop
+/// turns an accepted change into the ordered, reversible plan to recompile Formal AI and
+/// reattach the improved worker to the UI. Steps whose tool the CLI did not advertise are
+/// skipped.
+fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = rebuild_plan::render_document();
+
+    // Step 1: write the generated rebuild-and-reattach plan.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(rebuild_plan::REBUILD_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", rebuild_plan::REBUILD_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated plan inline.
+    AgenticPlan::Final(rebuild_plan::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

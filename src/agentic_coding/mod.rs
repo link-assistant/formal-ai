@@ -18,28 +18,42 @@
 //! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod change_request;
 pub mod corpus;
 pub mod diagram;
 pub mod driver;
+pub mod explain;
 mod file_read;
 pub mod formalize;
+pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+pub mod rebuild_plan;
+pub mod repair_strategy;
 pub mod self_ast;
+pub mod self_heal;
+pub mod source_graph;
 
+pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
 };
+pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
 };
+pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
 pub use meaning_detail::{
     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
 };
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
+pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
+pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
+pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};

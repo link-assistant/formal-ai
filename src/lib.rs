@@ -9,6 +9,7 @@ pub mod attachment_context;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
+pub mod change_request;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
@@ -26,6 +27,7 @@ pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
+pub mod learning_ledger;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
@@ -47,14 +49,19 @@ pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub(crate) mod protocol_responses;
 pub mod proxy;
+pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
+pub mod repair_strategy;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod selection;
+pub mod self_explanation;
+pub mod self_healing;
 pub mod self_improvement;
+pub mod self_source_graph;
 pub mod server;
 pub mod shared_dialog;
 pub mod skill_compiler;
@@ -100,6 +107,7 @@ pub use associative_package::{
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
 };
+pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
@@ -127,6 +135,9 @@ pub use knowledge::{
     KNOWLEDGE_CACHE_FLOOR,
 };
 pub use language::{detect as detect_language, Language};
+pub use learning_ledger::{
+    canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
+};
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
 pub use link_store::{
@@ -165,6 +176,8 @@ pub use protocol::{
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
 };
+pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
+pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
     environment_records, intent_routing, language_rules, merged_bundle, model_aliases,
@@ -174,9 +187,19 @@ pub use seed::{
     ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
     ProjectRecord, ProjectStatement, ProjectsRegistry,
 };
+pub use self_explanation::{
+    canonical_explanation, Citation, CitationKind, ExplanationSection, SystemExplanation,
+};
+pub use self_healing::{
+    canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
+};
 pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
     LearningRejection, LearningRun, UnknownTrace,
+};
+pub use self_source_graph::{
+    owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
+    owned_source_files, owned_total_bytes, SourceGraph, SourceModuleDigest, SourceModuleProjection,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,

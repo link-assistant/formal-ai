@@ -1,0 +1,48 @@
+repair_case
+  id "repair_case_9de88924139c1553"
+  failure_prompt "List the files but sort the results in reverse order"
+  outcome "awaiting_review"
+  human_gated "true"
+  source_round_trip
+    module_path "src/agentic_coding/planner.rs"
+    total_link_count "20765"
+    named_node_count "4180"
+    faithful "true"
+  failure_trace
+    unknown_trace
+      id "unknown_trace_0b5bfd2b6b7cdae9"
+      prompt "List the files but sort the results in reverse order"
+      event_count "3"
+      event
+        kind "selected_rule"
+        id "selected_rule_c4b73715d69a320a"
+        payload "initial unknown reason no_seed_route next try_rule_synthesis"
+      event
+        kind "rule_synthesis_candidate"
+        id "rule_synthesis_candidate_a72cf4a7d25ca712"
+        payload "rule_synthesis_candidate\n  id reverse_sort_list_files\n  source constructed_from_operation_vocabulary\n  base_task list_files\n  modifier reverse_sort\n  operation sort\n  operation_modifier descending\n  target program:last.output_order\n  resolved_task list_files_reverse_sort"
+      event
+        kind "rule_verification"
+        id "rule_verification_5225998dff6d7324"
+        payload "rule_verification\n  candidate reverse_sort_list_files\n  fixture list_files_output_order\n  input a.txt,b.txt,c.txt\n  expected_order c.txt,b.txt,a.txt\n  lowering_check passed\n  render_check passed\n  status passed"
+  learning_run
+    self_improvement_run
+      id "self_improvement_run_10f7d0dab049048f"
+      trace_count "1"
+      benchmark_suite "issue_362_multilingual_coding_modification"
+      benchmark_runner "cargo test --test unit issue_362_multilingual_multi_turn_coding_modification_ratchet -- --nocapture"
+      benchmark_passed "4"
+      benchmark_failed "0"
+      benchmark_minimum_pass_count "4"
+      benchmark_status "passed"
+      learned_rule
+        id "learned_rule_1979c4a27fe2ea09"
+        trace "unknown_trace_0b5bfd2b6b7cdae9"
+        rule "reverse_sort_list_files"
+        base_task "list_files"
+        modifier "reverse_sort"
+        resolved_task "list_files_reverse_sort"
+        fixture "list_files_output_order"
+        adoption "adoptable"
+        summary "Learn `reverse_sort` for `list_files` by rewriting to `list_files_reverse_sort`; fixture `list_files_output_order` passed; benchmark `issue_362_multilingual_coding_modification` is passed (4/4)."
+        seed_rule "substitution_rules\n  id 'learned_program_plan_rules'\n  rule 'reverse_sort_list_files'\n    order '90'\n    event 'learned'\n    when 'request:modifier -> reverse_sort'\n    replace 'request:task -> list_files'\n      with 'request:task -> list_files_reverse_sort'"

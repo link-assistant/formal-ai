@@ -1,0 +1,6 @@
+Captured 2026-07-04 with:
+gh search code --owner link-assistant "auto learning" --limit 20
+
+No code results returned.
+
+exit=0

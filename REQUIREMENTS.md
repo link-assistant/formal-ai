@@ -935,10 +935,13 @@ data, and bidirectionally linked. It then expands into a large aspirational
 programme (self-inspecting universal meta algorithm, Rust→WASM worker,
 CST/AST-in-data, mermaid diagrams, an embedded-VS-Code debug view, and solving
 the task by driving Formal AI through its own Agent CLI). PR
-[#601](https://github.com/link-assistant/formal-ai/pull/601) ships the concrete,
-verifiable core (R370–R377) and records the aspirational programme as tracked
-follow-ups (R378–R386). The full decomposition, per-requirement solution plan,
-and online research are in `docs/case-studies/issue-538`.
+[#601](https://github.com/link-assistant/formal-ai/pull/601) first shipped the
+concrete, verifiable lexical core (R370–R377) and then added bounded Agent CLI
+generality, live Agent CLI e2e coverage, generated recipe diagrams, and a
+one-module self-AST census. Those slices satisfy important parts of issue #538,
+but they are not a full auto-learning loop; issue #558 records that remaining
+gap. The full decomposition, per-requirement solution plan, and online research
+are in `docs/case-studies/issue-538`.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -950,12 +953,35 @@ and online research are in `docs/case-studies/issue-538`.
 | R375 | The new detail must use one normalized representation per link type, reusing existing mechanisms. | Implemented by adding a single `grammatical_number` kind to the closed `FACET_KINDS` vocabulary and reusing `SemanticFacet`, `part_of_speech`, `denotation`, and `source-lexeme`; no parallel structure was introduced. |
 | R376 | The grammatical values must be multilingual (any language to any language). | Implemented by lexicalising `grammatical_number`/`singular`/`plural` in en/ru/hi/zh in `data/seed/meanings-lexical-meta.lino` and tagging the tomato hi/zh surfaces with part of speech; covered by `tests/unit/issue_538.rs::grammatical_number_meanings_are_grounded_and_multilingual`. |
 | R377 | Issue data, a requirements decomposition, per-requirement solution plans, and online research must be preserved under `docs/case-studies/issue-538`. | Implemented by `docs/case-studies/issue-538/{README,requirements,solution-plan}.md` and `raw-data/`. |
-| R378 | The system should be able to import all semantics collectable from external lexical sources, not only the curated tomato entry. | Tracked follow-up: the tomato block is the target template; a batch importer generalizing `scripts/ground-meanings.rs` is the next step (see `docs/case-studies/issue-538/solution-plan.md` R9). |
-| R379 | Previously hardcoded natural-language strings must be migrated into grounded meanings, and every codebase concept expressed as meanings. | Tracked follow-up building on `docs/design/no-hardcoded-natural-language.md`; a CI lint that burns down an allowlist is the proposed next step (solution-plan R10). |
+| R378 | The system should be able to import all semantics collectable from external lexical sources, not only the curated tomato entry. | Partially implemented: PR #601 generalized the Agent CLI meaning-detail recipe through a concept registry and reproduced tomato/potato data from different requests; a batch importer generalizing `scripts/ground-meanings.rs` remains the next scale step (see `docs/case-studies/issue-538/solution-plan.md` R9). |
+| R379 | Previously hardcoded natural-language strings must be migrated into grounded meanings, and every codebase concept expressed as meanings. | Partially implemented for the touched grammatical-number concepts and issue #538 generated artifacts; the broader codebase string/concept audit remains a follow-up building on `docs/design/no-hardcoded-natural-language.md` (solution-plan R10). |
 | R380 | Formal-worker logic should run in a WebAssembly worker compiled from Rust, with JavaScript limited to UI interfacing. | Partially pre-existing: the demo already ships a Rust→WASM worker (`src/web/wasm-worker/src/lib.rs` → `src/web/formal_ai_worker.wasm`, issue #1 R16); absorbing the remaining `src/web/worker/*.js` logic is the tracked follow-up (solution-plan R11/R12). |
-| R381 | The Rust logic's CST/AST should be stored in data so the algorithm can reason about and rebuild itself. | Tracked follow-up; the proposed first slice is a `syn`-based round-trip of a single module into `.lino` (solution-plan R13/R14). |
-| R382 | Generated, split mermaid diagrams should give a high-level and per-entry-point view of the system. | Tracked follow-up; the proposed first slice generates one diagram from the existing method registry (solution-plan R15/R16). |
+| R381 | The Rust logic's CST/AST should be stored in data so the algorithm can reason about and rebuild itself. | Implemented as a bounded self-inspection slice: `src/agentic_coding/self_ast.rs` drives the Agent CLI to parse `src/agentic_coding/planner.rs` through the meta-language CST path and write `data/meta/self-ast.lino`; whole-repository source-to-links and rebuild are tracked by issue #558. |
+| R382 | Generated, split mermaid diagrams should give a high-level and per-entry-point view of the system. | Implemented for the Agent CLI recipe surface by `src/agentic_coding/diagram.rs`, `docs/diagrams/agentic-recipes.md`, and the committed diagram session JSON in `docs/case-studies/issue-538/agent-cli-session-diagram.json`. |
 | R383 | An interactive, step-by-step debugging view (embedded VS Code, split into chat/data/mermaid/Rust/JS panes) should exist. | Tracked follow-up; related exploratory notes live under `docs/vscode/` (solution-plan R17). |
-| R384 | The universal meta algorithm should be fully inspectable, formalize every message as a probability-weighted statement, and warn about contradictory requirements with proposed resolutions. | Tracked follow-up overlapping issue #559; this issue's own mixed scope is used as a contradiction fixture (solution-plan R18–R21). |
-| R385 | The task should be solved by driving Formal AI through its own Agent CLI, producing a session JSON that reproduces the change in a clean repo, and CONTRIBUTING.md should record this as the way forward. | Tracked / not performed for the solve itself; honestly reported in `docs/case-studies/issue-538/README.md`. The intended workflow and its current status are documented in `CONTRIBUTING.md` (solution-plan R22–R25). |
+| R384 | The universal meta algorithm should be fully inspectable, formalize every message as a probability-weighted statement, and warn about contradictory requirements with proposed resolutions. | Partially implemented through issue #559's method registry and meta-dispatch work plus PR #601's self-AST slice; automatic probability-weighted statement formalization and contradiction repair remain follow-ups (solution-plan R18–R21). |
+| R385 | The task should be solved by driving Formal AI through its own Agent CLI, producing a session JSON that reproduces the change in a clean repo, and CONTRIBUTING.md should record this as the way forward. | Implemented for issue #538's bounded delivery: `docs/case-studies/issue-538/agent-cli-session*.json`, `agent-cli-e2e-run.log`, `scripts/reproduce-issue-538.sh`, and `tests/unit/issue_538_agentic.rs` preserve the Agent-CLI-driven reproduction; this is not yet arbitrary auto-learning, which is tracked by issue #558. |
 | R386 | The work must land in the single prepared PR #601 with the smallest practical commits. | Implemented on branch `issue-538-eca4a11c39c6` as a sequence of small atomic commits tracked by PR [#601](https://github.com/link-assistant/formal-ai/pull/601). |
+
+## Issue #558 Auto Learning
+
+Issue [#558](https://github.com/link-assistant/formal-ai/issues/558) asks for
+dynamic self-programming: Formal AI should learn from failures, represent its
+own source as link-native data, regenerate and rebuild accepted changes, reattach
+the improved version to the UI, and explain itself from source/data/test
+evidence. PR [#637](https://github.com/link-assistant/formal-ai/pull/637)
+captures the missing requirements and delivery plan, with special attention to
+what PR #601 did and did not deliver for auto-learning, and lands the first
+implemented, human-gated slice of the loop in code.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R387 | Preserve the raw issue #558 source material, related issue #538/PR #601 evidence, GitHub searches, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-558/README.md`, `docs/case-studies/issue-558/raw-data/`, and `docs/case-studies/issue-558/raw-data/online-research.md`. |
+| R388 | Analyze PR #601 and explain why its delivered Agent CLI, diagram, and self-AST slices are not a complete auto-learning system. | Implemented by `docs/case-studies/issue-558/pr-601-gap-analysis.md`, including the stale root requirement status, recipe-driven Agent CLI boundary, partial self-AST, missing Links-to-source, and missing learning-promotion protocol. |
+| R389 | Decompose issue #558 into explicit requirements covering failure repair, source-to-links, Links-to-source, recompile/reattach, user-requested self-change, and grounded self-explanation. | Implemented by `docs/case-studies/issue-558/requirements.md`, with requirements `R558-01` through `R558-12`. |
+| R390 | Compare existing approaches and libraries that can inform the design without replacing Formal AI's link-native core. | Implemented by `docs/case-studies/issue-558/raw-data/online-research.md`, covering SWE-agent, OpenHands, Reflexion, DSPy, Tree-sitter, rustdoc JSON, syn, and rowan. |
+| R391 | Propose a phased solution plan with concrete acceptance gates for safe human-gated auto-learning. | Implemented by `docs/case-studies/issue-558/solution-plan.md`, which defines Phase 0 through Phase 5 and gates for repair cases, source-to-links, Links-to-source, repair execution, learning promotion, rebuild/reattach, and self-explanation. |
+| R392 | Protect the issue #558 case-study contract with an automated traceability test and land the work in PR #637. | Implemented by `tests/unit/docs_requirements_issue_558.rs`, wired through `tests/unit/mod.rs`, and tracked by PR [#637](https://github.com/link-assistant/formal-ai/pull/637). |
+| R393 | When Formal AI cannot answer an input, compose the failure, the source it maps onto, a benchmark-gated candidate lesson, and a human-review outcome into one auditable, proposal-only repair case (R558-01). | Implemented by `src/self_healing.rs` (`RepairCase`, `RepairOutcome`, `canonical_case`), which reaches a human-gated `AwaitingReview` outcome and never writes source or seed data. Committed as `data/meta/self-healing-case.lino` and covered by `tests/unit/issue_558_self_healing.rs`. |
+| R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
+| R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
