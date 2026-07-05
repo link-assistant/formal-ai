@@ -18,6 +18,7 @@
 //! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod change_request;
 pub mod corpus;
 pub mod diagram;
 pub mod driver;
@@ -32,6 +33,7 @@ pub mod self_ast;
 pub mod self_heal;
 pub mod source_graph;
 
+pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,

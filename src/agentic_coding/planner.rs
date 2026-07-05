@@ -28,6 +28,7 @@
 
 use serde_json::json;
 
+use super::change_request;
 use super::diagram;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
@@ -156,6 +157,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Notation" as the output format its document is rendered in.
     if explain::is_explain_task(&task) {
         return Some(plan_explain_step(messages, tool_names));
+    }
+    // The user-initiated self-change recipe: turns a natural-language "change Formal AI
+    // itself" request into a reviewable pull request through the same human-gated loop.
+    // Checked alongside the other self-referential recipes and before formalization,
+    // since its request legitimately names "Links Notation" as the output format.
+    if change_request::is_change_request_task(&task) {
+        return Some(plan_change_request_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -486,6 +494,40 @@ fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(explain::final_answer(&document))
+}
+
+/// The issue-#558 self-change recipe: write the generated reviewable pull-request
+/// document → verify → final. Like the other self-referential recipes it needs no web
+/// step — the document is a deterministic function of the request and its grounded
+/// target ([`change_request::render_document`]), so the loop turns a user's request to
+/// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
+/// advertise are skipped.
+fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = change_request::render_document();
+
+    // Step 1: write the generated reviewable pull-request document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(change_request::CHANGE_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", change_request::CHANGE_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(change_request::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
