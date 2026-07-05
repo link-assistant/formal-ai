@@ -32,6 +32,7 @@ mod issue_535;
 mod issue_538;
 mod issue_538_agentic;
 mod issue_558_learning_ledger;
+mod issue_558_self_explanation;
 mod issue_558_self_healing;
 mod issue_558_source_graph;
 mod issue_571;
