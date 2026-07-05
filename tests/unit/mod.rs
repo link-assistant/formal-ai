@@ -31,6 +31,7 @@ mod issue_513;
 mod issue_535;
 mod issue_538;
 mod issue_538_agentic;
+mod issue_558_change_request;
 mod issue_558_learning_ledger;
 mod issue_558_self_explanation;
 mod issue_558_self_healing;
