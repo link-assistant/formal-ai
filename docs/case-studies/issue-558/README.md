@@ -170,10 +170,33 @@ repair loop (`R558-03`):
   `tests/integration/issue_558_learning_ledger.rs` boots the agent-mode server
   and proves three paraphrases route to a `write_file` of the generated ledger.
 
+PR #637 additionally closes the prose-heavy self-explanation gap (`G7`/`R558-08`):
+
+- **Grounded whole-system explanation** — `src/self_explanation.rs` answers "how
+  does Formal AI work?" from the system's *own* artifacts, not prose docs: an
+  ordered set of topics, each citing the real source, data, and tests it rests on.
+  The grounding is enforced, not decorative — every source citation resolves its
+  `content_id` from the owned manifest (`src/self_source_graph.rs`) and *panics* if
+  the cited path is not an owned source file, so a fabricated or stale citation
+  fails to construct rather than lying at runtime. The rendered document is anchored
+  to the same whole-source manifest content id the round-trip proves lossless.
+- **Eighth agentic recipe** — `src/agentic_coding/explain.rs` makes the grounded
+  explanation reachable through the agentic interface. The deterministic planner
+  walks a write → verify → final recipe that emits the explanation as a read-only
+  Links Notation document (`how-formal-ai-works.lino`). Like the source-graph
+  recipe it commits no byte-pinned artifact, because the citation ids track the
+  whole source tree.
+- **Tests** — `tests/unit/issue_558_self_explanation.rs` pins the manifest
+  grounding, the on-disk existence of every data/test citation, the
+  panic-on-fabrication guarantee, the Links Notation validity with a stable content
+  id, and the planner/driver walk; `tests/integration/issue_558_self_explanation.rs`
+  proves three paraphrases route through the agent-mode server to a grounded write.
+
 What remains for later slices (still human-gated by design): driving accepted
 Links-to-source *edits* back through the round-trip with rebuild tests (`G4`),
-and the rebuild/UI-reattach step (`G6`). The `RepairCase`, `SourceGraph`, and
-`LearningLedger` are the anchors those slices attach to.
+the rebuild/UI-reattach step (`G6`), and user-driven arbitrary self-change
+(`R558-07`). The `RepairCase`, `SourceGraph`, `LearningLedger`, and
+`SystemExplanation` are the anchors those slices attach to.
 
 ## Related Existing Pieces
 
@@ -202,3 +225,8 @@ source-to-links projection (sixth recipe).
 ledger that terminates the loop: the promotion gates, lesson recall, the
 committed ledger artifact, and the seventh agentic recipe reachable through the
 agent-mode server.
+`tests/unit/issue_558_self_explanation.rs` and
+`tests/integration/issue_558_self_explanation.rs` verify the grounded
+whole-system self-explanation (eighth recipe): every source citation is
+content-addressed against the owned manifest, every data/test citation exists on
+disk, and the recipe is reachable through the agent-mode server.
