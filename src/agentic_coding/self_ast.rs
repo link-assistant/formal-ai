@@ -170,6 +170,32 @@ pub fn render_ast_document(target_path: &str, source: &str) -> String {
     format!("{}\n", out.trim_end())
 }
 
+/// Reconstruct Rust `source` back out of its meta-language links network — the
+/// *links → source* direction of the round-trip.
+///
+/// Issue #558 asks the system to translate its own source code to the links/meta
+/// language *and back*. The forward direction is [`ast_census`] (source → links);
+/// this is the reverse: parse the source into the links network, then render the
+/// network back to text with `reconstruct_text`. Because the links network is a
+/// lossless representation of the parse, the reconstruction is byte-for-byte the
+/// original for any well-formed input — which [`round_trips`] verifies.
+#[must_use]
+pub fn reconstruct_source(source: &str) -> String {
+    let network = LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default());
+    network.reconstruct_text()
+}
+
+/// Whether `source` survives a full source → links → source round-trip unchanged.
+///
+/// This is the concrete, testable form of issue #558's "translate the source code
+/// to the meta language and back" requirement: it is `true` exactly when the
+/// links representation loses nothing, so a downstream self-modification could be
+/// expressed as an edit to the links and rendered back to compilable Rust.
+#[must_use]
+pub fn round_trips(source: &str) -> bool {
+    reconstruct_source(source) == source
+}
+
 /// Render the CST/AST document for the pinned self-inspection target (the planner).
 #[must_use]
 pub fn render_document() -> String {
@@ -182,6 +208,14 @@ pub fn render_document() -> String {
 #[must_use]
 pub fn target_census() -> AstCensus {
     ast_census(TARGET_MODULE_SOURCE)
+}
+
+/// The pinned self-inspection target's source, embedded at build time. Exposed so
+/// the self-healing loop can round-trip the module it maps a failure onto without
+/// re-reading the filesystem at run time.
+#[must_use]
+pub const fn target_source() -> &'static str {
+    TARGET_MODULE_SOURCE
 }
 
 /// The self-contained final answer: a natural-language summary plus the generated

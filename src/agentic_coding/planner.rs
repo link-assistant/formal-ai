@@ -36,6 +36,7 @@ use super::formalize::{
 };
 use super::meaning_detail;
 use super::self_ast;
+use super::self_heal;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -123,6 +124,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
     // request legitimately mentions "Links Notation" as its output format, which
     // would otherwise be captured by the broad formalization keyword match below.
+    // The self-healing recipe is checked before self-AST: both are self-inspection
+    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
+    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
+    // guards against a request that names both.
+    if self_heal::is_self_heal_task(&task) {
+        return Some(plan_self_heal_step(messages, tool_names));
+    }
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
     }
@@ -330,6 +338,36 @@ fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticP
 
     // Step 3: nothing left to do — answer with the generated document inline.
     AgenticPlan::Final(self_ast::final_answer(&document))
+}
+
+/// The issue-#558 self-healing recipe: write the generated repair-case document →
+/// verify → final. Like the diagram and self-AST recipes it needs no web step — the
+/// document is a pure function of the canonical self-healing case
+/// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
+/// the CLI did not advertise are skipped.
+fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = self_heal::render_document();
+
+    // Step 1: write the generated repair-case document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(tool, write_arguments(self_heal::SELF_HEAL_PATH, &document));
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({ "command": format!("cat {}", self_heal::SELF_HEAL_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(self_heal::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

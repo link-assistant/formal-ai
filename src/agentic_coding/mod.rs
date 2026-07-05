@@ -27,6 +27,7 @@ pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
 pub mod self_ast;
+pub mod self_heal;
 
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use driver::{
@@ -43,3 +44,4 @@ pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
+pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};

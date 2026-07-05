@@ -54,6 +54,7 @@ pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod selection;
+pub mod self_healing;
 pub mod self_improvement;
 pub mod server;
 pub mod shared_dialog;
@@ -173,6 +174,9 @@ pub use seed::{
     EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
     ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
     ProjectRecord, ProjectStatement, ProjectsRegistry,
+};
+pub use self_healing::{
+    canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
 };
 pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
