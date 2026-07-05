@@ -66,3 +66,28 @@ the root requirements table, and the delivered slices were easy to overstate as
   promotion protocol.
 
 Issue #558 should therefore treat PR #601 as foundation, not completion.
+
+## How PR #637 Starts To Close These Gaps
+
+PR #637 lands the first implemented, human-gated slice on top of that foundation.
+It does not close every gap, but it converts two of them from "not built" to
+"first slice built and tested":
+
+- **G4 (no full compiler round-trip):** `SourceRoundTrip::for_pinned_target()`
+  now regenerates one real module from its meta-language links network and proves
+  `source → links → source` byte-for-byte (`faithful = true`). This is the first
+  genuine Links-to-source round-trip — still one module, not the whole repo, and
+  not yet driving edits, but no longer merely a census.
+- **G5 (no learning-promotion protocol):** `src/self_healing.rs` introduces the
+  single durable artifact the gap called for — a `RepairCase` that records the
+  failure, the source it maps onto, the benchmark-gated candidate lesson, and a
+  terminal human-review outcome (`AwaitingReview`) — emitted as
+  `data/meta/self-healing-case.lino`. Promotion itself stays a human decision.
+
+The loop is reachable through the same Agent CLI surface PR #601 built, added as a
+fifth recipe. The remaining gaps — G2 (arbitrary failure repair), G3
+(whole-repository source graph), G6 (rebuild/UI reattach), and G7 (grounded
+self-explanation) — stay open and are the subject of later slices, each
+human-gated by design. The self-AST slice PR #601 shipped remains the base the
+round-trip builds on; PR #637's contribution is that it is now a verified
+round-trip, not a one-way census.

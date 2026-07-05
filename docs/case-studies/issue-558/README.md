@@ -1,16 +1,21 @@
 # Issue 558 Case Study: Auto Learning
 
-Status: **analysis and delivery plan captured in PR #637**. This case study
-answers issue #558's request to collect data, inspect issue #538 / PR #601,
+Status: **first closed self-healing slice implemented in PR #637**. This case
+study answers issue #558's request to collect data, inspect issue #538 / PR #601,
 search for related approaches, list requirements, and propose a concrete path to
-auto-learning.
+auto-learning — and PR #637 now lands the first end-to-end, human-gated slice of
+that path in code.
 
 PR #601 delivered important slices but not a closed self-learning loop. It
 proved bounded Agent CLI recipes, reproducible sessions, generated recipe
 diagrams, and a one-module self-AST census. Issue #558 needs the next layer: a
 human-gated repair loop that starts from failures, maps them to source-to-links
 data, produces reviewable patches, proves them with tests, and promotes accepted
-lessons.
+lessons. PR #637 closes that loop in its safe, proposal-only form (see
+[Delivered In PR #637](#delivered-in-pr-637)): one failure the system could not
+answer → the source it maps onto with a verified source-to-links round-trip → a
+benchmark-gated lesson → a human-review outcome, wired into the agentic interface
+as the fifth recipe and exercised by unit and server integration tests.
 
 ## Source Material
 
@@ -71,6 +76,48 @@ new behavior. It is not uncontrolled self-modification: every Links-to-source
 change, rebuild, and UI reattach stays observable, testable, reversible, and
 reviewed.
 
+## Delivered In PR #637
+
+PR #637 implements the first end-to-end slice of that architecture as a single,
+auditable, proposal-only artifact — the closed loop in its safe form — and wires
+it into the agentic interface:
+
+- **Closed self-healing loop** — `src/self_healing.rs` composes the four stages
+  the issue calls for into one `RepairCase`: a captured failure the system could
+  not answer (`UnknownTrace`), the source it maps onto with a verified
+  source-to-links round-trip (`SourceRoundTrip`), a benchmark-gated candidate
+  lesson (`LearningRun` + `BenchmarkGateReport`), and a terminal `RepairOutcome`
+  that never advances past `AwaitingReview`. Adoption stays a human decision:
+  `RepairCase::is_human_gated()` is `true` by construction, mirroring the
+  existing self-improvement modules.
+- **Verified source ↔ links round-trip** — `SourceRoundTrip::for_pinned_target()`
+  parses a real module of the reasoning meta algorithm (the deterministic
+  planner) through the sole CST/AST engine in the repo and confirms
+  `source → links → source` reproduces it byte-for-byte (`faithful = true`). This
+  is the concrete, tested realization of issue #558's "translate the source code
+  to the meta language and back" (`R558-05`), stopping short of writing source.
+- **Fifth agentic recipe** — `src/agentic_coding/self_heal.rs` makes the loop
+  reachable through the agentic interface. When an external agent CLI (Codex,
+  OpenCode, Gemini, Agent CLI) — or the in-repo driver — asks Formal AI to run
+  its self-healing loop, the deterministic planner walks a write → verify → final
+  recipe that emits the repair case as Links Notation, exactly like the self-AST
+  and diagram recipes emit their self-inspection documents.
+- **Committed, generated artifact** — `data/meta/self-healing-case.lino` is the
+  worked repair case, *generated* by running the loop (never hand-written) and
+  pinned byte-for-byte to what the Agent CLI writes, so it can never drift.
+  Regenerate with `cargo run --example dump_self_healing_case`.
+- **Tests** — `tests/unit/issue_558_self_healing.rs` locks the loop's outcome,
+  the round-trip faithfulness, the Links Notation validity, the planner recipe
+  walk, and the driver's end-to-end write; `tests/integration/issue_558_self_healing.rs`
+  boots the agent-mode server and proves a self-healing request over the wire
+  routes to a `write_file` tool call carrying the generated repair case.
+
+What remains for later slices (still human-gated by design): projecting the
+*whole* repository to source-to-links data (`G3`), Links-to-source regeneration
+with rebuild tests (`G4`), a durable promotion ledger (`G5`), and the
+rebuild/UI-reattach step (`G6`). The `RepairCase` is the anchor those slices
+attach to.
+
 ## Related Existing Pieces
 
 - Issue #364 provides the earlier self-improvement framing.
@@ -85,3 +132,8 @@ reviewed.
 `tests/unit/docs_requirements_issue_558.rs` checks that the root requirements,
 case-study index, gap analysis, requirements matrix, solution plan, online
 research notes, and raw evidence files remain present and traceable.
+`tests/unit/issue_558_self_healing.rs` and
+`tests/integration/issue_558_self_healing.rs` verify the delivered self-healing
+loop: the closed `RepairCase`, the verified source-to-links round-trip, the fifth
+agentic recipe, the driver's end-to-end write, and the agent-mode server routing
+a self-healing request to the repair-case write.

@@ -5,6 +5,13 @@ running binary. Formal AI should learn by creating reviewable artifacts: failure
 traces, source/data links, candidate patches, tests, and approved lessons. The
 installed system changes only after rebuild, verification, and human approval.
 
+**Delivered in PR #637 (first slice):** the Phase 1 `repair_case` model and the
+Phase 3 source-to-links round-trip now exist in code, composed into one auditable
+`RepairCase` (`src/self_healing.rs`) that reaches a human-gated `AwaitingReview`
+outcome, reachable through the agentic interface as the fifth recipe
+(`src/agentic_coding/self_heal.rs`) and covered by unit and integration tests.
+The phases below mark what is delivered versus what remains.
+
 ## Phase 0: Evidence And Status Correction
 
 - Preserve issue #558, issue #538, PR #601, related GitHub searches, PR diff,
@@ -16,6 +23,11 @@ installed system changes only after rebuild, verification, and human approval.
   `tests/unit/docs_requirements_issue_558.rs`.
 
 ## Phase 1: Failure-To-Repair Ledger
+
+*Status: first slice delivered in PR #637 — `src/self_healing.rs` introduces the
+`RepairCase` model composing a failure trace, source round-trip, benchmark-gated
+lesson, and human-review outcome. Generalizing beyond the canonical failure class
+remains.*
 
 - Introduce a `repair_case` data model with prompt, normalized task, failed
   answer, known facts, unknown facts, attempted methods, selected repair
@@ -45,6 +57,11 @@ installed system changes only after rebuild, verification, and human approval.
   full-file round trip exists.
 
 ## Phase 3: Links-To-Source Round Trip
+
+*Status: first slice delivered in PR #637 — `SourceRoundTrip::for_pinned_target()`
+regenerates one real module from its links network and asserts byte-for-byte
+equality (`faithful = true`). Scaling to more modules and driving edits through
+the round-trip remains.*
 
 - Start with one Rust module that has stable formatting and existing tests.
 - Regenerate that module from link-native data, run `cargo fmt`, and assert
@@ -87,6 +104,12 @@ installed system changes only after rebuild, verification, and human approval.
 | Learning record | Reviewer-approved repairs are stored as reusable lessons and queried on repeated failures. |
 | Rebuild/reattach | The accepted version rebuilds and the affected UI or service surface uses it after explicit approval. |
 | Self-explanation | "How does Formal AI work here?" answers cite source, data, tests, and learning records from the graph. |
+
+PR #637 passes the **Failure trace** gate (a `RepairCase` with unknowns,
+attempted methods, and a proposed repair target) and the **Links-to-source** gate
+for one module (byte-for-byte regeneration), both under
+`tests/unit/issue_558_self_healing.rs`. The remaining gates stay open for later
+slices.
 
 ## Requirement Mapping
 
