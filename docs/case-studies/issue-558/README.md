@@ -137,10 +137,43 @@ PR #637 additionally closes the whole-repository source-to-links gap (`G3`/`G4`)
   reachable through the agent-mode server. Regenerate the exhaustive projection
   with `cargo run --example project_source_graph`.
 
+PR #637 additionally closes the promotion-ledger gap (`G5`) that terminates the
+repair loop (`R558-03`):
+
+- **Human-gated promotion ledger** — `src/learning_ledger.rs` is the single
+  promotion protocol the issue asks for. `LearningLedger::promote` turns a
+  `RepairCase` into a durable *approved learning record* only when *both* the
+  benchmark gate is green *and* a human approves (`HumanApproval`), and refuses
+  every other case with a specific, testable reason (`TestsNotGreen`,
+  `NoReviewableProposal`, `SourceNotFaithful`, `HumanDeclined`,
+  `AlreadyPromoted`). The `SourceNotFaithful` gate is the recompile guardrail: a
+  lesson whose source cannot be reconstructed byte-for-byte is never recorded.
+  This realizes issue #558's *"promotes improvements when tests and the user
+  accept them"* and writes the accepted result *"to mainline history as an
+  approved learning record"*.
+- **Auto learning on a repeated failure** — once recorded, a failure is answered
+  from the ledger (`lesson_for` / `knows`, tolerant of whitespace/case
+  rephrasings) instead of being re-derived, which is the concrete payoff of
+  "auto learning".
+- **Seventh agentic recipe** — `src/agentic_coding/ledger.rs` makes the promotion
+  reachable through the agentic interface. The deterministic planner walks a
+  write → verify → final recipe that emits the ledger as Links Notation
+  (`learning-ledger.lino`); the document records an *already-approved* decision,
+  so nothing new is adopted and the recompile-and-reattach guardrail stays
+  human-gated.
+- **Committed, generated artifact** — `data/meta/learning-ledger.lino` is the
+  approved ledger, *generated* by `cargo run --example dump_learning_ledger`
+  (never hand-written) and pinned byte-for-byte in the tests.
+- **Tests** — `tests/unit/issue_558_learning_ledger.rs` pins the promotion gates,
+  lesson recall, the Links Notation validity with a stable content id, the
+  committed artifact, and the planner/driver recipe walk;
+  `tests/integration/issue_558_learning_ledger.rs` boots the agent-mode server
+  and proves three paraphrases route to a `write_file` of the generated ledger.
+
 What remains for later slices (still human-gated by design): driving accepted
-Links-to-source *edits* back through the round-trip with rebuild tests (`G4`), a
-durable promotion ledger (`G5`), and the rebuild/UI-reattach step (`G6`). The
-`RepairCase` and `SourceGraph` are the anchors those slices attach to.
+Links-to-source *edits* back through the round-trip with rebuild tests (`G4`),
+and the rebuild/UI-reattach step (`G6`). The `RepairCase`, `SourceGraph`, and
+`LearningLedger` are the anchors those slices attach to.
 
 ## Related Existing Pieces
 
@@ -161,3 +194,11 @@ research notes, and raw evidence files remain present and traceable.
 loop: the closed `RepairCase`, the verified source-to-links round-trip, the fifth
 agentic recipe, the driver's end-to-end write, and the agent-mode server routing
 a self-healing request to the repair-case write.
+`tests/unit/issue_558_source_graph.rs` and
+`tests/integration/issue_558_source_graph.rs` verify the whole-repository
+source-to-links projection (sixth recipe).
+`tests/unit/issue_558_learning_ledger.rs` and
+`tests/integration/issue_558_learning_ledger.rs` verify the human-gated promotion
+ledger that terminates the loop: the promotion gates, lesson recall, the
+committed ledger artifact, and the seventh agentic recipe reachable through the
+agent-mode server.
