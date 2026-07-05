@@ -49,6 +49,7 @@ pub(crate) mod protocol_memory;
 pub(crate) mod protocol_policy;
 pub(crate) mod protocol_responses;
 pub mod proxy;
+pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
@@ -175,6 +176,7 @@ pub use protocol::{
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
 };
+pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
