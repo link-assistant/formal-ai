@@ -26,6 +26,7 @@ pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
+pub mod learning_ledger;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
@@ -129,6 +130,9 @@ pub use knowledge::{
     KNOWLEDGE_CACHE_FLOOR,
 };
 pub use language::{detect as detect_language, Language};
+pub use learning_ledger::{
+    canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
+};
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
 pub use link_store::{
