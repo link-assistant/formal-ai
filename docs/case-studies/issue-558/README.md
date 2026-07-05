@@ -192,11 +192,39 @@ PR #637 additionally closes the prose-heavy self-explanation gap (`G7`/`R558-08`
   id, and the planner/driver walk; `tests/integration/issue_558_self_explanation.rs`
   proves three paraphrases route through the agent-mode server to a grounded write.
 
+PR #637 additionally closes the user-driven self-change gap (`R558-07`):
+
+- **Change request → reviewable pull request** — `src/change_request.rs` turns a
+  natural-language "change Formal AI itself" request into a structured proposal: a
+  normalised requirement, a proposed test name, and an ordered patch plan against a
+  *grounded* target module. `ChangeRequest::for_module` resolves the target's
+  `content_id` from the owned manifest and *panics* on any path the repository does
+  not ship, so a request can never target fabricated source. The proposal serialises
+  to Links Notation as the reviewable pull request a human reads.
+- **Same human gate as the ledger** — `ChangeRequest::review` reuses the exact two
+  acceptance conditions the learning ledger enforces: a green `BenchmarkGateReport`
+  *and* an explicit `HumanApproval`. It refuses every case that is not both
+  (`TestsNotGreen` / `HumanDeclined`), so no user request is applied automatically.
+  Neural inference stays a NON-GOAL — the requirement, test, and patch plan are a
+  deterministic function of the request and its grounded target, and the *patch* is a
+  plan a human or Agent CLI executes, not generated code.
+- **Ninth agentic recipe** — `src/agentic_coding/change_request.rs` makes the flow
+  reachable through the agentic interface. The deterministic planner walks a write →
+  verify → final recipe that emits the reviewable pull request as a Links Notation
+  document (`requested-change.lino`). Like the source-graph and explain recipes it
+  commits no byte-pinned artifact, because the target's manifest content id tracks
+  the whole source tree.
+- **Tests** — `tests/unit/issue_558_change_request.rs` pins the manifest grounding,
+  the panic-on-fabrication guarantee, the derived requirement/test/patch plan, the
+  green-and-approved review gate, the Links Notation validity with a stable content
+  id, and the non-colliding planner/driver walk; `tests/integration/issue_558_change_request.rs`
+  proves three paraphrases route through the agent-mode server to a reviewable write.
+
 What remains for later slices (still human-gated by design): driving accepted
-Links-to-source *edits* back through the round-trip with rebuild tests (`G4`),
-the rebuild/UI-reattach step (`G6`), and user-driven arbitrary self-change
-(`R558-07`). The `RepairCase`, `SourceGraph`, `LearningLedger`, and
-`SystemExplanation` are the anchors those slices attach to.
+Links-to-source *edits* back through the round-trip with rebuild tests (`G4`) and
+the rebuild/UI-reattach step (`G6`). The `RepairCase`, `SourceGraph`,
+`LearningLedger`, `SystemExplanation`, and `ChangeRequest` are the anchors those
+slices attach to.
 
 ## Related Existing Pieces
 
@@ -230,3 +258,8 @@ agent-mode server.
 whole-system self-explanation (eighth recipe): every source citation is
 content-addressed against the owned manifest, every data/test citation exists on
 disk, and the recipe is reachable through the agent-mode server.
+`tests/unit/issue_558_change_request.rs` and
+`tests/integration/issue_558_change_request.rs` verify the user-driven self-change
+(ninth recipe): a change request grounds its target in the owned manifest, derives
+a requirement/test/patch plan, merges only through a green benchmark gate plus an
+explicit human approval, and is reachable through the agent-mode server.
