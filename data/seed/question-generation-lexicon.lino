@@ -1,0 +1,255 @@
+question_generation_lexicon
+  record_type "question_generation_lexicon"
+  topic "question_generation"
+  title "Frequency-ranked question vocabulary and grammar roles, lifted into reviewable link data"
+  summary "Issue #527 asks Formal AI to generate every possible question from smallest to largest, drawing words from a frequency-tiered vocabulary averaged across corpuses, then classify each candidate as grammatical or not and logically meaningful or not before answering it. The generation and classification logic (src/question_generation.rs) must stay general: it may never branch on a specific word. This file holds the two data tables that logic reads — the frequency-ranked words (each with its per-corpus scores, averaged at load time exactly as the issue asks) and the grammar role sets (interrogative openers, auxiliary openers, function words) that the grammatical/meaningful classifier consults. The Rust code keeps only the structural glue: the lazy word-count-ascending enumeration, the frequency-tier selection curve, and the grammar/logic gates. A grounding test (tests/unit/specification/question_generation_lexicon.rs) pins every table the code consults to this data so the two can never drift."
+  generalization "To widen the generator's reach, add a frequency_word record (with its per-corpus scores) or extend a grammar_role member list here instead of editing a Rust literal. Every record carries a language tag, so a second language is added by appending its words and role sets — the enumeration, tiering, and answering logic are language-agnostic and read whichever language the caller selects. All four supported languages are seeded here (en, ru, hi, zh) and grounded to the same behaviour by tests/unit/specification/question_generation_lexicon.rs, so a one-language regression cannot land silently. This mirrors the cue-lexicon migration (issue #559): behaviour lives in code, vocabulary lives in reviewable links."
+tier_policy
+  record_type "tier_policy"
+  note "The frequency tier a candidate draws from halves as it grows: the top 10% of ranked words feed one- and two-word candidates, then 5% for three words, 2.5% for four, and so on. Stored as basis points (1000 bp = 10%) so the curve is exact and reviewable rather than a magic number in code."
+  base_basis_points "1000"
+  halving_start_word_count "2"
+  max_halvings "9"
+  minimum_ranked_words "4"
+role_interrogative_openers
+  record_type "grammar_role"
+  role "interrogative_opener"
+  language "en"
+  note "Wh-words that open a grammatical content question; also the logical pivot a meaningful question asks about."
+  member (what who when where why how which)
+role_auxiliary_openers
+  record_type "grammar_role"
+  role "auxiliary_opener"
+  language "en"
+  note "Auxiliary and modal verbs that open a grammatical yes/no question."
+  member (is are am was were do does did can could should would will has have)
+role_function_words
+  record_type "grammar_role"
+  role "function_word"
+  language "en"
+  note "Closed-class words that carry no standalone content; a question whose slots are only function words stays an open slot rather than a meaningful question."
+  member (a an the to of for in on)
+word_what
+  record_type "frequency_word"
+  language "en"
+  surface "what"
+  frequency_scores (0.99 0.98 0.97)
+word_is
+  record_type "frequency_word"
+  language "en"
+  surface "is"
+  frequency_scores (0.98 0.97 0.96)
+word_who
+  record_type "frequency_word"
+  language "en"
+  surface "who"
+  frequency_scores (0.95 0.94 0.93)
+word_formal
+  record_type "frequency_word"
+  language "en"
+  surface "formal"
+  frequency_scores (0.90 0.88 0.86)
+word_ai
+  record_type "frequency_word"
+  language "en"
+  surface "ai"
+  frequency_scores (0.89 0.87 0.85)
+word_where
+  record_type "frequency_word"
+  language "en"
+  surface "where"
+  frequency_scores (0.84 0.82 0.81)
+word_when
+  record_type "frequency_word"
+  language "en"
+  surface "when"
+  frequency_scores (0.83 0.81 0.80)
+word_why
+  record_type "frequency_word"
+  language "en"
+  surface "why"
+  frequency_scores (0.82 0.80 0.79)
+word_how
+  record_type "frequency_word"
+  language "en"
+  surface "how"
+  frequency_scores (0.81 0.79 0.78)
+word_does
+  record_type "frequency_word"
+  language "en"
+  surface "does"
+  frequency_scores (0.80 0.78 0.77)
+word_can
+  record_type "frequency_word"
+  language "en"
+  surface "can"
+  frequency_scores (0.79 0.77 0.76)
+word_you
+  record_type "frequency_word"
+  language "en"
+  surface "you"
+  frequency_scores (0.78 0.76 0.75)
+word_work
+  record_type "frequency_word"
+  language "en"
+  surface "work"
+  frequency_scores (0.70 0.69 0.68)
+word_answer
+  record_type "frequency_word"
+  language "en"
+  surface "answer"
+  frequency_scores (0.69 0.68 0.67)
+word_question
+  record_type "frequency_word"
+  language "en"
+  surface "question"
+  frequency_scores (0.68 0.67 0.66)
+word_language
+  record_type "frequency_word"
+  language "en"
+  surface "language"
+  frequency_scores (0.67 0.66 0.65)
+role_interrogative_openers_ru
+  record_type "grammar_role"
+  role "interrogative_opener"
+  language "ru"
+  note "Russian wh-words that open a grammatical content question (проверка на всех поддерживаемых языках)."
+  member (что кто где когда почему как какой)
+role_auxiliary_openers_ru
+  record_type "grammar_role"
+  role "auxiliary_opener"
+  language "ru"
+  note "Russian auxiliary and modal openers for yes/no questions."
+  member (есть был была будет может должен можно)
+role_function_words_ru
+  record_type "grammar_role"
+  role "function_word"
+  language "ru"
+  note "Russian closed-class words that carry no standalone content."
+  member (и в на с о у из)
+word_ru_chto
+  record_type "frequency_word"
+  language "ru"
+  surface "что"
+  frequency_scores (0.99 0.98 0.97)
+word_ru_formalnyy
+  record_type "frequency_word"
+  language "ru"
+  surface "формальный"
+  frequency_scores (0.95 0.94 0.93)
+word_ru_intellekt
+  record_type "frequency_word"
+  language "ru"
+  surface "интеллект"
+  frequency_scores (0.90 0.89 0.88)
+word_ru_otvechaet
+  record_type "frequency_word"
+  language "ru"
+  surface "отвечает"
+  frequency_scores (0.85 0.84 0.83)
+word_ru_kto
+  record_type "frequency_word"
+  language "ru"
+  surface "кто"
+  frequency_scores (0.80 0.79 0.78)
+word_ru_kak
+  record_type "frequency_word"
+  language "ru"
+  surface "как"
+  frequency_scores (0.78 0.77 0.76)
+role_interrogative_openers_hi
+  record_type "grammar_role"
+  role "interrogative_opener"
+  language "hi"
+  note "Hindi wh-words that open a grammatical content question (हिंदी सहित हर समर्थित भाषा की जाँच)."
+  member (क्या कौन कहाँ कब क्यों कैसे कौनसा)
+role_auxiliary_openers_hi
+  record_type "grammar_role"
+  role "auxiliary_opener"
+  language "hi"
+  note "Hindi auxiliary and modal openers for yes/no questions."
+  member (है हैं था थे होगा सकता चाहिए)
+role_function_words_hi
+  record_type "grammar_role"
+  role "function_word"
+  language "hi"
+  note "Hindi closed-class words that carry no standalone content."
+  member (का की के को में पर से)
+word_hi_kya
+  record_type "frequency_word"
+  language "hi"
+  surface "क्या"
+  frequency_scores (0.99 0.98 0.97)
+word_hi_aupacharik
+  record_type "frequency_word"
+  language "hi"
+  surface "औपचारिक"
+  frequency_scores (0.95 0.94 0.93)
+word_hi_buddhi
+  record_type "frequency_word"
+  language "hi"
+  surface "बुद्धि"
+  frequency_scores (0.90 0.89 0.88)
+word_hi_uttar
+  record_type "frequency_word"
+  language "hi"
+  surface "उत्तर"
+  frequency_scores (0.85 0.84 0.83)
+word_hi_kaun
+  record_type "frequency_word"
+  language "hi"
+  surface "कौन"
+  frequency_scores (0.80 0.79 0.78)
+word_hi_kaise
+  record_type "frequency_word"
+  language "hi"
+  surface "कैसे"
+  frequency_scores (0.78 0.77 0.76)
+role_interrogative_openers_zh
+  record_type "grammar_role"
+  role "interrogative_opener"
+  language "zh"
+  note "Chinese wh-words that open a grammatical content question (覆盖每一种受支持的语言，包括中文)."
+  member (什么 谁 哪里 何时 为什么 如何 哪个)
+role_auxiliary_openers_zh
+  record_type "grammar_role"
+  role "auxiliary_opener"
+  language "zh"
+  note "Chinese auxiliary and modal openers for yes/no questions."
+  member (是 有 能 会 可以 应该)
+role_function_words_zh
+  record_type "grammar_role"
+  role "function_word"
+  language "zh"
+  note "Chinese closed-class words that carry no standalone content."
+  member (的 了 在 和 与 对)
+word_zh_shenme
+  record_type "frequency_word"
+  language "zh"
+  surface "什么"
+  frequency_scores (0.99 0.98 0.97)
+word_zh_xingshi
+  record_type "frequency_word"
+  language "zh"
+  surface "形式"
+  frequency_scores (0.95 0.94 0.93)
+word_zh_zhineng
+  record_type "frequency_word"
+  language "zh"
+  surface "智能"
+  frequency_scores (0.90 0.89 0.88)
+word_zh_huida
+  record_type "frequency_word"
+  language "zh"
+  surface "回答"
+  frequency_scores (0.85 0.84 0.83)
+word_zh_shui
+  record_type "frequency_word"
+  language "zh"
+  surface "谁"
+  frequency_scores (0.80 0.79 0.78)
+word_zh_ruhe
+  record_type "frequency_word"
+  language "zh"
+  surface "如何"
+  frequency_scores (0.78 0.77 0.76)

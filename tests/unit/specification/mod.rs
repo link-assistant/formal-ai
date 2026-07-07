@@ -77,6 +77,7 @@ mod probabilistic_reasoning;
 mod procedural_howto_benchmarks;
 mod project_lookups;
 mod prompt_variations;
+mod question_generation_lexicon;
 mod reasoning_loop;
 mod reasoning_paths;
 mod reasoning_paths_procedures;
