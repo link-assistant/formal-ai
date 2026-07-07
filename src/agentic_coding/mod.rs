@@ -29,6 +29,7 @@ pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
 pub mod self_ast;
@@ -51,6 +52,9 @@ pub use meaning_detail::{
 };
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
+};
+pub use question_catalog::{
+    is_question_catalog_task, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
 };
 pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
 pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};

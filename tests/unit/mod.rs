@@ -30,6 +30,7 @@ mod issue_484;
 mod issue_493;
 mod issue_513;
 mod issue_527;
+mod issue_527_question_catalog;
 mod issue_535;
 mod issue_538;
 mod issue_538_agentic;

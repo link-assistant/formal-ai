@@ -38,6 +38,7 @@ use super::formalize::{
 };
 use super::ledger;
 use super::meaning_detail;
+use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
 use super::self_ast;
@@ -186,6 +187,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // names both.
     if rebuild_plan::is_rebuild_task(&task) {
         return Some(plan_rebuild_step(messages, tool_names));
+    }
+    // The question-catalog recipe (issue #527): enumerate every possible question
+    // smallest-first, classify each grammatically and logically, and answer the
+    // meaningful ones. Checked alongside the other self-referential recipes and before
+    // formalization, since its request legitimately names "Links Notation" as the output
+    // format its catalog is rendered in. Its keywords ("question catalog", "all possible
+    // questions", …) are disjoint from the sibling recipes', so ordering only guards a
+    // request that somehow names both.
+    if question_catalog::is_question_catalog_task(&task) {
+        return Some(plan_question_catalog_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -617,6 +628,41 @@ fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 
     // Step 3: nothing left to do — answer with the generated plan inline.
     AgenticPlan::Final(rebuild_plan::final_answer(&document))
+}
+
+/// The issue-#527 question-catalog recipe: write the generated question-catalog
+/// document → verify → final. Like the other self-referential recipes it needs no web
+/// step — the document is a deterministic function of the seed lexicon and the
+/// deterministic engine ([`question_catalog::render_document`]), so the loop *generates
+/// every possible question and answers it*. Steps whose tool the CLI did not advertise
+/// are skipped.
+fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = question_catalog::render_document();
+
+    // Step 1: write the generated question-catalog document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(question_catalog::QUESTION_CATALOG_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments =
+                json!({ "command": format!("cat {}", question_catalog::QUESTION_CATALOG_PATH) });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated catalog inline.
+    AgenticPlan::Final(question_catalog::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
