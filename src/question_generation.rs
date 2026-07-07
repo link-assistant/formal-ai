@@ -6,7 +6,7 @@
 //! question-like fragments, grammatical questions, or only logically meaningful
 //! questions.
 
-use std::collections::HashSet;
+use std::collections::{BTreeMap, HashSet};
 use std::sync::OnceLock;
 
 use crate::engine::{FormalAiEngine, SymbolicAnswer};
@@ -34,11 +34,58 @@ const DEFAULT_LANGUAGE: &str = "en";
 /// and role from here. Mirrors the cue-lexicon migration (issue #559).
 #[derive(Debug, Clone)]
 struct QuestionLexicon {
+    /// Grammar roles and frequency vocabulary keyed by language tag (`en`, `ru`,
+    /// …). The generation and classification logic never branches on a specific
+    /// word *or* language: it reads whichever language the caller selects, and the
+    /// classifier recognizes an opener/auxiliary/function word in any seeded
+    /// language (surfaces are script-distinct, so languages never collide).
+    languages: BTreeMap<String, LanguageLexicon>,
+    tier: TierCurve,
+}
+
+/// The per-language vocabulary and grammar role sets lifted from the seed data.
+#[derive(Debug, Clone, Default)]
+struct LanguageLexicon {
     words: Vec<QuestionWord>,
     openers: HashSet<String>,
     auxiliaries: HashSet<String>,
     function_words: HashSet<String>,
-    tier: TierCurve,
+}
+
+impl QuestionLexicon {
+    /// The frequency vocabulary for `language`, or an empty slice when the
+    /// language is not seeded.
+    fn words_for(&self, language: &str) -> &[QuestionWord] {
+        self.languages
+            .get(language)
+            .map_or(&[], |lexicon| lexicon.words.as_slice())
+    }
+
+    /// The frequency vocabulary for the default language (`en`).
+    fn default_words(&self) -> &[QuestionWord] {
+        self.words_for(DEFAULT_LANGUAGE)
+    }
+
+    /// Whether `token` fills `role` in *any* seeded language. The classifier is
+    /// language-agnostic: a Russian opener is recognized exactly like an English
+    /// one, because seeded surfaces never overlap across scripts.
+    fn any_language_has_role(&self, token: &str, role: GrammarRole) -> bool {
+        self.languages.values().any(|lexicon| {
+            let set = match role {
+                GrammarRole::InterrogativeOpener => &lexicon.openers,
+                GrammarRole::AuxiliaryOpener => &lexicon.auxiliaries,
+                GrammarRole::FunctionWord => &lexicon.function_words,
+            };
+            set.contains(token)
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+enum GrammarRole {
+    InterrogativeOpener,
+    AuxiliaryOpener,
+    FunctionWord,
 }
 
 /// The frequency-tier selection curve: how large a slice of the ranked vocabulary
@@ -78,10 +125,7 @@ fn question_lexicon() -> &'static QuestionLexicon {
 
 fn load_question_lexicon() -> QuestionLexicon {
     let tree = parse_lino(QUESTION_LEXICON_LINO);
-    let mut words = Vec::new();
-    let mut openers = HashSet::new();
-    let mut auxiliaries = HashSet::new();
-    let mut function_words = HashSet::new();
+    let mut languages: BTreeMap<String, LanguageLexicon> = BTreeMap::new();
     let mut tier = TierCurve {
         base_basis_points: 1_000,
         halving_start_word_count: 2,
@@ -92,7 +136,8 @@ fn load_question_lexicon() -> QuestionLexicon {
     for record in &tree.children {
         match record.find_child_value("record_type") {
             "frequency_word" => {
-                if record.find_child_value("language") != DEFAULT_LANGUAGE {
+                let language = record.find_child_value("language");
+                if language.is_empty() {
                     continue;
                 }
                 let surface = record.find_child_value("surface");
@@ -103,19 +148,26 @@ fn load_question_lexicon() -> QuestionLexicon {
                     .iter()
                     .filter_map(|token| token.parse::<f32>().ok())
                     .collect();
-                words.push(QuestionWord::from_corpus_scores(surface, &scores));
+                languages
+                    .entry(language.to_string())
+                    .or_default()
+                    .words
+                    .push(QuestionWord::from_corpus_scores(surface, &scores));
             }
             "grammar_role" => {
-                if record.find_child_value("language") != DEFAULT_LANGUAGE {
+                let language = record.find_child_value("language");
+                if language.is_empty() {
                     continue;
                 }
-                let members = split_pipe_list(record.find_child_value("member"))
+                let members: Vec<String> = split_pipe_list(record.find_child_value("member"))
                     .into_iter()
-                    .map(|member| member.to_ascii_lowercase());
+                    .map(|member| member.to_ascii_lowercase())
+                    .collect();
+                let lexicon = languages.entry(language.to_string()).or_default();
                 match record.find_child_value("role") {
-                    "interrogative_opener" => openers.extend(members),
-                    "auxiliary_opener" => auxiliaries.extend(members),
-                    "function_word" => function_words.extend(members),
+                    "interrogative_opener" => lexicon.openers.extend(members),
+                    "auxiliary_opener" => lexicon.auxiliaries.extend(members),
+                    "function_word" => lexicon.function_words.extend(members),
                     _ => {}
                 }
             }
@@ -141,13 +193,7 @@ fn load_question_lexicon() -> QuestionLexicon {
         }
     }
 
-    QuestionLexicon {
-        words,
-        openers,
-        auxiliaries,
-        function_words,
-        tier,
-    }
+    QuestionLexicon { languages, tier }
 }
 
 fn parse_usize(value: &str) -> Option<usize> {
@@ -159,6 +205,8 @@ fn parse_usize(value: &str) -> Option<usize> {
 /// to expose its internal tables.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QuestionLexiconSummary {
+    /// The language tag this summary describes (`en`, `ru`, `hi`, `zh`).
+    pub language: String,
     /// Ranked vocabulary surfaces, most frequent first (ties broken alphabetically).
     pub vocabulary: Vec<String>,
     /// `interrogative_opener` role members, sorted.
@@ -173,24 +221,37 @@ pub struct QuestionLexiconSummary {
     pub tier_minimum_ranked_words: usize,
 }
 
-/// Summarize the seed lexicon the default generator reads. Exposed for the
-/// issue-#527 grounding test.
+/// Summarize the seed lexicon the default generator reads (the `en` language).
+/// Exposed for the issue-#527 grounding test.
 #[must_use]
 pub fn question_lexicon_summary() -> QuestionLexiconSummary {
+    question_lexicon_summary_for_language(DEFAULT_LANGUAGE)
+        .expect("the default language must be present in the seed lexicon")
+}
+
+/// Summarize the seed lexicon for a specific `language`.
+///
+/// Returns `None` when that language is not seeded. Every supported language is
+/// grounded to its behavior by the issue-#527 tests, so a one-language regression
+/// cannot land silently.
+#[must_use]
+pub fn question_lexicon_summary_for_language(language: &str) -> Option<QuestionLexiconSummary> {
     let lexicon = question_lexicon();
-    let vocabulary = QuestionGenerationConfig::default()
+    let language_lexicon = lexicon.languages.get(language)?;
+    let vocabulary = QuestionGenerationConfig::for_language(language)
         .words()
         .iter()
         .map(|word| word.surface.clone())
         .collect();
-    QuestionLexiconSummary {
+    Some(QuestionLexiconSummary {
+        language: language.to_string(),
         vocabulary,
-        interrogative_openers: sorted(&lexicon.openers),
-        auxiliary_openers: sorted(&lexicon.auxiliaries),
-        function_words: sorted(&lexicon.function_words),
+        interrogative_openers: sorted(&language_lexicon.openers),
+        auxiliary_openers: sorted(&language_lexicon.auxiliaries),
+        function_words: sorted(&language_lexicon.function_words),
         tier_base_basis_points: lexicon.tier.base_basis_points,
         tier_minimum_ranked_words: lexicon.tier.minimum_ranked_words,
-    }
+    })
 }
 
 fn sorted(set: &HashSet<String>) -> Vec<String> {
@@ -277,11 +338,26 @@ impl Default for QuestionGenerationConfig {
     fn default() -> Self {
         // The default vocabulary is the frequency-ranked word list from the seed
         // lexicon — no words are hardcoded here.
-        Self::from_words(question_lexicon().words.iter().cloned())
+        Self::for_language(DEFAULT_LANGUAGE)
     }
 }
 
 impl QuestionGenerationConfig {
+    /// Build a config from a seeded `language`'s frequency vocabulary. The
+    /// enumeration, tiering, and classification logic is language-agnostic, so
+    /// selecting a language changes only which words feed the stream. Falls back
+    /// to the default language when `language` is not seeded.
+    #[must_use]
+    pub fn for_language(language: &str) -> Self {
+        let words = question_lexicon().words_for(language);
+        let words = if words.is_empty() {
+            question_lexicon().default_words()
+        } else {
+            words
+        };
+        Self::from_words(words.iter().cloned())
+    }
+
     #[must_use]
     pub fn from_words<I>(words: I) -> Self
     where
@@ -632,9 +708,10 @@ fn is_question_like(tokens: &[String]) -> bool {
 /// Whether `token` is an interrogative opener (a wh-word). Reads the
 /// `interrogative_opener` role from the seed lexicon; never a hardcoded list.
 fn is_question_opener(token: &str) -> bool {
-    question_lexicon()
-        .openers
-        .contains(&token.to_ascii_lowercase())
+    question_lexicon().any_language_has_role(
+        &token.to_ascii_lowercase(),
+        GrammarRole::InterrogativeOpener,
+    )
 }
 
 fn is_question_pronoun(token: &str) -> bool {
@@ -645,8 +722,7 @@ fn is_question_pronoun(token: &str) -> bool {
 /// role from the seed lexicon; never a hardcoded list.
 fn is_auxiliary_opener(token: &str) -> bool {
     question_lexicon()
-        .auxiliaries
-        .contains(&token.to_ascii_lowercase())
+        .any_language_has_role(&token.to_ascii_lowercase(), GrammarRole::AuxiliaryOpener)
 }
 
 /// Whether `token` carries standalone content — anything that is neither an
@@ -656,7 +732,7 @@ fn is_content_word(token: &str) -> bool {
     let lower = token.to_ascii_lowercase();
     !is_question_pronoun(&lower)
         && !is_auxiliary_opener(&lower)
-        && !question_lexicon().function_words.contains(&lower)
+        && !question_lexicon().any_language_has_role(&lower, GrammarRole::FunctionWord)
 }
 
 fn has_duplicate_token(tokens: &[String]) -> bool {

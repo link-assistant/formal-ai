@@ -16,8 +16,9 @@
 //!    behavior the issue specifies.
 
 use formal_ai::{
-    question_lexicon_summary, GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance,
-    QuestionGenerationConfig, QuestionGenerator, QuestionGrammarClass,
+    question_lexicon_summary, question_lexicon_summary_for_language, GeneratedQuestionClass,
+    LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig, QuestionGenerator,
+    QuestionGrammarClass,
 };
 
 #[test]
@@ -159,4 +160,66 @@ fn seed_tier_curve_reproduces_halving_behavior() {
             .all(|question| question.words.iter().all(|word| !word.starts_with("term"))),
         "the halved 5% tier should exclude lower-ranked words for three-word candidates: {three_word:?}",
     );
+}
+
+/// The generation and classification logic is language-agnostic: it never
+/// branches on a specific word *or* language. Issue #527 seeds English, Russian,
+/// Hindi, and Chinese vocabulary and grammar roles into the same lexicon, and the
+/// same Rust glue must turn each language's frequency-ranked words into a
+/// grammatical, logically meaningful question. This pins that guarantee for every
+/// supported language so a one-language regression cannot land silently.
+#[test]
+fn seed_lexicon_generates_questions_in_every_supported_language() {
+    // (language tag, native interrogative opener, English name for messages).
+    let cases = [
+        ("en", "what", "English"),
+        ("ru", "что", "Russian"),
+        ("hi", "क्या", "Hindi"),
+        ("zh", "什么", "Chinese"),
+    ];
+
+    for (language, opener, name) in cases {
+        let summary = question_lexicon_summary_for_language(language)
+            .unwrap_or_else(|| panic!("{name} ({language}) must be seeded in the lexicon"));
+
+        assert_eq!(
+            summary.language, language,
+            "{name} summary must report its own language tag",
+        );
+        assert!(
+            summary.vocabulary.contains(&opener.to_string()),
+            "{name} ({language}) vocabulary must include its interrogative opener {opener:?}: {:?}",
+            summary.vocabulary,
+        );
+        assert!(
+            summary.interrogative_openers.contains(&opener.to_string()),
+            "{name} ({language}) must carry {opener:?} in its interrogative_opener role: {:?}",
+            summary.interrogative_openers,
+        );
+        // The frequency-tier curve is shared data, so every language reads the
+        // same "top 10%, then halve" policy.
+        assert_eq!(summary.tier_base_basis_points, 1_000);
+        assert_eq!(summary.tier_minimum_ranked_words, 4);
+
+        // The same generator produces a grammatical, meaningful question from this
+        // language's seeded words — no language-specific code path involved.
+        let config = QuestionGenerationConfig::for_language(language)
+            .with_acceptance(QuestionAcceptance::GrammaticalAndMeaningful);
+        let meaningful = QuestionGenerator::new(config)
+            .take(500)
+            .find(|question| {
+                question.class == GeneratedQuestionClass::GrammaticalAndMeaningful
+                    && question.words.first().map(String::as_str) == Some(opener)
+            })
+            .unwrap_or_else(|| {
+                panic!("the generator must produce a meaningful {name} ({language}) question opening with {opener:?}")
+            });
+
+        assert_eq!(meaningful.grammar, QuestionGrammarClass::Grammatical);
+        assert_eq!(meaningful.logical_meaning, LogicalMeaningClass::Meaningful);
+        assert!(
+            meaningful.word_count >= 3,
+            "a meaningful {name} question needs an opener and content: {meaningful:?}",
+        );
+    }
 }
