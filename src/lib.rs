@@ -178,9 +178,10 @@ pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
 };
 pub use question_generation::{
-    generated_question_answers, GeneratedQuestion, GeneratedQuestionAnswer,
-    GeneratedQuestionAnswerStream, GeneratedQuestionClass, LogicalMeaningClass, QuestionAcceptance,
-    QuestionGenerationConfig, QuestionGenerator, QuestionGrammarClass, QuestionWord,
+    generated_question_answers, question_lexicon_summary, GeneratedQuestion,
+    GeneratedQuestionAnswer, GeneratedQuestionAnswerStream, GeneratedQuestionClass,
+    LogicalMeaningClass, QuestionAcceptance, QuestionGenerationConfig, QuestionGenerator,
+    QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
 };
 pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};

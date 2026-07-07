@@ -7,11 +7,197 @@
 //! questions.
 
 use std::collections::HashSet;
+use std::sync::OnceLock;
 
 use crate::engine::{FormalAiEngine, SymbolicAnswer};
+use crate::seed::parser::{parse_lino, split_pipe_list};
 
-const DEFAULT_MIN_RANKED_WORDS: usize = 4;
 const BASIS_POINTS_DENOMINATOR: usize = 10_000;
+
+/// The language whose vocabulary and grammar roles the default generator reads.
+///
+/// Every record in the lexicon carries a `language` tag, so a second language is
+/// added purely in data; the enumeration, tiering, and answering logic never
+/// branch on the language.
+const DEFAULT_LANGUAGE: &str = "en";
+
+/// The frequency-ranked vocabulary and grammar role sets that drive generation,
+/// lifted out of Rust literals into `data/seed/question-generation-lexicon.lino`.
+///
+/// Issue #527 requires the generator to draw from a frequency-tiered vocabulary
+/// and to classify candidates grammatically and logically. Historically both the
+/// words and the grammar lexicons (interrogative openers, auxiliary openers,
+/// function words) lived as inline `matches!`/literal lists here, which branched
+/// the *general* generation logic on specific English words. This struct holds
+/// them as reviewable link data instead; the Rust code keeps only the structural
+/// glue (lazy enumeration, tier curve, grammar/logic gates) and reads every word
+/// and role from here. Mirrors the cue-lexicon migration (issue #559).
+#[derive(Debug, Clone)]
+struct QuestionLexicon {
+    words: Vec<QuestionWord>,
+    openers: HashSet<String>,
+    auxiliaries: HashSet<String>,
+    function_words: HashSet<String>,
+    tier: TierCurve,
+}
+
+/// The frequency-tier selection curve: how large a slice of the ranked vocabulary
+/// a candidate of a given word count may draw from. Stored in the lexicon's
+/// `tier_policy` record so the "top 10%, then halve" rule is reviewable data, not a
+/// magic number in code.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct TierCurve {
+    base_basis_points: usize,
+    halving_start_word_count: usize,
+    max_halvings: u32,
+    minimum_ranked_words: usize,
+}
+
+impl TierCurve {
+    /// The basis-point fraction of the ranked vocabulary a `word_count`-word
+    /// candidate may draw from: the base tier up to [`Self::halving_start_word_count`]
+    /// words, then halved for each additional word (capped at [`Self::max_halvings`]).
+    fn basis_points_for_word_count(self, word_count: usize) -> usize {
+        if word_count <= self.halving_start_word_count {
+            return self.base_basis_points;
+        }
+        let halvings = word_count
+            .saturating_sub(self.halving_start_word_count)
+            .min(self.max_halvings as usize);
+        (self.base_basis_points >> halvings).max(1)
+    }
+}
+
+const QUESTION_LEXICON_LINO: &str = include_str!("../data/seed/question-generation-lexicon.lino");
+
+/// The question-generation lexicon, parsed once from the embedded link data.
+fn question_lexicon() -> &'static QuestionLexicon {
+    static CELL: OnceLock<QuestionLexicon> = OnceLock::new();
+    CELL.get_or_init(load_question_lexicon)
+}
+
+fn load_question_lexicon() -> QuestionLexicon {
+    let tree = parse_lino(QUESTION_LEXICON_LINO);
+    let mut words = Vec::new();
+    let mut openers = HashSet::new();
+    let mut auxiliaries = HashSet::new();
+    let mut function_words = HashSet::new();
+    let mut tier = TierCurve {
+        base_basis_points: 1_000,
+        halving_start_word_count: 2,
+        max_halvings: 9,
+        minimum_ranked_words: 4,
+    };
+
+    for record in &tree.children {
+        match record.find_child_value("record_type") {
+            "frequency_word" => {
+                if record.find_child_value("language") != DEFAULT_LANGUAGE {
+                    continue;
+                }
+                let surface = record.find_child_value("surface");
+                if surface.is_empty() {
+                    continue;
+                }
+                let scores: Vec<f32> = split_pipe_list(record.find_child_value("frequency_scores"))
+                    .iter()
+                    .filter_map(|token| token.parse::<f32>().ok())
+                    .collect();
+                words.push(QuestionWord::from_corpus_scores(surface, &scores));
+            }
+            "grammar_role" => {
+                if record.find_child_value("language") != DEFAULT_LANGUAGE {
+                    continue;
+                }
+                let members = split_pipe_list(record.find_child_value("member"))
+                    .into_iter()
+                    .map(|member| member.to_ascii_lowercase());
+                match record.find_child_value("role") {
+                    "interrogative_opener" => openers.extend(members),
+                    "auxiliary_opener" => auxiliaries.extend(members),
+                    "function_word" => function_words.extend(members),
+                    _ => {}
+                }
+            }
+            "tier_policy" => {
+                if let Some(value) = parse_usize(record.find_child_value("base_basis_points")) {
+                    tier.base_basis_points = value;
+                }
+                if let Some(value) =
+                    parse_usize(record.find_child_value("halving_start_word_count"))
+                {
+                    tier.halving_start_word_count = value;
+                }
+                if let Some(value) = parse_usize(record.find_child_value("max_halvings"))
+                    .and_then(|value| u32::try_from(value).ok())
+                {
+                    tier.max_halvings = value;
+                }
+                if let Some(value) = parse_usize(record.find_child_value("minimum_ranked_words")) {
+                    tier.minimum_ranked_words = value;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    QuestionLexicon {
+        words,
+        openers,
+        auxiliaries,
+        function_words,
+        tier,
+    }
+}
+
+fn parse_usize(value: &str) -> Option<usize> {
+    value.trim().parse::<usize>().ok()
+}
+
+/// A read-only view of the seed lexicon the generator reads, so a grounding test
+/// can pin the data to the behavior it drives (R13) without the generator having
+/// to expose its internal tables.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QuestionLexiconSummary {
+    /// Ranked vocabulary surfaces, most frequent first (ties broken alphabetically).
+    pub vocabulary: Vec<String>,
+    /// `interrogative_opener` role members, sorted.
+    pub interrogative_openers: Vec<String>,
+    /// `auxiliary_opener` role members, sorted.
+    pub auxiliary_openers: Vec<String>,
+    /// `function_word` role members, sorted.
+    pub function_words: Vec<String>,
+    /// Base frequency tier in basis points (1000 bp = the top 10%).
+    pub tier_base_basis_points: usize,
+    /// Minimum number of ranked words a tier may shrink to.
+    pub tier_minimum_ranked_words: usize,
+}
+
+/// Summarize the seed lexicon the default generator reads. Exposed for the
+/// issue-#527 grounding test.
+#[must_use]
+pub fn question_lexicon_summary() -> QuestionLexiconSummary {
+    let lexicon = question_lexicon();
+    let vocabulary = QuestionGenerationConfig::default()
+        .words()
+        .iter()
+        .map(|word| word.surface.clone())
+        .collect();
+    QuestionLexiconSummary {
+        vocabulary,
+        interrogative_openers: sorted(&lexicon.openers),
+        auxiliary_openers: sorted(&lexicon.auxiliaries),
+        function_words: sorted(&lexicon.function_words),
+        tier_base_basis_points: lexicon.tier.base_basis_points,
+        tier_minimum_ranked_words: lexicon.tier.minimum_ranked_words,
+    }
+}
+
+fn sorted(set: &HashSet<String>) -> Vec<String> {
+    let mut members: Vec<String> = set.iter().cloned().collect();
+    members.sort();
+    members
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct QuestionWord {
@@ -68,9 +254,13 @@ impl QuestionAcceptance {
     }
 }
 
+/// How the generator restricts the ranked vocabulary as candidates grow.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum FrequencySelectionPolicy {
-    Issue527Percentages,
+    /// The default: draw from a frequency tier that shrinks with word count
+    /// (top [`TierCurve::base_basis_points`], halving per extra word).
+    FrequencyTiers,
+    /// Draw from the whole ranked vocabulary regardless of word count.
     AllRankedWords,
 }
 
@@ -79,29 +269,15 @@ pub struct QuestionGenerationConfig {
     words: Vec<QuestionWord>,
     acceptance: QuestionAcceptance,
     frequency_policy: FrequencySelectionPolicy,
+    tier: TierCurve,
     minimum_ranked_words: usize,
 }
 
 impl Default for QuestionGenerationConfig {
     fn default() -> Self {
-        Self::from_words([
-            QuestionWord::from_corpus_scores("what", &[0.99, 0.98, 0.97]),
-            QuestionWord::from_corpus_scores("is", &[0.98, 0.97, 0.96]),
-            QuestionWord::from_corpus_scores("who", &[0.95, 0.94, 0.93]),
-            QuestionWord::from_corpus_scores("formal", &[0.90, 0.88, 0.86]),
-            QuestionWord::from_corpus_scores("ai", &[0.89, 0.87, 0.85]),
-            QuestionWord::from_corpus_scores("where", &[0.84, 0.82, 0.81]),
-            QuestionWord::from_corpus_scores("when", &[0.83, 0.81, 0.80]),
-            QuestionWord::from_corpus_scores("why", &[0.82, 0.80, 0.79]),
-            QuestionWord::from_corpus_scores("how", &[0.81, 0.79, 0.78]),
-            QuestionWord::from_corpus_scores("does", &[0.80, 0.78, 0.77]),
-            QuestionWord::from_corpus_scores("can", &[0.79, 0.77, 0.76]),
-            QuestionWord::from_corpus_scores("you", &[0.78, 0.76, 0.75]),
-            QuestionWord::from_corpus_scores("work", &[0.70, 0.69, 0.68]),
-            QuestionWord::from_corpus_scores("answer", &[0.69, 0.68, 0.67]),
-            QuestionWord::from_corpus_scores("question", &[0.68, 0.67, 0.66]),
-            QuestionWord::from_corpus_scores("language", &[0.67, 0.66, 0.65]),
-        ])
+        // The default vocabulary is the frequency-ranked word list from the seed
+        // lexicon — no words are hardcoded here.
+        Self::from_words(question_lexicon().words.iter().cloned())
     }
 }
 
@@ -125,11 +301,13 @@ impl QuestionGenerationConfig {
         let mut seen = HashSet::new();
         ranked.retain(|word| seen.insert(word.surface.to_ascii_lowercase()));
 
+        let tier = question_lexicon().tier;
         Self {
             words: ranked,
             acceptance: QuestionAcceptance::GrammaticalAndMeaningful,
-            frequency_policy: FrequencySelectionPolicy::Issue527Percentages,
-            minimum_ranked_words: DEFAULT_MIN_RANKED_WORDS,
+            frequency_policy: FrequencySelectionPolicy::FrequencyTiers,
+            tier,
+            minimum_ranked_words: tier.minimum_ranked_words,
         }
     }
 
@@ -159,8 +337,8 @@ impl QuestionGenerationConfig {
     fn ranked_word_limit(&self, word_count: usize) -> usize {
         match self.frequency_policy {
             FrequencySelectionPolicy::AllRankedWords => self.words.len(),
-            FrequencySelectionPolicy::Issue527Percentages => {
-                let basis_points = frequency_basis_points_for_word_count(word_count);
+            FrequencySelectionPolicy::FrequencyTiers => {
+                let basis_points = self.tier.basis_points_for_word_count(word_count);
                 let selected = self
                     .words
                     .len()
@@ -445,58 +623,40 @@ fn normalize_word_surface(surface: &str) -> String {
         .to_ascii_lowercase()
 }
 
-fn frequency_basis_points_for_word_count(word_count: usize) -> usize {
-    if word_count <= 2 {
-        return 1_000;
-    }
-    let halvings = word_count.saturating_sub(2).min(9);
-    (1_000 / (1_usize << halvings)).max(1)
-}
-
 fn is_question_like(tokens: &[String]) -> bool {
     tokens
         .first()
         .is_some_and(|token| is_question_opener(token) || is_auxiliary_opener(token))
 }
 
+/// Whether `token` is an interrogative opener (a wh-word). Reads the
+/// `interrogative_opener` role from the seed lexicon; never a hardcoded list.
 fn is_question_opener(token: &str) -> bool {
-    matches!(
-        token,
-        "what" | "who" | "when" | "where" | "why" | "how" | "which"
-    )
+    question_lexicon()
+        .openers
+        .contains(&token.to_ascii_lowercase())
 }
 
 fn is_question_pronoun(token: &str) -> bool {
     is_question_opener(token)
 }
 
+/// Whether `token` is an auxiliary/modal opener. Reads the `auxiliary_opener`
+/// role from the seed lexicon; never a hardcoded list.
 fn is_auxiliary_opener(token: &str) -> bool {
-    matches!(
-        token,
-        "is" | "are"
-            | "am"
-            | "was"
-            | "were"
-            | "do"
-            | "does"
-            | "did"
-            | "can"
-            | "could"
-            | "should"
-            | "would"
-            | "will"
-            | "has"
-            | "have"
-    )
+    question_lexicon()
+        .auxiliaries
+        .contains(&token.to_ascii_lowercase())
 }
 
+/// Whether `token` carries standalone content — anything that is neither an
+/// interrogative opener, an auxiliary opener, nor a closed-class `function_word`
+/// (all three role sets come from the seed lexicon).
 fn is_content_word(token: &str) -> bool {
-    !is_question_pronoun(token)
-        && !is_auxiliary_opener(token)
-        && !matches!(
-            token,
-            "a" | "an" | "the" | "to" | "of" | "for" | "in" | "on"
-        )
+    let lower = token.to_ascii_lowercase();
+    !is_question_pronoun(&lower)
+        && !is_auxiliary_opener(&lower)
+        && !question_lexicon().function_words.contains(&lower)
 }
 
 fn has_duplicate_token(tokens: &[String]) -> bool {
