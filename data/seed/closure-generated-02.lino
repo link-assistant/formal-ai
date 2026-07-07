@@ -1,4 +1,29 @@
 meanings
+  pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni kongxian shijian zuo shenme zh"
+  pattern_assistant_free_time_phrase_ni_yeyu_shijian_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni yeyu shijian zuo shenme zh"
+  pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni you kong de shihou zuo shenme zh"
+  pattern_assistant_free_time_phrase_what_do_you_do_in_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do in free time en"
+  pattern_assistant_free_time_phrase_what_do_you_do_in_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do in your free time en"
   pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
     defined-by prompt_pattern
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present ru"
-  response_document_originality_check_sample_present_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present zh"
-  response_farewell_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell en"
-  response_farewell_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell hi"
-  response_farewell_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell ru"
-  response_farewell_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell zh"

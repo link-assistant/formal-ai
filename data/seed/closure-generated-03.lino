@@ -1,4 +1,29 @@
 meanings
+  response_document_originality_check_sample_present_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present zh"
+  response_farewell_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell en"
+  response_farewell_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell hi"
+  response_farewell_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell ru"
+  response_farewell_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response farewell zh"
   response_github_repository_traffic_en
     defined-by response_template
     lexeme en
@@ -344,6 +369,11 @@ meanings
     lexeme en
       surface
         text "short rule list"
+  should
+    defined-by concept
+    lexeme en
+      surface
+        text "should"
   signal-processing
     defined-by category
     lexeme en
@@ -729,6 +759,11 @@ meanings
     lexeme en
       surface
         text "vscode local sync"
+  was
+    defined-by concept
+    lexeme en
+      surface
+        text "was"
   web-search
     defined-by word_surface
     lexeme en
@@ -739,6 +774,11 @@ meanings
     lexeme en
       surface
         text "webvm"
+  were
+    defined-by concept
+    lexeme en
+      surface
+        text "were"
   wget
     defined-by token
     lexeme en
@@ -814,6 +854,11 @@ meanings
     lexeme en
       surface
         text "wiktionary"
+  will
+    defined-by concept
+    lexeme en
+      surface
+        text "will"
   wordnet
     defined-by source
     lexeme en
@@ -824,6 +869,11 @@ meanings
     lexeme en
       surface
         text "words"
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
   write_program
     defined-by intent
     lexeme en
