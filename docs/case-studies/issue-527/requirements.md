@@ -10,11 +10,18 @@
 | R527-6 | Make "what counts as a question" configurable instead of hardcoding one acceptance rule. | `QuestionAcceptance` lets callers request any question-like candidate, grammatical candidates, or only grammatical and logically meaningful candidates. |
 | R527-7 | Provide a way to answer generated questions with the best existing Formal AI answer path. | `generated_question_answers(config)` yields `GeneratedQuestionAnswer` values by delegating each question to `FormalAiEngine::answer`. |
 | R527-8 | Study popular question datasets, frequency resources, grammar frameworks, and question/answer generation prior art before choosing the first implementation slice. | `raw-data/online-research.md` records current top-question sources, Wordfreq, Universal Dependencies, question generation surveys, and answer generation survey notes. |
+| R527-9 | Execute the task by driving Formal AI through its own Agent CLI, not by hand-editing files. | The `question_catalog` recipe (`src/agentic_coding/question_catalog.rs`) walks `write_file → run_command (cat verify) → final`; `data/meta/question-catalog.lino` is byte-for-byte what the driver writes, asserted under test. |
+| R527-10 | Enumerate, classify, and answer smallest-first in one reviewable catalog. | `QuestionCatalog` records the smallest-first four-way classification and answers the grammatical-and-meaningful questions with the deterministic engine, rendered as Links Notation. |
+| R527-11 | Wire answered questions into auto-learning without changing solver behaviour behind a human's back. | `QuestionCatalog::answer_for` is a case/whitespace-insensitive recall table over the answered questions; it never mutates the human-gated learning ledger. |
+| R527-12 | Keep the whole loop reproducible. | `run_agentic_task(QUESTION_CATALOG_TASK)` regenerates the committed Agent CLI session byte-for-byte, pinned by `tests/unit/issue_527_question_catalog.rs`. |
 
-## Scope Boundary
+## Generality Boundary
 
-The implementation does not claim to enumerate every natural-language question
-from every language immediately. It provides the bounded, lazy, configurable
-core needed to do that work safely: consumers can plug in larger vocabularies,
-future template sources, and stronger grammar/meaning classifiers while keeping
-the iterator and answer-stream contract stable.
+The vocabulary, template sources, and grammar/meaning classifiers are pluggable
+by design, not deferred: the generator ranks whatever `QuestionWord` evidence it
+is given, the recipe renders whatever the generator produces, and the labels are
+shaped so a Universal-Dependencies-style parser can replace the heuristics
+without changing any caller — the iterator, the answer stream, the agentic
+recipe, and the recall table all keep their contracts. Larger corpora and
+stronger classifiers extend the *data and the classifier*, never the general
+routing logic.

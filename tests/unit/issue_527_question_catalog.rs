@@ -222,6 +222,27 @@ fn planner_walks_the_question_catalog_recipe() {
 }
 
 #[test]
+fn committed_agent_cli_session_matches_a_fresh_run() {
+    // The committed Agent CLI session (docs/case-studies/issue-527) is byte-for-byte what
+    // a fresh driven run produces from the recipe's *own* task wording — the issue-#527
+    // reproducibility pin, mirroring the issue-#538 sessions. It depends only on the seed
+    // lexicon and the deterministic engine, so it is safe to pin.
+    let committed =
+        include_str!("../../docs/case-studies/issue-527/agent-cli-session-question-catalog.json");
+    let fresh = run_agentic_task(QUESTION_CATALOG_TASK).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed question-catalog Agent CLI session is stale — regenerate it with \
+         `formal-ai agent --task \"<QUESTION_CATALOG_TASK>\" --session-json \
+         docs/case-studies/issue-527/agent-cli-session-question-catalog.json`",
+    );
+}
+
+#[test]
 fn driver_drives_the_question_catalog_recipe_to_a_write() {
     // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
     // exactly the generated catalog document.

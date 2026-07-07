@@ -54,12 +54,37 @@ existing engine:
 This keeps answering aligned with the universal solver instead of creating a
 parallel QA path.
 
-## Follow-Up Scaling
+## Agentic Recipe (Drive The Agent CLI, Not A Human Editor)
 
-The current PR establishes the executable contract. Larger follow-ups can add:
+The issue is executed by driving Formal AI through its own Agent CLI, exactly
+like the other agentic recipes. `src/agentic_coding/question_catalog.rs` is the
+eleventh recipe:
 
-- imported high-frequency word lists per supported language;
-- popular question-pattern seeds from search-query datasets;
-- template sources from knowledge-base facts and repository-local documents;
-- stronger grammaticality checks through dependency parsing;
-- logical-meaning checks against Formal AI's concept and source-cache records.
+1. `is_question_catalog_task` routes a differently worded request to the recipe
+   from the words alone, without colliding with the sibling routers.
+2. the deterministic planner walks `write_file → run_command (cat verify) →
+   final`; there is no web step because the catalog is a pure function of the
+   seed lexicon and the deterministic engine.
+3. `render_document` emits the smallest-first classification and the answered
+   questions as Links Notation, committed byte-for-byte to
+   `data/meta/question-catalog.lino`.
+4. `QuestionCatalog::answer_for` is the auto-learning link — a
+   case/whitespace-insensitive recall table over the answered questions that
+   never mutates the human-gated learning ledger, so recall can never change
+   solver behaviour on its own.
+
+The committed `agent-cli-session-question-catalog.json` is byte-for-byte what a
+fresh driven run produces, so the whole loop is reproducible and cannot silently
+regress into hand-editing without turning a test red.
+
+## Extending, Not Deferring
+
+Larger corpora and stronger classifiers extend the *data and the classifier*,
+never the general routing logic: import high-frequency word lists per language
+into the seed lexicon, add popular question-pattern seeds from search-query
+datasets, ground logical-meaning checks against Formal AI's concept and
+source-cache records, and swap the deterministic grammar heuristics for a
+dependency parser behind the existing `QuestionGrammarClass` /
+`LogicalMeaningClass` labels. Every one of these is a data or classifier change
+that the iterator, the answer stream, the recipe, and the recall table already
+accommodate without modification.
