@@ -54,6 +54,7 @@ pub mod formatting;
 pub mod http;
 mod language_markers;
 pub mod meaning;
+pub mod model_fallback;
 pub mod pipeline;
 pub mod prompt;
 pub mod selection;
@@ -70,6 +71,13 @@ pub use http::{CurlClient, HttpError};
 pub(crate) use language_markers::{
     detect_comprehension_failure, detect_response_language, detect_source_language,
     detect_target_language,
+};
+pub use model_fallback::{
+    apply_formalization_model_advice, available_small_formalization_models,
+    build_formalization_model_prompt, formalization_model_option_id,
+    parse_formalization_model_advice, select_formalization_candidate_with_model_advice,
+    small_formalization_model_catalog, FormalizationModelAdvice, SmallFormalizationModel,
+    SmallModelHardwareProfile,
 };
 pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};

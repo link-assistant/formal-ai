@@ -5,9 +5,12 @@
 //! Wikidata properties/items when possible and to explicit fallbacks otherwise.
 
 use formal_ai::translation::{
-    formalize_prompt, formalize_prompt_candidates, select_formalization_candidate,
+    apply_formalization_model_advice, available_small_formalization_models,
+    build_formalization_model_prompt, formalize_prompt, formalize_prompt_candidates,
+    select_formalization_candidate, select_formalization_candidate_with_model_advice,
     softmax_formalization_scores, FormalizationAnchorKind, FormalizationDecision,
-    FormalizationRole, FormalizationSelectionConfig, FormalizationSelectionReason,
+    FormalizationModelAdvice, FormalizationRole, FormalizationSelectionConfig,
+    FormalizationSelectionReason, SmallModelHardwareProfile,
 };
 use formal_ai::{FormalAiEngine, SolverConfig, UniversalSolver};
 
@@ -127,6 +130,178 @@ fn unmodeled_dictionary_terms_fall_back_to_wiktionary_surfaces() {
         candidate.unresolved_terms.is_empty(),
         "Wiktionary fallback should remain anchored, got {candidate:?}",
     );
+}
+
+#[test]
+fn experimental_model_formalization_fallback_is_off_by_default() {
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+    let subclass_summary = candidates
+        .iter()
+        .find(|candidate| {
+            candidate
+                .compact_summary()
+                .contains("predicate=wikidata:P279")
+        })
+        .expect("ambiguous subclass candidate")
+        .compact_summary();
+    let advice = FormalizationModelAdvice {
+        model_id: "SmolLM2-360M-Instruct-q4f16_1-MLC".to_owned(),
+        selected_option: subclass_summary,
+        confidence: 0.91,
+        raw_output: "{\"selected_option\":\"subclass\"}".to_owned(),
+    };
+
+    let ranked = apply_formalization_model_advice(&candidates, false, Some(&advice));
+
+    assert_eq!(
+        ranked, candidates,
+        "the small-model advisor must not change deterministic formalization unless enabled",
+    );
+}
+
+#[test]
+fn experimental_model_advice_can_only_select_existing_candidates() {
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+    let subclass_summary = candidates
+        .iter()
+        .find(|candidate| {
+            candidate
+                .compact_summary()
+                .contains("predicate=wikidata:P279")
+        })
+        .expect("ambiguous subclass candidate")
+        .compact_summary();
+    let advice = FormalizationModelAdvice {
+        model_id: "SmolLM2-360M-Instruct-q4f16_1-MLC".to_owned(),
+        selected_option: subclass_summary.clone(),
+        confidence: 0.88,
+        raw_output: "{\"selected_option\":\"option_2\"}".to_owned(),
+    };
+
+    let ranked = apply_formalization_model_advice(&candidates, true, Some(&advice));
+
+    assert_eq!(
+        ranked.len(),
+        candidates.len(),
+        "model fallback may rerank but must not synthesize new formal candidates",
+    );
+    assert_eq!(ranked[0].compact_summary(), subclass_summary);
+    assert!(ranked[0].score > candidates[0].score);
+
+    let invalid = FormalizationModelAdvice {
+        selected_option: "subject=wikidata:Q89 predicate=wikidata:P999999 object=wikidata:Q3314483"
+            .to_owned(),
+        ..advice
+    };
+    assert_eq!(
+        apply_formalization_model_advice(&candidates, true, Some(&invalid)),
+        candidates,
+        "unknown model output must be ignored rather than trusted",
+    );
+}
+
+#[test]
+fn model_advice_selection_uses_normal_formalization_decision_boundary() {
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+    let subclass_summary = candidates
+        .iter()
+        .find(|candidate| {
+            candidate
+                .compact_summary()
+                .contains("predicate=wikidata:P279")
+        })
+        .expect("ambiguous subclass candidate")
+        .compact_summary();
+    let advice = FormalizationModelAdvice {
+        model_id: "SmolLM2-360M-Instruct-q4f16_1-MLC".to_owned(),
+        selected_option: subclass_summary.clone(),
+        confidence: 0.91,
+        raw_output: "{\"selected_option\":\"option_2\",\"confidence\":0.91}".to_owned(),
+    };
+    let config = FormalizationSelectionConfig {
+        temperature: 0.0,
+        guess_probability: 1.0,
+        questioning_rigor: 0.0,
+    };
+
+    let disabled = select_formalization_candidate_with_model_advice(
+        &candidates,
+        config,
+        "apple is a fruit",
+        false,
+        Some(&advice),
+    );
+    assert_ne!(
+        disabled
+            .selected_candidate()
+            .expect("disabled fallback still selects baseline")
+            .compact_summary(),
+        subclass_summary,
+        "disabled model advice must not affect the normal selector",
+    );
+
+    let enabled = select_formalization_candidate_with_model_advice(
+        &candidates,
+        config,
+        "apple is a fruit",
+        true,
+        Some(&advice),
+    );
+    assert_eq!(
+        enabled
+            .selected_candidate()
+            .expect("enabled fallback selects through normal selector")
+            .compact_summary(),
+        subclass_summary,
+    );
+}
+
+#[test]
+fn small_model_catalog_filters_hardware_and_sorts_by_public_rating() {
+    let profile = SmallModelHardwareProfile {
+        webgpu_available: true,
+        shader_f16_available: true,
+        device_memory_mb: Some(1024),
+    };
+
+    let models = available_small_formalization_models(profile);
+
+    assert!(
+        models.len() >= 2,
+        "a 1 GB WebGPU profile should expose the smallest practical options",
+    );
+    assert!(models
+        .iter()
+        .all(|model| model.vram_required_mb <= profile.device_memory_mb.unwrap()));
+    assert!(models
+        .windows(2)
+        .all(|pair| pair[0].public_rating >= pair[1].public_rating));
+    assert_eq!(models[0].id, "SmolLM2-360M-Instruct-q4f16_1-MLC");
+
+    let unsupported = available_small_formalization_models(SmallModelHardwareProfile {
+        webgpu_available: false,
+        shader_f16_available: true,
+        device_memory_mb: Some(4096),
+    });
+    assert!(unsupported.is_empty(), "browser models require WebGPU");
+}
+
+#[test]
+fn model_advisor_prompt_lists_bounded_formalization_options() {
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+
+    let prompt = build_formalization_model_prompt("apple is a fruit", &candidates);
+
+    assert!(prompt.contains("Return JSON"), "{prompt}");
+    assert!(prompt.contains("option_1"), "{prompt}");
+    assert!(prompt.contains("Do not create new anchors"), "{prompt}");
+    for candidate in &candidates {
+        assert!(
+            prompt.contains(&candidate.compact_summary()),
+            "prompt must expose candidate {}",
+            candidate.compact_summary(),
+        );
+    }
 }
 
 #[test]
