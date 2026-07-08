@@ -264,7 +264,7 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [detect-changes]
     # Note: always() is required because detect-changes is skipped on
     # workflow_dispatch; without it the skipped dependency would cascade and
