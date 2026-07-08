@@ -6,13 +6,12 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_google_trends;
 mod cli_shared_dialog;
 
+use cli_google_trends::{run_google_trends, GoogleTrendsOptions};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
-use formal_ai::google_trends::{
-    render_prompt_suite_from_rss, TrendPromptSuiteConfig, GOOGLE_TRENDS_US_RSS_URL,
-};
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
@@ -119,38 +118,7 @@ enum Command {
         action: GithubLogsAction,
     },
     /// Convert a saved Google Trends RSS feed into multilingual Formal AI request cases.
-    GoogleTrends {
-        /// Saved RSS input, for example docs/case-studies/issue-499/raw-data/google-trends-us-rss.xml.
-        #[arg(long)]
-        input: PathBuf,
-
-        /// Destination `.lino` file. Omit or pass `-` to write to stdout.
-        #[arg(long)]
-        output: Option<PathBuf>,
-
-        /// Number of ranked trends to convert.
-        #[arg(long, default_value_t = 10)]
-        top: usize,
-
-        /// Trends geography code recorded in the generated fixture.
-        #[arg(long, default_value = "US")]
-        geo: String,
-
-        /// Capture timestamp recorded in the generated fixture.
-        #[arg(long = "captured-at", default_value = "unknown")]
-        captured_at: String,
-
-        /// Source feed URL recorded in the generated fixture.
-        #[arg(long, default_value = GOOGLE_TRENDS_US_RSS_URL)]
-        source_url: String,
-
-        /// Snapshot path recorded in the generated fixture.
-        #[arg(
-            long,
-            default_value = "docs/case-studies/issue-499/raw-data/google-trends-us-rss.xml"
-        )]
-        source_snapshot: String,
-    },
+    GoogleTrends(GoogleTrendsOptions),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
@@ -465,24 +433,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
-        Command::GoogleTrends {
-            input,
-            output,
-            top,
-            geo,
-            captured_at,
-            source_url,
-            source_snapshot,
-        } => {
-            let config = TrendPromptSuiteConfig {
-                geo,
-                captured_at,
-                source_url,
-                source_snapshot,
-                top_n: top,
-            };
-            run_google_trends(&input, output.as_deref(), &config)?;
-        }
+        Command::GoogleTrends(options) => run_google_trends(options)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
             task,
@@ -553,28 +504,6 @@ fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
                 eprintln!("  {}", capture.file);
             }
         }
-    }
-    Ok(())
-}
-
-fn run_google_trends(
-    input: &std::path::Path,
-    output: Option<&std::path::Path>,
-    config: &TrendPromptSuiteConfig,
-) -> Result<(), Box<dyn Error>> {
-    let xml = std::fs::read_to_string(input)?;
-    let rendered = render_prompt_suite_from_rss(&xml, config)?;
-    match output {
-        Some(path) if path != std::path::Path::new("-") => {
-            if let Some(parent) = path.parent() {
-                if !parent.as_os_str().is_empty() {
-                    std::fs::create_dir_all(parent)?;
-                }
-            }
-            std::fs::write(path, rendered)?;
-            eprintln!("wrote Google Trends prompt suite to {}", path.display());
-        }
-        _ => print!("{rendered}"),
     }
     Ok(())
 }
