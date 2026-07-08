@@ -1022,6 +1022,36 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
   });
 });
 
+test.describe('Issue #557: adaptive composer skins', () => {
+  test('settings expose Material skin and a glass transparency slider', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const skin = page.locator('[data-testid="setting-ui-skin"]');
+    await skin.selectOption('material');
+    await expect(page.locator('.app')).toHaveClass(/ui-skin-material/);
+
+    await expect(page.locator('[data-testid="setting-glass-opacity"]')).toHaveCount(0);
+
+    await skin.selectOption('glass');
+    const glassOpacity = page.locator('[data-testid="setting-glass-opacity"]');
+    await expect(glassOpacity).toBeVisible();
+    await setRangeValue(page, 'setting-glass-opacity', 0.45);
+
+    const glassAlpha = await page.locator('.app').evaluate((node) =>
+      getComputedStyle(node).getPropertyValue('--fa-glass-alpha').trim(),
+    );
+    expect(glassAlpha).toBe('0.45');
+
+    const stored = await page.evaluate(
+      () => window.localStorage.getItem('formal-ai.preferences.v1') || '',
+    );
+    expect(stored).toContain('uiSkin "glass"');
+    expect(stored).toContain('glassOpacity "0.45"');
+  });
+});
+
 test.describe('Issue #136: desktop sidebar sizing', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);

@@ -1,0 +1,16 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #(108|557)
+
+[2m[WebServer] [22m(node:8328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+  ✓  1 [chromium] › tests/demo.spec.js:930:3 › Issue #108: mobile composer and configurable input UI › mobile uses a left menu, hides the wordmark, and exposes brand details inside the drawer (2.1s)
+  ✓  2 [chromium] › tests/demo.spec.js:951:3 › Issue #108: mobile composer and configurable input UI › focused mobile composer stays in one row and keeps the top menu reachable (1.7s)
+  ✓  3 [chromium] › tests/demo.spec.js:986:3 › Issue #108: mobile composer and configurable input UI › UI skin, chat style, composer style, and action button are configurable and persisted (1.9s)
+  ✓  4 [chromium] › tests/demo.spec.js:1010:3 › Issue #108: mobile composer and configurable input UI › composer menu exposes attachment and memory actions at the input (2.0s)
+  ✓  5 [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider (1.8s)
+
+  5 passed (14.5s)

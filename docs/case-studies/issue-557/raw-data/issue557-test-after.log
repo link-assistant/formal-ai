@@ -1,0 +1,12 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #557
+
+[2m[WebServer] [22m(node:8038) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider (2.9s)
+
+  1 passed (10.4s)

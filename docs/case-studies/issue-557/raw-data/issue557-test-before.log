@@ -1,0 +1,87 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #557
+
+[2m[WebServer] [22m(node:5140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider (11.3s)
+  ✘  2 [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider (retry #1) (14.8s)
+
+
+  1) [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider 
+
+    TimeoutError: locator.selectOption: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[data-testid="setting-ui-skin"]')[22m
+    [2m    - locator resolved to <select data-testid="setting-ui-skin">…</select>[22m
+    [2m  - attempting select option action[22m
+    [2m    2 × waiting for element to be visible and enabled[22m
+    [2m      - did not find some options[22m
+    [2m    - retrying select option action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible and enabled[22m
+    [2m      - did not find some options[22m
+    [2m    - retrying select option action[22m
+    [2m      - waiting 100ms[22m
+    [2m    19 × waiting for element to be visible and enabled[22m
+    [2m       - did not find some options[22m
+    [2m     - retrying select option action[22m
+    [2m       - waiting 500ms[22m
+
+
+      1030 |
+      1031 |     const skin = page.locator('[data-testid="setting-ui-skin"]');
+    > 1032 |     await skin.selectOption('material');
+           |                ^
+      1033 |     await expect(page.locator('.app')).toHaveClass(/ui-skin-material/);
+      1034 |
+      1035 |     await expect(page.locator('[data-testid="setting-glass-opacity"]')).toHaveCount(0);
+        at /tmp/gh-issue-solver-1783548102926/tests/e2e/tests/demo.spec.js:1032:16
+
+    Error Context: test-results/demo-Issue-557-adaptive-co-fdef1-a-glass-transparency-slider-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: locator.selectOption: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[data-testid="setting-ui-skin"]')[22m
+    [2m    - locator resolved to <select data-testid="setting-ui-skin">…</select>[22m
+    [2m  - attempting select option action[22m
+    [2m    2 × waiting for element to be visible and enabled[22m
+    [2m      - did not find some options[22m
+    [2m    - retrying select option action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible and enabled[22m
+    [2m      - did not find some options[22m
+    [2m    - retrying select option action[22m
+    [2m      - waiting 100ms[22m
+    [2m    19 × waiting for element to be visible and enabled[22m
+    [2m       - did not find some options[22m
+    [2m     - retrying select option action[22m
+    [2m       - waiting 500ms[22m
+
+
+      1030 |
+      1031 |     const skin = page.locator('[data-testid="setting-ui-skin"]');
+    > 1032 |     await skin.selectOption('material');
+           |                ^
+      1033 |     await expect(page.locator('.app')).toHaveClass(/ui-skin-material/);
+      1034 |
+      1035 |     await expect(page.locator('[data-testid="setting-glass-opacity"]')).toHaveCount(0);
+        at /tmp/gh-issue-solver-1783548102926/tests/e2e/tests/demo.spec.js:1032:16
+
+    Error Context: test-results/demo-Issue-557-adaptive-co-fdef1-a-glass-transparency-slider-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/demo-Issue-557-adaptive-co-fdef1-a-glass-transparency-slider-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/demo-Issue-557-adaptive-co-fdef1-a-glass-transparency-slider-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/demo.spec.js:1026:3 › Issue #557: adaptive composer skins › settings expose Material skin and a glass transparency slider 

@@ -637,6 +637,9 @@ function recognizeInterfaceCommand(text) {
     if (normalized.includes("glass")) {
       return { kind: "set_preference", key: "uiSkin", value: "glass", intent: "configure_ui_skin", label: "UI skin" };
     }
+    if (normalized.includes("material")) {
+      return { kind: "set_preference", key: "uiSkin", value: "material", intent: "configure_ui_skin", label: "UI skin" };
+    }
     if (normalized.includes("contrast") || normalized.includes("контраст")) {
       return { kind: "set_preference", key: "uiSkin", value: "contrast", intent: "configure_ui_skin", label: "UI skin" };
     }
@@ -679,6 +682,23 @@ function recognizeInterfaceCommand(text) {
     if (normalized.includes("attach") || normalized.includes("attachment") || normalized.includes("скреп")) {
       return { kind: "set_preference", key: "composerAction", value: "attach", intent: "configure_composer_action", label: "Composer action" };
     }
+  }
+
+  const glassOpacity = commandNumberValue(normalized, [
+    "glass opacity",
+    "glass transparency",
+    "стекло прозрач",
+    "玻璃透明",
+    "ग्लास पारदर्शिता",
+  ]);
+  if (glassOpacity !== null) {
+    return {
+      kind: "set_preference",
+      key: "glassOpacity",
+      value: glassOpacity,
+      intent: "configure_glass_opacity",
+      label: "Glass opacity",
+    };
   }
 
   const temperature = commandNumberValue(normalized, ["temperature", "температур", "तापमान", "温度"]);
@@ -1117,6 +1137,7 @@ const PREFERENCE_DEFAULTS = {
   // Issues #108/#110: UI, chat, and input surfaces are configurable while the
   // defaults stay flat and cheap to render.
   uiSkin: "flat",
+  glassOpacity: 0.78,
   chatStyle: "cards",
   composerStyle: "flat",
   composerAction: "attach",
@@ -1135,6 +1156,9 @@ const DEFAULT_TEMPERATURE_TEXT = String(
 const DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT = formatSliderValue(
   PREFERENCE_DEFAULTS.followUpProbability,
 );
+const DEFAULT_GLASS_OPACITY_PERCENT = formatSliderValue(
+  PREFERENCE_DEFAULTS.glassOpacity,
+);
 
 // Issue #386: the settings panel lets the user reset each setting (or all of
 // them) back to the shipped default. A setting is "modified" when its current
@@ -1148,7 +1172,7 @@ function settingIsDefault(key, value) {
   return value === fallback;
 }
 
-const UI_SKINS = ["flat", "glass", "contrast"];
+const UI_SKINS = ["flat", "glass", "material", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
@@ -1530,6 +1554,15 @@ function normalizeThemePreference(value) {
 
 function normalizeUiSkin(value) {
   return UI_SKINS.includes(value) ? value : PREFERENCE_DEFAULTS.uiSkin;
+}
+
+function normalizeGlassOpacity(value) {
+  return clampNumber(
+    value,
+    0.35,
+    0.95,
+    PREFERENCE_DEFAULTS.glassOpacity,
+  );
 }
 
 function normalizeChatStyle(value) {
@@ -2053,6 +2086,7 @@ function collectUserContext({
   uiLanguagePreference,
   themePreference,
   uiSkin,
+  glassOpacity,
   chatStyle,
   composerStyle,
   composerAction,
@@ -2080,6 +2114,7 @@ function collectUserContext({
     uiLanguagePreference,
     themePreference,
     uiSkin,
+    glassOpacity: formatSliderValue(glassOpacity),
     chatStyle,
     composerStyle,
     composerAction,
@@ -2199,6 +2234,9 @@ function appendUserContextBlock(lines, context) {
   }
   if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
     push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  if (safe.glassOpacity !== DEFAULT_GLASS_OPACITY_PERCENT) {
+    push("Glass opacity", `${safe.glassOpacity || "unknown"}%`);
   }
   const thinkingDetailLevel =
     safe.thinkingDetailLevel || PREFERENCE_DEFAULTS.thinkingDetailLevel;
@@ -6128,6 +6166,9 @@ function App() {
   const [uiSkin, setUiSkin] = useState(
     normalizeUiSkin(initialPreferences.current.uiSkin),
   );
+  const [glassOpacity, setGlassOpacity] = useState(
+    normalizeGlassOpacity(initialPreferences.current.glassOpacity),
+  );
   const [chatStyle, setChatStyle] = useState(
     normalizeChatStyle(initialPreferences.current.chatStyle),
   );
@@ -6625,6 +6666,7 @@ function App() {
         uiLanguagePreference,
         themePreference,
         uiSkin,
+        glassOpacity,
         chatStyle,
         composerStyle,
         composerAction,
@@ -6643,6 +6685,7 @@ function App() {
       uiLanguagePreference,
       themePreference,
       uiSkin,
+      glassOpacity,
       chatStyle,
       composerStyle,
       composerAction,
@@ -7147,6 +7190,7 @@ function App() {
       associativeProjectPromotion,
       theme: themePreference,
       uiSkin,
+      glassOpacity,
       chatStyle,
       composerStyle,
       composerAction,
@@ -7189,6 +7233,7 @@ function App() {
     associativeProjectPromotion,
     themePreference,
     uiSkin,
+    glassOpacity,
     chatStyle,
     composerStyle,
     composerAction,
@@ -7350,6 +7395,11 @@ function App() {
     uiSkinRef.current = uiSkin;
   }, [uiSkin]);
 
+  const glassOpacityRef = useRef(glassOpacity);
+  useEffect(() => {
+    glassOpacityRef.current = glassOpacity;
+  }, [glassOpacity]);
+
   const chatStyleRef = useRef(chatStyle);
   useEffect(() => {
     chatStyleRef.current = chatStyle;
@@ -7415,6 +7465,7 @@ function App() {
       responseLanguage: responseLanguageRef.current,
       preferredLanguage: preferredLanguageRef.current,
       uiSkin: uiSkinRef.current,
+      glassOpacity: glassOpacityRef.current,
       chatStyle: chatStyleRef.current,
       composerStyle: composerStyleRef.current,
       composerAction: composerActionRef.current,
@@ -8067,6 +8118,9 @@ function App() {
         case "uiSkin":
           setUiSkin(normalizeUiSkin(command.value));
           break;
+        case "glassOpacity":
+          setGlassOpacity(normalizeGlassOpacity(command.value));
+          break;
         case "chatStyle":
           setChatStyle(normalizeChatStyle(command.value));
           break;
@@ -8530,6 +8584,7 @@ function App() {
     { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
     { key: "theme", value: themePreference, set: setThemePreference, label: "settings.theme" },
     { key: "uiSkin", value: uiSkin, set: setUiSkin, label: "settings.uiSkin" },
+    { key: "glassOpacity", value: glassOpacity, set: setGlassOpacity, label: "settings.glassOpacity" },
     { key: "chatStyle", value: chatStyle, set: setChatStyle, label: "settings.chatStyle" },
     { key: "composerStyle", value: composerStyle, set: setComposerStyle, label: "settings.composerStyle" },
     { key: "composerAction", value: composerAction, set: setComposerAction, label: "settings.composerAction" },
@@ -8580,10 +8635,26 @@ function App() {
       && (updater.updateAvailable || updater.downloaded)
       && !updateInFlight,
   );
+  const glassOpacityValue = normalizeGlassOpacity(glassOpacity);
+  const glassStyleVariables = {
+    "--fa-glass-alpha": String(glassOpacityValue),
+    "--fa-glass-panel-alpha": String(
+      clampNumber(glassOpacityValue - 0.16, 0.2, 0.9, 0.62),
+    ),
+    "--fa-glass-header-alpha": String(
+      clampNumber(glassOpacityValue - 0.02, 0.25, 0.95, 0.76),
+    ),
+    "--fa-glass-control-alpha": String(
+      clampNumber(glassOpacityValue - 0.04, 0.2, 0.9, 0.74),
+    ),
+    "--fa-glass-clear-alpha": String(
+      clampNumber(glassOpacityValue - 0.26, 0.12, 0.85, 0.52),
+    ),
+  };
   const renderDesktopPermissionPanel = (testId) =>
     <DesktopPermissionPanel grants={desktopToolGrants} mode={mode} onDecision={setDesktopToolGrant} onGrantAll={grantAllAndRunPending} hasPendingTask={hasPendingAgentTask} testId={testId} t={t} />;
 
-  return <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")}><chakra.header className="topbar">
+  return <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")} style={glassStyleVariables}><chakra.header className="topbar">
       <ToolbarButton className="mobile-menu-toggle topbar-menu-toggle" testId="mobile-menu-toggle" ariaLabel={mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu")} title={mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen")} onClick={() => setMobileMenuOpen(value => !value)} extraProps={{
       "aria-pressed": mobileMenuOpen
     }}>
@@ -8682,7 +8753,7 @@ function App() {
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled
         // by default and the user can opt out of any one.
-        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label><label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} /></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} onChange={event => setLocationPreference(event.target.value.slice(0, 80))} /></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
+        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="material">{t("settings.uiSkin.material")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label>{uiSkin === "glass" ? <div className="setting-row setting-row-slider" data-testid="setting-glass-opacity-row"><label htmlFor="setting-glass-opacity">{t("settings.glassOpacity")}</label><div className="setting-poles"><span>{t("settings.glassMoreTransparent")}</span><span>{t("settings.glassMoreOpaque")}</span></div><input id="setting-glass-opacity" data-testid="setting-glass-opacity" type="range" min="0.35" max="0.95" step="0.05" value={glassOpacity} onChange={event => setGlassOpacity(normalizeGlassOpacity(event.target.value))} /><output htmlFor="setting-glass-opacity">{`${formatSliderValue(glassOpacity)}%`}</output></div> : null}<label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} /></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} onChange={event => setLocationPreference(event.target.value.slice(0, 80))} /></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
           setDemoMode(false);
           setPrompt(entry.text);
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {

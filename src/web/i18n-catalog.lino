@@ -292,7 +292,12 @@ en
       label "UI skin"
       flat "Flat"
       glass "Glass"
+      material "Material"
       contrast "Contrast"
+    glassOpacity
+      label "Glass opacity"
+    glassMoreTransparent "Clearer"
+    glassMoreOpaque "More opaque"
     toolbarIconPack
       label "Toolbar icons"
       fontawesome "Font Awesome"
@@ -647,7 +652,12 @@ ru
       label "Скин UI"
       flat "Плоский"
       glass "Стекло"
+      material "Material"
       contrast "Контраст"
+    glassOpacity
+      label "Прозрачность стекла"
+    glassMoreTransparent "Прозрачнее"
+    glassMoreOpaque "Плотнее"
     toolbarIconPack
       label "Иконки панели"
       fontawesome "Font Awesome"
@@ -992,7 +1002,12 @@ zh
       label "界面皮肤"
       flat "扁平"
       glass "玻璃"
+      material "Material"
       contrast "高对比"
+    glassOpacity
+      label "玻璃不透明度"
+    glassMoreTransparent "更透明"
+    glassMoreOpaque "更不透明"
     toolbarIconPack
       label "工具栏图标"
       fontawesome "Font Awesome"
@@ -1343,7 +1358,12 @@ hi
       label "UI स्किन"
       flat "फ्लैट"
       glass "ग्लास"
+      material "Material"
       contrast "कॉन्ट्रास्ट"
+    glassOpacity
+      label "ग्लास अपारदर्शिता"
+    glassMoreTransparent "अधिक पारदर्शी"
+    glassMoreOpaque "अधिक अपारदर्शी"
     toolbarIconPack
       label "टूलबार आइकन"
       fontawesome "Font Awesome"
