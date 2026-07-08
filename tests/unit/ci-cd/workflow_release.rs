@@ -300,7 +300,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("changelog", 10),
         ("version-check", 5),
         ("lint", 10),
-        ("test", 10),
+        ("test", 15),
         ("coverage", 15),
         ("build", 10),
         ("auto-release", 30),
