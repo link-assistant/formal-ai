@@ -44,6 +44,7 @@ use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
 use super::source_graph;
+use super::trend_prompt_catalog;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -197,6 +198,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // request that somehow names both.
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
+    }
+    // The issue-#499 Google Trends recipe: convert the captured Trending Now RSS
+    // top ten into multilingual Formal AI request cases. Checked before generic file
+    // and shell helpers so "Google Trends prompt catalog" routes to the generated
+    // artifact instead of an ordinary explanation.
+    if trend_prompt_catalog::is_trend_prompt_catalog_task(&task) {
+        return Some(plan_trend_prompt_catalog_step(messages, tool_names));
     }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -663,6 +671,39 @@ fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> 
 
     // Step 3: nothing left to do — answer with the generated catalog inline.
     AgenticPlan::Final(question_catalog::final_answer(&document))
+}
+
+/// The issue-#499 Google Trends prompt-catalog recipe: write the generated
+/// benchmark fixture → verify → final. The source data is the committed RSS snapshot,
+/// not a live network call, so the in-repo Agent CLI session is reproducible.
+fn plan_trend_prompt_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = trend_prompt_catalog::render_document();
+
+    // Step 1: write the generated Google Trends prompt-catalog document.
+    if let Some(tool) = write_tool {
+        if !progress.done(Capability::Write) {
+            return plan_one(
+                tool,
+                write_arguments(trend_prompt_catalog::TREND_PROMPT_CATALOG_PATH, &document),
+            );
+        }
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) = run_tool {
+        if !progress.done(Capability::Run) {
+            let arguments = json!({
+                "command": format!("cat {}", trend_prompt_catalog::TREND_PROMPT_CATALOG_PATH),
+            });
+            return plan_one(tool, arguments.to_string());
+        }
+    }
+
+    // Step 3: nothing left to do — answer with the generated catalog inline.
+    AgenticPlan::Final(trend_prompt_catalog::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

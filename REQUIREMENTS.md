@@ -946,6 +946,27 @@ template regression upstream as
 | R368 | The release badge and README badge behavior must be protected by automated regression tests. | Implemented by `crate_release_badges_use_static_artifact_links_not_live_status`, `readme_keeps_traditional_ci_and_artifact_badges`, and `issue_492_release_badge_documents_are_traceable`. |
 | R369 | The issue #492 fix, documentation, test coverage, and PR metadata must land in the prepared PR #583 branch. | Implemented on branch `issue-492-c714d50efef8` and tracked by PR [#583](https://github.com/link-assistant/formal-ai/pull/583). |
 
+## Issue #499 Google Trends Requirements
+
+Issue [#499](https://github.com/link-assistant/formal-ai/issues/499) asks for
+automated scripts and tools that turn Google Trends into Formal AI test-case
+data, including the current top ten trend requests and variations across every
+supported language. PR [#641](https://github.com/link-assistant/formal-ai/pull/641)
+adds a deterministic RSS-snapshot converter, a generated
+`google-trends-top10-suite.lino` benchmark fixture, an Agent CLI recipe, and a
+traceable case study under `docs/case-studies/issue-499`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R499-1 | Preserve issue #499 source data, PR #641 discussion data, online research, and Google Trends raw evidence under `docs/case-studies/issue-499`. | Implemented by `docs/case-studies/issue-499/raw-data/*`, `README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/online-research.md`; covered by `issue_499_google_trends_documents_are_traceable`. |
+| R499-2 | Provide an automated converter from a saved Google Trends RSS snapshot into structured Formal AI request data. | Implemented by `src/google_trends.rs` and the `formal-ai google-trends` CLI command. |
+| R499-3 | Convert the captured Google Trends top ten into Formal AI request cases. | Implemented by `data/benchmarks/google-trends-top10-suite.lino`, generated from `docs/case-studies/issue-499/raw-data/google-trends-us-rss.xml`. |
+| R499-4 | Generate variations for every supported language used by the prompt matrix. | Implemented for English, Russian, Hindi, and Chinese via `SUPPORTED_TREND_PROMPT_LANGUAGES`; covered by `prompt_suite_covers_each_top_ten_topic_in_every_supported_language`. |
+| R499-5 | Keep CI deterministic and offline even though Google Trends is live and frequently changing. | Implemented by committing the RSS snapshot and asserting the generated fixture byte-for-byte against that snapshot. |
+| R499-6 | Make the conversion reachable through Formal AI's own Agent CLI flow. | Implemented by `src/agentic_coding/trend_prompt_catalog.rs`, planner routing, and `docs/case-studies/issue-499/agent-cli-session-google-trends.json`. |
+| R499-7 | Record prior art, external libraries, and local components considered for the design. | Implemented by `docs/case-studies/issue-499/raw-data/online-research.md`, which covers Google Trends Trending Now, RSS, API alpha, pytrends, third-party APIs, and local benchmark/catalog precedents. |
+| R499-8 | Protect the data collection with regression tests. | Implemented by `tests/unit/issue_499_google_trends.rs` and `tests/unit/docs_requirements_issue_499.rs`. |
+
 ## Issue #538 Detailed Meanings and Words
 
 Issue [#538](https://github.com/link-assistant/formal-ai/issues/538) starts from

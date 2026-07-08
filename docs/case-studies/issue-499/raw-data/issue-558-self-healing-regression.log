@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.50s
+     Running tests/unit/mod.rs (target/debug/deps/unit-3efb08dd56b862be)
+
+running 1 test
+test issue_558_self_healing::committed_self_healing_case_is_generated_and_written_by_the_driver ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1449 filtered out; finished in 15.67s

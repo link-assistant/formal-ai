@@ -23,6 +23,7 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
+pub mod google_trends;
 pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
