@@ -1007,3 +1007,28 @@ implemented, human-gated slice of the loop in code.
 | R393 | When Formal AI cannot answer an input, compose the failure, the source it maps onto, a benchmark-gated candidate lesson, and a human-review outcome into one auditable, proposal-only repair case (R558-01). | Implemented by `src/self_healing.rs` (`RepairCase`, `RepairOutcome`, `canonical_case`), which reaches a human-gated `AwaitingReview` outcome and never writes source or seed data. Committed as `data/meta/self-healing-case.lino` and covered by `tests/unit/issue_558_self_healing.rs`. |
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
+
+## Issue #531 Pattern Inference Research
+
+Issue [#531](https://github.com/link-assistant/formal-ai/issues/531) asks for a
+research-first plan for pattern inference across sequences, text, and 2D images,
+starting from associative deduplication and the upstream
+`linksplatform/Data.Doublets.Sequences` converters. PR
+[#642](https://github.com/link-assistant/formal-ai/pull/642) preserves the first
+research pass under `docs/case-studies/issue-531` and keeps implementation
+requirements staged until maintainers choose the next coding slice.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Preserve issue #531, PR #642, comments, review comments, upstream repository metadata, and selected sequence-converter source evidence under `docs/case-studies/issue-531`. | Implemented by `docs/case-studies/issue-531/raw-data/`, including GitHub JSON snapshots, Data.Doublets.Sequences metadata, checked commit data, converter file inventories, and selected C#/C++ source excerpts. |
+| R397 | Decompose issue #531 into explicit requirements and proposed solutions before runtime implementation. | Implemented by `docs/case-studies/issue-531/requirements.md`, which records `R531-01` through `R531-16`. |
+| R398 | Inventory current Formal AI integration points for link-native sequence and pattern inference. | Implemented by `docs/case-studies/issue-531/architecture-inventory.md`, covering `link_store`, `substitution`, `solver`, `meta_core`, existing text deduplication, and dependency boundaries. |
+| R399 | Research `linksplatform/Data.Doublets.Sequences` converters and dependencies before reimplementing sequence support in Rust. | Implemented by the saved upstream excerpts and summarized in `docs/case-studies/issue-531/README.md`, including `BalancedVariantConverter`, `OptimalVariantConverter`, `CompressingConverter`, `LinkFrequenciesCache`, `SequenceIndex`, and `StringToUnicodeSequenceConverter`. |
+| R400 | Document the known C# vs C++ `CompressingConverter` max-frequency discrepancy so it is verified before porting. | Implemented in `docs/case-studies/issue-531/{README.md,architecture-inventory.md,solution-plan.md}` and backed by raw C# and C++ converter excerpts. |
+| R401 | Research known algorithms and benchmark families relevant to associative deduplication, sequence pattern inference, and transformed 2D matching. | Implemented by `docs/case-studies/issue-531/raw-data/online-research.md`, covering SEQUITUR, Re-Pair, ARC-AGI, Data.Doublets.Sequences, meta-theory, and relative-meta-logic. |
+| R402 | Propose a staged Rust implementation for link-native sequence symbols, sequence markers, balanced/optimal/compressing converters, frequency caches, and exact expansion. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phases 1-3, with acceptance gates for round trips, converter fixtures, compression traces, and exact decompression. |
+| R403 | Propose transformed pattern matching for 1D sequences/text and 2D grids, including symmetry, rotation, reflection, translation, and analogy-like comparisons. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 4, using sequence projections for rows, columns, diagonals, borders, connected components, and relative coordinates. |
+| R404 | Ground pattern-inference vocabulary in ontology/seed meanings instead of ad hoc strings. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 5 for sequence, pattern, repetition, compression, deduplication, transformation, symmetry, rotation, reflection, translation, analogy, and invariant. |
+| R405 | Integrate future pattern inference through solver/meta-core methods with default-off diagnostics and auditable evidence. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 6; the architecture inventory identifies the solver and meta-core attachment points. |
+| R406 | Define benchmark directions for text, symbolic sequences, event streams, ARC-style grids, and requirements-solution fact checking. | Planned in `docs/case-studies/issue-531/solution-plan.md` Phase 7. |
+| R407 | Protect the research contract with automated traceability coverage in PR #642. | Implemented by `tests/unit/docs_requirements_issue_531.rs`, wired through `tests/unit/mod.rs`. |
