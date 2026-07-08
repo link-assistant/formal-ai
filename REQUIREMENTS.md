@@ -1007,3 +1007,25 @@ implemented, human-gated slice of the loop in code.
 | R393 | When Formal AI cannot answer an input, compose the failure, the source it maps onto, a benchmark-gated candidate lesson, and a human-review outcome into one auditable, proposal-only repair case (R558-01). | Implemented by `src/self_healing.rs` (`RepairCase`, `RepairOutcome`, `canonical_case`), which reaches a human-gated `AwaitingReview` outcome and never writes source or seed data. Committed as `data/meta/self-healing-case.lino` and covered by `tests/unit/issue_558_self_healing.rs`. |
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
+
+## Issue #482 Nemotron Training-Data Samples
+
+Issue [#482](https://github.com/link-assistant/formal-ai/issues/482) asks to
+use NVIDIA Nemotron 3 Ultra training data to add tests, without using the model
+and without downloading the full dataset. PR
+[#639](https://github.com/link-assistant/formal-ai/pull/639) adds a
+license-aware sampler, a compact ten-row benchmark fixture, and a documentation
+case study under `docs/case-studies/issue-482`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Use Nemotron 3 Ultra training data, not the released model weights or another LLM inference path. | Implemented by `scripts/sample-nemotron-training-data.py`, which samples Hugging Face dataset rows and records no model call. |
+| R397 | Avoid downloading full upstream datasets. | Implemented by the sampler's datasets-server `rows` requests with `length=1`; covered by `issue_482_nemotron_training_sample_fixture_is_well_formed` and `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples`. |
+| R398 | Add ten random samples from the training data. | Implemented by `docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and `data/benchmarks/nemotron-training-samples.lino`, generated from seed `issue-482`. |
+| R399 | Preserve row provenance so more samples can be fetched later. | Implemented by recording dataset, config, split, row offset, row UUID, revision, license, digest, and row URL for every sample. |
+| R400 | Keep imported benchmark data within the repository's permissive-license policy. | Implemented by selecting the Nemotron Legal v1 shard and rejecting sampled rows without explicit `CC-BY-4.0` row licenses. |
+| R401 | Turn the samples into executable tests. | Implemented by `tests/unit/specification/nemotron_training_samples.rs`, which validates Links Notation syntax, fixture/raw JSON consistency, no-full-download policy, sample diversity, and a 10/10 ingestion floor. |
+| R402 | Index the new benchmark in the central catalog and license provenance. | Implemented by updates to `docs/benchmarks.md` and `data/benchmarks/LICENSES.md`. |
+| R403 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
+| R404 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
+| R405 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `tests/unit/docs_requirements_issue_482.rs`, wired through `tests/unit/mod.rs`. |

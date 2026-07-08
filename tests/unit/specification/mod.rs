@@ -71,6 +71,7 @@ mod method_registry;
 mod multilingual;
 mod natural_language_access;
 mod natural_language_skill_compilation;
+mod nemotron_training_samples;
 mod network_visualization;
 mod openai_compatibility;
 mod probabilistic_reasoning;
