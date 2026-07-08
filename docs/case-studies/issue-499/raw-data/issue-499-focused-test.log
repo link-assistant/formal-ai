@@ -1,16 +1,16 @@
    Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.30s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.81s
      Running tests/unit/mod.rs (target/debug/deps/unit-3efb08dd56b862be)
 
 running 9 tests
-test docs_requirements_issue_499::issue_499_google_trends_documents_are_traceable ... ok
-test issue_499_google_trends::google_trends_rss_snapshot_parses_top_ten ... ok
+test issue_499_google_trends::committed_google_trends_suite_is_generated_from_the_snapshot ... ok
 test issue_499_google_trends::planner_walks_the_trend_prompt_catalog_recipe ... ok
+test issue_499_google_trends::google_trends_rss_snapshot_parses_top_ten ... ok
 test issue_499_google_trends::recognises_the_trend_prompt_catalog_task_without_colliding ... ok
 test issue_499_google_trends::prompt_suite_covers_each_top_ten_topic_in_every_supported_language ... ok
-test issue_499_google_trends::committed_google_trends_suite_is_generated_from_the_snapshot ... ok
 test issue_499_google_trends::driver_drives_the_trend_prompt_catalog_recipe_to_a_write ... ok
+test docs_requirements_issue_499::issue_499_google_trends_documents_are_traceable ... ok
 test issue_499_google_trends::committed_agent_cli_session_matches_a_fresh_run ... ok
 test issue_499_google_trends::generated_prompts_are_usable_formal_ai_requests ... ok
 
-test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1441 filtered out; finished in 4.93s
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1441 filtered out; finished in 4.82s

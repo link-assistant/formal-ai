@@ -1,4 +1,7 @@
     Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
    Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 18.54s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.01s
      Running `target/debug/examples/dump_self_ast`

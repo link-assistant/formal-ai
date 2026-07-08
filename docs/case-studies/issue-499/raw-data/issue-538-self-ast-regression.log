@@ -1,5 +1,5 @@
    Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783542327422)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.71s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.31s
      Running tests/unit/mod.rs (target/debug/deps/unit-3efb08dd56b862be)
 
 running 2 tests
@@ -7,4 +7,4 @@ test issue_538_agentic::committed_self_ast_session_matches_a_fresh_run ... ok
 test issue_538_agentic::committed_self_ast_is_generated_and_written_by_the_driver has been running for over 60 seconds
 test issue_538_agentic::committed_self_ast_is_generated_and_written_by_the_driver ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1448 filtered out; finished in 80.19s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1448 filtered out; finished in 78.60s
