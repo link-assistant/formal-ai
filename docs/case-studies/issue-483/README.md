@@ -33,8 +33,8 @@ Pull request: [#644](https://github.com/link-assistant/formal-ai/pull/644)
 - Formatting, lint, build, and static-check logs:
   `raw-data/cargo-fmt-check.log`, `raw-data/cargo-clippy.log`,
   `raw-data/check-file-size.log`, `raw-data/build-web.log`,
-  `raw-data/check-i18n.log`, `raw-data/check-web-tdz.log`, and
-  `raw-data/check-web-hardcoded-ui.log`.
+  `raw-data/check-i18n.log`, `raw-data/check-language-test-coverage.log`,
+  `raw-data/check-web-tdz.log`, and `raw-data/check-web-hardcoded-ui.log`.
 - UI evidence:
   `screenshots/formalization-model-settings.png`.
 
@@ -128,6 +128,7 @@ rust-script scripts/check-file-size.rs
 cargo test --test unit formalization
 cargo test --all-features
 npm --prefix tests/e2e run check:i18n
+npm --prefix tests/e2e run check:language-test-coverage
 npm --prefix tests/e2e run check:web-tdz
 npm --prefix tests/e2e run check:web-hardcoded-ui
 bun run build:web
