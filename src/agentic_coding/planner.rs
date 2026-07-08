@@ -36,6 +36,7 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::google_trends_catalog;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
@@ -187,6 +188,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // names both.
     if rebuild_plan::is_rebuild_task(&task) {
         return Some(plan_rebuild_step(messages, tool_names));
+    }
+    if google_trends_catalog::is_google_trends_catalog_task(&task) {
+        return Some(plan_google_trends_catalog_step(messages, tool_names));
     }
     // The question-catalog recipe (issue #527): enumerate every possible question
     // smallest-first, classify each grammatically and logically, and answer the
@@ -663,6 +667,28 @@ fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> 
 
     // Step 3: nothing left to do — answer with the generated catalog inline.
     AgenticPlan::Final(question_catalog::final_answer(&document))
+}
+
+fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = google_trends_catalog::render_document();
+
+    if let Some(tool) = write_tool.filter(|_| !progress.done(Capability::Write)) {
+        return plan_one(
+            tool,
+            write_arguments(google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH, &document),
+        );
+    }
+
+    if let Some(tool) = run_tool.filter(|_| !progress.done(Capability::Run)) {
+        let command = google_trends_catalog::verification_command();
+        return plan_one(tool, json!({ "command": command }).to_string());
+    }
+
+    AgenticPlan::Final(google_trends_catalog::final_answer(&document))
 }
 
 /// Which recipe capabilities the conversation already produced a result for.

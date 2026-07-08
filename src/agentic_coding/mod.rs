@@ -25,6 +25,7 @@ pub mod driver;
 pub mod explain;
 mod file_read;
 pub mod formalize;
+pub mod google_trends_catalog;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
@@ -45,6 +46,9 @@ pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
+};
+pub use google_trends_catalog::{
+    is_google_trends_catalog_task, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
 };
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
 pub use meaning_detail::{
