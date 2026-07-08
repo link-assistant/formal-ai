@@ -93,7 +93,15 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
             .iter()
             .map(|prompt| prompt.language.as_str())
             .collect();
-        assert_eq!(languages, BTreeSet::from(["en", "hi", "ru", "zh"]));
+        let language = "en";
+        assert!(languages.contains(language), "English prompts are required");
+        let language = "ru";
+        assert!(languages.contains(language), "Russian prompts are required");
+        let language = "hi";
+        assert!(languages.contains(language), "Hindi prompts are required");
+        let language = "zh";
+        assert!(languages.contains(language), "Chinese prompts are required");
+        assert_eq!(languages.len(), 4, "only supported languages are expected");
 
         assert!(
             topic
