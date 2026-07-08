@@ -524,17 +524,17 @@ fn searchable_text(event: &MemoryEvent) -> String {
 
 fn estimate_event_bytes(event: &MemoryEvent) -> u64 {
     64 + string_bytes(&event.id)
-        + option_bytes(&event.kind)
-        + option_bytes(&event.role)
-        + option_bytes(&event.intent)
-        + option_bytes(&event.tool)
-        + option_bytes(&event.inputs)
-        + option_bytes(&event.outputs)
-        + option_bytes(&event.content)
-        + option_bytes(&event.sent_at)
-        + option_bytes(&event.demo_label)
-        + option_bytes(&event.conversation_id)
-        + option_bytes(&event.conversation_title)
+        + option_bytes(event.kind.as_deref())
+        + option_bytes(event.role.as_deref())
+        + option_bytes(event.intent.as_deref())
+        + option_bytes(event.tool.as_deref())
+        + option_bytes(event.inputs.as_deref())
+        + option_bytes(event.outputs.as_deref())
+        + option_bytes(event.content.as_deref())
+        + option_bytes(event.sent_at.as_deref())
+        + option_bytes(event.demo_label.as_deref())
+        + option_bytes(event.conversation_id.as_deref())
+        + option_bytes(event.conversation_title.as_deref())
         + event
             .evidence
             .iter()
@@ -584,10 +584,10 @@ fn normalized(value: Option<&str>) -> String {
     value.unwrap_or_default().trim().to_ascii_lowercase()
 }
 
-fn option_bytes(value: &Option<String>) -> u64 {
-    value.as_deref().map_or(0, string_bytes)
+fn option_bytes(value: Option<&str>) -> u64 {
+    value.map_or(0, string_bytes)
 }
 
-fn string_bytes(value: &str) -> u64 {
+const fn string_bytes(value: &str) -> u64 {
     value.len() as u64
 }
