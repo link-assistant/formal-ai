@@ -291,8 +291,12 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo registry
-        uses: actions/cache@v5
+      # Restore the cargo cache here, but leave cache writes to the lint/build
+      # jobs. This test job runs close to its timeout after the full suite, and
+      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
+      # successful run.
+      - name: Restore cargo registry cache
+        uses: actions/cache/restore@v5
         with:
           path: |
             ~/.cargo/registry
