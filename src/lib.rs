@@ -16,6 +16,7 @@ pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod cue_lexicon;
 pub mod document_formats;
+pub mod dreaming;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -115,6 +116,11 @@ pub use document_formats::{
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
     supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
     DOCUMENT_FORMAT_ENGINE,
+};
+pub use dreaming::{
+    apply_dreaming_plan, plan_memory_dreaming, render_dreaming_plan, DreamingAction,
+    DreamingActionKind, DreamingConfig, DreamingDurability, DreamingEventObservation,
+    DreamingOutcome, DreamingPlan,
 };
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,

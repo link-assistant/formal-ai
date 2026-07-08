@@ -11,15 +11,16 @@ mod cli_shared_dialog;
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
-    agent_info, collect_github_logs, create_chat_completion_with_solver,
+    agent_info, apply_dreaming_plan, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
     execute_memory_query, export_memory_bundle, export_memory_full, import_memory_full,
     knowledge_links_notation, merged_bundle, naturalize_thinking_step, parse_bundle,
-    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
-    run_with_formal_ai, seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest,
-    ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ProxyConfig,
-    ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver,
-    WithFormalAiArgs, DEFAULT_MODEL,
+    plan_memory_dreaming, render_dreaming_plan, render_github_log_plan, run_proxy,
+    run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
+    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, DreamingConfig,
+    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest,
+    SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs,
+    DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -244,6 +245,51 @@ enum MemoryAction {
         /// Natural-language memory query, for example "Find Rust in another conversation".
         #[arg(long)]
         prompt: String,
+    },
+    /// Plan low-priority memory dreaming: recomputable duplicate cleanup,
+    /// cache/intermediate eviction under storage pressure, and deleted-thread
+    /// purge candidates. Prints the plan by default; `--apply --confirm` is
+    /// required before the memory file is changed.
+    Dream {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value = "formal-ai-memory.lino"
+        )]
+        path: PathBuf,
+
+        /// Total capacity, in bytes, of the storage area that holds memory.
+        #[arg(long)]
+        storage_capacity_bytes: Option<u64>,
+
+        /// Current free bytes in the storage area.
+        #[arg(long)]
+        free_bytes: Option<u64>,
+
+        /// Bytes expected for the next write/fetch before the free-space target
+        /// is evaluated.
+        #[arg(long, default_value_t = 0)]
+        incoming_bytes: u64,
+
+        /// Desired free-space ratio after the next write. Defaults to 20%.
+        #[arg(long, default_value_t = 20)]
+        target_free_ratio_percent: u8,
+
+        /// Turn off the default background dreaming planner for this run.
+        #[arg(long, default_value_t = false)]
+        disable_daydreaming: bool,
+
+        /// Apply the selected plan actions to the memory file.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before deletion.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
     },
     /// Permanently remove every event attached to conversations that were
     /// already soft-deleted in the browser conversation list. Irreversible:
@@ -725,6 +771,63 @@ fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                     println!("{}", execution.answer.answer);
                 }
                 None => println!("No natural-language memory query recognized."),
+            }
+        }
+        MemoryAction::Dream {
+            path,
+            storage_capacity_bytes,
+            free_bytes,
+            incoming_bytes,
+            target_free_ratio_percent,
+            disable_daydreaming,
+            apply,
+            backup,
+            confirm,
+        } => {
+            if apply && path.as_os_str() == "-" {
+                return Err(
+                    "Refusing to apply a dreaming plan to stdin/stdout memory path '-'.".into(),
+                );
+            }
+            let mut store = load_memory_or_empty(&path)?;
+            let config = DreamingConfig {
+                daydreaming_enabled: !disable_daydreaming,
+                target_free_ratio_percent,
+                storage_capacity_bytes,
+                free_bytes,
+                incoming_bytes,
+            };
+            let plan = plan_memory_dreaming(store.events(), &config);
+            println!("{}", render_dreaming_plan(&plan));
+
+            if apply {
+                require_destructive_confirmation(confirm, "apply dreaming memory plan")?;
+                if let Some(backup_path) = backup.as_deref() {
+                    write_full_memory_backup(backup_path, &store)?;
+                } else {
+                    eprintln!(
+                        "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
+                        path.display()
+                    );
+                }
+                let outcome = apply_dreaming_plan(&mut store, &plan);
+                store.save_to_file(&path)?;
+                eprintln!(
+                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable.",
+                    path.display(),
+                    outcome.removed_events,
+                    outcome.estimated_reclaimed_bytes
+                );
+            } else if !plan.actions.is_empty() {
+                eprintln!(
+                    "Plan only; rerun with `--apply --confirm` and preferably `--backup` to mutate {}.",
+                    path.display()
+                );
+            }
+            if plan.requires_bigger_storage {
+                eprintln!(
+                    "Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target."
+                );
             }
         }
         MemoryAction::PurgeDeleted {

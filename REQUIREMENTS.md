@@ -1007,3 +1007,31 @@ implemented, human-gated slice of the loop in code.
 | R393 | When Formal AI cannot answer an input, compose the failure, the source it maps onto, a benchmark-gated candidate lesson, and a human-review outcome into one auditable, proposal-only repair case (R558-01). | Implemented by `src/self_healing.rs` (`RepairCase`, `RepairOutcome`, `canonical_case`), which reaches a human-gated `AwaitingReview` outcome and never writes source or seed data. Committed as `data/meta/self-healing-case.lino` and covered by `tests/unit/issue_558_self_healing.rs`. |
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
+
+## Issue #540 Dreaming Memory Maintenance
+
+Issue [#540](https://github.com/link-assistant/formal-ai/issues/540) asks for
+default-on background "dreaming": reorganize memory, detect reusable patterns,
+deduplicate by recalculated frequency of use, and garbage-collect only data that
+can be refetched or recomputed. It explicitly incorporates issue
+[#494](https://github.com/link-assistant/formal-ai/issues/494), which requires
+a free-space policy that retains raw event history and learned experience while
+using cache/intermediate data as the disposable tier. PR
+[#645](https://github.com/link-assistant/formal-ai/pull/645) implements the
+deterministic memory-maintenance slice, desktop plan scheduler, and case-study
+trace under `docs/case-studies/issue-540`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Preserve the issue #540 source material, related issue #494 free-space policy, prepared PR #645 state, code search, CI snapshot, merged-PR search, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-540/` and protected by `tests/unit/docs_requirements_issue_540.rs`. |
+| R397 | Dreaming must be default-on as background maintenance planning while remaining safe to run without user interaction. | Implemented by `DreamingConfig::default()` (`daydreaming_enabled = true`) and `desktop/lib/dreaming.cjs`, which starts the Electron scheduler unless `FORMAL_AI_DESKTOP_DREAMING=off`. |
+| R398 | Default dreaming must be non-destructive; physical deletion must require an explicit apply path, confirmation, and optional full-memory backup. | Implemented by pure `plan_memory_dreaming`, separate `apply_dreaming_plan`, and `formal-ai memory dream --apply --confirm --backup`; the CLI reuses `require_destructive_confirmation` and `write_full_memory_backup`. |
+| R399 | Memory restructuring must recalculate event frequency of use before deduplicating recomputable records. | Implemented by `src/dreaming.rs::usage_counts`, duplicate grouping over recomputable payloads, and `dreaming_restructures_recomputable_duplicates_by_recalculated_use_frequency`. |
+| R400 | Raw event history, learned experience, learning ledgers, and generalized algorithms must not be selected by automatic free-space maintenance. | Implemented by `DreamingDurability::{IrreplaceableRaw,RetainedLearning}` and verified by `dreaming_preserves_raw_events_and_learning_when_reclaiming_space`. |
+| R401 | Free-space maintenance should preferentially forget refetchable cached public data, deleted-thread data, and recomputable intermediate conclusions. | Implemented by `DreamingDurability::{DeletedConversation,RecomputableCache,RecomputableIntermediate}` and low-usage pressure candidate sorting in `src/dreaming.rs`. |
+| R402 | The garbage-collection policy must target 20% free space by default when storage capacity/free-space data is supplied, and free only enough reclaimable data for the next known write. | Implemented by `DreamingConfig::target_free_ratio_percent = 20`, `incoming_bytes`, `required_reclaim_bytes`, and `selected_reclaim_bytes`. |
+| R403 | If reclaimable memory cannot satisfy the free-space target, Formal AI must report that larger storage is required instead of deleting retained experience. | Implemented by `DreamingPlan::requires_bigger_storage`, the CLI migration warning, and `dreaming_reports_bigger_storage_when_recomputable_data_cannot_satisfy_target`. |
+| R404 | Users and embedders need an inspectable maintenance interface. | Implemented by public library re-exports in `src/lib.rs` and `formal-ai memory dream`, which prints `render_dreaming_plan`. |
+| R405 | Desktop applications must run the dreaming task in the background with the lowest practical priority. | Implemented by `desktop/lib/dreaming.cjs`; it delays first run, repeats infrequently, unrefs timers/processes, and wraps Unix-like runs with `nice -n 19`; covered by `desktop/scripts/dreaming.test.mjs`. |
+| R406 | The design must be documented with requirements, solution plans, and online research. | Implemented by `docs/case-studies/issue-540/{README.md,requirements.md,solution-plans.md,raw-data/online-research.md}`, plus README and ARCHITECTURE updates. |
+| R407 | The implementation must have automated regression coverage for Rust policy, desktop scheduling, and documentation traceability. | Implemented by `tests/unit/memory_maintenance.rs`, `desktop/scripts/dreaming.test.mjs`, `desktop/scripts/smoke.mjs`, and `tests/unit/docs_requirements_issue_540.rs`. |

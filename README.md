@@ -593,6 +593,8 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
+cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
 cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
 cargo run -- bundle export --path bundle.lino --memory memory.lino
@@ -607,6 +609,12 @@ browser actions show an export-first prompt and then an irreversible
 confirmation prompt. The CLI refuses both destructive commands unless
 `--confirm` is present, and `--backup` writes a full `formal_ai_bundle` before
 the memory file is changed.
+
+`memory dream` is the default-on background maintenance planner from issue
+#540. It recalculates usage from event text/evidence, proposes duplicate
+recomputable cache cleanup, and can target a 20% free-space reserve when storage
+capacity/free-byte data is supplied. It is plan-only by default; applying the
+plan still requires `--apply --confirm` and should use `--backup`.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 

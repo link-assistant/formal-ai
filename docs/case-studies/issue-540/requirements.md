@@ -1,0 +1,18 @@
+# Issue 540 Requirements
+
+| ID | Requirement | Implementation |
+| --- | --- | --- |
+| R540-01 | Preserve the raw issue #540 material, related issue #494 material, prepared PR #645 state, and research. | `docs/case-studies/issue-540/raw-data/` and this case-study directory. |
+| R540-02 | Dreaming must be available by default as background work, not only as a manual repair command. | `DreamingConfig::default()` enables planning; `desktop/lib/dreaming.cjs` starts the Electron scheduler by default unless `FORMAL_AI_DESKTOP_DREAMING=off`. |
+| R540-03 | Background dreaming must be low priority and should not block foreground work. | The desktop scheduler waits before its first run, repeats at a long interval, unrefs timers/processes, and uses `nice -n 19` on Unix-like systems. |
+| R540-04 | Default dreaming must not destructively change memory. | `plan_memory_dreaming` is pure; `formal-ai memory dream` prints only a plan unless `--apply --confirm` is present. |
+| R540-05 | Destructive application must keep the existing backup/confirmation safety boundary. | `run_memory` requires `require_destructive_confirmation` and can write a full-memory `--backup` before `apply_dreaming_plan`. |
+| R540-06 | Reorganization must use recalculated frequency of use, not stale insertion order. | `src/dreaming.rs::usage_counts` scans current event text/evidence links; tests verify the more referenced duplicate is retained. |
+| R540-07 | Duplicate cleanup must target recomputable/cache/intermediate records only. | `DreamingDurability` classification and duplicate keys are emitted only for `RecomputableCache` and `RecomputableIntermediate`. |
+| R540-08 | Garbage collection must keep a free-space reserve, defaulting to 20% when capacity/free data is known. | `DreamingConfig::target_free_ratio_percent` defaults to 20; `required_reclaim_bytes` computes pressure after `incoming_bytes`. |
+| R540-09 | The policy must preferentially forget refetchable/recomputable data and unused cached data. | Pressure candidates are restricted to deleted conversations, cache records, and intermediate records, sorted by low recalculated usage. |
+| R540-10 | Raw events, learned experience, learning ledgers, and generalized algorithms must be retained. | `IrreplaceableRaw` and `RetainedLearning` are never reclaimable; tests assert raw and learning events are not selected under pressure. |
+| R540-11 | If reclaimable data cannot satisfy the target, the system must report the need for bigger storage instead of over-deleting. | `DreamingPlan::requires_bigger_storage` is set when selected reclaimable bytes are insufficient; the CLI prints a migration warning. |
+| R540-12 | The feature must be accessible to users and embedders. | Public re-exports in `src/lib.rs` and the `formal-ai memory dream` CLI surface. |
+| R540-13 | The implementation must be documented and regression-tested. | `REQUIREMENTS.md`, `ARCHITECTURE.md`, this case study, `tests/unit/memory_maintenance.rs`, `tests/unit/docs_requirements_issue_540.rs`, and `desktop/scripts/dreaming.test.mjs`. |
+

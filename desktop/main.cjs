@@ -17,6 +17,7 @@ const { createDockerDetector } = require("./lib/docker-detect.cjs");
 const { createDataMigration } = require("./lib/data-migration.cjs");
 const { createAutoUpdateController } = require("./lib/auto-update.cjs");
 const { createVsCodeInstaller } = require("./lib/vscode-install.cjs");
+const { createDreamingScheduler } = require("./lib/dreaming.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -45,6 +46,17 @@ const REPO_ROOT = path.resolve(__dirname, "..");
 // whenReady, before the window/session touches storage.
 const dataMigration = createDataMigration({ app, fs, path, log: debugLog });
 dataMigration.pinAppName();
+const dreamingScheduler = createDreamingScheduler({
+  repoRoot: REPO_ROOT,
+  env: process.env,
+  spawn: childProcess.spawn,
+  resourcesPath: process.resourcesPath,
+  log: debugLog,
+  onStatusChange: (status) => {
+    desktopStatus = { ...desktopStatus, dreaming: status };
+    return desktopStatus;
+  },
+});
 
 let mainWindow = null;
 let staticServer = null;
@@ -64,6 +76,7 @@ let desktopStatus = {
   chatUrl: "",
   traceUrl: "",
   memory: "formal_ai_bundle",
+  dreaming: dreamingScheduler.status(),
   agentModeDefault: false,
   toolCallPolicy: "explicit-permission",
   agentExecutionProvider: { type: "in-process" },
@@ -259,6 +272,7 @@ async function createMainWindow() {
 }
 
 async function shutdown() {
+  dreamingScheduler.stop();
   if (staticServer) {
     await new Promise((resolve) => staticServer.close(resolve));
     staticServer = null;
@@ -659,6 +673,7 @@ app.whenReady().then(() => {
       error && error.message ? error.message : String(error),
     );
   }
+  dreamingScheduler.start();
   return createMainWindow().then((window) => {
     updateController.checkForUpdates().catch((error) => {
       debugLog("auto-update startup check failed:", error && error.message ? error.message : String(error));
