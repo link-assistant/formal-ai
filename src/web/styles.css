@@ -160,9 +160,9 @@
  * --fa-glass-alpha). */
 .ui-skin-glass.app {
   background:
-    radial-gradient(135% 120% at 6% -14%, rgb(120 176 255 / 0.55), transparent 52%),
-    radial-gradient(120% 120% at 104% 2%, rgb(196 130 255 / 0.5), transparent 48%),
-    radial-gradient(130% 132% at 46% 120%, rgb(86 226 196 / 0.48), transparent 52%),
+    radial-gradient(140% 130% at 4% -16%, rgb(120 176 255 / 0.7), transparent 64%),
+    radial-gradient(128% 128% at 106% 0%, rgb(196 130 255 / 0.64), transparent 60%),
+    radial-gradient(138% 140% at 48% 122%, rgb(86 226 196 / 0.6), transparent 62%),
     linear-gradient(158deg, #eaf1fb 0%, #e6ecf6 52%, #e9f4ef 100%);
 }
 
@@ -423,9 +423,9 @@
 
 :root[data-theme="dark"] .ui-skin-glass.app {
   background:
-    radial-gradient(135% 120% at 6% -14%, rgb(58 104 190 / 0.5), transparent 52%),
-    radial-gradient(120% 120% at 104% 2%, rgb(120 68 180 / 0.46), transparent 48%),
-    radial-gradient(130% 132% at 46% 120%, rgb(26 128 110 / 0.44), transparent 52%),
+    radial-gradient(140% 130% at 4% -16%, rgb(58 104 190 / 0.68), transparent 64%),
+    radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
+    radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
     linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
 }
 
@@ -531,9 +531,9 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .ui-skin-glass.app {
     background:
-      radial-gradient(135% 120% at 6% -14%, rgb(58 104 190 / 0.5), transparent 52%),
-      radial-gradient(120% 120% at 104% 2%, rgb(120 68 180 / 0.46), transparent 48%),
-      radial-gradient(130% 132% at 46% 120%, rgb(26 128 110 / 0.44), transparent 52%),
+      radial-gradient(140% 130% at 4% -16%, rgb(58 104 190 / 0.68), transparent 64%),
+      radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
+      radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
       linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
   }
 
