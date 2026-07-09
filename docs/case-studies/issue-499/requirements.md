@@ -1,12 +1,18 @@
 # Issue 499 Requirements
 
+The reported directive
+`Обратясь сюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&&geo=US`
+must be recognized as a **learn from this data source** directive and routed into
+the auto-learning process, in every supported language, and driven through the
+Agent CLI — not answered with `intent: unknown`.
+
 | ID | Requirement | Acceptance |
 | --- | --- | --- |
-| R499-1 | Preserve the issue, PR, comments, related work, Google Trends source data, and online research under `docs/case-studies/issue-499`. | `tests/unit/docs_requirements_issue_499.rs` asserts the case-study files and raw data exist. |
-| R499-2 | Provide an automated converter from a Google Trends RSS snapshot into structured Formal AI test-case data. | `formal-ai google-trends` reads a saved RSS file and writes `data/benchmarks/google-trends-top10-suite.lino`. |
-| R499-3 | Convert the captured Google Trends top ten into Formal AI requests. | `data/benchmarks/google-trends-top10-suite.lino` records 10 trend topics and 40 prompt cases. |
-| R499-4 | Generate supported languages for every trend topic. | English, Russian, Hindi, and Chinese prompts are generated for each of the top ten. |
-| R499-5 | Keep the test path deterministic and offline. | CI tests use the committed RSS snapshot, not a live Google Trends request. |
-| R499-6 | Make the conversion reachable through the in-repo Agent CLI recipe. | `TREND_PROMPT_CATALOG_TASK` writes and verifies the catalog through `write_file -> run_command -> final`. |
-| R499-7 | Document prior art, existing libraries, and local components that informed the design. | `raw-data/online-research.md`, `solution-plan.md`, and this README summarize Google Trends, API alpha, pytrends, and prior benchmark/catalog PRs. |
-| R499-8 | Add regression coverage so future changes cannot silently drop topics, languages, traceability, or generated-artifact reproducibility. | `tests/unit/issue_499_google_trends.rs` pins parsing, generation, prompt usability, and the Agent CLI session. |
+| R499-1 | Preserve the issue, PR, comments, related work, Google Trends source snapshot, and online research under `docs/case-studies/issue-499`. | `tests/unit/docs_requirements_issue_499.rs` asserts the case-study files and raw data exist. |
+| R499-2 | The exact reported prompt must no longer return `intent: unknown`. | `try_learn_from_source` routes it to `learn_from_source`; the reported prompt is pinned in `tests/unit/issue_499_learn_from_source.rs`. |
+| R499-3 | Recognition is language-agnostic and proven with different wording per supported language. | English, Russian, Hindi, and Chinese directives all route to `learn_from_source`, and the acknowledgement is rendered in the prompt's language. |
+| R499-4 | Routing is data-driven — a directive cue plus a seed-declared source, never a hardcoded URL or phrase. | `LearningSources::match_directive` reads `data/seed/learning-sources.lino`; production code branches only on the declared `capability` slug. |
+| R499-5 | The directive feeds the auto-learning process instead of answering in isolation. | Both entry points route the Google Trends learning frontier (60 of 80 prompts) through the human-gated issue-#558 loop; nothing is auto-adopted. |
+| R499-6 | The same teaching directive drives the Agent CLI learning recipe. | `is_google_trends_learning_task` recognizes the seed-driven directive; `run_agentic_task(<reported prompt>)` writes `data/meta/google-trends-learning.lino`. |
+| R499-7 | Pin the Agent CLI session byte-for-byte and drive it live in CI. | `tests/unit/issue_499_learn_from_source.rs` compares a fresh run with `agent-cli-session-learn-from-source.json`; `.github/workflows/release.yml` drives the directive through the real Agent CLI. |
+| R499-8 | Add regression coverage so future changes cannot silently drop recognition, localization, data-driven routing, the auto-learning route, or artifact reproducibility. | `tests/unit/issue_499_learn_from_source.rs` and `tests/unit/docs_requirements_issue_499.rs` pin routing, localization, recipe driving, the pinned session, and traceability. |

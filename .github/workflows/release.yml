@@ -1064,6 +1064,20 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+        # The user directive from issue #499 — "here you can learn the trending
+        # topics from Google Trends" — is itself the task. It routes through the
+        # seed learning_sources registry into the same write → verify → final
+        # learning recipe, proving one teaching directive drives the Agent CLI,
+        # not just a chat reply. Canary: the human-gated marker in the report.
+        env:
+          PORT: 8772
+          TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
+          EXPECT_FILE: google-trends-learning.lino
+          EXPECT_TEXT: human_gated
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
       - name: Upload E2E logs on failure
         if: failure()
         uses: actions/upload-artifact@v7

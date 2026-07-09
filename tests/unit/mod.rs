@@ -9,6 +9,7 @@ mod docs_requirements_issue_451;
 mod docs_requirements_issue_468;
 mod docs_requirements_issue_492;
 mod docs_requirements_issue_498;
+mod docs_requirements_issue_499;
 mod docs_requirements_issue_526;
 mod docs_requirements_issue_527;
 mod docs_requirements_issue_558;
