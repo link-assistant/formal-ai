@@ -98,6 +98,19 @@ fn fetch_and_canonical_fallback_yield_the_same_block() {
     assert_eq!(from_fallback, from_none);
 }
 
+#[test]
+fn live_fetch_sources_use_cached_cdn_endpoints() {
+    // The external Agent CLI treats `webfetch` HTTP errors as terminal tool errors.
+    // Keep these live E2E URLs on a cached HTTPS endpoint instead of raw GitHub,
+    // whose unauthenticated edge can rate-limit CI with HTTP 429.
+    for concept in [&meaning_detail::TOMATO, &meaning_detail::POTATO] {
+        assert!(concept
+            .source_url
+            .starts_with("https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@"));
+        assert!(!concept.source_url.contains("raw.githubusercontent.com"));
+    }
+}
+
 /// Plan one step and assert it is a single tool call, returning it.
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     match plan_chat_step(messages, tools) {

@@ -8,13 +8,13 @@
       "arguments": {
         "query": "Wikidata lexemes potato картофель картошка grammatical number forms"
       },
-      "result": "1. Wikidata lexemes for the tomato concept (Q23501) — Wikidata\n   https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json\n   {\"entities\":{\"L170542\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\",\"Q131105\"],\"i…\n2. Wikidata lexemes for the potato concept (Q10998) — Wikidata\n   https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json\n   {\"entities\":{\"L3784\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\"],\"id\":\"L3784-F1…",
+      "result": "1. Wikidata lexemes for the tomato concept (Q23501) — Wikidata\n   https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json\n   {\"entities\":{\"L170542\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\",\"Q131105\"],\"i…\n2. Wikidata lexemes for the potato concept (Q10998) — Wikidata\n   https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json\n   {\"entities\":{\"L3784\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\"],\"id\":\"L3784-F1…",
       "tool": "web_search"
     },
     {
       "arguments": {
         "format": "text",
-        "url": "https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json"
+        "url": "https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json"
       },
       "result": "{\"entities\":{\"L3784\":{\"forms\":[{\"grammaticalFeatures\":[\"Q110786\"],\"id\":\"L3784-F1\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"potato\"}}},{\"grammaticalFeatures\":[\"Q146786\"],\"id\":\"L3784-F2\",\"representations\":{\"en\":{\"language\":\"en\",\"value\":\"potatoes\"}}}],\"id\":\"L3784\",\"language\":\"Q1860\",\"lemmas\":{\"en\":{\"language\":\"en\",\"value\":\"potato\"}},\"lexicalCategory\":\"Q1084\",\"senses\":[{\"id\":\"L3784-S1\"},{\"id\":\"L3784-S2\"}]}}}",
       "tool": "web_fetch"
