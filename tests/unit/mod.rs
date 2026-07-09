@@ -21,6 +21,7 @@ mod docs_requirements_issue_607;
 mod docs_requirements_issue_622;
 mod docs_requirements_issue_628;
 mod formal_ai;
+mod issue_531_concepts_probe;
 mod github_logs;
 mod installation_conversion;
 mod issue_1963;
