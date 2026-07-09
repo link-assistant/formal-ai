@@ -130,12 +130,8 @@ fn the_directive_routes_into_the_human_gated_learning_frontier() {
     // The answer names Google Trends and quotes the report's own coverage split,
     // proving it is derived from trending_learning_report(), not a canned string.
     assert!(result.answer.contains("Google Trends"));
-    assert!(result
-        .answer
-        .contains(&report.total_prompts.to_string()));
-    assert!(result
-        .answer
-        .contains(&report.frontier_count().to_string()));
+    assert!(result.answer.contains(&report.total_prompts.to_string()));
+    assert!(result.answer.contains(&report.frontier_count().to_string()));
     assert!(
         result.answer.contains("human-gated"),
         "the answer must state the frontier flows into the human-gated loop: {}",

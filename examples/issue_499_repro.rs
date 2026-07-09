@@ -11,6 +11,14 @@ fn main() {
     ];
     for p in prompts {
         let a = engine.answer(p);
-        println!("PROMPT: {p}\n  intent = {}\n  answer = {}\n", a.intent, a.answer.replace('\n', " ").chars().take(120).collect::<String>());
+        println!(
+            "PROMPT: {p}\n  intent = {}\n  answer = {}\n",
+            a.intent,
+            a.answer
+                .replace('\n', " ")
+                .chars()
+                .take(120)
+                .collect::<String>()
+        );
     }
 }
