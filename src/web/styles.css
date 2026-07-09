@@ -65,6 +65,14 @@
   --fa-glass-header-alpha: 0.76;
   --fa-glass-control-alpha: 0.74;
   --fa-glass-clear-alpha: 0.52;
+  /* Issue #557: the composer field surface + embedded controls theme through
+   * these tokens so the unified input reads correctly in light/dark and skins. */
+  --fa-composer-surface: #ffffff;
+  --fa-composer-border: #cdd7dc;
+  --fa-composer-shadow: 0 1px 2px rgb(15 23 30 / 0.06), 0 10px 30px rgb(15 23 30 / 0.09);
+  --fa-composer-control-bg: #eef2f4;
+  --fa-composer-control-border: transparent;
+  --fa-composer-control-text: #24333d;
 }
 
 /* Dark token values — explicit theme override (wins over the OS preference). */
@@ -93,6 +101,12 @@
   --fa-control-active-hover-border: #2a8f6a;
   --fa-control-active-hover-bg: #165a49;
   --fa-focus-ring: #6cc5a6;
+  --fa-composer-surface: #23272a;
+  --fa-composer-border: #3f4744;
+  --fa-composer-shadow: 0 1px 2px rgb(0 0 0 / 0.32), 0 12px 34px rgb(0 0 0 / 0.44);
+  --fa-composer-control-bg: #2e3432;
+  --fa-composer-control-border: transparent;
+  --fa-composer-control-text: #ece7df;
 }
 
 /* Dark token values — OS preference fallback (unless light is pinned). The two
@@ -125,6 +139,12 @@
     --fa-control-active-hover-border: #2a8f6a;
     --fa-control-active-hover-bg: #165a49;
     --fa-focus-ring: #6cc5a6;
+    --fa-composer-surface: #23272a;
+    --fa-composer-border: #3f4744;
+    --fa-composer-shadow: 0 1px 2px rgb(0 0 0 / 0.32), 0 12px 34px rgb(0 0 0 / 0.44);
+    --fa-composer-control-bg: #2e3432;
+    --fa-composer-control-border: transparent;
+    --fa-composer-control-text: #ece7df;
   }
 }
 
@@ -235,12 +255,20 @@
 
 .ui-skin-contrast .topbar,
 .ui-skin-contrast .context-panel,
-.ui-skin-contrast .composer,
+.ui-skin-contrast .composer-grid,
+.ui-skin-contrast .composer-menu-item,
 .ui-skin-contrast .message-body,
 .ui-skin-contrast .trace-list div,
 .ui-skin-contrast .desktop-shell-panel div,
 .ui-skin-contrast .tool {
   border-color: #25313a;
+}
+
+/* Issue #557: the contrast skin keeps the composer as one heavy-bordered field
+ * (no internal separator lines) so the embedded controls still read as part of
+ * the input surface. */
+.ui-skin-contrast .composer-grid {
+  border-width: 2px;
 }
 
 .ui-skin-contrast .topbar,
@@ -358,7 +386,7 @@
 
 :root[data-theme="dark"] .ui-skin-contrast .topbar,
 :root[data-theme="dark"] .ui-skin-contrast .context-panel,
-:root[data-theme="dark"] .ui-skin-contrast .composer,
+:root[data-theme="dark"] .ui-skin-contrast .composer-grid,
 :root[data-theme="dark"] .ui-skin-contrast .message-body,
 :root[data-theme="dark"] .ui-skin-contrast .trace-list div,
 :root[data-theme="dark"] .ui-skin-contrast .desktop-shell-panel div,
@@ -436,7 +464,7 @@
 
   :root:not([data-theme="light"]) .ui-skin-contrast .topbar,
   :root:not([data-theme="light"]) .ui-skin-contrast .context-panel,
-  :root:not([data-theme="light"]) .ui-skin-contrast .composer,
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-grid,
   :root:not([data-theme="light"]) .ui-skin-contrast .message-body,
   :root:not([data-theme="light"]) .ui-skin-contrast .trace-list div,
   :root:not([data-theme="light"]) .ui-skin-contrast .desktop-shell-panel div,
@@ -2850,26 +2878,20 @@ body.is-resizing-context {
    so it is removed with the fixed width it used to size. */
 
 .composer {
-  max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
+  max-height: min(320px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
   overflow: auto;
-  border-top: 1px solid #d6dde1;
-  padding: 12px clamp(14px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
-  background: #f7f8fa;
+  border-top: 1px solid transparent;
+  padding: 14px clamp(14px, 4vw, 48px) max(16px, env(safe-area-inset-bottom));
+  background: transparent;
 }
 
 .composer-style-glass-soft .composer,
 .composer-style-glass-clear .composer {
-  background: rgb(247 248 250 / var(--fa-glass-alpha, 0.86));
-  -webkit-backdrop-filter: blur(18px) saturate(1.25);
-  backdrop-filter: blur(18px) saturate(1.25);
-}
-
-.composer-style-glass-clear .composer {
-  background: rgb(247 248 250 / var(--fa-glass-panel-alpha, 0.68));
+  background: transparent;
 }
 
 .composer-style-bubble .composer {
-  background: #ffffff;
+  background: transparent;
 }
 
 .composer-demo-hint {
@@ -2896,62 +2918,115 @@ body.is-resizing-context {
   vertical-align: -2px;
 }
 
+/* Issue #557: the composer is one unified field surface. The text area and the
+ * action/send controls read as a single control (buttons embedded into the text
+ * field) on desktop, tablet, and mobile, instead of three separate boxes. */
 .composer-grid {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 8px;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--fa-composer-border);
+  border-radius: 26px;
+  padding: 10px 12px 8px;
+  background: var(--fa-composer-surface);
+  box-shadow: var(--fa-composer-shadow);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-textarea {
+.composer-grid:focus-within {
+  border-color: var(--fa-focus-ring);
+  box-shadow:
+    var(--fa-composer-shadow),
+    0 0 0 3px color-mix(in srgb, var(--fa-focus-ring) 26%, transparent);
+}
+
+textarea,
+.composer-input {
   min-width: 0;
-  min-height: 48px;
+  width: 100%;
+  min-height: 40px;
   height: auto;
-  max-height: min(180px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
+  max-height: min(200px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
   resize: none;
-  overflow-y: hidden;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
-  padding: 13px;
-  background: #ffffff;
-  color: #1e252b;
-  line-height: 1.35;
+  overflow-y: auto;
+  border: none;
+  border-radius: 0;
+  padding: 8px 10px 2px;
+  background: transparent;
+  color: var(--fa-text-body);
+  line-height: 1.45;
+  font-size: 15px;
 }
 
-textarea:focus {
-  outline: 2px solid #2d6cdf;
-  outline-offset: 1px;
+textarea:focus,
+.composer-input:focus {
+  outline: none;
 }
 
-textarea:disabled {
-  color: #667684;
-  background: #edf1f3;
+textarea:disabled,
+.composer-input:disabled {
+  color: var(--fa-text-muted);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.composer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.composer-toolbar-spacer {
+  flex: 1 1 auto;
 }
 
 .send-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-width: 88px;
-  min-height: 44px;
-  padding: 0 14px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  flex: none;
+}
+
+.send-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.send-icon {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .composer-action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #1e252b;
-  font-size: 22px;
-  font-weight: 800;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--fa-composer-control-border);
+  border-radius: 999px;
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+  font-size: 20px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -2959,18 +3034,18 @@ textarea:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .composer-action-button:hover,
 .composer-menu-item:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 .composer-menu {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto 8px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2982,11 +3057,11 @@ textarea:disabled {
   align-items: center;
   justify-content: center;
   min-height: 38px;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
+  border: 1px solid var(--fa-composer-border);
+  border-radius: 12px;
   padding: 8px 10px;
-  background: #ffffff;
-  color: #1e252b;
+  background: var(--fa-composer-surface);
+  color: var(--fa-text-body);
   font-size: 13px;
   font-weight: 700;
   text-align: center;
@@ -2994,47 +3069,42 @@ textarea:disabled {
 }
 
 .composer-attachment-status {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 8px auto 0;
-  color: #40515f;
+  color: var(--fa-text-muted);
   font-size: 12px;
   font-weight: 700;
 }
 
-.composer-style-glass-soft textarea,
-.composer-style-glass-soft .composer-action-button,
-.composer-style-glass-soft .composer-menu-item,
-.composer-style-glass-clear textarea,
-.composer-style-glass-clear .composer-action-button,
-.composer-style-glass-clear .composer-menu-item {
-  background: rgb(255 255 255 / var(--fa-glass-control-alpha, 0.74));
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  backdrop-filter: blur(12px) saturate(1.2);
+.composer-style-glass-soft .composer-grid,
+.composer-style-glass-clear .composer-grid {
+  background: color-mix(
+    in srgb,
+    var(--fa-composer-surface) calc(var(--fa-glass-alpha, 0.78) * 100%),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.3);
 }
 
-.composer-style-glass-clear textarea,
-.composer-style-glass-clear .composer-action-button,
-.composer-style-glass-clear .composer-menu-item {
-  background: rgb(255 255 255 / var(--fa-glass-clear-alpha, 0.52));
+.composer-style-glass-clear .composer-grid {
+  background: color-mix(
+    in srgb,
+    var(--fa-composer-surface) calc(var(--fa-glass-clear-alpha, 0.52) * 100%),
+    transparent
+  );
 }
 
 .composer-style-bubble .composer-grid {
-  border: 1px solid #d6dde1;
   border-radius: 999px;
-  padding: 6px;
-  background: #f7f8fa;
-}
-
-.composer-style-bubble textarea {
-  min-height: 42px;
-  border-color: transparent;
-  border-radius: 999px;
-  resize: none;
+  padding: 8px 10px;
 }
 
 .send-button:disabled {
-  border-color: #b9c6ca;
-  background: #a9b6bb;
+  border-color: transparent;
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-text-muted);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -3323,35 +3393,41 @@ textarea:disabled {
     padding: 8px 10px max(8px, env(safe-area-inset-bottom));
   }
 
+  /* Issue #557 / #108: on mobile the composer stays the same unified field with
+   * its controls embedded in the bottom toolbar. Only the touch targets grow to
+   * a comfortable 42px; the single-surface geometry is identical to desktop. */
   .composer-grid {
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    border-radius: 24px;
+    padding: 8px 10px 8px;
     gap: 6px;
   }
 
-  textarea {
+  textarea,
+  .composer-input {
     min-height: 42px;
     height: auto;
     max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
-    padding: 11px;
+    padding: 9px 8px 2px;
     resize: none;
+  }
+
+  .composer-toolbar {
+    gap: 6px;
   }
 
   .send-button {
     width: 42px;
     min-width: 42px;
+    height: 42px;
     min-height: 42px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 999px;
   }
 
   .composer-action-button {
     width: 42px;
     height: 42px;
     font-size: 21px;
-  }
-
-  .send-label {
-    display: none;
   }
 
   .send-icon {
@@ -3481,8 +3557,8 @@ textarea:disabled {
 
 :root[data-theme="dark"] .context-panel,
 :root[data-theme="dark"] .composer {
-  border-color: #343a3d;
-  background: #1d201f;
+  border-color: transparent;
+  background: transparent;
 }
 
 :root[data-theme="dark"] .context-resizer {
@@ -3682,8 +3758,7 @@ textarea:disabled {
   color: #f1d28a;
 }
 
-:root[data-theme="dark"] .markdown-body :not(pre) > code,
-:root[data-theme="dark"] textarea:disabled {
+:root[data-theme="dark"] .markdown-body :not(pre) > code {
   background: #272b2a;
 }
 
@@ -3871,7 +3946,6 @@ textarea:disabled {
   color: #c9c1b6;
 }
 
-:root[data-theme="dark"] textarea,
 :root[data-theme="dark"] .setting-row input[type="text"],
 :root[data-theme="dark"] .setting-row select {
   border-color: #4a524e;
@@ -3879,42 +3953,9 @@ textarea:disabled {
   color: #ece7df;
 }
 
-:root[data-theme="dark"] .composer-style-glass-soft .composer,
-:root[data-theme="dark"] .composer-style-glass-clear .composer {
-  background: rgb(29 32 31 / var(--fa-glass-alpha, 0.82));
-}
-
-:root[data-theme="dark"] .composer-style-glass-clear .composer {
-  background: rgb(29 32 31 / var(--fa-glass-panel-alpha, 0.64));
-}
-
-:root[data-theme="dark"] .composer-style-bubble .composer {
-  background: #181a1b;
-}
-
-:root[data-theme="dark"] .composer-style-glass-soft textarea,
-:root[data-theme="dark"] .composer-style-glass-soft .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-soft .composer-menu-item,
-:root[data-theme="dark"] .composer-style-glass-clear textarea,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
-  background: rgb(32 35 34 / var(--fa-glass-control-alpha, 0.74));
-}
-
-:root[data-theme="dark"] .composer-style-glass-clear textarea,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
-  background: rgb(32 35 34 / var(--fa-glass-clear-alpha, 0.52));
-}
-
-:root[data-theme="dark"] .composer-style-bubble .composer-grid {
-  border-color: #343a3d;
-  background: #1d201f;
-}
-
-:root[data-theme="dark"] textarea:focus {
-  outline-color: #7aa5ff;
-}
+/* Issue #557: the composer field surface + its glass/bubble variants theme
+ * through the --fa-composer-* tokens, so the dark axis needs no per-variant
+ * background overrides here. */
 
 :root[data-theme="dark"] .send-button:disabled {
   border-color: #3f4643;
@@ -4337,12 +4378,6 @@ textarea:disabled {
     color: #c9c1b6;
   }
 
-  :root:not([data-theme="light"]) textarea {
-    border-color: #4a524e;
-    background: #202322;
-    color: #ece7df;
-  }
-
   :root:not([data-theme="light"]) .setting-row input[type="text"],
   :root:not([data-theme="light"]) .setting-row select {
     border-color: #4a524e;
@@ -4350,42 +4385,8 @@ textarea:disabled {
     color: #ece7df;
   }
 
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
-    background: rgb(29 32 31 / var(--fa-glass-alpha, 0.82));
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
-    background: rgb(29 32 31 / var(--fa-glass-panel-alpha, 0.64));
-  }
-
-  :root:not([data-theme="light"]) .composer-style-bubble .composer {
-    background: #181a1b;
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-soft textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-menu-item,
-  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
-    background: rgb(32 35 34 / var(--fa-glass-control-alpha, 0.74));
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
-    background: rgb(32 35 34 / var(--fa-glass-clear-alpha, 0.52));
-  }
-
-  :root:not([data-theme="light"]) .composer-style-bubble .composer-grid {
-    border-color: #343a3d;
-    background: #1d201f;
-  }
-
-  :root:not([data-theme="light"]) textarea:focus {
-    outline-color: #7aa5ff;
-  }
+  /* Issue #557: composer field + variants theme through --fa-composer-* tokens;
+   * no per-variant background overrides needed on this dark axis. */
 
   :root:not([data-theme="light"]) .send-button:disabled {
     border-color: #3f4643;
