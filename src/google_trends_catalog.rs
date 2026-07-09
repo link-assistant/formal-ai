@@ -6,6 +6,12 @@
 //! engine. The module keeps the live-network part outside tests. A checked-in Trends
 //! RSS snapshot is parsed into `data/seed/google-trends-snapshot.lino`; the catalog is
 //! then a deterministic function of that seed and `FormalAiEngine`.
+//!
+//! The multilingual request wording is *data*, not code: the templates live in
+//! `data/seed/google-trends-prompts.lino` and are expanded per topic (per the
+//! no-hardcoded-language convention, #386). Adding a language or a request variation
+//! is a change to that seed with no edit to this converter — the language set comes
+//! from `supported_languages()`, so coverage generalizes automatically.
 
 use std::error::Error;
 use std::fmt::{self, Write as _};
@@ -19,6 +25,7 @@ use crate::seed::supported_languages;
 pub const GOOGLE_TRENDS_TOP_LIMIT: usize = 10;
 
 const GOOGLE_TRENDS_SNAPSHOT_LINO: &str = include_str!("../data/seed/google-trends-snapshot.lino");
+const GOOGLE_TRENDS_PROMPTS_LINO: &str = include_str!("../data/seed/google-trends-prompts.lino");
 
 /// A parsed Google Trends RSS snapshot plus generated prompts and answers.
 #[derive(Debug, Clone, PartialEq)]
@@ -327,57 +334,70 @@ fn optional_child(value: &str) -> Option<String> {
     (!trimmed.is_empty()).then(|| trimmed.to_string())
 }
 
-fn prompt_variants_for_topic(query: &str) -> Vec<GoogleTrendPromptVariant> {
+/// A multilingual request template loaded from the prompt seed.
+///
+/// The natural-language pattern lives in `data/seed/google-trends-prompts.lino`
+/// (per the no-hardcoded-language convention, #386); `{query}` is substituted with
+/// the trending search term when the catalog is built.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct GoogleTrendPromptTemplate {
+    language: String,
+    variation_key: String,
+    text: String,
+}
+
+/// The placeholder in a seeded template replaced by the trending search term.
+const QUERY_PLACEHOLDER: &str = "{query}";
+
+/// Expand every seeded prompt template for `search`, in `supported_languages()`
+/// order and, within each language, in seed order.
+///
+/// Adding a language or a request variation is a data-only change to the prompt
+/// seed — this converter iterates whatever the seed declares, so no Rust edit is
+/// needed to extend catalog coverage.
+fn prompt_variants_for_topic(search: &str) -> Vec<GoogleTrendPromptVariant> {
+    let templates = prompt_templates();
     supported_languages()
         .iter()
-        .filter_map(|language| prompt_templates(language, query))
-        .flatten()
+        .flat_map(|language| {
+            templates
+                .iter()
+                .filter(|template| template.language == *language)
+                .map(|template| GoogleTrendPromptVariant {
+                    language: template.language.clone(),
+                    variation_key: template.variation_key.clone(),
+                    prompt: template.text.replace(QUERY_PLACEHOLDER, search),
+                })
+                .collect::<Vec<_>>()
+        })
         .collect()
 }
 
-fn prompt_templates(language: &str, query: &str) -> Option<Vec<GoogleTrendPromptVariant>> {
-    let variants = match language {
-        "en" => [
-            ("tell_me_about", format!("Tell me about {query}?")),
-            (
-                "trends_context",
-                format!("Give Google Trends context for {query}?"),
-            ),
-        ],
-        "ru" => [
-            ("tell_me_about", format!("Расскажи о {query}?")),
-            (
-                "trends_context",
-                format!("Дай контекст Google Trends для {query}?"),
-            ),
-        ],
-        "hi" => [
-            ("tell_me_about", format!("{query} के बारे में बताओ?")),
-            (
-                "trends_context",
-                format!("{query} के लिए Google Trends संदर्भ दो?"),
-            ),
-        ],
-        "zh" => [
-            ("tell_me_about", format!("介绍一下 {query}?")),
-            (
-                "trends_context",
-                format!("给出 {query} 的 Google Trends 背景?"),
-            ),
-        ],
-        _ => return None,
-    };
+/// The seeded prompt templates, parsed once from the prompt catalog seed.
+fn prompt_templates() -> &'static [GoogleTrendPromptTemplate] {
+    static TEMPLATES: OnceLock<Vec<GoogleTrendPromptTemplate>> = OnceLock::new();
+    TEMPLATES.get_or_init(load_prompt_templates)
+}
 
-    Some(
-        variants
-            .into_iter()
-            .map(|(variation_key, prompt)| GoogleTrendPromptVariant {
+fn load_prompt_templates() -> Vec<GoogleTrendPromptTemplate> {
+    let tree = parse_lino(GOOGLE_TRENDS_PROMPTS_LINO);
+    tree.children
+        .iter()
+        .filter(|record| record.find_child_value("record_type") == "google_trend_prompt_template")
+        .filter_map(|record| {
+            let language = record.find_child_value("language").trim();
+            let variation_key = record.find_child_value("variation").trim();
+            let text = record.find_child_value("text");
+            if language.is_empty() || variation_key.is_empty() || text.trim().is_empty() {
+                return None;
+            }
+            Some(GoogleTrendPromptTemplate {
                 language: language.to_string(),
                 variation_key: variation_key.to_string(),
-                prompt,
+                text: text.to_string(),
             })
-            .collect(),
-    )
+        })
+        .collect()
 }
 
 fn parse_news_item(block: &str) -> Option<GoogleTrendNewsItem> {

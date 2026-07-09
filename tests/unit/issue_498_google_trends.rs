@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
 use formal_ai::{
-    google_trends_catalog, parse_google_trends_rss, GoogleTrendPromptVariant,
+    google_trends_catalog, parse_google_trends_rss, supported_languages, GoogleTrendPromptVariant,
     GOOGLE_TRENDS_TOP_LIMIT,
 };
 
@@ -55,6 +55,30 @@ fn google_trends_rss_is_converted_to_ranked_topics() {
 }
 
 #[test]
+fn prompts_are_generated_from_the_seed_templates() {
+    // The multilingual wording lives in data, not Rust (#386). Every generated
+    // request must trace back to a seeded template: substituting the trending query
+    // back with the `{query}` placeholder must reproduce a template that appears
+    // verbatim in `data/seed/google-trends-prompts.lino`. If someone re-introduced a
+    // hardcoded prompt in the converter, this test would fail.
+    const PROMPT_SEED: &str = include_str!("../../data/seed/google-trends-prompts.lino");
+    let catalog = google_trends_catalog();
+
+    for topic in &catalog.topics {
+        assert!(!topic.prompts.is_empty(), "topic {topic:?} has no prompts");
+        for prompt in &topic.prompts {
+            let templated = prompt.prompt.replace(&topic.query, "{query}");
+            assert!(
+                PROMPT_SEED.contains(&templated),
+                "prompt {:?} (language {}) is not derived from a seeded template",
+                prompt.prompt,
+                prompt.language,
+            );
+        }
+    }
+}
+
+#[test]
 fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() {
     let catalog = google_trends_catalog();
 
@@ -70,6 +94,16 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
         "https://trends.google.com/trending/rss?geo=US"
     );
 
+    // Coverage is derived from the data, not hardcoded: every supported language
+    // (from `supported_languages()`) must be present, and each language must
+    // contribute the same number of request variations. Adding a language or a
+    // variation to the prompt seed extends the catalog with no code or test edit.
+    let supported: BTreeSet<String> = supported_languages().into_iter().collect();
+    assert!(
+        !supported.is_empty(),
+        "the seed must declare at least one supported language",
+    );
+
     let mut seen_ranks = BTreeSet::new();
     for topic in &catalog.topics {
         assert!(
@@ -77,31 +111,41 @@ fn checked_in_google_trends_catalog_covers_top_ten_in_all_supported_languages() 
             "rank should be unique: {topic:?}"
         );
         assert!(!topic.query.trim().is_empty());
+
+        let languages: BTreeSet<String> = topic
+            .prompts
+            .iter()
+            .map(|prompt| prompt.language.clone())
+            .collect();
+        assert_eq!(
+            languages, supported,
+            "each topic must cover exactly the supported languages: {topic:?}",
+        );
+
+        // Uniform, non-empty coverage per language proves the seed drives the shape.
+        let per_language = topic.prompts.len() / languages.len();
+        assert!(per_language >= 1, "each language needs a request variation");
+        for language in &supported {
+            let count = topic
+                .prompts
+                .iter()
+                .filter(|prompt| &prompt.language == language)
+                .count();
+            assert_eq!(
+                count, per_language,
+                "language {language} should contribute {per_language} variations like every other",
+            );
+        }
         assert_eq!(
             topic.prompts.len(),
-            8,
-            "each topic should have two request variations in each of four supported languages",
+            per_language * languages.len(),
+            "prompt count should be languages × variations",
         );
         assert_eq!(
             topic.answered.len(),
             topic.prompts.len(),
             "every prompt variation should be answered through the normal Formal AI path",
         );
-
-        let languages: BTreeSet<_> = topic
-            .prompts
-            .iter()
-            .map(|prompt| prompt.language.as_str())
-            .collect();
-        let language = "en";
-        assert!(languages.contains(language), "English prompts are required");
-        let language = "ru";
-        assert!(languages.contains(language), "Russian prompts are required");
-        let language = "hi";
-        assert!(languages.contains(language), "Hindi prompts are required");
-        let language = "zh";
-        assert!(languages.contains(language), "Chinese prompts are required");
-        assert_eq!(languages.len(), 4, "only supported languages are expected");
 
         assert!(
             topic
