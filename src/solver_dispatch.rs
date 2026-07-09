@@ -21,7 +21,8 @@ use crate::solver_handlers::{
     try_coreference_request, try_definition_merge, try_document_originality_check,
     try_document_request, try_execution_failure, try_fact_lookup, try_github_repository_traffic,
     try_http_fetch, try_ill_formed, try_installation_conversion, try_javascript_execution,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_number_riddle,
+    try_learn_from_source, try_meta_explanation, try_meta_explanation_with_runtime,
+    try_network_query, try_number_riddle,
     try_numeric_list, try_numeric_list_with_history, try_opinion_question, try_program_synthesis,
     try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
     try_research_comparison_table, try_research_result_followup, try_response_language_followup,
@@ -190,6 +191,14 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("github_repository_traffic", try_github_repository_traffic),
     ("document_originality_check", try_document_originality_check),
     ("web_search", try_web_search),
+    // Issue #499: a "learn from this data source" directive (a user pointing the
+    // engine at Google Trends or another declared source it can learn from) must
+    // route into the matching auto-learning capability instead of the unknown
+    // opener. It sits after the URL/search handlers — which decline a directive
+    // that carries no fetch/open/search cue — and above the general lookups. The
+    // match is self-gated on the seed-declared learnable-source registry, so an
+    // unrelated prompt is untouched.
+    ("learn_from_source", try_learn_from_source),
     ("research_comparison_table", try_research_comparison_table),
     ("research_result_followup", try_research_result_followup),
     ("docs_method_explanation", try_docs_method_explanation),

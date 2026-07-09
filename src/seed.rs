@@ -55,7 +55,7 @@ pub use embedded::{
     seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CLIENT_INTEGRATIONS_LINO,
     CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO,
     ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
-    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MARKET_PRICE_REFERENCES_LINO,
+    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO,
     MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
     MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
     MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
@@ -682,6 +682,67 @@ pub fn intent_routing() -> IntentRouting {
         }
     }
     routing
+}
+
+/// One learnable data source declared by `learning-sources.lino` (issue #499).
+///
+/// The seed names each external data source the engine can *learn from* when a
+/// user points it there — a host, the natural-language keywords that name it in
+/// any supported language, and the `capability` slug that says which learning
+/// loop ingests it. Routing reads this data rather than branching on a specific
+/// URL, so a new source is a data edit, never a code change.
+#[derive(Debug, Clone, Default)]
+pub struct LearningSource {
+    pub id: String,
+    pub capability: String,
+    pub host: String,
+    pub keywords: Vec<String>,
+}
+
+/// The learnable-source registry plus the shared, language-agnostic directive
+/// cues that mark a "learn from this source" request (issue #499).
+#[derive(Debug, Clone, Default)]
+pub struct LearningSources {
+    pub sources: Vec<LearningSource>,
+    pub directive_cues: Vec<String>,
+}
+
+/// Parse the learnable-source registry from `learning-sources.lino`.
+///
+/// The keywords and directive cues are stored lowercased in the seed so a
+/// lowercased prompt matches them directly (Rust's `to_lowercase` folds the
+/// Cyrillic, Devanagari, and Han text too).
+#[must_use]
+pub fn learning_sources() -> LearningSources {
+    let tree = parse_lino(LEARNING_SOURCES_LINO);
+    let mut registry = LearningSources::default();
+    if let Some(root) = tree.children.first() {
+        for child in &root.children {
+            match child.name.as_str() {
+                "source" => {
+                    let keywords = child
+                        .children
+                        .iter()
+                        .filter(|entry| entry.name == "keyword")
+                        .map(|entry| entry.id.clone())
+                        .collect();
+                    registry.sources.push(LearningSource {
+                        id: child.id.clone(),
+                        capability: child.find_child_value("capability").to_string(),
+                        host: child.find_child_value("host").to_string(),
+                        keywords,
+                    });
+                }
+                "directive" => {
+                    for entry in child.children.iter().filter(|entry| entry.name == "cue") {
+                        registry.directive_cues.push(entry.id.clone());
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    registry
 }
 
 #[must_use]
