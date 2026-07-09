@@ -1,0 +1,41 @@
+   Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783548696005)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 37.95s
+     Running tests/unit/mod.rs (target/debug/deps/unit-3efb08dd56b862be)
+
+running 33 tests
+test agentic_coding::planner_ignores_non_formalization_tasks ... ok
+test agentic_coding::server_emits_tool_calls_for_a_formalization_task_in_agent_mode ... ok
+test agentic_coding::formalization_is_deterministic ... ok
+test specification::formalization::arbitrary_statement_maps_predicate_and_nouns_to_wikidata_ids ... ok
+test specification::formalization::experimental_model_advice_can_only_select_existing_candidates ... ok
+test specification::formalization::action_prompt_maps_translation_verb_to_wikidata_property ... ok
+test specification::formalization::experimental_model_formalization_fallback_is_off_by_default ... ok
+test specification::formalization::model_advice_selection_uses_normal_formalization_decision_boundary ... ok
+test specification::formalization::model_advisor_prompt_lists_bounded_formalization_options ... ok
+test specification::formalization::high_rigor_low_margin_asks_smallest_clarifying_question ... ok
+test specification::formalization::small_model_catalog_filters_hardware_and_sorts_by_public_rating ... ok
+test specification::formalization::supported_language_prompts_map_local_surfaces_to_same_language_independent_ids ... ok
+test specification::formalization::temperature_selection_is_deterministic_for_fixed_config ... ok
+test specification::formalization::temperature_selection_preserves_supported_language_candidates ... ok
+test specification::formalization::unanchored_unknown_terms_are_flagged_for_later_translation_gaps ... ok
+test specification::formalization::unmodeled_dictionary_terms_fall_back_to_wiktionary_surfaces ... ok
+test specification::formalization::low_rigor_ambiguous_prompt_guesses_and_records_policy ... ok
+test specification::formalization::solver_evidence_exposes_formalization_ids_for_downstream_selection ... ok
+test specification::intent_formalization::fronted_interrogative_opener_classifies_prompt_as_question ... ok
+test specification::intent_formalization::intent_formalization_cache_exports_to_durable_links_store ... ok
+test specification::intent_formalization::class_artifact_formalization_routes_to_write_program ... ok
+test specification::intent_formalization::prompt_formalizes_to_intent_links_with_kind_knowns_and_relevants ... ok
+test specification::intent_formalization::legacy_greeting_route_is_derived_from_formalized_intent ... ok
+test specification::intent_formalization::repeated_prompt_hits_intent_formalization_cache ... ok
+test specification::formalization::same_prompt_and_config_produce_same_interpretation_choice ... ok
+test specification::meta_frame::frame_mirrors_formalization_classification ... ok
+test specification::intent_formalization::write_program_formalization_records_language_and_task_parameters ... ok
+test specification::probabilistic_reasoning::decision_policy::decision_policy_threads_into_formalization_selection ... ok
+test specification::probabilistic_reasoning::multilingual::probability_evidence_reranks_formalization_across_supported_languages ... ok
+test specification::synthesis::mixed_script_definition_prompt_survives_meta_frame_formalization ... ok
+test specification::intent_formalization::supported_language_greetings_route_through_intent_formalization ... ok
+test software_project::popular_software_project_prompts_use_the_general_formalization_path ... ok
+test issue_538_agentic::self_ast_task_wins_over_the_formalization_keyword ... ok
+
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 1413 filtered out; finished in 46.10s
+

@@ -136,12 +136,12 @@ pub const TOMATO: Concept = Concept {
     // fetches the URL exactly as we advertise it — and CI/sandboxed environments
     // that block `wikidata.org` egress can't reach that. So we point at the
     // *same* underlying JSON we already ship in `data/cache/wikidata/lexeme/`,
-    // served over `raw.githubusercontent.com` (reachable from anywhere with
-    // outbound HTTPS to GitHub). It is byte-for-byte the cached Wikidata JSON —
-    // the same document `include_str!` embeds below — so the offline corpus and
-    // the live fetch return the same bytes, and the deterministic pipeline
-    // works whether the CLI or the in-repo driver is running.
-    source_url: "https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json",
+    // served through jsDelivr's GitHub CDN instead of raw GitHub, whose
+    // unauthenticated edge can rate-limit CI with HTTP 429. It is byte-for-byte the
+    // cached Wikidata JSON — the same document `include_str!` embeds below — so the
+    // offline corpus and the live fetch return the same bytes, and the deterministic
+    // pipeline works whether the CLI or the in-repo driver is running.
+    source_url: "https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L170542.json",
     kb_path: "meanings-tomato-detail.lino",
     sources: &[
         SourceRef {
@@ -182,11 +182,11 @@ pub const POTATO: Concept = Concept {
     name: "potato",
     grounded_in: "Q10998",
     search_query: "Wikidata lexemes potato картофель картошка grammatical number forms",
-    // Same rationale as `TOMATO.source_url`: fetch the cached JSON from
-    // `raw.githubusercontent.com` so the live agent CLI's `webfetch` succeeds
-    // in sandboxed CI (which blocks `wikidata.org`). The bytes are identical to
-    // the `L3784.json` file embedded below.
-    source_url: "https://raw.githubusercontent.com/link-assistant/formal-ai/issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json",
+    // Same rationale as `TOMATO.source_url`: fetch the cached JSON from the
+    // GitHub CDN so the live agent CLI's `webfetch` avoids raw GitHub rate limits
+    // in sandboxed CI. The bytes are identical to the `L3784.json` file embedded
+    // below.
+    source_url: "https://cdn.jsdelivr.net/gh/link-assistant/formal-ai@issue-538-eca4a11c39c6/data/cache/wikidata/lexeme/L3784.json",
     kb_path: "meanings-potato-detail.lino",
     sources: &[SourceRef {
         id: "L3784",

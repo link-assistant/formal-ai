@@ -585,6 +585,27 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
+  const formalizationModelFallback = detectToggleCommand(normalized, [
+    "formalization model",
+    "small model formalization",
+    "formalization fallback",
+    "model formalization fallback",
+    "browser model formalization",
+    "small llm formalization",
+    "нейросетевая формализация",
+    "小模型形式化",
+    "छोटा मॉडल formalization",
+  ]);
+  if (formalizationModelFallback !== null) {
+    return {
+      kind: "set_preference",
+      key: "experimentalFormalizationModelFallback",
+      value: formalizationModelFallback,
+      intent: "configure_experimental_formalization_model_fallback",
+      label: "Small-model formalization fallback",
+    };
+  }
+
   const projectPromotion = detectToggleCommand(normalized, [
     "project promotion",
     "repository promotion",
@@ -1008,6 +1029,50 @@ const EXTERNAL_TRUSTED_SERVICES = [
   { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
 ];
 
+const FORMALIZATION_MODEL_AUTO = "auto";
+const FORMALIZATION_MODEL_CATALOG = [
+  {
+    id: "SmolLM2-360M-Instruct-q4f16_1-MLC",
+    label: "SmolLM2 360M Instruct q4f16",
+    runtime: "WebLLM",
+    sourceUrl: "https://huggingface.co/mlc-ai/SmolLM2-360M-Instruct-q4f16_1-MLC",
+    publicRating: 80150,
+    vramRequiredMb: 377,
+    lowResource: true,
+    requiredFeatures: ["shader-f16"],
+  },
+  {
+    id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    label: "Qwen2.5 0.5B Instruct q4f16",
+    runtime: "WebLLM",
+    sourceUrl: "https://huggingface.co/mlc-ai/Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+    publicRating: 34924,
+    vramRequiredMb: 945,
+    lowResource: true,
+    requiredFeatures: [],
+  },
+  {
+    id: "SmolLM2-1.7B-Instruct-q4f16_1-MLC",
+    label: "SmolLM2 1.7B Instruct q4f16",
+    runtime: "WebLLM",
+    sourceUrl: "https://huggingface.co/mlc-ai/SmolLM2-1.7B-Instruct-q4f16_1-MLC",
+    publicRating: 503,
+    vramRequiredMb: 1775,
+    lowResource: true,
+    requiredFeatures: ["shader-f16"],
+  },
+  {
+    id: "Phi-3.5-mini-instruct-q4f16_1-MLC-1k",
+    label: "Phi-3.5 mini Instruct q4f16 1k",
+    runtime: "WebLLM",
+    sourceUrl: "https://huggingface.co/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC",
+    publicRating: 0,
+    vramRequiredMb: 2521,
+    lowResource: true,
+    requiredFeatures: [],
+  },
+];
+
 const LEGACY_EXPANDED_SIDEBAR_KEYS = [
   "sidebarSettingsCollapsed",
   "sidebarToolsCollapsed",
@@ -1071,6 +1136,11 @@ const PREFERENCE_DEFAULTS = {
   //                          optional region (error handling, comments) present.
   blueprintComposition: "composed",
   experimentalOcr: false,
+  // Issue #483: optional browser-model advisor for formalization matching.
+  // It is disabled by default and no model runtime is loaded by the app until a
+  // future runtime hook explicitly asks for one after the user opts in.
+  experimentalFormalizationModelFallback: false,
+  formalizationModelId: FORMALIZATION_MODEL_AUTO,
   // Issue #444: external trusted-service opt-outs. Defined data-driven from
   // EXTERNAL_TRUSTED_SERVICES; every service ships enabled (opt-out model) so the
   // assistant keeps consulting them unless the user disables one in settings.
@@ -1146,6 +1216,59 @@ function settingIsDefault(key, value) {
     return Number(value) === fallback;
   }
   return value === fallback;
+}
+
+function normalizeFormalizationModelId(value, models = FORMALIZATION_MODEL_CATALOG) {
+  const id = String(value || FORMALIZATION_MODEL_AUTO).trim();
+  if (id === FORMALIZATION_MODEL_AUTO) return FORMALIZATION_MODEL_AUTO;
+  return models.some((model) => model.id === id) ? id : FORMALIZATION_MODEL_AUTO;
+}
+
+function browserFormalizationModelHardwareProfile() {
+  const nav = typeof navigator !== "undefined" ? navigator : {};
+  const rawDeviceMemoryGb = Number(nav.deviceMemory);
+  const deviceMemoryMb =
+    Number.isFinite(rawDeviceMemoryGb) && rawDeviceMemoryGb > 0
+      ? Math.round(rawDeviceMemoryGb * 1024)
+      : null;
+  const webgpuAvailable = Boolean(nav.gpu);
+  return {
+    webgpuAvailable,
+    // Browser feature probing for shader-f16 is asynchronous; until a runtime
+    // owns that probe, use WebGPU availability as the conservative UI signal
+    // for the low-resource WebLLM entries that require it.
+    shaderF16Available: webgpuAvailable,
+    deviceMemoryMb,
+  };
+}
+
+function formalizationModelFeatureSupported(feature, profile) {
+  if (feature === "shader-f16") return Boolean(profile.shaderF16Available);
+  return false;
+}
+
+function formalizationModelFitsHardware(model, profile) {
+  if (!profile.webgpuAvailable) return false;
+  if (
+    !model.requiredFeatures.every((feature) =>
+      formalizationModelFeatureSupported(feature, profile),
+    )
+  ) {
+    return false;
+  }
+  if (profile.deviceMemoryMb === null) return model.lowResource;
+  return model.vramRequiredMb <= profile.deviceMemoryMb;
+}
+
+function availableFormalizationModels(profile = browserFormalizationModelHardwareProfile()) {
+  return FORMALIZATION_MODEL_CATALOG.filter((model) =>
+    formalizationModelFitsHardware(model, profile),
+  ).sort(
+    (left, right) =>
+      right.publicRating - left.publicRating ||
+      left.vramRequiredMb - right.vramRequiredMb ||
+      left.id.localeCompare(right.id),
+  );
 }
 
 const UI_SKINS = ["flat", "glass", "contrast"];
@@ -2065,6 +2188,8 @@ function collectUserContext({
   definitionFusion,
   thinkingDetailLevel,
   experimentalOcr,
+  experimentalFormalizationModelFallback,
+  formalizationModelId,
 }) {
   const browserLanguages = browserLanguagesList();
   const nav = typeof navigator !== "undefined" ? navigator : {};
@@ -2105,6 +2230,10 @@ function collectUserContext({
     definitionFusion,
     thinkingDetailLevel,
     experimentalOcr: experimentalOcr ? "on" : "off",
+    experimentalFormalizationModelFallback: experimentalFormalizationModelFallback
+      ? "on"
+      : "off",
+    formalizationModelId,
     locationInference:
       locationPreference
         ? `user-provided preference: ${locationPreference}`
@@ -6105,6 +6234,25 @@ function App() {
   const [experimentalOcr, setExperimentalOcr] = useState(
     Boolean(initialPreferences.current.experimentalOcr),
   );
+  const [
+    experimentalFormalizationModelFallback,
+    setExperimentalFormalizationModelFallback,
+  ] = useState(Boolean(initialPreferences.current.experimentalFormalizationModelFallback));
+  const [formalizationModelId, setFormalizationModelId] = useState(
+    normalizeFormalizationModelId(initialPreferences.current.formalizationModelId),
+  );
+  const formalizationModelHardwareProfile = useMemo(
+    browserFormalizationModelHardwareProfile,
+    [],
+  );
+  const availableFormalizationModelOptions = useMemo(
+    () => availableFormalizationModels(formalizationModelHardwareProfile),
+    [formalizationModelHardwareProfile],
+  );
+  const visibleFormalizationModelId = normalizeFormalizationModelId(
+    formalizationModelId,
+    availableFormalizationModelOptions,
+  );
   // Issue #444: one boolean per external trusted service, kept in a single map so
   // the catalog stays the only place that enumerates the services. A missing
   // stored value defaults to enabled (opt-out model).
@@ -6637,6 +6785,8 @@ function App() {
         definitionFusion,
         thinkingDetailLevel,
         experimentalOcr,
+        experimentalFormalizationModelFallback,
+        formalizationModelId: visibleFormalizationModelId,
       }),
     [
       uiLanguage,
@@ -6655,6 +6805,8 @@ function App() {
       definitionFusion,
       thinkingDetailLevel,
       experimentalOcr,
+      experimentalFormalizationModelFallback,
+      visibleFormalizationModelId,
       colorSchemeTick,
     ],
   );
@@ -7143,6 +7295,8 @@ function App() {
       thinkingDetailLevel,
       minMessageAnimationMs,
       experimentalOcr,
+      experimentalFormalizationModelFallback,
+      formalizationModelId,
       ...externalServices,
       associativeProjectPromotion,
       theme: themePreference,
@@ -7185,6 +7339,8 @@ function App() {
     thinkingDetailLevel,
     minMessageAnimationMs,
     experimentalOcr,
+    experimentalFormalizationModelFallback,
+    formalizationModelId,
     externalServices,
     associativeProjectPromotion,
     themePreference,
@@ -7277,6 +7433,19 @@ function App() {
   useEffect(() => {
     experimentalOcrRef.current = experimentalOcr;
   }, [experimentalOcr]);
+
+  const experimentalFormalizationModelFallbackRef = useRef(
+    experimentalFormalizationModelFallback,
+  );
+  useEffect(() => {
+    experimentalFormalizationModelFallbackRef.current =
+      experimentalFormalizationModelFallback;
+  }, [experimentalFormalizationModelFallback]);
+
+  const formalizationModelIdRef = useRef(visibleFormalizationModelId);
+  useEffect(() => {
+    formalizationModelIdRef.current = visibleFormalizationModelId;
+  }, [visibleFormalizationModelId]);
 
   // Issue #444: mirror the external trusted-service toggles into a ref so the
   // worker prefs payload (assembled outside React render) reads the live values.
@@ -7404,6 +7573,9 @@ function App() {
       definitionFusion: definitionFusionRef.current,
       blueprintComposition: blueprintCompositionRef.current,
       experimentalOcr: experimentalOcrRef.current,
+      experimentalFormalizationModelFallback:
+        experimentalFormalizationModelFallbackRef.current,
+      formalizationModelId: formalizationModelIdRef.current,
       // Issue #444: forward every external trusted-service opt-out so the worker
       // can skip a disabled service's live fetch.
       ...externalServicesRef.current,
@@ -8049,6 +8221,9 @@ function App() {
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
           break;
+        case "experimentalFormalizationModelFallback":
+          setExperimentalFormalizationModelFallback(Boolean(command.value));
+          break;
         case "associativeProjectPromotion":
           setAssociativeProjectPromotion(Boolean(command.value));
           break;
@@ -8517,6 +8692,8 @@ function App() {
     { key: "thinkingDetailLevel", value: thinkingDetailLevel, set: setThinkingDetailLevel, label: "settings.thinkingDetail" },
     { key: "minMessageAnimationMs", value: minMessageAnimationMs, set: setMinMessageAnimationMs, label: "settings.minMessageAnimation" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
+    { key: "experimentalFormalizationModelFallback", value: experimentalFormalizationModelFallback, set: setExperimentalFormalizationModelFallback, label: "settings.experimentalFormalizationModelFallback" },
+    { key: "formalizationModelId", value: formalizationModelId, set: setFormalizationModelId, label: "settings.formalizationModel" },
     // Issue #444: one reset descriptor per external trusted service so the
     // "modified settings" reset bar lists any service the user turned off.
     ...EXTERNAL_TRUSTED_SERVICES.map((service) => ({
@@ -8677,7 +8854,9 @@ function App() {
                     })}</span></button><button type="button" className={`conversation-copy${copiedConversationId === entry.id ? " is-copied" : ""}`} data-testid="conversation-copy" data-conversation-id={entry.id} data-copied={copiedConversationId === entry.id ? "true" : null} aria-label={t("conversation.copyMarkdownTitle")} title={t("conversation.copyMarkdownTitle")} onClick={() => handleCopyConversation(entry)}>{copiedConversationId === entry.id ? t("conversation.copyMarkdownDone") : t("conversation.copyMarkdown")}</button>{entry.deleted ? <button type="button" className="conversation-delete conversation-permanent-delete" data-testid="conversation-purge-one" aria-label={t("conversation.deletePermanent")} title={t("conversation.deletePermanent")} onClick={() => handlePurgeConversation(entry)}>{"!"}</button> : <button type="button" className="conversation-delete" data-testid="conversation-delete" aria-label={t("conversation.delete")} title={t("conversation.delete")} onClick={() => handleDeleteConversation(entry)}>{"×"}</button>}</div></li>;
           })}</ul>}</div>} /><SidebarSection title={t("sidebar.settings")} testId="sidebar-settings" collapsed={sidebarSettingsCollapsed} onToggle={() => setSidebarSettingsCollapsed(value => !value)} children={<div className="settings-panel"><div className="settings-reset" data-testid="settings-reset"><div className="settings-reset-header"><span className="settings-reset-title">{t("settings.resetHeading")}</span><button type="button" className="settings-reset-all" data-testid="settings-reset-all" disabled={modifiedSettings.length === 0} onClick={resetAllSettings} title={t("settings.resetAll")}>{t("settings.resetAll")}</button></div>{modifiedSettings.length === 0 ? <p className="settings-reset-empty" data-testid="settings-reset-empty">{t("settings.resetNone")}</p> : <ul className="settings-reset-list">{modifiedSettings.map(descriptor => <li key={descriptor.key} className="settings-reset-item"><span className="settings-reset-label">{t(descriptor.label)}</span><button type="button" className="settings-reset-one" data-testid={`settings-reset-${descriptor.key}`} onClick={() => resetSetting(descriptor)} title={t("settings.resetOne")}>{t("settings.resetOne")}</button></li>)}</ul>}</div><div className="setting-row setting-row-slider"><label htmlFor="setting-guess-probability">{t("settings.ambiguity")}</label><div className="setting-poles"><span>{t("settings.moreQuestions")}</span><span>{t("settings.moreGuessing")}</span></div><input id="setting-guess-probability" data-testid="setting-guess-probability" type="range" min="0" max="1" step="0.05" value={guessProbability} onChange={event => setGuessProbability(normalizeSliderPreference(event.target.value, 0.8))} /><output htmlFor="setting-guess-probability">{`${formatSliderValue(guessProbability)}%`}</output></div><div className="setting-row setting-row-slider"><label htmlFor="setting-follow-up-probability">{t("settings.followUpInitiative")}</label><div className="setting-poles"><span>{t("settings.userInitiative")}</span><span>{t("settings.assistantInitiative")}</span></div><input id="setting-follow-up-probability" data-testid="setting-follow-up-probability" type="range" min="0" max="1" step="0.05" value={followUpProbability} onChange={event => setFollowUpProbability(normalizeSliderPreference(event.target.value, PREFERENCE_DEFAULTS.followUpProbability))} /><output htmlFor="setting-follow-up-probability">{`${formatSliderValue(followUpProbability)}%`}</output></div><div className="setting-row setting-row-slider"><label htmlFor="setting-temperature">{t("settings.temperature")}</label><div className="setting-poles"><span>{t("settings.deterministic")}</span><span>{t("settings.varied")}</span></div><input id="setting-temperature" data-testid="setting-temperature" type="range" min="0" max="1" step="0.05" value={temperature} onChange={event => setTemperature(normalizeSliderPreference(event.target.value, 0))} /><output htmlFor="setting-temperature">{normalizeSliderPreference(temperature, 0).toFixed(2)}</output></div><label className="setting-check"><input type="checkbox" checked={greetingVariations} onChange={event => setGreetingVariations(event.target.checked)} /><span>{t("settings.variations")}</span></label><label className="setting-row"><span>{t("settings.definitionFusion")}</span><select data-testid="setting-definition-fusion" value={definitionFusion} onChange={event => setDefinitionFusion(normalizeDefinitionFusion(event.target.value))}><option value="explicit">{t("settings.definitionFusion.explicit")}</option><option value="auto">{t("settings.definitionFusion.auto")}</option></select></label><label className="setting-row"><span>{t("settings.blueprintComposition")}</span><select data-testid="setting-blueprint-composition" value={blueprintComposition} onChange={event => setBlueprintComposition(normalizeBlueprintComposition(event.target.value))}><option value="composed">{t("settings.blueprintComposition.composed")}</option><option value="documented">{t("settings.blueprintComposition.documented")}</option></select></label><label className="setting-row"><span>{t("settings.thinkingDetail")}</span><select data-testid="setting-thinking-detail" value={thinkingDetailLevel} onChange={event => setThinkingDetailLevel(normalizeThinkingDetailLevel(event.target.value))}><option value="brief">{t("settings.thinkingDetail.brief")}</option><option value="standard">{t("settings.thinkingDetail.standard")}</option><option value="detailed">{t("settings.thinkingDetail.detailed")}</option></select></label><div className="setting-row setting-row-slider"><label htmlFor="setting-min-message-animation">{t("settings.minMessageAnimation")}</label><div className="setting-poles"><span>{t("settings.animationImmediate")}</span><span>{t("settings.animationRelaxed")}</span></div><input id="setting-min-message-animation" data-testid="setting-min-message-animation" type="range" min="0" max="6000" step="250" value={minMessageAnimationMs} onChange={event => setMinMessageAnimationMs(normalizeAnimationBudgetMs(event.target.value))} /><output htmlFor="setting-min-message-animation">{minMessageAnimationMs === 0 ? t("settings.animationImmediate") : t("settings.animationSeconds", {
               seconds: (minMessageAnimationMs / 1000).toFixed(1)
-            })}</output></div><div className="setting-row setting-row-ocr"><label className="setting-check"><input type="checkbox" checked={experimentalOcr} data-testid="setting-experimental-ocr" onChange={event => setExperimentalOcr(event.target.checked)} /><span>{t("settings.experimentalOcr")}</span></label><p className="setting-warning" data-testid="setting-experimental-ocr-warning" title={OCR_DOWNLOAD_WARNING}>{t("settings.experimentalOcr.warning")}</p></div>{
+            })}</output></div><div className="setting-row setting-row-ocr"><label className="setting-check"><input type="checkbox" checked={experimentalOcr} data-testid="setting-experimental-ocr" onChange={event => setExperimentalOcr(event.target.checked)} /><span>{t("settings.experimentalOcr")}</span></label><p className="setting-warning" data-testid="setting-experimental-ocr-warning" title={OCR_DOWNLOAD_WARNING}>{t("settings.experimentalOcr.warning")}</p></div><div className="setting-row setting-row-formalization-model" data-testid="settings-formalization-model"><label className="setting-check"><input type="checkbox" checked={experimentalFormalizationModelFallback} data-testid="setting-experimental-formalization-model-fallback" onChange={event => setExperimentalFormalizationModelFallback(event.target.checked)} /><span>{t("settings.experimentalFormalizationModelFallback")}</span></label><p className="setting-warning" data-testid="setting-experimental-formalization-model-warning">{t("settings.experimentalFormalizationModelFallback.warning")}</p><label className="setting-row"><span>{t("settings.formalizationModel")}</span><select data-testid="setting-formalization-model-id" value={visibleFormalizationModelId} disabled={!experimentalFormalizationModelFallback || availableFormalizationModelOptions.length === 0} onChange={event => setFormalizationModelId(normalizeFormalizationModelId(event.target.value))}><option value={FORMALIZATION_MODEL_AUTO}>{t("settings.formalizationModel.auto")}</option>{availableFormalizationModelOptions.map(model => <option key={model.id} value={model.id} data-testid="formalization-model-option" data-public-rating={model.publicRating} data-vram-required-mb={model.vramRequiredMb}>{`${model.label} (${model.vramRequiredMb} MB)`}</option>)}</select></label><p className="setting-section-note" data-testid="setting-formalization-model-hardware">{availableFormalizationModelOptions.length === 0 ? t("settings.formalizationModel.none") : t("settings.formalizationModel.available", {
+              count: availableFormalizationModelOptions.length
+            })}</p></div>{
         // Issue #444: external trusted-services opt-in/opt-out section. The
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled

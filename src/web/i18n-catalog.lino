@@ -262,6 +262,14 @@ en
     experimentalOcr
       label "Experimental OCR"
       warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
+    experimentalFormalizationModelFallback
+      label "Small-model formalization fallback"
+      warning "Experimental and off by default. No model is bundled; a fitting browser model is downloaded only after you enable and use this fallback."
+    formalizationModel
+      label "Formalization model"
+      auto "Auto (highest rated fitting model)"
+      none "No fitting WebGPU model detected"
+      available "{count} fitting model(s)"
     externalServices
       label "External trusted services"
       note "Choose which trusted services the assistant may consult for procedural how-to answers, project lookups, and document originality / fact-check verification. Each one is on by default; turn off any you would rather not contact."
@@ -617,6 +625,14 @@ ru
     experimentalOcr
       label "Экспериментальный OCR"
       warning "При первом использовании скачивается около 6 MB: оболочка OCR, worker, ядро WebAssembly и английские traineddata."
+    experimentalFormalizationModelFallback
+      label "Резервная формализация малой моделью"
+      warning "Экспериментально и по умолчанию выключено. Модель не входит в сборку; подходящая браузерная модель скачивается только после включения и использования."
+    formalizationModel
+      label "Модель формализации"
+      auto "Авто (самая рейтинговая подходящая)"
+      none "Подходящая WebGPU-модель не найдена"
+      available "Подходящих моделей: {count}"
     externalServices
       label "Внешние доверенные сервисы"
       note "Выберите, к каким доверенным сервисам ассистент может обращаться для пошаговых инструкций, поиска по проектам и проверки оригинальности документов и достоверности фактов. Каждый включён по умолчанию; отключите те, к которым обращаться не нужно."
@@ -962,6 +978,14 @@ zh
     experimentalOcr
       label "实验性 OCR"
       warning "首次使用会下载约 6 MB：OCR 包装层、worker、WebAssembly 核心和英语训练数据。"
+    experimentalFormalizationModelFallback
+      label "小模型形式化回退"
+      warning "实验性功能，默认关闭。应用不内置模型；只有启用并使用此回退后，才会下载适配浏览器的模型。"
+    formalizationModel
+      label "形式化模型"
+      auto "自动（评分最高的适配模型）"
+      none "未检测到适配的 WebGPU 模型"
+      available "{count} 个适配模型"
     externalServices
       label "外部可信服务"
       note "选择助手在回答操作指南、查找项目以及核查文档原创性和事实真实性时可以访问哪些可信服务。每项默认开启；如不希望访问，可将其关闭。"
@@ -1313,6 +1337,14 @@ hi
     experimentalOcr
       label "Experimental OCR"
       warning "पहली बार इस्तेमाल पर लगभग 6 MB डाउनलोड होता है: OCR wrapper, worker, WebAssembly core, और English traineddata."
+    experimentalFormalizationModelFallback
+      label "Small-model formalization fallback"
+      warning "यह experimental है और default में off है. कोई model bundle नहीं है; enable करके इस्तेमाल करने पर ही fitting browser model डाउनलोड होता है."
+    formalizationModel
+      label "Formalization model"
+      auto "Auto (highest rated fitting model)"
+      none "कोई fitting WebGPU model नहीं मिला"
+      available "{count} fitting model(s)"
     externalServices
       label "बाहरी विश्वसनीय सेवाएँ"
       note "चुनें कि सहायक प्रक्रियात्मक how-to उत्तरों, प्रोजेक्ट खोज और दस्तावेज़ मौलिकता तथा तथ्य-जाँच सत्यापन के लिए किन विश्वसनीय सेवाओं से संपर्क कर सकता है। प्रत्येक डिफ़ॉल्ट रूप से चालू है; जिनसे संपर्क नहीं चाहते उन्हें बंद कर दें।"
