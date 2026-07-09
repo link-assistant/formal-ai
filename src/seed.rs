@@ -707,6 +707,40 @@ pub struct LearningSources {
     pub directive_cues: Vec<String>,
 }
 
+impl LearningSources {
+    /// Match a lowercased prompt against the registry and return the source the
+    /// user is teaching the engine to learn from, if any.
+    ///
+    /// A directive is only recognized when the prompt carries **both** a
+    /// language-agnostic learning cue (e.g. "learn from", "узнаешь",
+    /// "यहाँ से सीख", "在这里了解") **and** a reference to a declared source — its
+    /// host or one of its native-language keywords. This is the single source of
+    /// truth shared by the chat handler ([`crate::solver_handlers::try_learn_from_source`])
+    /// and the Agent CLI planner
+    /// ([`crate::agentic_coding::google_trends_learning::is_google_trends_learning_task`]),
+    /// so the *same* natural-language teaching directive drives both the chat
+    /// acknowledgement and the artifact-writing recipe. Callers pass an
+    /// already-lowercased prompt so the seed's lowercased cues/keywords match
+    /// directly (issue #499).
+    #[must_use]
+    pub fn match_directive(&self, lowercased: &str) -> Option<&LearningSource> {
+        let has_cue = self
+            .directive_cues
+            .iter()
+            .any(|cue| lowercased.contains(cue.as_str()));
+        if !has_cue {
+            return None;
+        }
+        self.sources.iter().find(|source| {
+            (!source.host.is_empty() && lowercased.contains(source.host.as_str()))
+                || source
+                    .keywords
+                    .iter()
+                    .any(|keyword| lowercased.contains(keyword.as_str()))
+        })
+    }
+}
+
 /// Parse the learnable-source registry from `learning-sources.lino`.
 ///
 /// The keywords and directive cues are stored lowercased in the seed so a

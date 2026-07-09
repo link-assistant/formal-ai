@@ -810,20 +810,7 @@ pub fn try_learn_from_source(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let registry = crate::seed::learning_sources();
-    if !registry
-        .directive_cues
-        .iter()
-        .any(|cue| normalized.contains(cue.as_str()))
-    {
-        return None;
-    }
-    let source = registry.sources.iter().find(|source| {
-        (!source.host.is_empty() && normalized.contains(source.host.as_str()))
-            || source
-                .keywords
-                .iter()
-                .any(|keyword| normalized.contains(keyword.as_str()))
-    })?;
+    let source = registry.match_directive(normalized)?;
     let summary = learning_source_summary(&source.capability)?;
     log.append("learning_source", source.id.clone());
     log.append("learning_capability", source.capability.clone());

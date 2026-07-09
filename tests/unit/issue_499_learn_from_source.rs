@@ -7,6 +7,10 @@
 //! deliberately vary the natural-language wording each time (CONTRIBUTING rule 4)
 //! so a passing run proves the routing is general, not hardcoded to one phrase.
 
+use formal_ai::agentic_coding::{
+    google_trends_learning as recipe, is_google_trends_learning_task, run_agentic_task,
+    GOOGLE_TRENDS_LEARNING_PATH,
+};
 use formal_ai::engine::FormalAiEngine;
 use formal_ai::{response_for, seed, supported_languages, trending_learning_report};
 
@@ -136,5 +140,55 @@ fn the_directive_routes_into_the_human_gated_learning_frontier() {
         result.answer.contains("human-gated"),
         "the answer must state the frontier flows into the human-gated loop: {}",
         result.answer,
+    );
+}
+
+// R499-6: the *same* teaching directive that the chat handler recognizes also
+// drives the Agent CLI learning recipe — one seed-declared source, two entry
+// points. The directive routes into the same `write_file -> run_command -> final`
+// loop the operator-worded task uses and writes the committed learning artifact.
+#[test]
+fn the_reported_directive_drives_the_learning_recipe_via_agent_cli() {
+    // The literal user directive is enough to select the learning recipe; no
+    // English operator framing ("learning frontier" / "self-improvement loop") is
+    // required, because routing consults the seed `learning_sources` registry.
+    assert!(
+        is_google_trends_learning_task(REPORTED_PROMPT),
+        "the reported learn-from-source directive must drive the Agent CLI learning recipe",
+    );
+    // A learning cue with no declared source must not select the recipe, so the
+    // Agent CLI stays as data-driven as the chat handler.
+    assert!(!is_google_trends_learning_task(
+        "Here you can learn a lot from reading books"
+    ));
+
+    let outcome = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+    assert!(!outcome.hit_turn_cap, "the loop must finish");
+    let write = outcome
+        .steps
+        .iter()
+        .find(|step| step.tool == "write_file")
+        .expect("the directive must drive a write step");
+    let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+    assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
+    assert_eq!(written["content"], recipe::render_document());
+}
+
+// R499-7: the Agent CLI session driven by the reported directive is pinned
+// byte-for-byte, so a routing or report change can never silently drift the
+// committed transcript the case study links to.
+#[test]
+fn committed_agent_cli_session_matches_a_fresh_learn_from_source_run() {
+    let committed =
+        include_str!("../../docs/case-studies/issue-499/agent-cli-session-learn-from-source.json");
+    let fresh = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+    let rendered = format!(
+        "{}\n",
+        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+    );
+    assert_eq!(
+        committed, rendered,
+        "the committed issue-499 learn-from-source Agent CLI session is stale; regenerate it with \
+         `cargo run --example issue_499_dump_agent_cli_session`",
     );
 }
