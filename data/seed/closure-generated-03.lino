@@ -1,4 +1,49 @@
 meanings
+  response_courtesy_response_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response ru"
+  response_courtesy_response_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response zh"
+  response_document_originality_check_sample_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing en"
+  response_document_originality_check_sample_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing hi"
+  response_document_originality_check_sample_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing ru"
+  response_document_originality_check_sample_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing zh"
+  response_document_originality_check_sample_present_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present en"
+  response_document_originality_check_sample_present_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present hi"
+  response_document_originality_check_sample_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present ru"
   response_document_originality_check_sample_present_zh
     defined-by response_template
     lexeme en
@@ -299,6 +344,11 @@ meanings
     lexeme en
       surface
         text "role only"
+  rotation
+    defined-by term
+    lexeme en
+      surface
+        text "rotation"
   rs
     defined-by word_surface
     lexeme en
@@ -354,6 +404,11 @@ meanings
     lexeme en
       surface
         text "sentence case"
+  sequence
+    defined-by term
+    lexeme en
+      surface
+        text "sequence"
   shell-helpers
     defined-by category
     lexeme en
@@ -494,6 +549,11 @@ meanings
     lexeme en
       surface
         text "symbolic ai"
+  symmetry
+    defined-by term
+    lexeme en
+      surface
+        text "symmetry"
   tail
     defined-by token
     lexeme en
@@ -649,6 +709,11 @@ meanings
     lexeme en
       surface
         text "traffic"
+  transformation
+    defined-by term
+    lexeme en
+      surface
+        text "transformation"
   travel_guide
     defined-by category
     lexeme en

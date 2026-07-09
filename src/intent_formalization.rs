@@ -754,6 +754,16 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             "handler:meta_explanation",
             seed::lexicon().mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized),
         ),
+        // Issue #531: a concrete "what is the pattern in <grid/sequence>" request
+        // carries both pattern-inference intent and a parseable run of atoms. It
+        // must rank ahead of `concept_lookup` (which the shared "what is …" cue
+        // would otherwise claim) so the data is analysed structurally instead of
+        // answered as a dictionary definition. The gate mirrors the handler, so a
+        // bare "what is a pattern?" stays with the concept lookup.
+        (
+            "handler:pattern_inference",
+            crate::solver_handlers::looks_like_pattern_inference(prompt),
+        ),
         (
             "handler:concept_lookup",
             cue_lexicon::matches("concept_lookup", normalized)

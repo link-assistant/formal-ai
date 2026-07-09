@@ -20,6 +20,7 @@ mod meta_explanation;
 mod natural_language_tools;
 mod number_riddle;
 mod numeric_list;
+mod pattern_inference;
 mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
@@ -57,6 +58,7 @@ pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runti
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use number_riddle::try_number_riddle;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
+pub use pattern_inference::{looks_like_pattern_inference, try_pattern_inference};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;

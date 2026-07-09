@@ -3,9 +3,18 @@ use formal_ai::solve;
 #[test]
 fn issue_531_pattern_vocabulary_resolves() {
     for term in [
-        "sequence", "pattern", "repetition", "compression", "deduplication",
-        "symmetry", "rotation", "reflection", "translation", "analogy",
-        "invariant", "transformation",
+        "sequence",
+        "pattern",
+        "repetition",
+        "compression",
+        "deduplication",
+        "symmetry",
+        "rotation",
+        "reflection",
+        "translation",
+        "analogy",
+        "invariant",
+        "transformation",
     ] {
         let answer = solve(&format!("what is a {term}?"));
         assert_eq!(
