@@ -222,7 +222,12 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     await expect.poll(() => page.evaluate(() => window.__toolInvocations.length)).toBe(0);
 
     await sendPrompt(page, 'run `ls ~` in terminal');
-    await page.locator('[data-testid="command-approve"]').last().click();
+    // The denied approval card remains rendered, so wait for the new pending
+    // approve control to be enabled before clicking rather than racing the
+    // still-disabled button on the resolved card.
+    const approveSecond = page.locator('[data-testid="command-approve"]').last();
+    await expect(approveSecond).toBeEnabled();
+    await approveSecond.click();
     await expect.poll(() => page.evaluate(() => window.__toolInvocations.length)).toBe(1);
     await expect(page.locator('[data-testid="chat-message"]').last()).toContainText('ran ls ~');
   });

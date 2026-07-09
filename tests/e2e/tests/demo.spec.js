@@ -1113,6 +1113,52 @@ test.describe('Issue #557: adaptive composer skins', () => {
     expect(stored).toContain('uiSkin "glass"');
     expect(stored).toContain('glassOpacity "0.45"');
   });
+
+  // Issue #557: the adaptive skin picker (Flat / Glass / Material / Contrast)
+  // and the glass transparency slider are language-facing UI, so every supported
+  // locale must render the translated skin label, options, and slider caption.
+  // Covering all languages here prevents a single-language regression from
+  // shipping a skin control that is only translated for English.
+  const skinLocaleCases = [
+    { language: 'en', skinLabel: 'UI skin', glass: 'Glass', opacity: 'Glass opacity' },
+    { language: 'ru', skinLabel: 'Скин UI', glass: 'Стекло', opacity: 'Прозрачность стекла' },
+    { language: 'hi', skinLabel: 'UI स्किन', glass: 'ग्लास', opacity: 'ग्लास अपारदर्शिता' },
+    { language: 'zh', skinLabel: '界面皮肤', glass: '玻璃', opacity: '玻璃不透明度' },
+  ];
+
+  for (const { language, skinLabel, glass, opacity } of skinLocaleCases) {
+    test(`skin picker and glass slider are translated for ${language}`, async ({ page }) => {
+      // Seed the full preference snapshot (glass skin + UI language) before the
+      // first load. A single init script avoids the greeting-off helper, which
+      // re-writes preferences on every navigation and would otherwise clobber
+      // the selected uiLanguage on reload.
+      await page.addInitScript((lang) => {
+        try {
+          window.localStorage.setItem(
+            'formal-ai.preferences.v1',
+            `demo_preferences\n  demoMode "off"\n  greetingVariations "off"\n  uiSkin "glass"\n  uiLanguage "${lang}"`,
+          );
+        } catch (_error) {
+          // localStorage can be unavailable in hardened browser contexts.
+        }
+      }, language);
+      await page.goto('./');
+      await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('html')).toHaveAttribute('lang', language);
+
+      const panel = page.locator('.settings-panel');
+      // The Material option keeps its brand name across locales, while Flat,
+      // Glass, and Contrast are localized; assert the localized Glass label plus
+      // the always-present Material brand render in the picker.
+      const skin = page.locator('[data-testid="setting-ui-skin"]');
+      await expect(skin.locator('option', { hasText: glass })).toHaveCount(1);
+      await expect(skin.locator('option', { hasText: 'Material' })).toHaveCount(1);
+      await expect(panel).toContainText(skinLabel);
+      // With the glass skin active the transparency slider caption is visible.
+      await expect(page.locator('[data-testid="setting-glass-opacity"]')).toBeVisible();
+      await expect(panel).toContainText(opacity);
+    });
+  }
 });
 
 test.describe('Issue #136: desktop sidebar sizing', () => {

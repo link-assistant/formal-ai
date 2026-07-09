@@ -208,7 +208,13 @@ async function proveColdStartJourney(page) {
   await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(0);
 
   await sendPrompt(page, 'run `ls ~` in terminal');
-  await page.locator('[data-testid="command-approve"]').last().click();
+  // A resolved (denied) approval card stays rendered, so the second prompt adds a
+  // new pending card after it. Wait for the latest approve control to actually be
+  // enabled before clicking; otherwise `.last()` can resolve to the disabled
+  // denied button during the brief window before the pending card mounts.
+  const approveCommand = page.locator('[data-testid="command-approve"]').last();
+  await expect(approveCommand).toBeEnabled();
+  await approveCommand.click();
   await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(1);
 
   const providerRequest = await page.evaluate(() => window.__agentProviderCalls[0]);
@@ -315,7 +321,9 @@ test.describe('Issue #511/#519: cold-start ls home journey', () => {
     await page.locator('[data-testid="mode-option-agent"]').click();
     await page.locator('[data-testid="desktop-permission-panel-sidebar-grant-shell"]').click();
     await sendPrompt(page, 'run `ls ~` in terminal');
-    await page.locator('[data-testid="command-approve"]').last().click();
+    const approveShell = page.locator('[data-testid="command-approve"]').last();
+    await expect(approveShell).toBeEnabled();
+    await approveShell.click();
     await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(1);
 
     const lastAssistant = page.locator('[data-testid="chat-message"].assistant').last();

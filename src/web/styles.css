@@ -2955,7 +2955,10 @@ textarea,
   overflow-y: auto;
   border: none;
   border-radius: 0;
-  padding: 8px 10px 2px;
+  /* Uniform padding on all four sides keeps the embedded field balanced and
+     satisfies the Issue #112 equal-padding contract now that the action and
+     send controls live in a separate toolbar row below the text. */
+  padding: 8px;
   background: transparent;
   color: var(--fa-text-body);
   line-height: 1.45;
@@ -3407,7 +3410,8 @@ textarea:disabled,
     min-height: 42px;
     height: auto;
     max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
-    padding: 9px 8px 2px;
+    /* Keep the four-side padding uniform on mobile too (Issue #112). */
+    padding: 9px;
     resize: none;
   }
 
