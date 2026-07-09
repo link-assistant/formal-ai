@@ -37,6 +37,7 @@ use super::formalize::{
     FISHERMAN_DOC_ID,
 };
 use super::google_trends_catalog;
+use super::google_trends_learning;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
@@ -188,6 +189,15 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // names both.
     if rebuild_plan::is_rebuild_task(&task) {
         return Some(plan_rebuild_step(messages, tool_names));
+    }
+    // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
+    // engine cannot yet resolve through the human-gated self-improvement loop. Checked
+    // before the sibling catalog recipe because both legitimately name "Google Trends";
+    // its keywords ("learning frontier", "self-improvement loop", "cannot … resolve") are
+    // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
+    // guards a request that somehow names both.
+    if google_trends_learning::is_google_trends_learning_task(&task) {
+        return Some(plan_google_trends_learning_step(messages, tool_names));
     }
     if google_trends_catalog::is_google_trends_catalog_task(&task) {
         return Some(plan_google_trends_catalog_step(messages, tool_names));
@@ -667,6 +677,34 @@ fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> 
 
     // Step 3: nothing left to do — answer with the generated catalog inline.
     AgenticPlan::Final(question_catalog::final_answer(&document))
+}
+
+/// The issues-#498 + #558 learning-frontier recipe: write the generated
+/// learning-frontier report → verify → final. Like the other self-referential recipes
+/// it needs no web step — the report is a pure function of the committed Trends catalog
+/// routed through the human-gated self-improvement loop
+/// ([`google_trends_learning::render_document`]), so the loop maps its own coverage gap
+/// and hands it to human triage. Steps whose tool the CLI did not advertise are skipped.
+fn plan_google_trends_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let write_tool = tool_for(tool_names, Capability::Write);
+    let run_tool = tool_for(tool_names, Capability::Run);
+
+    let progress = Progress::scan(messages);
+    let document = google_trends_learning::render_document();
+
+    if let Some(tool) = write_tool.filter(|_| !progress.done(Capability::Write)) {
+        return plan_one(
+            tool,
+            write_arguments(google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH, &document),
+        );
+    }
+
+    if let Some(tool) = run_tool.filter(|_| !progress.done(Capability::Run)) {
+        let command = google_trends_learning::verification_command();
+        return plan_one(tool, json!({ "command": command }).to_string());
+    }
+
+    AgenticPlan::Final(google_trends_learning::final_answer(&document))
 }
 
 fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
