@@ -63,6 +63,7 @@ pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
 pub mod self_source_graph;
+pub mod sequences;
 pub mod server;
 pub mod shared_dialog;
 pub mod skill_compiler;
@@ -207,6 +208,13 @@ pub use self_improvement::{
 pub use self_source_graph::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
     owned_source_files, owned_total_bytes, SourceGraph, SourceModuleDigest, SourceModuleProjection,
+};
+pub use sequences::{
+    balanced_convert, compress, detect_palindrome, detect_period, detect_repetition,
+    infer_grid_patterns, infer_sequence_patterns, CompressionResult, CompressionStep, Doublet,
+    Grid, GridPatternReport, GridSymmetry, GridTransform, LinkAddress, LinkFrequenciesCache,
+    LinkFrequency, RepetitionPattern, SequenceIndex, SequencePattern, SequencePatternReport,
+    SequenceStore, SymbolTable,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,

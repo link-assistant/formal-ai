@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.274.0 (/tmp/gh-issue-solver-1783546061280)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.85s
+     Running tests/unit/mod.rs (target/debug/deps/unit-3efb08dd56b862be)
+
+running 1 test
+test docs_requirements_issue_531::issue_531_pattern_inference_case_study_is_traceable ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1441 filtered out; finished in 0.03s

@@ -1,0 +1,10 @@
+cpp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.h
+cpp/Platform.Data.Doublets.Sequences/Converters/CompressingConverter.h
+cpp/Platform.Data.Doublets.Sequences/Converters/LinksListToSequenceConverterBase.h
+cpp/Platform.Data.Doublets.Sequences/Converters/OptimalVariantConverter.h
+cpp/Platform.Data.Doublets.Sequences/Converters/SequenceToItsLocalElementLevelsConverter.h
+csharp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.cs
+csharp/Platform.Data.Doublets.Sequences/Converters/CompressingConverter.cs
+csharp/Platform.Data.Doublets.Sequences/Converters/LinksListToSequenceConverterBase.cs
+csharp/Platform.Data.Doublets.Sequences/Converters/OptimalVariantConverter.cs
+csharp/Platform.Data.Doublets.Sequences/Converters/SequenceToItsLocalElementLevelsConverter.cs

@@ -119,6 +119,11 @@ meanings
     lexeme en
       surface
         text "am"
+  analogy
+    defined-by term
+    lexeme en
+      surface
+        text "analogy"
   analyze
     defined-by word_surface
     lexeme en
@@ -384,6 +389,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  compression
+    defined-by term
+    lexeme en
+      surface
+        text "compression"
   concept_lookup
     defined-by intent
     lexeme en
@@ -564,6 +574,11 @@ meanings
     lexeme en
       surface
         text "deduplicate lines"
+  deduplication
+    defined-by term
+    lexeme en
+      surface
+        text "deduplication"
   default_language
     defined-by field
     lexeme en
@@ -994,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "intent write program"
+  invariant
+    defined-by term
+    lexeme en
+      surface
+        text "invariant"
   invert
     defined-by concept
     lexeme en
@@ -1169,6 +1189,11 @@ meanings
     lexeme en
       surface
         text "mathematical logic"
+  mathematics
+    defined-by category
+    lexeme en
+      surface
+        text "mathematics"
   memory_export_filename
     defined-by field
     lexeme en
@@ -1349,6 +1374,11 @@ meanings
     lexeme en
       surface
         text "path argument list files reverse sort"
+  pattern
+    defined-by term
+    lexeme en
+      surface
+        text "pattern"
   pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
     defined-by prompt_pattern
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase fursat men kya karte ho hi"
-  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase how do you spend your free time en"
-  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase khali samay men kya karte ho hi"

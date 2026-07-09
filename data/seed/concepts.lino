@@ -489,3 +489,99 @@ concept_metatheory
     summary 元理论(英语:metatheory),又译后设理论,是系统地解释理论本身的理论,即「理论之理论」。关于某个理论所作的陈述称为元理论陈述。在数学和数理逻辑中,元理论是研究另一种数学理论(对象理论)的数学理论,从外部考察其符号、公理与证明;例如元数学研究形式系统的一致性与完备性。
     source "https://zh.wikipedia.org/wiki/元理论"
     source_kind wikipedia
+concept_sequence
+  term sequence
+  intent concept_lookup
+  category knowledge-representation
+  aliases ("sequence" "a sequence" "sequences" "ordered sequence" "linear sequence")
+  summary "A sequence is an ordered collection of elements. In Links meta-theory a sequence is not a primitive: it is built from links, folded into a balanced tree of doublets where each doublet pairs two sub-sequences and every leaf is a point (a self-referential link modelling an atomic symbol). formal-ai reimplements the Data.Doublets.Sequences converters in Rust, so a text, an event stream, or a row of an image all become the same structure — a root link whose expansion reproduces the original elements. Sequences are treated as more basic than sets because order is retained; a set is the order-forgetting projection of a sequence."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_pattern
+  term pattern
+  intent concept_lookup
+  category knowledge-representation
+  aliases ("pattern" "a pattern" "patterns" "pattern inference" "structural pattern")
+  summary "A pattern is regular structure that lets a sequence, text, or image be described more compactly than element by element. In formal-ai pattern inference starts from associative deduplication: shared sub-structure is stored once through GetOrCreate on links, so repeated content collapses to reused links. On top of that substrate the system detects 1D structure (repetition, periodicity, palindromes, reversal, translation) and 2D structure (symmetry, rotation, reflection, transposition, analogy). Every inferred pattern is auditable and lossless: expanding the compressed links reproduces the input exactly."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_repetition
+  term repetition
+  intent concept_lookup
+  category knowledge-representation
+  aliases ("repetition" "a repetition" "repetitions" "repeat" "repeating pattern" "repeated block")
+  summary "Repetition is the simplest pattern: a block of elements that recurs to build a longer sequence. formal-ai detects an exact tiling (the smallest block whose repeats reproduce the whole sequence) and, more loosely, the smallest period p such that element i equals element i+p even when it does not tile evenly. Grounded in links, a repeated block is the same sub-link reused, which is exactly what associative deduplication captures for free."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_compression
+  term compression
+  intent concept_lookup
+  category algorithm
+  aliases ("compression" "data compression" "lossless compression" "sequence compression" "re-pair")
+  summary "Compression encodes data using fewer symbols by exploiting repeated structure. formal-ai uses a deterministic Re-Pair scheme over links: it repeatedly replaces the most frequent adjacent pair with a single composite link (created via GetOrCreate) and records each substitution as a reversible step. Because every replacement goes through the associative store, the result is lossless — expanding the composite links reproduces the original sequence exactly. Compression is the measurable side of pattern inference: a lower compression ratio means more inferred structure."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_deduplication
+  term deduplication
+  intent concept_lookup
+  category algorithm
+  aliases ("deduplication" "associative deduplication" "dedup" "de-duplication" "duplicate elimination")
+  summary "Deduplication stores identical structure exactly once. In Links meta-theory it is intrinsic: GetOrCreate(source, target) returns the same address for the same pair, so equal atoms and equal sub-sequences share one link. formal-ai makes associative deduplication the first step of pattern inference — the substrate on which repetition, periodicity, and symmetry detection are built — because content that deduplicates is, by definition, patterned. It is the storage-layer counterpart of lossless compression."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_symmetry
+  term symmetry
+  intent concept_lookup
+  category mathematics
+  aliases ("symmetry" "a symmetry" "symmetries" "symmetric" "mirror symmetry")
+  summary "A symmetry is a transformation that leaves an object unchanged. For a 2D grid formal-ai checks left-right and top-bottom mirroring, 180-degree rotation, and reflection across the main and anti diagonals; a grid is symmetric under a transform when applying it yields the identical grid. Symmetries are invariants: the transforms that map a pattern onto itself, which is a compact way to describe its structure."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_rotation
+  term rotation
+  intent concept_lookup
+  category mathematics
+  aliases ("rotation" "a rotation" "rotations" "rotate" "rotational")
+  summary "A rotation turns a structure about a point. For 2D images formal-ai supports 90-degree clockwise, 180-degree, and 90-degree counter-clockwise rotations of a grid, using them both to test rotational symmetry and to detect analogy — whether one grid is a rotated copy of another. For 1D sequences the cyclic analogue is translation (rotation of the index), detected as the shift that maps one sequence onto another."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_reflection
+  term reflection
+  intent concept_lookup
+  category mathematics
+  aliases ("reflection" "a reflection" "reflections" "mirror" "reflect")
+  summary "A reflection mirrors a structure across an axis. formal-ai reflects a 2D grid horizontally (left-right), vertically (top-bottom), and across its two diagonals (transpose and anti-transpose). Reflections are used to detect mirror symmetry within a single grid and reflective analogy between two grids. The 1D counterpart is sequence reversal — the reflection of an ordered sequence about its centre — which also underlies palindrome detection."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_translation_transform
+  term translation
+  intent concept_lookup
+  category mathematics
+  aliases ("translation" "a translation" "translations" "shift" "cyclic shift" "translational" "translation transformation")
+  summary "In the geometric and pattern-inference sense, a translation is a shift of position (not a change of language). For 1D sequences formal-ai detects cyclic translation: the shift amount that rotates one sequence onto another, with shift zero meaning they already match. For 2D grids, translational regularity appears as a repeating tile. Translation is one of the invariance-defining transforms — repetition is precisely translational symmetry by the period."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_analogy
+  term analogy
+  intent concept_lookup
+  category reasoning
+  aliases ("analogy" "an analogy" "analogies" "analogical mapping" "analogical reasoning")
+  summary "An analogy identifies two structures as the same up to a transformation: A is to B as C is to D. formal-ai infers analogy geometrically — one grid is an analogue of another when a single transform (rotation, reflection, transpose, or identity) maps one onto the other. Grounded in links, an analogy is a structure-preserving mapping between link networks, which is why the same deduplicated substrate that finds repetition also finds analogy: both are shared structure under a transform."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_invariant
+  term invariant
+  intent concept_lookup
+  category mathematics
+  aliases ("invariant" "an invariant" "invariants" "invariance" "invariant property")
+  summary "An invariant is a property preserved under a class of transformations. In pattern inference the invariants of a structure characterise it: the set of transforms that leave a grid unchanged is its symmetry group, and quantities like element counts or the compressed length are invariant under those transforms. formal-ai reports, for each grid, the non-identity transforms under which it is invariant, giving a compact fingerprint of its structure."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
+concept_transformation
+  term transformation
+  intent concept_lookup
+  category mathematics
+  aliases ("transformation" "a transformation" "transformations" "transform" "geometric transformation")
+  summary "A transformation is a mapping that rewrites a structure into another. formal-ai's pattern inference is organised around a small algebra of transformations: for 1D, reversal and cyclic translation; for 2D, the eight square symmetries (identity, three rotations, two axis reflections, two diagonal reflections). Symmetry, analogy, and invariance are all defined in terms of which transformations map a structure onto itself or onto another. Grounded in links, a transformation is a rewrite of one link network into another."
+  source docs/case-studies/issue-531/README.md
+  source_kind project-docs
