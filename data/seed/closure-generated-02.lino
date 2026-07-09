@@ -1,4 +1,24 @@
 meanings
+  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase fursat men kya karte ho hi"
+  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase how do you spend your free time en"
+  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase khali samay men kya karte ho hi"
   pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response document originality check sample missing ru"
-  response_document_originality_check_sample_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing zh"
-  response_document_originality_check_sample_present_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present en"
-  response_document_originality_check_sample_present_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present hi"
-  response_document_originality_check_sample_present_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present ru"

@@ -32,6 +32,7 @@ mod issue_493;
 mod issue_498_google_trends;
 mod issue_498_google_trends_catalog;
 mod issue_498_google_trends_learning;
+mod issue_499_learn_from_source;
 mod issue_513;
 mod issue_527;
 mod issue_527_question_catalog;
