@@ -482,6 +482,27 @@ return through the same meta-language meaning to the original source surface.
 | R526-5 | The architecture must state that translation goes through the meta language and that direct translation bypasses are not the quality path. | Implemented in `VISION.md`, `ARCHITECTURE.md` section 10, `ROADMAP.md`, and `CONTRIBUTING.md`. |
 | R526-6 | Issue data, online research, requirements, and solution planning must be compiled under `docs/case-studies/issue-526`. | Implemented by `docs/case-studies/issue-526/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, and raw GitHub snapshots. |
 
+## Issue #498 Google Trends Requirements
+
+Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks
+Formal AI to learn from popular Google searches visible in Google Trends. The
+delivered slice converts the U.S. top 10 Trends RSS snapshot into multilingual
+Formal AI prompts, answers every prompt, and records the catalog through the
+Agent CLI.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R498-1 | Issue data, PR data, online research, requirements, solution planning, and raw Google Trends evidence must be compiled under `docs/case-studies/issue-498`. | Implemented by `docs/case-studies/issue-498/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, raw GitHub snapshots, and `raw-data/google-trends-us-rss.xml`. |
+| R498-2 | The Google Trends top searches must be converted from an automated source into ranked topics. | Implemented by `parse_google_trends_rss` and `render_google_trends_snapshot_lino`, with the deterministic seed stored at `data/seed/google-trends-snapshot.lino`. |
+| R498-3 | The first catalog must cover the top 10 Google Trends topics. | Implemented by `GOOGLE_TRENDS_TOP_LIMIT = 10`; `data/meta/google-trends-catalog.lino` records `topic_count "10"`. |
+| R498-4 | Every supported language must receive Google Trends prompt variations. | Implemented by `google_trends_catalog()` expanding each topic across `supported_languages()` with `tell_me_about` and `trends_context` variants for English, Russian, Hindi, and Chinese. |
+| R498-5 | Every generated prompt must be answered through the existing Formal AI engine. | Implemented by `google_trends_catalog`, which calls `FormalAiEngine::answer` for each prompt and records the answer metadata in the `google_trends_catalog` artifact. |
+| R498-6 | The live Google Trends dependency must not make CI flaky. | Implemented by checking in the parsed Trends seed and keeping the live RSS fetch in `examples/issue_498_parse_google_trends_rss.rs` for explicit refreshes. |
+| R498-7 | The generated Google Trends catalog must be reviewable Links Notation. | Implemented by `src/agentic_coding/google_trends_catalog.rs::render_document` and committed at `data/meta/google-trends-catalog.lino`, with parser coverage in `tests/unit/issue_498_google_trends_catalog.rs`. |
+| R498-8 | The work must be driven and reproducible through Formal AI's Agent CLI. | Implemented by the `google_trends_catalog` agentic recipe, `GOOGLE_TRENDS_CATALOG_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends.json`. |
+| R498-9 | The trending prompts the engine cannot yet resolve must feed the human-gated auto-learning loop instead of being dropped. | Implemented by `src/google_trends_learning.rs::trending_learning_report`, which routes every unresolved prompt through the issue-#558 learner (`learn_rules_from_unknown_traces`) and records the honest, proposal-only result at `data/meta/google-trends-learning.lino` (nothing is auto-adopted). |
+| R498-10 | The learning-frontier report must be driven and pinned through a differently worded Agent CLI session. | Implemented by the `google_trends_learning` agentic recipe, `GOOGLE_TRENDS_LEARNING_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json`. |
+
 ## Issue #527 Question Generation Requirements
 
 Issue [#527](https://github.com/link-assistant/formal-ai/issues/527) asks for a
@@ -945,6 +966,30 @@ template regression upstream as
 | R367 | If the same release-badge issue exists in a template, it must be reported upstream and linked from the case study. | Implemented by reporting [rust-ai-driven-development-pipeline-template#85](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/85) and preserving `reported-rust-template-issue-85.json`. |
 | R368 | The release badge and README badge behavior must be protected by automated regression tests. | Implemented by `crate_release_badges_use_static_artifact_links_not_live_status`, `readme_keeps_traditional_ci_and_artifact_badges`, and `issue_492_release_badge_documents_are_traceable`. |
 | R369 | The issue #492 fix, documentation, test coverage, and PR metadata must land in the prepared PR #583 branch. | Implemented on branch `issue-492-c714d50efef8` and tracked by PR [#583](https://github.com/link-assistant/formal-ai/pull/583). |
+
+## Issue #499 Learn From This Data Source Requirements
+
+Issue [#499](https://github.com/link-assistant/formal-ai/issues/499) reported that
+a user teaching the engine where to learn from — the Russian directive
+`Обратясь сюда ты узнаешь актуальные темы <Google Trends URL>` — was answered with
+`intent: unknown`, and the maintainer asked for automated tools that convert such
+a source into the auto-learning process in every supported language. PR
+[#641](https://github.com/link-assistant/formal-ai/pull/641) makes the directive a
+first-class, language-agnostic `learn_from_source` intent driven from a seed
+`learning_sources` registry, routes it into the human-gated Google Trends learning
+loop, and drives the *same* directive through the Agent CLI, with a traceable case
+study under `docs/case-studies/issue-499`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R499-1 | Preserve issue #499 source data, PR #641 discussion data, online research, and the Google Trends raw snapshot under `docs/case-studies/issue-499`. | Implemented by `docs/case-studies/issue-499/raw-data/*`, `README.md`, `requirements.md`, `solution-plans.md`, and `raw-data/online-research.md`; covered by `issue_499_learn_from_source_documents_are_traceable`. |
+| R499-2 | The exact reported directive must no longer return `intent: unknown`. | Implemented by `src/solver_handlers/mod.rs::try_learn_from_source`; the reported prompt is pinned in `tests/unit/issue_499_learn_from_source.rs`. |
+| R499-3 | Recognition must be language-agnostic, proven with different wording per supported language and localized in the answer. | Implemented by the seed `learning_sources` directive cues and native-language keywords; covered by `learn_from_source_is_recognized_in_every_supported_language` and `the_acknowledgement_is_localized_to_the_prompt_language`. |
+| R499-4 | Routing must be data-driven — a directive cue plus a seed-declared source, never a hardcoded URL or phrase. | Implemented by `src/seed.rs::LearningSources::match_directive` and `data/seed/learning-sources.lino`; covered by `routing_requires_both_a_directive_and_a_known_source`. |
+| R499-5 | The directive must feed the auto-learning process rather than answer in isolation. | Implemented by routing the Google Trends learning frontier through the human-gated issue-#558 loop; covered by `the_directive_routes_into_the_human_gated_learning_frontier`. |
+| R499-6 | The same teaching directive must drive Formal AI's own Agent CLI learning recipe. | Implemented by `src/agentic_coding/google_trends_learning.rs::is_google_trends_learning_task`; covered by `the_reported_directive_drives_the_learning_recipe_via_agent_cli`. |
+| R499-7 | Pin the Agent CLI session byte-for-byte and drive the directive through the real Agent CLI in CI. | Implemented by `docs/case-studies/issue-499/agent-cli-session-learn-from-source.json`, the release-workflow E2E step, and `committed_agent_cli_session_matches_a_fresh_learn_from_source_run`. |
+| R499-8 | Protect recognition, localization, data-driven routing, the auto-learning route, and artifact reproducibility with regression tests. | Implemented by `tests/unit/issue_499_learn_from_source.rs` and `tests/unit/docs_requirements_issue_499.rs`. |
 
 ## Issue #538 Detailed Meanings and Words
 

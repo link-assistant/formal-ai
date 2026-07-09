@@ -405,6 +405,9 @@ intent_routing
     phrase "web search for"
     phrase "найди в интернете"
     phrase "поищи в интернете"
+  intent intent_learn_from_source
+    slug learn_from_source
+    response_link "response:learn_from_source"
   intent intent_unknown
     slug unknown
     response_link "response:unknown"

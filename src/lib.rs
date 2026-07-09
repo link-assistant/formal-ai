@@ -24,6 +24,8 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
+pub mod google_trends_catalog;
+pub mod google_trends_learning;
 pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
@@ -132,6 +134,14 @@ pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
     GithubLogCollectorConfig,
+};
+pub use google_trends_catalog::{
+    google_trends_catalog, parse_google_trends_rss, render_google_trends_snapshot_lino,
+    GoogleTrendNewsItem, GoogleTrendPromptAnswer, GoogleTrendPromptVariant, GoogleTrendTopic,
+    GoogleTrendsCatalog, GoogleTrendsParseError, GOOGLE_TRENDS_TOP_LIMIT,
+};
+pub use google_trends_learning::{
+    trending_learning_report, TrendingFrontierEntry, TrendingLearningReport,
 };
 pub use intent_formalization::{
     formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,

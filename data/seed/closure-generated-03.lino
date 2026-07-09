@@ -1,4 +1,24 @@
 meanings
+  response_document_originality_check_sample_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing zh"
+  response_document_originality_check_sample_present_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present en"
+  response_document_originality_check_sample_present_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present hi"
+  response_document_originality_check_sample_present_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample present ru"
   response_document_originality_check_sample_present_zh
     defined-by response_template
     lexeme en
@@ -124,6 +144,26 @@ meanings
     lexeme en
       surface
         text "response kupi slona zh"
+  response_learn_from_source_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source en"
+  response_learn_from_source_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source hi"
+  response_learn_from_source_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source ru"
+  response_learn_from_source_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response learn from source zh"
   response_meta_explanation_en
     defined-by response_template
     lexeme en
