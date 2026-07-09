@@ -21,8 +21,9 @@ use crate::solver_dispatch::{
 use crate::solver_handlers::{
     try_behavior_rules_with_runtime, try_concept_lookup_with_response_language,
     try_definition_merge_by_default, try_explicit_repository_lookup, try_feature_capability,
-    try_natural_language_tool_request, try_playwright_script, try_project_lookup,
-    try_project_lookup_with_response_language, CapabilityRuntime, SelfAwarenessRuntime,
+    try_natural_language_tool_request, try_pattern_inference_with_response_language,
+    try_playwright_script, try_project_lookup, try_project_lookup_with_response_language,
+    CapabilityRuntime, SelfAwarenessRuntime,
 };
 
 /// Execute the single registry-backed method-selection path.
@@ -96,6 +97,23 @@ pub fn try_dispatch(
                     try_concept_lookup_with_response_language(prompt, log, Some(language))
                 {
                     return Some(record_method_answer(prompt, log, answer, "concept_lookup"));
+                }
+            }
+        }
+        // Issue #531/#556: when a language is forced, render the pattern-inference
+        // report in that language so a replayed "find the pattern" request no
+        // longer strands its answer in English.
+        if name == "pattern_inference" {
+            if let Some(language) = forced_response_language {
+                if let Some(answer) =
+                    try_pattern_inference_with_response_language(prompt, &normalized, log, language)
+                {
+                    return Some(record_method_answer(
+                        prompt,
+                        log,
+                        answer,
+                        "pattern_inference",
+                    ));
                 }
             }
         }

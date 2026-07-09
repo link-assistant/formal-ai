@@ -58,7 +58,10 @@ pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runti
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use number_riddle::try_number_riddle;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
-pub use pattern_inference::{looks_like_pattern_inference, try_pattern_inference};
+pub use pattern_inference::{
+    looks_like_pattern_inference, try_pattern_inference,
+    try_pattern_inference_with_response_language,
+};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;

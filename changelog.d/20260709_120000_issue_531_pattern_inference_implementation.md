@@ -18,3 +18,8 @@ bump: patch
   `compression`, `deduplication`, `symmetry`, `rotation`, `reflection`,
   `translation`, `analogy`, `invariant`, `transformation`) rooted in links and
   closed by the total-closure resolver.
+- Localized the pattern-inference report into every seeded language (en, ru, hi,
+  zh): a response-language follow-up ("answer in Russian") now re-renders the 1D
+  sequence and 2D grid analysis — classification, counts, compression, next-element
+  prediction, and grid symmetry labels — in the requested language instead of
+  stranding it in English.
