@@ -79,6 +79,44 @@ fn the_learning_report_is_a_faithful_proposal_only_run() {
 }
 
 #[test]
+fn the_learning_frontier_spans_every_supported_language() {
+    // Issue #498 requires the learning frontier to span *every* supported language,
+    // not just one: English (en), Russian (ru), Hindi (hi), and Chinese (zh). A
+    // regression that dropped a locale would silently narrow the engine's own map of
+    // which trending prompts it cannot yet answer. Each expected fragment is the
+    // native-language request template the frontier prompt is built from, so this also
+    // pins that the non-English prompts stay in their own script.
+    let report = trending_learning_report();
+    let expected: [(&str, &str); 4] = [
+        ("en", "Give Google Trends context for"),
+        ("ru", "Дай контекст Google Trends для"),
+        ("hi", "के बारे में बताओ"),
+        ("zh", "介绍一下"),
+    ];
+    for (language, request_fragment) in expected {
+        assert!(
+            report
+                .frontier
+                .iter()
+                .any(|entry| entry.language == language && entry.prompt.contains(request_fragment)),
+            "the learning frontier must include {language} prompts like {request_fragment:?}",
+        );
+    }
+
+    // Coverage is derived from supported_languages(), so every language contributes at
+    // least one frontier prompt — none is silently dropped.
+    for language in ["en", "ru", "hi", "zh"] {
+        assert!(
+            report
+                .frontier
+                .iter()
+                .any(|entry| entry.language == language),
+            "language {language} must appear on the frontier",
+        );
+    }
+}
+
+#[test]
 fn recognises_the_google_trends_learning_task_without_colliding_with_siblings() {
     assert!(is_google_trends_learning_task(GOOGLE_TRENDS_LEARNING_TASK));
     assert!(is_google_trends_learning_task(
