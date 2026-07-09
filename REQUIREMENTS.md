@@ -500,6 +500,8 @@ Agent CLI.
 | R498-6 | The live Google Trends dependency must not make CI flaky. | Implemented by checking in the parsed Trends seed and keeping the live RSS fetch in `examples/issue_498_parse_google_trends_rss.rs` for explicit refreshes. |
 | R498-7 | The generated Google Trends catalog must be reviewable Links Notation. | Implemented by `src/agentic_coding/google_trends_catalog.rs::render_document` and committed at `data/meta/google-trends-catalog.lino`, with parser coverage in `tests/unit/issue_498_google_trends_catalog.rs`. |
 | R498-8 | The work must be driven and reproducible through Formal AI's Agent CLI. | Implemented by the `google_trends_catalog` agentic recipe, `GOOGLE_TRENDS_CATALOG_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends.json`. |
+| R498-9 | The trending prompts the engine cannot yet resolve must feed the human-gated auto-learning loop instead of being dropped. | Implemented by `src/google_trends_learning.rs::trending_learning_report`, which routes every unresolved prompt through the issue-#558 learner (`learn_rules_from_unknown_traces`) and records the honest, proposal-only result at `data/meta/google-trends-learning.lino` (nothing is auto-adopted). |
+| R498-10 | The learning-frontier report must be driven and pinned through a differently worded Agent CLI session. | Implemented by the `google_trends_learning` agentic recipe, `GOOGLE_TRENDS_LEARNING_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json`. |
 
 ## Issue #527 Question Generation Requirements
 

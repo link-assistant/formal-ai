@@ -23,8 +23,14 @@ offline and reproducible.
   [`agent-cli-session-google-trends.json`](agent-cli-session-google-trends.json)
 - Captured end-to-end Agent CLI run:
   [`agent-cli-e2e-run.log`](agent-cli-e2e-run.log)
+- Committed learning-frontier Agent CLI session:
+  [`agent-cli-session-google-trends-learning.json`](agent-cli-session-google-trends-learning.json)
+- Captured learning-frontier Agent CLI run:
+  [`agent-cli-e2e-run-google-trends-learning.log`](agent-cli-e2e-run-google-trends-learning.log)
 - Generated catalog artifact:
   [`../../../data/meta/google-trends-catalog.lino`](../../../data/meta/google-trends-catalog.lino)
+- Generated learning-frontier artifact:
+  [`../../../data/meta/google-trends-learning.lino`](../../../data/meta/google-trends-learning.lino)
 - Deterministic Trends seed:
   [`../../../data/seed/google-trends-snapshot.lino`](../../../data/seed/google-trends-snapshot.lino)
 
@@ -58,6 +64,8 @@ download or verify.
 | R498-6 | Drive the solution through Formal AI's own Agent CLI. | The `google_trends_catalog` agentic recipe writes the catalog, verifies it with a sandboxed compact read, and returns the generated document. |
 | R498-7 | Pin the Agent CLI session byte-for-byte. | `tests/unit/issue_498_google_trends_catalog.rs` compares a fresh `run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK)` session with `agent-cli-session-google-trends.json`. |
 | R498-8 | Keep the documentation and implementation contract test-covered. | `tests/unit/docs_requirements_issue_498.rs` protects this case-study evidence, and the issue-specific tests protect parser, catalog, recipe routing, and artifact freshness. |
+| R498-9 | Route the trending prompts the engine cannot yet resolve into the human-gated auto-learning loop. | `src/google_trends_learning.rs::trending_learning_report` re-answers every catalog prompt, hands the `unknown`-intent frontier to the issue-#558 learner (`learn_rules_from_unknown_traces`), and records the proposal-only result at `data/meta/google-trends-learning.lino`; nothing is auto-adopted. |
+| R498-10 | Drive and pin the learning-frontier report through a differently worded Agent CLI session. | `GOOGLE_TRENDS_LEARNING_TASK` drives the `google_trends_learning` recipe; `tests/unit/issue_498_google_trends_learning.rs` compares a fresh run with `agent-cli-session-google-trends-learning.json`. |
 
 ## 3. Root Cause
 
@@ -97,6 +105,23 @@ The missing abstraction was a catalog boundary:
 - The planner walks `write_file -> run_command -> final`; the run step uses the
   sandboxed `python3` allowlist to print the line count and first 12 lines rather
   than dumping the full catalog through the tool result.
+
+`src/google_trends_learning.rs` closes the auto-learning loop the maintainer
+asked for. It re-answers every catalog prompt through `FormalAiEngine`, splits
+them into the ones the engine already routes (e.g. `web_search`) and the
+**learning frontier** — the prompts it leaves at `intent "unknown"` — and hands
+that frontier to the same human-gated issue-#558 learner
+(`learn_rules_from_unknown_traces`) the rest of the system uses. Trending
+searches are open-domain factual questions, not program-plan modifiers, so the
+rule-synthesis learner correctly *declines* to fabricate a seed rule for them:
+of the 80 generated prompts, 20 are already routed and 60 land on the frontier,
+every frontier trace is rejected with `no rule_synthesis_candidate event`, and
+**nothing is auto-adopted**. Reporting that honest rejection — rather than
+manufacturing a rule — is exactly the faithful, proposal-only behaviour issue
+\#558 requires. `src/agentic_coding/google_trends_learning.rs` exposes the report
+through a differently worded Agent CLI recipe (`GOOGLE_TRENDS_LEARNING_TASK`)
+that walks the same `write_file -> run_command -> final` loop, so the frontier is
+generated and pinned by the Agent CLI just like the catalog.
 
 The snapshot collected on 2026-07-08 records these top 10 U.S. Trends queries:
 
@@ -142,7 +167,12 @@ After the implementation, focused coverage verifies:
 - recipe routing and planner behavior without colliding with the question
   catalog;
 - a fresh Agent CLI run matching the committed
-  `agent-cli-session-google-trends.json`; and
+  `agent-cli-session-google-trends.json`;
+- byte-for-byte freshness of `data/meta/google-trends-learning.lino`, the honest
+  20-routed / 60-frontier split, and the proposal-only learning run (nothing
+  auto-adopted);
+- a fresh learning-frontier Agent CLI run matching the committed
+  `agent-cli-session-google-trends-learning.json`; and
 - this documentation/evidence contract.
 
 To refresh the Trends seed from the live feed:
@@ -162,4 +192,15 @@ cargo run --bin formal-ai -- agent \
   --transcript \
   --session-json docs/case-studies/issue-498/agent-cli-session-google-trends.json \
   > docs/case-studies/issue-498/agent-cli-e2e-run.log
+```
+
+To regenerate the learning-frontier report and its Agent CLI session:
+
+```sh
+cargo run --example dump_google_trends_learning > data/meta/google-trends-learning.lino
+cargo run --bin formal-ai -- agent \
+  --task "Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation." \
+  --transcript \
+  --session-json docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json \
+  > docs/case-studies/issue-498/agent-cli-e2e-run-google-trends-learning.log
 ```
