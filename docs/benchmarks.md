@@ -19,7 +19,6 @@ source provenance for download-on-test integration. Only permissive licenses
 | Multilingual coding-modification | #362 | [`coding-modification-suite.lino`](../data/benchmarks/coding-modification-suite.lino) | `issue_362_multilingual_multi_turn_coding_modification_ratchet` | 4 |
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
-| Google Trends top-ten prompt catalog | #499 | [`google-trends-top10-suite.lino`](../data/benchmarks/google-trends-top10-suite.lino) | `issue_499_google_trends` | 40 |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -73,16 +72,6 @@ routing path.
 | OpenAssistant Conversations (OASST1) | Apache-2.0 | assistant dialog | <https://huggingface.co/datasets/OpenAssistant/oasst1> |
 | BIG-bench | Apache-2.0 | reasoning | <https://github.com/google/BIG-bench> |
 | MMLU | MIT | knowledge | <https://github.com/hendrycks/test> |
-
-### Google Trends top-ten prompt catalog — issue #499
-
-Records a captured Google Trends US RSS snapshot from
-`https://trends.google.com/trending/rss?geo=US` and generates self-authored
-Formal AI request templates from the top ten topic strings. The suite contains
-40 prompt cases: English, Russian, Hindi, and Chinese for each captured trend.
-The RSS snapshot is preserved under
-[`docs/case-studies/issue-499/raw-data/`](./case-studies/issue-499/raw-data/);
-CI never fetches live Google Trends data.
 
 ### Text/code edit profile — issue #408
 
@@ -160,9 +149,6 @@ cargo test --test unit issue_408_text_code_edit_profile_passes_local_ratchet -- 
 
 # Procedural how-to / instruction-following (#444)
 cargo test --test unit issue_444_procedural_howto_suite_routes_each_case -- --nocapture
-
-# Google Trends top-ten prompt catalog (#499)
-cargo test --test unit issue_499_google_trends -- --nocapture
 ```
 
 ## Conventions

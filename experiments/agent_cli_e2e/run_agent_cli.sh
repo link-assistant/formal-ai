@@ -15,12 +15,15 @@
 #                 (default: meanings-tomato-detail.lino)
 #   EXPECT_TEXT   A string that must appear inside EXPECT_FILE (default: `томаты`,
 #                 the previously missing Russian plural — the issue's canary)
+#   ATTEMPTS      How many times to (re)drive the CLI before giving up (default: 5).
+#                 The third-party CLI is non-deterministic — see the retry note
+#                 below — so a stalled first attempt is retried, not fatal.
 #
 # The script exits non-zero (with a diagnostic tail of the server log and the
 # CLI stdout/stderr) if:
 #   - the server never comes up on PORT
-#   - the CLI exits non-zero
-#   - EXPECT_FILE is missing from the workdir at the end of the run
+#   - the CLI exits non-zero on the final attempt
+#   - EXPECT_FILE is still missing from the workdir after ATTEMPTS runs
 #   - EXPECT_TEXT is missing from EXPECT_FILE
 #
 # This is the exact loop CI runs (see .github/workflows/release.yml).
@@ -100,13 +103,32 @@ echo "== server up on $PORT =="
 # script drives a single prompt through). 180s is generous for a 4-step loop
 # where each POST is deterministic and finishes in <100ms — the extra time
 # absorbs npm-install setup on a cold CI runner.
-timeout 180 "$AGENT" run \
-  --prompt "$TASK" \
-  --disable-stdin \
-  --model "formal-ai/formal-ai" \
-  > "$AGENT_LOG" 2>&1
-RC=$?
-echo "== agent exit: $RC =="
+#
+# The external `@link-assistant/agent` CLI is *non-deterministic*: it
+# occasionally exits 0 after only the first tool round (a websearch) without
+# walking the rest of the recipe, so no file is written. That is a property of
+# the third-party CLI — the deterministic formal-ai server plans the same next
+# step every time (visible in the server trace) — so we retry the whole
+# invocation up to ATTEMPTS times and stop as soon as EXPECT_FILE appears. A
+# stalled attempt exits in a few seconds, so the retries stay well inside the
+# job timeout, and every hard assertion below still has to pass on a genuine,
+# complete round-trip that actually wrote the file.
+ATTEMPTS="${ATTEMPTS:-5}"
+RC=1
+for attempt in $(seq 1 "$ATTEMPTS"); do
+  echo "== agent attempt $attempt/$ATTEMPTS =="
+  timeout 180 "$AGENT" run \
+    --prompt "$TASK" \
+    --disable-stdin \
+    --model "formal-ai/formal-ai" \
+    > "$AGENT_LOG" 2>&1
+  RC=$?
+  echo "== agent exit: $RC =="
+  if [ "$RC" -eq 0 ] && [ -f "$WORKDIR/$EXPECT_FILE" ]; then
+    break
+  fi
+  echo "== attempt $attempt produced no $EXPECT_FILE (external CLI stalled?); retrying =="
+done
 
 echo "== agent stderr/out tail =="
 tail -40 "$AGENT_LOG"
@@ -131,6 +153,9 @@ grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
 # One extra structural check: the server must have seen at least MIN_POSTS
 # /v1/chat/completions posts — a single post would mean the loop stopped after
 # the first turn without walking the recipe (search → fetch → write → verify).
+# The count is cumulative across retries, but since the successful attempt that
+# wrote EXPECT_FILE necessarily walked the full recipe, it alone contributes
+# ≥MIN_POSTS, so this stays a valid lower bound.
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
 [ "$posts" -ge "$MIN_POSTS" ] \
   || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"

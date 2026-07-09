@@ -152,8 +152,8 @@ the repo's **sole** CST/AST engine, the link-foundation `meta-language` links
 network (the same `LinkNetwork::parse` path as `src/coding/cst.rs`, *not* a
 parallel `syn` structure), and store the abstract-syntax node census in our data
 as Links Notation at
-[`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (2259 named nodes,
-80 distinct kinds, `text_preserved`/`clean` verified). The census logic is general
+[`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (3905 named nodes,
+81 distinct kinds, `text_preserved`/`clean` verified). The census logic is general
 — tests parse several different Rust sources through it — so nothing is hardcoded
 to one answer. The Agent CLI writes the artifact from a fourth differently-worded
 request ([session JSON](agent-cli-session-self-ast.json)), it is reproduced

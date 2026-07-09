@@ -10,11 +10,6 @@ Issue #362 adds a coding-modification manifest. It records external benchmark
 provenance for download-on-test integration while keeping full upstream
 datasets out of the repository.
 
-Issue #499 adds a Google Trends prompt catalog. It commits one small RSS
-metadata snapshot for traceability and generates self-authored prompt templates
-from short trend topic strings. No article bodies, canonical answers, or full
-external datasets are vendored.
-
 ## Imported Sources
 
 | Source | License | Upstream revision | Upstream cases | Held-out variants | Suite cases |
@@ -59,16 +54,3 @@ The issue #362 deterministic ratchet vendors only four self-authored
 multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
-
-## Issue #499 Google Trends Snapshot
-
-| Source | License | Captured data | Suite cases |
-| --- | --- | --- | --- |
-| Google Trends Trending Now RSS | Public web metadata; no upstream payload license imported | Top-ten topic strings, traffic labels, publication times, source names, titles, and URLs from `https://trends.google.com/trending/rss?geo=US` captured on 2026-07-08 | 40 self-authored prompt templates |
-
-The generated fixture
-[`google-trends-top10-suite.lino`](./google-trends-top10-suite.lino) contains
-Formal AI request prompts written by this project. It uses the RSS snapshot only
-as short topic/provenance metadata, stored under
-`docs/case-studies/issue-499/raw-data/google-trends-us-rss.xml`, and does not
-copy article bodies or full Google Trends datasets.

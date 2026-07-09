@@ -6,10 +6,8 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
-mod cli_google_trends;
 mod cli_shared_dialog;
 
-use cli_google_trends::{run_google_trends, GoogleTrendsOptions};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
@@ -117,8 +115,6 @@ enum Command {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
-    /// Convert a saved Google Trends RSS feed into multilingual Formal AI request cases.
-    GoogleTrends(GoogleTrendsOptions),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
@@ -433,7 +429,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
-        Command::GoogleTrends(options) => run_google_trends(options)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
             task,
