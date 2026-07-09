@@ -133,10 +133,11 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 let outcome = apply_dreaming_plan(&mut store, &plan);
                 store.save_to_file(&path)?;
                 eprintln!(
-                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable.",
+                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s).",
                     path.display(),
                     outcome.removed_events,
-                    outcome.estimated_reclaimed_bytes
+                    outcome.estimated_reclaimed_bytes,
+                    outcome.learned_amendments
                 );
             } else if !plan.actions.is_empty() {
                 eprintln!(

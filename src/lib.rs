@@ -120,7 +120,7 @@ pub use document_formats::{
 pub use dreaming::{
     apply_dreaming_plan, plan_memory_dreaming, render_dreaming_plan, DreamingAction,
     DreamingActionKind, DreamingConfig, DreamingDurability, DreamingEventObservation,
-    DreamingOutcome, DreamingPlan,
+    DreamingOutcome, DreamingPlan, LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
 };
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,

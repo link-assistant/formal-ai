@@ -233,8 +233,8 @@ full-bundle `--backup` as reset and purge-deleted.
 The planner classifies events into five `DreamingDurability` classes:
 
 - `IrreplaceableRaw` for raw user/assistant/system experience;
-- `RetainedLearning` for learning ledgers, promoted lessons, and generalized
-  algorithms;
+- `RetainedLearning` for learning ledgers, promoted lessons, generalized
+  algorithms, and baked-in meta-algorithm amendments;
 - `DeletedConversation` for data already attached to a soft-deleted thread;
 - `RecomputableCache` for public-source cache and fetch/tool output;
 - `RecomputableIntermediate` for derived summaries and conclusions.
@@ -247,6 +247,24 @@ evidence links before deciding which duplicate to keep. Under storage pressure,
 next known `incoming_bytes`, and selects the lowest-use reclaimable records
 first. If reclaimable records cannot satisfy the target, the plan reports
 `requires_bigger_storage` instead of selecting raw or learned experience.
+
+Dreaming also *learns from the same memory graph and generalizes*. In the same
+pure pass, `event_topic` recalculates which topic each event belongs to and
+`learn_from_memory` ranks topics by recalculated interaction frequency
+(`TopicFrequency`), recovers the durable requirements the user stated on those
+topics (`requirement_statement` → `LearnedRequirement`), and bakes each one into
+a `MetaAlgorithmAmendment`. `apply_dreaming_plan` materializes every amendment as
+a retained, never-reclaimable `meta_algorithm_amendment` event — idempotently, so
+re-applying an unchanged plan never duplicates it — which is how the user's
+requirements are baked into how similar future tasks are solved. Because an
+amendment can reproduce the specific task/test-run records it covers, those
+specifics classify as recomputable and, under pressure, are forgotten first via
+the `ForgetCoveredSpecific` action while the generalized amendment is kept
+forever. This realizes issue #540's core rule: as soon as a generalization
+works, the specific can be forgotten, yet the general meta-algorithm must keep
+the changes that let it solve all other tasks. The dreaming meta-algorithm is
+itself recorded as grounded data in `data/meta/dreaming-recipe.lino`, pinned to
+the live source by `tests/unit/specification/dreaming_meta_algorithm.rs`.
 
 The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
 plan-only background task. It waits before its first run, repeats infrequently,

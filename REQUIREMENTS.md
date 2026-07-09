@@ -1016,10 +1016,16 @@ deduplicate by recalculated frequency of use, and garbage-collect only data that
 can be refetched or recomputed. It explicitly incorporates issue
 [#494](https://github.com/link-assistant/formal-ai/issues/494), which requires
 a free-space policy that retains raw event history and learned experience while
-using cache/intermediate data as the disposable tier. PR
+using cache/intermediate data as the disposable tier. It further asks that
+dreaming *learn about the topics the user interacts with*, remember the user's
+requirements so he never has to repeat himself, and **generalize** them so
+Formal AI changes its own meta-algorithm — baking new requirements into how
+similar future tasks are solved and then safely forgetting the specifics a
+retained generalization can reproduce. PR
 [#645](https://github.com/link-assistant/formal-ai/pull/645) implements the
-deterministic memory-maintenance slice, desktop plan scheduler, and case-study
-trace under `docs/case-studies/issue-540`.
+deterministic memory-maintenance slice, the self-generalization layer, the
+desktop plan scheduler, and the case-study trace under
+`docs/case-studies/issue-540`.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
@@ -1035,3 +1041,8 @@ trace under `docs/case-studies/issue-540`.
 | R405 | Desktop applications must run the dreaming task in the background with the lowest practical priority. | Implemented by `desktop/lib/dreaming.cjs`; it delays first run, repeats infrequently, unrefs timers/processes, and wraps Unix-like runs with `nice -n 19`; covered by `desktop/scripts/dreaming.test.mjs`. |
 | R406 | The design must be documented with requirements, solution plans, and online research. | Implemented by `docs/case-studies/issue-540/{README.md,requirements.md,solution-plans.md,raw-data/online-research.md}`, plus README and ARCHITECTURE updates. |
 | R407 | The implementation must have automated regression coverage for Rust policy, desktop scheduling, and documentation traceability. | Implemented by `tests/unit/memory_maintenance.rs`, `desktop/scripts/dreaming.test.mjs`, `desktop/scripts/smoke.mjs`, and `tests/unit/docs_requirements_issue_540.rs`. |
+| R408 | Dreaming must recalculate which topics the user interacts with most from the current memory graph so learning concentrates where the user actually spends time. | Implemented by `src/dreaming.rs::event_topic`/`learn_from_memory` producing ranked `TopicFrequency` records, verified by `dreaming_recalculates_topic_frequency_and_learns_durable_requirements`. |
+| R409 | Dreaming must recover the durable requirements the user has stated on those topics so the user never has to repeat himself. | Implemented by `src/dreaming.rs::requirement_statement` and `LearnedRequirement` aggregation, verified by `dreaming_recalculates_topic_frequency_and_learns_durable_requirements`. |
+| R410 | Dreaming must generalize each learned requirement into a meta-algorithm amendment and bake it into memory as retained, never-reclaimable learning so new requirements are applied when solving similar future tasks. | Implemented by `src/dreaming.rs::MetaAlgorithmAmendment`, `apply_dreaming_plan` materializing an idempotent `meta_algorithm_amendment` event, and `dreaming_generalizes_requirements_into_meta_algorithm_amendments`/`applying_dreaming_plan_bakes_amendments_and_is_idempotent`. |
+| R411 | Under storage pressure, dreaming must forget the specific task/test-run records a retained amendment can reproduce before other recomputable data, while keeping the generalized amendment. | Implemented by `DreamingActionKind::ForgetCoveredSpecific`, covered-specific-first pressure ordering, and `dreaming_forgets_covered_specifics_first_under_pressure`. |
+| R412 | The dreaming meta-algorithm must be described as grounded, machine-readable data that CI keeps pinned to the live source. | Implemented by `data/meta/dreaming-recipe.lino`, `tests/unit/specification/dreaming_meta_algorithm.rs`, and the dreaming section of `docs/meta-algorithm.md`. |

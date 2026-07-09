@@ -23,10 +23,17 @@ fn issue_540_dreaming_documents_are_traceable() {
             "| R405 ",
             "| R406 ",
             "| R407 ",
+            "| R408 ",
+            "| R409 ",
+            "| R410 ",
+            "| R411 ",
+            "| R412 ",
             "src/dreaming.rs",
             "formal-ai memory dream",
             "desktop/lib/dreaming.cjs",
             "docs/case-studies/issue-540",
+            "MetaAlgorithmAmendment",
+            "data/meta/dreaming-recipe.lino",
         ],
     );
 
@@ -51,6 +58,21 @@ fn issue_540_dreaming_documents_are_traceable() {
             "RecomputableCache",
             "requires_bigger_storage",
             "FORMAL_AI_DESKTOP_DREAMING=off",
+            "MetaAlgorithmAmendment",
+            "ForgetCoveredSpecific",
+            "meta_algorithm_amendment",
+        ],
+    );
+
+    let meta_algorithm = read(root.join("docs/meta-algorithm.md"));
+    assert_contains_all(
+        "docs/meta-algorithm.md",
+        &meta_algorithm,
+        &[
+            "The dreaming meta-algorithm (issue #540)",
+            "data/meta/dreaming-recipe.lino",
+            "tests/unit/specification/dreaming_meta_algorithm.rs",
+            "ForgetCoveredSpecific",
         ],
     );
 
@@ -68,8 +90,11 @@ fn issue_540_dreaming_documents_are_traceable() {
             "## 6. Verification",
             "R396",
             "R407",
+            "R412",
             "DreamingConfig",
             "desktop/lib/dreaming.cjs",
+            "MetaAlgorithmAmendment",
+            "data/meta/dreaming-recipe.lino",
         ],
     );
 
@@ -80,8 +105,10 @@ fn issue_540_dreaming_documents_are_traceable() {
         &[
             "R540-01",
             "R540-13",
+            "R540-18",
             "FORMAL_AI_DESKTOP_DREAMING=off",
             "requires_bigger_storage",
+            "MetaAlgorithmAmendment",
         ],
     );
 
@@ -124,6 +151,9 @@ fn issue_540_dreaming_documents_are_traceable() {
         "docs/case-studies/issue-540/raw-data/code-search-memory.txt",
         "docs/case-studies/issue-540/raw-data/online-research.md",
         "changelog.d/20260708_223000_issue_540_dreaming.md",
+        "changelog.d/20260709_090000_issue_540_dreaming_generalization.md",
+        "data/meta/dreaming-recipe.lino",
+        "tests/unit/specification/dreaming_meta_algorithm.rs",
     ] {
         assert!(
             root.join(relative).is_file(),

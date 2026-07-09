@@ -613,8 +613,15 @@ the memory file is changed.
 `memory dream` is the default-on background maintenance planner from issue
 #540. It recalculates usage from event text/evidence, proposes duplicate
 recomputable cache cleanup, and can target a 20% free-space reserve when storage
-capacity/free-byte data is supplied. It is plan-only by default; applying the
-plan still requires `--apply --confirm` and should use `--backup`.
+capacity/free-byte data is supplied. Dreaming also *learns while idle*: it
+recalculates which topics you interact with most, remembers the durable
+requirements you have stated on them so you never have to repeat yourself, and
+generalizes each requirement into a **meta-algorithm amendment** — a retained,
+never-forgotten rule baked into how similar future tasks are solved. Because an
+amendment can reproduce the specific test-run records it covers, those specifics
+are forgotten first under storage pressure while the generalization is kept. It
+is plan-only by default; applying the plan (which also bakes in the learned
+amendments) still requires `--apply --confirm` and should use `--backup`.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 

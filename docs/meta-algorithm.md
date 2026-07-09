@@ -423,3 +423,77 @@ Because this recipe is checked against the source too, the market-price fact
 check and its recipe can never silently diverge — catching false numeric claims
 is itself a reproducible, data-driven artifact of the meta-algorithm that scales
 to the whole class of assets, periods, and languages by editing seed data alone.
+
+## The dreaming meta-algorithm (issue #540)
+
+The same grounded-recipe discipline records a sixth meta-algorithm, this time
+turned **inward**: the low-priority **dreaming** planner that maintains memory
+and lets Formal AI *change its own meta-algorithm* from stored experience. Issue
+#540 asked that, while idle and never blocking the UI, the assistant restructure
+deduplication by recalculated frequency of use, keep roughly a 20% free-space
+reserve (issue #494) by forgetting only recomputable/refetchable data, and —
+crucially — *learn more about the topics the user interacts with*, remember the
+requirements the user has stated so he never has to repeat himself, and
+**generalize** them so "when we solve similar tasks to previous tasks … new
+user's requirements are baked in", after which "if we don't have enough space we
+can forget specifics about test runs, but our general meta algorithm must keep
+changes that allow it to solve all other tasks." Its recipe lives at
+[`data/meta/dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) and is
+grounded by
+[`tests/unit/specification/dreaming_meta_algorithm.rs`](../tests/unit/specification/dreaming_meta_algorithm.rs).
+
+The whole planner is one pure function, `plan_memory_dreaming`, in
+[`src/dreaming.rs`](../src/dreaming.rs): it only reads memory and proposes work,
+so it is safe to run by default in the background, while physical deletion stays
+an explicit, confirmation-guarded `apply_dreaming_plan` call. Learning is folded
+into the same pass: `event_topic` recalculates which topic each event belongs to,
+`requirement_statement` lifts durable requirements from user-authored events, and
+`learn_from_memory` bakes each requirement into a `MetaAlgorithmAmendment` that is
+materialized as a retained, never-reclaimable `meta_algorithm_amendment` event.
+Because that amendment can reproduce the specific task/test-run records it
+covers, those specifics are classified as recomputable and, under storage
+pressure, forgotten first via the `ForgetCoveredSpecific` action — while the
+generalized amendment is kept forever.
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *dream about stored experience* behaviour:
+
+1. **Classify every event by durability** into one `DreamingDurability`, so
+   recomputability is known and raw experience and learning are protected.
+2. **Recalculate how often each event is actually used**, driving deduplication
+   and eviction by recalculated frequency of use.
+3. **Restructure recomputable duplicates** around the most-reused copy.
+4. **Recalculate which topics the user interacts with most** into ranked
+   `TopicFrequency` records.
+5. **Recover the durable requirements** the user stated on those topics into
+   `LearnedRequirement` records.
+6. **Generalize each requirement into a meta-algorithm amendment**, materialized
+   as a retained learning event so the requirement is baked into future solving.
+7. **Reclaim space toward the 20% free-space reserve** (issue #494), reporting
+   `requires_bigger_storage` when recomputable data alone cannot satisfy it.
+8. **Forget the specifics a retained amendment can reproduce**, keeping the
+   generalized meta-algorithm even after its specifics are gone.
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering is contiguous from 1; each has a `detail` and an existing `source_file` |
+| `meta_function` | `fn <name>` in the named source file |
+| `meta_constant` | the token present in the named source file, with a stated purpose |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the dreaming recipe still matches the live source:
+cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the dreaming planner and
+its recipe can never silently diverge — self-generalization is itself a
+reproducible, data-driven artifact: the amendments Formal AI bakes into its own
+meta-algorithm while dreaming are the same changes the grounded recipe pins to
+the code that produces them.
