@@ -163,8 +163,8 @@ about itself and fill gaps (e.g. unhandled errors).**
   CST/AST engine — the link-foundation `meta-language` links network, the same
   `LinkNetwork::parse` path as `src/coding/cst.rs`, not a parallel `syn` structure
   — and its abstract-syntax node census is stored in our data as Links Notation at
-  [`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (2259 named nodes,
-  80 distinct kinds, `text_preserved`/`clean` verified). The census logic
+  [`data/meta/self-ast.lino`](../../../data/meta/self-ast.lino) (3905 named nodes,
+  81 distinct kinds, `text_preserved`/`clean` verified). The census logic
   ([`self_ast::ast_census`](../../../src/agentic_coding/self_ast.rs)) is general —
   it works on any Rust source, proven by tests that parse several different
   sources — so nothing is hardcoded to one answer. The Agent CLI drives it end to
