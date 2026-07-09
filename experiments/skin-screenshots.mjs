@@ -12,12 +12,24 @@ const BASE = process.env.BASE || 'http://localhost:3456/app/';
 const OUT = process.env.OUT || 'docs/case-studies/issue-557/screenshots';
 const skins = ['flat', 'glass', 'material', 'contrast'];
 const themes = ['light', 'dark'];
+// Issue #557 (PR #643 follow-up): the selectable brand colour themes. Each one
+// re-tints the accent tokens and ships a light + dark variant.
+const colorThemes = [
+  'emerald',
+  'ocean',
+  'indigo',
+  'violet',
+  'rose',
+  'amber',
+  'graphite',
+];
 
 const prefsLines = (overrides) => {
   const base = {
     demoMode: 'on',
     greetingVariations: 'off',
     uiSkin: 'flat',
+    colorTheme: 'emerald',
     theme: 'light',
     glassOpacity: '0.72',
     glassBlur: '18',
@@ -116,6 +128,36 @@ for (const theme of themes) {
     }
   }
   await ctx.close();
+}
+
+// 3) Colour-theme gallery: every brand theme, light + dark, on the flat Chakra
+// skin so the accent recolouring (links, the solid send button, hover/focus)
+// reads clearly against the neutral surfaces. Demo mode stays ON so the
+// populated chat shows the accent applied to real message chrome.
+for (const theme of themes) {
+  for (const colorTheme of colorThemes) {
+    const ctx = await browser.newContext({
+      viewport: { width: 1280, height: 860 },
+      deviceScaleFactor: 2,
+      colorScheme: theme,
+    });
+    const page = await ctx.newPage();
+    await seedPrefs(page, { uiSkin: 'flat', theme, colorTheme });
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.waitForSelector('.app', { timeout: 15000 });
+    await page
+      .waitForFunction(
+        () =>
+          document.querySelectorAll('[data-testid="chat-message"]').length >= 2,
+        { timeout: 20000 },
+      )
+      .catch(() => {});
+    await page.waitForTimeout(1000);
+    const file = `${OUT}/color-theme-${theme}-${colorTheme}.png`;
+    await page.screenshot({ path: file, fullPage: false });
+    console.log('saved', file);
+    await ctx.close();
+  }
 }
 
 await browser.close();

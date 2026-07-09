@@ -12,19 +12,23 @@
 
 import { createTheme } from "@mui/material/styles";
 
-// Matches --fa-accent-solid-bg (the app's brand green).
+// Default brand hex — matches --fa-accent-solid-bg (the app's emerald brand).
+// Issue #557: the colour-theme selector overrides this per theme by passing a
+// resolved `brandHex` into the factory below.
 const BRAND = "#1f7a5b";
 const BRAND_DARK_BORDER = "#2a8f6a";
 
-// Build a MUI theme for the given resolved colour scheme ("light" | "dark").
-// Kept as a factory so the provider can rebuild it when the app theme flips.
-export function createMuiTheme(mode = "light") {
+// Build a MUI theme for the given resolved colour scheme ("light" | "dark") and
+// brand hex. Kept as a factory so the provider can rebuild it when the app
+// theme or the selected colour theme flips.
+export function createMuiTheme(mode = "light", brandHex = BRAND) {
   const isDark = mode === "dark";
+  const brand = brandHex || BRAND;
   return createTheme({
     palette: {
       mode: isDark ? "dark" : "light",
       primary: {
-        main: BRAND,
+        main: brand,
         contrastText: "#ffffff",
       },
       background: {
@@ -71,7 +75,9 @@ export function createMuiTheme(mode = "light") {
         styleOverrides: {
           root: {
             backgroundImage: "none",
-            borderColor: isDark ? BRAND_DARK_BORDER : "var(--fa-border-subtle)",
+            borderColor: isDark
+              ? brand || BRAND_DARK_BORDER
+              : "var(--fa-border-subtle)",
           },
         },
       },

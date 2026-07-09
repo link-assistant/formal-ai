@@ -294,6 +294,15 @@ en
       glass "Glass"
       material "Material"
       contrast "Contrast"
+    colorTheme
+      label "Colour theme"
+      emerald "Emerald"
+      ocean "Ocean"
+      indigo "Indigo"
+      violet "Violet"
+      rose "Rose"
+      amber "Amber"
+      graphite "Graphite"
     glassOpacity
       label "Glass opacity"
     glassMoreTransparent "Clearer"
@@ -660,6 +669,15 @@ ru
       glass "Стекло"
       material "Material"
       contrast "Контраст"
+    colorTheme
+      label "Цветовая тема"
+      emerald "Изумруд"
+      ocean "Океан"
+      indigo "Индиго"
+      violet "Фиолетовый"
+      rose "Роза"
+      amber "Янтарь"
+      graphite "Графит"
     glassOpacity
       label "Прозрачность стекла"
     glassMoreTransparent "Прозрачнее"
@@ -1016,6 +1034,15 @@ zh
       glass "玻璃"
       material "Material"
       contrast "高对比"
+    colorTheme
+      label "配色主题"
+      emerald "翡翠"
+      ocean "海洋"
+      indigo "靛蓝"
+      violet "紫罗兰"
+      rose "玫瑰"
+      amber "琥珀"
+      graphite "石墨"
     glassOpacity
       label "玻璃不透明度"
     glassMoreTransparent "更透明"
@@ -1378,6 +1405,15 @@ hi
       glass "ग्लास"
       material "Material"
       contrast "कॉन्ट्रास्ट"
+    colorTheme
+      label "रंग थीम"
+      emerald "एमराल्ड"
+      ocean "ओशन"
+      indigo "इंडिगो"
+      violet "वायलेट"
+      rose "रोज़"
+      amber "एम्बर"
+      graphite "ग्रेफाइट"
     glassOpacity
       label "ग्लास अपारदर्शिता"
     glassMoreTransparent "अधिक पारदर्शी"

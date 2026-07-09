@@ -32,6 +32,7 @@ function preferences(overrides = {}) {
     uiLanguage: 'en',
     theme: 'light',
     uiSkin: 'flat',
+    colorTheme: 'emerald',
     sidebarSettingsCollapsed: 'off',
     glassOpacity: '0.72',
     glassBlur: '18',
@@ -148,5 +149,68 @@ test.describe('Issue #557: glass skin configuration', () => {
       .evaluate((node) => getComputedStyle(node).backgroundColor);
     // Fully transparent renders as rgba(…, 0) or the keyword "transparent".
     expect(bg === 'transparent' || /,\s*0\s*\)$/.test(bg)).toBe(true);
+  });
+});
+
+// Issue #557 (PR #643 follow-up): multiple user-selectable colour themes, each
+// with a light and a dark variant. The theme id is mirrored onto `.app` via
+// `data-color-theme`, and it re-tints the shared `--fa-accent-*` tokens so the
+// brand accent (links, the solid send button, hover/focus) recolours across
+// every framework/skin without touching surfaces or text contrast.
+test.describe('Issue #557: colour themes', () => {
+  const readAccent = (page) =>
+    page
+      .locator('.app')
+      .evaluate((node) =>
+        getComputedStyle(node).getPropertyValue('--fa-accent-solid-bg').trim(),
+      );
+
+  test('the default emerald theme marks .app with data-color-theme', async ({ page }) => {
+    await boot(page, { colorTheme: 'emerald' });
+    await expect(page.locator('.app')).toHaveAttribute(
+      'data-color-theme',
+      'emerald',
+    );
+  });
+
+  test('a persisted non-default theme is applied on boot and re-tints the accent', async ({ page }) => {
+    await boot(page, { colorTheme: 'ocean' });
+    await expect(page.locator('.app')).toHaveAttribute(
+      'data-color-theme',
+      'ocean',
+    );
+    // getPropertyValue returns the raw declared custom-property value, so we
+    // compare against the hex the theme sets (ocean's light brand).
+    expect(await readAccent(page)).toBe('#1668b8');
+  });
+
+  test('choosing a theme in settings re-drives the accent token live', async ({ page }) => {
+    await boot(page, { colorTheme: 'emerald' });
+    // Emerald is the base palette (no override) — --fa-accent-solid-bg is #1f7a5b.
+    expect(await readAccent(page)).toBe('#1f7a5b');
+    await page
+      .locator('[data-testid="setting-color-theme"]')
+      .selectOption('violet');
+    await expect(page.locator('.app')).toHaveAttribute(
+      'data-color-theme',
+      'violet',
+    );
+    // Violet's light brand is #7c3aed.
+    await expect.poll(async () => await readAccent(page)).toBe('#7c3aed');
+  });
+
+  test('each theme ships a distinct dark variant', async ({ page }) => {
+    await boot(page, { colorTheme: 'rose', theme: 'dark' });
+    // Rose's dark brand is #be123c; its dark border (#fb7185) differs from the
+    // light one, proving the dark layer is applied rather than the light block.
+    expect(await readAccent(page)).toBe('#be123c');
+    const border = await page
+      .locator('.app')
+      .evaluate((node) =>
+        getComputedStyle(node)
+          .getPropertyValue('--fa-accent-solid-border')
+          .trim(),
+      );
+    expect(border).toBe('#fb7185');
   });
 });

@@ -149,6 +149,213 @@
 }
 
 /* ==================================================================
+ * Issue #557 — selectable colour themes (brand accent palettes)
+ * ==================================================================
+ * The colour-theme selector re-tints ONLY the accent tokens (links, the
+ * solid brand button, and the shared interactive hover/focus states) while
+ * surfaces/text keep the shared light/dark values, so every theme preserves
+ * contrast in both schemes. `emerald` is the default and needs no override —
+ * it IS the base palette defined at the top of this file.
+ *
+ * Values follow the same triplication the base tokens use: a light block,
+ * plus two dark layers (explicit `data-theme="dark"` and the OS-preference
+ * fallback) so pinned-dark and OS-dark users both get the dark accent. The
+ * brand hex mirrors COLOR_THEME_BRAND_HEX in main.jsx so the MUI-backed
+ * `material` skin recolours in lockstep with the CSS/Chakra skins.
+ *
+ * `data-color-theme` sits on `.app` (a descendant of :root), so these custom
+ * properties cascade down to every control and the composer for free. */
+
+/* Light accents */
+.app[data-color-theme="ocean"] {
+  --fa-accent-link: #135a9e;
+  --fa-accent-solid-bg: #1668b8;
+  --fa-accent-solid-border: #1668b8;
+  --fa-control-hover-border: #86b0d8;
+  --fa-control-hover-bg: #eef4fb;
+  --fa-control-active-hover-border: #0d477f;
+  --fa-control-active-hover-bg: #0d477f;
+  --fa-focus-ring: #135a9e;
+}
+.app[data-color-theme="indigo"] {
+  --fa-accent-link: #4338ca;
+  --fa-accent-solid-bg: #4f46e5;
+  --fa-accent-solid-border: #4f46e5;
+  --fa-control-hover-border: #a5b0f0;
+  --fa-control-hover-bg: #f0f1fe;
+  --fa-control-active-hover-border: #3730a3;
+  --fa-control-active-hover-bg: #3730a3;
+  --fa-focus-ring: #4338ca;
+}
+.app[data-color-theme="violet"] {
+  --fa-accent-link: #6d28d9;
+  --fa-accent-solid-bg: #7c3aed;
+  --fa-accent-solid-border: #7c3aed;
+  --fa-control-hover-border: #c4a5f0;
+  --fa-control-hover-bg: #f6f1fe;
+  --fa-control-active-hover-border: #5b21b6;
+  --fa-control-active-hover-bg: #5b21b6;
+  --fa-focus-ring: #6d28d9;
+}
+.app[data-color-theme="rose"] {
+  --fa-accent-link: #a5123a;
+  --fa-accent-solid-bg: #be123c;
+  --fa-accent-solid-border: #be123c;
+  --fa-control-hover-border: #e8a3b4;
+  --fa-control-hover-bg: #fdeff2;
+  --fa-control-active-hover-border: #881337;
+  --fa-control-active-hover-bg: #881337;
+  --fa-focus-ring: #a5123a;
+}
+.app[data-color-theme="amber"] {
+  --fa-accent-link: #92400e;
+  --fa-accent-solid-bg: #b45309;
+  --fa-accent-solid-border: #b45309;
+  --fa-control-hover-border: #e6c088;
+  --fa-control-hover-bg: #fdf6ec;
+  --fa-control-active-hover-border: #7c3a06;
+  --fa-control-active-hover-bg: #7c3a06;
+  --fa-focus-ring: #92400e;
+}
+.app[data-color-theme="graphite"] {
+  --fa-accent-link: #334155;
+  --fa-accent-solid-bg: #475569;
+  --fa-accent-solid-border: #475569;
+  --fa-control-hover-border: #aeb9c6;
+  --fa-control-hover-bg: #eff2f5;
+  --fa-control-active-hover-border: #1e293b;
+  --fa-control-active-hover-bg: #1e293b;
+  --fa-focus-ring: #334155;
+}
+
+/* Dark accents — explicit theme override (wins over the OS preference). */
+:root[data-theme="dark"] .app[data-color-theme="ocean"] {
+  --fa-accent-link: #8cc4f0;
+  --fa-accent-solid-bg: #1668b8;
+  --fa-accent-solid-border: #3d92e0;
+  --fa-control-hover-border: #6ca8dd;
+  --fa-control-hover-bg: #1c2a38;
+  --fa-control-active-hover-border: #3d92e0;
+  --fa-control-active-hover-bg: #12456f;
+  --fa-focus-ring: #6ca8dd;
+}
+:root[data-theme="dark"] .app[data-color-theme="indigo"] {
+  --fa-accent-link: #b3bcfa;
+  --fa-accent-solid-bg: #4f46e5;
+  --fa-accent-solid-border: #818cf8;
+  --fa-control-hover-border: #8b93ea;
+  --fa-control-hover-bg: #24263a;
+  --fa-control-active-hover-border: #818cf8;
+  --fa-control-active-hover-bg: #37307a;
+  --fa-focus-ring: #a5b0f0;
+}
+:root[data-theme="dark"] .app[data-color-theme="violet"] {
+  --fa-accent-link: #cbb4fa;
+  --fa-accent-solid-bg: #7c3aed;
+  --fa-accent-solid-border: #a78bfa;
+  --fa-control-hover-border: #a78bfa;
+  --fa-control-hover-bg: #2b2440;
+  --fa-control-active-hover-border: #a78bfa;
+  --fa-control-active-hover-bg: #4a2f8a;
+  --fa-focus-ring: #c4a5f0;
+}
+:root[data-theme="dark"] .app[data-color-theme="rose"] {
+  --fa-accent-link: #fca5b6;
+  --fa-accent-solid-bg: #be123c;
+  --fa-accent-solid-border: #fb7185;
+  --fa-control-hover-border: #e28796;
+  --fa-control-hover-bg: #3a222a;
+  --fa-control-active-hover-border: #fb7185;
+  --fa-control-active-hover-bg: #7a1e34;
+  --fa-focus-ring: #fca5b6;
+}
+:root[data-theme="dark"] .app[data-color-theme="amber"] {
+  --fa-accent-link: #f5c177;
+  --fa-accent-solid-bg: #b45309;
+  --fa-accent-solid-border: #f59e0b;
+  --fa-control-hover-border: #d9a860;
+  --fa-control-hover-bg: #362c1c;
+  --fa-control-active-hover-border: #f59e0b;
+  --fa-control-active-hover-bg: #6f4410;
+  --fa-focus-ring: #f5c177;
+}
+:root[data-theme="dark"] .app[data-color-theme="graphite"] {
+  --fa-accent-link: #cbd5e1;
+  --fa-accent-solid-bg: #475569;
+  --fa-accent-solid-border: #94a3b8;
+  --fa-control-hover-border: #8b97a8;
+  --fa-control-hover-bg: #262c33;
+  --fa-control-active-hover-border: #94a3b8;
+  --fa-control-active-hover-bg: #3a4453;
+  --fa-focus-ring: #cbd5e1;
+}
+
+/* Dark accents — OS preference fallback (unless light is pinned). Mirrors the
+ * explicit-dark values above, per the file's triplication pattern. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .app[data-color-theme="ocean"] {
+    --fa-accent-link: #8cc4f0;
+    --fa-accent-solid-bg: #1668b8;
+    --fa-accent-solid-border: #3d92e0;
+    --fa-control-hover-border: #6ca8dd;
+    --fa-control-hover-bg: #1c2a38;
+    --fa-control-active-hover-border: #3d92e0;
+    --fa-control-active-hover-bg: #12456f;
+    --fa-focus-ring: #6ca8dd;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="indigo"] {
+    --fa-accent-link: #b3bcfa;
+    --fa-accent-solid-bg: #4f46e5;
+    --fa-accent-solid-border: #818cf8;
+    --fa-control-hover-border: #8b93ea;
+    --fa-control-hover-bg: #24263a;
+    --fa-control-active-hover-border: #818cf8;
+    --fa-control-active-hover-bg: #37307a;
+    --fa-focus-ring: #a5b0f0;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="violet"] {
+    --fa-accent-link: #cbb4fa;
+    --fa-accent-solid-bg: #7c3aed;
+    --fa-accent-solid-border: #a78bfa;
+    --fa-control-hover-border: #a78bfa;
+    --fa-control-hover-bg: #2b2440;
+    --fa-control-active-hover-border: #a78bfa;
+    --fa-control-active-hover-bg: #4a2f8a;
+    --fa-focus-ring: #c4a5f0;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="rose"] {
+    --fa-accent-link: #fca5b6;
+    --fa-accent-solid-bg: #be123c;
+    --fa-accent-solid-border: #fb7185;
+    --fa-control-hover-border: #e28796;
+    --fa-control-hover-bg: #3a222a;
+    --fa-control-active-hover-border: #fb7185;
+    --fa-control-active-hover-bg: #7a1e34;
+    --fa-focus-ring: #fca5b6;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="amber"] {
+    --fa-accent-link: #f5c177;
+    --fa-accent-solid-bg: #b45309;
+    --fa-accent-solid-border: #f59e0b;
+    --fa-control-hover-border: #d9a860;
+    --fa-control-hover-bg: #362c1c;
+    --fa-control-active-hover-border: #f59e0b;
+    --fa-control-active-hover-bg: #6f4410;
+    --fa-focus-ring: #f5c177;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="graphite"] {
+    --fa-accent-link: #cbd5e1;
+    --fa-accent-solid-bg: #475569;
+    --fa-accent-solid-border: #94a3b8;
+    --fa-control-hover-border: #8b97a8;
+    --fa-control-hover-bg: #262c33;
+    --fa-control-active-hover-border: #94a3b8;
+    --fa-control-active-hover-bg: #3a4453;
+    --fa-focus-ring: #cbd5e1;
+  }
+}
+
+/* ==================================================================
  * Issue #557 — Glass skin ("Liquid Glass", Apple-inspired)
  * ==================================================================
  * Translucent, backdrop-blurred surfaces float over a living ambient
@@ -772,7 +979,7 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: #175f4f;
+  background: var(--fa-accent-solid-bg);
   font-size: 14px;
 }
 
@@ -810,10 +1017,10 @@ button {
   flex: 0 1 auto;
   max-width: min(360px, 38vw);
   padding: 6px 8px;
-  border: 1px solid #b9d8cf;
+  border: 1px solid color-mix(in srgb, var(--fa-accent-solid-bg) 28%, var(--fa-surface-card));
   border-radius: 8px;
-  background: #edf6f3;
-  color: #175f4f;
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 10%, var(--fa-surface-card));
+  color: var(--fa-accent-link);
   font-size: 12px;
   font-weight: 800;
   overflow: hidden;
@@ -1075,8 +1282,8 @@ button {
 .mode-option.is-active,
 .mobile-menu-toggle[aria-pressed="true"],
 .send-button {
-  border-color: #175f4f;
-  background: #175f4f;
+  border-color: var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
   color: #ffffff;
 }
 
@@ -1300,14 +1507,14 @@ body.is-resizing-context {
   border: 1px dashed #b9c6ca;
   border-radius: 8px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   font-weight: 700;
   text-align: left;
 }
 
 .conversation-new:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-deleted-toggle {
@@ -1322,7 +1529,7 @@ body.is-resizing-context {
 .conversation-deleted-toggle input {
   width: 16px;
   height: 16px;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .conversation-purge-deleted {
@@ -1385,13 +1592,13 @@ body.is-resizing-context {
 }
 
 .conversation-copy:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-copy.is-copied {
-  border-color: #175f4f;
-  color: #175f4f;
+  border-color: var(--fa-accent-link);
+  color: var(--fa-accent-link);
 }
 
 .conversation-entry-button {
@@ -1425,8 +1632,8 @@ body.is-resizing-context {
 }
 
 .conversation-entry-button:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-delete:hover {
@@ -1435,8 +1642,8 @@ body.is-resizing-context {
 }
 
 .conversation-entry.is-active .conversation-entry-button {
-  border-color: #175f4f;
-  background: #e3efe9;
+  border-color: var(--fa-accent-solid-border);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 14%, var(--fa-surface-card));
   font-weight: 600;
 }
 
@@ -1587,7 +1794,7 @@ body.is-resizing-context {
 
 .setting-row input[type="range"] {
   width: 100%;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .setting-poles {
@@ -1618,7 +1825,7 @@ body.is-resizing-context {
 .setting-check input {
   width: 16px;
   height: 16px;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .setting-row-ocr {
@@ -1666,7 +1873,7 @@ body.is-resizing-context {
 }
 
 .desktop-shell-panel a {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   font-weight: 700;
 }
 
@@ -1793,7 +2000,7 @@ body.is-resizing-context {
 .desktop-update-progress {
   width: 100%;
   height: 9px;
-  accent-color: #1f7a5b;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .desktop-update-actions {
@@ -1879,7 +2086,7 @@ body.is-resizing-context {
 }
 
 .message.assistant .avatar {
-  background: #175f4f;
+  background: var(--fa-accent-solid-bg);
 }
 
 .message.system .avatar {
@@ -1953,8 +2160,8 @@ body.is-resizing-context {
 
 .permission-button-grant-all {
   flex: 1;
-  border-color: #5da28a;
-  background: #175f4f;
+  border-color: var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
@@ -1964,8 +2171,8 @@ body.is-resizing-context {
 
 .permission-button-grant-all:hover:not(:disabled),
 .permission-button-grant-all:focus-visible {
-  background: #1e7960;
-  border-color: #175f4f;
+  background: var(--fa-control-active-hover-bg);
+  border-color: var(--fa-accent-solid-border);
   color: #ffffff;
 }
 
@@ -2008,7 +2215,7 @@ body.is-resizing-context {
 .command-approval-status-approved {
   border-color: #9bc9b7;
   background: #e7f5ef;
-  color: #175f4f;
+  color: var(--fa-accent-link);
 }
 
 .permission-state-declined,
@@ -2037,7 +2244,7 @@ body.is-resizing-context {
   border-radius: 6px;
   padding: 5px 8px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
@@ -2047,8 +2254,8 @@ body.is-resizing-context {
 
 .permission-button:hover:not(:disabled),
 .permission-button[aria-pressed="true"] {
-  background: #e5f3ee;
-  border-color: #5da28a;
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 9%, var(--fa-surface-card));
+  border-color: var(--fa-accent-link);
 }
 
 .permission-button-secondary {
@@ -2366,7 +2573,7 @@ body.is-resizing-context {
 }
 
 .markdown-body a.external-link {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
@@ -2458,7 +2665,7 @@ body.is-resizing-context {
   border-radius: 6px;
   padding: 3px 9px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
@@ -2949,7 +3156,7 @@ body.is-resizing-context {
 }
 
 .message-actions a {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   text-decoration: none;
 }
 
@@ -3012,7 +3219,7 @@ body.is-resizing-context {
   background: none;
   border: 1px solid #b0bac4;
   border-radius: 4px;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
@@ -3822,12 +4029,12 @@ textarea:disabled,
 :root[data-theme="dark"] .source-code-button:hover,
 :root[data-theme="dark"] .download-button:hover,
 :root[data-theme="dark"] .sidebar-section-collapse:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .conversation-new {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .conversation-new:hover,
@@ -3839,8 +4046,8 @@ textarea:disabled,
 :root[data-theme="dark"] .composer-action-button:hover,
 :root[data-theme="dark"] .composer-menu-item:hover,
 :root[data-theme="dark"] .fetch-iframe-control:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .conversation-empty,
@@ -3894,11 +4101,11 @@ textarea:disabled,
 
 :root[data-theme="dark"] .settings-reset-all:hover:not(:disabled),
 :root[data-theme="dark"] .settings-reset-one:hover {
-  border-color: #6cc5a6;
+  border-color: var(--fa-control-hover-border);
 }
 
 :root[data-theme="dark"] .conversation-entry.is-active .conversation-entry-button {
-  border-color: #6cc5a6;
+  border-color: var(--fa-control-hover-border);
   background: #1f3a31;
 }
 
@@ -4067,8 +4274,8 @@ textarea:disabled,
 }
 
 :root[data-theme="dark"] .thinking-preview-toggle:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .formalization-view {
@@ -4094,11 +4301,11 @@ textarea:disabled,
 }
 
 :root[data-theme="dark"] .message-actions a {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .markdown-body a.external-link {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .fetch-iframe-container,
@@ -4255,7 +4462,7 @@ textarea:disabled,
   }
 
   :root:not([data-theme="light"]) .conversation-new {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .conversation-new:hover,
@@ -4271,8 +4478,8 @@ textarea:disabled,
   :root:not([data-theme="light"]) .source-code-button:hover,
   :root:not([data-theme="light"]) .download-button:hover,
   :root:not([data-theme="light"]) .sidebar-section-collapse:hover {
-    border-color: #6cc5a6;
-    background: #28332f;
+    border-color: var(--fa-control-hover-border);
+    background: var(--fa-control-hover-bg);
   }
 
   :root:not([data-theme="light"]) .conversation-empty,
@@ -4326,11 +4533,11 @@ textarea:disabled,
 
   :root:not([data-theme="light"]) .settings-reset-all:hover:not(:disabled),
   :root:not([data-theme="light"]) .settings-reset-one:hover {
-    border-color: #6cc5a6;
+    border-color: var(--fa-control-hover-border);
   }
 
   :root:not([data-theme="light"]) .conversation-entry.is-active .conversation-entry-button {
-    border-color: #6cc5a6;
+    border-color: var(--fa-control-hover-border);
     background: #1f3a31;
   }
 
@@ -4499,8 +4706,8 @@ textarea:disabled,
   }
 
   :root:not([data-theme="light"]) .thinking-preview-toggle:hover {
-    border-color: #6cc5a6;
-    background: #28332f;
+    border-color: var(--fa-control-hover-border);
+    background: var(--fa-control-hover-bg);
   }
 
   :root:not([data-theme="light"]) .formalization-view {
@@ -4526,11 +4733,11 @@ textarea:disabled,
   }
 
   :root:not([data-theme="light"]) .message-actions a {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .markdown-body a.external-link {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .fetch-iframe-container,
