@@ -10,11 +10,21 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { ChakraProvider, chakra } from "@chakra-ui/react";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import ScopedCssBaseline from "@mui/material/ScopedCssBaseline";
+import MuiIconButton from "@mui/material/IconButton";
 
 // Issue #550: the Chakra system bridges the app's --fa-* CSS design tokens into
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
+
+// Issue #557: multi-framework UI skins. The `glass` skin renders Apple "Liquid
+// Glass" on top of Chakra UI via rdev/liquid-glass-react (GlassBacking), and the
+// `material` skin switches the UI framework from Chakra UI to MUI (Material UI)
+// via the theme factory below. See docs/case-studies/issue-557 for the design.
+import { GlassBacking } from "./liquid-glass.jsx";
+import { createMuiTheme } from "./mui-theme.js";
 
 const {
   createElement: h,
@@ -1137,7 +1147,13 @@ const PREFERENCE_DEFAULTS = {
   // Issues #108/#110: UI, chat, and input surfaces are configurable while the
   // defaults stay flat and cheap to render.
   uiSkin: "flat",
+  // Issue #557: glass-skin configuration. `glassOpacity` controls how frosted
+  // the panes are; `glassBlur` is the backdrop blur radius (in px, mapped to the
+  // liquid-glass refraction blur); `glassRefraction` is the displacement/warp
+  // strength Apple's Liquid Glass uses to bend the content behind the pane.
   glassOpacity: 0.78,
+  glassBlur: 18,
+  glassRefraction: 60,
   chatStyle: "cards",
   composerStyle: "flat",
   composerAction: "attach",
@@ -1565,6 +1581,35 @@ function normalizeGlassOpacity(value) {
   );
 }
 
+// Issue #557: backdrop blur radius for glass panes, in CSS pixels.
+function normalizeGlassBlur(value) {
+  return clampNumber(
+    value,
+    4,
+    40,
+    PREFERENCE_DEFAULTS.glassBlur,
+  );
+}
+
+// Issue #557: liquid-glass refraction (displacement) strength. Higher values
+// bend the content behind the pane more strongly.
+function normalizeGlassRefraction(value) {
+  return clampNumber(
+    value,
+    0,
+    120,
+    PREFERENCE_DEFAULTS.glassRefraction,
+  );
+}
+
+// Issue #557: which UI framework backs a given skin. The default/glass/contrast
+// skins are Chakra UI (glass layers Apple Liquid Glass on top); the material
+// skin switches the framework to MUI. Keeping this a pure helper makes the
+// framework swap testable and keeps the mapping in one place.
+function uiFrameworkForSkin(skin) {
+  return skin === "material" ? "mui" : "chakra";
+}
+
 function normalizeChatStyle(value) {
   return CHAT_STYLES.includes(value) ? value : PREFERENCE_DEFAULTS.chatStyle;
 }
@@ -1962,6 +2007,39 @@ function ToolbarIcon({ action, pack, className = "btn-icon" }) {
 // Pairs with the `--fa-control-*` design tokens in styles.css (the shared
 // hover/active/focus treatment); see docs/case-studies/issue-550 for the full
 // rationale (M2 reusable-component requirement + the Chakra/CSP ADR).
+// Issue #557: framework-aware composer button. The flat/glass/contrast skins
+// keep a plain <button> (identical DOM, test hooks and keyboard behaviour); the
+// glass skin adds a non-interactive Apple Liquid Glass backing behind it; the
+// material skin renders a real MUI IconButton, switching the UI framework from
+// Chakra UI to MUI while forwarding the same props (data-testid, aria-*,
+// onClick, disabled, type). Everything after `framework`/`glass`/`glassConfig`/
+// `glassSize` is spread verbatim onto the underlying control.
+function ComposerControlButton({
+  framework,
+  glass = false,
+  glassConfig = null,
+  glassSize = 36,
+  children,
+  ...rest
+}) {
+  if (framework === "mui") {
+    return h(MuiIconButton, { disableRipple: false, ...rest }, children);
+  }
+  return h(
+    "button",
+    rest,
+    glass
+      ? h(GlassBacking, {
+          width: glassSize,
+          height: glassSize,
+          radius: 999,
+          config: glassConfig,
+        })
+      : null,
+    children,
+  );
+}
+
 function ToolbarButton({
   className,
   label,
@@ -6169,6 +6247,12 @@ function App() {
   const [glassOpacity, setGlassOpacity] = useState(
     normalizeGlassOpacity(initialPreferences.current.glassOpacity),
   );
+  const [glassBlur, setGlassBlur] = useState(
+    normalizeGlassBlur(initialPreferences.current.glassBlur),
+  );
+  const [glassRefraction, setGlassRefraction] = useState(
+    normalizeGlassRefraction(initialPreferences.current.glassRefraction),
+  );
   const [chatStyle, setChatStyle] = useState(
     normalizeChatStyle(initialPreferences.current.chatStyle),
   );
@@ -7191,6 +7275,8 @@ function App() {
       theme: themePreference,
       uiSkin,
       glassOpacity,
+      glassBlur,
+      glassRefraction,
       chatStyle,
       composerStyle,
       composerAction,
@@ -7234,6 +7320,8 @@ function App() {
     themePreference,
     uiSkin,
     glassOpacity,
+    glassBlur,
+    glassRefraction,
     chatStyle,
     composerStyle,
     composerAction,
@@ -8636,6 +8724,27 @@ function App() {
       && !updateInFlight,
   );
   const glassOpacityValue = normalizeGlassOpacity(glassOpacity);
+  const glassBlurValue = normalizeGlassBlur(glassBlur);
+  const glassRefractionValue = normalizeGlassRefraction(glassRefraction);
+  // Issue #557: the glass configuration drives both the CSS panes (via the
+  // --fa-glass-* custom properties) and the liquid-glass-react backing layers
+  // (via `glassConfig`). Keeping one derivation keeps CSS and canvas in sync.
+  const uiFramework = uiFrameworkForSkin(uiSkin);
+  const isGlassSkin = uiSkin === "glass";
+  // Issue #557: build the MUI theme only for the material skin (which switches
+  // the UI framework to MUI). It follows the app's resolved light/dark scheme so
+  // Material components share the same palette as the rest of the app.
+  const muiTheme =
+    uiFramework === "mui"
+      ? createMuiTheme(
+          currentColorScheme(themePreference) === "dark" ? "dark" : "light",
+        )
+      : null;
+  const glassConfig = {
+    opacity: glassOpacityValue,
+    blur: glassBlurValue / 160,
+    refraction: glassRefractionValue,
+  };
   const glassStyleVariables = {
     "--fa-glass-alpha": String(glassOpacityValue),
     "--fa-glass-panel-alpha": String(
@@ -8650,11 +8759,13 @@ function App() {
     "--fa-glass-clear-alpha": String(
       clampNumber(glassOpacityValue - 0.26, 0.12, 0.85, 0.52),
     ),
+    "--fa-glass-blur": `${glassBlurValue}px`,
+    "--fa-glass-refraction": String(glassRefractionValue),
   };
   const renderDesktopPermissionPanel = (testId) =>
     <DesktopPermissionPanel grants={desktopToolGrants} mode={mode} onDecision={setDesktopToolGrant} onGrantAll={grantAllAndRunPending} hasPendingTask={hasPendingAgentTask} testId={testId} t={t} />;
 
-  return <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")} style={glassStyleVariables}><chakra.header className="topbar">
+  const appTree = <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")} style={glassStyleVariables}><chakra.header className="topbar">
       <ToolbarButton className="mobile-menu-toggle topbar-menu-toggle" testId="mobile-menu-toggle" ariaLabel={mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu")} title={mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen")} onClick={() => setMobileMenuOpen(value => !value)} extraProps={{
       "aria-pressed": mobileMenuOpen
     }}>
@@ -8753,7 +8864,7 @@ function App() {
         // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
         // catalog stays the single source of truth; each service is enabled
         // by default and the user can opt out of any one.
-        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="material">{t("settings.uiSkin.material")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label>{uiSkin === "glass" ? <div className="setting-row setting-row-slider" data-testid="setting-glass-opacity-row"><label htmlFor="setting-glass-opacity">{t("settings.glassOpacity")}</label><div className="setting-poles"><span>{t("settings.glassMoreTransparent")}</span><span>{t("settings.glassMoreOpaque")}</span></div><input id="setting-glass-opacity" data-testid="setting-glass-opacity" type="range" min="0.35" max="0.95" step="0.05" value={glassOpacity} onChange={event => setGlassOpacity(normalizeGlassOpacity(event.target.value))} /><output htmlFor="setting-glass-opacity">{`${formatSliderValue(glassOpacity)}%`}</output></div> : null}<label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} /></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} onChange={event => setLocationPreference(event.target.value.slice(0, 80))} /></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
+        <div className="setting-row setting-row-external-services" data-testid="settings-external-services"><p className="setting-section-title">{t("settings.externalServices")}</p><p className="setting-section-note">{t("settings.externalServices.note")}</p>{EXTERNAL_TRUSTED_SERVICES.map(service => <label className="setting-check" key={service.key}><input type="checkbox" checked={externalServices[service.key] !== false} data-testid={`setting-${service.key}`} onChange={event => setExternalService(service.key, event.target.checked)} /><span>{t(service.label)}</span></label>)}</div>}<label className="setting-row"><span>{t("settings.language")}</span><select data-testid="setting-ui-language" value={uiLanguagePreference} onChange={event => setUiLanguagePreference(normalizeUiLanguagePreference(event.target.value))}><option value="auto">{t("settings.language.auto")}</option><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label><label className="setting-row"><span>{t("settings.responseLanguage")}</span><select data-testid="setting-response-language" value={responseLanguage} onChange={event => setResponseLanguage(normalizeResponseLanguageMode(event.target.value))}><option value="last_message">{t("settings.responseLanguage.lastMessage")}</option><option value="preferred">{t("settings.responseLanguage.preferred")}</option><option value="ui">{t("settings.responseLanguage.ui")}</option></select></label>{responseLanguage === "preferred" ? <label className="setting-row"><span>{t("settings.preferredLanguage")}</span><select data-testid="setting-preferred-language" value={preferredLanguage} onChange={event => setPreferredLanguage(normalizePreferredLanguage(event.target.value))}><option value="en">{"English"}</option><option value="ru">{"Русский"}</option><option value="zh">{"中文"}</option><option value="hi">{"हिन्दी"}</option></select></label> : null}<label className="setting-row"><span>{t("settings.theme")}</span><select data-testid="setting-theme" value={themePreference} onChange={event => setThemePreference(normalizeThemePreference(event.target.value))}><option value="auto">{t("settings.theme.auto")}</option><option value="light">{t("settings.theme.light")}</option><option value="dark">{t("settings.theme.dark")}</option></select></label><label className="setting-row"><span>{t("settings.uiSkin")}</span><select data-testid="setting-ui-skin" value={uiSkin} onChange={event => setUiSkin(normalizeUiSkin(event.target.value))}><option value="flat">{t("settings.uiSkin.flat")}</option><option value="glass">{t("settings.uiSkin.glass")}</option><option value="material">{t("settings.uiSkin.material")}</option><option value="contrast">{t("settings.uiSkin.contrast")}</option></select></label>{uiSkin === "glass" ? <div className="setting-row setting-row-slider" data-testid="setting-glass-opacity-row"><label htmlFor="setting-glass-opacity">{t("settings.glassOpacity")}</label><div className="setting-poles"><span>{t("settings.glassMoreTransparent")}</span><span>{t("settings.glassMoreOpaque")}</span></div><input id="setting-glass-opacity" data-testid="setting-glass-opacity" type="range" min="0.35" max="0.95" step="0.05" value={glassOpacity} onChange={event => setGlassOpacity(normalizeGlassOpacity(event.target.value))} /><output htmlFor="setting-glass-opacity">{`${formatSliderValue(glassOpacity)}%`}</output></div> : null}{uiSkin === "glass" ? <div className="setting-row setting-row-slider" data-testid="setting-glass-blur-row"><label htmlFor="setting-glass-blur">{t("settings.glassBlur")}</label><div className="setting-poles"><span>{t("settings.glassLessBlur")}</span><span>{t("settings.glassMoreBlur")}</span></div><input id="setting-glass-blur" data-testid="setting-glass-blur" type="range" min="4" max="40" step="1" value={glassBlur} onChange={event => setGlassBlur(normalizeGlassBlur(event.target.value))} /><output htmlFor="setting-glass-blur">{`${Math.round(glassBlur)}px`}</output></div> : null}{uiSkin === "glass" ? <div className="setting-row setting-row-slider" data-testid="setting-glass-refraction-row"><label htmlFor="setting-glass-refraction">{t("settings.glassRefraction")}</label><div className="setting-poles"><span>{t("settings.glassLessRefraction")}</span><span>{t("settings.glassMoreRefraction")}</span></div><input id="setting-glass-refraction" data-testid="setting-glass-refraction" type="range" min="0" max="120" step="5" value={glassRefraction} onChange={event => setGlassRefraction(normalizeGlassRefraction(event.target.value))} /><output htmlFor="setting-glass-refraction">{String(Math.round(glassRefraction))}</output></div> : null}<label className="setting-row"><span>{t("settings.toolbarIconPack")}</span><select data-testid="setting-toolbar-icon-pack" value={toolbarIconPack} onChange={event => setToolbarIconPack(normalizeToolbarIconPack(event.target.value))}><option value="fontawesome">{t("settings.toolbarIconPack.fontawesome")}</option><option value="material-symbols">{t("settings.toolbarIconPack.materialSymbols")}</option><option value="bootstrap-icons">{t("settings.toolbarIconPack.bootstrapIcons")}</option><option value="ionicons">{t("settings.toolbarIconPack.ionicons")}</option><option value="remix-icon">{t("settings.toolbarIconPack.remixIcon")}</option><option value="tabler-icons">{t("settings.toolbarIconPack.tablerIcons")}</option><option value="names">{t("settings.toolbarIconPack.names")}</option></select></label><label className="setting-row"><span>{t("settings.chatStyle")}</span><select data-testid="setting-chat-style" value={chatStyle} onChange={event => setChatStyle(normalizeChatStyle(event.target.value))}><option value="cards">{t("settings.chatStyle.cards")}</option><option value="compact">{t("settings.chatStyle.compact")}</option><option value="bubbles">{t("settings.chatStyle.bubbles")}</option></select></label><label className="setting-row"><span>{t("settings.composerStyle")}</span><select data-testid="setting-composer-style" value={composerStyle} onChange={event => setComposerStyle(normalizeComposerStyle(event.target.value))}><option value="flat">{t("settings.composerStyle.flat")}</option><option value="glass-soft">{t("settings.composerStyle.glassSoft")}</option><option value="glass-clear">{t("settings.composerStyle.glassClear")}</option><option value="bubble">{t("settings.composerStyle.bubble")}</option></select></label><label className="setting-row"><span>{t("settings.composerAction")}</span><select data-testid="setting-composer-action" value={composerAction} onChange={event => setComposerAction(normalizeComposerAction(event.target.value))}><option value="attach">{t("settings.composerAction.attach")}</option><option value="plus">{t("settings.composerAction.plus")}</option></select></label><label className="setting-row"><span>{t("settings.assistantName")}</span><input data-testid="setting-assistant-name" type="text" value={assistantName} maxLength={64} placeholder={t("settings.assistantName.placeholder")} onChange={event => setAssistantName(sanitizeAssistantNameInput(event.target.value))} /></label><label className="setting-row"><span>{t("settings.location")}</span><input data-testid="setting-location" type="text" value={locationPreference} placeholder={t("settings.location.placeholder")} onChange={event => setLocationPreference(event.target.value.slice(0, 80))} /></label></div>} /><SidebarSection title={t("sidebar.examplePrompts")} testId="sidebar-prompts" collapsed={sidebarPromptsCollapsed} onToggle={() => setSidebarPromptsCollapsed(value => !value)} children={<div className="prompt-list" data-testid="example-prompts">{EXAMPLE_PROMPTS.map(entry => <button key={entry.text} type="button" data-prompt-label={entry.label} data-prompt-text={entry.text} onClick={() => {
           setDemoMode(false);
           setPrompt(entry.text);
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
@@ -8767,7 +8878,14 @@ function App() {
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
           display: "none"
-        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><textarea ref={composerInputRef} className="composer-input" value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode} data-testid="chat-composer-input" /><div className="composer-toolbar"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><span className="composer-toolbar-spacer" aria-hidden="true" /><button className="send-button" type="submit" disabled={pending || demoMode || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit" aria-label={pending ? t("composer.sending") : t("composer.send")} title={pending ? t("composer.sending") : t("composer.send")}>{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><textarea ref={composerInputRef} className="composer-input" value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode} data-testid="chat-composer-input" /><div className="composer-toolbar"><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</ComposerControlButton><span className="composer-toolbar-spacer" aria-hidden="true" /><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} className="send-button" type="submit" disabled={pending || demoMode || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit" aria-label={pending ? t("composer.sending") : t("composer.send")} title={pending ? t("composer.sending") : t("composer.send")}>{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></ComposerControlButton></div></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+  // Issue #557: the material skin renders inside MUI's ThemeProvider + a scoped
+  // CSS baseline, switching the UI framework from Chakra UI to MUI for that skin
+  // while the flat/glass/contrast skins stay on Chakra UI untouched.
+  if (uiFramework === "mui") {
+    return <MuiThemeProvider theme={muiTheme}><ScopedCssBaseline data-testid="mui-framework-root">{appTree}</ScopedCssBaseline></MuiThemeProvider>;
+  }
+  return appTree;
 }
 
 function wait(milliseconds) {

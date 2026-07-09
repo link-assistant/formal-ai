@@ -178,8 +178,8 @@
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
   background: rgb(251 253 255 / var(--fa-glass-alpha, 0.78));
-  -webkit-backdrop-filter: blur(22px) saturate(1.7);
-  backdrop-filter: blur(22px) saturate(1.7);
+  -webkit-backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(1.7);
+  backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(1.7);
 }
 
 /* Hero surfaces get the full treatment — a bright inner highlight along the
@@ -197,8 +197,37 @@
 }
 
 .ui-skin-glass .composer-grid {
-  -webkit-backdrop-filter: blur(28px) saturate(1.85);
-  backdrop-filter: blur(28px) saturate(1.85);
+  -webkit-backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(1.85);
+  backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(1.85);
+}
+
+/* Issue #557: Apple Liquid Glass backing for the composer controls. The real,
+ * fully-interactive <button> stays on top; the liquid-glass-react canvas is a
+ * non-interactive layer painted behind it (see app/liquid-glass.jsx). We make
+ * the button transparent and isolate its stacking context so the negative-z
+ * backing is clamped to the control and never bleeds over the pill. */
+.ui-skin-glass .composer-action-button,
+.ui-skin-glass .send-button {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.ui-skin-glass .composer-action-button {
+  color: var(--fa-text-strong);
+}
+
+.ui-skin-glass .send-button {
+  color: var(--fa-accent-solid-bg);
+}
+
+.ui-skin-glass .composer-action-button:hover,
+.ui-skin-glass .send-button:hover:not(:disabled) {
+  background: transparent;
+  border-color: transparent;
 }
 
 /* Keep the conversation area translucent so the ambient gradient glows

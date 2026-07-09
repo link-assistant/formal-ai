@@ -1,0 +1,2 @@
+# Build artifact from the glass framework probe (regenerate with bun build)
+*.bundle.js
