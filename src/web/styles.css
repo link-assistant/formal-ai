@@ -211,9 +211,17 @@
   position: relative;
   isolation: isolate;
   overflow: visible;
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
+  /* A faint glass fill + specular rim so each control always reads as a
+   * rounded glass chip; the liquid-glass-react canvas behind it adds the
+   * live refraction/lensing on top (see app/liquid-glass.jsx). */
+  background: rgb(255 255 255 / 0.22);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  border-color: rgb(255 255 255 / 0.55);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    inset 0 0 0 1px rgb(255 255 255 / 0.14),
+    0 4px 12px rgb(31 45 70 / 0.14);
 }
 
 .ui-skin-glass .composer-action-button {
@@ -226,8 +234,8 @@
 
 .ui-skin-glass .composer-action-button:hover,
 .ui-skin-glass .send-button:hover:not(:disabled) {
-  background: transparent;
-  border-color: transparent;
+  background: rgb(255 255 255 / 0.34);
+  border-color: rgb(255 255 255 / 0.7);
 }
 
 /* Keep the conversation area translucent so the ambient gradient glows

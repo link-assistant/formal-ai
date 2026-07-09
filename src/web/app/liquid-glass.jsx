@@ -27,7 +27,10 @@
 import React from "react";
 import LiquidGlass from "liquid-glass-react";
 
-const { useRef } = React;
+// The bundler's JSX factory is pinned to `h` (React.createElement) via
+// jsconfig.json — see src/web/app/main.jsx. Any JSX in this module compiles to
+// `h(tag, props, …children)`, so `h`/`Fragment` must be in scope here too.
+const { createElement: h, Fragment, useRef } = React;
 
 // The Tailwind-ish utilities liquid-glass-react references internally. Scoped
 // under `.fa-glass-backing` so they can never leak onto the rest of the app.
