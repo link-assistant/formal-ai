@@ -100,7 +100,10 @@ lightly tinted default.
 on top of it:
 
 - `.ui-skin-glass.app` paints a multi-stop radial + linear ambient gradient (blue /
-  violet / mint washes in light, navy / purple / teal in dark).
+  violet / mint washes in light, navy / purple / teal in dark). The radial alphas
+  (light `0.7`, dark `0.68`) and reach (transparent stop at `60-64%`) are tuned so
+  the colour washes across the whole conversation canvas instead of only pooling in
+  the corners.
 - Topbar, context panel, composer field, sidebar bodies, and message cards become
   translucent surfaces with `backdrop-filter: blur(22-28px) saturate(1.7-1.85)`,
   inner-highlight borders (`inset 0 1px 0 rgb(255 255 255 / 0.65)`), and soft floating
