@@ -27,6 +27,7 @@ pub const TOOLS_LINO: &str = include_str!("../../data/seed/tools.lino");
 pub const LANGUAGE_DETECTION_LINO: &str = include_str!("../../data/seed/language-detection.lino");
 pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patterns.lino");
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
+pub const LEARNING_SOURCES_LINO: &str = include_str!("../../data/seed/learning-sources.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
 pub const TERMINAL_COMMANDS_LINO: &str = include_str!("../../data/seed/terminal-commands.lino");
@@ -128,6 +129,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/language-detection.lino", LANGUAGE_DETECTION_LINO),
         ("data/seed/prompt-patterns.lino", PROMPT_PATTERNS_LINO),
         ("data/seed/intent-routing.lino", INTENT_ROUTING_LINO),
+        ("data/seed/learning-sources.lino", LEARNING_SOURCES_LINO),
         (
             "data/seed/operation-vocabulary.lino",
             OPERATION_VOCABULARY_LINO,

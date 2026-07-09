@@ -23,17 +23,35 @@ pub const GOOGLE_TRENDS_LEARNING_TASK: &str =
      yet resolve — route them through the human-gated self-improvement loop, and record the \
      learning report in Links Notation.";
 
+/// The learning-capability slug this recipe ingests. A learn-from-source
+/// directive naming a seed source with this capability drives this exact recipe.
+const LEARNING_CAPABILITY: &str = "google_trends_learning";
+
 const GOOGLE_TRENDS_KEYWORDS: [&str; 2] = ["google trends", "trending search"];
 
 /// Whether `prompt` asks for the Google Trends learning-frontier recipe.
 ///
-/// Kept disjoint from the catalog recipe (which keys on prompt/answer/catalog/test):
-/// this one requires the learning-loop framing — the *frontier*, the
-/// *self-improvement loop*, or the "cannot … resolve" pairing — so a catalog request
-/// never routes here and vice versa.
+/// Two disjoint phrasings route here, and both stay clear of the sibling catalog
+/// recipe (which keys on prompt/answer/catalog/test):
+///
+/// 1. **Operator framing** — the explicit learning-loop request: the *frontier*,
+///    the *self-improvement loop*, or the "cannot … resolve" pairing.
+/// 2. **User teaching directive** (issue #499) — a natural-language "learn from
+///    this source" directive that names the Google Trends source, in *any*
+///    supported language. This is detected from the same seed-declared registry
+///    the chat handler uses ([`crate::seed::learning_sources`]), so the very
+///    directive a user types — e.g. "Обратясь сюда ты узнаешь актуальные темы
+///    &lt;Google Trends URL&gt;" — drives this artifact-writing recipe through the
+///    Agent CLI, not just a chat acknowledgement. Routing keys on the source's
+///    declared `capability` slug, never a literal URL or phrase, so a new
+///    learnable source is a seed edit rather than a code change (CONTRIBUTING
+///    rule 7).
 #[must_use]
 pub fn is_google_trends_learning_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
+    if is_learn_from_source_directive(&lower) {
+        return true;
+    }
     let cannot_resolve = lower.contains("resolve")
         && (lower.contains("cannot") || lower.contains("can't") || lower.contains("not yet"));
     GOOGLE_TRENDS_KEYWORDS
@@ -42,6 +60,15 @@ pub fn is_google_trends_learning_task(prompt: &str) -> bool {
         && (lower.contains("learning frontier")
             || lower.contains("self-improvement loop")
             || cannot_resolve)
+}
+
+/// Whether `lowercased` is a user directive teaching the engine to learn from the
+/// Google Trends source, resolved entirely from the seed `learning_sources`
+/// registry so it stays language-agnostic and free of hardcoded phrases.
+fn is_learn_from_source_directive(lowercased: &str) -> bool {
+    crate::seed::learning_sources()
+        .match_directive(lowercased)
+        .is_some_and(|source| source.capability == LEARNING_CAPABILITY)
 }
 
 /// Render the deterministic Google Trends learning-frontier report.
