@@ -25,6 +25,7 @@ Companion evidence in this folder:
 | Mobile UI should match the same adaptive embedded-composer model. | Preserved from the #108/#111/#113 work. | Existing mobile viewport tests assert same-row action/input/send geometry. |
 | Settings should expose multiple skins: default, glass, Material, etc. | Completed. | `UI_SKINS` now includes `material`; settings has a Material option and CSS has `.ui-skin-material`. |
 | Glass skin should expose a transparency setting. | Completed. | `glassOpacity` is a persisted preference, settings range input, reset descriptor, user-context field, and CSS variable source. |
+| UI should be "as polished as possible" / the skins should look impressive. | Completed (2026-07-09 polish pass). | Glass now renders a living ambient gradient behind heavy `backdrop-filter` frosted surfaces with inner highlights and floating shadows; Material follows M3 tonal surfaces, surface-tint backdrop, elevation shadows, and filled tonal buttons. See the [Visual Polish Pass](#visual-polish-pass-2026-07-09) gallery. |
 | Study best-rated market UI kits and compile the data under `docs/case-studies/issue-557`. | Completed. | This file plus `raw-data/ui-kit-*.json`. |
 | List requirements, analysis, solutions, and plans. | Completed. | Sections below. |
 
@@ -84,9 +85,53 @@ The focused pre-fix Playwright test in [`raw-data/issue557-test-before.log`](raw
 3. Extend `UI_SKINS` with `material` and add the Material option to the settings panel.
 4. Add the conditional glass opacity slider, shown only when the Glass skin is active.
 5. Convert glass CSS alpha values to app-level CSS variables driven by `glassOpacity`.
-6. Add `.ui-skin-material` CSS using Material-like tonal surfaces, subtle elevation, compact 8px controls, and light/dark token overrides.
+6. Add `.ui-skin-material` CSS using Material 3 tonal surfaces, elevation shadows, the M3 shape scale (16px radii), filled-tonal buttons, and light/dark token overrides.
 7. Add localized settings labels for all four supported locales and enforce them in the i18n catalog check.
 8. Rebuild `src/web/app.js`, run focused e2e/i18n checks, save after screenshots, and update PR #643.
+9. **Visual polish pass (2026-07-09):** deepen the glass and material skins so they read as genuinely premium (see next section).
+
+## Visual Polish Pass (2026-07-09)
+
+Feedback on the first cut ("on screenshot I don't see something impressive") drove a
+dedicated polish pass so each non-flat skin looks distinctly designed rather than a
+lightly tinted default.
+
+**Glass** now layers a living ambient gradient behind the app and frosts every panel
+on top of it:
+
+- `.ui-skin-glass.app` paints a multi-stop radial + linear ambient gradient (blue /
+  violet / mint washes in light, navy / purple / teal in dark).
+- Topbar, context panel, composer field, sidebar bodies, and message cards become
+  translucent surfaces with `backdrop-filter: blur(22-28px) saturate(1.7-1.85)`,
+  inner-highlight borders (`inset 0 1px 0 rgb(255 255 255 / 0.65)`), and soft floating
+  shadows, so the ambient gradient shows through and shifts as content scrolls.
+- The opacity slider drives the surface alpha via `--fa-glass-*` CSS variables, so
+  users can dial the frost from nearly clear to solid.
+
+**Material** now follows Material 3 rather than a flat tint:
+
+- Tonal surface roles (`--fa-material-surface`, `-container`, `-container-high`) plus a
+  primary "surface tint" radial wash on `.ui-skin-material.app`.
+- Elevation tokens (`--fa-material-elevation-1/2`) applied to cards and the composer.
+- The M3 shape scale (16px radii) on cards, tools, context panel, and composer.
+- Filled-tonal action buttons using the secondary-container + accent-text pairing.
+
+**Critical root cause found and fixed during this pass:** the skin classes
+(`.ui-skin-glass`, `.ui-skin-material`) are applied to the *same* `<main>` element as
+`.app`. The initial CSS used the descendant selector `.ui-skin-glass .app`, which can
+never match a single element, so the ambient background never rendered and the skin
+looked flat. Switching all six occurrences to the compound selector
+`.ui-skin-glass.app` / `.ui-skin-material.app` made the gradients render.
+
+The polish pass is captured as a 16-shot gallery (4 skins x 2 themes x 2 viewports)
+regenerated with [`experiments/skin-screenshots.mjs`](../../../experiments/skin-screenshots.mjs):
+
+| Viewport / theme | Flat | Glass | Material | Contrast |
+|---|---|---|---|---|
+| Desktop light | [png](../../screenshots/skin-desktop-light-flat.png) | [png](../../screenshots/skin-desktop-light-glass.png) | [png](../../screenshots/skin-desktop-light-material.png) | [png](../../screenshots/skin-desktop-light-contrast.png) |
+| Desktop dark | [png](../../screenshots/skin-desktop-dark-flat.png) | [png](../../screenshots/skin-desktop-dark-glass.png) | [png](../../screenshots/skin-desktop-dark-material.png) | [png](../../screenshots/skin-desktop-dark-contrast.png) |
+| Mobile light | [png](../../screenshots/skin-mobile-light-flat.png) | [png](../../screenshots/skin-mobile-light-glass.png) | [png](../../screenshots/skin-mobile-light-material.png) | [png](../../screenshots/skin-mobile-light-contrast.png) |
+| Mobile dark | [png](../../screenshots/skin-mobile-dark-flat.png) | [png](../../screenshots/skin-mobile-dark-glass.png) | [png](../../screenshots/skin-mobile-dark-material.png) | [png](../../screenshots/skin-mobile-dark-contrast.png) |
 
 ## Verification
 

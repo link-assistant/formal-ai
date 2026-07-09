@@ -148,48 +148,110 @@
   }
 }
 
+/* ==================================================================
+ * Issue #557 — Glass skin ("Liquid Glass", Apple-inspired)
+ * ==================================================================
+ * Translucent, backdrop-blurred surfaces float over a living ambient
+ * gradient. The gradient is what turns the blur into frosted glass: with
+ * no colour behind them, translucent panels look identical to the flat
+ * skin — that was the "not impressive" feedback on the first pass. Every
+ * colour flows through the --fa-glass-* tokens so one set of rules themes
+ * in light and dark, and the glass-opacity slider stays live (it drives
+ * --fa-glass-alpha). */
+.ui-skin-glass.app {
+  background:
+    radial-gradient(135% 120% at 6% -14%, rgb(120 176 255 / 0.55), transparent 52%),
+    radial-gradient(120% 120% at 104% 2%, rgb(196 130 255 / 0.5), transparent 48%),
+    radial-gradient(130% 132% at 46% 120%, rgb(86 226 196 / 0.48), transparent 52%),
+    linear-gradient(158deg, #eaf1fb 0%, #e6ecf6 52%, #e9f4ef 100%);
+}
+
+/* Frosted surfaces: heavy blur + saturation lift the ambient wash showing
+ * through, so panels read as real glass rather than tinted rectangles. */
 .ui-skin-glass .topbar,
 .ui-skin-glass .context-panel,
-.ui-skin-glass .composer,
+.ui-skin-glass .composer-grid,
 .ui-skin-glass .sidebar-section-body,
 .ui-skin-glass .message-body,
 .ui-skin-glass .trace-list div,
 .ui-skin-glass .desktop-shell-panel div,
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
-  background: rgb(251 252 253 / var(--fa-glass-alpha, 0.78));
-  -webkit-backdrop-filter: blur(16px) saturate(1.18);
-  backdrop-filter: blur(16px) saturate(1.18);
+  background: rgb(251 253 255 / var(--fa-glass-alpha, 0.78));
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  backdrop-filter: blur(22px) saturate(1.7);
 }
 
+/* Hero surfaces get the full treatment — a bright inner highlight along the
+ * top edge, a faint inner outline, and a soft floating drop shadow for depth. */
+.ui-skin-glass .topbar,
+.ui-skin-glass .context-panel,
+.ui-skin-glass .composer-grid,
+.ui-skin-glass .sidebar-section-body,
+.ui-skin-glass .message-body {
+  border-color: rgb(255 255 255 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 12px 34px rgb(31 45 70 / 0.16);
+}
+
+.ui-skin-glass .composer-grid {
+  -webkit-backdrop-filter: blur(28px) saturate(1.85);
+  backdrop-filter: blur(28px) saturate(1.85);
+}
+
+/* Keep the conversation area translucent so the ambient gradient glows
+ * behind the frosted message bubbles. */
 .ui-skin-glass .chat-panel {
   background:
     linear-gradient(
       180deg,
-      rgb(255 255 255 / var(--fa-glass-panel-alpha, 0.62)),
-      rgb(238 242 241 / var(--fa-glass-alpha, 0.72))
-    ),
-    #eef2f1;
+      rgb(255 255 255 / var(--fa-glass-clear-alpha, 0.42)),
+      rgb(236 242 248 / var(--fa-glass-panel-alpha, 0.5))
+    );
 }
 
 .ui-skin-glass .sidebar-section-header,
 .ui-skin-glass .drawer-brand,
 .ui-skin-glass .fetch-iframe-header {
-  background: rgb(238 242 241 / var(--fa-glass-header-alpha, 0.76));
-  -webkit-backdrop-filter: blur(14px) saturate(1.16);
-  backdrop-filter: blur(14px) saturate(1.16);
+  background: rgb(240 245 251 / var(--fa-glass-header-alpha, 0.76));
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
 }
 
+/* ==================================================================
+ * Issue #557 — Material skin (Material Design 3 "Material You")
+ * ==================================================================
+ * Follows the M3 guidelines: tonal surface-container colours, a primary
+ * "surface tint" wash on the backdrop, layered elevation shadows, and the
+ * M3 shape scale (small 12px / medium 16px / large 20px radii). Filled
+ * tonal buttons carry the primary accent so the skin reads as Material,
+ * not just a re-bordered flat theme. */
 .ui-skin-material {
-  --fa-material-surface: #fffbfe;
-  --fa-material-surface-muted: #f4fbf7;
+  --fa-material-surface: #fbfdf9;
+  --fa-material-surface-muted: #eef4ef;
   --fa-material-container: #ffffff;
-  --fa-material-border: #c6d8d0;
+  --fa-material-container-high: #e7f0ea;
+  --fa-material-border: #c1d3cb;
   --fa-material-accent: #006b5b;
-  --fa-material-accent-soft: #e6f3ee;
-  --fa-material-user: #edf4ff;
-  --fa-material-user-border: #bfd5ff;
-  --fa-material-shadow: 0 1px 2px rgb(32 42 38 / 0.14), 0 1px 3px rgb(32 42 38 / 0.08);
+  --fa-material-accent-soft: #cfeee3;
+  --fa-material-accent-text: #00382f;
+  --fa-material-user: #d7e7ff;
+  --fa-material-user-border: #a9c9f5;
+  /* M3 elevation levels 1 and 2 (Google Material 3 dp shadow tokens). */
+  --fa-material-elevation-1: 0 1px 2px rgb(16 32 27 / 0.28), 0 1px 3px 1px rgb(16 32 27 / 0.12);
+  --fa-material-elevation-2: 0 1px 2px rgb(16 32 27 / 0.28), 0 2px 6px 2px rgb(16 32 27 / 0.14);
+  --fa-material-shadow: var(--fa-material-elevation-1);
+  --fa-material-radius: 16px;
+}
+
+/* Primary surface-tint wash — the signature M3 tinted backdrop. */
+.ui-skin-material.app {
+  background:
+    radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+    radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+    var(--fa-material-surface-muted);
 }
 
 .ui-skin-material .topbar,
@@ -206,8 +268,20 @@
   box-shadow: var(--fa-material-shadow);
 }
 
+/* Rounded, elevated cards are core to the M3 look. */
+.ui-skin-material .message-body,
+.ui-skin-material .tool,
+.ui-skin-material .fetch-iframe-container,
+.ui-skin-material .context-panel {
+  border-radius: var(--fa-material-radius);
+}
+
+.ui-skin-material .message-body {
+  box-shadow: var(--fa-material-elevation-1);
+}
+
 .ui-skin-material .chat-panel {
-  background: var(--fa-material-surface-muted);
+  background: transparent;
 }
 
 .ui-skin-material .topbar,
@@ -216,15 +290,15 @@
 .ui-skin-material .fetch-iframe-header {
   border-color: var(--fa-material-border);
   background: var(--fa-material-surface);
-  box-shadow: 0 1px 2px rgb(32 42 38 / 0.12);
+  box-shadow: var(--fa-material-elevation-2);
 }
 
 .ui-skin-material .composer-grid {
   border: 1px solid var(--fa-material-border);
-  border-radius: 8px;
-  padding: 6px;
-  background: var(--fa-material-surface);
-  box-shadow: var(--fa-material-shadow);
+  border-radius: var(--fa-material-radius);
+  padding: 8px 10px;
+  background: var(--fa-material-container);
+  box-shadow: var(--fa-material-elevation-2);
 }
 
 .ui-skin-material textarea {
@@ -232,6 +306,7 @@
   background: transparent;
 }
 
+/* Filled tonal buttons — M3 secondary-container fill, pill shape. */
 .ui-skin-material .composer-action-button,
 .ui-skin-material .composer-menu-item,
 .ui-skin-material .prompt-list button,
@@ -240,12 +315,14 @@
 .ui-skin-material .conversation-entry-button {
   border-color: transparent;
   background: var(--fa-material-accent-soft);
+  color: var(--fa-material-accent-text);
 }
 
 .ui-skin-material .send-button {
   border-color: var(--fa-material-accent);
   background: var(--fa-material-accent);
   color: #ffffff;
+  box-shadow: var(--fa-material-elevation-1);
 }
 
 .ui-skin-material .message.user .message-body {
@@ -344,44 +421,74 @@
   background: #f7fbf9;
 }
 
+:root[data-theme="dark"] .ui-skin-glass.app {
+  background:
+    radial-gradient(135% 120% at 6% -14%, rgb(58 104 190 / 0.5), transparent 52%),
+    radial-gradient(120% 120% at 104% 2%, rgb(120 68 180 / 0.46), transparent 48%),
+    radial-gradient(130% 132% at 46% 120%, rgb(26 128 110 / 0.44), transparent 52%),
+    linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+}
+
 :root[data-theme="dark"] .ui-skin-glass .topbar,
 :root[data-theme="dark"] .ui-skin-glass .context-panel,
-:root[data-theme="dark"] .ui-skin-glass .composer,
+:root[data-theme="dark"] .ui-skin-glass .composer-grid,
 :root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
 :root[data-theme="dark"] .ui-skin-glass .message-body,
 :root[data-theme="dark"] .ui-skin-glass .trace-list div,
 :root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-glass .tool,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
-  background: rgb(29 32 31 / var(--fa-glass-alpha, 0.78));
+  background: rgb(38 44 52 / var(--fa-glass-alpha, 0.78));
+}
+
+:root[data-theme="dark"] .ui-skin-glass .topbar,
+:root[data-theme="dark"] .ui-skin-glass .context-panel,
+:root[data-theme="dark"] .ui-skin-glass .composer-grid,
+:root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
+:root[data-theme="dark"] .ui-skin-glass .message-body {
+  border-color: rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05),
+    0 16px 42px rgb(0 0 0 / 0.5);
 }
 
 :root[data-theme="dark"] .ui-skin-glass .chat-panel {
   background:
     linear-gradient(
       180deg,
-      rgb(32 35 34 / var(--fa-glass-panel-alpha, 0.62)),
-      rgb(24 26 27 / var(--fa-glass-alpha, 0.78))
-    ),
-    #181a1b;
+      rgb(30 36 44 / var(--fa-glass-clear-alpha, 0.42)),
+      rgb(18 22 28 / var(--fa-glass-panel-alpha, 0.5))
+    );
 }
 
 :root[data-theme="dark"] .ui-skin-glass .sidebar-section-header,
 :root[data-theme="dark"] .ui-skin-glass .drawer-brand,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-header {
-  background: rgb(34 38 36 / var(--fa-glass-header-alpha, 0.76));
+  background: rgb(40 47 55 / var(--fa-glass-header-alpha, 0.76));
 }
 
 :root[data-theme="dark"] .ui-skin-material {
-  --fa-material-surface: #211f24;
-  --fa-material-surface-muted: #171c1a;
-  --fa-material-container: #1d2220;
-  --fa-material-border: #3f4a45;
-  --fa-material-accent: #7bd8bd;
-  --fa-material-accent-soft: #22342f;
+  --fa-material-surface: #1a1f1d;
+  --fa-material-surface-muted: #121715;
+  --fa-material-container: #202725;
+  --fa-material-container-high: #283330;
+  --fa-material-border: #3a4642;
+  --fa-material-accent: #5bdcc0;
+  --fa-material-accent-soft: #0c443a;
+  --fa-material-accent-text: #a6f2df;
   --fa-material-user: #1d2f42;
   --fa-material-user-border: #365878;
-  --fa-material-shadow: 0 1px 2px rgb(0 0 0 / 0.34), 0 1px 3px rgb(0 0 0 / 0.24);
+  --fa-material-elevation-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.3);
+  --fa-material-elevation-2: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.34);
+  --fa-material-shadow: var(--fa-material-elevation-1);
+}
+
+:root[data-theme="dark"] .ui-skin-material.app {
+  background:
+    radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+    radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+    var(--fa-material-surface-muted);
 }
 
 :root[data-theme="dark"] .ui-skin-contrast .topbar,
@@ -422,44 +529,74 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ui-skin-glass.app {
+    background:
+      radial-gradient(135% 120% at 6% -14%, rgb(58 104 190 / 0.5), transparent 52%),
+      radial-gradient(120% 120% at 104% 2%, rgb(120 68 180 / 0.46), transparent 48%),
+      radial-gradient(130% 132% at 46% 120%, rgb(26 128 110 / 0.44), transparent 52%),
+      linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+  }
+
   :root:not([data-theme="light"]) .ui-skin-glass .topbar,
   :root:not([data-theme="light"]) .ui-skin-glass .context-panel,
-  :root:not([data-theme="light"]) .ui-skin-glass .composer,
+  :root:not([data-theme="light"]) .ui-skin-glass .composer-grid,
   :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
   :root:not([data-theme="light"]) .ui-skin-glass .message-body,
   :root:not([data-theme="light"]) .ui-skin-glass .trace-list div,
   :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-glass .tool,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
-    background: rgb(29 32 31 / var(--fa-glass-alpha, 0.78));
+    background: rgb(38 44 52 / var(--fa-glass-alpha, 0.78));
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-glass .topbar,
+  :root:not([data-theme="light"]) .ui-skin-glass .context-panel,
+  :root:not([data-theme="light"]) .ui-skin-glass .composer-grid,
+  :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
+  :root:not([data-theme="light"]) .ui-skin-glass .message-body {
+    border-color: rgb(255 255 255 / 0.14);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 0 0 1px rgb(255 255 255 / 0.05),
+      0 16px 42px rgb(0 0 0 / 0.5);
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .chat-panel {
     background:
       linear-gradient(
         180deg,
-        rgb(32 35 34 / var(--fa-glass-panel-alpha, 0.62)),
-        rgb(24 26 27 / var(--fa-glass-alpha, 0.78))
-      ),
-      #181a1b;
+        rgb(30 36 44 / var(--fa-glass-clear-alpha, 0.42)),
+        rgb(18 22 28 / var(--fa-glass-panel-alpha, 0.5))
+      );
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-header,
   :root:not([data-theme="light"]) .ui-skin-glass .drawer-brand,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-header {
-    background: rgb(34 38 36 / var(--fa-glass-header-alpha, 0.76));
+    background: rgb(40 47 55 / var(--fa-glass-header-alpha, 0.76));
   }
 
   :root:not([data-theme="light"]) .ui-skin-material {
-    --fa-material-surface: #211f24;
-    --fa-material-surface-muted: #171c1a;
-    --fa-material-container: #1d2220;
-    --fa-material-border: #3f4a45;
-    --fa-material-accent: #7bd8bd;
-    --fa-material-accent-soft: #22342f;
+    --fa-material-surface: #1a1f1d;
+    --fa-material-surface-muted: #121715;
+    --fa-material-container: #202725;
+    --fa-material-container-high: #283330;
+    --fa-material-border: #3a4642;
+    --fa-material-accent: #5bdcc0;
+    --fa-material-accent-soft: #0c443a;
+    --fa-material-accent-text: #a6f2df;
     --fa-material-user: #1d2f42;
     --fa-material-user-border: #365878;
-    --fa-material-shadow: 0 1px 2px rgb(0 0 0 / 0.34), 0 1px 3px rgb(0 0 0 / 0.24);
+    --fa-material-elevation-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.3);
+    --fa-material-elevation-2: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.34);
+    --fa-material-shadow: var(--fa-material-elevation-1);
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-material.app {
+    background:
+      radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+      radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+      var(--fa-material-surface-muted);
   }
 
   :root:not([data-theme="light"]) .ui-skin-contrast .topbar,
