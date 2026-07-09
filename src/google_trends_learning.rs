@@ -4,7 +4,7 @@
 //! Issue #498 asks Formal AI to "train" on popular Google queries. For a symbolic,
 //! inspectable engine, "training" is not gradient descent: it is (a) turning
 //! trending searches into reviewable test cases — the job of
-//! [`crate::google_trends_catalog`] — and (b) recognising which of those cases the
+//! [`mod@crate::google_trends_catalog`] — and (b) recognising which of those cases the
 //! engine *cannot yet route* and feeding that frontier into the same proposal-only,
 //! human-gated learning pipeline the rest of the system uses
 //! ([`crate::self_improvement`], issue #558) instead of silently dropping it.
