@@ -476,3 +476,31 @@ multilingual_responses
     intent document_originality_check_sample_missing
     language zh
     text "已识别 `{target}` 的原创性/抄袭检查请求。\n\n计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。\n\nClient text sample: read from attachment."
+  response response_learn_from_source_en
+    intent learn_from_source
+    language en
+    text "Thanks — you're pointing me at a data source I can learn from."
+    variant "Thanks — you're pointing me at a data source I can learn from."
+    variant "Got it: you're telling me where to get data to reason and learn from."
+    variant "Understood — that's a source I can study to improve myself."
+  response response_learn_from_source_ru
+    intent learn_from_source
+    language ru
+    text "Спасибо — вы показываете мне источник данных, из которого я могу учиться."
+    variant "Спасибо — вы показываете мне источник данных, из которого я могу учиться."
+    variant "Понятно: вы объясняете, где брать данные для рассуждений и обучения."
+    variant "Ясно — это источник, который я могу изучить, чтобы улучшить себя."
+  response response_learn_from_source_hi
+    intent learn_from_source
+    language hi
+    text "धन्यवाद — आप मुझे एक ऐसा डेटा स्रोत दिखा रहे हैं जिससे मैं सीख सकता हूँ।"
+    variant "धन्यवाद — आप मुझे एक ऐसा डेटा स्रोत दिखा रहे हैं जिससे मैं सीख सकता हूँ।"
+    variant "समझ गया: आप बता रहे हैं कि तर्क और सीखने के लिए डेटा कहाँ से लेना है।"
+    variant "ठीक है — यह एक स्रोत है जिसका अध्ययन करके मैं स्वयं को बेहतर बना सकता हूँ।"
+  response response_learn_from_source_zh
+    intent learn_from_source
+    language zh
+    text 谢谢——你在向我指出一个我可以学习的数据来源。
+    variant 谢谢——你在向我指出一个我可以学习的数据来源。
+    variant 明白了：你在告诉我从哪里获取用于推理和学习的数据。
+    variant 了解——这是一个我可以研究以自我改进的来源。

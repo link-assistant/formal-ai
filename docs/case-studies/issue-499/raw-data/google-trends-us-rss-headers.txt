@@ -1,0 +1,22 @@
+HTTP/2 200
+content-type: text/xml; charset=utf-8
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+pragma: no-cache
+expires: Mon, 01 Jan 1990 00:00:00 GMT
+date: Wed, 08 Jul 2026 20:29:32 GMT
+p3p: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+cross-origin-opener-policy: same-origin
+content-security-policy: require-trusted-types-for 'script';report-uri /_/TrendsUi/cspreport
+content-security-policy: script-src 'nonce-KQyrOE9pQ9_pmYh08_7RLQ' 'unsafe-inline';object-src 'none';base-uri 'self';report-uri /_/TrendsUi/cspreport;worker-src 'self'
+cross-origin-resource-policy: same-site
+accept-ch: Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version
+permissions-policy: ch-ua-arch=*, ch-ua-bitness=*, ch-ua-full-version=*, ch-ua-full-version-list=*, ch-ua-model=*, ch-ua-wow64=*, ch-ua-form-factors=*, ch-ua-platform=*, ch-ua-platform-version=*
+reporting-endpoints: default="/_/TrendsUi/web-reports?context=eJzjCtDikmII0pBiaL15jnUyEJcsOs_aBMRdQDwDiA0VLrHaA3GRxBXWBiD-VHWDVaD6Buu3Yl82lhIgfuvPZhoSyOYMxFVsEWxCPBxrnu26xCbwYO_SCYxKekn5hfElRal5KcW6QKZucWpRWWpRsW5aUX5eCVA03sjAyMzA3MBcz8A4vsAAAO9bM2E"
+server: ESF
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+set-cookie: NID=533=b23tq72cBeJBdacS8i4Akngn-JpBGkunnyCUEQL09hZdFJLPCMYD1cRDUHIG2XGiJma2xQvd1KA3B2cg35-xXrt1vi50hoLqCo8z0-v2xRjCuT3iBf8Zbt-3psCd7LmdSjY19uT9Wa4fRTI4aQsHcvCsrOluNb7luLUizzuceM1XpZbPJrjhIgwMFHDASLTEJ4s; expires=Thu, 07-Jan-2027 20:29:32 GMT; path=/; domain=.google.com; HttpOnly
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+accept-ranges: none
+vary: Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site,Accept-Encoding
