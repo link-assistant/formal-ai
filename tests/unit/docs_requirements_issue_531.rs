@@ -36,7 +36,7 @@ fn issue_531_pattern_inference_case_study_is_traceable() {
         &readme,
         &[
             "# Issue 531 Case Study: Pattern Inference",
-            "Status: research and proposal pass",
+            "Status: research, proposal, and implementation pass",
             "linksplatform/Data.Doublets.Sequences",
             "BalancedVariantConverter",
             "OptimalVariantConverter",

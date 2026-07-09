@@ -1,10 +1,15 @@
 # Issue 531 Case Study: Pattern Inference
 
-Status: research and proposal pass for PR #642. The issue explicitly asks the
-first working session to research, double-check, fact-check, collect data, list
-requirements, and propose implementation directions before maintainers choose
-which slice to ship next. This case study therefore records evidence and a
-delivery plan rather than adding a runtime pattern-inference engine in this PR.
+Status: research, proposal, and implementation pass for PR #642. The first
+session collected evidence, fact-checked the upstream converters, listed
+requirements, and proposed a staged plan; this PR then follows that plan
+through to a working, tested runtime. It ships a link-native sequence
+substrate (`src/sequences/`), associative deduplication, 1D and 2D pattern
+inference, a `pattern_inference` solver handler wired into the dispatch table,
+and the pattern-vocabulary ontology in the seed knowledge. The research and
+proposal material below is retained for traceability; the "planned" phase
+language in the requirement tables is annotated where a phase is now
+implemented.
 
 ## Source Material
 
