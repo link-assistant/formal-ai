@@ -1,11 +1,13 @@
 use std::error::Error;
+use std::io::{self, IsTerminal, Write};
 use std::path::Path;
 
 use crate::{read_input, MemoryAction};
 use formal_ai::{
-    agent_info, apply_dreaming_plan, execute_memory_query, export_memory_full,
-    plan_memory_dreaming, render_dreaming_plan, seed_files, suggest_memory_migrations, BundleInfo,
-    DreamingConfig, MemoryStore,
+    agent_info, apply_dreaming_plan, auto_free_space_enabled, execute_memory_query,
+    export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
+    render_dreaming_plan, seed_files, suggest_memory_migrations, BundleInfo, DreamingConfig,
+    MemoryStore,
 };
 
 pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
@@ -110,18 +112,34 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 );
             }
             let mut store = load_memory_or_empty(&path)?;
+            let measured = (path.as_os_str() != "-")
+                .then(|| measure_storage(&path))
+                .transpose()?;
             let config = DreamingConfig {
                 daydreaming_enabled: !disable_daydreaming,
                 target_free_ratio_percent,
-                storage_capacity_bytes,
-                free_bytes,
+                storage_capacity_bytes: storage_capacity_bytes
+                    .or_else(|| measured.map(|snapshot| snapshot.capacity_bytes)),
+                free_bytes: free_bytes.or_else(|| measured.map(|snapshot| snapshot.free_bytes)),
                 incoming_bytes,
             };
             let plan = plan_memory_dreaming(store.events(), &config);
             println!("{}", render_dreaming_plan(&plan));
 
-            if apply {
-                require_destructive_confirmation(confirm, "apply dreaming memory plan")?;
+            let mut auto_free = path.as_os_str() != "-" && auto_free_space_enabled(&path);
+            if plan.required_reclaim_bytes > 0
+                && !auto_free
+                && path.as_os_str() != "-"
+                && io::stdin().is_terminal()
+            {
+                auto_free = ask_to_enable_auto_free_space()?;
+                persist_auto_free_space_choice(&path, auto_free)?;
+            }
+            let should_apply = apply || (auto_free && plan.required_reclaim_bytes > 0);
+            let should_confirm = confirm || auto_free;
+
+            if should_apply {
+                require_destructive_confirmation(should_confirm, "apply dreaming memory plan")?;
                 if let Some(backup_path) = backup.as_deref() {
                     write_full_memory_backup(backup_path, &store)?;
                 } else {
@@ -133,11 +151,12 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 let outcome = apply_dreaming_plan(&mut store, &plan);
                 store.save_to_file(&path)?;
                 eprintln!(
-                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s).",
+                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s).",
                     path.display(),
                     outcome.removed_events,
                     outcome.estimated_reclaimed_bytes,
-                    outcome.learned_amendments
+                    outcome.learned_amendments,
+                    outcome.learned_patterns
                 );
             } else if !plan.actions.is_empty() {
                 eprintln!(
@@ -197,6 +216,19 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
         }
     }
     Ok(())
+}
+
+fn ask_to_enable_auto_free_space() -> Result<bool, Box<dyn Error>> {
+    eprint!(
+        "Memory needs more free space. Enable persisted auto-free-space and apply the minimal recomputable-data plan now? [y/N] "
+    );
+    io::stderr().flush()?;
+    let mut answer = String::new();
+    io::stdin().read_line(&mut answer)?;
+    Ok(matches!(
+        answer.trim().to_ascii_lowercase().as_str(),
+        "y" | "yes"
+    ))
 }
 
 pub fn load_memory_or_empty(path: &Path) -> Result<MemoryStore, Box<dyn Error>> {

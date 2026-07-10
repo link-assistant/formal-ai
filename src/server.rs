@@ -112,6 +112,7 @@ pub fn handle_api_request_with_auth(
     body: &str,
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
+    let _foreground_activity = crate::dreaming_runtime::ForegroundActivity::begin();
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
 
@@ -727,6 +728,7 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
 }
 
 pub fn serve(address: &str) -> std::io::Result<()> {
+    crate::dreaming_runtime::start_core_dreaming();
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 

@@ -23,6 +23,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use crate::memory::{MemoryEvent, MemoryStore};
 
+mod learning;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DreamingConfig {
     /// Background planning is on by default; disabling it returns an empty plan.
@@ -94,7 +96,7 @@ pub enum DreamingActionKind {
 }
 
 /// How often the user has interacted with one topic, recalculated from the
-/// current memory graph. Topics are the unit dreaming learns about.
+/// current memory links. Topics are the unit dreaming learns about.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TopicFrequency {
     pub topic: String,
@@ -129,6 +131,27 @@ pub struct MetaAlgorithmAmendment {
     pub rule: String,
     pub source_requirement_ids: Vec<String>,
     pub covered_event_ids: Vec<String>,
+}
+
+/// A prior task replayed by dreaming against the generalized meta-algorithm.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DreamingCandidateTask {
+    pub topic: String,
+    pub source_event_id: String,
+    pub input: String,
+    pub expected_output: String,
+    pub simulated_output: String,
+    pub passed: bool,
+}
+
+/// A recurring task structure mined without relying on natural-language cue
+/// words. Patterns are retained learning and can seed later amendments.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DreamingPattern {
+    pub topic: String,
+    pub structure: String,
+    pub occurrences: usize,
+    pub source_event_ids: Vec<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -175,6 +198,10 @@ pub struct DreamingPlan {
     pub learned_requirements: Vec<LearnedRequirement>,
     /// Meta-algorithm generalizations baked in from the learned requirements.
     pub amendments: Vec<MetaAlgorithmAmendment>,
+    /// Prior tasks discovered on frequent topics and replayed in simulation.
+    pub candidate_tasks: Vec<DreamingCandidateTask>,
+    /// Recurring structures mined across task inputs independently of language.
+    pub patterns: Vec<DreamingPattern>,
 }
 
 impl DreamingPlan {
@@ -210,6 +237,8 @@ pub struct DreamingOutcome {
     pub estimated_reclaimed_bytes: u64,
     /// Meta-algorithm amendments newly materialized into the store.
     pub learned_amendments: usize,
+    /// Recurring task structures newly materialized as retained learning.
+    pub learned_patterns: usize,
 }
 
 #[must_use]
@@ -238,6 +267,8 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
             topics: Vec::new(),
             learned_requirements: Vec::new(),
             amendments: Vec::new(),
+            candidate_tasks: Vec::new(),
+            patterns: Vec::new(),
         };
     }
 
@@ -263,15 +294,19 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
             usage_count: usage_counts[index],
             estimated_bytes,
             duplicate_key,
-            topic: event_topic(event),
+            topic: learning::event_topic(event),
             covered_by_amendment: false,
         });
     }
 
     // Self-generalization: learn topics and durable requirements from the same
-    // memory graph, then bake each requirement into a meta-algorithm amendment.
-    let (topics, learned_requirements, amendments) =
-        learn_from_memory(events, &observations, &deleted_conversations);
+    // memory links, then bake each requirement into a meta-algorithm amendment.
+    let learning = learning::learn_from_memory(events, &observations, &deleted_conversations);
+    let topics = learning.topics;
+    let learned_requirements = learning.requirements;
+    let amendments = learning.amendments;
+    let candidate_tasks = learning.candidate_tasks;
+    let patterns = learning.patterns;
     let covered_event_ids: BTreeSet<&str> = amendments
         .iter()
         .flat_map(|amendment| amendment.covered_event_ids.iter().map(String::as_str))
@@ -422,6 +457,8 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         topics,
         learned_requirements,
         amendments,
+        candidate_tasks,
+        patterns,
     }
 }
 
@@ -448,12 +485,20 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
         .map(amendment_event)
         .collect();
     let learned_amendments = new_amendments.len();
+    let new_patterns = plan
+        .patterns
+        .iter()
+        .map(pattern_event)
+        .filter(|event| !existing_ids.contains(&event.id))
+        .collect::<Vec<_>>();
+    let learned_patterns = new_patterns.len();
 
-    if selected_ids.is_empty() && new_amendments.is_empty() {
+    if selected_ids.is_empty() && new_amendments.is_empty() && new_patterns.is_empty() {
         return DreamingOutcome {
             removed_events: 0,
             estimated_reclaimed_bytes: 0,
             learned_amendments: 0,
+            learned_patterns: 0,
         };
     }
 
@@ -466,11 +511,32 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
         .collect::<Vec<_>>();
     let removed_events = initial_len - retained.len();
     retained.extend(new_amendments);
+    retained.extend(new_patterns);
     *store = MemoryStore::from_events(retained);
     DreamingOutcome {
         removed_events,
         estimated_reclaimed_bytes: selected_bytes(&plan.actions),
         learned_amendments,
+        learned_patterns,
+    }
+}
+
+fn pattern_event(pattern: &DreamingPattern) -> MemoryEvent {
+    let identity = format!("{}\0{}", pattern.topic, pattern.structure);
+    MemoryEvent {
+        id: crate::engine::stable_id("dreaming_pattern", &identity),
+        kind: Some(String::from("dreaming_pattern")),
+        role: Some(String::from("system")),
+        intent: Some(String::from("generalize")),
+        inputs: Some(format!("topic={}", pattern.topic)),
+        outputs: Some(format!("structure={}", pattern.structure)),
+        content: Some(format!(
+            "Recurring structure {} observed {} time(s)",
+            pattern.structure, pattern.occurrences
+        )),
+        demo_label: Some(pattern.topic.clone()),
+        evidence: pattern.source_event_ids.clone(),
+        ..MemoryEvent::default()
     }
 }
 
@@ -482,9 +548,16 @@ fn amendment_event(amendment: &MetaAlgorithmAmendment) -> MemoryEvent {
         role: Some(String::from("system")),
         intent: Some(String::from("generalize")),
         content: Some(amendment.rule.clone()),
+        inputs: Some(format!("topic={}", amendment.topic)),
+        outputs: Some(format!("rule={}", amendment.rule)),
         demo_label: Some(amendment.topic.clone()),
         conversation_title: Some(amendment.topic.clone()),
-        evidence: amendment.source_requirement_ids.clone(),
+        evidence: amendment
+            .source_requirement_ids
+            .iter()
+            .cloned()
+            .chain([String::from("recipe:data/meta/dreaming-recipe.lino")])
+            .collect(),
         ..MemoryEvent::default()
     }
 }
@@ -566,6 +639,18 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
             amendment.rule
         ));
     }
+    for candidate in &plan.candidate_tasks {
+        lines.push(format!(
+            "  candidate_task topic={} source={} passed={}",
+            candidate.topic, candidate.source_event_id, candidate.passed
+        ));
+    }
+    for pattern in &plan.patterns {
+        lines.push(format!(
+            "  learned_pattern topic={} occurrences={} structure={}",
+            pattern.topic, pattern.occurrences, pattern.structure
+        ));
+    }
 
     lines.join("\n")
 }
@@ -641,7 +726,15 @@ fn classify_event(
 
     if contains_any(
         &kind,
-        &["source:", "source_", "cache", "http", "web_search"],
+        &[
+            "source:",
+            "source_",
+            "cache",
+            "http",
+            "web_search",
+            "seed_data",
+            "seed_cache",
+        ],
     ) || contains_any(&tool, &["web_search", "http", "fetch", "source", "cache"])
     {
         return DreamingDurability::RecomputableCache;
@@ -665,209 +758,6 @@ fn classify_event(
     }
 
     DreamingDurability::IrreplaceableRaw
-}
-
-/// Cues that mark a piece of text as a durable user requirement rather than a
-/// one-off request. Kept deliberately conservative so learning stays precise.
-const REQUIREMENT_CUES: &[&str] = &[
-    "always",
-    "never",
-    "must",
-    "should",
-    "requirement",
-    "require",
-    "prefer",
-    "make sure",
-    "ensure",
-    "do not",
-    "don't",
-];
-
-/// Intents/labels too generic to identify a topic the user actually cares about.
-fn is_generic_topic(value: &str) -> bool {
-    matches!(
-        value,
-        "" | "message"
-            | "ask"
-            | "reply"
-            | "chat"
-            | "note"
-            | "generalize"
-            | "system"
-            | "user"
-            | "assistant"
-    )
-}
-
-/// Recalculate which topic an event belongs to, preferring the most specific
-/// stable label available.
-fn event_topic(event: &MemoryEvent) -> Option<String> {
-    for raw in [
-        event.conversation_title.as_deref(),
-        event.demo_label.as_deref(),
-        event.intent.as_deref(),
-        event.tool.as_deref(),
-    ]
-    .into_iter()
-    .flatten()
-    {
-        let normalized = raw.trim().to_ascii_lowercase();
-        if !is_generic_topic(&normalized) {
-            return Some(normalized);
-        }
-    }
-    None
-}
-
-/// A concrete task or test run on a topic, as opposed to a durable requirement.
-fn is_task_event(event: &MemoryEvent) -> bool {
-    let kind = lower_opt(event.kind.as_deref());
-    let intent = lower_opt(event.intent.as_deref());
-    contains_any(&kind, &["task", "test_run", "test-run", "trial", "run_log"])
-        || contains_any(&intent, &["task", "solve", "test"])
-}
-
-/// Extract a durable requirement statement from an event, if it states one. Only
-/// user-authored (or unlabeled) events count so amendments and assistant chatter
-/// are never mistaken for standing requirements.
-fn requirement_statement(event: &MemoryEvent) -> Option<String> {
-    if event.role.as_deref().is_some_and(|role| {
-        role.eq_ignore_ascii_case("assistant") || role.eq_ignore_ascii_case("system")
-    }) {
-        return None;
-    }
-    let content = event.content.as_deref()?.trim();
-    if content.is_empty() {
-        return None;
-    }
-    if !contains_any(&content.to_ascii_lowercase(), REQUIREMENT_CUES) {
-        return None;
-    }
-    Some(content.to_string())
-}
-
-/// Turn a topic name into a stable, id-safe slug.
-fn topic_slug(topic: &str) -> String {
-    topic
-        .chars()
-        .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
-        .collect()
-}
-
-/// Learn from stored experience: recalculate topic interaction frequency, recover
-/// durable user requirements, and generalize them into meta-algorithm amendments
-/// whose retained rule can reproduce the specific task/test-run records it covers.
-fn learn_from_memory(
-    events: &[MemoryEvent],
-    observations: &[DreamingEventObservation],
-    deleted_conversations: &BTreeSet<String>,
-) -> (
-    Vec<TopicFrequency>,
-    Vec<LearnedRequirement>,
-    Vec<MetaAlgorithmAmendment>,
-) {
-    let mut interactions: BTreeMap<String, usize> = BTreeMap::new();
-    let mut task_events: BTreeMap<String, usize> = BTreeMap::new();
-    let mut requirement_events: BTreeMap<String, usize> = BTreeMap::new();
-    let mut requirements: BTreeMap<(String, String), LearnedRequirement> = BTreeMap::new();
-    let mut coverable: BTreeMap<String, Vec<String>> = BTreeMap::new();
-
-    for (index, event) in events.iter().enumerate() {
-        // Events on deleted conversations are being purged; do not learn from them.
-        if event
-            .conversation_id
-            .as_deref()
-            .is_some_and(|id| deleted_conversations.contains(id))
-        {
-            continue;
-        }
-        let Some(topic) = observations[index].topic.clone() else {
-            continue;
-        };
-        *interactions.entry(topic.clone()).or_default() += 1;
-
-        if is_task_event(event) {
-            *task_events.entry(topic.clone()).or_default() += 1;
-            // Only specifics that can be recomputed are safe to eventually forget.
-            if observations[index].durability.is_reclaimable() && !event.id.is_empty() {
-                coverable
-                    .entry(topic.clone())
-                    .or_default()
-                    .push(event.id.clone());
-            }
-        }
-
-        if let Some(statement) = requirement_statement(event) {
-            *requirement_events.entry(topic.clone()).or_default() += 1;
-            let key = (topic.clone(), statement.to_ascii_lowercase());
-            let entry = requirements
-                .entry(key)
-                .or_insert_with(|| LearnedRequirement {
-                    topic: topic.clone(),
-                    statement: statement.clone(),
-                    source_event_ids: Vec::new(),
-                    occurrences: 0,
-                });
-            entry.occurrences += 1;
-            if !event.id.is_empty() {
-                entry.source_event_ids.push(event.id.clone());
-            }
-        }
-    }
-
-    let mut topics: Vec<TopicFrequency> = interactions
-        .iter()
-        .map(|(topic, count)| TopicFrequency {
-            topic: topic.clone(),
-            interactions: *count,
-            task_events: task_events.get(topic).copied().unwrap_or(0),
-            requirement_events: requirement_events.get(topic).copied().unwrap_or(0),
-        })
-        .collect();
-    topics.sort_by(|left, right| {
-        right
-            .interactions
-            .cmp(&left.interactions)
-            .then_with(|| left.topic.cmp(&right.topic))
-    });
-
-    let learned_requirements: Vec<LearnedRequirement> = requirements.into_values().collect();
-
-    // Generalize: one amendment per topic that has both a durable requirement and
-    // specific task/test-run records the amendment can reproduce.
-    let mut by_topic: BTreeMap<String, Vec<&LearnedRequirement>> = BTreeMap::new();
-    for requirement in &learned_requirements {
-        by_topic
-            .entry(requirement.topic.clone())
-            .or_default()
-            .push(requirement);
-    }
-    let mut amendments = Vec::new();
-    for (topic, reqs) in &by_topic {
-        let covered = coverable.get(topic).cloned().unwrap_or_default();
-        if covered.is_empty() {
-            continue;
-        }
-        let mut source_requirement_ids = Vec::new();
-        let mut statements = Vec::new();
-        for requirement in reqs {
-            statements.push(requirement.statement.clone());
-            source_requirement_ids.extend(requirement.source_event_ids.iter().cloned());
-        }
-        let rule = format!(
-            "When solving \"{topic}\" tasks, always apply the user's standing requirement(s): {}",
-            statements.join("; ")
-        );
-        amendments.push(MetaAlgorithmAmendment {
-            id: format!("amendment:{}", topic_slug(topic)),
-            topic: topic.clone(),
-            rule,
-            source_requirement_ids,
-            covered_event_ids: covered,
-        });
-    }
-
-    (topics, learned_requirements, amendments)
 }
 
 fn duplicate_key(event: &MemoryEvent, durability: DreamingDurability) -> Option<String> {

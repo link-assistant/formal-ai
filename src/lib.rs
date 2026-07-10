@@ -17,6 +17,8 @@ pub(crate) mod concepts;
 pub mod cue_lexicon;
 pub mod document_formats;
 pub mod dreaming;
+pub mod dreaming_application;
+pub mod dreaming_runtime;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -86,6 +88,7 @@ pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
 pub mod statement_verification;
+pub mod storage_policy;
 pub mod substitution;
 pub mod summarization;
 pub mod telegram;
@@ -124,6 +127,10 @@ pub use dreaming::{
     DreamingActionKind, DreamingConfig, DreamingDurability, DreamingEventObservation,
     DreamingOutcome, DreamingPlan, LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
 };
+pub use dreaming_application::{
+    amended_answer, apply_retained_amendments, retained_amendments, RetainedAmendment,
+};
+pub use dreaming_runtime::{core_is_idle, run_core_dreaming_once, ForegroundActivity};
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
     render_thinking_steps, thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep,
@@ -246,6 +253,10 @@ pub use solver_helpers::humanize_url;
 pub use statement_verification::{
     assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
     MarketPriceClaim,
+};
+pub use storage_policy::{
+    apply_auto_free_space_for_write, auto_free_space_enabled, auto_free_space_preference_path,
+    measure_storage, persist_auto_free_space_choice, plan_for_real_storage, StorageSnapshot,
 };
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,

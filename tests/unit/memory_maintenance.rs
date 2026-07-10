@@ -1,6 +1,9 @@
 use formal_ai::{
-    apply_dreaming_plan, plan_memory_dreaming, DreamingActionKind, DreamingConfig, MemoryEvent,
-    MemoryStore,
+    apply_dreaming_plan, auto_free_space_enabled, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, measure_storage, persist_auto_free_space_choice,
+    plan_memory_dreaming, run_core_dreaming_once, ChatCompletionRequest, ChatMessage,
+    DreamingActionKind, DreamingConfig, MemoryEvent, MemoryStore, ResponsesRequest,
+    UniversalSolver,
 };
 
 #[test]
@@ -210,8 +213,18 @@ fn dreaming_recalculates_topic_frequency_and_learns_durable_requirements() {
             "latex",
             "Always compile proofs with LaTeX before answering.",
         ),
-        task_run_event("run-1", "latex", "proof render pass 1"),
-        task_run_event("run-2", "latex", "proof render pass 2"),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "proof render pass 1",
+            "Always compile proofs with LaTeX.",
+        ),
+        verified_task_run_event(
+            "run-2",
+            "latex",
+            "proof render pass 2",
+            "Always compile proofs with LaTeX.",
+        ),
         MemoryEvent {
             id: String::from("chit-chat"),
             kind: Some(String::from("message")),
@@ -244,8 +257,18 @@ fn dreaming_generalizes_requirements_into_meta_algorithm_amendments() {
     // covers the specific test-run records it can reproduce.
     let events = vec![
         requirement_event("req-1", "latex", "Always compile proofs with LaTeX."),
-        task_run_event("run-1", "latex", "proof render pass 1"),
-        task_run_event("run-2", "latex", "proof render pass 2"),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "proof render pass 1",
+            "Always compile proofs with LaTeX.",
+        ),
+        verified_task_run_event(
+            "run-2",
+            "latex",
+            "proof render pass 2",
+            "Always compile proofs with LaTeX.",
+        ),
     ];
 
     let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
@@ -262,12 +285,306 @@ fn dreaming_generalizes_requirements_into_meta_algorithm_amendments() {
 }
 
 #[test]
+fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
+    let mut store = MemoryStore::from_events(vec![
+        requirement_event(
+            "req-1",
+            "latex",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "Explain a proof by induction",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+    ]);
+    let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
+    let _ = apply_dreaming_plan(&mut store, &plan);
+
+    let request = ChatCompletionRequest {
+        model: None,
+        messages: vec![ChatMessage::user("latex: solve a new recurrence proof")],
+        temperature: None,
+        stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
+        stream_options: None,
+    };
+    let completion = create_chat_completion_with_solver_and_memory(
+        &request,
+        &UniversalSolver::default(),
+        store.events(),
+    );
+    let answer = completion.choices[0].message.content.plain_text();
+
+    assert!(answer.contains("Learned standing requirement"));
+    assert!(answer.contains("LaTeX verification step"));
+
+    let responses_request = ResponsesRequest {
+        input: serde_json::Value::String(String::from("latex: solve another recurrence proof")),
+        ..ResponsesRequest::default()
+    };
+    let response = create_response_with_solver_and_memory(
+        &responses_request,
+        &UniversalSolver::default(),
+        store.events(),
+    );
+    let response_text = &response.output_messages()[0].content[0].text;
+    assert!(response_text.contains("Learned standing requirement"));
+    assert!(response_text.contains("LaTeX verification step"));
+}
+
+#[test]
+fn dreaming_marks_only_replay_verified_specifics_as_covered() {
+    let events = vec![
+        requirement_event(
+            "req-1",
+            "latex",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+        verified_task_run_event(
+            "run-verified",
+            "latex",
+            "Explain a proof by induction",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+        MemoryEvent {
+            id: String::from("run-unverified"),
+            kind: Some(String::from("test_run")),
+            role: Some(String::from("assistant")),
+            inputs: Some(String::from("Explain a contradiction proof")),
+            outputs: Some(String::from(
+                "an unrelated output that replay cannot reproduce",
+            )),
+            content: Some(String::from("unverified test run")),
+            conversation_title: Some(String::from("latex")),
+            ..MemoryEvent::default()
+        },
+    ];
+    let plan = plan_memory_dreaming(
+        &events,
+        &DreamingConfig {
+            storage_capacity_bytes: Some(1_000),
+            free_bytes: Some(0),
+            ..DreamingConfig::default()
+        },
+    );
+
+    let verified = plan
+        .observations
+        .iter()
+        .find(|observation| observation.event_id == "run-verified")
+        .expect("verified run observation");
+    let unverified = plan
+        .observations
+        .iter()
+        .find(|observation| observation.event_id == "run-unverified")
+        .expect("unverified run observation");
+    assert!(verified.covered_by_amendment);
+    assert!(!unverified.covered_by_amendment);
+    assert!(!plan.actions.iter().any(|action| {
+        action.event_id == "run-unverified"
+            && action.kind == DreamingActionKind::ForgetCoveredSpecific
+    }));
+}
+
+#[test]
+fn dreaming_simulates_frequent_topic_tasks_and_mines_recurring_structures() {
+    let events = vec![
+        requirement_event(
+            "req-1",
+            "rust",
+            "Always include a runnable test with Rust changes.",
+        ),
+        verified_task_run_event(
+            "run-1",
+            "rust",
+            "refactor parser safely",
+            "Always include a runnable test with Rust changes.",
+        ),
+        verified_task_run_event(
+            "run-2",
+            "rust",
+            "refactor renderer safely",
+            "Always include a runnable test with Rust changes.",
+        ),
+    ];
+
+    let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+
+    assert_eq!(plan.candidate_tasks.len(), 2);
+    assert!(plan
+        .candidate_tasks
+        .iter()
+        .all(|candidate| candidate.passed));
+    assert!(plan.patterns.iter().any(|pattern| {
+        pattern.topic == "rust"
+            && pattern.occurrences == 2
+            && pattern.structure.starts_with("refactor")
+    }));
+}
+
+#[test]
+fn storage_policy_measures_real_filesystem_and_persists_opt_in() {
+    let memory_path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-540-{}-memory.lino",
+        std::process::id()
+    ));
+    let preference_path = memory_path.with_file_name(format!(
+        "{}.auto-free-space",
+        memory_path.file_name().unwrap().to_string_lossy()
+    ));
+    let _ = std::fs::remove_file(&preference_path);
+
+    let snapshot = measure_storage(&memory_path).expect("filesystem measurement");
+    assert!(snapshot.capacity_bytes > 0);
+    assert!(snapshot.free_bytes <= snapshot.capacity_bytes);
+    assert!(!auto_free_space_enabled(&memory_path));
+    persist_auto_free_space_choice(&memory_path, true).expect("persist opt-in");
+    assert!(auto_free_space_enabled(&memory_path));
+    persist_auto_free_space_choice(&memory_path, false).expect("persist opt-out");
+    assert!(!auto_free_space_enabled(&memory_path));
+
+    let _ = std::fs::remove_file(preference_path);
+}
+
+#[test]
+fn dreaming_requirement_learning_uses_multilingual_data_cues() {
+    let events = vec![
+        requirement_event(
+            "req-ru",
+            "доказательства",
+            "Всегда добавляй проверку результата.",
+        ),
+        verified_task_run_event(
+            "run-ru",
+            "доказательства",
+            "Реши новую задачу",
+            "Всегда добавляй проверку результата.",
+        ),
+    ];
+
+    let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+
+    assert!(plan.learned_requirements.iter().any(|requirement| {
+        requirement.topic == "доказательства" && requirement.statement.contains("Всегда")
+    }));
+}
+
+#[test]
+fn multilingual_topics_receive_distinct_stable_amendment_ids() {
+    let events = vec![
+        requirement_event("req-proof", "证明", "始终添加验证步骤。"),
+        verified_task_run_event("run-proof", "证明", "解释归纳法", "始终添加验证步骤。"),
+        requirement_event("req-code", "编码", "始终添加测试步骤。"),
+        verified_task_run_event("run-code", "编码", "重构解析器", "始终添加测试步骤。"),
+    ];
+
+    let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+    assert_eq!(plan.amendments.len(), 2);
+    assert_ne!(plan.amendments[0].id, plan.amendments[1].id);
+}
+
+#[test]
+fn core_background_dreaming_learns_but_does_not_free_without_consent() {
+    let memory_path = std::env::temp_dir().join(format!(
+        "formal-ai-core-dreaming-{}-memory.lino",
+        std::process::id()
+    ));
+    let store = MemoryStore::from_events(vec![
+        requirement_event(
+            "req-core",
+            "rust",
+            "Always include a runnable test with Rust changes.",
+        ),
+        verified_task_run_event(
+            "run-core",
+            "rust",
+            "refactor parser safely",
+            "Always include a runnable test with Rust changes.",
+        ),
+        recomputable_event("duplicate-a", "same public cache"),
+        recomputable_event("duplicate-b", "same public cache"),
+    ]);
+    store.save_to_file(&memory_path).expect("write fixture");
+    persist_auto_free_space_choice(&memory_path, false).expect("persist default-off");
+
+    let outcome = run_core_dreaming_once(&memory_path).expect("core dreaming run");
+    let after = MemoryStore::load_from_file(&memory_path).expect("load dreamed store");
+
+    assert_eq!(outcome.removed_events, 0);
+    assert!(after.events().iter().any(|event| event.id == "duplicate-a"));
+    assert!(after.events().iter().any(|event| event.id == "duplicate-b"));
+    assert!(after
+        .events()
+        .iter()
+        .any(|event| { event.kind.as_deref() == Some("meta_algorithm_amendment") }));
+
+    let _ = std::fs::remove_file(&memory_path);
+    let _ = std::fs::remove_file(format!("{}.auto-free-space", memory_path.display()));
+}
+
+#[test]
+fn usage_recalculation_covers_cached_and_seed_links() {
+    let events = vec![
+        MemoryEvent {
+            id: String::from("seed-unused"),
+            kind: Some(String::from("seed_cache")),
+            content: Some(String::from("reconstructable seeded catalog entry")),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("seed-used"),
+            kind: Some(String::from("seed_cache")),
+            content: Some(String::from("another seeded catalog entry")),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("task-reference"),
+            kind: Some(String::from("task")),
+            content: Some(String::from("solve using seed-used")),
+            evidence: vec![String::from("seed-used")],
+            ..MemoryEvent::default()
+        },
+    ];
+    let plan = plan_memory_dreaming(
+        &events,
+        &DreamingConfig {
+            storage_capacity_bytes: Some(1_000),
+            free_bytes: Some(0),
+            ..DreamingConfig::default()
+        },
+    );
+
+    assert_eq!(plan.event_usage("seed-unused"), Some(0));
+    assert!(plan.event_usage("seed-used").unwrap_or_default() > 0);
+    let unused_position = plan
+        .actions
+        .iter()
+        .position(|action| action.event_id == "seed-unused")
+        .expect("unused seed cache selected");
+    let used_position = plan
+        .actions
+        .iter()
+        .position(|action| action.event_id == "seed-used");
+    assert!(used_position.is_none_or(|position| unused_position < position));
+}
+
+#[test]
 fn dreaming_forgets_covered_specifics_first_under_pressure() {
     // Under storage pressure, specifics reproducible from a retained amendment
     // are forgotten before other recomputable data, while raw/learning stays.
     let events = vec![
         requirement_event("req-1", "latex", "Always compile proofs with LaTeX."),
-        task_run_event("run-1", "latex", &"proof render specifics ".repeat(20)),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            &"proof render specifics ".repeat(20),
+            "Always compile proofs with LaTeX.",
+        ),
         recomputable_event("unrelated-cache", &"unrelated cached source ".repeat(5)),
     ];
     let config = DreamingConfig {
@@ -295,8 +612,18 @@ fn applying_dreaming_plan_bakes_amendments_and_is_idempotent() {
     // re-applying an unchanged plan must not duplicate it.
     let mut store = MemoryStore::from_events(vec![
         requirement_event("req-1", "latex", "Always compile proofs with LaTeX."),
-        task_run_event("run-1", "latex", "proof render pass 1"),
-        task_run_event("run-2", "latex", "proof render pass 2"),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "proof render pass 1",
+            "Always compile proofs with LaTeX.",
+        ),
+        verified_task_run_event(
+            "run-2",
+            "latex",
+            "proof render pass 2",
+            "Always compile proofs with LaTeX.",
+        ),
     ]);
     let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
 
@@ -333,13 +660,17 @@ fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
     }
 }
 
-fn task_run_event(id: &str, topic: &str, payload: &str) -> MemoryEvent {
+fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str) -> MemoryEvent {
+    let solved = UniversalSolver::default().solve(input).answer;
     MemoryEvent {
         id: String::from(id),
         kind: Some(String::from("test_run")),
         role: Some(String::from("assistant")),
-        content: Some(String::from(payload)),
-        outputs: Some(String::from(payload)),
+        content: Some(String::from(input)),
+        inputs: Some(String::from(input)),
+        outputs: Some(format!(
+            "{solved}\n\nLearned standing requirement ({topic}): {requirement}"
+        )),
         conversation_title: Some(String::from(topic)),
         ..MemoryEvent::default()
     }

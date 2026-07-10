@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
+use crate::dreaming_application::{amended_answer, apply_retained_amendments};
 use crate::engine::{
     estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
 };
@@ -587,7 +588,9 @@ pub fn create_chat_completion_with_solver_and_memory(
         AgenticOutcome::Refused(answer) => {
             return chat_completion_from_symbolic(request, &prompt, answer)
         }
-        AgenticOutcome::Planned(plan) => return chat_completion_from_plan(request, &prompt, plan),
+        AgenticOutcome::Planned(plan) => {
+            return chat_completion_from_plan(request, &prompt, plan, memory_events)
+        }
         AgenticOutcome::Fallthrough => {}
     }
 
@@ -596,7 +599,8 @@ pub fn create_chat_completion_with_solver_and_memory(
         return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
     }
 
-    let symbolic_answer = solver.solve_with_history(&prompt, &history);
+    let mut symbolic_answer = solver.solve_with_history(&prompt, &history);
+    apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -672,6 +676,7 @@ fn chat_completion_from_plan(
     request: &ChatCompletionRequest,
     prompt: &str,
     plan: AgenticPlan,
+    memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = estimate_tokens(prompt);
@@ -699,6 +704,7 @@ fn chat_completion_from_plan(
             )
         }
         AgenticPlan::Final(answer) => {
+            let answer = amended_answer(prompt, &answer, memory_events);
             let completion_tokens = estimate_tokens(&answer);
             (
                 ChatMessage::assistant(answer),
@@ -784,7 +790,9 @@ pub fn create_response_with_solver_and_memory(
     let chat_request = request.to_chat_completion_request();
     match agentic_outcome(&chat_request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
-        AgenticOutcome::Planned(plan) => return response_from_plan(request, &prompt, plan),
+        AgenticOutcome::Planned(plan) => {
+            return response_from_plan(request, &prompt, plan, memory_events)
+        }
         AgenticOutcome::Fallthrough => {}
     }
     let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
@@ -798,7 +806,8 @@ pub fn create_response_with_solver_and_memory(
     {
         return response_from_symbolic(request, &prompt, symbolic_answer);
     }
-    let symbolic_answer = solver.solve(&prompt);
+    let mut symbolic_answer = solver.solve(&prompt);
+    apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
     response_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -810,6 +819,7 @@ fn response_from_plan(
     request: &ResponsesRequest,
     prompt: &str,
     plan: AgenticPlan,
+    memory_events: &[MemoryEvent],
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = estimate_tokens(prompt);
@@ -839,6 +849,7 @@ fn response_from_plan(
             (items, output_tokens)
         }
         AgenticPlan::Final(answer) => {
+            let answer = amended_answer(prompt, &answer, memory_events);
             let output_tokens = estimate_tokens(&answer);
             let message = ResponseOutputItem::Message(ResponseOutputMessage {
                 id: stable_id("msg", &answer),

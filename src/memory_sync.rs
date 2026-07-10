@@ -171,6 +171,16 @@ impl SyncStore {
         let before = self.events.len();
         self.events = merge_union_by_id(&self.events, &incoming);
         let added = self.events.len() - before;
+        if let Some(path) = self.path.as_deref() {
+            let mut memory =
+                crate::memory::MemoryStore::from_events(std::mem::take(&mut self.events));
+            let _ = crate::storage_policy::apply_auto_free_space_for_write(
+                &mut memory,
+                path,
+                u64::try_from(text.len()).unwrap_or(u64::MAX),
+            )?;
+            self.events = memory.events().to_vec();
+        }
         self.persist()?;
         Ok(added)
     }
