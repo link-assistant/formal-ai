@@ -248,23 +248,25 @@ next known `incoming_bytes`, and selects the lowest-use reclaimable records
 first. If reclaimable records cannot satisfy the target, the plan reports
 `requires_bigger_storage` instead of selecting raw or learned experience.
 
-Dreaming also *learns from the same memory graph and generalizes*. In the same
-pure pass, `event_topic` recalculates which topic each event belongs to and
-`learn_from_memory` ranks topics by recalculated interaction frequency
-(`TopicFrequency`), recovers the durable requirements the user stated on those
-topics (`requirement_statement` → `LearnedRequirement`), and bakes each one into
-a `MetaAlgorithmAmendment`. `apply_dreaming_plan` materializes every amendment as
-a retained, never-reclaimable `meta_algorithm_amendment` event — idempotently, so
-re-applying an unchanged plan never duplicates it — which is how the user's
-requirements are baked into how similar future tasks are solved. Because an
-amendment can reproduce the specific task/test-run records it covers, those
-specifics classify as recomputable and, under pressure, are forgotten first via
-the `ForgetCoveredSpecific` action while the generalized amendment is kept
-forever. This realizes issue #540's core rule: as soon as a generalization
-works, the specific can be forgotten, yet the general meta-algorithm must keep
-the changes that let it solve all other tasks. The dreaming meta-algorithm is
-itself recorded as grounded data in `data/meta/dreaming-recipe.lino`, pinned to
-the live source by `tests/unit/specification/dreaming_meta_algorithm.rs`.
+Dreaming also *learns from memory links and generalizes*. `event_topic` ranks
+frequent topics, `requirement_statement` reads multilingual cues from
+`data/meta/dreaming-cues.lino`, and `mine_patterns` derives recurring task
+structures directly from records. Proposed `MetaAlgorithmAmendment` values are
+replayed against discovered candidate tasks; only an exact normalized replay
+may mark a specific as covered. Applied amendments are retained as structured
+`meta_algorithm_amendment` events, and `src/dreaming_application.rs` reads those
+events on later OpenAI-compatible requests so the learned rule changes similar
+future answers without being repeated. Under pressure, only replay-verified
+specifics can be forgotten via `ForgetCoveredSpecific`.
+
+`src/storage_policy.rs` measures actual filesystem capacity/free bytes and the
+next incoming write. Automatic removal requires a persisted `.auto-free-space`
+choice; both CLI and Electron can ask, and Electron warns when larger storage is
+still required. `src/dreaming_runtime.rs` runs the same learning loop in the
+core server, guarded by foreground activity, while Electron additionally uses
+system-idle detection and lowest practical cross-platform process priority.
+The thirteen-stage recipe in `data/meta/dreaming-recipe.lino` is pinned to all
+of these live source modules.
 
 The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
 plan-only background task. It waits before its first run, repeats infrequently,

@@ -28,26 +28,44 @@ Acceptance gates:
   purge-deleted;
 - tests prove apply removes only selected event ids.
 
-## Plan C: Desktop Background Scheduler
+## Plan C: Core And Desktop Background Scheduler
 
-Start a plan-only scheduler in the Electron main process. It should run after a
-delay, repeat infrequently, unref timers and child processes, and use OS niceness
-where practical. The desktop task must not require the renderer to be open or a
-user to click a maintenance button.
+Start dreaming with the core server and Electron main process. Both yield to
+foreground activity; desktop additionally uses actual system-idle time and the
+lowest practical OS process priority.
 
 Acceptance gates:
 
 - default desktop status includes the dreaming scheduler;
 - `FORMAL_AI_DESKTOP_DREAMING=off` disables it;
-- Unix-like platforms wrap the CLI with `nice -n 19`;
+- Unix-like platforms wrap the CLI with `nice -n 19` and all platforms request
+  low host priority where supported;
 - scheduler tests run without launching Electron.
 
-## Deferred Scale Work
+## Plan D: Verified Learning And Application
 
-The current implementation plans and can apply maintenance for the `.lino`
-memory projection. Future work can push the same policy deeper into the native
-doublets store, add persisted usage histograms, and integrate live filesystem
-free-space probes per platform. Those are scale improvements on top of the
-deterministic policy introduced here, not prerequisites for the issue #540
-safety contract.
+Derive frequent-topic candidate tasks, replay proposed amendments, retain
+recurring structures, and read stored amendments on later protocol requests.
+Only replay-verified coverage may make a specific record reclaimable.
 
+## Plan E: Real Storage And Persisted Consent
+
+Measure the filesystem hosting memory, include actual incoming bytes, and ask
+before automatic cleanup. Persist both acceptance and refusal. If reclaimable
+links cannot meet the 20% reserve, show a larger-storage migration prompt rather
+than deleting raw experience or retained learning.
+
+## Existing Component And Library Survey
+
+| Requirement | Existing components surveyed | Reuse decision |
+| --- | --- | --- |
+| Memory garbage collection and reserve | RocksDB leveled/tiered/FIFO compaction; SQLite incremental vacuum; `redb::Database::compact`; existing `MemoryStore` purge/reset | Adopt incremental, declared-cache-only policy; retain Formal AI durability/replay semantics in the planner instead of migrating storage engines. |
+| Real disk capacity | Rust `fs2`; `sysinfo::Disk`; manual `statvfs`/platform commands | Use `fs2` because it directly measures total/available bytes for the filesystem containing the memory path without mount enumeration or subprocess parsing. |
+| Duplicate restructuring | RocksDB compaction filters; Redis LFU/LRU eviction; existing event evidence links | Recalculate current link references and deduplicate only recomputable records; storage engines cannot infer retained-learning safety. |
+| Idle and low-priority scheduling | browser `requestIdleCallback`; Electron `powerMonitor`; Unix `nice`; Node `os.setPriority`; core request activity counters | Use host idle/priority APIs plus shared core foreground guards; timers only schedule checks, not unconditional work. |
+| Pattern and trend mining | existing Formal AI topic labels, task/test-run records, grounded recipe/data conventions | Mine recurring task structures from stored events and retain them as data; avoid adding a statistical/ML dependency for deterministic first-stage mining. |
+| Consent and migration | existing destructive CLI confirmation; Electron native dialogs; `.lino` sidecar preferences | Reuse native surfaces and persist both choices in a shared `.auto-free-space` convention. |
+| Agentic task execution | existing generalized `DocumentRecipe` and in-repo Agent CLI driver | Add a dreaming-audit recipe that writes, verifies, and returns the gap analysis; pin its complete session byte-for-byte. |
+
+The detailed source links and tradeoffs are preserved in
+`raw-data/online-research.md`.

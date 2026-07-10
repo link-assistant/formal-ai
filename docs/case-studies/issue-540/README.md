@@ -12,8 +12,10 @@ history must be retained unless the user explicitly chooses otherwise.
 Raw GitHub issue, related issue, PR, comment, CI, code-search, and merged-PR
 captures are preserved in `docs/case-studies/issue-540/raw-data/`. The prepared
 PR was #645 on branch `issue-540-daaf4da2188a`; there were no issue comments,
-PR conversation comments, inline review comments, or PR reviews at collection
-time.
+PR conversation comments, inline review comments, or PR reviews in the initial
+capture. The later maintainer amendment is preserved separately in
+`raw-data/pr-645-amendment-2026-07-10.md` and drove the replay, application,
+storage, and runtime work described below.
 
 Online research is summarized in `raw-data/online-research.md`. The relevant
 patterns were background compaction, routine vacuuming, cooperative idle
@@ -28,7 +30,7 @@ The implemented slice is the deterministic memory-maintenance core:
   command that users must remember to run manually.
 - `R398` keeps default dreaming non-destructive; mutation requires the existing
   explicit confirmation and backup flow.
-- `R399` recalculates event usage from the memory graph before deduplicating
+- `R399` recalculates event usage from memory links before deduplicating
   recomputable records.
 - `R400` protects raw messages and learned/ledger experience from automatic
   eviction.
@@ -52,6 +54,10 @@ The implemented slice is the deterministic memory-maintenance core:
   reproduce first under pressure, keeping the generalization.
 - `R412` records the dreaming meta-algorithm as grounded, machine-readable data
   pinned to the live source.
+- `R413`–`R421` require amendment application, replay verification, candidate
+  simulation, recurring-structure mining, real storage and consent, cached/seed
+  link usage, and true core/desktop idle scheduling.
+- `R422` drives the audit through Formal AI's own Agent CLI and pins its session.
 
 ## 3. Root Cause
 
@@ -75,31 +81,54 @@ memory. `apply_dreaming_plan` is a separate helper used only when the CLI caller
 passes `--apply --confirm`. This mirrors the existing `purge-deleted` and
 `reset` safety model.
 
-`formal-ai memory dream` prints an inspectable plan. With storage-capacity and
-free-byte inputs, it computes how many bytes must be reclaimed to maintain the
-default 20% free-space target after the next incoming write. If recomputable
-data is insufficient, the plan reports `requires_bigger_storage` instead of
-selecting raw or learned events.
+`formal-ai memory dream` prints an inspectable plan and measures real filesystem
+capacity/free bytes unless deterministic overrides are supplied. Import paths
+pass the actual incoming byte count. When pressure occurs the CLI or Electron
+asks whether to enable automatic free-space maintenance and persists either
+choice; accepted cleanup frees only enough for the next write. Insufficient
+recomputable data reports `requires_bigger_storage` and Electron displays a
+larger-storage migration prompt.
 
-`desktop/lib/dreaming.cjs` starts a plan-only scheduler in the Electron shell.
-It waits before the first run, repeats at a long interval, unrefs timers and
-child processes, and uses `nice -n 19` on Unix-like platforms so foreground UI
-work remains preferred.
+`src/dreaming_runtime.rs` starts default-on core dreaming with the server and
+yields while API requests are active. `desktop/lib/dreaming.cjs` also checks
+real system idle time, unrefs timers/processes, uses `nice -n 19` on Unix, and
+requests low OS priority on every platform where the host supports it.
 
-The same pure pass also makes dreaming *learn and generalize*. `event_topic`
-recalculates which topic each event belongs to and `learn_from_memory` ranks
-topics by recalculated interaction frequency (`TopicFrequency`), recovers the
-durable requirements the user stated on those topics
-(`requirement_statement` → `LearnedRequirement`), and generalizes each into a
-`MetaAlgorithmAmendment`. `apply_dreaming_plan` materializes every amendment as a
-retained, never-reclaimable `meta_algorithm_amendment` event — idempotently — so
-the user's requirement is baked into how similar future tasks are solved. Because
-an amendment can reproduce the specific task/test-run records it covers, those
-specifics are forgotten first under storage pressure via the
-`ForgetCoveredSpecific` action while the generalization is kept forever. The
-dreaming meta-algorithm is itself recorded as grounded data in
+The same pass learns and generalizes. Multilingual cue data lifts standing
+requirements into `MetaAlgorithmAmendment` records, while language-independent
+structure mining finds repeated task forms. Dreaming derives candidate tasks
+from frequent topics and replays each proposed amendment against recorded
+outputs. Only a passing replay can mark a
+specific as covered; failures remain explicit candidates and cannot authorize
+forgetting. `apply_dreaming_plan` retains amendments and patterns idempotently,
+and `src/dreaming_application.rs` reads amendments during later chat/Responses
+requests so learned rules actually change future answers. The dreaming
+meta-algorithm is recorded as grounded data in
 `data/meta/dreaming-recipe.lino`, pinned to the live source by
 `tests/unit/specification/dreaming_meta_algorithm.rs`.
+
+### Agent CLI execution and gap generalization
+
+This amendment was also driven through the in-repo Agent CLI against Formal
+AI's OpenAI-compatible agentic planner. The canonical task asks Formal AI to
+inspect the grounded dreaming recipe, identify gaps, and record the reusable
+generalization resolving each gap. The live run took three turns:
+
+1. `write_file` generated `dreaming-gap-analysis.lino` in the isolated agent
+   workspace;
+2. `run_command` read it back for verification;
+3. Formal AI returned the verified analysis as its final answer.
+
+The complete request, advertised tools, tool arguments/results, and final answer
+are preserved in
+[`agent-cli-session-dreaming-audit.json`](agent-cli-session-dreaming-audit.json).
+The generated artifact is committed as
+[`dreaming-gap-analysis.lino`](dreaming-gap-analysis.lino). It records all seven
+observed shortfalls—unused amendments, unverified coverage, absent simulation
+and pattern discovery, static storage inputs, missing consent/migration UI,
+desktop-only timers, and English/terminology coupling—and the generalized stage
+added for each. `tests/unit/issue_540_agent_cli.rs` reruns the loop and requires
+the committed session and generated analysis to match byte-for-byte.
 
 ## 5. Prior Art And Existing Components
 
@@ -129,10 +158,11 @@ Automated tests cover the policy directly:
   pressure, and idempotent amendment materialization.
 - `tests/unit/specification/dreaming_meta_algorithm.rs` keeps the dreaming
   recipe grounded: the live source still defines every named function and lists
-  eight contiguously ordered steps.
+  thirteen contiguously ordered steps.
 - `desktop/scripts/dreaming.test.mjs` verifies default desktop scheduling,
   plan-only CLI arguments, low-priority wrapping, and output capture.
 - `tests/unit/docs_requirements_issue_540.rs` verifies that this issue's
   requirements, research, raw data, README, architecture notes, and changelog
   remain traceable.
-
+- `tests/unit/issue_540_agent_cli.rs` drives the Formal AI Agent CLI recipe to a
+  real write/read/final loop and pins its session and gap analysis byte-for-byte.

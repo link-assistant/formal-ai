@@ -1,11 +1,11 @@
 //! Issue #540: the dreaming planner, self-described as grounded data.
 //!
 //! `data/meta/dreaming-recipe.lino` is the meta-algorithm describing how the
-//! low-priority dreaming planner is produced: the eight ordered steps that turn
+//! low-priority dreaming planner is produced: the thirteen ordered steps that turn
 //! stored experience into a maintenance-and-generalization plan, plus the live
 //! functions and constants that implement each step. These tests keep that
 //! recipe grounded — they load it and assert the real source still defines every
-//! named function, declares every named constant, lists eight contiguous steps,
+//! named function, declares every named constant, lists thirteen contiguous steps,
 //! and is pinned by real tests — so the self-description can never drift from the
 //! code that actually runs. The parser mirrors
 //! `tests/unit/specification/recursive_core_recipe.rs`.
@@ -123,8 +123,8 @@ fn meta_recipe_steps_are_complete_and_ordered() {
     orders.sort_unstable();
     assert_eq!(
         orders,
-        (1..=8).collect::<Vec<_>>(),
-        "the meta-algorithm must list eight contiguously ordered steps"
+        (1..=13).collect::<Vec<_>>(),
+        "the meta-algorithm must list thirteen contiguously ordered steps"
     );
 
     for step in of_kind(&records, "meta_step") {
@@ -142,8 +142,8 @@ fn meta_recipe_functions_exist_in_named_source() {
     let records = records();
     let functions = of_kind(&records, "meta_function");
     assert!(
-        functions.len() >= 8,
-        "expected the classify/usage/duplicate/topic/requirement/generalize/plan/apply chain"
+        functions.len() >= 13,
+        "expected the classify/learn/replay/apply/storage/runtime chain"
     );
     for function in &functions {
         let name = function.require("function");

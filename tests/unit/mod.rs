@@ -41,6 +41,7 @@ mod issue_527_question_catalog;
 mod issue_535;
 mod issue_538;
 mod issue_538_agentic;
+mod issue_540_agent_cli;
 mod issue_558_change_request;
 mod issue_558_learning_ledger;
 mod issue_558_rebuild_plan;

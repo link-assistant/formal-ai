@@ -21,6 +21,7 @@
 pub mod change_request;
 pub mod corpus;
 pub mod diagram;
+pub mod dreaming_audit;
 pub mod driver;
 pub mod explain;
 mod file_read;
@@ -40,6 +41,7 @@ pub mod source_graph;
 
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
+pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
 };

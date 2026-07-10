@@ -50,3 +50,21 @@ signal.
 - `tests/unit/memory_maintenance.rs`: existing issue #196 maintenance tests
   extended with issue #540 dreaming policy coverage.
 
+## Library Survey And Selection
+
+The amendment asked explicitly whether mature libraries could replace bespoke
+storage/runtime work. The implementation keeps the Formal-AI-specific policy
+(durability, replay coverage, and retained learning) local, but delegates real
+filesystem statistics:
+
+| Candidate | Existing capability | Decision |
+| --- | --- | --- |
+| [`fs2`](https://docs.rs/fs2/latest/fs2/) | Direct cross-platform `total_space` and `available_space` calls for the filesystem containing a path. | Selected: small dependency and exact path-oriented API needed by `.lino` memory. |
+| [`sysinfo::Disk`](https://docs.rs/sysinfo/latest/sysinfo/struct.Disk.html) | Enumerates mounts and reports total/available space plus broader system/process data. | Not selected: substantially broader than the two filesystem values required, and mount matching would add policy. |
+| [`redb::Database::compact`](https://docs.rs/redb/latest/redb/struct.Database.html#method.compact) | Embedded Rust database compaction. | Deferred: the active issue path is the portable Links Notation projection; changing the storage engine would not implement semantic retention or replay verification. |
+| [SQLite incremental vacuum](https://www.sqlite.org/pragma.html#pragma_incremental_vacuum) | Reclaims a caller-selected number of freelist pages when incremental auto-vacuum is enabled. | Pattern adopted, engine not adopted: reclaim only enough for current pressure, but avoid a database migration unrelated to this issue. |
+| [RocksDB compaction](https://github.com/facebook/rocksdb/wiki/Compaction) | Background leveled/tiered/FIFO compaction, including FIFO for cache-like data. | Pattern adopted, engine not adopted: low-priority background compaction and declared cacheability match dreaming, but RocksDB cannot infer Formal AI's retained-learning semantics. |
+
+This survey is why `src/storage_policy.rs` uses `fs2`, while the deterministic
+planner remains responsible for deciding which memory links are genuinely
+recomputable and whether replay verified a generalization before deletion.

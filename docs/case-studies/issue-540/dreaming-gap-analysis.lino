@@ -1,0 +1,41 @@
+dreaming_gap_analysis
+  record_type "agent_cli_gap_analysis"
+  issue "540"
+  grounded_recipe_steps "13"
+  multilingual_cues "22"
+  conclusion "all identified gaps resolved by reusable stages"
+  resolution_01
+    gap "stored amendments were not consumed by future tasks"
+    evidence_step "apply_future_tasks"
+    generalization "represent amendments as structured data and apply every matching retained rule at the shared protocol answer boundary"
+    status "implemented_and_tested"
+  resolution_02
+    gap "topic matching alone claimed that a specific was reproducible"
+    evidence_step "replay_candidates"
+    generalization "derive candidate tasks and require normalized output replay before granting covered status"
+    status "implemented_and_tested"
+  resolution_03
+    gap "requirement extraction did not test the meta-algorithm or discover structures"
+    evidence_step "mine_patterns"
+    generalization "simulate frequent-topic tasks and retain repeated task structures independently of requirement cue words"
+    status "implemented_and_tested"
+  resolution_04
+    gap "storage pressure depended on optional static inputs"
+    evidence_step "measure_real_storage"
+    generalization "measure the filesystem containing memory and include the actual next write byte count"
+    status "implemented_and_tested"
+  resolution_05
+    gap "automatic cleanup had no persisted user decision or migration prompt"
+    evidence_step "idle_consent_runtime"
+    generalization "persist acceptance and refusal, remove only after acceptance, and surface larger-storage pressure"
+    status "implemented_and_tested"
+  resolution_06
+    gap "background dreaming existed only in desktop timers"
+    evidence_step "idle_consent_runtime"
+    generalization "run the same loop in the core server and guard both runtimes with foreground-idle signals and low process priority"
+    status "implemented_and_tested"
+  resolution_07
+    gap "English-only code cues and graph terminology limited generalization"
+    evidence_step "learn_requirements"
+    generalization "load multilingual cues from extensible data and describe the representation consistently as memory links"
+    status "implemented_and_tested"

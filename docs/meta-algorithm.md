@@ -442,20 +442,18 @@ changes that allow it to solve all other tasks." Its recipe lives at
 grounded by
 [`tests/unit/specification/dreaming_meta_algorithm.rs`](../tests/unit/specification/dreaming_meta_algorithm.rs).
 
-The whole planner is one pure function, `plan_memory_dreaming`, in
+The planner starts as one pure function, `plan_memory_dreaming`, in
 [`src/dreaming.rs`](../src/dreaming.rs): it only reads memory and proposes work,
-so it is safe to run by default in the background, while physical deletion stays
-an explicit, confirmation-guarded `apply_dreaming_plan` call. Learning is folded
-into the same pass: `event_topic` recalculates which topic each event belongs to,
-`requirement_statement` lifts durable requirements from user-authored events, and
-`learn_from_memory` bakes each requirement into a `MetaAlgorithmAmendment` that is
-materialized as a retained, never-reclaimable `meta_algorithm_amendment` event.
-Because that amendment can reproduce the specific task/test-run records it
-covers, those specifics are classified as recomputable and, under storage
-pressure, forgotten first via the `ForgetCoveredSpecific` action — while the
-generalized amendment is kept forever.
+so planning is safe in the background. Learning follows memory links:
+multilingual cue data lifts requirements, candidate tasks are replayed against
+proposed amendments, and recurring structures are mined directly from repeated
+task records. Only exact normalized replay grants coverage. Applied amendments
+are stored as structured `meta_algorithm_amendment` events and read by
+`src/dreaming_application.rs` on later protocol requests, which makes learned
+rules change future answers. Physical removal additionally requires persisted
+consent and real filesystem pressure measured by `src/storage_policy.rs`.
 
-### The eight steps
+### The thirteen steps
 
 Each step is one `meta_step` record in the recipe; instantiate them in order to
 add any *dream about stored experience* behaviour:
@@ -467,14 +465,21 @@ add any *dream about stored experience* behaviour:
 3. **Restructure recomputable duplicates** around the most-reused copy.
 4. **Recalculate which topics the user interacts with most** into ranked
    `TopicFrequency` records.
-5. **Recover the durable requirements** the user stated on those topics into
+5. **Recover durable requirements from multilingual cue data** into
    `LearnedRequirement` records.
-6. **Generalize each requirement into a meta-algorithm amendment**, materialized
-   as a retained learning event so the requirement is baked into future solving.
-7. **Reclaim space toward the 20% free-space reserve** (issue #494), reporting
-   `requires_bigger_storage` when recomputable data alone cannot satisfy it.
-8. **Forget the specifics a retained amendment can reproduce**, keeping the
-   generalized meta-algorithm even after its specifics are gone.
+6. **Propose a meta-algorithm amendment** for each learned requirement.
+7. **Derive and replay candidate tasks**, granting coverage only on a matching
+   recorded output.
+8. **Mine recurring task structures** independently of requirement cue words.
+9. **Apply retained amendments to later similar tasks** through both
+   OpenAI-compatible protocol surfaces.
+10. **Measure real storage and actual incoming bytes** on the memory filesystem.
+11. **Reclaim toward the 20% reserve** only from recomputable links.
+12. **Forget replay-verified specifics** with
+    `DreamingActionKind::ForgetCoveredSpecific`, retaining amendments and
+    patterns.
+13. **Run while truly idle**, yielding to foreground work and requiring a
+    persisted user choice before automatic cleanup.
 
 ### What the recipe records
 
@@ -493,7 +498,5 @@ cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
 ```
 
 Because this recipe is checked against the source too, the dreaming planner and
-its recipe can never silently diverge — self-generalization is itself a
-reproducible, data-driven artifact: the amendments Formal AI bakes into its own
-meta-algorithm while dreaming are the same changes the grounded recipe pins to
-the code that produces them.
+its recipe cannot silently diverge: replay, application, storage, consent, and
+runtime stages are all pinned to the live code.
