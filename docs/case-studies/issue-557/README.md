@@ -17,9 +17,43 @@ Companion evidence in this folder:
 | [`raw-data/issue557-test-before.log`](raw-data/issue557-test-before.log) | Failing focused Playwright repro before the fix. |
 | [`screenshots/after-glass-opacity-settings.png`](screenshots/after-glass-opacity-settings.png) | After screenshot showing the Glass skin opacity slider in settings. |
 | [`screenshots/after-material-settings.png`](screenshots/after-material-settings.png) | After screenshot showing the Material skin applied in the app. |
-| [`screenshots/skin-*.png`](screenshots/) | 16-shot skin gallery (4 skins × light/dark × desktop/mobile). See [gallery](#visual-polish-pass-2026-07-09). |
-| [`screenshots/*-glass-component-*.png`](screenshots/) | Per-component liquid-glass closeups (composer, message cards, top bar, sidebar) in light + dark. See [components](#liquid-glass-on-chakra-components). |
+| [`screenshots/skin-*.png`](screenshots/) | 30-shot skin gallery (5 skins x light/dark x desktop/tablet/mobile). See [gallery](#visual-polish-pass-2026-07-09). |
+| [`screenshots/*-glass-component-*.png`](screenshots/) | 18 per-component liquid-glass closeups (composer, message cards, top bar, sidebar, settings, prompts, tools, chat panel) in light + dark. See [components](#liquid-glass-on-chakra-components). |
 | [`screenshots/color-theme-*.png`](screenshots/) | 14-shot colour gallery (7 palettes × light/dark). See [colour themes](#colour-themes-light--dark). |
+
+> **Authoritative completion-gate note (2026-07-10):** the historical
+> "Completed" labels below describe earlier delivery milestones; they do not
+> satisfy the later whole-UI gate in PR comment `4937492083`. The live audit is
+> tracked in [`EVIDENCE-MATRIX.md`](EVIDENCE-MATRIX.md). Until every checkbox in
+> that matrix has implementation, automated coverage, and inspected visual
+> evidence, the PR remains incomplete and in draft.
+
+## Authoritative follow-up audit
+
+The expanded review requires evidence across the entire interface rather than
+selected hero surfaces. The reproducible capture matrix now includes desktop,
+tablet, and mobile for all five skins in light and dark. It also names settings,
+prompts, tools, chat, dialogs, drawers, and state variants explicitly so a
+generated image cannot be mistaken for a completed visual inspection.
+
+The audit found a settings consistency defect: glass blur and refraction were
+persisted controls but were missing from individual reset registration and the
+setting-command switch, while issue-report context carried only opacity. The
+follow-up registers and traces all glass controls together.
+
+React Bits' useful product-level pattern is multiple optical presentations on
+one semantic component tree, not its WebGL showcase itself. The glass skin now
+offers Balanced, Clear, and Frosted profiles. They resolve opacity, blur,
+refraction, and saturation from the same user settings, retain the accessible
+controls, and use a subtle ambient drift that is disabled by
+`prefers-reduced-motion`.
+
+The [Callstack liquid-glass project](https://github.com/callstack/liquid-glass)
+targets native React Native platforms and is valuable as evidence for keeping
+the optical layer separate from semantic controls. It is not a web/Chakra drop-in
+replacement. The web bridge therefore remains isolated in
+`src/web/app/liquid-glass.jsx`, with CSS capability fallbacks and pointer-inert
+decorative layers.
 
 ## Requirement Trace
 
@@ -27,18 +61,18 @@ Companion evidence in this folder:
 |---|---|---|
 | Desktop/tablet buttons should be embedded inside the text field. | Completed (2026-07-10): the composer is now a single-row pill with attach + send controls embedded on either side of the auto-growing text area (replacing the earlier two-row stack). | `tests/e2e/tests/demo.spec.js` has the one-row composer layout test; see [Composer + button polish](#composer--button-polish-all-skins). |
 | Mobile UI should match the same adaptive embedded-composer model. | Completed: the mobile composer uses the same single-row pill geometry with larger 42px touch targets. | Existing mobile viewport tests assert same-row action/input/send geometry. |
-| Settings should expose multiple skins: default, glass, Material, etc. | Completed. | `UI_SKINS` now includes `material`; settings has a Material option and CSS has `.ui-skin-material`. |
+| Settings should expose multiple skins: default, glass, Material, etc. | Completed. | `UI_SKINS` includes `flat`, `glass`, `mui-flat`, `material`, and `contrast`; settings exposes each option and CSS has matching `.ui-skin-*` selectors. |
 | Glass skin should expose a transparency setting. | Completed. | `glassOpacity` is a persisted preference, settings range input, reset descriptor, user-context field, and CSS variable source. |
 | UI should be "as polished as possible" / the skins should look impressive. | Completed (2026-07-09 polish pass). | Glass now renders a living ambient gradient behind heavy `backdrop-filter` frosted surfaces with inner highlights and floating shadows; Material follows M3 tonal surfaces, surface-tint backdrop, elevation shadows, and filled tonal buttons. See the [Visual Polish Pass](#visual-polish-pass-2026-07-09) gallery. |
 | Keep the basic Chakra UI skin, but polish the input field + buttons. | Completed (2026-07-09). | Flat skin keeps Chakra; composer textarea is transparent inside the rounded pill and buttons are polished. See [Composer + button polish](#composer--button-polish-all-skins). |
-| Material skin should also switch the UI framework from Chakra UI to MUI. | Completed (2026-07-09). | `uiFrameworkForSkin` maps `material` → `mui`; app wraps in `MuiThemeProvider` + `ScopedCssBaseline[data-testid=mui-framework-root]`; composer controls become `MuiIconButton`. See [UI framework switch](#ui-framework-switch-chakra--mui). |
-| Support multiple UI frameworks. | Completed. | Chakra (flat/glass/contrast) and MUI (material) coexist, selectable per skin. |
+| Material skin should also switch the UI framework from Chakra UI to MUI. | Completed (2026-07-10 follow-up strengthened). | `uiFrameworkForSkin` maps `mui-flat` and `material` to `mui`; app wraps in `MuiThemeProvider` + `ScopedCssBaseline[data-testid=mui-framework-root]`; composer and shared topbar buttons become `MuiIconButton`. See [UI framework switch](#ui-framework-switch-chakra--mui). |
+| Support multiple UI frameworks. | Completed. | Chakra (flat/glass/contrast) and MUI (mui-flat/material) coexist, selectable per skin. |
 | Study React Bits; add its framework if it differs from Chakra. | Completed without a redundant framework dependency. | React Bits' own application depends on `@chakra-ui/react`; its distributable components are copied as React/CSS or React/Tailwind source, not mounted through a third component framework. See [React Bits framework decision](#react-bits-framework-decision). |
 | Apply React Bits best practices and support different Liquid Glass modes. | Completed. | The implementation combines surface frost/refraction, glass icon controls, and responsive fallbacks while preserving accessible native controls. The deliberately excluded WebGL lens/bar/cube modes are documented below. |
 | Glass skin ("glass") built on Chakra UI using rdev/liquid-glass-react + Apple glass guidelines. | Completed (2026-07-09). | `src/web/app/liquid-glass.jsx` bridges `liquid-glass-react` as a decorative backing behind Chakra controls; no ready-made integration existed, so built in-house for later extraction. |
 | Configurable glass transparency + other glass settings. | Completed. | Three persisted, localized sliders: `glassOpacity`, `glassBlur`, `glassRefraction`. See [Glass configuration settings](#glass-configuration-settings). |
 | Multiple configurable colour themes, each in light and dark. | Completed. | Emerald, Ocean, Indigo, Violet, Rose, Amber, and Graphite are persisted, localized, shared by Chakra/CSS and MUI, and captured in the [14-shot gallery](#colour-themes-light--dark). |
-| Component screenshots saved in the repo for verification. | Completed. | 10 per-component glass closeups, 16-shot skin gallery, and 14-shot colour gallery under `screenshots/`. |
+| Component screenshots saved in the repo for verification. | Completed. | 18 per-component glass closeups, 30-shot skin gallery, six glass-mode images, and 14-shot colour gallery under `screenshots/`. |
 | Study best-rated market UI kits and compile the data under `docs/case-studies/issue-557`. | Completed. | This file plus `raw-data/ui-kit-*.json`. |
 | List requirements, analysis, solutions, and plans. | Completed. | Sections below. |
 
@@ -169,15 +203,17 @@ never match a single element, so the ambient background never rendered and the s
 looked flat. Switching all six occurrences to the compound selector
 `.ui-skin-glass.app` / `.ui-skin-material.app` made the gradients render.
 
-The polish pass is captured as a 16-shot gallery (4 skins x 2 themes x 2 viewports)
+The polish pass is captured as a 30-shot gallery (5 skins x 2 themes x 3 viewports)
 regenerated with [`experiments/skin-screenshots.mjs`](../../../experiments/skin-screenshots.mjs):
 
-| Viewport / theme | Flat | Glass | Material | Contrast |
-|---|---|---|---|---|
-| Desktop light | [png](screenshots/skin-desktop-light-flat.png) | [png](screenshots/skin-desktop-light-glass.png) | [png](screenshots/skin-desktop-light-material.png) | [png](screenshots/skin-desktop-light-contrast.png) |
-| Desktop dark | [png](screenshots/skin-desktop-dark-flat.png) | [png](screenshots/skin-desktop-dark-glass.png) | [png](screenshots/skin-desktop-dark-material.png) | [png](screenshots/skin-desktop-dark-contrast.png) |
-| Mobile light | [png](screenshots/skin-mobile-light-flat.png) | [png](screenshots/skin-mobile-light-glass.png) | [png](screenshots/skin-mobile-light-material.png) | [png](screenshots/skin-mobile-light-contrast.png) |
-| Mobile dark | [png](screenshots/skin-mobile-dark-flat.png) | [png](screenshots/skin-mobile-dark-glass.png) | [png](screenshots/skin-mobile-dark-material.png) | [png](screenshots/skin-mobile-dark-contrast.png) |
+| Viewport / theme | Flat | Glass | MUI Flat | Material | Contrast |
+|---|---|---|---|---|---|
+| Desktop light | [png](screenshots/skin-desktop-light-flat.png) | [png](screenshots/skin-desktop-light-glass.png) | [png](screenshots/skin-desktop-light-mui-flat.png) | [png](screenshots/skin-desktop-light-material.png) | [png](screenshots/skin-desktop-light-contrast.png) |
+| Desktop dark | [png](screenshots/skin-desktop-dark-flat.png) | [png](screenshots/skin-desktop-dark-glass.png) | [png](screenshots/skin-desktop-dark-mui-flat.png) | [png](screenshots/skin-desktop-dark-material.png) | [png](screenshots/skin-desktop-dark-contrast.png) |
+| Tablet light | [png](screenshots/skin-tablet-light-flat.png) | [png](screenshots/skin-tablet-light-glass.png) | [png](screenshots/skin-tablet-light-mui-flat.png) | [png](screenshots/skin-tablet-light-material.png) | [png](screenshots/skin-tablet-light-contrast.png) |
+| Tablet dark | [png](screenshots/skin-tablet-dark-flat.png) | [png](screenshots/skin-tablet-dark-glass.png) | [png](screenshots/skin-tablet-dark-mui-flat.png) | [png](screenshots/skin-tablet-dark-material.png) | [png](screenshots/skin-tablet-dark-contrast.png) |
+| Mobile light | [png](screenshots/skin-mobile-light-flat.png) | [png](screenshots/skin-mobile-light-glass.png) | [png](screenshots/skin-mobile-light-mui-flat.png) | [png](screenshots/skin-mobile-light-material.png) | [png](screenshots/skin-mobile-light-contrast.png) |
+| Mobile dark | [png](screenshots/skin-mobile-dark-flat.png) | [png](screenshots/skin-mobile-dark-glass.png) | [png](screenshots/skin-mobile-dark-mui-flat.png) | [png](screenshots/skin-mobile-dark-material.png) | [png](screenshots/skin-mobile-dark-contrast.png) |
 
 ## Multi-Framework Skins (2026-07-09)
 
@@ -191,11 +227,12 @@ framework at once). All three are now implemented.
 
 ### UI framework switch (Chakra ⇄ MUI)
 
-`uiFrameworkForSkin(skin)` maps the `material` skin to the `mui` framework and
-every other skin to `chakra`. When the framework is `mui`, the whole app tree is
+`uiFrameworkForSkin(skin)` maps the neutral `mui-flat` skin and the `material`
+skin to the `mui` framework; flat, glass, and contrast stay on Chakra. When the
+framework is `mui`, the whole app tree is
 wrapped in `<MuiThemeProvider><ScopedCssBaseline data-testid="mui-framework-root">`
-and the composer's action/send controls render as `MuiIconButton` instead of
-plain Chakra buttons. `ScopedCssBaseline` keeps MUI's reset from leaking onto
+and the composer's action/send controls plus shared non-link topbar buttons
+render as `MuiIconButton` instead of Chakra buttons. `ScopedCssBaseline` keeps MUI's reset from leaking onto
 the landing page, and MUI's IconButton forwards `data-testid`, `aria-*`,
 `disabled`, and `onClick` to its root `<button>` — so the entire existing E2E
 suite keeps targeting the same controls regardless of framework. The MUI theme
@@ -230,6 +267,10 @@ glass treatment be verified in isolation:
 | User message card | [png](screenshots/light-glass-component-message-user.png) | [png](screenshots/dark-glass-component-message-user.png) |
 | Top bar | [png](screenshots/light-glass-component-topbar.png) | [png](screenshots/dark-glass-component-topbar.png) |
 | Conversations sidebar | [png](screenshots/light-glass-component-sidebar-conversations.png) | [png](screenshots/dark-glass-component-sidebar-conversations.png) |
+| Settings/reset panel | [png](screenshots/light-glass-component-settings.png) | [png](screenshots/dark-glass-component-settings.png) |
+| Example prompts | [png](screenshots/light-glass-component-prompts.png) | [png](screenshots/dark-glass-component-prompts.png) |
+| Tool card | [png](screenshots/light-glass-component-tool.png) | [png](screenshots/dark-glass-component-tool.png) |
+| Chat panel | [png](screenshots/light-glass-component-chat-panel.png) | [png](screenshots/dark-glass-component-chat-panel.png) |
 
 ### Glass configuration settings
 
@@ -262,7 +303,7 @@ polished Chakra pill.
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
 (every skin's marker class and transparent textarea, the MUI framework root
-mounting only for Material, MuiIconButton controls preserving test ids and
+mounting only for MUI skins, MuiIconButton composer/topbar controls preserving test ids and
 disabled state, the three glass sliders showing only in Glass, live blur, and
 all seven colour palettes in both light and dark).
 

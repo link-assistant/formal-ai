@@ -292,6 +292,7 @@ en
       label "UI skin"
       flat "Flat"
       glass "Glass"
+      muiFlat "MUI Flat"
       material "Material"
       contrast "Contrast"
     colorTheme
@@ -313,6 +314,11 @@ en
     glassRefraction "Glass refraction"
     glassLessRefraction "Flat"
     glassMoreRefraction "Liquid"
+    glassMode
+      label "Glass appearance"
+      balanced "Balanced"
+      clear "Clear"
+      frosted "Frosted"
     toolbarIconPack
       label "Toolbar icons"
       fontawesome "Font Awesome"
@@ -667,6 +673,7 @@ ru
       label "Скин UI"
       flat "Плоский"
       glass "Стекло"
+      muiFlat "MUI Плоский"
       material "Material"
       contrast "Контраст"
     colorTheme
@@ -688,6 +695,11 @@ ru
     glassRefraction "Преломление стекла"
     glassLessRefraction "Плоское"
     glassMoreRefraction "Жидкое"
+    glassMode
+      label "Вид стекла"
+      balanced "Сбалансированный"
+      clear "Прозрачный"
+      frosted "Матовый"
     toolbarIconPack
       label "Иконки панели"
       fontawesome "Font Awesome"
@@ -1032,6 +1044,7 @@ zh
       label "界面皮肤"
       flat "扁平"
       glass "玻璃"
+      muiFlat "MUI 扁平"
       material "Material"
       contrast "高对比"
     colorTheme
@@ -1053,6 +1066,11 @@ zh
     glassRefraction "玻璃折射"
     glassLessRefraction "平面"
     glassMoreRefraction "液态"
+    glassMode
+      label "玻璃外观"
+      balanced "均衡"
+      clear "通透"
+      frosted "磨砂"
     toolbarIconPack
       label "工具栏图标"
       fontawesome "Font Awesome"
@@ -1403,6 +1421,7 @@ hi
       label "UI स्किन"
       flat "फ्लैट"
       glass "ग्लास"
+      muiFlat "MUI फ्लैट"
       material "Material"
       contrast "कॉन्ट्रास्ट"
     colorTheme
@@ -1424,6 +1443,11 @@ hi
     glassRefraction "ग्लास अपवर्तन"
     glassLessRefraction "सपाट"
     glassMoreRefraction "तरल"
+    glassMode
+      label "ग्लास रूप"
+      balanced "संतुलित"
+      clear "पारदर्शी"
+      frosted "फ्रॉस्टेड"
     toolbarIconPack
       label "टूलबार आइकन"
       fontawesome "Font Awesome"

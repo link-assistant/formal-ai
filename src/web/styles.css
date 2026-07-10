@@ -371,6 +371,8 @@
     radial-gradient(128% 128% at 106% 0%, rgb(196 130 255 / 0.64), transparent 60%),
     radial-gradient(138% 140% at 48% 122%, rgb(86 226 196 / 0.6), transparent 62%),
     linear-gradient(158deg, #eaf1fb 0%, #e6ecf6 52%, #e9f4ef 100%);
+  background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
+  animation: glass-ambient-drift 22s ease-in-out infinite alternate;
 }
 
 /* Frosted surfaces: heavy blur + saturation lift the ambient wash showing
@@ -385,8 +387,8 @@
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
   background: rgb(251 253 255 / var(--fa-glass-alpha, 0.78));
-  -webkit-backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(1.7);
-  backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(1.7);
+  -webkit-backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(var(--fa-glass-saturation, 1.35));
+  backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(var(--fa-glass-saturation, 1.35));
 }
 
 /* Hero surfaces get the full treatment — a bright inner highlight along the
@@ -404,8 +406,17 @@
 }
 
 .ui-skin-glass .composer-grid {
-  -webkit-backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(1.85);
-  backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(1.85);
+  -webkit-backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(calc(var(--fa-glass-saturation, 1.35) + 0.15));
+  backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(calc(var(--fa-glass-saturation, 1.35) + 0.15));
+}
+
+@keyframes glass-ambient-drift {
+  from { background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%; }
+  to { background-position: 7% 5%, 94% 8%, 44% 94%, 0% 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skin-glass.app { animation: none; }
 }
 
 /* Issue #557: Apple Liquid Glass backing for the composer controls. The real,
@@ -671,6 +682,7 @@
     radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
     radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
     linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+  background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
 }
 
 :root[data-theme="dark"] .ui-skin-glass .topbar,
@@ -779,6 +791,7 @@
       radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
       radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
       linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+    background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .topbar,
