@@ -13,11 +13,13 @@ Companion evidence in this folder:
 | [`raw-data/pr-643.json`](raw-data/pr-643.json) | Prepared PR snapshot. |
 | [`raw-data/issue-108.json`](raw-data/issue-108.json) | Prior mobile/configurable-input issue. |
 | [`raw-data/pr-109.json`](raw-data/pr-109.json), [`pr-111.json`](raw-data/pr-111.json), [`pr-113.json`](raw-data/pr-113.json) | Related merged PRs that already shipped the adaptive composer foundation. |
+| [`raw-data/react-bits-research.md`](raw-data/react-bits-research.md) | React Bits repository/framework audit and glass-component comparison captured for the second PR review. |
 | [`raw-data/issue557-test-before.log`](raw-data/issue557-test-before.log) | Failing focused Playwright repro before the fix. |
 | [`screenshots/after-glass-opacity-settings.png`](screenshots/after-glass-opacity-settings.png) | After screenshot showing the Glass skin opacity slider in settings. |
 | [`screenshots/after-material-settings.png`](screenshots/after-material-settings.png) | After screenshot showing the Material skin applied in the app. |
 | [`screenshots/skin-*.png`](screenshots/) | 16-shot skin gallery (4 skins × light/dark × desktop/mobile). See [gallery](#visual-polish-pass-2026-07-09). |
 | [`screenshots/*-glass-component-*.png`](screenshots/) | Per-component liquid-glass closeups (composer, message cards, top bar, sidebar) in light + dark. See [components](#liquid-glass-on-chakra-components). |
+| [`screenshots/color-theme-*.png`](screenshots/) | 14-shot colour gallery (7 palettes × light/dark). See [colour themes](#colour-themes-light--dark). |
 
 ## Requirement Trace
 
@@ -31,9 +33,12 @@ Companion evidence in this folder:
 | Keep the basic Chakra UI skin, but polish the input field + buttons. | Completed (2026-07-09). | Flat skin keeps Chakra; composer textarea is transparent inside the rounded pill and buttons are polished. See [Composer + button polish](#composer--button-polish-all-skins). |
 | Material skin should also switch the UI framework from Chakra UI to MUI. | Completed (2026-07-09). | `uiFrameworkForSkin` maps `material` → `mui`; app wraps in `MuiThemeProvider` + `ScopedCssBaseline[data-testid=mui-framework-root]`; composer controls become `MuiIconButton`. See [UI framework switch](#ui-framework-switch-chakra--mui). |
 | Support multiple UI frameworks. | Completed. | Chakra (flat/glass/contrast) and MUI (material) coexist, selectable per skin. |
+| Study React Bits; add its framework if it differs from Chakra. | Completed without a redundant framework dependency. | React Bits' own application depends on `@chakra-ui/react`; its distributable components are copied as React/CSS or React/Tailwind source, not mounted through a third component framework. See [React Bits framework decision](#react-bits-framework-decision). |
+| Apply React Bits best practices and support different Liquid Glass modes. | Completed. | The implementation combines surface frost/refraction, glass icon controls, and responsive fallbacks while preserving accessible native controls. The deliberately excluded WebGL lens/bar/cube modes are documented below. |
 | Glass skin ("glass") built on Chakra UI using rdev/liquid-glass-react + Apple glass guidelines. | Completed (2026-07-09). | `src/web/app/liquid-glass.jsx` bridges `liquid-glass-react` as a decorative backing behind Chakra controls; no ready-made integration existed, so built in-house for later extraction. |
 | Configurable glass transparency + other glass settings. | Completed. | Three persisted, localized sliders: `glassOpacity`, `glassBlur`, `glassRefraction`. See [Glass configuration settings](#glass-configuration-settings). |
-| Per-component screenshots saved in the repo for verification. | Completed. | 10 per-component glass closeups + 16-shot skin gallery under `screenshots/`. |
+| Multiple configurable colour themes, each in light and dark. | Completed. | Emerald, Ocean, Indigo, Violet, Rose, Amber, and Graphite are persisted, localized, shared by Chakra/CSS and MUI, and captured in the [14-shot gallery](#colour-themes-light--dark). |
+| Component screenshots saved in the repo for verification. | Completed. | 10 per-component glass closeups, 16-shot skin gallery, and 14-shot colour gallery under `screenshots/`. |
 | Study best-rated market UI kits and compile the data under `docs/case-studies/issue-557`. | Completed. | This file plus `raw-data/ui-kit-*.json`. |
 | List requirements, analysis, solutions, and plans. | Completed. | Sections below. |
 
@@ -66,6 +71,7 @@ Snapshot captured on 2026-07-08 from GitHub and official docs:
 | [Ant Design](https://github.com/ant-design/ant-design) | 98,610 stars / 54,645 forks | Mature enterprise settings surfaces use explicit controls and predictable density. |
 | [MUI Material UI](https://github.com/mui/material-ui) | 98,555 stars / 32,591 forks | Material is best represented as tonal surfaces, 8px-ish radii, and subtle elevation rather than a decorative theme. |
 | [Chakra UI](https://github.com/chakra-ui/chakra-ui) | 40,485 stars / 3,623 forks | Component-system ergonomics favor shared controls and theme tokens. |
+| [React Bits](https://github.com/DavidHDev/react-bits) | 43,104 stars / 2,007 forks (2026-07-10 follow-up) | Copy-paste visual recipes are useful as design references; audit dependencies before treating a component collection as another UI framework. |
 | [Mantine](https://github.com/mantinedev/mantine) | 31,404 stars / 2,329 forks | Practical React UI kits expose controls directly and keep forms compact. |
 
 Additional official design references:
@@ -75,6 +81,35 @@ Additional official design references:
 - [Chakra UI docs](https://chakra-ui.com/) for token/component-system patterns.
 - [Ant Design docs](https://ant.design/) for dense enterprise control patterns.
 - [Apple HIG materials](https://developer.apple.com/design/human-interface-guidelines/materials) and [Liquid Glass overview](https://developer.apple.com/documentation/technologyoverviews/liquid-glass) for the glass/translucency setting.
+
+### React Bits framework decision
+
+The second PR review conditionally requested another framework if React Bits
+uses something other than Chakra. The repository audit found that React Bits is
+a source-component collection rather than a runtime UI framework: its project
+depends on `@chakra-ui/react` 3.x, and the public installation model offers each
+component as JavaScript/TypeScript plus CSS/Tailwind source. Adding React Bits as
+a third framework would therefore duplicate Chakra rather than satisfy the
+multi-framework goal; formal-ai already provides the meaningful split of Chakra
+for flat/glass/contrast and MUI for Material.
+
+The audit still influenced the implementation. React Bits' glass catalogue has
+three relevant modes:
+
+- `GlassSurface`: CSS/SVG refraction with browser capability detection and a
+  blur/saturation fallback. formal-ai uses the same progressive-enhancement
+  principle through `liquid-glass-react` plus its CSS frost fallback.
+- `GlassIcons`: decorative front/back glass layers around real labelled
+  buttons. formal-ai likewise keeps the real button accessible and testable,
+  placing a pointer-inert liquid-glass layer behind it.
+- `FluidGlass`: WebGL lens, navigation bar, and cube modes backed by Three.js.
+  These are immersive hero/demo effects, not appropriate application chrome:
+  they add a WebGL renderer, 3D assets, and pointer-following motion to controls
+  that must remain fast and predictable. The equivalent product modes here are
+  component-appropriate surface glass, icon glass, and adjustable refraction.
+
+The evidence and exact source links are preserved in
+[`raw-data/react-bits-research.md`](raw-data/react-bits-research.md).
 
 ## Root Cause
 
@@ -218,10 +253,29 @@ they keep the polished Chakra pill.
 
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
-(11 tests: every skin's marker class, the MUI framework root mounting only for
-Material, MuiIconButton controls preserving test ids + disabled state, the three
-glass sliders showing only in the glass skin, the blur slider re-driving
-`--fa-glass-blur`, and the transparent composer textarea).
+(every skin's marker class and transparent textarea, the MUI framework root
+mounting only for Material, MuiIconButton controls preserving test ids and
+disabled state, the three glass sliders showing only in Glass, live blur, and
+all seven colour palettes in both light and dark).
+
+### Colour themes (light + dark)
+
+The colour selector is independent of skin, so every palette can tint Chakra
+flat/glass/contrast or the MUI Material theme. Selection persists in
+`formal-ai.preferences.v1`; `.app[data-color-theme]` drives shared accent tokens,
+and MUI receives the matching concrete brand value. Surfaces and typography
+continue to use the light/dark semantic tokens, keeping contrast separate from
+brand choice.
+
+| Palette | Light | Dark |
+|---|---|---|
+| Emerald | [png](screenshots/color-theme-light-emerald.png) | [png](screenshots/color-theme-dark-emerald.png) |
+| Ocean | [png](screenshots/color-theme-light-ocean.png) | [png](screenshots/color-theme-dark-ocean.png) |
+| Indigo | [png](screenshots/color-theme-light-indigo.png) | [png](screenshots/color-theme-dark-indigo.png) |
+| Violet | [png](screenshots/color-theme-light-violet.png) | [png](screenshots/color-theme-dark-violet.png) |
+| Rose | [png](screenshots/color-theme-light-rose.png) | [png](screenshots/color-theme-dark-rose.png) |
+| Amber | [png](screenshots/color-theme-light-amber.png) | [png](screenshots/color-theme-dark-amber.png) |
+| Graphite | [png](screenshots/color-theme-light-graphite.png) | [png](screenshots/color-theme-dark-graphite.png) |
 
 ## Verification
 

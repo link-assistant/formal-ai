@@ -14,8 +14,10 @@
 //   * the glass skin exposes exactly the opacity/blur/refraction sliders (and
 //     the other skins hide them), and moving the blur slider re-drives the
 //     `--fa-glass-blur` CSS variable that the frosted surfaces read;
-//   * the glass composer textarea is fully transparent so it blends into the
-//     rounded composer pill (the explicit request on PR #643).
+//   * the composer textarea stays fully transparent in every skin so it blends
+//     into the rounded composer pill (the explicit request on PR #643);
+//   * every colour palette exposes its light accent and a distinct dark accent
+//     border, guarding the complete skin × scheme configuration contract.
 
 const { test, expect } = require('@playwright/test');
 
@@ -141,15 +143,19 @@ test.describe('Issue #557: glass skin configuration', () => {
       .poll(async () => await readBlur())
       .toBe('40px');
   });
+});
 
-  test('composer textarea is fully transparent so it blends into the pill', async ({ page }) => {
-    await boot(page, { uiSkin: 'glass' });
-    const bg = await page
-      .locator('[data-testid="chat-composer-input"]')
-      .evaluate((node) => getComputedStyle(node).backgroundColor);
-    // Fully transparent renders as rgba(…, 0) or the keyword "transparent".
-    expect(bg === 'transparent' || /,\s*0\s*\)$/.test(bg)).toBe(true);
-  });
+test.describe('Issue #557: unified composer surface', () => {
+  for (const skin of ['flat', 'glass', 'material', 'contrast']) {
+    test(`${skin} keeps the actual textarea transparent`, async ({ page }) => {
+      await boot(page, { uiSkin: skin });
+      const bg = await page
+        .locator('[data-testid="chat-composer-input"]')
+        .evaluate((node) => getComputedStyle(node).backgroundColor);
+      // Fully transparent renders as rgba(…, 0) or the keyword "transparent".
+      expect(bg === 'transparent' || /,\s*0\s*\)$/.test(bg)).toBe(true);
+    });
+  }
 });
 
 // Issue #557 (PR #643 follow-up): multiple user-selectable colour themes, each
@@ -158,6 +164,16 @@ test.describe('Issue #557: glass skin configuration', () => {
 // brand accent (links, the solid send button, hover/focus) recolours across
 // every framework/skin without touching surfaces or text contrast.
 test.describe('Issue #557: colour themes', () => {
+  const themes = {
+    emerald: { light: '#1f7a5b', darkBorder: '#2a8f6a' },
+    ocean: { light: '#1668b8', darkBorder: '#3d92e0' },
+    indigo: { light: '#4f46e5', darkBorder: '#818cf8' },
+    violet: { light: '#7c3aed', darkBorder: '#a78bfa' },
+    rose: { light: '#be123c', darkBorder: '#fb7185' },
+    amber: { light: '#b45309', darkBorder: '#f59e0b' },
+    graphite: { light: '#475569', darkBorder: '#94a3b8' },
+  };
+
   const readAccent = (page) =>
     page
       .locator('.app')
@@ -199,18 +215,33 @@ test.describe('Issue #557: colour themes', () => {
     await expect.poll(async () => await readAccent(page)).toBe('#7c3aed');
   });
 
-  test('each theme ships a distinct dark variant', async ({ page }) => {
-    await boot(page, { colorTheme: 'rose', theme: 'dark' });
-    // Rose's dark brand is #be123c; its dark border (#fb7185) differs from the
-    // light one, proving the dark layer is applied rather than the light block.
-    expect(await readAccent(page)).toBe('#be123c');
-    const border = await page
-      .locator('.app')
-      .evaluate((node) =>
+  test('all seven palettes switch live and ship light + dark variants', async ({ page }) => {
+    await boot(page, { colorTheme: 'emerald', theme: 'light' });
+    const app = page.locator('.app');
+    const colorSelect = page.locator('[data-testid="setting-color-theme"]');
+    const schemeSelect = page.locator('[data-testid="setting-theme"]');
+    const readBorder = () =>
+      app.evaluate((node) =>
         getComputedStyle(node)
           .getPropertyValue('--fa-accent-solid-border')
           .trim(),
       );
-    expect(border).toBe('#fb7185');
+
+    await expect(colorSelect.locator('option')).toHaveCount(
+      Object.keys(themes).length,
+    );
+    for (const [themeId, expected] of Object.entries(themes)) {
+      await colorSelect.selectOption(themeId);
+      await schemeSelect.selectOption('light');
+      await expect(app).toHaveAttribute('data-color-theme', themeId);
+      await expect.poll(async () => await readAccent(page)).toBe(expected.light);
+      await expect.poll(async () => await readBorder()).toBe(expected.light);
+
+      await schemeSelect.selectOption('dark');
+      await expect
+        .poll(() => page.locator('html').getAttribute('data-theme'))
+        .toBe('dark');
+      await expect.poll(async () => await readBorder()).toBe(expected.darkBorder);
+    }
   });
 });
