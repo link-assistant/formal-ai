@@ -1,0 +1,15 @@
+form.composer,
+form.composer * {
+  font-family: Arial, sans-serif !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+form.composer [data-testid="chat-composer-input"] {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+form.composer [data-testid="chat-composer-input"]::placeholder {
+  color: transparent !important;
+}

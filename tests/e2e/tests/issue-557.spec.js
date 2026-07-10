@@ -21,8 +21,13 @@
 //     border, guarding the complete skin × scheme configuration contract.
 
 const { test, expect } = require('@playwright/test');
+const path = require('node:path');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
+const COMPOSER_SNAPSHOT_STYLE = path.join(
+  __dirname,
+  'issue-557-composer-snapshot.css',
+);
 
 // Build a LINO preferences blob (the app persists preferences as LINO, not
 // JSON). Demo mode stays off so the composer is interactive and slider changes
@@ -362,7 +367,12 @@ test.describe('Issue #557: composer visual regression matrix', () => {
           await input.focus();
           await expect(page.locator('form.composer')).toHaveScreenshot(
             `composer-${viewport.name}-${theme}-${skin}.png`,
-            { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0.01 },
+            {
+              animations: 'disabled',
+              caret: 'hide',
+              maxDiffPixelRatio: 0.01,
+              stylePath: COMPOSER_SNAPSHOT_STYLE,
+            },
           );
         });
       }
