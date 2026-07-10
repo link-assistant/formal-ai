@@ -1,8 +1,3 @@
-# UI translations for the browser demo, parsed by lino-i18n at runtime.
-# Permission and Services strings live in i18n-catalog-permissions.lino; the
-# loader (src/web/i18n.js) fetches both files and merges them per locale.
-# Keep locale blocks in sync; tests/e2e/scripts/check-i18n-catalog.mjs enforces key parity.
-
 en
   buttons
     reportIssue "Report issue"
@@ -27,26 +22,16 @@ en
     expandSidebar "Expand side panel"
     expandOnlySection "Expand only this section"
   titles
-    reportIssue """
-      Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).
-    """
+    reportIssue "Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip)."
     sourceCode "Open the formal-ai source code on GitHub."
     download "Download formal-ai Desktop for macOS, Windows, and Linux."
-    exportMemory """
-      Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip).
-    """
-    importMemory """
-      Import memory - load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar.
-    """
-    resetMemory """
-      Reset memory - permanently delete the local event log after an export warning and confirmation. The built-in seed remains available.
-    """
+    exportMemory "Export memory - save the full agent state to formal-ai-memory.lino: the entire seed, UI preferences, environment metadata, and the append-only event log. See docs/upload-memory.md for attaching it to a GitHub issue (Gist or .zip)."
+    importMemory "Import memory - load a previous export. Accepts both the new full-memory bundle and the legacy demo_memory event-only log. Migration hints are shown next to this bar."
+    resetMemory "Reset memory - permanently delete the local event log after an export warning and confirmation. The built-in seed remains available."
     diagnosticsShow "Show reasoning trace, intent, evidence, and thinking-steps panels."
     diagnosticsHide "Hide reasoning trace, intent, evidence, and thinking-steps panels."
     agentOn "Agent mode is on - switch back to single-turn chat."
-    agentOff """
-      Chat mode - switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.
-    """
+    agentOff "Chat mode - switch to agent mode and each message will be decomposed into sequential steps and executed as a plan."
     fullAuto "Full Auto - agent mode that runs permitted commands automatically."
     modeGroup "Operating mode - choose Chat, Agent, or Full Auto."
     demoOn "Demo is on - stop the scripted dialog and resume manual chat."
@@ -381,7 +366,6 @@ en
     seedFiles "Seed files"
     toolsLoaded "Tools loaded"
     conceptsLoaded "Concepts loaded"
-
 ru
   buttons
     reportIssue "Сообщить о проблеме"
@@ -762,7 +746,6 @@ ru
     seedFiles "Файлы seed"
     toolsLoaded "Инструментов загружено"
     conceptsLoaded "Понятий загружено"
-
 zh
   buttons
     reportIssue "报告问题"
@@ -1133,7 +1116,6 @@ zh
     seedFiles "Seed 文件"
     toolsLoaded "已加载工具"
     conceptsLoaded "已加载概念"
-
 hi
   buttons
     reportIssue "समस्या रिपोर्ट करें"
