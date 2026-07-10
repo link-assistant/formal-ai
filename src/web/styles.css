@@ -809,33 +809,34 @@ button {
   min-height: 0;
   display: grid;
   place-items: center;
-  border-right: 1px solid #d6dde1;
-  background: #eef2f1;
-  cursor: col-resize;
+  position: relative;
+  background: transparent;
+  cursor: ew-resize;
   touch-action: none;
 }
 
 .context-resizer::before {
   content: "";
-  width: 2px;
-  height: 34px;
-  border-radius: 999px;
-  background: #9aa9b1;
+  width: 1px;
+  height: 100%;
+  background: #d6dde1;
+  pointer-events: none;
+  transition: background-color 100ms ease-out, width 100ms ease-out;
 }
 
-.context-resizer:hover,
-.context-resizer:focus-visible,
-body.is-resizing-context .context-resizer {
-  background: #dfe8e5;
+.context-resizer:hover::before,
+.context-resizer:focus-visible::before,
+body.is-resizing-context .context-resizer::before {
+  width: 2px;
+  background: #2878c7;
 }
 
 .context-resizer:focus-visible {
-  outline: 2px solid #2d6cdf;
-  outline-offset: -2px;
+  outline: none;
 }
 
 body.is-resizing-context {
-  cursor: col-resize;
+  cursor: ew-resize;
   user-select: none;
 }
 
@@ -3372,18 +3373,17 @@ textarea:disabled {
 }
 
 :root[data-theme="dark"] .context-resizer {
-  border-right-color: #343a3d;
-  background: #222624;
+  background: transparent;
 }
 
 :root[data-theme="dark"] .context-resizer::before {
-  background: #6f7975;
+  background: #343a3d;
 }
 
-:root[data-theme="dark"] .context-resizer:hover,
-:root[data-theme="dark"] .context-resizer:focus-visible,
-:root[data-theme="dark"] body.is-resizing-context .context-resizer {
-  background: #2b302e;
+:root[data-theme="dark"] .context-resizer:hover::before,
+:root[data-theme="dark"] .context-resizer:focus-visible::before,
+:root[data-theme="dark"] body.is-resizing-context .context-resizer::before {
+  background: #3794ff;
 }
 
 :root[data-theme="dark"] .chat-panel,
@@ -3843,18 +3843,17 @@ textarea:disabled {
   }
 
   :root:not([data-theme="light"]) .context-resizer {
-    border-right-color: #343a3d;
-    background: #222624;
+    background: transparent;
   }
 
   :root:not([data-theme="light"]) .context-resizer::before {
-    background: #6f7975;
+    background: #343a3d;
   }
 
-  :root:not([data-theme="light"]) .context-resizer:hover,
-  :root:not([data-theme="light"]) .context-resizer:focus-visible,
-  :root:not([data-theme="light"]) body.is-resizing-context .context-resizer {
-    background: #2b302e;
+  :root:not([data-theme="light"]) .context-resizer:hover::before,
+  :root:not([data-theme="light"]) .context-resizer:focus-visible::before,
+  :root:not([data-theme="light"]) body.is-resizing-context .context-resizer::before {
+    background: #3794ff;
   }
 
   :root:not([data-theme="light"]) .chat-panel,
