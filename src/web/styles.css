@@ -540,7 +540,7 @@
 .ui-skin-material .composer-grid {
   border: 1px solid var(--fa-material-border);
   border-radius: var(--fa-material-radius);
-  padding: 8px 10px;
+  padding: 6px 6px 6px 10px;
   background: var(--fa-material-container);
   box-shadow: var(--fa-material-elevation-2);
 }
@@ -3306,16 +3306,24 @@ body.is-resizing-context {
   width: min(820px, 100%);
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
   border: 1px solid var(--fa-composer-border);
   border-radius: 26px;
-  padding: 10px 12px 8px;
+  padding: 6px 6px 6px 8px;
   background: var(--fa-composer-surface);
   box-shadow: var(--fa-composer-shadow);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
+}
+
+/* The embedded controls stay pinned to the bottom of the pill so the text area
+   grows upward (multi-line) without pushing the send/attach buttons around. */
+.composer-grid > .composer-action-button,
+.composer-grid > .send-button {
+  flex: none;
 }
 
 .composer-grid:focus-within {
@@ -3336,14 +3344,23 @@ textarea,
   overflow-y: auto;
   border: none;
   border-radius: 0;
-  /* Uniform padding on all four sides keeps the embedded field balanced and
-     satisfies the Issue #112 equal-padding contract now that the action and
-     send controls live in a separate toolbar row below the text. */
   padding: 8px;
   background: transparent;
   color: var(--fa-text-body);
   line-height: 1.45;
   font-size: 15px;
+}
+
+/* Issue #557: the composer text area is the flexible middle of a single-row
+   pill — the attach button hugs the left edge and the send button the right, so
+   the whole composer reads as one compact control (buttons embedded into the
+   text field) instead of a tall three-box stack. The text area itself carries
+   no background or border; it inherits the pill surface behind it. */
+.composer-input {
+  flex: 1 1 auto;
+  min-height: 36px;
+  padding: 7px 4px;
+  line-height: 1.4;
 }
 
 textarea:focus,
@@ -3356,17 +3373,6 @@ textarea:disabled,
   color: var(--fa-text-muted);
   background: transparent;
   cursor: not-allowed;
-}
-
-.composer-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 2px;
-}
-
-.composer-toolbar-spacer {
-  flex: 1 1 auto;
 }
 
 .send-button {
@@ -3777,12 +3783,13 @@ textarea:disabled,
     padding: 8px 10px max(8px, env(safe-area-inset-bottom));
   }
 
-  /* Issue #557 / #108: on mobile the composer stays the same unified field with
-   * its controls embedded in the bottom toolbar. Only the touch targets grow to
-   * a comfortable 42px; the single-surface geometry is identical to desktop. */
+  /* Issue #557 / #108: on mobile the composer stays the same unified single-row
+   * pill with the attach + send controls embedded on either side of the text
+   * area. Only the touch targets grow to a comfortable 42px; the single-surface
+   * geometry is identical to desktop. */
   .composer-grid {
     border-radius: 24px;
-    padding: 8px 10px 8px;
+    padding: 6px 6px 6px 10px;
     gap: 6px;
   }
 
@@ -3791,13 +3798,8 @@ textarea:disabled,
     min-height: 42px;
     height: auto;
     max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
-    /* Keep the four-side padding uniform on mobile too (Issue #112). */
-    padding: 9px;
+    padding: 9px 4px;
     resize: none;
-  }
-
-  .composer-toolbar {
-    gap: 6px;
   }
 
   .send-button {

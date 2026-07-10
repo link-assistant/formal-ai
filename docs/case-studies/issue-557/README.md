@@ -25,8 +25,8 @@ Companion evidence in this folder:
 
 | Requirement from #557 | Status | Evidence |
 |---|---|---|
-| Desktop/tablet buttons should be embedded inside the text field. | Preserved from the #108/#109 work and covered by existing Playwright tests. | `tests/e2e/tests/demo.spec.js` has the one-row composer layout test. |
-| Mobile UI should match the same adaptive embedded-composer model. | Preserved from the #108/#111/#113 work. | Existing mobile viewport tests assert same-row action/input/send geometry. |
+| Desktop/tablet buttons should be embedded inside the text field. | Completed (2026-07-10): the composer is now a single-row pill with attach + send controls embedded on either side of the auto-growing text area (replacing the earlier two-row stack). | `tests/e2e/tests/demo.spec.js` has the one-row composer layout test; see [Composer + button polish](#composer--button-polish-all-skins). |
+| Mobile UI should match the same adaptive embedded-composer model. | Completed: the mobile composer uses the same single-row pill geometry with larger 42px touch targets. | Existing mobile viewport tests assert same-row action/input/send geometry. |
 | Settings should expose multiple skins: default, glass, Material, etc. | Completed. | `UI_SKINS` now includes `material`; settings has a Material option and CSS has `.ui-skin-material`. |
 | Glass skin should expose a transparency setting. | Completed. | `glassOpacity` is a persisted preference, settings range input, reset descriptor, user-context field, and CSS variable source. |
 | UI should be "as polished as possible" / the skins should look impressive. | Completed (2026-07-09 polish pass). | Glass now renders a living ambient gradient behind heavy `backdrop-filter` frosted surfaces with inner highlights and floating shadows; Material follows M3 tonal surfaces, surface-tint backdrop, elevation shadows, and filled tonal buttons. See the [Visual Polish Pass](#visual-polish-pass-2026-07-09) gallery. |
@@ -244,12 +244,20 @@ all persisted as preferences and localized in all four locales:
 
 ### Composer + button polish (all skins)
 
-The composer textarea background is now fully transparent so it blends into the
-rounded composer pill instead of showing a lighter inner rectangle (the explicit
-PR request). In the glass skin the action/send buttons render as translucent
-glass chips (specular rim + `backdrop-filter`) sitting over the liquid-glass
-backing; in Material they become filled-tonal `MuiIconButton`s; in flat/contrast
-they keep the polished Chakra pill.
+The composer is now a single-row pill: the attach control hugs the left edge, the
+auto-growing text area is the flexible middle, and the send control hugs the right
+edge, so the buttons read as embedded *inside* the text field rather than sitting
+in a separate toolbar row below it. This replaces the earlier taller two-row stack
+and tightens the paddings/offsets uniformly on desktop, tablet, and mobile; as the
+text area grows to multiple lines it expands upward while both controls stay pinned
+to the bottom edge of the pill.
+
+The composer textarea background is fully transparent so it blends into the rounded
+composer pill instead of showing a lighter inner rectangle (the explicit PR
+request). In the glass skin the action/send buttons render as translucent glass
+chips (specular rim + `backdrop-filter`) sitting over the liquid-glass backing; in
+Material they become filled-tonal `MuiIconButton`s; in flat/contrast they keep the
+polished Chakra pill.
 
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
