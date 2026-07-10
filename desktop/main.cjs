@@ -1,6 +1,6 @@
 "use strict";
 
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, powerMonitor, shell } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
@@ -37,6 +37,57 @@ const {
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 
+function desktopMemoryPath() {
+  return process.env.FORMAL_AI_MEMORY_PATH || path.join(app.getPath("userData"), "formal-ai-memory.lino");
+}
+
+function autoFreeSpacePreferencePath() {
+  return `${desktopMemoryPath()}.auto-free-space`;
+}
+
+function autoFreeSpacePreference() {
+  try {
+    const value = fs.readFileSync(autoFreeSpacePreferencePath(), "utf8").trim();
+    return value === "enabled" ? true : value === "disabled" ? false : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+async function persistAutoFreeSpaceChoice(enabled) {
+  fs.mkdirSync(path.dirname(autoFreeSpacePreferencePath()), { recursive: true });
+  fs.writeFileSync(autoFreeSpacePreferencePath(), enabled ? "enabled\n" : "disabled\n");
+}
+
+async function requestAutoFreeSpaceConsent() {
+  const preference = autoFreeSpacePreference();
+  if (preference !== null) {
+    return preference;
+  }
+  const result = await dialog.showMessageBox(mainWindow || undefined, {
+    type: "question",
+    title: "AI memory needs free space",
+    message: "Enable automatic free-space maintenance?",
+    detail:
+      "Formal AI will free only enough recomputable or refetchable links for the next write. Raw events and retained learning are preserved.",
+    buttons: ["Enable auto-free-space", "Keep everything"],
+    defaultId: 1,
+    cancelId: 1,
+    noLink: true,
+  });
+  return result.response === 0;
+}
+
+async function notifyBiggerStorage() {
+  await dialog.showMessageBox(mainWindow || undefined, {
+    type: "warning",
+    title: "Move AI memory to larger storage",
+    message: "AI memory cannot free enough recomputable links for the next operation.",
+    detail: "Migrate the Formal AI memory file to a larger storage location, then update FORMAL_AI_MEMORY_PATH.",
+    buttons: ["OK"],
+  });
+}
+
 // Desktop data persistence & migration (issue #541, R3). Pin the userData
 // directory to a stable, productName-independent name so a future rebrand or
 // package rename can never again orphan a user's conversations, and migrate any
@@ -51,6 +102,11 @@ const dreamingScheduler = createDreamingScheduler({
   env: process.env,
   spawn: childProcess.spawn,
   resourcesPath: process.resourcesPath,
+  memoryPath: desktopMemoryPath(),
+  isIdle: () => powerMonitor.getSystemIdleTime() >= 60,
+  requestAutoFreeSpaceConsent,
+  persistAutoFreeSpaceChoice,
+  notifyBiggerStorage,
   log: debugLog,
   onStatusChange: (status) => {
     desktopStatus = { ...desktopStatus, dreaming: status };

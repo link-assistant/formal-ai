@@ -2,6 +2,7 @@
 
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const { packagedBinaryPath } = require("./local-server.cjs");
 
@@ -148,6 +149,14 @@ function spawnAndCollect(candidate, options = {}) {
     let stdout = "";
     let stderr = "";
     let child = null;
+    let yielded = false;
+    let idlePoll = null;
+    const clearIdlePoll = () => {
+      if (idlePoll) {
+        (options.clearInterval || clearInterval)(idlePoll);
+        idlePoll = null;
+      }
+    };
     try {
       child = spawn(candidate.command, candidate.args, {
         cwd: candidate.cwd,
@@ -171,6 +180,29 @@ function spawnAndCollect(candidate, options = {}) {
     if (child && typeof child.unref === "function") {
       child.unref();
     }
+    if (child && Number.isInteger(child.pid)) {
+      try {
+        (options.setPriority || os.setPriority)(
+          child.pid,
+          options.lowPriorityValue ?? os.constants.priority.PRIORITY_LOW,
+        );
+      } catch (_error) {
+        // Cooperative idle checks remain the cross-platform fallback when the
+        // host refuses an OS priority change.
+      }
+    }
+    if (options.isIdle && child && typeof child.kill === "function") {
+      idlePoll = (options.setInterval || setInterval)(() => {
+        if (!options.isIdle()) {
+          yielded = true;
+          clearIdlePoll();
+          child.kill();
+        }
+      }, options.idlePollMs || 250);
+      if (idlePoll && typeof idlePoll.unref === "function") {
+        idlePoll.unref();
+      }
+    }
     if (child.stdout && typeof child.stdout.on === "function") {
       child.stdout.on("data", (chunk) => {
         stdout = appendCapture(stdout, chunk, maxBytes);
@@ -182,6 +214,7 @@ function spawnAndCollect(candidate, options = {}) {
       });
     }
     child.once("error", (error) => {
+      clearIdlePoll();
       resolve({
         ok: false,
         label: candidate.label,
@@ -190,11 +223,13 @@ function spawnAndCollect(candidate, options = {}) {
         code: null,
         stdout,
         stderr,
-        reason: error && error.message ? error.message : String(error),
+        yielded,
+        reason: yielded ? "foreground work arrived" : error && error.message ? error.message : String(error),
       });
     });
     child.once("exit", (code, signal) => {
-      const ok = code === 0;
+      clearIdlePoll();
+      const ok = code === 0 && !yielded;
       resolve({
         ok,
         label: candidate.label,
@@ -204,7 +239,8 @@ function spawnAndCollect(candidate, options = {}) {
         signal,
         stdout,
         stderr,
-        reason: ok ? "" : stderr.trim() || `exit ${code || signal}`,
+        yielded,
+        reason: yielded ? "foreground work arrived" : ok ? "" : stderr.trim() || `exit ${code || signal}`,
       });
     });
   });
@@ -221,8 +257,38 @@ async function runDreamingOnce(options = {}) {
     const runnable =
       options.lowPriority === false ? candidate : lowPriorityCandidate(candidate, platform);
     const result = await spawnAndCollect(runnable, options);
+    if (result.yielded) {
+      return { ...result, ok: true, state: "foreground-active" };
+    }
     if (result.ok) {
-      return { ...result, state: "ok" };
+      let finalResult = { ...result, state: "ok" };
+      const requiredReclaimBytes = planNumber(result.stdout, "required_reclaim_bytes");
+      const requiresBiggerStorage = planBoolean(result.stdout, "requires_bigger_storage");
+      if (requiredReclaimBytes > 0 && options.requestAutoFreeSpaceConsent) {
+        const enabled = await options.requestAutoFreeSpaceConsent(finalResult);
+        if (options.persistAutoFreeSpaceChoice) {
+          await options.persistAutoFreeSpaceChoice(enabled);
+        }
+        if (enabled) {
+          const applyCandidate = {
+            ...candidate,
+            args: [...candidate.args, "--apply", "--confirm"],
+            label: `${candidate.label} with auto-free-space`,
+          };
+          const runnableApply =
+            options.lowPriority === false
+              ? applyCandidate
+              : lowPriorityCandidate(applyCandidate, platform);
+          finalResult = {
+            ...(await spawnAndCollect(runnableApply, options)),
+            state: "auto-free-space-applied",
+          };
+        }
+      }
+      if (requiresBiggerStorage && options.notifyBiggerStorage) {
+        await options.notifyBiggerStorage(finalResult);
+      }
+      return finalResult;
     }
     lastResult = result;
   }
@@ -235,12 +301,25 @@ async function runDreamingOnce(options = {}) {
   );
 }
 
+function planNumber(output, key) {
+  const match = String(output || "").match(new RegExp(`^\\s*${key}:\\s*(\\d+)\\s*$`, "m"));
+  return match ? Number.parseInt(match[1], 10) : 0;
+}
+
+function planBoolean(output, key) {
+  const match = String(output || "").match(
+    new RegExp(`^\\s*${key}:\\s*(true|false)\\s*$`, "mi"),
+  );
+  return Boolean(match && match[1].toLowerCase() === "true");
+}
+
 function createDreamingScheduler(options = {}) {
   const env = options.env || process.env;
   const setTimer = options.setTimeout || setTimeout;
   const clearTimer = options.clearTimeout || clearTimeout;
   const onStatusChange = options.onStatusChange || (() => {});
   const log = options.log || (() => {});
+  const isIdle = options.isIdle || (() => true);
   const enabled = dreamingEnabled(env);
   const initialDelayMs = positiveInteger(
     options.initialDelayMs || env.FORMAL_AI_DESKTOP_DREAMING_INITIAL_DELAY_MS,
@@ -303,6 +382,15 @@ function createDreamingScheduler(options = {}) {
     if (running) {
       return { ok: true, state: "already-running" };
     }
+    if (!isIdle()) {
+      lastResult = {
+        ok: true,
+        state: "foreground-active",
+        reason: "waiting for real user idle",
+      };
+      publish();
+      return lastResult;
+    }
     running = true;
     publish();
     try {
@@ -346,5 +434,7 @@ module.exports = {
   memoryDreamCandidates,
   lowPriorityCandidate,
   runDreamingOnce,
+  planBoolean,
+  planNumber,
   createDreamingScheduler,
 };

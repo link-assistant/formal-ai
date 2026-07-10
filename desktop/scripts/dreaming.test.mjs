@@ -111,6 +111,116 @@ test("runDreamingOnce captures successful plan output", async () => {
   assert.deepEqual(calls, [{ command: "formal-ai", args: ["memory", "dream"] }]);
 });
 
+test("scheduler yields while foreground work is active", async () => {
+  let spawned = 0;
+  const scheduler = createDreamingScheduler({
+    env: {},
+    isIdle: () => false,
+    candidates: [
+      { command: "formal-ai", args: ["memory", "dream"], cwd: "/repo", label: "test" },
+    ],
+    spawn: () => {
+      spawned += 1;
+      return fakeChild({ code: 0 });
+    },
+  });
+
+  const result = await scheduler.runNow();
+
+  assert.equal(result.state, "foreground-active");
+  assert.equal(spawned, 0);
+});
+
+test("a running dreaming child yields when foreground work arrives", async () => {
+  let idle = true;
+  let killed = false;
+  const child = new EventEmitter();
+  child.pid = 42;
+  child.stdout = new EventEmitter();
+  child.stderr = new EventEmitter();
+  child.unref = () => {};
+  child.kill = () => {
+    killed = true;
+    queueMicrotask(() => child.emit("exit", null, "SIGTERM"));
+  };
+  const resultPromise = runDreamingOnce({
+    env: {},
+    platform: "win32",
+    candidates: [
+      { command: "formal-ai", args: ["memory", "dream"], cwd: "/repo", label: "test" },
+    ],
+    isIdle: () => idle,
+    spawn: () => child,
+    setPriority: () => {},
+    setInterval: callback => {
+      idle = false;
+      queueMicrotask(callback);
+      return { unref() {} };
+    },
+    clearInterval: () => {},
+  });
+
+  const result = await resultPromise;
+  assert.equal(killed, true);
+  assert.equal(result.ok, true);
+  assert.equal(result.state, "foreground-active");
+});
+
+test("storage pressure asks consent, applies it, and surfaces migration", async () => {
+  const calls = [];
+  let persisted = false;
+  let migrationNotified = false;
+  const result = await runDreamingOnce({
+    env: {},
+    platform: "win32",
+    candidates: [
+      { command: "formal-ai", args: ["memory", "dream"], cwd: "/repo", label: "test" },
+    ],
+    setPriority: () => {},
+    spawn: (_command, args) => {
+      calls.push(args);
+      return fakeChild({
+        code: 0,
+        stdout: "required_reclaim_bytes: 128\nrequires_bigger_storage: true\n",
+      });
+    },
+    requestAutoFreeSpaceConsent: async () => true,
+    persistAutoFreeSpaceChoice: async value => {
+      persisted = value;
+    },
+    notifyBiggerStorage: async () => {
+      migrationNotified = true;
+    },
+  });
+
+  assert.equal(result.state, "auto-free-space-applied");
+  assert.equal(persisted, true);
+  assert.equal(migrationNotified, true);
+  assert.deepEqual(calls[1].slice(-2), ["--apply", "--confirm"]);
+});
+
+test("declined automatic cleanup is persisted without applying removals", async () => {
+  const choices = [];
+  const calls = [];
+  const result = await runDreamingOnce({
+    env: {},
+    platform: "win32",
+    candidates: [
+      { command: "formal-ai", args: ["memory", "dream"], cwd: "/repo", label: "test" },
+    ],
+    spawn: (_command, args) => {
+      calls.push(args);
+      return fakeChild({ code: 0, stdout: "required_reclaim_bytes: 128\n" });
+    },
+    requestAutoFreeSpaceConsent: async () => false,
+    persistAutoFreeSpaceChoice: async value => choices.push(value),
+  });
+
+  assert.equal(result.state, "ok");
+  assert.deepEqual(choices, [false]);
+  assert.equal(calls.length, 1);
+});
+
 test("scheduler starts with an unrefed low-priority timer", () => {
   const timers = [];
   const scheduler = createDreamingScheduler({
