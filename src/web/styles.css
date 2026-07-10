@@ -540,7 +540,7 @@
 .ui-skin-material .composer-grid {
   border: 1px solid var(--fa-material-border);
   border-radius: var(--fa-material-radius);
-  padding: 6px 6px 6px 10px;
+  padding: 6px;
   background: var(--fa-material-container);
   box-shadow: var(--fa-material-elevation-2);
 }
@@ -3311,7 +3311,10 @@ body.is-resizing-context {
   gap: 8px;
   border: 1px solid var(--fa-composer-border);
   border-radius: 26px;
-  padding: 6px 6px 6px 8px;
+  /* Uniform padding on all four sides so the embedded attach (left) and send
+     (right) controls sit equidistant from the pill edges — no lopsided offset
+     (Issue #557 markup/offset polish). */
+  padding: 6px;
   background: var(--fa-composer-surface);
   box-shadow: var(--fa-composer-shadow);
   transition:
@@ -3792,7 +3795,9 @@ textarea:disabled,
    * geometry is identical to desktop. */
   .composer-grid {
     border-radius: 24px;
-    padding: 6px 6px 6px 10px;
+    /* Symmetric padding keeps the embedded controls centred against both pill
+       edges on mobile too (Issue #557 markup/offset polish). */
+    padding: 6px;
     gap: 6px;
   }
 
