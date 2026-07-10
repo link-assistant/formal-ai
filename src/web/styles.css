@@ -3355,11 +3355,14 @@ textarea,
    pill — the attach button hugs the left edge and the send button the right, so
    the whole composer reads as one compact control (buttons embedded into the
    text field) instead of a tall three-box stack. The text area itself carries
-   no background or border; it inherits the pill surface behind it. */
+   no background or border; it inherits the pill surface behind it. The padding
+   stays uniform on all four sides (Issue #112 equal-padding contract) — the
+   horizontal separation from the embedded attach/send controls comes from the
+   pill's flex `gap`, not from lopsided text-area padding. */
 .composer-input {
   flex: 1 1 auto;
   min-height: 36px;
-  padding: 7px 4px;
+  padding: 7px;
   line-height: 1.4;
 }
 
@@ -3798,7 +3801,9 @@ textarea:disabled,
     min-height: 42px;
     height: auto;
     max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
-    padding: 9px 4px;
+    /* Keep the four-side padding uniform on mobile too (Issue #112); the
+       horizontal gap to the embedded controls comes from the pill flex gap. */
+    padding: 9px;
     resize: none;
   }
 
