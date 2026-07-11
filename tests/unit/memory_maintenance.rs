@@ -5,7 +5,7 @@ use formal_ai::{
     execute_memory_query, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
     replay_answer_with_amendments, run_core_dreaming_once, seed_cache_events, AutoFreeSpaceChoice,
     ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, DreamingDurability,
-    MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment, StorageSnapshot,
+    MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment, SolverConfig, StorageSnapshot,
     UniversalSolver,
 };
 
@@ -338,6 +338,55 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
     let response_text = &response.output_messages()[0].content[0].text;
     assert!(response_text.contains("Learned standing requirement"));
     assert!(response_text.contains("LaTeX verification step"));
+}
+
+#[test]
+fn learned_amendment_changes_the_agentic_final_answer() {
+    // Issue #540 §1: retained amendments must reach the agentic loop's final
+    // answer (`AgenticPlan::Final`), not only the symbolic solver path — the
+    // agentic surface must not be a side door around retained learning.
+    let mut store = MemoryStore::from_events(vec![
+        requirement_event(
+            "req-1",
+            "latex",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+        verified_task_run_event(
+            "run-1",
+            "latex",
+            "Explain a latex proof by induction",
+            "Always include a LaTeX verification step in proof solutions.",
+        ),
+    ]);
+    let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
+    let _ = apply_dreaming_plan(&mut store, &plan);
+
+    // A recognised shell task with only a non-shell tool advertised makes the
+    // planner emit `AgenticPlan::Final` immediately (it cannot call a run tool).
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "messages": [{"role": "user", "content": "latex: run ls in the terminal"}],
+        "tools": [{
+            "type": "function",
+            "function": {"name": "read_file", "parameters": {"type": "object"}}
+        }]
+    }))
+    .expect("valid tool-bearing chat request");
+    let agent_solver = UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    });
+
+    let completion =
+        create_chat_completion_with_solver_and_memory(&request, &agent_solver, store.events());
+
+    assert_eq!(completion.choices[0].finish_reason, "stop");
+    let answer = completion.choices[0].message.content.plain_text();
+    assert!(
+        answer.contains("Learned standing requirement"),
+        "agentic final answer must carry the retained amendment: {answer}"
+    );
+    assert!(answer.contains("LaTeX verification step"), "{answer}");
 }
 
 #[test]
