@@ -246,6 +246,19 @@ function spawnAndCollect(candidate, options = {}) {
   });
 }
 
+// A consented auto-apply is destructive, so it must always carry a --backup
+// (issue #540 §4). Reuses an explicitly configured backup; otherwise derives
+// a sidecar path next to the memory file.
+function autoApplyBackupArgs(args, env) {
+  if (args.includes("--backup")) {
+    return [];
+  }
+  const pathIndex = args.indexOf("--path");
+  const memoryPath =
+    pathIndex >= 0 ? args[pathIndex + 1] : env.FORMAL_AI_MEMORY_PATH || "formal-ai-memory.lino";
+  return ["--backup", `${memoryPath}.pre-dream-backup.lino`];
+}
+
 async function runDreamingOnce(options = {}) {
   if (!dreamingEnabled(options.env || process.env)) {
     return { ok: true, state: "disabled", reason: `${ENABLE_ENV}=off` };
@@ -272,7 +285,12 @@ async function runDreamingOnce(options = {}) {
         if (enabled) {
           const applyCandidate = {
             ...candidate,
-            args: [...candidate.args, "--apply", "--confirm"],
+            args: [
+              ...candidate.args,
+              ...autoApplyBackupArgs(candidate.args, options.env || process.env),
+              "--apply",
+              "--confirm",
+            ],
             label: `${candidate.label} with auto-free-space`,
           };
           const runnableApply =

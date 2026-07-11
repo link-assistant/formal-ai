@@ -728,6 +728,18 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
             let parsed_seed = parse_bundle(&text);
             let mut store = load_memory_or_empty(&into)?;
             store.import(&parsed.events);
+            // Seed files become recomputable `seed_cache` events so seed data
+            // participates in usage/eviction accounting (issue #494).
+            let known: std::collections::BTreeSet<String> = store
+                .events()
+                .iter()
+                .map(|event| event.id.clone())
+                .collect();
+            let fresh_seed: Vec<_> = formal_ai::seed_cache_events(&parsed.seed_files)
+                .into_iter()
+                .filter(|event| !known.contains(&event.id))
+                .collect();
+            store.import(&fresh_seed);
             store.save_to_file(&into)?;
             eprintln!(
                 "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",

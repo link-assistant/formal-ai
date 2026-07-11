@@ -36,12 +36,36 @@ pub fn auto_free_space_preference_path(memory_path: &Path) -> PathBuf {
     memory_path.with_file_name(format!("{filename}.auto-free-space"))
 }
 
+/// The user's persisted auto-free-space decision.
+///
+/// Distinguishes "was never asked" from "was asked and declined" (issue #540
+/// §4): a surface that prompts for consent must not re-prompt a user who
+/// already said no.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AutoFreeSpaceChoice {
+    /// No sidecar exists — the user has never been asked.
+    NeverAsked,
+    /// The user explicitly declined; do not re-prompt, do not delete.
+    Declined,
+    /// The user explicitly consented to automatic freeing.
+    Enabled,
+}
+
+/// Read the persisted tri-state choice.
+#[must_use]
+pub fn auto_free_space_choice(memory_path: &Path) -> AutoFreeSpaceChoice {
+    match fs::read_to_string(auto_free_space_preference_path(memory_path)) {
+        Ok(value) if value.trim() == "enabled" => AutoFreeSpaceChoice::Enabled,
+        Ok(value) if value.trim() == "disabled" => AutoFreeSpaceChoice::Declined,
+        _ => AutoFreeSpaceChoice::NeverAsked,
+    }
+}
+
 /// Read the persisted choice. Missing/invalid files mean "not enabled" so the
 /// default can never silently delete data.
 #[must_use]
 pub fn auto_free_space_enabled(memory_path: &Path) -> bool {
-    fs::read_to_string(auto_free_space_preference_path(memory_path))
-        .is_ok_and(|value| value.trim() == "enabled")
+    auto_free_space_choice(memory_path) == AutoFreeSpaceChoice::Enabled
 }
 
 /// Persist an explicit user choice atomically enough for this tiny sidecar.
@@ -84,9 +108,41 @@ pub fn apply_auto_free_space_for_write(
     if !auto_free_space_enabled(memory_path) {
         return Ok(None);
     }
-    let plan = plan_for_real_storage(store, memory_path, incoming_bytes)?;
+    let snapshot = measure_storage(memory_path)?;
+    Ok(apply_auto_free_space_with_snapshot(
+        store,
+        memory_path,
+        incoming_bytes,
+        snapshot,
+    ))
+}
+
+/// The consent-gated freeing step with an explicit storage snapshot.
+///
+/// [`apply_auto_free_space_for_write`] measures the real filesystem and
+/// delegates here; tests inject a synthetic snapshot to exercise the
+/// stop-at-target behavior deterministically (issue #540 §4).
+#[must_use]
+pub fn apply_auto_free_space_with_snapshot(
+    store: &mut MemoryStore,
+    memory_path: &Path,
+    incoming_bytes: u64,
+    snapshot: StorageSnapshot,
+) -> Option<(DreamingPlan, DreamingOutcome)> {
+    if !auto_free_space_enabled(memory_path) {
+        return None;
+    }
+    let plan = plan_memory_dreaming(
+        store.events(),
+        &DreamingConfig {
+            storage_capacity_bytes: Some(snapshot.capacity_bytes),
+            free_bytes: Some(snapshot.free_bytes),
+            incoming_bytes,
+            ..DreamingConfig::default()
+        },
+    );
     let outcome = apply_dreaming_plan(store, &plan);
-    Ok(Some((plan, outcome)))
+    Some((plan, outcome))
 }
 
 fn existing_ancestor(path: &Path) -> PathBuf {

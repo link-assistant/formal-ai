@@ -1,8 +1,11 @@
 use formal_ai::{
-    apply_dreaming_plan, auto_free_space_enabled, create_chat_completion_with_solver_and_memory,
-    create_response_with_solver_and_memory, measure_storage, persist_auto_free_space_choice,
-    plan_memory_dreaming, run_core_dreaming_once, ChatCompletionRequest, ChatMessage,
-    DreamingActionKind, DreamingConfig, MemoryEvent, MemoryStore, ResponsesRequest,
+    apply_auto_free_space_with_snapshot, apply_dreaming_plan, auto_free_space_choice,
+    auto_free_space_enabled, auto_free_space_preference_path,
+    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
+    execute_memory_query, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
+    replay_answer_with_amendments, run_core_dreaming_once, seed_cache_events, AutoFreeSpaceChoice,
+    ChatCompletionRequest, ChatMessage, DreamingActionKind, DreamingConfig, DreamingDurability,
+    MemoryEvent, MemoryStore, ResponsesRequest, RetainedAmendment, StorageSnapshot,
     UniversalSolver,
 };
 
@@ -216,13 +219,13 @@ fn dreaming_recalculates_topic_frequency_and_learns_durable_requirements() {
         verified_task_run_event(
             "run-1",
             "latex",
-            "proof render pass 1",
+            "latex proof render pass 1",
             "Always compile proofs with LaTeX.",
         ),
         verified_task_run_event(
             "run-2",
             "latex",
-            "proof render pass 2",
+            "latex proof render pass 2",
             "Always compile proofs with LaTeX.",
         ),
         MemoryEvent {
@@ -260,13 +263,13 @@ fn dreaming_generalizes_requirements_into_meta_algorithm_amendments() {
         verified_task_run_event(
             "run-1",
             "latex",
-            "proof render pass 1",
+            "latex proof render pass 1",
             "Always compile proofs with LaTeX.",
         ),
         verified_task_run_event(
             "run-2",
             "latex",
-            "proof render pass 2",
+            "latex proof render pass 2",
             "Always compile proofs with LaTeX.",
         ),
     ];
@@ -295,7 +298,7 @@ fn learned_amendment_changes_a_new_task_answer_without_repeating_requirement() {
         verified_task_run_event(
             "run-1",
             "latex",
-            "Explain a proof by induction",
+            "Explain a latex proof by induction",
             "Always include a LaTeX verification step in proof solutions.",
         ),
     ]);
@@ -348,7 +351,7 @@ fn dreaming_marks_only_replay_verified_specifics_as_covered() {
         verified_task_run_event(
             "run-verified",
             "latex",
-            "Explain a proof by induction",
+            "Explain a latex proof by induction",
             "Always include a LaTeX verification step in proof solutions.",
         ),
         MemoryEvent {
@@ -402,13 +405,13 @@ fn dreaming_simulates_frequent_topic_tasks_and_mines_recurring_structures() {
         verified_task_run_event(
             "run-1",
             "rust",
-            "refactor parser safely",
+            "refactor rust parser safely",
             "Always include a runnable test with Rust changes.",
         ),
         verified_task_run_event(
             "run-2",
             "rust",
-            "refactor renderer safely",
+            "refactor rust renderer safely",
             "Always include a runnable test with Rust changes.",
         ),
     ];
@@ -503,7 +506,7 @@ fn core_background_dreaming_learns_but_does_not_free_without_consent() {
         verified_task_run_event(
             "run-core",
             "rust",
-            "refactor parser safely",
+            "refactor rust parser safely",
             "Always include a runnable test with Rust changes.",
         ),
         recomputable_event("duplicate-a", "same public cache"),
@@ -582,7 +585,7 @@ fn dreaming_forgets_covered_specifics_first_under_pressure() {
         verified_task_run_event(
             "run-1",
             "latex",
-            &"proof render specifics ".repeat(20),
+            &format!("latex {}", "proof render specifics ".repeat(20)),
             "Always compile proofs with LaTeX.",
         ),
         recomputable_event("unrelated-cache", &"unrelated cached source ".repeat(5)),
@@ -615,13 +618,13 @@ fn applying_dreaming_plan_bakes_amendments_and_is_idempotent() {
         verified_task_run_event(
             "run-1",
             "latex",
-            "proof render pass 1",
+            "latex proof render pass 1",
             "Always compile proofs with LaTeX.",
         ),
         verified_task_run_event(
             "run-2",
             "latex",
-            "proof render pass 2",
+            "latex proof render pass 2",
             "Always compile proofs with LaTeX.",
         ),
     ]);
@@ -649,6 +652,210 @@ fn applying_dreaming_plan_bakes_amendments_and_is_idempotent() {
     assert_eq!(amendment_count_after, 1);
 }
 
+#[test]
+fn auto_free_space_choice_distinguishes_never_asked_from_declined() {
+    // Issue #540 §4: the CLI must not re-prompt a user who already declined,
+    // which requires a persisted tri-state, not a boolean.
+    let memory_path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-540-tri-state-{}-memory.lino",
+        std::process::id()
+    ));
+    let preference_path = auto_free_space_preference_path(&memory_path);
+    let _ = std::fs::remove_file(&preference_path);
+
+    assert_eq!(
+        auto_free_space_choice(&memory_path),
+        AutoFreeSpaceChoice::NeverAsked
+    );
+    persist_auto_free_space_choice(&memory_path, false).expect("persist decline");
+    assert_eq!(
+        auto_free_space_choice(&memory_path),
+        AutoFreeSpaceChoice::Declined
+    );
+    assert!(!auto_free_space_enabled(&memory_path));
+    persist_auto_free_space_choice(&memory_path, true).expect("persist consent");
+    assert_eq!(
+        auto_free_space_choice(&memory_path),
+        AutoFreeSpaceChoice::Enabled
+    );
+    assert!(auto_free_space_enabled(&memory_path));
+
+    let _ = std::fs::remove_file(preference_path);
+}
+
+#[test]
+fn auto_free_space_for_write_stops_at_target_with_nonzero_incoming_bytes() {
+    // Issue #540 §4: the write-driven freeing path must reclaim just enough
+    // for the next write plus the 20% target, not everything reclaimable.
+    let memory_path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-540-stop-at-target-{}-memory.lino",
+        std::process::id()
+    ));
+    let preference_path = auto_free_space_preference_path(&memory_path);
+
+    // Five distinct recomputable caches (~600 bytes each) plus irreplaceable
+    // raw messages that must never be selected under pressure.
+    let mut events: Vec<MemoryEvent> = (0..5)
+        .map(|index| {
+            recomputable_event(
+                &format!("cache-{index}"),
+                &format!("distinct cached payload {index} {}", "x".repeat(600)),
+            )
+        })
+        .collect();
+    events.push(MemoryEvent::user("irreplaceable raw question"));
+    events.push(MemoryEvent::assistant("irreplaceable raw answer"));
+    let recomputable_count = 5;
+
+    // capacity 100_000 → 20% target = 20_000; free 20_500 with 1_000 incoming
+    // leaves a 500-byte deficit — far less than one cache entry.
+    let snapshot = StorageSnapshot {
+        capacity_bytes: 100_000,
+        free_bytes: 20_500,
+    };
+
+    // Declined (and never-asked) consent must block freeing even under
+    // identical pressure.
+    let _ = std::fs::remove_file(&preference_path);
+    let mut store = MemoryStore::from_events(events.clone());
+    assert!(
+        apply_auto_free_space_with_snapshot(&mut store, &memory_path, 1_000, snapshot).is_none()
+    );
+    persist_auto_free_space_choice(&memory_path, false).expect("persist decline");
+    assert!(
+        apply_auto_free_space_with_snapshot(&mut store, &memory_path, 1_000, snapshot).is_none()
+    );
+    assert_eq!(store.len(), events.len());
+
+    persist_auto_free_space_choice(&memory_path, true).expect("persist consent");
+    let (plan, outcome) =
+        apply_auto_free_space_with_snapshot(&mut store, &memory_path, 1_000, snapshot)
+            .expect("consented freeing runs");
+
+    assert_eq!(plan.incoming_bytes, 1_000);
+    assert_eq!(plan.required_reclaim_bytes, 500);
+    assert!(plan.selected_reclaim_bytes >= plan.required_reclaim_bytes);
+    // Stops at the target: one cache covers the 500-byte deficit, so most
+    // recomputable data survives and nothing irreplaceable is touched.
+    assert!(outcome.removed_events >= 1);
+    assert!(outcome.removed_events < recomputable_count);
+    let remaining_caches = store
+        .events()
+        .iter()
+        .filter(|event| event.id.starts_with("cache-"))
+        .count();
+    assert!(remaining_caches >= recomputable_count - outcome.removed_events);
+    assert!(store
+        .events()
+        .iter()
+        .any(|event| event.content.as_deref() == Some("irreplaceable raw question")));
+    assert!(store
+        .events()
+        .iter()
+        .any(|event| event.content.as_deref() == Some("irreplaceable raw answer")));
+
+    let _ = std::fs::remove_file(preference_path);
+}
+
+#[test]
+fn seed_cache_events_are_stable_and_classified_recomputable() {
+    // Issue #540 §4: imports materialize seed files as `seed_cache` events —
+    // recomputable data with ids stable over the file name so re-import never
+    // duplicates.
+    let seed_files = vec![(
+        String::from("data/seed/roles.lino"),
+        String::from("roles\n  example\n"),
+    )];
+    let first = seed_cache_events(&seed_files);
+    let second = seed_cache_events(&seed_files);
+    assert_eq!(first.len(), 1);
+    assert_eq!(
+        first[0].id, second[0].id,
+        "ids must be stable per file name"
+    );
+    assert_eq!(first[0].kind.as_deref(), Some("seed_cache"));
+    assert_eq!(first[0].tool.as_deref(), Some("data/seed/roles.lino"));
+    assert_eq!(first[0].content.as_deref(), Some("roles\n  example\n"));
+
+    let plan = plan_memory_dreaming(&first, &DreamingConfig::default());
+    let observation = plan
+        .observations
+        .iter()
+        .find(|observation| observation.event_id == first[0].id)
+        .expect("seed cache observed");
+    assert_eq!(
+        observation.durability,
+        DreamingDurability::RecomputableCache
+    );
+}
+
+#[test]
+fn recall_counts_access_and_dreaming_treats_read_data_as_used() {
+    // Issue #494 via #540 §4: usage is counted when data is *read back*, not
+    // only when other events cite it — a recall bumps `access_count`, the
+    // caller persists the store, and dreaming ranks the read event as used.
+    let mut store = MemoryStore::from_events(vec![
+        MemoryEvent {
+            id: String::from("tool-1"),
+            kind: Some(String::from("source:http")),
+            role: Some(String::from("tool")),
+            tool: Some(String::from("web_search")),
+            content: Some(String::from("Found Rust memory references.")),
+            conversation_id: Some(String::from("conv-tools")),
+            conversation_title: Some(String::from("Tool Trace")),
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("never-read"),
+            kind: Some(String::from("analysis")),
+            content: Some(String::from("unrelated derived summary")),
+            ..MemoryEvent::default()
+        },
+    ]);
+
+    let execution = execute_memory_query("recall web_search", &mut store, Some("conv-current"))
+        .expect("recall query recognized");
+    assert_eq!(execution.answer.intent, "conversation_recall");
+    assert!(
+        execution.changed,
+        "a recall that read events must mark the store changed so access counts persist"
+    );
+    let read_event = store
+        .events()
+        .iter()
+        .find(|event| event.id == "tool-1")
+        .expect("read event survives");
+    assert_eq!(read_event.access_count, 1);
+    assert_eq!(
+        store
+            .events()
+            .iter()
+            .find(|event| event.id == "never-read")
+            .expect("unread event survives")
+            .access_count,
+        0
+    );
+
+    // Access counts must round-trip through serialization.
+    let serialized = store.export_links_notation();
+    assert!(serialized.contains("accessCount \"1\""));
+    let reloaded = MemoryStore::from_events(formal_ai::parse_memory_links_notation(&serialized));
+    assert_eq!(
+        reloaded
+            .events()
+            .iter()
+            .find(|event| event.id == "tool-1")
+            .expect("reload keeps event")
+            .access_count,
+        1
+    );
+
+    // Dreaming sees the read event as used even though nothing cites it.
+    let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
+    assert!(plan.event_usage("tool-1").unwrap_or_default() >= 1);
+    assert_eq!(plan.event_usage("never-read"), Some(0));
+}
+
 fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
     MemoryEvent {
         id: String::from(id),
@@ -661,16 +868,25 @@ fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
 }
 
 fn verified_task_run_event(id: &str, topic: &str, input: &str, requirement: &str) -> MemoryEvent {
-    let solved = UniversalSolver::default().solve(input).answer;
+    // The expected output is produced by the production application path
+    // itself (issue #540 §2): replay verification then compares like with
+    // like, and a fixture whose input does not actually match the topic will
+    // fail replay exactly as an organic record would.
+    let output = replay_answer_with_amendments(
+        input,
+        &[RetainedAmendment {
+            id: format!("{id}-amendment"),
+            topic: String::from(topic),
+            rule: String::from(requirement),
+        }],
+    );
     MemoryEvent {
         id: String::from(id),
         kind: Some(String::from("test_run")),
         role: Some(String::from("assistant")),
         content: Some(String::from(input)),
         inputs: Some(String::from(input)),
-        outputs: Some(format!(
-            "{solved}\n\nLearned standing requirement ({topic}): {requirement}"
-        )),
+        outputs: Some(output),
         conversation_title: Some(String::from(topic)),
         ..MemoryEvent::default()
     }

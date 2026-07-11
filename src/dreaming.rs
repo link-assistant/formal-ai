@@ -23,7 +23,9 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use crate::memory::{MemoryEvent, MemoryStore};
 
+pub mod cues;
 mod learning;
+pub mod lexicon;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DreamingConfig {
@@ -154,6 +156,20 @@ pub struct DreamingPattern {
     pub source_event_ids: Vec<String>,
 }
 
+/// A brand-new task dreamed up on a most-used topic while idle.
+///
+/// It is built from a mined pattern and solved through the production
+/// amendment path. Applying the plan retains it as a `dreaming_trial` event,
+/// so patterns and topic frequencies have a real consumer instead of being
+/// write-only statistics.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DreamingSynthesizedTask {
+    pub topic: String,
+    pub structure: String,
+    pub input: String,
+    pub answer: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DreamingAction {
     pub kind: DreamingActionKind,
@@ -202,6 +218,9 @@ pub struct DreamingPlan {
     pub candidate_tasks: Vec<DreamingCandidateTask>,
     /// Recurring structures mined across task inputs independently of language.
     pub patterns: Vec<DreamingPattern>,
+    /// New tasks synthesized from patterns on the most-used topics and solved
+    /// through the production amendment path while dreaming.
+    pub synthesized_tasks: Vec<DreamingSynthesizedTask>,
 }
 
 impl DreamingPlan {
@@ -231,7 +250,7 @@ impl DreamingPlan {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct DreamingOutcome {
     pub removed_events: usize,
     pub estimated_reclaimed_bytes: u64,
@@ -239,6 +258,12 @@ pub struct DreamingOutcome {
     pub learned_amendments: usize,
     /// Recurring task structures newly materialized as retained learning.
     pub learned_patterns: usize,
+    /// Failed replay candidates preserved as `dreaming_candidate_failure`
+    /// records so future dreaming rounds can keep learning from them.
+    pub recorded_failures: usize,
+    /// Synthesized trials on the most-used topics materialized as
+    /// `dreaming_trial` records.
+    pub recorded_trials: usize,
 }
 
 #[must_use]
@@ -269,6 +294,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
             amendments: Vec::new(),
             candidate_tasks: Vec::new(),
             patterns: Vec::new(),
+            synthesized_tasks: Vec::new(),
         };
     }
 
@@ -307,6 +333,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
     let amendments = learning.amendments;
     let candidate_tasks = learning.candidate_tasks;
     let patterns = learning.patterns;
+    let synthesized_tasks = learning.synthesized_tasks;
     let covered_event_ids: BTreeSet<&str> = amendments
         .iter()
         .flat_map(|amendment| amendment.covered_event_ids.iter().map(String::as_str))
@@ -323,6 +350,14 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
     let mut actions = Vec::new();
     let mut selected_event_ids = BTreeSet::new();
 
+    // Deleted-conversation purges and duplicate restructuring are planned even
+    // without storage pressure — deliberately (issue #540 §4). Neither loses
+    // information: purged events belong to conversations the user already
+    // deleted explicitly, and deduplication always retains one canonical copy
+    // of the recomputable record. They are consented housekeeping (nothing is
+    // applied without --apply/--confirm or persisted auto-free-space consent);
+    // only the pressure loop below is sized to "just enough for the next
+    // write" and stops at the reclaim target.
     for event_index in deleted_event_indices(events, &deleted_conversations) {
         push_action_once(
             &mut actions,
@@ -459,6 +494,7 @@ pub fn plan_memory_dreaming(events: &[MemoryEvent], config: &DreamingConfig) -> 
         amendments,
         candidate_tasks,
         patterns,
+        synthesized_tasks,
     }
 }
 
@@ -492,13 +528,37 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
         .filter(|event| !existing_ids.contains(&event.id))
         .collect::<Vec<_>>();
     let learned_patterns = new_patterns.len();
+    // Failed simulations are learning material, not noise: preserve each one as
+    // a retained record so later dreaming rounds (and refinement) can consume it.
+    let new_failures = plan
+        .candidate_tasks
+        .iter()
+        .filter(|candidate| !candidate.passed)
+        .map(candidate_failure_event)
+        .filter(|event| !existing_ids.contains(&event.id))
+        .collect::<Vec<_>>();
+    let recorded_failures = new_failures.len();
+    let new_trials = plan
+        .synthesized_tasks
+        .iter()
+        .map(synthesized_trial_event)
+        .filter(|event| !existing_ids.contains(&event.id))
+        .collect::<Vec<_>>();
+    let recorded_trials = new_trials.len();
 
-    if selected_ids.is_empty() && new_amendments.is_empty() && new_patterns.is_empty() {
+    if selected_ids.is_empty()
+        && new_amendments.is_empty()
+        && new_patterns.is_empty()
+        && new_failures.is_empty()
+        && new_trials.is_empty()
+    {
         return DreamingOutcome {
             removed_events: 0,
             estimated_reclaimed_bytes: 0,
             learned_amendments: 0,
             learned_patterns: 0,
+            recorded_failures: 0,
+            recorded_trials: 0,
         };
     }
 
@@ -512,12 +572,59 @@ pub fn apply_dreaming_plan(store: &mut MemoryStore, plan: &DreamingPlan) -> Drea
     let removed_events = initial_len - retained.len();
     retained.extend(new_amendments);
     retained.extend(new_patterns);
+    retained.extend(new_failures);
+    retained.extend(new_trials);
     *store = MemoryStore::from_events(retained);
     DreamingOutcome {
         removed_events,
         estimated_reclaimed_bytes: selected_bytes(&plan.actions),
         learned_amendments,
         learned_patterns,
+        recorded_failures,
+        recorded_trials,
+    }
+}
+
+/// Preserve a failed replay as retained learning material. The record keeps
+/// the diverging outputs so the next dreaming round's refinement pass (and any
+/// human inspecting memory) can see exactly what the meta-algorithm still gets
+/// wrong.
+fn candidate_failure_event(candidate: &DreamingCandidateTask) -> MemoryEvent {
+    let identity = format!("{}\0{}", candidate.source_event_id, candidate.input);
+    MemoryEvent {
+        id: crate::engine::stable_id("dreaming_failure", &identity),
+        kind: Some(String::from("dreaming_candidate_failure")),
+        role: Some(String::from("system")),
+        intent: Some(String::from("generalize")),
+        inputs: Some(candidate.input.clone()),
+        outputs: Some(candidate.expected_output.clone()),
+        content: Some(format!(
+            "Replay of {} on topic {} diverged from the stored output; kept for refinement. Simulated: {}",
+            candidate.source_event_id, candidate.topic, candidate.simulated_output
+        )),
+        demo_label: Some(candidate.topic.clone()),
+        evidence: vec![candidate.source_event_id.clone()],
+        ..MemoryEvent::default()
+    }
+}
+
+/// Materialize a synthesized trial dreamed on a most-used topic.
+fn synthesized_trial_event(trial: &DreamingSynthesizedTask) -> MemoryEvent {
+    let identity = format!("{}\0{}", trial.topic, trial.input);
+    MemoryEvent {
+        id: crate::engine::stable_id("dreaming_trial", &identity),
+        kind: Some(String::from("dreaming_trial")),
+        role: Some(String::from("system")),
+        intent: Some(String::from("solve")),
+        inputs: Some(trial.input.clone()),
+        outputs: Some(trial.answer.clone()),
+        content: Some(format!(
+            "Trial synthesized from recurring structure {} on most-used topic {}",
+            trial.structure, trial.topic
+        )),
+        demo_label: Some(trial.topic.clone()),
+        evidence: Vec::new(),
+        ..MemoryEvent::default()
     }
 }
 
@@ -651,8 +758,41 @@ pub fn render_dreaming_plan(plan: &DreamingPlan) -> String {
             pattern.topic, pattern.occurrences, pattern.structure
         ));
     }
+    for trial in &plan.synthesized_tasks {
+        lines.push(format!(
+            "  synthesized_trial topic={} structure={} input={}",
+            trial.topic, trial.structure, trial.input
+        ));
+    }
 
     lines.join("\n")
+}
+
+/// Compose the meta-algorithm recipe **as data**.
+///
+/// The result is the base `data/meta/dreaming-recipe.lino` document plus one
+/// `meta_amendment` record per retained amendment currently in memory. The
+/// dreaming runtime writes this next to the memory file after every run, so
+/// learning literally changes the recipe artifact the amendments cite instead
+/// of leaving it static.
+#[must_use]
+pub fn compose_recipe_with_amendments(events: &[MemoryEvent]) -> String {
+    let base = lexicon::load_data_document(
+        "dreaming-recipe.lino",
+        include_str!("../data/meta/dreaming-recipe.lino"),
+    );
+    let mut composed = base.trim_end().to_owned();
+    for amendment in crate::dreaming_application::retained_amendments(events) {
+        let _ = std::fmt::Write::write_fmt(
+            &mut composed,
+            format_args!(
+                "\n  meta_amendment {}\n    topic: {}\n    rule: {}\n    applied_by: fn_solve_with_standing_requirements\n",
+                amendment.id, amendment.topic, amendment.rule
+            ),
+        );
+    }
+    composed.push('\n');
+    composed
 }
 
 fn push_action_once(
@@ -704,56 +844,25 @@ fn classify_event(
         return DreamingDurability::DeletedConversation;
     }
 
+    // Durability cues are grounded as data (multilingual) in
+    // data/meta/dreaming-lexicon.lino instead of hardcoded English keywords.
+    let cues = lexicon::lexicon();
     let kind = lower_opt(event.kind.as_deref());
     let tool = lower_opt(event.tool.as_deref());
     let content = lower_opt(event.content.as_deref());
-    let evidence = event.evidence.join("\n").to_ascii_lowercase();
-    if contains_any(
-        &kind,
-        &[
-            "learning",
-            "ledger",
-            "skill",
-            "meta_algorithm",
-            "amendment",
-            "generalization",
-        ],
-    ) || contains_any(&content, &["learned", "learning ledger", "promoted lesson"])
+    let evidence = event.evidence.join("\n").to_lowercase();
+    if contains_any(&kind, &cues.learning_kind_cues)
+        || contains_any(&content, &cues.learning_content_cues)
         || evidence.contains("learning")
     {
         return DreamingDurability::RetainedLearning;
     }
 
-    if contains_any(
-        &kind,
-        &[
-            "source:",
-            "source_",
-            "cache",
-            "http",
-            "web_search",
-            "seed_data",
-            "seed_cache",
-        ],
-    ) || contains_any(&tool, &["web_search", "http", "fetch", "source", "cache"])
-    {
+    if contains_any(&kind, &cues.cache_kind_cues) || contains_any(&tool, &cues.cache_tool_cues) {
         return DreamingDurability::RecomputableCache;
     }
 
-    if contains_any(
-        &kind,
-        &[
-            "intermediate",
-            "summary",
-            "analysis",
-            "conclusion",
-            "derived",
-            "test_run",
-            "test-run",
-            "trial",
-            "run_log",
-        ],
-    ) {
+    if contains_any(&kind, &cues.intermediate_kind_cues) {
         return DreamingDurability::RecomputableIntermediate;
     }
 
@@ -785,15 +894,19 @@ fn usage_counts(events: &[MemoryEvent]) -> Vec<usize> {
         .iter()
         .enumerate()
         .map(|(target_index, target)| {
+            // Usage = read accesses counted at recall time (issue #494) plus
+            // citations from other events; either alone undercounts.
+            let accessed = usize::try_from(target.access_count).unwrap_or(usize::MAX);
             if target.id.is_empty() {
-                return 0;
+                return accessed;
             }
-            searchable
+            let cited: usize = searchable
                 .iter()
                 .enumerate()
                 .filter(|(index, _)| *index != target_index)
                 .map(|(_, text)| text.matches(&target.id).count())
-                .sum()
+                .sum();
+            accessed.saturating_add(cited)
         })
         .collect()
 }
@@ -866,8 +979,10 @@ fn push_opt(target: &mut String, value: Option<&str>) {
     }
 }
 
-fn contains_any(haystack: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| haystack.contains(needle))
+fn contains_any(haystack: &str, needles: &[String]) -> bool {
+    needles
+        .iter()
+        .any(|needle| haystack.contains(needle.as_str()))
 }
 
 fn lower_opt(value: Option<&str>) -> String {

@@ -197,6 +197,35 @@ test("storage pressure asks consent, applies it, and surfaces migration", async 
   assert.equal(persisted, true);
   assert.equal(migrationNotified, true);
   assert.deepEqual(calls[1].slice(-2), ["--apply", "--confirm"]);
+  // A consented auto-apply must always carry a backup (issue #540 §4).
+  const backupIndex = calls[1].indexOf("--backup");
+  assert.ok(backupIndex >= 0, "auto-apply must pass --backup");
+  assert.ok(calls[1][backupIndex + 1].endsWith(".pre-dream-backup.lino"));
+});
+
+test("auto-apply keeps an explicitly configured backup path", async () => {
+  const calls = [];
+  await runDreamingOnce({
+    env: {},
+    platform: "win32",
+    candidates: [
+      {
+        command: "formal-ai",
+        args: ["memory", "dream", "--path", "/data/mem.lino", "--backup", "/data/own.lino"],
+        cwd: "/repo",
+        label: "test",
+      },
+    ],
+    setPriority: () => {},
+    spawn: (_command, args) => {
+      calls.push(args);
+      return fakeChild({ code: 0, stdout: "required_reclaim_bytes: 128\n" });
+    },
+    requestAutoFreeSpaceConsent: async () => true,
+    persistAutoFreeSpaceChoice: async () => {},
+  });
+  assert.equal(calls[1].filter(argument => argument === "--backup").length, 1);
+  assert.equal(calls[1][calls[1].indexOf("--backup") + 1], "/data/own.lino");
 });
 
 test("declined automatic cleanup is persisted without applying removals", async () => {

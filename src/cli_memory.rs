@@ -4,10 +4,10 @@ use std::path::Path;
 
 use crate::{read_input, MemoryAction};
 use formal_ai::{
-    agent_info, apply_dreaming_plan, auto_free_space_enabled, execute_memory_query,
+    agent_info, apply_dreaming_plan, auto_free_space_choice, execute_memory_query,
     export_memory_full, measure_storage, persist_auto_free_space_choice, plan_memory_dreaming,
-    render_dreaming_plan, seed_files, suggest_memory_migrations, BundleInfo, DreamingConfig,
-    MemoryStore,
+    render_dreaming_plan, seed_files, suggest_memory_migrations, AutoFreeSpaceChoice, BundleInfo,
+    DreamingConfig, MemoryStore,
 };
 
 pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
@@ -58,9 +58,22 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             let parsed_count = parsed.events.len();
             let mut store = load_memory_or_empty(&into)?;
             store.import(&parsed.events);
+            // Materialize bundled seed files as recomputable `seed_cache`
+            // events so seed data joins usage/eviction accounting (issue #494).
+            let seed_events = formal_ai::seed_cache_events(&parsed.seed_files);
+            let known: std::collections::BTreeSet<String> = store
+                .events()
+                .iter()
+                .map(|event| event.id.clone())
+                .collect();
+            let fresh_seed: Vec<_> = seed_events
+                .into_iter()
+                .filter(|event| !known.contains(&event.id))
+                .collect();
+            let seed_count = store.import(&fresh_seed);
             store.save_to_file(&into)?;
             eprintln!(
-                "Imported {parsed_count} event(s) into {}; total now {}.",
+                "Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.",
                 into.display(),
                 store.len()
             );
@@ -126,10 +139,16 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             let plan = plan_memory_dreaming(store.events(), &config);
             println!("{}", render_dreaming_plan(&plan));
 
-            let mut auto_free = path.as_os_str() != "-" && auto_free_space_enabled(&path);
+            let choice = if path.as_os_str() == "-" {
+                AutoFreeSpaceChoice::Declined
+            } else {
+                auto_free_space_choice(&path)
+            };
+            let mut auto_free = choice == AutoFreeSpaceChoice::Enabled;
+            // Ask only when the user was never asked before: a persisted
+            // "disabled" answer must not re-prompt (issue #540 §4).
             if plan.required_reclaim_bytes > 0
-                && !auto_free
-                && path.as_os_str() != "-"
+                && choice == AutoFreeSpaceChoice::NeverAsked
                 && io::stdin().is_terminal()
             {
                 auto_free = ask_to_enable_auto_free_space()?;
@@ -151,12 +170,14 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 let outcome = apply_dreaming_plan(&mut store, &plan);
                 store.save_to_file(&path)?;
                 eprintln!(
-                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s).",
+                    "Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).",
                     path.display(),
                     outcome.removed_events,
                     outcome.estimated_reclaimed_bytes,
                     outcome.learned_amendments,
-                    outcome.learned_patterns
+                    outcome.learned_patterns,
+                    outcome.recorded_failures,
+                    outcome.recorded_trials
                 );
             } else if !plan.actions.is_empty() {
                 eprintln!(
