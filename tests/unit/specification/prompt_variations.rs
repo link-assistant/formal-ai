@@ -543,18 +543,43 @@ fn summarization_intent_routes_to_summarization_handler() {
 
 #[test]
 fn summarization_request_summarizes_inline_conversation_content() {
-    let response = answer(
-        "Summarize the following conversation: User asked about the weather. \
-         Assistant said it is sunny. User thanked the assistant.",
-    );
-    assert_eq!(response.intent, "summarize_conversation");
-    assert!(response.answer.contains("weather"), "{}", response.answer);
-    assert!(response.answer.contains("sunny"), "{}", response.answer);
-    assert!(
-        !response.answer.contains("could not determine"),
-        "{}",
-        response.answer
-    );
+    let cases = [
+        (
+            "English",
+            "Summarize conversation: User asked about the weather. Assistant said it is sunny.",
+            "weather",
+        ),
+        (
+            "ru",
+            "Резюме разговора: Пользователь спросил о погоде. Ассистент сказал, что солнечно.",
+            "погоде",
+        ),
+        (
+            "hi",
+            "बातचीत सारांश: उपयोगकर्ता ने मौसम के बारे में पूछा। सहायक ने कहा कि धूप है।",
+            "मौसम",
+        ),
+        ("zh", "总结对话: 用户询问天气。助手说天气晴朗。", "天气"),
+    ];
+
+    for (language, prompt, expected_topic) in cases {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, "summarize_conversation",
+            "language={language}: {}",
+            response.answer
+        );
+        assert!(
+            response.answer.contains(expected_topic),
+            "language={language}: {}",
+            response.answer
+        );
+        assert!(
+            !response.answer.contains("could not determine"),
+            "language={language}: {}",
+            response.answer
+        );
+    }
 }
 
 const BRAINSTORMING_PROMPTS: &[&str] = &[
