@@ -48,7 +48,7 @@ use parser::{
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use client_integrations::{
     client_integrations, ClientIntegration, ClientIntegrationGlobalConfig,
-    ClientIntegrationInvocation, ConfigFormat, ModelArgPosition, TemplateEnv,
+    ClientIntegrationInvocation, ConfigFormat, ModeArgPosition, ModelArgPosition, TemplateEnv,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{

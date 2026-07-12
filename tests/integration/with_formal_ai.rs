@@ -260,6 +260,85 @@ fn with_formal_ai_summarize_restores_agent_default() {
 }
 
 #[test]
+fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
+    let cases = [
+        ("codex", "exec"),
+        ("opencode", "run"),
+        ("agent", "-p"),
+        ("gemini", "-p"),
+        ("claude", "--print"),
+        ("qwen", "-p"),
+        ("grok", "--prompt"),
+        ("aider", "--message"),
+    ];
+    for (tool, one_shot_arg) in cases {
+        let dir = tmpdir();
+        let home = dir.join("home");
+        let bin_dir = dir.join("bin");
+        std::fs::create_dir_all(&home).expect("home");
+        std::fs::create_dir_all(&bin_dir).expect("bin");
+        write_fake_cli(&bin_dir, tool);
+
+        let interactive_capture = dir.join("interactive.txt");
+        let interactive = run_with_capture(
+            &home,
+            &bin_dir,
+            &interactive_capture,
+            &["with", "--interactive", tool],
+        );
+        assert!(
+            interactive.status.success(),
+            "{tool}: {}",
+            String::from_utf8_lossy(&interactive.stderr)
+        );
+        let captured = std::fs::read_to_string(&interactive_capture).expect("interactive capture");
+        assert!(
+            !captured.contains(&format!("={one_shot_arg}\n")),
+            "{tool} interactive capture:\n{captured}"
+        );
+
+        let print_capture = dir.join("print.txt");
+        let print = run_with_capture(
+            &home,
+            &bin_dir,
+            &print_capture,
+            &["with", "--non-interactive", tool, "hi"],
+        );
+        assert!(
+            print.status.success(),
+            "{tool}: {}",
+            String::from_utf8_lossy(&print.stderr)
+        );
+        let captured = std::fs::read_to_string(&print_capture).expect("print capture");
+        assert!(
+            captured.contains(&format!("={one_shot_arg}\n")),
+            "{tool} non-interactive capture:\n{captured}"
+        );
+        assert!(
+            captured.contains("=hi\n"),
+            "{tool} non-interactive capture:\n{captured}"
+        );
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[test]
+fn with_formal_ai_globally_alias_is_accepted() {
+    let home = tmpdir();
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["with", "--globally", "codex"])
+        .env("HOME", &home)
+        .output()
+        .expect("run --globally");
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let _ = std::fs::remove_dir_all(home);
+}
+
+#[test]
 fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
     for tool in [
         "codex", "opencode", "agent", "gemini", "claude", "qwen", "grok", "aider",

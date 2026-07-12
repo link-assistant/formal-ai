@@ -12,7 +12,7 @@ use toml_edit::{value as toml_value, DocumentMut, Item, Table};
 
 use crate::seed::{
     client_integrations as seed_client_integrations, ClientIntegration, ConfigFormat,
-    ModelArgPosition,
+    ModeArgPosition, ModelArgPosition,
 };
 use crate::DEFAULT_MODEL;
 
@@ -43,7 +43,12 @@ impl ClientProtocol {
 #[allow(clippy::struct_excessive_bools)]
 pub struct WithFormalAiArgs {
     /// Permanently configure the selected tool instead of running it once.
-    #[arg(short = 'g', long = "global", default_value_t = false)]
+    #[arg(
+        short = 'g',
+        long = "global",
+        alias = "globally",
+        default_value_t = false
+    )]
     pub global: bool,
 
     /// Restore the backup created by a previous global configuration.
@@ -73,6 +78,14 @@ pub struct WithFormalAiArgs {
     /// Keep the wrapped tool's normal summarization/compaction behavior.
     #[arg(long, alias = "keep-summarization", default_value_t = false)]
     pub summarize: bool,
+
+    /// Force the wrapped CLI to stay in its interactive mode.
+    #[arg(long, default_value_t = false, conflicts_with = "non_interactive")]
+    pub interactive: bool,
+
+    /// Force one-shot/headless output (aliases: --print and --one-shot).
+    #[arg(long, alias = "print", alias = "one-shot", default_value_t = false)]
+    pub non_interactive: bool,
 
     /// Protocol namespace to use for tools that support more than one protocol.
     #[arg(long, value_enum)]
@@ -173,7 +186,14 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     } else {
         None
     };
-    run_ephemeral(integration, &args.tool_args, &context, args.summarize)
+    run_ephemeral(
+        integration,
+        &args.tool_args,
+        &context,
+        args.summarize,
+        args.interactive,
+        args.non_interactive,
+    )
 }
 
 fn select_integrations<'a>(
@@ -273,6 +293,8 @@ fn run_ephemeral(
     user_args: &[String],
     context: &RenderContext,
     keep_summarization: bool,
+    force_interactive: bool,
+    force_non_interactive: bool,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut temp_dirs = Vec::new();
@@ -324,7 +346,14 @@ fn run_ephemeral(
         temp_dirs.push(temp);
     }
 
-    let final_args = build_invocation_args(integration, user_args, context, keep_summarization);
+    let final_args = build_invocation_args(
+        integration,
+        user_args,
+        context,
+        keep_summarization,
+        force_interactive,
+        force_non_interactive,
+    );
     command.args(final_args);
     let status = command.status()?;
     drop(temp_dirs);
@@ -362,6 +391,8 @@ fn build_invocation_args(
     user_args: &[String],
     context: &RenderContext,
     keep_summarization: bool,
+    force_interactive: bool,
+    force_non_interactive: bool,
 ) -> Vec<String> {
     let invocation = &integration.invocation;
     let mut args = invocation
@@ -370,6 +401,26 @@ fn build_invocation_args(
         .chain(invocation.args.iter())
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
+    let interactive = force_interactive || (!force_non_interactive && user_args.is_empty());
+    let mode_args = if interactive {
+        &invocation.interactive_args
+    } else {
+        &invocation.non_interactive_args
+    };
+    let rendered_mode_args = if !mode_args
+        .iter()
+        .any(|mode_arg| user_args.contains(mode_arg))
+    {
+        mode_args
+            .iter()
+            .map(|arg| render_template(arg, context))
+            .collect::<Vec<_>>()
+    } else {
+        Vec::new()
+    };
+    if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
+        args.splice(0..0, rendered_mode_args.iter().cloned());
+    }
     if !keep_summarization {
         args.extend(
             invocation
@@ -378,24 +429,29 @@ fn build_invocation_args(
                 .map(|arg| render_template(arg, context)),
         );
     }
+    let mut effective_user_args = Vec::new();
+    if invocation.mode_arg_position != Some(ModeArgPosition::BeforeInvocation) {
+        effective_user_args.extend(rendered_mode_args);
+    }
+    effective_user_args.extend(user_args.iter().cloned());
     if invocation.model_arg.is_empty() || contains_model_arg(user_args) {
-        args.extend(user_args.iter().cloned());
+        args.extend(effective_user_args);
         return args;
     }
 
     let model_arg = render_template(&invocation.model_arg, context);
     let model_value = context.model_selector.clone();
     match invocation.model_arg_position {
-        Some(ModelArgPosition::AfterFirstArg) if !user_args.is_empty() => {
-            args.push(user_args[0].clone());
+        Some(ModelArgPosition::AfterFirstArg) if !effective_user_args.is_empty() => {
+            args.push(effective_user_args[0].clone());
             args.push(model_arg);
             args.push(model_value);
-            args.extend(user_args.iter().skip(1).cloned());
+            args.extend(effective_user_args.iter().skip(1).cloned());
         }
         _ => {
             args.push(model_arg);
             args.push(model_value);
-            args.extend(user_args.iter().cloned());
+            args.extend(effective_user_args);
         }
     }
     args

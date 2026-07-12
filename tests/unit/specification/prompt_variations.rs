@@ -541,6 +541,22 @@ fn summarization_intent_routes_to_summarization_handler() {
     }
 }
 
+#[test]
+fn summarization_request_summarizes_inline_conversation_content() {
+    let response = answer(
+        "Summarize the following conversation: User asked about the weather. \
+         Assistant said it is sunny. User thanked the assistant.",
+    );
+    assert_eq!(response.intent, "summarize_conversation");
+    assert!(response.answer.contains("weather"), "{}", response.answer);
+    assert!(response.answer.contains("sunny"), "{}", response.answer);
+    assert!(
+        !response.answer.contains("could not determine"),
+        "{}",
+        response.answer
+    );
+}
+
 const BRAINSTORMING_PROMPTS: &[&str] = &[
     "Give me five ideas for an open-source side project.",
     "Brainstorm ten names for a code review tool.",

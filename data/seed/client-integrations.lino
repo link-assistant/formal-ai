@@ -10,7 +10,8 @@ client_integrations
     api_key_default "formal-ai"
     ephemeral
       temp_home_env "HOME"
-      prepend_arg "exec"
+      non_interactive_arg "exec"
+      mode_arg_position "before_invocation"
       arg "--skip-git-repo-check"
       arg "--sandbox"
       arg "read-only"
@@ -48,6 +49,8 @@ client_integrations
     api_key_default "formal-ai"
     model_selector "{provider_id}/{model}"
     ephemeral
+      non_interactive_arg "run"
+      mode_arg_position "before_invocation"
       env "FORMAL_AI_API_KEY={api_key}"
       config_env "OPENCODE_CONFIG"
       config_dir_env "OPENCODE_CONFIG_DIR"
@@ -82,6 +85,8 @@ client_integrations
     api_key_default "formal-ai"
     model_selector "{provider_id}/{model}"
     ephemeral
+      interactive_arg "--interactive"
+      non_interactive_arg "-p"
       temp_home_env "HOME"
       no_summarize_arg "--no-summarize-session"
       no_summarize_arg "--compaction-model"
@@ -119,6 +124,8 @@ client_integrations
     api_key_env "GEMINI_API_KEY"
     api_key_default "formal-ai"
     ephemeral
+      interactive_arg "--prompt-interactive"
+      non_interactive_arg "-p"
       env "GEMINI_API_KEY={api_key}"
       env "GEMINI_DEFAULT_AUTH_TYPE={google_auth_type}"
       env "GEMINI_CLI_TRUST_WORKSPACE=true"
@@ -146,6 +153,7 @@ client_integrations
     api_key_env "ANTHROPIC_AUTH_TOKEN"
     api_key_default "formal-ai"
     ephemeral
+      non_interactive_arg "--print"
       temp_home_env "CLAUDE_CONFIG_DIR"
       env "ANTHROPIC_AUTH_TOKEN={api_key}"
       env "ANTHROPIC_API_KEY="
@@ -168,6 +176,8 @@ client_integrations
     api_key_env "OPENAI_API_KEY"
     api_key_default "formal-ai"
     ephemeral
+      interactive_arg "--prompt-interactive"
+      non_interactive_arg "-p"
       env "OPENAI_API_KEY={api_key}"
       env "OPENAI_BASE_URL={endpoint_base_url}"
       env "OPENAI_MODEL={model}"
@@ -190,6 +200,7 @@ client_integrations
     api_key_env "XAI_API_KEY"
     api_key_default "formal-ai"
     ephemeral
+      non_interactive_arg "--prompt"
       temp_home_env "HOME"
       env "XAI_API_KEY={api_key}"
       env "XAI_BASE_URL={endpoint_base_url}"
@@ -212,6 +223,7 @@ client_integrations
     api_key_default "formal-ai"
     model_selector "openai/{model}"
     ephemeral
+      non_interactive_arg "--message"
       temp_home_env "HOME"
       env "OPENAI_API_KEY={api_key}"
       env "OPENAI_API_BASE={endpoint_base_url}"
