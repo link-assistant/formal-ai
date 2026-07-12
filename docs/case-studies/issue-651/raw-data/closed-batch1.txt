@@ -1,0 +1,177 @@
+=== ISSUE 647 ===
+=== ISSUE 628 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Feeds the CI e2e suite proposed in #625; documents the method that surfaced #624, #626, #627.
+--
+=== ISSUE 627 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Part of the agent-mode tool-calling coverage set: list-files NL routing gap #624, codex tool-arg/protocol bugs #626, and the proposed Rust logging proxy + agentic e2e suite #625 (this 12-dialog read matrix is exactly the coverage that suite should include). Verified via logging proxy; provenance = formal-ai on every request.
+--
+=== ISSUE 626 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Part of the with-formal-ai default-works effort: #620 #621 #622 #624 #625. Provenance/routing verified via logging proxy (#625).
+--
+=== ISSUE 625 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Concrete routing failures this proxy + e2e suite would catch: #624.
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+### Coverage note: the e2e suite must exercise all three protocol paths, not just OpenAI chat
+
+Cross-CLI testing this session showed each client stresses a *different* server path, and bugs hide in the non-OpenAI-chat paths:
+
+- **OpenAI `chat/completions`** (opencode, our `agent`) — tool-calls with `{"command": …}` work for direct phrasings; natural-language phrasings mis-route (#624).
+- **OpenAI `responses`** (codex) — tool-call arg field mismatch (`command` vs `cmd`), `/models` missing `slug`, non-git-dir hard fail (#626). None of this is visible from the chat/completions path.
+- **Gemini `streamGenerateContent`** (gemini) — client sends no `functionDeclarations`; server has nothing to route (note on #620).
+
+So the CI e2e matrix should assert, per CLI and per protocol: request carried `model=formal-ai` (provenance), the expected tools were offered, the server returned the expected tool-call **in the schema that CLI consumes**, the CLI executed it, and the final output contains the real fixture filenames. A proxy that logs all three shapes (chat/completions, responses, gemini generateContent) — including streamed SSE bodies — is what makes these assertions possible. Concrete failures this would have caught: #624, #626.
+
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Concrete coverage target for the e2e suite: the 12-variation file-reading matrix in #627 (all currently failing), plus the list-files matrix in #624.
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Companion documentation issue: #628 proposes writing up the testing methodology (fixtures, logging proxy, phrasing matrices, marker assertions) that feeds this e2e suite.
+--
+=== ISSUE 624 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Provenance/routing verified via a logging proxy; proposing a built-in Rust proxy + agentic e2e tests in CI to catch exactly this class of regression: #625.
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+### Update: routing gap confirmed CLI-independent (opencode **and** our own `agent` CLI)
+
+Re-ran a representative subset (2 direct phrasings that worked + 2 natural-language phrasings that failed) through multiple CLIs, all pointed at the same `formal-ai serve --agent-mode` via a logging proxy in a fixture dir (`alpha.txt`, `beta.md`, `gamma.json`, `subdir/`). The direct-works / NL-fails split is **identical** across the OpenAI-compatible CLIs, and the NL failures return the exact same server text (`could not determine \`what files are in this folder\``), confirming this is a **server-side intent-routing gap**, not a client quirk:
+
+| CLI | endpoint | `run ls` | `list the files in the current directory` | `what files are in this folder?` | `show me the contents of this directory` |
+|-----|----------|:---:|:---:|:---:|:---:|
+| **opencode** | `/api/openai/v1/chat/completions` | ✅ | ✅ | ❌ cnd | ❌ cnd |
+| **agent** (ours) | `/api/openai/v1/chat/completions` | ✅ | ✅ | ❌ cnd | ❌ cnd |
+
+(cnd = server returned the "could not determine …" text instead of a `bash` tool_call.)
+
+The other two CLIs couldn't even reach this comparison because of separate, more fundamental problems (tracked elsewhere), so the routing gap could not be isolated for them:
+- **codex** — server returns a tool call but codex rejects the arguments (`missing field \`cmd\``; the server emits `{"command": …}`), plus a `/models` `missing field \`slug\`` error and a hard fail in non-git dirs. Filed separately.
+- **gemini** — gemini-cli headless (`-p`) sends **no** `functionDeclarations`/tools at all, so the server has no shell tool to route to. Not a server bug. Noted on the gemini issue.
+
+Net: fixing the NL→shell-intent routing here would immediately benefit both opencode and our own agent CLI, which are the two clients that fully exercise the tool-call path today.
+
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Broader finding: file **reading** is entirely non-functional (0/12 dialogs), even for direct 'read the file X' requests — see #627. So beyond the NL list-files routing gap here, the read-tool path isn't wired at all.
+--
+=== ISSUE 622 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Root causes tracked in #620 (gemini) and #621 (agent support).
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Double check if after all resent changes requirements are still valid, double check docs and update them to correctly reflect the codebase in any case.
+--
+=== ISSUE 621 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Related: #620 (gemini default failure), #622 (README doc fixes). Upstream note: link-assistant/agent#275 (harmless compaction-cascade log noise).
+--
+=== ISSUE 620 ===
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+Part of the "with-formal-ai works with no extra args/env by default" set: #621 (add `agent` tool), #622 (README doc fixes).
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+### Additional finding: even after auth is fixed, gemini-cli headless advertises no tools (so tool-calling can't work)
+
+After applying the auth + workspace-trust workarounds from this issue, gemini connects and answers plain prompts, but **tool-using requests never execute**. For "run ls" / "list the files in the current directory" the server replies:
+
+> I can run `ls` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
+
+I captured the raw request body gemini-cli sends to `/api/gemini/v1beta/models/formal-ai:streamGenerateContent`: it contains **no `functionDeclarations` and no `tools`** at all. So this is **not** a server bug — gemini-cli in headless `-p` mode simply does not advertise its built-in tools over the API, leaving the server nothing to route to.
+
+Implication for the "works by default" goal: even once `with-formal-ai gemini -p hi` is fixed for plain chat (the main subject of this issue), gemini will only do chat, not tool/agentic actions, unless gemini-cli is invoked in a mode that sends function declarations (or an approval/agent mode that does). Worth documenting the limitation, and worth checking whether a different gemini-cli flag makes it advertise tools. Tool-call routing itself works for the OpenAI-compatible clients (opencode, our `agent`) — see #624.
+
+--
+author:	konard
+association:	member
+edited:	false
+status:	none
+--
+### Verified fixed by #623 — keeping this closed ✅
+
+Independently reviewed and re-tested the merged fix (PR #623, merge `6f94f490`, released in `v0.264.0`) against the **real** Gemini CLI, not just the fake-CLI integration test.
+
+**End-to-end test** (the exact original repro condition):
+- Machine still has cached OAuth: `~/.gemini/settings.json` → `{"security":{"auth":{"selectedType":"oauth-personal"}}}` and `~/.gemini/oauth_creds.json` present.
+- Built `with-formal-ai` at the merged commit, started `formal-ai serve --agent-mode`, and ran with **no manual env overrides**:
+  ```
+  with-formal-ai gemini -p hi
+  # => Hi, how may I help you?   (exit 0)
+  ```
+- The previous `IneligibleTierError: This client is no longer supported for Gemini Code Assist for individuals` is gone.
+
+**What the fix does** (all three gaps from this issue are addressed in `data/seed/client-integrations.lino` + `src/client_integrations.rs`):
+- exports `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key` (protocol-aware: `vertex-ai` for `--protocol vertex`),
+- exports `GEMINI_CLI_TRUST_WORKSPACE=true`,
+- isolates from the user's `~/.gemini` via a temporary `GEMINI_CLI_HOME` with a generated `.gemini/settings.json` selecting `gemini-api-key` (with a path-traversal guard on the generated config path).
+- Docs updated (README wrapper note + manual example) and a changelog fragment added, which also resolves the "docs overstate the flow" point (#622 item 1).
+
+Confirmed the real gemini-cli honors `GEMINI_CLI_HOME`. Nothing outstanding on this issue — leaving it closed.
+
+Note (separate, not part of this issue): even with auth fixed, gemini-cli in headless `-p` mode advertises no tool/functionDeclarations, so it does chat but not tool actions — tracked as a comment above and unrelated to the auth isolation delivered here.
+
+--

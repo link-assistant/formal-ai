@@ -1,0 +1,56 @@
+=== ISSUE 651 ===
+
+=== ISSUE 650 ===
+
+=== ISSUE 649 ===
+
+=== ISSUE 557 ===
+
+=== ISSUE 534 ===
+
+=== ISSUE 531 ===
+
+=== ISSUE 491 ===
+
+=== ISSUE 483 ===
+
+=== ISSUE 482 ===
+
+=== ISSUE 453 ===
+
+=== ISSUE 447 ===
+author:	AlexZenoo
+association:	none
+edited:	false
+status:	none
+--
+https://gyazo.com/bbd7e67835a99ba79e551aaef06e01f8
+--
+author:	konard
+association:	member
+edited:	true
+status:	none
+--
+<img width="1728" height="1081" alt="Image" src="https://github.com/user-attachments/assets/d5b660bf-8d0d-4188-b585-12627a71ae97" />
+
+Here is screenshot (not cropped, and all collapsed):
+
+<img width="1278" height="607" alt="Image" src="https://github.com/user-attachments/assets/d172b6c5-9e30-4f21-8c41-a617abf11d3d" />
+
+Double check that our splitter does not conflicts with scrolls inside of left panel, so it possible to scroll them with a mouse.
+
+In safari I cannot reproduce that, so may be it is only on windows and in windows browsers.
+
+--
+author:	konard
+association:	member
+edited:	true
+status:	none
+--
+I think the problem was that user confised our resizer for scroll, may be we can research, how to reduce such probability. May be we can do it like in VS code, where it is a thin line, with no middle handle, which is get colored in blue on dark when hovered and cursor becomes clear horizontal resize (we need to think of better colors to fit).
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+--
+

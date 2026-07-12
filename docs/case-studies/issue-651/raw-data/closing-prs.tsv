@@ -1,0 +1,39 @@
+647	CLOSED	PR#648(merged=true)	formal-ai with: auto-start temp --agent-mode server + disable summarization + temp-config-only + broaden tool coverage (claude/qwen/grok/aider) by default
+628	CLOSED	PR#634(merged=true)	docs: add an agentic CLI tools testing guide (fixtures, logging proxy, phrasing matrices, marker assertions)
+627	CLOSED	PR#633(merged=true)	File reading broken in agent mode: 0/12 read dialogs work (no read-tool routing; filenames parsed as URLs; cat refused while ls works)
+626	CLOSED	PR#630(merged=true)	codex tool-calling broken vs formal-ai: args field 'command' vs 'cmd', /models missing 'slug', non-git-dir hard fail
+625	CLOSED	PR#631(merged=true)	Add a built-in Rust logging reverse proxy (formal-ai proxy) for provenance/routing testing
+624	CLOSED	PR#632(merged=true)	agent-mode: natural-language file-listing requests return 'could not determine' instead of a bash tool_call (4/10 phrasings fail)
+622	CLOSED	PR#636(merged=true)	docs: README overstates gemini/agent/codex with-formal-ai flows
+621	CLOSED	PR#629(merged=true)	with-formal-ai: add support for our own 'agent' CLI (@link-assistant/agent) — it is fully env-configurable
+620	CLOSED	PR#623(merged=true)	with-formal-ai: gemini fails by default (cached OAuth overrides wrapper env; needs api-key auth + workspace trust)
+608	CLOSED	PR#613(merged=true)	Expose reasoning/thinking in standard fields (reasoning_content, Anthropic thinking blocks) + stream it, so thinking-capable CLIs can display it
+607	CLOSED	PR#609(merged=true)	Agent CLI cannot run shell commands (ls) via natural language: server never emits tool_calls for the bash tool
+606	CLOSED	PR#615(merged=true)	with-formal-ai: CLI helper to run/preconfigure codex, opencode, gemini against Formal AI (with -g/--global permanent setup)
+605	CLOSED	PR#611(merged=true)	Model id should be formal-ai (rename): remove user-facing formal-symbolic-production, accept @link-assistant/formal-ai aliases
+604	CLOSED	PR#610(merged=true)	OpenAI Chat Completions streaming is malformed: /v1/chat/completions stream:true sends chat.completion not chat.completion.chunk/delta (breaks opencode & AI SDK clients)
+603	CLOSED	PR#612(merged=true)	Universal multi-protocol API server: support OpenAI, Anthropic, Gemini, and Vertex shapes under /api/<protocol>/ (move OpenAI routes to /api/openai/v1)
+602	CLOSED	PR#614(merged=true)	OpenAI-compatible server cannot be driven by Codex CLI: no SSE streaming on /v1/responses
+571	CLOSED	PR#618(merged=true)	We need to have ability to solve entire class of similar questions by using reasoning and logic in our meta algorithm
+563	CLOSED	PR#564(merged=true)	Support summarization of any file in the repository
+559	CLOSED	PR#560(merged=true)	Generalize meta algorithm
+558	CLOSED	PR#637(merged=true)	Auto learning
+554	CLOSED	PR#555(merged=true)	Make support for VS Code extension more user friendly as well as other interfaces
+552	CLOSED	PR#553(merged=true)	Automated testing scripts/CLI commands
+548	CLOSED	PR#549(merged=true)	Auto update mechanism for Desktop app
+541	CLOSED	PR#542(merged=true)	Missing UI/UX improvements
+540	CLOSED	PR#645(merged=true)	Dreaming
+538	CLOSED	PR#601(merged=true)	Make our meanings and words more detailed
+527	CLOSED	PR#638(merged=true)	Generate all possible questions and answer them
+526	CLOSED	PR#635(merged=true)	Translation quality test
+523	CLOSED	PR#524(merged=true)	Fix all false positives and errors at CI/CD
+520	CLOSED		E8: Upstream feedback to agent-commander + best-practices write-up
+519	CLOSED		E7: Full integration + e2e for the cold-start `ls ~` journey
+518	CLOSED		E6: Render Agent CLI (NDJSON) output into the existing chat UI
+517	CLOSED		E5: Installable Formal-AI container (server + agent + agent-commander) & CLI setup
+516	CLOSED		E4: AgentProvider seam — in-process provider + agent-commander provider
+515	CLOSED		E3: Auto-start the local OpenAI-compatible server for agent mode
+514	CLOSED		E2: Per-tool / per-command permission UI + onboarding message
+513	CLOSED		E1: Terminal-command intent + three-way Mode radio (visible fix for #511)
+511	CLOSED	PR#512(merged=true)	Unknown prompt: Выполни `ls ~` в терминале
+509	CLOSED	PR#590(merged=true)	Надо сделать что бы FormalAI умел работать с историей
