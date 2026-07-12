@@ -12,7 +12,7 @@ use formal_ai::summarization::{
     summarize_repository_resource, DialogTurn, RepositoryEntry, RepositoryResourceFormalization,
     StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
 };
-use formal_ai::{FormalAiEngine, UniversalSolver};
+use formal_ai::FormalAiEngine;
 
 #[test]
 fn summarization_request_summarizes_inline_conversation_content() {
