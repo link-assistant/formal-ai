@@ -407,16 +407,16 @@ fn build_invocation_args(
     } else {
         &invocation.non_interactive_args
     };
-    let rendered_mode_args = if !mode_args
+    let rendered_mode_args = if mode_args
         .iter()
         .any(|mode_arg| user_args.contains(mode_arg))
     {
+        Vec::new()
+    } else {
         mode_args
             .iter()
             .map(|arg| render_template(arg, context))
             .collect::<Vec<_>>()
-    } else {
-        Vec::new()
     };
     if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation) {
         args.splice(0..0, rendered_mode_args.iter().cloned());
