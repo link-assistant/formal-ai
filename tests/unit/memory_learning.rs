@@ -394,6 +394,42 @@ fn multilingual_task_kinds_are_replayed_as_candidates() {
     assert!(candidate.passed, "{}", candidate.simulated_output);
 }
 
+#[test]
+fn hindi_task_kinds_are_replayed_as_candidates() {
+    // Issue #540 §3/§7: the same lexicon-grounded gating must hold for Hindi —
+    // a run recorded with the Hindi kind "परीक्षण" (test) is replayed as a
+    // candidate exactly like English and Russian kinds.
+    let rule = "हमेशा परिणाम की जाँच जोड़ें।";
+    let output = replay_answer_with_amendments(
+        "आगमन द्वारा प्रमाण हल करें",
+        &[RetainedAmendment {
+            id: String::from("hi-amendment"),
+            topic: String::from("प्रमाण"),
+            rule: String::from(rule),
+        }],
+    );
+    let events = vec![
+        requirement_event("req-hi", "प्रमाण", rule),
+        MemoryEvent {
+            id: String::from("run-hi"),
+            kind: Some(String::from("परीक्षण")),
+            role: Some(String::from("assistant")),
+            inputs: Some(String::from("आगमन द्वारा प्रमाण हल करें")),
+            outputs: Some(output),
+            conversation_title: Some(String::from("प्रमाण")),
+            ..MemoryEvent::default()
+        },
+    ];
+
+    let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+    let candidate = plan
+        .candidate_tasks
+        .iter()
+        .find(|candidate| candidate.source_event_id == "run-hi")
+        .expect("Hindi-kind run must be replayed as a candidate");
+    assert!(candidate.passed, "{}", candidate.simulated_output);
+}
+
 fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
     MemoryEvent {
         id: String::from(id),
