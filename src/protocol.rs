@@ -4,7 +4,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
-use crate::dreaming_application::{amended_answer, apply_retained_amendments};
+use crate::dreaming_application::{
+    amended_answer, apply_retained_amendments, solve_with_standing_requirements,
+};
 use crate::engine::{
     estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
 };
@@ -594,13 +596,19 @@ pub fn create_chat_completion_with_solver_and_memory(
         AgenticOutcome::Fallthrough => {}
     }
 
-    if let Some(symbolic_answer) = answer_from_memory_if_requested(&prompt, &history, memory_events)
+    if let Some(mut symbolic_answer) =
+        answer_from_memory_if_requested(&prompt, &history, memory_events)
     {
+        // Memory-recall answers honour standing requirements too — recall must
+        // not become a side door around retained learning.
+        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
     }
 
-    let mut symbolic_answer = solver.solve_with_history(&prompt, &history);
-    apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
+    // Standing requirements are injected into the solving context itself (as if
+    // the user restated them), not appended after the fact.
+    let symbolic_answer =
+        solve_with_standing_requirements(solver, &prompt, &history, memory_events);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -801,13 +809,13 @@ pub fn create_response_with_solver_and_memory(
     } else {
         memory_prompt.as_str()
     };
-    if let Some(symbolic_answer) =
+    if let Some(mut symbolic_answer) =
         answer_from_memory_if_requested(memory_prompt, &history, memory_events)
     {
+        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
     }
-    let mut symbolic_answer = solver.solve(&prompt);
-    apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
+    let symbolic_answer = solve_with_standing_requirements(solver, &prompt, &[], memory_events);
     response_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -939,6 +947,38 @@ fn response_reasoning_item(
             text,
         }],
     }))
+}
+
+/// The `(prompt, answer)` pair of a completed chat exchange, if any.
+///
+/// The HTTP server uses this to record live usage into the shared memory log
+/// (issue #540) so dreaming learns from real traffic, not only imported
+/// bundles. Tool-call turns (no textual answer) yield `None`.
+#[must_use]
+pub fn chat_exchange_to_record(
+    request: &ChatCompletionRequest,
+    completion: &ChatCompletion,
+) -> Option<(String, String)> {
+    let (prompt, _) = chat_prompt_and_history(&request.messages);
+    let answer = completion.choices.first()?.message.content.plain_text();
+    (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))
+}
+
+/// Responses-surface counterpart of [`chat_exchange_to_record`].
+#[must_use]
+pub fn responses_exchange_to_record(
+    request: &ResponsesRequest,
+    response: &ResponseObject,
+) -> Option<(String, String)> {
+    let prompt = response_prompt(request);
+    let answer = response
+        .output_messages()
+        .iter()
+        .flat_map(|message| message.content.iter())
+        .map(|content| content.text.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))
 }
 
 fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
