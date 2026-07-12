@@ -133,11 +133,35 @@ pub fn execute_memory_query(
         });
     }
     answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
-        MemoryQueryExecution {
-            answer,
-            changed: false,
-        }
+        // Issue #494: usage is counted on read access — every store event the
+        // recall actually read gets its access count bumped, and the caller
+        // persists the store so dreaming sees frequently-read data as used.
+        let accessed =
+            recalled_event_indices(&normalized, store.events(), current_conversation_id, prompt);
+        let changed = store.record_access(&accessed) > 0;
+        MemoryQueryExecution { answer, changed }
     })
+}
+
+/// Indices of the store events a recall for this prompt reads.
+fn recalled_event_indices(
+    normalized: &str,
+    events: &[MemoryEvent],
+    current_conversation_id: Option<&str>,
+    prompt: &str,
+) -> Vec<usize> {
+    let Some(query) = recognize_recall_query(normalized) else {
+        return Vec::new();
+    };
+    let mut indices: Vec<usize> =
+        memory_recall_matches(events, &query, current_conversation_id, prompt)
+            .iter()
+            // `event_index` is 1-based for display; the store slice is 0-based.
+            .map(|matched| matched.event_index.saturating_sub(1))
+            .collect();
+    indices.sort_unstable();
+    indices.dedup();
+    indices
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {

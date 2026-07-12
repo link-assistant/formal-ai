@@ -423,3 +423,80 @@ Because this recipe is checked against the source too, the market-price fact
 check and its recipe can never silently diverge — catching false numeric claims
 is itself a reproducible, data-driven artifact of the meta-algorithm that scales
 to the whole class of assets, periods, and languages by editing seed data alone.
+
+## The dreaming meta-algorithm (issue #540)
+
+The same grounded-recipe discipline records a sixth meta-algorithm, this time
+turned **inward**: the low-priority **dreaming** planner that maintains memory
+and lets Formal AI *change its own meta-algorithm* from stored experience. Issue
+#540 asked that, while idle and never blocking the UI, the assistant restructure
+deduplication by recalculated frequency of use, keep roughly a 20% free-space
+reserve (issue #494) by forgetting only recomputable/refetchable data, and —
+crucially — *learn more about the topics the user interacts with*, remember the
+requirements the user has stated so he never has to repeat himself, and
+**generalize** them so "when we solve similar tasks to previous tasks … new
+user's requirements are baked in", after which "if we don't have enough space we
+can forget specifics about test runs, but our general meta algorithm must keep
+changes that allow it to solve all other tasks." Its recipe lives at
+[`data/meta/dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) and is
+grounded by
+[`tests/unit/specification/dreaming_meta_algorithm.rs`](../tests/unit/specification/dreaming_meta_algorithm.rs).
+
+The planner starts as one pure function, `plan_memory_dreaming`, in
+[`src/dreaming.rs`](../src/dreaming.rs): it only reads memory and proposes work,
+so planning is safe in the background. Learning follows memory links:
+multilingual cue data lifts requirements, candidate tasks are replayed against
+proposed amendments, and recurring structures are mined directly from repeated
+task records. Only exact normalized replay grants coverage. Applied amendments
+are stored as structured `meta_algorithm_amendment` events and read by
+`src/dreaming_application.rs` on later protocol requests, which makes learned
+rules change future answers. Physical removal additionally requires persisted
+consent and real filesystem pressure measured by `src/storage_policy.rs`.
+
+### The thirteen steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+add any *dream about stored experience* behaviour:
+
+1. **Classify every event by durability** into one `DreamingDurability`, so
+   recomputability is known and raw experience and learning are protected.
+2. **Recalculate how often each event is actually used**, driving deduplication
+   and eviction by recalculated frequency of use.
+3. **Restructure recomputable duplicates** around the most-reused copy.
+4. **Recalculate which topics the user interacts with most** into ranked
+   `TopicFrequency` records.
+5. **Recover durable requirements from multilingual cue data** into
+   `LearnedRequirement` records.
+6. **Propose a meta-algorithm amendment** for each learned requirement.
+7. **Derive and replay candidate tasks**, granting coverage only on a matching
+   recorded output.
+8. **Mine recurring task structures** independently of requirement cue words.
+9. **Apply retained amendments to later similar tasks** through both
+   OpenAI-compatible protocol surfaces.
+10. **Measure real storage and actual incoming bytes** on the memory filesystem.
+11. **Reclaim toward the 20% reserve** only from recomputable links.
+12. **Forget replay-verified specifics** with
+    `DreamingActionKind::ForgetCoveredSpecific`, retaining amendments and
+    patterns.
+13. **Run while truly idle**, yielding to foreground work and requiring a
+    persisted user choice before automatic cleanup.
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering is contiguous from 1; each has a `detail` and an existing `source_file` |
+| `meta_function` | `fn <name>` in the named source file |
+| `meta_constant` | the token present in the named source file, with a stated purpose |
+| `meta_test` | the pinning test file exists and describes what it pins |
+
+### Running it
+
+```sh
+# Verify the dreaming recipe still matches the live source:
+cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the dreaming planner and
+its recipe cannot silently diverge: replay, application, storage, consent, and
+runtime stages are all pinned to the live code.

@@ -261,7 +261,7 @@ impl SubstitutionRuleSet {
     }
 }
 
-/// In-memory graph that applies substitution rules over concrete links.
+/// In-memory links network that applies substitution rules over concrete links.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct SubstitutionGraph {
     links: BTreeSet<SubstitutionLink>,

@@ -16,6 +16,9 @@ pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod cue_lexicon;
 pub mod document_formats;
+pub mod dreaming;
+pub mod dreaming_application;
+pub mod dreaming_runtime;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -85,6 +88,7 @@ pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
 pub mod statement_verification;
+pub mod storage_policy;
 pub mod substitution;
 pub mod summarization;
 pub mod telegram;
@@ -117,6 +121,20 @@ pub use document_formats::{
     document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
     supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
     DOCUMENT_FORMAT_ENGINE,
+};
+pub use dreaming::{
+    apply_dreaming_plan, compose_recipe_with_amendments, plan_memory_dreaming,
+    render_dreaming_plan, DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,
+    DreamingEventObservation, DreamingOutcome, DreamingPlan, DreamingSynthesizedTask,
+    LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
+};
+pub use dreaming_application::{
+    amended_answer, apply_retained_amendments, replay_answer_with_amendments, retained_amendments,
+    solve_with_amendment_records, solve_with_standing_requirements, topic_matches,
+    RetainedAmendment,
+};
+pub use dreaming_runtime::{
+    core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
 };
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
@@ -164,8 +182,8 @@ pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
-    ParsedBundle,
+    seed_cache_events, suggest_migrations as suggest_memory_migrations, write_locked_atomic,
+    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
@@ -240,6 +258,11 @@ pub use solver_helpers::humanize_url;
 pub use statement_verification::{
     assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
     MarketPriceClaim,
+};
+pub use storage_policy::{
+    apply_auto_free_space_for_write, apply_auto_free_space_with_snapshot, auto_free_space_choice,
+    auto_free_space_enabled, auto_free_space_preference_path, measure_storage,
+    persist_auto_free_space_choice, plan_for_real_storage, AutoFreeSpaceChoice, StorageSnapshot,
 };
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,

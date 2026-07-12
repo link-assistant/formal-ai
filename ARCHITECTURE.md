@@ -222,7 +222,59 @@ User-facing surfaces guard these operations with an export-first path and an
 irreversible confirmation, while the CLI requires `--confirm` and can write a
 full-bundle `--backup` before modifying the memory file.
 
-### 4.2 Default native doublets-rs / doublets-web store
+### 4.2 Dreaming maintenance planner
+
+Issue #540 adds `src/dreaming.rs`, a default-on, low-priority maintenance
+planner over the same `MemoryEvent` projection. Dreaming reads memory and emits
+an inspectable plan; it does not mutate memory unless the caller explicitly
+uses `formal-ai memory dream --apply --confirm`, with the same optional
+full-bundle `--backup` as reset and purge-deleted.
+
+The planner classifies events into five `DreamingDurability` classes:
+
+- `IrreplaceableRaw` for raw user/assistant/system experience;
+- `RetainedLearning` for learning ledgers, promoted lessons, generalized
+  algorithms, and baked-in meta-algorithm amendments;
+- `DeletedConversation` for data already attached to a soft-deleted thread;
+- `RecomputableCache` for public-source cache and fetch/tool output;
+- `RecomputableIntermediate` for derived summaries and conclusions.
+
+Only deleted conversation data, recomputable cache data, and recomputable
+intermediate data are reclaimable. Duplicate cleanup is limited to the
+recomputable classes and recalculates usage by scanning current event text and
+evidence links before deciding which duplicate to keep. Under storage pressure,
+`DreamingConfig` targets a 20% free-space reserve by default, subtracts the
+next known `incoming_bytes`, and selects the lowest-use reclaimable records
+first. If reclaimable records cannot satisfy the target, the plan reports
+`requires_bigger_storage` instead of selecting raw or learned experience.
+
+Dreaming also *learns from memory links and generalizes*. `event_topic` ranks
+frequent topics, `requirement_statement` reads multilingual cues from
+`data/meta/dreaming-cues.lino`, and `mine_patterns` derives recurring task
+structures directly from records. Proposed `MetaAlgorithmAmendment` values are
+replayed against discovered candidate tasks; only an exact normalized replay
+may mark a specific as covered. Applied amendments are retained as structured
+`meta_algorithm_amendment` events, and `src/dreaming_application.rs` reads those
+events on later OpenAI-compatible requests so the learned rule changes similar
+future answers without being repeated. Under pressure, only replay-verified
+specifics can be forgotten via `ForgetCoveredSpecific`.
+
+`src/storage_policy.rs` measures actual filesystem capacity/free bytes and the
+next incoming write. Automatic removal requires a persisted `.auto-free-space`
+choice; both CLI and Electron can ask, and Electron warns when larger storage is
+still required. `src/dreaming_runtime.rs` runs the same learning loop in the
+core server, guarded by foreground activity, while Electron additionally uses
+system-idle detection and lowest practical cross-platform process priority.
+The thirteen-stage recipe in `data/meta/dreaming-recipe.lino` is pinned to all
+of these live source modules.
+
+The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
+plan-only background task. It waits before its first run, repeats infrequently,
+unrefs timers/processes, and wraps the CLI with `nice -n 19` on Unix-like
+platforms. Operators can disable that scheduler with
+`FORMAL_AI_DESKTOP_DREAMING=off`.
+
+### 4.3 Default native doublets-rs / doublets-web store
 
 Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes
@@ -267,7 +319,7 @@ Implemented migration surface:
 6. Keep the browser IndexedDB/doublets-web mirror on the same projection
    contract.
 
-### 4.3 Public-knowledge cache
+### 4.4 Public-knowledge cache
 
 When the local memory does not contain enough evidence to satisfy a prompt,
 the solver follows the **source cache protocol** (see

@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
+use crate::dreaming_application::{
+    amended_answer, apply_retained_amendments, solve_with_standing_requirements,
+};
 use crate::engine::{
     estimate_tokens, render_thinking_steps, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep,
 };
@@ -15,7 +18,11 @@ use crate::protocol_policy::{
     tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
-use crate::solver::{ConversationTurn, UniversalSolver};
+use crate::solver::UniversalSolver;
+
+mod recording;
+pub use recording::{chat_exchange_to_record, responses_exchange_to_record};
+use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
@@ -587,16 +594,25 @@ pub fn create_chat_completion_with_solver_and_memory(
         AgenticOutcome::Refused(answer) => {
             return chat_completion_from_symbolic(request, &prompt, answer)
         }
-        AgenticOutcome::Planned(plan) => return chat_completion_from_plan(request, &prompt, plan),
+        AgenticOutcome::Planned(plan) => {
+            return chat_completion_from_plan(request, &prompt, plan, memory_events)
+        }
         AgenticOutcome::Fallthrough => {}
     }
 
-    if let Some(symbolic_answer) = answer_from_memory_if_requested(&prompt, &history, memory_events)
+    if let Some(mut symbolic_answer) =
+        answer_from_memory_if_requested(&prompt, &history, memory_events)
     {
+        // Memory-recall answers honour standing requirements too — recall must
+        // not become a side door around retained learning.
+        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return chat_completion_from_symbolic(request, &prompt, symbolic_answer);
     }
 
-    let symbolic_answer = solver.solve_with_history(&prompt, &history);
+    // Standing requirements are injected into the solving context itself (as if
+    // the user restated them), not appended after the fact.
+    let symbolic_answer =
+        solve_with_standing_requirements(solver, &prompt, &history, memory_events);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -672,6 +688,7 @@ fn chat_completion_from_plan(
     request: &ChatCompletionRequest,
     prompt: &str,
     plan: AgenticPlan,
+    memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = estimate_tokens(prompt);
@@ -699,6 +716,7 @@ fn chat_completion_from_plan(
             )
         }
         AgenticPlan::Final(answer) => {
+            let answer = amended_answer(prompt, &answer, memory_events);
             let completion_tokens = estimate_tokens(&answer);
             (
                 ChatMessage::assistant(answer),
@@ -784,7 +802,9 @@ pub fn create_response_with_solver_and_memory(
     let chat_request = request.to_chat_completion_request();
     match agentic_outcome(&chat_request, solver.config.agent_mode) {
         AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
-        AgenticOutcome::Planned(plan) => return response_from_plan(request, &prompt, plan),
+        AgenticOutcome::Planned(plan) => {
+            return response_from_plan(request, &prompt, plan, memory_events)
+        }
         AgenticOutcome::Fallthrough => {}
     }
     let (memory_prompt, history) = chat_prompt_and_history(&chat_request.messages);
@@ -793,12 +813,13 @@ pub fn create_response_with_solver_and_memory(
     } else {
         memory_prompt.as_str()
     };
-    if let Some(symbolic_answer) =
+    if let Some(mut symbolic_answer) =
         answer_from_memory_if_requested(memory_prompt, &history, memory_events)
     {
+        apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
     }
-    let symbolic_answer = solver.solve(&prompt);
+    let symbolic_answer = solve_with_standing_requirements(solver, &prompt, &[], memory_events);
     response_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -810,6 +831,7 @@ fn response_from_plan(
     request: &ResponsesRequest,
     prompt: &str,
     plan: AgenticPlan,
+    memory_events: &[MemoryEvent],
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = estimate_tokens(prompt);
@@ -839,6 +861,7 @@ fn response_from_plan(
             (items, output_tokens)
         }
         AgenticPlan::Final(answer) => {
+            let answer = amended_answer(prompt, &answer, memory_events);
             let output_tokens = estimate_tokens(&answer);
             let message = ResponseOutputItem::Message(ResponseOutputMessage {
                 id: stable_id("msg", &answer),
@@ -928,61 +951,4 @@ fn response_reasoning_item(
             text,
         }],
     }))
-}
-
-fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
-    let Some(latest_user_index) = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-    else {
-        return (String::new(), Vec::new());
-    };
-
-    let prompt = messages[latest_user_index].content.plain_text();
-    let history = messages[..latest_user_index]
-        .iter()
-        .filter_map(chat_message_to_turn)
-        .collect();
-    (prompt, history)
-}
-
-fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
-    let content = message.content.plain_text();
-    if content.trim().is_empty() {
-        return None;
-    }
-    if message.role.eq_ignore_ascii_case("user") {
-        return Some(ConversationTurn::user(content));
-    }
-    if message.role.eq_ignore_ascii_case("assistant") {
-        return Some(ConversationTurn::assistant(content));
-    }
-    None
-}
-
-fn response_prompt(request: &ResponsesRequest) -> String {
-    let input = value_to_prompt_text(&request.input);
-    match request.instructions.as_deref() {
-        Some(instructions) if !instructions.trim().is_empty() => {
-            format!("{}\n{}", instructions.trim(), input.trim())
-        }
-        _ => input,
-    }
-}
-
-fn value_to_prompt_text(value: &Value) -> String {
-    match value {
-        Value::String(text) => text.clone(),
-        Value::Array(items) => items
-            .iter()
-            .map(value_to_prompt_text)
-            .filter(|text| !text.trim().is_empty())
-            .collect::<Vec<_>>()
-            .join("\n"),
-        Value::Object(object) => object
-            .get("content")
-            .or_else(|| object.get("text"))
-            .map_or_else(String::new, value_to_prompt_text),
-        _ => String::new(),
-    }
 }

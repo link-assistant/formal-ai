@@ -593,6 +593,9 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
+cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
+cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
 cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
 cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
 cargo run -- bundle export --path bundle.lino --memory memory.lino
@@ -607,6 +610,24 @@ browser actions show an export-first prompt and then an irreversible
 confirmation prompt. The CLI refuses both destructive commands unless
 `--confirm` is present, and `--backup` writes a full `formal_ai_bundle` before
 the memory file is changed.
+
+`memory dream` is the default-on background maintenance planner from issue
+#540. It follows memory links, recalculates cached/seed usage, proposes duplicate
+recomputable cleanup, and measures the real filesystem to target a 20%
+free-space reserve including the next incoming write. Dreaming also learns while
+the core server or desktop is idle: it ranks frequent topics, reads multilingual
+standing-requirement cues from data, derives candidate tasks, replays proposed
+meta-algorithm amendments, and mines recurring task structures.
+Only a passing replay may mark a specific test run as covered. Retained amendments are
+read by
+later chat and Responses requests, so similar future answers apply the learned
+rule without the user repeating it.
+
+The manual CLI remains plan-only unless `--apply --confirm` is supplied. The
+default background runtime may retain amendments and patterns, but it never
+removes links without a persisted auto-free-space choice. CLI/Electron prompts
+persist acceptance or refusal, free only enough recomputable data for the next
+operation, and recommend larger storage when the reserve cannot be met.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 

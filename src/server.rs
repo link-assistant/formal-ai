@@ -19,8 +19,9 @@ use crate::gemini::{
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
-    create_chat_completion_with_solver_and_memory, create_response_with_solver_and_memory,
-    ChatCompletion, ChatCompletionRequest, ResponsesRequest,
+    chat_exchange_to_record, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, responses_exchange_to_record, ChatCompletion,
+    ChatCompletionRequest, ResponsesRequest,
 };
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
@@ -92,6 +93,18 @@ pub fn handle_api_request_with_headers(
     handle_api_request_with_auth(method, path, headers, body, &ApiAuthConfig::from_env())
 }
 
+/// Record a live chat exchange into the shared memory log (issue #540), never
+/// failing the request over it: a write error is logged and swallowed so the
+/// answer still reaches the client.
+fn record_exchange_best_effort(store: &mut SyncStore, exchange: Option<(String, String)>) {
+    let Some((prompt, answer)) = exchange else {
+        return;
+    };
+    if let Err(error) = store.record_chat_exchange(&prompt, &answer) {
+        eprintln!("[memory] failed to record live chat exchange: {error}");
+    }
+}
+
 /// Dump every inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
 ///
 /// Off by default so production output stays quiet; flip the env var on when
@@ -112,6 +125,7 @@ pub fn handle_api_request_with_auth(
     body: &str,
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
+    let _foreground_activity = crate::dreaming_runtime::ForegroundActivity::begin();
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
 
@@ -168,28 +182,23 @@ pub fn handle_api_request_with_auth(
                         return response;
                     }
                     let solver = http_solver();
-                    let store = SyncStore::open();
+                    let mut store = SyncStore::open();
+                    let completion = create_chat_completion_with_solver_and_memory(
+                        &request,
+                        &solver,
+                        store.events(),
+                    );
+                    record_exchange_best_effort(
+                        &mut store,
+                        chat_exchange_to_record(&request, &completion),
+                    );
                     if request.stream {
                         let include_usage = request
                             .stream_options
                             .is_some_and(|options| options.include_usage);
-                        chat_completion_sse_response(
-                            &create_chat_completion_with_solver_and_memory(
-                                &request,
-                                &solver,
-                                store.events(),
-                            ),
-                            include_usage,
-                        )
+                        chat_completion_sse_response(&completion, include_usage)
                     } else {
-                        json_response(
-                            200,
-                            &create_chat_completion_with_solver_and_memory(
-                                &request,
-                                &solver,
-                                store.events(),
-                            ),
-                        )
+                        json_response(200, &completion)
                     }
                 }
                 Err(error) => error_response(400, &format!("invalid chat request: {error}")),
@@ -202,9 +211,13 @@ pub fn handle_api_request_with_auth(
                         return response;
                     }
                     let solver = http_solver();
-                    let store = SyncStore::open();
+                    let mut store = SyncStore::open();
                     let response =
                         create_response_with_solver_and_memory(&request, &solver, store.events());
+                    record_exchange_best_effort(
+                        &mut store,
+                        responses_exchange_to_record(&request, &response),
+                    );
                     if request.stream {
                         responses_sse_response(&response)
                     } else {
@@ -727,6 +740,7 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
 }
 
 pub fn serve(address: &str) -> std::io::Result<()> {
+    crate::dreaming_runtime::start_core_dreaming();
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 

@@ -30,6 +30,7 @@ use serde_json::json;
 
 use super::change_request;
 use super::diagram;
+use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -139,6 +140,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // guards against a request that names both.
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
+    }
+    if dreaming_audit::is_dreaming_audit_task(&task) {
+        return Some(plan_dreaming_audit_step(messages, tool_names));
     }
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
@@ -608,6 +612,21 @@ fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> 
         DocumentRecipe {
             path: question_catalog::QUESTION_CATALOG_PATH,
             verify_command: format!("cat {}", question_catalog::QUESTION_CATALOG_PATH),
+            final_answer,
+            document,
+        },
+    )
+}
+
+fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = dreaming_audit::render_document();
+    let final_answer = dreaming_audit::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: dreaming_audit::DREAMING_AUDIT_PATH,
+            verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
             final_answer,
             document,
         },

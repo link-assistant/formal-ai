@@ -97,6 +97,9 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
             incoming.conversation_title.as_ref(),
         ),
         evidence,
+        // Access counts are monotone per event; the larger side has seen more
+        // reads, so max is the lossless merge.
+        access_count: base.access_count.max(incoming.access_count),
     }
 }
 
@@ -111,6 +114,15 @@ pub fn configured_memory_path() -> Option<PathBuf> {
         .map(|value| value.trim().to_owned())
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
+}
+
+/// Live chat exchanges are recorded into memory unless explicitly disabled.
+#[must_use]
+pub fn chat_recording_enabled() -> bool {
+    !matches!(
+        std::env::var("FORMAL_AI_RECORD_CHAT").as_deref(),
+        Ok("0" | "false" | "off")
+    )
 }
 
 /// A small file-backed event log used by the HTTP sync endpoints.
@@ -171,7 +183,59 @@ impl SyncStore {
         let before = self.events.len();
         self.events = merge_union_by_id(&self.events, &incoming);
         let added = self.events.len() - before;
+        if let Some(path) = self.path.as_deref() {
+            let mut memory =
+                crate::memory::MemoryStore::from_events(std::mem::take(&mut self.events));
+            let _ = crate::storage_policy::apply_auto_free_space_for_write(
+                &mut memory,
+                path,
+                u64::try_from(text.len()).unwrap_or(u64::MAX),
+            )?;
+            self.events = memory.events().to_vec();
+        }
         self.persist()?;
+        Ok(added)
+    }
+
+    /// Record one live chat exchange into the shared memory log (issue #540's
+    /// live-usage loop): the user turn becomes a `message` event that
+    /// requirement learning can lift, and the assistant turn becomes a `task`
+    /// event with the exact input/output pair dreaming can replay and
+    /// generalize. Ids are stable over (prompt, answer), so retries do not
+    /// duplicate. Set `FORMAL_AI_RECORD_CHAT=0` to opt out.
+    ///
+    /// # Errors
+    /// Returns an [`std::io::Error`] when the backing file cannot be written.
+    pub fn record_chat_exchange(&mut self, prompt: &str, answer: &str) -> std::io::Result<usize> {
+        if self.path.is_none() || !chat_recording_enabled() {
+            return Ok(0);
+        }
+        let seed = format!("{prompt}\0{answer}");
+        let recorded = vec![
+            MemoryEvent {
+                id: crate::engine::stable_id("chat_user", &seed),
+                kind: Some(String::from("message")),
+                role: Some(String::from("user")),
+                content: Some(prompt.to_owned()),
+                ..MemoryEvent::default()
+            },
+            MemoryEvent {
+                id: crate::engine::stable_id("chat_task", &seed),
+                kind: Some(String::from("task")),
+                role: Some(String::from("assistant")),
+                intent: Some(String::from("solve")),
+                inputs: Some(prompt.to_owned()),
+                outputs: Some(answer.to_owned()),
+                evidence: vec![crate::engine::stable_id("chat_user", &seed)],
+                ..MemoryEvent::default()
+            },
+        ];
+        let before = self.events.len();
+        self.events = merge_union_by_id(&self.events, &recorded);
+        let added = self.events.len() - before;
+        if added > 0 {
+            self.persist()?;
+        }
         Ok(added)
     }
 
@@ -179,11 +243,8 @@ impl SyncStore {
         let Some(path) = self.path.as_ref() else {
             return Ok(());
         };
-        if let Some(parent) = path.parent() {
-            if !parent.as_os_str().is_empty() {
-                std::fs::create_dir_all(parent)?;
-            }
-        }
-        std::fs::write(path, self.to_links_notation())
+        // Locked atomic write (issue #540 §6): the HTTP handlers and the
+        // background dreaming thread share this log.
+        crate::memory::write_locked_atomic(path, &self.to_links_notation())
     }
 }
