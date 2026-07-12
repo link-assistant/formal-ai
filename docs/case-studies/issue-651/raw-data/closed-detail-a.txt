@@ -1,0 +1,1026 @@
+=========== ISSUE 647 ===========
+TITLE: formal-ai with: auto-start temp --agent-mode server + disable summarization + temp-config-only + broaden tool coverage (claude/qwen/grok/aider) by default
+CLOSED: 2026-07-12T14:49:32Z
+BODY:
+## Summary
+
+Follow-up to #606 (the `with-formal-ai` / `formal-ai with` helper) and #515 (auto-start for desktop agent mode). The wrapper now exists and works, but making it a genuine **single-line, zero-config** entry point for every popular agent CLI needs four refinements. This issue tracks them together so `formal-ai with <tool> -p "hi"` "just works" by default, safely, for all supported tools.
+
+Verified against `formal-ai 0.276.0` (installed via `cargo install formal-ai`, ships `formal-ai` + `with-formal-ai`).
+
+## Current behavior (verified)
+
+Running `formal-ai with agent -p "hi"` today:
+
+1. Auto-generates the correct `formalai/formal-ai` provider config pointing at `http://127.0.0.1:8080/api/openai/v1`. ✅
+2. **Does not start a server** unless `--start-server` is passed. With nothing listening, the run fails with `ProviderModelNotFoundError` + `UnknownError: "Unable to connect. Is the computer able to access the url?"`.
+3. Even with a server up, if it was started **without `--agent-mode`**, the model replies with a canned refusal instead of answering:
+   > `"Tool calls and function execution are not allowed without explicit agent mode. Enable agent mode only for an isolated execution environment."`
+   Starting the server with `formal-ai serve --agent-mode` fixes it — `hi` → `"Hi, how may I help you?"`.
+4. The wrapped `agent` CLI runs **session summarization / context compaction** anyway (log shows `session.summary → "loading model for summarization"` using `opencode/big-pickle`), despite formal-ai having effectively unbounded context. This is wasted work and pulls in an unrelated remote compaction model.
+
+`formal-ai with --help` confirms the current tool set is **`codex`, `opencode`, `gemini`, `agent`** only, and `--start-server` is opt-in with no way to pass `--agent-mode` to the server it spawns.
+
+## Requested changes
+
+### 1. Auto-start a temporary server by default (with `--agent-mode`)
+
+`formal-ai with <tool>` should, when the target loopback port is **not** already listening, transparently start a temporary `formal-ai serve` for the duration of the run and tear it down on exit — **without** requiring `--start-server`. If a server is already listening (globally started by the user), reuse it and do **not** double-start (same reuse rule as #515).
+
+Crucially, the auto-started server must run with **`--agent-mode`**, because every tool driven through `with` *is* an agentic client — otherwise the very first turn returns the "tool calls not allowed" refusal (see current behavior #3).
+
+- Keep `--start-server` as an explicit override, and add a `--no-start-server` to opt out of the new default.
+- If auto-start enables `--agent-mode`, print a one-line notice (it grants shell/tool execution — the model's own refusal text warns it's for isolated environments).
+
+### 2. Disable summarization / compaction by default when wrapping
+
+Formal AI is deterministic and not bounded by a neural context window, so session summarization and context compaction are pure overhead — and they drag in an unrelated remote compaction model (`opencode/big-pickle` by default). When `with` launches a tool that supports it, it should pass the tool's "no summarization / no compaction" flags by default.
+
+For our own `agent` CLI the flag exists: **`--no-summarize-session`** (and the compaction cascade could be pinned to `same` / disabled). Other tools have their own equivalents where applicable.
+
+- Add a `--summarize` / `--keep-summarization` escape hatch to restore the tool's default if a user wants it.
+
+### 3. Temporary config only — never override any tool's global config (all tools)
+
+#606 already promises temp-config "for tools that only read config files (opencode)." This should be an **invariant for every tool**, not just opencode: a **non-global** `formal-ai with <tool>` run must **never** mutate the user's persistent config (`~/.codex/config.toml`, `~/.config/opencode/opencode.json`, `~/.config/link-assistant-agent/*.json`, `~/.gemini/settings.json`, shell profiles, etc.). Only `-g`/`--global` may write persistent config (backed up + `--undo`, per #606).
+
+- Use temp config files + per-invocation env (e.g. tool-specific config-path env vars) so the real config is untouched.
+- **Acceptance test:** checksum every candidate global config file before and after a non-global `formal-ai with <tool> -p "hi"` run; assert **zero** changes for every supported tool.
+
+### 4. Broaden tool coverage so `with` is one line for all popular CLIs
+
+Today only `codex`, `opencode`, `gemini`, `agent` are in the seed registry. To make `formal-ai with` a universal front door, add seed-data integrations (per #606's "tool templates are seed data, not hardcoded" principle) for:
+
+- **`claude`** (Anthropic Messages via `/api/anthropic`) — already tracked internally as Issue #347 / R4; land it here.
+- **`qwen`** (Qwen Code CLI).
+- **`grok`** (xAI **grok build** CLI).
+- **`aider`** — needs investigation: aider targets an OpenAI-compatible base URL via env (`OPENAI_API_BASE` / `--openai-api-base`), so it likely fits the OpenAI protocol path, but it is not a JSON/agentic-protocol CLI like the others; confirm whether it belongs in `with` or is better documented as a plain `OPENAI_API_BASE=…` recipe.
+
+Each new tool should satisfy the same acceptance criteria as #606 (ephemeral run works with zero manual config; `-g` configures/undoes; temp-config-only for non-global).
+
+## Acceptance criteria
+
+- [ ] `formal-ai with <tool> -p "hi"` prints a Formal AI reply with **no** `--start-server` and **no** pre-started server, auto-starting a temporary `--agent-mode` server and tearing it down on exit.
+- [ ] An already-listening server is reused, not double-started; `--no-start-server` opts out.
+- [ ] Summarization/compaction is disabled by defau
+--- COMMENTS ---
+
+=========== ISSUE 628 ===========
+TITLE: docs: add an agentic CLI tools testing guide (fixtures, logging proxy, phrasing matrices, marker assertions)
+CLOSED: 2026-07-04T12:07:53Z
+BODY:
+## Summary
+
+Add a documented guide — e.g. `docs/testing/agentic-cli-tools.md` — describing how to test external agentic CLIs (codex, opencode, gemini, and our own `agent`) against a local Formal AI server. This session produced a repeatable methodology (fixtures, a logging proxy for provenance, phrasing matrices, marker-based assertions) that found a series of real bugs (#620, #621, #622, #624, #626, #627). Capturing it as a guide preserves that know-how and gives contributors a runbook for reproducing/extending the checks. It also seeds the concrete e2e suite proposed in #625.
+
+## Why
+
+Agent-mode behavior is easy to get wrong in ways plain unit tests miss: a request returns HTTP 200 but the model never emits the tool-call, or emits it in a schema the client can't parse, or a filename is misread as a URL. The only reliable way to catch these is to drive the real CLIs end-to-end and assert on observed behavior — with a way to *prove* the answer came from our server. That workflow should be written down.
+
+## Proposed guide outline
+
+### 1. Setup
+- Build wrapper + server: `cargo build --bin with-formal-ai --bin formal-ai`.
+- Install/update the client CLIs the same way they ship (bun global): `bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest`. Note pinning versions for reproducible CI.
+- Start the server in agent mode: `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
+
+### 2. Per-CLI invocation cheatsheet (what "just works" vs. what needs flags)
+- **opencode**: `with-formal-ai opencode run "<prompt>"` (clean).
+- **agent** (ours): OpenAI-compatible; configure via env only with `LINK_ASSISTANT_AGENT_CONFIG_CONTENT` (inline OpenCode-shaped provider JSON) + `FORMAL_AI_API_KEY`; run `agent --model formalai/formal-ai --permission-mode auto -p "<prompt>"`. (Wrapper support tracked in #621.)
+- **codex**: uses the Responses wire API; needs `--skip-git-repo-check` to run outside a git repo; known tool-arg mismatch (#626).
+- **gemini**: needs `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key`, `GEMINI_CLI_TRUST_WORKSPACE=true`, and isolation from `~/.gemini` cached OAuth (#620); headless `-p` sends no tool declarations.
+- Redirect stdin from `/dev/null` for non-interactive runs; strip ANSI when scraping output.
+
+### 3. Provenance via a logging proxy
+- Put a logging reverse proxy between the CLI and the server and point the CLI at it with `with-formal-ai --base-url http://127.0.0.1:<proxyport>`.
+- Assert every model call carried `model=formal-ai` (so no client-side model answered), and log per request: path, tools offered, tool-calls returned (name + arguments), status.
+- Cover all three protocol paths: OpenAI `chat/completions` (opencode, agent), OpenAI `responses` (codex), Gemini `streamGenerateContent` (gemini) — including streamed SSE bodies. (A native Rust proxy is proposed in #625; until then a throwaway script works but shouldn't live in the repo.)
+
+### 4. Fixtures and marker-based assertions
+- Create a fixture workspace with known files and **distinctive content markers**, e.g. `alpha.txt` → `ALPHA_MARKER_11111`, `beta.md` → `BETA_MARKER_22222`, `gamma.json` → `{"gamma_marker":"GAMMA_33333"}`, `subdir/nested.log` → `NESTED_MARKER_44444`.
+- A test passes only if the expected marker (or real filename, for listing) appears in the CLI's final answer — not merely exit code 0. Exit 0 means "the CLI ran," not "the task succeeded."
+
+### 5. Phrasing matrices (test many wordings, expect natural conversation)
+For each capability, run direct + natural-language + multi-step variations, because routing is wording-sensitive:
+- **List files**: "run ls", "list the files in the current directory" (work today) vs. "what files are in this folder?", "show me the contents of this directory" (fail today — #624).
+- **Read a file**: "read the file X", "cat X", "show me the contents of X", "what does X say?", "open X and tell me what's inside", "print the first line of X", "what is the value of Y in X?", plus multi-step "list the files then read the first one" (all failing today — #627).
+- Include **negative cases** (prompts that should NOT trigger a tool call) to catch over-triggering.
+
+### 6. Reading the results
+- Classify each run: content/marker present? fell back to "could not determine" / "requires Agent mode" / URL-misparse? tool-call emitted in the proxy log?
+- Compile failures into an issue with the full matrix and a minimal `curl` server-side repro (drop the CLI, send the same `messages` + `tools` array directly) so maintainers can reproduce without the CLI.
+
+### 7. Wire it into CI
+- Turn the matrices into an e2e job that runs on every PR (see #625): start server + proxy, install pinned CLIs, run matrices, assert on proxy-log + CLI output. Fail the build on regressions in intent-routing or tool-calling.
+
+## Deliverable
+A `docs/testing/agentic-cli-tools.md` (or under `docs/ci-cd/`) capturing the above, with copy-pasteable commands and the fixture/marker convention, cross-referenced from CONTRIBUTING. Should link the living examples: #624, #626, #627 (found with this method) and #625 (the CI suite it feeds).
+
+
+--- COMMENTS ---
+[konard]
+Feeds the CI e2e suite proposed in #625; documents the method that surfaced #624, #626, #627.
+----
+
+=========== ISSUE 627 ===========
+TITLE: File reading broken in agent mode: 0/12 read dialogs work (no read-tool routing; filenames parsed as URLs; cat refused while ls works)
+CLOSED: 2026-07-04T01:53:53Z
+BODY:
+## Summary
+
+File **reading** does not work through the Formal AI server at all. Across 12 file-reading dialog variations driven through two OpenAI-compatible CLIs (opencode and our own `agent`), **0/12 returned the actual file contents** — even though the clients offered a `read` tool on 25 of the requests. The server returned **zero** tool-calls (`read` or `bash`) for any file-reading phrasing. Several requests fail in surprising ways (a local filename is treated as a website URL; `cat <file>` is refused as "requires Agent mode" while `ls` works).
+
+This complements the natural-language *list-files* routing gap (#624): here even **direct** read requests fail, so it's a broader capability gap, not just NL paraphrasing.
+
+## Environment
+- `with-formal-ai` @ `main` `b231afda`; server `formal-ai serve --agent-mode` on `127.0.0.1:8080`.
+- Clients: `opencode-ai 1.17.13`, `@link-assistant/agent 0.24.1` (both OpenAI `chat/completions`, offering a `read` tool + others).
+- All traffic routed through a logging proxy. Tested `2026-07-04`.
+- Fixture dir with verifiable markers:
+  - `alpha.txt` → `ALPHA_MARKER_11111` (+ 2 more lines)
+  - `beta.md` → `BETA_MARKER_22222`
+  - `gamma.json` → `{"gamma_marker":"GAMMA_33333","n":42}`
+  - `subdir/nested.log` → `NESTED_MARKER_44444`
+- A test "passes" only if the expected marker appears in the CLI's answer.
+
+## Results — 0/12 (identical for opencode and agent)
+
+| # | Category | Prompt | Content returned? | Failure mode |
+|---|----------|--------|:---:|---|
+| 1 | direct | `read the file alpha.txt` | ❌ | "could not determine" |
+| 2 | direct | `show me the contents of beta.md` | ❌ | **treats `beta.md` as a URL**: "I suggest opening this in a new tab: https://beta.md" |
+| 3 | direct | `cat gamma.json` | ❌ | "could not determine" |
+| 4 | nl | `open alpha.txt and tell me what's inside` | ❌ | **treats `alpha.txt` as a URL**: "…open this in a new tab: https://alpha.txt" |
+| 5 | nl | `what does beta.md say?` | ❌ | "could not determine" |
+| 6 | nl | `please read gamma.json for me` | ❌ | "could not determine" |
+| 7 | nested | `read the file in the subdir folder` | ❌ | "could not determine" |
+| 8 | multistep | `list the files then read the first one alphabetically` | ❌ | "could not determine" |
+| 9 | multistep | `ls the folder and show me the contents of the last file` | ❌ | "could not determine" |
+| 10 | nl-extract | `what is the value of gamma_marker in gamma.json?` | ❌ | "could not determine" |
+| 11 | nl-partial | `print the first line of alpha.txt` | ❌ | "could not determine" |
+| 12 | multi-read | `read every file here and summarize them` | ❌ | records a "bounded summarization task" but reads nothing |
+
+## Proxy evidence (quantified)
+
+- 37 `chat/completions` requests total across the run.
+- **25** of them offered a `read` tool in the request `tools` array.
+- **0** tool-calls returned by the server (0 `read`, 0 `bash`).
+- Response `model` = `formal-ai` on every summarizable request → **provenance: all answers came from this server**, not any client-side model.
+
+## Distinct bugs to fix
+
+1. **No `read`-tool routing.** The server never emits a `read` tool-call even when the client advertises one and the user directly says "read the file alpha.txt" / "use the read tool to read alpha.txt". File-reading intent is not mapped to any tool.
+
+2. **Local filenames parsed as web URLs.** `beta.md` and `alpha.txt` get routed to a "open this in a new tab: https://beta.md" browser-preview answer — the `.md`/`.txt` suffix is being treated as a domain/TLD instead of a local file. File-looking tokens in a read request should not be interpreted as URLs.
+
+3. **`cat <file>` refused as "requires Agent mode" while `ls` works.** With agent-mode on and a `bash` tool offered, `cat gamma.json` returns:
+   > It looks like you want to run a terminal command: `cat gamma.json`. Running shell commands requires Agent mode. In Chat mode I only reason about your request…
+
+   …but `ls` in the same setup returns a proper `bash` tool-call. Both `ls` and `cat` are in the terminal-command vocabulary (`data/seed/terminal-commands.lino` `shell_tokens`), so the divergence looks like the agent-mode/tool-offered gate isn't applied consistently on the "terminal command" path. The Chat-mode refusal text is also wrong here since the server *is* in agent mode.
+
+4. **Multi-step ls→read dialogs fail entirely** (tests 8, 9): "list the files then read the first one" / "show me the contents of the last file" never trigger either step.
+
+## Minimal server-side repro
+
+`read` and `bash` tools offered; direct read request; no tool-call returned:
+```bash
+curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
+  -H 'Content-Type: application/json' -H 'Authorization: Bearer formal-ai' \
+  -d '{"model":"formal-ai","stream":false,
+       "messages":[{"role":"user","content":"read the file alpha.txt"}],
+       "tools":[
+         {"type":"function","function":{"name":"read","description":"Read a file","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},
+         {"type":"function","function":{"name":"bash","description":"Run a shell command","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}
+       ]}'
+# choices[0].message.tool_calls == absent; content == "I could not determine `read the file alpha.txt` …"
+
+# cat -> wrong agent-mode refusal (ls in the same shape returns a bash tool_call):
+#   content: "…Running shell commands requires Agent mode…"
+```
+
+## Expected
+
+When a `read` (and/or `bash`) tool is offered and the user asks to read/inspect a file — direct or natural-language, single or multi-step — the server should return the appropriate tool-call (`read {"filePath":"alpha.txt"}`, or `bash {"command"
+--- COMMENTS ---
+[konard]
+Part of the agent-mode tool-calling coverage set: list-files NL routing gap #624, codex tool-arg/protocol bugs #626, and the proposed Rust logging proxy + agentic e2e suite #625 (this 12-dialog read matrix is exactly the coverage that suite should include). Verified via logging proxy; provenance = formal-ai on every request.
+----
+
+=========== ISSUE 626 ===========
+TITLE: codex tool-calling broken vs formal-ai: args field 'command' vs 'cmd', /models missing 'slug', non-git-dir hard fail
+CLOSED: 2026-07-03T23:32:04Z
+BODY:
+## Summary
+
+Driving **codex** against `formal-ai serve --agent-mode` via `with-formal-ai`, codex reaches the server but its tool-calling is broken by three separate problems. The last one (tool-argument field name) means codex cannot actually execute the shell tool the server asks for.
+
+## Environment
+- `with-formal-ai` @ `main` `b231afda`; server `formal-ai serve --agent-mode` on `127.0.0.1:8080`.
+- `@openai/codex 0.142.5` (latest via `bun add --global`). Codex uses the Responses wire API (`/api/openai/v1/responses`), as the seed configures `wire_api = "responses"`.
+- Tested `2026-07-04` in a fixture dir with `alpha.txt`, `beta.md`, `gamma.json`, `subdir/`.
+
+## Problem 1 — tool-call argument field mismatch: server sends `command`, codex expects `cmd`
+
+When the server returns a shell tool-call, codex's tool router rejects the arguments:
+
+```
+2026-07-03T...Z ERROR codex_core::tools::router:
+  error=failed to parse function arguments: missing field `cmd` at line 1 column 16
+```
+
+The server emits `{"command": "ls"}` (this is what opencode/agent consume successfully), but codex's shell/exec tool schema expects the field name **`cmd`**. Result: codex reports the command "completed" but the actual tool output is the parse error:
+
+```
+The `ls` command completed. Output:
+```text
+failed to parse function arguments: missing field `cmd` at line 1 column 16
+```
+```
+
+So no real `ls` ever runs. The server's Responses-API tool-call serialization needs to match the field name codex's tool expects (`cmd`) — or emit the schema codex advertises.
+
+## Problem 2 — `/models` response missing `slug`, and model metadata not found
+
+On startup codex fails to refresh models and warns about missing metadata:
+
+```
+ERROR codex_models_manager::manager: failed to refresh available models:
+  ... failed to decode models response: missing field `slug` at line 16 column 5
+warning: Model metadata for `formal-ai` not found. Defaulting to fallback metadata;
+  this can degrade performance and cause issues.
+```
+
+The server's `/api/openai/v1/models` payload is missing a `slug` field codex requires, so codex falls back to default metadata.
+
+## Problem 3 — hard fail in a non-git directory (wrapper omits `--skip-git-repo-check`)
+
+By default, `with-formal-ai codex "run ls"` fails unless the working directory is a git repo:
+
+```
+Not inside a trusted directory and --skip-git-repo-check was not specified.
+Error: "codex exited with status 1"
+```
+
+The wrapper's seed invocation (`data/seed/client-integrations.lino`) does not pass `--skip-git-repo-check` (nor `--sandbox`), even though the README's manual codex examples do (README L268, L276–284). Inside a git repo codex proceeds (and then hits Problems 1–2). The wrapper should pass `--skip-git-repo-check` so `with-formal-ai codex` works in any directory, matching the documented manual usage. (Related doc issue: #622.)
+
+## Repro
+```bash
+# in a NON-git dir -> Problem 3
+with-formal-ai codex "run ls" </dev/null
+# => Not inside a trusted directory ... exit 1
+
+# in a git dir -> Problems 1 & 2
+cd /some/git/repo
+with-formal-ai codex "run ls" </dev/null
+# => models 'missing field slug' warning, then tool output:
+#    "failed to parse function arguments: missing field `cmd`"
+```
+
+## Expected
+- Server Responses-API tool-calls use the argument field codex expects (`cmd`) so codex can execute the shell tool.
+- `/api/openai/v1/models` includes the `slug` field (and metadata) codex needs.
+- `with-formal-ai codex` passes `--skip-git-repo-check` so it runs outside git repos, as documented.
+
+## Notes
+Provenance confirmed via logging proxy — all codex traffic hit this server (`/api/openai/v1/responses`, `/models`), `model=formal-ai`. By contrast opencode and our `agent` CLI (OpenAI `chat/completions`, `{"command": …}`) execute `ls` correctly, so this is specific to the Responses-API path + codex's tool schema. Part of the "`with-formal-ai` works by default for all CLIs" effort (#620, #621, #622); routing gap for NL phrasings tracked in #624.
+
+
+--- COMMENTS ---
+[konard]
+Part of the with-formal-ai default-works effort: #620 #621 #622 #624 #625. Provenance/routing verified via logging proxy (#625).
+----
+
+=========== ISSUE 625 ===========
+TITLE: Add a built-in Rust logging reverse proxy (formal-ai proxy) for provenance/routing testing
+CLOSED: 2026-07-04T00:18:01Z
+BODY:
+## Summary
+
+Add a first-class **logging reverse proxy** to formal-ai (e.g. `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`) for observing client↔server traffic during testing. It sits in front of `formal-ai serve` and records, per request: path, `model`, the `tools` offered, and the response's `tool_calls` / content — so you can *prove* which server answered and see exactly how each request was routed.
+
+## Motivation
+
+While testing `with-formal-ai opencode` tool-calling, I needed to verify two things that are otherwise invisible:
+1. **Provenance** — that answers came from the Formal AI server and not from any model on the client side.
+2. **Routing** — whether the server returned a `bash` tool-call or a fallback text answer for each phrasing.
+
+I threw together a Python proxy to do this, but (a) it doesn't belong in this Rust codebase, and (b) it couldn't cleanly parse streamed (SSE) responses. A native Rust proxy shipped with formal-ai would make this kind of verification reproducible in CI and for issue repros, and would handle streaming since it can pass bytes through untouched while still summarizing.
+
+Concretely it would have made the routing-gap issue (natural-language file-listing requests not mapping to a tool-call) trivial to demonstrate and regression-test.
+
+## Proposed behavior
+
+- `formal-ai proxy --listen <addr> --upstream <url> [--log <path>] [--body]`
+- Transparently forwards every request/response (including streaming) to `--upstream`.
+- Appends one JSON line per exchange: method, path, request `model`, request `tools` (names), response `model`, response `tool_calls` (name + arguments), a content preview, and status.
+- `--body` optionally logs full request/response bodies for deep debugging.
+
+## Example implementation (std-only, blocking, no new deps)
+
+A minimal starting point that forwards bytes and logs a summary. It reads the upstream response fully for non-streamed bodies; for streamed responses it can stream through and skip the JSON summary (or be extended to parse SSE `data:` lines). This is deliberately dependency-free so it can live behind a small subcommand; a production version would likely reuse the crate's existing async HTTP stack.
+
+```rust
+use std::io::{BufRead, BufReader, Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::mpsc::Sender;
+
+/// One request/response summary line appended to the log.
+#[derive(Debug, Default)]
+struct Exchange {
+    method: String,
+    path: String,
+    req_model: Option<String>,
+    req_tools: Vec<String>,
+    status: u16,
+    resp_model: Option<String>,
+    resp_tool_calls: Vec<(String, String)>, // (name, arguments)
+    resp_content_head: String,
+}
+
+fn main() -> std::io::Result<()> {
+    // formal-ai proxy --listen 127.0.0.1:8090 --upstream 127.0.0.1:8080 --log proxy.jsonl
+    let listen = "127.0.0.1:8090";
+    let upstream = "127.0.0.1:8080";
+    let log_path = "proxy.jsonl";
+
+    let (tx, rx) = std::sync::mpsc::channel::<String>();
+    // dedicated writer thread keeps log lines ordered and non-blocking for handlers
+    std::thread::spawn(move || {
+        let mut f = std::fs::File::create(log_path).unwrap();
+        for line in rx {
+            let _ = writeln!(f, "{line}");
+        }
+    });
+
+    let server = TcpListener::bind(listen)?;
+    eprintln!("formal-ai proxy on {listen} -> {upstream}, logging to {log_path}");
+    for client in server.incoming() {
+        let client = client?;
+        let upstream = upstream.to_string();
+        let tx = tx.clone();
+        std::thread::spawn(move || {
+            if let Err(e) = handle(client, &upstream, tx) {
+                eprintln!("proxy error: {e}");
+            }
+        });
+    }
+    Ok(())
+}
+
+fn handle(client: TcpStream, upstream: &str, tx: Sender<String>) -> std::io::Result<()> {
+    let mut reader = BufReader::new(client.try_clone()?);
+    let mut client_out = client;
+
+    // --- read request line + headers ---
+    let mut request_line = String::new();
+    reader.read_line(&mut request_line)?;
+    let mut parts = request_line.split_whitespace();
+    let method = parts.next().unwrap_or("").to_string();
+    let path = parts.next().unwrap_or("").to_string();
+
+    let mut headers = Vec::new();
+    let mut content_length = 0usize;
+    loop {
+        let mut line = String::new();
+        reader.read_line(&mut line)?;
+        if line == "\r\n" || line.is_empty() {
+            break;
+        }
+        if let Some(v) = line.to_ascii_lowercase().strip_prefix("content-length:") {
+            content_length = v.trim().parse().unwrap_or(0);
+        }
+        headers.push(line);
+    }
+    let mut body = vec![0u8; content_length];
+    reader.read_exact(&mut body)?;
+
+    let mut ex = Exchange { method: method.clone(), path: path.clone(), ..Default::default() };
+    if let Ok(v) = serde_json::from_slice::<serde_json::Value>(&body) {
+        ex.req_model = v.get("model").and_then(|m| m.as_str()).map(String::from);
+        if let Some(tools) = v.get("tools").and_then(|t| t.as_array()) {
+            ex.req_tools = tools
+                .iter()
+                .filter_map(|t| t.get("function")?.get("name")?.as_str().map(String::from))
+                .collect();
+        }
+    }
+
+    // --- forward to upstream ---
+    let mut up = TcpStream::connect(upstream)?;
+    write!(up, "{method} {path} HTTP/1.1\r\n")?;
+    write!(up, "Host: {upstream}\r\n")?;
+    for h in &headers {
+        // (Host was already rewritten above; skip the client's original Host)
+        if !h.to_ascii_lowercase().starts_with("host:") {
+            up.write_all(h.as_bytes())?;
+        }
+    }
+    write!(up, "Content-Length: {}\r\n\r\n", body.len())?;
+    up.write_all(&body)?;
+    up.flush()?;
+
+    // --- read upstream response fully, pass it back, summarize if JSON ---
+    let mut resp = Vec::new();
+    up.read_to_end(&mut re
+--- COMMENTS ---
+[konard]
+Concrete routing failures this proxy + e2e suite would catch: #624.
+----
+[konard]
+### Coverage note: the e2e suite must exercise all three protocol paths, not just OpenAI chat
+
+Cross-CLI testing this session showed each client stresses a *different* server path, and bugs hide in the non-OpenAI-chat paths:
+
+- **OpenAI `chat/completions`** (opencode, our `agent`) — tool-calls with `{"command": …}` work for direct phrasings; natural-language phrasings mis-route (#624).
+- **OpenAI `responses`** (codex) — tool-call arg field mismatch (`command` vs `cmd`), `/models` missing `slug`, non-git-dir hard fail (#626). None of this is visible from the chat/completions path.
+- **Gemini `streamGenerateContent`** (gemini) — client sends no `functionDeclarations`; server has nothing to route (note on #620).
+
+So the CI e2e matrix should assert, per CLI and per protocol: request carried `model=formal-ai` (provenance), the expected tools were offered, the server returned the expected tool-call **in the schema that CLI consumes**, the CLI executed it, and the final output contains the real fixture filenames. A proxy that logs all three shapes (chat/completions, responses, gemini generateContent) — including streamed SSE bodies — is what makes these assertions possible. Concrete failures this would have caught: #624, #626.
+
+----
+[konard]
+Concrete coverage target for the e2e suite: the 12-variation file-reading matrix in #627 (all currently failing), plus the list-files matrix in #624.
+----
+[konard]
+Companion documentation issue: #628 proposes writing up the testing methodology (fixtures, logging proxy, phrasing matrices, marker assertions) that feeds this e2e suite.
+----
+
+=========== ISSUE 624 ===========
+TITLE: agent-mode: natural-language file-listing requests return 'could not determine' instead of a bash tool_call (4/10 phrasings fail)
+CLOSED: 2026-07-04T01:23:52Z
+BODY:
+## Summary
+
+In agent mode, the Formal AI server correctly emits a `bash` tool-call for **direct/imperative** shell requests, but returns a "could not determine" **text** answer for **indirect / natural-language** phrasings of the *same* intent (list files in the current directory). Driving `opencode` against the server, 6/10 phrasings worked and 4/10 failed — all four failures because the server did not route the request to a shell tool-call.
+
+This was verified to be a **server-side** behavior: the identical `tools` array is sent every time, and the difference is entirely in whether the server returns `tool_calls` or a fallback text answer.
+
+## Environment
+- `with-formal-ai` @ `main` `b231afda`, server: `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`
+- `opencode-ai 1.17.13` (latest via `bun add --global`)
+- Test dir contained: `alpha.txt`, `beta.md`, `gamma.json`, `subdir/`
+- Tested `2026-07-04`. All traffic routed through a logging proxy — every call had `req_model=formal-ai` / `resp model=formal-ai`, confirming answers came from **this server**, not any opencode-side model.
+
+## Results (`with-formal-ai --base-url <proxy> opencode run "<prompt>"`)
+
+| # | Prompt | Result |
+|---|--------|--------|
+| 1 | `run ls` | ✅ bash→ls, listed real files |
+| 2 | `run ls in bash` | ✅ |
+| 3 | `execute the command ls -la in the shell` | ✅ |
+| 4 | `list the files in the current directory` | ✅ |
+| 5 | `what files are in this folder?` | ❌ "could not determine" |
+| 6 | `show me the contents of this directory` | ❌ "could not determine" |
+| 7 | `use the bash tool to run: ls` | ✅ |
+| 8 | `list files here and tell me their names` | ✅ |
+| 9 | `can you check which files exist in the current folder?` | ❌ "could not determine" |
+| 10 | `print a directory listing of the current working directory` | ❌ "could not determine" |
+
+Successful runs returned the actual directory contents:
+```
+alpha.txt
+beta.md
+gamma.json
+subdir
+```
+
+## Minimal server-side repro (no opencode needed)
+
+Same request shape, only the user text differs. A `tools` array with a `bash` function is included in every call.
+
+Works — returns a tool call:
+```bash
+curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
+  -H 'Content-Type: application/json' -H 'Authorization: Bearer formal-ai' \
+  -d '{"model":"formal-ai","stream":false,
+       "messages":[{"role":"user","content":"run ls"}],
+       "tools":[{"type":"function","function":{"name":"bash","description":"Execute a shell command","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+# choices[0].message.tool_calls[0] = bash {"command":"ls"}
+```
+
+Fails — returns fallback text instead of a tool call:
+```bash
+curl -s http://127.0.0.1:8080/api/openai/v1/chat/completions \
+  -H 'Content-Type: application/json' -H 'Authorization: Bearer formal-ai' \
+  -d '{"model":"formal-ai","stream":false,
+       "messages":[{"role":"user","content":"what files are in this folder?"}],
+       "tools":[{"type":"function","function":{"name":"bash", ... same as above ... }}]}'
+```
+Response `choices[0].message.content`:
+```
+I could not determine `what files are in this folder` from local Links Notation
+memory, cached public knowledge, or the source cache, and cannot infer a verified
+answer. I recorded the failed gather attempts in the trace.
+...
+```
+`tool_calls` is absent.
+
+## Impact
+
+Agents using natural language ("what files are here?", "show me the contents of this directory") get a dead-end text answer instead of the tool call they'd get from a real coding model, even though `tools` were offered. It makes agent-mode feel unreliable depending on exact wording.
+
+## Expected
+
+When a `tools` array is present and the user's message expresses a shell/file-inspection intent — including indirect phrasings — the server should route to the appropriate tool-call (e.g. `bash {"command":"ls"}`) rather than falling back to the "could not determine" answer. At minimum, common list-files paraphrases should map to the shell/ls intent:
+- "what files are in this folder / here?"
+- "show me the contents of this directory"
+- "which files exist in the current folder?"
+- "print a directory listing of the current working directory"
+
+## Notes
+- Provenance confirmed via logging proxy: every call hit this server (`model: formal-ai`); no opencode-side model was used. (Separately proposing a built-in Rust logging proxy to make this kind of verification first-class.)
+- Direct/imperative wording and explicit tool mentions ("use the bash tool to run: ls") already work, so the tool-call machinery is fine; this is an intent-routing/coverage gap.
+
+
+--- COMMENTS ---
+[konard]
+Provenance/routing verified via a logging proxy; proposing a built-in Rust proxy + agentic e2e tests in CI to catch exactly this class of regression: #625.
+----
+[konard]
+### Update: routing gap confirmed CLI-independent (opencode **and** our own `agent` CLI)
+
+Re-ran a representative subset (2 direct phrasings that worked + 2 natural-language phrasings that failed) through multiple CLIs, all pointed at the same `formal-ai serve --agent-mode` via a logging proxy in a fixture dir (`alpha.txt`, `beta.md`, `gamma.json`, `subdir/`). The direct-works / NL-fails split is **identical** across the OpenAI-compatible CLIs, and the NL failures return the exact same server text (`could not determine \`what files are in this folder\``), confirming this is a **server-side intent-routing gap**, not a client quirk:
+
+| CLI | endpoint | `run ls` | `list the files in the current directory` | `what files are in this folder?` | `show me the contents of this directory` |
+|-----|----------|:---:|:---:|:---:|:---:|
+| **opencode** | `/api/openai/v1/chat/completions` | ✅ | ✅ | ❌ cnd | ❌ cnd |
+| **agent** (ours) | `/api/openai/v1/chat/completions` | ✅ | ✅ | ❌ cnd | ❌ cnd |
+
+(cnd = server returned the "could not determine …" text instead of a `bash` tool_call.)
+
+The other two CLIs couldn't even reach this comparison because of separate, more fundamental problems (tracked elsewhere), so the routing gap could not be isolated for them:
+- **codex** — server returns a tool call but codex rejects the arguments (`missing field \`cmd\``; the server emits `{"command": …}`), plus a `/models` `missing field \`slug\`` error and a hard fail in non-git dirs. Filed separately.
+- **gemini** — gemini-cli headless (`-p`) sends **no** `functionDeclarations`/tools at all, so the server has no shell tool to route to. Not a server bug. Noted on the gemini issue.
+
+Net: fixing the NL→shell-intent routing here would immediately benefit both opencode and our own agent CLI, which are the two clients that fully exercise the tool-call path today.
+
+----
+[konard]
+Broader finding: file **reading** is entirely non-functional (0/12 dialogs), even for direct 'read the file X' requests — see #627. So beyond the NL list-files routing gap here, the read-tool path isn't wired at all.
+----
+
+=========== ISSUE 622 ===========
+TITLE: docs: README overstates gemini/agent/codex with-formal-ai flows
+CLOSED: 2026-07-04T14:51:28Z
+BODY:
+## Summary
+
+`README.md` documents several `with-formal-ai` / per-tool flows that don't work exactly as written. Found while testing the wrapper against all four client CLIs on `2026-07-04` (`main` @ `b231afda`).
+
+## Doc mismatches
+
+1. **Gemini (L223 `formal-ai with gemini -p "hi"`, L343 `gemini -m formal-ai -p "hi"`).**
+   Shown as producing `# Hi, how may I help you?`, but on any machine with a cached Gemini OAuth login (`~/.gemini/settings.json` → `selectedType: oauth-personal`) it fails with `IneligibleTierError` because the wrapper's `GEMINI_API_KEY` is ignored. Requires `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key` + `GEMINI_CLI_TRUST_WORKSPACE=true` + isolation from `~/.gemini`. Either (a) update once the wrapper sets those envs, or (b) document the required env until then. (Root cause tracked in the gemini-default-failure issue.)
+
+2. **Link Assistant Agent CLI (L368–405).**
+   The section only documents a **manual** `~/.config/link-assistant-agent/opencode.json` setup and never mentions `with-formal-ai agent` — because `agent` isn't a wrapper tool yet. The documented config path and `formal-ai/formal-ai` selector are **correct**. Once `agent` is added to the wrapper (separate issue), add the `with-formal-ai agent -p hi` one-liner here.
+
+3. **Codex (L268, L276–284).**
+   The manual codex examples pass `--skip-git-repo-check --sandbox read-only`, but the wrapper's seed invocation (`data/seed/client-integrations.lino`) omits both. `with-formal-ai codex hi` succeeded inside a git repo under the default sandbox, but outside a git repo (or under a stricter default sandbox) it may fail. Either align the wrapper's codex args with the documented flags, or note the difference in the docs.
+
+## Verified-correct (no change needed)
+- Codex/OpenCode base URLs, `wire_api = "responses"`, and model selectors match observed behavior.
+- OpenCode flow (`opencode run -m formalai/formal-ai "hi"` → greeting) works exactly as documented.
+- Agent CLI documented config path/model selector are accurate.
+
+
+--- COMMENTS ---
+[konard]
+Root causes tracked in #620 (gemini) and #621 (agent support).
+----
+[konard]
+Double check if after all resent changes requirements are still valid, double check docs and update them to correctly reflect the codebase in any case.
+----
+
+=========== ISSUE 621 ===========
+TITLE: with-formal-ai: add support for our own 'agent' CLI (@link-assistant/agent) — it is fully env-configurable
+CLOSED: 2026-07-03T22:29:28Z
+BODY:
+## Summary
+
+Our own `@link-assistant/agent` CLI is **not** a `with-formal-ai` tool, so it can't be connected to Formal AI with a single command like the others:
+
+```
+with-formal-ai agent hi
+# Error: unsupported tool `agent`; supported tools: codex, opencode, gemini
+```
+
+It should be added to `data/seed/client-integrations.lino` so `with-formal-ai agent -p hi` works by default, consistent with codex/opencode/gemini.
+
+Tested `2026-07-04`, `@link-assistant/agent 0.24.1` (latest via `bun add --global`), server `formal-ai serve --agent-mode` on `127.0.0.1:8080`.
+
+## It's fully configurable via env alone (no config file needed)
+
+`agent` is OpenCode-JSON-compatible and reads an inline config from `LINK_ASSISTANT_AGENT_CONFIG_CONTENT` (or a dir from `LINK_ASSISTANT_AGENT_CONFIG_DIR`). Providing the `formalai` provider that way plus `FORMAL_AI_API_KEY` is enough — verified working:
+
+```
+FORMAL_AI_API_KEY=formal-ai \
+LINK_ASSISTANT_AGENT_CONFIG_CONTENT='{"$schema":"https://opencode.ai/config.json","provider":{"formalai":{"name":"formal-ai local server","npm":"@ai-sdk/openai-compatible","options":{"baseURL":"http://127.0.0.1:8080/api/openai/v1","apiKey":"{env:FORMAL_AI_API_KEY}"},"models":{"formal-ai":{"name":"formal-ai"}}}},"model":"formalai/formal-ai"}' \
+agent --model formalai/formal-ai -p hi
+# => assistant text: "Hi, how may I help you?"  (exit 0)
+```
+
+## Suggested fix
+
+Add an `agent` entry to the seed reusing the `opencode` OpenAI provider shape:
+- **ephemeral:** inject the provider JSON via `LINK_ASSISTANT_AGENT_CONFIG_CONTENT` (env-only, no temp file needed), set `FORMAL_AI_API_KEY`, and pass `--model formalai/formal-ai` (`-p` for the prompt).
+- **global (`-g`) target:** `~/.config/link-assistant-agent/opencode.json` (same OpenCode provider block as opencode's global config).
+
+Since the CLI needs no on-disk config for the ephemeral case, this mirrors the existing tools cleanly.
+
+Minor upstream note (filed on link-assistant/agent): with a single provider, `agent` logs harmless `ProviderModelNotFoundError` "skipping unresolvable compaction model in cascade" for its default compaction list — cosmetic, doesn't affect output.
+
+Part of the "`with-formal-ai` should work with no extra args/env by default" effort alongside the gemini-default-failure issue.
+
+
+--- COMMENTS ---
+[konard]
+Related: #620 (gemini default failure), #622 (README doc fixes). Upstream note: link-assistant/agent#275 (harmless compaction-cascade log noise).
+----
+
+=========== ISSUE 620 ===========
+TITLE: with-formal-ai: gemini fails by default (cached OAuth overrides wrapper env; needs api-key auth + workspace trust)
+CLOSED: 2026-07-03T21:39:13Z
+BODY:
+## Summary
+
+`with-formal-ai <tool> "hi"` is meant to set **all** temporary env/config a client CLI needs so the user passes no extra flags. This holds for `opencode` and `codex`, but **`gemini` fails by default**: it authenticates against Google Code Assist OAuth instead of the API key the wrapper points at the local Formal AI server.
+
+Tested `2026-07-04`, `with-formal-ai` built from `main` (`b231afda`), server `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`, `@google/gemini-cli 0.49.0` (latest via `bun add --global`).
+
+## Repro
+```
+with-formal-ai gemini -p hi
+# Error authenticating: IneligibleTierError: This client is no longer supported
+# for Gemini Code Assist for individuals. ... exit status 1
+```
+
+## Root cause
+
+The seed sets `GEMINI_API_KEY` and `GOOGLE_GEMINI_BASE_URL`, but the Gemini CLI still prefers **Code Assist OAuth** because the user's `~/.gemini/settings.json` has `{"security":{"auth":{"selectedType":"oauth-personal"}}}` cached (plus `~/.gemini/oauth_creds.json`). The cached `selectedType` overrides the env var, so gemini hits Google (now rejected with `IneligibleTierError`) instead of the local API-key path.
+
+## What makes it work (three overrides the wrapper does NOT set)
+```
+HOME=<clean dir> \        # bypass cached ~/.gemini/settings.json + oauth_creds.json
+GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key \
+GEMINI_CLI_TRUST_WORKSPACE=true \
+with-formal-ai gemini -p hi
+# Hi, how may I help you?
+```
+
+Two distinct gaps:
+- **Auth mode not forced.** Force API-key auth so a pre-existing OAuth login can't hijack it — export `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key`, and/or isolate gemini from the user's `~/.gemini` via a temp config dir / temp `HOME` seeded with `selectedType: gemini-api-key` (analogous to the temp config codex/opencode already get).
+- **Workspace-trust gate.** Even after auth is fixed, gemini refuses headless with *"Gemini CLI is not running in a trusted directory ... set `GEMINI_CLI_TRUST_WORKSPACE=true`"* (exit 55). The wrapper should set `GEMINI_CLI_TRUST_WORKSPACE=true` for the ephemeral run.
+
+## Suggested fix
+In the gemini ephemeral path, additionally export `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key` and `GEMINI_CLI_TRUST_WORKSPACE=true`, and isolate the run from `~/.gemini` so cached OAuth can't win. Then re-verify `with-formal-ai gemini -p hi` returns the greeting on a machine that has an existing Gemini OAuth login.
+
+Related: README documents this flow as if it already works (tracked separately). Part of the "`with-formal-ai` should work with no extra args/env by default" effort alongside the `agent`-support issue.
+
+
+--- COMMENTS ---
+[konard]
+Part of the "with-formal-ai works with no extra args/env by default" set: #621 (add `agent` tool), #622 (README doc fixes).
+----
+[konard]
+### Additional finding: even after auth is fixed, gemini-cli headless advertises no tools (so tool-calling can't work)
+
+After applying the auth + workspace-trust workarounds from this issue, gemini connects and answers plain prompts, but **tool-using requests never execute**. For "run ls" / "list the files in the current directory" the server replies:
+
+> I can run `ls` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
+
+I captured the raw request body gemini-cli sends to `/api/gemini/v1beta/models/formal-ai:streamGenerateContent`: it contains **no `functionDeclarations` and no `tools`** at all. So this is **not** a server bug — gemini-cli in headless `-p` mode simply does not advertise its built-in tools over the API, leaving the server nothing to route to.
+
+Implication for the "works by default" goal: even once `with-formal-ai gemini -p hi` is fixed for plain chat (the main subject of this issue), gemini will only do chat, not tool/agentic actions, unless gemini-cli is invoked in a mode that sends function declarations (or an approval/agent mode that does). Worth documenting the limitation, and worth checking whether a different gemini-cli flag makes it advertise tools. Tool-call routing itself works for the OpenAI-compatible clients (opencode, our `agent`) — see #624.
+
+----
+[konard]
+### Verified fixed by #623 — keeping this closed ✅
+
+Independently reviewed and re-tested the merged fix (PR #623, merge `6f94f490`, released in `v0.264.0`) against the **real** Gemini CLI, not just the fake-CLI integration test.
+
+**End-to-end test** (the exact original repro condition):
+- Machine still has cached OAuth: `~/.gemini/settings.json` → `{"security":{"auth":{"selectedType":"oauth-personal"}}}` and `~/.gemini/oauth_creds.json` present.
+- Built `with-formal-ai` at the merged commit, started `formal-ai serve --agent-mode`, and ran with **no manual env overrides**:
+  ```
+  with-formal-ai gemini -p hi
+  # => Hi, how may I help you?   (exit 0)
+  ```
+- The previous `IneligibleTierError: This client is no longer supported for Gemini Code Assist for individuals` is gone.
+
+**What the fix does** (all three gaps from this issue are addressed in `data/seed/client-integrations.lino` + `src/client_integrations.rs`):
+- exports `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key` (protocol-aware: `vertex-ai` for `--protocol vertex`),
+- exports `GEMINI_CLI_TRUST_WORKSPACE=true`,
+- isolates from the user's `~/.gemini` via a temporary `GEMINI_CLI_HOME` with a generated `.gemini/settings.json` selecting `gemini-api-key` (with a path-traversal guard on the generated config path).
+- Docs updated (README wrapper note + manual example) and a changelog fragment added, which also resolves the "docs overstate the flow" point (#622 item 1).
+
+Confirmed the real gemini-cli honors `GEMINI_CLI_HOME`. Nothing outstanding on this issue — leaving it closed.
+
+Note (separate, not part of this issue): even with auth fixed, gemini-cli in headless `-p` mode advertises no tool/functionDeclarations, so it does chat but not tool actions — tracked as a comment above and unrelated to the auth isolation delivered here.
+
+----
+
+=========== ISSUE 608 ===========
+TITLE: Expose reasoning/thinking in standard fields (reasoning_content, Anthropic thinking blocks) + stream it, so thinking-capable CLIs can display it
+CLOSED: 2026-07-03T07:12:19Z
+BODY:
+## Summary
+
+Formal AI produces a rich, inspectable reasoning trace (`thinking_steps`) for every answer — but it is exposed only in a **non-standard** field, and not streamed. As a result, agent CLIs that can **display model thinking** (codex reasoning summaries, Claude/Anthropic `thinking` blocks, DeepSeek-style `reasoning_content`) show **no reasoning** when driving Formal AI, even though the trace exists. Our reasoning transparency — a core selling point per `VISION.md` — is invisible to every external client.
+
+Our APIs should expose thinking in each protocol's **standard reasoning field**, and stream it, so any thinking-capable CLI can render it.
+
+## Evidence
+
+### OpenAI Chat Completions — thinking is in a custom field, not `reasoning`
+```
+$ curl -s .../v1/chat/completions -d '{"model":"formal-ai","messages":[{"role":"user","content":"hi"}]}'
+message fields: ['role', 'content', 'thinking_steps']
+has reasoning: False | has reasoning_content: False | has thinking_steps: True
+```
+The trace lives in `message.thinking_steps` (Formal-AI-specific). OpenAI-compatible clients look for `message.reasoning` / `message.reasoning_content` (the de-facto field used by DeepSeek-R1, OpenRouter, vLLM, etc.), so they display nothing.
+
+### Anthropic Messages — no `thinking` content block
+```
+$ curl -s .../v1/messages -d '{"model":"formal-ai","max_tokens":100,"messages":[{"role":"user","content":"hi"}]}'
+content block types: ['text']
+has thinking block: False
+```
+Anthropic clients render reasoning from `thinking` content blocks (`type: "thinking"`). Our `/v1/messages` emits only a `text` block, so Claude-style CLIs show no reasoning.
+
+### Streaming — thinking is never streamed
+Because `/v1/chat/completions` streaming is malformed (#604) and `/v1/responses` doesn't stream (#602), even the custom `thinking_steps` never arrives as incremental reasoning deltas. Thinking-capable clients render reasoning **live** from streamed deltas; a single final blob (or a non-standard field) can't drive that UI.
+
+## Proposed behavior
+
+Expose the existing `thinking_steps` trace through each protocol's standard reasoning channel, in both non-streaming and streaming responses:
+
+- **OpenAI Chat Completions**: populate `message.reasoning_content` (and/or `message.reasoning`) with the rendered thinking, in addition to keeping `thinking_steps` for richness. In streaming, emit reasoning as `choices[].delta.reasoning_content` deltas before the content deltas.
+- **OpenAI Responses**: emit `reasoning` output items / `response.reasoning_summary_text.delta` events in the stream (what codex's reasoning-summary UI consumes).
+- **Anthropic Messages**: emit a `thinking` content block (and `content_block_delta` of `thinking_delta` when streaming) ahead of the `text` block.
+- **Gemini** (per #603 S4): map thinking onto Gemini's `thought`-part convention.
+
+Keep `thinking_steps` as a superset/vendor extension; the standard fields are what make it visible.
+
+Gate verbosity by the existing `diagnostic_mode` / thinking-level config so clients can opt in/out.
+
+## Acceptance criteria
+
+- [ ] OpenAI Chat responses include `reasoning_content` (non-streaming) and stream `delta.reasoning_content` (streaming) carrying the thinking trace.
+- [ ] OpenAI Responses stream reasoning summary events.
+- [ ] Anthropic `/v1/messages` emits a `thinking` content block (and streamed `thinking_delta`).
+- [ ] A thinking-capable CLI (codex reasoning summaries and/or a Claude/DeepSeek-style client) driving Formal AI **visibly displays** the reasoning for a prompt.
+- [ ] Behavior respects the diagnostic/thinking-level config.
+- [ ] End-to-end tests assert reasoning is present in each protocol's standard field, streaming and non-streaming.
+
+## Environment
+
+- `formal-ai 0.254.0`, stable rustc 1.96.1, macOS aarch64
+- Verified against `codex 0.142.5`, `opencode 1.17.13`, `@link-assistant/agent 0.24.0`
+
+## Related
+
+- #602 — OpenAI Responses SSE (needed to stream reasoning summaries)
+- #604 — OpenAI Chat SSE (needed to stream `delta.reasoning_content`)
+- #603 — multi-protocol umbrella (Gemini thought parts, Anthropic thinking blocks)
+
+---
+
+## Documentation requirement (applies to this issue)
+
+This issue is not complete until it ships **clear, copy-pasteable, end-to-end-verified documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`) for how a user configures and uses the relevant CLI/tooling against Formal AI — such that following the doc produces a working result (e.g. a `hi` reply, or the documented command succeeding) **without reverse-engineering the wire format or config**. Every accepted client/model/config surface introduced here must be documented with a concrete, tested example.
+
+--- COMMENTS ---
+
+=========== ISSUE 607 ===========
+TITLE: Agent CLI cannot run shell commands (ls) via natural language: server never emits tool_calls for the bash tool
+CLOSED: 2026-07-02T21:00:10Z
+BODY:
+## Summary
+
+Formal AI, driven through our own **Agent CLI** (`@link-assistant/agent`), cannot execute a shell command (e.g. `ls`) when asked in natural language. The server never emits a `tool_calls` response for the standard `bash` tool that agent CLIs advertise. Two independent defects combine to block the whole flow.
+
+This was found while verifying the issue-#538 premise that Formal AI should be drivable by its own Agent CLI to *"call bash commands"* and complete real tasks.
+
+## Setup
+
+- `@link-assistant/agent` **0.24.0** (updated via `bun add -g @link-assistant/agent@latest`).
+- Provider config at `~/.config/link-assistant-agent/opencode.json`: a `formalai` provider using `@ai-sdk/openai-compatible`, `baseURL: http://127.0.0.1:8080/v1`, model `formal-symbolic-production`.
+- Server: `formal-ai serve` (v0.254.0, stable rustc 1.96.1).
+
+## Defect 1 — streaming hides all model output (see #604)
+
+Agent CLI uses the same `@ai-sdk/openai-compatible` streaming path as opencode, so it hits **#604**: even `agent -p "hi"` returns an **empty** assistant turn. The `step_finish` event shows work happened but no text surfaced:
+
+```json
+{"type":"step_finish","part":{"reason":"unknown","tokens":{"input":1,"output":21,"reasoning":0},
+ "model":{"providerID":"formalai","requestedModelID":"formal-symbolic-production"}}}
+```
+
+Because the streamed payload is `chat.completion` (with `message`) rather than `chat.completion.chunk` (with `delta`), **nothing the model emits — including any `tool_calls` — reaches the client.** This alone blocks tool use over the Agent CLI. Fixing #604 is a prerequisite.
+
+## Defect 2 — the `bash` tool is never granted / never mapped (new)
+
+Tested **server-direct** (bypassing streaming) with `FORMAL_AI_AGENT_MODE=1` so tool execution is enabled. The server still **never emits `tool_calls`** for a shell request. Failing prompts, by advertised tool name:
+
+| Advertised tool | `finish_reason` | `tool_calls` | Server text |
+| --- | --- | --- | --- |
+| `bash` | `stop` | **NONE** | `Tool calls are not allowed for tool:bash: no installed associative package grants tool:bash.` |
+| `shell` | `stop` | **NONE** | `Tool calls are not allowed for tool:shell: no installed associative package grants tool:shell.` |
+| `run_command` | `stop` | **NONE** | misroutes to `write_program`: `no template for language the and task list_files` |
+
+Reproduction (agent mode on):
+
+```sh
+FORMAL_AI_AGENT_MODE=1 ./target/debug/formal-ai serve &
+curl -s http://127.0.0.1:8080/v1/chat/completions -d '{
+  "model":"formal-symbolic-production",
+  "messages":[{"role":"user","content":"Run the ls command to list files in the current directory."}],
+  "tools":[{"type":"function","function":{"name":"bash","description":"Run a bash command",
+    "parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]
+}'
+# -> finish_reason: stop, tool_calls: NONE, content: "...no installed associative package grants tool:bash..."
+```
+
+### Root causes (in code)
+
+1. **Agent mode is server-env-gated only.** Tool execution requires `FORMAL_AI_AGENT_MODE=1` (`src/solver_helpers.rs:842`). Without it, every tool request is refused with *"Tool calls and function execution are not allowed without explicit agent mode."* There is no per-request way for a CLI to opt in.
+2. **No package grants `tool:bash` / `tool:shell`.** `default_associative_packages()` (`src/associative_package.rs:566`) grants `tool:calculator`, `tool:web_search`, `tool:javascript_execution`, `tool:write_program`, `tool:concept_lookup`, `tool:web_fetch`, `tool:write_file`, `tool:run_command` — **but not `tool:bash` or `tool:shell`**.
+3. **No tool-name → capability mapping.** Every agent CLI (codex, opencode, Agent CLI, claude) advertises a tool literally named **`bash`**. The server looks up capability `tool:bash` verbatim and finds nothing, even though a `tool:run_command` capability exists. Nothing maps the advertised `bash`/`shell` tool name onto `run_command`.
+
+## Proposed fix
+
+- **Map the conventional shell tool names** (`bash`, `shell`) to the shell/run-command capability, so a CLI advertising `bash` triggers the granted command-execution path.
+- **Grant a shell/bash capability by default** (in an agent-mode package), or document the exact package to import — executed in the existing bounded/isolated agent workspace (honoring `--read-only` / `permission-mode`, per NON-GOALS on bounded autonomy). Reuse the isolated `AgentWorkspace` the agentic-coding loop already uses.
+- **Emit real `tool_calls`** (OpenAI `tool_calls` / streamed `delta.tool_calls`) so the CLI executes the command in its own sandbox and feeds the result back — the normal agent loop — rather than the server refusing or answering in prose.
+
+## Acceptance criteria
+
+- [ ] With #604 fixed, `agent -p "run ls to list files here" --model formalai/formal-symbolic-production` results in a `bash`/shell `tool_calls` with `command: "ls"`, the CLI runs it, and the file list is summarized back.
+- [ ] The server emits `tool_calls` (not prose) for a natural-language shell request when a `bash`/`shell` tool is advertised and execution is permitted.
+- [ ] `bash` and `shell` tool names resolve to the shell/run-command capability.
+- [ ] Shell execution respects `--read-only` / `permission-mode` and runs in the bounded isolated workspace.
+- [ ] A per-request / config way to enable agent tool execution exists (not only the `FORMAL_AI_AGENT_MODE` server env), or it is clearly documented.
+- [ ] End-to-end test: Agent CLI drives Formal AI to run `ls` and report the listing.
+
+## All failed prompts (as requested — reported for the record)
+
+Every one of these returned `tool_calls: NONE`:
+- Via Agent CLI: `agent -p "hi"` → empty turn (Defect 1).
+- Server-direct, tool `bash`: "Run the ls command..." → refused, `tool:bash` not grante
+--- COMMENTS ---
+
+=========== ISSUE 606 ===========
+TITLE: with-formal-ai: CLI helper to run/preconfigure codex, opencode, gemini against Formal AI (with -g/--global permanent setup)
+CLOSED: 2026-07-03T08:21:45Z
+BODY:
+## Summary
+
+Add a `with-formal-ai` CLI helper that makes it trivial to run any supported external agent CLI (codex, opencode, gemini, …) against a local Formal AI server — by presetting the right environment variables / config per tool — and, with `-g`/`--global`, to **permanently** preconfigure those tools to use Formal AI as their default provider.
+
+Today, pointing each CLI at Formal AI requires tool-specific, easy-to-get-wrong config (a `model_providers` TOML block for codex, an `opencode.json` provider for opencode, `GEMINI_API_KEY` + `GOOGLE_GEMINI_BASE_URL` for gemini). `with-formal-ai` should collapse all of that into one command.
+
+## Motivation
+
+Each tool configures a custom provider completely differently:
+
+| Tool | How it targets a custom endpoint |
+| --- | --- |
+| **codex** | `-c model_providers.<id>.base_url=...`, `wire_api="responses"`, `-c model_provider=...`, `-c model=...` |
+| **opencode** | `opencode.json` → `provider.<id>` with `@ai-sdk/openai-compatible`, `options.baseURL`, `models` |
+| **gemini** | `GEMINI_API_KEY=<any>` + `GOOGLE_GEMINI_BASE_URL=<base>` (`gemini-api-key` auth); Vertex via `GOOGLE_VERTEX_BASE_URL` |
+
+A user should not have to remember any of this. `with-formal-ai codex "hi"` should just work.
+
+## Proposed UX
+
+### Ephemeral (per-invocation) — preset env/config, exec the tool
+
+```sh
+with-formal-ai codex "hi"       # runs codex against local Formal AI
+with-formal-ai opencode run "hi"
+with-formal-ai gemini -p "hi"
+```
+
+- Detects/creates the target's provider config, sets the model to the `formal-ai` alias (depends on #605), and `exec`s the tool with all remaining args passed through verbatim.
+- Options: `--base-url` (default `http://127.0.0.1:8080`), `--protocol` (openai|gemini|vertex|anthropic, default per tool), `--model` (default `formal-ai`), `--start-server` (spawn `formal-ai serve` if nothing is listening, then run), `--port`.
+- For tools that only read config files (opencode), write a temporary config and point the tool at it via its config env var, so the user's real config is untouched.
+
+### Global (permanent) — `-g` / `--global`
+
+```sh
+with-formal-ai -g codex        # permanently make codex default to Formal AI
+with-formal-ai -g opencode
+with-formal-ai -g gemini
+with-formal-ai -g --all        # configure every detected tool
+with-formal-ai -g --undo codex # revert to prior config
+```
+
+- Writes the provider config into each tool's **persistent** config location:
+  - codex → `~/.codex/config.toml` (add `model_providers.formalai`, set `model_provider`/`model`)
+  - opencode → `~/.config/opencode/opencode.json` (add `provider.formalai`)
+  - gemini → shell profile / gemini settings (`GEMINI_API_KEY`, `GOOGLE_GEMINI_BASE_URL`, auth type)
+- **Idempotent and reversible:** back up the existing config before writing; `--undo` restores it. Never clobber unrelated settings — merge, don't overwrite.
+- Print exactly what was changed and where.
+
+## Delivery
+
+`with-formal-ai` should ship as a subcommand of the existing `formal-ai` binary (e.g. `formal-ai with <tool> ...` / `formal-ai configure <tool>`) and/or a thin standalone wrapper, following the repo's "shell is interface" principle. The per-tool config templates should live in **seed data** (a `client-integrations` table describing each tool's provider-config shape), not hardcoded, so adding a new tool is a data edit.
+
+## Acceptance criteria
+
+- [ ] `with-formal-ai codex "hi"` / `opencode run "hi"` / `gemini -p "hi"` each print a Formal AI reply with zero manual config (given the blocking protocol issues are resolved).
+- [ ] `with-formal-ai -g <tool>` permanently configures the tool; a subsequent bare `codex "hi"` (no wrapper) uses Formal AI.
+- [ ] `-g` is idempotent, backs up prior config, and `--undo` restores it.
+- [ ] `--start-server` launches `formal-ai serve` when nothing is listening.
+- [ ] Uses the `formal-ai` model alias (#605).
+- [ ] Per-tool integration templates are seed data, not hardcoded.
+- [ ] Docs: a single page showing `with-formal-ai <tool>` and `-g` for every supported tool.
+
+## Blocked by
+
+This wrapper is only useful once each tool can actually complete a turn against the server:
+
+- #602 — Codex: OpenAI Responses SSE
+- #604 — opencode: OpenAI Chat Completions SSE (`chat.completion.chunk`/`delta`)
+- #603 — Gemini/Vertex native protocol (+ `/api/<protocol>/...` URL reorg)
+- #605 — model aliases (`formal-ai`, `@link-assistant/formal-ai`) that the wrapper presets
+
+## Environment context (from live testing)
+
+- codex 0.142.5, opencode 1.17.13, gemini-cli 0.49.0, all installed via `bun add -g`.
+- All three were verified to *reach* the server (or be aimable at it) and fail only on the blocking server-side gaps above.
+
+---
+
+## Documentation requirement (applies to this issue)
+
+This issue is not complete until it ships **clear, copy-pasteable, end-to-end-verified documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`) for how a user configures and uses the relevant CLI/tooling against Formal AI — such that following the doc produces a working result (e.g. a `hi` reply, or the documented command succeeding) **without reverse-engineering the wire format or config**. Every accepted client/model/config surface introduced here must be documented with a concrete, tested example.
+
+--- COMMENTS ---
+
+=========== ISSUE 605 ===========
+TITLE: Model id should be formal-ai (rename): remove user-facing formal-symbolic-production, accept @link-assistant/formal-ai aliases
+CLOSED: 2026-07-02T23:31:01Z
+BODY:
+## Summary
+
+The server currently exposes and accepts exactly one model id — `formal-symbolic-production` (`DEFAULT_MODEL`) — in both `GET /v1/models` and the `model` field of chat/responses/messages requests. **`formal-symbolic-production` is not the project name and only confuses users. It must be removed.** The canonical model id should become **`formal-ai`**, with a small set of friendly aliases resolving to it.
+
+## Motivation
+
+Every client config in the ecosystem asks the user to type a model name (`codex -c model=...`, `opencode -m <provider>/<model>`, `gemini -m ...`). `formal-symbolic-production` is unmemorable, vendor-internal, and not the product's name — it will confuse anyone configuring a client. Users expect to type `formal-ai`. The planned `with-formal-ai` wrapper CLI presets `model=formal-ai`, so `formal-ai` must be the real, canonical id.
+
+## Proposed behavior
+
+### Rename the canonical model id to `formal-ai`
+
+- `DEFAULT_MODEL` becomes **`formal-ai`**.
+- **Remove `formal-symbolic-production` entirely** — it must no longer be the canonical id, must not be advertised in `GET /v1/models`, and should not be presented anywhere users see model names. (It may, at most, be tolerated as a silent legacy alias for one transition release if truly needed — but the default expectation is removal; do not surface it.)
+
+### Accepted request aliases (all resolve to the canonical `formal-ai` model)
+
+The `model` field on `POST /v1/chat/completions`, `/v1/responses`, `/v1/messages` (and the future `/api/<protocol>/...` routes) should accept, case-insensitively:
+
+- `formal-ai` (canonical)
+- `@link-assistant/formal-ai`
+- `link-assistant/formal-ai`
+- `formal-ai-latest` / `latest` (optional convenience)
+
+Unknown model ids should resolve to the canonical model OR return a clear error — decide during design — but the aliases above must map to it.
+
+### `GET /v1/models` listing
+
+Advertise **`formal-ai` as the primary/default and only user-facing id** (optionally listing the `@link-assistant/formal-ai` scoped form). `formal-symbolic-production` must **not** appear in the listing.
+
+### Alias source is data, not hardcode
+
+Per the project's "data is the interface" principle, the canonical id and alias table should live in seed data (e.g. a `model-aliases` entry) and be read by the server, not baked into a `match` in `server.rs`. Adding an alias should be a data edit.
+
+## Acceptance criteria
+
+- [ ] The canonical model id is `formal-ai`; `DEFAULT_MODEL == "formal-ai"`.
+- [ ] `formal-symbolic-production` is **removed** — not advertised in `GET /v1/models` and not surfaced to users anywhere.
+- [ ] `curl .../v1/chat/completions -d '{"model":"formal-ai",...}'` returns the greeting (and same for `@link-assistant/formal-ai`).
+- [ ] `GET /v1/models` advertises `formal-ai` as the primary id; the old id does not appear.
+- [ ] Alias resolution is case-insensitive and driven by seed data, not a hardcoded match.
+- [ ] The codebase, seed data, tests, and docs no longer reference `formal-symbolic-production` as a user-facing model name.
+- [ ] Tests cover each alias resolving to the canonical model.
+
+## Related
+
+- Blocks the `with-formal-ai` wrapper CLI (which presets `model=formal-ai`).
+- Related to #603 (per-protocol model listing / metadata, and the `/api/<protocol>/...` reorg).
+
+---
+
+## Documentation requirement (applies to this issue)
+
+This issue is not complete until it ships **clear, copy-pasteable, end-to-end-verified documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`) for how a user configures and uses the relevant CLI/tooling against Formal AI — such that following the doc produces a working result (e.g. a `hi` reply, or the documented command succeeding) **without reverse-engineering the wire format or config**. Every accepted client/model/config surface introduced here must be documented with a concrete, tested example, using the `formal-ai` model id (never `formal-symbolic-production`).
+
+
+--- COMMENTS ---
+[konard]
+Blocks #606 (the `with-formal-ai` wrapper CLI, which can only complete a turn once this is resolved).
+----
+

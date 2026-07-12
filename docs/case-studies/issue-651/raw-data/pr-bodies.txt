@@ -1,0 +1,1279 @@
+===== PR#648: Make formal-ai with zero-config across agent CLIs (merged=true)
+Closes #647.
+
+## Summary
+
+- auto-start a temporary `formal-ai serve --agent-mode` when the selected loopback port is idle, reuse an existing listener, print a security notice, and retain both `--start-server` and the new `--no-start-server` escape hatch
+- disable Agent CLI session summarization/remote compaction by default with `--no-summarize-session --compaction-model same`; restore client defaults with `--summarize` / `--keep-summarization`
+- isolate one-shot Codex and Agent runs in temporary homes so non-global invocations do not alter persistent client configuration
+- add seed-driven Claude Code, Qwen Code, Grok Build, and Aider integrations alongside Codex, OpenCode, Agent, and Gemini
+- document all single-line and persistent setup forms and add a changelog fragment
+
+## Reproduction and verification
+
+Before this change, `formal-ai with agent -p "hi"` required a separately started server, Agent retained its normal summarization behavior, and the four new tools were unsupported.
+
+Automated coverage now verifies:
+
+- idle-port auto-start in agent mode and teardown after the wrapped CLI exits
+- reuse of an existing loopback listener
+- default Agent no-summarization arguments and the summarization escape hatch
+- exact protocol environment/model arguments for Claude, Qwen, Grok, and Aider
+- unchanged persistent config files for all eight non-global integrations
+
+A real installed Agent CLI run also completed successfully with no manual configuration:
+
+```text
+formal-ai: started a temporary server in agent mode (tool and shell execution enabled)
+Hi, how may I help you?
+```
+
+## Tests
+
+- `cargo test --test integration with_formal_ai -- --nocapture` (12 passed)
+- `cargo test --test unit docs_requirements_issue_606::issue_606_with_formal_ai_docs_and_seed_templates_are_traceable`
+- `cargo clippy --all-targets --all-features`
+- `cargo fmt --check`
+- `git diff --check`
+- full `cargo test` regression pass executed 1,463 tests; its single stale README traceability assertion was corrected and rerun successfully above
+
+===== PR#637: feat(issue-558): complete human-gated auto-learning loop (R558-01…R558-06) via the agentic interface (merged=true)
+## Issue #558 — Auto Learning
+
+Closes #558. This PR takes issue #558 from documentation-only to a **fully
+implemented, human-gated, deterministic** auto-learning / self-healing loop,
+wired end to end through the agentic interface with unit + integration
+coverage. Every one of the issue's six requirements (`R558-01`…`R558-06`) is
+now built, tested, and reachable through an external agent CLI (Codex /
+OpenCode / Gemini / Agent CLI) or the in-repo driver.
+
+### Design guardrails (preserved throughout)
+
+- **Human-gated & proposal-only.** Nothing is ever auto-applied. Every artifact
+  is a *record for review*, never an automatic write-back to source, seed, or
+  the running UI.
+- **Deterministic.** Every artifact is a pure function of its inputs — no
+  randomness, no wall-clock.
+- **Neural inference is a NON-GOAL.** All reasoning is symbolic and links-based.
+- **Byte-for-byte round-trips.** Every `source → links → source` projection
+  reproduces the original bytes.
+- **Cheap CI.** Exhaustive whole-repo proofs are `#[ignore]`d.
+
+### What ships — the eleven deterministic recipes
+
+Each capability is a slice: library module + agentic recipe + planner routing +
+example + unit test + integration test + docs. All eleven are reachable through
+the agent-mode server, each keyed on disjoint keywords so the planner routes
+unambiguously.
+
+| # | Recipe | Requirement | Library |
+|---|--------|-------------|---------|
+| Closed self-healing loop | `self_heal` | R558-01/03 | `src/self_healing.rs` |
+| Self-AST projection | `self_ast` | R558-04 | `src/self_source_graph.rs` |
+| Whole-repo source graph | `source_graph` | R558-04/05 | `src/self_source_graph.rs` |
+| Learning ledger (promotion protocol) | `ledger` | R558-03 | `src/learning_ledger.rs` |
+| Self-explanation | `explain` | how-it-works | `src/self_explanation.rs` |
+| Change request | `change_request` | user-requested change | `src/change_request.rs` |
+| Repair strategy (general classifier) | `repair_strategy` | R558-02 | `src/repair_strategy.rs` |
+| **Rebuild & reattach** | **`rebuild`** | **R558-06** | **`src/rebuild_plan.rs`** |
+| …plus the meaning/formalization/diagram recipes |  |  |  |
+
+### The final requirement closed by this session — R558-06
+
+*"Formal AI must be able to recompile and reattach the improved code to the UI."*
+
+- `src/rebuild_plan.rs` composes a deterministic, human-gated `RebuildPlan`
+  that is **derived from an already-accepted change** (`for_accepted_change`
+  takes an `AcceptedChange`, which only exists after a green benchmark gate
+  *and* an explicit human approval), so a rebuild can never precede acceptance.
+- It **grounds every reattached UI artifact** against the real repository bytes
+  and the owned manifest — `Cargo.toml`, the server/CLI entry (`src/main.rs`,
+  resolved through `owned_manifest`), the worker glue
+  (`src/web/formal_ai_worker.js`), and the UI entry (`src/web/index.html`). The
+  regenerated `formal_ai_worker.wasm` is deliberately the pipeline's *output*,
+  referenced by the steps rather than pinned as an input.
+- The plan is an ordered five-step pipeline (recompile → regenerate worker →
+  reattach → hot-swap → verify), and **every step is observable** (what proves
+  it happened) **and reversible** (how to roll it back), so keeping the swap
+  stays a reviewable human decision.
+- Nothing is rebuilt or restarted: the plan is the reviewable product. Reachable
+  as the eleventh recipe (`src/agentic_coding/rebuild_plan.rs`), emitting the
+  plan *live* as `rebuild-and-reattach.lino` (keyed on `reattach`, disjoint from
+  the source-graph recipe's `recompile`).
+
+### Requirements matrix — all six implemented
+
+- **R558-01** Failure never simply fails → `src/self_healing.rs` `RepairCase`.
+- **R558-02** Rethink the meta algorithm using itself → `src/repair_strategy.rs`
+  classifies *any* trace onto solver-method / data-record / test and composes a
+  grounded, verifiable repair plan.
+- **R558-03** Self-healing that promotes only when tests **and** the user accept →
+  `src/learning_ledger.rs` single promotion protocol (green gate + human approval).
+- **R558-04** Entire source translatable to links & present in seed →
+  `build.rs` embeds every owned `src/*.rs`; `src/self_source_graph.rs` projects
+  and content-addresses all of it.
+- **R558-05** Links round-trips back to source → every owned module reconstructs
+  byte-for-byte (`is_fully_faithful`, `coverage_permille == 1000`).
+- **R558-06** Recompile & reattach to the UI → `src/rebuild_plan.rs` (this session).
+
+Full detail: `docs/case-studies/issue-558/requirements.md`.
+
+### How to reproduce / verify
+
+- Full suite: `cargo test` (1 422 unit + 71 integration, all green locally; CI Test + Coverage + both E2E suites green).
+- R558-06 unit: `cargo test --test unit issue_558_rebuild_plan`
+  - plan derived from an accepted change; artifacts grounded against the owned
+    manifest (wasm output absent); pipeline ordered/observable/reversible;
+    deterministic & content-addressed; valid Links Notation; non-colliding
+    routing; planner walk; driver drive.
+- R558-06 integration: `cargo test --test integration issue_558_rebuild_plan`
+  - boots the agent-mode server and proves a rebuild-and-reattach request routes
+    to a plan `write_file` tool call.
+- Regenerate the artifact: `cargo run --example dump_rebuild_plan` /
+  `cargo run --example rebuild_and_reattach`.
+
+### Release
+
+`changelog.d/20260705_193000_issue_558_rebuild_plan.md` carries `bump: minor`,
+driving the automated release for the newly-closed requirement.
+
+Fixes #558
+
+
+===== PR#645: Complete verified idle dreaming and memory cleanup (merged=true)
+## Summary
+
+- make retained dreaming amendments affect future Chat Completions, Responses, agentic final answers, and memory-recall paths by injecting standing requirements into the solving context itself — never decorating answers after the fact
+- record every live chat exchange into the configured memory log (`SyncStore::record_chat_exchange`, default-on, `FORMAL_AI_RECORD_CHAT` opt-out) so background dreaming learns from organic conversations
+- verify generalization through the production application path: replay candidate tasks with `replay_answer_with_amendments`, revoke coverage when a topic's rule changes, and fall back to normal usage/priority eviction for unverifiable records
+- close the auto-learning loop: marker-grounded refinement resurrects lost rules from historical outputs, failed replays persist as durable `dreaming_candidate_failure` records, and mined numeric patterns synthesize genuinely new `dreaming_trial` tasks on top topics
+- run core, Telegram, and desktop dreaming default-on after 60 seconds of idle at minimum OS thread priority with a mid-run cancellation point; shared memory-log writes go through locked atomic write-rename; missing `FORMAL_AI_MEMORY_PATH` is announced loudly instead of silently skipping
+- ground task detection, topics, and durability in runtime-loaded multilingual lexicon data (`data/meta/dreaming-lexicon.lino`), and derive the Agent CLI dreaming audit analytically instead of echoing constants
+
+## Review response (comment 4939858814)
+
+Every section of the deep review is addressed with implementation + tests + traceability rows R540-29..33 / R423..R427:
+
+- §1 amendments change solving and live chats are recorded (`organically_recorded_chat_dreams_amendments_that_replay_through_production` proves record → dream → apply → changed future answer end-to-end through the production chat path)
+- §2 replay verification uses the production path; rule changes revoke coverage; failed verification falls back to normal eviction ordering
+- §3 failed dreams refine amendments (`failed_replay_refines_the_amendment_back_from_the_recorded_marker`), are preserved (`failed_replays_are_preserved_as_refinement_records`), patterns synthesize new trials, and task-kind gating is multilingual
+- §4 issue #494 consent, backup, and incoming-bytes behavior tested
+- §5 Agent CLI audit derives gaps analytically from the live plan
+- §6 runtime regression tests: idle gate, mid-run yield, `FORMAL_AI_DREAMING` opt-out, `serve()`/Telegram wiring, core `ThreadPriority::Min`, locked atomic writes, desktop `PRIORITY_LOW` assertion
+- §7 repo-wide memory-links sweep, runtime-loaded cues, traceability test verifies cited identifiers exist in live sources
+
+## Verification
+
+- `cargo test` — 1507 passed, 0 failed, 2 ignored
+- `cargo clippy --all-targets --all-features` — no warnings (CI runs `-D warnings`)
+- `cargo fmt --check`, `git diff --check`
+- `cargo test --test unit -- memory_maintenance` — 30 passed
+- `cargo test --test unit -- dreaming_runtime docs_requirements_issue_540` — 6 passed
+- `npm --prefix desktop test` — 102 passed plus smoke checks
+
+## Review artifacts
+
+- [Agent CLI session](https://github.com/link-assistant/formal-ai/blob/issue-540-daaf4da2188a/docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json)
+- [Generated gap analysis](https://github.com/link-assistant/formal-ai/blob/issue-540-daaf4da2188a/docs/case-studies/issue-540/dreaming-gap-analysis.lino)
+- [Amended acceptance criteria](https://github.com/link-assistant/formal-ai/blob/issue-540-daaf4da2188a/docs/case-studies/issue-540/raw-data/pr-645-amendment-2026-07-10.md)
+- [Library research](https://github.com/link-assistant/formal-ai/blob/issue-540-daaf4da2188a/docs/case-studies/issue-540/raw-data/online-research.md)
+
+Closes #540
+Closes #494
+
+
+===== PR#601: Make our meanings and words more detailed (grammatical number, part of speech, Wikidata grounding) (merged=true)
+## Issue
+
+Closes #538 — "Make our meanings and words more detailed".
+
+The issue starts from a concrete, verifiable observation: the tomato meaning lists the Russian surfaces `помидор`, `помидоры`, `томат` **without saying which is singular or plural**, and `помидор` has a plural while its synonym `томат` does not. Its central *method* requirement is that the task be solved **by driving Formal AI through its own [Agent CLI](https://github.com/link-assistant/agent)** — *"you don't read or edit code or files yourself, you only use Agent CLI with Formal AI server connected to do it"* — never by hand-editing and never by deferring parts to a roadmap.
+
+This PR does exactly that. See [`docs/case-studies/issue-538/`](docs/case-studies/issue-538/README.md) for the full analysis.
+
+## How the change is produced: the Agent CLI + Formal AI, not a human editor
+
+The change is authored by an **in-repo agentic driver** (`src/agentic_coding/`) that plays the Agent CLI against the OpenAI-compatible Formal AI server (`formal-ai serve`), offline and deterministically, through a real tool loop:
+
+```
+web_search → web_fetch → write_file → run_command (cat verify) → final
+```
+
+The driver's `write_file` step emits the enriched meaning block, and the committed seed data is **byte-for-byte identical** to what the driver writes — `tests/unit/issue_538_agentic.rs` asserts `seed == driver-output`, so the Formal-AI-driven recipe is the author, not a human, and it cannot silently regress into hand-editing. The exact sessions that produced the change are committed as [`agent-cli-session.json`](docs/case-studies/issue-538/agent-cli-session.json) (tomato), [`agent-cli-session-potato.json`](docs/case-studies/issue-538/agent-cli-session-potato.json) (potato), [`agent-cli-session-diagram.json`](docs/case-studies/issue-538/agent-cli-session-diagram.json) (recipe diagrams), and [`agent-cli-session-self-ast.json`](docs/case-studies/issue-538/agent-cli-session-self-ast.json) (self-AST census) — the *"json file with Agent CLI session that solved this exact task"* the issue asks for.
+
+**Generality (not hardcoded):** the recipe is a **concept registry** and is driven for **four artifacts with four differently-worded requests** — tomato meaning, potato meaning, and two non-lexeme axes (the generated recipe diagrams and the self-inspection CST/AST census) — routed by the planner from each request's own wording. Tests assert the differently-worded meaning requests reach the two distinct concepts and that the third and fourth requests drive entirely different artifacts, so a passing run is evidence the recipe generalises rather than pattern-matching one answer.
+
+**When the tool couldn't do it, we extended the tool:** the tomato-only recipe was refactored into the concept registry, a real TOCTOU race in `AgentWorkspace::for_prompt` was fixed, and two further recipes were added so the same Agent CLI generates architecture diagrams and stores its own CST/AST — rather than hand-finishing and deferring.
+
+**No hardcoded answers — every surface is *derived* from real data:** `src/agentic_coding/meaning_detail.rs` holds no hand-typed answer strings. Each enriched surface is derived from real, checked-in Wikidata lexeme JSON (`data/cache/wikidata/lexeme/{L7993,L3526,L170542,L3784}.json`, embedded via `include_str!`) parsed by a general `serde_json` algorithm. The selection is **lemma-anchored and case-key-matched**: the singular form is the one whose text equals the lexeme's lemma, and the plural is the form whose non-number grammatical features match the singular's — general for any case paradigm and referencing **no hardcoded case id**. Hardcoded strings live only in tests; the four seed blocks are reproduced byte-for-byte from the source JSON, so correctness is proven against real Wikidata data rather than a memorised answer.
+
+## What the enriched data looks like
+
+Every surface pins its **part of speech** and **grammatical number**, references its real Wikidata lexeme form, and denotes its meaning bidirectionally.
+
+**tomato** (Q23501):
+
+| Surface       | Language | Part of speech | Grammatical number | Grounded via            |
+| ------------- | -------- | -------------- | ------------------ | ----------------------- |
+| tomato        | en       | noun           | singular           | `L7993-F1`, `Q110786`   |
+| tomatoes      | en       | noun           | plural             | `L7993-F2`, `Q146786`   |
+| помидор       | ru       | noun           | singular           | `L3526-F1`, `Q110786`   |
+| помидоры      | ru       | noun           | plural             | `L3526-F3`, `Q146786`   |
+| томат         | ru       | noun           | singular           | `L170542-F1`, `Q110786` |
+| томаты (new)  | ru       | noun           | plural             | `L170542-F7`, `Q146786` |
+
+**potato** (Q10998):
+
+| Surface        | Language | Part of speech | Grammatical number | Grounded via          |
+| -------------- | -------- | -------------- | ------------------ | --------------------- |
+| potato         | en       | noun           | singular           | `L3784-F1`, `Q110786` |
+| potatoes (new) | en       | noun           | plural             | `L3784-F2`, `Q146786` |
+
+Under the hood:
+
+- **New `grammatical_number` semantic facet kind** in the closed `FACET_KINDS` vocabulary (`src/seed/meanings.rs`), plus accessors `WordForm::grammatical_number()`, `WordForm::part_of_speech()`, `WordForm::denotations()`.
+- **Grounded, multilingual `grammatical_number` / `singular` / `plural` meanings** (`Q104083` / `Q110786` / `Q146786`), en/ru/hi/zh, with checked-in Wikidata cache so grounding-closure tests run offline.
+- **`formal-ai agent --session-json <path>`** to capture a replayable Agent-CLI session as JSON.
+
+## Beyond meanings: the same method generates architecture diagrams (R15/R16)
+
+To prove the "drive the Agent CLI" method is not special-cased to editing meaning data, a third recipe (`src/agentic_coding/diagram.rs`) makes the **same Agent CLI generate the mermaid diagrams of its own agentic recipes** — the issue's *"generated mermaid diagram split into parts"* axis. The diagrams are rendered from the planner's own recipe table (not hand-drawn), so they cannot drift from the code; the Agent CLI writes [`docs/diagrams/agentic-recipes.md`](docs/diagrams/agentic-recipes.md) from a third differently-worded request, and both the document and its session JSON are reproduced **byte-for-byte** under test. This is strong generality evidence: the loop authored a different *kind* of artifact from a different *kind* of request.
+
+## Self-inspection: the meta algorithm stores its own CST/AST (R13)
+
+The issue asks that we *"have CST/AST of all our Rust logic (meta algorithm) in our data so the algorithm can reason about itself."* A fourth recipe (`src/agentic_coding/self_ast.rs`) drives the **same Agent CLI** to parse one of the meta algorithm's own Rust modules — the deterministic planner `src/agentic_coding/planner.rs` — through the repo's **sole** CST/AST engine, the link-foundation `meta-language` links network (the same `LinkNetwork::parse` path as `src/coding/cst.rs`, **not** a parallel `syn` structure), and store the abstract-syntax node census in our data as Links Notation at [`data/meta/self-ast.lino`](data/meta/self-ast.lino) (2259 named nodes, 80 distinct kinds, `text_preserved`/`clean` verified). The census logic is **general** — tests parse several different Rust sources through it, so nothing is hardcoded to one answer — the Agent CLI writes the artifact from a fourth differently-worded request, it is reproduced byte-for-byte under test, and the live CI E2E job reruns it against the real server. Smallest real next slice: extend the pinned target from one module to a directory census so "all our Rust logic" is covered module by module (R14 round-trip builds on this).
+
+## The reasoning this PR explicitly rejects
+
+An earlier draft chose to *"ship the concrete verifiable core … honestly framing large research items as tracked follow-ups"* and led with a *"what did not ship"* section. That was rejected: *"opposite of my requirements … no refusals, no delays, no deferral, no follow ups."* The failed reasoning is dissected in [`refusal-anti-pattern.md`](docs/case-studies/issue-538/refusal-anti-pattern.md) and is now **required reading** in [`CONTRIBUTING.md`](CONTRIBUTING.md), which makes this Agent-CLI-driven, no-deferral method the **only way we develop Formal AI going forward** (issue requirement R25).
+
+## Final acceptance: reproduce on a clean copy (R24)
+
+[`scripts/reproduce-issue-538.sh`](scripts/reproduce-issue-538.sh) makes a **separate clean git work-tree** of the branch tip (no local/dirty state), builds `formal-ai` there, drives the Agent CLI for all four artifacts with the exact committed task wording, and asserts the fresh sessions and enriched seed blocks match the committed artifacts **byte-for-byte** — verified passing. (Because the recipe is part of this PR, "a clean copy" is the branch's committed source, not `main`.)
+
+## Real Agent CLI ↔ formal-ai E2E in CI, with real captured logs
+
+Beyond the in-process agentic driver, this PR ships a **real end-to-end test** that boots `formal-ai serve` and drives it with the **external** [`@link-assistant/agent`](https://github.com/link-assistant/agent) CLI (Vercel AI SDK's `@ai-sdk/openai-compatible` provider), over an actual TCP loopback — no mocks, no in-process shortcuts. The script [`experiments/agent_cli_e2e/run_agent_cli.sh`](experiments/agent_cli_e2e/run_agent_cli.sh) asserts four invariants: the agent CLI exits 0, the enriched Links Notation file (`meanings-tomato-detail.lino`) lands in the workdir, the previously-missing Russian plural `томаты` is inside it, and the server observed ≥4 `/v1/chat/completions` POSTs (the full `search → fetch → write → verify → final` recipe walk).
+
+The **new `test-agent-cli-e2e` job** in [`.github/workflows/release.yml`](.github/workflows/release.yml) runs the script for **all four recipe axes** (tomato, potato, diagrams, and the self-AST census, on ports 8768–8771) on every push/PR that touches Rust, TOML, or the workflow itself — installing the CLI with `bun add -g @link-assistant/agent`, building `target/release/formal-ai`, and uploading `/tmp/*.log` on failure. A regression in the SSE frame, planner recipe, permission gate, capability classifier, or fetch-argument shape now breaks the build.
+
+The **real captured console output** of a live four-recipe round-trip — server startup, the chat-completion POST sizes, the planner outcome per round, the file listing, and the `E2E OK` assertion line for each axis — is committed at [`docs/case-studies/issue-538/agent-cli-e2e-run.log`](docs/case-studies/issue-538/agent-cli-e2e-run.log) (regenerated by [`experiments/agent_cli_e2e/capture_all.sh`](experiments/agent_cli_e2e/capture_all.sh)) so reviewers can see *actual* Agent CLI ↔ Formal AI logs, not summaries.
+
+Standing rules added to [`CONTRIBUTING.md`](CONTRIBUTING.md) (rules 6–9) enshrine the requirement: real Agent-CLI E2E in CI, hardcoded cases only in tests, real logs in case studies, small atomic commits.
+
+## Reproduce / test
+
+```sh
+cargo test --test unit -- issue_538_agentic   # Agent-CLI recipe: routing, byte-for-byte parity, end-to-end
+cargo test --test unit -- issue_538           # grammatical-detail data facets
+cargo test --test unit -- semantic_grounding  # grounding-closure guard
+cargo test --test unit -- data_files          # data-floor guard
+bash scripts/reproduce-issue-538.sh           # clean-copy reproduction via the Agent CLI
+```
+
+Run one binary at a time (the issue asks for single-repository test runs to keep the cargo cache from filling the disk). Full `cargo test --test unit`: **1294 passed, 0 failed, 1 ignored**.
+
+## Requirement status
+
+The per-requirement matrix is in [`requirements.md`](docs/case-studies/issue-538/requirements.md). **Done/Partial** and **Not yet built in this PR** are the honest status labels — the latter names, for each unbuilt axis, its smallest real testable next slice and the exact method (drive the Agent-CLI recipe, extend the tool until a test goes red on regression). Delivered here: the linchpin Agent-CLI-driven authorship (R22–R25) with **four** committed session JSONs and clean-copy reproduction; the grammatical-detail data for two concepts (R1–R9); the generated recipe mermaid diagrams (R15/R16); and the self-inspection CST/AST census in data (R13). Axes honestly reported as not yet built — hardcoded-string audit (R10), Rust→WASM worker widening (R11/R12), CST/AST → Rust round-trip (R14, builds on the now-shipped R13), interactive debug view (R17), universal meta algorithm (R18/R19, overlaps #559), automated contradiction detection (R21) — carry a concrete next slice each and are **never** dressed as "did not ship".
+
+
+
+
+
+===== PR#638: Generate, classify, and answer questions via the Agent CLI (issue #527) (merged=true)
+## Summary
+
+Closes #527. This PR delivers the issue #527 vision — *generate all possible
+questions from smallest to largest and answer them* — and, per the maintainer's
+linchpin instruction, **executes the task by driving Formal AI through its own
+Agent CLI** rather than hand-editing files, wiring the answers into auto-learning
+through the meta algorithm's existing recipe pattern.
+
+There are two layers:
+
+1. **A lazy, configurable question-generation core** (`src/question_generation.rs`)
+   — an infinite iterator of candidate questions ordered smallest-first, ranked
+   by frequency evidence, classified by grammar and logical meaning, with a
+   configurable "what counts as a question" surface, and an answer stream that
+   delegates to the existing `FormalAiEngine`.
+2. **The eleventh agentic recipe** (`src/agentic_coding/question_catalog.rs`) that
+   drives the Agent CLI to enumerate, classify, answer, and record the catalog as
+   reviewable Links Notation, with a recall table that feeds auto-learning without
+   ever silently changing solver behaviour.
+
+## What it does
+
+- **Lazy smallest-to-largest stream.** `QuestionGenerator` implements
+  `Iterator<Item = GeneratedQuestion>`, advancing by word count (1 word, 2 words,
+  …) without materializing the infinite space.
+- **Frequency-tiered vocabulary averaged across corpuses.**
+  `QuestionWord::from_corpus_scores` records averaged multi-corpus frequency;
+  `QuestionGenerationConfig` defaults to the issue's tier policy (top 10% at
+  one/two words, 5% at three, 2.5% at four, halving thereafter with a practical
+  floor). Ranking and grammar roles are **grounded in the committed seed lexicon**
+  `data/seed/question-generation-lexicon.lino`, not hardcoded in production code.
+- **Two classification gates.** Every candidate carries
+  `QuestionGrammarClass::{Fragment, Grammatical, Ungrammatical}` and, among the
+  grammatical ones, `LogicalMeaningClass::{Meaningful, OpenSlot, NotMeaningful}`,
+  plus a combined `GeneratedQuestionClass`.
+- **Configurable acceptance.** `QuestionAcceptance` selects any question-like,
+  grammatical, or grammatical-and-meaningful candidates — the issue's "what counts
+  as a question" definition is a config surface, not a hardcoded rule.
+- **Best-possible answers via the existing engine.**
+  `generated_question_answers(config)` composes the generator with
+  `FormalAiEngine::answer`, so answering stays on the universal solver path.
+- **Driven by the Agent CLI.** The `question_catalog` recipe routes a
+  differently-worded request through the deterministic planner
+  (`write_file → run_command (cat verify) → final`) and writes
+  `data/meta/question-catalog.lino` byte-for-byte. The committed
+  `docs/case-studies/issue-527/agent-cli-session-question-catalog.json` is exactly
+  what a fresh driven run produces, pinned under test.
+- **Auto-learning without behind-the-back behaviour changes.**
+  `QuestionCatalog::answer_for` is a case/whitespace-insensitive recall table over
+  the answered questions; it never mutates the human-gated learning ledger
+  (issue #558 invariant preserved).
+
+## Generality (CONTRIBUTING.md method)
+
+Production code never branches on a specific word or phrase. The vocabulary,
+grammar roles, and openers live in the seed lexicon; the generator ranks whatever
+`QuestionWord` evidence it is given; the classifier labels are shaped so a future
+Universal-Dependencies parser can replace the heuristics without changing any
+caller. Larger corpora and stronger classifiers extend *data and the classifier*,
+never the routing logic. Hardcoded example strings appear only in tests.
+
+## Tests
+
+- `tests/unit/issue_527.rs` — lazy word-count ordering, one-word fragment
+  classification, grammatical/meaningful classification, strict
+  `QuestionAcceptance::GrammaticalAndMeaningful` filtering, and answer-stream
+  delegation.
+- `tests/unit/issue_527_question_catalog.rs` — smallest-first four-way
+  classification, the answered-questions recall table, byte-for-byte
+  `question-catalog.lino`, disjoint recipe routing, the planner walk, the in-repo
+  driver, and the committed Agent CLI session matching a fresh run byte-for-byte.
+- `tests/unit/docs_requirements_issue_527.rs` — the case-study documentation
+  contract.
+- `tests/unit/specification/question_generation_lexicon.rs` — the seed lexicon
+  specification.
+
+Also refreshed the self-inspection artifacts invalidated by the planner.rs edit
+(`data/meta/self-ast.lino`, the issue-538 self-AST session, and the self-healing
+census) and restored total reference closure for the auxiliary-verb openers
+introduced by the lexicon (`data/seed/closure-generated-*.lino` via the
+documented `scripts/close-total.py` migration).
+
+Local verification: `cargo fmt --all -- --check`, `RUSTFLAGS=-Dwarnings cargo
+clippy --all-targets --all-features`, `cargo test --test unit` (1438 passed),
+`cargo test --doc`, and the file-size limits all pass.
+
+## Reproduce
+
+```sh
+cargo test --test unit issue_527 -- --nocapture
+formal-ai agent \
+  --task "$QUESTION_CATALOG_TASK" \
+  --session-json docs/case-studies/issue-527/agent-cli-session-question-catalog.json
+```
+
+Case study: [`docs/case-studies/issue-527/`](docs/case-studies/issue-527/README.md).
+
+
+===== PR#635: Add translation round-trip quality coverage (merged=true)
+Fixes #526
+
+## Summary
+- Reworked code translation (`translate_program`) to route through a language-neutral **code meta language** (`CodeMeaning` / `formalize_code_meaning` / `render_code_meaning`) instead of direct `(source, target)` match arms. This removes the N² anti-pattern issue #526 explicitly forbids: the translator now stays at `N` formalizers + `N` renderers, so pairs that never had a hardcoded arm (Python → JavaScript, Rust → Go) translate through one shared meaning for free.
+- Added issue #526 round-trip translation quality requirements, solution notes, online research, and raw PR/issue snapshots under `docs/case-studies/issue-526/`.
+- Expanded natural-language translation coverage so every supported language surface formalizes to the meta language and every directed en/ru/hi/zh pair round-trips through the shared meaning (already routed through `TranslationPipeline`, not direct pairs).
+- Added Rust → JavaScript → Rust code translation coverage plus a `code_translation_routes_through_the_code_meta_language_not_direct_pairs` test that proves never-hardcoded pairs translate through one shared `meaning:` link.
+- Updated `VISION.md`, `ARCHITECTURE.md`, `ROADMAP.md`, `REQUIREMENTS.md`, and `CONTRIBUTING.md` so future translation work is governed by the same round-trip, meta-language rule.
+
+## Root obsolete practice fixed
+`translate_program` previously matched on the concrete `(source, target)` language pair — a direct pair-specific translator. Issue #526 states direct translation without a meta language is computationally unsolvable (N languages → N² translators). The fix formalizes any source fragment into a `CodeMeaning` (source language irrelevant), then renders that meaning into the requested target; no `(source, target)` arm survives.
+
+## Reproduction
+Before the fix, the reproducer failed because Rust → JavaScript returned a translation gap instead of an add-function renderer, and cross pairs like Python → JavaScript were never supported:
+
+```bash
+cargo test --test unit rust_javascript_code_translation_round_trips_through_code_meaning -- --nocapture
+cargo test --test unit code_translation_routes_through_the_code_meta_language_not_direct_pairs -- --nocapture
+```
+
+## Verification
+Post-merge verification on branch `issue-526-215ae32f521b`:
+
+```bash
+cargo test --test unit translation_round_trip -- --nocapture
+cargo test --test unit translation_via_links -- --nocapture
+cargo test --test unit issue_526_translation_quality_documents_are_traceable -- --nocapture
+cargo fmt --check
+rust-script scripts/check-file-size.rs
+cargo clippy --all-targets --all-features
+cargo test
+```
+
+## Visuals
+Not applicable; this change is tests, translation helper behavior, and documentation.
+
+
+===== PR#618: Solve the whole class of external-entity questions by reasoning (#571) (merged=true)
+## Summary
+
+Issue #571 asks for the ability to solve an **entire class** of similar
+externally verifiable questions using reasoning and logic in the meta algorithm
+— not just the specific Russian subscription-pricing example. The maintainer
+explicitly flagged that a seed-vocabulary-only fix was too narrow.
+
+This PR keeps the seed-vocabulary path for the exact reported prompt **and**
+adds a genuine reasoning rule that generalizes to the whole class by reasoning
+about the *referent* of a question rather than memorised topic words.
+
+## The reasoning rule
+
+`extract_externally_verifiable_question` (in
+`src/solver_handlers/web_search_intent.rs`) routes a prompt to the
+source-gathering web-research plan when three structural conditions all hold:
+
+1. **Interrogative** — the prompt opens with a seeded question opener (any
+   language) or ends with a question mark (`?` / fullwidth `？`).
+2. **Names a referential external entity** — it contains a Latin token written
+   with *interior capitalisation* (`ChatGPT`, `OpenAI`, `GitHub`, `iPhone`,
+   `TypeScript`), the orthographic signature of an engineered brand/product
+   name whose current facts (pricing, availability, features, history) live on
+   the public web rather than in seed memory.
+3. **Not locally resolvable** — it is neither a seeded concept lookup nor a
+   self-introduction / capability / non-referential-subject question, so those
+   handlers keep their prompts.
+
+Because interior capitalisation is a property of the Latin brand token itself,
+the rule fires identically for English, Russian, Hindi, and Chinese prompts and
+across any topic. All-caps acronyms (`BSD`, `ML`, `USD`), plain capitalised
+proper nouns (`Claude`, `Tesla`, `Wikipedia`), and Title-Cased phrases
+(`Hive Mind`) deliberately do **not** match, so concept-lookup, coding, and
+unknown-reasoning prompts are untouched.
+
+## Why this satisfies "entire class, not just the example"
+
+The rule is a pure structural test with **no per-product and no per-language
+word list to maintain**. The Russian annual-discount prompt for Claude Max and
+ChatGPT Pro is handled as one instance of the general class, alongside
+unrelated, non-commercial questions such as "Is the iPhone 16 waterproof?" or
+"Когда OpenAI выпустила свою первую модель?".
+
+## How to reproduce
+
+Before: the solver returned the localized `unknown` fallback for the Russian
+prompt and for any brand question lacking seeded commercial vocabulary.
+
+```sh
+cargo run --bin formal-ai -- chat --prompt 'есть ли скидка если брать подписки $200 Claude MAX и ChatGPT Pro не помесячно, а на год?'
+```
+
+## Tests
+
+`tests/unit/issue_571.rs` now has two tests:
+
+- `commercial_subscription_discount_questions_route_to_web_search_handler` —
+  the exact reported example across en/ru/hi/zh.
+- `external_entity_questions_route_to_web_search_by_reasoning_not_vocabulary` —
+  brand questions with **no** pricing/subscription/discount vocabulary, on
+  non-commercial topics (release dates, hardware specs, features), across
+  en/ru/hi/zh, proving the reasoning rule generalizes beyond any stored word
+  list.
+
+## Verification (all green locally)
+
+- `cargo test --test unit` — 1319 passed
+- `cargo test --test source` — 475 passed
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features` — no warnings
+- `python3 scripts/audit-total-closure.py --json .` — 0 unresolved
+
+## Docs & changelog
+
+- `docs/case-studies/issue-571/README.md` — documents the two-layer solution
+  (seed vocabulary + reasoning rule).
+- `changelog.d/20260703_120000_issue_571_commercial_research.md` — updated.
+
+
+
+Fixes #571
+
+===== PR#590: Add natural-language conversation and memory recall (merged=true)
+Fixes #509
+
+## Summary
+- Extends the seed-backed `conversation_recall` path from prior dialog turns to persisted `MemoryEvent` records from `demo_memory` and full-memory bundles.
+- Wires `/v1/chat/completions`, `/v1/responses`, and `/v1/messages` through `SyncStore::open().events()` so local API requests can answer natural-language memory queries, not just current request history.
+- Adds `formal-ai memory query --path ... --prompt ...` for direct natural-language recall over saved memory files.
+- Keeps protocol memory/policy helpers split below file-size thresholds and updates the issue case study plus changelog.
+
+## Reproduction
+- Before the fix, the persisted-memory HTTP reproduction test returned a history-only/no-match answer because the server never passed the configured memory log into recall.
+
+## Tests
+- `cargo test --test unit persisted_memory -- --nocapture`
+- `cargo test --test integration cli_memory_query_answers_natural_language_recall_from_persisted_memory -- --nocapture`
+- `cargo test --test unit openai_compatibility -- --nocapture`
+- `cargo test --test unit agentic_surfaces -- --nocapture`
+- `cargo test --test unit associative_packages -- --nocapture`
+- `cargo test --test unit conversation_history -- --nocapture`
+- `cargo test --test unit check_file_size -- --nocapture`
+- `cargo test --test unit data_files -- --nocapture`
+- `cargo test --test unit reference_closure -- --nocapture`
+- `cargo test --test unit total_closure -- --nocapture`
+- `npm --prefix tests/e2e run check:language-test-coverage`
+- `npm --prefix tests/e2e run check:language-parity`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --all-features --verbose` (1215 passed, 0 failed, 1 ignored)
+
+===== PR#564: Support repository resource summarization (files and folders) (merged=true)
+## Summary
+
+Closes #563. Generalizes repository summarization from **files only** to **any repository resource — files *and* folders** — by following the meta algorithm's *describe → formalize → decompose → solve → compose* loop, applied recursively over the repository tree.
+
+This addresses the PR review feedback that the file-only surface was "not general enough … what if we want to summarize not only files, but also folders and so on." The meta algorithm must solve any task by description, formalization to the meta language, decomposition, testing, and composition — so summarization now treats a repository as a recursive tree of resources rather than a flat list of files.
+
+## What changed
+
+- **`src/summarization/resource.rs` (new):** the generalization layer.
+  - `RepositoryEntry` — a filesystem-free input tree (`File { path, content }` / `Directory { path, children }`), so the layer stays deterministic and testable; a real directory walk builds the tree and hands it in.
+  - `formalize_repository_resource` dispatches on kind: files reuse `formalize_repository_file` unchanged; directories recurse through `formalize_repository_directory`, aggregating recursive file/subdirectory counts and total lines/bytes.
+  - A folder is summarized by the **decompose → summarize → compose** loop: split the directory into children, summarize each child on its own (files via `file.rs`, subdirectories by recursion), then compose behind an aggregate identity sentence.
+  - **Recursion depth is bounded by the summarization mode ladder** (`SummarizationMode::one_step_shorter`), not an ad hoc depth cap: a `Full` folder describes its children in `Standard`, theirs in `Short`, deeper as `Topic`.
+  - `summarize_repository_resource` is the single general entry point and reproduces `summarize_repository_file` exactly for file inputs (the file behavior is subsumed, not replaced).
+  - `RepositoryDirectoryFormalization::links_notation` renders link-native `repository_directory` evidence.
+- **`src/summarization/file.rs`:** exposes `RepositoryFileFormalization::summary` so directory recursion reuses file summaries.
+- **Exports** wired through `mod.rs`, `src/lib.rs`, and the `tests/source` mirror.
+
+## How to reproduce / demonstrate
+
+```
+cargo run --example issue_563_folder_summary
+```
+
+Summarizes a folder tree across `Topic`/`Short`/`Standard`/`Full` modes and prints the `repository_directory` evidence.
+
+## Tests
+
+- `tests/unit/specification/summarization_pipeline.rs`: `summarize_repository_resource_subsumes_file_summarization`, `directory_topic_summary_is_a_single_identity_sentence`, `directory_summary_reports_recursive_aggregate_counts`, `directory_short_summary_bounds_listed_children`, `directory_summary_recurses_with_one_step_shorter_mode`, `formalize_repository_resource_distinguishes_files_and_directories`, `directory_links_notation_lists_children_by_kind` (plus the original file-summary recursion test).
+- `tests/source/source_tests/summarization/mod/tests.rs`: matching source-mirror tests for the resource/folder surface.
+- `tests/unit/docs_requirements_issue_563.rs`: documentation traceability for R345–R359.
+
+## Docs & traceability
+
+- `REQUIREMENTS.md`: rows **R355–R359** for the folder/resource generalization (alongside R345–R354 for files).
+- `docs/case-studies/issue-563/README.md`: new "Generalization From Files To Folders" section, updated requirements table and verification list.
+- `ARCHITECTURE.md`, `README.md`: repository-resource (files + folders) summarization described.
+- `changelog.d/…issue_563…md`: minor-bump fragment updated.
+
+## Verification
+
+`cargo fmt --all --check`, `cargo clippy --all-targets --all-features` (clean), and the full `cargo test` suite all pass locally.
+
+
+===== PR#560: Issue 559: registry-backed recursive meta algorithm (merged=true)
+Fixes #559
+
+## Summary
+
+This PR delivers the issue-559 meta algorithm end to end, and completes the **total migration to a single general meta algorithm** with the data-driven method registry as the **sole dispatch authority** — the previous specialized route/handler mapper is removed outright so no obsolete-by-example code is left behind.
+
+- Adds the link-native recursive meta core: problem frames, bounded work-unit decomposition, need ledger, solution evidence, white-box reasoning, upward construction, the registry's per-leaf method-selection trace, skill ledger, and recipe interpreter for R330-R344.
+- Replaces the solver-local specialized handler loop with `src/meta_method_dispatch.rs::try_dispatch`, driven by `MethodRegistry` rather than a separate hardcoded control plane.
+- Expands `MethodRegistry` to cover prelude, specialized, and contextual dispatch surfaces, with alias-aware ordering from formalized `route:` / `handler:` relevants.
+- **Retires the legacy dispatch authority (R344):** an interim corpus-wide parity certificate first proved the registry resolved the entire route vocabulary as a behavior-preserving replacement (zero contradictions); with that proof in hand the legacy `specialized_handler_name` mapper and the `dispatch_parity` audit scaffolding were removed outright. The corpus-wide closure invariant now holds directly against the live registry (`tests/unit/specification/method_registry.rs::the_registry_is_the_sole_authority_that_closes_over_the_route_corpus`).
+- Updates the issue-559 case study, requirements, raw artifacts, recursive recipe, route-method aliases, changelog fragments, and regression tests so every surface describes the completed migration rather than a retained baseline.
+
+## Key implementation points
+
+- `src/solver.rs` now calls `meta_method_dispatch::try_dispatch` after meta-core recording and before policy/unknown fallbacks.
+- `src/solver_dispatch.rs` is the executable method catalogue: prelude names, contextual overrides, regular handler table, and `handler_for_method` all live behind one uniform method executor.
+- `src/method_registry.rs` derives the live registry from dispatch constants and supplies `ordered_method_names_for_relevants`, so formalized intent promotes relevant methods before the regular fallback sweep. `MethodRegistry::method_for_route` (alias-aware via `src/route_method_alias.rs`) is the only route→method resolver.
+- `src/selection.rs` records, per request, the method the registry resolves for each atomic leaf (or `unresolved`), gated by the `selection_mode` knob (`Off` default / `Record`), so the dispatch the sole authority performs is auditable.
+- Handler-produced answers are refreshed after the `method` event is appended, so evidence links, thinking steps, and Links Notation include the selected registry method.
+
+## Verification
+
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets -- -D warnings` — clean
+- `cargo test --test unit` — 1144 passed, 1 ignored
+- `cargo build --examples` — clean
+- File-size guard: no `.rs` file > 1000 lines, no `.lino` file > 1500 lines
+- Focused regressions: `docs_requirements_issue_559` (incl. `issue_559_legacy_dispatch_authority_is_fully_retired`, `issue_559_selection_trace_is_traceable`), `method_registry` (incl. the corpus-closure invariant), and `reasoning_paths::selected_registry_method_is_recorded_as_a_meta_method`
+
+## Reproduce artifacts
+
+```text
+cargo run --example issue_559_meta_core
+```
+
+The checked-in output is `docs/case-studies/issue-559/raw-data/meta-core-artifacts.txt`, including the live method registry counts and the per-leaf method-selection trace.
+
+
+===== PR#555: Make VS Code extension and all interfaces easy to install: landing pages, universal installer, one-click desktop install (#554) (merged=true)
+## Summary
+
+Closes #554. Makes the **VS Code extension** — and every other interface — far easier to install, with a dedicated landing page per interface, copy-paste install commands, a single universal installer, and a one-click "Install VS Code extension" button inside the desktop app.
+
+Everything was planned and executed in this single PR. A full case-study dossier (requirements, solution plans, online research, raw data) lives in [`docs/case-studies/issue-554/`](docs/case-studies/issue-554/README.md).
+
+## Requirements → what shipped
+
+| # | Requirement (from the issue) | Status | Where |
+| - | --- | --- | --- |
+| **R1** | Separate landing page for the VS Code extension with detailed manual / "VS Code Extension only" install instructions | ✅ | `src/web/vscode/` (`/vscode/`) |
+| **R2** | Install the VS Code extension from the installed Desktop app in one click | ✅ | `desktop/lib/vscode-install.cjs`, Settings → *Install VS Code extension* |
+| **R3** | While unpublished, the only VS Code install path is manual via `curl/wget … .sh \| bash`, with a direct link to the raw install script | ✅ | one-liner + raw `install.sh` links on `/vscode/` |
+| **R4** | Universal `.sh` + PowerShell installer for the Desktop app, VS Code, and all interfaces | ✅ | `scripts/install.sh`, `scripts/install.ps1` |
+| **R5** | Landing pages for the Telegram bot and the CLI | ✅ | `src/web/telegram/` (`/telegram/`), `src/web/cli/` (`/cli/`) |
+| **R6** | Collect issue data into `docs/case-studies/issue-554/`, deep analysis + online research, requirement list, per-requirement solution plans, existing-component check | ✅ | `docs/case-studies/issue-554/` |
+| **R7** | Plan and execute everything in this single PR until fully done | ✅ | this PR |
+
+## What changed
+
+**Landing pages (R1, R5).** Three new static, CSP-strict, no-build pages rendered by the shared `src/web/site-chrome.js`: `/vscode/`, `/cli/`, `/telegram/`. The shared chooser gained a section renderer (copy-paste command blocks with one-click copy buttons, ordered manual steps, and direct links) reused by all three. The root landing chooser now lists six destinations (web app, docs, download, VS Code, CLI, Telegram).
+
+**Universal installer (R3, R4).** `scripts/install.sh` (POSIX `sh`, passes `shellcheck` clean) and `scripts/install.ps1` (PowerShell) install the `desktop`, `vscode`, `cli`, or `all` targets from one command. They resolve the latest GitHub release, download the matching asset, and — for VS Code — run `code --install-extension`. The `/vscode/` page documents the manual-only `.vsix` ("VS Code Extension only") flow and links to the raw script.
+
+**One-click desktop install (R2).** `desktop/lib/vscode-install.cjs` is an injected-dependency factory (mirroring `service-control.cjs` / `docker-detect.cjs`) that detects an installed `code`/`code-insiders`/`codium`/`cursor`/`windsurf` CLI, downloads the published `.vsix` from the latest release, and installs it with `--force`. It is wired through `formalAiDesktop:installVsCodeExtension` (main + preload) and surfaced in the renderer Settings panel with localized status for every outcome.
+
+**Release plumbing.** `.github/workflows/desktop-release.yml` now builds and uploads the `formal-ai-vscode-*.vsix` asset so the installers and the one-click flow have a release artifact to fetch.
+
+**Case study (R6).** Requirements breakdown, per-requirement solution plans, an interface inventory, online research, and raw GitHub data captured under `docs/case-studies/issue-554/`.
+
+## Tests
+
+- **`tests/e2e/tests/issue-554-site.spec.js`** (new, 11 cases): each new page boots, renders its `info-sections` with the expected `section-<id>` / `command-<testid>` / `copy-<testid>` controls, exposes its cross-link `nav-<id>` cards with correct relative hrefs, and localizes across **all four** UI languages (en/ru/zh/hi).
+- **`desktop/scripts/vscode-install.test.mjs`** (new, 15 cases): full detect → resolve → download → install pipeline, plus every failure state (`no-vscode-cli`, `no-release-asset`, `release-lookup-failed`, `download-failed`, `install-failed`) and the bundled-`vsixPath` short-circuit. Whole desktop suite: **91/91 pass**.
+- `i18n-catalog-permissions.lino` gained a `vscodeInstall` block in all four locales; the `check-i18n-catalog` guard now registers those keys and spot-checks `{cli}` interpolation.
+- Local guards green: `check:i18n`, `check:language-parity`, `check:language-test-coverage`, `check:web-tdz`, `check:web-hardcoded-ui`, `shellcheck scripts/install.sh`.
+
+## Notes
+
+- A `bump: minor` changelog fragment is included; the version is bumped by CI from the fragment (manual `Cargo.toml` edits are rejected by `check-version-modification`).
+- `main` (v0.216.0) is merged into the branch.
+
+
+===== PR#553: Add shared dialog replay conversion (merged=true)
+## Summary
+
+- Add `formal-ai shared-dialog convert` for converting captured ChatGPT shared-page HTML or compact Markdown transcripts into replayable `demo_memory` Links Notation.
+- Preserve multi-line memory event content through export/import, which is required for command/code-block dialog turns.
+- Add solver coverage for issue #552 shared-dialog behavior: produce a readable one-line infinite shell loop, then wrap the prior loop in a detached `screen` command on follow-up.
+- Add multilingual replay coverage for the shell loop/screen prompts in English, Russian, Hindi, and Chinese.
+- Save the issue case study, raw captures, public shared-link corpus samples, generated replay memory, and upstream dependency notes under `docs/case-studies/issue-552/`.
+
+## Reproduction Data
+
+- ChatGPT share fixture: `docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html`
+- Generated replay memory: `docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.demo_memory.lino`
+- Google AI Mode static capture: `docs/case-studies/issue-552/raw-data/google-ai-mode-VG0HhpnAXrBkC0QgP.html`
+
+The Google AI Mode URL could not be converted from a static HTTP capture because the saved response is a Google Search interstitial/challenge, not a transcript. That capture gap is documented in the case study and in upstream issues.
+
+## Upstream Follow-up
+
+- web-capture: https://github.com/link-assistant/web-capture/issues/141
+- meta-language: https://github.com/link-foundation/meta-language/issues/168
+
+## Tests
+
+- `cargo fmt --all -- --check`
+- `RUSTFLAGS=-Dwarnings cargo clippy --all-targets --all-features`
+- `cargo test`
+- `cargo test --doc`
+- `rust-script scripts/check-file-size.rs`
+- `cargo test --test unit shared_dialog -- --nocapture`
+- `npm run --prefix tests/e2e check:language-test-coverage`
+
+## CI
+
+- Latest head run: https://github.com/link-assistant/formal-ai/actions/runs/27915240393
+- Full code-checking run before metadata-only cleanup commits: https://github.com/link-assistant/formal-ai/actions/runs/27914918637
+
+Fixes #552.
+
+
+===== PR#549: Add desktop auto-update flow (merged=true)
+Fixes #548
+
+## Summary
+- Add an `electron-updater` main-process controller, preload IPC, and renderer controls for update checks and user-triggered install.
+- Fix the desktop version badge by passing Electron `app.getVersion()` through desktop status instead of relying on the unstamped web fallback.
+- Publish and require Electron Builder update metadata (`latest*.yml` and blockmaps) so release assets can serve macOS, Linux, and Windows updater clients.
+- Document the investigation, requirements, alternatives, and raw issue/PR inputs under `docs/case-studies/issue-548/`.
+
+## Verification
+- `node --check src/web/app.js`
+- `node --check desktop/main.cjs`
+- `node --check desktop/preload.cjs`
+- `node --check desktop/lib/auto-update.cjs`
+- `node --check desktop/scripts/normalize-artifacts.mjs`
+- `npm --prefix desktop test`
+- `npm --prefix tests/e2e run check:i18n`
+- `npm --prefix tests/e2e run check:web-hardcoded-ui`
+- `npm --prefix tests/e2e run check:language-parity`
+- `npm --prefix tests/e2e run check:language-test-coverage`
+- `npm --prefix tests/e2e run check:web-tdz`
+- `npm --prefix tests/e2e run test:local -- tests/issue-548.spec.js`
+- `cargo test --test unit ci_cd::`
+- `cargo test --test unit specification::desktop_surface`
+- `cargo fmt --check`
+- `GITHUB_BASE_REF=main rust-script scripts/check-changelog-fragment.rs`
+- `GITHUB_EVENT_NAME=pull_request GITHUB_HEAD_REF=issue-548-60f357ad6440 GITHUB_BASE_REF=main rust-script scripts/check-version-modification.rs`
+
+## Notes
+- Case study: `docs/case-studies/issue-548/README.md`
+- macOS auto-update still depends on signed/notarized production builds, matching Electron Builder requirements and the existing desktop release signing path.
+
+
+===== PR#542: Missing UI/UX improvements (#541): theme + Docker + persistence + demo + reveal + reasoning + permissions (merged=true)
+## Summary
+
+Closes #541. Lands every one of the nine UI/UX requirements (R1–R9) from the issue body plus the deep case-study deliverable (R10) in this single PR, per the maintainer's instruction (*"Please plan and execute everything in this single pull request"*).
+
+Each commit is tagged with the requirement IDs it satisfies; the deep analysis (root-cause traces, online research, per-requirement solution plans, patterns, follow-ups) lives under [`docs/case-studies/issue-541/`](docs/case-studies/issue-541/).
+
+## What ships
+
+| Req | Theme | Fix (one-line) | Files | Test |
+|---|---|---|---|---|
+| **R1** | CSS dark/auto coverage | Five primary widgets (`.mode-status`, `.sidebar-toggle.is-collapsed`, `.drawer-menu-section h2`, `.tool-mode`, `.tool-mode-agent .tool-mode`) now have matching `:root[data-theme="dark"]` + `prefers-color-scheme` overrides. | `src/web/styles.css` | `tests/e2e/tests/issue-541-theme.spec.js` |
+| **R2** | Desktop / Docker | New `desktop/lib/docker-detect.cjs` resolves `docker` across well-known install paths (incl. GUI-launch + NixOS + Windows) with TTL re-probe; `FORMAL_AI_DOCKER_BIN` + `FORMAL_AI_DESKTOP_DEBUG` envs. | `desktop/lib/docker-detect.cjs`, `desktop/main.cjs` | `desktop/scripts/docker-detect.test.mjs` |
+| **R3** | Desktop / Electron | `app.setName("formal-ai")` before `ready` pins userData path. New `desktop/lib/data-migration.cjs` non-destructively migrates `IndexedDB` + `Local Storage` + `Session Storage` from 5 legacy profile names + writes `formal-ai-data-version.json` stamp. | `desktop/lib/data-migration.cjs`, `desktop/main.cjs` | `desktop/scripts/data-migration.test.mjs` |
+| **R4** | Demo mode | Dedicated session-scoped, sidebar-hidden demo conversation. Demo events tagged `isDemo: true` in IndexedDB. Clicking a real conversation auto-disables demo. | `src/web/app.js`, `src/web/memory.js` | `tests/e2e/tests/issue-541-demo-mode.spec.js` |
+| **R5** | Animation budget | New `minMessageAnimationMs` preference (default 2 s, range 0–8 s). `usePrefersReducedMotion` short-circuits to instant. | `src/web/app.js`, `src/web/preferences.js`, `src/web/i18n-catalog.lino` | `experiments/reveal-budget-logic.test.mjs` |
+| **R6** | Reveal order | `useMessageReveal` splits budget 72 % / 28 % between step reveal and body fade-in; freshly produced messages carry `animateReveal: true`, history does not. | `src/web/app.js`, `src/web/styles.css` | `experiments/reveal-budget-logic.test.mjs` |
+| **R7** | Collapsed preview | Drop `nowrap`/`ellipsis` clip; `.thinking-preview-current` `min-height: 1.55em`; `.thinking-preview-previous` `max-height: 1.05em`. | `src/web/styles.css` | manual + demo-mode spec |
+| **R8** | Human-readable reasoning | `naturalizeThinkingStep` no longer leaks raw `(@USER OP:… ?term)` Links tuple. 9 new `formalizeOp*` i18n keys × 4 locales project the verb to a plain task noun. `thinkingDetailLevel` default → `"standard"` (50 % midpoint). | `src/web/app.js`, `src/web/i18n-catalog.lino` | i18n audit (`check-i18n-catalog.mjs`) + manual |
+| **R9** | Permissions CTA | Primary CTA on the permission panel: "Grant all and switch to Agent mode" — with a pending shell task ⇒ "… and run pending task". One click mirrors all six `DESKTOP_TOOL_OPTIONS` to `true`, flips mode to Agent, replays the queued command via `executeTerminalCommand`. | `src/web/app.js`, `src/web/i18n-catalog-permissions.lino` | `tests/e2e/tests/issue-541-permissions.spec.js` |
+| **R10** | Case study | Five-doc case study (`README` / `requirements` / `solution-plans` / `best-practices` / `proposed-issues`) + 4 raw-data captures. Mirrors the structure of `docs/case-studies/issue-511/`. | `docs/case-studies/issue-541/**` | self-describing |
+
+## Test plan
+
+- [x] `node tests/e2e/scripts/check-i18n-catalog.mjs` — 4 locales × 362 keys
+- [x] `node tests/e2e/scripts/check-web-tdz.mjs` — 223 components scanned
+- [x] `node tests/e2e/scripts/check-web-hardcoded-ui-strings.mjs` — no hardcoded UI strings
+- [x] `node desktop/scripts/docker-detect.test.mjs` — 9 / 9 subtests
+- [x] `node desktop/scripts/data-migration.test.mjs` — 8 / 8 subtests
+- [x] `node experiments/reveal-budget-logic.test.mjs` — 7 / 7 subtests
+- [x] `npx playwright test issue-541-theme` — 2 / 2 cases
+- [x] `npx playwright test issue-541-permissions` — 2 / 2 cases
+- [x] `npx playwright test issue-541-demo-mode` — 3 / 3 cases
+
+## Verification commands (CI parity)
+
+```bash
+# Static checks
+cd tests/e2e
+node scripts/check-i18n-catalog.mjs
+node scripts/check-web-tdz.mjs
+node scripts/check-web-hardcoded-ui-strings.mjs
+
+# Unit tests
+cd ..
+node desktop/scripts/docker-detect.test.mjs
+node desktop/scripts/data-migration.test.mjs
+node experiments/reveal-budget-logic.test.mjs
+
+# Playwright e2e
+cd tests/e2e
+E2E_PORT=4598 npx playwright test --config playwright.local.config.js issue-541-theme
+E2E_PORT=4599 npx playwright test --config playwright.local.config.js issue-541-permissions
+E2E_PORT=4600 npx playwright test --config playwright.local.config.js issue-541-demo-mode
+```
+
+## Changelog
+
+`changelog.d/20260620_ui_ux_improvements_issue_541.md` carries the user-facing entries (5 × Fixed, 1 × Changed, 3 × Added).
+
+## Notes for review
+
+- `chakra-ui.com` migration (raised in the R1 quote) is **rejected** with reasoning in `docs/case-studies/issue-541/raw-data/background-research.md` §2: the app runs without a build step via hyperscript React (`h(...)`); Chakra requires JSX + Emotion + framer-motion bundling. The existing 3-tier CSS-custom-property pattern already gives "define once, override per theme" — the bug was *missing overrides*, not the wrong system.
+- The data migration is **non-destructive**: legacy profiles are never deleted, so worst-case the user keeps two profiles instead of zero. See `docs/case-studies/issue-541/best-practices.md` §5.
+- Default-deny on permissions is preserved — the grant-all CTA writes through the existing `isPermitted` gate; it does not bypass checks. See `docs/case-studies/issue-541/solution-plans.md` R9.
+- The seven implementation commits land in dependency order (Docker probe → reveal hooks → reasoning trace → migration → demo isolation → grant CTA → CSS theme) so each commit compiles and the test suite stays green at every revision; see `docs/case-studies/issue-541/proposed-issues.md` §1.
+
+Closes #541.
+
+
+===== PR#524: fix(ci): resolve 'No space left on device' in Deploy Demo job (issue #523) (merged=true)
+## Summary
+
+Fixes the only hard failure in CI/CD run [27703726124](https://github.com/link-assistant/formal-ai/actions/runs/27703726124): the **Deploy Demo to GitHub Pages** job crashed with `System.IO.IOException: No space left on device`.
+
+### Root cause
+The `deploy-demo` job restored a **shared, multi-gigabyte `target/` cache** keyed `${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}` — the *same* key the `lint` job (`cargo clippy --all-targets --all-features`) and `test` job populate. On top of that restored tree the job built the web vendor bundle, ran `cargo doc`, duplicated `target/doc` into the Pages artifact, and tarred it — exhausting the `ubuntu-latest` runner's ~14 GB root disk. The runner worker process itself then crashed while writing its diagnostic log.
+
+This was a **self-introduced regression**: PR #479 added the `cargo doc` step + `target` cache to `deploy-demo`. The upstream [rust pipeline template](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template)'s doc-deploy job caches **no** `target/` and is unaffected — so there is **no upstream bug to file** (full template comparison in the case study).
+
+### Fix (`.github/workflows/release.yml`, `deploy-demo` job)
+- **Cache only `~/.cargo/registry` + `~/.cargo/git`** under a dedicated `*-cargo-docs-*` key — the bloated `target/` tree is never restored here. `cargo doc --no-deps --lib` rebuilds its own small `target/` from the cached registry.
+- **Free unused pre-installed SDKs** (dotnet / android / ghc / codeql) and prune docker images before the heavy build (~20–30 GB reclaimed).
+- **Log `df -h`** before/after cleanup so disk pressure is visible on every run (verbose/debug for future iterations).
+
+### Other CI signals (triaged, no code change)
+- ⚠️ *Node.js 20 deprecated … `actions/github-script@60a0d83…`* — transitive inside `codecov/codecov-action@v5`; not referenced by our workflows. External, non-blocking.
+- ⚠️ *Rust file approaching 1000-line limit* (×10) — intended advisory from the repo's own file-size lint, not a false positive.
+
+### Case study
+Full evidence + analysis (timeline, requirements, root causes, solutions, template comparison) in [`docs/case-studies/issue-523/`](https://github.com/link-assistant/formal-ai/tree/issue-523-d811f560cba2/docs/case-studies/issue-523).
+
+## Verification
+- `release.yml` parses cleanly (`yaml.safe_load`).
+- Deploy cache no longer lists `target` and uses an isolated key → cannot restore the multi-GB lint/test tree.
+- Final proof: the next green **Deploy Demo to GitHub Pages** run on `main`.
+
+Fixes #523
+
+
+===== PR#512: Issue #511: agent-mode case study, requirements, and full implementation (E1–E8) (merged=true)
+## Issue #511 — case study, requirements, and full agent-mode implementation
+
+Fixes #511.
+
+### What the issue is
+A Russian desktop prompt asking to run `` `ls ~` `` in the terminal fell through to the worker's `unknown` fallback. The maintainer ask is larger than that visible bug: surface chat / agent / full-auto mode from the start, request per-command permissions, execute through `link-assistant/agent` via `agent-commander`, isolate execution in a Formal-AI container, and cover the cold-start journey with integration/e2e tests.
+
+### What this PR delivers
+The work was decomposed into eight verifiable milestones (E1–E8, tracked as #513–#520) and **every milestone is now merged into this branch**:
+
+- **E1 (#513 / PR #525)** — terminal-command intent in the Rust engine and JS worker (seed-backed, total-closure grounded, worker-mirror CI guard) + the three-way **chat / agent / full-auto** mode radio. Terminal prompts no longer dead-end in `unknown`.
+- **E2 (#514 / PR #528)** — agent onboarding system message and the desktop per-tool permission panel (grant/decline each tool), persisted in preferences, fully internationalized (en/ru/zh/hi).
+- **E3 (#515 / PR #530)** — agent-mode local OpenAI-compatible server auto-start (`ensureAgentServer`) wired to the desktop status surface.
+- **E4 (#516 / PR #532)** — the `AgentProvider` seam: an in-process default (hermetic/offline/deterministic) plus an opt-in `agent-commander` provider, with the command-approval flow and default-deny tool router as the enforcement point.
+- **E5 (#517 / PR #533)** — the installable `formal-ai-agent` container (Dockerfile + `compose.yaml` agent profile) bundling `link-assistant/agent` + `agent-commander`, with one-click install/health-check from the desktop services panel.
+- **E6 (#518 / PR #536)** — NDJSON agent-output rendering mapped onto the existing chat message / tool-call render path.
+- **E7 (#519 / PR #537)** — the cold-start `ls ~` e2e journey (hermetic in-process variant always-on; container-gated commander variant opt-in via `FORMAL_AI_E2E_AGENT_COMMANDER=1`).
+- **E8 (#520 / PR #539)** — upstream re-verification (`agent` v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6, no open gaps) and the finalized Agent CLI + agent-commander best-practices write-up.
+
+`docs/case-studies/issue-511/` carries the full case study, the R1–R21 requirements inventory with per-requirement evidence, the solution plans, and the (now-completed) E1–E8 epic. Raw PR/issue snapshots live under `raw-data/`.
+
+### Upstream feedback (R16)
+- `agent#271` (no native permission system) → **resolved** by `agent#272` (v0.24.0).
+- `agent-commander#39` (map `--read-only` for the `agent` tool) → **closed** (js_0.7.0 / rust_0.2.5).
+- `agent-commander#40` (uniform `--approve-each` per-command relay) → **closed** (js_0.8.0 / rust_0.2.6).
+
+No open `agent-commander` gaps remain. The one residual limitation — approve-each relays only for `agent`/`claude` because `codex`/`gemini`/`qwen` expose no headless approval handshake — is a documented upstream-CLI constraint.
+
+### Constraints honored
+- **Isolation:** autonomous execution runs only inside the Formal-AI container, never against the host's `claude`/`codex`. The in-process provider keeps CI hermetic; the container/commander path is opt-in.
+- **Indirection:** the desktop app drives `agent-commander`, which drives `agent` — never the Agent CLI directly.
+- **Default-deny:** the per-tool gate (`tool-router.cjs` `isPermitted`) remains the enforcement point; the UI only records grants.
+- **No hardcoded natural language:** all new user-facing prose is seed-backed (engines) or routed through the i18n catalog (web), enforced by CI guards.
+
+### Tests run locally
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+- `rust-script scripts/check-file-size.rs`
+- `npm ci --prefix tests/e2e`
+- `npm run --prefix tests/e2e check:i18n`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-parity`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-test-coverage`
+- `npm run --prefix tests/e2e check:intent-coverage`
+- `npm run --prefix tests/e2e check:web-tdz`
+- `npm run --prefix tests/e2e check:web-hardcoded-ui`
+- `node experiments/issue-513-sync-worker-terminal.mjs --check`
+- `node --test desktop/scripts/service-control.test.mjs`
+- `bun install --frozen-lockfile`
+- `bun run build:web`
+- `git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js`
+- `npm run vscode:test`
+- `npm run --prefix tests/e2e test:local -- tests/issue-511-cold-start.spec.js`
+
+
+===== PR#615: Add with-formal-ai wrapper for external CLIs (merged=true)
+## Summary
+- Adds `formal-ai with` and the standalone `with-formal-ai` binary for running Codex, OpenCode, and Gemini against a local Formal AI server.
+- Moves client-specific command/config templates into `data/seed/client-integrations.lino` and loads them through the seed registry.
+- Supports ephemeral runs, `--start-server`, `--base-url`, `--port`, `--protocol`, `--model`, plus persistent `-g/--global`, `--all`, and `--undo` flows with backups and merge-preserving config writes.
+- Documents the wrapper in the README and desktop server API docs.
+- Classifies the client integration seed as language-neutral for the diff-aware language test coverage guard.
+
+Fixes #606.
+
+## How to Reproduce
+```bash
+formal-ai serve --host 127.0.0.1 --port 8080
+with-formal-ai codex "hi"
+with-formal-ai opencode run "hi"
+with-formal-ai gemini -p "hi"
+```
+
+Permanent setup examples:
+```bash
+with-formal-ai -g codex
+with-formal-ai -g opencode
+with-formal-ai -g gemini
+with-formal-ai -g --all
+with-formal-ai -g --undo codex
+```
+
+## Verification
+- `cargo fmt --all -- --check`
+- `RUSTFLAGS=-Dwarnings cargo clippy --all-targets --all-features`
+- `cargo test --test unit data_files -- --nocapture`
+- `cargo test --test unit docs_requirements_issue_602::issue_602_codex_docs_are_copy_pasteable_and_responses_only -- --nocapture`
+- `cargo test --test unit total_closure::seed_has_total_reference_closure -- --nocapture`
+- `cargo test --test unit issue_606_with_formal_ai_docs_and_seed_templates_are_traceable -- --nocapture`
+- `cargo test --test integration with_formal_ai -- --nocapture`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+- `cargo build --release --verbose`
+- `cargo package --list --allow-dirty`
+- `rust-script scripts/check-file-size.rs`
+- `GITHUB_BASE_REF=main rust-script scripts/check-changelog-fragment.rs`
+- `GITHUB_EVENT_NAME=pull_request GITHUB_HEAD_REF=issue-606-3b82a4ca654b GITHUB_BASE_REF=main rust-script scripts/check-version-modification.rs`
+- `rust-script scripts/check-crate-package-size.rs`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-test-coverage`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-parity`
+
+===== PR#613: Expose reasoning through standard API fields (merged=true)
+## Summary
+- Exposes the existing `thinking_steps` trace as OpenAI Chat `message.reasoning_content` / `message.reasoning` and streaming `delta.reasoning_content`.
+- Adds OpenAI Responses reasoning output items plus `response.reasoning_summary_*` SSE events when `stream: true`.
+- Reuses one shared thinking renderer across OpenAI and Anthropic while preserving Anthropic's opt-in `thinking.type = enabled` behavior.
+- Documents copy-pasteable Chat, Responses, Anthropic, and native CLI reasoning checks.
+
+Fixes #608
+
+## Reproduction and Tests
+- Added OpenAI compatibility tests for Chat non-stream reasoning fields, Chat streaming reasoning deltas, Responses reasoning output items, and Responses reasoning summary stream events.
+- Existing Anthropic extended-thinking tests continue to cover `thinking` blocks and `thinking_delta` / `signature_delta` streaming.
+
+## Verification
+- `cargo test --test unit openai_compatibility`
+- `cargo test --test unit agentic_surfaces`
+- `cargo test`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+
+Note: `rust-script scripts/check-changelog-fragment.rs` could not run locally because `rust-script` is not installed in this environment. A changelog fragment was added at `changelog.d/20260702_000000_reasoning_fields.md`.
+
+
+===== PR#612: Add multi-protocol API gateway (merged=true)
+Fixes #603
+
+## Summary
+- Added a protocol-namespaced local gateway: `/api/openai/v1`, `/api/anthropic/v1`, `/api/gemini/v1beta`, `/api/vertex/v1`, and `/api/formal-ai/v1`.
+- Kept the existing `/v1/*` aliases for OpenAI, Anthropic, graph, bundle, links, and memory routes.
+- Added Gemini/Vertex `generateContent` adapters over the shared solver, per-protocol model discovery, API-key header auth compatibility, and CORS preflight coverage.
+- Fixed OpenAI Responses streaming so `stream: true` emits named Responses SSE events ending in `response.completed`.
+- Documented copy-paste Codex, OpenCode, Claude Code, Gemini, and Vertex-shaped client configs, with a changelog fragment and issue case study.
+
+## Reproduction and Tests
+- Added `responses_stream_true_emits_responses_sse_protocol`, which would fail before this fix because `/api/openai/v1/responses` was missing and Responses SSE was not emitted.
+- Added `cli_serve_exposes_namespaced_protocols_over_loopback_http`, which starts the real server and verifies OpenAI, Anthropic, Gemini, Vertex, streaming, and preflight behavior.
+- Added `issue_603_multi_protocol_gateway_docs_are_traceable` to keep the setup documentation tied to the issue requirements.
+
+## Verification
+- `cargo test --test unit responses_stream_true_emits_responses_sse_protocol -- --nocapture`
+- `cargo test --test unit protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces -- --nocapture`
+- `cargo test --test unit gemini_and_vertex_protocols_share_the_solver_with_native_model_lists -- --nocapture`
+- `cargo test --test integration cli_serve_exposes_namespaced_protocols_over_loopback_http -- --nocapture`
+- `cargo test --test unit issue_603_multi_protocol_gateway_docs_are_traceable -- --nocapture`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `rust-script scripts/check-file-size.rs`
+- `rust-script scripts/check-changelog-fragment.rs`
+- `git diff --check HEAD`
+- `cargo test --all-features`
+
+
+===== PR#614: Fix Codex Responses streaming compatibility (merged=true)
+Fixes #602
+
+## Summary
+- Added real loopback HTTP coverage for `POST /v1/responses` with `stream:true`, asserting named Responses SSE events and a final `response.completed` event.
+- Extended unit coverage so both `/v1/responses` and `/api/openai/v1/responses` preserve the Responses streaming contract.
+- Documented copy-paste Codex CLI 0.142+ setup, including the `model_providers.formalai` Responses provider block and `codex exec "hi"` smoke test.
+- Added a changelog fragment for the Codex Responses streaming compatibility fix.
+
+## Reproduction and Tests
+Before this PR, the issue acceptance surface was not covered by a real HTTP test on the legacy `/v1/responses` route. The new `cli_serve_streams_responses_events_over_legacy_loopback_http_route` test starts `formal-ai serve`, sends a streaming Responses request over loopback HTTP, parses the SSE frames, and asserts the sequence ends with `response.completed`.
+
+Docs are guarded by `issue_602_codex_docs_are_copy_pasteable_and_responses_only`, which verifies the exact Codex provider config, the 0.142+ Responses-only note, and the `codex exec --skip-git-repo-check --sandbox read-only "hi"` flow.
+
+## Verification
+- `cargo fmt --all -- --check`
+- `rust-script scripts/check-file-size.rs`
+- `cargo clippy --all-targets --all-features`
+- `cargo test`
+- `GITHUB_BASE_REF=main rust-script scripts/check-changelog-fragment.rs`
+- `GITHUB_EVENT_NAME=pull_request GITHUB_BASE_REF=main GITHUB_HEAD_REF=issue-602-dd2ad19de0f3 rust-script scripts/check-version-modification.rs`
+
+
+===== PR#610: Fix OpenAI chat completion streaming compatibility (merged=true)
+## Summary
+- Added a real loopback HTTP regression test for `POST /v1/chat/completions` with `stream:true`, asserting OpenAI-compatible SSE chunks: `chat.completion.chunk`, `choices[].delta`, assistant role first, final empty stop delta, usage chunk, and `[DONE]`.
+- Extracted shared integration HTTP server/request helpers so the streaming test and existing loopback API test use the same path.
+- Updated OpenCode docs for `@ai-sdk/openai-compatible` with the verified `formalai/formal-symbolic-production` provider/model selector and `opencode run -m formalai/formal-symbolic-production "hi"` smoke test.
+
+## Reproduction and Verification
+The new integration test starts `formal-ai serve`, sends the streaming Chat Completions request over loopback HTTP, reconstructs the streamed assistant text, and would fail on the malformed legacy shape that sent a non-streaming `chat.completion`/`choices[].message.content` response as one SSE frame.
+
+Local checks run:
+- `cargo test --test integration cli_serve_streams_chat_completion_chunks_over_loopback_http -- --nocapture`
+- `cargo test --test integration cli_serve_exposes_agentic_tool_protocols_over_loopback -- --nocapture`
+- `cargo test --test unit issue_368_readme_documents_agentic_cli_setup -- --nocapture`
+- `cargo test --test unit issue_607_agent_cli_shell_docs_are_traceable -- --nocapture`
+- `cargo test --test unit streaming_chat_completion_emits_server_sent_events -- --nocapture`
+- `cargo fmt --all -- --check`
+- `git diff --check`
+- `rust-script scripts/check-file-size.rs`
+- `rust-script scripts/check-changelog-fragment.rs`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --all-features`
+
+Fixes #604
+
+===== PR#611: Fix formal-ai model id and aliases (merged=true)
+## Summary
+- Rename the public canonical model id to `formal-ai` across the API, docs, desktop/web defaults, and tests.
+- Add seed-backed model alias data in `data/seed/model-aliases.lino` and route OpenAI/Anthropic HTTP validation through that resolver.
+- Keep `/v1/models` advertising only `formal-ai`, while chat completions, responses, and messages accept `formal-ai`, `@link-assistant/formal-ai`, `link-assistant/formal-ai`, `formal-ai-latest`, and `latest` case-insensitively and return `formal-ai`.
+- Add a changelog fragment for the release pipeline.
+
+## Reproduction
+Before the fix, `cargo test --test unit canonical_model_id_is_formal_ai -- --nocapture` failed because `DEFAULT_MODEL` was still `formal-symbolic-production`.
+
+## Tests
+- `cargo fmt --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --test unit 'model_' -- --nocapture`
+- `cargo test --test unit openai_compatibility -- --nocapture`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+- `cargo test --test source -- --nocapture`
+- `cargo test --test integration -- --nocapture`
+- `python3 scripts/audit-total-closure.py --json .`
+- `bun install --frozen-lockfile`
+- `bun run build:web`
+- `git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js`
+- `node --test desktop/scripts/local-server.test.mjs desktop/scripts/agent-provider.test.mjs`
+- `npm ci --prefix tests/e2e`
+- `npm run --prefix tests/e2e check:i18n`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-parity`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-test-coverage`
+- `npm run --prefix tests/e2e check:intent-coverage`
+- `npm run --prefix tests/e2e check:web-tdz`
+- `npm run --prefix tests/e2e check:web-hardcoded-ui`
+- `node experiments/issue-513-sync-worker-terminal.mjs --check`
+- `npm run vscode:test`
+- `git diff --check`
+- `rg -n "formal-symbolic-production" . -g '!target/**' -g '!node_modules/**' -g '!data/cache/**' -g '!tests/e2e/node_modules/**'` (no matches)
+
+Note: the local `rust-script` install attempt for the changelog/version/file-size helper scripts did not complete in this container, so those exact helpers are left to CI. I manually verified the staged changelog fragment, no version-file edit, and file-size thresholds.
+
+
+
+Fixes #605
+
+===== PR#609: Emit Agent CLI shell tool calls for ls requests (merged=true)
+Fixes https://github.com/link-assistant/formal-ai/issues/607
+
+## Summary
+- Route natural-language `ls` and current-directory listing prompts to `bash`, `shell`, or `run_command` tool calls when agent mode is enabled.
+- Add `formal-ai serve --agent-mode` as a documented command-line opt-in alongside the existing `FORMAL_AI_AGENT_MODE=1` server path.
+- Document Agent CLI shell execution with `--permission-mode plan`, including the hard `--read-only` behavior, and refresh the generated self-AST artifacts touched by the planner change.
+
+## Tests
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `rust-script scripts/check-file-size.rs`
+- `cargo test --test unit issue_607 -- --nocapture`
+- `cargo test --test unit agentic_coding -- --nocapture`
+- `cargo test --test unit issue_538_agentic -- --nocapture`
+- `cargo test --test unit openai_compatibility -- --nocapture`
+- `cargo test`
+- `cargo test --doc`
+
+## Notes
+- `rust-script scripts/check-file-size.rs` passed with existing warning-band files only; no hard file-size violations were introduced.
+
+
+===== PR#633: Fix agent-mode file read tool routing (merged=true)
+Fixes #627.
+
+## Summary
+- Adds a deterministic file-read agentic recipe for local filename prompts, shell-shaped `cat`, list-then-read, nested-folder reads, last-file selection, first-line requests, JSON value extraction, and read-all summaries.
+- Adds a `Read` tool capability classification and default agentic package permission so OpenAI-compatible `read`, `read_file`, `open_file`, and similar tools are allowed in agent mode.
+- Regenerates the self-AST case-study artifacts after the planner update.
+
+## Reproduction and Tests
+- New `tests/unit/issue_627.rs` reproduces the original failures: no tool calls for local file prompts, URL fallback for `beta.md`, and no multi-step list-then-read loop. The suite now covers the issue's read-dialog categories.
+- `cargo test --test unit issue_627`
+- `cargo test --test unit agentic_coding`
+- `cargo test --test integration issue_624_agent_mode`
+- `cargo test --test unit specification::agentic_meta_algorithm`
+- `cargo test --test unit specification::associative_packages`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `rust-script scripts/check-file-size.rs`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+
+===== PR#632: Fix agent-mode natural-language directory listings (merged=true)
+Fixes #624
+
+## Summary
+- Route natural-language current-directory listing prompts to the same agent-mode shell tool call as direct `ls` requests.
+- Add unit and OpenAI-compatible HTTP integration regressions for the issue phrasings, asserting `bash` receives `{"command":"ls"}`.
+- Document the supported paraphrases and regenerate the self-AST fixture that tracks `planner.rs`.
+
+## Reproduction / verification
+Before the fix, `cargo test --test unit issue_624` failed because the planner returned no tool call and the server stopped with the unknown-answer path. The new regression tests cover all four issue prompts against the planner, chat-completions solver path, and HTTP server path.
+
+## Tests
+- `cargo fmt --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test`
+- `cargo test --test unit issue_624`
+- `cargo test --test integration agent_mode_routes_natural_language_directory_listing_to_bash_tool_call`
+- `cargo test --test unit committed_self_ast`
+- `rust-script scripts/check-file-size.rs`
+- `rust-script scripts/check-changelog-fragment.rs`
+- `git diff --cached --check`
+
+
+===== PR#630: Fix Codex Responses compatibility (merged=true)
+## Summary
+- Adapt Responses shell tool-call arguments to the advertised schema so Codex receives `cmd` while command-schema clients still receive `command`.
+- Add `slug` to the OpenAI-compatible `/api/openai/v1/models` response and the mirrored test server metadata.
+- Add `--skip-git-repo-check` to the seeded `with-formal-ai codex` invocation so it works outside Git worktrees.
+
+Fixes #626
+
+## Verification
+- `git diff --check`
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+
+## Notes
+- `rust-script scripts/check-file-size.rs` was not run locally because `rust-script` is not installed in this environment.
+
+===== PR#631: Add logging reverse proxy (merged=true)
+Fixes #625
+
+## Summary
+- Adds `formal-ai proxy --listen <addr> --upstream <url> [--log <path>] [--body]` as a transparent HTTP reverse proxy for `formal-ai serve`.
+- Appends JSONL exchange summaries with method, path, status, request model/tool names, response model, response tool calls, and content preview.
+- Supports optional full body logging with `--body`, plus OpenAI Chat Completions, OpenAI Responses, Gemini `generateContent`, and Gemini `streamGenerateContent` summaries.
+
+## Reproduction
+1. Run `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
+2. Run `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.
+3. Send Chat Completions, Responses, or Gemini requests to the proxy port and inspect the appended JSONL row.
+
+## Tests
+- `cargo fmt --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test proxy --test unit`
+- `cargo test logging_proxy --test integration`
+- `cargo test` (1343 passed, 1 ignored; doc-tests passed)
+- `rust-script scripts/check-file-size.rs` could not run because `rust-script` is not installed in this environment; manual line count confirms `src/proxy.rs` is 950 lines.
+
+
+===== PR#634: Add agentic CLI testing guide (merged=true)
+Fixes #628
+
+## Summary
+- Adds `docs/testing/agentic-cli-tools.md`, a runbook for testing external agentic CLIs against a local Formal AI server.
+- Covers setup, fixture marker conventions, `formal-ai proxy` provenance checks, per-CLI invocation notes, phrasing matrices, failure classification, and the CI e2e shape that feeds #625.
+- Links the guide from `CONTRIBUTING.md` and adds a docs requirement test so the guide and contributor pointer stay traceable.
+
+## Reproduction and Tests
+- New `tests/unit/docs_requirements_issue_628.rs` fails without the guide and `CONTRIBUTING.md` link, reproducing the missing documentation requirement.
+- `cargo test issue_628_agentic_cli_testing_guide_is_traceable`
+- `cargo fmt --check`
+- `git diff --check`
+- `cargo test` (1353 passed, 1 ignored; doc-tests passed)
+- `cargo clippy --all-targets --all-features`
+- `rust-script scripts/check-file-size.rs` (passes; existing near-limit warnings only)
+
+
+===== PR#636: Fix Codex wrapper docs and sandbox flags (merged=true)
+Fixes #622
+
+## Summary
+- Aligned the Codex one-shot wrapper seed with the documented direct Codex invocation by adding `--sandbox read-only` after `--skip-git-repo-check`.
+- Updated README, desktop server API docs, and the agentic CLI testing guide to describe the current Gemini isolation, Agent inline config, and Codex wrapper flags.
+- Added issue-622 docs/seed traceability coverage plus stronger Codex wrapper integration assertions.
+- Added a patch changelog fragment.
+
+## Reproduction and test coverage
+- Reproduced the mismatch by first extending `with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config` to require `--sandbox read-only`; it failed because the wrapper only passed `--skip-git-repo-check` before provider overrides.
+- The integration test now passes and verifies the seeded Codex invocation starts with `exec --skip-git-repo-check --sandbox read-only`.
+- `issue_622_wrapper_docs_match_current_cli_seed_behavior` pins the README and desktop docs to the current seed behavior.
+
+## Verification
+- `cargo fmt --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --test integration with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config`
+- `cargo test --test integration with_formal_ai`
+- `cargo test --test unit issue_622_wrapper_docs_match_current_cli_seed_behavior`
+- `cargo test --test unit issue_606_with_formal_ai_docs_and_seed_templates_are_traceable`
+- `cargo test --test unit issue_602_codex_docs_are_copy_pasteable_and_responses_only`
+- `cargo test --test unit issue_326_program_synthesis_accepts_native_operation_verbs` (passes in isolation after full-suite artifact)
+- `cargo test --test unit shared_cross_runtime_synthesis_fixture_matches_rust_solver` (passes in isolation after full-suite artifact)
+- `git diff --cached --check`
+
+Notes:
+- `rust-script scripts/check-file-size.rs` could not run locally because `rust-script` is not installed in this environment.
+- A full `cargo test` run was stopped after about 49 minutes: it had already reported unrelated failures in `issue_326_program_synthesis_accepts_native_operation_verbs` and `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and both pass when rerun individually. The remaining active test was an unrelated long-running benchmark-style case.
+
+
+===== PR#629: Add with-formal-ai support for Agent CLI (merged=true)
+Fixes #621
+
+## Summary
+- Added the `agent` client integration to the seeded `with-formal-ai` templates.
+- Added inline Agent CLI config injection via `LINK_ASSISTANT_AGENT_CONFIG_CONTENT` while preserving the existing temporary-file config path for OpenCode.
+- Added persistent `~/.config/link-assistant-agent/opencode.json` setup/undo support, docs, and a minor changelog fragment.
+
+## Reproduction and test coverage
+- Reproduced the original failure with a new integration test: `with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag` initially failed with unsupported tool `agent`.
+- The test now verifies `formal-ai with --base-url http://127.0.0.1:18080 agent -p hi` injects `--model formalai/formal-ai`, `FORMAL_AI_API_KEY`, and the OpenCode-compatible Agent config JSON.
+- Extended global config tests to cover `with-formal-ai -g --all` and undo for the Agent config target.
+
+## Verification
+- `cargo fmt --all -- --check`
+- `git diff --check`
+- `cargo test --test integration with_formal_ai -- --nocapture`
+- `RUSTFLAGS=-Dwarnings cargo clippy --all-targets --all-features`
+- `cargo test --all-features --verbose`
+- `rust-script scripts/check-file-size.rs` (passes; existing near-limit warnings only)
+- `GITHUB_BASE_REF=main rust-script scripts/check-changelog-fragment.rs`
+- `GITHUB_EVENT_NAME=pull_request GITHUB_HEAD_REF=issue-621-2a32af255191 GITHUB_BASE_REF=main rust-script scripts/check-version-modification.rs`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-test-coverage`
+- `GITHUB_BASE_REF=main npm run --prefix tests/e2e check:language-parity`
+
+===== PR#623: Fix with-formal-ai Gemini auth isolation (merged=true)
+## Summary
+
+- Isolate one-shot `with-formal-ai gemini` runs with a temporary `GEMINI_CLI_HOME` and generated `.gemini/settings.json` selecting API-key auth.
+- Set Gemini CLI auth/trust environment from seed data, including protocol-aware `gemini-api-key` vs `vertex-ai` auth templates.
+- Document the auth isolation path for wrapper and manual Gemini CLI usage, and add a patch changelog fragment.
+
+## Reproduction
+
+The integration test now seeds `HOME/.gemini/settings.json` with cached `oauth-personal` auth before launching a fake Gemini CLI through `formal-ai with gemini -p hi`. The wrapper must pass `GEMINI_DEFAULT_AUTH_TYPE=gemini-api-key`, `GEMINI_CLI_TRUST_WORKSPACE=true`, a temporary `GEMINI_CLI_HOME`, and a generated `.gemini/settings.json` selecting `gemini-api-key`; otherwise the test fails like the reported issue.
+
+## Verification
+
+- `cargo fmt --all -- --check`
+- `cargo clippy --all-targets --all-features`
+- `cargo test --test integration with_formal_ai -- --nocapture`
+- `cargo test --all-features --verbose`
+- `cargo test --doc --verbose`
+
+Fixes #620
+

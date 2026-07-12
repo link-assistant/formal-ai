@@ -1,0 +1,12 @@
+---
+bump: minor
+---
+
+### Added
+- Added the issue #651 case study under `docs/case-studies/issue-651/`: a deferred-work audit across all closed-issue conversations (`raw-data/incomplete-work-audit.md`), a repository-state audit against the vision docs (`code-audit.md`), online research on Agent CLI / Hive Mind self-coding feasibility (`online-research.md`), the full body and acceptance criteria of every planning epic (`proposed-issues.md`), and raw issue/PR/CI snapshots.
+- Opened the 21 vision-completion planning issues (E35–E55, [#654](https://github.com/link-assistant/formal-ai/issues/654)–[#674](https://github.com/link-assistant/formal-ai/issues/674)), each registered as a sub-issue of #651 via the GitHub sub-issues API with `blocked_by` relations encoding execution order. Tracks: self-coding (general agentic planning → Hive-Mind end-to-end solve → benchmark-gated promotion → per-release self-hosting metric), associative core (WASM worker absorption, hardcoded-language lint, bulk semantics import, weighted formalization with contradiction detection, budget-driven search, data-driven handler precedence, terminology cleanup), and distribution (offline PWA + npm engine, VS Code Marketplace publication, interactive debugging view, shareable packages, cloud memory sync, WebVM experiment, multi-CLI CI matrix, UI follow-ups, workspace self-AST census, arbitrary natural-language skill compilation).
+- Added three sections to `VISION.md`: "Associative Technologies Only" (links networks, Links Notation, and the meta language as the only data surface — never graphs or tables), "Self-Coding: The Project Builds Itself" (a four-rung ladder from recipe-driven edits to a measured per-release self-hosting percentage, driven through Agent CLI and Hive Mind), and "Reaching A Wide Audience" (web, desktop, editor, and package distribution without forking the core).
+
+### Changed
+- Aligned the roadmap traceability pins in `tests/unit/docs_requirements_issue_526.rs` and `tests/unit/docs_requirements/benchmarks.rs` with the restructured `ROADMAP.md` (the stale "- current PR" section anchors no longer exist), and added the issue #651 planning rows R428–R433 to `REQUIREMENTS.md`.
+- Restructured `ROADMAP.md` from an issue-batch chronicle into a general-requirement status tracker: eight requirement groups, each requirement marked done / partially done / not done, with the invariant that no partially-done or not-done requirement may exist without a linked open issue (issue #651). Planning history is condensed with pointers to the per-batch case studies.

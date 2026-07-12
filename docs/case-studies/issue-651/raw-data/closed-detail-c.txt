@@ -1,0 +1,545 @@
+=========== ISSUE 538 ===========
+TITLE: Make our meanings and words more detailed
+CLOSED: 2026-07-02T20:07:50Z
+BODY:
+```
+lexeme ru
+      surface
+        text помидор
+      surface
+        text помидоры
+      surface
+        text томат
+```
+
+Our meanings are not detailed enough.
+
+What I want to see, is what `помидор`, `помидоры`, `томат` are in relation to meaning, for example is it singular or plural and so on.
+
+And also each words itself should be fully defined (its composition).
+
+So if meanings is reverse dictionary, description of itself is regular direct dictionary.
+
+We need to make much more detailed descriptions of both meanings and words.
+
+And if meaning reference possible ways to express it using words, words should reference possible meanings.
+
+Also it is strange that for `помидор` we have plural, and for `томат` we don't.
+
+So the ideal goal is to allow our system use all the semantics we can collect from other sources.
+
+And our construction should ideally in normalized way in respect to each type of link.
+
+We also need to find actual tasks and questions and other relevant places in the code that will actually benefit of the more detailed knowledge links network structure.
+
+We also need to find all previously hardcoded strings in the code, and keep meanings, and their translation from any language to any language in our data, and that data should be grounded in real data (which for tests we can precache as we already do).
+
+We need to make sure each and every concept in our codebase is fully expressed in meanings.
+
+Also we have a huge portion of code in formal worker in JavaScript. I expected for us to have WebAssembly web worker, and JavaScript should solve only interfacing with the UI, not reimplementing the logic.
+
+We also need to double check we don't repeat ourselves, and if we absolutely must convert some code to JavaScript for logic, it should be compiled at build time from Rust to JavaScript.
+
+So the code on JavaScript should be kept minimal.
+
+Also we should have CST/AST of all our Rust logic (meta algorithm) in our data, so we can use our algorithm to reason about itself, add missing parts to itself (for example in places where we place unhandled error exceptions).
+
+And we should be able to rebuild Rust logic on demand from full CST/AST of it. And also we should have generated mermaid diagram split into parts so we can have high level overview of the whole system algorithm visually by humans.
+
+We should make different mermaid diagram describing in detail what exactly happens when the input to the system coming from different places.
+
+And we also need to make interactive debugging view (that should be separate experimental view, for which we can use embedded VS Code, that is split into different views in a debug view), where while the formal AI is thinking, we are able to execute it step by step showing split view with chat, data, mermaid diagram for the part of algorithm, rust version of the code, javascript version of the code.
+
+So we need to make sure our universal meta algorithm is fully inspectable, and is able to reason about itself.
+
+We need to make sure everything from what I ask here if reflected in our docs, roadmaps, requirements and so on.
+
+We also must double check that we fully apply https://github.com/link-foundation/code-architecture-principles in our system.
+
+Yet the meta algorithm for processing messages, talking, executing tools, solving tasks - the meta algorithm should be fully universal, should reason about itself, should be able to reason about any message, any task, any question.
+
+Any message should be treaded as statement formalized into meta language and weighted using probability of being true given all we know in the context of dialog, in the context of all dialogs and so on. And also when user gives conflicting requirements, we need ways to warn user about this, and propose solutions to paradoxes, contradictions and so on in different ways, dimensions, axis, criteria.
+
+Even this task itself must be solvable by our meta algorithm.
+
+So the best tactic is to use our own Formal AI via agent tool CLI (https://github.com/link-assistant/agent) it must be possible to spawn instance of Formal AI server, and to give him this task. It surely will fail soon, you can connect to it via debugger, or find any other way to iterate.
+
+So the goal is to use our meta algorithm, to reason through it about this task, fixing all the failures on the way, and as the result we should get json file with Agent CLI session that fully solved this exact task, i mean literally https://github.com/link-assistant/formal-ai/issues/538.
+
+So you are the guide for our algorithm, and any missing or wrong reasoning must be fixed using our meta algorithm itself.
+
+So there is a simple rule: you don't read or edit code or files yourself, you only use Agent CLI with Formal AI server connected to do it.
+
+If https://github.com/link-assistant/agent has any blockers, that we cannot do workaround - we can create an issue and pause.
+
+If Formal AI is not able to do changes in files as requested - you go and fix it, until it can, each time you should use different natural language requests, so we test, that solutions are never hardcoded, but truly general.
+
+So it is like a game you go through the task using another intelligence, and when it fails you keep fixing it, using itself.
+
+So you can fallback to reading or editing code yourself, only when proven Agent CLI with Formal AI connected cannot, yet immediately you need to make sure you fix Agent CLI with Formal AI just enough for it to be able to do such tests in general, and retry the step, even if it is already done, yet if formal AI will not react accordingly like you would do or any human - you fix it all, and each small fixing step should also be done with Agent CLI itself.
+
+By doing it all so - we will be able to ensure that our Formal AI is truly and fully general AI system, that is able to do coding, and keep improving,
+--- COMMENTS ---
+
+=========== ISSUE 527 ===========
+TITLE: Generate all possible questions and answer them
+CLOSED: 2026-07-07T15:59:28Z
+BODY:
+We can start by generating questions using single word, and provide best possible answer to them.
+
+After that all questions using 2 words and so on.
+
+We can also use only 10% of most frequent word - we can take average from multiple known corpuses of texts for each language.
+
+For 3 words and so on, we can take 5% of most frequent words.
+
+For 4 we take 2.5% most frequent and so on.
+
+We also should distinct between grammatically correct and incorrect.
+
+And grammatically correct also should be split in logically meaningful.
+
+We can also optimize our system for top asked questions: https://explodingtopics.com/blog/top-google-questions, and also find lots of similar sources, so we can merge them and re-rank, so we know that are the most popular questions.
+
+We also need to support all variations of such questions.
+
+So ideally we should have some function that produces infinite sequence of questions from smallest to largest, yet it should be possible to configure what counts as question or now, for example sequence of all grammatically and logically sound questions, for that we should exactly define, what these criteria actually mean.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+
+
+
+
+--- COMMENTS ---
+
+=========== ISSUE 526 ===========
+TITLE: Translation quality test
+CLOSED: 2026-07-04T17:02:22Z
+BODY:
+The best translation is the translation that survives round trip translation.
+
+So we should by default find such formulation for translation, that is more likely and in most part will survive round trip translation.
+
+We need to make sure that all our logic related to formal translation via meta language (between programming languages, between natural languages) all have round trip translation quality test.
+
+Translation to meta language from any other language must have zero data loss, meaning, roundtrip from meta language and back must work always.
+
+Yet we also need to test roundtrips from Rust to meta language to JavaScript (roundtrip via meta language between JavaScript and Rust), from JavaScript to meta language to Rust (and round trip). The same for Russian -> meta language -> English, English -> meta language -> Russian. So Rust <-> JavaScript, Russian <-> English and so on. We should support tests for all roundtrips between each separate language and meta language, and between each 2 languages we support via meta language.
+
+We should never support direct translation without meta language, as doing so will be computationally unsolvable.
+
+For example if we have 100 languages, translators between them will be 100 * 100 = 10 000, and if we have 100 languages + meta language, we will need only 200 translators (to and from meta language from each 100 languages).
+
+Make sure our vision, requirements, roadmap and contributing guide all do not contradict this, and all include all relevant text about the case.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--- COMMENTS ---
+
+=========== ISSUE 523 ===========
+TITLE: Fix all false positives and errors at CI/CD
+CLOSED: 2026-06-17T18:05:00Z
+BODY:
+- https://github.com/link-assistant/formal-ai/actions/runs/27703726124
+
+Use all the best practices from CI/CD templates (check full file tree to compare for all GitHub workflow and CI/CD scripts file), if the same issue is found in template report issue also in templates:
+- https://github.com/link-foundation/js-ai-driven-development-pipeline-template
+- https://github.com/link-foundation/rust-ai-driven-development-pipeline-template
+- https://github.com/link-foundation/python-ai-driven-development-pipeline-template
+- https://github.com/link-foundation/csharp-ai-driven-development-pipeline-template
+
+We should compare all files, so we don't have more CI/CD errors in the future and reuse all the best practices from these templates.
+
+We need to download all logs and data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), in which we will reconstruct timeline/sequence of events, list of each and all requirements from the issue, find root causes of the each problem, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+If there is not enough data to find actual root cause, add debug output and verbose mode if not present, that will allow us to find root cause on next iteration.
+
+If issue related to any other repository/project, where we can report issues on GitHub, please do so. Each issue must contain reproducible examples, workarounds and suggestions for fix the issue in code. Also double check to fully apply requirements to entire codebase, so if we have issue in multiple places, it should be fixed in all them.
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--- COMMENTS ---
+
+=========== ISSUE 520 ===========
+TITLE: E8: Upstream feedback to agent-commander + best-practices write-up
+CLOSED: 2026-06-20T00:15:46Z
+BODY:
+**Close the upstream loop.** Parent: #511.
+
+## Problem
+The issue requires: "if some features are missing from agent-commander we should report it" and "check hive-mind for best practices for Agent CLI + agent-commander". Gaps found during E4–E7 must be filed upstream and linked, and the best-practices write-up finalized.
+
+## Approach
+1. File any `agent-commander` capability gaps found during E4–E7 as issues on `link-assistant/agent-commander` and link them here.
+2. Finalize the best-practices doc (hive-mind isolation guidance applied).
+
+## Known upstream status (already triaged in E0)
+- `agent-commander` read-only/plan enforcement was requested and shipped: link-assistant/agent-commander#20 (closed). `--read-only` now maps to native flags for `claude`/`codex`/`opencode`/`qwen`/`gemini`.
+- Residual gap: the `@link-assistant/agent` tool has **no native permission system**, so `--tool agent --read-only` is *rejected* by agent-commander. Filed upstream at link-assistant/agent#271. Until it lands, read-only for the `agent` tool is enforced by the desktop tool gate (E4).
+
+## Acceptance criteria
+- Any further gaps found in E4–E7 are filed on `link-assistant/agent-commander` and linked here.
+- The best-practices doc is finalized and merged.
+
+**Delivers:** R16, R17 (closeout). **Depends on:** E4–E7 (findings).
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+[konard]
+Closed by #539, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+----
+
+=========== ISSUE 519 ===========
+TITLE: E7: Full integration + e2e for the cold-start `ls ~` journey
+CLOSED: 2026-06-19T22:51:30Z
+BODY:
+**Prove the cold-start journey.** Parent: #511.
+
+## Problem
+The issue requires "full integration and e2e tests to make sure our desktop app fully supports that case from the start" — i.e. the whole `ls ~` journey, end to end. None exist yet.
+
+## Approach
+Add `tests/e2e/tests/issue-511*.spec.js` covering: first-run onboarding, per-command grant/deny, the three-way mode switch, and `ls ~` returning a real listing rendered in chat. Provide a hermetic variant (in-process provider) wired into CI, plus a container-gated variant exercising the real CLI through agent-commander.
+
+## Existing components
+The e2e harness under `tests/e2e/`, the in-process provider (E4), the chat render adapter (E6), the Formal-AI container (E5, for the gated variant).
+
+## Acceptance criteria
+- CI runs the hermetic journey green (onboarding → grant → mode switch → `ls ~` listing in chat).
+- The container-gated variant (real CLI through agent-commander, inside the container) passes on demand.
+
+**Delivers:** R15, R18. **Depends on:** E2, E6 (and E5 for the gated variant).
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+[konard]
+Closed by #537, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+----
+
+=========== ISSUE 518 ===========
+TITLE: E6: Render Agent CLI (NDJSON) output into the existing chat UI
+CLOSED: 2026-06-20T13:24:12Z
+BODY:
+**Agent output rendered as chat.** Parent: #511.
+
+## Problem
+In agent mode the issue requires reusing the existing chat UI: "use Agent CLI output to actually construct the viewable chat UI we already have in regular chat mode." Today there is no adapter from the CLI's streamed events to the chat render path.
+
+## Approach
+Build an adapter mapping `agent-commander` / OpenCode NDJSON events (assistant text, tool start/result, errors) onto the existing chat message + tool-call render path.
+
+## Existing components
+The existing chat message + tool-call render components; `agent-commander`/`agent` NDJSON streaming (100% OpenCode-compatible event format).
+
+## Acceptance criteria
+- An agent turn renders like normal chat with tool steps from a recorded NDJSON fixture (unit test) and live (e2e).
+- Assistant text, tool start/result, and error events each map to the correct chat element.
+
+**Delivers:** R14. **Depends on:** E4 (events), E5 (real stream).
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+
+=========== ISSUE 517 ===========
+TITLE: E5: Installable Formal-AI container (server + agent + agent-commander) & CLI setup
+CLOSED: 2026-06-20T13:24:04Z
+BODY:
+**Installable, isolated execution environment.** Parent: #511.
+
+## Problem
+Autonomous tools must run inside an isolated container, never against the developer's host `claude`/`codex` subscriptions. Today `konard/box-dind` is used for the `shell` tool, but there is no Formal-AI-owned image bundling the server + `agent` + `agent-commander`, and no installer UX. The issue requires "a separate small docker container (our server … easy installable by our desktop application)".
+
+## Approach
+1. Define the Formal-AI image (extending the `konard/box-dind` sandbox) bundling the local OpenAI-compatible server + `agent` + `agent-commander`.
+2. Desktop "Install agent environment" action: pull/build + health check.
+3. Managed install/upgrade of the Agent CLI **inside** the container (R10).
+4. Document the hive-mind isolation practices applied (R17).
+
+## Existing components
+`konard/box-dind` sandbox, the local server (E3), `agent-commander` (E4), hive-mind isolation guidance (`docs/case-studies/issue-511/raw-data/online-research.md` §3).
+
+## Acceptance criteria
+- One-click "Install agent environment" produces a ready container; `agent --version` is present/current inside it.
+- Autonomous tools run only inside the container; no host CLI is invoked.
+- The applied hive-mind isolation practices are documented.
+
+**Delivers:** R10, R13, R14b, R17. **Depends on:** E4.
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+
+=========== ISSUE 516 ===========
+TITLE: E4: AgentProvider seam — in-process provider + agent-commander provider
+CLOSED: 2026-06-20T13:24:00Z
+BODY:
+**Execution seam: in-process + agent-commander.** Parent: #511.
+
+## Problem
+Today only the in-repo test driver from `src/agentic_coding/` exists; there is no provider abstraction, no path through `link-assistant/agent-commander`, and the safety rule "never spawn the host's `claude`/`codex`" is not enforced by design.
+
+## Approach
+1. Introduce an `AgentProvider` interface; implement `InProcessProvider` over the existing `src/agentic_coding/` loop (default, hermetic).
+2. Implement `CommanderProvider` that drives `link-assistant/agent` **through** `agent-commander` (dependency added), mapping per-tool grants → read-only/plan flags (`--read-only` etc.).
+3. Add a CI guard that no host `claude`/`codex`/`agent` binary is ever spawned by the desktop app.
+
+## Existing components
+`src/agentic_coding/` agentic loop (#468), `link-assistant/agent-commander` (`start-agent`, NDJSON, `--read-only`), the E2 per-tool grant map.
+
+## Acceptance criteria
+- A read-only command executes via the in-process provider in tests.
+- The commander provider is selectable and never invokes a CLI directly or touches host subscriptions.
+- CI guard fails the build if a host `claude`/`codex`/`agent` spawn is introduced.
+
+**Delivers:** R9, R12, R14b (in part). **Depends on:** E2 (grants), E3 (server). See the upstream `agent` permission-system gap filed at link-assistant/agent#271 — until it lands, `--tool agent --read-only` is rejected by agent-commander, so read-only for the `agent` tool must be enforced by the desktop tool gate.
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+
+=========== ISSUE 515 ===========
+TITLE: E3: Auto-start the local OpenAI-compatible server for agent mode
+CLOSED: 2026-06-20T13:23:54Z
+BODY:
+**Local model backend for agent mode.** Parent: #511.
+
+## Problem
+The local OpenAI-compatible server exists behind `FORMAL_AI_DESKTOP_SERVER` but is not auto-started when the user enters agent mode, and its `apiBase` is not handed to the provider layer. The issue requires: "Start the Formal AI OpenAI compatible server locally, and configure Agent CLI."
+
+## Approach
+On entering `agent`/`full-auto`, ensure the local server is running — start + health-probe if down, reuse if already up — and expose its `apiBase` to the provider layer for later CLI configuration.
+
+## Existing components
+The existing `FORMAL_AI_DESKTOP_SERVER` server mode and `/v1/chat/completions`, `/v1/messages`, `/v1/responses` surfaces (see `docs/desktop/server-api.md`, issue #468).
+
+## Acceptance criteria
+- Entering agent mode yields a ready local-server `apiBase`; an already-running server is reused (not double-started).
+- Unit tests with a mocked server lifecycle (start, health-probe, reuse, failure).
+
+**Delivers:** R11. **Depends on:** E1 (mode); parallelizable with E2.
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+
+=========== ISSUE 514 ===========
+TITLE: E2: Per-tool / per-command permission UI + onboarding message
+CLOSED: 2026-06-18T07:12:26Z
+BODY:
+**Permissions become real.** Parent: #511.
+
+## Problem
+The tool router gates per-tool but desktop grants are all-or-nothing (`{ all }`), there is no per-command approval, and no first-run onboarding system message. The issue requires that "each [permission] should be granted or declined separately" and that the first run "produce a system message with requests for permissions".
+
+## Approach
+1. Extend the grant payload from `{ all }` to a per-tool map (the tool router already gates per-tool via `isPermitted`).
+2. Build the permission panel: grant/decline per tool; per-command approve/deny in `agent` mode; no prompts in `full-auto` (but grants still gate which tools are allowed).
+3. First-run / agent-intent onboarding system message (R1), shown once, persisted in preferences.
+4. Regression test that default-deny cannot be bypassed by the new UI.
+
+## Existing components
+`desktop/lib/tool-router.cjs` `isPermitted` (default-deny invariant), the existing grant plumbing, the chat system-message rendering path.
+
+## Acceptance criteria
+- Each tool (`shell`, `http_fetch`, `read_local_file`, …) and, in `agent` mode, each concrete command can be granted or declined independently.
+- `full-auto` runs granted tools without per-command prompts; empty grants refuse everything.
+- The onboarding system message is emitted once on first agent intent and the decision persists.
+- Regression test: no grant ⇒ every tool refused; the new UI never bypasses `isPermitted`.
+
+**Delivers:** R1, R2, R3, R4 (guard), R7, R8. **Depends on:** E1.
+
+---
+Part of the #511 epic. Full specification is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+[konard]
+Closed by #528, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+----
+
+=========== ISSUE 513 ===========
+TITLE: E1: Terminal-command intent + three-way Mode radio (visible fix for #511)
+CLOSED: 2026-06-17T23:32:35Z
+BODY:
+**Visible fix / first slice.** Parent: #511.
+
+## Problem
+A terminal-command prompt (`Выполни \`ls ~\` в терминале`, `run \`ls ~\` in terminal`) dead-ends in the worker's `unknown` fallback (see #511 reasoning trace). Agent mode is a binary off-by-default toggle with no onboarding, so the user has no path from a shell request to execution.
+
+## Approach
+1. Add `tryTerminalCommand` to the JS worker **and** the Rust solver (parity) so a shell/terminal request returns an `agent_suggestion` intent instead of `unknown`.
+2. Replace the binary agent toggle with a `chat` / `agent` / `full-auto` radio group and a `mode` preference (derive `agentMode` for back-compat); update the status label.
+
+## Existing components
+`desktop/lib/tool-router.cjs` (permission-gated tool router with a `shell` tool); the existing binary `agent-toggle`; the JS worker intent table and the Rust `src/solver` intents.
+
+## Acceptance criteria
+- `Выполни \`ls ~\` в терминале` (ru) and `run \`ls ~\` in terminal` (en) no longer return `unknown`.
+- The top toolbar shows a three-way `chat`/`agent`/`full-auto` radio group; switching is one click and reflected in the status label.
+- Unit tests in both engines (JS + Rust) for the new intent; one e2e for the mode switch.
+
+**Delivers:** R5, R6, scaffolding for R1. **Depends on:** E0 (this PR's plan). **Hermetic** (no Docker, no real CLI, no subscriptions).
+
+---
+Part of the #511 epic. Full specification (requirements R1–R20, solution plans, dependency graph) is in `docs/case-studies/issue-511/`.
+
+
+--- COMMENTS ---
+[konard]
+Closed by #525, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+----
+
+=========== ISSUE 511 ===========
+TITLE: Unknown prompt: Выполни `ls ~` в терминале
+CLOSED: 2026-06-20T13:23:39Z
+BODY:
+## Environment
+
+- **Version**: dev (wasm)
+- **URL**: http://127.0.0.1:54928/app/index.html?desktop=1
+- **Timestamp**: 2026-06-17T12:05:37.963Z
+
+## User Context
+
+- **UI languages**: *en-US*, ru-US
+- **UI**: 1280x812 viewport, 1728x1117 @2x screen, Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) formal-ai-desktop/0.207.0 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36 browser, macOS platform
+- **Locale**: en-US (Asia/Calcutta)
+
+## Reproduction of dialog
+
+Legend: `U` = user, `A` = agent.
+
+```
+U: Дай мне список файлов в моей домашней директории.
+A: Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для языка `missing` и задачи `list_files`. Поддерживаемые языки: rust, python, javascript, typescript, go, c, cpp, java, csharp, ruby. Поддерживаемые задачи: hello_world, count_to_three, list_files, list_files_arg, list_files_reverse_sort, list_files_arg_reverse_sort, fizzbuzz, factorial, reverse_string, sum_to_ten, fibonacci.
+U: Выполни `ls ~` в терминале
+A (intent: unknown, reported): Я ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога.
+```
+
+## Reasoning Trace
+
+Focused assistant turn:
+
+```
+intent: unknown
+evidence:
+- intent:unknown
+- source:worker
+- fallback:unknown
+- language:ru
+- trace:impulse:Выполни `ls ~` в терминале
+- trace:formalization:(@USER OP:express ?выполни ls в терминале)
+- trace:language:ru
+- trace:fallback:unknown
+- trace:deformalize:(@USER OP:express ?выполни ls в терминале):unknown
+- user_context:ui_language:en
+- user_context:browser_language:en-US
+- user_context:color_scheme:dark
+- user_context:time_zone:Asia/Calcutta
+- user_context:location_inference:time zone / locale only; exact geolocation was not requested
+diagnostics_steps:
+- impulse: Выполни `ls ~` в терминале
+- formalize: (@USER OP:express ?выполни ls в терминале)
+- detect_language: ru
+- invoke_tool: wikipedia_article_question
+- invoke_tool: fact_query
+- invoke_tool: project_lookup
+- invoke_tool: http_fetch
+- invoke_tool: url_navigate
+- invoke_tool: docs_method_explanation
+- invoke_tool: procedural_how_to
+- invoke_tool: procedural_how_to_followup
+- invoke_tool: web_search
+- invoke_tool: wikipedia_lookup
+- fallback: unknown
+- deformalize: (@USER OP:express ?выполни ls в терминале) ⇒ unknown: Я ещё не научился отвечать на это. Я пока не могу ответить на это по локальным правилам связей. …
+- user_context: ui_language:en, browser_language:en-US, color_scheme:dark, time_zone:Asia/Calcutta, location_inference:time zone / locale only; exact geolocation was not requested
+tool_calls:
+- wikipedia_lookup: in: prompt, language • out: no_match
+```
+
+
+## Description
+
+<img width="1392" height="952" alt="Image" src="https://github.com/user-attachments/assets/9fdfcabe-a199-450b-8b89-e68a26a94a51" />
+
+We need to make sure that from the start it will ask to switch to agentic mode (with configuration for each bash tool call), and will use https://github.com/link-assistant/agent + our server start up to actually execute actions.
+
+At first time we should produce system message with requests for permissions (each should be granted or declined separately).
+
+Switch to agent mode (approve each command).
+Install Agent CLI (if not installed) or upgrade if not newest version.
+Start the Formal AI OpenAI compatible server locally, and configure Agent CLI.
+
+And so on.
+
+We should also add full integration and e2e tests to make sure our desktop app fully supports that case from the start.
+
+So user is able to do basic readonly operations via terminal, which itself executed in Agent CLI.
+
+When in agent mode we should use Agent CLI output to actually construct viewable chat UI we already have in regular chat mode.
+
+Also chat/agent/full auto modes should be single radio button group on top, that is possible to easily switch between.
+
+full auto is agentic mode + no confirmations. Also may be Agent CLI has missing features, and we can use our https://github.com/link-assistant/agent-commander to communicate with tools like claude/codex and so on.
+
+Also if some features are missing from https://github.com/link-assistant/agent-commander we should report it. Check github.com/link-assistant/hive-mind for best practices for Agent CLI + agent-commander.
+
+Also don't use your local claude and codex, they are connected to our subscriptions, and if you reconfigure them execution of this task and other our tasks may fail, so please use separate small docker container (our server, which we also should make available and easy installable by our desktop application), in near server you can install codex and claude to test integration of  https://github.com/link-assistant/agent-commander with our desktop app. So even Agent CLI we should not 
+--- COMMENTS ---
+
+=========== ISSUE 509 ===========
+TITLE: Надо сделать что бы FormalAI умел работать с историей
+CLOSED: 2026-06-30T01:03:08Z
+BODY:
+Если formal-ai сможет вычлинять информацию из истории будет очень круто
+
+--- COMMENTS ---
+[konard]
+We need to support multiple natural language queries to the history of the dialog, and the whole memory.
+
+We also need to support natural language queries to the entire memory. So we should have something much more powerful than SQL, GraphQL and so on.
+
+Natural language queries to the links (associative) memory.
+----
+

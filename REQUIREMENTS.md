@@ -1106,3 +1106,22 @@ desktop plan scheduler, and the case-study trace under
 | R425 | The auto-learning loop must consume failed replays: refinement folds recorded compliance markers back into amendments, and failures that remain are preserved as durable `dreaming_candidate_failure` records instead of being dropped. | Implemented by `refine_amendments_from_failures` (marker lines only) and failure materialization in `apply_dreaming_plan`; verified by `failed_replay_refines_the_amendment_back_from_the_recorded_marker` and `failed_replays_are_preserved_as_refinement_records`. |
 | R426 | Dreaming must synthesize genuinely new trials from mined numeric patterns on the most-used topics and retain them, and task detection must work through the multilingual lexicon rather than English-only kinds. | Verified by `dreaming_synthesizes_new_trials_from_numeric_patterns_on_top_topics` and `multilingual_task_kinds_are_replayed_as_candidates` against `data/meta/dreaming-lexicon.lino`. |
 | R427 | The core dreaming runtime must be directly regression-tested: foreground activity gates idleness, a mid-flight foreground request cancels the run without touching the log, `FORMAL_AI_DREAMING` opt-out honors only explicit off values, serve() starts the worker, and shared-log writes stay locked and atomic. | Verified by `tests/unit/dreaming_runtime.rs` (including `write_locked_atomic_creates_parents_replaces_content_and_leaves_no_temp_files`) and the desktop `PRIORITY_LOW` assertion in `desktop/scripts/dreaming.test.mjs`. |
+
+## Issue #651 Vision Completion Planning
+
+Issue [#651](https://github.com/link-assistant/formal-ai/issues/651) asks for a
+planning pass: audit everything that keeps the project from fully fulfilling
+its vision, file the most critical missing features as maximum-detail
+sub-issues, and make the vision and roadmap consistent with the latest
+development. PR [#652](https://github.com/link-assistant/formal-ai/pull/652)
+delivers the audits, the restructured planning docs, and the 21-issue batch
+E35–E55.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R428 | Preserve the issue #651 source material, open/closed-issue snapshots, CI state, deferred-work audit, code audit, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-651/{README.md,code-audit.md,online-research.md,proposed-issues.md,raw-data/}`. |
+| R429 | Sweep all previous issue conversations and repository docs for work that was deferred, downgraded, or ignored, and map every actionable finding to a tracking issue. | Implemented by `docs/case-studies/issue-651/raw-data/incomplete-work-audit.md`; every actionable finding maps to E35–E55 or an already-open issue (the mapping is in `proposed-issues.md`). |
+| R430 | Restructure `ROADMAP.md` to track general requirements — not issues — with done / partially done / not done status, under the invariant that no non-done requirement exists without a linked open issue. | Implemented by the 2026-07-12 `ROADMAP.md` restructure (eight requirement groups plus the invariant in its Verification Contract). |
+| R431 | Update `VISION.md` with the associative-only constraint (links networks, never graphs or tables), the self-coding ladder through Agent CLI and Hive Mind, and the wide-audience distribution promise. | Implemented by the `VISION.md` sections "Associative Technologies Only", "Self-Coding: The Project Builds Itself", and "Reaching A Wide Audience". |
+| R432 | File every partially-done or not-done requirement as a maximum-detail issue (problem, approach, existing components, acceptance criteria) via `gh`. | Implemented by issues [#654](https://github.com/link-assistant/formal-ai/issues/654)–[#674](https://github.com/link-assistant/formal-ai/issues/674), whose full bodies live in `docs/case-studies/issue-651/proposed-issues.md`. |
+| R433 | Register every filed issue as a sub-issue of #651 and encode execution order with `blocked_by` relations through the modern GitHub API. | Implemented via `POST .../issues/651/sub_issues` (21 registrations) and `POST .../issues/{n}/dependencies/blocked_by` (#655←#654, #657←#655+#656, #665←#658, #667←#666), verified by reading both endpoints back. |

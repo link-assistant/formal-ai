@@ -1,0 +1,48 @@
+=== ISSUE 520 ===
+TITLE: E8: Upstream feedback to agent-commander + best-practices write-up
+state_reason: completed closed_at: 2026-06-20T00:15:46Z
+[konard]: Closed by #539, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+=== ISSUE 519 ===
+TITLE: E7: Full integration + e2e for the cold-start `ls ~` journey
+state_reason: completed closed_at: 2026-06-19T22:51:30Z
+[konard]: Closed by #537, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+=== ISSUE 518 ===
+TITLE: E6: Render Agent CLI (NDJSON) output into the existing chat UI
+state_reason: completed closed_at: 2026-06-20T13:24:12Z
+=== ISSUE 517 ===
+TITLE: E5: Installable Formal-AI container (server + agent + agent-commander) & CLI setup
+state_reason: completed closed_at: 2026-06-20T13:24:04Z
+=== ISSUE 516 ===
+TITLE: E4: AgentProvider seam — in-process provider + agent-commander provider
+state_reason: completed closed_at: 2026-06-20T13:24:00Z
+=== ISSUE 515 ===
+TITLE: E3: Auto-start the local OpenAI-compatible server for agent mode
+state_reason: completed closed_at: 2026-06-20T13:23:54Z
+=== ISSUE 514 ===
+TITLE: E2: Per-tool / per-command permission UI + onboarding message
+state_reason: completed closed_at: 2026-06-18T07:12:26Z
+[konard]: Closed by #528, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._
+=== ISSUE 513 ===
+TITLE: E1: Terminal-command intent + three-way Mode radio (visible fix for #511)
+state_reason: completed closed_at: 2026-06-17T23:32:35Z
+[konard]: Closed by #525, which targeted the non-default branch `issue-511-26d6b8408464` (repository default: `main`).
+
+GitHub only auto-closes linked issues for pull requests merged into the default branch,
+so hive-mind closed this issue explicitly after the merge.
+
+_Automated by hive-mind ([#1895](https://github.com/link-assistant/hive-mind/issues/1895))._

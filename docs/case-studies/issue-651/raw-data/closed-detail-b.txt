@@ -1,0 +1,617 @@
+=========== ISSUE 604 ===========
+TITLE: OpenAI Chat Completions streaming is malformed: /v1/chat/completions stream:true sends chat.completion not chat.completion.chunk/delta (breaks opencode & AI SDK clients)
+CLOSED: 2026-07-02T22:07:52Z
+BODY:
+## Summary
+
+Our OpenAI-compatible server produces a **malformed streaming response** on `POST /v1/chat/completions` when `stream: true`. Streaming clients that use the standard OpenAI Chat Completions SSE format — including [opencode](https://opencode.ai) via `@ai-sdk/openai-compatible`, and any Vercel AI SDK client — receive an **empty assistant turn**: the request round-trips, tokens are counted, `finish_reason: stop` is reported, but **no text is surfaced**.
+
+This is the **Chat Completions** analog of the Responses-API SSE gap tracked in #602, and it is the one that affects the widest set of clients (anything built on the Vercel AI SDK's OpenAI-compatible provider).
+
+## Reproduction
+
+```sh
+# 1. Build + run the server (stable rustc >= 1.96)
+cargo build --bin formal-ai
+./target/debug/formal-ai serve --host 127.0.0.1 --port 8080 &
+
+# 2. opencode 1.17.13, custom OpenAI-compatible provider — opencode.json:
+# {
+#   "$schema": "https://opencode.ai/config.json",
+#   "provider": { "formalai": {
+#     "npm": "@ai-sdk/openai-compatible",
+#     "options": { "baseURL": "http://127.0.0.1:8080/v1", "apiKey": "local-formal-ai" },
+#     "models": { "formal-symbolic-production": { "name": "Formal Symbolic Production" } }
+#   }}
+# }
+OPENCODE_CONFIG=./opencode.json opencode run -m formalai/formal-symbolic-production "hi"
+```
+
+### Observed
+
+opencode prints the session header and exits with **no assistant text**. `--format json` shows the turn completing empty:
+
+```json
+{"type":"step_start", ...}
+{"type":"step_finish", "part":{"reason":"stop","tokens":{"total":22,"input":1,"output":21,...}}}
+```
+
+`output: 21` tokens were produced by the solver, but opencode surfaced nothing.
+
+### Expected
+
+opencode prints `Hi, how may I help you?`.
+
+## Root cause
+
+When `stream: true`, `sse_response()` (`src/server.rs:259`) serializes the **non-streaming** `chat.completion` object and wraps it in a single `data:` line:
+
+```
+$ curl -s -N http://127.0.0.1:8080/v1/chat/completions \
+    -d '{"model":"formal-symbolic-production","messages":[{"role":"user","content":"hi"}],"stream":true}'
+data: {"id":"...","object":"chat.completion","choices":[{"index":0,"message":{"role":"assistant","content":"Hi, how may I help you?", ...}}]}
+data: [DONE]
+```
+
+But the OpenAI **streaming** protocol requires **`chat.completion.chunk`** objects whose text lives in `choices[].delta.content` (not `choices[].message.content`):
+
+```
+data: {"object":"chat.completion.chunk","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+data: {"object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"Hi, how may I help you?"},"finish_reason":null}]}
+data: {"object":"chat.completion.chunk","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+data: [DONE]
+```
+
+opencode's AI-SDK parser reads `choices[].delta`; our payload has `choices[].message` and `object: "chat.completion"`, so it extracts no text and closes the turn empty.
+
+The **non-streaming** path is correct — the same request without `stream:true` returns `message.content = "Hi, how may I help you?"`. This is strictly a streaming-shape bug.
+
+## Fix
+
+When `stream: true` on `/v1/chat/completions`, emit a proper SSE stream of `chat.completion.chunk` events:
+- first chunk: `delta: {"role":"assistant"}`
+- one or more content chunks: `delta: {"content": "<piece>"}` (a single chunk with the whole text is acceptable; incremental is nicer)
+- final chunk: `delta: {}`, `finish_reason: "stop"`
+- terminate with `data: [DONE]`
+
+`object` must be `"chat.completion.chunk"` on every event. (Move the `thinking_steps` out of the streamed text path, or carry them on the final chunk / a vendor extension field — they must not replace the `delta` shape.)
+
+## Documentation ask
+
+Alongside the fix, please add **clear, copy-pasteable documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`) for **how to configure opencode against Formal AI** end to end: the exact `opencode.json` provider block, the `baseURL`, model id, and the `opencode run -m <provider>/<model> "hi"` invocation — verified to print a reply. A user should be able to follow the doc and get a working `hi` without reverse-engineering the wire format.
+
+## Acceptance criteria
+
+- [ ] `POST /v1/chat/completions` with `stream:true` returns `object: "chat.completion.chunk"` events with `choices[].delta.content`, terminated by `data: [DONE]`.
+- [ ] `opencode run -m formalai/formal-symbolic-production "hi"` prints `Hi, how may I help you?` (or equivalent), non-empty.
+- [ ] An automated end-to-end test drives `/v1/chat/completions` with `stream:true` over real HTTP and asserts a chunk-shaped stream with recoverable text (catches this regression in CI, which the in-process in-repo driver does not).
+- [ ] Documentation for configuring opencode (and generally any `@ai-sdk/openai-compatible` client) against Formal AI is added and verified.
+
+## Environment
+
+- `formal-ai 0.254.0`, `serve` on `127.0.0.1:8080`, stable rustc 1.96.1, macOS aarch64
+- `opencode 1.17.13` (`@ai-sdk/openai-compatible`)
+
+## Related
+
+- #602 — OpenAI **Responses** API SSE (codex). This issue is the **Chat Completions** SSE sibling.
+- #603 — umbrella multi-protocol server (this is sub-issue **S3**: OpenAI Chat SSE correctness).
+
+
+--- COMMENTS ---
+[konard]
+Blocks #606 (the `with-formal-ai` wrapper CLI, which can only complete a turn once this is resolved).
+----
+[konard]
+Related: #607 (Agent CLI shell tool_calls never reach the client because of this streaming bug) and #608 (thinking/reasoning can't stream until this is fixed).
+----
+
+=========== ISSUE 603 ===========
+TITLE: Universal multi-protocol API server: support OpenAI, Anthropic, Gemini, and Vertex shapes under /api/<protocol>/ (move OpenAI routes to /api/openai/v1)
+CLOSED: 2026-07-03T00:33:04Z
+BODY:
+## Summary
+
+Formal AI's HTTP server should be a **universal, multi-protocol API gateway** in front of the one symbolic solver: it must speak *every* major agent-facing API dialect — OpenAI (Chat Completions + Responses), Anthropic Messages, **Google Gemini (`generateContent` / `streamGenerateContent`)**, and **Vertex AI** — so that any agent CLI or SDK can drive Formal AI unchanged. The reasoning core stays single and shared; only the request/response *envelope* differs per protocol.
+
+To make room for this, the URL space must be **reorganized by protocol family**: every OpenAI-shaped route moves from `/v1/...` to **`/api/openai/v1/...`**, and each other protocol gets its own sibling prefix (`/api/gemini/...`, `/api/vertex/...`, `/api/anthropic/...`, ...). This gives us a clean namespace instead of overloading `/v1` for one vendor's shape.
+
+This is the umbrella issue for that initiative. It builds on and subsumes the streaming gap found in #602.
+
+## Motivation — found by actually driving external CLIs
+
+We drove real agent CLIs at the running server (`formal-ai serve`, v0.254.0, stable rustc 1.96.1):
+
+| CLI | Reaches our server? | Result |
+| --- | --- | --- |
+| **Codex** (`codex-cli 0.142.0`) | Yes (Responses wire API) | **Fails** — `/v1/responses` ignores `stream:true`, returns one JSON body and closes; Codex waits for `response.completed` SSE events, retries 5×, dies: `stream disconnected before completion`. (Tracked in #602.) Codex 0.142 also dropped `wire_api = "chat"`, so Responses+SSE is the only path. |
+| **Gemini CLI** (`@google/gemini-cli 0.38.2`) | **No** | The official build has **no OpenAI-compatible provider** at all — its `AuthType` enum is only `LOGIN_WITH_GOOGLE`, `USE_GEMINI`, `USE_VERTEX_AI`, `COMPUTE_ADC`, `GATEWAY`, `LEGACY_CLOUD_SHELL`. `OPENAI_BASE_URL` is ignored; it falls through to Google auth. The **only** way it can ever target us is if we expose a **native Gemini `generateContent` endpoint** (a different API shape from OpenAI's). |
+
+So supporting the Gemini/Vertex ecosystem is not an OpenAI-compat tweak — it requires implementing their native wire shapes. Hence this umbrella issue.
+
+## Current route surface (`src/server.rs`)
+
+Everything vendor-facing currently lives under `/v1`:
+
+- `GET  /v1/models`
+- `POST /v1/chat/completions`  — honors `stream:true` (single-chunk SSE, see caveat below)
+- `POST /v1/responses`         — **does NOT** honor `stream:true` (always one JSON body) ← #602
+- `POST /v1/messages`          — Anthropic Messages (honors `stream:true`)
+- `GET  /v1/graph`, `/v1/bundle`, `/v1/links`, `POST /v1/links/query`, `/v1/memory*` — Formal-AI-native introspection
+
+**Streaming caveat (affects #602 too):** `sse_response()` (`src/server.rs:259`) emits the *entire* answer as **one** `data: {json}\n\n` chunk followed by `data: [DONE]`. It is SSE-framed but not incremental, and — critically — for the Responses endpoint it would still emit a Chat-Completions-shaped blob, **not** the `response.created → response.output_text.delta → response.completed` event sequence Codex requires. So "add SSE to `/v1/responses`" means emitting the correct Responses event *protocol*, not just wrapping the existing JSON.
+
+## Proposed design
+
+### 1. Protocol-namespaced URL space
+
+Introduce `/api/<protocol>/...` and move OpenAI routes under it:
+
+```
+/api/openai/v1/models
+/api/openai/v1/chat/completions
+/api/openai/v1/responses
+/api/anthropic/v1/messages
+/api/gemini/v1beta/models/{model}:generateContent
+/api/gemini/v1beta/models/{model}:streamGenerateContent
+/api/vertex/v1/projects/{project}/locations/{loc}/publishers/google/models/{model}:generateContent
+```
+
+Formal-AI-native routes (`/graph`, `/bundle`, `/links`, `/memory`) move to a neutral prefix, e.g. `/api/formal-ai/...` (or stay at root — decide during design).
+
+**Backward compatibility:** keep the old `/v1/...` paths working as aliases (301/308 redirect or internal re-dispatch) for at least one release, with a deprecation note, so existing clients pointed at `…:8080/v1` don't break.
+
+### 2. One solver, many envelopes (adapter pattern)
+
+Each protocol is a thin **codec** that (a) parses its request shape into the shared internal request, (b) calls the existing `UniversalSolver`, and (c) renders the internal answer into that protocol's response shape — both non-streaming JSON and that protocol's streaming event format. The Anthropic path (`src/anthropic.rs`) already demonstrates this seam; Gemini and Vertex follow the same structure.
+
+### 3. Correct streaming per protocol
+
+- OpenAI Chat: `chat.completion.chunk` events + `data: [DONE]`.
+- OpenAI Responses: `response.created` → `response.output_item.added` → `response.output_text.delta`… → `response.output_item.done` → `response.completed`. **(This is the #602 fix.)**
+- Anthropic: `message_start` → `content_block_delta`… → `message_stop`.
+- Gemini: `streamGenerateContent` chunked `GenerateContentResponse` objects.
+
+### 4. Per-protocol model listing
+
+Return the model-list shape each client expects (OpenAI `{"data":[...]}`, Gemini `{"models":[...]}` under `/api/gemini/v1beta/models`, etc.). This also clears the Codex `failed to refresh available models` warning noted in #602.
+
+## Scope / sub-issues
+
+This umbrella should be split into shippable, independently testable slices (each with an end-to-end test driving the real HTTP transport with a real client, so regressions are caught in CI, not only by the in-process in-repo driver):
+
+- [ ] **S1 — URL reorg**: move OpenAI routes to `/api/openai/v1/*`, add `/api/...` namespace, keep `/v1/*` aliases with deprecation. Tests: old + new paths both resolve.
+- [ ] **S2 — OpenAI Responses SSE** (subsumes #602): correct `response.*` event stream; `codex exec "hi"` completes end-to-end.
+- [ ] **S3 
+--- COMMENTS ---
+[konard]
+## Correction + verified config details for Codex and Gemini
+
+I did a full documentation pass on both CLIs (installed versions **codex 0.142.5**, **gemini-cli 0.49.0**) and need to **correct** one claim in the issue body: the official Gemini CLI **can** be pointed at a custom base URL — I was wrong to say it can't. This actually *strengthens* the case for native Gemini support here.
+
+### Codex — no config workaround; streaming is mandatory
+From the official config reference (`developers.openai.com/codex/config-reference`), `model_providers.<id>` supports: `base_url`, `env_key`, `env_http_headers`, `http_headers`, `query_params`, `request_max_retries` (4), `stream_max_retries` (5), `stream_idle_timeout_ms` (300000), `wire_api`.
+- **`wire_api`: `"responses"` is the only supported value** — `chat` is removed. (Matches the runtime error we saw.)
+- **There is no option to disable streaming / force non-streaming**, and no model-listing/metadata key.
+- **Conclusion:** Codex *always* streams over the Responses API. The only fix is server-side Responses SSE — tracked as **#602 / sub-issue S2**. Re-tested `codex exec "hi"` on 0.142.5: fails identically (`stream disconnected before completion`).
+
+### Gemini — base-URL override DOES exist (correction)
+The gemini-cli 0.49.0 config reference documents:
+- **`GOOGLE_GEMINI_BASE_URL`** — *"Overrides the default base URL for Gemini API requests (when using `gemini-api-key` authentication)."* Explicitly permits `http://localhost` / `127.0.0.1` (HTTPS requirement waived for localhost).
+- **`GOOGLE_VERTEX_BASE_URL`** — same, for `vertex-ai` auth.
+- **`CODE_ASSIST_ENDPOINT`** — overrides the OAuth code-assist endpoint.
+
+**Key point:** `GOOGLE_GEMINI_BASE_URL` changes only *where* the request is sent, **not the wire protocol** — gemini-cli still sends its native `generateContent` / `streamGenerateContent` shape (not OpenAI). So the official CLI **can** be aimed at our server via:
+
+```sh
+export GEMINI_API_KEY="anything"                       # selects gemini-api-key auth
+export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:8080/api/gemini"
+gemini -m gemini-... -p "hi"
+```
+
+…and "hi" will work **as soon as our server answers the native Gemini `generateContent` protocol (+ its SSE) at that base URL** — i.e. **sub-issue S4**. My earlier `IneligibleTierError` was caused by leaving it on the default Google-OAuth path (which ignores the base URL); the correct path is `gemini-api-key` auth **plus** `GOOGLE_GEMINI_BASE_URL`.
+
+**Net effect on this issue:** native Gemini support (S4) is even more valuable than first stated — it makes the *real, official Gemini CLI* work against Formal AI, not just a Gemini SDK. Same for Vertex via `GOOGLE_VERTEX_BASE_URL` (S5). This aligns cleanly with the proposed `/api/gemini/...` and `/api/vertex/...` prefixes.
+----
+[konard]
+## Added ask: clear per-protocol / per-CLI configuration documentation
+
+This umbrella should also deliver **clear, copy-pasteable documentation** for configuring each supported client CLI/SDK against Formal AI, verified to print a `hi` reply. At minimum:
+
+- **Codex** — `model_providers` block, `wire_api = "responses"`, `codex exec "hi"`. (see #602)
+- **opencode** — `opencode.json` custom `@ai-sdk/openai-compatible` provider, `opencode run -m <provider>/<model> "hi"`. (see #604)
+- **Gemini CLI** — `GEMINI_API_KEY=<any>` + `GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:8080/api/gemini` (`gemini-api-key` auth), `gemini -p "hi"`. (sub-issue S4)
+- **Vertex** — `GOOGLE_VERTEX_BASE_URL` + `vertex-ai` auth. (sub-issue S5)
+- Base URLs per protocol prefix (`/api/openai/v1`, `/api/gemini/...`, `/api/vertex/...`, `/api/anthropic/...`).
+
+**Acceptance addition (S7):** each documented client config is verified end-to-end (`hi` returns a reply) and the doc requires no wire-format reverse-engineering.
+----
+[konard]
+Blocks #606 (the `with-formal-ai` wrapper CLI, which can only complete a turn once this is resolved).
+----
+[konard]
+Related sub-work: #607 (bash/shell tool_calls) and #608 (standard reasoning/thinking fields + streaming) — both feed the multi-protocol client-compatibility goal.
+----
+
+=========== ISSUE 602 ===========
+TITLE: OpenAI-compatible server cannot be driven by Codex CLI: no SSE streaming on /v1/responses
+CLOSED: 2026-07-03T01:40:52Z
+BODY:
+## Summary
+
+Our OpenAI-compatible HTTP server (`formal-ai serve`) cannot be driven by the [Codex CLI](https://github.com/openai/codex) (`codex-cli 0.142.0`). A trivial `codex exec "hi"` pointed at our server never completes: Codex retries 5 times and dies with `stream disconnected before completion`.
+
+This matters because the project's direction (see issue #538 and the `agent` subcommand's docstring) is that Formal AI should be drivable by *any* external agentic CLI through our OpenAI-compatible endpoint. Codex is a mainstream one, and today it fails at the very first turn. The in-repo agentic driver never surfaces this because it calls the solver in-process and does not exercise the HTTP transport an external CLI actually uses.
+
+Both underlying endpoints return correct answers for a plain (non-streaming) request — the gap is purely protocol/transport, not reasoning.
+
+## Reproduction
+
+```sh
+# 1. Build and start the server (stable rustc >= 1.96)
+cargo build --bin formal-ai
+./target/debug/formal-ai serve --host 127.0.0.1 --port 8080 &
+
+# 2. Drive it with Codex (codex-cli 0.142.0)
+OPENAI_API_KEY="local-formal-ai" codex exec \
+  -c 'model_providers.formalai.name="Formal AI"' \
+  -c 'model_providers.formalai.base_url="http://127.0.0.1:8080/v1"' \
+  -c 'model_providers.formalai.wire_api="responses"' \
+  -c 'model_providers.formalai.env_key="OPENAI_API_KEY"' \
+  -c 'model_provider="formalai"' \
+  -c 'model="formal-ai"' \
+  --skip-git-repo-check --sandbox read-only \
+  "hi"
+```
+
+### Observed
+
+```
+ERROR codex_models_manager::manager: failed to refresh available models:
+  ... missing field `models` at line 15 ...
+warning: Model metadata for `formal-symbolic-production` not found. Defaulting to fallback metadata ...
+ERROR: Reconnecting... 1/5
+ERROR: Reconnecting... 2/5
+ERROR: Reconnecting... 3/5
+ERROR: Reconnecting... 4/5
+ERROR: Reconnecting... 5/5
+ERROR: stream disconnected before completion: stream closed before response.completed
+```
+
+### Expected
+
+Codex prints the assistant reply (`Hi, how may I help you?`) and exits 0.
+
+## Root causes (two distinct gaps)
+
+### 1. No SSE streaming on `/v1/responses` (fatal)
+
+Codex 0.142 speaks the **Responses** wire API and always opens the request as a stream (`{"input":"hi","stream":true}`), expecting a `text/event-stream` body that ends with a `response.completed` event.
+
+Our server **ignores `stream: true`** and answers with a single non-streaming JSON body:
+
+```
+$ curl -s -o /dev/null -D - http://127.0.0.1:8080/v1/responses \
+    -H 'content-type: application/json' \
+    -d '{"model":"formal-ai","input":"hi","stream":true}'
+HTTP/1.1 200 OK
+content-type: application/json          <-- should be text/event-stream when stream:true
+content-length: 5719
+connection: close                       <-- closes before any response.completed event
+```
+
+Codex sees the socket close before `response.completed` and reports `stream disconnected before completion`.
+
+The same request **without** streaming works and returns the correct answer with the full symbolic thinking trace:
+
+```
+$ curl -s http://127.0.0.1:8080/v1/responses \
+    -H 'content-type: application/json' \
+    -d '{"model":"formal-ai","input":"hi"}'
+{ "output":[{"type":"message","role":"assistant",
+   "content":[{"type":"output_text","text":"Hi, how may I help you?"}]}], ... }
+```
+
+**Fix:** when `stream: true`, emit an SSE stream (`content-type: text/event-stream`) with the Responses event sequence — at minimum `response.created` → `response.output_item.added` → `response.output_text.delta` (one or more) → `response.output_item.done` → `response.completed`. The same applies to `/v1/chat/completions` (`data: {chunk}` / `data: [DONE]`) so streaming Chat-API clients work too.
+
+### 2. `/v1/models` uses `data` instead of `models` (non-fatal warning)
+
+Codex's model manager expects `{"models":[...]}`; we return the OpenAI-standard `{"data":[...]}`:
+
+```
+$ curl -s http://127.0.0.1:8080/v1/models
+{ "data": [ { "id": "formal-symbolic-production", ... } ], "object": "list", ... }
+```
+
+This only produces a warning (`failed to refresh available models`, then falls back to default model metadata), but it degrades the experience and should be addressed so Codex recognizes the model.
+
+## Acceptance criteria
+
+- [ ] `POST /v1/responses` with `stream: true` returns `content-type: text/event-stream` and emits the Responses SSE event sequence ending in `response.completed`.
+- [ ] `POST /v1/chat/completions` with `stream: true` returns an SSE stream of `chat.completion.chunk` events terminated by `data: [DONE]`.
+- [ ] The reproduction command above (`codex exec "hi"`) completes and prints `Hi, how may I help you?` (or an equivalent greeting), exit 0.
+- [ ] Codex no longer emits the `failed to refresh available models` error for our `/v1/models`.
+- [ ] An automated end-to-end test drives the server over its real HTTP transport with a streaming client (ideally Codex itself, or a minimal SSE client) so this regression is caught in CI — not only by the in-process in-repo driver.
+
+## Environment
+
+- `codex-cli 0.142.0`
+- `formal-ai 0.254.0`, `serve` on `127.0.0.1:8080`
+- rustc 1.96.1 (stable), macOS (aarch64)
+
+## Notes
+
+- The reasoning core is fine: both `/v1/chat/completions` and `/v1/responses` return `"Hi, how may I help you?"` with a complete symbolic thinking trace for a non-streaming request. This is strictly a transport/protocol-compatibility gap.
+- Codex 0.142 removed support for `wire_api = "chat"` (it errors: *"`wire_api = "chat"` is no longer supported"*), so the `responses` wire API is the only path for this client — which makes SSE support on `/v1/responses` the priority.
+
+---
+
+## Documentation requirement (applies to this issue)
+
+This issue is not complete until it ships **clear, copy-pasteable, end-to-end-verified documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`)
+--- COMMENTS ---
+[konard]
+## Added ask: clear documentation for configuring Codex against Formal AI
+
+In addition to the SSE fix, this issue should also deliver **clear, copy-pasteable documentation** (in `README.md` / `ARCHITECTURE.md` and/or `docs/`) for **how to point the Codex CLI at Formal AI** end to end, verified to print a reply:
+
+- the exact `model_providers.<id>` block (`base_url`, `env_key`, `wire_api = "responses"`),
+- the `model_provider` / `model` settings,
+- the full `codex exec "hi"` invocation,
+- a note that Codex 0.142+ only supports `wire_api = "responses"` (no `chat`) and always streams.
+
+**Acceptance addition:** a user can follow the doc and get a working `codex exec "hi"` against Formal AI without reverse-engineering the wire format.
+----
+[konard]
+Blocks #606 (the `with-formal-ai` wrapper CLI, which can only complete a turn once this is resolved).
+----
+
+=========== ISSUE 571 ===========
+TITLE: We need to have ability to solve entire class of similar questions by using reasoning and logic in our meta algorithm
+CLOSED: 2026-07-03T12:42:16Z
+BODY:
+```
+есть ли скидка если брать подписки $200 Claude MAX и ChatGPT Pro не помесячно, а на год?
+```
+
+```
+Выбранные вами премиум-планы ($200) сейчас не предлагают годовых скидок при оплате за год для отдельных пользователей. Скидки работают следующим образом: 
+
+• ChatGPT Pro ($200/мес): Оплата за годовое использование недоступна — подписка оформляется строго как ежемесячный платеж общим объемом $2400 за 12 месяцев. 
+• Claude Max ($200/мес): Для уровня Max годовых тарифов не предусмотрено — подписка оплачивается помесячно. [[3](https://support.claude.com/en/articles/11049762-choose-a-claude-plan), [4](https://www.cloudzero.com/blog/how-much-does-chatgpt-cost/#:~:text=ChatGPT%20Pro%20starts%20at%20$100/month%20and%20goes,April%209%2C%202026%2C%20deliberately%20positioned%20against%20Ant), [5](https://www.bleap.finance/blog/how-to-get-claude-cheaper#:~:text=Does%20Claude%20offer%20an%20annual%20billing%20discount?,saving%20$40%20per%20year.%20Team%20plans%20also), [6](https://www.glbgpt.com/hub/chatgpt-plus-annual-plan-discount-does-chatgpt-offer-one-in-2026/)]  
+
+(Примечание: если бы вы рассматривали младшие тарифы за $20/мес, то для Claude Pro годовая подписка со скидкой доступна — $17/мес при оплате за год, а для ChatGPT Plus скидки нет). [[1](https://claude.com/pricing), [2](https://blog.laozhang.ai/en/posts/chatgpt-plus-discount-guide-2026#:~:text=Is%20there%20a%20public%20ChatGPT%20Plus%20discount,still%20describes%20ChatGPT%20Plus%20as%20a%20$20), [5](https://www.bleap.finance/blog/how-to-get-claude-cheaper#:~:text=Does%20Claude%20offer%20an%20annual%20billing%20discount?,saving%20$40%20per%20year.%20Team%20plans%20also), [6](https://www.glbgpt.com/hub/chatgpt-plus-annual-plan-discount-does-chatgpt-offer-one-in-2026/)]  
+Если хотите оптимизировать расходы на AI, сообщите:Какие именно задачи для вас важнее всегоРассматриваете ли вы API от обеих компаний, где тарификация идет только за реальное использование токенов (и часто выходит дешевле $200)Я помогу подобрать наиболее выгодный формат работы с нейросетями. 
+AI responses may include mistakes.
+
+[1] https://claude.com/pricing
+[2] [https://blog.laozhang.ai/en/posts/chatgpt-plus-discount-guide-2026](https://blog.laozhang.ai/en/posts/chatgpt-plus-discount-guide-2026#:~:text=Is%20there%20a%20public%20ChatGPT%20Plus%20discount,still%20describes%20ChatGPT%20Plus%20as%20a%20$20)
+[3] https://support.claude.com/en/articles/11049762-choose-a-claude-plan
+[4] [https://www.cloudzero.com/blog/how-much-does-chatgpt-cost/](https://www.cloudzero.com/blog/how-much-does-chatgpt-cost/#:~:text=ChatGPT%20Pro%20starts%20at%20$100/month%20and%20goes,April%209%2C%202026%2C%20deliberately%20positioned%20against%20Ant)
+[5] [https://www.bleap.finance/blog/how-to-get-claude-cheaper](https://www.bleap.finance/blog/how-to-get-claude-cheaper#:~:text=Does%20Claude%20offer%20an%20annual%20billing%20discount?,saving%20$40%20per%20year.%20Team%20plans%20also)
+[6] https://www.glbgpt.com/hub/chatgpt-plus-annual-plan-discount-does-chatgpt-offer-one-in-2026/
+```
+
+--- COMMENTS ---
+[konard]
+Note our contributing guidelines, vision, roadmap. The scope of this task is full repository and full roadmap. We must support the entire class of similar requests.
+----
+
+=========== ISSUE 563 ===========
+TITLE: Support summarization of any file in the repository
+CLOSED: 2026-06-25T22:10:53Z
+BODY:
+Inspired by https://youtu.be/0UmZYKkG1do
+
+We need to test our system to be able to take random file of our repository and being able to summarize it correctly.
+
+We first take 2 random files and do summarization for them manually, after that we teach our system by generalizing the algorithm to solve summarization for these 2 files exactly that way, and we should hope to take 2 next 2 random files, and summarize them as well and our system being able to summarize similar to close, we should repeat iterations until we will actually have 2-3 times similar summarization. So once the quality is good enough on random files, we didn't optimize for, that means algorithm is general enough for summarization to actually be solved.
+
+We need to make sure each file is fully formalized as meta language (for markdown files recursively with multiple embedded grammars).
+
+Summarization itself must be a part of meta algorithm. And everything should be solved using recursive reasoning steps.
+
+We should test for each and every detail I described.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+We don't stop until the quality is truly reasonable and perfect (at least 80% perfect).
+
+--- COMMENTS ---
+
+=========== ISSUE 559 ===========
+TITLE: Generalize meta algorithm
+CLOSED: 2026-06-24T15:51:14Z
+BODY:
+I think hardcoded intents are dead end, it will require infinite amount of coding.
+
+Instead we should translate message to meta language and work on it directly, on conversion detect questions, requirements, needs, and so, and make sure we address all of the in our response. If it is a task with big plan, we need to make sure we use todo tool in agentic mode, to actually plan each item, and do step by step execution. In chat mode, we should give meaningful answer, using fresh data gathered in the internet.
+
+So we need to merge all of our specific algorithms into single general meta algorithm, which later should be also reason about itself and should be able to modify itself as just another algorithm/codebase/repository.
+
+But at the moment we need to make core architectural update, so that our algorithm is as general as possible. And all already supported test cases should be greatly expanded, we should support not only single specific task/question in each categories, we should support entire class of each tasks we previously encountered, entire class of questions. With end goal to move to support of entire class of task for all possible tasks, and for all possible questions.
+
+So tests are not deleted, changes are additive (can be improved if are totally wrong, but we need to make sure we preserve backward compatibility in most of previously working dialogs).
+
+Codebase architecture can be altered as needed.
+
+Data seed can be increased in detail if required, but the architecture of caches, overrides, meanings and style of lino files should be preserved (or we can take the best practices).
+
+We will do everything in this pull request, but in steps, the first working session should be dedicated to detailed planing of what we exactly will do, in next working sessions we will be executing this plan. After that I either approve the plan, or will ask to change it.
+
+Also see
+
+<img width="2732" height="2048" alt="Image" src="https://github.com/user-attachments/assets/4c536685-7221-4935-8788-b3e7a68080e5" />
+
+for inspiration.
+
+It genuinely believe with all the tools we have it is actually possible to formalize the general problem solving algorithm for any question, task, requirement and so on. This algorithm does not need to know everything, it can use the internet and public services as database or API, and just get to know enough knowledge to actually solve any task.
+
+Read most of our docs, code and so on, make sure that current code architecture is well documented before you start planing changing it.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+
+
+--- COMMENTS ---
+
+=========== ISSUE 558 ===========
+TITLE: Auto learning
+CLOSED: 2026-07-05T22:58:03Z
+BODY:
+We need to make sure our meta algorithm is advanced enough to actually recompile itself.
+
+For example we found the situation, where we cannot answer a question or any input, instead of failing, we should try to rethink our meta algorithm using the meta algorithm itself, enabling fully dynamic self programming or self learning.
+
+So we should reason about the actual problems and fails, we so in our own algorithm trace, and reason on how to fix that. 
+
+So as the result we should make a self healing algorithm, that is able to reason about itself, test new version, and if it passes tests and user is satisfied with the result we should be able to improve the generalization of the algorithm.
+
+To enable it fully, we need to make sure we can translate entire source code of our system to links/meta language, and it should be present in the seed data, so when started on user machine we have full details about our code, and we should be able to translate that meta language representation back to the source code, recompile and reattach it to the UI.
+
+Also user should be able to ask to introduce any changes in our AI system that way, and also any questions about how formal AI itself works can be answered.
+
+We need to deeply analyze what went wrong at https://github.com/link-assistant/formal-ai/pull/601, and why my requirements from https://github.com/link-assistant/formal-ai/issues/538 were not fully delivered.
+
+And here we should focus on everything auto learning related, that was not fully delivered.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+
+--- COMMENTS ---
+
+=========== ISSUE 554 ===========
+TITLE: Make support for VS Code extension more user friendly as well as other interfaces
+CLOSED: 2026-06-21T23:10:28Z
+BODY:
+We should have separate page on our landing page for VS Code extension, with detailed instructions how to download and install manually with VS Code Extension only mode.
+
+We should also add ability to install it from already installed Desktop app in one click.
+
+As we are not yet published to official store, the only way to install VS Code extension should be manual, by command downloadable from our repository `curl/wget ... .sh | bash`. With direct link to download the installation script from raw github files.
+
+We should add universal .sh + power shell installer, for all Desktop app, VS Code and all other interfaces we have.
+
+We also need to add pages in landing for telegram bot and CLI.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--- COMMENTS ---
+
+=========== ISSUE 552 ===========
+TITLE: Automated testing scripts/CLI commands
+CLOSED: 2026-06-21T20:14:50Z
+BODY:
+https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24
+
+We need to make sure we add automated dialog recreation, that will test our system for ability to answer correctly.
+
+For example we need to add automated script for conversion of `https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24` into our demo format, so we will be able to fully support replay of that dialog. And we can use that replay as test for our system, it should be able to answer not worse than ChatGPT did answer in that case.
+
+When user asks to answer with single line, from all possible solutions we might find or generate we should select simpliest, shortest, yet human readable. For example we should not compromise whitespace for shortness.
+
+We also need to be able to find similar links (crawl them on any target website), for example we can search similar links using GitHub regexp search, take 100 of them, and out 100, find 10 shortest, and ensure our system is able to solve them all by thinking, generalizing, not memoizing or specializing.
+
+Anyway after this pull request, we should preserve all our tools, so next time we will encounter ChatGPT share links as example we will be ready to improve our system by generalizing our meta algorithm to be able to solve also that new provided case without specifically memoizing it.
+
+We should also do the same for https://share.google/aimode/VG0HhpnAXrBkC0QgP and 
+
+We also need to support same features for markdown and other formats in https://github.com/link-assistant/web-capture feature, but we also need to make sure web-capture is able to produce as close to the source description of these links in https://github.com/link-foundation/meta-language as possible.
+
+So we should ask web-capture to add support for meta-language as a basis for parsed documents base object model, along size source HTML, so we can use all the details in Rust model.
+
+So the first stage of this issue is deep analysis, and reporting of issues to our dependencies, that we develop, once our dependencies are enriched, we will use their latest versions, to fully support all these features ourselves. So the pull request will be placed on pause once all issues are reported using gh tool.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+
+
+--- COMMENTS ---
+
+=========== ISSUE 548 ===========
+TITLE: Auto update mechanism for Desktop app
+CLOSED: 2026-06-21T09:33:33Z
+BODY:
+We need to make our Desktop app to support auto update without reinstalling it as usual. As soon as new version is released user is notified about that inside the app and when user presses update actual update happening.
+
+Auto update must support all platforms - macOS, Linux, Windows.
+
+We also need to fix version display in desktop app, as right now it only displays `vdev` not actual version number.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--- COMMENTS ---
+
+=========== ISSUE 541 ===========
+TITLE: Missing UI/UX improvements
+CLOSED: 2026-06-20T20:34:24Z
+BODY:
+- Not all UI elements has correctly applied theme, may be we should migrate to chakra-ui.com, so we do everything right, and it will also look better, more polished.
+- `Docker unavailable` is wrong, because it is actually available.
+- Previous desktop conversation were deleted, we need to make sure we use some kind of application folder in each OS, where all the memory security kept, and when new version arrives, we need to make sure we migrate our data to new form, so all previous users will be able to continue using their data (that is critical feature, and must be done right).
+- Demo mode should now delete or overwrite any user conversations, if we are in the existing conversation we should create new conversation for demo mode, that is overridden when active, so when user switching to any non-demo mode conversation we should automatically disable demo mode, and keep last example in the newly created demo conversation.
+
+<img width="1824" height="1122" alt="Image" src="https://github.com/user-attachments/assets/386897dc-adb4-4244-9dd5-046626661b40" />
+
+- By default reasoning steps animation is too fast, and answers are too fast, we need to make sure user will feel something is happening, and thinking animation is scrolling, even if it is immediate, also we should have setting for minimum message animation time where 0 is immediate display, and by default it should be 2 seconds for full animation play out.
+- First we display reasoning steps, animate scrolling, and after that only when we scrolled to last thinking step we can show message itself. All these animations + showing message also with animation should be under the selected budget.
+- Also at the moment reasoning steps in collapsed more are too small, so even not a single line of thinking is displayed, we need to make sure we actually display at least one paragraph/reasoning step fully.
+- Reasoning steps should be more human like, we don't expect user to understand too much detail on how it works by default. We need to make sure that by default at 50% setting of reasoning detalization we show only high level thinking steps (not sub steps) - if there is no steps hierarchy it should be added. We also need to make sure in maximum detail thinking/reasoning steps are still fully human readable, they can have injected actual data, terms and so on in markdown, but they should not be too much technical, meaning no special syntax and so on. Reasoning steps should be short, by concise, expressive, so it is really possible to understand how the thinking was done.
+
+<img width="1824" height="1122" alt="Image" src="https://github.com/user-attachments/assets/ad3a5ab1-568b-43b8-bcd3-7c2c1e7e91aa" />
+
+- After permissions are granted nothing happens, the message for granting permissions should also include button to grant all permissions and switch to agent mode, which when clicked should actually evaluate pending task for execution. So everything will be maximum user friendly by default.
+
+<img width="1824" height="1115" alt="Image" src="https://github.com/user-attachments/assets/9f3c05ba-b91f-4b04-be41-8991dfb998d3" />
+
+We need to download all logs and data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), in which we will reconstruct timeline/sequence of events, list of each and all requirements from the issue, find root causes of the each problem, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+If there is not enough data to find actual root cause, add debug output and verbose mode if not present, that will allow us to find root cause on next iteration.
+
+If issue related to any other repository/project, where we can report issues on GitHub, please do so. Each issue must contain reproducible examples, workarounds and suggestions for fix the issue in code. Also double check to fully apply requirements to entire codebase, so if we have issue in multiple places, it should be fixed in all them.
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--- COMMENTS ---
+
+=========== ISSUE 540 ===========
+TITLE: Dreaming
+CLOSED: 2026-07-12T12:28:29Z
+BODY:
+Restructure deduplication based on recalculated frequencies of use.
+
+By default day dreaming is turned on - it works while user uses the app, but in the background, so it never blocks any UI rendering, execution of tasks and so on. It should be executed with lowest possible priority.
+
+And also on desktop it should be possible to activate dreaming daemon, that will restructure deduplication based on recalculated frequencies of use to save space, and also find patterns, regularities, trends, laws.
+
+That process can also do garbage collection, so there always for example at least 20% of free memory / space, so we selectively forget some things, that can be refetched from the external sources, that can be recomputed from raw data of events we have (and we have algorithms for that recomputation).
+
+We can also use that time for generalizing our algorithms to forget about specific algorithms.
+
+Generalization should be treated as successful, as given input generalized algorithm can produce specific algorithm, as soon as it is working, specific algorithm can be forgotten.
+
+As dreaming is like garbage collection + indexing, we should apply fully this task also here https://github.com/link-assistant/formal-ai/issues/494
+
+So the resulting pull request will close both tasks.
+
+Make sure to be ambitious, take into account our vision, requirements, roadmap (the latest have stronger weight), contributing guide lines, testing guidelines and so on.
+
+Ideally this task itself must be fully and partially solvable by Formal AI connected to Agent CLI. You task to drive Formal AI to make all the actions, if something fails, you improve algorithms by generalization, so Formal AI have enough features to solve each part of this task, and also the task as the whole.
+
+We need to collect data related about the issue to this repository, make sure we compile that data to ./docs/case-studies/issue-{id} folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), list of each and all requirements from the issue, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+
+--- COMMENTS ---
+

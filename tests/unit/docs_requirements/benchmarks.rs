@@ -29,11 +29,7 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
     super::assert_contains_all(
         "ROADMAP.md",
         &roadmap,
-        &[
-            "Issue #408 Text And Code Editing - current PR",
-            "repository-local 10% floor of 3 checks",
-            "1,440 of 1,440",
-        ],
+        &["text/code editing", "rising ratchet floors", "1,440/1,440"],
     );
 
     let vision = super::read(root.join("VISION.md"));

@@ -61,7 +61,7 @@ This keeps the seed model small while letting the network define new concepts, i
 - Add-only history: changes requested by users or made by the assistant should be appended as events first, then projected into the current state.
 - User-queryable memory: the user should be able to ask about any relevant detail in the associative network and receive a traceable answer.
 - Chat-first interface: chat should be the default interface for English, Russian, Hindi, Chinese, and later other languages.
-- Visual network on demand: the link graph should be available side by side with chat when the user wants deeper inspection.
+- Visual network on demand: the links network should be viewable side by side with chat when the user wants deeper inspection.
 - Bounded chat autonomy: chat mode should do only enough work to answer the current message, including compiling or running code when appropriate.
 - Explicit agent autonomy: agent mode should expose actions and run them in an isolated environment such as a Docker image, a server sandbox, or a browser VM where practical.
 
@@ -198,7 +198,7 @@ produce syntax that looks plausible.
 
 ## Data Is The Interface
 
-The shell code should be about *interfacing* (rendering chat, dispatching tools, persisting events) and not about *logic*. The agent's identity, its multilingual responses, its concept table, and its registered tools should all live in seeded Links Notation files inside an associative store, so a user can fully reconfigure the agent — add a new language, retire an answer, register a new tool, change a rule — by editing data, not by rewriting code. The same principle applies to executable knowledge: precompiled handlers can be seeded, and dynamically-compiled Rust, JavaScript, and WebAssembly snippets can be linked into the store on demand, so the data graph itself defines what the agent can do.
+The shell code should be about *interfacing* (rendering chat, dispatching tools, persisting events) and not about *logic*. The agent's identity, its multilingual responses, its concept table, and its registered tools should all live in seeded Links Notation files inside an associative store, so a user can fully reconfigure the agent — add a new language, retire an answer, register a new tool, change a rule — by editing data, not by rewriting code. The same principle applies to executable knowledge: precompiled handlers can be seeded, and dynamically-compiled Rust, JavaScript, and WebAssembly snippets can be linked into the store on demand, so the links network itself defines what the agent can do.
 
 Concretely, `data/seed/` is the canonical knowledge surface for every interface in this repository. The browser worker fetches the files at runtime through `src/web/seed_loader.js`; the Rust library, CLI binary, HTTP server, and Telegram webhook read the same files through `src/seed.rs`, which `include_str!`-embeds each `.lino` at compile time so even offline builds expose the same data. `scripts/sync-seed.sh` keeps `src/web/seed/` mirrored from `data/seed/` for the GitHub Pages deploy. The seed currently covers multilingual responses, the concept table, the tool registry (HTTP fetch, web search, Wikipedia lookup, JS execution, local file read, memory append, memory export — each tagged `thinking` or `agent`), language-detection rules, prompt-question patterns, identity metadata, greetings, hello-world programs, demo dialogs, and the **intent-routing rule book** (`keyword` / `phrase` / `token` / `combo` semantics) that decides which handler runs for a given prompt. Any environment-specific tool (axios, file I/O, bash, docker, container actions) is registered through the same data shape.
 
@@ -213,6 +213,91 @@ The seed must describe every environment the agent can run in. `data/seed/enviro
 ## Library-First Availability
 
 Every capability the CLI or HTTP server exposes is also reachable from the `formal_ai` library crate root. Embedders writing their own surface (a desktop app, a bot for another platform, a research notebook) get the same `MemoryStore`, `MemoryEvent`, `export_memory_links_notation`, `parse_memory_links_notation`, `export_memory_bundle`, `extract_memory_from_bundle`, `seed_files`, `merged_bundle`, `parse_bundle`, `environment_directory`, `environment_records`, `agent_info`, `intent_routing`, `multilingual_responses`, `language_rules`, and `prompt_patterns` accessors that the bundled binaries rely on. The shell code is interface; the library is logic.
+
+## Associative Technologies Only
+
+Formal AI is built exclusively on associative technologies: doublet links
+networks, Links Notation, and the links-based meta language. The project does
+not model its knowledge as property graphs, triple stores, relational tables,
+or document collections. Where the industry says "knowledge graph", this
+project says **links network**; where the industry reaches for a table, this
+project stores links whose substance is other links. Auxiliary lookup
+structures may exist inside code as implementation details, but every one of
+them must be generated from, or reducible to, Links Notation data (the
+generated arithmetic word data in `src/arithmetic_word_tables.rs`, derived
+from seed `.lino` meanings with a parity test, is the pattern). Legacy names
+that still say "graph" — such as the `/v1/graph` endpoint — are naming debt
+to be migrated toward links-network vocabulary, not an architectural
+statement.
+
+## Self-Coding: The Project Builds Itself
+
+The most ambitious goal of this project is **self-hosting**: Formal AI should
+develop Formal AI. The route runs through the existing link-assistant stack:
+
+- [Agent CLI](https://github.com/link-assistant/agent) already ships Formal AI
+  as a built-in provider (`agent --model formal-ai`): the agent drives its
+  read/write/edit/bash/search tools against any OpenAI-compatible endpoint,
+  and `formal-ai serve --agent-mode` is such an endpoint.
+- [Hive Mind](https://github.com/link-assistant/hive-mind) orchestrates the
+  outer loop: it watches GitHub issues, prepares a branch and a draft pull
+  request, runs `solve <issue-url> --tool agent --model <model>`, and leaves
+  review and merge to humans and CI.
+
+So the self-coding ladder is concrete, and each rung is verifiable:
+
+1. **Recipe-driven edits (achieved).** Bounded, deterministic Agent-CLI
+   recipes reproduce real repository changes (issue #538 meaning details,
+   issue #540 dreaming audit) with session JSON preserved for byte-for-byte
+   replay.
+2. **Issue-driven bounded changes.** A Hive-Mind-dispatched Formal AI session
+   takes a small, well-specified repository issue end to end: plan, edit,
+   test, changelog fragment, pull request — with every step recorded as links.
+3. **Benchmark-gated self-improvement promotion.** The proposal-only loops
+   that already exist (`self_improvement`, `meta_self_improvement`,
+   `self_healing`, dreaming amendments) gain an explicit promotion protocol:
+   a proposal that passes its benchmark ratchets and CI can be promoted into
+   seed data or source automatically, while draft PRs and human review remain
+   the outer gate.
+4. **Measured self-hosting.** Each release reports what share of its changes
+   was authored by Formal AI itself, and that share ratchets upward — the
+   same discipline the benchmark suites already apply to solving ability.
+   Prior art says this is realistic: coding agents that edit their own code
+   under benchmark gates improve without drift, and mature AI coding tools
+   already write most of their own patches.
+
+Determinism is the advantage here, not a limitation: a self-coding session is
+a reproducible trace, so a self-authored change is *more* auditable than a
+human one, never less.
+
+## Reaching A Wide Audience
+
+Because the engine is deterministic and symbolic, it needs no GPU and no
+vendor cloud — the entire assistant can run on the user's own device. That
+makes distribution breadth a core promise rather than an afterthought:
+
+- **Web**: the GitHub Pages demo should grow into an installable,
+  offline-capable progressive web app backed by the Rust→WebAssembly worker,
+  and the worker should be publishable as an npm package so any web project
+  can embed the engine.
+- **Desktop**: the Electron shell ships today for Linux/macOS/Windows with
+  auto-update; lighter Rust-native shells (such as Tauri, which also opens a
+  path to mobile) are the follow-on evaluation once the library boundary is
+  stable.
+- **Editors**: the VS Code extension should be published to the Marketplace
+  and to Open VSX, because editor surfaces are where coding assistants meet
+  most of their users; the OpenAI-compatible endpoint additionally lets any
+  custom-base-URL client connect without a dedicated extension.
+- **Server and CLI**: crates.io, npm, Docker Hub, and GHCR releases stay
+  automated by the release pipeline, and the OpenAI-, Anthropic-, and
+  Gemini-compatible server lets existing agent CLIs adopt Formal AI as a
+  drop-in model.
+- **Messaging**: the Telegram surface continues, and the same webhook shape
+  generalizes to other messengers.
+
+Every surface reads the same seed, exports the same single-file
+`formal_ai_bundle`, and answers with the same traces — reach must never fork
+the core.
 
 ## Current Direction
 
@@ -246,3 +331,16 @@ PR #416 lists 48 researched sources in
 edit variations per source, and requires every source to pass both the explicit
 3-check repository-local 10% floor and the stronger 30/30 ratchet, for 1,440 of
 1,440 passing checks before the branch is complete.
+
+As of 2026-07, the later waves are also merged: translation round-trip
+survival is the quality contract (issue #526), meanings carry grounded
+grammatical detail with bidirectional word ⇄ meaning links (issue #538),
+default-on background dreaming learns durable requirements from organic
+conversations and maintains memory under storage pressure (issue #540), the
+whole repository's Rust source round-trips into a links projection with a
+proposal-only self-healing loop (issues #558/#559), and the server speaks the
+OpenAI Chat Completions, OpenAI Responses, Anthropic Messages, and Gemini
+protocols so mainstream agent CLIs can run on the symbolic core. The current
+direction is the two ambition sections above — self-coding through Agent CLI
+and Hive Mind, and wide distribution of the GPU-free engine — tracked
+requirement by requirement in [`ROADMAP.md`](ROADMAP.md).
