@@ -22,6 +22,7 @@ mod docs_requirements_issue_606;
 mod docs_requirements_issue_607;
 mod docs_requirements_issue_622;
 mod docs_requirements_issue_628;
+mod dreaming_runtime;
 mod formal_ai;
 mod github_logs;
 mod installation_conversion;

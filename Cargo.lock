@@ -753,7 +753,7 @@ dependencies = [
 
 [[package]]
 name = "formal-ai"
-version = "0.276.0"
+version = "0.277.0"
 dependencies = [
  "clap",
  "doublets",
@@ -768,6 +768,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
+ "thread-priority",
  "toml_edit",
  "walkdir",
 ]
@@ -2878,6 +2879,20 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.117",
+]
+
+[[package]]
+name = "thread-priority"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfe075d7053dae61ac5413a34ea7d4913b6e6207844fd726bdd858b37ff72bf5"
+dependencies = [
+ "bitflags 2.11.1",
+ "cfg-if",
+ "libc",
+ "log",
+ "rustversion",
+ "winapi",
 ]
 
 [[package]]

@@ -53,35 +53,60 @@ pub fn core_is_idle(idle_for: Duration) -> bool {
         >= idle_for.as_secs()
 }
 
-/// Start the one-per-process core worker. No configured memory path means there
-/// is no persistent links store to maintain, so the thread is not created.
+/// Start the one-per-process core worker.
+///
+/// Dreaming is **default-on**: it only stays off when `FORMAL_AI_DREAMING` is
+/// explicitly set to `0`/`off`/`false`, or when no `FORMAL_AI_MEMORY_PATH` is
+/// configured — and the latter is announced loudly on stderr so the missing
+/// configuration is a visible, fixable condition rather than a silent no-op
+/// (issue #540 §6).
 pub fn start_core_dreaming() {
     if dreaming_disabled() {
         return;
     }
     let Some(path) = crate::memory_sync::configured_memory_path() else {
+        eprintln!(
+            "[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; \
+             there is no persistent memory log to maintain, so the dreaming worker will not \
+             start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it."
+        );
         return;
     };
     START.call_once(|| {
         LAST_FOREGROUND_SECONDS.store(now_seconds(), Ordering::SeqCst);
         std::thread::Builder::new()
             .name(String::from("formal-ai-dreaming"))
-            .spawn(move || loop {
-                std::thread::sleep(Duration::from_secs(DEFAULT_IDLE_SECONDS));
-                if core_is_idle(Duration::from_secs(DEFAULT_IDLE_SECONDS)) {
-                    if let Err(error) = run_core_dreaming_once(&path) {
-                        if std::env::var("FORMAL_AI_DREAMING_DEBUG").as_deref() == Ok("1") {
-                            eprintln!("[dreaming] background run failed: {error}");
+            .spawn(move || {
+                lower_current_thread_priority();
+                loop {
+                    std::thread::sleep(Duration::from_secs(DEFAULT_IDLE_SECONDS));
+                    if core_is_idle(Duration::from_secs(DEFAULT_IDLE_SECONDS)) {
+                        if let Err(error) = run_core_dreaming_once(&path) {
+                            if std::env::var("FORMAL_AI_DREAMING_DEBUG").as_deref() == Ok("1") {
+                                eprintln!("[dreaming] background run failed: {error}");
+                            }
                         }
+                        std::thread::sleep(Duration::from_secs(DEFAULT_INTERVAL_SECONDS));
                     }
-                    std::thread::sleep(Duration::from_secs(DEFAULT_INTERVAL_SECONDS));
                 }
             })
             .expect("spawn core dreaming worker");
     });
 }
 
+/// Drop the calling thread to the lowest OS scheduling priority so dreaming
+/// work never competes with foreground request handling (issue #540 §6). Best
+/// effort: an unsupported platform simply keeps the default priority — the
+/// cooperative [`core_is_idle`] gate still applies either way.
+fn lower_current_thread_priority() {
+    let _ = thread_priority::set_current_thread_priority(thread_priority::ThreadPriority::Min);
+}
+
 /// Execute one idle run, exposed for deterministic integration tests.
+///
+/// The run yields cooperatively: if a foreground request arrives between the
+/// planning and application steps, the run aborts without writing anything and
+/// returns an empty outcome, so dreaming never delays live traffic.
 pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome> {
     let mut store = MemoryStore::load_from_file(memory_path)?;
     let mut plan = plan_for_real_storage(&store, memory_path, 0)?;
@@ -89,15 +114,33 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
         plan.actions.clear();
         plan.selected_reclaim_bytes = 0;
     }
+    // Mid-run cancellation point: planning is the expensive half, so check the
+    // foreground gate again before mutating and persisting the store.
+    if ACTIVE_FOREGROUND.load(Ordering::SeqCst) != 0 {
+        return Ok(DreamingOutcome::default());
+    }
     let outcome = apply_dreaming_plan(&mut store, &plan);
-    if outcome.removed_events > 0 || outcome.learned_amendments > 0 || outcome.learned_patterns > 0
+    if outcome.removed_events > 0
+        || outcome.learned_amendments > 0
+        || outcome.learned_patterns > 0
+        || outcome.recorded_failures > 0
+        || outcome.recorded_trials > 0
     {
         store.save_to_file(memory_path)?;
+        // Keep the composed meta-recipe artifact in step with the amendments
+        // that shape solving (issue #540 §1): the recipe next to the memory
+        // log always reflects the currently retained amendment set.
+        let recipe = crate::dreaming::compose_recipe_with_amendments(store.events());
+        let recipe_path = memory_path.with_extension("recipe.lino");
+        crate::memory::write_locked_atomic(&recipe_path, &recipe)?;
     }
     Ok(outcome)
 }
 
-fn dreaming_disabled() -> bool {
+/// Whether the `FORMAL_AI_DREAMING` opt-out is in force. Dreaming is
+/// default-on; only an explicit `0`/`off`/`false` (any case) disables it.
+#[must_use]
+pub fn dreaming_disabled() -> bool {
     std::env::var("FORMAL_AI_DREAMING")
         .ok()
         .is_some_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))

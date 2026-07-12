@@ -133,7 +133,9 @@ pub use dreaming_application::{
     solve_with_amendment_records, solve_with_standing_requirements, topic_matches,
     RetainedAmendment,
 };
-pub use dreaming_runtime::{core_is_idle, run_core_dreaming_once, ForegroundActivity};
+pub use dreaming_runtime::{
+    core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
+};
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
     render_thinking_steps, thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep,
@@ -180,8 +182,8 @@ pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    seed_cache_events, suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent,
-    MemoryStore, ParsedBundle,
+    seed_cache_events, suggest_migrations as suggest_memory_migrations, write_locked_atomic,
+    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,

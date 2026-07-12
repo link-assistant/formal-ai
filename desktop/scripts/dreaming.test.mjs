@@ -166,6 +166,27 @@ test("a running dreaming child yields when foreground work arrives", async () =>
   assert.equal(result.state, "foreground-active");
 });
 
+test("a spawned dreaming child is dropped to PRIORITY_LOW (issue #540 §6)", async () => {
+  const os = require("node:os");
+  const priorityCalls = [];
+  const child = fakeChild({ code: 0, stdout: "memory_dreaming_plan\n" });
+  child.pid = 4242;
+  const result = await runDreamingOnce({
+    env: {},
+    platform: "win32",
+    candidates: [
+      { command: "formal-ai", args: ["memory", "dream"], cwd: "/repo", label: "test" },
+    ],
+    spawn: () => child,
+    setPriority: (pid, priority) => priorityCalls.push({ pid, priority }),
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(priorityCalls, [
+    { pid: 4242, priority: os.constants.priority.PRIORITY_LOW },
+  ]);
+});
+
 test("storage pressure asks consent, applies it, and surfaces migration", async () => {
   const calls = [];
   let persisted = false;
