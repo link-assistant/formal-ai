@@ -62,9 +62,17 @@ pub struct WithFormalAiArgs {
     #[arg(long)]
     pub port: Option<u16>,
 
-    /// Start `formal-ai serve` when the target loopback port is not listening.
+    /// Explicitly start `formal-ai serve` when the target loopback port is not listening.
     #[arg(long, default_value_t = false)]
     pub start_server: bool,
+
+    /// Do not auto-start a temporary server when the target is not listening.
+    #[arg(long, default_value_t = false, conflicts_with = "start_server")]
+    pub no_start_server: bool,
+
+    /// Keep the wrapped tool's normal summarization/compaction behavior.
+    #[arg(long, alias = "keep-summarization", default_value_t = false)]
+    pub summarize: bool,
 
     /// Protocol namespace to use for tools that support more than one protocol.
     #[arg(long, value_enum)]
@@ -74,7 +82,7 @@ pub struct WithFormalAiArgs {
     #[arg(long, default_value = DEFAULT_MODEL)]
     pub model: String,
 
-    /// External CLI to run or configure: codex, opencode, gemini, agent.
+    /// External CLI: codex, opencode, agent, gemini, claude, qwen, grok, or aider.
     #[arg(value_name = "TOOL")]
     pub tool: Option<String>,
 
@@ -153,15 +161,19 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let tool = args
         .tool
         .as_deref()
-        .ok_or("missing tool; expected codex, opencode, gemini, or agent")?;
+        .ok_or("missing tool; pass one of the supported tool names")?;
     let integration = find_integration(tool, &integrations)?;
     let context = render_context(integration, args)?;
-    let _server = if args.start_server {
-        maybe_start_server(&context.base_url, args.port)?
+    let _server = if args.start_server || !args.no_start_server {
+        let server = maybe_start_server(&context.base_url, args.port)?;
+        if server.is_some() {
+            eprintln!("formal-ai: started a temporary server in agent mode (tool and shell execution enabled)");
+        }
+        server
     } else {
         None
     };
-    run_ephemeral(integration, &args.tool_args, &context)
+    run_ephemeral(integration, &args.tool_args, &context, args.summarize)
 }
 
 fn select_integrations<'a>(
@@ -260,6 +272,7 @@ fn run_ephemeral(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
+    keep_summarization: bool,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut temp_dirs = Vec::new();
@@ -311,7 +324,7 @@ fn run_ephemeral(
         temp_dirs.push(temp);
     }
 
-    let final_args = build_invocation_args(integration, user_args, context);
+    let final_args = build_invocation_args(integration, user_args, context, keep_summarization);
     command.args(final_args);
     let status = command.status()?;
     drop(temp_dirs);
@@ -348,6 +361,7 @@ fn build_invocation_args(
     integration: &ClientIntegration,
     user_args: &[String],
     context: &RenderContext,
+    keep_summarization: bool,
 ) -> Vec<String> {
     let invocation = &integration.invocation;
     let mut args = invocation
@@ -356,6 +370,14 @@ fn build_invocation_args(
         .chain(invocation.args.iter())
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
+    if !keep_summarization {
+        args.extend(
+            invocation
+                .no_summarize_args
+                .iter()
+                .map(|arg| render_template(arg, context)),
+        );
+    }
     if invocation.model_arg.is_empty() || contains_model_arg(user_args) {
         args.extend(user_args.iter().cloned());
         return args;
@@ -736,7 +758,14 @@ fn maybe_start_server(
     }
     let binary = formal_ai_binary_path()?;
     let mut child = Command::new(binary)
-        .args(["serve", "--host", &host, "--port", &port.to_string()])
+        .args([
+            "serve",
+            "--agent-mode",
+            "--host",
+            &host,
+            "--port",
+            &port.to_string(),
+        ])
         .spawn()?;
     wait_for_server(&address, &mut child)?;
     Ok(Some(ServerGuard { child }))

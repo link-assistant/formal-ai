@@ -249,11 +249,14 @@ variables plus Agent CLI inline config in seed data instead of hardcoded
 command text:
 
 ```bash
-formal-ai serve --host 127.0.0.1 --port 8080
 with-formal-ai codex "hi"
 with-formal-ai opencode run "hi"
 with-formal-ai agent -p "hi"
 with-formal-ai gemini -p "hi"
+with-formal-ai claude -p "hi"
+with-formal-ai qwen -p "hi"
+with-formal-ai grok -p "hi"
+with-formal-ai aider --message "hi"
 # Hi, how may I help you?
 ```
 
@@ -270,11 +273,13 @@ For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
 provider overrides through `-c` before appending your remaining arguments.
 
-If the server is not already running, the wrapper can start it for the duration
-of the invocation:
+If the loopback port is idle, the wrapper starts `formal-ai serve --agent-mode`
+for the duration of the invocation and prints a notice because agent mode enables
+tool and shell execution. An existing listener is reused. Opt out when server
+lifecycle is managed separately:
 
 ```bash
-formal-ai with --start-server codex "hi"
+formal-ai with --no-start-server codex "hi"
 ```
 
 Permanent setup uses the same seed templates, creates a `*.formal-ai.bak`
@@ -286,6 +291,10 @@ with-formal-ai -g codex
 with-formal-ai -g opencode
 with-formal-ai -g agent
 with-formal-ai -g gemini
+with-formal-ai -g claude
+with-formal-ai -g qwen
+with-formal-ai -g grok
+with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
@@ -293,7 +302,11 @@ with-formal-ai -g --undo codex
 The persistent files are `~/.codex/config.toml`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed Formal AI block
-in `~/.profile` for Gemini. Re-running `-g` is idempotent.
+in `~/.profile` for environment-configured tools. Re-running `-g` is idempotent.
+
+Non-global runs never write these persistent targets. Agent CLI summarization is
+disabled by default with `--no-summarize-session`; pass `--summarize` (or
+`--keep-summarization`) to keep its normal behavior.
 
 ### 4a. `codex` (OpenAI Codex CLI) - Responses API
 

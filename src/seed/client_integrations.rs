@@ -45,6 +45,7 @@ pub struct TemplateEnv {
 pub struct ClientIntegrationInvocation {
     pub prepend_args: Vec<String>,
     pub args: Vec<String>,
+    pub no_summarize_args: Vec<String>,
     pub env: Vec<TemplateEnv>,
     pub config_content_env: String,
     pub config_env: String,
@@ -162,6 +163,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
         match child.name.as_str() {
             "prepend_arg" => invocation.prepend_args.push(child.id.clone()),
             "arg" => invocation.args.push(child.id.clone()),
+            "no_summarize_arg" => invocation.no_summarize_args.push(child.id.clone()),
             "env" => {
                 if let Some((key, value)) = split_once_equals(&child.id) {
                     invocation.env.push(TemplateEnv { key, value });

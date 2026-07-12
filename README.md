@@ -218,17 +218,31 @@ The wrapper command reads client templates from
 config, and then runs the external CLI with the remaining arguments unchanged:
 
 ```bash
-formal-ai with --start-server codex "hi"
+formal-ai with codex "hi"
 formal-ai with opencode run "hi"
 formal-ai with agent -p "hi"
 formal-ai with gemini -p "hi"
+formal-ai with claude -p "hi"
+formal-ai with qwen -p "hi"
+formal-ai with grok -p "hi"
+formal-ai with aider --message "hi"
 # Hi, how may I help you?
 ```
 
-Use `--base-url` when the server is not on `http://127.0.0.1:8080`; the wrapper
+When the loopback port is idle, the wrapper starts a temporary
+`formal-ai serve --agent-mode`, prints a security notice, and tears it down when
+the CLI exits. It reuses an existing listener. Use `--no-start-server` to require
+an already-running server. Use `--base-url` when the server is not on
+`http://127.0.0.1:8080`; the wrapper
 adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+The existing explicit form remains supported:
+
+```bash
+formal-ai with --start-server codex "hi"
+```
 
 For one-shot Gemini runs, the wrapper also uses a temporary `GEMINI_CLI_HOME`
 with API-key auth selected and workspace trust enabled. That keeps cached
@@ -236,7 +250,13 @@ OAuth settings from `~/.gemini` from taking over the invocation.
 
 For one-shot Agent CLI runs, the wrapper injects the OpenCode-compatible
 provider JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so no temporary
-config file is needed.
+config file is needed. It also passes `--no-summarize-session`; use
+`--summarize` (alias `--keep-summarization`) to retain the client's default.
+
+Every one-shot integration uses only command-line overrides, environment
+variables, inline config, or a temporary config/home directory. Persistent tool
+configuration is written only by explicit `--global` runs. Agent CLI compaction
+is pinned to the Formal AI model rather than a remote fallback.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
@@ -251,6 +271,10 @@ with-formal-ai -g codex
 with-formal-ai -g opencode
 with-formal-ai -g agent
 with-formal-ai -g gemini
+with-formal-ai -g claude
+with-formal-ai -g qwen
+with-formal-ai -g grok
+with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```

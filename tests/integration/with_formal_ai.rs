@@ -1,3 +1,4 @@
+use std::net::{TcpListener, TcpStream};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -16,6 +17,14 @@ fn tmpdir() -> PathBuf {
     ));
     std::fs::create_dir_all(&dir).expect("create tmp dir");
     dir
+}
+
+fn unused_loopback_port() -> u16 {
+    TcpListener::bind("127.0.0.1:0")
+        .expect("bind ephemeral port")
+        .local_addr()
+        .expect("local address")
+        .port()
 }
 
 fn write_fake_cli(bin_dir: &Path, name: &str) {
@@ -40,6 +49,15 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "GEMINI_CLI_HOME=$GEMINI_CLI_HOME"
   echo "GOOGLE_GEMINI_BASE_URL=$GOOGLE_GEMINI_BASE_URL"
   echo "GOOGLE_VERTEX_BASE_URL=$GOOGLE_VERTEX_BASE_URL"
+  echo "ANTHROPIC_AUTH_TOKEN=$ANTHROPIC_AUTH_TOKEN"
+  echo "ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY"
+  echo "ANTHROPIC_BASE_URL=$ANTHROPIC_BASE_URL"
+  echo "OPENAI_API_KEY=$OPENAI_API_KEY"
+  echo "OPENAI_BASE_URL=$OPENAI_BASE_URL"
+  echo "OPENAI_API_BASE=$OPENAI_API_BASE"
+  echo "OPENAI_MODEL=$OPENAI_MODEL"
+  echo "XAI_API_KEY=$XAI_API_KEY"
+  echo "XAI_BASE_URL=$XAI_BASE_URL"
   if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
     echo "---OPENCODE_CONFIG---"
     cat "$OPENCODE_CONFIG"
@@ -73,8 +91,13 @@ fn run_with_capture(
     capture: &Path,
     args: &[&str],
 ) -> std::process::Output {
-    Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args(args)
+    let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
+    command.arg(args[0]);
+    if args.first() == Some(&"with") && !args.contains(&"--global") && !args.contains(&"--undo") {
+        command.arg("--no-start-server");
+    }
+    command
+        .args(&args[1..])
         .env("HOME", home)
         .env("PATH", path_with_fake_clis(bin_dir))
         .env("FORMAL_AI_CAPTURE", capture)
@@ -177,13 +200,20 @@ fn with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag() {
         String::from_utf8_lossy(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
-    assert!(captured.contains("arg[0]=--model"), "capture:\n{captured}");
     assert!(
-        captured.contains("arg[1]=formalai/formal-ai"),
+        captured.contains("arg[0]=--no-summarize-session"),
         "capture:\n{captured}"
     );
-    assert!(captured.contains("arg[2]=-p"), "capture:\n{captured}");
-    assert!(captured.contains("arg[3]=hi"), "capture:\n{captured}");
+    assert!(
+        captured.contains("--no-summarize-session"),
+        "capture:\n{captured}"
+    );
+    assert!(
+        captured.contains("arg[4]=formalai/formal-ai"),
+        "capture:\n{captured}"
+    );
+    assert!(captured.contains("arg[5]=-p"), "capture:\n{captured}");
+    assert!(captured.contains("arg[6]=hi"), "capture:\n{captured}");
     assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
     assert!(
         captured.contains("LINK_ASSISTANT_AGENT_CONFIG_CONTENT={"),
@@ -197,6 +227,213 @@ fn with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag() {
     assert!(captured.contains(&expected_api_key), "capture:\n{captured}");
     assert!(captured.contains("\"model\": \"formalai/formal-ai\""));
 
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_summarize_restores_agent_default() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "agent");
+    let capture = dir.join("capture.txt");
+
+    let output = run_with_capture(
+        &home,
+        &bin_dir,
+        &capture,
+        &["with", "--summarize", "agent", "-p", "hi"],
+    );
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let captured = std::fs::read_to_string(&capture).expect("capture");
+    assert!(
+        !captured.contains("--no-summarize-session"),
+        "capture:\n{captured}"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
+    for tool in [
+        "codex", "opencode", "agent", "gemini", "claude", "qwen", "grok", "aider",
+    ] {
+        let dir = tmpdir();
+        let home = dir.join("home");
+        let bin_dir = dir.join("bin");
+        for parent in [
+            ".codex",
+            ".config/opencode",
+            ".config/link-assistant-agent",
+            ".gemini",
+        ] {
+            std::fs::create_dir_all(home.join(parent)).expect("config parent");
+        }
+        std::fs::create_dir_all(&bin_dir).expect("bin");
+        let candidates = [
+            ".codex/config.toml",
+            ".config/opencode/opencode.json",
+            ".config/link-assistant-agent/opencode.json",
+            ".gemini/settings.json",
+            ".profile",
+        ];
+        for candidate in candidates {
+            std::fs::write(home.join(candidate), format!("unchanged:{candidate}\n"))
+                .expect("seed persistent config");
+        }
+        write_fake_cli(&bin_dir, tool);
+        let capture = dir.join("capture.txt");
+        let output = run_with_capture(&home, &bin_dir, &capture, &["with", tool, "hi"]);
+        assert!(
+            output.status.success(),
+            "{tool} stderr: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        for candidate in candidates {
+            assert_eq!(
+                std::fs::read_to_string(home.join(candidate)).expect("persistent config"),
+                format!("unchanged:{candidate}\n"),
+                "{tool} modified {candidate}"
+            );
+        }
+        let captured = std::fs::read_to_string(&capture).expect("capture");
+        match tool {
+            "claude" => {
+                assert!(captured.contains("ANTHROPIC_AUTH_TOKEN=formal-ai"));
+                assert!(captured.contains("ANTHROPIC_API_KEY="));
+                assert!(captured.contains("ANTHROPIC_BASE_URL=http://127.0.0.1:8080/api/anthropic"));
+                assert!(captured.contains("arg[0]=--model"));
+                assert!(captured.contains("arg[1]=formal-ai"));
+            }
+            "qwen" => {
+                assert!(captured.contains("OPENAI_API_KEY=formal-ai"));
+                assert!(captured.contains("OPENAI_BASE_URL=http://127.0.0.1:8080/api/openai/v1"));
+                assert!(captured.contains("OPENAI_MODEL=formal-ai"));
+                assert!(captured.contains("arg[0]=--model"));
+                assert!(captured.contains("arg[1]=formal-ai"));
+            }
+            "grok" => {
+                assert!(captured.contains("XAI_API_KEY=formal-ai"));
+                assert!(captured.contains("XAI_BASE_URL=http://127.0.0.1:8080/api/openai/v1"));
+                assert!(captured.contains("arg[0]=--model"));
+                assert!(captured.contains("arg[1]=formal-ai"));
+            }
+            "aider" => {
+                assert!(captured.contains("OPENAI_API_KEY=formal-ai"));
+                assert!(captured.contains("OPENAI_API_BASE=http://127.0.0.1:8080/api/openai/v1"));
+                assert!(captured.contains("arg[0]=--no-auto-commits"));
+                assert!(captured.contains("arg[1]=--model"));
+                assert!(captured.contains("arg[2]=openai/formal-ai"));
+            }
+            _ => {}
+        }
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[test]
+fn with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "agent");
+    let capture = dir.join("capture.txt");
+    let port = unused_loopback_port();
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["with", "--port", &port.to_string(), "agent", "-p", "hi"])
+        .env("HOME", &home)
+        .env("PATH", path_with_fake_clis(&bin_dir))
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run formal-ai with auto server");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("temporary server in agent mode"),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(
+        TcpStream::connect(("127.0.0.1", port)).is_err(),
+        "temporary server still listening"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_no_start_server_runs_without_a_listener() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "agent");
+    let capture = dir.join("capture.txt");
+    let port = unused_loopback_port();
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "--no-start-server",
+            "--port",
+            &port.to_string(),
+            "agent",
+            "-p",
+            "hi",
+        ])
+        .env("HOME", &home)
+        .env("PATH", path_with_fake_clis(&bin_dir))
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run formal-ai with no-start-server");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
+    assert!(capture.exists(), "wrapped CLI was not invoked");
+    assert!(TcpStream::connect(("127.0.0.1", port)).is_err());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn with_formal_ai_reuses_an_existing_loopback_listener() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "agent");
+    let capture = dir.join("capture.txt");
+    let listener = TcpListener::bind("127.0.0.1:0").expect("listener");
+    let port = listener.local_addr().expect("address").port();
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["with", "--port", &port.to_string(), "agent", "-p", "hi"])
+        .env("HOME", &home)
+        .env("PATH", path_with_fake_clis(&bin_dir))
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run formal-ai with existing server");
+
+    assert!(output.status.success());
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
+    assert!(
+        listener.local_addr().is_ok(),
+        "existing listener was replaced"
+    );
     let _ = std::fs::remove_dir_all(&dir);
 }
 
