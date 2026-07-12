@@ -79,7 +79,7 @@ step_forget_covered_specifics
   order "12"
   id "forget_covered_specifics"
   title "Forget the specifics a retained amendment can reproduce, keep the amendment"
-  detail "Under pressure the planner prefers ForgetCoveredSpecific: a specific task/test-run record covered by a retained amendment is forgotten before any other recomputable data, because the generalized amendment can reproduce it. The amendment itself is RetainedLearning and never reclaimable, so the general meta algorithm keeps every change that lets it solve the whole task class even after its specifics are gone."
+  detail "Under pressure plan_memory_dreaming prefers ForgetCoveredSpecific: a specific task/test-run record whose id appears in the covered_event_ids that replay_candidate_tasks verified is forgotten before any other recomputable data, because the generalized amendment can reproduce it. The amendment itself is RetainedLearning and never reclaimable, so the general meta algorithm keeps every change that lets it solve the whole task class even after its specifics are gone."
   source_file "src/dreaming.rs"
 step_measure_real_storage
   record_type "meta_step"
@@ -150,6 +150,11 @@ fn_apply_retained_amendments
   function "apply_retained_amendments"
   source_file "src/dreaming_application.rs"
   kind "future_task_application"
+fn_required_reclaim_bytes
+  record_type "meta_function"
+  function "required_reclaim_bytes"
+  source_file "src/dreaming.rs"
+  kind "pressure_target"
 fn_measure_storage
   record_type "meta_function"
   function "measure_storage"
@@ -179,7 +184,7 @@ test_unit_memory_maintenance
   record_type "meta_test"
   suite "memory_maintenance"
   test_file "tests/unit/memory_maintenance.rs"
-  pins "Duplicate restructuring by recalculated use, raw/learning protection, requires_bigger_storage reporting, topic-frequency recalculation, durable-requirement learning, amendment generalization, covered-specific forgetting under pressure, and idempotent amendment materialization."
+  pins "plan_memory_dreaming, apply_dreaming_plan, classify_event, usage_counts, duplicate_key, required_reclaim_bytes, event_topic, requirement_statement, learn_from_memory, replay_candidate_tasks, mine_patterns, apply_retained_amendments, measure_storage, persist_auto_free_space_choice, and run_core_dreaming_once: duplicate restructuring by recalculated use, raw/learning protection, requires_bigger_storage reporting, topic-frequency recalculation, durable-requirement learning, amendment generalization, covered-specific forgetting under pressure, and idempotent amendment materialization."
 test_unit_docs_requirements
   record_type "meta_test"
   suite "docs_requirements_issue_540"

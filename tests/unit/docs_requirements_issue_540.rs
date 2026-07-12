@@ -148,16 +148,25 @@ fn issue_540_dreaming_documents_are_traceable() {
         ],
     );
 
-    for (label, content) in [
-        ("REQUIREMENTS.md", requirements),
-        ("ARCHITECTURE.md", architecture),
-        ("issue-540 requirements", issue_requirements),
-        ("issue-540 case study", case_study),
-    ] {
-        assert!(
-            !content.contains("memory graph"),
-            "{label} must use memory-links terminology",
-        );
+    // Repo-wide terminology sweep (issue #540 §7): every source and document
+    // must use memory-links terminology, not "memory graph". The sweep walks
+    // the trees so a new file cannot reintroduce the phrase unnoticed.
+    for tree in ["src", "tests", "docs"] {
+        for entry in walkdir::WalkDir::new(root.join(tree)) {
+            let entry = entry.expect("tree should be walkable");
+            let path = entry.path();
+            let sweepable = path
+                .extension()
+                .is_some_and(|ext| ext == "rs" || ext == "md" || ext == "lino");
+            if !sweepable || path.ends_with("docs_requirements_issue_540.rs") {
+                continue;
+            }
+            assert!(
+                !read(path).to_lowercase().contains("memory graph"),
+                "{} must use memory-links terminology",
+                path.display(),
+            );
+        }
     }
 
     let research = read(root.join("docs/case-studies/issue-540/raw-data/online-research.md"));
@@ -199,11 +208,58 @@ fn issue_540_dreaming_documents_are_traceable() {
         "tests/unit/issue_540_agent_cli.rs",
         "tests/unit/specification/dreaming_meta_algorithm.rs",
     ] {
+        let path = root.join(relative);
         assert!(
-            root.join(relative).is_file(),
+            path.is_file(),
             "{relative} should exist for issue #540 traceability",
         );
+        // A zero-byte placeholder is not traceability evidence (issue #540 §7).
+        assert!(
+            path.metadata().map_or(0, |meta| meta.len()) > 0,
+            "{relative} must not be empty for issue #540 traceability",
+        );
     }
+
+    // Every backticked snake_case identifier cited in the requirements table
+    // must still exist in the live Rust sources: citing a renamed or deleted
+    // test/function fails here instead of silently going stale (issue #540 §7).
+    let live_sources = read_rust_sources(&[root.join("src"), root.join("tests")]);
+    for identifier in cited_identifiers(&issue_requirements) {
+        assert!(
+            live_sources.contains(&identifier),
+            "requirements.md cites `{identifier}` but it no longer appears in src/ or tests/",
+        );
+    }
+}
+
+/// Backticked tokens that look like plain `snake_case` identifiers (test or
+/// function names). Paths, env vars, CLI flags, and type paths are skipped.
+fn cited_identifiers(content: &str) -> Vec<String> {
+    content
+        .split('`')
+        .skip(1)
+        .step_by(2)
+        .filter(|token| {
+            token.contains('_')
+                && token.chars().all(|character| {
+                    character.is_ascii_lowercase() || character == '_' || character.is_ascii_digit()
+                })
+        })
+        .map(str::to_owned)
+        .collect()
+}
+
+fn read_rust_sources(roots: &[std::path::PathBuf]) -> String {
+    let mut combined = String::new();
+    for root in roots {
+        for entry in walkdir::WalkDir::new(root) {
+            let entry = entry.expect("source tree should be walkable");
+            if entry.path().extension().is_some_and(|ext| ext == "rs") {
+                combined.push_str(&read(entry.path()));
+            }
+        }
+    }
+    combined
 }
 
 fn read(path: impl AsRef<Path>) -> String {
