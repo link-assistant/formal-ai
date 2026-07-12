@@ -373,6 +373,43 @@ fn with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down() {
 }
 
 #[test]
+fn with_formal_ai_no_start_server_runs_without_a_listener() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    let bin_dir = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin_dir).expect("bin");
+    write_fake_cli(&bin_dir, "agent");
+    let capture = dir.join("capture.txt");
+    let port = unused_loopback_port();
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "--no-start-server",
+            "--port",
+            &port.to_string(),
+            "agent",
+            "-p",
+            "hi",
+        ])
+        .env("HOME", &home)
+        .env("PATH", path_with_fake_clis(&bin_dir))
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run formal-ai with no-start-server");
+
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
+    assert!(capture.exists(), "wrapped CLI was not invoked");
+    assert!(TcpStream::connect(("127.0.0.1", port)).is_err());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn with_formal_ai_reuses_an_existing_loopback_listener() {
     let dir = tmpdir();
     let home = dir.join("home");
