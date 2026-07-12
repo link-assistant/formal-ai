@@ -8,4 +8,5 @@ bump: minor
 - Added three sections to `VISION.md`: "Associative Technologies Only" (links networks, Links Notation, and the meta language as the only data surface — never graphs or tables), "Self-Coding: The Project Builds Itself" (a four-rung ladder from recipe-driven edits to a measured per-release self-hosting percentage, driven through Agent CLI and Hive Mind), and "Reaching A Wide Audience" (web, desktop, editor, and package distribution without forking the core).
 
 ### Changed
+- Aligned the roadmap traceability pins in `tests/unit/docs_requirements_issue_526.rs` and `tests/unit/docs_requirements/benchmarks.rs` with the restructured `ROADMAP.md` (the stale "- current PR" section anchors no longer exist), and added the issue #651 planning rows R428–R433 to `REQUIREMENTS.md`.
 - Restructured `ROADMAP.md` from an issue-batch chronicle into a general-requirement status tracker: eight requirement groups, each requirement marked done / partially done / not done, with the invariant that no partially-done or not-done requirement may exist without a linked open issue (issue #651). Planning history is condensed with pointers to the per-batch case studies.
