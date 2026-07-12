@@ -153,7 +153,7 @@ fn_apply_retained_amendments
 fn_required_reclaim_bytes
   record_type "meta_function"
   function "required_reclaim_bytes"
-  source_file "src/dreaming.rs"
+  source_file "src/dreaming/support.rs"
   kind "pressure_target"
 fn_measure_storage
   record_type "meta_function"

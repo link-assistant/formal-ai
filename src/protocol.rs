@@ -18,7 +18,11 @@ use crate::protocol_policy::{
     tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
-use crate::solver::{ConversationTurn, UniversalSolver};
+use crate::solver::UniversalSolver;
+
+mod recording;
+pub use recording::{chat_exchange_to_record, responses_exchange_to_record};
+use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
@@ -947,93 +951,4 @@ fn response_reasoning_item(
             text,
         }],
     }))
-}
-
-/// The `(prompt, answer)` pair of a completed chat exchange, if any.
-///
-/// The HTTP server uses this to record live usage into the shared memory log
-/// (issue #540) so dreaming learns from real traffic, not only imported
-/// bundles. Tool-call turns (no textual answer) yield `None`.
-#[must_use]
-pub fn chat_exchange_to_record(
-    request: &ChatCompletionRequest,
-    completion: &ChatCompletion,
-) -> Option<(String, String)> {
-    let (prompt, _) = chat_prompt_and_history(&request.messages);
-    let answer = completion.choices.first()?.message.content.plain_text();
-    (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))
-}
-
-/// Responses-surface counterpart of [`chat_exchange_to_record`].
-#[must_use]
-pub fn responses_exchange_to_record(
-    request: &ResponsesRequest,
-    response: &ResponseObject,
-) -> Option<(String, String)> {
-    let prompt = response_prompt(request);
-    let answer = response
-        .output_messages()
-        .iter()
-        .flat_map(|message| message.content.iter())
-        .map(|content| content.text.as_str())
-        .collect::<Vec<_>>()
-        .join("\n");
-    (!prompt.trim().is_empty() && !answer.trim().is_empty()).then_some((prompt, answer))
-}
-
-fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<ConversationTurn>) {
-    let Some(latest_user_index) = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-    else {
-        return (String::new(), Vec::new());
-    };
-
-    let prompt = messages[latest_user_index].content.plain_text();
-    let history = messages[..latest_user_index]
-        .iter()
-        .filter_map(chat_message_to_turn)
-        .collect();
-    (prompt, history)
-}
-
-fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
-    let content = message.content.plain_text();
-    if content.trim().is_empty() {
-        return None;
-    }
-    if message.role.eq_ignore_ascii_case("user") {
-        return Some(ConversationTurn::user(content));
-    }
-    if message.role.eq_ignore_ascii_case("assistant") {
-        return Some(ConversationTurn::assistant(content));
-    }
-    None
-}
-
-fn response_prompt(request: &ResponsesRequest) -> String {
-    let input = value_to_prompt_text(&request.input);
-    match request.instructions.as_deref() {
-        Some(instructions) if !instructions.trim().is_empty() => {
-            format!("{}\n{}", instructions.trim(), input.trim())
-        }
-        _ => input,
-    }
-}
-
-fn value_to_prompt_text(value: &Value) -> String {
-    match value {
-        Value::String(text) => text.clone(),
-        Value::Array(items) => items
-            .iter()
-            .map(value_to_prompt_text)
-            .filter(|text| !text.trim().is_empty())
-            .collect::<Vec<_>>()
-            .join("\n"),
-        Value::Object(object) => object
-            .get("content")
-            .or_else(|| object.get("text"))
-            .map_or_else(String::new, value_to_prompt_text),
-        _ => String::new(),
-    }
 }
