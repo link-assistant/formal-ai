@@ -69,13 +69,21 @@ pub(super) fn chat_message_to_turn(message: &ChatMessage) -> Option<Conversation
 }
 
 pub(super) fn response_prompt(request: &ResponsesRequest) -> String {
-    let input = value_to_prompt_text(&request.input);
-    match request.instructions.as_deref() {
-        Some(instructions) if !instructions.trim().is_empty() => {
-            format!("{}\n{}", instructions.trim(), input.trim())
-        }
-        _ => input,
-    }
+    latest_response_user_text(&request.input)
+        .unwrap_or_else(|| value_to_prompt_text(&request.input))
+}
+
+fn latest_response_user_text(input: &Value) -> Option<String> {
+    input.as_array()?.iter().rev().find_map(|item| {
+        let object = item.as_object()?;
+        object
+            .get("role")?
+            .as_str()?
+            .eq_ignore_ascii_case("user")
+            .then(|| object.get("content").map(value_to_prompt_text))
+            .flatten()
+            .filter(|text| !text.trim().is_empty())
+    })
 }
 
 pub(super) fn value_to_prompt_text(value: &Value) -> String {
