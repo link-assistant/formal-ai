@@ -76,6 +76,18 @@ guide defines the fixture markers, logging proxy assertions, phrasing matrices,
 and CI shape needed to prove that a result came from Formal AI and that the
 client actually executed the expected tools.
 
+### Replaying the self-coding loop
+
+```bash
+cargo build --release --bin formal-ai
+examples/self-coding/run.sh
+cargo test self_coding_session_replays
+```
+
+For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`.
+This invokes `solve ISSUE_URL --tool agent --model formal-ai`: Hive Mind drives
+the Agent CLI, which drives the local Formal AI server.
+
 ## Development Setup
 
 1. **Fork and clone the repository**
