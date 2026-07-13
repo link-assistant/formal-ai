@@ -7,6 +7,13 @@ bump: minor
   Ineffa" (or "I'll call you Ada", "you are called …") it acknowledges the name and
   recalls it when later asked "what is your name", using dialog-local memory with no
   server state — mirrored in the browser worker (issue #676).
+- Reasoning traces now open with a human, first-person narrative of what the
+  assistant understood and decided ("You asked how I'm doing, so I told you and
+  offered to help.") instead of an identical per-intent category template. The
+  concrete steps remain beneath it as an expandable, recursive "robotic detail"
+  layer. Applied to the API/CLI reasoning field (what agentic clients such as
+  OpenCode render) and mirrored in the web thinking preview across en/ru/zh/hi
+  (issue #676).
 
 ### Fixed
 - Agentic planner now runs any seed shell token (`pwd`, `git`, `cargo`, …) named in a

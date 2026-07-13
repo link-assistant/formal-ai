@@ -177,17 +177,32 @@ The bugs above are all *generality* failures: a slightly different phrasing than
 falls to *unknown*. The fix for each requirement adds a broad set of phrasings (and unit tests that
 assert many variants), directly serving R6.
 
-### R8 — Robotic thinking display — **root cause found**
+### R8 — Robotic thinking display — **fixed**
 
-The reasoning trace is a fixed six-line template ("Read the request … Detect the request language …
+The reasoning trace was a fixed six-line template ("Read the request … Detect the request language …
 Formalize … Route … Verify … Compose the answer …") applied to every intent, which is why `Hello`
-and `How are you?` look identical apart from the quoted text. It is not human-like, not per-intent,
-and offers no way to expand into the full "robotic" detail.
+and `How are you?` looked identical apart from the quoted text. It was not human-like, not per-intent,
+and offered no way to expand into the full "robotic" detail.
 
-**Solution plan:** make the thinking generator per-intent and human-readable (a short narrative of
-what the assistant understood and decided), keep the detailed step list available as an expandable
-"robotic detail" layer (recursive: high-level thought → its sub-steps), and keep both in parity
-between Rust and the JS worker. Natural-language thought strings live in seed data (CI rule).
+**Delivered solution:** the reasoning trace now leads with a per-intent, first-person narrative of
+what the assistant understood and decided, with the concrete step list kept beneath it as a
+recursive "robotic detail" layer.
+
+- **Rust / API / CLI** — `thinking_narrative(&[ThinkingStep])` (in `src/thinking.rs`) maps the
+  resolved route to one human sentence ("You said hello, so I greeted you back.", "This was a
+  calculation, so I worked it out step by step and checked the result.", with a humanized generic
+  fallback for any unrecognized route). `render_thinking_steps` prepends it, so the API `reasoning`
+  field an agentic client such as OpenCode renders now opens human and per-intent while every
+  concrete step (which the surface tests pin by substring) still renders below, including the
+  recursive `↳` sub-steps. Covered by `tests/unit/issue_676_thinking_narrative.rs`.
+- **Web** — `ThinkingPreview` renders the same headline in a dedicated always-visible
+  `thinking-narrative` element above the collapsed/expanded step list (which already provides the
+  brief/standard/detailed levels and a recursive expandable diagnostics panel). The 18 `narrative*`
+  strings live in `src/web/i18n-catalog.lino` for all four locales (en/ru/zh/hi); `thinkingNarrative`
+  keys off the resolved intent. Covered by `tests/e2e/tests/issue-676-thinking-narrative.spec.js`.
+
+Both surfaces summarize the *decision* (a stable meta-language headline), so the same route reached
+in any input language yields the same reasoning headline while the composed answer stays localized.
 
 ### R9–R13 — Process requirements
 
