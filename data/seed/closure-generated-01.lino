@@ -1004,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "intent web search"
+  intent_wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "intent wellbeing"
   intent_write_program
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"

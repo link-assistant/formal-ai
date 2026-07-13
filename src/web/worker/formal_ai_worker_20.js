@@ -398,6 +398,26 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, architecture, formalizationContext);
   }
 
+  // Issue #676: "how are you?" small talk is its own wellbeing intent so the
+  // reply differs from a bare greeting. It must be checked before the greeting
+  // rule because some phrasings ("привет как дела") also contain a greeting cue.
+  if (isWellbeingPrompt(normalized, prompt)) {
+    events.push("rule:wellbeing");
+    steps.push({ step: "match_rule", detail: "wellbeing" });
+    const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
+    const randomize = preferences.greetingVariations !== false && temperature > 0;
+    return finalize(events, steps, toolCalls, {
+      intent: "wellbeing",
+      content: answerFor("wellbeing", language, { randomize: randomize }),
+      confidence: 1.0,
+      evidence: [
+        "rule:wellbeing",
+        `language:${language}`,
+        `variation:${randomize ? "random" : "canonical"}`,
+        `temperature:${temperature.toFixed(2)}`,
+      ],
+    }, formalizationContext);
+  }
   if (isGreetingPrompt(normalized, prompt)) {
     events.push("rule:greeting");
     steps.push({ step: "match_rule", detail: "greeting" });

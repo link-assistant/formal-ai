@@ -96,11 +96,11 @@ fn greeting_chinese_variations_match() {
     assert_intent(&prompts, "greeting", "response:greeting");
 }
 
-// Issue #152 follow-up: "how are you?" small talk is greeting intent, not a
-// language-specific one-off. Keep the semantic family covered in every
-// language declared by `agent_info.supported_languages`.
+// Issue #152 follow-up / Issue #676: "how are you?" small talk is its own
+// `wellbeing` intent (distinct from a bare greeting), covered in every language
+// declared by `agent_info.supported_languages`.
 #[test]
-fn greeting_how_are_you_variations_match_across_languages() {
+fn wellbeing_how_are_you_variations_match_across_languages() {
     let prompts = [
         "How are you?",
         "how are you doing?",
@@ -115,7 +115,7 @@ fn greeting_how_are_you_variations_match_across_languages() {
         "你怎么样?",
         "最近怎么样?",
     ];
-    assert_intent(&prompts, "greeting", "response:greeting");
+    assert_intent(&prompts, "wellbeing", "response:wellbeing");
 }
 
 // Issue #402: free-time small talk should answer with an assistant-specific

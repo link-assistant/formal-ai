@@ -12,6 +12,8 @@ const FALLBACK_ASSISTANT_NAME_ANSWER =
   "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
 
 const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
+const FALLBACK_WELLBEING_ANSWER =
+  "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?";
 
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER =
@@ -41,6 +43,9 @@ const FALLBACK_CLARIFICATION_ANSWER =
 let MULTILINGUAL_ANSWERS = {
   greeting: {
     en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
+  },
+  wellbeing: {
+    en: { text: FALLBACK_WELLBEING_ANSWER, variants: [FALLBACK_WELLBEING_ANSWER] },
   },
   farewell: {
     en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
@@ -236,6 +241,43 @@ function hydrateLinoSeedText(raw) {
 let INTENT_ROUTING = {
   intents: [
     {
+      id: "intent_wellbeing",
+      slug: "wellbeing",
+      responseLink: "response:wellbeing",
+      keywords: [],
+      phrases: [
+        "how are you",
+        "how are you doing",
+        "how do you do",
+        "how is it going",
+        "how s it going",
+        "how are things",
+        "как дела",
+        "как твои дела",
+        "как ваши дела",
+        "как у тебя дела",
+        "как у вас дела",
+        "привет как дела",
+        "здравствуйте как ваши дела",
+        "как поживаешь",
+        "как вы поживаете",
+        "कैसे हो",
+        "आप कैसे हैं",
+        "तुम कैसे हो",
+        "क्या हाल है",
+        "आपका क्या हाल है",
+        "सब कैसा चल रहा है",
+        "你好吗",
+        "你还好吗",
+        "你怎么样",
+        "您怎么样",
+        "最近怎么样",
+        "过得怎么样",
+      ],
+      tokens: [],
+      combos: [],
+    },
+    {
       id: "intent_greeting",
       slug: "greeting",
       responseLink: "response:greeting",
@@ -256,37 +298,10 @@ let INTENT_ROUTING = {
         "哈喽",
       ],
       phrases: [
-        "how are you",
-        "how are you doing",
-        "how do you do",
-        "how is it going",
-        "how s it going",
-        "how are things",
         "шабат шалом",
-        "как дела",
-        "как твои дела",
-        "как ваши дела",
-        "как у тебя дела",
-        "как у вас дела",
-        "привет как дела",
-        "здравствуйте как ваши дела",
-        "как поживаешь",
-        "как вы поживаете",
         "राम राम",
-        "कैसे हो",
-        "आप कैसे हैं",
-        "तुम कैसे हो",
-        "क्या हाल है",
-        "आपका क्या हाल है",
-        "सब कैसा चल रहा है",
         "早上好",
         "早安",
-        "你好吗",
-        "你还好吗",
-        "你怎么样",
-        "您怎么样",
-        "最近怎么样",
-        "过得怎么样",
       ],
       tokens: ["greet"],
       combos: [],
@@ -539,6 +554,9 @@ let INTENT_ROUTING = {
 function fallbackEntry(intent) {
   if (intent === "greeting") {
     return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
+  }
+  if (intent === "wellbeing") {
+    return { text: FALLBACK_WELLBEING_ANSWER, variants: [FALLBACK_WELLBEING_ANSWER] };
   }
   if (intent === "courtesy_response") {
     return {

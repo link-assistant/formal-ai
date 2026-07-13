@@ -38,6 +38,7 @@ pub mod rebuild_plan;
 pub mod repair_strategy;
 pub mod self_ast;
 pub mod self_heal;
+mod shell_command;
 pub mod source_graph;
 
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};

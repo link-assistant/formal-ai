@@ -309,12 +309,14 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText(/Здравствуйте|Привет/);
   });
 
-  test('how-are-you small talk replies as a greeting across languages', async ({ page }) => {
+  // Issue #676: "how are you?" small talk now has its own wellbeing reply,
+  // distinct from a bare greeting, across every supported language.
+  test('how-are-you small talk replies with wellbeing across languages', async ({ page }) => {
     const cases = [
-      { prompt: 'How are you?', answer: /Hi|Hello|Hey/ },
-      { prompt: 'Как твои дела?', answer: /Здравствуйте|Привет/ },
-      { prompt: 'आप कैसे हैं?', answer: /नमस्ते|नमस्कार/ },
-      { prompt: '你好吗?', answer: /你好|您好/ },
+      { prompt: 'How are you?', answer: /doing great|doing well|All good|ready to help/ },
+      { prompt: 'Как твои дела?', answer: /хорошо|отлично|Готов помочь|полезен/ },
+      { prompt: 'आप कैसे हैं?', answer: /बढ़िया|ठीक|अच्छा|मदद/ },
+      { prompt: '你好吗?', answer: /我很好|我挺好|一切都好|谢谢/ },
     ];
 
     for (const { prompt, answer } of cases) {
