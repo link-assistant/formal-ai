@@ -48,20 +48,21 @@ use parser::{
 pub use brainstorm::{brainstorm_seeds, BrainstormCategory, BrainstormSeeds};
 pub use client_integrations::{
     client_integrations, ClientIntegration, ClientIntegrationGlobalConfig,
-    ClientIntegrationInvocation, ConfigFormat, ModelArgPosition, TemplateEnv,
+    ClientIntegrationInvocation, ConfigFormat, ModeArgPosition, ModelArgPosition, TemplateEnv,
 };
 pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{
     seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CLIENT_INTEGRATIONS_LINO,
     CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO,
     ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
-    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, MARKET_PRICE_REFERENCES_LINO,
-    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
-    MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
-    MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
-    OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO,
-    PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
-    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
+    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO,
+    MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
+    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
+    MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
+    MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
+    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
+    PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
+    TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
@@ -682,6 +683,101 @@ pub fn intent_routing() -> IntentRouting {
         }
     }
     routing
+}
+
+/// One learnable data source declared by `learning-sources.lino` (issue #499).
+///
+/// The seed names each external data source the engine can *learn from* when a
+/// user points it there — a host, the natural-language keywords that name it in
+/// any supported language, and the `capability` slug that says which learning
+/// loop ingests it. Routing reads this data rather than branching on a specific
+/// URL, so a new source is a data edit, never a code change.
+#[derive(Debug, Clone, Default)]
+pub struct LearningSource {
+    pub id: String,
+    pub capability: String,
+    pub host: String,
+    pub keywords: Vec<String>,
+}
+
+/// The learnable-source registry plus the shared, language-agnostic directive
+/// cues that mark a "learn from this source" request (issue #499).
+#[derive(Debug, Clone, Default)]
+pub struct LearningSources {
+    pub sources: Vec<LearningSource>,
+    pub directive_cues: Vec<String>,
+}
+
+impl LearningSources {
+    /// Match a lowercased prompt against the registry and return the source the
+    /// user is teaching the engine to learn from, if any.
+    ///
+    /// A directive is only recognized when the prompt carries **both** a
+    /// language-agnostic learning cue (e.g. "learn from", "узнаешь",
+    /// "यहाँ से सीख", "在这里了解") **and** a reference to a declared source — its
+    /// host or one of its native-language keywords. This is the single source of
+    /// truth shared by the chat handler ([`crate::solver_handlers::try_learn_from_source`])
+    /// and the Agent CLI planner
+    /// ([`crate::agentic_coding::google_trends_learning::is_google_trends_learning_task`]),
+    /// so the *same* natural-language teaching directive drives both the chat
+    /// acknowledgement and the artifact-writing recipe. Callers pass an
+    /// already-lowercased prompt so the seed's lowercased cues/keywords match
+    /// directly (issue #499).
+    #[must_use]
+    pub fn match_directive(&self, lowercased: &str) -> Option<&LearningSource> {
+        let has_cue = self
+            .directive_cues
+            .iter()
+            .any(|cue| lowercased.contains(cue.as_str()));
+        if !has_cue {
+            return None;
+        }
+        self.sources.iter().find(|source| {
+            (!source.host.is_empty() && lowercased.contains(source.host.as_str()))
+                || source
+                    .keywords
+                    .iter()
+                    .any(|keyword| lowercased.contains(keyword.as_str()))
+        })
+    }
+}
+
+/// Parse the learnable-source registry from `learning-sources.lino`.
+///
+/// The keywords and directive cues are stored lowercased in the seed so a
+/// lowercased prompt matches them directly (Rust's `to_lowercase` folds the
+/// Cyrillic, Devanagari, and Han text too).
+#[must_use]
+pub fn learning_sources() -> LearningSources {
+    let tree = parse_lino(LEARNING_SOURCES_LINO);
+    let mut registry = LearningSources::default();
+    if let Some(root) = tree.children.first() {
+        for child in &root.children {
+            match child.name.as_str() {
+                "source" => {
+                    let keywords = child
+                        .children
+                        .iter()
+                        .filter(|entry| entry.name == "keyword")
+                        .map(|entry| entry.id.clone())
+                        .collect();
+                    registry.sources.push(LearningSource {
+                        id: child.id.clone(),
+                        capability: child.find_child_value("capability").to_string(),
+                        host: child.find_child_value("host").to_string(),
+                        keywords,
+                    });
+                }
+                "directive" => {
+                    for entry in child.children.iter().filter(|entry| entry.name == "cue") {
+                        registry.directive_cues.push(entry.id.clone());
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    registry
 }
 
 #[must_use]

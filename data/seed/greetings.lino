@@ -23,31 +23,31 @@ greeting_5
   intent greeting
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
-greeting_6
+wellbeing_1
   text "как твои дела"
-  intent greeting
-  response_link "response:greeting"
-  answer "Здравствуйте! Чем могу помочь?"
-greeting_7
+  intent wellbeing
+  response_link "response:wellbeing"
+  answer "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+wellbeing_2
   text "как дела"
-  intent greeting
-  response_link "response:greeting"
-  answer "Здравствуйте! Чем могу помочь?"
-greeting_8
+  intent wellbeing
+  response_link "response:wellbeing"
+  answer "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+wellbeing_3
   text "how are you"
-  intent greeting
-  response_link "response:greeting"
-  answer "Hi, how may I help you?"
-greeting_9
+  intent wellbeing
+  response_link "response:wellbeing"
+  answer "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
+wellbeing_4
   text "आप कैसे हैं"
-  intent greeting
-  response_link "response:greeting"
-  answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
-greeting_10
+  intent wellbeing
+  response_link "response:wellbeing"
+  answer "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
+wellbeing_5
   text 你好吗
-  intent greeting
-  response_link "response:greeting"
-  answer 你好!请问有什么可以帮您的?
+  intent wellbeing
+  response_link "response:wellbeing"
+  answer 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
 farewell_1
   text Bye
   intent farewell

@@ -10,7 +10,7 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
-It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack.
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings.
 
 The current implementation covers the surface area requested in issue #1:
 
@@ -218,17 +218,31 @@ The wrapper command reads client templates from
 config, and then runs the external CLI with the remaining arguments unchanged:
 
 ```bash
-formal-ai with --start-server codex "hi"
+formal-ai with codex "hi"
 formal-ai with opencode run "hi"
 formal-ai with agent -p "hi"
 formal-ai with gemini -p "hi"
+formal-ai with claude -p "hi"
+formal-ai with qwen -p "hi"
+formal-ai with grok -p "hi"
+formal-ai with aider --message "hi"
 # Hi, how may I help you?
 ```
 
-Use `--base-url` when the server is not on `http://127.0.0.1:8080`; the wrapper
+When the loopback port is idle, the wrapper starts a temporary
+`formal-ai serve --agent-mode`, prints a security notice, and tears it down when
+the CLI exits. It reuses an existing listener. Use `--no-start-server` to require
+an already-running server. Use `--base-url` when the server is not on
+`http://127.0.0.1:8080`; the wrapper
 adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+The existing explicit form remains supported:
+
+```bash
+formal-ai with --start-server codex "hi"
+```
 
 For one-shot Gemini runs, the wrapper also uses a temporary `GEMINI_CLI_HOME`
 with API-key auth selected and workspace trust enabled. That keeps cached
@@ -236,7 +250,13 @@ OAuth settings from `~/.gemini` from taking over the invocation.
 
 For one-shot Agent CLI runs, the wrapper injects the OpenCode-compatible
 provider JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so no temporary
-config file is needed.
+config file is needed. It also passes `--no-summarize-session`; use
+`--summarize` (alias `--keep-summarization`) to retain the client's default.
+
+Every one-shot integration uses only command-line overrides, environment
+variables, inline config, or a temporary config/home directory. Persistent tool
+configuration is written only by explicit `--global` runs. Agent CLI compaction
+is pinned to the Formal AI model rather than a remote fallback.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
@@ -251,6 +271,10 @@ with-formal-ai -g codex
 with-formal-ai -g opencode
 with-formal-ai -g agent
 with-formal-ai -g gemini
+with-formal-ai -g claude
+with-formal-ai -g qwen
+with-formal-ai -g grok
+with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
@@ -593,6 +617,9 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
+cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
+cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
 cargo run -- memory purge-deleted --path memory.lino --backup before-purge.lino --confirm
 cargo run -- memory reset --path memory.lino --backup before-reset.lino --confirm
 cargo run -- bundle export --path bundle.lino --memory memory.lino
@@ -607,6 +634,24 @@ browser actions show an export-first prompt and then an irreversible
 confirmation prompt. The CLI refuses both destructive commands unless
 `--confirm` is present, and `--backup` writes a full `formal_ai_bundle` before
 the memory file is changed.
+
+`memory dream` is the default-on background maintenance planner from issue
+#540. It follows memory links, recalculates cached/seed usage, proposes duplicate
+recomputable cleanup, and measures the real filesystem to target a 20%
+free-space reserve including the next incoming write. Dreaming also learns while
+the core server or desktop is idle: it ranks frequent topics, reads multilingual
+standing-requirement cues from data, derives candidate tasks, replays proposed
+meta-algorithm amendments, and mines recurring task structures.
+Only a passing replay may mark a specific test run as covered. Retained amendments are
+read by
+later chat and Responses requests, so similar future answers apply the learned
+rule without the user repeating it.
+
+The manual CLI remains plan-only unless `--apply --confirm` is supplied. The
+default background runtime may retain amendments and patterns, but it never
+removes links without a persisted auto-free-space choice. CLI/Electron prompts
+persist acceptance or refusal, free only enough recomputable data for the next
+operation, and recommend larger storage when the reserve cannot be met.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 

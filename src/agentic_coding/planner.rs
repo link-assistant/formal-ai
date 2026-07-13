@@ -12,30 +12,23 @@
 //! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
 //! hidden state, and the same history always yields the same plan.
 //!
-//! The recipe is a small state machine:
-//!
-//! ```text
-//! web_search → web_fetch → write_file(formalize) → run_command(verify) → final
-//! ```
-//!
-//! Each step is taken only if (a) the conversation does not already contain a
-//! tool result for that capability and (b) the CLI advertised a tool with that
-//! capability. Steps whose tool is unavailable are skipped, so the planner adapts
-//! to whatever subset of tools a given CLI exposes. Tool *errors* are observed:
-//! a fetch result that [`looks_like_error`] is ignored, and the formalizer falls
-//! back to the canonical synopsis so the loop still completes with a stable
-//! knowledge base.
+//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
+//! The general fallback is likewise bounded, advertised, and deterministic.
 
 use serde_json::json;
 
 use super::change_request;
 use super::diagram;
+use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
+use super::google_trends_catalog;
+use super::google_trends_learning;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
@@ -43,6 +36,7 @@ use super::rebuild_plan;
 use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
+use super::shell_command;
 use super::source_graph;
 use crate::protocol::ChatMessage;
 
@@ -117,13 +111,8 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
     classify_tool(name)
 }
 
-/// Plan the next agentic step from the conversation so far and the tool names the
-/// CLI advertised.
-///
-/// Returns [`None`] when the latest user turn is neither of the recipes the
-/// planner knows (formalize a text — issue #468, or make a meaning more detailed
-/// — issue #538) — the server then falls back to its ordinary solver text, so
-/// unrelated requests are untouched.
+/// Plan the next agentic step from the conversation and advertised tools.
+/// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
@@ -137,6 +126,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // guards against a request that names both.
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
+    }
+    if dreaming_audit::is_dreaming_audit_task(&task) {
+        return Some(plan_dreaming_audit_step(messages, tool_names));
     }
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
@@ -188,6 +180,18 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if rebuild_plan::is_rebuild_task(&task) {
         return Some(plan_rebuild_step(messages, tool_names));
     }
+    // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
+    // engine cannot yet resolve through the human-gated self-improvement loop. Checked
+    // before the sibling catalog recipe because both legitimately name "Google Trends";
+    // its keywords ("learning frontier", "self-improvement loop", "cannot … resolve") are
+    // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
+    // guards a request that somehow names both.
+    if google_trends_learning::is_google_trends_learning_task(&task) {
+        return Some(plan_google_trends_learning_step(messages, tool_names));
+    }
+    if google_trends_catalog::is_google_trends_catalog_task(&task) {
+        return Some(plan_google_trends_catalog_step(messages, tool_names));
+    }
     // The question-catalog recipe (issue #527): enumerate every possible question
     // smallest-first, classify each grammatically and logically, and answer the
     // meaningful ones. Checked alongside the other self-referential recipes and before
@@ -201,7 +205,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
-    if let Some(command) = shell_command_for_task(&task) {
+    if let Some(command) = shell_command::shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
     }
     if is_formalization_task(&task) {
@@ -213,7 +217,40 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    None
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+}
+
+fn plan_general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let writes = progress.count(Capability::Write);
+    if let Some(tool) = tool_for(tool_names, Capability::Write) {
+        if writes == 0 {
+            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
+        }
+        if writes == 1 {
+            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+        }
+    }
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
+    {
+        return plan_one(
+            tool,
+            json!({ "command": plan.verification_command }).to_string(),
+        );
+    }
+    AgenticPlan::Final(format!(
+        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
+        plan.target,
+        plan.verification_command,
+        PLAN_PATH,
+        plan.links_notation().trim_end(),
+    ))
 }
 
 /// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
@@ -236,6 +273,56 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
     AgenticPlan::Final(format!(
         "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
     ))
+}
+
+/// A self-referential *generate → verify → final* recipe expressed as data.
+///
+/// Every self-inspection recipe (diagram, self-AST, self-heal, source-graph,
+/// ledger, explain, change-request, repair-strategy, rebuild, question-catalog,
+/// Google-Trends catalog, Google-Trends learning) has the *same* three-step shape:
+/// write a generated document to `path`, verify it by running `verify_command`,
+/// then answer with `final_answer`. They differ only in the document they generate,
+/// so they are modelled as one struct and one planner
+/// ([`plan_document_recipe`]) rather than a dozen copy-pasted functions — the exact
+/// generalization the meta-algorithm is meant to embody.
+struct DocumentRecipe {
+    /// The workspace-relative path the generated document is written to.
+    path: &'static str,
+    /// The generated Links Notation document (a pure function of committed state).
+    document: String,
+    /// The sandbox-allowlisted command that reads the document back for verification.
+    verify_command: String,
+    /// The inline final answer returned once the write and verify steps are done.
+    final_answer: String,
+}
+
+/// Plan the next step of a [`DocumentRecipe`]: `write → verify → final`. Steps whose
+/// capability the CLI did not advertise (or the conversation already satisfied) are
+/// skipped, so the loop adapts to whatever subset of tools a given CLI exposes.
+fn plan_document_recipe(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    recipe: DocumentRecipe,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+
+    // Step 1: write the generated document.
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Write).filter(|_| !progress.done(Capability::Write))
+    {
+        return plan_one(tool, write_arguments(recipe.path, &recipe.document));
+    }
+    // Step 2: verify by reading the document back.
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
+    {
+        return plan_one(
+            tool,
+            json!({ "command": recipe.verify_command }).to_string(),
+        );
+    }
+    // Step 3: nothing left to do — answer with the generated document inline.
+    AgenticPlan::Final(recipe.final_answer)
 }
 
 /// The issue-#468 recipe: search → fetch → formalize → verify → final.
@@ -350,28 +437,18 @@ fn plan_meaning_detail_step(
 /// so the loop *documents itself*. Steps whose tool the CLI did not advertise are
 /// skipped.
 fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = diagram::render_document();
-
-    // Step 1: write the generated diagram document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(diagram::DIAGRAM_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", diagram::DIAGRAM_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(diagram::final_answer(&document))
+    let final_answer = diagram::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: diagram::DIAGRAM_PATH,
+            verify_command: format!("cat {}", diagram::DIAGRAM_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#538 self-AST recipe: write the generated CST/AST-in-data document →
@@ -380,28 +457,18 @@ fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 /// network ([`self_ast::render_document`]), so the loop *inspects itself*. Steps
 /// whose tool the CLI did not advertise are skipped.
 fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = self_ast::render_document();
-
-    // Step 1: write the generated CST/AST document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(self_ast::AST_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", self_ast::AST_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(self_ast::final_answer(&document))
+    let final_answer = self_ast::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: self_ast::AST_PATH,
+            verify_command: format!("cat {}", self_ast::AST_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 self-healing recipe: write the generated repair-case document →
@@ -410,28 +477,18 @@ fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticP
 /// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
 /// the CLI did not advertise are skipped.
 fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = self_heal::render_document();
-
-    // Step 1: write the generated repair-case document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(self_heal::SELF_HEAL_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", self_heal::SELF_HEAL_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(self_heal::final_answer(&document))
+    let final_answer = self_heal::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: self_heal::SELF_HEAL_PATH,
+            verify_command: format!("cat {}", self_heal::SELF_HEAL_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 source-graph recipe: write the generated whole-repository
@@ -441,32 +498,18 @@ fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> Agentic
 /// network ([`source_graph::render_document`]), so the loop *translates itself*.
 /// Steps whose tool the CLI did not advertise are skipped.
 fn plan_source_graph_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = source_graph::render_document();
-
-    // Step 1: write the generated projection document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(
-                tool,
-                write_arguments(source_graph::SOURCE_GRAPH_PATH, &document),
-            );
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments =
-                json!({ "command": format!("cat {}", source_graph::SOURCE_GRAPH_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(source_graph::final_answer(&document))
+    let final_answer = source_graph::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: source_graph::SOURCE_GRAPH_PATH,
+            verify_command: format!("cat {}", source_graph::SOURCE_GRAPH_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 learning-ledger recipe: write the generated approved-lesson ledger
@@ -475,28 +518,18 @@ fn plan_source_graph_step(messages: &[ChatMessage], tool_names: &[&str]) -> Agen
 /// ([`ledger::render_document`]). Steps whose tool the CLI did not advertise are
 /// skipped.
 fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = ledger::render_document();
-
-    // Step 1: write the generated ledger document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(ledger::LEDGER_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", ledger::LEDGER_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(ledger::final_answer(&document))
+    let final_answer = ledger::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: ledger::LEDGER_PATH,
+            verify_command: format!("cat {}", ledger::LEDGER_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 self-explanation recipe: write the generated grounded-explanation
@@ -505,28 +538,18 @@ fn plan_ledger_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPla
 /// through the owned manifest ([`explain::render_document`]), so the loop *explains
 /// itself*. Steps whose tool the CLI did not advertise are skipped.
 fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = explain::render_document();
-
-    // Step 1: write the generated grounded-explanation document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(explain::EXPLAIN_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", explain::EXPLAIN_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(explain::final_answer(&document))
+    let final_answer = explain::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: explain::EXPLAIN_PATH,
+            verify_command: format!("cat {}", explain::EXPLAIN_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 self-change recipe: write the generated reviewable pull-request
@@ -536,31 +559,18 @@ fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 /// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
 /// advertise are skipped.
 fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = change_request::render_document();
-
-    // Step 1: write the generated reviewable pull-request document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(
-                tool,
-                write_arguments(change_request::CHANGE_PATH, &document),
-            );
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", change_request::CHANGE_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(change_request::final_answer(&document))
+    let final_answer = change_request::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: change_request::CHANGE_PATH,
+            verify_command: format!("cat {}", change_request::CHANGE_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 general repair-classification recipe: write the generated
@@ -570,32 +580,18 @@ fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
 /// the loop decides *which part* of itself to repair for every failure class. Steps
 /// whose tool the CLI did not advertise are skipped.
 fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = repair_strategy::render_document();
-
-    // Step 1: write the generated repair-strategies document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(
-                tool,
-                write_arguments(repair_strategy::REPAIR_STRATEGY_PATH, &document),
-            );
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments =
-                json!({ "command": format!("cat {}", repair_strategy::REPAIR_STRATEGY_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated document inline.
-    AgenticPlan::Final(repair_strategy::final_answer(&document))
+    let final_answer = repair_strategy::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: repair_strategy::REPAIR_STRATEGY_PATH,
+            verify_command: format!("cat {}", repair_strategy::REPAIR_STRATEGY_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#558 rebuild-and-reattach recipe: write the generated
@@ -606,28 +602,18 @@ fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> A
 /// reattach the improved worker to the UI. Steps whose tool the CLI did not advertise are
 /// skipped.
 fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = rebuild_plan::render_document();
-
-    // Step 1: write the generated rebuild-and-reattach plan.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(rebuild_plan::REBUILD_PATH, &document));
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", rebuild_plan::REBUILD_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
-
-    // Step 3: nothing left to do — answer with the generated plan inline.
-    AgenticPlan::Final(rebuild_plan::final_answer(&document))
+    let final_answer = rebuild_plan::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: rebuild_plan::REBUILD_PATH,
+            verify_command: format!("cat {}", rebuild_plan::REBUILD_PATH),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// The issue-#527 question-catalog recipe: write the generated question-catalog
@@ -637,32 +623,69 @@ fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPl
 /// every possible question and answers it*. Steps whose tool the CLI did not advertise
 /// are skipped.
 fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let write_tool = tool_for(tool_names, Capability::Write);
-    let run_tool = tool_for(tool_names, Capability::Run);
-
-    let progress = Progress::scan(messages);
     let document = question_catalog::render_document();
+    let final_answer = question_catalog::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: question_catalog::QUESTION_CATALOG_PATH,
+            verify_command: format!("cat {}", question_catalog::QUESTION_CATALOG_PATH),
+            final_answer,
+            document,
+        },
+    )
+}
 
-    // Step 1: write the generated question-catalog document.
-    if let Some(tool) = write_tool {
-        if !progress.done(Capability::Write) {
-            return plan_one(
-                tool,
-                write_arguments(question_catalog::QUESTION_CATALOG_PATH, &document),
-            );
-        }
-    }
-    // Step 2: verify by reading the document back.
-    if let Some(tool) = run_tool {
-        if !progress.done(Capability::Run) {
-            let arguments =
-                json!({ "command": format!("cat {}", question_catalog::QUESTION_CATALOG_PATH) });
-            return plan_one(tool, arguments.to_string());
-        }
-    }
+fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = dreaming_audit::render_document();
+    let final_answer = dreaming_audit::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: dreaming_audit::DREAMING_AUDIT_PATH,
+            verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
+            final_answer,
+            document,
+        },
+    )
+}
 
-    // Step 3: nothing left to do — answer with the generated catalog inline.
-    AgenticPlan::Final(question_catalog::final_answer(&document))
+/// The issues-#498 + #558 learning-frontier recipe: write the generated
+/// learning-frontier report → verify → final. Like the other self-referential recipes
+/// it needs no web step — the report is a pure function of the committed Trends catalog
+/// routed through the human-gated self-improvement loop
+/// ([`google_trends_learning::render_document`]), so the loop maps its own coverage gap
+/// and hands it to human triage. Steps whose tool the CLI did not advertise are skipped.
+fn plan_google_trends_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = google_trends_learning::render_document();
+    let final_answer = google_trends_learning::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: google_trends_learning::GOOGLE_TRENDS_LEARNING_PATH,
+            verify_command: google_trends_learning::verification_command(),
+            final_answer,
+            document,
+        },
+    )
+}
+
+fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = google_trends_catalog::render_document();
+    let final_answer = google_trends_catalog::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: google_trends_catalog::GOOGLE_TRENDS_CATALOG_PATH,
+            verify_command: google_trends_catalog::verification_command(),
+            final_answer,
+            document,
+        },
+    )
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
@@ -696,9 +719,7 @@ impl Progress {
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
-            if !completed.contains(&capability) {
-                completed.push(capability);
-            }
+            completed.push(capability);
         }
         Self {
             completed,
@@ -710,6 +731,13 @@ impl Progress {
     /// Whether a prior tool result already covered `capability`.
     fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
+    }
+
+    fn count(&self, capability: Capability) -> usize {
+        self.completed
+            .iter()
+            .filter(|done| **done == capability)
+            .count()
     }
 }
 
@@ -855,86 +883,6 @@ fn is_formalization_task(prompt: &str) -> bool {
     FORMALIZATION_KEYWORDS
         .iter()
         .any(|keyword| lower.contains(keyword))
-}
-
-/// Whether `prompt` asks the CLI to run `ls` / list the current workspace.
-///
-/// This intentionally starts narrow: it resolves only read-only directory-listing
-/// language to `ls`. Broader shell synthesis belongs in a richer command parser,
-/// not in a one-off fallback that might accidentally execute an invented command.
-fn shell_command_for_task(prompt: &str) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    let mentions_ls = contains_word(&lower, "ls");
-    let run_context = ["run", "execute", "command", "terminal", "shell"]
-        .iter()
-        .any(|word| contains_word(&lower, word));
-    let listing_context = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "files here",
-            "current directory",
-            "working directory",
-        ],
-    );
-
-    if mentions_ls && (run_context || listing_context) {
-        return Some(String::from("ls"));
-    }
-
-    let asks_for_listing = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "directory listing",
-            "directory contents",
-            "folder contents",
-            "contents of this directory",
-            "contents of the current directory",
-            "contents of this folder",
-            "contents of the current folder",
-        ],
-    );
-    let asks_which_files = contains_any(
-        &lower,
-        &[
-            "what files",
-            "which files",
-            "files are in",
-            "files exist",
-            "files are here",
-        ],
-    );
-    let local_scope = contains_any(
-        &lower,
-        &[
-            "here",
-            "current directory",
-            "working directory",
-            "current working directory",
-            "this directory",
-            "current folder",
-            "this folder",
-            "local files",
-        ],
-    );
-
-    ((asks_for_listing || asks_which_files) && local_scope).then(|| String::from("ls"))
-}
-
-fn contains_any(text: &str, phrases: &[&str]) -> bool {
-    phrases.iter().any(|phrase| text.contains(phrase))
-}
-
-fn contains_word(text: &str, word: &str) -> bool {
-    text.split(|character: char| !character.is_ascii_alphanumeric())
-        .any(|part| part == word)
 }
 
 /// Whether a tool result looks like an error the planner should not trust.

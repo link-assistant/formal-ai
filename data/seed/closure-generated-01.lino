@@ -814,6 +814,16 @@ meanings
     lexeme en
       surface
         text "golang"
+  google_trends
+    defined-by source
+    lexeme en
+      surface
+        text "google trends"
+  google_trends_learning
+    defined-by concept
+    lexeme en
+      surface
+        text "google trends learning"
   goto
     defined-by word_surface
     lexeme en
@@ -939,6 +949,11 @@ meanings
     lexeme en
       surface
         text "intent identity"
+  intent_learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "intent learn from source"
   intent_meta_explanation
     defined-by intent
     lexeme en
@@ -989,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "intent web search"
+  intent_wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "intent wellbeing"
   intent_write_program
     defined-by intent
     lexeme en
@@ -1069,6 +1089,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "learn from source"
   learning_resource
     defined-by kind
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase fursat men kya karte ho hi"
-  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase how do you spend your free time en"
-  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase khali samay men kya karte ho hi"

@@ -1,4 +1,29 @@
 meanings
+  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase fursat men kya karte ho hi"
+  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase how do you spend your free time en"
+  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase khali samay men kya karte ho hi"
   pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
     defined-by prompt_pattern
     lexeme en
@@ -664,146 +689,11 @@ meanings
     lexeme en
       surface
         text "pattern greeting keyword zdravstvuyte"
-  pattern_greeting_phrase_aap_kaise_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase aap kaise hain hi"
-  pattern_greeting_phrase_aapka_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase aapka kya haal hai hi"
-  pattern_greeting_phrase_guode_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase guode zenmeyang zh"
-  pattern_greeting_phrase_how_are_things_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how are things en"
-  pattern_greeting_phrase_how_are_you_doing_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how are you doing en"
-  pattern_greeting_phrase_how_are_you_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how are you en"
-  pattern_greeting_phrase_how_do_you_do_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how do you do en"
-  pattern_greeting_phrase_how_is_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how is it going en"
-  pattern_greeting_phrase_how_s_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase how s it going en"
-  pattern_greeting_phrase_kaise_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kaise ho hi"
-  pattern_greeting_phrase_kak_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak dela"
-  pattern_greeting_phrase_kak_pozhivaesh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak pozhivaesh"
-  pattern_greeting_phrase_kak_tvoi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak tvoi dela"
-  pattern_greeting_phrase_kak_u_tebya_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak u tebya dela"
-  pattern_greeting_phrase_kak_u_vas_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak u vas dela"
-  pattern_greeting_phrase_kak_vashi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak vashi dela"
-  pattern_greeting_phrase_kak_vy_pozhivaete
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kak vy pozhivaete"
-  pattern_greeting_phrase_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase kya haal hai hi"
-  pattern_greeting_phrase_ni_hai_hao_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase ni hai hao ma zh"
-  pattern_greeting_phrase_ni_hao_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase ni hao ma zh"
-  pattern_greeting_phrase_ni_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase ni zenmeyang zh"
-  pattern_greeting_phrase_nin_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase nin zenmeyang zh"
-  pattern_greeting_phrase_privet_kak_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase privet kak dela"
-  pattern_greeting_phrase_sab_kaisa_chal_raha_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase sab kaisa chal raha hai hi"
   pattern_greeting_phrase_shabbat_shalom
     defined-by prompt_pattern
     lexeme en
       surface
         text "pattern greeting phrase shabbat shalom"
-  pattern_greeting_phrase_tum_kaise_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase tum kaise ho hi"
-  pattern_greeting_phrase_zdravstvuyte_kak_vashi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase zdravstvuyte kak vashi dela"
-  pattern_greeting_phrase_zuijin_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase zuijin zenmeyang zh"
   pattern_how_do_x_work_prefix_en
     defined-by prompt_pattern
     lexeme en
@@ -939,6 +829,141 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase ya zdes ru"
+  pattern_wellbeing_phrase_aap_kaise_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aap kaise hain hi"
+  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aapka kya haal hai hi"
+  pattern_wellbeing_phrase_guode_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase guode zenmeyang zh"
+  pattern_wellbeing_phrase_how_are_things_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are things en"
+  pattern_wellbeing_phrase_how_are_you_doing_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are you doing en"
+  pattern_wellbeing_phrase_how_are_you_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are you en"
+  pattern_wellbeing_phrase_how_do_you_do_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how do you do en"
+  pattern_wellbeing_phrase_how_is_it_going_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how is it going en"
+  pattern_wellbeing_phrase_how_s_it_going_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how s it going en"
+  pattern_wellbeing_phrase_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kaise ho hi"
+  pattern_wellbeing_phrase_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak dela"
+  pattern_wellbeing_phrase_kak_pozhivaesh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak pozhivaesh"
+  pattern_wellbeing_phrase_kak_tvoi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak tvoi dela"
+  pattern_wellbeing_phrase_kak_u_tebya_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak u tebya dela"
+  pattern_wellbeing_phrase_kak_u_vas_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak u vas dela"
+  pattern_wellbeing_phrase_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vashi dela"
+  pattern_wellbeing_phrase_kak_vy_pozhivaete
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vy pozhivaete"
+  pattern_wellbeing_phrase_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kya haal hai hi"
+  pattern_wellbeing_phrase_ni_hai_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hai hao ma zh"
+  pattern_wellbeing_phrase_ni_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hao ma zh"
+  pattern_wellbeing_phrase_ni_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni zenmeyang zh"
+  pattern_wellbeing_phrase_nin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase nin zenmeyang zh"
+  pattern_wellbeing_phrase_privet_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase privet kak dela"
+  pattern_wellbeing_phrase_sab_kaisa_chal_raha_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase sab kaisa chal raha hai hi"
+  pattern_wellbeing_phrase_tum_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase tum kaise ho hi"
+  pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
+  pattern_wellbeing_phrase_zuijin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zuijin zenmeyang zh"
   pattern_wikipedia_article_question_exact_en
     defined-by prompt_pattern
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response document originality check sample missing hi"
-  response_document_originality_check_sample_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing ru"
-  response_document_originality_check_sample_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing zh"
-  response_document_originality_check_sample_present_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present en"
-  response_document_originality_check_sample_present_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present hi"
-  response_document_originality_check_sample_present_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present ru"

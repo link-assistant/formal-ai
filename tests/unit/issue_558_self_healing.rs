@@ -119,10 +119,19 @@ fn recognises_the_self_heal_task() {
     assert!(self_heal::is_self_heal_task(
         "record a repair case for the input you couldn't answer"
     ));
+    // Issue #676: natural self-directed repair phrasings must also route here — the
+    // reported failure was "Can you fix it yourself?" resolving to unknown.
+    assert!(self_heal::is_self_heal_task("Can you fix it yourself?"));
+    assert!(self_heal::is_self_heal_task(
+        "you got that wrong — debug yourself and try again"
+    ));
+    assert!(self_heal::is_self_heal_task("please heal yourself"));
     // Unrelated requests, and the sibling self-AST request, do not route here.
     assert!(!self_heal::is_self_heal_task(
         "what files are in this folder?"
     ));
+    // An ordinary "fix this file" request — with no self-reference — stays out.
+    assert!(!self_heal::is_self_heal_task("fix the bug in src/main.rs"));
     assert!(!self_heal::is_self_heal_task(
         "store the cst/ast of our meta algorithm so it can reason about itself"
     ));

@@ -1169,6 +1169,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
 
+function isWellbeingPrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_wellbeing");
+}
+
 function isAssistantFreeTimePrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_assistant_free_time");
 }

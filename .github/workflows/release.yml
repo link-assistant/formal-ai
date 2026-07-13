@@ -291,8 +291,12 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache cargo registry
-        uses: actions/cache@v5
+      # Restore the cargo cache here, but leave cache writes to the lint/build
+      # jobs. This test job runs close to its timeout after the full suite, and
+      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
+      # successful run.
+      - name: Restore cargo registry cache
+        uses: actions/cache/restore@v5
         with:
           path: |
             ~/.cargo/registry
@@ -1058,6 +1062,32 @@ jobs:
           EXPECT_FILE: self-ast.lino
           EXPECT_TEXT: named_node_count
           MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+        # The user directive from issue #499 — "here you can learn the trending
+        # topics from Google Trends" — is itself the task. It routes through the
+        # seed learning_sources registry into the same write → verify → final
+        # learning recipe, proving one teaching directive drives the Agent CLI,
+        # not just a chat reply. Canary: the human-gated marker in the report.
+        env:
+          PORT: 8772
+          TASK: "Here you can learn the trending topics from Google Trends: https://trends.google.com/trending/rss?geo=US"
+          EXPECT_FILE: google-trends-learning.lino
+          EXPECT_TEXT: human_gated
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — general unpinned change plan (issue #654)
+        # No `*_TASK` constant names this request. The fallback planner derives the
+        # target, literal payload, evidence, and verification command from the
+        # formalized requirement, writes its plan event first, then executes it.
+        env:
+          PORT: 8773
+          TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
+          EXPECT_FILE: artifacts/general-agent-plan.txt
+          EXPECT_TEXT: general planner e2e passed
+          MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Upload E2E logs on failure

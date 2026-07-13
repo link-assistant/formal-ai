@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.274.0"
+version = "0.282.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -45,6 +45,8 @@ mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+fs2 = "0.4"
+thread-priority = "1"
 toml_edit = "0.25.11"
 
 [features]

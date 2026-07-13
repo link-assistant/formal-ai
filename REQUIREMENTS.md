@@ -482,6 +482,27 @@ return through the same meta-language meaning to the original source surface.
 | R526-5 | The architecture must state that translation goes through the meta language and that direct translation bypasses are not the quality path. | Implemented in `VISION.md`, `ARCHITECTURE.md` section 10, `ROADMAP.md`, and `CONTRIBUTING.md`. |
 | R526-6 | Issue data, online research, requirements, and solution planning must be compiled under `docs/case-studies/issue-526`. | Implemented by `docs/case-studies/issue-526/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, and raw GitHub snapshots. |
 
+## Issue #498 Google Trends Requirements
+
+Issue [#498](https://github.com/link-assistant/formal-ai/issues/498) asks
+Formal AI to learn from popular Google searches visible in Google Trends. The
+delivered slice converts the U.S. top 10 Trends RSS snapshot into multilingual
+Formal AI prompts, answers every prompt, and records the catalog through the
+Agent CLI.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R498-1 | Issue data, PR data, online research, requirements, solution planning, and raw Google Trends evidence must be compiled under `docs/case-studies/issue-498`. | Implemented by `docs/case-studies/issue-498/{README,requirements,solution-plans}.md`, `raw-data/online-research.md`, raw GitHub snapshots, and `raw-data/google-trends-us-rss.xml`. |
+| R498-2 | The Google Trends top searches must be converted from an automated source into ranked topics. | Implemented by `parse_google_trends_rss` and `render_google_trends_snapshot_lino`, with the deterministic seed stored at `data/seed/google-trends-snapshot.lino`. |
+| R498-3 | The first catalog must cover the top 10 Google Trends topics. | Implemented by `GOOGLE_TRENDS_TOP_LIMIT = 10`; `data/meta/google-trends-catalog.lino` records `topic_count "10"`. |
+| R498-4 | Every supported language must receive Google Trends prompt variations. | Implemented by `google_trends_catalog()` expanding each topic across `supported_languages()` with `tell_me_about` and `trends_context` variants for English, Russian, Hindi, and Chinese. |
+| R498-5 | Every generated prompt must be answered through the existing Formal AI engine. | Implemented by `google_trends_catalog`, which calls `FormalAiEngine::answer` for each prompt and records the answer metadata in the `google_trends_catalog` artifact. |
+| R498-6 | The live Google Trends dependency must not make CI flaky. | Implemented by checking in the parsed Trends seed and keeping the live RSS fetch in `examples/issue_498_parse_google_trends_rss.rs` for explicit refreshes. |
+| R498-7 | The generated Google Trends catalog must be reviewable Links Notation. | Implemented by `src/agentic_coding/google_trends_catalog.rs::render_document` and committed at `data/meta/google-trends-catalog.lino`, with parser coverage in `tests/unit/issue_498_google_trends_catalog.rs`. |
+| R498-8 | The work must be driven and reproducible through Formal AI's Agent CLI. | Implemented by the `google_trends_catalog` agentic recipe, `GOOGLE_TRENDS_CATALOG_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends.json`. |
+| R498-9 | The trending prompts the engine cannot yet resolve must feed the human-gated auto-learning loop instead of being dropped. | Implemented by `src/google_trends_learning.rs::trending_learning_report`, which routes every unresolved prompt through the issue-#558 learner (`learn_rules_from_unknown_traces`) and records the honest, proposal-only result at `data/meta/google-trends-learning.lino` (nothing is auto-adopted). |
+| R498-10 | The learning-frontier report must be driven and pinned through a differently worded Agent CLI session. | Implemented by the `google_trends_learning` agentic recipe, `GOOGLE_TRENDS_LEARNING_TASK`, and the pinned `docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json`. |
+
 ## Issue #527 Question Generation Requirements
 
 Issue [#527](https://github.com/link-assistant/formal-ai/issues/527) asks for a
@@ -946,6 +967,30 @@ template regression upstream as
 | R368 | The release badge and README badge behavior must be protected by automated regression tests. | Implemented by `crate_release_badges_use_static_artifact_links_not_live_status`, `readme_keeps_traditional_ci_and_artifact_badges`, and `issue_492_release_badge_documents_are_traceable`. |
 | R369 | The issue #492 fix, documentation, test coverage, and PR metadata must land in the prepared PR #583 branch. | Implemented on branch `issue-492-c714d50efef8` and tracked by PR [#583](https://github.com/link-assistant/formal-ai/pull/583). |
 
+## Issue #499 Learn From This Data Source Requirements
+
+Issue [#499](https://github.com/link-assistant/formal-ai/issues/499) reported that
+a user teaching the engine where to learn from — the Russian directive
+`Обратясь сюда ты узнаешь актуальные темы <Google Trends URL>` — was answered with
+`intent: unknown`, and the maintainer asked for automated tools that convert such
+a source into the auto-learning process in every supported language. PR
+[#641](https://github.com/link-assistant/formal-ai/pull/641) makes the directive a
+first-class, language-agnostic `learn_from_source` intent driven from a seed
+`learning_sources` registry, routes it into the human-gated Google Trends learning
+loop, and drives the *same* directive through the Agent CLI, with a traceable case
+study under `docs/case-studies/issue-499`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R499-1 | Preserve issue #499 source data, PR #641 discussion data, online research, and the Google Trends raw snapshot under `docs/case-studies/issue-499`. | Implemented by `docs/case-studies/issue-499/raw-data/*`, `README.md`, `requirements.md`, `solution-plans.md`, and `raw-data/online-research.md`; covered by `issue_499_learn_from_source_documents_are_traceable`. |
+| R499-2 | The exact reported directive must no longer return `intent: unknown`. | Implemented by `src/solver_handlers/mod.rs::try_learn_from_source`; the reported prompt is pinned in `tests/unit/issue_499_learn_from_source.rs`. |
+| R499-3 | Recognition must be language-agnostic, proven with different wording per supported language and localized in the answer. | Implemented by the seed `learning_sources` directive cues and native-language keywords; covered by `learn_from_source_is_recognized_in_every_supported_language` and `the_acknowledgement_is_localized_to_the_prompt_language`. |
+| R499-4 | Routing must be data-driven — a directive cue plus a seed-declared source, never a hardcoded URL or phrase. | Implemented by `src/seed.rs::LearningSources::match_directive` and `data/seed/learning-sources.lino`; covered by `routing_requires_both_a_directive_and_a_known_source`. |
+| R499-5 | The directive must feed the auto-learning process rather than answer in isolation. | Implemented by routing the Google Trends learning frontier through the human-gated issue-#558 loop; covered by `the_directive_routes_into_the_human_gated_learning_frontier`. |
+| R499-6 | The same teaching directive must drive Formal AI's own Agent CLI learning recipe. | Implemented by `src/agentic_coding/google_trends_learning.rs::is_google_trends_learning_task`; covered by `the_reported_directive_drives_the_learning_recipe_via_agent_cli`. |
+| R499-7 | Pin the Agent CLI session byte-for-byte and drive the directive through the real Agent CLI in CI. | Implemented by `docs/case-studies/issue-499/agent-cli-session-learn-from-source.json`, the release-workflow E2E step, and `committed_agent_cli_session_matches_a_fresh_learn_from_source_run`. |
+| R499-8 | Protect recognition, localization, data-driven routing, the auto-learning route, and artifact reproducibility with regression tests. | Implemented by `tests/unit/issue_499_learn_from_source.rs` and `tests/unit/docs_requirements_issue_499.rs`. |
+
 ## Issue #538 Detailed Meanings and Words
 
 Issue [#538](https://github.com/link-assistant/formal-ai/issues/538) starts from
@@ -1008,6 +1053,91 @@ implemented, human-gated slice of the loop in code.
 | R394 | Verify the source-to-links representation round-trips back to source byte-for-byte for a real module (R558-05). | Implemented by `src/self_healing.rs` (`SourceRoundTrip`) over `src/agentic_coding/self_ast.rs`, confirming `source → links → source` reproduces the pinned planner module exactly (`faithful = true`), verified by `tests/unit/issue_558_self_healing.rs`. |
 | R395 | Make the self-healing loop reachable through the agentic interface (Codex, OpenCode, Gemini, Agent CLI) and prove it end to end. | Implemented by the fifth recipe `src/agentic_coding/self_heal.rs`, dispatched from `src/agentic_coding/planner.rs`; the driver write and agent-mode server routing are covered by `tests/unit/issue_558_self_healing.rs` and `tests/integration/issue_558_self_healing.rs`. |
 
+## Issue #540 Dreaming Memory Maintenance
+
+Issue [#540](https://github.com/link-assistant/formal-ai/issues/540) asks for
+default-on background "dreaming": reorganize memory, detect reusable patterns,
+deduplicate by recalculated frequency of use, and garbage-collect only data that
+can be refetched or recomputed. It explicitly incorporates issue
+[#494](https://github.com/link-assistant/formal-ai/issues/494), which requires
+a free-space policy that retains raw event history and learned experience while
+using cache/intermediate data as the disposable tier. It further asks that
+dreaming *learn about the topics the user interacts with*, remember the user's
+requirements so he never has to repeat himself, and **generalize** them so
+Formal AI changes its own meta-algorithm — baking new requirements into how
+similar future tasks are solved and then safely forgetting the specifics a
+retained generalization can reproduce. PR
+[#645](https://github.com/link-assistant/formal-ai/pull/645) implements the
+deterministic memory-maintenance slice, the self-generalization layer, the
+desktop plan scheduler, and the case-study trace under
+`docs/case-studies/issue-540`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R396 | Preserve the issue #540 source material, related issue #494 free-space policy, prepared PR #645 state, code search, CI snapshot, merged-PR search, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-540/` and protected by `tests/unit/docs_requirements_issue_540.rs`. |
+| R397 | Dreaming must be default-on as background maintenance planning while remaining safe to run without user interaction. | Implemented by `DreamingConfig::default()` (`daydreaming_enabled = true`) and `desktop/lib/dreaming.cjs`, which starts the Electron scheduler unless `FORMAL_AI_DESKTOP_DREAMING=off`. |
+| R398 | Default dreaming must be non-destructive; physical deletion must require an explicit apply path, confirmation, and optional full-memory backup. | Implemented by pure `plan_memory_dreaming`, separate `apply_dreaming_plan`, and `formal-ai memory dream --apply --confirm --backup`; the CLI reuses `require_destructive_confirmation` and `write_full_memory_backup`. |
+| R399 | Memory restructuring must recalculate event frequency of use before deduplicating recomputable records. | Implemented by `src/dreaming.rs::usage_counts`, duplicate grouping over recomputable payloads, and `dreaming_restructures_recomputable_duplicates_by_recalculated_use_frequency`. |
+| R400 | Raw event history, learned experience, learning ledgers, and generalized algorithms must not be selected by automatic free-space maintenance. | Implemented by `DreamingDurability::{IrreplaceableRaw,RetainedLearning}` and verified by `dreaming_preserves_raw_events_and_learning_when_reclaiming_space`. |
+| R401 | Free-space maintenance should preferentially forget refetchable cached public data, deleted-thread data, and recomputable intermediate conclusions. | Implemented by `DreamingDurability::{DeletedConversation,RecomputableCache,RecomputableIntermediate}` and low-usage pressure candidate sorting in `src/dreaming.rs`. |
+| R402 | The garbage-collection policy must target 20% free space by default when storage capacity/free-space data is supplied, and free only enough reclaimable data for the next known write. | Implemented by `DreamingConfig::target_free_ratio_percent = 20`, `incoming_bytes`, `required_reclaim_bytes`, and `selected_reclaim_bytes`. |
+| R403 | If reclaimable memory cannot satisfy the free-space target, Formal AI must report that larger storage is required instead of deleting retained experience. | Implemented by `DreamingPlan::requires_bigger_storage`, the CLI migration warning, and `dreaming_reports_bigger_storage_when_recomputable_data_cannot_satisfy_target`. |
+| R404 | Users and embedders need an inspectable maintenance interface. | Implemented by public library re-exports in `src/lib.rs` and `formal-ai memory dream`, which prints `render_dreaming_plan`. |
+| R405 | Desktop applications must run the dreaming task in the background with the lowest practical priority. | Implemented by `desktop/lib/dreaming.cjs`; it delays first run, repeats infrequently, unrefs timers/processes, and wraps Unix-like runs with `nice -n 19`; covered by `desktop/scripts/dreaming.test.mjs`. |
+| R406 | The design must be documented with requirements, solution plans, and online research. | Implemented by `docs/case-studies/issue-540/{README.md,requirements.md,solution-plans.md,raw-data/online-research.md}`, plus README and ARCHITECTURE updates. |
+| R407 | The implementation must have automated regression coverage for Rust policy, desktop scheduling, and documentation traceability. | Implemented by `tests/unit/memory_maintenance.rs`, `desktop/scripts/dreaming.test.mjs`, `desktop/scripts/smoke.mjs`, and `tests/unit/docs_requirements_issue_540.rs`. |
+| R408 | Dreaming must recalculate which topics the user interacts with most from current memory links so learning concentrates where the user actually spends time. | Implemented by `src/dreaming/learning.rs::event_topic`/`learn_from_memory` producing ranked `TopicFrequency` records, verified by `dreaming_recalculates_topic_frequency_and_learns_durable_requirements`. |
+| R409 | Dreaming must recover durable requirements without an English-only production cue branch so the user never has to repeat them. | Implemented by `src/dreaming/learning.rs::requirement_statement`, multilingual `data/meta/dreaming-cues.lino`, and `LearnedRequirement` aggregation. |
+| R410 | Dreaming must generalize each learned requirement into a meta-algorithm amendment and bake it into memory as retained, never-reclaimable learning so new requirements are applied when solving similar future tasks. | Implemented by `src/dreaming.rs::MetaAlgorithmAmendment`, `apply_dreaming_plan` materializing an idempotent `meta_algorithm_amendment` event, and `dreaming_generalizes_requirements_into_meta_algorithm_amendments`/`applying_dreaming_plan_bakes_amendments_and_is_idempotent`. |
+| R411 | Under storage pressure, dreaming must forget the specific task/test-run records a retained amendment can reproduce before other recomputable data, while keeping the generalized amendment. | Implemented by `DreamingActionKind::ForgetCoveredSpecific`, covered-specific-first pressure ordering, and `dreaming_forgets_covered_specifics_first_under_pressure`. |
+| R412 | The dreaming meta-algorithm must be described as grounded, machine-readable data that CI keeps pinned to the live source. | Implemented by `data/meta/dreaming-recipe.lino`, `tests/unit/specification/dreaming_meta_algorithm.rs`, and the dreaming section of `docs/meta-algorithm.md`. |
+| R413 | Retained amendments must be consumed by similar future tasks and alter their answers without requiring the user to repeat a standing requirement. | Implemented by `src/dreaming_application.rs`, wired into OpenAI-compatible Chat Completions and Responses in `src/protocol.rs`, and verified by `learned_amendment_changes_a_new_task_answer_without_repeating_requirement`. |
+| R414 | Dreaming must replay a proposed amendment against the specific task's recorded output before treating that specific as covered or forgettable. | Implemented by `replay_candidate_tasks`/`amendment_reproduces_specific`; `dreaming_marks_only_replay_verified_specifics_as_covered` proves failed/unverified replay remains retained. |
+| R415 | Dreaming must derive candidate tasks from frequent topics, simulate the amended meta-algorithm, and expose pass/fail evidence. | Implemented by `DreamingCandidateTask` records and inspectable plan rendering in `src/dreaming.rs`/`src/dreaming/learning.rs`. |
+| R416 | Dreaming must discover recurring task structures beyond explicit language cues and retain them as learning. | Implemented by data-derived `mine_patterns` and idempotent `dreaming_pattern` memory events. |
+| R417 | Free-space planning must measure the real filesystem, include actual incoming bytes, and cover cached/seed link usage. | Implemented by `src/storage_policy.rs`, `src/memory_sync.rs`, the `seed_cache`/`seed_data` durability classes, and all-field/evidence link usage scanning. |
+| R418 | Automatic cleanup must ask for consent, persist both acceptance and refusal, free only enough for the next operation, and prompt for larger storage when necessary. | Implemented by `.auto-free-space` preferences in Rust/Electron, CLI and native Electron prompts, and `requires_bigger_storage` notification handling. |
+| R419 | Default-on dreaming must run in the core server as well as desktop and yield to foreground work at the lowest practical cross-platform priority. | Implemented by `src/dreaming_runtime.rs` (worker thread dropped to `ThreadPriority::Min`, loud startup logging, mid-run yield), server and Telegram request guards, desktop system-idle checks, Unix niceness, and host `os.setPriority`. |
+| R420 | The grounded recipe must include candidate replay, pattern mining, future-task application, real storage measurement, and background consent/runtime stages. | Implemented as thirteen contiguous source-pinned steps in `data/meta/dreaming-recipe.lino`. |
+| R421 | Issue #540 documentation must use the repository's memory-links terminology consistently. | Enforced by the issue traceability suite across requirements, architecture, recipe, and case-study documents. |
+| R422 | Execute the dreaming gap audit through Formal AI's Agent CLI and preserve a reproducible session mapping every failure to the generalization added. | Implemented by `src/agentic_coding/dreaming_audit.rs`, `docs/case-studies/issue-540/{dreaming-gap-analysis.lino,agent-cli-session-dreaming-audit.json}`, and byte-for-byte replay tests in `tests/unit/issue_540_agent_cli.rs`. |
+| R423 | Live chat exchanges must be recorded into the configured memory log so background dreaming learns from organic conversations, and the full loop — record, dream, apply, changed future answer — must be verified through the production application path. | Implemented by `SyncStore::record_chat_exchange` wired into the chat routes; verified end-to-end by `organically_recorded_chat_dreams_amendments_that_replay_through_production` in `tests/unit/memory_learning.rs`. |
+| R424 | Changing a topic's rule must revoke replay-verified coverage until the amended rule reproduces the specifics again, and unverifiable records must fall back to normal usage/priority eviction ordering rather than covered-specific forgetting. | Verified by `adding_a_requirement_revokes_coverage_and_preserves_the_stale_specific` and `failed_verification_falls_back_to_normal_eviction_ordering_under_pressure`. |
+| R425 | The auto-learning loop must consume failed replays: refinement folds recorded compliance markers back into amendments, and failures that remain are preserved as durable `dreaming_candidate_failure` records instead of being dropped. | Implemented by `refine_amendments_from_failures` (marker lines only) and failure materialization in `apply_dreaming_plan`; verified by `failed_replay_refines_the_amendment_back_from_the_recorded_marker` and `failed_replays_are_preserved_as_refinement_records`. |
+| R426 | Dreaming must synthesize genuinely new trials from mined numeric patterns on the most-used topics and retain them, and task detection must work through the multilingual lexicon rather than English-only kinds. | Verified by `dreaming_synthesizes_new_trials_from_numeric_patterns_on_top_topics` and `multilingual_task_kinds_are_replayed_as_candidates` against `data/meta/dreaming-lexicon.lino`. |
+| R427 | The core dreaming runtime must be directly regression-tested: foreground activity gates idleness, a mid-flight foreground request cancels the run without touching the log, `FORMAL_AI_DREAMING` opt-out honors only explicit off values, serve() starts the worker, and shared-log writes stay locked and atomic. | Verified by `tests/unit/dreaming_runtime.rs` (including `write_locked_atomic_creates_parents_replaces_content_and_leaves_no_temp_files`) and the desktop `PRIORITY_LOW` assertion in `desktop/scripts/dreaming.test.mjs`. |
+
+## Issue #649 World Models And Contexts
+
+Issue [#649](https://github.com/link-assistant/formal-ai/issues/649) asks Formal
+AI to reason with **symbolic world models**: throughout a dialogue build a
+**current-state** and a **target-state** world model, expose their difference,
+let the user and agent **synchronize** the target, **merge** and **split**
+context models where **each context is a links network** (explicitly *not*
+embeddings), use [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic)
+so **statements are dependent** and **any change recalculates all statement
+probabilities**, and ultimately **predict the consequences of an action**. Its
+final paragraph mandates the concrete deliverable: collect the issue data into a
+case-study directory, do a deep analysis with online research, list every
+requirement, propose a solution plan per requirement while surveying existing
+components/libraries, and land it all in the single PR
+[#675](https://github.com/link-assistant/formal-ai/pull/675). The case study
+under `docs/case-studies/issue-649` finds the associative stack already supplies
+every substrate (links network, fixpoint rewrite, the RML kernel, symbolic
+probability, context merge) so the feature is an audit-and-wire design task
+rather than green-field infrastructure; the per-issue requirements R649-01 …
+R649-19 are enumerated in `docs/case-studies/issue-649/requirements.md`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R428 | Preserve the issue #649 source material, prepared PR #675 state, empty comment/review threads, and online research under a dedicated case-study directory. | Implemented by `docs/case-studies/issue-649/raw-data/` and protected by `tests/unit/docs_requirements_issue_649.rs`. |
+| R429 | Produce a deep case-study analysis of the symbolic world-model request, including online research beyond the source video. | Implemented by `docs/case-studies/issue-649/README.md` and `docs/case-studies/issue-649/raw-data/online-research.md` (STRIPS/PDDL, situation calculus, JTMS/ATMS, AGM belief revision, and the world-model literature, all cited). |
+| R430 | Enumerate each and every requirement of the issue. | Implemented by `docs/case-studies/issue-649/requirements.md` (conceptual R649-01 … R649-14 plus meta-deliverable R649-15 … R649-19). |
+| R431 | Map every world-model / context concept to its associative-stack realization with honest Realized/Partial/Proposed status and `path:symbol` evidence. | Implemented by `docs/case-studies/issue-649/world-model-mapping.md` (3 realized substrate rows, 8 partial, 3 proposed across 14 concepts). |
+| R432 | Propose a solution plan for each requirement and survey known existing components/libraries that solve a similar problem. | Implemented by `docs/case-studies/issue-649/solution-plans.md` (per-requirement plans reusing `SubstitutionGraph`, `relative_meta_logic`, `probability`, `memory_sync`, `meta_frame`, plus a STRIPS/ATMS/JTMS/AGM/JEPA prior-art survey). |
+| R433 | Plan and execute every deliverable in the single PR #675. | Implemented by the full `docs/case-studies/issue-649/` tree plus this matrix section, the changelog fragment, and the traceability test. |
+| R434 | Protect the issue #649 case study with a documentation-traceability regression test. | Implemented by `tests/unit/docs_requirements_issue_649.rs`, registered in `tests/unit/mod.rs`. |
+
 ## Issue #482 Nemotron Training-Data Samples
 
 Issue [#482](https://github.com/link-assistant/formal-ai/issues/482) asks to
@@ -1019,13 +1149,13 @@ case study under `docs/case-studies/issue-482`.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R396 | Use Nemotron 3 Ultra training data, not the released model weights or another LLM inference path. | Implemented by `scripts/sample-nemotron-training-data.py`, which samples Hugging Face dataset rows and records no model call. |
-| R397 | Avoid downloading full upstream datasets. | Implemented by the sampler's datasets-server `rows` requests with `length=1`; covered by `issue_482_nemotron_training_sample_fixture_is_well_formed` and `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples`. |
-| R398 | Add ten random samples from the training data. | Implemented by `docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and `data/benchmarks/nemotron-training-samples.lino`, generated from seed `issue-482`. |
-| R399 | Preserve row provenance so more samples can be fetched later. | Implemented by recording dataset, config, split, row offset, row UUID, revision, license, digest, and row URL for every sample. |
-| R400 | Keep imported benchmark data within the repository's permissive-license policy. | Implemented by selecting the Nemotron Legal v1 shard and rejecting sampled rows without explicit `CC-BY-4.0` row licenses. |
-| R401 | Turn the samples into executable tests. | Implemented by `tests/unit/specification/nemotron_training_samples.rs`, which validates Links Notation syntax, fixture/raw JSON consistency, no-full-download policy, sample diversity, and a 10/10 ingestion floor. |
-| R402 | Index the new benchmark in the central catalog and license provenance. | Implemented by updates to `docs/benchmarks.md` and `data/benchmarks/LICENSES.md`. |
-| R403 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
-| R404 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
-| R405 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `tests/unit/docs_requirements_issue_482.rs`, wired through `tests/unit/mod.rs`. |
+| R435 | Use Nemotron 3 Ultra training data, not the released model weights or another LLM inference path. | Implemented by `scripts/sample-nemotron-training-data.py`, which samples Hugging Face dataset rows and records no model call. |
+| R436 | Avoid downloading full upstream datasets. | Implemented by the sampler's datasets-server `rows` requests with `length=1`; covered by `issue_482_nemotron_training_sample_fixture_is_well_formed` and `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples`. |
+| R437 | Add ten random samples from the training data. | Implemented by `docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and `data/benchmarks/nemotron-training-samples.lino`, generated from seed `issue-482`. |
+| R438 | Preserve row provenance so more samples can be fetched later. | Implemented by recording dataset, config, split, row offset, row UUID, revision, license, digest, and row URL for every sample. |
+| R439 | Keep imported benchmark data within the repository's permissive-license policy. | Implemented by selecting the Nemotron Legal v1 shard and rejecting sampled rows without explicit `CC-BY-4.0` row licenses. |
+| R440 | Turn the samples into executable tests. | Implemented by `tests/unit/specification/nemotron_training_samples.rs`, which validates Links Notation syntax, fixture/raw JSON consistency, no-full-download policy, sample diversity, and a 10/10 ingestion floor. |
+| R441 | Index the new benchmark in the central catalog and license provenance. | Implemented by updates to `docs/benchmarks.md` and `data/benchmarks/LICENSES.md`. |
+| R442 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
+| R443 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
+| R444 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `tests/unit/docs_requirements_issue_482.rs`, wired through `tests/unit/mod.rs`. |

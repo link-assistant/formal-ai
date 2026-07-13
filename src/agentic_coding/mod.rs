@@ -21,10 +21,14 @@
 pub mod change_request;
 pub mod corpus;
 pub mod diagram;
+pub mod dreaming_audit;
 pub mod driver;
 pub mod explain;
 mod file_read;
 pub mod formalize;
+pub mod general_planner;
+pub mod google_trends_catalog;
+pub mod google_trends_learning;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
@@ -34,10 +38,12 @@ pub mod rebuild_plan;
 pub mod repair_strategy;
 pub mod self_ast;
 pub mod self_heal;
+mod shell_command;
 pub mod source_graph;
 
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
+pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
 };
@@ -45,6 +51,12 @@ pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
+};
+pub use google_trends_catalog::{
+    is_google_trends_catalog_task, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
+};
+pub use google_trends_learning::{
+    is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
 };
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
 pub use meaning_detail::{

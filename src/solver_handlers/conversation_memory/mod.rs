@@ -13,7 +13,8 @@ use crate::link_store::memory_events_to_link_records;
 use crate::memory::{MemoryEvent, MemoryStore};
 use crate::seed::{self, Slot, WordForm};
 use crate::solver_helpers::{
-    extract_introduced_name, last_turn, last_user_turn, recall_name_from_history,
+    extract_assistant_name, extract_introduced_name, last_turn, last_user_turn,
+    recall_assistant_name_from_history, recall_name_from_history,
 };
 use crate::summarization::{
     generate_chat_title, summarize_dialog, DialogTurn, SummarizationConfig, SummarizationMode,
@@ -75,6 +76,9 @@ pub fn try_conversation_memory(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if let Some(answer) = try_assistant_name(prompt, normalized, log) {
+        return Some(answer);
+    }
     if let Some(answer) = try_recall_name(prompt, normalized, log) {
         return Some(answer);
     }
@@ -133,11 +137,35 @@ pub fn execute_memory_query(
         });
     }
     answer_memory_recall(prompt, store.events(), current_conversation_id).map(|answer| {
-        MemoryQueryExecution {
-            answer,
-            changed: false,
-        }
+        // Issue #494: usage is counted on read access — every store event the
+        // recall actually read gets its access count bumped, and the caller
+        // persists the store so dreaming sees frequently-read data as used.
+        let accessed =
+            recalled_event_indices(&normalized, store.events(), current_conversation_id, prompt);
+        let changed = store.record_access(&accessed) > 0;
+        MemoryQueryExecution { answer, changed }
     })
+}
+
+/// Indices of the store events a recall for this prompt reads.
+fn recalled_event_indices(
+    normalized: &str,
+    events: &[MemoryEvent],
+    current_conversation_id: Option<&str>,
+    prompt: &str,
+) -> Vec<usize> {
+    let Some(query) = recognize_recall_query(normalized) else {
+        return Vec::new();
+    };
+    let mut indices: Vec<usize> =
+        memory_recall_matches(events, &query, current_conversation_id, prompt)
+            .iter()
+            // `event_index` is 1-based for display; the store slice is 0-based.
+            .map(|matched| matched.event_index.saturating_sub(1))
+            .collect();
+    indices.sort_unstable();
+    indices.dedup();
+    indices
 }
 
 fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
@@ -159,6 +187,79 @@ fn try_recall_name(prompt: &str, normalized: &str, log: &mut EventLog) -> Option
         &body,
         0.9,
     ))
+}
+
+/// Set or recall the *assistant's* name from dialog-local memory (issue #676).
+///
+/// The assistant advertises "you can name me as you like", but nothing acted on a
+/// follow-up such as "Now your name is Ineffa", so it fell through to the unknown
+/// fallback. This handler closes that loop, statelessly, in the same spirit as
+/// [`try_recall_name`]: when the current turn assigns a name it acknowledges it, and
+/// when a later turn asks "what is your name" it replays the most recent assigned
+/// name from the conversation history. With no name ever set it returns `None` so the
+/// static `assistant_name` answer ("…you can name me as you like") still applies.
+fn try_assistant_name(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    let language = detect_language(prompt).slug();
+    // A rename in the current turn takes priority — acknowledge it.
+    if let Some(name) = extract_assistant_name(prompt) {
+        log.append("filter:assistant", format!("name={name}"));
+        let body = render_assistant_name_ack(&name, language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "set_assistant_name",
+            "response:set_assistant_name",
+            &body,
+            0.9,
+        ));
+    }
+    // Otherwise, an explicit "what is your name" recalls a previously set name.
+    let asks_name = normalized.contains("what is your name")
+        || normalized.contains("what's your name")
+        || normalized.contains("what s your name")
+        || normalized.contains("whats your name")
+        || normalized.contains("tell me your name")
+        || normalized.contains("do you have a name")
+        || normalized.contains("what should i call you")
+        || normalized.contains("what do i call you");
+    if !asks_name {
+        return None;
+    }
+    let name = recall_assistant_name_from_history(log, prompt)?;
+    log.append("filter:assistant", format!("name={name}"));
+    let body = render_assistant_name_recall(&name, language);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "assistant_name",
+        "response:assistant_name",
+        &body,
+        0.9,
+    ))
+}
+
+/// Warm acknowledgement of a freshly assigned assistant name.
+fn render_assistant_name_ack(name: &str, language: &str) -> String {
+    match language {
+        "ru" => format!("Отлично, теперь меня зовут {name}. Приятно познакомиться!"),
+        "zh" => format!("好的，从现在起就叫我 {name} 吧。很高兴认识你！"),
+        "hi" => format!("बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!"),
+        _ => format!("Nice to meet you! I'll go by {name} from now on."),
+    }
+}
+
+/// Recall a previously assigned assistant name.
+fn render_assistant_name_recall(name: &str, language: &str) -> String {
+    match language {
+        "ru" => format!("Меня зовут {name} — так вы меня назвали."),
+        "zh" => format!("我叫 {name}，这是你给我起的名字。"),
+        "hi" => format!("मेरा नाम {name} है — यह नाम आपने मुझे दिया था."),
+        _ => format!("My name is {name} — that's what you named me."),
+    }
 }
 
 fn try_recall_last_question(
@@ -802,7 +903,7 @@ fn try_summarize_conversation(
     if !asks_for_conversation_summary(normalized) {
         return None;
     }
-    let turns: Vec<DialogTurn> = log
+    let mut turns: Vec<DialogTurn> = log
         .events()
         .iter()
         .filter_map(|event| match event.kind {
@@ -811,6 +912,15 @@ fn try_summarize_conversation(
             _ => None,
         })
         .collect();
+    if turns.is_empty() {
+        if let Some(content) = prompt
+            .split_once(':')
+            .map(|(_, content)| content.trim())
+            .filter(|content| !content.is_empty())
+        {
+            turns.push(DialogTurn::user(content));
+        }
+    }
     let user_turn_count = turns.iter().filter(|t| t.role == "user").count();
     if user_turn_count == 0 {
         return None;

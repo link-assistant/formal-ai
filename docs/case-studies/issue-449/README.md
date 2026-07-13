@@ -46,7 +46,7 @@ construction** rather than interpretable after the fact. Its core ideas:
   utilities, not a trained network.
 
 The architecture is three layers: **state transformer → state learning layer
-(an in-memory graph database) → decision-making layer.** The key
+(an in-memory link database) → decision-making layer.** The key
 hyperparameters (with the paper's defaults) are `CS=2`, `LM=2`, `SR=True`,
 `CU=False`, `EA=False`, `SC=2`, `SS=0.9`, `TU=0`, `TC=1`. See
 [`raw-data/online-research.md`](./raw-data/online-research.md) for the full
@@ -73,7 +73,7 @@ The paper's model is, structurally, *already* an associative store:
 | Paper concept | formal-ai associative analogue |
 | --- | --- |
 | Transition graph between state sets | Markov-style transition records (`ProbabilityModel::MarkovTransition`) keyed by `transition_from` |
-| State learning layer = in-memory graph DB | The append-only `ProbabilityStore` projected into the link store / event log |
+| State learning layer = in-memory link DB | The append-only `ProbabilityStore` projected into the link store / event log |
 | Utility `U` on a transition | Accumulated weight: `ProbabilityStore::target_weight` |
 | Evidence count `C` on a transition | **New:** `ProbabilityStore::target_evidence_count` |
 | Decision `argmax U` / `argmax U·C` | Deterministic ranking in `rank_probability_candidates` (temperature `0.0` ⇒ argmax) |
@@ -201,8 +201,8 @@ similar problem or can help in solutions". The relevant landscape:
   natural home for the paper's mechanisms, so the work was an *extension* of an
   existing component rather than a new subsystem.
 - **`src/event_log.rs` + `src/link_store.rs`** provide the append-only log and
-  link-store projection that play the role of the paper's "in-memory graph
-  database" — already associative, already deterministic.
+  link-store projection that play the role of the paper's state-learning
+  database — already associative, already deterministic.
 - **`src/translation/selection.rs`** already provides deterministic selection,
   margin-based clarification, and a seeded "guess under ambiguity" path — the
   symbolic counterpart of the paper's similarity fallback.

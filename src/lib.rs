@@ -16,6 +16,9 @@ pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod cue_lexicon;
 pub mod document_formats;
+pub mod dreaming;
+pub mod dreaming_application;
+pub mod dreaming_runtime;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -23,6 +26,8 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
+pub mod google_trends_catalog;
+pub mod google_trends_learning;
 pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
@@ -83,6 +88,7 @@ pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
 pub mod statement_verification;
+pub mod storage_policy;
 pub mod substitution;
 pub mod summarization;
 pub mod telegram;
@@ -92,6 +98,7 @@ pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub mod world_model;
 
 pub use agent::{
     parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
@@ -116,16 +123,38 @@ pub use document_formats::{
     supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
     DOCUMENT_FORMAT_ENGINE,
 };
+pub use dreaming::{
+    apply_dreaming_plan, compose_recipe_with_amendments, plan_memory_dreaming,
+    render_dreaming_plan, DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,
+    DreamingEventObservation, DreamingOutcome, DreamingPlan, DreamingSynthesizedTask,
+    LearnedRequirement, MetaAlgorithmAmendment, TopicFrequency,
+};
+pub use dreaming_application::{
+    amended_answer, apply_retained_amendments, replay_answer_with_amendments, retained_amendments,
+    solve_with_amendment_records, solve_with_standing_requirements, topic_matches,
+    RetainedAmendment,
+};
+pub use dreaming_runtime::{
+    core_is_idle, dreaming_disabled, run_core_dreaming_once, ForegroundActivity,
+};
 pub use engine::{
     humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
-    render_thinking_steps, thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep,
-    DEFAULT_MODEL,
+    render_thinking_steps, thinking_language_label, thinking_narrative, FormalAiEngine,
+    SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
     GithubLogCollectorConfig,
+};
+pub use google_trends_catalog::{
+    google_trends_catalog, parse_google_trends_rss, render_google_trends_snapshot_lino,
+    GoogleTrendNewsItem, GoogleTrendPromptAnswer, GoogleTrendPromptVariant, GoogleTrendTopic,
+    GoogleTrendsCatalog, GoogleTrendsParseError, GOOGLE_TRENDS_TOP_LIMIT,
+};
+pub use google_trends_learning::{
+    trending_learning_report, TrendingFrontierEntry, TrendingLearningReport,
 };
 pub use intent_formalization::{
     formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
@@ -154,8 +183,8 @@ pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
     export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
     import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    suggest_migrations as suggest_memory_migrations, BundleInfo, MemoryEvent, MemoryStore,
-    ParsedBundle,
+    seed_cache_events, suggest_migrations as suggest_memory_migrations, write_locked_atomic,
+    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
@@ -184,6 +213,10 @@ pub use question_generation::{
     QuestionGenerator, QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
 };
 pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
+pub use relative_meta_logic::{
+    Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
+    ASSUMED_TRUE_PRIOR,
+};
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
@@ -231,6 +264,11 @@ pub use statement_verification::{
     assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
     MarketPriceClaim,
 };
+pub use storage_policy::{
+    apply_auto_free_space_for_write, apply_auto_free_space_with_snapshot, auto_free_space_choice,
+    auto_free_space_enabled, auto_free_space_preference_path, measure_storage,
+    persist_auto_free_space_choice, plan_for_real_storage, AutoFreeSpaceChoice, StorageSnapshot,
+};
 pub use substitution::{
     CrudEvent, LinkPattern, SubstitutionAction, SubstitutionGraph, SubstitutionLink,
     SubstitutionRule, SubstitutionRuleError, SubstitutionRuleSet, SubstitutionTrace,
@@ -265,4 +303,8 @@ pub use web_search_core::{
     parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output, FusedEntry, ProviderCategory,
     ProviderRanking, ProviderSpec, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS,
     WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+};
+pub use world_model::{
+    Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,
+    Statement as WorldStatement, StatementChange, WorldModel,
 };
