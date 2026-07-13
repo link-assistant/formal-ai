@@ -8,6 +8,7 @@ mod docker_runtime;
 mod docs_requirements;
 mod docs_requirements_issue_451;
 mod docs_requirements_issue_468;
+mod docs_requirements_issue_482;
 mod docs_requirements_issue_492;
 mod docs_requirements_issue_498;
 mod docs_requirements_issue_499;
