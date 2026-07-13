@@ -338,6 +338,12 @@ function tryHistorical(prompt, history) {
     return trySummarizeConversation(history);
   }
   if (!normalized) return null;
+  // Issue #676: set/recall the assistant's own name from dialog-local history so
+  // "Now your name is Ineffa" is acknowledged and later recalled, instead of
+  // falling through to the unknown opener. Mirrors try_assistant_name in the
+  // Rust conversation-memory handler and runs before the user-name recall below.
+  const assistantName = tryAssistantName(prompt, normalized, history);
+  if (assistantName) return assistantName;
   if (normalized === "what is my name" || normalized === "what s my name") {
     const hit = tryRecallName(history);
     if (hit) return hit;

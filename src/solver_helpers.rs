@@ -384,6 +384,45 @@ pub fn last_turn(log: &EventLog) -> Option<(&'static str, &str)> {
 
 pub fn extract_introduced_name(prompt: &str) -> Option<String> {
     let needles = ["my name is", "i am called", "call me", "i'm", "i am "];
+    extract_name_after_needles(prompt, &needles)
+}
+
+/// Assistant-name-setting phrasings (issue #676). Each needle pins the *assistant*
+/// as the subject being (re)named — "your name is", "I'll call you", "you are
+/// called" — so a declarative rename like "Now your name is Ineffa" is recognised
+/// while questions ("what is your name") and user self-introductions are left alone.
+const ASSISTANT_NAME_NEEDLES: [&str; 16] = [
+    "your name is",
+    "your name shall be",
+    "your name will be",
+    "your name would be",
+    "your new name is",
+    "let your name be",
+    "you are named",
+    "you're named",
+    "you are called",
+    "you're called",
+    "i'll call you",
+    "i will call you",
+    "i'll name you",
+    "i will name you",
+    "i name you",
+    "i'll refer to you as",
+];
+
+/// Extract a name the user assigns to the *assistant* from a single prompt.
+///
+/// Mirrors [`extract_introduced_name`] but keys off assistant-directed needles so
+/// "Now your name is Ineffa" yields `Ineffa`. Returns `None` for questions and for
+/// user self-introductions, keeping the two name paths from colliding.
+#[must_use]
+pub fn extract_assistant_name(prompt: &str) -> Option<String> {
+    extract_name_after_needles(prompt, &ASSISTANT_NAME_NEEDLES)
+}
+
+/// Shared token scan: find the first non-empty word following any needle and clean
+/// it down to an alphabetic-leading identifier.
+fn extract_name_after_needles(prompt: &str, needles: &[&str]) -> Option<String> {
     let lower = prompt.to_lowercase();
     for needle in needles {
         let mut search_from = 0;
@@ -395,15 +434,33 @@ pub fn extract_introduced_name(prompt: &str) -> Option<String> {
                 .split(|c: char| {
                     c.is_whitespace() || matches!(c, '.' | ',' | '!' | '?' | ';' | ':' | '\n')
                 })
-                .find(|token| !token.is_empty())?;
-            let cleaned = token.trim_matches(|c: char| !c.is_alphanumeric());
-            if !cleaned.is_empty() && cleaned.chars().next().is_some_and(char::is_alphabetic) {
-                return Some(cleaned.to_owned());
+                .find(|token| !token.is_empty());
+            if let Some(token) = token {
+                let cleaned = token.trim_matches(|c: char| !c.is_alphanumeric());
+                if !cleaned.is_empty() && cleaned.chars().next().is_some_and(char::is_alphabetic) {
+                    return Some(cleaned.to_owned());
+                }
             }
             search_from = absolute;
         }
     }
     None
+}
+
+/// Recall the most recently assigned assistant name across the conversation.
+///
+/// Checks the current prompt first, then walks `prior_turn:user` events from newest
+/// to oldest so a later rename ("actually, call you Ada") wins over an earlier one.
+#[must_use]
+pub fn recall_assistant_name_from_history(log: &EventLog, prompt: &str) -> Option<String> {
+    if let Some(name) = extract_assistant_name(prompt) {
+        return Some(name);
+    }
+    log.events()
+        .iter()
+        .rev()
+        .filter(|event| event.kind == "prior_turn:user")
+        .find_map(|event| extract_assistant_name(&event.payload))
 }
 
 pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
