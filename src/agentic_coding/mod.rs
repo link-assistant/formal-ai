@@ -26,6 +26,7 @@ pub mod driver;
 pub mod explain;
 mod file_read;
 pub mod formalize;
+pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod ledger;

@@ -12,19 +12,8 @@
 //! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
 //! hidden state, and the same history always yields the same plan.
 //!
-//! The recipe is a small state machine:
-//!
-//! ```text
-//! web_search → web_fetch → write_file(formalize) → run_command(verify) → final
-//! ```
-//!
-//! Each step is taken only if (a) the conversation does not already contain a
-//! tool result for that capability and (b) the CLI advertised a tool with that
-//! capability. Steps whose tool is unavailable are skipped, so the planner adapts
-//! to whatever subset of tools a given CLI exposes. Tool *errors* are observed:
-//! a fetch result that [`looks_like_error`] is ignored, and the formalizer falls
-//! back to the canonical synopsis so the loop still completes with a stable
-//! knowledge base.
+//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
+//! The general fallback is likewise bounded, advertised, and deterministic.
 
 use serde_json::json;
 
@@ -37,6 +26,7 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::ledger;
@@ -121,13 +111,8 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
     classify_tool(name)
 }
 
-/// Plan the next agentic step from the conversation so far and the tool names the
-/// CLI advertised.
-///
-/// Returns [`None`] when the latest user turn is neither of the recipes the
-/// planner knows (formalize a text — issue #468, or make a meaning more detailed
-/// — issue #538) — the server then falls back to its ordinary solver text, so
-/// unrelated requests are untouched.
+/// Plan the next agentic step from the conversation and advertised tools.
+/// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
@@ -232,7 +217,40 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    None
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+}
+
+fn plan_general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let writes = progress.count(Capability::Write);
+    if let Some(tool) = tool_for(tool_names, Capability::Write) {
+        if writes == 0 {
+            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
+        }
+        if writes == 1 {
+            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+        }
+    }
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
+    {
+        return plan_one(
+            tool,
+            json!({ "command": plan.verification_command }).to_string(),
+        );
+    }
+    AgenticPlan::Final(format!(
+        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
+        plan.target,
+        plan.verification_command,
+        PLAN_PATH,
+        plan.links_notation().trim_end(),
+    ))
 }
 
 /// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
@@ -701,9 +719,7 @@ impl Progress {
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
-            if !completed.contains(&capability) {
-                completed.push(capability);
-            }
+            completed.push(capability);
         }
         Self {
             completed,
@@ -715,6 +731,13 @@ impl Progress {
     /// Whether a prior tool result already covered `capability`.
     fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
+    }
+
+    fn count(&self, capability: Capability) -> usize {
+        self.completed
+            .iter()
+            .filter(|done| **done == capability)
+            .count()
     }
 }
 
