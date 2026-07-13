@@ -128,7 +128,7 @@ impl ChatCompletionRequest {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -214,6 +214,23 @@ impl Default for MessageContent {
     fn default() -> Self {
         Self::Text(String::new())
     }
+}
+
+/// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
+/// default (empty text) instead of failing.
+///
+/// `MessageContent` is an untagged enum (`Text | Parts`) with no unit variant,
+/// so `#[serde(default)]` alone only covers an *absent* `content` key — an
+/// explicit `"content": null` is still handed to the untagged enum and fails
+/// with `data did not match any variant of untagged enum MessageContent`.
+/// `content: null` on an assistant tool-call turn is the standard OpenAI shape
+/// (emitted by e.g. Qwen Code), so we accept it by treating `null` as the
+/// default. See issue #682.
+fn deserialize_null_content<'de, D>(deserializer: D) -> Result<MessageContent, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    Ok(Option::<MessageContent>::deserialize(deserializer)?.unwrap_or_default())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
