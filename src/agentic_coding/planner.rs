@@ -12,7 +12,7 @@
 //! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
 //! hidden state, and the same history always yields the same plan.
 //!
-//! Stored recipe: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
+//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
 //! The general fallback is likewise bounded, advertised, and deterministic.
 
 use serde_json::json;
