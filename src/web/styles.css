@@ -2136,6 +2136,16 @@ body.is-resizing-context {
   text-transform: uppercase;
 }
 
+/* Issue #676 (R8): the human, first-person headline that leads the trace. It
+   sits above the collapsed/expanded steps and reads as a sentence, so it is
+   styled a touch larger and darker than the robotic step detail beneath it. */
+.thinking-preview-narrative {
+  margin: 0 0 6px;
+  color: #2b3a45;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .thinking-preview-toggle {
   flex: 0 0 auto;
   border: 1px solid #cbd6db;
@@ -3693,6 +3703,10 @@ textarea:disabled {
   color: #d8d0c4;
 }
 
+:root[data-theme="dark"] .thinking-preview-narrative {
+  color: #e4ddd0;
+}
+
 :root[data-theme="dark"] .thinking-preview-toggle {
   border-color: #4a524e;
   background: #202322;
@@ -4157,6 +4171,10 @@ textarea:disabled {
   :root:not([data-theme="light"]) .thinking-preview-title,
   :root:not([data-theme="light"]) .thinking-preview-current {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-narrative {
+    color: #e4ddd0;
   }
 
   :root:not([data-theme="light"]) .thinking-preview-toggle {
