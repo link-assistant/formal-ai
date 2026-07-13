@@ -105,6 +105,68 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     })
 }
 
+/// Words that, when they immediately precede a file-looking token, mark that token
+/// as the write target. Includes the container words ("file"/"in"/…), the naming
+/// words ("named"/"called" — issue #681's phrasing), and the write verbs
+/// themselves ("write hello.py …") across the supported languages. Kept as data so
+/// a new phrasing is one entry, never a code branch.
+const TARGET_PRECEDING_WORDS: [&str; 17] = [
+    "file", "файл", "in", "в", "create", "создай", "создать", "named", "called", "write",
+    "save", "generate", "make", "запиши", "сохрани", "названием", "именем",
+];
+
+/// Verbs (any supported language) that mark a request as *producing* a file rather
+/// than reading one. Substrings so inflected forms match (`create`/`creating`,
+/// `создай`/`создать`). Kept deliberately narrow to a creation/mutation sense so an
+/// ordinary read prompt never trips them.
+const WRITE_VERBS: [&str; 12] = [
+    "create", "write", "save", "generate", "append to", "add to",
+    "созда", "запиш", "сохран", "записать", "допиш", "добав",
+];
+
+/// Whether `lower` (an already-lowercased request) is a file **write / create**
+/// intent — a write verb applied to something file-shaped. This is the single
+/// signal the router uses to keep a file-creation request from ever being
+/// misrouted to the file-read recipe (issue #681): a request to *produce* a file
+/// is a write, never a read of the not-yet-existing target.
+///
+/// It fires only when a write verb co-occurs with a file signal — the literal
+/// word "file"/"файл", a naming word ("named"/"called"/"именем"/"названием"), or a
+/// filename-looking token — so that "write a poem" or "save the world" (no file in
+/// sight) fall through to the ordinary solver, while "create a file named …",
+/// "save report.md …", and "generate data.json …" are recognised as writes.
+#[must_use]
+pub(super) fn has_file_write_intent(lower: &str) -> bool {
+    let has_write_verb = WRITE_VERBS.iter().any(|verb| lower.contains(verb));
+    if !has_write_verb {
+        return false;
+    }
+    let names_a_file = lower.contains("file")
+        || lower.contains("файл")
+        || lower.contains(" named ")
+        || lower.contains(" called ")
+        || lower.contains(" именем ")
+        || lower.contains(" названием ")
+        || mentions_filename_token(lower);
+    has_write_verb && names_a_file
+}
+
+/// Whether any whitespace-delimited token in `text` looks like a local filename
+/// (`name.ext`, not a URL). Mirrors the write planner's own target heuristic so the
+/// intent gate and the extractor agree on what "a file" is.
+fn mentions_filename_token(text: &str) -> bool {
+    text.split_whitespace().any(|word| {
+        let cleaned = word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'));
+        cleaned.contains('.')
+            && !cleaned.contains("://")
+            && cleaned.rsplit_once('.').is_some_and(|(stem, extension)| {
+                !stem.is_empty()
+                    && (1..=12).contains(&extension.len())
+                    && extension.chars().all(|c| c.is_ascii_alphanumeric())
+            })
+    })
+}
+
 fn extract_target(request: &str) -> Option<String> {
     let words: Vec<&str> = request.split_whitespace().collect();
     words.iter().enumerate().find_map(|(index, word)| {
@@ -112,34 +174,50 @@ fn extract_target(request: &str) -> Option<String> {
         let previous = index
             .checked_sub(1)
             .and_then(|i| words.get(i))
-            .map(|w| w.to_lowercase());
+            .map(|w| {
+                w.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
+                    .to_lowercase()
+            });
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
         (looks_like_file
             && previous
                 .as_deref()
-                .is_some_and(|p| ["file", "файл", "in", "в", "create", "создай"].contains(&p)))
+                .is_some_and(|p| TARGET_PRECEDING_WORDS.contains(&p)))
         .then(|| cleaned.to_owned())
     })
 }
 
+/// Natural-language markers that introduce the literal content of a write request.
+/// The longest, most specific markers come first so *"with the content"* wins over
+/// a bare *"content"* substring (issue #681). Kept as data, ordered by descending
+/// length, so a new phrasing is one entry rather than a code branch.
+const CONTENT_MARKERS: [&str; 12] = [
+    " with the content ",
+    " with the text ",
+    " with content ",
+    " with text ",
+    " that says ",
+    " that contains ",
+    " containing ",
+    " saying ",
+    " с содержанием ",
+    " содержанием ",
+    " с текстом ",
+    " текстом ",
+];
+
 fn extract_content(request: &str) -> Option<String> {
     let lower = request.to_lowercase();
-    [
-        " containing ",
-        " with content ",
-        " with text ",
-        " содержанием ",
-        " текстом ",
-    ]
-    .iter()
-    .find_map(|marker| lower.find(marker).map(|at| (marker, at)))
-    .map(|(marker, at)| {
-        request[at + marker.len()..]
-            .trim()
-            .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'))
-            .to_owned()
-    })
-    .filter(|content| !content.is_empty())
+    CONTENT_MARKERS
+        .iter()
+        .find_map(|marker| lower.find(marker).map(|at| (marker, at)))
+        .map(|(marker, at)| {
+            request[at + marker.len()..]
+                .trim()
+                .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'))
+                .to_owned()
+        })
+        .filter(|content| !content.is_empty())
 }
 
 fn safe_relative_path(path: &str) -> bool {
