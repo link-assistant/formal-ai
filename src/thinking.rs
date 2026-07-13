@@ -114,11 +114,100 @@ pub fn humanize_meta_identifier(value: &str) -> String {
     collapsed.trim().to_ascii_lowercase()
 }
 
+/// Build a short, first-person narrative headline that says, in plain language,
+/// what the assistant understood and decided (issue #676, R8).
+///
+/// This is the deliberately *human* layer that sits above the concrete step
+/// sentences. The reporter reached Formal AI through an agentic CLI (`OpenCode`)
+/// that renders the API `reasoning` field verbatim, and that field read as a
+/// robotic list of category steps identical across unrelated prompts. The
+/// headline restores a human summary while the detailed steps below stay intact
+/// as the recursive "robotic detail" layer (high-level thought → its sub-steps).
+///
+/// The narrative is derived purely from the steps already present — the chosen
+/// route from `dispatch_handler` (falling back to `formalize`) — so it stays
+/// deterministic and needs no extra engine state. Returns `None` when the trace
+/// has no recognizable route, leaving the robotic steps to speak for themselves.
+///
+/// The English sentences are `src` template literals, exactly like the
+/// [`naturalize_thinking_step`] sentences below; the browser mirrors the same
+/// per-intent framing through its localized "plain" thinking variants.
+#[must_use]
+pub fn thinking_narrative(steps: &[ThinkingStep]) -> Option<String> {
+    let route_detail = steps
+        .iter()
+        .find(|step| strip_agent_substep_prefix(&step.step) == "dispatch_handler")
+        .or_else(|| {
+            steps
+                .iter()
+                .find(|step| strip_agent_substep_prefix(&step.step) == "formalize")
+        })
+        .map(|step| step.detail.trim().to_ascii_lowercase())?;
+    if route_detail.is_empty() {
+        return None;
+    }
+    let narrative = match route_detail.as_str() {
+        "greeting" => "You said hello, so I greeted you back.",
+        "wellbeing" => "You asked how I'm doing, so I told you and offered to help.",
+        "assistant_free_time" => {
+            "You asked what I get up to, so I answered in a friendly way and offered to help."
+        }
+        "farewell" => "You said goodbye, so I wished you well in return.",
+        "gratitude" | "thanks" | "courtesy_response" | "courtesy" => {
+            "You thanked me, so I acknowledged it warmly."
+        }
+        "identity" | "assistant_name" | "recall_name" | "naming" | "assistant_naming" => {
+            "You asked about my name or who I am, so I answered from what I remember of our chat."
+        }
+        "calculation" | "arithmetic" => {
+            "This was a calculation, so I worked it out step by step and checked the result."
+        }
+        "fact_lookup" | "concept_lookup" | "concept_lookup_in_context" => {
+            "You asked for a fact, so I looked it up and reported what I found."
+        }
+        "translation" => "You asked for a translation, so I converted the text and returned it.",
+        "web_search" | "http_fetch" | "url_navigate" => {
+            "You pointed me at the web, so I fetched what you needed and summarized it."
+        }
+        "write_program" | "software_project_plan" | "software_project_implementation"
+        | "algorithm" => "You asked for code, so I planned it and wrote the program.",
+        "test_status" => "You asked about the tests, so I checked their status and reported it.",
+        "self_healing" | "self_heal" => {
+            "You asked me to fix myself, so I diagnosed the failure and repaired it."
+        }
+        "meta_explanation" => "You asked how I work, so I walked through my reasoning.",
+        "learn_from_source" => {
+            "You gave me something to learn from, so I read it and updated what I know."
+        }
+        "clarification" => "The request could mean more than one thing, so I asked you to clarify.",
+        "unknown" | "fallback" => {
+            "I wasn't sure how to handle this one yet, so I explained what I can do."
+        }
+        other => {
+            // Any other resolved route still gets a human headline rather than a
+            // bare category label: describe it as the task it was read as.
+            let task = humanize_meta_identifier(other);
+            return Some(format!(
+                "I read this as {} {task} request, worked out the answer, and replied.",
+                indefinite_article(&task)
+            ));
+        }
+    };
+    Some(narrative.to_owned())
+}
+
 /// Render a full reasoning trace as the plain-text form expected by protocol
 /// surfaces that expose a single thinking/reasoning string.
+///
+/// The output leads with a human [`thinking_narrative`] headline (issue #676,
+/// R8) when the route is recognizable, followed by the concrete per-step
+/// sentences as the recursive "robotic detail" beneath it.
 #[must_use]
 pub fn render_thinking_steps(steps: &[ThinkingStep]) -> String {
-    let mut lines = Vec::with_capacity(steps.len());
+    let mut lines = Vec::with_capacity(steps.len() + 1);
+    if let Some(narrative) = thinking_narrative(steps) {
+        lines.push(narrative);
+    }
     for step in steps {
         let sentence = if step.summary.is_empty() {
             naturalize_thinking_step(&step.step, &step.detail)
