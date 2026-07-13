@@ -65,6 +65,73 @@ fn web_fetch_intent_routes_to_fetch_tool_in_any_phrasing() {
 }
 
 #[test]
+fn write_intent_routes_to_write_tool_in_any_phrasing() {
+    // Each request names a relative target file and literal content, in a
+    // *different* phrasing (and one in Russian). A file-creation intent must route
+    // to a real write `tool_call` — the first step records the plan event, so we
+    // assert on the target file appearing in the composed plan rather than the raw
+    // prose the engine used to emit.
+    for (prompt, expected_target) in [
+        (
+            "create a file called README.md with the following: hello world",
+            "README.md",
+        ),
+        (
+            "add a new file src/lib.rs with content pub fn ready() {}",
+            "src/lib.rs",
+        ),
+        ("write hello there to notes/todo.txt", "notes/todo.txt"),
+        (
+            "make a file report.md that says all checks pass",
+            "report.md",
+        ),
+        (
+            "Создай файл вывод/пример.txt с текстом всё готово",
+            "вывод/пример.txt",
+        ),
+    ] {
+        let (tool, arguments) = single_call(prompt, &["write_file", "read_file", "run_command"]);
+        assert_eq!(tool, "write_file", "{prompt}");
+        let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
+        let content = value["content"].as_str().unwrap_or_default();
+        assert!(
+            content.contains("general_change_plan") && content.contains(expected_target),
+            "plan for {prompt:?} missing target {expected_target:?}: {content}"
+        );
+    }
+}
+
+#[test]
+fn write_intent_without_write_tool_does_not_emit_write_call() {
+    // No write tool advertised — the planner must not fabricate a write call; the
+    // request falls through to whatever else can honour it (or the prose answer).
+    let messages = vec![ChatMessage::user(
+        "create a file called README.md with the following: hello world",
+    )];
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["read_file"]) {
+        assert!(
+            calls.iter().all(|call| call.tool != "write_file"),
+            "unexpected write call without a write tool: {calls:?}"
+        );
+    }
+}
+
+#[test]
+fn read_intent_is_not_stolen_by_the_write_router() {
+    // A pure read request, even with a write tool advertised, must still route to
+    // the read tool: it names no content to write, so the write router declines and
+    // the file-read router downstream takes it.
+    for prompt in [
+        "read the file alpha.txt",
+        "show me the contents of beta.md",
+        "what does gamma.json say?",
+    ] {
+        let (tool, _) = single_call(prompt, &["write_file", "read_file"]);
+        assert_ne!(tool, "write_file", "{prompt} was mis-routed to a write");
+    }
+}
+
+#[test]
 fn web_intent_without_matching_tool_falls_through_to_prose() {
     // No search/fetch tool advertised — the planner must not fabricate a call it
     // cannot honour; it returns None so the prose path answers instead.

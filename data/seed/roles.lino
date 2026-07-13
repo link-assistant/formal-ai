@@ -159,6 +159,14 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file_write_action_cue
+    kind predicate
+  file_write_content_lead
+    kind predicate
+  file_write_destination_cue
+    kind predicate
+  file_write_target_cue
+    kind predicate
   final_amount_reference
     kind predicate
   followup_instruction_verb

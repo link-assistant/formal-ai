@@ -49,6 +49,7 @@
     "seed/meanings-docs.lino",
     "seed/meanings-facts.lino",
     "seed/meanings-feature-capability.lino",
+    "seed/meanings-file-write.lino",
     "seed/meanings-finance.lino",
     "seed/meanings-how.lino",
     "seed/meanings-intent.lino",

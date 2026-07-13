@@ -1,0 +1,29 @@
+---
+bump: minor
+---
+
+### Added
+- Tool-call emission in `formal-ai serve` is now **intent-based** rather than
+  phrasing-gated (issue #680). When a client advertises a web-search, web-fetch, or
+  write/edit tool, a request expressing that intent in *any* phrasing — across en, ru,
+  hi, and zh — routes to the matching `tool_call` instead of a prose description. The
+  routing holds over all three wire surfaces the target CLIs use (OpenAI Chat
+  Completions, OpenAI Responses, and Gemini `generateContent`), and only fires when the
+  matching capability tool is actually advertised, so a request that cannot be honoured
+  still falls through to the prose answer.
+- A file-creation intent that names a relative target file and literal content now
+  routes to the advertised write tool in any phrasing/language. The write intent is
+  recognised entirely from the seed lexicon (the new `file_write_*` roles in
+  `data/seed/meanings-file-write.lino`) rather than from hardcoded English or Russian
+  phrasings (CONTRIBUTING §2), and is probed before the file-read router so
+  "create file X containing Y" is a *write*, not a read of X.
+
+### Fixed
+- The Russian navigation verb "загрузи" (load) is no longer misclassified as an
+  `http_fetch`; it stays with `url_navigate`, while "скачай" (download the bytes)
+  remains the fetch verb, so bare-domain navigation prompts resolve to an HTTPS link
+  without fetch advice (issue #680).
+- The general write router no longer mistakes a sentence-ending word for a target file:
+  a token whose only dot is a terminal `.`/`!`/`?` ("… add the plural to томат.") is no
+  longer treated as a dotted filename, so stored recipe requests are not hijacked
+  (issue #680).

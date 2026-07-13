@@ -90,6 +90,45 @@ fn chat_completions_routes_web_fetch_intent_to_tool_call() {
     );
 }
 
+/// Chat Completions: a file-creation request routes to the advertised write tool
+/// rather than being answered as prose. The first turn records the plan event, so
+/// the write lands on the plan path and carries the composed plan for the target.
+#[test]
+fn chat_completions_routes_write_intent_to_tool_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/openai/v1/chat/completions",
+        TOKEN,
+        &serde_json::json!({
+            "model": "formal-ai",
+            "stream": false,
+            "messages": [{
+                "role": "user",
+                "content": "create a file called README.md with the following: hello world"
+            }],
+            "tools": [
+                function_tool("write_file"),
+                function_tool("read_file"),
+                function_tool("run_command"),
+            ]
+        }),
+    );
+
+    assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+    let call = &response["choices"][0]["message"]["tool_calls"][0];
+    assert_eq!(call["function"]["name"], "write_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+    let content = arguments["content"].as_str().unwrap_or_default();
+    assert!(
+        content.contains("general_change_plan") && content.contains("README.md"),
+        "write call should carry the composed plan for the target: {arguments}"
+    );
+}
+
 /// Responses: a web-search intent surfaces as a `function_call` output item.
 #[test]
 fn responses_routes_web_search_intent_to_function_call() {

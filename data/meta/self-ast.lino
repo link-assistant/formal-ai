@@ -7,88 +7,88 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 19169
-  named_node_count 3880
+  total_link_count 21552
+  named_node_count 4378
   distinct_node_kinds 81
   node_kinds
-    arguments 255
+    arguments 296
     array_expression 2
-    array_type 43
-    assignment_expression 2
+    array_type 47
+    assignment_expression 3
     attribute 6
     attribute_item 6
-    binary_expression 24
-    block 95
-    call_expression 255
-    closure_expression 13
-    closure_parameters 13
+    binary_expression 26
+    block 105
+    call_expression 296
+    closure_expression 20
+    closure_parameters 20
     const_item 4
     continue_expression 2
-    crate 1
+    crate 3
     declaration_list 2
-    doc_comment 173
+    doc_comment 189
     else_clause 7
     enum_item 2
     enum_variant 7
     enum_variant_list 2
-    escape_sequence 13
-    expression_statement 91
-    field_declaration 9
+    escape_sequence 19
+    expression_statement 102
+    field_declaration 10
     field_declaration_list 3
-    field_expression 119
-    field_identifier 154
+    field_expression 139
+    field_identifier 175
     field_initializer 26
     field_initializer_list 14
     for_expression 1
-    function_item 35
+    function_item 39
     function_modifiers 1
-    generic_type 10
-    identifier 970
-    if_expression 55
+    generic_type 15
+    identifier 1088
+    if_expression 61
     impl_item 2
     index_expression 2
     inner_doc_comment_marker 16
     integer_literal 3
-    let_condition 17
-    let_declaration 60
+    let_condition 19
+    let_declaration 68
     lifetime 5
     lifetime_parameter 1
-    line_comment 247
-    macro_invocation 27
+    line_comment 282
+    macro_invocation 32
     match_arm 5
     match_block 1
     match_expression 1
     match_pattern 5
-    mutable_specifier 3
+    mutable_specifier 4
     ordered_field_declaration_list 2
-    outer_doc_comment_marker 157
-    parameter 62
-    parameters 35
+    outer_doc_comment_marker 173
+    parameter 72
+    parameters 39
     parenthesized_expression 1
-    primitive_type 44
+    primitive_type 52
     range_expression 1
-    reference_expression 51
-    reference_type 83
-    return_expression 34
-    scoped_identifier 132
+    reference_expression 57
+    reference_type 95
+    return_expression 38
+    scoped_identifier 148
     scoped_use_list 3
     self 6
     self_parameter 3
-    shorthand_field_initializer 29
+    shorthand_field_initializer 30
     source_file 1
-    string_content 84
-    string_literal 77
+    string_content 93
+    string_literal 82
     struct_expression 14
     struct_item 3
     super 18
-    token_tree 48
-    try_expression 2
+    token_tree 54
+    try_expression 6
     tuple_pattern 1
-    tuple_struct_pattern 18
-    type_arguments 10
-    type_identifier 99
+    tuple_struct_pattern 20
+    type_arguments 15
+    type_identifier 111
     type_parameters 1
-    unary_expression 17
+    unary_expression 21
     use_declaration 20
     use_list 3
     visibility_modifier 11

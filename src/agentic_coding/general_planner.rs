@@ -9,6 +9,7 @@ use std::fmt::Write as _;
 
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
+use crate::seed::{self, Slot};
 
 use super::planner::Capability;
 
@@ -57,16 +58,22 @@ impl GeneralChangePlan {
     }
 }
 
-/// Compose a safe file-creation plan from arbitrary English or Russian wording.
+/// Compose a safe file-creation plan from arbitrary wording in any supported
+/// language (issue #680).
 ///
 /// The universal intent formalizer supplies the stable impulse identity.  The
 /// decomposition is deliberately bounded to requests that state both a relative
 /// target file and literal content; ambiguous requests continue to the ordinary
 /// solver instead of inventing a patch or shell command.
+///
+/// The target, the content, and the write *intent* itself are all recognised
+/// from the seed lexicon (the `file_write_*` roles in
+/// `data/seed/meanings-file-write.lino`) rather than from a hardcoded list of
+/// English or Russian phrasings, so a file-creation request in en/ru/hi/zh — in
+/// any phrasing — routes to the write tool (CONTRIBUTING §2).
 #[must_use]
 pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
-    let target = extract_target(request)?;
-    let content = extract_content(request)?;
+    let (target, content) = parse_write_request(request)?;
     if !safe_relative_path(&target) {
         return None;
     }
@@ -105,41 +112,177 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     })
 }
 
-fn extract_target(request: &str) -> Option<String> {
-    let words: Vec<&str> = request.split_whitespace().collect();
-    words.iter().enumerate().find_map(|(index, word)| {
-        let cleaned = word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'));
-        let previous = index
-            .checked_sub(1)
-            .and_then(|i| words.get(i))
-            .map(|w| w.to_lowercase());
+/// Recover the `(target, content)` of a write request from its wording.
+///
+/// The recogniser is entirely seed-driven (issue #680). It locates the target
+/// file by a `file_write_target_cue`/`file_write_destination_cue` that directly
+/// precedes a file-looking, safe relative path, then recovers the content two
+/// ways:
+///
+/// * **Marker-led** — a `file_write_content_lead` phrase ("containing", "with
+///   the following", …) introduces the payload. The content is the span after
+///   the marker (when the file precedes it) or the span between the marker and
+///   the file clause (when the content precedes the file).
+/// * **Destination-led** — the "write CONTENT to FILE" shape, where a
+///   `file_write_action_cue` opens the request and a *destination* cue (not a
+///   positional target cue) routes the preceding span into the file.
+///
+/// Both byte offsets index the lowercased copy, which is byte-length preserving
+/// for en/ru/hi/zh, so the same offsets slice the original request and the
+/// recovered content keeps its case and punctuation.
+fn parse_write_request(request: &str) -> Option<(String, String)> {
+    let lowered = request.to_lowercase();
+    let toks = tokens(request);
+    let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
+    let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+
+    // The target file: the first safe, file-looking token that directly follows
+    // a target or destination cue. Requiring the cue keeps an incidental dotted
+    // token (a version, an abbreviation) out of the write path.
+    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
+        let cleaned = clean_path_token(token.text);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
-        (looks_like_file
-            && previous
-                .as_deref()
-                .is_some_and(|p| ["file", "файл", "in", "в", "create", "создай"].contains(&p)))
-        .then(|| cleaned.to_owned())
-    })
+        if !looks_like_file || !safe_relative_path(cleaned) {
+            return None;
+        }
+        let previous = index.checked_sub(1).map(|i| &toks[i])?;
+        let previous_word = clean_cue_token(previous.text);
+        (target_cues.contains(&previous_word) || dest_cues.contains(&previous_word))
+            .then(|| (index, cleaned.to_owned()))
+    })?;
+
+    let cue = &toks[file_index - 1];
+    let clause_start = cue.start;
+    let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
+
+    let content_span = if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
+        if marker_end <= clause_start {
+            request.get(marker_end..clause_start)
+        } else {
+            request.get(marker_end..)
+        }
+    } else if cue_is_destination {
+        let action_end = first_action_cue_end(&toks)?;
+        (action_end <= clause_start).then(|| request.get(action_end..clause_start))?
+    } else {
+        None
+    };
+
+    let content = clean_content(content_span?)?;
+    Some((target, content))
 }
 
-fn extract_content(request: &str) -> Option<String> {
-    let lower = request.to_lowercase();
-    [
-        " containing ",
-        " with content ",
-        " with text ",
-        " содержанием ",
-        " текстом ",
-    ]
-    .iter()
-    .find_map(|marker| lower.find(marker).map(|at| (marker, at)))
-    .map(|(marker, at)| {
-        request[at + marker.len()..]
-            .trim()
-            .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'))
-            .to_owned()
-    })
-    .filter(|content| !content.is_empty())
+/// One whitespace token together with its byte span in the original request.
+struct Token<'a> {
+    text: &'a str,
+    start: usize,
+    end: usize,
+}
+
+/// Split a request into whitespace tokens, recording each token's byte span.
+fn tokens(request: &str) -> Vec<Token<'_>> {
+    let mut cursor = 0;
+    request
+        .split_whitespace()
+        .map(|word| {
+            let start = request[cursor..]
+                .find(word)
+                .map_or(cursor, |offset| cursor + offset);
+            let end = start + word.len();
+            cursor = end;
+            Token {
+                text: word,
+                start,
+                end,
+            }
+        })
+        .collect()
+}
+
+/// The bare (whole-word) surface forms for a role, lowercased for token matching.
+fn bare_surfaces(role: &str) -> Vec<String> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .iter()
+        .filter(|form| form.slot() == Slot::Bare)
+        .map(|form| form.text.to_lowercase())
+        .collect()
+}
+
+/// Trim the quoting/edge punctuation from a token that may be a file path,
+/// preserving the interior dots that make it look like a file. Trailing sentence
+/// punctuation is stripped too, so a plain word that merely *ends a sentence*
+/// ("… add the plural to томат.") is not mistaken for a file whose only dot is the
+/// terminal period — a real filename never ends in a bare `.`/`!`/`?`.
+fn clean_path_token(word: &str) -> &str {
+    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
+        .trim_end_matches(['.', '!', '?'])
+}
+
+/// Lowercase a token stripped of edge punctuation, for cue/action comparison.
+fn clean_cue_token(word: &str) -> String {
+    word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?'))
+        .to_lowercase()
+}
+
+/// The byte span just past the leftmost `file_write_content_lead` marker in the
+/// lowercased request, honouring whole-word boundaries for space-delimited
+/// scripts and substring matches for CJK (which has no inter-word spaces).
+fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
+    let markers: Vec<String> = seed::lexicon()
+        .role_word_forms(seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+        .iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .map(|form| form.before_slot().trim().to_lowercase())
+        .filter(|marker| !marker.is_empty())
+        .collect();
+    let mut best: Option<(usize, usize)> = None;
+    for marker in &markers {
+        let mut from = 0;
+        while let Some(relative) = lowered[from..].find(marker.as_str()) {
+            let start = from + relative;
+            let end = start + marker.len();
+            let cjk = !marker.contains(' ') && !marker.is_ascii();
+            let before_ok = cjk
+                || start == 0
+                || lowered[..start]
+                    .chars()
+                    .next_back()
+                    .is_some_and(char::is_whitespace);
+            let after_ok = cjk
+                || end == lowered.len()
+                || lowered[end..]
+                    .chars()
+                    .next()
+                    .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
+            if before_ok && after_ok {
+                if best.is_none_or(|(best_start, _)| start < best_start) {
+                    best = Some((start, end));
+                }
+                break;
+            }
+            from = end;
+        }
+    }
+    best
+}
+
+/// The byte offset just past the first `file_write_action_cue` token.
+fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
+    let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+    toks.iter()
+        .find(|token| actions.contains(&clean_cue_token(token.text)))
+        .map(|token| token.end)
+}
+
+/// Trim a recovered content span down to its literal payload, dropping the
+/// leading clause separator ("… the following: hello") and any surrounding
+/// quoting. Returns [`None`] when nothing is left.
+fn clean_content(raw: &str) -> Option<String> {
+    let led = raw.trim().trim_start_matches([':', '-', '—', '–']).trim();
+    let unquoted = led.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'));
+    let result = unquoted.trim();
+    (!result.is_empty()).then(|| result.to_owned())
 }
 
 fn safe_relative_path(path: &str) -> bool {

@@ -202,6 +202,18 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
+    // General write routing (issue #680): a request that names a relative target
+    // file and literal content is a file-creation intent in any phrasing/language.
+    // It is probed before the file-read router so "create file X containing Y" is
+    // recognised as a *write* rather than mistaken for a read of X, and only when
+    // the CLI actually advertised a write tool — otherwise the request keeps
+    // looking and ultimately falls through to the prose answer.
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| compose_general_change_plan(&task))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
@@ -226,15 +238,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     //
     // The probes run most-specific-first so a real CLI that advertises every tool
     // at once still routes each request to the right one: a concrete URL to
-    // retrieve is a fetch; a file-and-content request is a write; and the broadest
-    // intent — an open research/search question — is the final capability
-    // catch-all before the prose fallback.
+    // retrieve is a fetch (the file-and-content write intent is already handled
+    // above, before the file-read router); and the broadest intent — an open
+    // research/search question — is the final capability catch-all before the
+    // prose fallback.
     if let Some(plan) = plan_web_fetch_step(&task, messages, tool_names) {
-        return Some(plan);
-    }
-    if let Some(plan) = compose_general_change_plan(&task)
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-    {
         return Some(plan);
     }
     plan_web_search_step(&task, messages, tool_names)
