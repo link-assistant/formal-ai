@@ -1,0 +1,23 @@
+wrote agent session to docs/case-studies/issue-654/agent-cli-session-general.json
+Completed the general change request for artifacts/general-agent-plan.txt and verified it with `cat artifacts/general-agent-plan.txt`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+general_change_plan
+  id "general_change_plan_5fe3de26d5eebc0c"
+  goal "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
+  target "artifacts/general-agent-plan.txt"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_472637a08191e324"
+  step 2
+    capability "Write"
+    action "write the requested content to artifacts/general-agent-plan.txt"
+    expected_evidence "workspace file artifacts/general-agent-plan.txt"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "general planner e2e passed"
+    command "cat artifacts/general-agent-plan.txt"
+  verification_command "cat artifacts/general-agent-plan.txt"
