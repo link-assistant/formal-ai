@@ -169,7 +169,9 @@ pub fn thinking_narrative(steps: &[ThinkingStep]) -> Option<String> {
         "web_search" | "http_fetch" | "url_navigate" => {
             "You pointed me at the web, so I fetched what you needed and summarized it."
         }
-        "write_program" | "software_project_plan" | "software_project_implementation"
+        "write_program"
+        | "software_project_plan"
+        | "software_project_implementation"
         | "algorithm" => "You asked for code, so I planned it and wrote the program.",
         "test_status" => "You asked about the tests, so I checked their status and reported it.",
         "self_healing" | "self_heal" => {

@@ -882,9 +882,8 @@ fn is_formalization_task(prompt: &str) -> bool {
 /// natural language in the solver.
 fn shell_command_for_task(prompt: &str) -> Option<String> {
     let vocab = seed::terminal_command_vocabulary();
-    named_shell_command(prompt, &vocab).or_else(|| {
-        asks_for_directory_listing(prompt).then(|| String::from("ls"))
-    })
+    named_shell_command(prompt, &vocab)
+        .or_else(|| asks_for_directory_listing(prompt).then(|| String::from("ls")))
 }
 
 /// Extract an explicit shell command named in the prompt, backed by the seed
@@ -976,12 +975,59 @@ fn normalize_command_word(word: &str) -> String {
 /// it (e.g. `git status` stops before `in the current directory`).
 fn is_prose_word(word: &str) -> bool {
     const PROSE_WORDS: &[&str] = &[
-        "command", "commands", "to", "in", "into", "on", "the", "a", "an", "and", "then",
-        "please", "for", "of", "that", "which", "so", "this", "these", "those", "here",
-        "there", "me", "us", "you", "it", "from", "at", "with", "will", "would", "can",
-        "could", "should", "using", "via", "inside", "within", "output", "result",
-        "results", "contents", "content", "directory", "folder", "folders", "file",
-        "files", "currently", "again", "also", "just", "now",
+        "command",
+        "commands",
+        "to",
+        "in",
+        "into",
+        "on",
+        "the",
+        "a",
+        "an",
+        "and",
+        "then",
+        "please",
+        "for",
+        "of",
+        "that",
+        "which",
+        "so",
+        "this",
+        "these",
+        "those",
+        "here",
+        "there",
+        "me",
+        "us",
+        "you",
+        "it",
+        "from",
+        "at",
+        "with",
+        "will",
+        "would",
+        "can",
+        "could",
+        "should",
+        "using",
+        "via",
+        "inside",
+        "within",
+        "output",
+        "result",
+        "results",
+        "contents",
+        "content",
+        "directory",
+        "folder",
+        "folders",
+        "file",
+        "files",
+        "currently",
+        "again",
+        "also",
+        "just",
+        "now",
     ];
     let normalized = word
         .trim_matches(|c: char| !c.is_ascii_alphanumeric())

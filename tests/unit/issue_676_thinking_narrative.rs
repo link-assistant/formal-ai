@@ -1,7 +1,7 @@
 //! Issue #676 (R8): the thinking display should read as a human narrative, not
 //! a robotic list of identical category steps.
 //!
-//! The reporter reached Formal AI through an agentic CLI (OpenCode) that renders
+//! The reporter reached Formal AI through an agentic CLI (`OpenCode`) that renders
 //! the API `reasoning` field verbatim. Before this change the reasoning for
 //! unrelated prompts (e.g. "Hello" vs "How are you?") differed only in the route
 //! label buried mid-list. Now `render_thinking_steps` leads with a per-intent
@@ -92,6 +92,9 @@ fn unknown_route_still_gets_a_human_headline() {
             text.chars().next().is_some_and(char::is_uppercase),
             "narrative should read as a sentence, got: {text}"
         );
-        assert!(text.ends_with('.'), "narrative should be a sentence: {text}");
+        assert!(
+            text.ends_with('.'),
+            "narrative should be a sentence: {text}"
+        );
     }
 }
