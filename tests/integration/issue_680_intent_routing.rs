@@ -129,6 +129,118 @@ fn chat_completions_routes_write_intent_to_tool_call() {
     );
 }
 
+/// Chat Completions: a file-modification request routes to the advertised edit
+/// tool, carrying the recovered old/new text and target path rather than being
+/// answered as prose.
+#[test]
+fn chat_completions_routes_edit_intent_to_tool_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/openai/v1/chat/completions",
+        TOKEN,
+        &serde_json::json!({
+            "model": "formal-ai",
+            "stream": false,
+            "messages": [{
+                "role": "user",
+                "content": "In greeting.txt, change hello to goodbye"
+            }],
+            "tools": [
+                function_tool("edit"),
+                function_tool("write_file"),
+                function_tool("read_file"),
+            ]
+        }),
+    );
+
+    assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+    let call = &response["choices"][0]["message"]["tool_calls"][0];
+    assert_eq!(call["function"]["name"], "edit");
+    let arguments: serde_json::Value =
+        serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+    assert_eq!(
+        arguments["path"], "greeting.txt",
+        "edit target: {arguments}"
+    );
+    assert_eq!(arguments["oldString"], "hello", "old text: {arguments}");
+    assert_eq!(arguments["new_string"], "goodbye", "new text: {arguments}");
+}
+
+/// Responses: a file-modification intent surfaces as a `function_call` output item
+/// on the advertised `replace` tool (Gemini/Qwen's edit-tool name).
+#[test]
+fn responses_routes_edit_intent_to_function_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/openai/v1/responses",
+        TOKEN,
+        &serde_json::json!({
+            "model": "formal-ai",
+            "input": "Replace foo with bar in notes.txt",
+            "tools": [{
+                "type": "function",
+                "name": "replace",
+                "parameters": {"type": "object"}
+            }]
+        }),
+    );
+
+    let call = response["output"]
+        .as_array()
+        .expect("Responses output should be an array")
+        .iter()
+        .find(|item| item["type"] == "function_call")
+        .expect("Responses output should include a function_call item");
+    assert_eq!(call["name"], "replace");
+    let arguments: serde_json::Value =
+        serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+    assert_eq!(arguments["path"], "notes.txt", "edit target: {arguments}");
+    assert_eq!(arguments["oldString"], "foo", "old text: {arguments}");
+    assert_eq!(arguments["new_string"], "bar", "new text: {arguments}");
+}
+
+/// Gemini generateContent: a file-modification intent phrased in Russian surfaces
+/// as a `functionCall` part, proving the routing is language- and phrasing-general.
+#[test]
+fn gemini_routes_edit_intent_to_function_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/gemini/v1beta/models/formal-ai:generateContent",
+        TOKEN,
+        &serde_json::json!({
+            "contents": [{
+                "role": "user",
+                "parts": [{"text": "замени привет на пока в файле заметки.txt"}]
+            }],
+            "tools": [{
+                "functionDeclarations": [
+                    {"name": "replace", "parameters": {"type": "object"}}
+                ]
+            }]
+        }),
+    );
+
+    let call = response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .expect("Gemini parts should be an array")
+        .iter()
+        .find_map(|part| part.get("functionCall"))
+        .expect("Gemini content should include a functionCall part");
+    assert_eq!(call["name"], "replace");
+    assert_eq!(call["args"]["path"], "заметки.txt", "edit target: {call}");
+    assert_eq!(call["args"]["oldString"], "привет", "old text: {call}");
+    assert_eq!(call["args"]["new_string"], "пока", "new text: {call}");
+}
+
 /// Responses: a web-search intent surfaces as a `function_call` output item.
 #[test]
 fn responses_routes_web_search_intent_to_function_call() {

@@ -17,6 +17,15 @@ bump: minor
   `data/seed/meanings-file-write.lino`) rather than from hardcoded English or Russian
   phrasings (CONTRIBUTING §2), and is probed before the file-read router so
   "create file X containing Y" is a *write*, not a read of X.
+- A file-modification intent that names a target file plus an old→new replacement
+  ("In greeting.txt, change hello to goodbye", "Replace foo with bar in notes.txt",
+  «замени привет на пока в файле заметки.txt») now routes to the advertised edit tool,
+  whatever the CLI calls it (`edit`, `replace`, `apply_patch`, `str_replace`). The
+  new `Capability::Edit` recovers the `(target, old, new)` triple entirely from the
+  seed lexicon (the new `file_edit_*` roles in `data/seed/meanings-file-edit.lino`),
+  emits every common argument-key alias so one plan drives any CLI's edit tool, and is
+  probed after the create-file write router and before the file-read router so an edit
+  is never mistaken for a write or a read.
 
 ### Fixed
 - The Russian navigation verb "загрузи" (load) is no longer misclassified as an

@@ -172,6 +172,93 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     Some((target, content))
 }
 
+/// Recover the `(target, old, new)` of a file-edit request from its wording
+/// (issue #680).
+///
+/// The recogniser is entirely seed-driven. It locates the target file by a
+/// [`ROLE_FILE_EDIT_TARGET_CUE`](seed::ROLE_FILE_EDIT_TARGET_CUE) ("in", "within",
+/// "of", "file", …) that directly precedes a file-looking, safe relative path,
+/// finds the leftmost
+/// [`ROLE_FILE_EDIT_ACTION_CUE`](seed::ROLE_FILE_EDIT_ACTION_CUE) ("change",
+/// "replace", "edit", …), then the first
+/// [`ROLE_FILE_EDIT_NEW_LEAD_CUE`](seed::ROLE_FILE_EDIT_NEW_LEAD_CUE) ("to",
+/// "with", "into", …) after it. The *old* text is the span between the action and
+/// the new-lead; the *new* text is the span after the new-lead, bounded by the
+/// file clause when the file follows the replacement (the "replace OLD with NEW in
+/// FILE" shape) or running to the end when the file was named first (the "in FILE,
+/// change OLD to NEW" shape).
+///
+/// Returns [`None`] unless a target file, an action cue, a new-lead, and non-empty
+/// old and new spans are all present — and unless the file clause sits *outside*
+/// the replaced span — so ambiguous or non-edit requests fall through to the
+/// ordinary solver rather than fabricating an edit.
+///
+/// Byte offsets index the original request directly (the cue matching lowercases
+/// per token, which is byte-length preserving for en/ru/hi/zh), so the recovered
+/// old/new text keeps its original case and punctuation.
+#[must_use]
+pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+    let toks = tokens(request);
+    let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
+    let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
+    let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
+
+    // The target file: the first safe, file-looking token that sits directly beside
+    // a target cue — before it in prepositional languages ("in notes.txt") or after
+    // it in postpositional ones ("doc.txt में", "the report.md file"). Requiring the
+    // cue keeps an incidental dotted token out of the edit path, exactly as the
+    // write recogniser does.
+    let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
+    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
+        let cleaned = clean_path_token(token.text);
+        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        if !looks_like_file || !safe_relative_path(cleaned) {
+            return None;
+        }
+        let prev_is_cue = index.checked_sub(1).is_some_and(&is_target_cue);
+        let next_is_cue = (index + 1 < toks.len()) && is_target_cue(index + 1);
+        (prev_is_cue || next_is_cue).then(|| (index, cleaned.to_owned()))
+    })?;
+    // Extend the clause boundary left over any run of target cues so a multi-word
+    // file clause ("в файле notes.txt") is excluded from the replacement text in
+    // full, not just its innermost word.
+    let mut clause_start_index = file_index;
+    while clause_start_index > 0 && is_target_cue(clause_start_index - 1) {
+        clause_start_index -= 1;
+    }
+    let file_clause_start = toks[clause_start_index].start;
+
+    // The edit action opens the replacement clause; the new-lead separates the old
+    // text from the new text. The new-lead must follow the action so a "to"/"with"
+    // belonging to an earlier clause is never mistaken for the replacement lead.
+    let action_end = toks
+        .iter()
+        .find(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .map(|token| token.end)?;
+    let new_lead = toks.iter().find(|token| {
+        token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
+    })?;
+
+    // A well-formed edit names the file before the action ("in F, change A to B")
+    // or after the replacement ("replace A with B in F") — never between the action
+    // and the new-lead, which would fold the filename into the replaced text.
+    if file_clause_start >= action_end && file_clause_start < new_lead.start {
+        return None;
+    }
+
+    let old_span = request.get(action_end..new_lead.start)?;
+    let new_end = if file_clause_start > new_lead.end {
+        file_clause_start
+    } else {
+        request.len()
+    };
+    let new_span = request.get(new_lead.end..new_end)?;
+
+    let old = clean_content(old_span)?;
+    let new = clean_content(new_span)?;
+    Some((target, old, new))
+}
+
 /// One whitespace token together with its byte span in the original request.
 struct Token<'a> {
     text: &'a str,
@@ -300,6 +387,7 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::Fetch => "Fetch",
         Capability::Read => "Read",
         Capability::Write => "Write",
+        Capability::Edit => "Edit",
         Capability::Run => "Run",
     }
 }

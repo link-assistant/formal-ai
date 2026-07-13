@@ -9,7 +9,7 @@
 //! is general, not memorised (CONTRIBUTING rule 4).
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::protocol::ChatMessage;
+use formal_ai::protocol::{ChatMessage, ToolCall};
 
 /// The single tool call a one-step plan emitted, or a panic with the prompt.
 fn single_call(prompt: &str, tools: &[&str]) -> (String, String) {
@@ -98,6 +98,116 @@ fn write_intent_routes_to_write_tool_in_any_phrasing() {
             content.contains("general_change_plan") && content.contains(expected_target),
             "plan for {prompt:?} missing target {expected_target:?}: {content}"
         );
+    }
+}
+
+#[test]
+fn edit_intent_routes_to_edit_tool_in_any_phrasing() {
+    // A file-modification intent — an edit action, a replacement lead, and a named
+    // target file — must route to a real edit `tool_call` that replaces the
+    // recovered *old* text with the *new* text, regardless of phrasing, language, or
+    // which CLI-specific edit tool is advertised (opencode `edit`, Gemini/Qwen
+    // `replace`, codex `apply_patch`, Anthropic `str_replace`). Each row is a
+    // *different* phrasing/word-order so a pass proves the routing is general, not
+    // memorised (CONTRIBUTING rule 4).
+    for (prompt, tool_name, target, old, new) in [
+        (
+            "In greeting.txt, change hello to goodbye",
+            "edit",
+            "greeting.txt",
+            "hello",
+            "goodbye",
+        ),
+        (
+            "Replace foo with bar in notes.txt",
+            "replace",
+            "notes.txt",
+            "foo",
+            "bar",
+        ),
+        (
+            "Correct teh to the in doc.txt",
+            "apply_patch",
+            "doc.txt",
+            "teh",
+            "the",
+        ),
+        (
+            "замени привет на пока в файле заметки.txt",
+            "str_replace",
+            "заметки.txt",
+            "привет",
+            "пока",
+        ),
+    ] {
+        let (tool, arguments) = single_call(prompt, &[tool_name, "read_file", "write_file"]);
+        assert_eq!(tool, tool_name, "{prompt}");
+        let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
+        // Every common key alias is emitted so one plan drives any CLI's edit tool;
+        // assert the canonical trio landed under representative aliases.
+        assert_eq!(value["path"].as_str().unwrap(), target, "path for {prompt}");
+        assert_eq!(
+            value["oldString"].as_str().unwrap(),
+            old,
+            "old text for {prompt}"
+        );
+        assert_eq!(
+            value["new_string"].as_str().unwrap(),
+            new,
+            "new text for {prompt}"
+        );
+    }
+}
+
+#[test]
+fn edit_intent_without_edit_tool_does_not_emit_edit_call() {
+    // No edit tool advertised — the planner must not fabricate an edit call; the
+    // request falls through (here to the read tool, since it still names a file).
+    let messages = vec![ChatMessage::user(
+        "In greeting.txt, change hello to goodbye",
+    )];
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["read_file"]) {
+        assert!(
+            calls.iter().all(|call| call.tool != "edit"),
+            "unexpected edit call without an edit tool: {calls:?}"
+        );
+    }
+}
+
+#[test]
+fn write_intent_is_not_stolen_by_the_edit_router() {
+    // A file-creation request ("add hello to config.txt") names no edit action and
+    // no edit target cue, so even with an edit tool advertised it must route to the
+    // write tool, not be mis-parsed as a replacement.
+    let (tool, _) = single_call(
+        "add hello to config.txt",
+        &["edit", "write_file", "read_file"],
+    );
+    assert_eq!(tool, "write_file", "write intent mis-routed to an edit");
+}
+
+#[test]
+fn edit_second_step_reports_completion_not_a_repeated_call() {
+    // Once the client has run the edit tool and returned its result, the planner
+    // must recognise the edit is done and answer in prose rather than looping on a
+    // second identical edit call.
+    let messages = vec![
+        ChatMessage::user("In greeting.txt, change hello to goodbye"),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "call_1".to_owned(),
+            "edit".to_owned(),
+            "{}".to_owned(),
+        )]),
+        ChatMessage::tool_result("call_1", "edit", "ok: greeting.txt updated"),
+    ];
+    match plan_chat_step(&messages, &["edit", "read_file"]) {
+        Some(AgenticPlan::Final(answer)) => {
+            assert!(
+                answer.contains("greeting.txt"),
+                "completion answer should reference the edited file: {answer}"
+            );
+        }
+        other => panic!("expected a final answer after the edit result, got {other:?}"),
     }
 }
 

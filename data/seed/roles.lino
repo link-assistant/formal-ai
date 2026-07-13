@@ -159,6 +159,12 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file_edit_action_cue
+    kind predicate
+  file_edit_new_lead_cue
+    kind predicate
+  file_edit_target_cue
+    kind predicate
   file_write_action_cue
     kind predicate
   file_write_content_lead

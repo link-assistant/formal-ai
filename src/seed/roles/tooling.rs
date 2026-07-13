@@ -91,6 +91,42 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: a verb that commands the in-place modification of an existing
+/// file (issue #680).
+///
+/// A file-edit action word ("change", "replace", "edit", "modify",
+/// "substitute", plus translations), carried by `file_edit_action` in
+/// `data/seed/meanings-file-edit.lino`. Read as whole tokens through
+/// [`crate::seed::Lexicon::role_word_forms`] by the deterministic edit-intent
+/// recogniser ([`crate::agentic_coding::general_planner::compose_edit_request`]):
+/// it evidences a file-*edit* intent (distinct from a create-file write)
+/// independently of any pinned phrasing, so a request in any supported language
+/// routes to the advertised edit tool instead of a prose description. The
+/// create-file verbs ("create", "write", …) are deliberately absent so a write
+/// is never misrouted as an edit.
+pub const ROLE_FILE_EDIT_ACTION_CUE: &str = "file_edit_action_cue";
+/// Semantic role: a word that introduces the replacement (new) text of a file
+/// edit (issue #680).
+///
+/// A directional lead such as "to" ("change X to Y"), "with" ("replace X with
+/// Y"), "into", or "by" (plus translations), carried by `file_edit_new_lead` in
+/// `data/seed/meanings-file-edit.lino`. The edit-intent recogniser reads these
+/// through [`crate::seed::Lexicon::role_word_forms`]: the span between the
+/// action cue and the first new-lead after it is the *old* text, and the span
+/// after the new-lead is the *new* text, so "replace foo with bar" recovers
+/// `foo` → `bar` from the wording alone.
+pub const ROLE_FILE_EDIT_NEW_LEAD_CUE: &str = "file_edit_new_lead_cue";
+/// Semantic role: a word that introduces or names the file an edit applies to
+/// (issue #680).
+///
+/// A positional or naming introducer ("in", "within", "inside", "of", "file",
+/// plus translations), carried by `file_edit_target` in
+/// `data/seed/meanings-file-edit.lino`. The edit-intent recogniser accepts a
+/// file-looking token as the edit target only when it directly follows one of
+/// these cues, so an incidental dotted token is not treated as a path. The
+/// create-file destination "to" is deliberately absent here so "add hello to
+/// config.txt" stays a *write*, not an edit.
+pub const ROLE_FILE_EDIT_TARGET_CUE: &str = "file_edit_target_cue";
 /// Semantic role: a verb that commands the creation or modification of a file
 /// (issue #680).
 ///

@@ -26,7 +26,9 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
+use super::general_planner::{
+    compose_edit_request, compose_general_change_plan, GeneralChangePlan, PLAN_PATH,
+};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::ledger;
@@ -81,6 +83,7 @@ pub enum Capability {
     Fetch,
     Read,
     Write,
+    Edit,
     Run,
 }
 
@@ -96,6 +99,7 @@ impl Capability {
             Self::Fetch => "tool:capability:fetch",
             Self::Read => "tool:capability:read",
             Self::Write => "tool:capability:write",
+            Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
         }
     }
@@ -214,6 +218,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     {
         return Some(plan);
     }
+    // General edit routing (issue #680): a request that names a target file plus
+    // an old→new replacement is a file-modification intent in any phrasing. It is
+    // probed after the create-file write router (so "create file X containing Y"
+    // stays a write) and before the file-read router (so "in X, change A to B" is
+    // an *edit* rather than a read of X), and only when the CLI actually
+    // advertised an edit tool — otherwise the request keeps looking and ultimately
+    // falls through to the prose answer.
+    if let Some(plan) = plan_edit_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
@@ -290,6 +304,34 @@ fn plan_web_search_step(
         )));
     }
     Some(plan_one(tool, json!({ "query": query }).to_string()))
+}
+
+/// General file-edit routing (issue #680): when the request carries a
+/// file-modification intent — an edit action, a replacement lead, and a named
+/// target file, in any phrasing/language — *and* the CLI advertised an edit tool,
+/// emit a real edit `tool_call` that replaces the recovered old text with the new
+/// text. Returns [`None`] when there is no edit intent or no edit tool was
+/// advertised, so the planner keeps looking (and ultimately falls through to the
+/// prose answer) rather than fabricating a call the client cannot honour.
+///
+/// The `(target, old, new)` triple is recovered entirely from the seed lexicon
+/// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
+/// arguments are emitted under every common key alias so one shape drives any
+/// CLI's edit/patch/replace tool (see [`edit_arguments`]).
+fn plan_edit_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let (target, old, new) = compose_edit_request(task)?;
+    let tool = tool_for(tool_names, Capability::Edit)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Edit) {
+        return Some(AgenticPlan::Final(format!(
+            "Edited `{target}`: replaced `{old}` with `{new}`."
+        )));
+    }
+    Some(plan_one(tool, edit_arguments(&target, &old, &new)))
 }
 
 /// The final answer once a web-fetch tool call has returned. Surfaces the fetched
@@ -870,6 +912,31 @@ fn write_arguments(path: &str, content: &str) -> String {
     .to_string()
 }
 
+/// Arguments for an edit step that satisfy whichever key an advertised edit tool
+/// expects. Agentic CLIs disagree on the parameter names — opencode's `edit`
+/// wants `filePath`/`oldString`/`newString`, Gemini/Qwen's `replace` wants
+/// `file_path`/`old_string`/`new_string`, and Anthropic's `str_replace` wants
+/// `path`/`old_str`/`new_str`. All aliases are emitted; a schema-validating CLI
+/// keeps the ones it declared and strips the rest, so the same plan drives any of
+/// them without a per-CLI special case (issue #680), mirroring
+/// [`write_arguments`].
+fn edit_arguments(path: &str, old: &str, new: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+        "oldString": old,
+        "old_string": old,
+        "old_str": old,
+        "old": old,
+        "newString": new,
+        "new_string": new,
+        "new_str": new,
+        "new": new,
+    })
+    .to_string()
+}
+
 /// Arguments for a fetch step. Emits `url` (the universal key) plus `format`
 /// set to `"text"` — the `@link-assistant/agent` CLI's `webfetch` tool declares
 /// a required `format` enum (`"text" | "markdown" | "html"`) and zod refuses the
@@ -897,13 +964,15 @@ fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a st
 /// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
 /// `run_command`, `bash`, `websearch`, `webfetch`, …).
 ///
-/// The recipe only wants five kinds of tool, and real CLIs expose *lookalikes*
-/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
-/// writer, a `codesearch` is not a web search, and `edit`/`patch`
-/// are not create-file tools. Those are ruled out first so that — even though
-/// [`requested_tool_names`](super::super::protocol) hands the planner an
-/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
-/// nor `codesearch` ahead of `websearch`.
+/// The recipe wants six kinds of tool, and real CLIs expose *lookalikes* that
+/// must not be mistaken for them: a `todowrite` scratchpad is not a file writer,
+/// a `codesearch` is not a web search, and an `edit`/`patch`/`replace` tool
+/// mutates an existing file rather than creating one. Those are separated so
+/// that — even though [`requested_tool_names`](super::super::protocol) hands the
+/// planner an alphabetically sorted list — `todowrite` can never be picked ahead
+/// of `write`, `codesearch` ahead of `websearch`, nor an `edit` tool ahead of a
+/// create-file `write` for a write intent (they carry distinct arguments, so
+/// each is its own capability class).
 fn classify_tool(name: &str) -> Option<Capability> {
     let lower = name.to_ascii_lowercase();
     // Scratchpad / navigation tools that merely *look* like recipe tools.
@@ -929,10 +998,14 @@ fn classify_tool(name: &str) -> Option<Capability> {
     {
         Some(Capability::Fetch)
     } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch; `edit`/`patch`
-        // mutate an existing one and take different arguments, so they are not
-        // interchangeable with the recipe's write step and stay unclassified.
+        // `write` / `write_file` create a file from scratch.
         Some(Capability::Write)
+    } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
+        // `edit` / `apply_patch` / `str_replace` mutate an *existing* file and
+        // take `(path, old, new)`-shaped arguments rather than `(path, content)`,
+        // so they are their own capability class — never interchangeable with the
+        // create-file write above (issue #680).
+        Some(Capability::Edit)
     } else if lower.contains("run")
         || lower.contains("bash")
         || lower.contains("command")
