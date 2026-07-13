@@ -68,6 +68,12 @@ meanings
         text "fetch this url"
       surface
         text "fetch the page"
+      surface
+        text "download …"
+      surface
+        text "download the page at …"
+      surface
+        text "download from …"
     lexeme ru
       surface
         text "сделай запрос …"
@@ -113,16 +119,26 @@ meanings
         text "http запрос к"
       surface
         text "http запрос на"
+      surface
+        text "скачай …"
+      surface
+        text "загрузи …"
+      surface
+        text "скачай страницу …"
     lexeme hi
       surface
         text "अनुरोध भेजें"
       surface
         text "अनुरोध करें"
+      surface
+        text "डाउनलोड करें"
     lexeme zh
       surface
         text 发送请求
       surface
         text 获取
+      surface
+        text 下载
   url_navigate
     defined-by inquiry
     defined-by action

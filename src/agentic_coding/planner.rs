@@ -217,8 +217,96 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    compose_general_change_plan(&task)
+    // General capability router (issue #680): route the request to a real tool
+    // call based on its *intent* — the advertised tool set plus the request
+    // semantics — rather than a pinned recipe or a literal phrasing. These probes
+    // reuse the same lexicon-driven detectors the prose path uses, and each only
+    // fires when the CLI actually advertised a tool of the matching capability
+    // (otherwise the request falls through to the prose answer).
+    //
+    // The probes run most-specific-first so a real CLI that advertises every tool
+    // at once still routes each request to the right one: a concrete URL to
+    // retrieve is a fetch; a file-and-content request is a write; and the broadest
+    // intent — an open research/search question — is the final capability
+    // catch-all before the prose fallback.
+    if let Some(plan) = plan_web_fetch_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
+    plan_web_search_step(&task, messages, tool_names)
+}
+
+/// General web-fetch routing (issue #680): when the request carries HTTP-fetch
+/// intent (any phrasing, any supported language) *and* the CLI advertised a fetch
+/// tool, emit a real fetch `tool_call` for the named URL. Returns [`None`] when
+/// there is no fetch intent or no fetch tool was advertised, so the planner keeps
+/// looking (and ultimately falls through to the prose answer) rather than
+/// fabricating a call the client cannot honour.
+fn plan_web_fetch_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let url = crate::solver_handlers::http_fetch_url_for(task)?;
+    let tool = tool_for(tool_names, Capability::Fetch)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Fetch) {
+        return Some(AgenticPlan::Final(web_fetch_final_answer(
+            &url,
+            progress.fetched_text.as_deref(),
+        )));
+    }
+    Some(plan_one(tool, fetch_arguments(&url)))
+}
+
+/// General web-search routing (issue #680): when the request carries web-search
+/// intent (any phrasing, any supported language) *and* the CLI advertised a
+/// search tool, emit a real search `tool_call` for the extracted query. Returns
+/// [`None`] when there is no search intent or no search tool was advertised.
+fn plan_web_search_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let query = crate::solver_handlers::web_search_query_for(task)?;
+    let tool = tool_for(tool_names, Capability::Search)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Search) {
+        return Some(AgenticPlan::Final(web_search_final_answer(
+            &query,
+            progress.search_output.as_deref(),
+        )));
+    }
+    Some(plan_one(tool, json!({ "query": query }).to_string()))
+}
+
+/// The final answer once a web-fetch tool call has returned. Surfaces the fetched
+/// text verbatim when the tool succeeded, otherwise states the URL that was
+/// requested so the conversation stays grounded in the real tool result.
+fn web_fetch_final_answer(url: &str, fetched_text: Option<&str>) -> String {
+    fetched_text
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map_or_else(
+            || format!("Fetched `{url}`."),
+            |text| format!("Fetched `{url}`. Response body:\n\n```text\n{text}\n```"),
+        )
+}
+
+/// The final answer once a web-search tool call has returned. Surfaces the search
+/// results verbatim when the tool produced any, otherwise states the query.
+fn web_search_final_answer(query: &str, search_output: Option<&str>) -> String {
+    search_output
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map_or_else(
+            || format!("Searched the web for `{query}`."),
+            |text| format!("Searched the web for `{query}`. Results:\n\n{text}"),
+        )
 }
 
 fn plan_general_change_step(
@@ -696,6 +784,8 @@ struct Progress {
     fetched_text: Option<String>,
     /// The latest run/shell result's text, if any.
     run_output: Option<String>,
+    /// The latest non-errored web-search result's text, if any.
+    search_output: Option<String>,
 }
 
 impl Progress {
@@ -703,6 +793,7 @@ impl Progress {
         let mut completed = Vec::new();
         let mut fetched_text = None;
         let mut run_output = None;
+        let mut search_output = None;
         for (index, message) in messages.iter().enumerate() {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
@@ -716,6 +807,12 @@ impl Progress {
                     fetched_text = Some(text);
                 }
             }
+            if capability == Capability::Search {
+                let text = message.content.plain_text();
+                if !looks_like_error(&text) && !text.trim().is_empty() {
+                    search_output = Some(text);
+                }
+            }
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
@@ -725,6 +822,7 @@ impl Progress {
             completed,
             fetched_text,
             run_output,
+            search_output,
         }
     }
 
