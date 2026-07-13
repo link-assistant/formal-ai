@@ -7,88 +7,88 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 19755
-  named_node_count 3987
+  total_link_count 20672
+  named_node_count 4158
   distinct_node_kinds 81
   node_kinds
-    arguments 255
+    arguments 274
     array_expression 7
-    array_type 42
+    array_type 44
     assignment_expression 2
     attribute 6
     attribute_item 6
-    binary_expression 26
-    block 94
-    call_expression 255
-    closure_expression 15
-    closure_parameters 15
+    binary_expression 29
+    block 99
+    call_expression 274
+    closure_expression 18
+    closure_parameters 18
     const_item 4
     continue_expression 2
     crate 1
     declaration_list 2
-    doc_comment 194
+    doc_comment 178
     else_clause 7
     enum_item 2
     enum_variant 7
     enum_variant_list 2
-    escape_sequence 9
-    expression_statement 87
+    escape_sequence 13
+    expression_statement 93
     field_declaration 9
     field_declaration_list 3
-    field_expression 118
-    field_identifier 153
+    field_expression 129
+    field_identifier 164
     field_initializer 26
     field_initializer_list 14
     for_expression 1
-    function_item 36
+    function_item 38
     function_modifiers 1
     generic_type 11
-    identifier 951
-    if_expression 53
+    identifier 1019
+    if_expression 56
     impl_item 2
     index_expression 2
-    inner_doc_comment_marker 27
-    integer_literal 1
-    let_condition 15
-    let_declaration 65
+    inner_doc_comment_marker 16
+    integer_literal 3
+    let_condition 17
+    let_declaration 67
     lifetime 5
     lifetime_parameter 1
-    line_comment 268
-    macro_invocation 25
+    line_comment 252
+    macro_invocation 27
     match_arm 5
     match_block 1
     match_expression 1
     match_pattern 5
     mutable_specifier 3
     ordered_field_declaration_list 2
-    outer_doc_comment_marker 167
-    parameter 64
-    parameters 36
+    outer_doc_comment_marker 162
+    parameter 68
+    parameters 38
     parenthesized_expression 4
-    primitive_type 50
+    primitive_type 52
     range_expression 1
-    reference_expression 57
-    reference_type 85
-    return_expression 32
-    scoped_identifier 125
-    scoped_use_list 2
-    self 4
-    self_parameter 2
+    reference_expression 61
+    reference_type 89
+    return_expression 35
+    scoped_identifier 132
+    scoped_use_list 3
+    self 6
+    self_parameter 3
     shorthand_field_initializer 29
     source_file 1
-    string_content 119
-    string_literal 114
+    string_content 123
+    string_literal 116
     struct_expression 14
     struct_item 3
-    super 16
-    token_tree 43
+    super 17
+    token_tree 48
     try_expression 2
     tuple_pattern 1
-    tuple_struct_pattern 16
+    tuple_struct_pattern 18
     type_arguments 11
-    type_identifier 97
+    type_identifier 101
     type_parameters 1
-    unary_expression 16
-    use_declaration 18
-    use_list 2
+    unary_expression 18
+    use_declaration 19
+    use_list 3
     visibility_modifier 11

@@ -1,4 +1,5 @@
 mod agentic_coding;
+mod agentic_general_planner;
 mod agentic_surfaces;
 mod assistant_name;
 mod courtesy_response;
