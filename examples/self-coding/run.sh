@@ -41,5 +41,4 @@ git -C "$work" diff --no-index -- /dev/null self-coding-result.txt \
   >"$OUT/result.diff" || test "$?" -eq 1
 cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino"
 "$BIN" agent --task "$TASK" --session-json "$OUT/session.json" >/dev/null
-printf 'solve ISSUE_URL --tool agent --model formal-ai\n' >"$OUT/hive-mind-dispatch.log"
 echo "self-coding replay passed"

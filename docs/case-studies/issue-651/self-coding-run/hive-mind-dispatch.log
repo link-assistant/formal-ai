@@ -1,1 +1,5 @@
-solve ISSUE_URL --tool agent --model formal-ai
+$ solve https://github.com/link-assistant/formal-ai/issues/655 --tool agent --model formal-ai --only-prepare-command
+solve v2.5.2
+Unrecognized model: "formal-ai"
+Invalid model name
+Upstream gap: https://github.com/link-assistant/hive-mind/issues/2059
