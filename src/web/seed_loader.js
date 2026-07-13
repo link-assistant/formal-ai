@@ -37,6 +37,7 @@
     "seed/numeric-list-operations.lino",
     "seed/coding-idioms.lino",
     "seed/terminal-commands.lino",
+    "seed/shell-intents.lino",
     "seed/program-plan-rules.lino",
     "seed/market-price-references.lino",
     "seed/meanings.lino",

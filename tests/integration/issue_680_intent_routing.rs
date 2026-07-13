@@ -241,6 +241,74 @@ fn gemini_routes_edit_intent_to_function_call() {
     assert_eq!(call["args"]["new_string"], "пока", "new text: {call}");
 }
 
+/// Chat Completions: a semantic shell request that never names the command ("How
+/// much disk space is free?") routes to the advertised run tool carrying the
+/// concrete command, proving intent-based shell routing survives the HTTP round-trip.
+#[test]
+fn chat_completions_routes_shell_intent_to_tool_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/openai/v1/chat/completions",
+        TOKEN,
+        &serde_json::json!({
+            "model": "formal-ai",
+            "stream": false,
+            "messages": [{
+                "role": "user",
+                "content": "How much disk space is free?"
+            }],
+            "tools": [
+                function_tool("bash"),
+                function_tool("read_file"),
+            ]
+        }),
+    );
+
+    assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+    let call = &response["choices"][0]["message"]["tool_calls"][0];
+    assert_eq!(call["function"]["name"], "bash");
+    let arguments: serde_json::Value =
+        serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+    assert_eq!(arguments["command"], "df -h", "shell command: {arguments}");
+}
+
+/// Gemini generateContent: a semantic shell request phrased as a question ("What is
+/// my username?") surfaces as a `functionCall` part on the advertised run tool.
+#[test]
+fn gemini_routes_shell_intent_to_function_call() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+
+    let response = http_post_json(
+        port,
+        "/api/gemini/v1beta/models/formal-ai:generateContent",
+        TOKEN,
+        &serde_json::json!({
+            "contents": [{
+                "role": "user",
+                "parts": [{"text": "What is my username?"}]
+            }],
+            "tools": [{
+                "functionDeclarations": [
+                    {"name": "shell", "parameters": {"type": "object"}}
+                ]
+            }]
+        }),
+    );
+
+    let call = response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .expect("Gemini parts should be an array")
+        .iter()
+        .find_map(|part| part.get("functionCall"))
+        .expect("Gemini content should include a functionCall part");
+    assert_eq!(call["name"], "shell");
+    assert_eq!(call["args"]["command"], "whoami", "shell command: {call}");
+}
+
 /// Responses: a web-search intent surfaces as a `function_call` output item.
 #[test]
 fn responses_routes_web_search_intent_to_function_call() {

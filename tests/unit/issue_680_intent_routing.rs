@@ -255,6 +255,53 @@ fn web_intent_without_matching_tool_falls_through_to_prose() {
 }
 
 #[test]
+fn shell_intent_routes_to_run_tool_in_any_phrasing() {
+    // A semantic shell request that never names the command — it expresses an
+    // *intent* ("Print the current working directory", "How much disk space is
+    // free?") — must route to the advertised run tool carrying the concrete command,
+    // instead of being answered as prose (issue #680). Each row is a *different*
+    // phrasing so a pass proves the routing is general, not memorised (rule 4). The
+    // exact command comes from the seed intent table (`data/seed/shell-intents.lino`),
+    // never from a hardcoded phrasing in the planner.
+    for (prompt, expected_command) in [
+        ("Show me what's in this folder", "ls"),
+        ("Print the current working directory", "pwd"),
+        ("Tell me today's date using the shell", "date"),
+        ("How much disk space is free?", "df -h"),
+        ("Show the running processes", "ps"),
+        (
+            "Count the number of lines in Cargo.toml",
+            "wc -l Cargo.toml",
+        ),
+        ("Create a directory called build", "mkdir build"),
+        ("What is my username?", "whoami"),
+    ] {
+        let (tool, arguments) = single_call(prompt, &["bash", "read_file"]);
+        assert_eq!(tool, "bash", "{prompt}");
+        let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
+        assert_eq!(
+            value["command"].as_str().unwrap(),
+            expected_command,
+            "command for {prompt}"
+        );
+    }
+}
+
+#[test]
+fn shell_intent_without_run_tool_does_not_emit_run_call() {
+    // No shell/run tool advertised — the planner must not fabricate a shell call; it
+    // falls through (here to the prose answer) rather than emitting a command the
+    // client cannot honour.
+    let messages = vec![ChatMessage::user("Print the current working directory")];
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["read_file"]) {
+        assert!(
+            calls.iter().all(|call| !call.arguments.contains("pwd")),
+            "unexpected shell call without a run tool: {calls:?}"
+        );
+    }
+}
+
+#[test]
 fn web_search_is_deterministic() {
     let messages = vec![ChatMessage::user(
         "look up the latest news about renewable energy",

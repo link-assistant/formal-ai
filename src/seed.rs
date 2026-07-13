@@ -35,6 +35,7 @@ pub(crate) mod parser;
 mod personas;
 mod projects;
 mod roles;
+mod shell_intents;
 mod summary_topics;
 mod terminal_commands;
 
@@ -61,8 +62,8 @@ pub use embedded::{
     MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
     MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
     PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
-    PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
-    TOOLS_LINO,
+    PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SHELL_INTENTS_LINO, SUMMARY_TOPICS_LINO,
+    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
@@ -157,6 +158,9 @@ pub use roles::{
     ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOOL_NAME,
     ROLE_WEB_SEARCH_TOPIC_MARKER, ROLE_WHO_QUESTION_LEAD, ROLE_WHO_QUESTION_TAIL,
     ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
+};
+pub use shell_intents::{
+    shell_intent_vocabulary, ShellIntent, ShellIntentArgument, ShellIntentVocabulary,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};
