@@ -12,19 +12,8 @@
 //! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
 //! hidden state, and the same history always yields the same plan.
 //!
-//! The recipe is a small state machine:
-//!
-//! ```text
-//! web_search → web_fetch → write_file(formalize) → run_command(verify) → final
-//! ```
-//!
-//! Each step is taken only if (a) the conversation does not already contain a
-//! tool result for that capability and (b) the CLI advertised a tool with that
-//! capability. Steps whose tool is unavailable are skipped, so the planner adapts
-//! to whatever subset of tools a given CLI exposes. Tool *errors* are observed:
-//! a fetch result that [`looks_like_error`] is ignored, and the formalizer falls
-//! back to the canonical synopsis so the loop still completes with a stable
-//! knowledge base.
+//! Stored recipes and the general fallback are bounded state machines; each step
+//! runs only when advertised and unsatisfied; deterministic fallbacks handle errors.
 
 use serde_json::json;
 
@@ -121,13 +110,8 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
     classify_tool(name)
 }
 
-/// Plan the next agentic step from the conversation so far and the tool names the
-/// CLI advertised.
-///
-/// Returns [`None`] when the latest user turn is neither of the recipes the
-/// planner knows (formalize a text — issue #468, or make a meaning more detailed
-/// — issue #538) — the server then falls back to its ordinary solver text, so
-/// unrelated requests are untouched.
+/// Plan the next agentic step from the conversation and advertised tools.
+/// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
