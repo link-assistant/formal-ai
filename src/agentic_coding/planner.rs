@@ -36,6 +36,7 @@ use super::rebuild_plan;
 use super::repair_strategy;
 use super::self_ast;
 use super::self_heal;
+use super::shell_command;
 use super::source_graph;
 use crate::protocol::ChatMessage;
 
@@ -204,7 +205,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
-    if let Some(command) = shell_command_for_task(&task) {
+    if let Some(command) = shell_command::shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
     }
     if is_formalization_task(&task) {
@@ -882,86 +883,6 @@ fn is_formalization_task(prompt: &str) -> bool {
     FORMALIZATION_KEYWORDS
         .iter()
         .any(|keyword| lower.contains(keyword))
-}
-
-/// Whether `prompt` asks the CLI to run `ls` / list the current workspace.
-///
-/// This intentionally starts narrow: it resolves only read-only directory-listing
-/// language to `ls`. Broader shell synthesis belongs in a richer command parser,
-/// not in a one-off fallback that might accidentally execute an invented command.
-fn shell_command_for_task(prompt: &str) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    let mentions_ls = contains_word(&lower, "ls");
-    let run_context = ["run", "execute", "command", "terminal", "shell"]
-        .iter()
-        .any(|word| contains_word(&lower, word));
-    let listing_context = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "files here",
-            "current directory",
-            "working directory",
-        ],
-    );
-
-    if mentions_ls && (run_context || listing_context) {
-        return Some(String::from("ls"));
-    }
-
-    let asks_for_listing = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "directory listing",
-            "directory contents",
-            "folder contents",
-            "contents of this directory",
-            "contents of the current directory",
-            "contents of this folder",
-            "contents of the current folder",
-        ],
-    );
-    let asks_which_files = contains_any(
-        &lower,
-        &[
-            "what files",
-            "which files",
-            "files are in",
-            "files exist",
-            "files are here",
-        ],
-    );
-    let local_scope = contains_any(
-        &lower,
-        &[
-            "here",
-            "current directory",
-            "working directory",
-            "current working directory",
-            "this directory",
-            "current folder",
-            "this folder",
-            "local files",
-        ],
-    );
-
-    ((asks_for_listing || asks_which_files) && local_scope).then(|| String::from("ls"))
-}
-
-fn contains_any(text: &str, phrases: &[&str]) -> bool {
-    phrases.iter().any(|phrase| text.contains(phrase))
-}
-
-fn contains_word(text: &str, word: &str) -> bool {
-    text.split(|character: char| !character.is_ascii_alphanumeric())
-        .any(|part| part == word)
 }
 
 /// Whether a tool result looks like an error the planner should not trust.

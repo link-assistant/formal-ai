@@ -5735,7 +5735,73 @@ function PendingAssistantBubble({ t }) {
   return <article className="message assistant pending"><div className="avatar" aria-hidden="true">{"FA"}</div><div className="message-body"><ThinkingPreview steps={pendingPhases} t={t} isPending={true} /></div></article>;
 }
 
-function ThinkingPreview({ steps, t, isPending = false }) {
+// Issue #676 (R8): map the resolved intent to a per-intent narrative catalog
+// key, mirroring the Rust `thinking_narrative`. Grouped so related routes share
+// one human headline (all lookups read the same, all web tools read the same).
+const THINKING_NARRATIVE_KEYS = {
+  greeting: "narrativeGreeting",
+  wellbeing: "narrativeWellbeing",
+  assistant_free_time: "narrativeAssistantFreeTime",
+  farewell: "narrativeFarewell",
+  gratitude: "narrativeGratitude",
+  thanks: "narrativeGratitude",
+  courtesy_response: "narrativeGratitude",
+  courtesy: "narrativeGratitude",
+  identity: "narrativeIdentity",
+  assistant_name: "narrativeIdentity",
+  set_assistant_name: "narrativeIdentity",
+  recall_name: "narrativeIdentity",
+  naming: "narrativeIdentity",
+  assistant_naming: "narrativeIdentity",
+  self_facts: "narrativeIdentity",
+  who_is_question: "narrativeIdentity",
+  calculation: "narrativeCalculation",
+  arithmetic: "narrativeCalculation",
+  calculation_error: "narrativeCalculation",
+  object_counting: "narrativeCalculation",
+  fact_lookup: "narrativeLookup",
+  fact_query: "narrativeLookup",
+  concept_lookup: "narrativeLookup",
+  concept_lookup_in_context: "narrativeLookup",
+  known_facts: "narrativeLookup",
+  wikipedia_lookup: "narrativeLookup",
+  wikipedia_article_question: "narrativeLookup",
+  definition_merge: "narrativeLookup",
+  translation: "narrativeTranslation",
+  web_search: "narrativeWeb",
+  http_fetch: "narrativeWeb",
+  url_navigate: "narrativeWeb",
+  write_program: "narrativeCode",
+  software_project_plan: "narrativeCode",
+  software_project_implementation: "narrativeCode",
+  algorithm: "narrativeCode",
+  test_status: "narrativeTests",
+  self_healing: "narrativeSelfHealing",
+  self_heal: "narrativeSelfHealing",
+  meta_explanation: "narrativeMetaExplanation",
+  learn_from_source: "narrativeLearn",
+  clarification: "narrativeClarification",
+  unknown: "narrativeUnknown",
+  fallback: "narrativeUnknown",
+  no_match: "narrativeUnknown",
+};
+
+// Issue #676 (R8): produce the single human, first-person headline that leads a
+// thinking trace ("You asked how I'm doing, so I told you and offered to
+// help."). Unknown routes still get a human sentence via the generic template.
+// Returns "" only when there is no intent to summarize (e.g. the pending
+// placeholder), so callers can skip the headline entirely.
+function thinkingNarrative(intent, t) {
+  const route = String(intent || "").trim().toLowerCase();
+  if (!route) return "";
+  const key = THINKING_NARRATIVE_KEYS[route];
+  if (key) return t(`message.thinkingStep.${key}`);
+  return t("message.thinkingStep.narrativeGeneric", {
+    task: humanizeThinkingIdentifier(route),
+  });
+}
+
+function ThinkingPreview({ steps, t, isPending = false, narrative = "" }) {
   const [expanded, setExpanded] = useState(false);
   const safeSteps = Array.isArray(steps)
     ? steps.map((step) => String(step || "").trim()).filter(Boolean)
@@ -5756,7 +5822,7 @@ function ThinkingPreview({ steps, t, isPending = false }) {
       // Issue #488: show a subtle "live" affordance while pending so the user
       // understands the trace is updating in real time (the dot pulses via
       // CSS; the visible label stays unchanged for screen readers).
-      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
+      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{narrative ? <p className="thinking-preview-narrative" data-testid="thinking-narrative">{narrative}</p> : null}{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
 }
 
 function DesktopPermissionPanel({
@@ -5919,7 +5985,7 @@ function Message({
     // the message), so it belongs at the top of the message body, not below it.
     // Issue #541 (R6): during the staged reveal only the steps unveiled so far
     // are shown, so the trace visibly fills in before the answer appears.
-    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
       })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }

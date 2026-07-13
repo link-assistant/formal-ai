@@ -302,6 +302,7 @@ pub(crate) fn record_intent_formalization(
 pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRule {
     match intent.route.as_deref() {
         Some("greeting") => SelectedRule::Greeting,
+        Some("wellbeing") => SelectedRule::Wellbeing,
         Some("farewell") => SelectedRule::Farewell,
         Some("test_status") => SelectedRule::TestStatus,
         Some("courtesy_response") => SelectedRule::CourtesyResponse,
@@ -886,7 +887,7 @@ fn infer_kind(
     candidate: Option<&FormalizationCandidate>,
 ) -> IntentKind {
     match route {
-        Some("greeting" | "farewell" | "courtesy_response") => IntentKind::Courtesy,
+        Some("greeting" | "wellbeing" | "farewell" | "courtesy_response") => IntentKind::Courtesy,
         Some("assistant_name" | "identity") => IntentKind::Question,
         Some(
             "translation"

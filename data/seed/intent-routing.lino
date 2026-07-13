@@ -1,20 +1,13 @@
 intent_routing
-  intent intent_greeting
-    slug greeting
-    response_link "response:greeting"
-    keyword hi
-    keyword hello
-    keyword hey
+  intent intent_wellbeing
+    slug wellbeing
+    response_link "response:wellbeing"
     phrase "how are you"
     phrase "how are you doing"
     phrase "how do you do"
     phrase "how is it going"
     phrase "how s it going"
     phrase "how are things"
-    keyword привет
-    keyword здравствуйте
-    keyword шалом
-    phrase "шабат шалом"
     phrase "как дела"
     phrase "как твои дела"
     phrase "как ваши дела"
@@ -24,29 +17,39 @@ intent_routing
     phrase "здравствуйте как ваши дела"
     phrase "как поживаешь"
     phrase "как вы поживаете"
-    keyword नमस्ते
-    keyword नमस्कार
-    keyword सलाम
-    keyword हाय
-    phrase "राम राम"
     phrase "कैसे हो"
     phrase "आप कैसे हैं"
     phrase "तुम कैसे हो"
     phrase "क्या हाल है"
     phrase "आपका क्या हाल है"
     phrase "सब कैसा चल रहा है"
-    keyword 你好
-    keyword 您好
-    keyword 嗨
-    keyword 哈喽
-    phrase 早上好
-    phrase 早安
     phrase 你好吗
     phrase 你还好吗
     phrase 你怎么样
     phrase 您怎么样
     phrase 最近怎么样
     phrase 过得怎么样
+  intent intent_greeting
+    slug greeting
+    response_link "response:greeting"
+    keyword hi
+    keyword hello
+    keyword hey
+    keyword привет
+    keyword здравствуйте
+    keyword шалом
+    phrase "шабат шалом"
+    keyword नमस्ते
+    keyword नमस्कार
+    keyword सलाम
+    keyword हाय
+    phrase "राम राम"
+    keyword 你好
+    keyword 您好
+    keyword 嗨
+    keyword 哈喽
+    phrase 早上好
+    phrase 早安
     token greet
   intent intent_farewell
     slug farewell
