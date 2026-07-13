@@ -1184,3 +1184,19 @@ the table in Section 2 and link the new module.
   `src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
   in `src/proof_engine/decision/boolean.rs` before being handed to it.
+
+### Symbolic world models and contexts (issue #649)
+
+- The design case study in `docs/case-studies/issue-649/README.md` audits how the
+  associative stack realizes symbolic **world models**: a **current-state** and a
+  **target-state** context, their difference, context **merge/split**, and
+  **predicting the consequences of an action** — each context being a **links
+  network** rather than an embedding. It maps the request onto the classical
+  prior art ([STRIPS/PDDL](https://en.wikipedia.org/wiki/Stanford_Research_Institute_Problem_Solver)
+  planning, [truth-maintenance systems](https://en.wikipedia.org/wiki/Reason_maintenance)
+  JTMS/ATMS, and [AGM belief revision](https://en.wikipedia.org/wiki/Belief_revision))
+  and onto [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic),
+  whose kernel already lives in `src/relative_meta_logic.rs`. Statement
+  dependency edges and the change-driven recalculation cascade reuse
+  `SubstitutionGraph::apply_rules`; the concept-by-concept status is in
+  `docs/case-studies/issue-649/world-model-mapping.md`.
