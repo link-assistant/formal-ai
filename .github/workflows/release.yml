@@ -1078,6 +1078,18 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — general unpinned change plan (issue #654)
+        # No `*_TASK` constant names this request. The fallback planner derives the
+        # target, literal payload, evidence, and verification command from the
+        # formalized requirement, writes its plan event first, then executes it.
+        env:
+          PORT: 8773
+          TASK: "Create file artifacts/general-agent-plan.txt containing general planner e2e passed"
+          EXPECT_FILE: artifacts/general-agent-plan.txt
+          EXPECT_TEXT: general planner e2e passed
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
       - name: Upload E2E logs on failure
         if: failure()
         uses: actions/upload-artifact@v7

@@ -37,6 +37,7 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::ledger;
@@ -231,7 +232,40 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    None
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+}
+
+fn plan_general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let writes = progress.count(Capability::Write);
+    if let Some(tool) = tool_for(tool_names, Capability::Write) {
+        if writes == 0 {
+            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
+        }
+        if writes == 1 {
+            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+        }
+    }
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
+    {
+        return plan_one(
+            tool,
+            json!({ "command": plan.verification_command }).to_string(),
+        );
+    }
+    AgenticPlan::Final(format!(
+        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
+        plan.target,
+        plan.verification_command,
+        PLAN_PATH,
+        plan.links_notation().trim_end(),
+    ))
 }
 
 /// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
@@ -700,9 +734,7 @@ impl Progress {
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
-            if !completed.contains(&capability) {
-                completed.push(capability);
-            }
+            completed.push(capability);
         }
         Self {
             completed,
@@ -714,6 +746,13 @@ impl Progress {
     /// Whether a prior tool result already covered `capability`.
     fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
+    }
+
+    fn count(&self, capability: Capability) -> usize {
+        self.completed
+            .iter()
+            .filter(|done| **done == capability)
+            .count()
     }
 }
 
