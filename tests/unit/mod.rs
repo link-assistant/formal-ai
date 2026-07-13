@@ -55,6 +55,7 @@ mod issue_558_source_graph;
 mod issue_571;
 mod issue_627;
 mod issue_649_world_model;
+mod issue_681;
 mod issue_676_naming;
 mod issue_676_thinking_narrative;
 mod local_surface;
