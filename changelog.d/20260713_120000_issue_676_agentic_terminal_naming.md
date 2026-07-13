@@ -17,3 +17,8 @@ bump: minor
 - Self-healing now triggers on natural self-directed repair requests such as "Can you
   fix it yourself?", "debug yourself", or "heal yourself", while ordinary "fix this
   file" requests still stay out of the repair loop (issue #676).
+- "How are you?" small talk now gets its own warm wellbeing reply instead of the
+  generic greeting. A dedicated `wellbeing` intent is matched before `greeting`
+  (first-match-wins), so "how are you", "как дела", "आप कैसे हैं", and "你好吗" reply
+  with an actual answer across en/ru/hi/zh — mirrored in the browser worker (issue
+  #676).

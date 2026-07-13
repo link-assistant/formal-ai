@@ -30,6 +30,35 @@ multilingual_responses
     variant 你好!请问有什么可以帮您的?
     variant 您好!我能为您做些什么?
     variant 你好,有什么我可以协助的吗?
+  response response_wellbeing_en
+    intent wellbeing
+    language en
+    text "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
+    variant "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?"
+    variant "I'm doing well, thank you! What can I help you with today?"
+    variant "All good here, thanks! How can I help?"
+    variant "Doing well and ready to help — what would you like to explore?"
+  response response_wellbeing_ru
+    intent wellbeing
+    language ru
+    text "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+    variant "У меня всё хорошо, спасибо, что спросили! Готов помочь — с чего начнём?"
+    variant "Всё отлично, спасибо! Чем могу помочь сегодня?"
+    variant "У меня всё хорошо! Чем могу быть полезен?"
+  response response_wellbeing_hi
+    intent wellbeing
+    language hi
+    text "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
+    variant "मैं बढ़िया हूँ, पूछने के लिए धन्यवाद! मैं मदद के लिए तैयार हूँ — आप क्या करना चाहेंगे?"
+    variant "मैं ठीक हूँ, धन्यवाद! आज मैं आपकी क्या मदद कर सकता हूँ?"
+    variant "सब अच्छा है, धन्यवाद! मैं कैसे मदद कर सकता हूँ?"
+  response response_wellbeing_zh
+    intent wellbeing
+    language zh
+    text 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
+    variant 我很好,谢谢关心!我随时可以帮忙,您想做点什么?
+    variant 我挺好的,谢谢!今天有什么可以帮您的?
+    variant 一切都好,谢谢!我能帮您做些什么?
   response response_farewell_en
     intent farewell
     language en

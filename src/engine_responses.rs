@@ -8,6 +8,8 @@ use crate::seed;
 /// cannot be parsed (which would be a build-time bug since the file is
 /// embedded via `include_str!`). All real reads come from [`crate::seed`].
 const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
+const FALLBACK_WELLBEING_ANSWER: &str =
+    "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?";
 const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
 const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
@@ -51,6 +53,11 @@ fn cached_response(
 pub fn greeting_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
+}
+
+pub fn wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "wellbeing", "en", FALLBACK_WELLBEING_ANSWER)
 }
 
 pub fn farewell_answer() -> &'static str {
@@ -181,6 +188,21 @@ pub fn identity_answer() -> &'static str {
 pub fn unknown_answer() -> &'static str {
     static CELL: OnceLock<String> = OnceLock::new();
     cached_response(&CELL, "unknown", "en", FALLBACK_UNKNOWN_ANSWER)
+}
+
+pub fn russian_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "wellbeing", "ru", FALLBACK_WELLBEING_ANSWER)
+}
+
+pub fn hindi_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "wellbeing", "hi", FALLBACK_WELLBEING_ANSWER)
+}
+
+pub fn chinese_wellbeing_answer() -> &'static str {
+    static CELL: OnceLock<String> = OnceLock::new();
+    cached_response(&CELL, "wellbeing", "zh", FALLBACK_WELLBEING_ANSWER)
 }
 
 pub fn russian_greeting_answer() -> &'static str {
