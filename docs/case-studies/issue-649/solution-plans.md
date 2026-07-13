@@ -15,20 +15,20 @@ The classical prior art each plan mirrors is documented and cited in
 
 ---
 
-## Proposed architecture in one paragraph
+## Architecture in one paragraph (implemented in `src/world_model.rs`)
 
-Introduce a first-class **`Context`** = `{ id, links: SubstitutionGraph,
-statements: Vec<StatementNode> }`, where a `StatementNode` carries an RML
-`TruthValue` and its dependency edges live as links in the same graph. A
-**`WorldModel`** holds two contexts per dialogue — `current` and `target` —
-plus a handle to the merged **general** context. An **action** is a set of link
-edits (add/delete, i.e. STRIPS effects); *predicting its consequence* is
-`apply_rules` on a **clone** of a context followed by a diff. *Recalculation* is
-the existing `apply_rules` fixpoint, extended so a changed `TruthValue` re-fires
-`StatementAssessment` for every dependent statement (JTMS-style). Merge/split
-reuse `merge_union_by_id` and the decomposition splitters, scoped to a context's
-subgraph (ATMS-style multiple contexts). Nothing here needs a new store, a
-neural model, or an external solver.
+PR #675 landed a first-class **`Context`** = `{ id, links: SubstitutionGraph,
+statements: BTreeMap<String, Statement> }`, where a `Statement` carries an RML
+`TruthValue` and its dependency edges are `Dependency{on, stance}` records
+mirrored into the same graph. A **`WorldModel`** holds three contexts —
+`current`, `target`, and the merged **general** context. An **`Action`** is a set
+of link edits (add/delete, i.e. STRIPS effects); *predicting its consequence* is
+`Context::predict` — apply the action to a **clone** of a context, recalculate,
+and diff. *Recalculation* is `Context::recalculate`, a bounded fixpoint where a
+changed `TruthValue` re-fires `StatementAssessment` for every dependent statement
+(JTMS-style). Merge/split are `Context::merge_from` and `Context::split_off`,
+scoped to a context's subgraph (ATMS-style multiple contexts). Nothing here needs
+a new store, a neural model, or an external solver.
 
 ---
 
@@ -59,10 +59,11 @@ shape* as the current context so the two are directly diffable. **Reuses:**
 **Prior art:** STRIPS *goal* (a condition over atoms).
 
 ### R649-04 — Difference between current and target
-**Plan (Proposed):** a pure `diff(current, target) -> {to_add, to_remove,
-conflicting}` over the two contexts' link sets, rendered with the existing
-`SubstitutionTraceReport` formatting and surfaced like `NeedLedger`'s
-satisfied/blocked list. **Reuses:** `SubstitutionTraceReport`,
+**Plan (Done):** implemented as `Context::difference(target) -> ContextDiff {
+to_add, to_remove, conflicting }` over the two contexts' state-link sets, with
+`ContextDiff::links_notation` for glass-box rendering; `WorldModel::difference`
+exposes it at any dialogue stage and `target_reached` reports an empty diff.
+**Reuses:** `SubstitutionLink` ordering; substrate `SubstitutionTraceReport`,
 `meta_frame::NeedLedger`. **Prior art:** STRIPS *goal − state* delta (the add/
 delete lists an action must achieve).
 
@@ -87,42 +88,45 @@ want; correct me"), applying accepted amendments as target edits. **Reuses:**
 (rational update of a belief set under new input).
 
 ### R649-08 — Merge a context into the general world model
-**Plan (Proposed):** scope `merge_union_by_id` to a context's subgraph so a
-per-dialogue `Context` folds into the general context by link-id union, with
-`merge_event`'s last-writer-wins reconciliation. **Reuses:**
-`memory_sync.rs::{merge_union_by_id, merge_event}`. **Prior art:** ATMS combining
-assumption sets across contexts.
+**Plan (Done):** implemented as `Context::merge_from(other)` — union the other
+context's state links and statements (by id, last-writer-wins) then recalculate;
+`WorldModel::commit_current_to_general` folds the dialogue context into the shared
+general context. **Reuses:** the `merge_union_by_id` union-by-id semantics.
+**Prior art:** ATMS combining assumption sets across contexts.
 
 ### R649-09 — Split contexts
-**Plan (Proposed):** reuse the clause/span splitters and `WorkUnit`
-decomposition to carve a context's subgraph into independent child contexts (e.g.
-one per sub-goal), keeping shared links by reference. **Reuses:**
-`meta_frame.rs` splitters + `WorkUnit`, `solver_helpers::record_decomposition`.
-**Prior art:** ATMS maintaining multiple simultaneous contexts.
+**Plan (Done):** implemented as `Context::split_off(child_id, statement_ids)` —
+carve a child context holding copies of the named statements plus every
+state link that references one of them, leaving the parent intact so the two can
+diverge independently. **Reuses:** substrate `meta_frame.rs` splitters + `WorkUnit`
+as the linguistic-split analog. **Prior art:** ATMS maintaining multiple
+simultaneous contexts.
 
 ### R649-10 — Each context is a links network
-**Plan (Proposed):** the only new type is a thin `Context{ id, SubstitutionGraph,
-statements }` wrapper; the network itself is the existing graph. **Reuses:**
-`SubstitutionGraph`, `LinkStore`. Guard against confusion with the existing
-*linguistic* `concepts.rs::resolve_context_label`. **Prior art:** semantic
-network as the universal container.
+**Plan (Done):** implemented as `Context{ id, links: SubstitutionGraph,
+statements }`; the network is the existing graph and the statement layer mirrors
+into it (`Context::links_notation` serializes the whole context). **Reuses:**
+`SubstitutionGraph`. Distinct from the *linguistic*
+`concepts.rs::resolve_context_label`. **Prior art:** semantic network as the
+universal container.
 
 ### R649-11 — Dependent statements
-**Plan (Proposed):** represent inter-statement dependencies as links whose
-`from`/`to` are statement ids inside the context's `SubstitutionGraph`; a
-statement's `TruthValue` becomes graph-visible state. **Reuses:**
+**Plan (Done):** implemented as `Dependency{on, stance}` edges on each `Statement`
+(mirrored into the context's `SubstitutionGraph` via `supports:`/`contradicts:`
+links); a statement's `TruthValue` becomes graph-visible state. **Reuses:**
 `SubstitutionGraph::{insert_link, remove_link}`,
 `relative_meta_logic::StatementAssessment`. **Prior art:** JTMS *justifications*;
 RML statements-relative-to-statements.
 
 ### R649-12 — Recalculate all probabilities on change
-**Plan (Proposed, engine already present):** on any context edit, run
-`apply_rules` to a fixpoint; each rule application that touches a statement's
-dependencies re-invokes `StatementAssessment::assess` with the updated evidence,
-so the whole context's `TruthValue`s converge deterministically. Snap values to
-the RML decimal grid (already in `relative_meta_logic.rs`) for reproducibility.
-**Reuses:** `SubstitutionGraph::apply_rules` (fixpoint), `ProbabilityStore`
-re-aggregation, `relative_meta_logic` aggregators. **Prior art:** JTMS
+**Plan (Done):** implemented as `Context::recalculate` — each context edit
+(`add_statement`, `apply_action`, `merge_from`) runs a bounded relaxation that
+re-invokes `StatementAssessment::assess` for every statement, feeding it the
+current truth of its dependencies as synthesized full-trust evidence, until the
+snapped values reach a fixpoint (`RecalculationReport{iterations, converged,
+updated}`). Values snap to the RML decimal grid for reproducibility, and the pass
+bound guarantees termination on negative-feedback cycles. **Reuses:**
+`relative_meta_logic` aggregators and `StatementAssessment`. **Prior art:** JTMS
 re-evaluation of affected beliefs; RML query-time re-evaluation.
 **Libraries surveyed:** upstream [`relative-meta-logic`](https://github.com/link-foundation/relative-meta-logic)
 (JS+Rust) — *reused via the in-repo port* rather than added as a dependency, to
@@ -136,22 +140,24 @@ SAT decision).
 **Prior art:** the upstream RML repo.
 
 ### R649-14 — Predict consequences of an action
-**Plan (Proposed):** `predict(context, action) = { let mut probe =
-context.clone(); probe.apply(action_edits); diff(context, probe) }` — apply the
-action's add/delete link edits to a **copy**, recalc via R649-12, and return the
-diff plus the recalculated statement probabilities. This composes R649-04 +
-R649-09 + R649-12 and never mutates the real world model. **Reuses:**
-`SubstitutionGraph::apply_rules`, the R649-04 diff, Markov transitions in
-`probability.rs`. **Prior art:** STRIPS successor state via add/delete effects;
+**Plan (Done):** implemented as `Context::predict(action)` — clone the context,
+`apply_action` the action's add/delete link edits to the clone, recalculate via
+R649-12, and return a `Prediction{added, removed, statement_changes, result}`
+(state links added/removed plus every statement whose probability moves), never
+mutating the real world model. `WorldModel::predict` runs it against the current
+state. This composes R649-04 + R649-12. **Reuses:** the R649-04 diff, the R649-12
+cascade. **Prior art:** STRIPS successor state via add/delete effects;
 probabilistic planning (distribution over next states, online-research §3).
 
 ### R649-15 … R649-19 — Meta-deliverables
 **Plan (Done):** the `gh`-exported `raw-data/` captures (R649-15); this analysis
 plus the cited `online-research.md` (R649-16); the `requirements.md` table
 (R649-17); this file and the prior-art survey below (R649-18); all landed in PR
-#675 with `REQUIREMENTS.md` rows R428–R434, a changelog fragment, and the
-`tests/unit/docs_requirements_issue_649.rs` traceability test (R649-19). **Reuses:**
-the case-study conventions of issue-451 and issue-540.
+#675 together with the `src/world_model.rs` implementation, its
+`tests/unit/issue_649_world_model.rs` coverage, `REQUIREMENTS.md` rows R428–R434,
+a changelog fragment, and the `tests/unit/docs_requirements_issue_649.rs`
+traceability test (R649-19). **Reuses:** the case-study conventions of issue-451
+and issue-540.
 
 ---
 
@@ -160,10 +166,17 @@ the case-study conventions of issue-451 and issue-540.
 What the field and the repo already built, and what the world model reuses vs.
 re-expresses.
 
+### The new module (PR #675)
+- **`world_model`** (`src/world_model.rs`) — the feature itself: `Context`,
+  `WorldModel`, `Action`, `Statement`/`Dependency`, `Prediction`, `ContextDiff`,
+  `RecalculationReport`, and `Context::{difference, predict, recalculate,
+  merge_from, split_off}`. A thin wiring layer over the components below.
+
 ### In-repo components (reused, not re-bought)
 - **`SubstitutionGraph`** (`src/substitution.rs`) — mutable links graph with
-  CRUD and `apply_rules` fixpoint rewriting. *The world-model state container and
-  the recalculation engine.*
+  CRUD and `apply_rules` fixpoint rewriting. *The `world_model::Context` state
+  container; its CRUD backs `assert_link`/`retract_link` and the statement-layer
+  mirror.*
 - **`relative_meta_logic`** (`src/relative_meta_logic.rs`) — the RML kernel
   (`TruthValue`, aggregators, `StatementAssessment`). *The per-statement logic.*
 - **`probability`** (`src/probability.rs`) — `BayesianEvidence` /

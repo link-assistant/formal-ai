@@ -1,8 +1,8 @@
 # Issue 649 Case Study
 
-> **Status:** Data collected, requirements enumerated, and solution plans drafted in PR #675.
-> **Type:** Research + design case study (audit of existing machinery, no behavioral code change required).
-> **Primary source:** the issue body (three intent paragraphs + one meta paragraph); it has **no comments**.
+> **Status:** Data collected, requirements enumerated, solution plans drafted, **and the core world-model feature implemented** in PR #675.
+> **Type:** Research + design case study **plus implementation** — the audit found the feature was an audit-and-wire task, and PR #675 then landed the [`src/world_model.rs`](../../../src/world_model.rs) module that wires it up.
+> **Primary source:** the issue body (three intent paragraphs + one meta paragraph); the PR carries the maintainer's follow-up "*Now we need to fully implement it here in this pull request.*"
 
 - **Issue:** <https://github.com/link-assistant/formal-ai/issues/649>
 - **Pull request:** <https://github.com/link-assistant/formal-ai/pull/675>
@@ -37,27 +37,35 @@ into `docs/case-studies/issue-649/`, do a **deep case-study analysis** with
 requirement while **surveying existing components/libraries**, and **do it all in
 this single PR**.
 
-The central finding is that **the associative stack already provides every
+The central finding was that **the associative stack already provides every
 substrate the feature needs** — a links network (`LinkStore`), a fixpoint rewrite
 engine (`SubstitutionGraph::apply_rules`), the relative-meta-logic kernel
 (`src/relative_meta_logic.rs`), symbolic probability (`src/probability.rs`), and
-context merge (`memory_sync::merge_union_by_id`). What is missing is not
+context merge (`memory_sync::merge_union_by_id`). What was missing was not
 infrastructure but **connections**: a named `Context` wrapper, inter-statement
 **dependency edges**, a `TruthValue` **cascade** on change, and a **predict =
-apply-to-a-copy + diff** composition. The honest status is therefore **3 realized
-substrate rows, 8 partial, 3 proposed**, each proposed row buildable on machinery
-that already exists (see [`world-model-mapping.md`](world-model-mapping.md)). This
-matches the issue's own framing — it asks to *"propose possible solutions and
-solution plans"*, so the deliverable is a rigorous audit-and-design, not a rushed
-half-built engine that would contradict the ask.
+apply-to-a-copy + diff** composition. PR #675 supplied exactly those connections
+in the [`src/world_model.rs`](../../../src/world_model.rs) module, so the honest
+status is now **9 realized concept rows (7 of them via the new module), 4 partial,
+1 proposed** (see [`world-model-mapping.md`](world-model-mapping.md)). The four
+partial rows are pipeline-integration steps (seed the current context from the
+append-only log, build the target from `IntentFormalization`, route "I want …"
+into target edits, render contexts through `self_explanation`); the one proposed
+row is the agent⇄user target-sync loop.
 
-The deliverables are documentation-centric and fully traceable:
+The deliverables are code + documentation, fully traceable:
 
-1. This case study, the requirement list, the concept→stack mapping, and the
+1. **The implementation:** [`src/world_model.rs`](../../../src/world_model.rs) —
+   `Context` (a links network + dependent statements), `WorldModel`
+   (`current`/`target`/`general`), `Action` (STRIPS-style link edits),
+   `Context::{difference, predict, recalculate, merge_from, split_off}`, and the
+   RML-backed dependent-statement cascade — with executable coverage in
+   [`tests/unit/issue_649_world_model.rs`](../../../tests/unit/issue_649_world_model.rs).
+2. This case study, the requirement list, the concept→stack mapping, and the
    solution plans, all under `docs/case-studies/issue-649/`.
-2. `REQUIREMENTS.md` rows **R428–R434** under *"Issue #649 World Models And
+3. `REQUIREMENTS.md` rows **R428–R434** under *"Issue #649 World Models And
    Contexts"*.
-3. `tests/unit/docs_requirements_issue_649.rs` pins the reference, the headings,
+4. `tests/unit/docs_requirements_issue_649.rs` pins the reference, the headings,
    and the requirement IDs so the case study cannot silently regress.
 
 ---
@@ -148,17 +156,23 @@ belief set under new input. The stack already has the mechanical halves:
 `question_generation.rs` for the confirm/amend loop. What is missing is scoping
 them to a first-class `Context` object — a wrapper, not a new store.
 
-### 4.4 Why "propose plans" is the right deliverable, not a finished engine
+### 4.4 Plan first, then implement
 
 The issue's meta paragraph asks to *"propose possible solutions and solution
-plans for each requirement"* and to *"check known existing components/libraries"*.
-A hastily-built world-model engine would (a) contradict that explicit ask, (b)
-risk introducing a second source of truth that violates the append-only
-current-state invariant (`VISION.md`, `REQUIREMENTS.md` R61), and (c) bypass the
-prior-art survey the issue demands. The disciplined answer is the audit here: name
-what already realizes each requirement, name the concrete reuse target for each
-gap, and pin it all with a traceability test — the same pattern issue-451 and
-issue-540 established.
+plans for each requirement"* and to *"check known existing components/libraries"*
+— so this case study did the audit first: name what already realizes each
+requirement and name the concrete reuse target for each gap. The maintainer then
+asked on PR #675 to *"fully implement it here in this pull request"*, and the
+audit's payoff is that the implementation is a thin wiring layer, not a
+green-field engine: [`src/world_model.rs`](../../../src/world_model.rs) reuses
+`SubstitutionGraph` as the state container, `StatementAssessment::assess` as the
+per-statement kernel, and `stable_id` for content addressing, adding only the
+`Context`/`WorldModel`/`Action` types and the dependency cascade the audit
+identified as missing. Two guard-rails from the audit are honored in code: the
+recalculation cascade is **bounded** (it cannot loop on a negative-feedback
+dependency cycle) and `predict` runs on a **clone** (it never introduces a second
+mutable source of truth for the current state, preserving the append-only
+invariant of `VISION.md` / `REQUIREMENTS.md` R61).
 
 ### 4.5 What the modern literature adds
 
@@ -175,25 +189,25 @@ project optimizes (inspectability and determinism).
 ## 5. Concept → Associative Stack (overview)
 
 The full mapping with `path:symbol` evidence and status is in
-[`world-model-mapping.md`](world-model-mapping.md). Summary — **3 realized
-(substrate), 8 partial, 3 proposed** across 14 concept rows:
+[`world-model-mapping.md`](world-model-mapping.md). Summary — **9 realized (7 via
+the new `world_model` module), 4 partial, 1 proposed** across 14 concept rows:
 
 | Issue concept | Associative-stack realization | Status |
 |---|---|---|
 | Links network as meaning (not embeddings) | `LinkStore` / Links-Notation | Realized |
-| Current-state model | append-only log projected to a `SubstitutionGraph` | Partial |
-| Target-state model | `IntentFormalization` / `ChangeRequest` | Partial |
-| Current↔target difference | `SubstitutionTraceReport` / `NeedLedger` | Partial |
-| User states the target | `change_request::derive_requirement` | Partial |
-| Explain current & target exactly | `self_explanation` + `trace:` log | Partial |
+| Current-state model | `WorldModel::current`; log-seeding not yet wired | Partial |
+| Target-state model | `WorldModel::target`; `IntentFormalization` build not yet wired | Partial |
+| Current↔target difference | `world_model::Context::difference` | Realized |
+| User states the target | `change_request::derive_requirement` routing not yet wired | Partial |
+| Explain current & target exactly | `Context::links_notation`; `self_explanation` wiring pending | Partial |
 | Synchronize the target | `question_generation` (precursor) | Proposed |
-| Merge contexts | `memory_sync::merge_union_by_id` | Partial |
-| Split contexts | `meta_frame` splitters + `WorkUnit` | Partial |
-| Each context is a links network | `SubstitutionGraph` / `LinkStore` | Realized |
-| Dependent statements | RML kernel present; no dependency edges | Proposed |
-| Recalculate all probabilities on change | `apply_rules` fixpoint + `ProbabilityStore` | Partial (engine) / Proposed (wiring) |
+| Merge contexts | `world_model::Context::merge_from` | Realized |
+| Split contexts | `world_model::Context::split_off` | Realized |
+| Each context is a links network | `world_model::Context` (id + `SubstitutionGraph` + statements) | Realized |
+| Dependent statements | `world_model::{Statement, Dependency}` (JTMS justifications) | Realized |
+| Recalculate all probabilities on change | `world_model::Context::recalculate` (bounded RML cascade) | Realized |
 | Use relative-meta-logic | `src/relative_meta_logic.rs` | Realized |
-| Predict consequences of an action | `apply_rules` + Markov transitions | Proposed |
+| Predict consequences of an action | `world_model::Context::predict` (apply-to-clone + diff) | Realized |
 
 ---
 
@@ -201,11 +215,12 @@ The full mapping with `path:symbol` evidence and status is in
 
 The per-requirement solution plan and the existing-component reuse target for
 each requirement are in [`solution-plans.md`](solution-plans.md), which also
-carries the full **prior-art survey**. The one-paragraph architecture: a
+carries the full **prior-art survey**. The one-paragraph architecture — now
+implemented in [`src/world_model.rs`](../../../src/world_model.rs) — is a
 first-class `Context = { id, SubstitutionGraph, statements }`, a `WorldModel`
 holding `current` + `target` + `general` contexts, an action modeled as link
-edits (STRIPS effects), consequence prediction as `apply_rules` on a **clone**
-followed by a diff, and recalculation as the existing fixpoint extended to re-fire
+edits (STRIPS effects), consequence prediction as apply-the-action to a **clone**
+followed by a diff, and recalculation as a bounded fixpoint that re-fires
 `StatementAssessment` for dependent statements (JTMS-style).
 
 ---
@@ -237,7 +252,7 @@ unplanned.
 | Risk | Why it matters here | Mitigation in the plan |
 |---|---|---|
 | **Second source of truth** | A standalone current-state store could drift from the append-only log. | Project the current context *from* the log (`VISION.md`/R61); never write it independently. |
-| **Cascade non-termination** | A `TruthValue` cascade over dependency edges could loop. | Reuse `apply_rules`' fixpoint + `apply_rules_with_limit` bound; snap values to the RML decimal grid for convergence and byte-reproducibility. |
+| **Cascade non-termination** | A `TruthValue` cascade over dependency edges could loop (negative-feedback cycle). | Implemented: `Context::recalculate` runs a **bounded** relaxation (`MAX_RECALCULATION_PASSES_PER_STATEMENT × statement count`) and snaps values to the RML decimal grid; a regression test drives a mutual-contradiction cycle to prove termination. |
 | **Combinatorial explosion of consequences** | Simulating every action against a large context is expensive. | Predict on a *scoped copy* of the relevant subgraph (split first), not the whole world model. |
 | **Overclaiming completeness** | Marketing a half-built engine would violate `NON-GOALS.md`. | Honest Realized/Partial/Proposed status per row; proposed rows carry concrete reuse targets, not vague intent. |
 | **Terminology collision** | `concepts.rs::resolve_context_label` already means *linguistic* context. | The world-model `Context` is a distinct type; the mapping notes the distinction explicitly. |
@@ -262,10 +277,17 @@ docs/case-studies/issue-649/
     └── online-research.md               # summarized + cited (R429)
 ```
 
-Wired into the rest of the repository by:
+Implemented and wired into the rest of the repository by:
 
+- `src/world_model.rs` — the world-model feature: `Context`, `WorldModel`,
+  `Action`, dependent `Statement`/`Dependency`, and
+  `difference`/`predict`/`recalculate`/`merge_from`/`split_off`.
+- `src/lib.rs` — `pub mod world_model;` plus re-exports of the public types.
+- `tests/unit/issue_649_world_model.rs` — executable coverage of the links
+  network, current→target diff, dependent-statement cascade, non-mutating
+  prediction, and merge/split.
 - `REQUIREMENTS.md` — rows **R428–R434** (R430).
 - `README.md` and `ARCHITECTURE.md` — a discoverable reference to this case study.
 - `tests/unit/docs_requirements_issue_649.rs` — pins the reference, the headings,
   and the requirement IDs so the case study cannot silently regress (R434).
-- `changelog.d/` — a `minor` fragment recording the case study.
+- `changelog.d/` — a `minor` fragment recording the feature.

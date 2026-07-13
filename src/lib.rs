@@ -98,6 +98,7 @@ pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
+pub mod world_model;
 
 pub use agent::{
     parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
@@ -212,6 +213,10 @@ pub use question_generation::{
     QuestionGenerator, QuestionGrammarClass, QuestionLexiconSummary, QuestionWord,
 };
 pub use rebuild_plan::{canonical_rebuild_plan, ReattachArtifact, RebuildPlan, RebuildStep};
+pub use relative_meta_logic::{
+    Aggregator, RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue,
+    ASSUMED_TRUE_PRIOR,
+};
 pub use repair_strategy::{canonical_strategies, RepairStrategy, RepairTarget};
 pub use seed::{
     agent_info, canonical_model_id, concepts as seed_concepts, environment_directory,
@@ -298,4 +303,8 @@ pub use web_search_core::{
     parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output, FusedEntry, ProviderCategory,
     ProviderRanking, ProviderSpec, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS,
     WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+};
+pub use world_model::{
+    Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,
+    Statement as WorldStatement, StatementChange, WorldModel,
 };

@@ -85,7 +85,8 @@ fn issue_649_world_model_case_study_documents_are_present_and_traceable() {
             "associative stack",
             "SubstitutionGraph",
             "relative_meta_logic",
-            "3 realized (substrate), 8 partial, 3 proposed",
+            "src/world_model.rs",
+            "9 realized (7 of them via the new `world_model` module)",
         ],
     );
 
