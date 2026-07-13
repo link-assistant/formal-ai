@@ -68,6 +68,7 @@ mod proof_request;
 mod proof_request_config;
 mod proxy;
 mod reference_closure;
+mod self_coding;
 mod semantic_facets;
 mod semantic_grounding;
 mod semantic_root;
