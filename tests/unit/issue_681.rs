@@ -1,8 +1,8 @@
 //! Regression coverage for issue #681 — a natural-language *file-creation* request
-//! must emit a `write` tool_call on the target, never a `read` on the (nonexistent)
+//! must emit a `write` `tool_call` on the target, never a `read` on the (nonexistent)
 //! file it is being asked to create.
 //!
-//! The umbrella issue is #680 ("no tool_call at all"); this issue is the distinct
+//! The umbrella issue is #680 ("no `tool_call` at all"); this issue is the distinct
 //! *wrong-tool* correctness bug: a `write`/`create`/`save`/`generate` request was
 //! being routed to the file-read recipe because the read-intent classifier matched
 //! the word "content" in *"with the content …"* and the read recipe was consulted
@@ -44,7 +44,7 @@ fn file_creation_request_emits_write_not_read() {
     // The first write step records the plan event; the second writes the target.
     // Either way, the target file and content must reach a write call, never a read.
     // Drive the loop far enough to observe the target write.
-    let path_str = call.arguments.clone();
+    let path_str = &call.arguments;
     assert!(
         path_str.contains("hello.txt") || path_str.contains(".formal-ai"),
         "write arguments should reference the plan or the target: {args}"
@@ -52,7 +52,7 @@ fn file_creation_request_emits_write_not_read() {
 }
 
 /// The write intent must win even when only a `read` tool is advertised: the planner
-/// must not emit a `read` tool_call against the file it was asked to create. It is
+/// must not emit a `read` `tool_call` against the file it was asked to create. It is
 /// acceptable to decline (no write tool available), but never to misroute to read.
 #[test]
 fn file_creation_never_routes_to_read_even_when_only_read_is_advertised() {
@@ -78,8 +78,9 @@ fn file_creation_never_routes_to_read_even_when_only_read_is_advertised() {
 /// phrasing so a `write` tool advertised alone still creates the file.
 #[test]
 fn general_change_plan_handles_named_and_with_the_content_phrasing() {
-    let plan = compose_general_change_plan("Create a file named hello.txt with the content hello world")
-        .expect("write plan for the issue's phrasing");
+    let plan =
+        compose_general_change_plan("Create a file named hello.txt with the content hello world")
+            .expect("write plan for the issue's phrasing");
     assert_eq!(plan.target, "hello.txt");
     assert_eq!(plan.content, "hello world");
 }
@@ -132,7 +133,11 @@ fn file_creation_end_to_end_writes_the_target_and_never_reads() {
         .expect("workspace");
     assert!(!outcome.hit_turn_cap, "loop should complete: {outcome:?}");
 
-    let tools: Vec<&str> = outcome.steps.iter().map(|step| step.tool.as_str()).collect();
+    let tools: Vec<&str> = outcome
+        .steps
+        .iter()
+        .map(|step| step.tool.as_str())
+        .collect();
     assert!(
         !tools.contains(&"read"),
         "must never read the file it was asked to create: {tools:?}"
@@ -148,7 +153,10 @@ fn file_creation_end_to_end_writes_the_target_and_never_reads() {
             && step.arguments.contains("hello.txt")
             && step.arguments.contains("hello world")
     });
-    assert!(wrote_target, "hello.txt must be written with its content: {outcome:?}");
+    assert!(
+        wrote_target,
+        "hello.txt must be written with its content: {outcome:?}"
+    );
 
     // The verification step reads the freshly-written file back and sees the content.
     assert!(

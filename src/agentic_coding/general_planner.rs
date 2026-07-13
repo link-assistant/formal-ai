@@ -111,8 +111,23 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
 /// themselves ("write hello.py …") across the supported languages. Kept as data so
 /// a new phrasing is one entry, never a code branch.
 const TARGET_PRECEDING_WORDS: [&str; 17] = [
-    "file", "файл", "in", "в", "create", "создай", "создать", "named", "called", "write",
-    "save", "generate", "make", "запиши", "сохрани", "названием", "именем",
+    "file",
+    "файл",
+    "in",
+    "в",
+    "create",
+    "создай",
+    "создать",
+    "named",
+    "called",
+    "write",
+    "save",
+    "generate",
+    "make",
+    "запиши",
+    "сохрани",
+    "названием",
+    "именем",
 ];
 
 /// Verbs (any supported language) that mark a request as *producing* a file rather
@@ -120,8 +135,18 @@ const TARGET_PRECEDING_WORDS: [&str; 17] = [
 /// `создай`/`создать`). Kept deliberately narrow to a creation/mutation sense so an
 /// ordinary read prompt never trips them.
 const WRITE_VERBS: [&str; 12] = [
-    "create", "write", "save", "generate", "append to", "add to",
-    "созда", "запиш", "сохран", "записать", "допиш", "добав",
+    "create",
+    "write",
+    "save",
+    "generate",
+    "append to",
+    "add to",
+    "созда",
+    "запиш",
+    "сохран",
+    "записать",
+    "допиш",
+    "добав",
 ];
 
 /// Whether `lower` (an already-lowercased request) is a file **write / create**
@@ -171,13 +196,10 @@ fn extract_target(request: &str) -> Option<String> {
     let words: Vec<&str> = request.split_whitespace().collect();
     words.iter().enumerate().find_map(|(index, word)| {
         let cleaned = word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'));
-        let previous = index
-            .checked_sub(1)
-            .and_then(|i| words.get(i))
-            .map(|w| {
-                w.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
-                    .to_lowercase()
-            });
+        let previous = index.checked_sub(1).and_then(|i| words.get(i)).map(|w| {
+            w.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
+                .to_lowercase()
+        });
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
         (looks_like_file
             && previous
