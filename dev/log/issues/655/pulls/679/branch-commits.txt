@@ -1,0 +1,20 @@
+be1dff1a docs: record Hive Mind model dispatch gap
+d277ed77 feat: add replayable self-coding issue solve
+c16709fa fix: format planner recipe documentation
+6807201e fix: refresh planner-derived regression data
+50881605 fix: keep planner within file size limit
+64118e70 feat: compose general agentic change plans
+1d3aadf2 Initial commit with task details
+a78f5600 chore: release v0.279.0
+2dcaeee4 Merge pull request #653 from link-assistant/issue-650-412272077860
+c1c3b33c fix: remove unused summary test import
+68d92d64 test: keep summary matrix within file limits
+c6b13a7e test: cover inline summaries in supported languages
+75cf8851 fix: satisfy clippy mode argument branch ordering
+25409cb2 fix: make with wrapper behavior consistent
+a249cdb7 Initial commit with task details
+6a19a72c chore: release v0.278.0
+31d3ac7c Merge pull request #648 from link-assistant/issue-647-ee229e289e45
+6b7a588f chore: release v0.277.0
+2eac7f70 Merge pull request #645 from link-assistant/issue-540-daaf4da2188a
+e895941b test: cover server auto-start opt-out

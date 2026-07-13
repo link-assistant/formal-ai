@@ -54,3 +54,18 @@ The issue #362 deterministic ratchet vendors only four self-authored
 multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
+
+## Issue #482 Nemotron Training-Data Samples
+
+| Source | License | Upstream revision | Sampled rows | Download mode |
+| --- | --- | --- | --- | --- |
+| Nemotron Pretraining Legal v1 | CC-BY-4.0 | HF `3d91d58a5c0c46fe9944300ec46719f97a385b13` | 10 | Hugging Face datasets-server `rows`, `length=1` |
+
+Canonical source:
+<https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1>.
+
+The issue #482 suite vendors only compact metadata, SHA-256 digests, and short
+excerpt previews for ten deterministic random rows. The sampler records row
+offsets and provenance URLs in
+`docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and never
+downloads upstream parquet files or full splits.
