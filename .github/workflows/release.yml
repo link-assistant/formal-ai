@@ -1090,6 +1090,21 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — file-creation routes to write not read (issue #681)
+        # The exact reproduction from issue #681: a "create a file … with the
+        # content …" request used to emit a `read` on the not-yet-existing target
+        # and finish with "File not found", writing nothing. Driven live through
+        # the real CLI, the request must now walk the write/create plan (write plan
+        # → write target → verify → final = 4 posts) and leave hello.txt on disk
+        # carrying its content — never a read of the file it was asked to create.
+        env:
+          PORT: 8774
+          TASK: "Create a file named hello.txt with the content hello world"
+          EXPECT_FILE: hello.txt
+          EXPECT_TEXT: hello world
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
       - name: Upload E2E logs on failure
         if: failure()
         uses: actions/upload-artifact@v7
