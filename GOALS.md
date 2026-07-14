@@ -70,6 +70,31 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Allow users to contribute facts that become first-class events with the user as the source, attributable for later review.
 - Keep diagnostic output off by default; require an explicit opt-in flag or message prefix before flooding the chat with internal links.
 
+## World-Model Goals
+
+- Maintain a current-state context and a target-state context as links networks throughout every dialogue, and expose their difference on request.
+- Keep the user and the agent synchronized on the target state through an explicit, append-only confirmation loop.
+- Support merging and splitting context models, where every context is a links network — never embeddings.
+- Treat statements as dependent under relative-meta-logic: any change recalculates the probabilities of dependent statements, visibly.
+- Predict the consequences of a candidate action as a hypothetical context before executing it, and compare that context against the target state.
+- Persist meta-language expressions with usage (read) and change (write) counting derived from incoming and outgoing links, so frequently used or changed knowledge persists longer.
+
+## Agent Orchestration Goals
+
+- Serve as an OpenAI-compatible backend that any agentic CLI (codex, opencode, gemini, qwen, claude, agent) can drive, with tools selected by formalized intent rather than phrasing.
+- Act as an orchestrator that drives those same agent CLIs as permissioned, isolated tools: dispatch decomposed sub-tasks, capture full sessions as append-only evidence, and verify results with generated tests.
+- Dispatch the same sub-task to multiple agents in parallel when configured, compare the verified results in a recorded ledger, and select the winner deterministically.
+- Complete the self-coding chain: Formal AI codes itself via Agent CLI, directed by Hive Mind, with every change landing as a reviewed pull request.
+- Keep every UI action, setting, and capability reachable through natural language in every environment, including agentic mode where no Formal AI UI exists.
+
+## Self-Evolution Goals
+
+- Grow capabilities through a closed learning loop: frontier detection (unknown intents, failed benchmarks, trending questions) → candidate knowledge/rules with generated tests → benchmark-gated promotion as reviewed seed edits — never silent self-modification.
+- Prove every adopted item with a before/after capability pair, including held-out paraphrases, so learning is generalization rather than memorization.
+- Predict likely next user requests per topic from symbolic transition records and pre-learn what they need while idle, under the existing consent and priority rules.
+- Generate multiple independent candidate drafts per hard task, select by test oracle with a least-action tie-break, and record why the winner won.
+- Measure the share of each release authored by Formal AI itself, starting honestly at 0% and ratcheting upward.
+
 ## Documentation Goals
 
 - Keep issue requirements in `REQUIREMENTS.md` (alongside `VISION.md`, `GOALS.md`, `NON-GOALS.md` at the repository root).
