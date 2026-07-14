@@ -5,6 +5,7 @@ pub mod agentic_coding;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
+pub mod associative_persistence;
 pub mod attachment_context;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
@@ -114,6 +115,9 @@ pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+};
+pub use associative_persistence::{
+    AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
