@@ -17,6 +17,7 @@ mod issue_558_self_explanation;
 mod issue_558_self_healing;
 mod issue_558_source_graph;
 mod issue_624_agent_mode;
+mod issue_656_improve;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

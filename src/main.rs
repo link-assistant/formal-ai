@@ -571,7 +571,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             apply,
             backup,
             confirm,
-        } => run_improve(ImproveArgs {
+        } => run_improve(&ImproveArgs {
             promote,
             proposals,
             seed_root,

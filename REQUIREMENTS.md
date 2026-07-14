@@ -1027,7 +1027,7 @@ are in `docs/case-studies/issue-538`.
 | R382 | Generated, split mermaid diagrams should give a high-level and per-entry-point view of the system. | Implemented for the Agent CLI recipe surface by `src/agentic_coding/diagram.rs`, `docs/diagrams/agentic-recipes.md`, and the committed diagram session JSON in `docs/case-studies/issue-538/agent-cli-session-diagram.json`. |
 | R383 | An interactive, step-by-step debugging view (embedded VS Code, split into chat/data/mermaid/Rust/JS panes) should exist. | Tracked follow-up; related exploratory notes live under `docs/vscode/` (solution-plan R17). |
 | R384 | The universal meta algorithm should be fully inspectable, formalize every message as a probability-weighted statement, and warn about contradictory requirements with proposed resolutions. | Partially implemented through issue #559's method registry and meta-dispatch work plus PR #601's self-AST slice; automatic probability-weighted statement formalization and contradiction repair remain follow-ups (solution-plan R18–R21). |
-| R385 | The task should be solved by driving Formal AI through its own Agent CLI, producing a session JSON that reproduces the change in a clean repo, and CONTRIBUTING.md should record this as the way forward. | Implemented for issue #538's bounded delivery: `docs/case-studies/issue-538/agent-cli-session*.json`, `agent-cli-e2e-run.log`, `scripts/reproduce-issue-538.sh`, and `tests/unit/issue_538_agentic.rs` preserve the Agent-CLI-driven reproduction; this is not yet arbitrary auto-learning, which is tracked by issue #558. |
+| R385 | The task should be solved by driving Formal AI through its own Agent CLI, producing a session JSON that reproduces the change in a clean repo, and CONTRIBUTING.md should record this as the way forward. | Implemented for issue #538's bounded delivery: `docs/case-studies/issue-538/agent-cli-session*.json`, `agent-cli-e2e-run.log`, `scripts/reproduce-issue-538.sh`, and `tests/unit/issue_538_agentic.rs` preserve the Agent-CLI-driven reproduction; the benchmark-gated promotion of proposals into seed data is implemented by issue #656 (`src/promotion.rs`, `formal-ai improve --promote`), while fully arbitrary auto-learning is tracked by issue #656. |
 | R386 | The work must land in the single prepared PR #601 with the smallest practical commits. | Implemented on branch `issue-538-eca4a11c39c6` as a sequence of small atomic commits tracked by PR [#601](https://github.com/link-assistant/formal-ai/pull/601). |
 
 ## Issue #558 Auto Learning
@@ -1159,3 +1159,23 @@ case study under `docs/case-studies/issue-482`.
 | R442 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
 | R443 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
 | R444 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `tests/unit/docs_requirements_issue_482.rs`, wired through `tests/unit/mod.rs`. |
+
+## Issue #656 Benchmark-Gated Promotion Protocol
+
+Issue [#656](https://github.com/link-assistant/formal-ai/issues/656) (E37) asks
+for a deterministic promotion protocol so self-improvement proposals that pass
+benchmark ratchets and CI can be materialized into seed data automatically, while
+draft PRs and human review remain the outer gate. It also serves as the open
+tracker for R385's fully arbitrary auto-learning, since issue #558 was closed.
+PR [#690](https://github.com/link-assistant/formal-ai/pull/690) adds the
+`src/promotion.rs` protocol and the `formal-ai improve --promote` command.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R445 | Define a promotion event protocol in the meta language: proposal link, benchmark evidence links, decision, and applied change, all appended to the event log. | Implemented by `PromotionRun::memory_events` in `src/promotion.rs`, emitting `promotion_proposal`, `promotion_evidence`, `promotion_decision`, `promotion_applied`, and `promotion_rejection` events. |
+| R446 | Replay each proposal's benchmark ratchets (coding-modification, industry, unit specs) against the checked-in floors before deciding. | Implemented by `PromotionRatchet`, whose floors and runners are read from `data/benchmarks/*.lino`; covered by `promotion_protocol_materializes_pass_and_preserves_fail`. |
+| R447 | Materialize accepted proposals as `.lino` seed edits on a workspace, never a direct push. | Implemented by `apply_promotions` writing into `--seed-root`; the branch/PR step is a `PromotionBranchPlan` of commands that are never executed. |
+| R448 | Preserve rejected proposals with their failing evidence, mirroring the R425 `dreaming_candidate_failure` pattern. | Implemented by the `promotion_rejection` event, which keeps the un-applied seed edit and failing benchmark links. |
+| R449 | Expose the protocol as `formal-ai improve --promote` (dry-run by default; `--apply` requires `--confirm`). | Implemented by `src/cli_improve.rs`; covered by `tests/integration/issue_656_improve.rs`. |
+| R450 | Round-trip promotion events through the bundle export/import path. | Implemented via custom `MemoryEvent` kinds; covered by `promotion_protocol_events_round_trip_through_bundle`. |
+| R451 | Document the promotion meta-algorithm and pin it with a traceability test. | Implemented by the promotion section of `docs/meta-algorithm.md` and `tests/unit/docs_requirements_issue_656.rs`. |

@@ -30,7 +30,7 @@ pub struct ImproveArgs {
 /// print the resulting plan, and — only under `--apply --confirm` — materialize
 /// the accepted seed edits onto a workspace. Never pushes: the branch/PR step is
 /// printed as a plan a human reviews and runs.
-pub fn run_improve(args: ImproveArgs) -> Result<(), Box<dyn Error>> {
+pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     if !args.promote {
         println!(
             "formal-ai improve — benchmark-gated promotion of self-improvement proposals (issue #656).\n\

@@ -515,10 +515,12 @@ pub fn promotions_from_learning_run(run: &LearningRun) -> Vec<PromotionProposal>
         .collect()
 }
 
-/// A deterministic demonstration run: one proposal that clears its ratchets and
-/// is promoted, and one that fails the coding-modification floor and is kept as
-/// a rejection record. Used by `formal-ai improve --promote` when no explicit
-/// proposal document is supplied, so the command always shows a real plan.
+/// A deterministic demonstration run.
+///
+/// One proposal clears its ratchets and is promoted; the other fails the
+/// coding-modification floor and is kept as a rejection record. Used by
+/// `formal-ai improve --promote` when no explicit proposal document is
+/// supplied, so the command always shows a real plan.
 #[must_use]
 pub fn demonstration_promotion_run() -> PromotionRun {
     PromotionRun::evaluate(demonstration_promotion_proposals())
@@ -842,12 +844,10 @@ impl DraftGate {
 }
 
 fn parse_count(value: Option<&str>, name: &str) -> Result<usize, String> {
-    match value {
-        None => Ok(0),
-        Some(raw) => raw
-            .parse::<usize>()
-            .map_err(|_| format!("gate `{name}` is not a number: {raw}")),
-    }
+    value.map_or(Ok(0), |raw| {
+        raw.parse::<usize>()
+            .map_err(|_| format!("gate `{name}` is not a number: {raw}"))
+    })
 }
 
 // ---- small local helpers, mirroring src/self_improvement.rs ---------------

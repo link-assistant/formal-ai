@@ -500,3 +500,72 @@ cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
 Because this recipe is checked against the source too, the dreaming planner and
 its recipe cannot silently diverge: replay, application, storage, consent, and
 runtime stages are all pinned to the live code.
+
+## The promotion meta-algorithm (issue #656)
+
+Every self-improvement loop above stops at *proposing* — the meta self-improvement
+loop proposes recipe deltas, white-box learning proposes seed rules, dreaming
+proposes amendments — and none of them writes `data/seed/`. Issue #656 (E37) adds
+the missing, deterministic step that closes the loop safely: a **promotion**
+protocol that materializes a proposal into seed data **only** after it clears its
+benchmark ratchets, and even then only as a `.lino` seed edit written onto a
+branch — never a direct push. Draft pull requests and human review stay the outer
+gate. This section is grounded by
+[`src/promotion.rs`](../src/promotion.rs) and pinned by
+[`tests/unit/issue_656_promotion.rs`](../tests/unit/issue_656_promotion.rs) and
+[`tests/integration/issue_656_improve.rs`](../tests/integration/issue_656_improve.rs).
+
+The protocol runs through `formal-ai improve --promote`:
+
+1. **Collect open proposals** — from a `promotion_proposals` Links Notation
+   document (`--proposals`) or the built-in demonstration run. Adoptable learned
+   rules bridge into promotion candidates via `promotions_from_learning_run`.
+2. **Replay each proposal's gates** — the coding-modification suite (issue #362),
+   the industry suite (issue #304), and the unit specifications. Each
+   `PromotionRatchet` reads its floor and runner from the checked-in
+   `data/benchmarks/*.lino` manifest, then compares the freshly observed pass
+   count against the floor. A proposal with no gates never promotes.
+3. **Decide** — a proposal that clears every ratchet is `Promoted`; any failing
+   ratchet makes it `Rejected`.
+4. **Record the decision as an append-only event chain** — `promotion_proposal`,
+   one `promotion_evidence` per ratchet, `promotion_decision`, then either
+   `promotion_applied` (the materialized seed edit) or `promotion_rejection`.
+   These custom-kind events round-trip through the bundle export/import path.
+5. **Materialize accepted edits** — `--apply` (which requires `--confirm`, like
+   `memory dream --apply --confirm`) writes each promoted `.lino` seed edit into
+   the `--seed-root` workspace. Rejected proposals are **never** applied; their
+   `promotion_rejection` record keeps the un-applied change together with the
+   failing benchmark evidence, mirroring the R425 `dreaming_candidate_failure`
+   durability pattern.
+6. **Emit the branch/PR step as a plan** — the run yields a `PromotionBranchPlan`
+   of `git`/`gh` commands that a human runs to open a draft pull request. The
+   protocol never executes them: E36 (the Agent-CLI branch/PR path) is not yet
+   implemented, so a promotion lands as an ordinary reviewed PR, not an automatic
+   push.
+
+### What the protocol records
+
+| Event kind | What it captures |
+| --- | --- |
+| `promotion_proposal` | the proposal link and which seed file it edits |
+| `promotion_evidence` | which ratchet ran, at what floor, cleared or blocked |
+| `promotion_decision` | `promoted` or `rejected`, with all evidence links |
+| `promotion_applied` | the materialized seed edit (promoted proposals only) |
+| `promotion_rejection` | the change kept but **not** applied (rejected only) |
+
+### Running it
+
+```sh
+# Dry run: replay the gates and print the plan without touching any files.
+formal-ai improve --promote
+
+# Materialize the accepted seed edits into a workspace (never a push):
+formal-ai improve --promote --apply --confirm --seed-root ./workspace
+
+# Verify the promotion protocol end to end:
+cargo test promotion_protocol
+```
+
+Because the ratchets read their floors from the same benchmark manifests CI
+enforces, a promotion cannot lower a gate to sneak a change through: the seed edit
+is written only when the live benchmark evidence clears the checked-in floor.
