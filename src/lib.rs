@@ -48,6 +48,7 @@ pub mod method_registry;
 pub mod probability;
 pub(crate) mod program_coreference;
 pub mod program_plan;
+pub mod promotion;
 pub mod proof_engine;
 pub mod protocol;
 pub(crate) mod protocol_memory;
@@ -194,6 +195,13 @@ pub use probability::{
     ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel, ProbabilityRanking,
     ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
     RankedProbabilityCandidate, SimilarEvidence,
+};
+pub use promotion::{
+    apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
+    parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
+    AppliedSeedEdit, PromotionApplyOutcome, PromotionBranchPlan, PromotionOutcome,
+    PromotionProposal, PromotionRatchet, PromotionRecord, PromotionRun, SeedEdit,
+    LEARNED_PROGRAM_RULES_SEED_FILE,
 };
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver,
