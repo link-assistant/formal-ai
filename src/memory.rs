@@ -343,7 +343,7 @@ fn replace_counting(value: &mut String, old: &str, new: &str) -> usize {
     count
 }
 
-fn initialize_write_count(event: &mut MemoryEvent) {
+const fn initialize_write_count(event: &mut MemoryEvent) {
     if event.write_count == 0 {
         event.write_count = 1;
     }
