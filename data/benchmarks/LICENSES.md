@@ -19,6 +19,14 @@ datasets out of the repository.
 | GSM8K | MIT | `3101c7d5072418e28b9008a6636bde82a006892c` | 1 | 1 | 2 |
 | MATH | MIT | `e839825f9ec5c6cfa585c654a59610969ec13993` | 1 | 1 | 2 |
 | BIG-bench object_counting | Apache-2.0 | `092b196c1f8f14a54bbc62f24759d43bde46dd3b` | 1 | 1 | 2 |
+| Arithmetic reachability search (self-authored) | CC-BY-4.0 | `issue-662` | 0 | 1 | 2 |
+
+Issue #662 adds a self-authored, search-only slice ("Arithmetic reachability
+search"). Its two cases have no reusable part or single rule that derives the
+answer, so they pass only through the step-7 budget-driven random/evolutionary
+search that combines the given numbers with the allowed operators to reach the
+target. Because the prompts are self-authored rather than imported, the source
+carries no upstream dataset; it is released under CC-BY-4.0.
 
 ## License Texts
 
@@ -30,10 +38,11 @@ The upstream license files are canonical:
 - MATH MIT license: <https://raw.githubusercontent.com/hendrycks/math/985bdc1696e88e8643f081a0ff4719da39f2ae2a/LICENSE>
 - BIG-bench Apache-2.0 license: <https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/LICENSE>
 
-Only five upstream task prompts, five self-authored held-out variants, and
+Only five upstream task prompts, six self-authored held-out variants (including
+the issue #662 search-only source), two self-authored search-only prompts, and
 their expected deterministic checks are vendored here. Canonical solutions and
 full external datasets are intentionally not copied into the repository. The
-benchmark suite records `minimum_pass_count "10"` so CI fails if the current
+benchmark suite records `minimum_pass_count "12"` so CI fails if the current
 derived pass count drops below the recorded floor.
 
 ## Issue #362 Coding-Modification Sources
