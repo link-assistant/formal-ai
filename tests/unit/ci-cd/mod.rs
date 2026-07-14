@@ -1,4 +1,6 @@
 mod changelog_parsing;
+#[path = "../../../scripts/check-associative-terminology.rs"]
+mod check_associative_terminology;
 #[allow(clippy::duplicate_mod)]
 #[path = "../../../scripts/check-crate-package-size.rs"]
 mod check_crate_package_size;

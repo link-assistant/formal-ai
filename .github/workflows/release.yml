@@ -190,6 +190,9 @@ jobs:
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
+      - name: Check associative terminology
+        run: rust-script scripts/check-associative-terminology.rs
+
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
 
