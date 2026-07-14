@@ -35,6 +35,25 @@ pub struct ApiHttpResponse {
     pub status_code: u16,
     pub content_type: &'static str,
     pub body: String,
+    /// Whether this response was served through a deprecated route alias.
+    ///
+    /// Set for the legacy `/v1/graph` links-network alias so the wire response
+    /// carries a `deprecation` marker in its metadata (an HTTP `deprecation`
+    /// header plus a successor `link` to the canonical `/v1/network` endpoint)
+    /// while the JSON payload stays byte-for-byte identical to the canonical one.
+    pub deprecated: bool,
+}
+
+impl ApiHttpResponse {
+    /// Flag this response as served through a deprecated route alias so the wire
+    /// layer emits the `deprecation` / successor-`link` metadata. The payload is
+    /// left untouched, keeping the alias byte-for-byte identical to the canonical
+    /// endpoint.
+    #[must_use]
+    fn into_deprecated_alias(mut self) -> Self {
+        self.deprecated = true;
+        self
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -144,6 +163,7 @@ pub fn handle_api_request_with_auth(
             status_code: 204,
             content_type: "application/json",
             body: String::new(),
+            deprecated: false,
         },
         ("GET", "/health") => json_response(
             200,
@@ -153,7 +173,14 @@ pub fn handle_api_request_with_auth(
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
-        ("GET", "/v1/graph" | "/api/formal-ai/v1/graph") => handle_graph_request(query),
+        ("GET", "/v1/network" | "/api/formal-ai/v1/network") => handle_network_request(query),
+        // Deprecated alias: the project's associative vocabulary is a *links
+        // network*, not a graph (issue #664). `/v1/graph` keeps working for
+        // existing desktop / VS Code / e2e clients but returns the same payload
+        // flagged deprecated so the wire response points at `/v1/network`.
+        ("GET", "/v1/graph" | "/api/formal-ai/v1/graph") => {
+            handle_network_request(query).into_deprecated_alias()
+        }
         ("GET", "/v1/bundle" | "/api/formal-ai/v1/bundle") => {
             links_notation_response(200, merged_bundle())
         }
@@ -233,6 +260,7 @@ pub fn handle_api_request_with_auth(
                 status_code: 200,
                 content_type: "application/json",
                 body: String::new(),
+                deprecated: false,
             },
             Err(error) => error_response(400, &error.to_string()),
         },
@@ -341,6 +369,7 @@ fn handle_gemini_generate_content_request(
                     status_code: 200,
                     content_type: "text/event-stream",
                     body: gemini_response_sse(&response),
+                    deprecated: false,
                 }
             } else {
                 json_response(200, &response)
@@ -468,7 +497,9 @@ fn http_solver() -> UniversalSolver {
     UniversalSolver::new(config)
 }
 
-fn handle_graph_request(query: &str) -> ApiHttpResponse {
+/// Serve the links-network view of the knowledge store — the canonical
+/// `/v1/network` endpoint (and, flagged deprecated, its `/v1/graph` alias).
+fn handle_network_request(query: &str) -> ApiHttpResponse {
     let mut trace: Option<&str> = None;
     let mut format: Option<&str> = None;
     for pair in query.split('&').filter(|part| !part.is_empty()) {
@@ -492,6 +523,7 @@ fn handle_graph_request(query: &str) -> ApiHttpResponse {
             status_code: 200,
             content_type: "text/plain",
             body: knowledge_graph_dot(),
+            deprecated: false,
         };
     }
 
@@ -620,6 +652,7 @@ fn chat_completion_sse_response(
         status_code: 200,
         content_type: "text/event-stream",
         body,
+        deprecated: false,
     }
 }
 
@@ -652,6 +685,7 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
                     status_code: 200,
                     content_type: "text/event-stream",
                     body: anthropic_message_sse(&message),
+                    deprecated: false,
                 }
             } else {
                 json_response(200, &message)
@@ -736,6 +770,7 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
         status_code,
         content_type: "text/plain",
         body,
+        deprecated: false,
     }
 }
 
@@ -831,6 +866,15 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         _ => "500 Internal Server Error",
     };
 
+    // A response served through a deprecated route alias carries a wire-layer
+    // deprecation note so clients can migrate without inspecting the (byte-identical)
+    // body. The canonical `/v1/network` endpoint never emits it.
+    let deprecation_header = if response.deprecated {
+        "deprecation: true\r\nlink: </v1/network>; rel=\"successor-version\"\r\n"
+    } else {
+        ""
+    };
+
     write!(
         stream,
         "HTTP/1.1 {status_text}\r\n\
@@ -839,6 +883,7 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
          access-control-allow-origin: *\r\n\
          access-control-allow-methods: GET,POST,OPTIONS\r\n\
          access-control-allow-headers: content-type,authorization,x-api-key,x-goog-api-key,anthropic-api-key\r\n\
+         {deprecation_header}\
          connection: close\r\n\
          \r\n{}",
         response.content_type,
@@ -853,6 +898,7 @@ fn json_response<T: Serialize>(status_code: u16, value: &T) -> ApiHttpResponse {
             status_code,
             content_type: "application/json",
             body,
+            deprecated: false,
         },
         Err(error) => error_response(500, &format!("failed to serialize response: {error}")),
     }
@@ -869,6 +915,7 @@ fn error_response(status_code: u16, message: &str) -> ApiHttpResponse {
             }
         })
         .to_string(),
+        deprecated: false,
     }
 }
 

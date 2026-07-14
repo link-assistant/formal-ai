@@ -40,7 +40,7 @@ pub mod repair_strategy;
 pub mod self_ast;
 pub mod self_heal;
 mod shell_command;
-pub mod source_graph;
+pub mod source_links;
 
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
@@ -73,4 +73,4 @@ pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
 pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
-pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};
+pub use source_links::{is_source_links_task, SOURCE_LINKS_PATH, SOURCE_LINKS_TASK};

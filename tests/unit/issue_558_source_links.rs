@@ -15,11 +15,11 @@
 //! deliberately slow).
 
 use formal_ai::agentic_coding::{
-    plan_chat_step, run_agentic_task, source_graph, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
+    plan_chat_step, run_agentic_task, source_links, AgenticPlan, PlannedToolCall, DRIVER_TOOLS,
 };
 use formal_ai::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
-    owned_source_files, owned_total_bytes, ChatMessage, SourceGraph, SourceModuleProjection,
+    owned_source_files, owned_total_bytes, ChatMessage, SourceLinks, SourceModuleProjection,
     ToolCall,
 };
 use lino_objects_codec::format::parse_indented;
@@ -107,14 +107,14 @@ fn owned_manifest_renders_valid_links_notation() {
     assert!(notation.contains(&format!("file_count {}", owned_file_count())));
     assert!(notation.contains(&format!("total_bytes {}", owned_total_bytes())));
     // This module's own source is part of the tree it describes.
-    assert!(notation.contains("src/self_source_graph.rs"));
+    assert!(notation.contains("src/self_source_links.rs"));
 }
 
 #[test]
 fn representative_slice_round_trips_losslessly() {
     // The concrete "and back" proof over real, varied modules: parse to links,
     // reconstruct to source, byte-for-byte equal — for every module in the slice.
-    let slice = source_graph::slice();
+    let slice = source_links::slice();
     assert!(slice.module_count() >= 2, "a real, spread slice");
     assert!(
         slice.is_fully_faithful(),
@@ -137,7 +137,7 @@ fn compile_projects_a_known_module_losslessly() {
         .copied()
         .find(|(path, _)| *path == "src/agentic_coding/planner.rs")
         .expect("the planner module is embedded");
-    let graph = SourceGraph::compile(&[planner]);
+    let graph = SourceLinks::compile(&[planner]);
     assert_eq!(graph.module_count(), 1);
     assert_eq!(graph.faithful_count(), 1);
     assert!(graph.is_fully_faithful());
@@ -149,7 +149,7 @@ fn compile_projects_a_known_module_losslessly() {
 #[test]
 fn coverage_is_integer_permille_and_flags_unfaithful_modules() {
     // Deterministic coverage math without a real parse: 3 of 4 faithful → 750‰.
-    let graph = SourceGraph {
+    let graph = SourceLinks {
         modules: vec![
             fake_module("a.rs", true),
             fake_module("b.rs", true),
@@ -166,16 +166,16 @@ fn coverage_is_integer_permille_and_flags_unfaithful_modules() {
     assert_eq!(unfaithful[0].path, "c.rs");
 
     // An empty graph is 0‰ and never "fully faithful".
-    let empty = SourceGraph { modules: vec![] };
+    let empty = SourceLinks { modules: vec![] };
     assert_eq!(empty.coverage_permille(), 0);
     assert!(!empty.is_fully_faithful());
 }
 
 #[test]
 fn render_document_is_valid_links_and_reports_the_whole_repo() {
-    let document = source_graph::render_document();
+    let document = source_links::render_document();
     parse_indented(&document).expect("projection should render valid Links Notation");
-    assert!(document.contains("self_source_graph"));
+    assert!(document.contains("self_source_links"));
     assert!(document.contains("engine meta_language"));
     assert!(document.contains("task translate_entire_source_to_links_and_back"));
     // The cheap "entire source in our data" view accounts for every file.
@@ -191,59 +191,59 @@ fn render_document_is_valid_links_and_reports_the_whole_repo() {
 }
 
 #[test]
-fn recognises_the_source_graph_task() {
-    assert!(source_graph::is_source_graph_task(
-        source_graph::SOURCE_GRAPH_TASK
+fn recognises_the_source_links_task() {
+    assert!(source_links::is_source_links_task(
+        source_links::SOURCE_LINKS_TASK
     ));
-    assert!(source_graph::is_source_graph_task(
+    assert!(source_links::is_source_links_task(
         "recompile yourself: project the whole source graph to links"
     ));
-    assert!(source_graph::is_source_graph_task(
+    assert!(source_links::is_source_links_task(
         "translate the entire source of the system to links and back"
     ));
     // Unrelated requests, and the sibling self-inspection requests, do not route here.
-    assert!(!source_graph::is_source_graph_task(
+    assert!(!source_links::is_source_links_task(
         "what files are in this folder?"
     ));
-    assert!(!source_graph::is_source_graph_task(
+    assert!(!source_links::is_source_links_task(
         "store the cst/ast of our meta algorithm so it can reason about itself"
     ));
-    assert!(!source_graph::is_source_graph_task(
+    assert!(!source_links::is_source_links_task(
         formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
     ));
-    // The source-graph task itself must not trip the sibling routers.
+    // The source-links task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_self_ast_task(
-        source_graph::SOURCE_GRAPH_TASK
+        source_links::SOURCE_LINKS_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_self_heal_task(
-        source_graph::SOURCE_GRAPH_TASK
+        source_links::SOURCE_LINKS_TASK
     ));
 }
 
 #[test]
-fn planner_walks_the_source_graph_recipe() {
+fn planner_walks_the_source_links_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(source_graph::SOURCE_GRAPH_TASK)];
+    let mut messages = vec![ChatMessage::user(source_links::SOURCE_LINKS_TASK)];
 
     // Step 1: no web step — the projection is a pure function of the embedded source,
     // so the planner goes straight to writing the generated document.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "write_file");
-    assert!(call.arguments.contains(source_graph::SOURCE_GRAPH_PATH));
+    assert!(call.arguments.contains(source_links::SOURCE_LINKS_PATH));
     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-    assert_eq!(written["content"], source_graph::render_document());
-    answer_tool_call(&mut messages, &call, "wrote self-source-graph.lino");
+    assert_eq!(written["content"], source_links::render_document());
+    answer_tool_call(&mut messages, &call, "wrote self-source-links.lino");
 
     // Step 2: verify by reading the document back.
     let call = expect_single_call(&messages, &tools);
     assert_eq!(call.tool, "run_command");
-    assert!(call.arguments.contains(source_graph::SOURCE_GRAPH_PATH));
-    answer_tool_call(&mut messages, &call, &source_graph::render_document());
+    assert!(call.arguments.contains(source_links::SOURCE_LINKS_PATH));
+    answer_tool_call(&mut messages, &call, &source_links::render_document());
 
     // Step 3: the recipe is exhausted — the final answer carries the projection.
     match plan_chat_step(&messages, &tools) {
         Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.contains(source_graph::SOURCE_GRAPH_PATH));
+            assert!(answer.contains(source_links::SOURCE_LINKS_PATH));
             assert!(answer.contains("entire source"));
             assert!(answer.contains("recompil"));
         }
@@ -252,11 +252,11 @@ fn planner_walks_the_source_graph_recipe() {
 }
 
 #[test]
-fn driver_drives_the_source_graph_projection_to_a_write() {
+fn driver_drives_the_source_links_projection_to_a_write() {
     // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
     // exactly the generated projection document. DRIVER_TOOLS advertises write_file.
     assert!(DRIVER_TOOLS.contains(&"write_file"));
-    let outcome = run_agentic_task(source_graph::SOURCE_GRAPH_TASK).expect("workspace");
+    let outcome = run_agentic_task(source_links::SOURCE_LINKS_TASK).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -264,11 +264,11 @@ fn driver_drives_the_source_graph_projection_to_a_write() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], source_graph::render_document());
-    assert_eq!(written["path"], source_graph::SOURCE_GRAPH_PATH);
+    assert_eq!(written["content"], source_links::render_document());
+    assert_eq!(written["path"], source_links::SOURCE_LINKS_PATH);
     assert!(outcome
         .final_answer
-        .contains(source_graph::SOURCE_GRAPH_PATH));
+        .contains(source_links::SOURCE_LINKS_PATH));
 }
 
 #[test]
@@ -276,7 +276,7 @@ fn driver_drives_the_source_graph_projection_to_a_write() {
 fn exhaustive_whole_repo_round_trip_is_lossless() {
     // The full "and back" invariant issue #558 requires: EVERY owned source file
     // round-trips byte-for-byte through the meta-language links network.
-    let graph = SourceGraph::owned();
+    let graph = SourceLinks::owned();
     assert_eq!(graph.module_count(), owned_file_count());
     let unfaithful: Vec<&str> = graph
         .unfaithful_modules()

@@ -52,7 +52,7 @@ mod issue_558_rebuild_plan;
 mod issue_558_repair_strategy;
 mod issue_558_self_explanation;
 mod issue_558_self_healing;
-mod issue_558_source_graph;
+mod issue_558_source_links;
 mod issue_571;
 mod issue_627;
 mod issue_649_world_model;
