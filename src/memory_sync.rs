@@ -77,6 +77,28 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
     } else {
         incoming.evidence.clone()
     };
+    let payload_changed = [
+        (&base.kind, &incoming.kind),
+        (&base.role, &incoming.role),
+        (&base.intent, &incoming.intent),
+        (&base.tool, &incoming.tool),
+        (&base.inputs, &incoming.inputs),
+        (&base.outputs, &incoming.outputs),
+        (&base.content, &incoming.content),
+        (&base.sent_at, &incoming.sent_at),
+        (&base.demo_label, &incoming.demo_label),
+        (&base.conversation_id, &incoming.conversation_id),
+        (&base.conversation_title, &incoming.conversation_title),
+    ]
+    .iter()
+    .any(|(left, right)| right.as_ref().is_some_and(|value| !value.is_empty()) && left != right)
+        || (!incoming.evidence.is_empty() && base.evidence != incoming.evidence);
+    let observed_writes = base.write_count.max(1).max(incoming.write_count.max(1));
+    let write_count = if payload_changed && incoming.write_count <= base.write_count {
+        observed_writes.saturating_add(1)
+    } else {
+        observed_writes
+    };
     MemoryEvent {
         id: base.id.clone(),
         kind: pick(base.kind.as_ref(), incoming.kind.as_ref()),
@@ -100,6 +122,9 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
         // Access counts are monotone per event; the larger side has seen more
         // reads, so max is the lossless merge.
         access_count: base.access_count.max(incoming.access_count),
+        // A peer can bring a newer monotone count. Legacy/uncounted edits are
+        // recognized from their changed payload and become one durable write.
+        write_count,
     }
 }
 
@@ -217,6 +242,7 @@ impl SyncStore {
                 kind: Some(String::from("message")),
                 role: Some(String::from("user")),
                 content: Some(prompt.to_owned()),
+                write_count: 1,
                 ..MemoryEvent::default()
             },
             MemoryEvent {
@@ -227,6 +253,7 @@ impl SyncStore {
                 inputs: Some(prompt.to_owned()),
                 outputs: Some(answer.to_owned()),
                 evidence: vec![crate::engine::stable_id("chat_user", &seed)],
+                write_count: 1,
                 ..MemoryEvent::default()
             },
         ];

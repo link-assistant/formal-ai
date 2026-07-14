@@ -16,6 +16,9 @@
 
 use formal_ai::associative_persistence::{AssociativeMemory, RetentionWeights};
 use formal_ai::world_model::{Context, Dependency, Statement};
+use formal_ai::{
+    parse_memory_links_notation, plan_memory_dreaming, DreamingConfig, MemoryEvent, MemoryStore,
+};
 
 #[test]
 fn persist_is_content_addressed_and_deterministic() {
@@ -28,6 +31,21 @@ fn persist_is_content_addressed_and_deterministic() {
     assert_eq!(memory.len(), 1);
     assert_eq!(memory.writes(&first), 2);
     assert_eq!(memory.reads(&first), 0);
+}
+
+#[test]
+fn writing_a_changed_identified_expression_persists_the_new_value() {
+    let mut memory = AssociativeMemory::new();
+    let id = "fact:door";
+    memory.persist_identified(id, "the door is closed");
+
+    memory.persist_identified(id, "the door is open");
+
+    assert_eq!(
+        memory.get(id).map(|entry| entry.text.as_str()),
+        Some("the door is open")
+    );
+    assert_eq!(memory.writes(id), 2);
 }
 
 #[test]
@@ -210,4 +228,130 @@ fn links_notation_is_a_sorted_reproducible_links_network() {
     assert!(first.contains(&format!("reads: ({a} 1)")));
     assert!(first.contains(&format!("writes: ({a} 1)")));
     assert!(first.contains(&format!("associates: ({a} {b})")));
+}
+
+#[test]
+fn durable_memory_writes_round_trip_and_protect_changed_knowledge() {
+    let mut store = MemoryStore::from_events(vec![MemoryEvent {
+        id: String::from("fact:door"),
+        content: Some(String::from("the door is closed")),
+        ..MemoryEvent::default()
+    }]);
+    assert_eq!(store.events()[0].write_count, 1);
+
+    assert_eq!(store.apply_substitution("closed", "open"), 1);
+    assert_eq!(store.events()[0].write_count, 2);
+    let serialized = store.export_links_notation();
+    assert!(serialized.contains("writeCount \"2\""));
+    let reloaded = parse_memory_links_notation(&serialized);
+    assert_eq!(reloaded[0].write_count, 2);
+    let projection = formal_ai::link_store::memory_event_to_link_record(&reloaded[0], 0);
+    assert!(projection
+        .links
+        .iter()
+        .any(|link| link.from == "field:writeCount" && link.to == "value:2"));
+
+    let plan = plan_memory_dreaming(&reloaded, &DreamingConfig::default());
+    assert_eq!(plan.event_usage("fact:door"), Some(2));
+}
+
+#[test]
+fn durable_memory_retention_uses_both_directions_of_evidence_links() {
+    let events = vec![
+        MemoryEvent {
+            id: String::from("conclusion"),
+            content: Some(String::from("the derived conclusion")),
+            evidence: vec![String::from("premise")],
+            ..MemoryEvent::default()
+        },
+        MemoryEvent {
+            id: String::from("premise"),
+            content: Some(String::from("the grounded premise")),
+            ..MemoryEvent::default()
+        },
+    ];
+
+    let associative = AssociativeMemory::from_memory_events(&events);
+    assert_eq!(associative.out_degree("conclusion"), 1);
+    assert_eq!(associative.in_degree("premise"), 1);
+    assert_eq!(associative.retention_score("conclusion"), 2);
+    assert_eq!(associative.retention_score("premise"), 2);
+
+    let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+    assert_eq!(plan.event_usage("conclusion"), Some(2));
+    assert_eq!(plan.event_usage("premise"), Some(2));
+}
+
+#[test]
+fn sync_merge_counts_uncounted_edits_and_preserves_monotone_peer_counts() {
+    let base = MemoryEvent {
+        id: String::from("fact"),
+        content: Some(String::from("old")),
+        write_count: 1,
+        ..MemoryEvent::default()
+    };
+    let edited = MemoryEvent {
+        id: String::from("fact"),
+        content: Some(String::from("new")),
+        write_count: 1,
+        ..MemoryEvent::default()
+    };
+    let merged = formal_ai::memory_sync::merge_event(&base, &edited);
+    assert_eq!(merged.content.as_deref(), Some("new"));
+    assert_eq!(merged.write_count, 2);
+
+    let peer = MemoryEvent {
+        write_count: 7,
+        ..edited
+    };
+    assert_eq!(
+        formal_ai::memory_sync::merge_event(&merged, &peer).write_count,
+        7
+    );
+}
+
+#[test]
+fn ingestion_preserves_qualifiers_and_retains_misaligned_candidates() {
+    let events = vec![MemoryEvent {
+        id: String::from("claim"),
+        kind: Some(String::from("task")),
+        role: Some(String::from("assistant")),
+        content: Some(String::from("qualified claim")),
+        sent_at: Some(String::from("2026-07-14T12:00:00Z")),
+        conversation_id: Some(String::from("case-study")),
+        evidence: vec![String::from("missing-source")],
+        ..MemoryEvent::default()
+    }];
+
+    let memory = AssociativeMemory::from_memory_events(&events);
+    let claim = memory.get("claim").expect("candidate is retained");
+    assert_eq!(
+        claim.qualifiers.get("kind").map(String::as_str),
+        Some("task")
+    );
+    assert_eq!(
+        claim.qualifiers.get("conversation_id").map(String::as_str),
+        Some("case-study")
+    );
+    assert_eq!(claim.validation_issues.len(), 1);
+    assert!(claim.validation_issues[0].contains("missing-source"));
+}
+
+#[test]
+fn multi_hop_recall_is_bounded_deterministic_and_counts_reads() {
+    let mut memory = AssociativeMemory::new();
+    memory.persist_identified("a", "first");
+    memory.persist_identified("b", "second");
+    memory.persist_identified("c", "third");
+    memory.associate("a", "b");
+    memory.associate("b", "c");
+
+    assert_eq!(memory.recall_related("a", 1), vec!["a", "b"]);
+    assert_eq!(memory.reads("a"), 1);
+    assert_eq!(memory.reads("b"), 1);
+    assert_eq!(memory.reads("c"), 0);
+    assert_eq!(memory.recall_related("a", 2), vec!["a", "b", "c"]);
+    assert_eq!(memory.reads("a"), 2);
+    assert_eq!(memory.reads("b"), 2);
+    assert_eq!(memory.reads("c"), 1);
 }
