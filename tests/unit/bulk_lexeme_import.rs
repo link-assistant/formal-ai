@@ -337,6 +337,33 @@ fn rendered_block_validates() {
     assert_eq!(lexeme_import::validate(&sample()), Ok(()));
 }
 
+/// Every supported import language keeps its own citation-form surface pinned in
+/// the canonical `dog`/`Q144` template, so a single-language regression cannot
+/// slip in unnoticed: English `dog`, Russian `собака`, Hindi `कुत्ता`, and
+/// Chinese `犬` are each asserted explicitly rather than only in aggregate.
+#[test]
+fn every_supported_language_surface_is_pinned() {
+    let labels = sample().labels;
+    let mut expected = IMPORT_LANGUAGES
+        .iter()
+        .map(ToString::to_string)
+        .collect::<Vec<_>>();
+    expected.sort();
+    assert_eq!(
+        labels.keys().cloned().collect::<Vec<_>>(),
+        expected,
+        "sample must carry exactly one surface per supported language"
+    );
+    // English (en)
+    assert_eq!(labels.get("en").map(String::as_str), Some("dog"));
+    // Russian (ru)
+    assert_eq!(labels.get("ru").map(String::as_str), Some("собака"));
+    // Hindi (hi)
+    assert_eq!(labels.get("hi").map(String::as_str), Some("कुत्ता"));
+    // Chinese (zh)
+    assert_eq!(labels.get("zh").map(String::as_str), Some("犬"));
+}
+
 /// A multi-token label (not a single citation-form surface) is rejected.
 #[test]
 fn multi_token_label_is_rejected() {
