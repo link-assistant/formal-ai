@@ -29,7 +29,6 @@ use super::formalize::{
 use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
-use super::intent_router;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
@@ -82,7 +81,6 @@ pub enum Capability {
     Fetch,
     Read,
     Write,
-    Edit,
     Run,
 }
 
@@ -98,7 +96,6 @@ impl Capability {
             Self::Fetch => "tool:capability:fetch",
             Self::Read => "tool:capability:read",
             Self::Write => "tool:capability:write",
-            Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
         }
     }
@@ -205,28 +202,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // General write routing (issue #680): a request that names a relative target
-    // file and literal content is a file-creation intent in any phrasing/language.
-    // It is probed before the file-read router so "create file X containing Y" is
-    // recognised as a *write* rather than mistaken for a read of X, and only when
-    // the CLI actually advertised a write tool — otherwise the request keeps
-    // looking and ultimately falls through to the prose answer.
-    if let Some(plan) = tool_for(tool_names, Capability::Write)
-        .and_then(|_| compose_general_change_plan(&task))
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-    {
-        return Some(plan);
-    }
-    // General edit routing (issue #680): a request that names a target file plus
-    // an old→new replacement is a file-modification intent in any phrasing. It is
-    // probed after the create-file write router (so "create file X containing Y"
-    // stays a write) and before the file-read router (so "in X, change A to B" is
-    // an *edit* rather than a read of X), and only when the CLI actually
-    // advertised an edit tool — otherwise the request keeps looking and ultimately
-    // falls through to the prose answer.
-    if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
-        return Some(plan);
-    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
@@ -242,23 +217,8 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    // General capability router (issue #680): route the request to a real tool
-    // call based on its *intent* — the advertised tool set plus the request
-    // semantics — rather than a pinned recipe or a literal phrasing. These probes
-    // reuse the same lexicon-driven detectors the prose path uses, and each only
-    // fires when the CLI actually advertised a tool of the matching capability
-    // (otherwise the request falls through to the prose answer).
-    //
-    // The probes run most-specific-first so a real CLI that advertises every tool
-    // at once still routes each request to the right one: a concrete URL to
-    // retrieve is a fetch (the file-and-content write intent is already handled
-    // above, before the file-read router); and the broadest intent — an open
-    // research/search question — is the final capability catch-all before the
-    // prose fallback.
-    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
-        return Some(plan);
-    }
-    intent_router::plan_web_search_step(&task, messages, tool_names)
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
 }
 
 fn plan_general_change_step(
@@ -729,23 +689,20 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
-pub(super) struct Progress {
+struct Progress {
     /// Capabilities a prior `tool` result already answered.
     completed: Vec<Capability>,
     /// The latest non-errored fetch result's text, if any.
     fetched_text: Option<String>,
     /// The latest run/shell result's text, if any.
     run_output: Option<String>,
-    /// The latest non-errored web-search result's text, if any.
-    search_output: Option<String>,
 }
 
 impl Progress {
-    pub(super) fn scan(messages: &[ChatMessage]) -> Self {
+    fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
         let mut run_output = None;
-        let mut search_output = None;
         for (index, message) in messages.iter().enumerate() {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
@@ -759,12 +716,6 @@ impl Progress {
                     fetched_text = Some(text);
                 }
             }
-            if capability == Capability::Search {
-                let text = message.content.plain_text();
-                if !looks_like_error(&text) && !text.trim().is_empty() {
-                    search_output = Some(text);
-                }
-            }
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
@@ -774,12 +725,11 @@ impl Progress {
             completed,
             fetched_text,
             run_output,
-            search_output,
         }
     }
 
     /// Whether a prior tool result already covered `capability`.
-    pub(super) fn done(&self, capability: Capability) -> bool {
+    fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
     }
 
@@ -789,21 +739,9 @@ impl Progress {
             .filter(|done| **done == capability)
             .count()
     }
-
-    /// The latest non-errored fetch result's text, for the [`intent_router`]
-    /// fetch probe's final answer.
-    pub(super) fn fetched_text(&self) -> Option<&str> {
-        self.fetched_text.as_deref()
-    }
-
-    /// The latest non-errored web-search result's text, for the [`intent_router`]
-    /// search probe's final answer.
-    pub(super) fn search_output(&self) -> Option<&str> {
-        self.search_output.as_deref()
-    }
 }
 
-pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
         arguments,
@@ -833,7 +771,7 @@ fn write_arguments(path: &str, content: &str) -> String {
 /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
 /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
 /// of them without a per-CLI special case.
-pub(super) fn fetch_arguments(url: &str) -> String {
+fn fetch_arguments(url: &str) -> String {
     json!({
         "url": url,
         "format": "text",
@@ -842,7 +780,7 @@ pub(super) fn fetch_arguments(url: &str) -> String {
 }
 
 /// The first advertised tool name that provides `capability`, if any.
-pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
         .iter()
         .copied()
@@ -853,15 +791,13 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
 /// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
 /// `run_command`, `bash`, `websearch`, `webfetch`, …).
 ///
-/// The recipe wants six kinds of tool, and real CLIs expose *lookalikes* that
-/// must not be mistaken for them: a `todowrite` scratchpad is not a file writer,
-/// a `codesearch` is not a web search, and an `edit`/`patch`/`replace` tool
-/// mutates an existing file rather than creating one. Those are separated so
-/// that — even though [`requested_tool_names`](super::super::protocol) hands the
-/// planner an alphabetically sorted list — `todowrite` can never be picked ahead
-/// of `write`, `codesearch` ahead of `websearch`, nor an `edit` tool ahead of a
-/// create-file `write` for a write intent (they carry distinct arguments, so
-/// each is its own capability class).
+/// The recipe only wants five kinds of tool, and real CLIs expose *lookalikes*
+/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
+/// writer, a `codesearch` is not a web search, and `edit`/`patch`
+/// are not create-file tools. Those are ruled out first so that — even though
+/// [`requested_tool_names`](super::super::protocol) hands the planner an
+/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
+/// nor `codesearch` ahead of `websearch`.
 fn classify_tool(name: &str) -> Option<Capability> {
     let lower = name.to_ascii_lowercase();
     // Scratchpad / navigation tools that merely *look* like recipe tools.
@@ -887,14 +823,10 @@ fn classify_tool(name: &str) -> Option<Capability> {
     {
         Some(Capability::Fetch)
     } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch.
+        // `write` / `write_file` create a file from scratch; `edit`/`patch`
+        // mutate an existing one and take different arguments, so they are not
+        // interchangeable with the recipe's write step and stay unclassified.
         Some(Capability::Write)
-    } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
-        // `edit` / `apply_patch` / `str_replace` mutate an *existing* file and
-        // take `(path, old, new)`-shaped arguments rather than `(path, content)`,
-        // so they are their own capability class — never interchangeable with the
-        // create-file write above (issue #680).
-        Some(Capability::Edit)
     } else if lower.contains("run")
         || lower.contains("bash")
         || lower.contains("command")

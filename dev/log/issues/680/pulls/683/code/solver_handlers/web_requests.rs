@@ -787,20 +787,6 @@ fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
     Some(url)
 }
 
-/// Capability-intent probe (issue #680): the absolute URL a fetch-intent prompt
-/// names — for *any* phrasing — or [`None`] when the prompt carries no HTTP-fetch
-/// intent. This is the same `http_fetch` meaning the prose handler
-/// ([`try_http_fetch`]) recognises, exposed so the deterministic agentic planner
-/// (`crate::agentic_coding::planner`) can route a web-fetch request to the
-/// advertised fetch tool instead of answering in prose. The planner and the prose
-/// path therefore reason about fetch intent through one lexicon-driven detector
-/// and never drift. `normalized` mirrors what the specialized-handler dispatch
-/// passes every handler — the lowercased prompt (see `meta_method_dispatch`).
-#[must_use]
-pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
-    extract_http_fetch_url(prompt, &prompt.to_lowercase())
-}
-
 fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
     if !is_url_navigate_prompt(prompt, normalized, &raw_candidate) {
