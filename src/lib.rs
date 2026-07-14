@@ -59,6 +59,7 @@ pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
+pub mod requirement_contradiction;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
