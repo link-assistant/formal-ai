@@ -19,7 +19,6 @@ use serde_json::json;
 
 use super::change_request;
 use super::diagram;
-use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -39,6 +38,7 @@ use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::{associative_learning, dreaming_audit};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -127,6 +127,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // recipes, but self-healing has its own dedicated keywords (self-heal, repair
     // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
     // guards against a request that names both.
+    if associative_learning::is_associative_learning_task(&task) {
+        return Some(plan_associative_learning_step(messages, tool_names));
+    }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
     }
@@ -686,6 +689,21 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
         DocumentRecipe {
             path: dreaming_audit::DREAMING_AUDIT_PATH,
             verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
+            final_answer,
+            document,
+        },
+    )
+}
+
+fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = associative_learning::render_document();
+    let final_answer = associative_learning::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
+            verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
             final_answer,
             document,
         },
