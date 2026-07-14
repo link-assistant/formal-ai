@@ -1,0 +1,16 @@
+Q16533
+  aliases
+    en (magistrate justice)
+    hi ("न्यायाधीश")
+  descriptions
+    en "official who presides over court proceedings"
+    ru "должностное лицо, входящее в состав суда и осуществляющее правосудие"
+    zh "主持法庭訴訟的官員"
+  id Q16533
+  labels
+    en judge
+    hi "न्यायधीश"
+    ru "судья"
+    zh "法官"
+  type item
+success 1

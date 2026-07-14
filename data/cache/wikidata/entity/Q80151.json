@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q80151": {
+      "type": "item",
+      "id": "Q80151",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шляпа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "टोपी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "帽子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "shaped head covering, having a brim and a crown, or one of these"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "головной убор из тульи и полей"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "тулья"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

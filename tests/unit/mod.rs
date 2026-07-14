@@ -2,6 +2,7 @@ mod agentic_coding;
 mod agentic_general_planner;
 mod agentic_surfaces;
 mod assistant_name;
+mod bulk_lexeme_import;
 mod courtesy_response;
 mod data_files;
 mod docker_runtime;

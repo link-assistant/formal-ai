@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q7364": {
+      "type": "item",
+      "id": "Q7364",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "eye"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "глаз"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आँख"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "眼"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organ that detects light and converts it into electro-chemical impulses in neurons"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сенсорный орган, обеспечивающий зрение"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नेत्र, ऐसा अंग जो प्रकाश का पता लगाता है।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "感知光線並將其轉換成神經訊號的器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "eyes"
+          },
+          {
+            "language": "en",
+            "value": "eyeball"
+          },
+          {
+            "language": "en",
+            "value": "👀"
+          },
+          {
+            "language": "en",
+            "value": "👁👁"
+          },
+          {
+            "language": "en",
+            "value": "eyeballs"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "око"
+          },
+          {
+            "language": "ru",
+            "value": "глазное яблоко"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "眼球"
+          },
+          {
+            "language": "zh",
+            "value": "眼珠"
+          },
+          {
+            "language": "zh",
+            "value": "眼睛"
+          },
+          {
+            "language": "zh",
+            "value": "目"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q132041": {
+      "type": "item",
+      "id": "Q132041",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "key"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ключ"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चाबी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鑰匙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "instrument that is used to operate a lock"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "средство для открывания и закрывания замка"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "keys"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "замковый ключ"
+          },
+          {
+            "language": "ru",
+            "value": "замочный ключ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "私钥"
+          },
+          {
+            "language": "zh",
+            "value": "鎖匙"
+          },
+          {
+            "language": "zh",
+            "value": "密钥"
+          },
+          {
+            "language": "zh",
+            "value": "钥"
+          },
+          {
+            "language": "zh",
+            "value": "公钥"
+          },
+          {
+            "language": "zh",
+            "value": "房門鑰匙"
+          },
+          {
+            "language": "zh",
+            "value": "房门钥匙"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

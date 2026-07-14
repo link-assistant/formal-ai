@@ -1,0 +1,17 @@
+Q34442
+  aliases
+    en (track route roadway)
+    ru ("автодорога" "дороги" "автомобильные дороги" "автомобильная дорога" "автомобильный маршрут" "путь" "Дорога")
+    zh ("馬路")
+  descriptions
+    en "wide way leading from one place to another, especially one with a specially prepared surface which vehicles can use"
+    ru "путь сообщения, полоса земли для передвижения"
+    zh "基础设施"
+  id Q34442
+  labels
+    en road
+    hi "सड़क"
+    ru "дорога"
+    zh "道路"
+  type item
+success 1

@@ -33,6 +33,7 @@ pub mod json_lino;
 pub mod knowledge;
 pub mod language;
 pub mod learning_ledger;
+pub mod lexeme_import;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;

@@ -1,0 +1,14 @@
+Q5852
+  aliases
+    zh ("毛毯")
+  descriptions
+    en "a large piece of woven fabric used as a bed covering or other covering"
+    ru "постельная принадлежность"
+  id Q5852
+  labels
+    en blanket
+    hi "कम्बल"
+    ru "одеяло"
+    zh "毯子"
+  type item
+success 1

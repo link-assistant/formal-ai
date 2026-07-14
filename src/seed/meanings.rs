@@ -750,3 +750,14 @@ pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
     CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
 }
+
+/// Parse an in-memory meaning-lexicon document into a [`Lexicon`].
+///
+/// The bulk lexeme importer (issue #660) uses this to validate a generated
+/// batch: it renders each `meaning` block, parses it back through the real
+/// loader, and confirms the surfaces denote their meaning and carry their
+/// facets before the batch is written to the seed.
+#[must_use]
+pub fn parse_lexicon_text(text: &str) -> Lexicon {
+    parse_lexicon(text)
+}

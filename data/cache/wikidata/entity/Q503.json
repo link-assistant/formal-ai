@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q503": {
+      "type": "item",
+      "id": "Q503",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "banana"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "банан"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "केला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "香蕉"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод многолетних травянистых растений рода Банан (Musa)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蕉果是从蕉树长出来的"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bananas"
+          },
+          {
+            "language": "en",
+            "value": "banana fruit"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Músa"
+          },
+          {
+            "language": "ru",
+            "value": "Musa"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蕉"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

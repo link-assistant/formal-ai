@@ -1,0 +1,15 @@
+Q39397
+  aliases
+    en (ax)
+    zh ("斧頭" "斧鉞")
+  descriptions
+    en "weapon or tool consisting of a shaft, with a head attached at a parallel angle that is used primarily for chopping, splitting, or shaping materials"
+    ru "рубящее военное или бытовое орудие"
+  id Q39397
+  labels
+    en axe
+    hi "कुल्हाड़ी"
+    ru "топор"
+    zh "斧"
+  type item
+success 1

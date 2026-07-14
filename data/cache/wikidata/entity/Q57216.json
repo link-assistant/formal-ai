@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q57216": {
+      "type": "item",
+      "id": "Q57216",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "plate"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тарелка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्लेट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "碟"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "flat vessel on which food can be served"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид столовой посуды"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फ्लैट पोत जिस पर भोजन परोसा जा सकता है"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "dish"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "盤"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

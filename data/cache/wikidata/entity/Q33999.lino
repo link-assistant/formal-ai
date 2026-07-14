@@ -1,0 +1,19 @@
+Q33999
+  aliases
+    en (actress actors actresses "movie actresses" "movie actress")
+    hi ("अभिनेत्री" "फिल्म अभिनेता" "अभिनेता")
+    ru ("актриса" "исполнитель ролей" "лицедей" "исполнительница ролей" "лицедейка")
+    zh ("男演员" "女演员" "戏子" "女演員" "演员" "舞台演員")
+  descriptions
+    en "person who acts in a dramatic or comic production and works in film, television, theatre, or radio"
+    hi "पुरुष कलाकार है जो एक चलचित्र या नाटक में किसी चरित्र का अभिनय करता है"
+    ru "артист, исполняющий роли персонажей в сценических, экранных постановках и/или в озвучивании"
+    zh "从事表演艺术的人"
+  id Q33999
+  labels
+    en actor
+    hi "अभिनयशिल्पी"
+    ru "актёр"
+    zh "演員"
+  type item
+success 1

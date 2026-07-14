@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q551997": {
+      "type": "item",
+      "id": "Q551997",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wire"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "проволока"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "電線"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "flexible strand or rod of metal composed of one or more strands"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "單根的金屬線"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "metal wire"
+          },
+          {
+            "language": "en",
+            "value": "metallic wire"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "проволка"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

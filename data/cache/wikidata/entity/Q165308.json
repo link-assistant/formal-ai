@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q165308": {
+      "type": "item",
+      "id": "Q165308",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pumpkin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тыква"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कुम्हड़ा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "南瓜"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "orange (yellow, green) winter squash native to North America"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод различных культивируемых видов рода Тыква (Cucubrita)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原產於北美的橘色（黃色、綠色）冬瓜"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Telfairia ocbu 8cidentalis vine,"
+          },
+          {
+            "language": "en",
+            "value": "MbMB"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "कुम्हड़े का पौधा"
+          },
+          {
+            "language": "hi",
+            "value": "कद्दू"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

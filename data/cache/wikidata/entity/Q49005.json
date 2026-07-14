@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q49005": {
+      "type": "item",
+      "id": "Q49005",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "curtain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "штора"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पर्दा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "簾"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "cloth used to block out light"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "портьера, оконная или дверная занавесь"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "挂在建筑物的窗户上，具有遮阳、隔热、调节室内光线、吸声隔声等作用的室内装饰品"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "drape"
+          },
+          {
+            "language": "en",
+            "value": "window treatment"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "занавес"
+          },
+          {
+            "language": "ru",
+            "value": "занавесь"
+          },
+          {
+            "language": "ru",
+            "value": "занавеска"
+          },
+          {
+            "language": "ru",
+            "value": "шторы"
+          },
+          {
+            "language": "ru",
+            "value": "портьера"
+          },
+          {
+            "language": "ru",
+            "value": "кулиса"
+          },
+          {
+            "language": "ru",
+            "value": "шторка"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "窗帘"
+          },
+          {
+            "language": "zh",
+            "value": "窗簾"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

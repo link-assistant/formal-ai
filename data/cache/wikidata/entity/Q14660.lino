@@ -1,0 +1,16 @@
+Q14660
+  aliases
+    en (flags)
+    zh ("旌旗")
+  descriptions
+    en "distinctive image used as a symbol, traditionally embodied as a piece of fabric"
+    ru "полотнище правильной геометрической формы, имеющее какую-либо специальную расцветку"
+    zh "印有獨特設計的布料"
+  id Q14660
+  labels
+    en flag
+    hi "ध्वज"
+    ru "флаг"
+    zh "旗幟"
+  type item
+success 1

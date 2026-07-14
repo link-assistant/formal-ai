@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Q140": {
+      "type": "item",
+      "id": "Q140",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lion"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лев"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सिंह"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "獅"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "species of big cat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид хищных млекопитающих семейства кошачьих"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेन्थेरा वंश की चार बड़ी बिल्लियों में से एक है और फेलिडे परिवार का सदस्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "产自非洲和亚洲的大型猫科动物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "African lion"
+          },
+          {
+            "language": "en",
+            "value": "the lion"
+          },
+          {
+            "language": "en",
+            "value": "Asiatic lion"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "азиатский лев"
+          },
+          {
+            "language": "ru",
+            "value": "большая кошка"
+          },
+          {
+            "language": "ru",
+            "value": "царь зверей"
+          },
+          {
+            "language": "ru",
+            "value": "африканский лев"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पेंथेरा लियो"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "狮子"
+          },
+          {
+            "language": "zh",
+            "value": "剛果獅"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

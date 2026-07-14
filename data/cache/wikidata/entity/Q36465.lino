@@ -1,0 +1,17 @@
+Q36465
+  aliases
+    hi ("मैदा")
+    ru ("92 9300" "мука́")
+    zh ("麵粉")
+  descriptions
+    en "powder which is made by grinding cereal grains"
+    hi "अनाज का पिसा हुआ रूप"
+    ru "продукт питания, молотые зёрна злаков"
+  id Q36465
+  labels
+    en flour
+    hi "आटा"
+    ru "мука"
+    zh "穀粉"
+  type item
+success 1
