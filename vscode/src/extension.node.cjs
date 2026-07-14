@@ -333,7 +333,7 @@ function activate(context) {
         await vscode.env.openExternal(vscode.Uri.parse(status.traceUrl || status.graphUrl));
       } else {
         vscode.window.showInformationMessage(
-          "formal-ai: the network view renders in the chat panel. Enable formal-ai.server.enabled to expose the /v1/graph endpoint.",
+          "formal-ai: the links network view renders in the chat panel. Enable formal-ai.server.enabled to expose the /v1/network endpoint.",
         );
       }
     }),

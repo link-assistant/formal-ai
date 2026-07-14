@@ -10,7 +10,7 @@ The extension ships **two hosts from one manifest**, so it runs both on the desk
 ## Features
 
 - Symbolic chat with markdown rendering and traceable reasoning.
-- Optional link-graph **network view** of the reasoning (`GET /v1/graph`).
+- Optional **links network view** of the reasoning (`GET /v1/network`).
 - Full-memory **export / import** of the self-contained `formal_ai_bundle` Links-Notation document.
 - **Agent mode** off by default; tool calls (HTTP fetch, file read, host shell, and sandboxed code execution) are permission-gated until you opt in.
 - Multilingual UI (English, Russian, Hindi, Chinese).
@@ -22,7 +22,7 @@ The extension ships **two hosts from one manifest**, so it runs both on the desk
 | `formal-ai: Open Chat` | Focus the chat view. |
 | `formal-ai: Toggle Local Server` | Start/stop the local `formal-ai serve` process (desktop host only). |
 | `formal-ai: Sync Memory` | Reconcile browser memory with the native store (requires the local server). |
-| `formal-ai: Open Network View` | Open the link-graph view. |
+| `formal-ai: Open Network View` | Open the links network view. |
 
 ## Settings
 
