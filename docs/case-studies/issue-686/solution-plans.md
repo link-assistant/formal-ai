@@ -141,8 +141,8 @@ vs. re-expresses.
   KG with alias-aware dedup and high entity degree for efficient multi-hop
   retrieval. *Re-expressed*: dedup via `stable_id`, degree as a retention signal;
   the LLM extraction pipeline is out of scope for a symbolic engine.
-- **AriGraph** (arXiv 2407.04363; same lab) — episodic+semantic memory graph for
-  agents. *Confirms the "well-connected links network as memory" framing that
+- **AriGraph** (arXiv 2407.04363; same lab) — episodic+semantic memory links
+  network for agents. *Confirms the "well-connected links network as memory" framing that
   motivates degree-weighted retention.*
 - **LFU / LRU cache replacement** — evict by lowest frequency / oldest use.
   *Re-expressed*: the frequency (LFU) axis, chosen over recency because

@@ -35,12 +35,12 @@ lifts exactly that principle into a *retention* policy: **"calculate usages base
 on incoming and outgoing links"**, i.e. let degree, not just explicit reads, drive
 how long knowledge persists.
 
-## 2. Same lab — AriGraph (the memory-graph lineage)
+## 2. Same lab — AriGraph (the memory-links lineage)
 
 Kuratov and Burtsev also authored **AriGraph** (*"AriGraph: Learning Knowledge
 Graph World Models with Episodic Memory for LLM Agents"*, arXiv 2407.04363), which
-builds a **memory graph combining semantic and episodic knowledge** and shows that
-a **structured, well-connected memory graph** outperforms flat retrieval for agent
+builds a **memory links network combining semantic and episodic knowledge** and shows that
+a **structured, well-connected memory links network** outperforms flat retrieval for agent
 planning. Source: <https://arxiv.org/abs/2407.04363>. It is the direct predecessor
 to Wikontic and the reason the issue frames memory as a **links network world
 model** rather than a vector store. This connects issue #686 to the project's
