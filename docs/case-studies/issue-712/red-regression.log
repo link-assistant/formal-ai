@@ -1,0 +1,45 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784065142265)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.20s
+     Running tests/issue_712.rs (target/debug/deps/issue_712-a1d3a25d3ce1c15c)
+
+running 4 tests
+test declarative_new_file_routes_to_write_not_read ... FAILED
+test failed_web_search_phrasings_route_by_research_intent ... FAILED
+test failed_edit_phrasings_route_by_replacement_shape ... FAILED
+test failed_web_fetch_phrasings_route_by_url_intent ... FAILED
+
+failures:
+
+---- declarative_new_file_routes_to_write_not_read stdout ----
+
+thread 'declarative_new_file_routes_to_write_not_read' (20955) panicked at tests/issue_712.rs:59:5:
+assertion `left == right` failed
+  left: "read"
+ right: "write"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- failed_web_search_phrasings_route_by_research_intent stdout ----
+
+thread 'failed_web_search_phrasings_route_by_research_intent' (20958) panicked at tests/issue_712.rs:15:18:
+expected a tool call for "google what is a monad", got None
+
+---- failed_edit_phrasings_route_by_replacement_shape stdout ----
+
+thread 'failed_edit_phrasings_route_by_replacement_shape' (20956) panicked at tests/issue_712.rs:15:18:
+expected a tool call for "update main.rs and change foo to bar", got None
+
+---- failed_web_fetch_phrasings_route_by_url_intent stdout ----
+
+thread 'failed_web_fetch_phrasings_route_by_url_intent' (20957) panicked at tests/issue_712.rs:15:18:
+expected a tool call for "get the contents of https://example.com", got None
+
+
+failures:
+    declarative_new_file_routes_to_write_not_read
+    failed_edit_phrasings_route_by_replacement_shape
+    failed_web_fetch_phrasings_route_by_url_intent
+    failed_web_search_phrasings_route_by_research_intent
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+error: test failed, to rerun pass `--test issue_712`
