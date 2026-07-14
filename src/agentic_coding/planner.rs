@@ -18,6 +18,7 @@
 use serde_json::json;
 
 use super::change_request;
+use super::conversation_recall;
 use super::diagram;
 use super::dreaming_audit;
 use super::explain;
@@ -34,10 +35,12 @@ use super::meaning_detail;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
+use super::report_issue;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::web_research;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -202,6 +205,24 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
+    // Report-issue recipe (issue #687): a natural-language "report/file an issue"
+    // request has no web UI to fall back on in agentic mode, so it is turned into a
+    // real `gh issue create` shell tool call. Checked before the file-read and
+    // shell recipes: its intent keys on a report verb paired with an issue noun or
+    // a repository reference, disjoint from a filename read ("open notes.md") or a
+    // generic shell command.
+    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
+        return Some(report_issue::plan_report_issue_step(
+            messages, tool_names, &request,
+        ));
+    }
+    // Conversation-recall recipe (issue #687): a meta-question about the dialogue
+    // ("what were we talking about?") is answered from the message history with no
+    // tool call. Checked before the research recipe so it is not mistaken for a
+    // factual question sent to the web.
+    if let Some(answer) = conversation_recall::recall_answer_for(messages) {
+        return Some(AgenticPlan::Final(answer));
+    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
@@ -216,6 +237,17 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
+    }
+    // Web-research recipe (issue #687): a factual/research question the deterministic
+    // engine cannot answer locally is routed to the client's web-search tool, then the
+    // surfaced source is fetched and the answer read from it. Checked last, just before
+    // the general-change fallthrough, so every named recipe wins first; it returns
+    // `None` when the client advertises no web tools and there is no progress to
+    // summarize, preserving the fallthrough for clients without a web search tool.
+    if let Some(query) = web_research::web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
+        }
     }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
@@ -689,19 +721,26 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
-struct Progress {
+///
+/// `pub(super)` so recipe submodules that own their own step sequencing (e.g.
+/// [`super::report_issue`], [`super::web_research`]) can inspect progress without
+/// duplicating the scan.
+pub(super) struct Progress {
     /// Capabilities a prior `tool` result already answered.
     completed: Vec<Capability>,
     /// The latest non-errored fetch result's text, if any.
-    fetched_text: Option<String>,
+    pub(super) fetched_text: Option<String>,
+    /// The latest non-errored web-search result's text, if any.
+    pub(super) search_output: Option<String>,
     /// The latest run/shell result's text, if any.
-    run_output: Option<String>,
+    pub(super) run_output: Option<String>,
 }
 
 impl Progress {
-    fn scan(messages: &[ChatMessage]) -> Self {
+    pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
+        let mut search_output = None;
         let mut run_output = None;
         for (index, message) in messages.iter().enumerate() {
             if !message.role.eq_ignore_ascii_case("tool") {
@@ -716,6 +755,12 @@ impl Progress {
                     fetched_text = Some(text);
                 }
             }
+            if capability == Capability::Search {
+                let text = message.content.plain_text();
+                if !looks_like_error(&text) && !text.trim().is_empty() {
+                    search_output = Some(text);
+                }
+            }
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
@@ -724,12 +769,13 @@ impl Progress {
         Self {
             completed,
             fetched_text,
+            search_output,
             run_output,
         }
     }
 
     /// Whether a prior tool result already covered `capability`.
-    fn done(&self, capability: Capability) -> bool {
+    pub(super) fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
     }
 
@@ -741,7 +787,7 @@ impl Progress {
     }
 }
 
-fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
         arguments,
@@ -771,7 +817,7 @@ fn write_arguments(path: &str, content: &str) -> String {
 /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
 /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
 /// of them without a per-CLI special case.
-fn fetch_arguments(url: &str) -> String {
+pub(super) fn fetch_arguments(url: &str) -> String {
     json!({
         "url": url,
         "format": "text",
@@ -780,7 +826,7 @@ fn fetch_arguments(url: &str) -> String {
 }
 
 /// The first advertised tool name that provides `capability`, if any.
-fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
         .iter()
         .copied()

@@ -58,6 +58,7 @@ mod issue_627;
 mod issue_649_world_model;
 mod issue_676_naming;
 mod issue_676_thinking_narrative;
+mod issue_687;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
