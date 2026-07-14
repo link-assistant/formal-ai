@@ -164,6 +164,26 @@ handlers (`solver_handler_units`, `solver_handler_how`, `solver_handlers`,
 `solver_handlers_policy`) are *plugged into* the universal solver, not
 branched on by domain at the top level.
 
+Within step 6, the solver tries its specialized handlers in a fixed
+first-match-wins **precedence order**. That order is *data*, not code: it lives
+in `data/seed/handler-precedence.lino` as an ordered list of bare handler-name
+rows, each optionally carrying a trailing `#` guard note (issue #663, "Data Is
+The Interface"; the name is the row head, so the seed's meaning-closure audit,
+which grounds only *value* tokens, leaves the precedence table alone).
+`src/solver_dispatch.rs` keeps only
+the executable function pointers (`HANDLER_FUNCTIONS`, which must stay Rust) and
+`specialized_handlers()` joins the two — asserting at load time that the seed is
+an exact permutation of the registry, so a seed edit can never silently drop or
+duplicate a handler. Reordering two rows in the seed changes routing (proven by
+`cargo test routing_precedence_from_seed`); the shipped seed preserves today's
+behaviour. `MethodRegistry::from_dispatch` (`src/method_registry.rs`) surfaces
+this seed-ordered table as the `Specialized` method surface, and
+`meta_method_dispatch::try_dispatch` consumes it. The browser worker mirrors the
+seed through `src/web/seed_loader.js`; because it names its handlers differently
+and runs its async fetch handlers in a later phase, full order-parity is
+impossible, so `tests/fixtures/routing-parity.lino` pins the *shared* precedence
+invariants both surfaces must honour (checked by the routing-parity test).
+
 ---
 
 ## 3. Translating Input to Links Notation

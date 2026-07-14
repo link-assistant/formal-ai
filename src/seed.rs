@@ -27,6 +27,7 @@ mod coreference;
 mod embedded;
 mod facts;
 mod grounding_overrides;
+mod handler_precedence;
 mod market_price_references;
 mod meanings;
 mod model_aliases;
@@ -55,10 +56,10 @@ pub use coreference::{coreference_seeds, Antecedent, CoreferenceSeeds, Pronoun};
 pub use embedded::{
     seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CLIENT_INTEGRATIONS_LINO,
     CODING_IDIOMS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO, COREFERENCE_LINO, DEMO_DIALOGS_LINO,
-    ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO,
-    INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO, LEARNING_SOURCES_LINO,
-    MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO,
-    MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
+    ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO, HANDLER_PRECEDENCE_LINO,
+    HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO,
+    LEARNING_SOURCES_LINO, MARKET_PRICE_REFERENCES_LINO, MEANINGS_CALENDAR_LINO,
+    MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO, MEANINGS_SEMANTIC_META_LINO,
     MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO,
     MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO,
     PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
@@ -69,6 +70,7 @@ pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
 };
+pub use handler_precedence::{handler_precedence, handler_precedence_from};
 pub use market_price_references::{market_price_assets, MarketPriceAsset, MarketPricePeriod};
 pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
 pub use model_aliases::{

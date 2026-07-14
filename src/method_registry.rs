@@ -19,7 +19,7 @@
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
 use crate::solver_dispatch::{
-    CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES, SPECIALIZED_HANDLERS,
+    specialized_handlers, CONTEXTUAL_HANDLER_NAMES, PRELUDE_METHOD_NAMES,
 };
 
 /// How a method is reached during dispatch.
@@ -34,7 +34,8 @@ use crate::solver_dispatch::{
 pub enum MethodSurface {
     /// A method that runs before the ordered handler table.
     Prelude,
-    /// A handler in the ordered [`SPECIALIZED_HANDLERS`] table.
+    /// A handler in the ordered specialized-handler table, whose precedence is
+    /// read from `data/seed/handler-precedence.lino`.
     Specialized,
     /// A context-dependent override evaluated by `try_contextual_override`.
     Contextual,
@@ -89,12 +90,16 @@ pub struct MethodRegistry {
 
 impl MethodRegistry {
     /// Derive the registry from the live dispatch constants.
+    ///
+    /// The specialized surface is built from [`specialized_handlers`], whose
+    /// precedence comes from `data/seed/handler-precedence.lino` joined with the
+    /// registered function pointers — so the registry reflects the seed-declared
+    /// order while staying grounded in the code that actually runs.
     #[must_use]
     pub fn from_dispatch() -> Self {
+        let specialized = specialized_handlers();
         let mut methods = Vec::with_capacity(
-            PRELUDE_METHOD_NAMES.len()
-                + SPECIALIZED_HANDLERS.len()
-                + CONTEXTUAL_HANDLER_NAMES.len(),
+            PRELUDE_METHOD_NAMES.len() + specialized.len() + CONTEXTUAL_HANDLER_NAMES.len(),
         );
         for (order, name) in PRELUDE_METHOD_NAMES.iter().enumerate() {
             methods.push(Method {
@@ -103,7 +108,7 @@ impl MethodRegistry {
                 surface: MethodSurface::Prelude,
             });
         }
-        for (order, (name, _handler)) in SPECIALIZED_HANDLERS.iter().enumerate() {
+        for (order, (name, _handler)) in specialized.iter().enumerate() {
             methods.push(Method {
                 name: (*name).to_owned(),
                 order,
