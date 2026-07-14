@@ -8,6 +8,18 @@ from observable evidence.
 This runbook documents the workflow that surfaced #624, #626, and #627, and it
 feeds the CI e2e suite proposed in #625.
 
+**Scope — what CI actually runs today.** Everything below is a *local* runbook.
+The only agentic job in CI is `test-agent-cli-e2e`
+(`.github/workflows/release.yml`), which drives our own Agent CLI against
+`formal-ai serve` — with no recording proxy, no `with-formal-ai` wrapper, and
+no other vendor CLI (codex, opencode, gemini, qwen, claude, grok, and aider
+appear nowhere in the workflows). The multi-CLI × proxy matrix described in
+*CI Shape* below is the target shape, tracked by
+[#625](https://github.com/link-assistant/formal-ai/issues/625) and
+[#671](https://github.com/link-assistant/formal-ai/issues/671); the OpenAI
+Responses and Gemini `streamGenerateContent` paths mentioned later are covered
+only by these manual procedures so far.
+
 ## Setup
 
 Build the server and wrapper binaries:
@@ -241,9 +253,11 @@ summary, the final CLI output, and a minimal server-side `curl` repro that sends
 the same `messages` or `input` plus `tools` directly to the server. The `curl`
 repro lets maintainers separate a server routing bug from a CLI integration bug.
 
-## CI Shape
+## CI Shape (proposed — not yet implemented)
 
-The CI e2e suite should follow this sequence:
+The CI e2e suite should follow this sequence (tracked by #625 / #671; today CI
+runs only step 1's `formal-ai` build, step 4, and a single-CLI variant of
+step 6):
 
 1. Build `formal-ai` and `with-formal-ai`.
 2. Install pinned CLI versions.

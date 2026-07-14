@@ -617,6 +617,8 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory show --path memory.lino                              # print every recorded event
+cargo run -- memory query --path memory.lino --query "Find Rust in another conversation"
 cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
 cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
@@ -754,7 +756,7 @@ Seed rules currently cover:
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
-Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.
+Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
 
 No GPU, neural network, remote model, or random sampling is used.
 

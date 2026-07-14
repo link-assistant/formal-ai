@@ -59,6 +59,8 @@ mod issue_627;
 mod issue_649_world_model;
 mod issue_676_naming;
 mod issue_676_thinking_narrative;
+mod issue_680_intent_routing;
+mod issue_681;
 mod issue_686_associative_persistence;
 mod local_surface;
 mod memory_learning;

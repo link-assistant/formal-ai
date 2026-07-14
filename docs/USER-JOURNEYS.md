@@ -310,8 +310,9 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Visual network on demand* is a stated operating
   principle; the graph complements chat without replacing it (a declared
   non-goal of replacing chat as the primary interface).
-- **Status:** Potential future. See *Operating Principles* and the *visual
-  graph* non-goal.
+- **Status:** Potential future; the interactive step-by-step debugging view is
+  tracked by [#667](https://github.com/link-assistant/formal-ai/issues/667). See
+  *Operating Principles* and the *visual graph* non-goal.
 
 ### F2 — Wei compiles a natural-language skill
 
@@ -325,8 +326,9 @@ vision text that motivates it; build status stays in
   most reviewable to most flexible, with natural-language skills at the flexible
   end.
 - **Status:** Potential future / partially scaffolded (skill-compiler seed and
-  design exist). See *Computation Model* in
-  [`VISION.md`](../VISION.md#computation-model).
+  design exist); compiling arbitrary freely-phrased procedures is tracked by
+  [#674](https://github.com/link-assistant/formal-ai/issues/674). See
+  *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
 
 ### F3 — Olúwa syncs memory to the cloud and across devices
 
@@ -336,8 +338,9 @@ vision text that motivates it; build status stays in
   persistent storage (cloud sync) so her memory is available on every device.
 - **Why it matters:** *Growable Memory* names "future cloud sync" as an
   additional persistent storage target beyond disk and IndexedDB.
-- **Status:** Potential future. See *Growable Memory And Public Knowledge As
-  Cache*.
+- **Status:** Potential future; tracked by
+  [#669](https://github.com/link-assistant/formal-ai/issues/669). See *Growable
+  Memory And Public Knowledge As Cache*.
 
 ### F4 — Priya tackles a problem that needs search
 
@@ -349,8 +352,11 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Solution synthesis* and the *Universal Solver Goals*
   describe budget-driven search while preserving reproducibility.
 - **Status:** Potential future / partially built (deterministic synthesis path
-  exists; broader search is staged). See *Reasoning Model* and
-  [`ROADMAP.md`](../ROADMAP.md).
+  exists; broader search is staged); budget-driven search is tracked by
+  [#662](https://github.com/link-assistant/formal-ai/issues/662) and parallel
+  candidate portfolios by
+  [#704](https://github.com/link-assistant/formal-ai/issues/704). See
+  *Reasoning Model* and [`ROADMAP.md`](../ROADMAP.md).
 
 ### F5 — Lin runs heavier code in the browser
 
@@ -361,7 +367,9 @@ vision text that motivates it; build status stays in
 - **Why it matters:** *Product Shape* notes browser mode can start with
   JavaScript evaluation and later experiment with WebVM, and browser mode must
   not claim host-level execution (a non-goal).
-- **Status:** Potential future. See *Product Shape*.
+- **Status:** Potential future; the time-boxed experiment is tracked by
+  [#670](https://github.com/link-assistant/formal-ai/issues/670). See *Product
+  Shape*.
 
 ### F6 — Wei shares an associative package
 
@@ -373,7 +381,9 @@ vision text that motivates it; build status stays in
   modes.
 - **Why it matters:** *Computation Model* cites Deep.Foundation as a reference
   for associative packages, handlers, and permissions stored inside memory.
-- **Status:** Potential future. See *Computation Model*.
+- **Status:** Potential future; tracked by
+  [#668](https://github.com/link-assistant/formal-ai/issues/668). See
+  *Computation Model*.
 
 ---
 
