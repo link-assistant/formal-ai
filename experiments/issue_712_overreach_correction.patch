@@ -54,27 +54,47 @@ index 7f5897ab..e9775319 100644
      let tool = tool_for(tool_names, Capability::Fetch)?;
      let progress = Progress::scan(messages);
      if progress.done(Capability::Fetch) {
+diff --git a/src/agentic_coding/general_planner.rs b/src/agentic_coding/general_planner.rs
+index 13bdfab4..e0f79343 100644
+--- a/src/agentic_coding/general_planner.rs
++++ b/src/agentic_coding/general_planner.rs
+@@ -131,9 +131,6 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
+ /// *parsing* a write once one is recognised, this gate governs *routing*.
+ #[must_use]
+ pub(super) fn has_file_write_intent(lower: &str) -> bool {
+-    if parse_write_request(lower).is_some() {
+-        return true;
+-    }
+     /// Verbs (any supported language) that mark a request as *producing* a file
+     /// rather than reading one. Substrings so inflected forms match
+     /// (`create`/`creating`, `создай`/`создать`). Kept deliberately narrow to a
+@@ -152,6 +149,9 @@ pub(super) fn has_file_write_intent(lower: &str) -> bool {
+         "допиш",
+         "добав",
+     ];
++    if parse_write_request(lower).is_some() {
++        return true;
++    }
+     let has_write_verb = WRITE_VERBS.iter().any(|verb| lower.contains(verb));
+     if !has_write_verb {
+         return false;
 diff --git a/src/solver_handlers/mod.rs b/src/solver_handlers/mod.rs
-index 3be0683c..2df9d956 100644
+index 3be0683c..cd7499c3 100644
 --- a/src/solver_handlers/mod.rs
 +++ b/src/solver_handlers/mod.rs
-@@ -79,8 +79,9 @@ pub use web_requests::{
+@@ -79,6 +79,6 @@ pub use web_requests::{
      try_project_lookup_with_response_language, try_url_navigate, try_web_search,
  };
  pub use {
 -    web_requests::answer_web_search_query, web_requests::http_fetch_url_for,
--    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
 +    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
-+    web_requests::http_fetch_url_for, web_search_intent::web_search_query_for,
-+    web_search_intent::WebSearchQueryKind,
+     web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
  };
- 
- use crate::calculation::{
 diff --git a/src/solver_handlers/web_requests.rs b/src/solver_handlers/web_requests.rs
-index 1d48a9c0..380b2f06 100644
+index 1d48a9c0..7f99247e 100644
 --- a/src/solver_handlers/web_requests.rs
 +++ b/src/solver_handlers/web_requests.rs
-@@ -798,6 +798,16 @@ fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
+@@ -798,7 +798,16 @@ fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
  /// passes every handler — the lowercased prompt (see `meta_method_dispatch`).
  #[must_use]
  pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
@@ -89,5 +109,7 @@ index 1d48a9c0..380b2f06 100644
 +#[must_use]
 +pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
      let normalized = prompt.to_lowercase();
-     extract_http_fetch_url(prompt, &normalized)
-         .or_else(|| extract_url_navigate_url(prompt, &normalized))
+-    extract_http_fetch_url(prompt, &normalized)
+-        .or_else(|| extract_url_navigate_url(prompt, &normalized))
++    http_fetch_url_for(prompt).or_else(|| extract_url_navigate_url(prompt, &normalized))
+ }

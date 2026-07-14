@@ -80,8 +80,7 @@ pub use web_requests::{
 };
 pub use {
     web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
-    web_requests::http_fetch_url_for, web_search_intent::web_search_query_for,
-    web_search_intent::WebSearchQueryKind,
+    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
 };
 
 use crate::calculation::{

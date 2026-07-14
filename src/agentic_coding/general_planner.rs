@@ -131,9 +131,6 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
 /// *parsing* a write once one is recognised, this gate governs *routing*.
 #[must_use]
 pub(super) fn has_file_write_intent(lower: &str) -> bool {
-    if parse_write_request(lower).is_some() {
-        return true;
-    }
     /// Verbs (any supported language) that mark a request as *producing* a file
     /// rather than reading one. Substrings so inflected forms match
     /// (`create`/`creating`, `создай`/`создать`). Kept deliberately narrow to a
@@ -152,6 +149,9 @@ pub(super) fn has_file_write_intent(lower: &str) -> bool {
         "допиш",
         "добав",
     ];
+    if parse_write_request(lower).is_some() {
+        return true;
+    }
     let has_write_verb = WRITE_VERBS.iter().any(|verb| lower.contains(verb));
     if !has_write_verb {
         return false;
