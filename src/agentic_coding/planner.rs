@@ -352,7 +352,7 @@ fn plan_document_recipe(
     AgenticPlan::Final(recipe.final_answer)
 }
 
-/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
