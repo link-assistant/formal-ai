@@ -137,6 +137,55 @@ fn budget_search_respects_the_allowed_operator_set() {
 }
 
 #[test]
+fn budget_search_recognizes_reachability_across_supported_languages() {
+    // The same reachability puzzle (reach 26 from 3, 5, and 7 with + and *)
+    // phrased in every supported language. Digits and the +/* symbols are
+    // language-neutral; only the "numbers", search-verb, and target framings are
+    // localized, so the search stage must recognize and solve each variant.
+    let cases = [
+        // english
+        (
+            "english",
+            "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26.",
+        ),
+        // russian / русский
+        (
+            "russian",
+            "Используя числа 3, 5 и 7 с операциями + и *, найдите выражение, которое равно 26.",
+        ),
+        // hindi / हिंदी
+        (
+            "hindi",
+            "संख्याओं 3, 5 और 7 का + और * संक्रियाओं के साथ उपयोग करके, 26 के बराबर एक व्यंजक खोजें।",
+        ),
+        // chinese / 中文
+        (
+            "chinese",
+            "使用数字 3、5 和 7 以及运算 + 和 *，找出一个等于 26 的表达式。",
+        ),
+    ];
+
+    for (language, prompt) in cases {
+        let solver = solver_with_budget(256);
+        let answer = solver.solve(prompt);
+        assert!(
+            answer.links_notation.contains("search:problem"),
+            "[{language}] the search stage should recognize the localized reachability problem; got: {}",
+            answer.links_notation,
+        );
+        assert!(
+            answer.answer.contains("budget-driven search") && answer.answer.contains("26"),
+            "[{language}] a sufficient budget should solve the localized puzzle; got: {}",
+            answer.answer,
+        );
+        assert_eq!(
+            answer.intent, "budget_search_solution",
+            "[{language}] the solved answer should carry the budget-search intent",
+        );
+    }
+}
+
+#[test]
 fn budget_search_stays_inert_for_ordinary_prompts() {
     // A plain calculation must not be captured by the search stage.
     let solver = solver_with_budget(512);

@@ -443,25 +443,47 @@ fn join_ops(ops: &[Op]) -> String {
         .join(" ")
 }
 
-/// Recognize an arithmetic-reachability search problem. Returns `None` for any
-/// prompt that is not clearly of this shape so the stage stays inert for the
-/// overwhelming majority of impulses.
+/// Recognize an arithmetic-reachability search problem across every supported
+/// language (en, ru, hi, zh). Returns `None` for any prompt that is not clearly
+/// of this shape so the stage stays inert for the overwhelming majority of
+/// impulses. Digits and the `+`/`-`/`*` symbols are language-neutral; only the
+/// "combine numbers", search-verb, and target framings are localized.
 fn parse_search_problem(prompt: &str) -> Option<SearchProblem> {
-    let lower = prompt.to_ascii_lowercase();
+    // Unicode-aware lowercasing so Cyrillic framing keywords match regardless of
+    // case (Devanagari and Han are caseless; ASCII is unaffected).
+    let lower = prompt.to_lowercase();
 
     // Gate: require both a "combine numbers" framing and a search verb so plain
     // calculations ("3 + 5") never reach this path.
-    let has_numbers_framing = lower.contains("number");
-    let has_search_verb = ["find", "combine", "reach", "make", "express", "arrange"]
-        .iter()
-        .any(|verb| lower.contains(verb));
-    if !has_numbers_framing || !has_search_verb {
+    if !contains_any(&lower, &NUMBERS_FRAMING) || !contains_any(&lower, &SEARCH_VERBS) {
         return None;
     }
 
-    let (operand_span, target_span) = split_on_target_keyword(&lower)?;
-    let numbers = extract_integers(operand_span);
-    let target = extract_integers(target_span).into_iter().next()?;
+    // Locate the target value as the integer nearest a target keyword. This
+    // handles both operand-then-target order (en/ru/zh: "equals 26") and
+    // target-then-keyword order (hi: "26 के बराबर").
+    let integers = extract_integers_with_positions(&lower);
+    if integers.len() < 3 {
+        // Need at least two operands plus a distinct target.
+        return None;
+    }
+    let keyword_positions = target_keyword_positions(&lower);
+    if keyword_positions.is_empty() {
+        return None;
+    }
+    let target_index = integers
+        .iter()
+        .enumerate()
+        .min_by_key(|(_, (_, position))| distance_to_nearest(*position, &keyword_positions))
+        .map(|(index, _)| index)?;
+
+    let target = integers[target_index].0;
+    let numbers: Vec<i64> = integers
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| *index != target_index)
+        .map(|(_, (value, _))| *value)
+        .collect();
     if numbers.len() < 2 || numbers.len() > MAX_OPERANDS {
         return None;
     }
@@ -478,49 +500,147 @@ fn parse_search_problem(prompt: &str) -> Option<SearchProblem> {
 /// bounded regardless of the prompt.
 const MAX_OPERANDS: usize = 6;
 
-/// Split the prompt around the first target keyword. The left span holds the
-/// operands; the right span holds the target value.
-fn split_on_target_keyword(lower: &str) -> Option<(&str, &str)> {
-    const KEYWORDS: [&str; 8] = [
-        "equals ",
-        "equal to ",
-        "to reach ",
-        "reach ",
-        "to make ",
-        "to get ",
-        "gives ",
-        "results in ",
-    ];
-    let mut best: Option<(usize, usize)> = None;
-    for keyword in KEYWORDS {
-        if let Some(index) = lower.find(keyword) {
-            // Prefer the earliest keyword occurrence for a stable split.
-            if best.is_none_or(|(start, _)| index < start) {
-                best = Some((index, keyword.len()));
-            }
+/// "Combine the numbers" framing across the supported languages. Matched as
+/// substrings so inflected forms (`числа`/`чисел`, `संख्याओं`) still hit.
+const NUMBERS_FRAMING: [&str; 4] = [
+    "number", // en
+    "числ",   // ru: числа / чисел / число / числами
+    "संख्या",   // hi: संख्या / संख्याओं
+    "数字",   // zh
+];
+
+/// Search verbs (find / combine / reach / make / express / arrange) across the
+/// supported languages.
+const SEARCH_VERBS: [&str; 24] = [
+    // en
+    "find",
+    "combine",
+    "reach",
+    "make",
+    "express",
+    "arrange",
+    // ru
+    "найд",
+    "комбин",
+    "состав",
+    "получ",
+    "выраз",
+    "достич",
+    // hi
+    "खोज",
+    "बनाए",
+    "संयोज",
+    "प्राप्त",
+    "व्यक्त",
+    "पहुँच",
+    // zh
+    "找",
+    "组合",
+    "得到",
+    "表达",
+    "达到",
+    "使",
+];
+
+/// Target keywords ("equals" and friends) across the supported languages. Their
+/// positions anchor which integer is the target value.
+const TARGET_KEYWORDS: [&str; 14] = [
+    // en
+    "equals",
+    "equal to",
+    "results in",
+    "gives",
+    "reach",
+    "make",
+    "get",
+    // ru
+    "равно",
+    "равн",
+    "получ",
+    // hi
+    "बराबर",
+    // zh
+    "等于",
+    "得到",
+    "达到",
+];
+
+fn contains_any(haystack: &str, needles: &[&str]) -> bool {
+    needles.iter().any(|needle| haystack.contains(needle))
+}
+
+/// Byte offsets at which any target keyword begins in `lower`.
+fn target_keyword_positions(lower: &str) -> Vec<usize> {
+    let mut positions = Vec::new();
+    for keyword in TARGET_KEYWORDS {
+        let mut from = 0;
+        while let Some(offset) = lower[from..].find(keyword) {
+            let absolute = from + offset;
+            positions.push(absolute);
+            from = absolute + keyword.len();
         }
     }
-    let (start, len) = best?;
-    Some((&lower[..start], &lower[start + len..]))
+    positions
+}
+
+fn distance_to_nearest(position: usize, keyword_positions: &[usize]) -> usize {
+    keyword_positions
+        .iter()
+        .map(|&keyword| position.abs_diff(keyword))
+        .min()
+        .unwrap_or(usize::MAX)
 }
 
 fn parse_ops(lower: &str) -> Vec<Op> {
     let mut ops = Vec::new();
     if lower.contains('+')
-        || lower.contains("plus")
-        || lower.contains("add")
-        || lower.contains("sum")
+        || contains_any(
+            lower,
+            &[
+                "plus",
+                "add",
+                "sum",
+                "плюс",
+                "сложе",
+                "сумм",
+                "जोड़",
+                "योग",
+                "加",
+            ],
+        )
     {
         ops.push(Op::Add);
     }
-    if lower.contains("minus") || lower.contains("subtract") || lower.contains("difference") {
+    if contains_any(
+        lower,
+        &[
+            "minus",
+            "subtract",
+            "difference",
+            "минус",
+            "вычит",
+            "разност",
+            "घटा",
+            "अंतर",
+            "减",
+        ],
+    ) {
         ops.push(Op::Sub);
     }
     if lower.contains('*')
         || lower.contains('×')
-        || lower.contains("times")
-        || lower.contains("multiply")
-        || lower.contains("product")
+        || contains_any(
+            lower,
+            &[
+                "times",
+                "multiply",
+                "product",
+                "умнож",
+                "произвед",
+                "गुणा",
+                "乘",
+            ],
+        )
     {
         ops.push(Op::Mul);
     }
@@ -531,23 +651,28 @@ fn parse_ops(lower: &str) -> Vec<Op> {
     ops
 }
 
-/// Extract non-negative integers from a text span, in order of appearance.
-fn extract_integers(span: &str) -> Vec<i64> {
+/// Extract non-negative integers with their byte offsets, in order of
+/// appearance.
+fn extract_integers_with_positions(span: &str) -> Vec<(i64, usize)> {
     let mut numbers = Vec::new();
     let mut current = String::new();
-    for ch in span.chars() {
+    let mut start = 0;
+    for (offset, ch) in span.char_indices() {
         if ch.is_ascii_digit() {
+            if current.is_empty() {
+                start = offset;
+            }
             current.push(ch);
         } else if !current.is_empty() {
             if let Ok(value) = current.parse::<i64>() {
-                numbers.push(value);
+                numbers.push((value, start));
             }
             current.clear();
         }
     }
     if !current.is_empty() {
         if let Ok(value) = current.parse::<i64>() {
-            numbers.push(value);
+            numbers.push((value, start));
         }
     }
     numbers
