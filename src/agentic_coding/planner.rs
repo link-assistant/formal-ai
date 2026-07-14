@@ -1,19 +1,8 @@
 //! Deterministic agentic planner — the server's "brain" for issue #468.
 //!
-//! The maintainer's framing: *"our Formal AI system should have enough skills
-//! (meta algorithm, rust code) to actually call all the tools from any agentic
-//! CLI, understand errors from tools, and so on, call bash commands, do web fetch
-//! and web search, to actually complete the task."*
-//!
-//! This module is that meta-algorithm for the canonical issue-#468 task —
-//! formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base. It
-//! is a **pure, deterministic function of the conversation so far**: given the
-//! messages exchanged and the tool names the agentic CLI advertised, it decides
-//! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
-//! hidden state, and the same history always yields the same plan.
-//!
-//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
-//! The general fallback is likewise bounded, advertised, and deterministic.
+//! This pure meta-algorithm chooses the next tool or final answer from the
+//! conversation and advertised capabilities. It supports stored task recipes and
+//! a bounded general fallback; neural sampling and hidden state remain non-goals.
 
 use serde_json::json;
 
@@ -119,14 +108,9 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // The self-AST recipe is checked first because it is the most specific router
-    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
-    // request legitimately mentions "Links Notation" as its output format, which
-    // would otherwise be captured by the broad formalization keyword match below.
-    // The self-healing recipe is checked before self-AST: both are self-inspection
-    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
-    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
-    // guards against a request that names both.
+    // Specific self-inspection routes precede broad formalization. Associative
+    // learning comes before self-healing because both accept auto-learning terms;
+    // the requested artifact scope distinguishes their recipes.
     if associative_learning::is_associative_learning_task(&task) {
         return Some(plan_associative_learning_step(messages, tool_names));
     }
@@ -697,14 +681,13 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
 
 fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let document = associative_learning::render_document();
-    let final_answer = associative_learning::final_answer(&document);
     plan_document_recipe(
         messages,
         tool_names,
         DocumentRecipe {
             path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
             verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
-            final_answer,
+            final_answer: associative_learning::final_answer(&document),
             document,
         },
     )
