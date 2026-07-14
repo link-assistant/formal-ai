@@ -131,14 +131,6 @@ src/engine_assistant_name.rs	Как твое имя?
 src/engine_assistant_name.rs	Как тебя зовут?
 src/engine_assistant_name.rs	Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите.
 src/engine_assistant_name.rs	आपका नाम क्या है?
-src/engine_responses.rs	Glad to hear it. What would you like to do next?
-src/engine_responses.rs	Goodbye! Feel free to return any time.
-src/engine_responses.rs	Hi, how may I help you?
-src/engine_responses.rs	I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.
-src/engine_responses.rs	I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.
-src/engine_responses.rs	I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.
-src/engine_responses.rs	I'm doing great, thanks for asking! I'm ready to help — what would you like to do?
-src/engine_responses.rs	Test passed. I'm here.
 src/engine_responses.rs	What are you?
 src/engine_responses.rs	What do you do in your free time?
 src/engine_responses.rs	What is formal-ai?
