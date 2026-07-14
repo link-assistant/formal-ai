@@ -422,6 +422,10 @@ meanings
       surface
         text " investigate "
       surface
+        text " google "
+      surface
+        text "google …"
+      surface
         text "search for …"
       surface
         text "search …"
@@ -510,6 +514,10 @@ meanings
         text " see "
       surface
         text " view "
+      surface
+        text " say "
+      surface
+        text " need "
       surface
         text "find …"
       surface

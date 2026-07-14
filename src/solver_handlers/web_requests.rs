@@ -798,7 +798,9 @@ fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
 /// passes every handler — the lowercased prompt (see `meta_method_dispatch`).
 #[must_use]
 pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
-    extract_http_fetch_url(prompt, &prompt.to_lowercase())
+    let normalized = prompt.to_lowercase();
+    extract_http_fetch_url(prompt, &normalized)
+        .or_else(|| extract_url_navigate_url(prompt, &normalized))
 }
 
 fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {

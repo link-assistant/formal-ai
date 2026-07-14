@@ -131,6 +131,9 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
 /// *parsing* a write once one is recognised, this gate governs *routing*.
 #[must_use]
 pub(super) fn has_file_write_intent(lower: &str) -> bool {
+    if parse_write_request(lower).is_some() {
+        return true;
+    }
     /// Verbs (any supported language) that mark a request as *producing* a file
     /// rather than reading one. Substrings so inflected forms match
     /// (`create`/`creating`, `создай`/`создать`). Kept deliberately narrow to a
@@ -284,14 +287,18 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     // cue keeps an incidental dotted token out of the edit path, exactly as the
     // write recogniser does.
     let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
+    let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
         if !looks_like_file || !safe_relative_path(cleaned) {
             return None;
         }
-        let prev_is_cue = index.checked_sub(1).is_some_and(&is_target_cue);
-        let next_is_cue = (index + 1 < toks.len()) && is_target_cue(index + 1);
+        let prev_is_cue = index
+            .checked_sub(1)
+            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+        let next_is_cue =
+            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
         (prev_is_cue || next_is_cue).then(|| (index, cleaned.to_owned()))
     })?;
     // Extend the clause boundary left over any run of target cues so a multi-word
@@ -306,10 +313,17 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     // The edit action opens the replacement clause; the new-lead separates the old
     // text from the new text. The new-lead must follow the action so a "to"/"with"
     // belonging to an earlier clause is never mistaken for the replacement lead.
-    let action_end = toks
+    // When a leading edit action names the target ("update FILE and change A to
+    // B"), prefer the later action that introduces the replacement itself.
+    let action = toks
         .iter()
-        .find(|token| action_cues.contains(&clean_cue_token(token.text)))
-        .map(|token| token.end)?;
+        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .find(|token| token.start > toks[file_index].end)
+        .or_else(|| {
+            toks.iter()
+                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
+        })?;
+    let action_end = action.end;
     let new_lead = toks.iter().find(|token| {
         token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
     })?;
