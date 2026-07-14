@@ -103,7 +103,7 @@ struct CheckResult {
 }
 
 impl CheckResult {
-    fn is_clean(&self) -> bool {
+    const fn is_clean(&self) -> bool {
         self.routes.is_empty() && self.modules.is_empty()
     }
 }
@@ -133,7 +133,7 @@ fn should_exclude(path: &Path) -> bool {
 fn has_route_scan_extension(path: &Path) -> bool {
     path.extension()
         .and_then(|ext| ext.to_str())
-        .is_some_and(|ext| ROUTE_SCAN_EXTENSIONS.iter().any(|allowed| *allowed == ext))
+        .is_some_and(|ext| ROUTE_SCAN_EXTENSIONS.contains(&ext))
 }
 
 fn is_rust_file(path: &Path) -> bool {
@@ -208,7 +208,11 @@ fn collect_route_violations(file: &str, content: &str, out: &mut Vec<RouteViolat
     }
 }
 
-fn collect_module_declaration_violations(file: &str, content: &str, out: &mut Vec<ModuleViolation>) {
+fn collect_module_declaration_violations(
+    file: &str,
+    content: &str,
+    out: &mut Vec<ModuleViolation>,
+) {
     for (index, line) in content.lines().enumerate() {
         let trimmed = line.trim_start();
         let declaration = trimmed
@@ -347,7 +351,10 @@ fn print_violations(result: &CheckResult) {
         println!("Found new graph-named public API routes:\n");
         for violation in &result.routes {
             println!("{}", route_annotation(violation));
-            println!("  {}:{}: `{}`", violation.file, violation.line, violation.route);
+            println!(
+                "  {}:{}: `{}`",
+                violation.file, violation.line, violation.route
+            );
         }
         println!();
     }
@@ -357,7 +364,10 @@ fn print_violations(result: &CheckResult) {
         for violation in &result.modules {
             println!("{}", module_annotation(violation));
             if violation.line == 0 {
-                println!("  {}: `{}` ({})", violation.file, violation.name, violation.kind);
+                println!(
+                    "  {}: `{}` ({})",
+                    violation.file, violation.name, violation.kind
+                );
             } else {
                 println!(
                     "  {}:{}: `{}` ({})",
@@ -435,7 +445,10 @@ mod tests {
             "(\"GET\", \"/v1/graph\" | \"/api/formal-ai/v1/graph\") => handle,",
             &mut routes,
         );
-        assert!(routes.is_empty(), "the deprecated alias must be allowed: {routes:?}");
+        assert!(
+            routes.is_empty(),
+            "the deprecated alias must be allowed: {routes:?}"
+        );
     }
 
     #[test]
@@ -532,7 +545,10 @@ mod tests {
     #[test]
     fn graph_named_source_file_is_flagged() {
         assert_eq!(
-            file_name_violation(Path::new("src/agentic_coding/source_graph.rs"), "src/agentic_coding/source_graph.rs"),
+            file_name_violation(
+                Path::new("src/agentic_coding/source_graph.rs"),
+                "src/agentic_coding/source_graph.rs"
+            ),
             Some(ModuleViolation {
                 file: "src/agentic_coding/source_graph.rs".to_string(),
                 line: 0,
@@ -541,12 +557,18 @@ mod tests {
             })
         );
         assert_eq!(
-            file_name_violation(Path::new("src/engine/knowledge_graph.rs"), "src/engine/knowledge_graph.rs"),
+            file_name_violation(
+                Path::new("src/engine/knowledge_graph.rs"),
+                "src/engine/knowledge_graph.rs"
+            ),
             None,
             "the Wikidata knowledge_graph engine is allowlisted",
         );
         assert_eq!(
-            file_name_violation(Path::new("src/self_source_links.rs"), "src/self_source_links.rs"),
+            file_name_violation(
+                Path::new("src/self_source_links.rs"),
+                "src/self_source_links.rs"
+            ),
             None,
         );
     }
