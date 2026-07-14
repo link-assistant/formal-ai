@@ -2,7 +2,6 @@
 
 use serde_json::json;
 
-use super::general_planner::has_file_write_intent;
 use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
 use crate::protocol::{ChatMessage, ToolCall};
 
@@ -177,16 +176,6 @@ fn plan_list_then_read(
 
 pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
     let lower = prompt.to_ascii_lowercase();
-
-    // Issue #681: a file-creation / write request must never be routed to the read
-    // recipe — the target does not exist yet, so reading it is always the wrong
-    // tool. When the request is a write intent, decline here and let the router
-    // fall through to the general write/create planner. This is the general rule
-    // ("write intent beats read intent"), not a per-phrase special case: the same
-    // gate catches create/write/save/generate across every supported language.
-    if has_file_write_intent(&lower) {
-        return None;
-    }
 
     if let Some(path) = leading_cat_path(prompt) {
         return Some(FileReadTask::Direct {

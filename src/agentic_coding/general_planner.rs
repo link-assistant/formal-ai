@@ -112,6 +112,72 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     })
 }
 
+/// Whether `lower` (an already-lowercased request) is a file **write / create**
+/// intent — a write verb applied to something file-shaped. This is the single
+/// signal the router uses to keep a file-creation request from ever being
+/// misrouted to the file-read recipe (issue #681): a request to *produce* a file
+/// is a write, never a read of the not-yet-existing target.
+///
+/// It fires only when a write verb co-occurs with a file signal — the literal
+/// word "file"/"файл", a naming word ("named"/"called"/"именем"/"названием"), or a
+/// filename-looking token — so that "write a poem" or "save the world" (no file in
+/// sight) fall through to the ordinary solver, while "create a file named …",
+/// "save report.md …", and "generate data.json …" are recognised as writes.
+///
+/// The verb list is deliberately narrower than the seed's
+/// [`ROLE_FILE_WRITE_ACTION_CUE`](seed::ROLE_FILE_WRITE_ACTION_CUE) (which also
+/// carries the ambiguous "make"/"add"/"put") so a *read* request such as
+/// "make sense of the file X" is not mistaken for a write — the seed cue governs
+/// *parsing* a write once one is recognised, this gate governs *routing*.
+#[must_use]
+pub(super) fn has_file_write_intent(lower: &str) -> bool {
+    /// Verbs (any supported language) that mark a request as *producing* a file
+    /// rather than reading one. Substrings so inflected forms match
+    /// (`create`/`creating`, `создай`/`создать`). Kept deliberately narrow to a
+    /// creation/mutation sense so an ordinary read prompt never trips them.
+    const WRITE_VERBS: [&str; 12] = [
+        "create",
+        "write",
+        "save",
+        "generate",
+        "append to",
+        "add to",
+        "созда",
+        "запиш",
+        "сохран",
+        "записать",
+        "допиш",
+        "добав",
+    ];
+    let has_write_verb = WRITE_VERBS.iter().any(|verb| lower.contains(verb));
+    if !has_write_verb {
+        return false;
+    }
+    lower.contains("file")
+        || lower.contains("файл")
+        || lower.contains(" named ")
+        || lower.contains(" called ")
+        || lower.contains(" именем ")
+        || lower.contains(" названием ")
+        || mentions_filename_token(lower)
+}
+
+/// Whether any whitespace-delimited token in `text` looks like a local filename
+/// (`name.ext`, not a URL). Mirrors the write planner's own target heuristic so the
+/// intent gate and the extractor agree on what "a file" is.
+fn mentions_filename_token(text: &str) -> bool {
+    text.split_whitespace().any(|word| {
+        let cleaned = word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'));
+        cleaned.contains('.')
+            && !cleaned.contains("://")
+            && cleaned.rsplit_once('.').is_some_and(|(stem, extension)| {
+                !stem.is_empty()
+                    && (1..=12).contains(&extension.len())
+                    && extension.chars().all(|c| c.is_ascii_alphanumeric())
+            })
+    })
+}
+
 /// Recover the `(target, content)` of a write request from its wording.
 ///
 /// The recogniser is entirely seed-driven (issue #680). It locates the target
@@ -126,6 +192,12 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
 /// * **Destination-led** — the "write CONTENT to FILE" shape, where a
 ///   `file_write_action_cue` opens the request and a *destination* cue (not a
 ///   positional target cue) routes the preceding span into the file.
+/// * **Action-led** — the "write FILE saying CONTENT" shape, where a
+///   `file_write_action_cue` ("write"/"create"/"save"/…) directly names the file
+///   and a content-lead marker introduces the payload after it. An action cue
+///   licenses the file just like a target cue, but only marker-led content is
+///   accepted for it, so a bare "create app.rs" (no content) still falls through
+///   to the ordinary solver rather than fabricating an empty file.
 ///
 /// Both byte offsets index the lowercased copy, which is byte-length preserving
 /// for en/ru/hi/zh, so the same offsets slice the original request and the
@@ -135,10 +207,11 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let toks = tokens(request);
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+    let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
 
-    // The target file: the first safe, file-looking token that directly follows
-    // a target or destination cue. Requiring the cue keeps an incidental dotted
-    // token (a version, an abbreviation) out of the write path.
+    // The target file: the first safe, file-looking token that directly follows a
+    // target cue, a destination cue, or an action cue. Requiring a cue keeps an
+    // incidental dotted token (a version, an abbreviation) out of the write path.
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
@@ -147,8 +220,10 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         }
         let previous = index.checked_sub(1).map(|i| &toks[i])?;
         let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word) || dest_cues.contains(&previous_word))
-            .then(|| (index, cleaned.to_owned()))
+        (target_cues.contains(&previous_word)
+            || dest_cues.contains(&previous_word)
+            || action_cues.contains(&previous_word))
+        .then(|| (index, cleaned.to_owned()))
     })?;
 
     let cue = &toks[file_index - 1];
