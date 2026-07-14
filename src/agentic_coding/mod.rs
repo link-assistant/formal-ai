@@ -29,6 +29,7 @@ pub mod formalize;
 pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+mod intent_router;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;

@@ -149,6 +149,20 @@ pub(super) fn extract_web_search_request(
     })
 }
 
+/// Capability-intent probe (issue #680): the search query a web-search-intent
+/// prompt implies — for *any* phrasing, in any supported language — or [`None`]
+/// when the prompt carries no web-search intent. This is the same intent cascade
+/// the prose handler ([`super::web_requests::try_web_search`]) runs, exposed so
+/// the deterministic agentic planner (`crate::agentic_coding::planner`) can route
+/// a search request to the advertised search tool instead of answering in prose.
+/// The planner and the prose path therefore share one lexicon-driven detector and
+/// never drift. `normalized` mirrors what the specialized-handler dispatch passes
+/// every handler — the lowercased prompt (see `meta_method_dispatch`).
+#[must_use]
+pub fn web_search_query_for(prompt: &str) -> Option<String> {
+    extract_web_search_request(prompt, &prompt.to_lowercase()).map(|request| request.query)
+}
+
 fn is_personal_fact_filter_request(normalized: &str) -> bool {
     normalized.contains("facts i have contributed")
         || normalized.contains("facts ive contributed")
