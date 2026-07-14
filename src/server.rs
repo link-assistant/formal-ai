@@ -50,7 +50,7 @@ impl ApiHttpResponse {
     /// left untouched, keeping the alias byte-for-byte identical to the canonical
     /// endpoint.
     #[must_use]
-    fn into_deprecated_alias(mut self) -> Self {
+    const fn into_deprecated_alias(mut self) -> Self {
         self.deprecated = true;
         self
     }
