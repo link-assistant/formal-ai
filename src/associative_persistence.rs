@@ -121,7 +121,7 @@ pub struct ScoredExpression {
 /// combines all four into a single priority, and the eviction helpers forget the
 /// lowest-priority expressions first — so the most frequently used, most
 /// frequently changed, and most connected knowledge persists for longest.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct AssociativeMemory {
     /// The associative links network: directed expression → expression edges.
     associations: SubstitutionGraph,
@@ -382,9 +382,9 @@ impl AssociativeMemory {
     /// they were evicted (least-retained first). Frequently used, frequently
     /// changed, and well-connected expressions are the last to go.
     pub fn evict_least_used(&mut self, count: usize) -> Vec<PersistedExpression> {
-        let victims: Vec<String> = self.eviction_order().into_iter().take(count).collect();
-        victims
+        self.eviction_order()
             .into_iter()
+            .take(count)
             .filter_map(|id| self.forget(&id))
             .collect()
     }
