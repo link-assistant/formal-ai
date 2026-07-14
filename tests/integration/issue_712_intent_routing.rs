@@ -123,6 +123,25 @@ fn all_reported_capability_classes_route_in_one_matrix() {
     }
 }
 
+#[test]
+fn leading_edit_action_is_language_general() {
+    let cases = [
+        ("English", "update main.rs and change foo to bar"),
+        ("Russian", "измени main.rs и замени foo на bar"),
+        ("Hindi", "बदलो main.rs और बदलो foo से bar"),
+        ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
+    ];
+    for (language, prompt) in cases {
+        let response = chat(prompt, &["edit"]);
+        let call = &response["choices"][0]["message"]["tool_calls"][0];
+        assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
+        let arguments = chat_arguments(call);
+        assert_eq!(arguments["path"], "main.rs", "{language}: {prompt}");
+        assert_eq!(arguments["oldString"], "foo", "{language}: {prompt}");
+        assert_eq!(arguments["new_string"], "bar", "{language}: {prompt}");
+    }
+}
+
 fn chat(prompt: &str, tools: &[&str]) -> serde_json::Value {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
