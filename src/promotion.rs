@@ -341,7 +341,7 @@ impl PromotionRun {
     /// The branch/PR plan for the promoted edits — never executed automatically.
     #[must_use]
     pub fn branch_plan(&self) -> PromotionBranchPlan {
-        let branch = format!("promotion/{}", &self.id);
+        let branch = format!("promotion/{}", self.id);
         let mut commands = vec![format!("git checkout -b {branch}")];
         let promoted = self.promoted();
         for record in &promoted {
@@ -355,7 +355,7 @@ impl PromotionRun {
             commands.push(format!(
                 "git commit -m \"promote {} self-improvement proposal(s) (run {})\"",
                 promoted.len(),
-                &self.id
+                self.id
             ));
             commands.push(String::from(
                 "gh pr create --draft --fill  # human review remains the outer gate",
