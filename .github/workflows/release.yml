@@ -190,6 +190,12 @@ jobs:
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
+      - name: Test release changelog collection
+        run: rust-script --test scripts/version-and-commit.rs
+
+      - name: Check reconstructed changelog
+        run: node experiments/issue_711_rebuild_changelog.mjs --check
+
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
 
