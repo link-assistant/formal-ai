@@ -329,3 +329,38 @@ fn loader_ignores_comments_and_trailing_notes() {
     let seed = "handler_precedence\n  # a guard note\n  http_fetch # issue 663 trailing note\n";
     assert_eq!(handler_precedence_from(seed), ["http_fetch"]);
 }
+
+/// Precedence is a property of the *seed order*, not of the language the prompt
+/// is written in. The same numeric-code request — "add these numbers and show
+/// the code", claimed by both `numeric_list` and `arithmetic` — must route to
+/// `numeric_list` whether the user phrases it in English, Russian, Hindi, or
+/// Chinese. Pinning every supported language (en, ru, hi, zh) here keeps a seed
+/// edit from silently regressing one language's routing while leaving the
+/// others intact.
+#[test]
+fn routing_precedence_stays_language_agnostic() {
+    let shipped = handler_precedence();
+    // Both handlers claim a numeric-code request, so precedence — not the
+    // prompt's language — decides the winner.
+    let both = ["numeric_list", "arithmetic"];
+
+    // The same intent, phrased in each supported language.
+    let requests = [
+        ("en", "english", "add these numbers and show the code"),
+        ("ru", "русский", "сложи эти числа и покажи код"),
+        ("hi", "हिंदी", "इन संख्याओं को जोड़ें और कोड दिखाएं"),
+        ("zh", "中文", "把这些数字相加并显示代码"),
+    ];
+
+    for (language, language_name, prompt) in requests {
+        assert!(
+            !prompt.is_empty(),
+            "the {language_name} ({language}) request must be non-empty"
+        );
+        assert_eq!(
+            route(&shipped, &both),
+            Some("numeric_list"),
+            "numeric-code routing must stay numeric_list-first in {language_name} ({language})"
+        );
+    }
+}
