@@ -6,7 +6,7 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let paper_url = "https://huggingface.co/papers/2512.00590";
 
-    // R445–R452: every issue requirement is enumerated in the global matrix.
+    // R445–R458: issue body plus maintainer follow-up are in the global matrix.
     let requirements = read(root.join("REQUIREMENTS.md"));
     assert_contains_all(
         "REQUIREMENTS.md",
@@ -21,10 +21,18 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
             "| R450 ",
             "| R451 ",
             "| R452 ",
+            "| R453 ",
+            "| R454 ",
+            "| R455 ",
+            "| R456 ",
+            "| R457 ",
+            "| R458 ",
             "docs/case-studies/issue-686/requirements.md",
             "docs/case-studies/issue-686/persistence-mapping.md",
             "docs/case-studies/issue-686/solution-plans.md",
             "src/associative_persistence.rs",
+            "src/web/memory.js",
+            "agentic_coding::associative_learning",
             paper_url,
         ],
     );
@@ -68,6 +76,9 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
             "Wikontic",
             "R445",
             "R452",
+            "Agent CLI",
+            "qualifier",
+            "multi-hop",
         ],
     );
 
@@ -76,7 +87,7 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
     assert_contains_all(
         "docs/case-studies/issue-686/requirements.md",
         &issue_requirements,
-        &["R686-01", "R686-07", "R686-13", "R445–R452"],
+        &["R686-01", "R686-07", "R686-13", "R686-18", "R445–R458"],
     );
 
     // R448: the concept -> associative-stack mapping with honest status.
@@ -89,7 +100,9 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
             "SubstitutionGraph",
             "stable_id",
             "src/associative_persistence.rs",
-            "7 done",
+            "13 done",
+            "recall_related",
+            "writeCount",
         ],
     );
 
@@ -107,6 +120,35 @@ fn issue_686_associative_persistence_case_study_documents_are_present_and_tracea
             "degree centrality",
             "SubstitutionGraph",
             "R686-07",
+        ],
+    );
+
+    let agent_session =
+        read(root.join("docs/case-studies/issue-686/agent-cli-session-associative-learning.json"));
+    assert_contains_all(
+        "agent-cli-session-associative-learning.json",
+        &agent_session,
+        &[
+            "formal-ai in-repo agentic CLI",
+            "associative-learning-report.lino",
+            "retention_formula",
+            "multi_hop_recall",
+            "write_file",
+            "run_command",
+        ],
+    );
+    let external_agent_evidence =
+        read(root.join("docs/case-studies/issue-686/agent-cli-external-e2e.lino"));
+    assert_contains_all(
+        "agent-cli-external-e2e.lino",
+        &external_agent_evidence,
+        &[
+            "@link-assistant/agent",
+            "target/release/formal-ai serve",
+            "chat_completion_rounds \"3\"",
+            "artifact_bytes \"1479\"",
+            "result \"E2E OK\"",
+            "retention_formula",
         ],
     );
 

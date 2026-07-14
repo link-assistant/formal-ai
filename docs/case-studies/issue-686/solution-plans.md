@@ -2,9 +2,11 @@
 
 Per **R686-11**, this file gives a concrete solution plan for each requirement in
 [`requirements.md`](requirements.md) and, for each, names the **existing component
-or external library** it reuses. The guiding finding of the case study (see
-[`README.md`](README.md)) is that usage-weighted persistence is an
-**audit-and-wire** task over the associative stack, so every plan below reuses
+or external library** it reuses. The revised finding (see
+[`README.md`](README.md) §0) is that the first audit-and-wire implementation was
+necessary but insufficient: the policy must run through durable memory,
+automatic dreaming, and Agent CLI, and it must transfer the paper's whole
+symbolic pipeline. Every plan below reuses
 `SubstitutionGraph` (the links network), `stable_id` (content addressing), and the
 `dreaming` LFU precursor rather than new infrastructure.
 
@@ -19,7 +21,8 @@ file.
 
 PR #689 landed a first-class **`AssociativeMemory`** = `{ associations:
 SubstitutionGraph, expressions: BTreeMap<String, PersistedExpression> }`. A
-**`PersistedExpression`** is `{ id, text, reads, writes }` keyed by a
+**`PersistedExpression`** is `{ id, text, reads, writes, qualifiers,
+validation_issues }` keyed by a
 content-addressed `stable_id` so one meaning is one node (Wikontic dedup). Reads
 and writes are counted per expression; **associations** between expressions are
 `SubstitutionLink` doublets in the embedded graph, giving each node an `in_degree`
@@ -28,19 +31,21 @@ incoming·in_degree + outgoing·out_degree` (weights from `RetentionWeights`)
 collapses all four signals into one priority; **eviction** (`eviction_order`,
 `evict_least_used`, `retain_most_used`) forgets the lowest-scored first, so the
 most used, most changed, and most connected expressions persist longest.
-`from_context` ingests a world-model `Context` (issue #649), preserving statement
-ids and turning dependency edges into associations. Everything is deterministic
-(no clocks, no randomness) and serializes to Links Notation (`links_notation`).
+`from_memory_events` rebuilds the policy from durable events and their evidence;
+`from_context` remains the world-model adapter. Everything is deterministic (no
+clocks or randomness) and serializes to Links Notation (`links_notation`).
 
 ---
 
 ## Per-requirement plans
 
 ### R686-01 — Apply the paper's best practices (Wikontic)
-**Plan (Done):** lift the paper's two transferable lessons — *one meaning is one
-node* and *degree drives retrieval/importance* — rather than its LLM extraction
-pipeline (out of scope for a symbolic engine). Dedup is inherited from
-content-addressed `stable_id`; degree becomes a first-class retention signal.
+**Plan (Done):** transfer qualifier preservation, relation/type alignment,
+alias-aware normalization and deduplication, incremental storage, retained
+verification warnings, and bounded multi-hop retrieval. `MemoryEvent` provides the
+symbolic candidate/qualifier input; `from_memory_events` performs normalization and
+validation; `recall_related` performs retrieval. Degree additionally becomes the
+issue-defined retention signal.
 **Reuses:** `src/engine.rs::stable_id`, `src/substitution.rs::SubstitutionGraph`.
 **Prior art:** Wikontic (entity degree ↔ retrieval, alias-aware dedup);
 online-research §1.
@@ -96,16 +101,34 @@ for byte-for-byte reproducibility. **Reuses:** `SubstitutionGraph`,
 doublet / associative-links model (online-research §5); the project's standing
 "everything is a link" commitment.
 
-### R686-08 … R686-13 — Meta-deliverables
-**Plan (Done):** the `gh`-exported `raw-data/` captures (R686-08); this analysis
-plus the cited `online-research.md` (R686-09); the `requirements.md` table
-(R686-10); this file and the prior-art survey below (R686-11); the honest
-`persistence-mapping.md` (R686-12); all landed in PR #689 together with the
-`src/associative_persistence.rs` implementation, its
-`tests/unit/issue_686_associative_persistence.rs` coverage, `REQUIREMENTS.md` rows
-R445–R452, a changelog fragment, and the
-`tests/unit/docs_requirements_issue_686.rs` traceability test (R686-13).
-**Reuses:** the case-study conventions of issue-649 and issue-482.
+### R686-08 … R686-11 — Paper pipeline
+**Plan (Done):** adapt paper stages to symbolic events: metadata becomes
+qualifiers; evidence endpoint checks become ontology alignment; stable ids and
+namespaced suffix resolution provide incremental normalization/deduplication;
+unresolved evidence is retained with a warning; deterministic bidirectional BFS
+provides bounded multi-hop recall. **Reuses:** `MemoryEvent`, `stable_id`,
+`SubstitutionGraph`; **prior art:** Wikontic stages 1–6 and final verification.
+
+### R686-12 — Durable auto-learning integration
+**Plan (Done):** add monotone `write_count` beside `access_count`, serialize it as
+`writeCount`, merge it across sync, increment it only when a stored event is
+changed, and rebuild the associative policy view inside `dreaming::usage_counts`.
+Mirror the portable fields and substitution increment in browser IndexedDB.
+**Reuses:** `MemoryStore`, `SyncStore`, `dreaming`, `storage_policy`, `memory.js`.
+
+### R686-13 — Formal AI via Agent CLI
+**Plan (Done):** parse a persisted Links Notation scenario, derive a ranked
+multi-hop report through production `AssociativeMemory`, then use the generalized
+`DocumentRecipe` to make any compatible Agent CLI write, verify, and report the
+artifact. Pin different prompt phrasings, tool-authoring behavior, derived-output
+sensitivity, and a real external CLI session. **Reuses:** issue-538 Agent CLI
+harness, `run_agentic_task`, `plan_document_recipe`.
+
+### R686-14 … R686-18 — Evidence and delivery
+**Plan (Done):** refresh all raw GitHub APIs; deepen primary-source research;
+maintain this per-requirement plan/mapping; reproduce stable-id mutation and
+runtime integration defects with automated tests; merge current `main`; land all
+work in PR #689. **Reuses:** case-study conventions and repository CI guidance.
 
 ---
 
@@ -126,10 +149,10 @@ vs. re-expresses.
   substrate.*
 - **`stable_id`** (`src/engine.rs`) — FNV-1a content addressing. *One meaning is
   one node (Wikontic dedup).*
-- **`dreaming::usage_counts`** (`src/dreaming.rs`) — LFU scoring of memory events by
-  `access_count` + citation in-degree, with lowest-first eviction. *The retention
-  precursor this module generalizes and completes (adds writes + outgoing degree +
-  an expression store).*
+- **`dreaming::usage_counts`** (`src/dreaming.rs`) — rebuilds the associative
+  policy view from durable events and ranks them by reads, writes, and both link
+  directions. *The former read + citation-in-degree precursor is now the production
+  consumer of the generalized policy.*
 - **`storage_policy`** (`src/storage_policy.rs`) — consent-gated, write-driven
   auto-free-space. *The pressure-driven eviction context this policy plugs into.*
 - **`world_model`** (`src/world_model.rs`, issue #649) — `Context`, `Statement`,
@@ -139,8 +162,9 @@ vs. re-expresses.
 ### External formalisms / literature (re-expressed in the associative stack)
 - **Wikontic** (arXiv 2512.00590; the cited paper) — LLM-built, Wikidata-aligned
   KG with alias-aware dedup and high entity degree for efficient multi-hop
-  retrieval. *Re-expressed*: dedup via `stable_id`, degree as a retention signal;
-  the LLM extraction pipeline is out of scope for a symbolic engine.
+  retrieval. *Re-expressed*: qualifier-preserving candidates, alignment warnings,
+  alias normalization/deduplication, incremental storage, and bounded multi-hop
+  recall; degree is additionally used as the issue-defined retention signal.
 - **AriGraph** (arXiv 2407.04363; same lab) — episodic+semantic memory links
   network for agents. *Confirms the "well-connected links network as memory" framing that
   motivates degree-weighted retention.*
@@ -155,9 +179,9 @@ vs. re-expresses.
 
 ### External systems surveyed, intentionally not adopted
 - **Vector databases / embedding memory** (FAISS, HNSW, RAG stores) — retrieval by
-  learned similarity. *Out of scope by construction*: the issue requires a links
-  network *instead of* embeddings, and demands a glass-box, deterministic policy
-  that similarity search cannot provide.
+  learned similarity. These were evaluated but not selected: this issue requires
+  a links network and a glass-box, deterministic policy that similarity search
+  does not provide.
 
 **Net conclusion:** for every requirement, either an in-repo component already
 realizes it (and is cited) or the new module supplies the exact missing

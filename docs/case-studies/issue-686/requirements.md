@@ -1,58 +1,47 @@
 # Issue 686 — Holistic Requirements
 
-Every requirement extracted from the issue body. The issue has **no comments**
-([`raw-data/issue-686-comments.json`](raw-data/issue-686-comments.json) is `[]`),
-so the body is the complete specification. Requirements are split into the
-**conceptual feature** the issue describes (R686-01 … R686-07) and the
-**meta-deliverable** it asks this PR to produce (R686-08 … R686-13).
-
-Status legend: **Realized** — already present in the codebase and reused as-is;
-**Partial** — a reusable precursor exists but not in the shape the issue wants;
-**Proposed** — scoped future work with a concrete plan in
-[`solution-plans.md`](solution-plans.md); **Done** — delivered by this PR.
+This list combines the issue body with the maintainer's follow-up on PR #689
+([comment](https://github.com/link-assistant/formal-ai/pull/689#issuecomment-4973111296)).
+The issue thread itself has no comments, but the PR feedback materially expands
+the acceptance criteria: implement the full vision through auto-learning, execute
+the same task through Formal AI via Agent CLI, follow the repository's
+self-hosting/testing guidance, and generalize touched logic.
 
 ## Conceptual feature requirements
 
-| ID | Requirement (verbatim intent) | Status |
+| ID | Requirement | Status and evidence |
 |---|---|---|
-| **R686-01** | Apply the **best practices from the cited paper** (arXiv 2512.00590, *Wikontic*): normalize/deduplicate so **one meaning is one node**, and treat **node degree as the currency of retrieval/importance**. | Realized (substrate) — content-addressed `stable_id` already gives one node per meaning (`src/engine.rs`); degree is now a first-class signal in `src/associative_persistence.rs`. |
-| **R686-02** | Keep a **persistent** version of **meta-language expressions** saved in **associative links networks** — not only *operate* on facts but *retain* them. | Done — `src/associative_persistence.rs::AssociativeMemory` persists each expression as a content-addressed node in an embedded `SubstitutionGraph`. |
-| **R686-03** | **Count usages (reads)** per expression. | Done — `AssociativeMemory::{note_read, reads}`; a fresh expression starts at 0 reads. |
-| **R686-04** | **Count changes (writes)** per expression. | Done — `AssociativeMemory::{persist, note_write, writes}`; asserting or re-asserting an expression is a write. |
-| **R686-05** | The data **most frequently used or changed persists for longer** (usage-weighted retention / eviction). | Done — `AssociativeMemory::{retention_score, retention_ranking, eviction_order, evict_least_used, retain_most_used}` — an LFU-style policy that forgets the lowest-scored first. |
-| **R686-06** | **Calculate usages based on incoming and outgoing links** (degree as an alternative usage signal). | Done — `AssociativeMemory::{in_degree, out_degree, degree, link_usage}`; both degree halves also feed `retention_score` with independent weights. |
-| **R686-07** | **Keep everything as a link, or link network — not graph, not edges, not vertices.** | Done — associations are `SubstitutionLink` doublets in a `SubstitutionGraph`; `AssociativeMemory::links_notation` serializes expressions, reads, writes, and associations all as links. |
+| **R686-01** | Apply **all transferable Wikontic practices**, not merely deduplication and degree. | Done — candidate event ingestion preserves qualifiers; evidence relations are validated; prefixed aliases normalize to canonical ids; duplicate ids merge; warnings are retained; bounded multi-hop recall is executable in `AssociativeMemory::from_memory_events` and `recall_related`. |
+| **R686-02** | Persist meta-language expressions in associative links networks. | Done — `AssociativeMemory`, Links Notation, and the durable `MemoryEvent` adapter. |
+| **R686-03** | Count reads. | Done — `access_count` round-trips durably and becomes `PersistedExpression::reads`; multi-hop recall increments reads. |
+| **R686-04** | Count writes/changes. | Done — durable `MemoryEvent::write_count`/`writeCount`, stable-id updates, sync merge, Rust substitution, and browser substitution. |
+| **R686-05** | Retain frequently read or changed data longer. | Done — dreaming now uses `AssociativeMemory::retention_score`, so the live eviction plan consumes the four-signal score. |
+| **R686-06** | Derive usage from both incoming and outgoing links. | Done — evidence and legacy id references become directed associations; both degree halves contribute to live dreaming usage. |
+| **R686-07** | Keep everything as links / links networks, never a separate vertex/edge model. | Done — associations use `SubstitutionLink`; persistence/report artifacts use Links Notation. |
 
-## Meta-deliverable requirements (this PR)
+## Paper-pipeline and runtime requirements
 
-| ID | Requirement | Status |
+| ID | Requirement | Status and evidence |
 |---|---|---|
-| **R686-08** | **Collect the issue-related data** into `docs/case-studies/issue-686/`. | Done — [`raw-data/`](raw-data/). |
-| **R686-09** | Do a **deep case-study analysis**, including **online research** for additional facts. | Done — [`README.md`](README.md) + [`raw-data/online-research.md`](raw-data/online-research.md). |
-| **R686-10** | **List each and all requirements** from the issue. | Done — this file (R686-01 … R686-13). |
-| **R686-11** | Propose **possible solutions and solution plans for each requirement**, checking **known existing components/libraries**. | Done — [`solution-plans.md`](solution-plans.md). |
-| **R686-12** | Map each concept to its associative-stack realization with **honest status**. | Done — [`persistence-mapping.md`](persistence-mapping.md). |
-| **R686-13** | **Plan and execute everything in the single PR** ([#689](https://github.com/link-assistant/formal-ai/pull/689)). | Done — every artifact in this directory plus the `src/associative_persistence.rs` implementation, its `tests/unit/issue_686_associative_persistence.rs` coverage, `REQUIREMENTS.md` rows R445–R452, the changelog fragment, and the traceability test. |
+| **R686-08** | Preserve context qualifiers during candidate extraction. | Done — event kind, role, intent, tool, time, and conversation qualifiers are retained per expression and serialized as links. |
+| **R686-09** | Apply ontology-aware alignment without hiding failures. | Done — evidence relation endpoints are checked; unresolved candidates remain persisted with `validation_issues`. |
+| **R686-10** | Normalize aliases and deduplicate incrementally. | Done — stable ids deduplicate expressions; namespaced evidence aliases resolve to canonical event ids; stable-id rewrites replace stale text and increment writes. |
+| **R686-11** | Support iterative, bounded multi-hop retrieval. | Done — deterministic bidirectional breadth-first `recall_related(id, max_hops)` with read accounting. |
+| **R686-12** | Integrate the policy into real persistent memory and auto-learning/dreaming. | Done — `MemoryEvent` serialization/sync/substitution and `dreaming::usage_counts` use the associative adapter; the browser mirror persists the same counters. |
+| **R686-13** | Execute the same learning task through Formal AI via Agent CLI. | Done — `agentic_coding::associative_learning`, the generalized document recipe, derived input fixture, driver tests, and committed external-CLI evidence. |
 
-## Why these thirteen and not more
+## Case-study and delivery requirements
 
-The issue body is three short intent paragraphs plus one meta paragraph.
-R686-01 is the "use all the best practices from [the paper]" sentence; R686-02 is
-the "persistent version of meta language expressions saved in associative links
-networks / we not only operate with facts we persist them" sentence; R686-03 and
-R686-04 are the "count usages (reads) and changes (writes)" clause; R686-05 is the
-"most frequently used or changes should persistent for longer" sentence; R686-06
-is the "calculate usages based on incoming and outgoing links" sentence; R686-07
-is the "keep everything as a link, or link network, not graph, not edges, not
-vertices" sentence. R686-08 … R686-13 are the sentences of the final meta
-paragraph (collect data → deep analysis with online research → list requirements →
-propose solution plans surveying existing components → do it all in this one PR),
-plus the honest concept→stack mapping the project's case-study pattern requires.
-No requirement is implied beyond these without over-reading the text.
+| ID | Requirement | Status and evidence |
+|---|---|---|
+| **R686-14** | Collect issue and PR data in this case-study directory. | Done — refreshed `raw-data/` includes the maintainer feedback and all three PR comment/review APIs. |
+| **R686-15** | Perform deep online research and distinguish paper claims from project inferences. | Done — `raw-data/online-research.md` covers all six Wikontic stages and labels degree-weighted retention as issue #686's inference. |
+| **R686-16** | Propose solutions/plans and survey reusable components. | Done — `solution-plans.md` and `persistence-mapping.md`. |
+| **R686-17** | Add reproducing automated tests before fixing logic defects. | Done — stable-id stale-text, durable write round-trip, bidirectional retention, qualifiers/warnings, multi-hop, and Agent CLI regressions. |
+| **R686-18** | Plan and execute all work in PR #689, including merging current `main`. | Done — the branch contains merge commit `978a0164` and all implementation/docs/tests. |
 
-## Relationship to the global requirement matrix
+## Relationship to the global matrix
 
-These per-issue IDs are the fine-grained specification. The
-[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) global matrix records this PR's
-concrete deliverables as rows **R445–R452** under *"Issue #686 Associative
-Knowledge Networks Learning"*, each pointing back into this directory.
+The global [`REQUIREMENTS.md`](../../../REQUIREMENTS.md) retains R445–R458 for
+the original issue-body deliverables and adds R453–R458 for the maintainer's
+full-pipeline, durable-runtime, browser-mirror, and Agent CLI acceptance criteria.

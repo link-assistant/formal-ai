@@ -16,15 +16,19 @@ bump: minor
   forget the lowest-scored first, and `forget` removes an expression together with
   its incident links. Everything serializes to Links Notation, `from_context`
   ingests an issue #649 world-model `Context` preserving statement ids, and the
-  whole policy is deterministic (no clocks, no randomness). Reuses the existing
-  `SubstitutionGraph` links network, `stable_id` content addressing, and the
-  read-count LFU precursor in `src/dreaming.rs`; covered by
-  `tests/unit/issue_686_associative_persistence.rs`.
+  whole policy is deterministic (no clocks, no randomness). Durable
+  `MemoryEvent::write_count` now round-trips through native serialization, sync,
+  substitutions, link projection, and the browser mirror; automatic dreaming
+  rebuilds this associative view and uses the complete score for real eviction.
+  Event ingestion also preserves qualifiers and validation warnings, normalizes
+  evidence aliases, and supports bounded multi-hop recall. A derived persisted
+  memory scenario executes through Formal AI and the real external Agent CLI.
+  Covered by the issue-686 persistence, dreaming, and agentic regression suites.
 - Design case study for issue #686 under `docs/case-studies/issue-686/`: a deep
   analysis mapping persistence, read/write counting, incoming/outgoing-link-degree
   usage, and links-only retention onto the associative stack, with cited online
-  research (the Wikontic paper's entity-degree↔retrieval and dedup lessons,
+  research (the Wikontic paper's full transferable symbolic pipeline,
   AriGraph, LFU/LRU cache replacement, reference counting, degree centrality), a
-  per-requirement solution plan and prior-art survey, requirement rows R445–R452 in
+  per-requirement solution plan and prior-art survey, requirement rows R445–R458 in
   `REQUIREMENTS.md`, and the `tests/unit/docs_requirements_issue_686.rs`
   traceability test.

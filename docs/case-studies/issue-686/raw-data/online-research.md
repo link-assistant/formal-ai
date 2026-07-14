@@ -12,11 +12,14 @@ The issue links <https://huggingface.co/papers/2512.00590>. That paper is
 Language Models"** by Alla Chepurova, Aydar Bulatov, Yuri Kuratov, and Mikhail
 Burtsev, which introduces a system named **Wikontic**. Its relevant findings:
 
-- It **constructs a knowledge graph from open-domain text**, extracting candidate
-  triplets with qualifiers, enforcing Wikidata-based type/relation constraints,
-  and **normalizing entities to reduce duplication** (alias-aware matching so
-  "NYC" and "New York City" resolve to one canonical node). Source: paper abstract
-  via <https://huggingface.co/papers/2512.00590> and <https://arxiv.org/abs/2512.00590>.
+- Its pipeline has six relevant stages: a curated Wikidata ontology; candidate
+  relation extraction that preserves contextual qualifiers; ontology-aware type,
+  domain, and range refinement; canonical-label/alias normalization and
+  deduplication; incremental structured storage; and iterative multi-hop
+  retrieval. A final verifier flags ontology-misaligned relations but retains
+  them for inspection and revision. Sources: the official
+  [abstract](https://arxiv.org/abs/2512.00590) and
+  [full HTML paper](https://arxiv.org/html/2512.00590).
 - The resulting graphs are **"compact, ontology-consistent, and well-connected"**;
   it reports an **average entity degree of ~4.3** and the correct answer entity
   present in **96% of triplets** on MuSiQue, which it ties directly to **efficient
@@ -25,15 +28,19 @@ Burtsev, which introduces a system named **Wikontic**. Its relevant findings:
 - It is **~3× more token-efficient than AriGraph** and much cheaper than GraphRAG.
   Source: same.
 
-**Why this matters for issue #686.** The paper's transferable "best practices" are
-not its LLM extraction pipeline (out of scope — `formal-ai` is symbolic, not an
-LLM KG builder) but its two structural lessons: (a) **deduplicate/normalize
-entities so one meaning is one node** — which the associative stack already does
-with content-addressed `stable_id`; and (b) **node degree is the currency of
-retrieval efficiency** — a well-connected node is reached more often. Issue #686
-lifts exactly that principle into a *retention* policy: **"calculate usages based
-on incoming and outgoing links"**, i.e. let degree, not just explicit reads, drive
-how long knowledge persists.
+**Why this matters for issue #686.** The first PR draft incorrectly reduced the
+paper to deduplication plus degree and declared the remaining pipeline out of
+scope. The maintainer's follow-up requires the ambitious generalized vision, so
+the implementation transfers every symbolic practice: `MemoryEvent`s are
+candidates; event metadata becomes precision-bearing qualifiers; evidence
+relations are alignment-checked; namespaced references normalize to canonical
+ids; stable ids deduplicate incremental ingestion; unresolved relations remain
+visible as warnings; and `recall_related` performs bounded multi-hop traversal.
+
+The paper reports connectivity and retrieval results, but it does **not** propose
+degree-weighted cache retention. Treating incoming/outgoing degree as a retention
+signal is an explicit inference and requirement from issue #686, combined here
+with durable reads and writes; it must not be attributed to the paper itself.
 
 ## 2. Same lab — AriGraph (the memory-links lineage)
 
@@ -54,26 +61,28 @@ should persist for longer"* — is the classic **cache-eviction** problem:
 - **LFU (Least-Frequently-Used)** evicts the item with the lowest access count;
   **LRU (Least-Recently-Used)** evicts the least-recently-touched. Because the
   issue mandates **determinism** (no clocks), this project uses the **frequency**
-  axis (LFU-style), not the recency axis. General reference:
-  <https://en.wikipedia.org/wiki/Cache_replacement_policies>.
-- **Reference counting** in garbage collection reclaims an object when its
-  **incoming-reference count** drops to zero — the direct analogue of the issue's
-  "usages based on incoming … links". Reference:
-  <https://en.wikipedia.org/wiki/Reference_counting>.
-- The associative stack **already** implements an LFU-style policy for memory
-  events: `dreaming::usage_counts` scores each event by `access_count` plus its
-  citation in-degree and evicts the lowest first (verified at
-  [`src/dreaming.rs`](../../../../src/dreaming.rs)). Issue #686's contribution is to
-  add the **write/change** axis and the **outgoing-link** axis the existing policy
-  omits, and to apply the policy to **persisted meta-language expressions**, not
-  only to memory events.
+  axis (LFU-style), not the recency axis. The USENIX replacement-policy survey
+  gives these operational definitions, and the LFU-Lite analysis proves
+  frequency counting can achieve order-optimal regret:
+  <https://www.usenix.org/legacy/publications/library/proceedings/usits97/full_papers/cao/cao_html/node4.html>,
+  <https://arxiv.org/abs/2004.00472>.
+- **Reference counting** in garbage collection reclaims storage according to
+  live references — the direct analogue of the issue's "usages based on incoming
+  … links". A primary implementation study is Mancini and Shrivastava's
+  fault-tolerant reference-count collector:
+  <https://doi.org/10.1093/comjnl/34.6.503>.
+- The associative stack's precursor used `access_count` plus citation in-degree.
+  PR #689 now persists `writeCount` and routes live dreaming retention through
+  `AssociativeMemory::from_memory_events`, which combines reads, writes, incoming
+  references, and outgoing evidence links in the same policy used for eviction.
 
 ## 4. Degree as an importance signal — network science
 
 Ranking nodes by their link count is **degree centrality**, the simplest
 centrality measure in network science: a node's importance is proportional to the
 number of links incident on it (in-degree + out-degree for a directed network).
-Reference: <https://en.wikipedia.org/wiki/Centrality#Degree_centrality>. Wikontic's
+Reference: Freeman's foundational centrality paper,
+<https://doi.org/10.1016/0378-8733(78)90021-7>. Wikontic's
 "entity degree ↔ retrieval efficiency" result (§1) is an applied instance: the
 higher a node's degree, the more retrieval paths reach it. Issue #686 reuses
 degree as one of four retention signals, alongside reads, writes, and the network
@@ -94,12 +103,13 @@ associations — as Links Notation.
 
 ## 6. Net conclusion
 
-The paper contributes the **principle** (dedup to one-node-per-meaning; degree
-drives retrieval); the caching/GC literature contributes the **mechanism**
+The paper contributes a full **symbolic pipeline** (qualifiers, ontology-aware
+validation, normalization/deduplication, incremental storage, verification, and
+multi-hop retrieval); the caching/GC literature contributes the **mechanism**
 (frequency-weighted retention, reference-count-style incoming-link usage); network
 science contributes the **measure** (degree centrality). Issue #686 composes these
 into a deterministic, glass-box, links-only retention policy over persisted
-meta-language expressions — and the audit finds the associative stack already
-supplies the substrate, so the work is to add the two missing signals (writes,
-outgoing degree) and a first-class persistence store, not to build new
-infrastructure.
+meta-language expressions. The existing associative stack supplies the substrate,
+but realizing the vision requires a durable write signal, both link directions,
+paper-pipeline adapters, automatic-dreaming integration, portable browser/sync
+formats, and self-hosted Agent CLI execution—not merely a standalone store.

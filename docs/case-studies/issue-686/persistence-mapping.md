@@ -10,8 +10,9 @@ associative machinery, and PR #689 then **did the wiring**, landing
 (`AssociativeMemory`, `PersistedExpression`, `RetentionWeights`,
 `ScoredExpression`) that realizes the core of the feature.
 
-Summary: **7 done (all via the new `associative_persistence` module), 2 realized
-substrate** across 9 concept rows. The audit's central finding is that the
+Summary: **13 done, 2 realized substrate** across 15 concept rows. The initial audit
+identified the links substrate, but maintainer feedback required the policy to run
+through durable memory, dreaming, browser interoperability, and Agent CLI. The
 associative stack **already** had two of the three ingredients — a links network
 (`SubstitutionGraph`) and an LFU-style read-count eviction policy
 (`dreaming::usage_counts`) — but was missing the **write/change** counter, the
@@ -31,13 +32,19 @@ with executable coverage in
 | 7 | **Usages from incoming and outgoing links** (degree) | In-degree, out-degree, and their sum, each an independent retention signal | `src/associative_persistence.rs::{in_degree, out_degree, degree, link_usage, RetentionWeights}` | Done |
 | 8 | Bridge to **world models / formal systems / contexts** | A world-model `Context`'s statements + dependency edges ingest into the store, preserving statement ids | `src/associative_persistence.rs::from_context`; reuses `src/world_model.rs::{Context, Statement, Dependency}` (issue #649) | Done |
 | 9 | Read-count eviction already present (the precursor being extended) | LFU policy over memory events by `access_count` + citation in-degree | `src/dreaming.rs::usage_counts`; `src/storage_policy.rs` (consent-gated auto-free) | Realized (substrate) |
+| 10 | Preserve extraction **qualifiers** | Event kind/role/intent/tool/time/conversation metadata remains attached to the persisted expression | `AssociativeMemory::from_memory_events`; `PersistedExpression::qualifiers` | Done |
+| 11 | Ontology/relation **alignment with retained warnings** | Evidence endpoints are validated; unresolved relations remain inspectable | `PersistedExpression::validation_issues` | Done |
+| 12 | Alias normalization, dedup, incremental extension | Stable ids merge expressions; namespaced evidence suffixes resolve to canonical ids; stable-id mutation updates text | `from_memory_events`; `persist_identified` | Done |
+| 13 | Iterative **multi-hop retrieval** | Bounded deterministic traversal follows incoming and outgoing links and counts reads | `AssociativeMemory::recall_related` | Done |
+| 14 | Durable runtime and automatic retention | `writeCount` survives serialization/sync/substitution; dreaming scores through the associative adapter; browser mirrors counters | `src/memory.rs`; `src/memory_sync.rs`; `src/dreaming.rs::usage_counts`; `src/web/memory.js` | Done |
+| 15 | Same task through Formal AI via Agent CLI | Derived persisted-memory report follows generalized write → verify → final recipe | `src/agentic_coding/associative_learning.rs`; `tests/unit/issue_686_agent_cli.rs` | Done |
 
-## What PR #689 implemented (the three missing connections)
+## What PR #689 implemented (the complete runtime connection)
 
-The audit predicted usage-weighted persistence was an **audit-and-wire** task, and
-PR #689 did the wiring in
-[`src/associative_persistence.rs`](../../../src/associative_persistence.rs). The
-three gaps the existing machinery left open are now closed:
+The first audit correctly identified three policy gaps, but incorrectly treated
+the standalone store as sufficient. The revised implementation closes those gaps
+and connects the policy to durable memory, dreaming, browser interchange,
+multi-hop retrieval, and Agent CLI execution:
 
 - **Write/change counting (row 5).** The existing `dreaming::usage_counts` scores a
   memory event by reads (`access_count`) plus citation in-degree only — a change to
@@ -49,12 +56,21 @@ three gaps the existing machinery left open are now closed:
   `AssociativeMemory` computes **both** `in_degree` and `out_degree` and folds them
   into the score under independent `RetentionWeights`, realizing *"calculate usages
   based on incoming **and outgoing** links"*.
-- **A persistence store for expressions (rows 3–6).** The existing policies operate
+- **A persistence view for expressions (rows 3–6).** The existing policies operate
   on memory *events*; issue #686 asks to persist the **meta-language expressions**
   themselves. `AssociativeMemory` is that store — content-addressed nodes,
   per-node read/write counters, an embedded association network, a combined
   retention score, and eviction that keeps the most used, most changed, and most
-  connected expressions last.
+  connected expressions last. `from_memory_events` rebuilds that view from the
+  durable event log, so it cannot become a competing source of truth.
+- **The complete symbolic pipeline (rows 10–13).** Qualifiers survive extraction,
+  evidence endpoints are validated without deleting uncertain claims, aliases
+  resolve to canonical ids, stable-id writes replace stale text, and bounded
+  bidirectional traversal supplies deterministic multi-hop recall.
+- **Production execution (rows 14–15).** `writeCount` is portable across native
+  serialization, sync, and the browser mirror; automatic dreaming uses the
+  combined score; the same derived-memory task executes through Formal AI via
+  Agent CLI with write and verification steps.
 
 Everything is deterministic: retention is decided by usage counts and link degree,
 never by wall-clock time, so replaying the same reads, writes, and associations

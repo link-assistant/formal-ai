@@ -1,8 +1,8 @@
 # Issue 686 Case Study
 
-> **Status:** Data collected, requirements enumerated, solution plans drafted, **and the core persistence feature implemented** in PR #689.
-> **Type:** Research + design case study **plus implementation** — the audit found the feature was an audit-and-wire task, and PR #689 then landed the [`src/associative_persistence.rs`](../../../src/associative_persistence.rs) module that wires it up.
-> **Primary source:** the issue body (three intent paragraphs + one meta paragraph); the issue has no comments.
+> **Status:** Full paper-pipeline transfer, durable runtime integration, auto-learning, and Agent CLI execution implemented in PR #689.
+> **Type:** Research + design + self-hosted implementation case study.
+> **Primary sources:** issue body plus the maintainer's expanded acceptance criteria in [PR comment 4973111296](https://github.com/link-assistant/formal-ai/pull/689#issuecomment-4973111296).
 
 - **Issue:** <https://github.com/link-assistant/formal-ai/issues/686>
 - **Pull request:** <https://github.com/link-assistant/formal-ai/pull/689>
@@ -10,8 +10,44 @@
 - **Per-requirement plans + prior art:** [`solution-plans.md`](solution-plans.md)
 - **Requirement list:** [`requirements.md`](requirements.md)
 - **Online research (cited):** [`raw-data/online-research.md`](raw-data/online-research.md)
+- **Reproducible Agent CLI session:** [`agent-cli-session-associative-learning.json`](agent-cli-session-associative-learning.json)
+- **Real external Agent CLI E2E:** [`agent-cli-external-e2e.lino`](agent-cli-external-e2e.lino)
 
 All raw artifacts referenced below live in [`raw-data/`](raw-data/).
+
+## 0. Deep implementation revision (authoritative)
+
+The original draft treated Wikontic as only a deduplication-and-degree lesson and
+built an isolated `AssociativeMemory`. That was insufficient: the paper describes
+a pipeline, and the store did not affect persisted application memory, dreaming,
+or Agent CLI task execution. The maintainer explicitly requested deeper analysis,
+automatic learning, Formal AI execution through Agent CLI, and generalization of
+touched architecture. This revision closes those gaps:
+
+1. **Qualifier-preserving candidates.** Durable `MemoryEvent`s become expression
+   candidates; kind, role, intent, tool, time, and conversation context are kept
+   as qualifiers rather than flattened away.
+2. **Alignment and interpretable failure.** Evidence relations resolve against
+   persisted ids. Unresolved relations do not disappear: the candidate remains
+   with a `validation_issue`, matching the paper's retain-for-revision verifier.
+3. **Normalization, deduplication, incremental writes.** Stable ids merge repeated
+   assertions, namespaced evidence aliases resolve to canonical ids, and a stable-id
+   rewrite now replaces stale text while incrementing the durable write counter.
+4. **Links-network storage and multi-hop retrieval.** Associations remain
+   `SubstitutionLink` doublets. `recall_related` performs deterministic bounded
+   traversal in both directions and records each recalled expression as read.
+5. **Real runtime retention.** `MemoryEvent::write_count` round-trips as
+   `writeCount`, survives sync, increments on native/browser substitutions, and
+   joins reads plus incoming/outgoing links in the actual dreaming eviction score.
+6. **Automatic learning and Agent CLI.** The existing default-on dreaming loop now
+   consumes this policy. A derived `associative-learning-report.lino` task runs
+   through the generalized Agent CLI write → verify → final recipe; its report is
+   computed from persisted memory, not canned prose.
+
+The paper itself links normalization/connectivity to retrieval quality; it does
+not prescribe degree-weighted eviction. Combining degree with reads/writes is the
+issue author's explicit extension and is identified as an inference throughout
+this case study.
 
 ---
 
@@ -33,19 +69,12 @@ into `docs/case-studies/issue-686/`, do a **deep case-study analysis** with
 requirement while **surveying existing components/libraries**, and **do it all in
 this single PR** (#689).
 
-The central finding was that **the associative stack already provides most of the
-substrate the feature needs** — a links network (`SubstitutionGraph`), content
-addressing that already gives one-node-per-meaning (`stable_id`), and an LFU-style
-read-count eviction policy for memory events (`dreaming::usage_counts` +
-`storage_policy`). What was missing was not infrastructure but **three
-connections** the issue names explicitly and the existing machinery lacks: a
-**write/change** counter (the existing policy counts reads only), an
-**outgoing-link** degree signal (the existing citation count is incoming-only), and
-a first-class store that persists **meta-language expressions themselves** (the
-existing policies operate on memory *events*). PR #689 supplied exactly those three
-in the [`src/associative_persistence.rs`](../../../src/associative_persistence.rs)
-module, so the honest status is now **7 done (all via the new module), 2 realized
-substrate** across 9 concept rows (see
+The associative stack supplied useful substrate—`SubstitutionGraph`, `stable_id`,
+and an LFU precursor—but the complete feature required six paper-pipeline
+practices plus durable runtime and Agent CLI integration. PR #689 now connects the
+policy to native/browser memory, sync, automatic dreaming, and the generalized
+agentic document recipe. The authoritative mapping is **13 done, 2 realized
+substrate** across 15 concept rows (see
 [`persistence-mapping.md`](persistence-mapping.md)).
 
 The deliverables are code + documentation, fully traceable:
@@ -53,13 +82,14 @@ The deliverables are code + documentation, fully traceable:
 1. **The implementation:**
    [`src/associative_persistence.rs`](../../../src/associative_persistence.rs) —
    `AssociativeMemory` (expressions as content-addressed nodes in a
-   `SubstitutionGraph`), `PersistedExpression` (`id`/`text`/`reads`/`writes`),
-   `RetentionWeights`, `ScoredExpression`, and the persist / count / degree /
-   `retention_score` / evict / `from_context` API — with executable coverage in
+   `SubstitutionGraph`), qualifier- and warning-bearing `PersistedExpression`,
+   durable-event ingest, bounded multi-hop recall, and four-signal retention;
+   `memory`, `memory_sync`, `dreaming`, and the browser mirror connect that view
+   to production persistence. Executable coverage lives in
    [`tests/unit/issue_686_associative_persistence.rs`](../../../tests/unit/issue_686_associative_persistence.rs).
 2. This case study, the requirement list, the concept→stack mapping, and the
    solution plans, all under `docs/case-studies/issue-686/`.
-3. `REQUIREMENTS.md` rows **R445–R452** under *"Issue #686 Associative Knowledge
+3. `REQUIREMENTS.md` rows **R445–R458** under *"Issue #686 Associative Knowledge
    Networks Learning"*.
 4. `tests/unit/docs_requirements_issue_686.rs` pins the reference, the headings,
    and the requirement IDs so the case study cannot silently regress.
@@ -76,7 +106,7 @@ under [`raw-data/`](raw-data/):
 | [`raw-data/issue-686.json`](raw-data/issue-686.json) | The issue as filed (`gh issue view 686 --json …`). |
 | [`raw-data/issue-686-comments.json`](raw-data/issue-686-comments.json) | Issue comment thread — empty (`[]`); the body is the sole specification. |
 | [`raw-data/pr-689.json`](raw-data/pr-689.json) | The pull request this work lands in. |
-| [`raw-data/pr-689-conversation-comments.json`](raw-data/pr-689-conversation-comments.json) | PR conversation comments — empty (`[]`). |
+| [`raw-data/pr-689-conversation-comments.json`](raw-data/pr-689-conversation-comments.json) | Complete PR conversation, including the deeper-analysis/auto-learning/Agent-CLI requirement. |
 | [`raw-data/pr-689-review-comments.json`](raw-data/pr-689-review-comments.json) | PR inline review comments — empty (`[]`). |
 | [`raw-data/pr-689-reviews.json`](raw-data/pr-689-reviews.json) | PR reviews — empty (`[]`). |
 | [`raw-data/online-research.md`](raw-data/online-research.md) | Summarized-and-cited research: the cited *Wikontic* paper, AriGraph, LFU/LRU cache replacement, reference counting, degree centrality, and the associative-memory model. |
@@ -90,42 +120,37 @@ quotes only short definitional phrases and links every claim to its source.
 ## 3. Holistic Requirements
 
 Every requirement extracted from the issue body is enumerated in
-[`requirements.md`](requirements.md) as **R686-01 … R686-13** (the conceptual
-feature plus the meta-deliverable). These are recorded in
-[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as **R445–R452** under *"Issue #686
+[`requirements.md`](requirements.md) as **R686-01 … R686-18**. These are recorded in
+[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as **R445–R458** under *"Issue #686
 Associative Knowledge Networks Learning"*. The short form:
 
 | ID | Requirement (verbatim intent) | Status |
 |---|---|---|
 | **R445** | Collect the issue-686 data into a dedicated case-study directory. | Done — [`raw-data/`](raw-data/). |
 | **R446** | Deep case-study analysis with cited online research. | Done — this file + [`raw-data/online-research.md`](raw-data/online-research.md). |
-| **R447** | Enumerate every requirement of the issue. | Done — [`requirements.md`](requirements.md) (R686-01 … R686-13). |
-| **R448** | Map each persistence concept to the associative stack with honest status. | Done — [`persistence-mapping.md`](persistence-mapping.md) (7 done / 2 realized substrate). |
+| **R447** | Enumerate every requirement of the issue and maintainer feedback. | Done — [`requirements.md`](requirements.md) (R686-01 … R686-18). |
+| **R448** | Map each persistence concept to the associative stack with honest status. | Done — [`persistence-mapping.md`](persistence-mapping.md) (13 done / 2 realized substrate). |
 | **R449** | Propose a solution plan per requirement, surveying existing components/libraries. | Done — [`solution-plans.md`](solution-plans.md). |
 | **R450** | Implement the usage-weighted associative persistence store. | Done — [`src/associative_persistence.rs`](../../../src/associative_persistence.rs) + [`tests/unit/issue_686_associative_persistence.rs`](../../../tests/unit/issue_686_associative_persistence.rs). |
 | **R451** | Plan and execute everything in the single PR #689. | Done — every artifact here plus the changelog fragment and traceability test. |
 | **R452** | Protect the case study with a documentation-traceability regression test. | Done — `tests/unit/docs_requirements_issue_686.rs`. |
 
-See [`requirements.md`](requirements.md) §"Why these thirteen" for why the issue
-decomposes into exactly these requirements and no more.
+See [`requirements.md`](requirements.md) for the complete R686-01 … R686-18
+decomposition of the issue body and expanded maintainer acceptance criteria.
 
 ---
 
 ## 4. Deep Analysis — usage-weighted persistence on the associative stack
 
-### 4.1 The paper's transferable lesson is degree, not the LLM pipeline
+### 4.1 Transfer the paper's pipeline, not only its degree metric
 
-The cited paper (arXiv 2512.00590) is *Wikontic* — an LLM system that builds
-Wikidata-aligned knowledge graphs, deduplicating entities so surface variants
-("NYC" / "New York City") collapse to one node, and reporting that the resulting
-**high entity degree** (≈4.3 average) drives **efficient multi-hop retrieval**
-(online-research §1). `formal-ai` is not an LLM KG builder, so the transferable
-best practices are the two *structural* ones: **one meaning is one node** —
-already true here via content-addressed `stable_id` — and **degree is the currency
-of retrieval/importance**. Issue #686 lifts that second lesson into a *retention*
-policy: a well-connected expression is used more, so it should persist longer, and
-degree can therefore *stand in for* explicit usage counting ("calculate usages
-based on incoming and outgoing links").
+Wikontic's transferable value is its complete structured pipeline: preserve
+qualifiers while extracting candidates; refine relations against ontology/type
+constraints; normalize aliases and deduplicate; extend storage incrementally;
+retain verifier warnings; and answer through iterative multi-hop retrieval. The
+native symbolic equivalents are now implemented over `MemoryEvent` candidates and
+`AssociativeMemory`. The reported average-degree result motivates connectivity for
+retrieval, while issue #686—not the paper—adds degree to the retention formula.
 
 ### 4.2 "Persist, count reads and writes, keep the busy data" is LFU caching
 
@@ -165,13 +190,9 @@ The issue's meta paragraph asks to *"propose possible solutions and solution pla
 for each requirement"* and to *"check known existing components/libraries"* — so
 this case study did the audit first: name what already realizes each requirement
 (`SubstitutionGraph`, `stable_id`, `dreaming`) and name the concrete missing
-connection for each gap (write counter, outgoing degree, expression store). The
-audit's payoff is that the implementation is a thin wiring layer, not a green-field
-engine: [`src/associative_persistence.rs`](../../../src/associative_persistence.rs)
-reuses `SubstitutionGraph` as the association store, `stable_id` for content
-addressing, and the `dreaming` LFU pattern for eviction, adding only the
-`AssociativeMemory` store, the write/degree signals, and the combined
-`retention_score`. Determinism is honored throughout: retention is decided by usage
+connection for each gap. The revised implementation reuses `SubstitutionGraph`,
+`stable_id`, durable `MemoryEvent`s, the dreaming runtime, browser memory, and the
+general Agent CLI document recipe. Determinism is honored throughout: retention is decided by usage
 counts and link degree, never by wall-clock time, so a replay of the same reads,
 writes, and associations yields byte-for-byte the same ranking.
 
@@ -191,8 +212,8 @@ different axis (learned generality) than the one this project optimizes
 ## 5. Concept → Associative Stack (overview)
 
 The full mapping with `path:symbol` evidence and status is in
-[`persistence-mapping.md`](persistence-mapping.md). Summary — **7 done (all via the
-new `associative_persistence` module), 2 realized substrate** across 9 concept
+[`persistence-mapping.md`](persistence-mapping.md). Summary — **13 done, 2
+realized substrate** across 15 concept
 rows:
 
 | Issue concept | Associative-stack realization | Status |
@@ -213,8 +234,9 @@ rows:
 
 The per-requirement solution plan and the existing-component reuse target for each
 requirement are in [`solution-plans.md`](solution-plans.md), which also carries the
-full **prior-art survey**. The one-paragraph architecture — now implemented in
-[`src/associative_persistence.rs`](../../../src/associative_persistence.rs) — is a
+full **prior-art survey**. The runtime architecture — now implemented across
+[`src/associative_persistence.rs`](../../../src/associative_persistence.rs),
+`memory`, `memory_sync`, `dreaming`, the browser mirror, and `agentic_coding` — is a
 first-class `AssociativeMemory = { associations: SubstitutionGraph, expressions:
 BTreeMap<id, PersistedExpression> }`, per-expression read/write counters, degree
 computed over the association graph, a single `retention_score` = `read·reads +
@@ -235,8 +257,8 @@ Detailed in [`solution-plans.md`](solution-plans.md); summary:
   AriGraph (memory-graph lineage), LFU/LRU cache replacement, reference counting,
   degree centrality.
 - **External systems surveyed, intentionally not adopted:** vector databases /
-  embedding memory (FAISS, HNSW, RAG) — out of scope by construction because the
-  issue requires links networks *instead of* embeddings.
+  embedding memory (FAISS, HNSW, RAG) do not satisfy this issue's requirement for
+  deterministic, inspectable links-network persistence.
 
 **Net conclusion:** for every requirement, either an in-repo component already
 realizes it (and is cited) or the new module supplies the exact missing connection
@@ -250,7 +272,7 @@ realizes it (and is cited) or the new module supplies the exact missing connecti
 |---|---|---|
 | **Non-determinism** | Any clock/recency signal would break byte-reproducibility (`NON-GOALS.md`). | Retention is frequency + degree only; no clocks, no randomness; ranking and `links_notation` are sorted and reproducible. |
 | **Counter overflow** | A pathological read/write/degree count could wrap the score. | Every term in `retention_score_with` uses saturating arithmetic; counters saturate on increment. |
-| **Silent second store** | A parallel expression store could drift from the append-only memory log. | `AssociativeMemory` is a *policy view* keyed by content-addressed ids and can be rebuilt (`from_context`) rather than being an independent source of truth. |
+| **Silent second store** | A parallel expression store could drift from the append-only memory log. | `AssociativeMemory` is a *policy view* keyed by content-addressed ids and is rebuilt by `from_memory_events`; `from_context` remains an explicit world-model adapter. |
 | **Losing links on forget** | Evicting an expression could leave dangling associations. | `forget` removes the record **and** every incident link; a regression test asserts degree drops to zero on neighbors. |
 | **Overclaiming completeness** | Marketing a half-built policy would violate `NON-GOALS.md`. | Honest Done/Realized status per row; the mapping states plainly which signals were newly added vs. inherited. |
 
@@ -261,14 +283,16 @@ realizes it (and is cited) or the new module supplies the exact missing connecti
 ```
 docs/case-studies/issue-686/
 ├── README.md                 # this analysis
-├── requirements.md           # R686-01 … R686-13 (R447)
+├── agent-cli-session-associative-learning.json # byte-reproducible in-repo driver
+├── agent-cli-external-e2e.lino # real @link-assistant/agent ↔ release server
+├── requirements.md           # R686-01 … R686-18 (R447)
 ├── persistence-mapping.md    # concept → associative-stack mapping (R448)
 ├── solution-plans.md         # per-requirement plans + prior-art survey (R449)
 └── raw-data/                 # third-party captures (lint-exempt)
     ├── issue-686.json
-    ├── issue-686-comments.json          # empty
+    ├── issue-686-comments.json          # current issue conversation
     ├── pr-689.json
-    ├── pr-689-conversation-comments.json # empty
+    ├── pr-689-conversation-comments.json # includes maintainer feedback
     ├── pr-689-review-comments.json       # empty
     ├── pr-689-reviews.json               # empty
     └── online-research.md               # summarized + cited (R446)
@@ -276,15 +300,19 @@ docs/case-studies/issue-686/
 
 Implemented and wired into the rest of the repository by:
 
-- `src/associative_persistence.rs` — the persistence feature: `AssociativeMemory`,
+- `src/associative_persistence.rs` — the persistence policy view: `AssociativeMemory`,
   `PersistedExpression`, `RetentionWeights`, `ScoredExpression`, and the persist /
-  count / degree / `retention_score` / evict / `from_context` API.
+  count / degree / `retention_score` / evict / durable-event ingest / multi-hop API.
+- `src/memory.rs`, `src/memory_sync.rs`, `src/dreaming.rs`, and
+  `src/web/memory.js` — portable write accounting and automatic retention.
+- `src/agentic_coding/associative_learning.rs` — derived-memory execution through
+  the generalized Agent CLI document recipe.
 - `src/lib.rs` — `pub mod associative_persistence;` plus re-exports of the public
   types.
-- `tests/unit/issue_686_associative_persistence.rs` — executable coverage of
-  read/write counting, degree, retention ranking, eviction, forgetting,
-  determinism, and `Context` ingestion.
-- `REQUIREMENTS.md` — rows **R445–R452** (R447).
+- `tests/unit/issue_686_associative_persistence.rs` and
+  `tests/unit/issue_686_agent_cli.rs` — executable coverage of persistence,
+  mutation, runtime retention, multi-hop recall, and Agent CLI behavior.
+- `REQUIREMENTS.md` — rows **R445–R458** (R447).
 - `README.md` and `ARCHITECTURE.md` — a discoverable reference to this case study.
 - `tests/unit/docs_requirements_issue_686.rs` — pins the reference, the headings,
   and the requirement IDs so the case study cannot silently regress (R452).
