@@ -94,9 +94,9 @@ fn routing_precedence_from_seed() {
     );
 
     // The reorder is behaviour-only: the same set of handlers, differently ordered.
-    let mut shipped_sorted = shipped.clone();
+    let mut shipped_sorted = shipped;
     shipped_sorted.sort();
-    let mut swapped_sorted = swapped.clone();
+    let mut swapped_sorted = swapped;
     swapped_sorted.sort();
     assert_eq!(
         shipped_sorted, swapped_sorted,
@@ -193,7 +193,7 @@ fn parity_rules() -> Vec<ParityRule> {
                     "worker_winner" => &mut rule.worker_winner,
                     _ => &mut rule.worker_loser,
                 };
-                *slot = value.to_owned();
+                value.clone_into(slot);
             }
             "routing_parity" => {}
             other => panic!("unexpected key `{other}` in routing-parity.lino"),
@@ -284,7 +284,7 @@ fn reordering_is_the_only_thing_a_seed_edit_can_change() {
         shipped.last(),
         "a reversed fixture flips the precedence order"
     );
-    let mut shipped_sorted = shipped.clone();
+    let mut shipped_sorted = shipped;
     shipped_sorted.sort();
     reversed.sort();
     assert_eq!(
