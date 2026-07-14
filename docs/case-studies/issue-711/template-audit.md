@@ -23,4 +23,3 @@ The broader workflow differs substantially because Formal AI includes web,
 desktop, Docker, dataset, self-coding, and deployment jobs not present in every
 template. Those unrelated differences were reviewed but intentionally left
 unchanged. The raw audit files make that scope decision reproducible.
-

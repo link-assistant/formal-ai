@@ -20,4 +20,3 @@
 | Use the repository's external-agent contribution workflow | The live wrapper failure and successful direct three-round Agent CLI session are archived in `raw-data/` and `agent-evidence/`. |
 | Keep regression checks in CI | The lint job runs both the Rust collector test and deterministic reconstruction check. |
 | Update and finalize PR 718 | PR title/body, readiness, commits, checks, and final CI state are handled during PR finalization. |
-
