@@ -190,6 +190,15 @@ jobs:
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
+      # Issue #659 (R379): fail the build when src/ gains user-facing prose
+      # string literals instead of sourcing them from data/seed/*.lino. The
+      # committed allowlist (scripts/hardcoded-language-allowlist.txt) inventories
+      # today's debt; new literals are blocked and migrated-away rows must be
+      # pruned, so the debt only shrinks. See
+      # docs/design/no-hardcoded-natural-language.md.
+      - name: Check hardcoded natural language
+        run: rust-script scripts/check-hardcoded-language.rs
+
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
 

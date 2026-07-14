@@ -112,6 +112,38 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    key in `REQUIRED_KEYS` in `check-i18n-catalog.mjs`, and render it with
    `t("<key>", params)` — never a literal.
 
+5. **Rust `src/` hardcoded-language burn-down (#659).**
+   `scripts/check-hardcoded-language.rs` (rust-script) scans every `src/**/*.rs`
+   file for user-facing prose string literals — a sentence heuristic: a literal
+   that contains a space, ends in terminal punctuation (`.`, `!`, `?`), and holds
+   at least two real words. Comments, char literals, and single-token
+   trace/event slugs are ignored by construction. The committed allowlist,
+   `scripts/hardcoded-language-allowlist.txt`, is the sorted, tab-separated
+   inventory of *today's* debt (`<relative-path>\t<canonical-literal-text>`). The
+   check **fails the build two ways**, so the debt can only shrink:
+
+   - a literal in `src/` that is **not** in the allowlist (new debt is blocked);
+   - an allowlist row whose literal **no longer occurs** in `src/` (a migrated
+     row must be pruned, keeping the inventory honest).
+
+   Regenerate the allowlist after an intentional change with:
+
+   ```sh
+   rust-script scripts/check-hardcoded-language.rs --write
+   ```
+
+   The burn-down loop: move a hardcoded answer into a grounded meaning in
+   `data/seed/*.lino`, read it back through `seed::response_for(...)` (never a
+   literal), then re-run `--write` so the migrated rows drop out of the
+   allowlist. PR #692 seeded the allowlist and migrated the duplicated
+   `src/engine_responses.rs` English fallbacks — which already existed for all
+   four languages in `data/seed/multilingual-responses.lino` — to prove the loop.
+   The check runs in `.github/workflows/release.yml` and locally with:
+
+   ```sh
+   rust-script scripts/check-hardcoded-language.rs
+   ```
+
 ## Worked example: the terminal-command intent (#513)
 
 The terminal-command intent recognises prompts like "run `npm test` in the
