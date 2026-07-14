@@ -158,6 +158,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -189,6 +190,15 @@ jobs:
 
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
+
+      - name: Check worker JS line budget
+        run: rust-script scripts/check-worker-line-budget.rs
+
+      - name: Build Rust→WASM worker
+        run: sh src/web/wasm-worker/build.sh
+
+      - name: Check wasm-worker size budget
+        run: rust-script scripts/check-wasm-worker-size.rs
 
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
