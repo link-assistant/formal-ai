@@ -442,6 +442,17 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "formalization_unresolved" => {
                 format!("formalization_unresolved:{}", event.payload)
             }
+            // Issue #661 (R384): each accepted interpretation's posterior weight,
+            // surfaced verbatim (`formalization:<i> weight=<p> <summary>`) so a
+            // consumer can read every formalized statement as a weighted claim and
+            // verify the weights sum to 1 across candidates. Trace-only.
+            "statement_weight" => format!("statement_weight:{}", event.payload),
+            // Issue #661 (R384): a detected clash between a new formalized
+            // requirement and a retained one. The id keys back to the event whose
+            // payload names both statements, the shared subject, and their weights.
+            "requirement_contradiction" => {
+                format!("requirement_contradiction:{}", event.id)
+            }
             "intent_formalization" => format!("intent_formalization:{}", event.id),
             "intent_formalization_cache" => {
                 format!(
