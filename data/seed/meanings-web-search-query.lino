@@ -53,6 +53,12 @@ meanings
       surface
         text "look up online …"
       surface
+        text "google …"
+      surface
+        text "what does the web say about …"
+      surface
+        text "i need current info from the internet on …"
+      surface
         text "interested in …"
       surface
         text "i am interested in …"

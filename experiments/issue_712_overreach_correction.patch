@@ -1,0 +1,93 @@
+diff --git a/data/seed/meanings-web-search-query.lino b/data/seed/meanings-web-search-query.lino
+index bf1913e5..76ed7f51 100644
+--- a/data/seed/meanings-web-search-query.lino
++++ b/data/seed/meanings-web-search-query.lino
+@@ -52,6 +52,12 @@ meanings
+         text "look up info on …"
+       surface
+         text "look up online …"
++      surface
++        text "google …"
++      surface
++        text "what does the web say about …"
++      surface
++        text "i need current info from the internet on …"
+       surface
+         text "interested in …"
+       surface
+diff --git a/data/seed/meanings-web-search.lino b/data/seed/meanings-web-search.lino
+index a49fa477..ffe67436 100644
+--- a/data/seed/meanings-web-search.lino
++++ b/data/seed/meanings-web-search.lino
+@@ -421,10 +421,6 @@ meanings
+         text " research "
+       surface
+         text " investigate "
+-      surface
+-        text " google "
+-      surface
+-        text "google …"
+       surface
+         text "search for …"
+       surface
+@@ -514,10 +510,6 @@ meanings
+         text " see "
+       surface
+         text " view "
+-      surface
+-        text " say "
+-      surface
+-        text " need "
+       surface
+         text "find …"
+       surface
+diff --git a/src/agentic_coding/intent_router.rs b/src/agentic_coding/intent_router.rs
+index 7f5897ab..e9775319 100644
+--- a/src/agentic_coding/intent_router.rs
++++ b/src/agentic_coding/intent_router.rs
+@@ -32,7 +32,7 @@ pub(super) fn plan_web_fetch_step(
+     messages: &[ChatMessage],
+     tool_names: &[&str],
+ ) -> Option<AgenticPlan> {
+-    let url = crate::solver_handlers::http_fetch_url_for(task)?;
++    let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
+     let tool = tool_for(tool_names, Capability::Fetch)?;
+     let progress = Progress::scan(messages);
+     if progress.done(Capability::Fetch) {
+diff --git a/src/solver_handlers/mod.rs b/src/solver_handlers/mod.rs
+index 3be0683c..2df9d956 100644
+--- a/src/solver_handlers/mod.rs
++++ b/src/solver_handlers/mod.rs
+@@ -79,8 +79,9 @@ pub use web_requests::{
+     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
+ };
+ pub use {
+-    web_requests::answer_web_search_query, web_requests::http_fetch_url_for,
+-    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
++    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
++    web_requests::http_fetch_url_for, web_search_intent::web_search_query_for,
++    web_search_intent::WebSearchQueryKind,
+ };
+ 
+ use crate::calculation::{
+diff --git a/src/solver_handlers/web_requests.rs b/src/solver_handlers/web_requests.rs
+index 1d48a9c0..380b2f06 100644
+--- a/src/solver_handlers/web_requests.rs
++++ b/src/solver_handlers/web_requests.rs
+@@ -798,6 +798,16 @@ fn extract_http_fetch_url(prompt: &str, normalized: &str) -> Option<String> {
+ /// passes every handler — the lowercased prompt (see `meta_method_dispatch`).
+ #[must_use]
+ pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
++    extract_http_fetch_url(prompt, &prompt.to_lowercase())
++}
++
++/// URL that an advertised agent fetch tool can satisfy.
++///
++/// Agent CLIs expose one fetch capability for both explicit HTTP requests and
++/// requests to open or visit a URL. The prose solver keeps those intents
++/// distinct, while this probe maps either intent onto that available tool.
++#[must_use]
++pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
+     let normalized = prompt.to_lowercase();
+     extract_http_fetch_url(prompt, &normalized)
+         .or_else(|| extract_url_navigate_url(prompt, &normalized))

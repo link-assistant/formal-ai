@@ -32,7 +32,7 @@ pub(super) fn plan_web_fetch_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let url = crate::solver_handlers::http_fetch_url_for(task)?;
+    let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Fetch) {

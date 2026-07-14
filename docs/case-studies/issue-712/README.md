@@ -12,15 +12,17 @@ The raw self-coding sessions are preserved as:
 - [`agent-create-fix.jsonl`](agent-create-fix.jsonl)
 - [`agent-apply-fix.jsonl`](agent-apply-fix.jsonl)
 
-The model-authored production patches are replayable from:
+The model-authored production patches and the full-suite scope correction are
+replayable from:
 
 - [`experiments/issue_712_intent_routing.patch`](../../../experiments/issue_712_intent_routing.patch)
 - [`experiments/issue_712_edit_correction.patch`](../../../experiments/issue_712_edit_correction.patch)
+- [`experiments/issue_712_overreach_correction.patch`](../../../experiments/issue_712_overreach_correction.patch)
 
 ## Root cause
 
 - The advertised fetch capability only accepted explicit HTTP-fetch cues, even though URL navigation was already recognized elsewhere.
-- Search intent lacked the reported `google`, source-oriented `say`, and request-oriented `need` cues.
+- Search intent lacked the reported `google` cue and exact source/current-information request templates.
 - The edit parser required a file target cue such as `in`; a leading edit action adjacent to a path was not accepted, and the first action could describe the file rather than the replacement clause.
 - The write parser did not recognize `contents:`, allowing the file-read router to claim the request.
 

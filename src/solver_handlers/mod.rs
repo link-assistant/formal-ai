@@ -79,8 +79,9 @@ pub use web_requests::{
     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
 };
 pub use {
-    web_requests::answer_web_search_query, web_requests::http_fetch_url_for,
-    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
+    web_requests::http_fetch_url_for, web_search_intent::web_search_query_for,
+    web_search_intent::WebSearchQueryKind,
 };
 
 use crate::calculation::{
