@@ -26,11 +26,10 @@ use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
-use super::general_planner::{
-    compose_edit_request, compose_general_change_plan, GeneralChangePlan, PLAN_PATH,
-};
+use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
+use super::intent_router;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
@@ -225,7 +224,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // an *edit* rather than a read of X), and only when the CLI actually
     // advertised an edit tool — otherwise the request keeps looking and ultimately
     // falls through to the prose answer.
-    if let Some(plan) = plan_edit_step(&task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
     if let Some(file_task) = file_read_task_for(&task) {
@@ -256,107 +255,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // above, before the file-read router); and the broadest intent — an open
     // research/search question — is the final capability catch-all before the
     // prose fallback.
-    if let Some(plan) = plan_web_fetch_step(&task, messages, tool_names) {
+    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    plan_web_search_step(&task, messages, tool_names)
-}
-
-/// General web-fetch routing (issue #680): when the request carries HTTP-fetch
-/// intent (any phrasing, any supported language) *and* the CLI advertised a fetch
-/// tool, emit a real fetch `tool_call` for the named URL. Returns [`None`] when
-/// there is no fetch intent or no fetch tool was advertised, so the planner keeps
-/// looking (and ultimately falls through to the prose answer) rather than
-/// fabricating a call the client cannot honour.
-fn plan_web_fetch_step(
-    task: &str,
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-) -> Option<AgenticPlan> {
-    let url = crate::solver_handlers::http_fetch_url_for(task)?;
-    let tool = tool_for(tool_names, Capability::Fetch)?;
-    let progress = Progress::scan(messages);
-    if progress.done(Capability::Fetch) {
-        return Some(AgenticPlan::Final(web_fetch_final_answer(
-            &url,
-            progress.fetched_text.as_deref(),
-        )));
-    }
-    Some(plan_one(tool, fetch_arguments(&url)))
-}
-
-/// General web-search routing (issue #680): when the request carries web-search
-/// intent (any phrasing, any supported language) *and* the CLI advertised a
-/// search tool, emit a real search `tool_call` for the extracted query. Returns
-/// [`None`] when there is no search intent or no search tool was advertised.
-fn plan_web_search_step(
-    task: &str,
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-) -> Option<AgenticPlan> {
-    let query = crate::solver_handlers::web_search_query_for(task)?;
-    let tool = tool_for(tool_names, Capability::Search)?;
-    let progress = Progress::scan(messages);
-    if progress.done(Capability::Search) {
-        return Some(AgenticPlan::Final(web_search_final_answer(
-            &query,
-            progress.search_output.as_deref(),
-        )));
-    }
-    Some(plan_one(tool, json!({ "query": query }).to_string()))
-}
-
-/// General file-edit routing (issue #680): when the request carries a
-/// file-modification intent — an edit action, a replacement lead, and a named
-/// target file, in any phrasing/language — *and* the CLI advertised an edit tool,
-/// emit a real edit `tool_call` that replaces the recovered old text with the new
-/// text. Returns [`None`] when there is no edit intent or no edit tool was
-/// advertised, so the planner keeps looking (and ultimately falls through to the
-/// prose answer) rather than fabricating a call the client cannot honour.
-///
-/// The `(target, old, new)` triple is recovered entirely from the seed lexicon
-/// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
-/// arguments are emitted under every common key alias so one shape drives any
-/// CLI's edit/patch/replace tool (see [`edit_arguments`]).
-fn plan_edit_step(
-    task: &str,
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-) -> Option<AgenticPlan> {
-    let (target, old, new) = compose_edit_request(task)?;
-    let tool = tool_for(tool_names, Capability::Edit)?;
-    let progress = Progress::scan(messages);
-    if progress.done(Capability::Edit) {
-        return Some(AgenticPlan::Final(format!(
-            "Edited `{target}`: replaced `{old}` with `{new}`."
-        )));
-    }
-    Some(plan_one(tool, edit_arguments(&target, &old, &new)))
-}
-
-/// The final answer once a web-fetch tool call has returned. Surfaces the fetched
-/// text verbatim when the tool succeeded, otherwise states the URL that was
-/// requested so the conversation stays grounded in the real tool result.
-fn web_fetch_final_answer(url: &str, fetched_text: Option<&str>) -> String {
-    fetched_text
-        .map(str::trim)
-        .filter(|text| !text.is_empty())
-        .map_or_else(
-            || format!("Fetched `{url}`."),
-            |text| format!("Fetched `{url}`. Response body:\n\n```text\n{text}\n```"),
-        )
-}
-
-/// The final answer once a web-search tool call has returned. Surfaces the search
-/// results verbatim when the tool produced any, otherwise states the query.
-fn web_search_final_answer(query: &str, search_output: Option<&str>) -> String {
-    search_output
-        .map(str::trim)
-        .filter(|text| !text.is_empty())
-        .map_or_else(
-            || format!("Searched the web for `{query}`."),
-            |text| format!("Searched the web for `{query}`. Results:\n\n{text}"),
-        )
+    intent_router::plan_web_search_step(&task, messages, tool_names)
 }
 
 fn plan_general_change_step(
@@ -827,7 +729,7 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
 }
 
 /// Which recipe capabilities the conversation already produced a result for.
-struct Progress {
+pub(super) struct Progress {
     /// Capabilities a prior `tool` result already answered.
     completed: Vec<Capability>,
     /// The latest non-errored fetch result's text, if any.
@@ -839,7 +741,7 @@ struct Progress {
 }
 
 impl Progress {
-    fn scan(messages: &[ChatMessage]) -> Self {
+    pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
         let mut run_output = None;
@@ -877,7 +779,7 @@ impl Progress {
     }
 
     /// Whether a prior tool result already covered `capability`.
-    fn done(&self, capability: Capability) -> bool {
+    pub(super) fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
     }
 
@@ -887,9 +789,21 @@ impl Progress {
             .filter(|done| **done == capability)
             .count()
     }
+
+    /// The latest non-errored fetch result's text, for the [`intent_router`]
+    /// fetch probe's final answer.
+    pub(super) fn fetched_text(&self) -> Option<&str> {
+        self.fetched_text.as_deref()
+    }
+
+    /// The latest non-errored web-search result's text, for the [`intent_router`]
+    /// search probe's final answer.
+    pub(super) fn search_output(&self) -> Option<&str> {
+        self.search_output.as_deref()
+    }
 }
 
-fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
         arguments,
@@ -912,31 +826,6 @@ fn write_arguments(path: &str, content: &str) -> String {
     .to_string()
 }
 
-/// Arguments for an edit step that satisfy whichever key an advertised edit tool
-/// expects. Agentic CLIs disagree on the parameter names — opencode's `edit`
-/// wants `filePath`/`oldString`/`newString`, Gemini/Qwen's `replace` wants
-/// `file_path`/`old_string`/`new_string`, and Anthropic's `str_replace` wants
-/// `path`/`old_str`/`new_str`. All aliases are emitted; a schema-validating CLI
-/// keeps the ones it declared and strips the rest, so the same plan drives any of
-/// them without a per-CLI special case (issue #680), mirroring
-/// [`write_arguments`].
-fn edit_arguments(path: &str, old: &str, new: &str) -> String {
-    json!({
-        "path": path,
-        "filePath": path,
-        "file_path": path,
-        "oldString": old,
-        "old_string": old,
-        "old_str": old,
-        "old": old,
-        "newString": new,
-        "new_string": new,
-        "new_str": new,
-        "new": new,
-    })
-    .to_string()
-}
-
 /// Arguments for a fetch step. Emits `url` (the universal key) plus `format`
 /// set to `"text"` — the `@link-assistant/agent` CLI's `webfetch` tool declares
 /// a required `format` enum (`"text" | "markdown" | "html"`) and zod refuses the
@@ -944,7 +833,7 @@ fn edit_arguments(path: &str, old: &str, new: &str) -> String {
 /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
 /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
 /// of them without a per-CLI special case.
-fn fetch_arguments(url: &str) -> String {
+pub(super) fn fetch_arguments(url: &str) -> String {
     json!({
         "url": url,
         "format": "text",
@@ -953,7 +842,7 @@ fn fetch_arguments(url: &str) -> String {
 }
 
 /// The first advertised tool name that provides `capability`, if any.
-fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
         .iter()
         .copied()
