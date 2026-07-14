@@ -8,7 +8,7 @@
 //! matching prose (`PROSE_WORDS`, listing phrases) in one module also keeps the
 //! planner file under the repository line budget.
 
-use crate::seed::{self, TerminalCommandVocabulary};
+use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
@@ -32,6 +32,83 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let vocab = seed::terminal_command_vocabulary();
     named_shell_command(prompt, &vocab)
         .or_else(|| asks_for_directory_listing(prompt).then(|| String::from("ls")))
+        .or_else(|| intent_shell_command(prompt, &seed::shell_intent_vocabulary()))
+}
+
+/// Resolve a semantic *intent* to its concrete command, backed by the seed
+/// [`ShellIntentVocabulary`] (issue #680).
+///
+/// The two strategies above only fire when the prompt *names* the command (`run
+/// pwd`) or asks, in prose, to list a directory. This third strategy handles the
+/// common case where the user expresses an intent without naming the tool at all —
+/// *"Print the current working directory"* → `pwd`, *"How much disk space is
+/// free?"* → `df -h`, *"What is my username?"* → `whoami`. Each intent carries
+/// multilingual cue phrases; the first intent whose cue is present in the prompt
+/// wins (declaration order is most-specific-first), and its argument — if any — is
+/// recovered from the prompt. An intent whose cue matches but whose required
+/// argument is absent is skipped so the search continues rather than emitting an
+/// argument-less command that would hang (`wc -l` on stdin).
+fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    let lower = prompt.to_ascii_lowercase();
+    vocab.intents.iter().find_map(|intent| {
+        if !intent.cues.iter().any(|cue| lower.contains(cue)) {
+            return None;
+        }
+        match intent.argument {
+            ShellIntentArgument::None => Some(intent.command.clone()),
+            ShellIntentArgument::Path => {
+                path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
+            }
+            ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
+                .map(|arg| format!("{} {arg}", intent.command)),
+        }
+    })
+}
+
+/// The first filename-looking token in the prompt: a token carrying an interior dot
+/// (`Cargo.toml`, `src/lib.rs`) that is a safe relative path, not a URL or flag.
+/// Used to fill a [`ShellIntentArgument::Path`] argument (`wc -l Cargo.toml`).
+fn path_argument(prompt: &str) -> Option<String> {
+    prompt
+        .split(|c: char| c.is_whitespace())
+        .map(|word| word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | '?')))
+        .map(|word| word.trim_end_matches(['.', '!']))
+        .find(|token| {
+            let interior_dot = token.trim_matches('.').contains('.');
+            interior_dot && !token.contains("://") && is_safe_path(token)
+        })
+        .map(str::to_owned)
+}
+
+/// The name introduced by a name-lead cue (*called*/*named*/…): the token following
+/// the first name-lead word. Used to fill a [`ShellIntentArgument::NameLead`]
+/// argument (`mkdir build` from *"create a directory called build"*).
+fn name_lead_argument(prompt: &str, name_leads: &[String]) -> Option<String> {
+    let words: Vec<&str> = prompt
+        .split(|c: char| c.is_whitespace())
+        .filter(|w| !w.is_empty())
+        .collect();
+    let lead_index = words.iter().position(|word| {
+        let normalized = word
+            .trim_matches(|c: char| !c.is_alphanumeric())
+            .to_lowercase();
+        name_leads.iter().any(|lead| lead == &normalized)
+    })?;
+    let name = words
+        .get(lead_index + 1)?
+        .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | '.' | '!' | '?' | ':'));
+    (!name.is_empty() && is_safe_path(name)).then(|| name.to_owned())
+}
+
+/// Whether a token is a safe relative path/name: no absolute or `..` escape, no
+/// leading dash, only path-safe characters.
+fn is_safe_path(token: &str) -> bool {
+    !token.starts_with('/')
+        && !token.starts_with('-')
+        && !token.split('/').any(|part| part == ".." || part.is_empty())
+        && token
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
 }
 
 /// Extract an explicit shell command named in the prompt, backed by the seed

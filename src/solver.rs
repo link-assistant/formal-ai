@@ -185,11 +185,11 @@ pub struct SolverConfig {
     /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
     /// trace the upward construction pass. Trace-only either way (R13).
     pub recursion_mode: crate::meta_construction::RecursionMode,
-    /// Whether the meta core records the legacy-vs-registry method-selection
-    /// comparison (issue #559, R339): `Legacy` (default) records nothing and the
-    /// hardcoded authority alone selects; `Registry` records the registry-driven
-    /// choice per leaf; `Compare` records the full comparison plus divergence and
-    /// contradiction counts. Trace-only in every mode (R13).
+    /// Whether the meta core records the method-selection trace (issue #559,
+    /// R339): `Off` (default) records nothing; `Record` names the method the
+    /// registry resolves for every atomic leaf, or marks the leaf unresolved.
+    /// The registry is the sole dispatch authority (R344), so there is no
+    /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
     /// Whether the meta core records the skill-accumulation ledger (issue #559,
     /// R342): `Off` (default) records nothing; `Accumulate` distills each satisfied

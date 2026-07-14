@@ -1,0 +1,177 @@
+shell_intents
+  name_leads
+    language en
+      lead "called"
+      lead "named"
+    language ru
+      lead "называется"
+      lead "названием"
+    language hi
+      lead "नामक"
+    language zh
+      lead "名为"
+  intents
+    intent
+      command pwd
+      argument "none"
+      language en
+        cue "working directory"
+        cue "where am i"
+        cue "where i am"
+        cue "which directory am i"
+        cue "current path"
+      language ru
+        cue "рабочий каталог"
+        cue "рабочем каталоге"
+        cue "рабочую директорию"
+        cue "текущий путь"
+      language hi
+        cue "वर्तमान निर्देशिका"
+        cue "कार्यशील निर्देशिका"
+      language zh
+        cue 当前目录
+        cue 工作目录
+    intent
+      command whoami
+      argument "none"
+      language en
+        cue "my username"
+        cue "my user name"
+        cue "who am i"
+        cue "current user"
+        cue "logged in as"
+      language ru
+        cue "моё имя пользователя"
+        cue "мое имя пользователя"
+        cue "кто я"
+        cue "текущий пользователь"
+      language hi
+        cue "मेरा उपयोगकर्ता नाम"
+        cue "मैं कौन हूँ"
+      language zh
+        cue 我的用户名
+        cue 当前用户
+    intent
+      command "df -h"
+      argument "none"
+      language en
+        cue "disk space"
+        cue "free space"
+        cue "space is free"
+        cue "space is available"
+        cue "space left"
+      language ru
+        cue "свободного места"
+        cue "места на диске"
+        cue "свободное место"
+      language hi
+        cue "डिस्क स्थान"
+        cue "खाली जगह"
+      language zh
+        cue 磁盘空间
+        cue 剩余空间
+    intent
+      command date
+      argument "none"
+      language en
+        cue "today's date"
+        cue "todays date"
+        cue "current date"
+        cue "what day is it"
+        cue "what's the date"
+        cue "what is the date"
+        cue "the current time"
+      language ru
+        cue "какое сегодня число"
+        cue "текущую дату"
+        cue "сегодняшнюю дату"
+        cue "текущее время"
+      language hi
+        cue "आज की तारीख"
+        cue "वर्तमान समय"
+      language zh
+        cue 今天的日期
+        cue 当前时间
+    intent
+      command ps
+      argument "none"
+      language en
+        cue "running processes"
+        cue "process list"
+        cue "list of processes"
+        cue "which processes"
+        cue "list processes"
+      language ru
+        cue "запущенные процессы"
+        cue "список процессов"
+        cue "работающие процессы"
+      language hi
+        cue "चल रही प्रक्रियाएं"
+        cue "प्रक्रियाओं की सूची"
+      language zh
+        cue 正在运行的进程
+        cue 进程列表
+    intent
+      command ls
+      argument "none"
+      language en
+        cue "what's in this folder"
+        cue "what is in this folder"
+        cue "what's in this directory"
+        cue "what is in this directory"
+        cue "what's in the current"
+        cue "what is in the current"
+        cue "what's here"
+        cue "what is here"
+      language ru
+        cue "что в этой папке"
+        cue "что в этом каталоге"
+        cue "что здесь есть"
+      language hi
+        cue "इस फ़ोल्डर में क्या है"
+      language zh
+        cue 这个文件夹里有什么
+        cue 当前目录里有什么
+    intent
+      command "wc -l"
+      argument "path"
+      language en
+        cue "number of lines"
+        cue "how many lines"
+        cue "count the lines"
+        cue "count lines"
+        cue "line count"
+      language ru
+        cue "количество строк"
+        cue "сколько строк"
+        cue "число строк"
+      language hi
+        cue "पंक्तियों की संख्या"
+        cue "कितनी पंक्तियाँ"
+      language zh
+        cue 有多少行
+        cue 行数
+    intent
+      command mkdir
+      argument "name_lead"
+      language en
+        cue "create a directory"
+        cue "create a new directory"
+        cue "make a directory"
+        cue "create a folder"
+        cue "create a new folder"
+        cue "make a folder"
+        cue "make a new directory"
+        cue "make a new folder"
+      language ru
+        cue "создай каталог"
+        cue "создай папку"
+        cue "создай директорию"
+        cue "создать каталог"
+        cue "создать папку"
+      language hi
+        cue "एक निर्देशिका बनाओ"
+        cue "एक फ़ोल्डर बनाओ"
+      language zh
+        cue 创建一个目录
+        cue 创建一个文件夹

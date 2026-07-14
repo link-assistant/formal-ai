@@ -1,0 +1,144 @@
+//! Issue #680: the general, intent-based capability router.
+//!
+//! Tool-call emission in `formal-ai serve` is a function of **intent** — the
+//! advertised tool set plus the request's semantics — not of a literal phrasing
+//! or a pinned recipe. This module holds the three general capability probes
+//! ([`plan_web_fetch_step`], [`plan_web_search_step`], [`plan_edit_step`]) that
+//! [`super::planner::plan_chat_step`] runs for an arbitrary request: each fires
+//! only when the request carries that capability's intent (recovered entirely
+//! from the seed lexicon, never from hardcoded natural language — CONTRIBUTING
+//! §2) *and* the CLI actually advertised a matching tool, otherwise it returns
+//! [`None`] so the planner keeps looking and ultimately falls through to the
+//! prose answer rather than fabricating a call the client cannot honour.
+//!
+//! The probes share the planner's own step primitives ([`super::planner`]'s
+//! `Progress`, `tool_for`, `plan_one`, `fetch_arguments`) so routing here never
+//! drifts from the recipe routing there.
+
+use serde_json::json;
+
+use super::general_planner::compose_edit_request;
+use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+use crate::protocol::ChatMessage;
+
+/// General web-fetch routing (issue #680): when the request carries HTTP-fetch
+/// intent (any phrasing, any supported language) *and* the CLI advertised a fetch
+/// tool, emit a real fetch `tool_call` for the named URL. Returns [`None`] when
+/// there is no fetch intent or no fetch tool was advertised, so the planner keeps
+/// looking (and ultimately falls through to the prose answer) rather than
+/// fabricating a call the client cannot honour.
+pub(super) fn plan_web_fetch_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let url = crate::solver_handlers::http_fetch_url_for(task)?;
+    let tool = tool_for(tool_names, Capability::Fetch)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Fetch) {
+        return Some(AgenticPlan::Final(web_fetch_final_answer(
+            &url,
+            progress.fetched_text(),
+        )));
+    }
+    Some(plan_one(tool, fetch_arguments(&url)))
+}
+
+/// General web-search routing (issue #680): when the request carries web-search
+/// intent (any phrasing, any supported language) *and* the CLI advertised a
+/// search tool, emit a real search `tool_call` for the extracted query. Returns
+/// [`None`] when there is no search intent or no search tool was advertised.
+pub(super) fn plan_web_search_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let query = crate::solver_handlers::web_search_query_for(task)?;
+    let tool = tool_for(tool_names, Capability::Search)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Search) {
+        return Some(AgenticPlan::Final(web_search_final_answer(
+            &query,
+            progress.search_output(),
+        )));
+    }
+    Some(plan_one(tool, json!({ "query": query }).to_string()))
+}
+
+/// General file-edit routing (issue #680): when the request carries a
+/// file-modification intent — an edit action, a replacement lead, and a named
+/// target file, in any phrasing/language — *and* the CLI advertised an edit tool,
+/// emit a real edit `tool_call` that replaces the recovered old text with the new
+/// text. Returns [`None`] when there is no edit intent or no edit tool was
+/// advertised, so the planner keeps looking (and ultimately falls through to the
+/// prose answer) rather than fabricating a call the client cannot honour.
+///
+/// The `(target, old, new)` triple is recovered entirely from the seed lexicon
+/// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
+/// arguments are emitted under every common key alias so one shape drives any
+/// CLI's edit/patch/replace tool (see [`edit_arguments`]).
+pub(super) fn plan_edit_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let (target, old, new) = compose_edit_request(task)?;
+    let tool = tool_for(tool_names, Capability::Edit)?;
+    let progress = Progress::scan(messages);
+    if progress.done(Capability::Edit) {
+        return Some(AgenticPlan::Final(format!(
+            "Edited `{target}`: replaced `{old}` with `{new}`."
+        )));
+    }
+    Some(plan_one(tool, edit_arguments(&target, &old, &new)))
+}
+
+/// The final answer once a web-fetch tool call has returned. Surfaces the fetched
+/// text verbatim when the tool succeeded, otherwise states the URL that was
+/// requested so the conversation stays grounded in the real tool result.
+fn web_fetch_final_answer(url: &str, fetched_text: Option<&str>) -> String {
+    fetched_text
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map_or_else(
+            || format!("Fetched `{url}`."),
+            |text| format!("Fetched `{url}`. Response body:\n\n```text\n{text}\n```"),
+        )
+}
+
+/// The final answer once a web-search tool call has returned. Surfaces the search
+/// results verbatim when the tool produced any, otherwise states the query.
+fn web_search_final_answer(query: &str, search_output: Option<&str>) -> String {
+    search_output
+        .map(str::trim)
+        .filter(|text| !text.is_empty())
+        .map_or_else(
+            || format!("Searched the web for `{query}`."),
+            |text| format!("Searched the web for `{query}`. Results:\n\n{text}"),
+        )
+}
+
+/// Arguments for an edit step that satisfy whichever key an advertised edit tool
+/// expects. Agentic CLIs disagree on the parameter names — opencode's `edit`
+/// wants `filePath`/`oldString`/`newString`, Gemini/Qwen's `replace` wants
+/// `file_path`/`old_string`/`new_string`, and Anthropic's `str_replace` wants
+/// `path`/`old_str`/`new_str`. All aliases are emitted; a schema-validating CLI
+/// keeps the ones it declared and strips the rest, so the same plan drives any of
+/// them without a per-CLI special case (issue #680), mirroring
+/// [`super::planner`]'s `write_arguments`.
+fn edit_arguments(path: &str, old: &str, new: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+        "oldString": old,
+        "old_string": old,
+        "old_str": old,
+        "old": old,
+        "newString": new,
+        "new_string": new,
+        "new_str": new,
+        "new": new,
+    })
+    .to_string()
+}

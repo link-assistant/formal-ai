@@ -1,0 +1,157 @@
+meanings
+  file_write_action
+    defined-by action
+    role file_write_action_cue
+    lexeme en
+      surface
+        text "create"
+      surface
+        text "write"
+      surface
+        text "save"
+      surface
+        text "make"
+      surface
+        text "generate"
+      surface
+        text "append"
+      surface
+        text "add"
+      surface
+        text "put"
+    lexeme ru
+      surface
+        text создай
+      surface
+        text создать
+      surface
+        text напиши
+      surface
+        text записать
+      surface
+        text запиши
+      surface
+        text сохрани
+      surface
+        text сделай
+      surface
+        text добавь
+    lexeme hi
+      surface
+        text बनाओ
+      surface
+        text लिखो
+      surface
+        text सहेजो
+      surface
+        text जोड़ो
+    lexeme zh
+      surface
+        text 创建
+      surface
+        text 写
+      surface
+        text 保存
+      surface
+        text 生成
+      surface
+        text 添加
+  file_write_content
+    defined-by relation
+    role file_write_content_lead
+    lexeme en
+      surface
+        text "containing …"
+      surface
+        text "with content …"
+      surface
+        text "with text …"
+      surface
+        text "with the content …"
+      surface
+        text "with the text …"
+      surface
+        text "with the following …"
+      surface
+        text "that says …"
+      surface
+        text "that contains …"
+      surface
+        text "which says …"
+      surface
+        text "saying …"
+    lexeme ru
+      surface
+        text "с текстом …"
+      surface
+        text "с содержанием …"
+      surface
+        text "содержащий …"
+      surface
+        text "содержащей …"
+    lexeme hi
+      surface
+        text "जिसमें लिखा हो …"
+      surface
+        text "सामग्री के साथ …"
+    lexeme zh
+      surface
+        text "内容为 …"
+      surface
+        text "包含 …"
+  file_write_target
+    defined-by relation
+    role file_write_target_cue
+    lexeme en
+      surface
+        text "file"
+      surface
+        text "called"
+      surface
+        text "named"
+      surface
+        text "at"
+      surface
+        text "as"
+      surface
+        text "in"
+      surface
+        text "inside"
+    lexeme ru
+      surface
+        text файл
+      surface
+        text файле
+      surface
+        text названный
+    lexeme hi
+      surface
+        text फ़ाइल
+      surface
+        text नामक
+    lexeme zh
+      surface
+        text 文件
+  file_write_destination
+    defined-by relation
+    role file_write_destination_cue
+    lexeme en
+      surface
+        text "to"
+      surface
+        text "into"
+      surface
+        text "onto"
+    lexeme ru
+      surface
+        text в
+      surface
+        text во
+    lexeme hi
+      surface
+        text में
+    lexeme zh
+      surface
+        text 到
+      surface
+        text 在
