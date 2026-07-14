@@ -263,26 +263,38 @@ fn shell_intent_routes_to_run_tool_in_any_phrasing() {
     // phrasing so a pass proves the routing is general, not memorised (rule 4). The
     // exact command comes from the seed intent table (`data/seed/shell-intents.lino`),
     // never from a hardcoded phrasing in the planner.
-    for (prompt, expected_command) in [
-        ("Show me what's in this folder", "ls"),
-        ("Print the current working directory", "pwd"),
-        ("Tell me today's date using the shell", "date"),
-        ("How much disk space is free?", "df -h"),
-        ("Show the running processes", "ps"),
+    //
+    // The routing is language-agnostic: the seed cues span English, Russian, Hindi
+    // and Chinese, so the rows below prove a matching intent in *any* of those
+    // languages recovers the same concrete command (CONTRIBUTING rule 4). The first
+    // tuple field names the language of the row.
+    for (language, prompt, expected_command) in [
+        ("English", "Show me what's in this folder", "ls"),
+        ("English", "Print the current working directory", "pwd"),
+        ("English", "Tell me today's date using the shell", "date"),
+        ("English", "How much disk space is free?", "df -h"),
+        ("English", "Show the running processes", "ps"),
         (
+            "English",
             "Count the number of lines in Cargo.toml",
             "wc -l Cargo.toml",
         ),
-        ("Create a directory called build", "mkdir build"),
-        ("What is my username?", "whoami"),
+        ("English", "Create a directory called build", "mkdir build"),
+        ("English", "What is my username?", "whoami"),
+        // Russian: "show what is in this folder" -> ls
+        ("Russian", "покажи что в этой папке", "ls"),
+        // Hindi: "show the current working directory" -> pwd
+        ("Hindi", "वर्तमान निर्देशिका दिखाओ", "pwd"),
+        // Chinese: "what is my username" -> whoami
+        ("Chinese", "我的用户名是什么", "whoami"),
     ] {
         let (tool, arguments) = single_call(prompt, &["bash", "read_file"]);
-        assert_eq!(tool, "bash", "{prompt}");
+        assert_eq!(tool, "bash", "{language}: {prompt}");
         let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
         assert_eq!(
             value["command"].as_str().unwrap(),
             expected_command,
-            "command for {prompt}"
+            "command for {language}: {prompt}"
         );
     }
 }
