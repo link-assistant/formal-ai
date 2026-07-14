@@ -517,7 +517,9 @@ impl AssociativeMemory {
     /// expression counters, and every cross-event reference becomes a directed
     /// associative link. References include explicit `evidence` and legacy ids
     /// embedded in searchable event text, so existing logs are upgraded without
-    /// a migration while new logs can use first-class evidence links.
+    /// a migration while new logs can use first-class evidence links. Recall
+    /// updates this rebuilt view; callers persist counters only by writing the
+    /// corresponding durable events.
     #[must_use]
     pub fn from_memory_events(events: &[MemoryEvent]) -> Self {
         let mut memory = Self::new();
