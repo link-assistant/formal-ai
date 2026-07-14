@@ -1200,3 +1200,27 @@ the table in Section 2 and link the new module.
   dependency edges and the change-driven recalculation cascade reuse
   `SubstitutionGraph::apply_rules`; the concept-by-concept status is in
   `docs/case-studies/issue-649/world-model-mapping.md`.
+
+### Usage-weighted associative persistence (issue #686)
+
+- `src/associative_persistence.rs` keeps a **persistent** version of
+  **meta-language expressions** saved in an **associative links network**: an
+  `AssociativeMemory` stores each expression as a content-addressed node (via
+  `stable_id`, so one meaning is one node) in an embedded `SubstitutionGraph`,
+  counts **usages (reads)** and **changes (writes)** per expression, and derives an
+  independent usage signal from each node's **incoming and outgoing link degree**.
+  A single `retention_score` (reads + writes + in-degree + out-degree, under
+  configurable `RetentionWeights`) drives an LFU-style policy so the **most used,
+  most changed, and most connected** knowledge **persists longest**; eviction
+  forgets the lowest-scored first. Everything — expressions, read/write counts, and
+  associations — is **a link** (never a separate edge/vertex type) and serializes to
+  Links Notation. The design case study in
+  `docs/case-studies/issue-686/README.md` maps the request onto its prior art
+  ([Wikontic](https://huggingface.co/papers/2512.00590) entity-degree↔retrieval,
+  [LFU cache replacement](https://en.wikipedia.org/wiki/Cache_replacement_policies),
+  [reference counting](https://en.wikipedia.org/wiki/Reference_counting), and
+  [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality)),
+  and the concept-by-concept status is in
+  `docs/case-studies/issue-686/persistence-mapping.md`. It generalizes the
+  read-count LFU precursor already present in `src/dreaming.rs` (`usage_counts`) and
+  bridges to the issue #649 world model via `AssociativeMemory::from_context`.
