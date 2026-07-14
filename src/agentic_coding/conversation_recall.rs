@@ -82,34 +82,3 @@ fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
         .find(|message| message.role.eq_ignore_ascii_case("user"))
         .map(|message| message.content.plain_text())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn recognises_recall_phrasings() {
-        assert!(is_recall_intent("What we were talking about?"));
-        assert!(is_recall_intent("What were we talking about?"));
-        assert!(is_recall_intent("Remind me what we discussed."));
-        assert!(is_recall_intent("what did we discuss earlier"));
-    }
-
-    #[test]
-    fn ignores_non_recall_prompts() {
-        assert!(!is_recall_intent("When are the next elections in the USA?"));
-        assert!(!is_recall_intent("Report this issue on GitHub"));
-        assert!(!is_recall_intent("let me talk to support")); // no "we"/"were"
-    }
-
-    #[test]
-    fn recalls_prior_user_turn() {
-        let messages = vec![
-            ChatMessage::user("When are the next elections in the USA?"),
-            ChatMessage::assistant("The next US general election is in November 2026."),
-            ChatMessage::user("What were we talking about?"),
-        ];
-        let answer = recall_answer_for(&messages).expect("recall answer");
-        assert!(answer.to_lowercase().contains("election"));
-    }
-}

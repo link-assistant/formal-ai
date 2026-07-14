@@ -102,6 +102,68 @@ mod factual_question {
     }
 }
 
+// Requirement 1 (generalization): a factual/answer-seeking question the symbolic
+// engine cannot resolve locally must reach the web in *every* supported language,
+// not only English. The reported OpenCode session was English, but the issue asks
+// for the behaviour to generalise across all environments and languages.
+mod multilingual_web_research {
+    use super::*;
+
+    fn web_query(prompt: &str) -> String {
+        let messages = vec![ChatMessage::user(prompt)];
+        let calls = tool_calls(&messages);
+        assert_eq!(calls.len(), 1, "{prompt:?} should emit one call");
+        assert_eq!(calls[0].tool, "websearch", "{prompt:?} should web-search");
+        let query = arguments(&calls[0])["query"]
+            .as_str()
+            .expect("query string")
+            .to_owned();
+        assert!(
+            !query.trim().is_empty(),
+            "{prompt:?} query must not be empty"
+        );
+        query
+    }
+
+    #[test]
+    fn english_question_reaches_the_web() {
+        // language: en (english) — the original OpenCode phrasing.
+        let query = web_query("When are the next elections in the USA?");
+        assert!(query.to_lowercase().contains("election"), "{query}");
+    }
+
+    #[test]
+    fn russian_question_reaches_the_web() {
+        // language: ru — Russian (русский). Cyrillic question, full-width absent.
+        let query = web_query("Когда следующие выборы в США?");
+        assert!(query.contains("выборы"), "{query}");
+    }
+
+    #[test]
+    fn hindi_question_reaches_the_web() {
+        // language: hi — Hindi (हिंदी). Devanagari question ending in `?`.
+        let query = web_query("संयुक्त राज्य अमेरिका में अगले चुनाव कब हैं?");
+        assert!(query.contains("चुनाव"), "{query}");
+    }
+
+    #[test]
+    fn chinese_question_reaches_the_web() {
+        // language: zh — Chinese (中文). Ends with the full-width `？`, which must be
+        // recognised as a question mark the same way ASCII `?` is.
+        let query = web_query("美国下次选举是什么时候？");
+        assert!(query.contains("选举"), "{query}");
+    }
+
+    #[test]
+    fn research_imperative_carries_the_bare_topic() {
+        // A direct English research imperative reduces to its bare topic.
+        let messages = vec![ChatMessage::user("Research quantum computing")];
+        let calls = tool_calls(&messages);
+        assert_eq!(calls[0].tool, "websearch");
+        assert_eq!(arguments(&calls[0])["query"], "quantum computing");
+    }
+}
+
 // Requirement 2: report the issue to the Formal AI repository in natural language.
 mod report_issue {
     use super::*;
@@ -163,6 +225,65 @@ mod report_issue {
             "final answer should surface the created issue URL, got: {answer}"
         );
     }
+
+    #[test]
+    fn bare_russian_report_files_the_issue() {
+        // language: ru — Russian (русский) bare "сообщи" is the minimal report.
+        let messages = vec![
+            ChatMessage::user("Когда следующие выборы в США?"),
+            ChatMessage::assistant("Я не смог это определить."),
+            ChatMessage::user("сообщи"),
+        ];
+        let calls = tool_calls(&messages);
+        assert_eq!(calls[0].tool, "bash");
+        let args = arguments(&calls[0]);
+        let command = args["command"].as_str().unwrap();
+        assert!(command.contains("gh issue create"), "{command}");
+    }
+
+    #[test]
+    fn conversation_text_is_shell_escaped_in_the_command() {
+        // An apostrophe in the conversation must not break out of the shell quoting
+        // when the report body transcribes it.
+        let messages = vec![
+            ChatMessage::user("it's broken and I can't proceed"),
+            ChatMessage::assistant("I could not determine that."),
+            ChatMessage::user("Report this issue on GitHub"),
+        ];
+        let calls = tool_calls(&messages);
+        let args = arguments(&calls[0]);
+        let command = args["command"].as_str().unwrap();
+        assert!(command.contains("gh issue create --repo link-assistant/formal-ai"));
+        // POSIX single-quote escaping renders a literal `'` as `'\''`.
+        assert!(
+            command.contains("'\\''"),
+            "apostrophe must be escaped: {command}"
+        );
+    }
+
+    #[test]
+    fn unrelated_report_shaped_prompt_is_not_an_issue_filing() {
+        // "report the file sizes here" uses "report" as a plain verb, not an intent
+        // to file a GitHub issue, so it must not shell out to `gh issue create`.
+        for prompt in [
+            "report the file sizes here",
+            "create file notes.txt with hello",
+        ] {
+            let messages = vec![ChatMessage::user(prompt)];
+            if let AgenticPlan::ToolCalls(calls) =
+                plan_chat_step(&messages, &TOOLS).unwrap_or(AgenticPlan::Final(String::new()))
+            {
+                for call in &calls {
+                    let args = arguments(call);
+                    let command = args["command"].as_str().unwrap_or_default();
+                    assert!(
+                        !command.contains("gh issue create"),
+                        "{prompt:?} must not file an issue, got: {command}"
+                    );
+                }
+            }
+        }
+    }
 }
 
 // Requirement 3: talk about the conversation itself.
@@ -185,6 +306,24 @@ mod conversation_recall {
             assert!(
                 answer.to_lowercase().contains("election"),
                 "{prompt:?} should recall the prior topic, got: {answer}"
+            );
+        }
+    }
+
+    #[test]
+    fn non_recall_prompts_do_not_hijack_the_recall_recipe() {
+        // "let me talk to support" mentions "talk" but no first-person-plural "we",
+        // so it is not a recall question and must not answer from history.
+        let messages = vec![
+            ChatMessage::user("When are the next elections in the USA?"),
+            ChatMessage::assistant("The next US general election is in November 2026."),
+            ChatMessage::user("let me talk to support"),
+        ];
+        let plan = plan_chat_step(&messages, &TOOLS);
+        if let Some(AgenticPlan::Final(answer)) = plan {
+            assert!(
+                !answer.contains("Here is what we have been talking about"),
+                "must not be answered as recall, got: {answer}"
             );
         }
     }

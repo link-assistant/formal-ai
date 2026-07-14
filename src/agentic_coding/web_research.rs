@@ -248,11 +248,17 @@ const QUESTION_OPENERS: [&str; 18] = [
     "do ", "does ", "can ", "will ", "should ", "could ", "were ",
 ];
 
-/// Whether `lower` is an answer-seeking question (ends with `?` or opens with a
-/// question word).
+/// Question marks that end an interrogative sentence across the languages Formal
+/// AI supports: ASCII `?`, the CJK full-width `？` (Chinese/Japanese), the Arabic
+/// `؟`, and the inverted `¿`. Keeping these together lets a non-English question
+/// reach the web the same way an English one does (issue #687 generalization).
+const QUESTION_MARKS: [char; 4] = ['?', '？', '؟', '¿'];
+
+/// Whether `lower` is an answer-seeking question (ends with a question mark in any
+/// supported script, or opens with a question word).
 fn is_answer_seeking(lower: &str) -> bool {
     let trimmed = lower.trim();
-    trimmed.ends_with('?')
+    trimmed.ends_with(QUESTION_MARKS)
         || QUESTION_OPENERS
             .iter()
             .any(|opener| trimmed.starts_with(opener))
@@ -267,10 +273,11 @@ fn engine_cannot_resolve_locally(task: &str) -> bool {
     matches!(intent.as_str(), "unknown" | "web_search")
 }
 
-/// Reduce a question to a search query: drop trailing punctuation, keep the words.
+/// Reduce a question to a search query: drop trailing punctuation (including the
+/// non-ASCII question marks above), keep the words.
 fn clean_query(task: &str) -> String {
     task.trim()
-        .trim_end_matches(['?', '.', '!'])
+        .trim_end_matches(|c| QUESTION_MARKS.contains(&c) || matches!(c, '.' | '!' | '。'))
         .trim()
         .to_owned()
 }
@@ -282,42 +289,4 @@ fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
         .rev()
         .find(|message| message.role.eq_ignore_ascii_case("user"))
         .map(|message| message.content.plain_text())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn resolves_learn_about_it_from_history() {
-        let messages = vec![
-            ChatMessage::user("Tell me about the Rust borrow checker."),
-            ChatMessage::assistant("It enforces ownership at compile time."),
-            ChatMessage::user("Learn about it."),
-        ];
-        let query = web_research_query_for(&messages).expect("query");
-        let lower = query.to_lowercase();
-        assert!(
-            lower.contains("borrow") || lower.contains("rust"),
-            "{query}"
-        );
-    }
-
-    #[test]
-    fn extracts_first_url() {
-        assert_eq!(
-            first_url("see https://example.com/x, and more").as_deref(),
-            Some("https://example.com/x")
-        );
-        assert_eq!(first_url("no url here"), None);
-    }
-
-    #[test]
-    fn research_imperative_direct_topic() {
-        let messages = vec![ChatMessage::user("Research quantum computing")];
-        assert_eq!(
-            web_research_query_for(&messages).as_deref(),
-            Some("quantum computing")
-        );
-    }
 }
