@@ -7,8 +7,8 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 20891
-  named_node_count 4201
+  total_link_count 20890
+  named_node_count 4199
   distinct_node_kinds 81
   node_kinds
     arguments 280
@@ -26,7 +26,7 @@ self_ast
     continue_expression 2
     crate 1
     declaration_list 2
-    doc_comment 169
+    doc_comment 168
     else_clause 8
     enum_item 2
     enum_variant 8
@@ -61,7 +61,7 @@ self_ast
     match_pattern 6
     mutable_specifier 4
     ordered_field_declaration_list 2
-    outer_doc_comment_marker 164
+    outer_doc_comment_marker 163
     parameter 64
     parameters 38
     parenthesized_expression 1
