@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+
+## [0.295.1] - 2026-07-15
+
+### Fixed
+- Route URL-navigation wording to advertised fetch tools, broader web-research wording to search tools, common file-update verbs to edit tools, and declarative `new file: …, contents: …` requests to write rather than read (issue #712).
+
 ## [0.295.0] - 2026-07-15
 
 ### Fixed
