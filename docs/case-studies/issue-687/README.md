@@ -1,109 +1,100 @@
-# Issue 687 Case Study — Agentic mode does not act on simple requests
+# Issue 687 case study — from symbolic fallback to agentic action
 
-> "Asking formal AI to report the issue on GitHub does not work (as well as other
-> simple prompts/requests)."
+Issue #687 records four requests sent to Formal AI through an agentic CLI. Each
+request named a capability the surrounding client already had, but Formal AI
+either returned its unknown-answer text or described work without doing it:
 
-## Collected data
+1. `When next elections in the USA?`
+2. `Report`
+3. `What we were talking about?`
+4. `Learn about it.`
 
-Raw evidence is preserved under [`raw-data/`](raw-data/):
+The screenshot is preserved as
+[`images/01-opencode-session.png`](images/01-opencode-session.png), and the
+GitHub snapshots available when the investigation began are under
+[`raw-data/`](raw-data/), including the issue, PR, conversation comments, inline
+review comments, reviews, and recent workflow metadata. The later maintainer direction in
+[PR comment 4977401752](https://github.com/link-assistant/formal-ai/pull/688#issuecomment-4977401752)
+required a deeper, auto-learning-oriented implementation and execution of the
+same task through Formal AI using Agent CLI.
 
-- [`issue-687.json`](raw-data/issue-687.json) — the issue as filed.
-- [`issue-687-comments.json`](raw-data/issue-687-comments.json) — issue comments
-  (empty at capture time).
-- [`image-urls.txt`](raw-data/image-urls.txt) — the attachment URLs in the issue
-  body.
-- [`pr-688.json`](raw-data/pr-688.json),
-  [`pr-688-conversation-comments.json`](raw-data/pr-688-conversation-comments.json),
-  [`pr-688-review-comments.json`](raw-data/pr-688-review-comments.json) — the
-  prepared pull request.
-- [`recent-runs.json`](raw-data/recent-runs.json) — CI runs on the branch.
+## Reconstructed timeline
 
-The screenshot from the issue is saved at
-[`images/01-opencode-session.png`](images/01-opencode-session.png).
+| Time (UTC) | Event |
+| --- | --- |
+| 2026-07-13 19:51 | Issue #687 filed with the four-turn screenshot and cross-environment requirements. |
+| 2026-07-14 | Initial planner recipes, tests, and case study added to PR #688; CI follow-up fixed fixture and multilingual gaps. |
+| 2026-07-15 06:01 | Maintainer rejected the shallow endpoint-specific solution and asked for deeper generalization, auto-learning alignment, and the exact task through Agent CLI. |
+| 2026-07-15 | Branch merged current `main`, including issue #686's associative-learning architecture. Hard-coded request tables were replaced by Links Notation seed semantics shared across planner roles. |
+| 2026-07-15 | The release Formal AI server was driven through the installed `@link-assistant/agent` in four continued invocations. It completed two research cycles, executed the report shell action, recalled the election topic, and completed at least nine OpenAI-compatible chat rounds. |
+| 2026-07-15 | A real Chromium flow verified natural-language control for UI settings that previously had no message route. The test also exposed and fixed a stale-bundle bug in the Playwright server command. |
 
-## Timeline / sequence of events
+## What actually failed
 
-1. The maintainer ran **OpenCode 1.17.18** as an agentic CLI, pointed at Formal
-   AI's OpenAI-compatible server as the model backend.
-2. Four ordinary prompts were sent in one session (see the screenshot):
-   - **"When next elections in the USA?"** → the assistant replied it *"could not
-     determine … cannot infer a verified answer"* (the unknown-reasoning blurb).
-   - **"Report"** → the assistant described a *web-search plan* instead of
-     actually filing the issue on GitHub.
-   - **"What we were talking about?"** → the unknown-reasoning blurb again.
-   - **"Learn about it."** → the unknown-reasoning blurb again.
-3. Each of the four is a *simple* request that a human, or a neural assistant,
-   would act on immediately. Formal AI, being deterministic and symbolic,
-   dead-ended on all four.
+The defect was not a single missing `if`. It was four architectural gaps:
 
-## Requirements
+- Agentic capability selection depended on local phrase tables rather than the
+  project's seed knowledge, so new wording and languages required Rust edits.
+- Recall and contextual learning did not share one history interpretation path.
+- Tool progress was scanned globally, allowing an old tool result to satisfy a
+  later user turn.
+- The UI advertised controls whose state setters were not all reachable through
+  message commands, and those commands had no declarative capability catalog.
 
-The full, itemised requirement list extracted from the issue body is in
-[`requirements.md`](requirements.md). In short:
+See [`root-cause.md`](root-cause.md) for the traced control flow and
+[`requirements.md`](requirements.md) for every issue requirement.
 
-1. Solve by **generalization** (auto-learning + contributing guidelines), not by
-   hardcoding each phrase in production code.
-2. Be able to **talk about the conversation** (meta / recall questions).
-3. **Factual questions** → go to the internet (web search + web fetch), find
-   official sources, answer the user.
-4. In **agentic mode**, rely on the tools of OpenCode CLI and any other supported
-   harness (Formal AI itself has no HTTP client).
-5. Ability to **report an issue** to the Formal AI repository in natural language
-   (agentic mode has no Formal AI web UI, so the "Report issue" button is
-   unreachable).
-6. **Everything in the web UI** (button, action, setting) must be actionable /
-   configurable with natural language in **all** environments.
-7. Download logs/data here and produce this **deep case study**.
-8. Add **debug output + verbose mode** if there is not enough data to find a root
-   cause.
-9. If the issue relates to another repository, **report it there** with
-   reproducible examples, workarounds, and fix suggestions.
-10. Apply the fix across the **entire codebase** (fix in all places).
-11. Plan and execute everything in the **single PR #688**.
+## Resulting architecture
 
-## Root cause
+The implementation makes the seed the extensibility boundary:
 
-Root-cause analysis is in [`root-cause.md`](root-cause.md). In short: the
-deterministic agentic planner, [`plan_chat_step`](../../../src/agentic_coding/planner.rs),
-had no recipe for any of the four request classes. It returned `None`, the loop
-fell through to the symbolic solver, and the solver — unable to answer a factual,
-report, research, or recall prompt from local Links Notation rules — emitted the
-unknown-reasoning blurb. OpenCode faithfully displayed that blurb. This mirrors
-the predecessor investigation for issue #676, which likewise concluded the
-harness (OpenCode) was **not** at fault.
+- `data/seed/meanings-agent-actions.lino` declares report, recall, and research
+  semantics in English, Russian, Hindi, and Chinese.
+- `data/seed/agent-info.lino` owns repository and issue-report templates.
+- Report, recall, and research roles consume the same embedded seed registries.
+- `solve_with_history` is the shared path for conversational recall and
+  contextual follow-ups.
+- Research ranks official government and educational URLs, fetches the chosen
+  source, and cites it in the answer.
+- Planner progress is scoped to the latest user turn, so a later `Learn about
+  it.` cannot reuse an earlier web result.
+- `data/seed/interface-capabilities.lino` maps natural-language phrases and
+  values to UI preference keys. Adding an enum alias or another catalogued
+  preference no longer requires another recognizer branch.
 
-## Implemented path
+This builds on the associative persistent-learning foundation merged from issue
+#686: learned conversation associations remain data, while the planner uses
+seed-declared semantic roles instead of duplicating language policy in code.
 
-Three new deterministic planner recipes, each emitting the tool calls the harness
-executes, or a final answer read from the conversation:
+## Reproduction and verification
 
-| Request class | Module | Behaviour |
-| --- | --- | --- |
-| Factual / research question | [`web_research.rs`](../../../src/agentic_coding/web_research.rs) | `websearch` → `webfetch` the surfaced source → answer from it. Fires only when the symbolic engine cannot resolve the prompt locally, so it is a genuine generalization, not a phrase list. |
-| "Report [this] on GitHub" | [`report_issue.rs`](../../../src/agentic_coding/report_issue.rs) | `gh issue create --repo link-assistant/formal-ai …`, then surface the created issue URL. |
-| "What were we talking about?" | [`conversation_recall.rs`](../../../src/agentic_coding/conversation_recall.rs) | Final answer built from the message history; no tool call. |
+The minimum deterministic reproduction is
+[`tests/unit/issue_687.rs`](../../../tests/unit/issue_687.rs). It covers the four
+reported turns, multilingual variants, official-source preference, source
+citation, shell escaping, and the stale-progress regression.
 
-The recipes are wired into `plan_chat_step` in priority order (report → recall →
-… → web research), disjoint from the existing recipes. Because the browser worker
-is **WASM-compiled Rust** (`mode = "wasm worker"`), the same logic reaches the web
-environment automatically; the web UI additionally already recognises "report
-issue" and recall via `src/web/app/main.jsx`.
+The system reproduction is
+[`experiments/agent_cli_e2e/run_issue_687.sh`](../../../experiments/agent_cli_e2e/run_issue_687.sh).
+It starts the release Formal AI server and runs the installed Agent CLI four
+times with `--continue --no-fork`. A PATH-local fake `gh` proves that the client
+executes the generated command without creating a real GitHub issue. The run
+completed with this invariant:
 
-## Reproduction test
+```text
+issue #687 E2E OK: report executed, recall retained context,
+follow-up researched it (9 rounds)
+```
 
-[`tests/unit/issue_687.rs`](../../../tests/unit/issue_687.rs) drives
-`plan_chat_step` exactly as an agentic CLI would, one test per reported prompt
-class. Every test fails on `main` (planner returns `None` → no tool call) and
-passes with the fix.
+The browser reproduction is
+[`tests/e2e/tests/issue-687.spec.js`](../../../tests/e2e/tests/issue-687.spec.js).
+It verifies seed-backed commands for thinking detail, message animation,
+follow-up probability, toolbar icon pack, and Full Auto mode.
 
-## Online research
+## Related evidence
 
-Corroboration of the factual example (the next US general election is **November
-3, 2026**) and a survey of related components is in
-[`online-research.md`](online-research.md).
-
-## Upstream
-
-Whether any other repository (OpenCode) is at fault is assessed in
-[`upstream.md`](upstream.md). Conclusion: no upstream bug; the gap was in Formal
-AI's own agentic planner.
+- [`online-research.md`](online-research.md) records primary sources and the
+  exact official election fact used to validate research behavior.
+- [`upstream.md`](upstream.md) explains why no OpenCode or Agent issue was filed.
+- No new Cargo dependency was needed; the implementation composes the existing
+  planner protocol, seed parser, associative memory, client tools, and browser
+  settings state.

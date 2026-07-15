@@ -1,32 +1,24 @@
-# Issue 687 — upstream assessment (R9)
+# Issue 687 — upstream assessment
 
-The issue asks: "If issue related to any other repository/project, where we can
-report issues on GitHub, please do so."
+The original screenshot used OpenCode, while the required reproduction uses the
+OpenCode-compatible Link Assistant Agent CLI. An upstream report would be
+appropriate only if either client failed to advertise, relay, or execute a valid
+Formal AI tool call.
 
-## The harness: OpenCode
+The release-server E2E established the opposite:
 
-The reported session used **OpenCode 1.17.18** as the agentic CLI, with Formal AI
-as the model backend over the OpenAI-compatible HTTP API.
+- Agent advertised web search, web fetch, and shell capabilities.
+- Formal AI emitted separate search/fetch cycles for the first and fourth turns.
+- Agent executed the generated `gh issue create` shell command; the PATH-local
+  fake recorded its arguments and returned a realistic issue URL.
+- Continued sessions preserved enough history for recall and `it` resolution.
+- At least nine `/v1/chat/completions` requests completed across four CLI
+  invocations.
 
-**Assessment: OpenCode is not at fault.**
+The defects were in Formal AI: missing seed-backed orchestration, unscoped
+progress, and incomplete browser message routes. No reproducible Agent/OpenCode
+defect remains, so filing an upstream issue would misattribute the problem.
 
-- OpenCode advertised its tools (`websearch`, `webfetch`, `read`, `write`,
-  `bash`) and faithfully rendered whatever the model returned.
-- For all four prompts, Formal AI's planner returned no tool call — it produced
-  the unknown-reasoning blurb (or a plan description for "Report"). OpenCode
-  correctly displayed that text. There was nothing for it to execute because
-  Formal AI emitted no tool call.
-- This mirrors the predecessor investigation for issue **#676**, which likewise
-  concluded the harness was not the cause; the gap was in Formal AI's own
-  deterministic reasoning.
-
-Therefore **no upstream issue is filed** — the defect and its fix are entirely
-within `link-assistant/formal-ai` (this PR).
-
-## Dogfooding note
-
-Ironically, one of the four failing prompts was a request to *report the issue on
-GitHub*. With this PR, that request now produces a real `gh issue create` tool
-call against `link-assistant/formal-ai`, so the exact scenario in the screenshot
-is now actionable from agentic mode — the assistant can file its own bug reports
-when asked in natural language.
+The Agent project's unrestricted-execution warning is relevant operationally,
+but it is documented behavior rather than a bug. The test follows that guidance
+by isolating its working directory and preventing a real GitHub mutation.

@@ -1,18 +1,32 @@
-# Issue 687 — itemised requirements
+# Issue 687 — requirements and evidence
 
-Extracted verbatim-in-spirit from the issue body, each with how this PR addresses
-it.
+This table includes the issue body and the maintainer's later PR direction.
 
-| # | Requirement (from the issue) | Where addressed |
+| # | Requirement | Implementation and evidence |
 | --- | --- | --- |
-| R1 | "We need solve it by **generalization**, using our auto learning and contributing guidelines." | The three recipes classify by *intent*, not by fixed phrases. Web research fires only when the symbolic engine reports it cannot resolve the prompt locally (`engine_cannot_resolve_locally`), reusing the seed-backed `detect_web_search_query`; report/recall use verb+noun/topic recognisers with word-boundary matching. |
-| R2 | "It should be possible to **talk about the conversation**." | `conversation_recall.rs` answers "what were we talking about?" from message history. |
-| R3 | "…ask such and all similar questions (Formal AI should go to the **internet**, do **web search**, **web fetch**, find official sources, and give an answer)." | `web_research.rs`: `websearch` → `webfetch` the surfaced source → answer from it. |
-| R4 | "In **agentic mode** we should rely on tools of OpenCode CLI, and any other harness we support." | All recipes emit `PlannedToolCall`s bound to the client's advertised tools (`tool_for(Capability::…)`); Formal AI performs no network I/O itself. |
-| R5 | "…ability to ask to **report the issue** to Formal AI repository, about any fails in natural language, as in agentic mode we don't have formal AI's UI." | `report_issue.rs`: `gh issue create --repo link-assistant/formal-ai …`, then surface the created URL. |
-| R6 | "…everything in the web UI (button, action, setting) must be **actionable and configurable with natural language in all environments**." | The browser worker is WASM-compiled from the same Rust planner (`src/web/worker`, `mode = "wasm worker"`), so these recipes reach the web environment too; `src/web/app/main.jsx` already recognises report-issue and recall in-browser. See `root-cause.md` § Environments. |
-| R7 | "Download all logs and data… compile to `./docs/case-studies/issue-{id}`… deep case study… timeline… requirements… root causes… solution plans… check known existing components/libraries." | This folder: `README.md`, `requirements.md`, `root-cause.md`, `online-research.md`, `upstream.md`, `raw-data/`. |
-| R8 | "If there is not enough data to find actual root cause, add **debug output and verbose mode** if not present." | Root cause was determinable from the code path (see `root-cause.md`); the reproduction test pins it. No new tracing was required, so none was added (keeping the change minimal). |
-| R9 | "If issue related to any other repository/project… **report issues on GitHub**… reproducible examples, workarounds and suggestions." | `upstream.md`: the gap is in Formal AI's own planner, not OpenCode; mirrors the #676 conclusion. No upstream report warranted. |
-| R10 | "…double check to fully apply requirements to **entire codebase**, so if we have issue in multiple places, it should be fixed in all them." | The planner is the single choke point for the agentic path; the WASM worker shares it. The web UI (`main.jsx`) already covered these classes. `root-cause.md` § Environments enumerates each surface. |
-| R11 | "Please **plan and execute everything in this single pull request**" (PR #688). | All commits land on `issue-687-b57bfef2a27f` / PR #688. |
+| R1 | Generalize through auto-learning and project guidelines; do not patch only the shown phrases. | Agent actions and UI capabilities are Links Notation seed data. Recall/context use the history solver and associative-learning architecture from #686. Multilingual and paraphrase tests prevent a screenshot-only implementation. |
+| R2 | Talk about the conversation. | `conversation_recall` uses `solve_with_history`; unit tests and the real continued Agent CLI session retain the election topic. |
+| R3 | Similar factual questions must search, fetch an official source, and answer. | Research progresses `websearch` → ranked official URL → `webfetch` → answer with citation. Tests cover en/ru/hi/zh and prefer `.gov` over an arbitrary URL. |
+| R4 | In agentic mode, rely on OpenCode/other harness tools. | The planner binds to advertised `websearch`, `webfetch`, and shell tools. The installed OpenCode-compatible Agent CLI executes the exact scenario against the release server. |
+| R5 | Natural-language self-reporting without the Formal AI UI. | Seed report semantics produce a safely quoted `gh issue create --repo link-assistant/formal-ai` call and surface the returned URL. The E2E uses a fake `gh` to prove execution without an external mutation. |
+| R6 | Every web/desktop button, action, and setting must be naturally actionable/configurable in all environments. | Existing specialized routes remain; a typed seed catalog closes uncovered preference routes. Playwright checks five representative gaps on real controls. The catalog is embedded for native/WASM and mirrored to the browser. |
+| R7 | Download data and create a deep case study with online research, timeline, requirements, root causes, solutions, and existing-component review. | This directory contains the screenshot/raw snapshots, reconstruction, four root causes, solution architecture, primary sources, and component inventory. |
+| R8 | Add disabled-by-default tracing if evidence is insufficient. | Existing `FORMAL_AI_TRACE_REQUESTS=1` was sufficient and is enabled by the E2E script. Its request count and `agentic_outcome` lines prove state transitions, so another tracing subsystem was unnecessary. |
+| R9 | File upstream issues when another project is responsible. | Real Agent execution showed the client advertises and executes the required tools. [`upstream.md`](upstream.md) records why no upstream issue is justified. |
+| R10 | Apply the solution across the codebase and avoid regressions/removals. | Native planner, embedded seed, browser seed mirror, React shell, generated bundle, tests, and release CI were updated. Existing routes remain as backward-compatible fallbacks. |
+| R11 | Keep all work in PR #688. | All commits are on `issue-687-b57bfef2a27f` and PR #688. |
+| R12 | Execute the same task using Formal AI via Agent CLI. | `experiments/agent_cli_e2e/run_issue_687.sh` makes four continued invocations with the exact issue workflow; the release run completed nine chat rounds and two separate web searches. |
+| R13 | Advance the meta-algorithm ambitiously and replace obsolete logic in touched areas. | Phrase policy moved from Rust into semantic seed roles; history interpretation was unified; progress became turn-scoped; source selection became trust-aware; UI commands became declarative. |
+
+## Existing components reused
+
+- Agentic planner protocol and capability binding (`PlannedToolCall`,
+  `Capability`, `tool_for`).
+- Seed parsing, embedded roles, closure generation, and browser seed mirroring.
+- `solve_with_history` and issue #686 associative memory.
+- Client-owned `websearch`, `webfetch`, and shell implementations.
+- GitHub CLI rather than a new GitHub API dependency.
+- Existing React preference normalizers and state setters.
+- Existing Playwright browser harness, corrected to rebuild current source.
+
+No feature was removed and no new Cargo dependency was introduced.

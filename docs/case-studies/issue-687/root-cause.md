@@ -1,87 +1,104 @@
 # Issue 687 — root-cause analysis
 
-## The symptom
+## Observed control flow
 
-Four ordinary prompts, sent through OpenCode driving Formal AI's
-OpenAI-compatible server, each produced either the unknown-reasoning blurb ("I
-could not determine … cannot infer a verified answer") or, for "Report", a
-*description of a plan* rather than the action itself.
+An OpenAI-compatible request enters the server's agentic loop. The planner can
+return tool calls, a final answer, or no plan. Before this work, the four issue
+prompts followed one of two bad paths:
 
-## The code path
-
-In agentic mode the server calls
-[`plan_chat_step`](../../../src/agentic_coding/planner.rs):
-
-```
-plan_chat_step(messages, tool_names) -> Option<AgenticPlan>
+```text
+user prompt
+  -> no specific agentic recipe
+  -> general planning text or symbolic solver
+  -> unknown-answer response
+  -> client has no tool call to execute
 ```
 
-It returns:
+The client was functioning correctly: it can only execute a tool when Formal AI
+emits one.
 
-- `Some(AgenticPlan::ToolCalls(..))` — emit tool calls the harness executes;
-- `Some(AgenticPlan::Final(..))` — a final answer; or
-- `None` — no agentic recipe matched.
+## Root cause 1: language policy was duplicated in Rust
 
-On `None`, the loop falls through to the symbolic solver. For a factual, report,
-research, or recall prompt, the solver has no local Links Notation rule that
-answers it, so it emits the unknown-reasoning blurb. OpenCode then faithfully
-renders that blurb — the harness did nothing wrong.
+The first implementation added per-feature arrays for words such as `report`,
+`issue`, `recall`, and `research`. That made the screenshot pass, but contradicted
+the repository's generalization goal: each new paraphrase or supported language
+would require a code change and another ordering decision.
 
-**Root cause:** `plan_chat_step` had no recipe for any of the four reported
-request classes, so all four returned `None` and dead-ended.
+The deeper fix introduces semantic seed records in
+`data/seed/meanings-agent-actions.lino`. Rust code asks the shared seed registry
+whether a text expresses a report verb, report subject, conversation recall, or
+research imperative. Multilingual behavior is therefore knowledge, not control
+flow. Repository identity and report templates likewise live in
+`data/seed/agent-info.lino`.
 
-Note the "Report" case is subtly different: the existing `compose_general_change_plan`
-path *did* sometimes match and produced a *plan description* (a web-search plan),
-which is why the screenshot shows a plan instead of a filed issue — the planner
-recognised "do something" but had no recipe that actually files an issue.
+## Root cause 2: follow-ups did not share history semantics
 
-## The fix
+`What were we talking about?` and `Learn about it.` are not isolated intents.
+Both require resolving the current user text against prior turns. Separate
+feature-specific extraction would drift and could not benefit from the
+associative-memory work merged in issue #686.
 
-Add three deterministic recipes and wire them into `plan_chat_step` in priority
-order, each disjoint from the others and from the pre-existing recipes:
+Recall now delegates to `solve_with_history`, the same history-aware solver used
+for contextual learning and pronoun resolution. The planner's research role can
+therefore turn `it` back into the prior election topic instead of searching for
+the literal pronoun or returning unknown.
 
-1. **Report** (`report_issue.rs`) — checked first: a report verb + issue noun /
-   repo reference ⇒ `gh issue create --repo link-assistant/formal-ai …`. Once the
-   shell tool returns the created URL, surface it as the final answer.
-2. **Conversation recall** (`conversation_recall.rs`) — a recall intent ⇒ a final
-   answer summarising prior topics from history; no tool call.
-3. **Web research** (`web_research.rs`) — checked just before the general-change
-   fallthrough: a research imperative, or an answer-seeking question the symbolic
-   engine cannot resolve locally ⇒ `websearch` → `webfetch` the surfaced source →
-   answer from it.
+## Root cause 3: progress was global instead of turn-scoped
 
-### Why this is a generalization, not a phrase list (R1)
+The real Agent CLI run exposed a bug that unit-only simulation missed. Planner
+`Progress::scan` searched every tool result in the session. After the initial
+election research, the later `Learn about it.` turn found the old fetch result
+and treated the new task as already complete.
 
-The web-research gate asks the deterministic engine itself:
+Progress is now scanned only after the latest user message. This preserves the
+multi-round state machine within one request while preventing a previous
+request's search or fetch from satisfying a later request. A regression test
+models two research turns in one conversation.
 
-```rust
-fn engine_cannot_resolve_locally(task: &str) -> bool {
-    let intent = FormalAiEngine.answer(task).intent;
-    matches!(intent.as_str(), "unknown" | "web_search")
-}
-```
+## Root cause 4: UI state had no complete message-command model
 
-So we web-search *precisely* what the engine cannot answer from its own knowledge
-base, and nothing it can. "What is the capital of France?" (intent `fact_lookup`)
-still resolves locally and is **not** sent to the web — preserving the existing
-`planner_ignores_non_formalization_tasks` behaviour. The report and recall
-recognisers use verb+noun and topic recognisers with word-boundary matching (so
-"report the file sizes" does not trip the repo reference inside "report").
+The web shell contained a large imperative recognizer and many direct state
+setters. Several visible settings had no message route at all, including Full
+Auto, thinking detail, message animation, follow-up probability, and toolbar icon
+pack. Sharing the Rust planner does not automatically invoke React state setters,
+so the earlier claim that WASM compilation fixed every UI action was incorrect.
 
-## Environments (R6, R10)
+`data/seed/interface-capabilities.lino` now declares preference keys, types,
+phrases, enum aliases, and numeric scales. The browser loader parses that catalog
+and one generic recognizer emits `set_preference` commands. Existing specialized
+commands remain compatible, while the uncovered settings use the declarative
+path. Playwright verifies the actual controls change.
 
-| Environment | Path | Status |
+The browser investigation found a second test-infrastructure root cause:
+`bun --cwd ../.. run build:web` prints help and exits successfully with the
+installed Bun version. Playwright consequently served a stale committed bundle.
+Changing the command to `bun run --cwd ../.. build:web` makes every run rebuild
+the application before serving it.
+
+## Why the solution generalizes
+
+| Concern | Previous extension point | New extension point |
 | --- | --- | --- |
-| Agentic CLI (OpenCode, `@link-assistant/agent`) | `plan_chat_step` (native Rust) | **Fixed here.** |
-| Web / desktop browser worker | `src/web/worker/*` — `mode = "wasm worker"`, WASM-compiled from the same Rust planner | **Fixed here** automatically (shares the planner). |
-| Web / desktop UI shell | `src/web/app/main.jsx` — `recognizeInterfaceCommand` (report_issue), `buildRecallReport` (recall) | Already handled these classes before this PR. |
+| Report/recall/research wording | Rust arrays and branches | Links Notation meanings |
+| Repository/report metadata | Code literals | `agent-info.lino` |
+| Contextual recall and `it` | Separate feature logic | Shared `solve_with_history` |
+| Research source choice | First URL found | Deterministic official-domain ranking |
+| Repeated tool workflows | Whole-session scan | Latest-user-turn progress scope |
+| UI preference commands | One branch per phrase | Typed seed capability catalog |
 
-Because the agentic planner is the single choke point and the browser worker
-compiles from it, the fix applies across every environment that routes through the
-planner; the JS UI shell already covered the same classes independently.
+The code still performs deterministic orchestration: it binds seed meanings to
+advertised client capabilities, quotes shell data safely, and advances search →
+fetch → cited answer states. The linguistic and configurable parts are data.
 
-## Reproduction
+## Environment coverage
 
-[`tests/unit/issue_687.rs`](../../../tests/unit/issue_687.rs) exercises
-`plan_chat_step` the way an agentic CLI does — one test per reported prompt class.
-All fail on `main` (planner returns `None`) and pass with the fix.
+| Surface | Verification |
+| --- | --- |
+| Native OpenAI-compatible server | Unit planner tests and release-server Agent CLI E2E |
+| Agent/OpenCode-compatible client | Four continued real `agent` invocations; shell action observed |
+| Browser/desktop solver worker | Shared Rust planner and embedded seed bundle |
+| Browser/desktop React shell | Chromium test against actual settings controls |
+| CI/release | Agent CLI script is a release-workflow step; Playwright spec is in the local/CI matrix |
+
+No upstream defect remained after these paths were exercised, so no external
+issue was warranted.
