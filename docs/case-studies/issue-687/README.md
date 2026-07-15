@@ -90,6 +90,11 @@ The browser reproduction is
 It verifies seed-backed commands for thinking detail, message animation,
 follow-up probability, toolbar icon pack, and Full Auto mode.
 
+The final Chromium state is preserved as
+[`images/02-seed-interface-controls.png`](images/02-seed-interface-controls.png).
+It shows the UI in Full Auto after the settings were changed through chat rather
+than by directly manipulating the controls.
+
 ## Related evidence
 
 - [`online-research.md`](online-research.md) records primary sources and the

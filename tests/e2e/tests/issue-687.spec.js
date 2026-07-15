@@ -83,5 +83,12 @@ test.describe("Issue #687 - seed-backed natural-language interface control", () 
       page.locator('[data-testid="mode-option-fullAuto"]'),
     ).toHaveAttribute("aria-checked", "true");
     await expect(answer).toContainText("Mode is now fullAuto");
+
+    if (process.env.ISSUE_687_SCREENSHOT_PATH) {
+      await page.screenshot({
+        path: process.env.ISSUE_687_SCREENSHOT_PATH,
+        fullPage: true,
+      });
+    }
   });
 });
