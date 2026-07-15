@@ -195,43 +195,24 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // Report-issue recipe (issue #687): a natural-language "report/file an issue"
-    // request has no web UI to fall back on in agentic mode, so it is turned into a
-    // real `gh issue create` shell tool call. Checked before the file-read and
-    // shell recipes: its intent keys on a report verb paired with an issue noun or
-    // a repository reference, disjoint from a filename read ("open notes.md") or a
-    // generic shell command.
+    // Agent-mode counterpart of the web UI's report action (issue #687).
     if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
         return Some(report_issue::plan_report_issue_step(
             messages, tool_names, &request,
         ));
     }
-    // Conversation-recall recipe (issue #687): a meta-question about the dialogue
-    // ("what were we talking about?") is answered from the message history with no
-    // tool call. Checked before the research recipe so it is not mistaken for a
-    // factual question sent to the web.
+    // Resolve dialogue meta-questions before open-world research.
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
-    // General write routing (issue #680): a request that names a relative target
-    // file and literal content is a file-creation intent in any phrasing/language.
-    // It is probed before the file-read router so "create file X containing Y" is
-    // recognised as a *write* rather than mistaken for a read of X, and only when
-    // the CLI actually advertised a write tool — otherwise the request keeps
-    // looking and ultimately falls through to the prose answer.
+    // Probe writes before reads so a named output file is not mistaken for input.
     if let Some(plan) = tool_for(tool_names, Capability::Write)
         .and_then(|_| compose_general_change_plan(&task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
     }
-    // General edit routing (issue #680): a request that names a target file plus
-    // an old→new replacement is a file-modification intent in any phrasing. It is
-    // probed after the create-file write router (so "create file X containing Y"
-    // stays a write) and before the file-read router (so "in X, change A to B" is
-    // an *edit* rather than a read of X), and only when the CLI actually
-    // advertised an edit tool — otherwise the request keeps looking and ultimately
-    // falls through to the prose answer.
+    // Probe edits before reads for the same target-file ambiguity.
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -250,30 +231,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    // Web-research recipe (issue #687): a factual/research question the deterministic
-    // engine cannot answer locally is routed to the client's web-search tool, then the
-    // surfaced source is fetched and the answer read from it. Checked last, just before
-    // the general-change fallthrough, so every named recipe wins first; it returns
-    // `None` when the client advertises no web tools and there is no progress to
-    // summarize, preserving the fallthrough for clients without a web search tool.
+    // Research is the final named recipe so more specific local actions win.
     if let Some(query) = web_research::web_research_query_for(messages) {
         if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
         }
     }
-    // General capability router (issue #680): route the request to a real tool
-    // call based on its *intent* — the advertised tool set plus the request
-    // semantics — rather than a pinned recipe or a literal phrasing. These probes
-    // reuse the same lexicon-driven detectors the prose path uses, and each only
-    // fires when the CLI actually advertised a tool of the matching capability
-    // (otherwise the request falls through to the prose answer).
-    //
-    // The probes run most-specific-first so a real CLI that advertises every tool
-    // at once still routes each request to the right one: a concrete URL to
-    // retrieve is a fetch (the file-and-content write intent is already handled
-    // above, before the file-read router); and the broadest intent — an open
-    // research/search question — is the final capability catch-all before the
-    // prose fallback.
+    // Route the remaining requests by seed-backed intent and advertised capability.
     if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -765,19 +729,11 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Which recipe capabilities the current user turn already produced a result for.
-///
-/// `pub(super)` so recipe submodules that own their own step sequencing (e.g.
-/// [`super::report_issue`], [`super::web_research`]) can inspect progress without
-/// duplicating the scan.
+/// Tool results produced since the current user turn began.
 pub(super) struct Progress {
-    /// Capabilities a prior `tool` result already answered.
     completed: Vec<Capability>,
-    /// The latest non-errored fetch result's text, if any.
     pub(super) fetched_text: Option<String>,
-    /// The latest non-errored web-search result's text, if any.
     pub(super) search_output: Option<String>,
-    /// The latest run/shell result's text, if any.
     pub(super) run_output: Option<String>,
 }
 
