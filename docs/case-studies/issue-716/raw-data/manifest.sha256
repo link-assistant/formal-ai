@@ -1,0 +1,16 @@
+ee1911d5e1947a9f58abf427f790ce7c970dfc80af34ff815eb10b85afaa61e0  docs/case-studies/issue-716/raw-data/agent-cli-e2e.log
+bd2cc2dfd583622194fecfc3c9473b1c4b87422e4b801a0c92cc41e604ace525  docs/case-studies/issue-716/raw-data/focused-regressions.log
+4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  docs/case-studies/issue-716/raw-data/issue-716-comments.json
+758dbbde3231fd154b66392adb7ab6d9b86b947cb03933cc3a1bab42dc4a5e81  docs/case-studies/issue-716/raw-data/issue-716.json
+11a6a3fb5094a91a1dff6a0a0e1c65a53d68e58e3d8443eaf65f94ceaa9cc22c  docs/case-studies/issue-716/raw-data/issue-716.png
+4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  docs/case-studies/issue-716/raw-data/pr-728-conversation-comments.json
+f0eee6d92fa3b2151b5972717e377519a4fa1ac566ab29a198be41c60b825821  docs/case-studies/issue-716/raw-data/pr-728-initial.diff
+4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  docs/case-studies/issue-716/raw-data/pr-728-review-comments.json
+4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945  docs/case-studies/issue-716/raw-data/pr-728-reviews.json
+93e336fca42232b6814c2f233d81f0fd898617f154b0cbb93ea4f1fe71fa08ac  docs/case-studies/issue-716/raw-data/pr-728.json
+f162dbfb8651a287908fee9d163d125ccd8624a9d526a16384cec8bee501ea1a  docs/case-studies/issue-716/raw-data/related-issue-680.json
+f197ff2cb429ffae12141d07019efa0bbbcfdf7f374f6bd6931c3c37b2d15d88  docs/case-studies/issue-716/raw-data/related-issue-681.json
+74fb78b2aeb96b48406b093c26f2a5b6cb9f08852ced18c1e600262d69bbaa4a  docs/case-studies/issue-716/raw-data/related-issue-682.json
+4ba5d023de27e99620af131d6a2a4f5bf7a38ebadcf3147c8ee2b51523769be5  docs/case-studies/issue-716/raw-data/related-pr-683.json
+18bf18af775a289f2aebd7f7bea0ecafe79d1983774b52d8abd0ab6f8119fb4e  docs/case-studies/issue-716/raw-data/related-pr-684.json
+c40f22bb43419c3fc7b8c893351566fb4b69ac18121db379e11ac131cc9adbaa  docs/case-studies/issue-716/raw-data/related-pr-685.json
