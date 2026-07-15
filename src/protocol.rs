@@ -650,7 +650,7 @@ fn command_reroute_plan(
     }
     let owned_names = request.requested_tool_names();
     let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
-    plan_symbolic_command_reroute(&request.messages, &tool_names, &symbolic_answer.answer)
+    plan_symbolic_command_reroute(&request.messages, &tool_names, symbolic_answer)
 }
 
 /// The deterministic agentic decision for a tool-bearing request. Shared by every

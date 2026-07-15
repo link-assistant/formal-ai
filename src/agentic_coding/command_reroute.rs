@@ -1,23 +1,22 @@
 //! Route command-bearing symbolic answers through an agentic CLI's real tools.
 //!
-//! The ordinary solver can return a code artifact together with `Check command:`
-//! and `Run command:` metadata. On an API request from an agentic harness, prose
-//! claiming those commands ran in an embedded fixture is the wrong boundary: the
-//! client owns its workspace, permission prompts, sandbox, and audit trail. This
-//! adapter turns that already-derived answer into a write -> command(s) -> final
-//! tool loop. It is generic over language, command, file name, and client tool
-//! names; the symbolic answer remains the source of the recipe.
+//! The ordinary solver can return a code artifact with a typed execution recipe.
+//! On an API request from an agentic harness, the client owns its workspace,
+//! permission prompts, sandbox, and audit trail. This adapter lowers the recipe
+//! into a write -> command(s) -> final tool loop. It is generic over language,
+//! command, file name, and client tool names and never scrapes rendered prose.
 
 use serde_json::json;
 use std::fmt::Write as _;
 
+use crate::engine::{ExecutionRecipe, SymbolicAnswer};
 use crate::protocol::ChatMessage;
 
 use super::planner::{
     tool_capability, tool_for, write_arguments, AgenticPlan, Capability, PlannedToolCall,
 };
 
-/// Plan the next client-side step for an answer containing source and commands.
+/// Plan the next client-side step for a typed source-and-command artifact.
 ///
 /// Both a file-write and command-execution tool must be advertised. This
 /// preserves ordinary text behavior for non-agentic clients and never invents a
@@ -25,9 +24,9 @@ use super::planner::{
 pub fn plan_symbolic_command_reroute(
     messages: &[ChatMessage],
     tool_names: &[&str],
-    symbolic_answer: &str,
+    symbolic_answer: &SymbolicAnswer,
 ) -> Option<AgenticPlan> {
-    let recipe = CommandRecipe::from_answer(symbolic_answer)?;
+    let recipe = symbolic_answer.execution_recipe.as_ref()?;
     let write_tool = tool_for(tool_names, Capability::Write)?;
     let run_tool = tool_for(tool_names, Capability::Run)?;
     let progress = RecipeProgress::after_latest_user(messages);
@@ -64,29 +63,7 @@ fn one_call(tool: &str, arguments: String) -> AgenticPlan {
     }])
 }
 
-struct CommandRecipe {
-    language: String,
-    source: String,
-    path: String,
-    commands: Vec<String>,
-}
-
-impl CommandRecipe {
-    fn from_answer(answer: &str) -> Option<Self> {
-        let (language, source) = first_fenced_source(answer)?;
-        let commands = command_lines(answer);
-        if commands.is_empty() {
-            return None;
-        }
-        let path = source_path(answer, &commands)?;
-        Some(Self {
-            language,
-            source,
-            path,
-            commands,
-        })
-    }
-
+impl ExecutionRecipe {
     fn final_answer(&self, outputs: &[String]) -> String {
         let mut answer = format!(
             "Created and verified `{}` through the agentic CLI harness.\n\n```{}\n{}\n```\n\nCommands executed by the harness:\n",
@@ -103,74 +80,6 @@ impl CommandRecipe {
         let _ = write!(answer, "\nActual tool output:\n\n```text\n{actual}\n```");
         answer
     }
-}
-
-fn first_fenced_source(answer: &str) -> Option<(String, String)> {
-    let opening = answer.find("```")?;
-    let header_end = answer[opening + 3..].find('\n')? + opening + 3;
-    let language = answer[opening + 3..header_end].trim();
-    if language.is_empty() || language.eq_ignore_ascii_case("text") {
-        return None;
-    }
-    let source_start = header_end + 1;
-    let source_end = answer[source_start..].find("```")? + source_start;
-    let source = answer[source_start..source_end].trim_end();
-    (!source.is_empty()).then(|| (language.to_owned(), source.to_owned()))
-}
-
-fn command_lines(answer: &str) -> Vec<String> {
-    answer
-        .lines()
-        .filter_map(|line| {
-            let (_, value) = line
-                .split_once("Check command:")
-                .or_else(|| line.split_once("Run command:"))?;
-            let command = value.trim().trim_matches('`').trim();
-            (!command.is_empty()).then(|| command.to_owned())
-        })
-        .collect()
-}
-
-fn source_path<'a>(answer: &'a str, commands: &'a [String]) -> Option<String> {
-    commands
-        .iter()
-        .flat_map(|command| command.split_whitespace())
-        .chain(answer.split_whitespace())
-        .map(clean_token)
-        .find(|token| looks_like_source_path(token))
-        .map(str::to_owned)
-}
-
-fn clean_token(token: &str) -> &str {
-    token.trim_matches(|character: char| {
-        matches!(
-            character,
-            '`' | '"' | '\'' | ',' | ';' | ':' | '(' | ')' | '[' | ']'
-        )
-    })
-}
-
-fn looks_like_source_path(token: &str) -> bool {
-    const SOURCE_EXTENSIONS: &[&str] = &[
-        "rs", "py", "js", "ts", "go", "c", "cc", "cpp", "cxx", "java", "cs", "rb", "php", "kt",
-        "kts", "swift", "scala", "sh",
-    ];
-    if token.is_empty()
-        || token.contains("://")
-        || token.starts_with('/')
-        || token.starts_with('-')
-        || token.split('/').any(|part| part == ".." || part.is_empty())
-    {
-        return false;
-    }
-    let Some((stem, extension)) = token.rsplit_once('.') else {
-        return false;
-    };
-    !stem.is_empty()
-        && SOURCE_EXTENSIONS.contains(&extension.to_ascii_lowercase().as_str())
-        && token.chars().all(|character| {
-            character.is_alphanumeric() || matches!(character, '/' | '.' | '_' | '-')
-        })
 }
 
 #[derive(Default)]
@@ -245,4 +154,68 @@ fn capability_from_call_id(messages: &[ChatMessage], call_id: Option<&str>) -> O
         .flat_map(|message| &message.tool_calls)
         .find(|call| call.id == call_id)
         .and_then(|call| tool_capability(&call.function.name))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::coding::PROGRAM_LANGUAGES;
+    use crate::solver::{SolverConfig, UniversalSolver};
+
+    #[test]
+    fn catalog_execution_recipe_does_not_depend_on_rendered_command_labels() {
+        let answer = UniversalSolver::new(SolverConfig {
+            agent_mode: true,
+            ..SolverConfig::default()
+        })
+        .solve("Please produce a Rust hello world program");
+        let mut reworded = answer.clone();
+        reworded.answer = answer
+            .answer
+            .replace("Check command:", "Compile using:")
+            .replace("Run command:", "Execute using:");
+
+        let plan = plan_symbolic_command_reroute(
+            &[ChatMessage::user(
+                "Please produce a Rust hello world program",
+            )],
+            &["write", "bash"],
+            &reworded,
+        );
+
+        assert!(
+            matches!(plan, Some(AgenticPlan::ToolCalls(_))),
+            "execution is symbolic data and must survive presentation changes"
+        );
+    }
+
+    #[test]
+    fn every_catalog_language_projects_its_structured_execution_metadata() {
+        let solver = UniversalSolver::new(SolverConfig {
+            agent_mode: true,
+            ..SolverConfig::default()
+        });
+
+        for language in PROGRAM_LANGUAGES {
+            let answer = solver.solve(&format!(
+                "Please produce a {} hello world program",
+                language.name
+            ));
+            let recipe = answer
+                .execution_recipe
+                .unwrap_or_else(|| panic!("{} did not produce an execution recipe", language.slug));
+            let expected_commands: Vec<String> = language
+                .execution
+                .check_command
+                .into_iter()
+                .chain(std::iter::once(language.execution.run_command))
+                .map(str::to_owned)
+                .collect();
+
+            assert_eq!(recipe.path, language.save_as, "{}", language.slug);
+            assert_eq!(recipe.language, language.code_fence, "{}", language.slug);
+            assert_eq!(recipe.commands, expected_commands, "{}", language.slug);
+            assert!(!recipe.source.is_empty(), "{}", language.slug);
+        }
+    }
 }

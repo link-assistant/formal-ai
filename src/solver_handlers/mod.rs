@@ -920,6 +920,7 @@ pub fn finalize_simple(
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body.to_owned(),
+        execution_recipe: None,
         confidence,
         evidence_links,
         thinking_steps,

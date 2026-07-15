@@ -568,6 +568,7 @@ fn finalize_composed_candidate(
     SymbolicAnswer {
         intent: candidate.intent.clone(),
         answer: candidate.answer.clone(),
+        execution_recipe: None,
         confidence: candidate.confidence,
         evidence_links,
         thinking_steps,

@@ -24,7 +24,7 @@
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, stable_id, ExecutionRecipe, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
@@ -673,6 +673,27 @@ impl UniversalSolver {
         let answer =
             append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
+        let execution_recipe = match &rule {
+            SelectedRule::WriteProgram(spec) => Some(ExecutionRecipe {
+                language: spec.language.code_fence.to_owned(),
+                source: crate::code_editing::apply_inline_hello_world_source_replacement(
+                    prompt,
+                    spec.template.code,
+                    *spec,
+                ),
+                path: spec.language.save_as.to_owned(),
+                commands: spec
+                    .language
+                    .execution
+                    .check_command
+                    .into_iter()
+                    .chain(std::iter::once(spec.language.execution.run_command))
+                    .map(str::to_owned)
+                    .collect(),
+            }),
+            _ => None,
+        };
+
         SymbolicAnswer {
             intent,
             answer,
@@ -680,6 +701,7 @@ impl UniversalSolver {
             evidence_links,
             thinking_steps,
             links_notation,
+            execution_recipe,
         }
     }
 

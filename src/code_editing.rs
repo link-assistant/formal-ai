@@ -14,6 +14,20 @@ pub fn apply_inline_hello_world_output_replacement(
     Some(answer.replace("Hello, world!", &replacement))
 }
 
+pub fn apply_inline_hello_world_source_replacement(
+    prompt: &str,
+    source: &str,
+    spec: ProgramSpec,
+) -> String {
+    if spec.task.slug != "hello_world" {
+        return source.to_owned();
+    }
+    inline_hello_world_replacement(prompt).map_or_else(
+        || source.to_owned(),
+        |replacement| source.replace("Hello, world!", &replacement),
+    )
+}
+
 fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
     let normalized = normalize_replacement_prompt(prompt);
     if !mentions_replacement(&normalized) {
