@@ -35,6 +35,7 @@ use super::meaning_detail;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
+use super::report_issue;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
@@ -119,6 +120,12 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    // Issue #714: the report action is an explicit interface command, not an
+    // information-search request. Route it before the broad web-search probe and
+    // preserve the preceding dialog in the non-interactive `gh issue create` call.
+    if shell_command::is_issue_report_task(&task) {
+        return Some(report_issue::plan_report_issue_step(messages, tool_names));
+    }
     // The self-AST recipe is checked first because it is the most specific router
     // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
     // request legitimately mentions "Links Notation" as its output format, which

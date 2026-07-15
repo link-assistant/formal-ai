@@ -37,6 +37,7 @@ pub mod planner;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
+mod report_issue;
 pub mod self_ast;
 pub mod self_heal;
 mod shell_command;

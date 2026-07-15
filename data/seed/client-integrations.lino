@@ -52,6 +52,7 @@ client_integrations
       non_interactive_arg "run"
       mode_arg_position "before_invocation"
       env "FORMAL_AI_API_KEY={api_key}"
+      env "OPENCODE_ENABLE_EXA=1"
       config_env "OPENCODE_CONFIG"
       config_dir_env "OPENCODE_CONFIG_DIR"
       model_arg "-m"

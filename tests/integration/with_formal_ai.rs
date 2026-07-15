@@ -43,6 +43,7 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "LINK_ASSISTANT_AGENT_CONFIG_CONTENT=$LINK_ASSISTANT_AGENT_CONFIG_CONTENT"
   echo "OPENCODE_CONFIG=$OPENCODE_CONFIG"
   echo "OPENCODE_CONFIG_DIR=$OPENCODE_CONFIG_DIR"
+  echo "OPENCODE_ENABLE_EXA=$OPENCODE_ENABLE_EXA"
   echo "GEMINI_API_KEY=$GEMINI_API_KEY"
   echo "GEMINI_DEFAULT_AUTH_TYPE=$GEMINI_DEFAULT_AUTH_TYPE"
   echo "GEMINI_CLI_TRUST_WORKSPACE=$GEMINI_CLI_TRUST_WORKSPACE"
@@ -105,6 +106,7 @@ fn run_with_capture(
         .env_remove("LINK_ASSISTANT_AGENT_CONFIG_CONTENT")
         .env_remove("OPENCODE_CONFIG")
         .env_remove("OPENCODE_CONFIG_DIR")
+        .env_remove("OPENCODE_ENABLE_EXA")
         .env_remove("GEMINI_API_KEY")
         .env_remove("GEMINI_DEFAULT_AUTH_TYPE")
         .env_remove("GEMINI_CLI_TRUST_WORKSPACE")
@@ -561,6 +563,10 @@ fn with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag() {
     assert!(captured.contains("\"formalai\""), "capture:\n{captured}");
     assert!(captured.contains("\"baseURL\": \"http://127.0.0.1:18080/api/openai/v1\""));
     assert!(captured.contains("\"model\": \"formalai/formal-ai\""));
+    assert!(
+        captured.contains("OPENCODE_ENABLE_EXA=1"),
+        "OpenCode must advertise its websearch tool in agentic mode:\n{captured}"
+    );
 
     let _ = std::fs::remove_dir_all(&dir);
 }

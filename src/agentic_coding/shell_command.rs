@@ -10,6 +10,24 @@
 
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
+const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
+
+/// Whether this turn is the explicit, whole-turn issue-report action.
+///
+/// The phrases live in `shell-intents.lino`; exact matching keeps an ordinary
+/// request such as “write a report” from opening a GitHub issue.
+pub(super) fn is_issue_report_task(prompt: &str) -> bool {
+    let normalized = prompt
+        .trim()
+        .trim_matches(|c: char| matches!(c, '.' | '!' | '?' | ':' | ';'))
+        .to_lowercase();
+    seed::shell_intent_vocabulary()
+        .intents
+        .iter()
+        .find(|intent| intent.command == REPORT_ISSUE_ACTION)
+        .is_some_and(|intent| intent.cues.iter().any(|cue| cue == &normalized))
+}
+
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
 /// Two data-driven strategies, in order of specificity:
@@ -51,6 +69,9 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_ascii_lowercase();
     vocab.intents.iter().find_map(|intent| {
+        if intent.command == REPORT_ISSUE_ACTION {
+            return None;
+        }
         if !intent.cues.iter().any(|cue| lower.contains(cue)) {
             return None;
         }
