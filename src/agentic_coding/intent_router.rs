@@ -68,10 +68,13 @@ pub(super) fn plan_web_search_step(
 /// General file-edit routing (issue #680): when the request carries a
 /// file-modification intent — an edit action, a replacement lead, and a named
 /// target file, in any phrasing/language — *and* the CLI advertised an edit tool,
-/// emit a real edit `tool_call` that replaces the recovered old text with the new
-/// text. Returns [`None`] when there is no edit intent or no edit tool was
-/// advertised, so the planner keeps looking (and ultimately falls through to the
-/// prose answer) rather than fabricating a call the client cannot honour.
+/// read the target first when a read tool is available, then emit a real edit
+/// `tool_call` that replaces the recovered old text with the new text. Reading
+/// first satisfies editing clients that enforce read-before-write and grounds the
+/// replacement in the current file. Returns [`None`] when there is no edit intent
+/// or no edit tool was advertised, so the planner keeps looking (and ultimately
+/// falls through to the prose answer) rather than fabricating a call the client
+/// cannot honour.
 ///
 /// The `(target, old, new)` triple is recovered entirely from the seed lexicon
 /// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
@@ -90,7 +93,21 @@ pub(super) fn plan_edit_step(
             "Edited `{target}`: replaced `{old}` with `{new}`."
         )));
     }
+    if let Some(read_tool) =
+        tool_for(tool_names, Capability::Read).filter(|_| !progress.done(Capability::Read))
+    {
+        return Some(plan_one(read_tool, read_arguments(&target)));
+    }
     Some(plan_one(tool, edit_arguments(&target, &old, &new)))
+}
+
+fn read_arguments(path: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+    })
+    .to_string()
 }
 
 /// The final answer once a web-fetch tool call has returned. Surfaces the fetched
