@@ -7,6 +7,7 @@
 use serde_json::json;
 
 use super::change_request;
+use super::conversation_recall;
 use super::diagram;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
@@ -23,10 +24,12 @@ use super::meaning_detail;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
+use super::report_issue;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::web_research;
 use super::{associative_learning, dreaming_audit};
 use crate::protocol::ChatMessage;
 
@@ -192,25 +195,24 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // General write routing (issue #680): a request that names a relative target
-    // file and literal content is a file-creation intent in any phrasing/language.
-    // It is probed before the file-read router so "create file X containing Y" is
-    // recognised as a *write* rather than mistaken for a read of X, and only when
-    // the CLI actually advertised a write tool — otherwise the request keeps
-    // looking and ultimately falls through to the prose answer.
+    // Agent-mode counterpart of the web UI's report action (issue #687).
+    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
+        return Some(report_issue::plan_report_issue_step(
+            messages, tool_names, &request,
+        ));
+    }
+    // Resolve dialogue meta-questions before open-world research.
+    if let Some(answer) = conversation_recall::recall_answer_for(messages) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    // Probe writes before reads so a named output file is not mistaken for input.
     if let Some(plan) = tool_for(tool_names, Capability::Write)
         .and_then(|_| compose_general_change_plan(&task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
     }
-    // General edit routing (issue #680): a request that names a target file plus
-    // an old→new replacement is a file-modification intent in any phrasing. It is
-    // probed after the create-file write router (so "create file X containing Y"
-    // stays a write) and before the file-read router (so "in X, change A to B" is
-    // an *edit* rather than a read of X), and only when the CLI actually
-    // advertised an edit tool — otherwise the request keeps looking and ultimately
-    // falls through to the prose answer.
+    // Probe edits before reads for the same target-file ambiguity.
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -229,23 +231,21 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    // General capability router (issue #680): route the request to a real tool
-    // call based on its *intent* — the advertised tool set plus the request
-    // semantics — rather than a pinned recipe or a literal phrasing. These probes
-    // reuse the same lexicon-driven detectors the prose path uses, and each only
-    // fires when the CLI actually advertised a tool of the matching capability
-    // (otherwise the request falls through to the prose answer).
-    //
-    // The probes run most-specific-first so a real CLI that advertises every tool
-    // at once still routes each request to the right one: a concrete URL to
-    // retrieve is a fetch (the file-and-content write intent is already handled
-    // above, before the file-read router); and the broadest intent — an open
-    // research/search question — is the final capability catch-all before the
-    // prose fallback.
+    // Research is the final named recipe so more specific local actions win.
+    if let Some(query) = web_research::web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
+        }
+    }
+    // Route the remaining requests by seed-backed intent and advertised capability.
     if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    intent_router::plan_web_search_step(&task, messages, tool_names)
+    if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
 }
 
 fn plan_general_change_step(
@@ -729,25 +729,25 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Which recipe capabilities the conversation already produced a result for.
+/// Tool results produced since the current user turn began.
 pub(super) struct Progress {
-    /// Capabilities a prior `tool` result already answered.
     completed: Vec<Capability>,
-    /// The latest non-errored fetch result's text, if any.
-    fetched_text: Option<String>,
-    /// The latest run/shell result's text, if any.
-    run_output: Option<String>,
-    /// The latest non-errored web-search result's text, if any.
-    search_output: Option<String>,
+    pub(super) fetched_text: Option<String>,
+    pub(super) search_output: Option<String>,
+    pub(super) run_output: Option<String>,
 }
 
 impl Progress {
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
-        let mut run_output = None;
         let mut search_output = None;
-        for (index, message) in messages.iter().enumerate() {
+        let mut run_output = None;
+        let current_turn = messages
+            .iter()
+            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+            .unwrap_or(0);
+        for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
             }
@@ -774,8 +774,8 @@ impl Progress {
         Self {
             completed,
             fetched_text,
-            run_output,
             search_output,
+            run_output,
         }
     }
 

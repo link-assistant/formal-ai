@@ -1139,6 +1139,13 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — research, report, recall, and learn (issue #687)
+        # Continue four natural-language turns in one real Agent CLI session.
+        # A PATH-local fake gh proves shell execution without mutating GitHub.
+        env:
+          PORT: 8776
+        run: experiments/agent_cli_e2e/run_issue_687.sh
+
       - name: Replay Hive Mind self-coding inner loop (issue #655)
         env:
           PORT: 8774

@@ -63,6 +63,7 @@ mod issue_680_intent_routing;
 mod issue_681;
 mod issue_686_agent_cli;
 mod issue_686_associative_persistence;
+mod issue_687;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
