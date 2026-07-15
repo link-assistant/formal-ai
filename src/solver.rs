@@ -588,7 +588,7 @@ impl UniversalSolver {
             }
         }
 
-        if let Some(answer) = Self::handle_policy(prompt, &mut log, language) {
+        if let Some(answer) = self.handle_policy(prompt, &mut log, language) {
             return answer;
         }
 
@@ -684,6 +684,7 @@ impl UniversalSolver {
     }
 
     fn handle_policy(
+        &self,
         prompt: &str,
         log: &mut EventLog,
         language: Language,
@@ -783,8 +784,15 @@ impl UniversalSolver {
         }
 
         if is_agent_request(&normalized) {
-            if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
-                return Some(answer);
+            // The HTTP surface is embedded in an agentic CLI harness. Executing
+            // here would mutate the server's private temporary workspace while
+            // the caller sees no tool call and cannot audit or approve it. API
+            // requests therefore stay declarative; `protocol` routes concrete
+            // actions through the tools advertised by the client.
+            if self.config.execution_surface != ExecutionSurface::HttpServer {
+                if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
+                    return Some(answer);
+                }
             }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());

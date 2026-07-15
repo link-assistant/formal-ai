@@ -33,6 +33,7 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
 
 fn mentions_replacement(normalized: &str) -> bool {
     normalized.contains("replace")
+        || normalized.contains("change")
         || normalized.contains("instead")
         || normalized.contains("rather than")
         || normalized.contains("вместо")

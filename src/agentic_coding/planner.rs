@@ -816,7 +816,7 @@ pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
 /// it declared and strips the rest, so the same plan drives any of them without a
 /// per-CLI special case.
-fn write_arguments(path: &str, content: &str) -> String {
+pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,
         "filePath": path,
