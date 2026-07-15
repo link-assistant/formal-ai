@@ -61,7 +61,7 @@ pub struct SymbolicAnswer {
     pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub execution_recipe: Option<ExecutionRecipe>,
+    pub execution_recipe: Option<Box<ExecutionRecipe>>,
 }
 
 /// A code artifact whose side effects belong to the requesting agentic client.

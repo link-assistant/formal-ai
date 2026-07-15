@@ -674,7 +674,7 @@ impl UniversalSolver {
             append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
         let execution_recipe = match &rule {
-            SelectedRule::WriteProgram(spec) => Some(ExecutionRecipe {
+            SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
                 language: spec.language.code_fence.to_owned(),
                 source: crate::code_editing::apply_inline_hello_world_source_replacement(
                     prompt,
@@ -690,7 +690,7 @@ impl UniversalSolver {
                     .chain(std::iter::once(spec.language.execution.run_command))
                     .map(str::to_owned)
                     .collect(),
-            }),
+            })),
             _ => None,
         };
 
