@@ -1,0 +1,95 @@
+tests/source/agent.rs:192:            .and_then(|resolved| fs::remove_file(resolved).map_err(AgentError::from));
+src/memory.rs:310:        let _ = fs::remove_file(&temp_path);
+scripts/desktop-release-resolve.sh:12:# The automated CI/CD release (scripts/version-and-commit.rs) bumps the version
+scripts/create-changelog-fragment.rs:56:        "changelog.d".to_string()
+scripts/create-changelog-fragment.rs:58:        format!("{}/changelog.d", rust_root)
+scripts/version-and-commit.rs:12://! - Single-language: Cargo.toml and changelog.d/ in repository root
+scripts/version-and-commit.rs:13://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+scripts/version-and-commit.rs:15://! Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>]
+scripts/version-and-commit.rs:52:        "./changelog.d".to_string()
+scripts/version-and-commit.rs:54:        format!("{}/changelog.d", rust_root)
+scripts/version-and-commit.rs:60:        "./CHANGELOG.md".to_string()
+scripts/version-and-commit.rs:62:        format!("{}/CHANGELOG.md", rust_root)
+scripts/version-and-commit.rs:235:        .set("User-Agent", "rust-script-version-and-commit")
+scripts/version-and-commit.rs:246:        .set("User-Agent", "rust-script-version-and-commit")
+scripts/version-and-commit.rs:346:fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+scripts/version-and-commit.rs:415:            eprintln!("Usage: rust-script scripts/version-and-commit.rs --bump-type <major|minor|patch> [--description <desc>] [--rust-root <path>] [--tag-prefix <prefix>] [--release-label <label>]");
+scripts/version-and-commit.rs:514:    collect_changelog(&changelog_dir, &changelog_file, &new_version);
+scripts/version-and-commit.rs:516:    // Stage Cargo.toml, Cargo.lock (when bumped), and CHANGELOG.md
+scripts/create-github-release.rs:2://! Create GitHub Release from CHANGELOG.md
+scripts/create-github-release.rs:339:    let changelog_path = "CHANGELOG.md";
+scripts/create-github-release.rs:462:    let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
+scripts/create-github-release.rs:638:                "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"
+scripts/create-github-release.rs:651:            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
+scripts/create-github-release.rs:660:        assert!(shortened.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
+scripts/check-version-modification.rs:6://! using changelog fragments in changelog.d/.
+scripts/check-version-modification.rs:153:        eprintln!("To trigger a release, add a changelog fragment to changelog.d/");
+scripts/check-version-modification.rs:155:        eprintln!("See changelog.d/README.md for more information.\n");
+scripts/detect-code-changes.rs:17://! - changelog.d/ folder (changelog fragments)
+scripts/detect-code-changes.rs:33://!   - any-code-changed: 'true' if any code files changed (excludes docs, changelog.d, experiments, examples)
+scripts/detect-code-changes.rs:118:    let excluded_folders = ["changelog.d/", "docs/", "experiments/", "examples/"];
+scripts/detect-code-changes.rs:164:    // Detect code changes (excluding docs, changelog.d, experiments, examples folders, and markdown files)
+scripts/collect-changelog.rs:2://! Collect changelog fragments into CHANGELOG.md
+scripts/collect-changelog.rs:4://! This script collects all .md files from changelog.d/ (except README.md)
+scripts/collect-changelog.rs:5://! and prepends them to CHANGELOG.md, then removes the processed fragments.
+scripts/collect-changelog.rs:8://! - Single-language: Cargo.toml and changelog.d/ in repository root
+scripts/collect-changelog.rs:9://! - Multi-language: Cargo.toml and changelog.d/ in rust/ subfolder
+scripts/collect-changelog.rs:11://! Usage: rust-script scripts/collect-changelog.rs [--rust-root <path>]
+scripts/collect-changelog.rs:70:        "./changelog.d".to_string()
+scripts/collect-changelog.rs:72:        format!("{}/changelog.d", rust_root)
+scripts/collect-changelog.rs:78:        "./CHANGELOG.md".to_string()
+scripts/collect-changelog.rs:80:        format!("{}/CHANGELOG.md", rust_root)
+scripts/collect-changelog.rs:184:    println!("Updated CHANGELOG.md with version {}", version);
+scripts/collect-changelog.rs:199:                if fs::remove_file(&path).is_ok() {
+tests/unit/specification/vscode_surface.rs:109:    // (scripts/version-and-commit.rs) bumps Cargo.toml without touching any
+scripts/rust-paths.rs:116:/// Get the path to changelog.d directory
+scripts/rust-paths.rs:119:        PathBuf::from("./changelog.d")
+scripts/rust-paths.rs:121:        PathBuf::from(rust_root).join("changelog.d")
+scripts/rust-paths.rs:125:/// Get the path to CHANGELOG.md
+scripts/rust-paths.rs:128:        PathBuf::from("./CHANGELOG.md")
+scripts/rust-paths.rs:130:        PathBuf::from(rust_root).join("CHANGELOG.md")
+scripts/check-changelog-fragment.rs:94:    let changelog_dir = if rust_root == "." { "changelog.d/".to_string() } else { format!("{}/changelog.d/", rust_root) };
+scripts/check-changelog-fragment.rs:96:    (file_path.starts_with(&changelog_dir) || file_path.starts_with("changelog.d/"))
+scripts/check-changelog-fragment.rs:151:        eprintln!("::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/");
+scripts/check-changelog-fragment.rs:154:        eprintln!("  Create a new .md file in changelog.d/ with your changes");
+scripts/check-changelog-fragment.rs:156:        eprintln!("See changelog.d/README.md for more information.");
+scripts/get-bump-type.rs:4://! This script reads changeset fragments from changelog.d/ and determines
+scripts/get-bump-type.rs:8://! - Single-language: changelog.d/ in repository root
+scripts/get-bump-type.rs:9://! - Multi-language: changelog.d/ in rust/ subfolder
+scripts/get-bump-type.rs:67:        "./changelog.d".to_string()
+scripts/get-bump-type.rs:69:        format!("{}/changelog.d", rust_root)
+tests/unit/docs_requirements_issue_540.rs:203:        "changelog.d/20260708_223000_issue_540_dreaming.md",
+tests/unit/docs_requirements_issue_540.rs:204:        "changelog.d/20260709_090000_issue_540_dreaming_generalization.md",
+tests/unit/docs_requirements.rs:386:        read(root.join("changelog.d/20260518_224500_issue_80_software_project_requests.md"));
+tests/unit/docs_requirements.rs:388:        "changelog.d/20260518_224500_issue_80_software_project_requests.md",
+tests/unit/memory_maintenance.rs:492:    let _ = std::fs::remove_file(&preference_path);
+tests/unit/memory_maintenance.rs:503:    let _ = std::fs::remove_file(preference_path);
+tests/unit/memory_maintenance.rs:578:    let _ = std::fs::remove_file(&memory_path);
+tests/unit/memory_maintenance.rs:579:    let _ = std::fs::remove_file(format!("{}.auto-free-space", memory_path.display()));
+tests/unit/memory_maintenance.rs:713:    let _ = std::fs::remove_file(&preference_path);
+tests/unit/memory_maintenance.rs:732:    let _ = std::fs::remove_file(preference_path);
+tests/unit/memory_maintenance.rs:768:    let _ = std::fs::remove_file(&preference_path);
+tests/unit/memory_maintenance.rs:806:    let _ = std::fs::remove_file(preference_path);
+tests/unit/ci-cd/workspace_manifest_resolution.rs:114:    assert_eq!(get_changelog_dir("."), PathBuf::from("./changelog.d"));
+tests/unit/ci-cd/workspace_manifest_resolution.rs:115:    assert_eq!(get_changelog_path("."), PathBuf::from("./CHANGELOG.md"));
+tests/unit/ci-cd/workspace_manifest_resolution.rs:126:    assert_eq!(get_changelog_dir("rust"), PathBuf::from("rust/changelog.d"));
+tests/unit/ci-cd/workspace_manifest_resolution.rs:129:        PathBuf::from("rust/CHANGELOG.md")
+tests/unit/ci-cd/changelog_parsing.rs:32:const SAMPLE_CHANGELOG: &str = r"# Changelog
+tests/unit/ci-cd/changelog_parsing.rs:56:    let result = get_changelog_for_version(SAMPLE_CHANGELOG, "0.3.0");
+tests/unit/ci-cd/changelog_parsing.rs:64:    let result = get_changelog_for_version(SAMPLE_CHANGELOG, "0.1.0");
+tests/unit/ci-cd/changelog_parsing.rs:70:    let result = get_changelog_for_version(SAMPLE_CHANGELOG, "9.9.9");
+tests/unit/ci-cd/changelog_parsing.rs:76:    let result = get_changelog_for_version(SAMPLE_CHANGELOG, "0.2.0");
+tests/integration/logging_proxy.rs:82:    let _ = fs::remove_file(log_path);
+tests/integration/logging_proxy.rs:133:    let _ = fs::remove_file(log_path);
+tests/integration/logging_proxy.rs:187:    let _ = fs::remove_file(log_path);
+tests/integration/logging_proxy.rs:246:    let _ = fs::remove_file(log_path);
+.github/workflows/release.yml:82:  # === CHANGELOG CHECK - only runs on PRs with code changes ===
+.github/workflows/release.yml:402:  # This job automatically bumps version based on fragments in changelog.d/
+.github/workflows/release.yml:453:          rust-script scripts/version-and-commit.rs \
+.github/workflows/release.yml:601:          # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
+.github/workflows/release.yml:670:        run: rust-script scripts/collect-changelog.rs
+.github/workflows/release.yml:677:        run: rust-script scripts/version-and-commit.rs --bump-type "${{ github.event.inputs.bump_type }}" --description "${{ github.event.inputs.description }}"
+.github/workflows/release.yml:836:  # === MANUAL CHANGELOG PR ===
+src/client_integrations.rs:505:        match fs::remove_file(&path) {
+src/client_integrations.rs:513:    fs::remove_file(&backup_path)?;
+src/agent.rs:215:            .and_then(|resolved| fs::remove_file(resolved).map_err(AgentError::from));

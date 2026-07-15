@@ -382,10 +382,11 @@ fn issue_80_software_project_dialogue_requirements_are_traceable() {
         ],
     );
 
-    let changelog =
-        read(root.join("changelog.d/20260518_224500_issue_80_software_project_requests.md"));
+    // Release fragments are consumed after collection; the durable trace is
+    // the released entry in CHANGELOG.md.
+    let changelog = read(root.join("CHANGELOG.md"));
     assert_contains_all(
-        "changelog.d/20260518_224500_issue_80_software_project_requests.md",
+        "CHANGELOG.md issue #80 release entry",
         &changelog,
         &[
             "software_project_plan",
@@ -881,6 +882,16 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     // asking for a quick prototype before committing to a full design).
     let relative = relative_path(root, entry.path());
     if relative.starts_with("docs/case-studies/") && relative.ends_with("/raw-data") {
+        return true;
+    }
+
+    // Released changelog text and its provenance map are immutable historical
+    // records. They can quote old project terminology without reintroducing it
+    // into current product documentation.
+    if matches!(
+        relative.as_str(),
+        "CHANGELOG.md" | "docs/case-studies/issue-711/fragment-release-map.tsv"
+    ) {
         return true;
     }
 
