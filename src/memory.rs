@@ -77,6 +77,13 @@ pub struct MemoryEvent {
     /// dreaming planner adds this count to the citation count so
     /// frequently-read data is not evicted as "unused".
     pub access_count: u64,
+    /// How many durable writes have created or changed this event.
+    ///
+    /// The first persistence is write one. Explicit substitutions and repeated
+    /// stable-id assertions increment the count, allowing the dreaming retention
+    /// policy to protect frequently changed knowledge as well as frequently read
+    /// knowledge (issue #686).
+    pub write_count: u64,
 }
 
 impl MemoryEvent {
@@ -115,11 +122,15 @@ impl MemoryStore {
     /// Build a store from an existing list. Useful for tests and for the
     /// `from_links_notation` factory below.
     #[must_use]
-    pub const fn from_events(events: Vec<MemoryEvent>) -> Self {
+    pub fn from_events(mut events: Vec<MemoryEvent>) -> Self {
+        for event in &mut events {
+            initialize_write_count(event);
+        }
         Self { events }
     }
 
-    pub fn append(&mut self, event: MemoryEvent) {
+    pub fn append(&mut self, mut event: MemoryEvent) {
+        initialize_write_count(&mut event);
         self.events.push(event);
     }
 
@@ -127,7 +138,10 @@ impl MemoryStore {
     /// events appended.
     pub fn import(&mut self, other: &[MemoryEvent]) -> usize {
         let initial = self.events.len();
-        self.events.extend_from_slice(other);
+        self.events.extend(other.iter().cloned().map(|mut event| {
+            initialize_write_count(&mut event);
+            event
+        }));
         self.events.len() - initial
     }
 
@@ -209,6 +223,7 @@ impl MemoryStore {
         }
         let mut replacements = 0;
         for event in &mut self.events {
+            let before = replacements;
             for value in [
                 &mut event.content,
                 &mut event.inputs,
@@ -223,6 +238,10 @@ impl MemoryStore {
             }
             for entry in &mut event.evidence {
                 replacements += replace_counting(entry, old, new);
+            }
+            if replacements > before {
+                initialize_write_count(event);
+                event.write_count = event.write_count.saturating_add(1);
             }
         }
         replacements
@@ -324,6 +343,12 @@ fn replace_counting(value: &mut String, old: &str, new: &str) -> usize {
     count
 }
 
+const fn initialize_write_count(event: &mut MemoryEvent) {
+    if event.write_count == 0 {
+        event.write_count = 1;
+    }
+}
+
 /// Serialize a slice of events as a `demo_memory` Links Notation document.
 #[must_use]
 pub fn export_links_notation(events: &[MemoryEvent]) -> String {
@@ -374,6 +399,9 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
         out.push_str(&event.access_count.to_string());
         out.push_str("\"\n");
     }
+    out.push_str("    writeCount \"");
+    out.push_str(&event.write_count.max(1).to_string());
+    out.push_str("\"\n");
 }
 
 /// Parse a `demo_memory` Links Notation document into events.
@@ -438,6 +466,7 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
                 "conversationId" => current.conversation_id = Some(value),
                 "conversationTitle" => current.conversation_title = Some(value),
                 "accessCount" => current.access_count = value.parse().unwrap_or(0),
+                "writeCount" => current.write_count = value.parse().unwrap_or(1).max(1),
                 "evidence" => {
                     current.evidence = value
                         .split('|')
@@ -451,6 +480,9 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
     }
     if let Some(existing) = current.take() {
         events.push(existing);
+    }
+    for event in &mut events {
+        initialize_write_count(event);
     }
     events
 }
