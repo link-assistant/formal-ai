@@ -26,6 +26,7 @@ pub mod corpus;
 pub mod diagram;
 pub mod dreaming_audit;
 pub mod driver;
+pub mod execution_learning;
 pub mod explain;
 mod file_read;
 pub mod formalize;
@@ -56,6 +57,9 @@ pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
+};
+pub use execution_learning::{
+    is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
 };
 pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{

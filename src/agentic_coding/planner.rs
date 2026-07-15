@@ -9,6 +9,7 @@ use serde_json::json;
 use super::change_request;
 use super::conversation_recall;
 use super::diagram;
+use super::execution_learning;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -120,6 +121,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if routing_learning::is_routing_learning_task(&task) {
         return Some(routing_learning::plan_step(messages, tool_names));
+    }
+    if execution_learning::is_execution_learning_task(&task) {
+        return Some(execution_learning::plan_step(messages, tool_names));
     }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));

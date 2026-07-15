@@ -1161,6 +1161,18 @@ jobs:
             ./main
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+        # Replay the same investigation through Formal AI's associative-memory
+        # adapter and real Agent CLI tools. The report remains review-gated; its
+        # evidence links make the architectural promotion auditable.
+        env:
+          PORT: 8777
+          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+          EXPECT_FILE: client-execution-learning-report.lino
+          EXPECT_TEXT: "lesson:typed-execution-artifact"
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
       - name: Run agent CLI E2E — declarative new-file phrasing (issue #712)
         # The exact declarative shape from issue #712 previously fell through to
         # the read router. The live CLI must execute the complete write plan and
