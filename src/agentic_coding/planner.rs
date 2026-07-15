@@ -18,6 +18,7 @@
 use serde_json::json;
 
 use super::change_request;
+use super::code_artifact;
 use super::diagram;
 use super::dreaming_audit;
 use super::explain;
@@ -119,6 +120,12 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    // Code is a workspace artifact when a client advertises file tools. Route
+    // generation and contextual follow-up changes before the generic file
+    // routers, which require the latest turn to repeat a path and content.
+    if let Some(plan) = code_artifact::plan_code_artifact_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     // The self-AST recipe is checked first because it is the most specific router
     // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
     // request legitimately mentions "Links Notation" as its output format, which
@@ -746,7 +753,13 @@ impl Progress {
         let mut fetched_text = None;
         let mut run_output = None;
         let mut search_output = None;
-        for (index, message) in messages.iter().enumerate() {
+        // Progress belongs to the current user turn. Results from an earlier
+        // request must not make a later request appear complete.
+        let current_turn = messages
+            .iter()
+            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+            .map_or(0, |index| index + 1);
+        for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
             }
@@ -816,7 +829,7 @@ pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
 /// it declared and strips the rest, so the same plan drives any of them without a
 /// per-CLI special case.
-fn write_arguments(path: &str, content: &str) -> String {
+pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,
         "filePath": path,

@@ -1,0 +1,1 @@
+- Make agentic code generation and contextual follow-up changes use real workspace read/write tools across every catalog language, backed by a bounded mutable rewrite graph.

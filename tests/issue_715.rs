@@ -44,6 +44,67 @@ fn code_generation_writes_a_real_workspace_file_for_every_catalog_language() {
             "{language}: generated source missing {code_fragment:?}: {value}"
         );
     }
+
+    // OpenCode serializes its positional prompt with surrounding JSON quotes.
+    let call = one_call(
+        &[ChatMessage::user(
+            "\"Give me a hello world program in Rust\"",
+        )],
+        &["read", "write"],
+    );
+    assert_eq!(call.tool, "write");
+}
+
+#[test]
+fn contextual_change_rewrites_workspace_source_for_every_catalog_language() {
+    for language in [
+        "Rust",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "Go",
+        "C",
+        "C++",
+        "Java",
+        "C#",
+        "Ruby",
+    ] {
+        let initial = format!("Give me a hello world program in {language}");
+        let generated = one_call(&[ChatMessage::user(&initial)], &["read", "write"]);
+        let generated_args = args(&generated);
+        let path = generated_args["filePath"].as_str().unwrap().to_owned();
+        let source = generated_args["content"].as_str().unwrap().to_owned();
+        let mut messages = vec![
+            ChatMessage::user(initial),
+            ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                "write-initial".to_owned(),
+                "write".to_owned(),
+                generated.arguments,
+            )]),
+            ChatMessage::tool_result("write-initial", "write", format!("Wrote {path}")),
+            ChatMessage::assistant(format!("Wrote `{path}`.")),
+            ChatMessage::user("Change the output message to `Hello 2`."),
+        ];
+
+        let read = one_call(&messages, &["read", "write"]);
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "read-current".to_owned(),
+            "read".to_owned(),
+            read.arguments,
+        )]));
+        messages.push(ChatMessage::tool_result(
+            "read-current",
+            "read",
+            source.clone(),
+        ));
+
+        let write = one_call(&messages, &["read", "write"]);
+        let value = args(&write);
+        assert_eq!(value["filePath"], path, "{language}");
+        let updated = value["content"].as_str().unwrap();
+        assert!(updated.contains("Hello 2"), "{language}: {updated}");
+        assert!(!updated.contains("Hello, world!"), "{language}: {updated}");
+    }
 }
 
 fn rust_conversation_with_latest_user(prompt: &str) -> Vec<ChatMessage> {
@@ -63,7 +124,8 @@ fn rust_conversation_with_latest_user(prompt: &str) -> Vec<ChatMessage> {
 
 #[test]
 fn contextual_code_change_reads_then_writes_the_active_file() {
-    let mut messages = rust_conversation_with_latest_user("Change the output message to 'Hello 2'.");
+    let mut messages =
+        rust_conversation_with_latest_user("Change the output message to 'Hello 2'.");
 
     let read = one_call(&messages, &["read", "write"]);
     assert_eq!(read.tool, "read");
@@ -77,7 +139,7 @@ fn contextual_code_change_reads_then_writes_the_active_file() {
     messages.push(ChatMessage::tool_result(
         "read-2",
         "read",
-        "fn main() {\n    println!(\"Hello, world!\");\n}\n",
+        "<path>/workspace/main.rs</path>\n<type>file</type>\n<content>\n1: fn main() {\n2:     println!(\"Hello, world!\");\n3: }\n\n(End of file - total 3 lines)\n</content>",
     ));
 
     let write = one_call(&messages, &["read", "write"]);
@@ -87,6 +149,27 @@ fn contextual_code_change_reads_then_writes_the_active_file() {
     let source = value["content"].as_str().unwrap();
     assert!(source.contains("println!(\"Hello 2\");"), "{source}");
     assert!(!source.contains("Hello, world!"), "{source}");
+    assert!(!source.contains("<content>"), "{source}");
+
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "write-2".to_owned(),
+        "write".to_owned(),
+        write.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "write-2",
+        "write",
+        "Wrote file successfully.",
+    ));
+    let final_answer = match plan_chat_step(&messages, &["read", "write"]) {
+        Some(AgenticPlan::Final(answer)) => answer,
+        other => panic!("expected final mutation trace, got {other:?}"),
+    };
+    assert!(final_answer.contains("mutation:target:'main.rs'"));
+    assert!(final_answer.contains("JumpIfContains"));
+    assert!(final_answer.contains("ReplaceFirst"));
+    assert!(final_answer.contains("Jump(3)"));
+    assert!(final_answer.contains("Halt"));
 }
 
 #[test]

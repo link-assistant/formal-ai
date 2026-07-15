@@ -19,6 +19,7 @@
 //! a pure, deterministic function of the message history.
 
 pub mod change_request;
+mod code_artifact;
 pub mod corpus;
 pub mod diagram;
 pub mod dreaming_audit;

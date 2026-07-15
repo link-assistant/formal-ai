@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Reproduce issue #715 through two turns of the real OpenCode CLI.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+BIN="${BIN:-$ROOT/target/debug/formal-ai}"
+OPENCODE="${OPENCODE:-opencode}"
+PORT="${PORT:-8795}"
+OUT="${OUT:-$ROOT/docs/case-studies/issue-715/opencode-run}"
+WORK="$(mktemp -d)"
+STATE="$(mktemp -d)"
+SERVER_LOG="$OUT/formal-ai.log"
+
+cleanup() {
+  kill "${server_pid:-}" 2>/dev/null || true
+  rm -rf "$WORK" "$STATE"
+}
+trap cleanup EXIT
+
+command -v "$OPENCODE" >/dev/null
+test -x "$BIN" || {
+  echo "build first: cargo build --bin formal-ai" >&2
+  exit 2
+}
+mkdir -p "$OUT"
+
+cd "$WORK"
+cat >opencode.json <<EOF
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "formal-ai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Formal AI",
+      "options": {
+        "baseURL": "http://127.0.0.1:$PORT/v1",
+        "apiKey": "local"
+      },
+      "models": {
+        "formal-ai": { "name": "Formal AI Symbolic Production" }
+      }
+    }
+  },
+  "model": "formal-ai/formal-ai"
+}
+EOF
+
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 "$BIN" serve \
+  --host 127.0.0.1 --port "$PORT" >"$SERVER_LOG" 2>&1 &
+server_pid=$!
+curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
+  "http://127.0.0.1:$PORT/health" >/dev/null
+
+export XDG_DATA_HOME="$STATE/data"
+export XDG_CONFIG_HOME="$STATE/config"
+export XDG_CACHE_HOME="$STATE/cache"
+
+"$OPENCODE" run --pure --auto --format json --model formal-ai/formal-ai \
+  "Give me a hello world program in Rust" >"$OUT/turn-1.jsonl" 2>"$OUT/turn-1.stderr"
+test -f main.rs
+grep -q 'Hello, world!' main.rs
+
+"$OPENCODE" run --pure --auto --format json --model formal-ai/formal-ai --continue \
+  'Change the output message to `Hello 2`.' >"$OUT/turn-2.jsonl" 2>"$OUT/turn-2.stderr"
+grep -q 'Hello 2' main.rs
+if grep -q 'Hello, world!' main.rs; then
+  echo "stale output remained in main.rs" >&2
+  exit 1
+fi
+rustc main.rs -o issue-715-main
+test "$(./issue-715-main)" = 'Hello 2'
+
+cp main.rs "$OUT/main.rs"
+posts="$(grep -c 'POST /v1/chat/completions' "$SERVER_LOG")"
+test "$posts" -ge 4
+echo "issue #715 OpenCode replay passed: $posts chat rounds"
