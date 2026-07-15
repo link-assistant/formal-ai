@@ -26,7 +26,7 @@ fn checksum_attestations_use_the_lf_safe_current_action() {
 }
 
 #[test]
-fn coverage_upload_uses_a_node_24_compatible_action() {
+fn coverage_is_retained_and_remote_upload_is_fail_closed_when_configured() {
     let release = workflow("release.yml");
 
     assert!(release.contains("uses: codecov/codecov-action@v7"));
@@ -36,11 +36,19 @@ fn coverage_upload_uses_a_node_24_compatible_action() {
         .nth(1)
         .and_then(|tail| tail.split("\n  build:\n").next())
         .expect("coverage job");
-    assert!(coverage.contains("    permissions:\n      contents: read\n      id-token: write"));
-    assert!(coverage.contains("          use_oidc: true"));
+    assert!(!coverage.contains("    env:\n      CODECOV_TOKEN:"));
+    assert!(coverage.contains("id: codecov-config"));
+    assert!(coverage.contains("CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}"));
+    assert!(coverage.contains("uses: actions/upload-artifact@v7"));
+    assert!(coverage.contains("name: rust-lcov"));
+    assert!(coverage.contains("path: lcov.info"));
+    assert!(coverage.contains("if: steps.codecov-config.outputs.configured == 'true'"));
+    assert!(coverage.contains("if: steps.codecov-config.outputs.configured != 'true'"));
+    assert!(coverage.contains("          token: ${{ secrets.CODECOV_TOKEN }}"));
     assert!(coverage.contains("          fail_ci_if_error: true"));
     assert!(coverage.contains("          disable_search: true"));
     assert!(coverage.contains("          plugins: noop"));
+    assert!(!coverage.contains("          use_oidc: true"));
     assert!(!coverage.contains("          fail_ci_if_error: false"));
 }
 

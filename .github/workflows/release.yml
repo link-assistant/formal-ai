@@ -329,9 +329,6 @@ jobs:
     name: Code Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      contents: read
-      id-token: write
     needs: [detect-changes]
     if: |
       always() && !cancelled() && (
@@ -365,14 +362,37 @@ jobs:
       - name: Generate code coverage
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
-      - name: Upload coverage to Codecov
+      - name: Retain LCOV report
+        uses: actions/upload-artifact@v7
+        with:
+          name: rust-lcov
+          path: lcov.info
+          if-no-files-found: error
+
+      - name: Detect Codecov configuration
+        id: codecov-config
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [[ -n "$CODECOV_TOKEN" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload coverage to Codecov when configured
+        if: steps.codecov-config.outputs.configured == 'true'
         uses: codecov/codecov-action@v7
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
           disable_search: true
           plugins: noop
-          use_oidc: true
           fail_ci_if_error: true
+
+      - name: Report optional Codecov integration status
+        if: steps.codecov-config.outputs.configured != 'true'
+        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
 
   # === BUILD ===
   # Build package - only runs if lint and test pass

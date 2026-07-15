@@ -7,7 +7,7 @@ The audit found one reproducible release failure, three repository-controlled wa
 The repository changes therefore:
 
 1. use `actions/attest@v4` for both desktop and VS Code checksum manifests;
-2. use authenticated, fail-closed Codecov v7 and download-artifact v8, removing Node 20 and `Buffer()` deprecations controlled by this repository;
+2. always retain LCOV coverage, use fail-closed Codecov v7 when configured, and use download-artifact v8, removing Node 20 and `Buffer()` deprecations controlled by this repository;
 3. configure Git's default initial branch before actions invoke Git, removing repeated runner hints;
 4. package the repository license in the VSIX;
 5. classify the documented ad-hoc macOS fallback as a notice rather than a false warning;
@@ -51,6 +51,7 @@ That integration exposed a separate general Agent CLI defect: the deterministic 
 | 2026-07-15 | issue 717 audit reproduced the policy failures, compared all templates, filed upstream reports, and implemented regression coverage. |
 | 2026-07-15 04:53 | first post-push run 29390080057 exposed the multi-commit change-detection false negative: Rust changes in earlier commits were hidden by the final evidence commit. |
 | 2026-07-15 05:00 | run 29390577430 exercised every required job successfully, then a complete log scan exposed Codecov's silently failed tokenless upload and Agent CLI 0.25.0 warnings. |
+| 2026-07-15 05:33 | run 29391752563 proved GitHub OIDC issuance worked but Codecov rejected the unprovisioned repository; every other required job passed. |
 
 Earlier failed/cancelled runs after the issue opened belonged to the concurrent PR 716 development sequence. Runs 29371095276 and 29372273229 failed tests; 29380834035 failed lint/coverage/tests plus changelog policy; several later runs were superseded and cancelled. Run 29386600637 passed at the final PR 716 SHA. Those are timeline evidence, not latent failures on issue 717's branch. The branch's pre-change run 29387999474 passed.
 
@@ -112,7 +113,7 @@ For pull requests, the detector now compares the synthetic merge parents (`HEAD^
 
 Fresh run 29390577430 generated `lcov.info`, but Codecov's final response was `Token required - not valid tokenless upload`. The action still exited successfully because the workflow explicitly set `fail_ci_if_error: false`. Thus the green coverage job proved only local report generation, not delivery of the report.
 
-The coverage job now grants only `contents: read` and `id-token: write`, authenticates with Codecov's documented `use_oidc: true` mode, and sets `fail_ci_if_error: true`. Explicit `disable_search: true` and `plugins: noop` restrict the uploader to the generated LCOV file rather than scanning historical evidence and invoking irrelevant language plugins. A regression scopes all assertions to the coverage job so another job's permissions cannot satisfy it accidentally.
+An attempted fail-closed OIDC fix proved the next boundary in run 29391752563: GitHub issued the requested OIDC token, but Codecov returned `Repository not found` because this repository is not provisioned there. Coverage must not depend on unavailable external state. The job now always uploads `lcov.info` as the required `rust-lcov` workflow artifact. When `CODECOV_TOKEN` is configured it additionally invokes Codecov v7 with `fail_ci_if_error: true`; otherwise it emits one explicit notice instead of attempting an upload that cannot succeed. Explicit `disable_search: true` and `plugins: noop` restrict a configured uploader to the generated LCOV file rather than scanning historical evidence and invoking irrelevant language plugins. A regression scopes all assertions to the coverage job and proves the artifact, configured, and unconfigured branches.
 
 ### 9. Agent CLI dependency diagnostics
 
@@ -140,7 +141,7 @@ The report bodies are preserved in `raw-data/upstream-*-report.md`. The comparis
 The pre-fix regression log is `raw-data/regression-before-fix.log`. The focused tests require:
 
 - two `actions/attest@v4` checksum attestations and no v2 wrapper;
-- Codecov v7 with OIDC authentication, explicit-file upload, and fail-closed errors;
+- an always-retained LCOV artifact plus Codecov v7 explicit-file upload and fail-closed errors when configured;
 - download-artifact v8;
 - deterministic Git init configuration in both workflows;
 - notice severity for the intentional ad-hoc signing fallback;
