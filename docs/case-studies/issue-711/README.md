@@ -13,7 +13,7 @@ A regression test proves that a second collection is empty and that
 The polluted changelog was rebuilt from Git release trees. At the time of the
 fix it shrank from 609,927 to 5,261 lines and assigned all 391 fragments that
 had reached a release tree exactly once. After merging releases v0.290.0 through
-v0.293.0, the same reconstruction contains 395 fragments in 5,337 lines. The
+v0.294.0, the same reconstruction contains 396 fragments in 5,344 lines. The
 388 stale files present when issue 711 was reported were removed; unreleased
 fragments remain pending for the next release.
 

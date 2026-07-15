@@ -9,7 +9,7 @@
 | Stage consumed files | The release commit now runs `git add -A` on the changelog directory and treats staging failures as fatal. |
 | Prove the second release is empty | The unit test invokes the collector twice and requires the changelog to remain byte-identical after the second invocation. |
 | Preserve README | The same test requires `changelog.d/README.md` to remain present. |
-| Repair historical pollution | The deterministic experiment reconstructed 391 released fragments exactly once and reduced `CHANGELOG.md` from 609,927 to 5,261 lines at the time of the fix; after merging releases through v0.293.0 it tracks 395 fragments in 5,337 lines. |
+| Repair historical pollution | The deterministic experiment reconstructed 391 released fragments exactly once and reduced `CHANGELOG.md` from 609,927 to 5,261 lines at the time of the fix; after merging releases through v0.294.0 it tracks 396 fragments in 5,344 lines. |
 | Remove stale fragments | All 388 fragment files stale at the time of the issue are deleted; README and genuinely unreleased fragments remain. |
 | Make cleanup reproducible | CI executes `node experiments/issue_711_rebuild_changelog.mjs --check`; the release map is committed. |
 | Preserve all related data | `raw-data/` contains GitHub payloads, releases, histories, diffs, CI output, agent traces, and test/build logs. |
