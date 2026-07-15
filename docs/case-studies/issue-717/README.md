@@ -2,18 +2,19 @@
 
 ## Executive result
 
-The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, one change-detection false negative, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. The upstream parser fix is in `actions/attest` v4.
+The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, two CI false negatives, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. The upstream parser fix is in `actions/attest` v4.
 
 The repository changes therefore:
 
 1. use `actions/attest@v4` for both desktop and VS Code checksum manifests;
-2. use Codecov v7 and download-artifact v8, removing Node 20 and `Buffer()` deprecations controlled by this repository;
+2. use authenticated, fail-closed Codecov v7 and download-artifact v8, removing Node 20 and `Buffer()` deprecations controlled by this repository;
 3. configure Git's default initial branch before actions invoke Git, removing repeated runner hints;
 4. package the repository license in the VSIX;
 5. classify the documented ad-hoc macOS fallback as a notice rather than a false warning;
 6. preserve repository-wide hard file-size enforcement while annotating only warning-band files changed by the event; and
-7. compare the complete PR or push range so a docs-only final commit cannot hide earlier code changes; and
-8. add policy and behavior regression tests.
+7. compare the complete PR or push range so a docs-only final commit cannot hide earlier code changes;
+8. classify only the two exact, reviewed Agent CLI 0.25.0 diagnostics while rejecting new dependency stderr; and
+9. add policy and behavior regression tests.
 
 ## Scope and evidence collection
 
@@ -49,6 +50,7 @@ That integration exposed a separate general Agent CLI defect: the deterministic 
 | 2026-07-14 17:30 | desktop run 29354019108 failed Windows x64 and arm64 attestations with an oversized subject name. |
 | 2026-07-15 | issue 717 audit reproduced the policy failures, compared all templates, filed upstream reports, and implemented regression coverage. |
 | 2026-07-15 04:53 | first post-push run 29390080057 exposed the multi-commit change-detection false negative: Rust changes in earlier commits were hidden by the final evidence commit. |
+| 2026-07-15 05:00 | run 29390577430 exercised every required job successfully, then a complete log scan exposed Codecov's silently failed tokenless upload and Agent CLI 0.25.0 warnings. |
 
 Earlier failed/cancelled runs after the issue opened belonged to the concurrent PR 716 development sequence. Runs 29371095276 and 29372273229 failed tests; 29380834035 failed lint/coverage/tests plus changelog policy; several later runs were superseded and cancelled. Run 29386600637 passed at the final PR 716 SHA. Those are timeline evidence, not latent failures on issue 717's branch. The branch's pre-change run 29387999474 passed.
 
@@ -106,7 +108,19 @@ Fresh run 29390080057 checked out GitHub's synthetic merge commit and logged `Co
 
 For pull requests, the detector now compares the synthetic merge parents (`HEAD^..HEAD^2`), which is the complete base-to-PR-head diff. For pushes, it uses `github.event.before..HEAD`, covering all commits in the push and avoiding the separate mistake of treating a real merge pushed to `main` as a synthetic PR merge. Missing/zero pre-push SHAs retain the previous-commit fallback. Pure range-selection tests cover all three cases, while the original failure and local full-push result are retained in `change-detection-before-fix.log`, `change-detection-unit-tests.log`, and `change-detection-push-check.log`.
 
-### 8. Third-party npm notices
+### 8. Codecov reported success after rejecting the upload
+
+Fresh run 29390577430 generated `lcov.info`, but Codecov's final response was `Token required - not valid tokenless upload`. The action still exited successfully because the workflow explicitly set `fail_ci_if_error: false`. Thus the green coverage job proved only local report generation, not delivery of the report.
+
+The coverage job now grants only `contents: read` and `id-token: write`, authenticates with Codecov's documented `use_oidc: true` mode, and sets `fail_ci_if_error: true`. Explicit `disable_search: true` and `plugins: noop` restrict the uploader to the generated LCOV file rather than scanning historical evidence and invoking irrelevant language plugins. A regression scopes all assertions to the coverage job so another job's permissions cannot satisfy it accidentally.
+
+### 9. Agent CLI dependency diagnostics
+
+The Hive Mind replay in run 29390577430 emitted eight AI SDK system-message warnings and four provider compatibility warnings from `@link-assistant/agent` 0.25.0. Its `js/src/session/prompt.ts` intentionally inserts system-role entries into the AI SDK 6 `messages` array without the SDK's required explicit acknowledgment. This call site is owned by the Agent CLI, not Formal AI; the upstream report is https://github.com/link-assistant/agent/issues/279.
+
+The self-coding harness now captures dependency stderr and accepts only the two byte-exact reviewed messages, aggregates them into one GitHub notice linked to the upstream issue, and fails on any other non-empty line. This preserves visibility without allowing known external repetition to obscure new warnings. A behavior regression proves both acceptance and fail-closed rejection; a real local Agent CLI run classified 9 system-message and 5 compatibility instances and completed the replay.
+
+### 10. Third-party npm notices
 
 The desktop and VSIX install logs contain deprecation notices from transitive packaging dependencies (`glob@7`, `rimraf@2`, `inflight`, `boolean`, `prebuild-install`, and `whatwg-encoding`). The direct Electron and electron-builder ranges were already current at audit time. These lines are neither GitHub annotations nor application runtime dependencies, and overriding nested versions can break packaging tools that selected those APIs. They are recorded as upstream dependency debt rather than hidden with npm log-level flags.
 
@@ -126,13 +140,14 @@ The report bodies are preserved in `raw-data/upstream-*-report.md`. The comparis
 The pre-fix regression log is `raw-data/regression-before-fix.log`. The focused tests require:
 
 - two `actions/attest@v4` checksum attestations and no v2 wrapper;
-- Codecov v7;
+- Codecov v7 with OIDC authentication, explicit-file upload, and fail-closed errors;
 - download-artifact v8;
 - deterministic Git init configuration in both workflows;
 - notice severity for the intentional ad-hoc signing fallback;
 - license copying before VSIX packaging; and
-- changed-file filtering for warning-band findings.
-- complete-event change detection for multi-commit pull requests and pushes.
+- changed-file filtering for warning-band findings;
+- complete-event change detection for multi-commit pull requests and pushes; and
+- fail-closed classification of the reviewed Agent CLI stderr messages.
 
 The post-fix logs record the focused test, all unit tests, format, Clippy, file-size policy, desktop/VSIX tests, and the real Agent CLI session. The first complete Rust pass (`cargo-test-all-features.log`) correctly exposed one integration assertion that still expected edit-before-read; the updated HTTP round-trip assertion passed independently and the complete rerun (`cargo-test-all-features-rerun.log`) finished with 1,575 passed, 0 failed, and 2 ignored. CI run metadata is retained after pushing so timestamps and SHAs can be compared to the final commit rather than trusting stale status.
 
@@ -141,10 +156,10 @@ The post-fix logs record the focused test, all unit tests, format, Clippy, file-
 | Issue requirement | Evidence/result |
 | --- | --- |
 | Compare all CI/CD files and four templates | Complete file trees, workflow diff, template run logs, and comparison above. |
-| Recheck errors, warnings, false positives, and false negatives | Classified in findings 1–8; stale/superseded failures separated in the timeline. |
+| Recheck errors, warnings, false positives, and false negatives | Classified in findings 1–10; stale/superseded failures separated in the timeline. |
 | Download logs/data | Full raw logs and API metadata under `raw-data/`. |
 | Deep root cause, alternatives, libraries, online research | Root-cause and alternatives sections; official action issues, PRs, releases, and source archived. |
-| Report matching template issues upstream | Four linked reports with preserved bodies. |
+| Report matching template issues upstream | Four linked template reports with preserved bodies; Agent CLI diagnostics reported in issue 279. |
 | Add diagnostics when insufficient | Existing verbose signing and release diagnostics were sufficient; no always-on debug noise was added. Real CLI/server traces are retained. |
 | Test before fix | Failing policy regression captured before action upgrades. |
 | Fix everywhere | Both attestation sites and every affected workflow-controlled warning source are covered by assertions. |

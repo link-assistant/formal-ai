@@ -1,6 +1,6 @@
 //! Regression coverage for the CI/CD audit in issue #717.
 
-use std::fs;
+use std::{fs, process::Command};
 
 fn workflow(name: &str) -> String {
     fs::read_to_string(format!(
@@ -31,6 +31,47 @@ fn coverage_upload_uses_a_node_24_compatible_action() {
 
     assert!(release.contains("uses: codecov/codecov-action@v7"));
     assert!(!release.contains("uses: codecov/codecov-action@v5"));
+    let coverage = release
+        .split("  coverage:\n")
+        .nth(1)
+        .and_then(|tail| tail.split("\n  build:\n").next())
+        .expect("coverage job");
+    assert!(coverage.contains("    permissions:\n      contents: read\n      id-token: write"));
+    assert!(coverage.contains("          use_oidc: true"));
+    assert!(coverage.contains("          fail_ci_if_error: true"));
+    assert!(coverage.contains("          disable_search: true"));
+    assert!(coverage.contains("          plugins: noop"));
+    assert!(!coverage.contains("          fail_ci_if_error: false"));
+}
+
+#[test]
+fn agent_cli_stderr_policy_accepts_only_reviewed_upstream_warnings() {
+    let script = format!(
+        "{}/scripts/classify-agent-cli-stderr.sh",
+        env!("CARGO_MANIFEST_DIR")
+    );
+    let fixture = std::env::temp_dir().join(format!(
+        "formal-ai-agent-stderr-{}-{}.log",
+        std::process::id(),
+        std::thread::current().name().unwrap_or("issue-717")
+    ));
+    fs::write(
+        &fixture,
+        concat!(
+            "AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.\n",
+            "AI SDK Warning (opencode.chat / big-pickle): The feature \"specificationVersion\" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.\n",
+        ),
+    )
+    .unwrap();
+    let accepted = Command::new(&script).arg(&fixture).output().unwrap();
+    assert!(accepted.status.success());
+    assert!(String::from_utf8_lossy(&accepted.stdout).contains("::notice"));
+
+    fs::write(&fixture, "unexpected dependency diagnostic\n").unwrap();
+    let rejected = Command::new(&script).arg(&fixture).output().unwrap();
+    fs::remove_file(&fixture).unwrap();
+    assert!(!rejected.status.success());
+    assert!(String::from_utf8_lossy(&rejected.stderr).contains("unexpected dependency diagnostic"));
 }
 
 #[test]

@@ -17,6 +17,7 @@ work="$(mktemp -d)"
 server="$OUT/formal-ai.log"
 events="$OUT/agent-stream.jsonl"
 raw_events="$OUT/agent-stream.raw.log"
+agent_stderr="$OUT/agent-stderr.log"
 cleanup() { kill "${server_pid:-}" 2>/dev/null || true; rm -rf "$work"; }
 trap cleanup EXIT
 git -C "$work" init -q
@@ -33,9 +34,14 @@ curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
 config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}' "$PORT")"
 (cd "$work" && FORMAL_AI_API_KEY=local LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
   "$AGENT" --model formalai/formal-ai --permission-mode auto \
-  --output-format stream-json --compact-json --disable-stdin --prompt "$TASK" >"$raw_events")
+  --output-format stream-json --compact-json --disable-stdin --prompt "$TASK" \
+  >"$raw_events" 2>"$agent_stderr") || {
+    cat "$agent_stderr" >&2
+    exit 1
+  }
+"$ROOT/scripts/classify-agent-cli-stderr.sh" "$agent_stderr"
 grep '^{' "$raw_events" >"$events"
-rm "$raw_events"
+rm "$raw_events" "$agent_stderr"
 test "$(cat "$work/self-coding-result.txt")" = 'self-coding=passed'
 git -C "$work" diff --no-index -- /dev/null self-coding-result.txt \
   >"$OUT/result.diff" || test "$?" -eq 1
