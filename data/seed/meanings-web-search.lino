@@ -424,6 +424,8 @@ meanings
       surface
         text " learn "
       surface
+        text " google "
+      surface
         text "search for …"
       surface
         text "search …"
@@ -439,6 +441,8 @@ meanings
         text "learn about …"
       surface
         text "learn more about …"
+      surface
+        text "google …"
     lexeme ru
       surface
         text " поищи "

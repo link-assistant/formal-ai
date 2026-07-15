@@ -105,6 +105,18 @@ pub(super) fn extract_web_search_request(
             kind: WebSearchQueryKind::SemanticAction,
         });
     }
+    if let Some(query) = extract_source_grounded_question(prompt, &normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        });
+    }
+    if let Some(query) = extract_current_source_information_request(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
+        });
+    }
     if let Some(query) = extract_latest_news_search_request(&normalized_words) {
         return Some(WebSearchRequest {
             query,
@@ -230,6 +242,8 @@ struct WebSearchMarkers {
     trailing_noise: Vec<&'static str>,
     /// Bare source words that are not, on their own, a valid query.
     source_only: Vec<String>,
+    /// Boundary-preserving source markers used as evidence in semantic frames.
+    source_markers: Vec<&'static str>,
     /// News/headline subject markers for bare latest-news requests.
     news_subject_markers: Vec<&'static str>,
     /// Freshness markers that pair with news/headline subjects.
@@ -274,6 +288,7 @@ fn markers() -> &'static WebSearchMarkers {
         leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
         trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+        source_markers: bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
         news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
         news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
         records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
@@ -376,6 +391,50 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
             if let Some(query) = valid_search_query(&normalized[start..]) {
                 return Some(query);
             }
+        }
+    }
+    None
+}
+
+/// Extract the topic from an interrogative grounded in an explicitly named web
+/// source. The frame is question shape + external source + topic connective, so
+/// unseen wording shares the same route without a sentence template.
+fn extract_source_grounded_question(prompt: &str, normalized: &str) -> Option<String> {
+    let markers = markers();
+    if !question_is_interrogative(prompt, normalized)
+        || !contains_any_search_marker(normalized, &markers.source_markers)
+    {
+        return None;
+    }
+    extract_topic_subject(normalized)
+}
+
+/// Extract a request for fresh information from a named external source. The
+/// independent evidence is source + recency + topic shape; no request-specific
+/// sentence template or English action verb is needed.
+fn extract_current_source_information_request(normalized: &str) -> Option<String> {
+    let markers = markers();
+    if !contains_any_search_marker(normalized, &markers.source_markers)
+        || !contains_any_search_marker(normalized, &markers.news_recency_markers)
+    {
+        return None;
+    }
+    extract_topic_subject(normalized)
+}
+
+/// Recover the subject selected by a seed-defined topic connective, supporting
+/// both prepositions (prefix slot: "about X") and postpositions (suffix slot:
+/// "X के बारे में") through the same shape parser.
+fn extract_topic_subject(normalized: &str) -> Option<String> {
+    let markers = markers();
+    for &marker in &markers.topic_after_markers {
+        if let Some(index) = normalized.find(marker) {
+            return valid_search_query(&normalized[index + marker.len()..]);
+        }
+    }
+    for &marker in &markers.topic_before_markers {
+        if let Some(index) = normalized.find(marker) {
+            return valid_search_query(&normalized[..index]);
         }
     }
     None

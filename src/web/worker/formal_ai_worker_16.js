@@ -1064,6 +1064,7 @@ function webSearchMarkers() {
     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMarkers: bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),

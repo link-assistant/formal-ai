@@ -115,6 +115,53 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
   return "";
 }
 
+function questionIsInterrogative(prompt, normalized) {
+  return (
+    startsWithAny(normalized, webSearchMarkers().researchQuestionPrefixes) ||
+    /[?？]\s*$/u.test(String(prompt || ""))
+  );
+}
+
+function extractTopicSubject(normalized) {
+  const markers = webSearchMarkers();
+  for (const marker of markers.topicAfterMarkers) {
+    const query = queryAfterNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  for (const marker of markers.topicBeforeMarkers) {
+    const query = queryBeforeNormalizedMarker(normalized, marker);
+    if (query) return query;
+  }
+  return "";
+}
+
+// Semantic frame shared with the Rust handler: interrogative + named external
+// source + topic connective. It covers unseen source-grounded wording without a
+// sentence template.
+function extractSourceGroundedQuestion(prompt, normalized) {
+  const markers = webSearchMarkers();
+  if (
+    !questionIsInterrogative(prompt, normalized) ||
+    !containsAnySearchMarker(normalized, markers.sourceMarkers)
+  ) {
+    return "";
+  }
+  return extractTopicSubject(normalized);
+}
+
+// Semantic frame shared with the Rust handler: named external source + recency
+// + topic connective.
+function extractCurrentSourceInformationRequest(normalized) {
+  const markers = webSearchMarkers();
+  if (
+    !containsAnySearchMarker(normalized, markers.sourceMarkers) ||
+    !containsAnySearchMarker(normalized, markers.newsRecencyMarkers)
+  ) {
+    return "";
+  }
+  return extractTopicSubject(normalized);
+}
+
 function extractExplicitWebSearchQuery(prompt) {
   const markers = webSearchMarkers();
   for (const prefix of markers.explicitPrefixes) {
@@ -296,6 +343,14 @@ function extractWebSearchRequest(prompt, normalized) {
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {
     return { query: semanticQuery, kind: "semantic_action" };
+  }
+  const sourceQuestion = extractSourceGroundedQuestion(prompt, normalized);
+  if (sourceQuestion) {
+    return { query: sourceQuestion, kind: "implicit_research_question" };
+  }
+  const currentSourceQuery = extractCurrentSourceInformationRequest(normalized);
+  if (currentSourceQuery) {
+    return { query: currentSourceQuery, kind: "implicit_research_question" };
   }
   const latestNewsQuery = extractLatestNewsSearchRequest(normalized);
   if (latestNewsQuery) {
