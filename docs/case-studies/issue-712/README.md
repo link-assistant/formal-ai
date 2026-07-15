@@ -23,6 +23,10 @@ associative-memory adapter, ranks observations and semantic amendments, writes
 `tool-routing-learning-report.lino`, verifies it, and leaves promotion explicitly
 `awaiting_human_review`. The runner is
 [`experiments/agent_cli_e2e/run_issue_712_learning.sh`](../../../experiments/agent_cli_e2e/run_issue_712_learning.sh).
+Its checked-in evidence includes the
+[`Agent CLI event stream`](agent-cli-routing-learning/agent-stream.jsonl),
+[`classified diagnostics`](agent-cli-routing-learning/agent-stderr.log), and the
+[`derived learning report`](agent-cli-routing-learning/tool-routing-learning-report.lino).
 
 ## Root cause and architecture
 
@@ -69,6 +73,9 @@ single incident to silently rewrite routing policy.
 - `.github/workflows/release.yml`: real external Agent CLI declarative-write E2E.
 - [`green-regression.log`](green-regression.log) and
   [`live-agent-cli-e2e.log`](live-agent-cli-e2e.log): original local evidence.
+- [`agent-cli-routing-learning/tool-routing-learning-report.lino`](agent-cli-routing-learning/tool-routing-learning-report.lino):
+  external Agent CLI result derived from six linked observations and amendments,
+  with promotion still awaiting human review.
 
 No new dependency is introduced. The fix composes the seed lexicon, existing
 intent router, general planner, associative persistence, and document recipe.
