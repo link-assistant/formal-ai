@@ -69,6 +69,22 @@ The capability classifier is protocol- and CLI-name-independent. Integration
 coverage proves the same report action over OpenAI Chat Completions, OpenAI
 Responses, and Gemini `generateContent`, using three distinct run-tool aliases.
 
+The follow-up review broadened that result into the architecture described in
+[`requirements.md`](requirements.md) and [`root-cause.md`](root-cause.md): report,
+research, recall, and learned interface actions are seed/capability driven rather
+than client-name branches. The API server remains a planner, not a second tool
+runtime. After the Agent CLI returns a tool result, however, the completed call's
+real name, arguments, and output are now written to the shared memory log as a
+`tool_call` event. The final task cites that event, giving associative persistence
+and dreaming concrete evidence from real execution instead of only the final prose.
+
+OpenAI Chat Completions, OpenAI Responses, Anthropic Messages, and Gemini adapters
+all feed this shared recording path. Gemini now also translates returned
+`functionResponse` parts, including ids, so its client-side loop can advance to a
+final answer rather than restarting at the first call. The protocol research and
+execution-boundary rationale are preserved in
+[`online-research.md`](online-research.md).
+
 ## Regression-first evidence
 
 The minimal unit regression was run before implementation. Four assertions failed:
@@ -86,10 +102,10 @@ After the fix:
 
 ```text
 cargo test --test unit issue_714_agentic_mode
-# 5 passed
+# 10 passed
 
 cargo test --test integration issue_714_agentic_mode
-# 3 passed
+# 4 passed
 
 cargo test --test integration with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag
 # 1 passed
@@ -102,12 +118,18 @@ boots the production release server, drives the installed `@link-assistant/agent
 CLI, and places a sandboxed `gh` fixture first on `PATH`. The fixture records the
 arguments and returns a representative GitHub URL; it cannot mutate GitHub.
 
-The real CLI completed the report loop in two chat rounds:
+The real CLI completed the report loop in two chat rounds and the server retained
+the sandboxed `gh` arguments/result as linked learning evidence:
 
 ```text
-Agent CLI invoked gh successfully in 2 chat rounds.
+Agent CLI invoked gh and retained its result as learning evidence in 2 chat rounds.
 ```
 
 The run is preserved in
 [`raw-data/agent-cli-report-e2e.log`](raw-data/agent-cli-report-e2e.log), and the
 same experiment is part of the repository's Agent CLI CI job.
+
+The generalized four-turn experiment from issue #687 additionally drives one
+continued real Agent CLI session through search, fetch, report, conversational
+recall, and an associative-learning update. Issue #714's focused experiment keeps
+the stronger byte-level assertion on `gh` and the durable memory record.

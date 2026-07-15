@@ -1,1 +1,7 @@
-Agent CLI invoked gh successfully in 2 chat rounds.
+2026-07-15T14:48:07Z production Agent CLI verification
+advertised tools: bash, batch, codesearch, edit, glob, grep, list, read, task, todoread, todowrite, webfetch, websearch, write
+planned call: bash {"command":"gh issue create --repo link-assistant/formal-ai ..."}
+fixture result: https://github.com/link-assistant/formal-ai/issues/999
+final answer: Filed the issue on GitHub: https://github.com/link-assistant/formal-ai/issues/999
+memory assertions: kind=tool_call, tool=bash, inputs contain "gh issue create", outputs contain "issues/999"
+Agent CLI invoked gh and retained its result as learning evidence in 2 chat rounds.
