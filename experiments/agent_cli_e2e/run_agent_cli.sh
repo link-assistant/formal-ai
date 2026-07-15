@@ -15,6 +15,9 @@
 #                 (default: meanings-tomato-detail.lino)
 #   EXPECT_TEXT   A string that must appear inside EXPECT_FILE (default: `томаты`,
 #                 the previously missing Russian plural — the issue's canary)
+#   EXPECT_SERVER_TEXTS
+#                 Optional newline-separated strings that must appear in the
+#                 server trace (useful for proving exact harness-side commands).
 #   ATTEMPTS      How many times to (re)drive the CLI before giving up (default: 5).
 #                 The third-party CLI is non-deterministic — see the retry note
 #                 below — so a stalled first attempt is retried, not fatal.
@@ -43,6 +46,7 @@ DEFAULT_TASK="Make the tomato meaning more detailed: pin every surface's part of
 TASK="${TASK:-$DEFAULT_TASK}"
 EXPECT_FILE="${EXPECT_FILE:-meanings-tomato-detail.lino}"
 EXPECT_TEXT="${EXPECT_TEXT:-томаты}"
+EXPECT_SERVER_TEXTS="${EXPECT_SERVER_TEXTS:-}"
 # Minimum /v1/chat/completions round-trips the recipe must drive. The default (4)
 # fits the web recipes (search → fetch → write → verify → final = 5 posts). A
 # no-web recipe (e.g. the diagram task: write → verify → final = 3 posts) sets
@@ -159,6 +163,12 @@ grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
 [ "$posts" -ge "$MIN_POSTS" ] \
   || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
+
+while IFS= read -r expected; do
+  [ -z "$expected" ] && continue
+  grep -Fq "$expected" "$LOG" \
+    || fail "expected server trace to contain: $expected"
+done <<< "$EXPECT_SERVER_TEXTS"
 
 echo "== E2E OK: $EXPECT_FILE written, contains \"$EXPECT_TEXT\", $posts chat rounds =="
 head -5 "$WORKDIR/$EXPECT_FILE"
