@@ -52,6 +52,7 @@
     "seed/meanings-feature-capability.lino",
     "seed/meanings-file-write.lino",
     "seed/meanings-file-edit.lino",
+    "seed/meanings-agent-actions.lino",
     "seed/meanings-finance.lino",
     "seed/meanings-how.lino",
     "seed/meanings-intent.lino",

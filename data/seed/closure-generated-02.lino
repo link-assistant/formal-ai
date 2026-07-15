@@ -1,4 +1,69 @@
 meanings
+  owlbear
+    defined-by word_surface
+    lexeme en
+      surface
+        text "owlbear"
+  package-management
+    defined-by category
+    lexeme en
+      surface
+        text "package management"
+  paper
+    defined-by word_surface
+    lexeme en
+      surface
+        text "paper"
+  pascal
+    defined-by concept
+    lexeme en
+      surface
+        text "pascal"
+  pascal_case
+    defined-by operation
+    lexeme en
+      surface
+        text "pascal case"
+  passage
+    defined-by word_surface
+    lexeme en
+      surface
+        text "passage"
+  path_argument
+    defined-by operation
+    lexeme en
+      surface
+        text "path argument"
+  path_argument_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files"
+  path_argument_list_files_reverse_sort
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files reverse sort"
+  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
+  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
   pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
     defined-by prompt_pattern
     lexeme en
@@ -1079,6 +1144,11 @@ meanings
     lexeme en
       surface
         text "prepend text"
+  problem
+    defined-by word_surface
+    lexeme en
+      surface
+        text "problem"
   program_plan_rules
     defined-by concept
     lexeme en
@@ -1110,7 +1180,7 @@ meanings
       surface
         text "proposal only"
   ps
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "ps"
@@ -1120,7 +1190,7 @@ meanings
       surface
         text "punctuation"
   pwd
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "pwd"
@@ -1324,73 +1394,3 @@ meanings
     lexeme en
       surface
         text "response clarification zh"
-  response_concept_lookup_in_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context en"
-  response_concept_lookup_in_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context hi"
-  response_concept_lookup_in_context_no_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias en"
-  response_concept_lookup_in_context_no_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"
-  response_courtesy_response_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response en"
-  response_courtesy_response_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response hi"
-  response_courtesy_response_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response ru"
-  response_courtesy_response_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response zh"
-  response_document_originality_check_sample_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing en"
-  response_document_originality_check_sample_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing hi"

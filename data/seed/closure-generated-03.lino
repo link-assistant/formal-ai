@@ -1,4 +1,74 @@
 meanings
+  response_concept_lookup_in_context_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context en"
+  response_concept_lookup_in_context_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context hi"
+  response_concept_lookup_in_context_no_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias en"
+  response_concept_lookup_in_context_no_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias hi"
+  response_concept_lookup_in_context_no_alias_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias ru"
+  response_concept_lookup_in_context_no_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias zh"
+  response_concept_lookup_in_context_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context ru"
+  response_concept_lookup_in_context_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context zh"
+  response_courtesy_response_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response en"
+  response_courtesy_response_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response hi"
+  response_courtesy_response_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response ru"
+  response_courtesy_response_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response courtesy response zh"
+  response_document_originality_check_sample_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing en"
+  response_document_originality_check_sample_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response document originality check sample missing hi"
   response_document_originality_check_sample_missing_ru
     defined-by response_template
     lexeme en
@@ -529,6 +599,11 @@ meanings
     lexeme en
       surface
         text "submission"
+  submit
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submit"
   substitute
     defined-by word_surface
     lexeme en
@@ -834,6 +909,16 @@ meanings
     lexeme en
       surface
         text "web search"
+  web_research_no_content
+    defined-by field
+    lexeme en
+      surface
+        text "web research no content"
+  web_research_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "web research source label"
   webvm
     defined-by word_surface
     lexeme en
@@ -860,7 +945,7 @@ meanings
       surface
         text "whitespace"
   whoami
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "whoami"

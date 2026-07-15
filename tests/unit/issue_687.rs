@@ -100,6 +100,29 @@ mod factual_question {
             "final answer must carry the fetched fact, got: {answer}"
         );
     }
+
+    #[test]
+    fn research_prefers_an_official_source_and_cites_it() {
+        let mut messages = vec![ChatMessage::user("When are the next elections in the USA?")];
+        let search = tool_calls(&messages).remove(0);
+        answer_tool_call(
+            &mut messages,
+            &search,
+            "Commentary https://example.com/elections Official https://www.usa.gov/election-day",
+        );
+
+        let fetch = tool_calls(&messages).remove(0);
+        assert_eq!(fetch.tool, "webfetch");
+        assert_eq!(arguments(&fetch)["url"], "https://www.usa.gov/election-day");
+        answer_tool_call(&mut messages, &fetch, "Election Day is November 3, 2026.");
+
+        let answer = final_answer(&messages);
+        assert!(answer.contains("November 3, 2026"), "{answer}");
+        assert!(
+            answer.contains("https://www.usa.gov/election-day"),
+            "{answer}"
+        );
+    }
 }
 
 // Requirement 1 (generalization): a factual/answer-seeking question the symbolic
@@ -242,6 +265,29 @@ mod report_issue {
     }
 
     #[test]
+    fn every_supported_language_routes_report_intent_from_seed_data() {
+        for prompt in [
+            "Please report this problem",
+            "Пожалуйста, сообщи об этой ошибке",
+            "कृपया इस समस्या की रिपोर्ट करें",
+            "请报告这个问题",
+        ] {
+            let messages = vec![
+                ChatMessage::user("The answer did not use the available tool."),
+                ChatMessage::assistant("I could not determine that."),
+                ChatMessage::user(prompt),
+            ];
+            let calls = tool_calls(&messages);
+            assert_eq!(calls[0].tool, "bash", "{prompt:?}");
+            let command = arguments(&calls[0])["command"]
+                .as_str()
+                .expect("command string")
+                .to_owned();
+            assert!(command.contains("gh issue create"), "{prompt:?}: {command}");
+        }
+    }
+
+    #[test]
     fn conversation_text_is_shell_escaped_in_the_command() {
         // An apostrophe in the conversation must not break out of the shell quoting
         // when the report body transcribes it.
@@ -327,6 +373,27 @@ mod conversation_recall {
             );
         }
     }
+
+    #[test]
+    fn multilingual_summary_phrases_use_the_shared_history_solver() {
+        for prompt in [
+            "What have we talked about?",
+            "О чём мы разговаривали?",
+            "हमने किस बारे में बात की?",
+            "我们聊了什么？",
+        ] {
+            let messages = vec![
+                ChatMessage::user("Associative auto-learning"),
+                ChatMessage::assistant("We inspected the durable links network."),
+                ChatMessage::user(prompt),
+            ];
+            let answer = final_answer(&messages);
+            assert!(
+                answer.contains("Associative auto-learning"),
+                "{prompt:?} should recall prior dialog, got: {answer}"
+            );
+        }
+    }
 }
 
 // Requirement 4: "learn about it" resolves the pronoun and researches the topic.
@@ -350,6 +417,28 @@ mod learn_about {
             query.contains("borrow") || query.contains("rust"),
             "learn-about should carry the resolved topic, got: {query}"
         );
+    }
+
+    #[test]
+    fn whole_reported_sequence_keeps_the_last_substantive_topic() {
+        let messages = vec![
+            ChatMessage::user("When are the next elections in the USA?"),
+            ChatMessage::assistant("The next general election is in 2026."),
+            ChatMessage::user("Report this problem"),
+            ChatMessage::assistant("Filed the issue on GitHub."),
+            ChatMessage::user("What we were talking about?"),
+            ChatMessage::assistant("We discussed the next elections and reporting the failure."),
+            ChatMessage::user("Learn about it."),
+        ];
+        let calls = tool_calls(&messages);
+        assert_eq!(calls[0].tool, "websearch");
+        let query = arguments(&calls[0])["query"]
+            .as_str()
+            .expect("query")
+            .to_lowercase();
+        assert!(query.contains("election"), "resolved query: {query}");
+        assert!(!query.contains("talking"), "resolved query: {query}");
+        assert!(!query.contains("report"), "resolved query: {query}");
     }
 }
 

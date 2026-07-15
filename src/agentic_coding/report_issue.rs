@@ -15,11 +15,15 @@
 use serde_json::json;
 
 use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
+use crate::engine::normalize_prompt;
 use crate::protocol::ChatMessage;
+use crate::seed;
 
 /// The Formal AI repository issues are filed against. Mirrors the `Tv` constant
 /// the web UI's "Report issue" button targets in `src/web/app.js`.
-pub const FORMAL_AI_REPO: &str = "link-assistant/formal-ai";
+fn formal_ai_repo() -> String {
+    config("repository")
+}
 
 /// A recognised request to file a GitHub issue against the Formal AI repository.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -37,7 +41,7 @@ impl ReportRequest {
     pub(super) fn gh_command(&self) -> String {
         format!(
             "gh issue create --repo {} --title {} --body {}",
-            FORMAL_AI_REPO,
+            formal_ai_repo(),
             shell_quote(&self.title),
             shell_quote(&self.body),
         )
@@ -63,60 +67,17 @@ pub(super) fn report_issue_request_for(
 }
 
 /// Whether `task` asks to report/file an issue.
-fn is_report_intent(task: &str) -> bool {
-    let lower = task.trim().to_lowercase();
-    let bare = lower.trim_end_matches(['.', '!', ' ']);
-    // A bare "report" (English or Russian) is the screenshot's minimal request.
-    if bare == "report" || bare == "сообщить" || bare == "сообщи" {
-        return true;
-    }
-    let padded = format!(" {lower} ");
-    // A word-boundary view: every non-alphanumeric character becomes a space so
-    // markers match whole words only. Without this, "repo" would match inside
-    // "report" and every "report …" prompt would look like a repository reference.
-    let words: String = format!(
-        " {} ",
-        lower
-            .chars()
-            .map(|c| if c.is_alphanumeric() { c } else { ' ' })
-            .collect::<String>()
-    );
-    let has_report_verb = REPORT_VERBS.iter().any(|verb| padded.contains(verb));
-    let has_issue_noun = ISSUE_NOUNS.iter().any(|noun| padded.contains(noun));
-    let mentions_repo = REPO_REFERENCES
+pub(super) fn is_report_intent(task: &str) -> bool {
+    let normalized = normalize_prompt(task);
+    let lexicon = seed::lexicon();
+    let action = lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_VERB, &normalized);
+    let bare_action = lexicon
+        .words_for_role(seed::ROLE_AGENT_ACTION_REPORT_VERB)
         .iter()
-        .any(|marker| words.contains(&format!(" {} ", marker.replace(['-', ' '], " "))));
-    has_report_verb && (has_issue_noun || mentions_repo)
+        .any(|word| normalize_prompt(word) == normalized);
+    bare_action
+        || (action && lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT, &normalized))
 }
-
-/// Report/file verbs (English + Russian), matched as space-padded words.
-const REPORT_VERBS: [&str; 10] = [
-    " report ",
-    " file ",
-    " open ",
-    " submit ",
-    " raise ",
-    " log ",
-    " create ",
-    " сообщить ",
-    " сообщи ",
-    " создать ",
-];
-
-/// Issue nouns that mark a report target.
-const ISSUE_NOUNS: [&str; 8] = [
-    " issue ",
-    " issues ",
-    " bug ",
-    " bugs ",
-    " problem ",
-    " ticket ",
-    " defect ",
-    " ошибк",
-];
-
-/// Repository references that scope a report to GitHub / the Formal AI repo.
-const REPO_REFERENCES: [&str; 5] = ["github", "repository", "repo", "formal ai", "formal-ai"];
 
 /// Compose the issue from the conversation: a title from the most recent
 /// non-report user turn, a body that transcribes the exchange deterministically.
@@ -137,17 +98,24 @@ fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
         .find(|(role, _)| role == "user")
         .map(|(_, text)| text.trim().to_owned());
     let title = match subject.as_deref() {
-        Some(text) if !text.is_empty() => format!("Formal AI: {}", truncate(text, 72)),
-        _ => String::from("Formal AI agentic session report"),
+        Some(text) if !text.is_empty() => {
+            format!(
+                "{}{}",
+                config("issue_report_title_prefix"),
+                truncate(text, 72)
+            )
+        }
+        _ => config("issue_report_default_title"),
     };
 
-    let mut body = String::from(
-        "Reported from an agentic session via natural language (no web UI available).\n\n",
-    );
+    let mut body = format!("{}\n\n", config("issue_report_body_intro"));
     if turns.is_empty() {
-        body.push_str("_No prior conversation was captured._\n");
+        body.push_str(&format!("_{}_\n", config("issue_report_empty_history")));
     } else {
-        body.push_str("### Conversation\n\n");
+        body.push_str(&format!(
+            "### {}\n\n",
+            config("issue_report_conversation_heading")
+        ));
         for (role, text) in &turns {
             body.push_str("- **");
             body.push_str(role);
@@ -156,7 +124,7 @@ fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
             body.push('\n');
         }
     }
-    body.push_str("\nFiled automatically by Formal AI in agentic mode (issue #687).");
+    body.push_str(&format!("\n{}", config("issue_report_body_footer")));
 
     ReportRequest { title, body }
 }
@@ -182,7 +150,11 @@ pub(super) fn plan_report_issue_step(
         return plan_one(tool, json!({ "command": command }).to_string());
     }
     AgenticPlan::Final(format!(
-        "I can report this to {FORMAL_AI_REPO} by running `{command}` once the client advertises a shell tool such as `bash`, `shell`, or `run_command`.",
+        "{}",
+        render(
+            "issue_report_tool_missing",
+            &[("repository", &formal_ai_repo())]
+        ),
     ))
 }
 
@@ -196,13 +168,28 @@ pub(super) fn final_answer(command: &str, run_output: &str) -> String {
         .map_or_else(
             || {
                 if trimmed.is_empty() {
-                    format!("Ran `{command}` to file the issue on GitHub.")
+                    render("issue_report_ran_command", &[("command", command)])
                 } else {
-                    format!("Filed the issue on GitHub.\n\n```text\n{trimmed}\n```")
+                    format!(
+                        "{}\n\n```text\n{trimmed}\n```",
+                        config("issue_report_created")
+                    )
                 }
             },
-            |url| format!("Filed the issue on GitHub: {url}"),
+            |url| render("issue_report_created_with_url", &[("url", url)]),
         )
+}
+
+fn config(key: &str) -> String {
+    seed::agent_info()
+        .remove(key)
+        .unwrap_or_else(|| key.to_owned())
+}
+
+fn render(key: &str, values: &[(&str, &str)]) -> String {
+    values.iter().fold(config(key), |text, (name, value)| {
+        text.replace(&format!("{{{name}}}"), value)
+    })
 }
 
 /// Single-quote escape a value for a POSIX shell command line.

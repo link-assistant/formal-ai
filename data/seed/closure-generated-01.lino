@@ -99,6 +99,16 @@ meanings
     lexeme en
       surface
         text "advertising platform"
+  agent_action_report_subject
+    defined-by concept
+    lexeme en
+      surface
+        text "agent action report subject"
+  agent_action_report_verb
+    defined-by concept
+    lexeme en
+      surface
+        text "agent action report verb"
   agent_suggestion
     defined-by intent
     lexeme en
@@ -1019,11 +1029,66 @@ meanings
     lexeme en
       surface
         text "invert"
+  issue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "issue"
   issue_364_unknown_trace_learning
     defined-by concept
     lexeme en
       surface
         text "issue 364 unknown trace learning"
+  issue_report_body_footer
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body footer"
+  issue_report_body_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body intro"
+  issue_report_conversation_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report conversation heading"
+  issue_report_created
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created"
+  issue_report_created_with_url
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created with url"
+  issue_report_default_title
+    defined-by field
+    lexeme en
+      surface
+        text "issue report default title"
+  issue_report_empty_history
+    defined-by field
+    lexeme en
+      surface
+        text "issue report empty history"
+  issue_report_ran_command
+    defined-by field
+    lexeme en
+      surface
+        text "issue report ran command"
+  issue_report_title_prefix
+    defined-by field
+    lexeme en
+      surface
+        text "issue report title prefix"
+  issue_report_tool_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report tool missing"
   issue_template_labels
     defined-by field
     lexeme en
@@ -1180,7 +1245,7 @@ meanings
       surface
         text "local shell"
   ls
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "ls"
@@ -1225,7 +1290,7 @@ meanings
       surface
         text "misinformation"
   mkdir
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "mkdir"
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "outdent lines"
-  owlbear
-    defined-by word_surface
-    lexeme en
-      surface
-        text "owlbear"
-  package-management
-    defined-by category
-    lexeme en
-      surface
-        text "package management"
-  paper
-    defined-by word_surface
-    lexeme en
-      surface
-        text "paper"
-  pascal
-    defined-by concept
-    lexeme en
-      surface
-        text "pascal"
-  pascal_case
-    defined-by operation
-    lexeme en
-      surface
-        text "pascal case"
-  passage
-    defined-by word_surface
-    lexeme en
-      surface
-        text "passage"
-  path_argument
-    defined-by operation
-    lexeme en
-      surface
-        text "path argument"
-  path_argument_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files"
-  path_argument_list_files_reverse_sort
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files reverse sort"
-  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
-  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
