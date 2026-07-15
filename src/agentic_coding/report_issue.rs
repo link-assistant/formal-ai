@@ -17,13 +17,13 @@ pub(super) fn plan_report_issue_step(messages: &[ChatMessage], tool_names: &[&st
 
     if let Some(result) = messages[report_index + 1..]
         .iter()
-        .find(|message| {
+        .enumerate()
+        .find(|(offset, message)| {
             message.role.eq_ignore_ascii_case("tool")
-                && message.name.as_deref().is_some_and(|name| {
-                    super::planner::tool_capability(name) == Some(Capability::Run)
-                })
+                && super::planner::result_capability(messages, report_index + 1 + offset)
+                    == Some(Capability::Run)
         })
-        .map(|message| message.content.plain_text())
+        .map(|(_, message)| message.content.plain_text())
     {
         return AgenticPlan::Final(format!(
             "GitHub issue reporting finished. The `gh` command returned:\n\n{}",

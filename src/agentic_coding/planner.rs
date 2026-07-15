@@ -917,7 +917,7 @@ fn classify_tool(name: &str) -> Option<Capability> {
 /// Resolve which capability the tool result at `index` answers. Prefer the
 /// result's own `name`; otherwise map its `tool_call_id` back to the tool name in
 /// a prior assistant `tool_calls` turn.
-fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
+pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
     let message = &messages[index];
     if let Some(name) = &message.name {
         if let Some(capability) = classify_tool(name) {

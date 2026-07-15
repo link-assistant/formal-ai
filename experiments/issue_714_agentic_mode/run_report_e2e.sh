@@ -53,7 +53,7 @@ done
 echo "== agent stderr/out tail =="
 tail -40 "$AGENT_LOG"
 echo "== relevant server trace =="
-rg 'formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome' "$LOG" | tail -40
+awk '/formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome/' "$LOG" | tail -40
 
 test "$RC" -eq 0
 test -f "$CAPTURE"

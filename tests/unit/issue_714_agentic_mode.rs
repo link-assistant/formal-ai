@@ -89,6 +89,30 @@ fn report_action_finishes_with_the_issue_url_after_gh_returns() {
 }
 
 #[test]
+fn report_action_resolves_an_unnamed_tool_result_by_call_id() {
+    let mut result = ChatMessage::tool_result(
+        "report_1",
+        "bash",
+        "https://github.com/link-assistant/formal-ai/issues/999",
+    );
+    result.name = None;
+    let messages = vec![
+        ChatMessage::user("Report issue"),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "report_1".to_owned(),
+            "bash".to_owned(),
+            "{}".to_owned(),
+        )]),
+        result,
+    ];
+
+    match plan_chat_step(&messages, &["bash", "websearch"]) {
+        Some(AgenticPlan::Final(answer)) => assert!(answer.contains("issues/999"), "{answer}"),
+        other => panic!("expected completion for unnamed tool result, got {other:?}"),
+    }
+}
+
+#[test]
 fn report_action_does_not_become_a_web_search_without_shell_access() {
     let messages = vec![ChatMessage::user("Report")];
     match plan_chat_step(&messages, &["websearch"]) {
