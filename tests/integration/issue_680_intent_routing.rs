@@ -129,14 +129,19 @@ fn chat_completions_routes_write_intent_to_tool_call() {
     );
 }
 
-/// Chat Completions: a file-modification request routes to the advertised edit
-/// tool, carrying the recovered old/new text and target path rather than being
-/// answered as prose.
+/// Chat Completions: a file-modification request reads the target first, then
+/// routes to the advertised edit tool carrying the recovered old/new text and
+/// target path rather than being answered as prose.
 #[test]
 fn chat_completions_routes_edit_intent_to_tool_call() {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
+    let tools = serde_json::json!([
+        function_tool("edit"),
+        function_tool("write_file"),
+        function_tool("read_file"),
+    ]);
     let response = http_post_json(
         port,
         "/api/openai/v1/chat/completions",
@@ -148,11 +153,39 @@ fn chat_completions_routes_edit_intent_to_tool_call() {
                 "role": "user",
                 "content": "In greeting.txt, change hello to goodbye"
             }],
-            "tools": [
-                function_tool("edit"),
-                function_tool("write_file"),
-                function_tool("read_file"),
-            ]
+            "tools": tools
+        }),
+    );
+
+    assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+    let read = &response["choices"][0]["message"]["tool_calls"][0];
+    assert_eq!(read["function"]["name"], "read_file");
+
+    let response = http_post_json(
+        port,
+        "/api/openai/v1/chat/completions",
+        TOKEN,
+        &serde_json::json!({
+            "model": "formal-ai",
+            "stream": false,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": "In greeting.txt, change hello to goodbye"
+                },
+                {
+                    "role": "assistant",
+                    "content": null,
+                    "tool_calls": [read]
+                },
+                {
+                    "role": "tool",
+                    "tool_call_id": read["id"],
+                    "name": "read_file",
+                    "content": "hello"
+                }
+            ],
+            "tools": tools
         }),
     );
 

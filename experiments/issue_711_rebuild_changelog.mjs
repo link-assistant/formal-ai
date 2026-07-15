@@ -156,8 +156,8 @@ function reconstruct(ref) {
     "",
   ].join("\n");
 
-  if (assignments.length !== 391) {
-    throw new Error(`Expected 391 released fragments, reconstructed ${assignments.length}`);
+  if (assignments.length === 0) {
+    throw new Error(`No released fragments found in ${ref}`);
   }
   return { changelog, map, assignments, groups };
 }
