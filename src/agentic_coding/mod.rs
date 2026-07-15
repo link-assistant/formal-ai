@@ -40,6 +40,7 @@ pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
 mod report_issue;
+pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;
 mod shell_command;
@@ -78,6 +79,9 @@ pub use question_catalog::{
 };
 pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
 pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
+pub use routing_learning::{
+    is_routing_learning_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
+};
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
 pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};

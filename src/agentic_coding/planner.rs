@@ -25,6 +25,7 @@ use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
 use super::report_issue;
+use super::routing_learning;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
@@ -116,6 +117,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // the requested artifact scope distinguishes their recipes.
     if associative_learning::is_associative_learning_task(&task) {
         return Some(plan_associative_learning_step(messages, tool_names));
+    }
+    if routing_learning::is_routing_learning_task(&task) {
+        return Some(plan_routing_learning_step(messages, tool_names));
     }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
@@ -688,6 +692,20 @@ fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str])
             path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
             verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
             final_answer: associative_learning::final_answer(&document),
+            document,
+        },
+    )
+}
+
+fn plan_routing_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = routing_learning::render_document();
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: routing_learning::ROUTING_LEARNING_PATH,
+            verify_command: format!("cat {}", routing_learning::ROUTING_LEARNING_PATH),
+            final_answer: routing_learning::final_answer(&document),
             document,
         },
     )
