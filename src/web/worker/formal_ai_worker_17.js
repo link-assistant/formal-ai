@@ -85,12 +85,23 @@ function queryBeforeNormalizedMarker(normalized, marker) {
 
 function extractSemanticWebSearchQuery(prompt, normalized) {
   const markers = webSearchMarkers();
-  const hasImperativeLead = startsWithAny(normalized, markers.imperativeLeadMarkers);
+  const imperativeCandidate = imperativeLeadCandidate(
+    normalized,
+    markers.imperativeLeadMarkers,
+    markers,
+  );
+  const hasImperativeLead = Boolean(imperativeCandidate);
   const hasAction =
     hasImperativeLead || containsAnySearchMarker(normalized, markers.actionMarkers);
   if (!hasAction) return "";
   const hasStrongAction =
-    startsWithAny(normalized, markers.strongImperativeLeadMarkers) ||
+    Boolean(
+      imperativeLeadCandidate(
+        normalized,
+        markers.strongImperativeLeadMarkers,
+        markers,
+      ),
+    ) ||
     containsAnySearchMarker(normalized, markers.strongActionMarkers);
   if (!hasStrongAction && !containsAnySearchMarker(normalized, markers.signalMarkers)) {
     return "";
@@ -107,11 +118,21 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
       queryBeforeNormalizedMarker(normalized, marker);
     if (query) return query;
   }
-  for (const marker of markers.imperativeLeadMarkers) {
-    const query = String(normalized || "").startsWith(marker)
-      ? validSearchQuery(String(normalized || "").slice(marker.length))
-      : "";
-    if (query) return query;
+  return validSearchQuery(imperativeCandidate);
+}
+
+// A typed search action may open the prompt, follow a seeded question opener,
+// or follow a named external source. Arbitrary mid-sentence verbs remain prose.
+function imperativeLeadCandidate(normalized, leads, markers) {
+  const text = String(normalized || "");
+  for (const lead of leads) {
+    if (text.startsWith(lead)) return text.slice(lead.length);
+    const index = text.indexOf(lead);
+    if (index === -1) continue;
+    const introducer = text.slice(0, index);
+    const questionLed = startsWithAny(text, markers.researchQuestionPrefixes);
+    const sourceLed = containsAnySearchMarker(introducer, markers.sourceMarkers);
+    if (questionLed || sourceLed) return text.slice(index + lead.length);
   }
   return "";
 }

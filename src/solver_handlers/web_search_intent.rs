@@ -245,6 +245,8 @@ struct WebSearchMarkers {
     trailing_noise: Vec<&'static str>,
     /// Bare source words that are not, on their own, a valid query.
     source_only: Vec<String>,
+    /// External-source markers that may introduce a typed search action.
+    source_markers: Vec<&'static str>,
     /// Boundary-preserving web-medium markers used as evidence in semantic frames.
     source_medium_markers: Vec<&'static str>,
     /// Information-object markers, excluding names of external sources.
@@ -294,6 +296,7 @@ fn markers() -> &'static WebSearchMarkers {
         leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
         trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+        source_markers: bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
         source_medium_markers: bare_literals(ROLE_WEB_MEDIUM),
         information_markers: information_literals(),
         news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
@@ -377,14 +380,18 @@ fn information_literals() -> Vec<&'static str> {
 
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
-    let has_imperative_lead = starts_with_any(normalized, &markers.imperative_lead_markers);
+    let imperative_candidate =
+        imperative_lead_candidate(normalized, &markers.imperative_lead_markers, markers);
+    let has_imperative_lead = imperative_candidate.is_some();
     let has_action =
         has_imperative_lead || contains_any_search_marker(normalized, &markers.action_markers);
     if !has_action {
         return None;
     }
-    let has_strong_action = starts_with_any(normalized, &markers.strong_imperative_lead_markers)
-        || contains_any_search_marker(normalized, &markers.strong_action_markers);
+    let has_strong_action =
+        imperative_lead_candidate(normalized, &markers.strong_imperative_lead_markers, markers)
+            .is_some()
+            || contains_any_search_marker(normalized, &markers.strong_action_markers);
     if !has_strong_action && !contains_any_search_marker(normalized, &markers.signal_markers) {
         return None;
     }
@@ -403,11 +410,35 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
             }
         }
     }
-    for &marker in &markers.imperative_lead_markers {
-        if let Some(candidate) = normalized.strip_prefix(marker) {
-            if let Some(query) = valid_search_query(candidate) {
-                return Some(query);
-            }
+    if let Some(query) = imperative_candidate.and_then(valid_search_query) {
+        return Some(query);
+    }
+    None
+}
+
+/// Return the typed argument of an imperative search lead.
+///
+/// The lead may open the prompt directly, or follow a seeded question opener
+/// ("Where can I find …") or an external-source phrase ("On Wikipedia, search
+/// …"). Arbitrary mid-sentence occurrences do not qualify, so prose such as
+/// "learn from popular Google searches" cannot be mistaken for a command.
+fn imperative_lead_candidate<'a>(
+    normalized: &'a str,
+    leads: &[&str],
+    markers: &WebSearchMarkers,
+) -> Option<&'a str> {
+    for &lead in leads {
+        if let Some(candidate) = normalized.strip_prefix(lead) {
+            return Some(candidate);
+        }
+        let Some(index) = normalized.find(lead) else {
+            continue;
+        };
+        let introducer = &normalized[..index];
+        let question_led = starts_with_any(normalized, &markers.research_question_prefixes);
+        let source_led = contains_any_search_marker(introducer, &markers.source_markers);
+        if question_led || source_led {
+            return Some(&normalized[index + lead.len()..]);
         }
     }
     None
