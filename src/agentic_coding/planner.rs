@@ -1,25 +1,13 @@
 //! Deterministic agentic planner — the server's "brain" for issue #468.
 //!
-//! The maintainer's framing: *"our Formal AI system should have enough skills
-//! (meta algorithm, rust code) to actually call all the tools from any agentic
-//! CLI, understand errors from tools, and so on, call bash commands, do web fetch
-//! and web search, to actually complete the task."*
-//!
-//! This module is that meta-algorithm for the canonical issue-#468 task —
-//! formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base. It
-//! is a **pure, deterministic function of the conversation so far**: given the
-//! messages exchanged and the tool names the agentic CLI advertised, it decides
-//! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
-//! hidden state, and the same history always yields the same plan.
-//!
-//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
-//! The general fallback is likewise bounded, advertised, and deterministic.
+//! This pure meta-algorithm chooses the next tool or final answer from the
+//! conversation and advertised capabilities. It supports stored task recipes and
+//! a bounded general fallback; neural sampling and hidden state remain non-goals.
 
 use serde_json::json;
 
 use super::change_request;
 use super::diagram;
-use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -39,6 +27,7 @@ use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::{associative_learning, dreaming_audit};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -119,14 +108,12 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // The self-AST recipe is checked first because it is the most specific router
-    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
-    // request legitimately mentions "Links Notation" as its output format, which
-    // would otherwise be captured by the broad formalization keyword match below.
-    // The self-healing recipe is checked before self-AST: both are self-inspection
-    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
-    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
-    // guards against a request that names both.
+    // Specific self-inspection routes precede broad formalization. Associative
+    // learning comes before self-healing because both accept auto-learning terms;
+    // the requested artifact scope distinguishes their recipes.
+    if associative_learning::is_associative_learning_task(&task) {
+        return Some(plan_associative_learning_step(messages, tool_names));
+    }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
     }
@@ -365,7 +352,7 @@ fn plan_document_recipe(
     AgenticPlan::Final(recipe.final_answer)
 }
 
-/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
@@ -687,6 +674,20 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
             path: dreaming_audit::DREAMING_AUDIT_PATH,
             verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
             final_answer,
+            document,
+        },
+    )
+}
+
+fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = associative_learning::render_document();
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
+            verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
+            final_answer: associative_learning::final_answer(&document),
             document,
         },
     )
