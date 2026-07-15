@@ -1106,6 +1106,7 @@ jobs:
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — report action executes gh (issue #714)
+        timeout-minutes: 3
         env:
           PORT: 8780
         run: experiments/issue_714_agentic_mode/run_report_e2e.sh

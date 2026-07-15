@@ -30,14 +30,32 @@ curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
 
 cd "$WORKDIR"
 CONFIG="{\"provider\":{\"formal-ai\":{\"npm\":\"@ai-sdk/openai-compatible\",\"name\":\"Formal AI\",\"options\":{\"baseURL\":\"http://127.0.0.1:$PORT/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formal-ai/formal-ai\"}"
-FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
-  FORMAL_AI_API_KEY=local LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$CONFIG" \
-  "$AGENT" run \
-    --prompt "Report issue" \
-    --disable-stdin \
-    --model "formal-ai/formal-ai" \
-    > "$AGENT_LOG" 2>&1
+printf '%s\n' "$CONFIG" > opencode.json
 
+RC=1
+for attempt in 1 2; do
+  set +e
+  FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
+    LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
+    timeout 60 "$AGENT" run \
+      --prompt "Report issue" \
+      --disable-stdin \
+      --model "formal-ai/formal-ai" \
+      > "$AGENT_LOG" 2>&1
+  RC=$?
+  set -e
+  if [[ "$RC" -eq 0 && -f "$CAPTURE" ]]; then
+    break
+  fi
+  echo "Agent CLI report attempt $attempt failed with exit $RC; retrying."
+done
+
+echo "== agent stderr/out tail =="
+tail -40 "$AGENT_LOG"
+echo "== relevant server trace =="
+rg 'formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome' "$LOG" | tail -40
+
+test "$RC" -eq 0
 test -f "$CAPTURE"
 grep -Fxq issue "$CAPTURE"
 grep -Fxq create "$CAPTURE"
