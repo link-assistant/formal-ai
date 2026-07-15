@@ -83,7 +83,7 @@ function initialSections() {
 }
 
 function releaseCommits(ref) {
-  return git(["log", "--first-parent", "--reverse", "--format=%H%x09%cI%x09%s", ref])
+  const releases = git(["log", "--format=%H%x09%cI%x09%s", ref])
     .trim()
     .split("\n")
     .map((line) => line.split("\t"))
@@ -93,6 +93,9 @@ function releaseCommits(ref) {
       date: committedAt.slice(0, 10),
       version: subject.match(/^chore: release v(\d+\.\d+\.\d+)/)[1],
     }));
+
+  const byVersion = new Map(releases.map((release) => [release.version, release]));
+  return [...byVersion.values()].sort((a, b) => compareVersions(a.version, b.version));
 }
 
 function reconstruct(ref) {

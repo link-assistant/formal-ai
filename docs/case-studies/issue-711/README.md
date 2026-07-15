@@ -10,11 +10,12 @@ successfully written `CHANGELOG.md`, and stages those removals with `git add -A`
 A regression test proves that a second collection is empty and that
 `changelog.d/README.md` survives.
 
-The polluted changelog was rebuilt from Git release trees. It shrank from
-609,927 to 5,261 lines. The reconstruction assigns all 391 fragments that
-actually reached a release tree to their first release exactly once. The 388
-stale files still present on `main` were removed; the new issue-711 fragment is
-intentionally left pending for the next release.
+The polluted changelog was rebuilt from Git release trees. At the time of the
+fix it shrank from 609,927 to 5,261 lines and assigned all 391 fragments that
+had reached a release tree exactly once. After merging releases v0.290.0 through
+v0.293.0, the same reconstruction contains 395 fragments in 5,337 lines. The
+388 stale files present when issue 711 was reported were removed; unreleased
+fragments remain pending for the next release.
 
 ## Root cause
 
@@ -37,7 +38,8 @@ the repository's initial commit, `6f8d4a8a05770adfd2fe33fdf3c6c586efb103af`.
 1. Preserve the pre-fragment 0.1.0 section verbatim.
 2. Match fragments in the initial import to the earliest original section that
    contains their exact, frontmatter-free body.
-3. Walk automatic release commits on the first-parent history chronologically.
+3. Walk release commits reachable from the selected ref in semantic-version
+   order, including releases merged from another parent of a feature branch.
 4. Assign every previously unseen fragment path to the first release tree in
    which it appears and read its content from that tree.
 5. Omit releases with no new fragment and emit releases in descending order.
@@ -50,7 +52,8 @@ One branch-only fragment for issue 468 was added and removed before reaching a
 release tree. It is deliberately excluded: it was never released and was
 superseded within its pull request. Three formerly released fragments that were
 subsequently deleted are recovered from release trees, producing 391 released
-fragments from the 388 stale files found on `main`.
+fragments from the 388 stale files found on `main` at the time of the fix. The
+map grows normally as later releases consume new fragments.
 
 ## Timeline
 
