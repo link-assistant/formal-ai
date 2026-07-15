@@ -75,3 +75,19 @@ fn file_size_warning_scope_uses_the_event_diff_base() {
         "FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}"
     ));
 }
+
+#[test]
+fn change_detection_covers_the_complete_pull_request() {
+    let script = fs::read_to_string(format!(
+        "{}/scripts/detect-code-changes.rs",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+
+    assert!(
+        !script.contains("HEAD^2^ to HEAD^2 (per-commit diff of PR head)"),
+        "per-commit detection can skip required tests for a multi-commit PR"
+    );
+    let release = workflow("release.yml");
+    assert!(release.contains("GITHUB_EVENT_BEFORE: ${{ github.event.before }}"));
+}

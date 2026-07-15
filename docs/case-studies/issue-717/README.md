@@ -2,7 +2,7 @@
 
 ## Executive result
 
-The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. The upstream parser fix is in `actions/attest` v4.
+The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, one change-detection false negative, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. The upstream parser fix is in `actions/attest` v4.
 
 The repository changes therefore:
 
@@ -12,7 +12,8 @@ The repository changes therefore:
 4. package the repository license in the VSIX;
 5. classify the documented ad-hoc macOS fallback as a notice rather than a false warning;
 6. preserve repository-wide hard file-size enforcement while annotating only warning-band files changed by the event; and
-7. add policy and behavior regression tests.
+7. compare the complete PR or push range so a docs-only final commit cannot hide earlier code changes; and
+8. add policy and behavior regression tests.
 
 ## Scope and evidence collection
 
@@ -47,6 +48,7 @@ That integration exposed a separate general Agent CLI defect: the deterministic 
 | 2026-07-14 16:58 | formal-ai main run 29351401385 passed but emitted repeated file-size and Codecov Node warnings. |
 | 2026-07-14 17:30 | desktop run 29354019108 failed Windows x64 and arm64 attestations with an oversized subject name. |
 | 2026-07-15 | issue 717 audit reproduced the policy failures, compared all templates, filed upstream reports, and implemented regression coverage. |
+| 2026-07-15 04:53 | first post-push run 29390080057 exposed the multi-commit change-detection false negative: Rust changes in earlier commits were hidden by the final evidence commit. |
 
 Earlier failed/cancelled runs after the issue opened belonged to the concurrent PR 716 development sequence. Runs 29371095276 and 29372273229 failed tests; 29380834035 failed lint/coverage/tests plus changelog policy; several later runs were superseded and cancelled. Run 29386600637 passed at the final PR 716 SHA. Those are timeline evidence, not latent failures on issue 717's branch. The branch's pre-change run 29387999474 passed.
 
@@ -98,7 +100,13 @@ Alternatives considered:
 - Split every historical near-limit file in this PR. Rejected: broad behavior refactors are unrelated to release correctness and carry substantially higher regression risk.
 - Changed-file annotations plus repository-wide enforcement. Selected: preserves prevention while making annotations actionable.
 
-### 7. Third-party npm notices
+### 7. Per-commit change detection skipped required PR jobs
+
+Fresh run 29390080057 checked out GitHub's synthetic merge commit and logged `Comparing HEAD^2^ to HEAD^2 (per-commit diff of PR head)`. That range covered only this branch's final documentation commit. It therefore emitted `rs-changed=false`, `workflow-changed=false`, and `any-code-changed=false`, skipping the Rust test, coverage, changelog, and E2E jobs despite this PR changing Rust and both workflows. The complete downloaded run is `raw-data/ci-logs/run-29390080057.log`; the decisive lines are 1229 and 1317–1326.
+
+For pull requests, the detector now compares the synthetic merge parents (`HEAD^..HEAD^2`), which is the complete base-to-PR-head diff. For pushes, it uses `github.event.before..HEAD`, covering all commits in the push and avoiding the separate mistake of treating a real merge pushed to `main` as a synthetic PR merge. Missing/zero pre-push SHAs retain the previous-commit fallback. Pure range-selection tests cover all three cases, while the original failure and local full-push result are retained in `change-detection-before-fix.log`, `change-detection-unit-tests.log`, and `change-detection-push-check.log`.
+
+### 8. Third-party npm notices
 
 The desktop and VSIX install logs contain deprecation notices from transitive packaging dependencies (`glob@7`, `rimraf@2`, `inflight`, `boolean`, `prebuild-install`, and `whatwg-encoding`). The direct Electron and electron-builder ranges were already current at audit time. These lines are neither GitHub annotations nor application runtime dependencies, and overriding nested versions can break packaging tools that selected those APIs. They are recorded as upstream dependency debt rather than hidden with npm log-level flags.
 
@@ -124,6 +132,7 @@ The pre-fix regression log is `raw-data/regression-before-fix.log`. The focused 
 - notice severity for the intentional ad-hoc signing fallback;
 - license copying before VSIX packaging; and
 - changed-file filtering for warning-band findings.
+- complete-event change detection for multi-commit pull requests and pushes.
 
 The post-fix logs record the focused test, all unit tests, format, Clippy, file-size policy, desktop/VSIX tests, and the real Agent CLI session. The first complete Rust pass (`cargo-test-all-features.log`) correctly exposed one integration assertion that still expected edit-before-read; the updated HTTP round-trip assertion passed independently and the complete rerun (`cargo-test-all-features-rerun.log`) finished with 1,575 passed, 0 failed, and 2 ignored. CI run metadata is retained after pushing so timestamps and SHAs can be compared to the final commit rather than trusting stale status.
 
@@ -132,7 +141,7 @@ The post-fix logs record the focused test, all unit tests, format, Clippy, file-
 | Issue requirement | Evidence/result |
 | --- | --- |
 | Compare all CI/CD files and four templates | Complete file trees, workflow diff, template run logs, and comparison above. |
-| Recheck errors, warnings, false positives, and false negatives | Classified in findings 1–7; stale/superseded failures separated in the timeline. |
+| Recheck errors, warnings, false positives, and false negatives | Classified in findings 1–8; stale/superseded failures separated in the timeline. |
 | Download logs/data | Full raw logs and API metadata under `raw-data/`. |
 | Deep root cause, alternatives, libraries, online research | Root-cause and alternatives sections; official action issues, PRs, releases, and source archived. |
 | Report matching template issues upstream | Four linked reports with preserved bodies. |
