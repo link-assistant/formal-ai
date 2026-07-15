@@ -4,6 +4,11 @@ use formal_ai::protocol::{
 use formal_ai::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use serde_json::{json, Value};
 
+struct LocalizedAgentCase {
+    language: &'static str,
+    prompt: &'static str,
+}
+
 fn function_tool(name: &str) -> Value {
     json!({
         "type": "function",
@@ -170,14 +175,43 @@ fn http_api_never_executes_agent_actions_in_the_servers_embedded_workspace() {
     assert_eq!(local.intent, "agent_workspace_task");
     assert!(local.answer.contains("Workspace isolation:"));
 
-    let api = UniversalSolver::new(SolverConfig {
-        agent_mode: true,
-        execution_surface: ExecutionSurface::HttpServer,
-        ..SolverConfig::default()
-    })
-    .solve(prompt);
+    let cases = [
+        LocalizedAgentCase {
+            language: "en",
+            prompt,
+        },
+        LocalizedAgentCase {
+            language: "ru",
+            prompt: "[agent] выполнить терминальную команду `ls`",
+        },
+        LocalizedAgentCase {
+            language: "hi",
+            prompt: "[agent] टर्मिनल कमांड `ls` चलाएँ",
+        },
+        LocalizedAgentCase {
+            language: "zh",
+            prompt: "[agent] 运行终端命令 `ls`",
+        },
+    ];
 
-    assert_ne!(api.intent, "agent_workspace_task");
-    assert!(!api.answer.contains("Workspace isolation:"));
-    assert!(!api.answer.contains("Execution status: completed"));
+    for case in cases {
+        let api = UniversalSolver::new(SolverConfig {
+            agent_mode: true,
+            execution_surface: ExecutionSurface::HttpServer,
+            ..SolverConfig::default()
+        })
+        .solve(case.prompt);
+
+        assert_ne!(api.intent, "agent_workspace_task", "{}", case.language);
+        assert!(
+            !api.answer.contains("Workspace isolation:"),
+            "{}",
+            case.language
+        );
+        assert!(
+            !api.answer.contains("Execution status: completed"),
+            "{}",
+            case.language
+        );
+    }
 }
