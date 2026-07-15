@@ -18,6 +18,7 @@
 //! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod associative_learning;
 pub mod change_request;
 mod conversation_recall;
 pub mod corpus;
@@ -30,6 +31,7 @@ pub mod formalize;
 pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+mod intent_router;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
@@ -44,6 +46,9 @@ mod shell_command;
 pub mod source_graph;
 mod web_research;
 
+pub use associative_learning::{
+    is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
+};
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};

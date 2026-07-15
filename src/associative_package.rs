@@ -664,6 +664,10 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
             "agentic-coding file write (any CLI naming, client-executed)",
         )
         .with_permission(
+            "tool:capability:edit",
+            "agentic-coding file edit (any CLI naming, client-executed)",
+        )
+        .with_permission(
             "tool:capability:run",
             "agentic-coding command runner (any CLI naming, client-executed)",
         ),
