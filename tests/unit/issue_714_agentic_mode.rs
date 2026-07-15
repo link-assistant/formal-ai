@@ -45,6 +45,25 @@ fn report_action_shell_quotes_apostrophes_in_conversation_history() {
 }
 
 #[test]
+fn localized_report_actions_route_to_shell() {
+    let cases = [
+        ("en", "Report issue"), // English
+        ("ru", "сообщить о проблеме"),
+        ("hi", "समस्या रिपोर्ट करें"),
+        ("zh", "报告问题"),
+    ];
+
+    for (language, prompt) in cases {
+        let messages = vec![ChatMessage::user(prompt)];
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) else {
+            panic!("{language} report action did not emit a shell call");
+        };
+        assert_eq!(calls[0].tool, "bash", "language={language}");
+        assert!(calls[0].arguments.contains("gh issue create"));
+    }
+}
+
+#[test]
 fn report_action_finishes_with_the_issue_url_after_gh_returns() {
     let messages = vec![
         ChatMessage::user("Report issue"),
