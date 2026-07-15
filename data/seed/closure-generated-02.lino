@@ -1,4 +1,104 @@
 meanings
+  mv
+    defined-by token
+    lexeme en
+      surface
+        text "mv"
+  non-deterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "non deterministic"
+  nondeterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "nondeterministic"
+  normal
+    defined-by concept
+    lexeme en
+      surface
+        text "normal"
+  normalize
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize"
+  normalize_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "normalize whitespace"
+  npm
+    defined-by token
+    lexeme en
+      surface
+        text "npm"
+  npx
+    defined-by token
+    lexeme en
+      surface
+        text "npx"
+  number_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "number lines"
+  official-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official docs"
+  official-repository
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official repository"
+  olleh
+    defined-by concept
+    lexeme en
+      surface
+        text "olleh"
+  one-paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  one_paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  open_textbook
+    defined-by kind
+    lexeme en
+      surface
+        text "open textbook"
+  openai
+    defined-by word_surface
+    lexeme en
+      surface
+        text "openai"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
+  outdent
+    defined-by concept
+    lexeme en
+      surface
+        text "outdent"
+  outdent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "outdent lines"
   owlbear
     defined-by word_surface
     lexeme en
@@ -1134,6 +1234,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  preferred
+    defined-by concept
+    lexeme en
+      surface
+        text "preferred"
   prepend
     defined-by phrase
     lexeme en
@@ -1229,6 +1334,16 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remix
+    defined-by concept
+    lexeme en
+      surface
+        text "remix"
+  remix-icon
+    defined-by concept
+    lexeme en
+      surface
+        text "remix icon"
   remove_punctuation
     defined-by operation
     lexeme en
@@ -1279,118 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agent suggestion en"
-  response_agent_suggestion_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion hi"
-  response_agent_suggestion_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion ru"
-  response_agent_suggestion_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion zh"
-  response_assistant_free_time_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time en"
-  response_assistant_free_time_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time hi"
-  response_assistant_free_time_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time ru"
-  response_assistant_free_time_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time zh"
-  response_assistant_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name en"
-  response_assistant_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name hi"
-  response_assistant_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name ru"
-  response_assistant_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name zh"
-  response_capabilities_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities en"
-  response_capabilities_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities hi"
-  response_capabilities_more_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more en"
-  response_capabilities_more_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more hi"
-  response_capabilities_more_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more ru"
-  response_capabilities_more_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more zh"
-  response_capabilities_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities ru"
-  response_capabilities_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities zh"
-  response_clarification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification en"
-  response_clarification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification hi"
-  response_clarification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification ru"
-  response_clarification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification zh"

@@ -1,4 +1,119 @@
 meanings
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
+  response_agent_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion ru"
+  response_agent_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion zh"
+  response_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time en"
+  response_assistant_free_time_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time hi"
+  response_assistant_free_time_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time ru"
+  response_assistant_free_time_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time zh"
+  response_assistant_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name en"
+  response_assistant_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name hi"
+  response_assistant_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name ru"
+  response_assistant_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name zh"
+  response_capabilities_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities en"
+  response_capabilities_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities hi"
+  response_capabilities_more_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more en"
+  response_capabilities_more_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more hi"
+  response_capabilities_more_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more ru"
+  response_capabilities_more_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more zh"
+  response_capabilities_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities ru"
+  response_capabilities_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities zh"
+  response_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification en"
+  response_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification hi"
+  response_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification ru"
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -574,6 +689,11 @@ meanings
     lexeme en
       surface
         text "stackexchange"
+  standard
+    defined-by concept
+    lexeme en
+      surface
+        text "standard"
   statement
     defined-by word_surface
     lexeme en
@@ -634,6 +754,16 @@ meanings
     lexeme en
       surface
         text "symbolic ai"
+  tabler
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler"
+  tabler-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "tabler icons"
   tail
     defined-by token
     lexeme en
@@ -825,7 +955,7 @@ meanings
       surface
         text "tue"
   ui
-    defined-by category
+    defined-by concept
     lexeme en
       surface
         text "ui"
@@ -864,6 +994,11 @@ meanings
     lexeme en
       surface
         text "veracity"
+  verbose
+    defined-by concept
+    lexeme en
+      surface
+        text "verbose"
   views
     defined-by word_surface
     lexeme en
