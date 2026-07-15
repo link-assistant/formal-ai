@@ -10,6 +10,8 @@
 
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
+const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
+
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
 /// Two data-driven strategies, in order of specificity:
@@ -51,6 +53,9 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_ascii_lowercase();
     vocab.intents.iter().find_map(|intent| {
+        if intent.command == REPORT_ISSUE_ACTION {
+            return None;
+        }
         if !intent.cues.iter().any(|cue| lower.contains(cue)) {
             return None;
         }
