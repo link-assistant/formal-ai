@@ -765,7 +765,7 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Which recipe capabilities the conversation already produced a result for.
+/// Which recipe capabilities the current user turn already produced a result for.
 ///
 /// `pub(super)` so recipe submodules that own their own step sequencing (e.g.
 /// [`super::report_issue`], [`super::web_research`]) can inspect progress without
@@ -787,7 +787,11 @@ impl Progress {
         let mut fetched_text = None;
         let mut search_output = None;
         let mut run_output = None;
-        for (index, message) in messages.iter().enumerate() {
+        let current_turn = messages
+            .iter()
+            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+            .unwrap_or(0);
+        for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
             }

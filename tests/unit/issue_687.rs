@@ -440,6 +440,33 @@ mod learn_about {
         assert!(!query.contains("talking"), "resolved query: {query}");
         assert!(!query.contains("report"), "resolved query: {query}");
     }
+
+    #[test]
+    fn earlier_research_results_do_not_complete_a_new_research_turn() {
+        let mut messages = vec![ChatMessage::user("When are the next elections in the USA?")];
+        let search = tool_calls(&messages).remove(0);
+        answer_tool_call(
+            &mut messages,
+            &search,
+            "Election dates: https://www.fec.gov/elections/",
+        );
+        let fetch = tool_calls(&messages).remove(0);
+        answer_tool_call(&mut messages, &fetch, "The 2026 election calendar.");
+        messages.push(ChatMessage::assistant(final_answer(&messages)));
+        messages.push(ChatMessage::user("Report this problem"));
+        messages.push(ChatMessage::assistant("Issue reported."));
+        messages.push(ChatMessage::user("What were we talking about?"));
+        messages.push(ChatMessage::assistant("The next US elections."));
+        messages.push(ChatMessage::user("Learn about it."));
+
+        let calls = tool_calls(&messages);
+        assert_eq!(calls[0].tool, "websearch");
+        let query = arguments(&calls[0])["query"]
+            .as_str()
+            .expect("query")
+            .to_lowercase();
+        assert!(query.contains("election"), "resolved query: {query}");
+    }
 }
 
 fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str) {
