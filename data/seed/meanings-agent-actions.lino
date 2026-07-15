@@ -30,7 +30,6 @@ meanings
         text 报告
       surface
         text 提交
-
   report_issue_subject
     defined-by inquiry
     role agent_action_report_subject
