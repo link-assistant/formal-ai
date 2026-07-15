@@ -1,0 +1,22 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.01s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 1 test
+test ci_cd::issue_717::change_detection_covers_the_complete_pull_request ... FAILED
+
+failures:
+
+---- ci_cd::issue_717::change_detection_covers_the_complete_pull_request stdout ----
+
+thread 'ci_cd::issue_717::change_detection_covers_the_complete_pull_request' (48640) panicked at tests/unit/ci-cd/issue_717.rs:87:5:
+a docs-only final commit must not hide code changed earlier in the PR
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ci_cd::issue_717::change_detection_covers_the_complete_pull_request
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1577 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

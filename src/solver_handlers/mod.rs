@@ -75,7 +75,7 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{
-    try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
 };
 pub use {

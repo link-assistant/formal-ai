@@ -1,0 +1,12 @@
+bun install v1.3.14 (0d9b296a)
+
++ @chakra-ui/react@3.36.0
++ @emotion/react@11.14.0
++ dompurify@3.4.10
++ lino-i18n@0.1.1
++ marked@18.0.5
++ react@19.2.7
++ react-dom@19.2.7
++ tesseract.js@7.0.0
+
+192 packages installed [25.14s]

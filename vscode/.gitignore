@@ -3,6 +3,7 @@
 # from the repo directly, so they are not committed.
 dist-web/
 src/lib/vendor/
+LICENSE
 
 # Packaged extension bundle.
 *.vsix

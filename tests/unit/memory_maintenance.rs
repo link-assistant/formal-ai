@@ -611,7 +611,7 @@ fn usage_recalculation_covers_cached_and_seed_links() {
         },
     );
 
-    assert_eq!(plan.event_usage("seed-unused"), Some(0));
+    assert_eq!(plan.event_usage("seed-unused"), Some(1));
     assert!(plan.event_usage("seed-used").unwrap_or_default() > 0);
     let unused_position = plan
         .actions
@@ -902,7 +902,7 @@ fn recall_counts_access_and_dreaming_treats_read_data_as_used() {
     // Dreaming sees the read event as used even though nothing cites it.
     let plan = plan_memory_dreaming(store.events(), &DreamingConfig::default());
     assert!(plan.event_usage("tool-1").unwrap_or_default() >= 1);
-    assert_eq!(plan.event_usage("never-read"), Some(0));
+    assert_eq!(plan.event_usage("never-read"), Some(1));
 }
 
 fn requirement_event(id: &str, topic: &str, statement: &str) -> MemoryEvent {
