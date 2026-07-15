@@ -6,6 +6,8 @@
 //! for human review: it never mutates the seed lexicon automatically.
 
 use super::associative_learning;
+use super::planner::{plan_document_recipe, AgenticPlan, DocumentRecipe};
+use crate::protocol::ChatMessage;
 
 pub const ROUTING_LEARNING_PATH: &str = "tool-routing-learning-report.lino";
 pub const ROUTING_LEARNING_TASK: &str = "Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino.";
@@ -15,6 +17,21 @@ const ROUTING_MEMORY: &str = include_str!("../../data/meta/issue-712-routing-lea
 #[must_use]
 pub fn is_routing_learning_task(prompt: &str) -> bool {
     prompt.to_lowercase().contains(ROUTING_LEARNING_PATH)
+}
+
+pub(super) fn plan_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = render_document();
+    let final_answer = final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: ROUTING_LEARNING_PATH,
+            document,
+            verify_command: format!("cat {ROUTING_LEARNING_PATH}"),
+            final_answer,
+        },
+    )
 }
 
 #[must_use]

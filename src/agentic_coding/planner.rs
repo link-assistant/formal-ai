@@ -119,7 +119,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         return Some(plan_associative_learning_step(messages, tool_names));
     }
     if routing_learning::is_routing_learning_task(&task) {
-        return Some(plan_routing_learning_step(messages, tool_names));
+        return Some(routing_learning::plan_step(messages, tool_names));
     }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
@@ -316,21 +316,21 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
 /// so they are modelled as one struct and one planner
 /// ([`plan_document_recipe`]) rather than a dozen copy-pasted functions — the exact
 /// generalization the meta-algorithm is meant to embody.
-struct DocumentRecipe {
+pub(super) struct DocumentRecipe {
     /// The workspace-relative path the generated document is written to.
-    path: &'static str,
+    pub(super) path: &'static str,
     /// The generated Links Notation document (a pure function of committed state).
-    document: String,
+    pub(super) document: String,
     /// The sandbox-allowlisted command that reads the document back for verification.
-    verify_command: String,
+    pub(super) verify_command: String,
     /// The inline final answer returned once the write and verify steps are done.
-    final_answer: String,
+    pub(super) final_answer: String,
 }
 
 /// Plan the next step of a [`DocumentRecipe`]: `write → verify → final`. Steps whose
 /// capability the CLI did not advertise (or the conversation already satisfied) are
 /// skipped, so the loop adapts to whatever subset of tools a given CLI exposes.
-fn plan_document_recipe(
+pub(super) fn plan_document_recipe(
     messages: &[ChatMessage],
     tool_names: &[&str],
     recipe: DocumentRecipe,
@@ -692,20 +692,6 @@ fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str])
             path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
             verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
             final_answer: associative_learning::final_answer(&document),
-            document,
-        },
-    )
-}
-
-fn plan_routing_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = routing_learning::render_document();
-    plan_document_recipe(
-        messages,
-        tool_names,
-        DocumentRecipe {
-            path: routing_learning::ROUTING_LEARNING_PATH,
-            verify_command: format!("cat {}", routing_learning::ROUTING_LEARNING_PATH),
-            final_answer: routing_learning::final_answer(&document),
             document,
         },
     )
