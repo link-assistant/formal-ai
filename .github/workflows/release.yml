@@ -1139,6 +1139,12 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — report action executes gh (issue #714)
+        timeout-minutes: 3
+        env:
+          PORT: 8780
+        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
+
       - name: Run agent CLI E2E — research, report, recall, and learn (issue #687)
         # Continue four natural-language turns in one real Agent CLI session.
         # A PATH-local fake gh proves shell execution without mutating GitHub.
