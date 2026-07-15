@@ -11,8 +11,8 @@ client_integrations
     ephemeral
       temp_home_env "HOME"
       non_interactive_arg "exec"
+      non_interactive_arg "--skip-git-repo-check"
       mode_arg_position "before_invocation"
-      arg "--skip-git-repo-check"
       arg "--sandbox"
       arg "read-only"
       arg "-c"
@@ -125,6 +125,7 @@ client_integrations
     api_key_default "formal-ai"
     ephemeral
       interactive_arg "--prompt-interactive"
+      interactive_args_require_prompt "true"
       non_interactive_arg "-p"
       env "GEMINI_API_KEY={api_key}"
       env "GEMINI_DEFAULT_AUTH_TYPE={google_auth_type}"
@@ -177,6 +178,7 @@ client_integrations
     api_key_default "formal-ai"
     ephemeral
       interactive_arg "--prompt-interactive"
+      interactive_args_require_prompt "true"
       non_interactive_arg "-p"
       env "OPENAI_API_KEY={api_key}"
       env "OPENAI_BASE_URL={endpoint_base_url}"
