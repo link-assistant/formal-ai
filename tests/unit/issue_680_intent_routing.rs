@@ -104,8 +104,9 @@ fn write_intent_routes_to_write_tool_in_any_phrasing() {
 #[test]
 fn edit_intent_routes_to_edit_tool_in_any_phrasing() {
     // A file-modification intent — an edit action, a replacement lead, and a named
-    // target file — must route to a real edit `tool_call` that replaces the
-    // recovered *old* text with the *new* text, regardless of phrasing, language, or
+    // target file — must read the target and then route to a real edit `tool_call`
+    // that replaces the recovered *old* text with the *new* text, regardless of
+    // phrasing, language, or
     // which CLI-specific edit tool is advertised (opencode `edit`, Gemini/Qwen
     // `replace`, codex `apply_patch`, Anthropic `str_replace`). Each row is a
     // *different* phrasing/word-order so a pass proves the routing is general, not
@@ -140,7 +141,32 @@ fn edit_intent_routes_to_edit_tool_in_any_phrasing() {
             "пока",
         ),
     ] {
-        let (tool, arguments) = single_call(prompt, &[tool_name, "read_file", "write_file"]);
+        let tools = [tool_name, "read_file", "write_file"];
+        let messages = vec![ChatMessage::user(prompt)];
+        let read = match plan_chat_step(&messages, &tools) {
+            Some(AgenticPlan::ToolCalls(calls)) => {
+                assert_eq!(calls.len(), 1, "expected one read call for {prompt:?}");
+                calls[0].clone()
+            }
+            other => panic!("expected a read call for {prompt:?}, got {other:?}"),
+        };
+        assert_eq!(read.tool, "read_file", "{prompt}");
+        let messages = vec![
+            ChatMessage::user(prompt),
+            ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                "read_1".to_owned(),
+                read.tool,
+                read.arguments,
+            )]),
+            ChatMessage::tool_result("read_1", "read_file", "current file contents"),
+        ];
+        let (tool, arguments) = match plan_chat_step(&messages, &tools) {
+            Some(AgenticPlan::ToolCalls(calls)) => {
+                assert_eq!(calls.len(), 1, "expected one edit call for {prompt:?}");
+                (calls[0].tool.clone(), calls[0].arguments.clone())
+            }
+            other => panic!("expected an edit call for {prompt:?}, got {other:?}"),
+        };
         assert_eq!(tool, tool_name, "{prompt}");
         let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
         // Every common key alias is emitted so one plan drives any CLI's edit tool;
