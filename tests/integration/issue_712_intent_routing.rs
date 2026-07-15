@@ -3,11 +3,14 @@
 use crate::http_server::{
     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
 };
+use std::sync::{Mutex, MutexGuard};
 
 const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
 
 #[test]
 fn chat_completions_get_contents_routes_to_web_fetch() {
+    let _guard = server_test_lock();
     let response = chat(
         "get contents https://example.com/data.json",
         &["web_fetch", "web_search"],
@@ -21,6 +24,7 @@ fn chat_completions_get_contents_routes_to_web_fetch() {
 
 #[test]
 fn responses_google_request_routes_to_web_search() {
+    let _guard = server_test_lock();
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
     let response = http_post_json(
@@ -54,6 +58,7 @@ fn responses_google_request_routes_to_web_search() {
 
 #[test]
 fn gemini_update_request_routes_to_edit() {
+    let _guard = server_test_lock();
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
     let response = http_post_json(
@@ -86,6 +91,7 @@ fn gemini_update_request_routes_to_edit() {
 
 #[test]
 fn declarative_new_file_routes_to_write_and_never_read() {
+    let _guard = server_test_lock();
     let response = chat(
         "new file: notes.txt, contents: hello",
         &["write_file", "read_file"],
@@ -107,6 +113,9 @@ fn declarative_new_file_routes_to_write_and_never_read() {
 
 #[test]
 fn all_reported_capability_classes_route_in_one_matrix() {
+    let _guard = server_test_lock();
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
     let cases = [
         ("visit https://example.com and summarize it", "web_fetch"),
         ("what does the web say about serde", "web_search"),
@@ -116,7 +125,8 @@ fn all_reported_capability_classes_route_in_one_matrix() {
         ("new file: notes.txt, contents: hello", "write_file"),
     ];
     for (prompt, expected) in cases {
-        let response = chat(
+        let response = chat_on_port(
+            port,
             prompt,
             &["web_fetch", "web_search", "edit", "write_file", "read_file"],
         );
@@ -127,6 +137,9 @@ fn all_reported_capability_classes_route_in_one_matrix() {
 
 #[test]
 fn leading_edit_action_is_language_general() {
+    let _guard = server_test_lock();
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
     let cases = [
         ("English", "update main.rs and change foo to bar"),
         ("Russian", "измени main.rs и замени foo на bar"),
@@ -134,7 +147,7 @@ fn leading_edit_action_is_language_general() {
         ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
     ];
     for (language, prompt) in cases {
-        let response = chat(prompt, &["edit"]);
+        let response = chat_on_port(port, prompt, &["edit"]);
         let call = &response["choices"][0]["message"]["tool_calls"][0];
         assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
         let arguments = chat_arguments(call);
@@ -147,6 +160,10 @@ fn leading_edit_action_is_language_general() {
 fn chat(prompt: &str, tools: &[&str]) -> serde_json::Value {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
+    chat_on_port(port, prompt, tools)
+}
+
+fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
     http_post_json(
         port,
         "/api/openai/v1/chat/completions",
@@ -173,4 +190,10 @@ fn function_tool(name: &str) -> serde_json::Value {
             "parameters": {"type": "object"}
         }
     })
+}
+
+fn server_test_lock() -> MutexGuard<'static, ()> {
+    SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
 }
