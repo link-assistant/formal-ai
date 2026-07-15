@@ -84,7 +84,7 @@ fn final_answer(query: &str, progress: &Progress) -> String {
         .unwrap_or_default()
         .trim();
     if evidence.is_empty() {
-        return seed_text("web_research_no_content").replace("{query}", query);
+        return render_seed_text("web_research_no_content", "query", query);
     }
     let source = progress
         .search_output
@@ -100,6 +100,14 @@ fn seed_text(key: &str) -> String {
     seed::agent_info()
         .remove(key)
         .unwrap_or_else(|| key.to_owned())
+}
+
+fn render_seed_text(key: &str, name: &str, value: &str) -> String {
+    let mut placeholder = String::with_capacity(name.len() + 2);
+    placeholder.push('{');
+    placeholder.push_str(name);
+    placeholder.push('}');
+    seed_text(key).replace(&placeholder, value)
 }
 
 /// Rank URLs instead of blindly fetching the first search result. Government
@@ -136,7 +144,11 @@ fn authoritative_host(url: &str) -> bool {
         .next()
         .unwrap_or_default()
         .to_ascii_lowercase();
-    host.ends_with(".gov") || host.ends_with(".gov.uk") || host.ends_with(".edu")
+    let mut labels = host.rsplit('.');
+    let terminal = labels.next().unwrap_or_default();
+    terminal == "gov"
+        || terminal == "edu"
+        || (terminal == "uk" && labels.next().is_some_and(|label| label == "gov"))
 }
 
 fn is_context_reference(query: &str) -> bool {

@@ -110,12 +110,13 @@ fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
 
     let mut body = format!("{}\n\n", config("issue_report_body_intro"));
     if turns.is_empty() {
-        body.push_str(&format!("_{}_\n", config("issue_report_empty_history")));
+        body.push('_');
+        body.push_str(&config("issue_report_empty_history"));
+        body.push_str("_\n");
     } else {
-        body.push_str(&format!(
-            "### {}\n\n",
-            config("issue_report_conversation_heading")
-        ));
+        body.push_str("### ");
+        body.push_str(&config("issue_report_conversation_heading"));
+        body.push_str("\n\n");
         for (role, text) in &turns {
             body.push_str("- **");
             body.push_str(role);
@@ -124,7 +125,8 @@ fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
             body.push('\n');
         }
     }
-    body.push_str(&format!("\n{}", config("issue_report_body_footer")));
+    body.push('\n');
+    body.push_str(&config("issue_report_body_footer"));
 
     ReportRequest { title, body }
 }
@@ -149,12 +151,9 @@ pub(super) fn plan_report_issue_step(
     if let Some(tool) = tool_for(tool_names, Capability::Run) {
         return plan_one(tool, json!({ "command": command }).to_string());
     }
-    AgenticPlan::Final(format!(
-        "{}",
-        render(
-            "issue_report_tool_missing",
-            &[("repository", &formal_ai_repo())]
-        ),
+    AgenticPlan::Final(render(
+        "issue_report_tool_missing",
+        &[("repository", &formal_ai_repo())],
     ))
 }
 
