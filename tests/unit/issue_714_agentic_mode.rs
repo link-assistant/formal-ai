@@ -30,6 +30,21 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
 }
 
 #[test]
+fn report_action_shell_quotes_apostrophes_in_conversation_history() {
+    let messages = vec![
+        ChatMessage::user("The answer isn't correct"),
+        ChatMessage::user("Report"),
+    ];
+
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) else {
+        panic!("report action did not emit a shell call");
+    };
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let command = arguments["command"].as_str().unwrap();
+    assert!(command.contains("isn'\"'\"'t correct"), "{command}");
+}
+
+#[test]
 fn report_action_finishes_with_the_issue_url_after_gh_returns() {
     let messages = vec![
         ChatMessage::user("Report issue"),
