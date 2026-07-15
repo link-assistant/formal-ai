@@ -7,85 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
-
 ## [0.295.0] - 2026-07-15
-
-### Added
-- Usage-weighted associative persistence for issue #686
-  (`src/associative_persistence.rs`): an `AssociativeMemory` that keeps a
-  persistent version of meta-language expressions saved in an associative links
-  network. Each expression is a content-addressed node (`stable_id`, so one meaning
-  is one node) in an embedded `SubstitutionGraph`; the store counts usages (reads)
-  and changes (writes) per expression and derives an independent usage signal from
-  each node's incoming and outgoing link degree. A single `retention_score` (reads
-  + writes + in-degree + out-degree, under configurable `RetentionWeights`) drives
-  an LFU-style policy so the most used, most changed, and most connected knowledge
-  persists longest; `eviction_order` / `evict_least_used` / `retain_most_used`
-  forget the lowest-scored first, and `forget` removes an expression together with
-  its incident links. Everything serializes to Links Notation, `from_context`
-  ingests an issue #649 world-model `Context` preserving statement ids, and the
-  whole policy is deterministic (no clocks, no randomness). Durable
-  `MemoryEvent::write_count` now round-trips through native serialization, sync,
-  substitutions, link projection, and the browser mirror; automatic dreaming
-  rebuilds this associative view and uses the complete score for real eviction.
-  Event ingestion also preserves qualifiers and validation warnings, normalizes
-  evidence aliases, and supports bounded multi-hop recall. A derived persisted
-  memory scenario executes through Formal AI and the real external Agent CLI.
-  Covered by the issue-686 persistence, dreaming, and agentic regression suites.
-- Design case study for issue #686 under `docs/case-studies/issue-686/`: a deep
-  analysis mapping persistence, read/write counting, incoming/outgoing-link-degree
-  usage, and links-only retention onto the associative stack, with cited online
-  research (the Wikontic paper's full transferable symbolic pipeline,
-  AriGraph, LFU/LRU cache replacement, reference counting, degree centrality), a
-  per-requirement solution plan and prior-art survey, requirement rows R445–R458 in
-  `REQUIREMENTS.md`, and the `tests/unit/docs_requirements_issue_686.rs`
-  traceability test.
-
-### Added
-
-- **Agentic mode now acts on simple natural-language requests** instead of
-  falling to the "I could not determine…" blurb (issue #687). When Formal AI is
-  driven as an agentic backend (e.g. OpenCode over the OpenAI-compatible server),
-  the deterministic planner now recognises three new request classes and emits
-  the appropriate tool calls for the harness to run:
-  - **Factual / research questions** the symbolic engine cannot answer locally
-    ("When are the next elections in the USA?", "What is the current population of
-    Japan?", "Learn about it.") are routed to the client's **web-search** tool,
-    then the surfaced source is **fetched** and the answer read from it
-    (`src/agentic_coding/web_research.rs`). Whether a prompt warrants web research
-    is decided by *asking the engine* — we search precisely what it cannot resolve
-    from its own knowledge base — so it generalises across phrasings rather than
-    matching fixed strings.
-  - **"Report [this] on GitHub"** in natural language is turned into a real
-    `gh issue create` shell tool call against the Formal AI repository, and the
-    created issue URL is surfaced back to the user
-    (`src/agentic_coding/report_issue.rs`). Agentic mode has no Formal AI web UI,
-    so the top-bar "Report issue" button was previously unreachable.
-  - **Conversational / meta questions** ("What we were talking about?") are
-    answered from the message history with no tool call
-    (`src/agentic_coding/conversation_recall.rs`).
-
-### Changed
-
-- The agentic `Progress` scan now also captures **web-search output**
-  (`Progress::search_output`) so the research recipe can pick the source URL the
-  search surfaced and fetch it before answering.
 
 ### Fixed
 - Consume and stage changelog fragments after a successful release collection, preventing later releases from republishing stale notes.
 - Reconstruct `CHANGELOG.md` from Git release history so each of the 391 released fragments appears exactly once.
-
-### Fixed
-
-- Keep subcommand-only and value-taking prompt flags out of empty interactive `with-formal-ai` launches, with PTY launch coverage for every supported CLI.
-
-### Fixed
-- Route agentic “Report issue” actions through an advertised shell tool to `gh issue create`, and enable OpenCode's documented Exa-backed `websearch` tool in ephemeral Formal AI sessions.
-- Preserve client-executed tool inputs and outputs as durable memory evidence after the final API turn, including unnamed OpenAI tool results and Anthropic/Responses translations, so the associative and dreaming loops can learn from work performed by an Agent CLI.
-- Parse Gemini `functionCall`/`functionResponse` history, retain call ids, and continue the shared multi-turn planner after a Gemini client executes a tool.
-
-- Fix Windows desktop provenance attestation by using the LF-safe current attestation action, update deprecated CI actions, remove recurring false-positive workflow warnings, and prevent docs-only final commits from hiding earlier code changes from CI.
-- Make file-edit plans read their target before editing so read-before-write Agent CLIs can execute Formal AI's requested patch.
 
 ## [0.294.0] - 2026-07-15
 

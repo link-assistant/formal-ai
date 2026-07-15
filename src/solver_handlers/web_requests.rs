@@ -813,6 +813,17 @@ pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
     extract_http_fetch_url(prompt, &prompt.to_lowercase())
 }
 
+/// URL that an advertised agent fetch tool can satisfy.
+///
+/// Agent CLIs expose one fetch capability for both explicit HTTP requests and
+/// requests to open or visit a URL. The prose solver keeps those intents
+/// distinct, while this probe maps either intent onto that available tool.
+#[must_use]
+pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
+    let normalized = prompt.to_lowercase();
+    http_fetch_url_for(prompt).or_else(|| extract_url_navigate_url(prompt, &normalized))
+}
+
 fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
     if !is_url_navigate_prompt(prompt, normalized, &raw_candidate) {

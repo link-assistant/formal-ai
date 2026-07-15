@@ -51,6 +51,20 @@ function treeFiles(commit) {
     .sort();
 }
 
+function releaseTreeFiles(commit) {
+  // Current releases consume their fragments in the release commit. Read both
+  // sides of that transition so reconstruction continues to work for releases
+  // made after fragment cleanup was introduced, while preserving historical
+  // releases whose fragments remained in the committed tree.
+  const before = treeFiles(`${commit}^`);
+  const after = treeFiles(commit);
+  const afterSet = new Set(after);
+  return [...new Set([...before, ...after])].sort().map((path) => ({
+    path,
+    source: afterSet.has(path) ? commit : `${commit}^`,
+  }));
+}
+
 function fileAt(commit, path) {
   return git(["show", `${commit}:${path}`]);
 }
@@ -132,9 +146,9 @@ function reconstruct(ref) {
 
   for (const release of releaseCommits(ref)) {
     const fragments = [];
-    for (const path of treeFiles(release.commit)) {
+    for (const { path, source } of releaseTreeFiles(release.commit)) {
       if (seen.has(path)) continue;
-      fragments.push({ path, body: stripFrontmatter(fileAt(release.commit, path)), commit: release.commit });
+      fragments.push({ path, body: stripFrontmatter(fileAt(source, path)), commit: release.commit });
       assignments.push({ path, version: release.version, commit: release.commit });
       seen.add(path);
     }

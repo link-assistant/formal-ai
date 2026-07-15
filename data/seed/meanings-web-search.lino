@@ -439,6 +439,8 @@ meanings
         text "learn about …"
       surface
         text "learn more about …"
+      surface
+        text "google …"
     lexeme ru
       surface
         text " поищи "

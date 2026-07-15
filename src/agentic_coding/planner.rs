@@ -25,6 +25,7 @@ use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
 use super::report_issue;
+use super::routing_learning;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
@@ -116,6 +117,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // the requested artifact scope distinguishes their recipes.
     if associative_learning::is_associative_learning_task(&task) {
         return Some(plan_associative_learning_step(messages, tool_names));
+    }
+    if routing_learning::is_routing_learning_task(&task) {
+        return Some(routing_learning::plan_step(messages, tool_names));
     }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
@@ -312,21 +316,21 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
 /// so they are modelled as one struct and one planner
 /// ([`plan_document_recipe`]) rather than a dozen copy-pasted functions — the exact
 /// generalization the meta-algorithm is meant to embody.
-struct DocumentRecipe {
+pub(super) struct DocumentRecipe {
     /// The workspace-relative path the generated document is written to.
-    path: &'static str,
+    pub(super) path: &'static str,
     /// The generated Links Notation document (a pure function of committed state).
-    document: String,
+    pub(super) document: String,
     /// The sandbox-allowlisted command that reads the document back for verification.
-    verify_command: String,
+    pub(super) verify_command: String,
     /// The inline final answer returned once the write and verify steps are done.
-    final_answer: String,
+    pub(super) final_answer: String,
 }
 
 /// Plan the next step of a [`DocumentRecipe`]: `write → verify → final`. Steps whose
 /// capability the CLI did not advertise (or the conversation already satisfied) are
 /// skipped, so the loop adapts to whatever subset of tools a given CLI exposes.
-fn plan_document_recipe(
+pub(super) fn plan_document_recipe(
     messages: &[ChatMessage],
     tool_names: &[&str],
     recipe: DocumentRecipe,
