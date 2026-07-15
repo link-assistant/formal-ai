@@ -110,7 +110,9 @@ fn all_reported_capability_classes_route_in_one_matrix() {
     let cases = [
         ("visit https://example.com and summarize it", "web_fetch"),
         ("what does the web say about serde", "web_search"),
-        ("rewrite main.rs and change foo to bar", "edit"),
+        // Editing clients may require a grounding read before mutation; the
+        // dedicated Gemini test above verifies the direct edit call shape.
+        ("rewrite main.rs and change foo to bar", "read_file"),
         ("new file: notes.txt, contents: hello", "write_file"),
     ];
     for (prompt, expected) in cases {
