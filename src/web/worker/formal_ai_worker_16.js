@@ -1057,6 +1057,7 @@ function webSearchMarkers() {
     explicitCircumfixes: circumfixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
     actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
     strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+    strongImperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
     signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
     topicAfterMarkers: prefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
     topicBeforeMarkers: suffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
@@ -1064,7 +1065,13 @@ function webSearchMarkers() {
     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
-    sourceMarkers: bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMediumMarkers: bareLiterals(ROLE_WEB_MEDIUM),
+    informationMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL).filter(
+      (marker) =>
+        !bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY).some(
+          (source) => source.trim() === marker.trim(),
+        ),
+    ),
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),

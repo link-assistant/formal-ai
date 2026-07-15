@@ -28,11 +28,12 @@ use crate::seed::{
     ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT,
     ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
     ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
-    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
-    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
-    ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
-    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL,
-    ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION,
+    ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY,
+    ROLE_WEB_SEARCH_NEWS_SUBJECT, ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT,
+    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
+    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
+    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -228,6 +229,8 @@ struct WebSearchMarkers {
     action_markers: Vec<&'static str>,
     /// The subset of action verbs strong enough to stand without a source noun.
     strong_action_markers: Vec<&'static str>,
+    /// Strong action verbs whose typed argument follows in a prefix slot.
+    strong_imperative_lead_markers: Vec<&'static str>,
     /// Source/topic nouns that corroborate a weak action verb.
     signal_markers: Vec<&'static str>,
     /// Topic connectives whose object follows them ("about …", "о …").
@@ -242,8 +245,10 @@ struct WebSearchMarkers {
     trailing_noise: Vec<&'static str>,
     /// Bare source words that are not, on their own, a valid query.
     source_only: Vec<String>,
-    /// Boundary-preserving source markers used as evidence in semantic frames.
-    source_markers: Vec<&'static str>,
+    /// Boundary-preserving web-medium markers used as evidence in semantic frames.
+    source_medium_markers: Vec<&'static str>,
+    /// Information-object markers, excluding names of external sources.
+    information_markers: Vec<&'static str>,
     /// News/headline subject markers for bare latest-news requests.
     news_subject_markers: Vec<&'static str>,
     /// Freshness markers that pair with news/headline subjects.
@@ -281,6 +286,7 @@ fn markers() -> &'static WebSearchMarkers {
         explicit_circumfixes: circumfix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
         action_markers: bare_literals(ROLE_WEB_SEARCH_ACTION),
         strong_action_markers: bare_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
+        strong_imperative_lead_markers: prefix_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
         signal_markers: bare_literals(ROLE_WEB_SEARCH_SIGNAL),
         topic_after_markers: prefix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
         topic_before_markers: suffix_literals(ROLE_WEB_SEARCH_TOPIC_MARKER),
@@ -288,7 +294,8 @@ fn markers() -> &'static WebSearchMarkers {
         leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
         trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
-        source_markers: bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+        source_medium_markers: bare_literals(ROLE_WEB_MEDIUM),
+        information_markers: information_literals(),
         news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
         news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
         records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
@@ -360,13 +367,24 @@ fn source_literals(role: &str) -> Vec<String> {
         .collect()
 }
 
+fn information_literals() -> Vec<&'static str> {
+    let sources = bare_literals(ROLE_WEB_SEARCH_SOURCE_ONLY);
+    bare_literals(ROLE_WEB_SEARCH_SIGNAL)
+        .into_iter()
+        .filter(|marker| !sources.iter().any(|source| source.trim() == marker.trim()))
+        .collect()
+}
+
 fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     let markers = markers();
-    let has_action = contains_any_search_marker(normalized, &markers.action_markers);
+    let has_imperative_lead = starts_with_any(normalized, &markers.imperative_lead_markers);
+    let has_action =
+        has_imperative_lead || contains_any_search_marker(normalized, &markers.action_markers);
     if !has_action {
         return None;
     }
-    let has_strong_action = contains_any_search_marker(normalized, &markers.strong_action_markers);
+    let has_strong_action = starts_with_any(normalized, &markers.strong_imperative_lead_markers)
+        || contains_any_search_marker(normalized, &markers.strong_action_markers);
     if !has_strong_action && !contains_any_search_marker(normalized, &markers.signal_markers) {
         return None;
     }
@@ -386,9 +404,8 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         }
     }
     for &marker in &markers.imperative_lead_markers {
-        if let Some(index) = normalized.find(marker) {
-            let start = index + marker.len();
-            if let Some(query) = valid_search_query(&normalized[start..]) {
+        if let Some(candidate) = normalized.strip_prefix(marker) {
+            if let Some(query) = valid_search_query(candidate) {
                 return Some(query);
             }
         }
@@ -402,7 +419,7 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
 fn extract_source_grounded_question(prompt: &str, normalized: &str) -> Option<String> {
     let markers = markers();
     if !question_is_interrogative(prompt, normalized)
-        || !contains_any_search_marker(normalized, &markers.source_markers)
+        || !contains_any_search_marker(normalized, &markers.source_medium_markers)
     {
         return None;
     }
@@ -414,8 +431,9 @@ fn extract_source_grounded_question(prompt: &str, normalized: &str) -> Option<St
 /// sentence template or English action verb is needed.
 fn extract_current_source_information_request(normalized: &str) -> Option<String> {
     let markers = markers();
-    if !contains_any_search_marker(normalized, &markers.source_markers)
+    if !contains_any_search_marker(normalized, &markers.source_medium_markers)
         || !contains_any_search_marker(normalized, &markers.news_recency_markers)
+        || !contains_any_search_marker(normalized, &markers.information_markers)
     {
         return None;
     }

@@ -85,12 +85,13 @@ function queryBeforeNormalizedMarker(normalized, marker) {
 
 function extractSemanticWebSearchQuery(prompt, normalized) {
   const markers = webSearchMarkers();
-  const hasAction = containsAnySearchMarker(normalized, markers.actionMarkers);
+  const hasImperativeLead = startsWithAny(normalized, markers.imperativeLeadMarkers);
+  const hasAction =
+    hasImperativeLead || containsAnySearchMarker(normalized, markers.actionMarkers);
   if (!hasAction) return "";
-  const hasStrongAction = containsAnySearchMarker(
-    normalized,
-    markers.strongActionMarkers,
-  );
+  const hasStrongAction =
+    startsWithAny(normalized, markers.strongImperativeLeadMarkers) ||
+    containsAnySearchMarker(normalized, markers.strongActionMarkers);
   if (!hasStrongAction && !containsAnySearchMarker(normalized, markers.signalMarkers)) {
     return "";
   }
@@ -107,9 +108,9 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
     if (query) return query;
   }
   for (const marker of markers.imperativeLeadMarkers) {
-    const query =
-      queryAfterRawMarker(prompt, marker) ||
-      queryAfterNormalizedMarker(normalized, marker);
+    const query = String(normalized || "").startsWith(marker)
+      ? validSearchQuery(String(normalized || "").slice(marker.length))
+      : "";
     if (query) return query;
   }
   return "";
@@ -142,7 +143,7 @@ function extractSourceGroundedQuestion(prompt, normalized) {
   const markers = webSearchMarkers();
   if (
     !questionIsInterrogative(prompt, normalized) ||
-    !containsAnySearchMarker(normalized, markers.sourceMarkers)
+    !containsAnySearchMarker(normalized, markers.sourceMediumMarkers)
   ) {
     return "";
   }
@@ -154,8 +155,9 @@ function extractSourceGroundedQuestion(prompt, normalized) {
 function extractCurrentSourceInformationRequest(normalized) {
   const markers = webSearchMarkers();
   if (
-    !containsAnySearchMarker(normalized, markers.sourceMarkers) ||
-    !containsAnySearchMarker(normalized, markers.newsRecencyMarkers)
+    !containsAnySearchMarker(normalized, markers.sourceMediumMarkers) ||
+    !containsAnySearchMarker(normalized, markers.newsRecencyMarkers) ||
+    !containsAnySearchMarker(normalized, markers.informationMarkers)
   ) {
     return "";
   }
