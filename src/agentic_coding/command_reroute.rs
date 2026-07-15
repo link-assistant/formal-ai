@@ -21,6 +21,7 @@ use super::planner::{
 /// Both a file-write and command-execution tool must be advertised. This
 /// preserves ordinary text behavior for non-agentic clients and never invents a
 /// tool that the harness cannot execute.
+#[must_use]
 pub fn plan_symbolic_command_reroute(
     messages: &[ChatMessage],
     tool_names: &[&str],
@@ -154,68 +155,4 @@ fn capability_from_call_id(messages: &[ChatMessage], call_id: Option<&str>) -> O
         .flat_map(|message| &message.tool_calls)
         .find(|call| call.id == call_id)
         .and_then(|call| tool_capability(&call.function.name))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::coding::PROGRAM_LANGUAGES;
-    use crate::solver::{SolverConfig, UniversalSolver};
-
-    #[test]
-    fn catalog_execution_recipe_does_not_depend_on_rendered_command_labels() {
-        let answer = UniversalSolver::new(SolverConfig {
-            agent_mode: true,
-            ..SolverConfig::default()
-        })
-        .solve("Please produce a Rust hello world program");
-        let mut reworded = answer.clone();
-        reworded.answer = answer
-            .answer
-            .replace("Check command:", "Compile using:")
-            .replace("Run command:", "Execute using:");
-
-        let plan = plan_symbolic_command_reroute(
-            &[ChatMessage::user(
-                "Please produce a Rust hello world program",
-            )],
-            &["write", "bash"],
-            &reworded,
-        );
-
-        assert!(
-            matches!(plan, Some(AgenticPlan::ToolCalls(_))),
-            "execution is symbolic data and must survive presentation changes"
-        );
-    }
-
-    #[test]
-    fn every_catalog_language_projects_its_structured_execution_metadata() {
-        let solver = UniversalSolver::new(SolverConfig {
-            agent_mode: true,
-            ..SolverConfig::default()
-        });
-
-        for language in PROGRAM_LANGUAGES {
-            let answer = solver.solve(&format!(
-                "Please produce a {} hello world program",
-                language.name
-            ));
-            let recipe = answer
-                .execution_recipe
-                .unwrap_or_else(|| panic!("{} did not produce an execution recipe", language.slug));
-            let expected_commands: Vec<String> = language
-                .execution
-                .check_command
-                .into_iter()
-                .chain(std::iter::once(language.execution.run_command))
-                .map(str::to_owned)
-                .collect();
-
-            assert_eq!(recipe.path, language.save_as, "{}", language.slug);
-            assert_eq!(recipe.language, language.code_fence, "{}", language.slug);
-            assert_eq!(recipe.commands, expected_commands, "{}", language.slug);
-            assert!(!recipe.source.is_empty(), "{}", language.slug);
-        }
-    }
 }

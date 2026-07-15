@@ -1,3 +1,4 @@
+use formal_ai::agentic_coding::{plan_symbolic_command_reroute, AgenticPlan};
 use formal_ai::protocol::{
     create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
 };
@@ -46,6 +47,98 @@ fn only_call(request: &ChatCompletionRequest) -> ToolCall {
     assert_eq!(completion.choices[0].finish_reason, "tool_calls");
     assert_eq!(completion.choices[0].message.tool_calls.len(), 1);
     completion.choices[0].message.tool_calls[0].clone()
+}
+
+#[test]
+fn catalog_execution_recipe_does_not_depend_on_rendered_command_labels() {
+    let answer = solver().solve("Please produce a Rust hello world program");
+    let mut reworded = answer.clone();
+    reworded.answer = answer
+        .answer
+        .replace("Check command:", "Compile using:")
+        .replace("Run command:", "Execute using:");
+
+    let plan = plan_symbolic_command_reroute(
+        &[ChatMessage::user(
+            "Please produce a Rust hello world program",
+        )],
+        &["write", "bash"],
+        &reworded,
+    );
+
+    assert!(
+        matches!(plan, Some(AgenticPlan::ToolCalls(_))),
+        "execution is symbolic data and must survive presentation changes"
+    );
+}
+
+#[test]
+fn every_catalog_language_projects_its_structured_execution_metadata() {
+    let solver = solver();
+    let languages = [
+        (
+            "Rust",
+            "rust",
+            "main.rs",
+            &["rustc main.rs -o main", "./main"][..],
+        ),
+        (
+            "Python",
+            "python",
+            "main.py",
+            &["python3 -m py_compile main.py", "python3 main.py"][..],
+        ),
+        (
+            "JavaScript",
+            "javascript",
+            "main.js",
+            &["node --check main.js", "node main.js"][..],
+        ),
+        (
+            "TypeScript",
+            "typescript",
+            "hello.ts",
+            &["tsc hello.ts", "node hello.js"][..],
+        ),
+        ("Go", "go", "main.go", &["go run main.go"][..]),
+        ("C", "c", "main.c", &["gcc main.c -o main", "./main"][..]),
+        (
+            "C++",
+            "cpp",
+            "main.cpp",
+            &["g++ main.cpp -o main", "./main"][..],
+        ),
+        (
+            "Java",
+            "java",
+            "Main.java",
+            &["javac Main.java", "java Main"][..],
+        ),
+        (
+            "C#",
+            "csharp",
+            "Program.cs",
+            &["dotnet build", "dotnet run"][..],
+        ),
+        (
+            "Ruby",
+            "ruby",
+            "main.rb",
+            &["ruby -c main.rb", "ruby main.rb"][..],
+        ),
+    ];
+
+    for (name, language, path, commands) in languages {
+        let answer = solver.solve(&format!("Please produce a {name} hello world program"));
+        let recipe = answer
+            .execution_recipe
+            .unwrap_or_else(|| panic!("{name} did not produce an execution recipe"));
+
+        assert_eq!(recipe.path, path, "{name}");
+        assert_eq!(recipe.language, language, "{name}");
+        assert_eq!(recipe.commands, commands, "{name}");
+        assert!(!recipe.source.is_empty(), "{name}");
+    }
 }
 
 #[test]

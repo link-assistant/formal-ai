@@ -53,6 +53,7 @@ pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
 };
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use command_reroute::plan_symbolic_command_reroute;
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
