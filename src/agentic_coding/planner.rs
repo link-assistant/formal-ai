@@ -120,9 +120,7 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // Code is a workspace artifact when a client advertises file tools. Route
-    // generation and contextual follow-up changes before the generic file
-    // routers, which require the latest turn to repeat a path and content.
+    // Route workspace code before generic routers that require a repeated path.
     if let Some(plan) = code_artifact::plan_code_artifact_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -753,8 +751,7 @@ impl Progress {
         let mut fetched_text = None;
         let mut run_output = None;
         let mut search_output = None;
-        // Progress belongs to the current user turn. Results from an earlier
-        // request must not make a later request appear complete.
+        // Ignore results from earlier user turns.
         let current_turn = messages
             .iter()
             .rposition(|message| message.role.eq_ignore_ascii_case("user"))
