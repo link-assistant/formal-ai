@@ -91,6 +91,14 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: a natural-language request to create a repository issue.
+///
+/// Surface templates live in `data/seed/meanings-agent-actions.lino`; the
+/// agentic action router matches their open slot structurally, so adding a
+/// language or phrasing is a data edit shared by every runtime.
+pub const ROLE_AGENT_ACTION_REPORT_VERB: &str = "agent_action_report_verb";
+/// Semantic role: the issue/bug/repository object of a report action.
+pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject";
 /// Semantic role: a verb that commands the in-place modification of an existing
 /// file (issue #680).
 ///

@@ -9,6 +9,10 @@
 # kind meaning   -> the role name is also a defined meaning slug
 # kind predicate -> the role name is a reserved role-only identifier
 roles
+  agent_action_report_subject
+    kind predicate
+  agent_action_report_verb
+    kind predicate
   answer_rationale_lead
     kind predicate
   architecture_concept

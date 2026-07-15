@@ -12,7 +12,7 @@
 use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
-use std::process::exit;
+use std::process::{exit, Command};
 use walkdir::WalkDir;
 
 const FILE_LIMITS: &[FileLimit] = &[
@@ -82,7 +82,7 @@ fn file_limit(path: &Path) -> Option<&'static FileLimit> {
     FILE_LIMITS.iter().find(|limit| limit.extension == ext)
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct Finding {
     file: String,
     lines: usize,
@@ -238,6 +238,45 @@ fn warning_annotation(finding: &Finding) -> String {
     )
 }
 
+fn warnings_for_changed_paths<'a>(
+    warnings: &'a [Finding],
+    changed_paths: &[String],
+) -> Vec<&'a Finding> {
+    warnings
+        .iter()
+        .filter(|finding| changed_paths.contains(&finding.file))
+        .collect()
+}
+
+#[cfg(not(test))]
+fn changed_paths_since(base: &str) -> Option<Vec<String>> {
+    if base.is_empty() || base.chars().all(|character| character == '0') {
+        return None;
+    }
+
+    let output = Command::new("git")
+        .args([
+            "diff",
+            "--name-only",
+            "--diff-filter=ACMR",
+            base,
+            "HEAD",
+            "--",
+        ])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+
+    Some(
+        String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .map(str::to_string)
+            .collect(),
+    )
+}
+
 #[cfg(not(test))]
 fn print_warnings(warnings: &[Finding]) {
     if warnings.is_empty() {
@@ -301,8 +340,14 @@ fn main() {
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);
-
-    print_warnings(&result.warnings);
+    let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
+    if let Some(changed_paths) = changed_paths_since(&warning_base) {
+        let warnings = warnings_for_changed_paths(&result.warnings, &changed_paths);
+        let warnings: Vec<Finding> = warnings.into_iter().cloned().collect();
+        print_warnings(&warnings);
+    } else {
+        print_warnings(&result.warnings);
+    }
 
     if result.violations.is_empty() && result.embedded_data_violations.is_empty() {
         println!("All checked files are within their line limits\n");
@@ -408,6 +453,31 @@ mod tests {
                 warn_lines: rust_limit.warn_lines,
                 label: rust_limit.label,
             }]
+        );
+    }
+
+    #[test]
+    fn warning_annotations_are_limited_to_changed_files() {
+        let warnings = vec![
+            Finding {
+                file: "src/unchanged.rs".to_string(),
+                lines: 910,
+                max_lines: 1_000,
+                warn_lines: 900,
+                label: "Rust",
+            },
+            Finding {
+                file: "src/changed.rs".to_string(),
+                lines: 920,
+                max_lines: 1_000,
+                warn_lines: 900,
+                label: "Rust",
+            },
+        ];
+
+        assert_eq!(
+            warnings_for_changed_paths(&warnings, &["src/changed.rs".to_string()]),
+            vec![&warnings[1]]
         );
     }
 

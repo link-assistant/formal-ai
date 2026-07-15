@@ -166,6 +166,18 @@ pub fn try_web_search(
     ))
 }
 
+/// The web-search query the intent recogniser extracts from `prompt`, or [`None`]
+/// when the prompt is not a web-search request.
+///
+/// Exposes the *same* seed-backed recognition [`try_web_search`] uses, without
+/// producing the descriptive answer, so the agentic planner (issue #687) can reuse
+/// it to decide when to emit the client's web-search tool call instead of
+/// re-deriving the intent independently.
+pub fn detect_web_search_query(prompt: &str) -> Option<String> {
+    let normalized = prompt.to_lowercase();
+    extract_web_search_request(prompt, &normalized).map(|request| request.query)
+}
+
 pub fn answer_web_search_query(
     prompt: &str,
     query: &str,
