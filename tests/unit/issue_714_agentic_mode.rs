@@ -1,7 +1,8 @@
 //! Regression coverage for issue #714's agentic-mode surface.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
-use formal_ai::protocol::{ChatMessage, ToolCall};
+use formal_ai::memory_sync::SyncStore;
+use formal_ai::protocol::{chat_tool_executions, ChatMessage, ToolCall};
 
 #[test]
 fn report_action_calls_gh_through_the_advertised_shell_tool() {
@@ -148,4 +149,75 @@ fn screenshot_search_prompt_routes_to_opencode_websearch_alias() {
         }
         other => panic!("screenshot search prompt did not route: {other:?}"),
     }
+}
+
+#[test]
+fn completed_client_tool_execution_is_recovered_even_when_result_name_is_absent() {
+    let mut result = ChatMessage::tool_result(
+        "report_1",
+        "bash",
+        "https://github.com/link-assistant/formal-ai/issues/999",
+    );
+    result.name = None;
+    let messages = vec![
+        ChatMessage::user("Report this answer"),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "report_1".to_owned(),
+            "bash".to_owned(),
+            r#"{"command":"gh issue create --repo link-assistant/formal-ai"}"#.to_owned(),
+        )]),
+        result,
+    ];
+
+    let executions = chat_tool_executions(&messages);
+    assert_eq!(executions.len(), 1);
+    assert_eq!(executions[0].tool, "bash");
+    assert!(executions[0].inputs.contains("gh issue create"));
+    assert!(executions[0].outputs.contains("issues/999"));
+}
+
+#[test]
+fn completed_client_tool_execution_becomes_durable_learning_evidence() {
+    let dir = std::env::temp_dir().join(format!(
+        "formal-ai-issue-714-tool-memory-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("memory.lino");
+    let execution = formal_ai::memory_sync::RecordedToolExecution {
+        tool: String::from("bash"),
+        inputs: String::from(r#"{"command":"gh issue create"}"#),
+        outputs: String::from("https://github.com/link-assistant/formal-ai/issues/999"),
+    };
+
+    let mut store = SyncStore::open_at(&path);
+    store
+        .record_chat_exchange_with_tools(
+            "Report this answer",
+            "Created issue https://github.com/link-assistant/formal-ai/issues/999",
+            &[execution],
+        )
+        .unwrap();
+
+    assert_eq!(store.events().len(), 3);
+    let tool = store
+        .events()
+        .iter()
+        .find(|event| event.kind.as_deref() == Some("tool_call"))
+        .expect("client tool execution must be persisted");
+    assert_eq!(tool.tool.as_deref(), Some("bash"));
+    assert!(tool.inputs.as_deref().unwrap().contains("gh issue create"));
+    assert!(tool.outputs.as_deref().unwrap().contains("issues/999"));
+    let answer = store
+        .events()
+        .iter()
+        .find(|event| event.kind.as_deref() == Some("task"))
+        .unwrap();
+    assert!(answer.evidence.contains(&tool.id));
+
+    let _ = std::fs::remove_dir_all(&dir);
 }

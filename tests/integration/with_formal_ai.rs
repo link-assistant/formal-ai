@@ -180,11 +180,8 @@ fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {
         ],
     );
 
-    assert!(
-        output.status.success(),
-        "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
-    );
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(output.status.success(), "stderr: {stderr}");
     assert_eq!(
         String::from_utf8_lossy(&output.stdout).trim(),
         "Hi, how may I help you?"
@@ -774,10 +771,8 @@ fn with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag() {
     assert!(captured.contains("\"formalai\""), "capture:\n{captured}");
     assert!(captured.contains("\"baseURL\": \"http://127.0.0.1:18080/api/openai/v1\""));
     assert!(captured.contains("\"model\": \"formalai/formal-ai\""));
-    assert!(
-        captured.contains("OPENCODE_ENABLE_EXA=1"),
-        "OpenCode must advertise its websearch tool in agentic mode:\n{captured}"
-    );
+    let has_exa = captured.contains("OPENCODE_ENABLE_EXA=1");
+    assert!(has_exa, "capture:\n{captured}");
 
     let _ = std::fs::remove_dir_all(&dir);
 }

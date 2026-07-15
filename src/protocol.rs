@@ -21,7 +21,10 @@ use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod recording;
-pub use recording::{chat_exchange_to_record, responses_exchange_to_record};
+pub use recording::{
+    chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
+    responses_exchange_to_record,
+};
 use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {

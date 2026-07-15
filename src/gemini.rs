@@ -7,11 +7,12 @@
 
 use serde::Deserialize;
 use serde_json::{json, Value};
+use std::collections::HashMap;
 
 use crate::memory::MemoryEvent;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, ChatCompletion, ChatCompletionRequest,
-    ChatMessage, MessageContent,
+    ChatMessage, MessageContent, ToolCall,
 };
 use crate::seed::{canonical_model_id, resolve_model_id};
 use crate::solver::UniversalSolver;
@@ -48,6 +49,10 @@ struct GeminiContent {
 struct GeminiPart {
     #[serde(default)]
     text: Option<String>,
+    #[serde(default)]
+    function_call: Option<Value>,
+    #[serde(default)]
+    function_response: Option<Value>,
 }
 
 impl GeminiGenerateContentRequest {
@@ -61,16 +66,67 @@ impl GeminiGenerateContentRequest {
             }
         }
 
-        for content in &self.contents {
+        let mut calls_by_name = HashMap::new();
+        for (content_index, content) in self.contents.iter().enumerate() {
             let text = content.text();
-            if text.trim().is_empty() {
-                continue;
+            if !text.trim().is_empty() {
+                messages.push(ChatMessage {
+                    role: gemini_role_to_chat_role(content.role.as_deref()),
+                    content: MessageContent::Text(text),
+                    ..ChatMessage::default()
+                });
             }
-            messages.push(ChatMessage {
-                role: gemini_role_to_chat_role(content.role.as_deref()),
-                content: MessageContent::Text(text),
-                ..ChatMessage::default()
-            });
+            let calls = content
+                .parts
+                .iter()
+                .enumerate()
+                .filter_map(|(part_index, part)| {
+                    let call = part.function_call.as_ref()?;
+                    let name = call.get("name")?.as_str()?.to_owned();
+                    let arguments = call
+                        .get("args")
+                        .cloned()
+                        .unwrap_or_else(|| json!({}))
+                        .to_string();
+                    let id = call.get("id").and_then(Value::as_str).map_or_else(
+                        || {
+                            crate::engine::stable_id(
+                                "gemini_call",
+                                &format!("{content_index}:{part_index}:{name}:{arguments}"),
+                            )
+                        },
+                        str::to_owned,
+                    );
+                    calls_by_name.insert(name.clone(), id.clone());
+                    Some(ToolCall::function(id, name, arguments))
+                })
+                .collect::<Vec<_>>();
+            if !calls.is_empty() {
+                messages.push(ChatMessage::assistant_tool_calls(calls));
+            }
+            for part in &content.parts {
+                let Some(response) = part.function_response.as_ref() else {
+                    continue;
+                };
+                let Some(name) = response.get("name").and_then(Value::as_str) else {
+                    continue;
+                };
+                let id = response
+                    .get("id")
+                    .and_then(Value::as_str)
+                    .map(str::to_owned)
+                    .or_else(|| calls_by_name.get(name).cloned())
+                    .unwrap_or_else(|| crate::engine::stable_id("gemini_call", name));
+                let output = response.get("response").cloned().unwrap_or(Value::Null);
+                messages.push(ChatMessage::tool_result(
+                    id,
+                    name.to_owned(),
+                    match output {
+                        Value::String(text) => text,
+                        other => other.to_string(),
+                    },
+                ));
+            }
         }
 
         ChatCompletionRequest {
@@ -215,6 +271,7 @@ fn gemini_response_from_chat_completion(completion: &ChatCompletion) -> Value {
                 .map(|call| {
                     json!({
                         "functionCall": {
+                            "id": call.id,
                             "name": call.function.name,
                             "args": serde_json::from_str::<Value>(&call.function.arguments)
                                 .unwrap_or_else(|_| json!({}))

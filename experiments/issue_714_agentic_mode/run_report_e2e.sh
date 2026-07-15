@@ -11,6 +11,7 @@ WORKDIR="$(mktemp -d)"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 CAPTURE="$WORKDIR/gh-invocation.txt"
+MEMORY="$WORKDIR/memory.lino"
 
 cleanup() {
   if [[ -n "${SERVER_PID:-}" ]]; then
@@ -22,7 +23,7 @@ trap cleanup EXIT
 
 FAKE_BIN="$ROOT/experiments/issue_714_agentic_mode/fixtures"
 
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 FORMAL_AI_MEMORY_PATH="$MEMORY" \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SERVER_PID=$!
 curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
@@ -63,5 +64,10 @@ grep -Fxq link-assistant/formal-ai "$CAPTURE"
 grep -q 'issues/999' "$AGENT_LOG"
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG")"
 test "$posts" -ge 2
+test -f "$MEMORY"
+grep -Fq 'kind "tool_call"' "$MEMORY"
+grep -Fq 'tool "bash"' "$MEMORY"
+grep -Fq 'gh issue create' "$MEMORY"
+grep -Fq 'issues/999' "$MEMORY"
 
-echo "Agent CLI invoked gh successfully in $posts chat rounds."
+echo "Agent CLI invoked gh and retained its result as learning evidence in $posts chat rounds."

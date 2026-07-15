@@ -96,6 +96,41 @@ fn gemini_routes_localized_report_to_shell_alias() {
         .is_some_and(|command| command.contains("gh issue create")));
 }
 
+#[test]
+fn gemini_continues_after_the_client_returns_a_function_response() {
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+    let response = http_post_json(
+        port,
+        "/api/gemini/v1beta/models/formal-ai:generateContent",
+        TOKEN,
+        &serde_json::json!({
+            "contents": [
+                {"role": "user", "parts": [{"text": "Report issue"}]},
+                {"role": "model", "parts": [{"functionCall": {
+                    "id": "report_1",
+                    "name": "shell",
+                    "args": {"command": "gh issue create --repo link-assistant/formal-ai"}
+                }}]},
+                {"role": "user", "parts": [{"functionResponse": {
+                    "id": "report_1",
+                    "name": "shell",
+                    "response": {"output": "https://github.com/link-assistant/formal-ai/issues/999"}
+                }}]}
+            ],
+            "tools": [{"functionDeclarations": [{
+                "name": "shell",
+                "parameters": {"type": "object"}
+            }]}]
+        }),
+    );
+
+    let text = response["candidates"][0]["content"]["parts"][0]["text"]
+        .as_str()
+        .expect("completed Gemini tool loop should return text");
+    assert!(text.contains("issues/999"), "{text}");
+}
+
 fn function_tool(name: &str) -> serde_json::Value {
     serde_json::json!({
         "type": "function",
