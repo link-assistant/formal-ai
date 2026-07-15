@@ -39,6 +39,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
   # Support both CARGO_REGISTRY_TOKEN (cargo's native env var) and CARGO_TOKEN (for backwards compatibility)
@@ -188,6 +193,8 @@ jobs:
         run: cargo test --test unit semantic_grounding -- --nocapture
 
       - name: Check file size limit
+        env:
+          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
 
       - name: Install web bundle dependencies
@@ -355,7 +362,7 @@ jobs:
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: lcov.info
           fail_ci_if_error: false
