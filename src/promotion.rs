@@ -150,7 +150,7 @@ impl PromotionRatchet {
 
     /// Whether this ratchet permits promotion: passed at or above the floor.
     #[must_use]
-    pub fn clears(&self) -> bool {
+    pub const fn clears(&self) -> bool {
         let total = self.passed.saturating_add(self.failed);
         let rate_clears = self.minimum_pass_rate_basis_points == 0
             || (total > 0
@@ -164,7 +164,7 @@ impl PromotionRatchet {
 
     /// Stable slug describing the outcome of this gate.
     #[must_use]
-    pub fn status_slug(&self) -> &'static str {
+    pub const fn status_slug(&self) -> &'static str {
         if self.clears() {
             "cleared"
         } else {

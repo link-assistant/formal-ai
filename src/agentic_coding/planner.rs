@@ -113,10 +113,8 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // A fully specified literal write is already an unambiguous executable task.
-    // Resolve it before keyword recipes: payloads and filenames are arbitrary data
-    // and may legitimately contain words such as "issue", "report", or "learning".
-    // Letting those words win would silently replace the requested operation.
+    // Resolve an unambiguous literal write before keyword recipes: arbitrary
+    // filenames/payloads may legitimately contain "issue", "report", or "learning".
     if let Some(plan) = tool_for(tool_names, Capability::Write)
         .and_then(|_| compose_general_change_plan(&task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
