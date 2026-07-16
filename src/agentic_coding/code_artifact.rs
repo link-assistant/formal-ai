@@ -11,6 +11,9 @@ use super::planner::{
     plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
 };
 use crate::coding::{program_language_by_alias, program_task_by_alias, program_template};
+use crate::links_substitution_query::{
+    parse_substitution_query, render_substitution_query, substitution_effect,
+};
 use crate::normal_markov::{
     quoted_segments, unwrap_transport_quotes, RewriteHalt, RewriteOutcome, RewriteProgram,
     RewriteRule,
@@ -36,6 +39,14 @@ impl WorkspaceRewrite {
     fn links_notation(&self, outcome: Option<&RewriteOutcome>) -> String {
         let mut links = String::from("normal_markov_program\n");
         link_field(&mut links, 2, "target", &self.target);
+        // The link-cli-dialect query is the meta-language representation the
+        // request was lowered to. Everything below it is that query expanded.
+        link_field(
+            &mut links,
+            2,
+            "substitution_query",
+            &render_substitution_query(&self.program),
+        );
         link_field(
             &mut links,
             2,
@@ -44,6 +55,7 @@ impl WorkspaceRewrite {
         );
         for (index, rule) in self.program.rules.iter().enumerate() {
             let _ = writeln!(links, "  rewrite_rule \"{index}\"");
+            link_field(&mut links, 4, "effect", substitution_effect(rule).as_str());
             link_field(&mut links, 4, "pattern", &rule.pattern);
             link_field(&mut links, 4, "replacement", &rule.replacement);
             link_field(&mut links, 4, "terminal", &rule.terminal.to_string());
@@ -158,6 +170,12 @@ fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
 }
 
 fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<WorkspaceRewrite> {
+    if let Some(program) = explicit_substitution_query(task) {
+        return Some(WorkspaceRewrite {
+            target: artifact.path.clone(),
+            program,
+        });
+    }
     if task.contains('?') || task.contains('？') {
         return None;
     }
@@ -189,6 +207,21 @@ fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<Workspa
         target: artifact.path.clone(),
         program: RewriteProgram::new(rules, MAX_REWRITE_STEPS),
     })
+}
+
+/// Accept the meta-language query itself as the request.
+///
+/// Prose with quoted operands only ever composes old/new pairs, so this is the
+/// only route to link-cli's `()` creation and deletion shorthands and to
+/// terminal rules. The whole turn must be the query: requiring that keeps the
+/// route unambiguous against ordinary prose that merely contains parentheses.
+fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
+    let trimmed = task.trim();
+    if !trimmed.starts_with('(') {
+        return None;
+    }
+    let program = parse_substitution_query(trimmed, MAX_REWRITE_STEPS).ok()?;
+    (!program.rules.is_empty()).then_some(program)
 }
 
 fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifact> {

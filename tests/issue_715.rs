@@ -307,3 +307,97 @@ fn ordered_substitutions_apply_as_one_general_rewrite_program() {
 
     assert_eq!(rewritten, "fn main() {\n    println!(\"Hi, team!\");\n}\n");
 }
+
+/// The link-cli-dialect query is the meta-language representation a request is
+/// lowered to. Accepting it directly proves the layer is real rather than a
+/// rendering, and it is the only way to state link-cli's `()` shorthands.
+#[test]
+fn substitution_query_is_accepted_as_the_request_itself() {
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+
+    let updated =
+        rewrite_current_rust_source(r#"(("Hello, world!")) ((terminal: "Hello 2"))"#, source);
+    assert_eq!(updated, "fn main() {\n    println!(\"Hello 2\");\n}\n");
+
+    // Deletion: a non-empty sequence substituted to no sequence.
+    let deleted = rewrite_current_rust_source(
+        "((terminal: \"    println!(\\\"Hello, world!\\\");\\n\")) ()",
+        source,
+    );
+    assert_eq!(deleted, "fn main() {\n}\n");
+
+    // Creation: the empty sequence substituted to a non-empty one.
+    let created = rewrite_current_rust_source(r#"() ((terminal: "// generated\n"))"#, source);
+    assert_eq!(
+        created,
+        "// generated\nfn main() {\n    println!(\"Hello, world!\");\n}\n"
+    );
+}
+
+/// Every harness reaches the same lowering through its own tool names, because
+/// routing is by capability rather than by a hard-coded vocabulary.
+#[test]
+fn substitution_query_lowers_identically_on_every_harness_vocabulary() {
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+    for tools in [
+        ["read", "write"],
+        ["read_file", "write_file"],
+        ["view_file", "create_file"],
+        ["file_read", "Write"],
+    ] {
+        let query = r#"(("Hello, world!")) ((terminal: "Hello 2"))"#;
+        let mut messages = rust_conversation_with_latest_user(query);
+
+        let read = one_call(&messages, &tools);
+        assert_eq!(read.tool, tools[0], "{tools:?}");
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "read-harness".to_owned(),
+            tools[0].to_owned(),
+            read.arguments,
+        )]));
+        messages.push(ChatMessage::tool_result("read-harness", tools[0], source));
+
+        let write = one_call(&messages, &tools);
+        assert_eq!(write.tool, tools[1], "{tools:?}");
+        assert_eq!(
+            args(&write)["content"].as_str().unwrap(),
+            "fn main() {\n    println!(\"Hello 2\");\n}\n",
+            "{tools:?}",
+        );
+    }
+}
+
+/// The final trace publishes the meta-language query and each rule's CRUD
+/// effect, so the lowering is auditable end to end.
+#[test]
+fn mutation_trace_publishes_the_substitution_query_and_effects() {
+    let mut messages =
+        rust_conversation_with_latest_user("Change the output message to 'Hello 2'.");
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+
+    let read = one_call(&messages, &["read", "write"]);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-trace".to_owned(),
+        "read".to_owned(),
+        read.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("read-trace", "read", source));
+    let write = one_call(&messages, &["read", "write"]);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "write-trace".to_owned(),
+        "write".to_owned(),
+        write.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result("write-trace", "write", "Wrote."));
+
+    let final_answer = match plan_chat_step(&messages, &["read", "write"]) {
+        Some(AgenticPlan::Final(answer)) => answer,
+        other => panic!("expected final mutation trace, got {other:?}"),
+    };
+    assert!(
+        final_answer
+            .contains(r#"substitution_query "((\"Hello, world!\")) ((terminal: \"Hello 2\"))""#),
+        "{final_answer}"
+    );
+    assert!(final_answer.contains("effect \"update\""), "{final_answer}");
+}

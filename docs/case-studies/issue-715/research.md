@@ -24,6 +24,84 @@ and DOI: <https://www.mathnet.ru/eng/im2534>. It confirms normal algorithms as a
 formal computation and complexity model, distinct from probabilistic Markov
 chains.
 
+## link-cli's substitution query language
+
+link-cli (`clink`) is the priority dialect named in the issue-#715 review. Its
+README is <https://github.com/link-foundation/link-cli>.
+
+It states the model this work adopts:
+
+> This tool provides all CRUD operations for links using single [substitution
+> operation](https://en.wikipedia.org/wiki/Markov_algorithm) which is turing
+> complete.
+
+The hyperlink on "substitution operation" targets the Markov algorithm article —
+the tool does not spell the words "Markov algorithm" in that sentence, it links
+them. That link is the whole reason the query language and `src/normal_markov.rs`
+can be the same object rather than two similar ones.
+
+The README splits every operation into two sides:
+
+> Each operations split into two parts:
+>
+> ```
+> (matching pattern)
+> (substitution pattern)
+> ```
+
+and derives CRUD from the shape of those sides, quoted verbatim:
+
+| Shape                   | link-cli's own words                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| `((1: 1 1)) ((1: 1 1))` | "this 'no change' can be used as read query"                    |
+| `() ((1 1))`            | "Creation is just a replacement of nothing to something"        |
+| `((1 1)) ()`            | "Deletion is just a replacement of something to nothing"        |
+| `((1: 1 1)) ((1: 1 2))` | "the update is substitution itself, obviously"                  |
+
+Those two middle rows are exactly the issue's requirement that "creation is
+absence or empty or 0 length sequence substitution to non-empty sequence, and
+deletion is reverse". The requirement is not an analogy to link-cli; it is
+link-cli's documented definition.
+
+The README also documents variables — "Where `$i` stands for variable named `i`,
+that stands for `index`. `$s` is for `source` and `$t` is for `target`" — and
+named references, `(child: father mother)`, persisted to a companion
+`<database-name>.names.links` file.
+
+Two deliberate divergences in this dialect, both recorded rather than silently
+taken:
+
+- **Operands are text sequences, not doublets.** link-cli's operands are link
+  indices over an associative store; a code file is a character sequence. The
+  substitution model is identical, the operand domain is not. `$i`/`$s`/`$t`
+  address a link's index/source/target, which a flat text sequence does not
+  have, so they are not carried over here.
+- **Terminal rules have no link-cli counterpart.** Normal algorithms distinguish
+  terminating from continuing rules; link-cli has no such concept because it
+  does not iterate to a fixed point. Rather than invent punctuation, this
+  dialect reuses link-cli's named-reference slot — the `child` in
+  `(child: father mother)` — so a terminal rule is `(terminal: "text")`.
+
+## LinksQL's confirmation of the model
+
+LinksQL (<https://github.com/link-foundation/linksql>) is the second reference
+named in the review. Its README states the computational claim directly rather
+than by hyperlink:
+
+> That single rule is Turing-complete (it is a Markov algorithm over an
+> associative store), so it scales from one-line reads to complex multi-pattern
+> rewrites without new syntax.
+
+It frames the two sides as `(restriction) (substitution)` and derives the same
+CRUD table, which independently corroborates link-cli's shape. Its "mixed" row —
+"several substitutions in one statement" — is the multi-rule case this dialect
+supports by pairing operands positionally.
+
+One shape was **not** adopted: LinksQL admits a single-sided `(pattern)` as a
+read. This dialect requires both sides, because a one-sided query is ambiguous
+against an operand list and link-cli — the stated priority — always writes two
+sides. A read is written the link-cli way, as an identity substitution.
+
 ## OpenCode tool and permission contract
 
 OpenCode's official tool documentation is

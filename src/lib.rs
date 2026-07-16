@@ -37,6 +37,7 @@ pub mod learning_ledger;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
+pub mod links_substitution_query;
 pub mod memory;
 pub mod memory_sync;
 pub mod meta_construction;
