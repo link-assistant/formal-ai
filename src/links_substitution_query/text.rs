@@ -1,71 +1,14 @@
-//! The link-cli substitution query language, over text sequences (#715).
+//! The text-sequence operand domain of the substitution query language.
 //!
-//! [`link-cli`](https://github.com/link-foundation/link-cli) expresses every
-//! CRUD operation as a single substitution written as two sides:
-//!
-//! ```text
-//! (matching pattern) (substitution pattern)
-//! ```
-//!
-//! and documents that shape as "all CRUD operations for links using single
-//! substitution operation which is turing complete" — hyperlinking "substitution
-//! operation" to the Markov algorithm. That is precisely the model
-//! [`crate::normal_markov`] executes, so this module is the
-//! bridge: it parses the query language into a [`RewriteProgram`] and renders a
-//! program back out. The query is the meta-language representation that sits
-//! between a natural-language request and a harness's read/write tools, so the
-//! same request lowers identically on every agentic CLI.
-//!
-//! link-cli's own shorthands carry over directly, with a link's operands being
-//! text sequences rather than doublets:
-//!
-//! | link-cli (links)          | this dialect (text)          | effect |
-//! | ------------------------- | ---------------------------- | ------ |
-//! | `() ((1 1))`              | `() (("new"))`               | create |
-//! | `((1 1)) ()`              | `(("old")) ()`               | delete |
-//! | `((1: 1 1)) ((1: 1 2))`   | `(("old")) (("new"))`        | update |
-//! | `((1: 1 1)) ((1: 1 1))`   | `(("x")) (("x"))`            | read   |
-//!
-//! Creation is therefore the empty sequence substituted to a non-empty one, and
-//! deletion is its reverse — the two directions issue #715 requires.
-//!
-//! Operands pair positionally, and each pair becomes one rule in Markov
-//! priority order. A side written `()` distributes across the other side, which
-//! is what makes the create and delete shorthands total.
-//!
-//! Markov's terminal rules have no link-cli counterpart. Rather than invent
-//! punctuation, the dialect reuses link-cli's named-reference slot — the `child`
-//! in `(child: father mother)` — so a terminal rule is `(terminal: "text")`.
-//! When a side is elided the name rides the side that survives.
+//! Operands are quoted character sequences, so a program lowers directly to
+//! [`crate::normal_markov`]'s executor. See the [module docs](super) for how
+//! this domain relates to the link one.
 
 use std::fmt::Write as _;
 
+use super::{err, escape, Parser, SubstitutionQueryError, MUST_QUOTE, TWO_SIDES};
 use crate::normal_markov::{RewriteProgram, RewriteRule};
 use crate::substitution::CrudEvent;
-
-/// A parse failure with a human-readable message.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SubstitutionQueryError {
-    pub message: String,
-}
-
-impl std::fmt::Display for SubstitutionQueryError {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(formatter, "{}", self.message)
-    }
-}
-
-impl std::error::Error for SubstitutionQueryError {}
-
-fn err(message: impl Into<String>) -> SubstitutionQueryError {
-    SubstitutionQueryError {
-        message: message.into(),
-    }
-}
-
-const TWO_SIDES: &str =
-    "a substitution query needs two sides: (matching pattern) (substitution pattern)";
-const MUST_QUOTE: &str = "operands must be quoted, as in (\"text\")";
 
 /// One `("text")` or `(terminal: "text")` operand on either side.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -221,64 +164,7 @@ fn rule(pattern: String, replacement: String, terminal: bool) -> RewriteRule {
     }
 }
 
-fn escape(text: &str) -> String {
-    let mut escaped = String::with_capacity(text.len());
-    for character in text.chars() {
-        match character {
-            '\\' => escaped.push_str("\\\\"),
-            '"' => escaped.push_str("\\\""),
-            '\n' => escaped.push_str("\\n"),
-            '\r' => escaped.push_str("\\r"),
-            '\t' => escaped.push_str("\\t"),
-            _ => escaped.push(character),
-        }
-    }
-    escaped
-}
-
-struct Parser<'a> {
-    input: &'a str,
-    cursor: usize,
-}
-
-impl<'a> Parser<'a> {
-    const fn new(input: &'a str) -> Self {
-        Self { input, cursor: 0 }
-    }
-
-    fn rest(&self) -> &'a str {
-        &self.input[self.cursor..]
-    }
-
-    fn peek(&self) -> Option<char> {
-        self.rest().chars().next()
-    }
-
-    fn bump(&mut self) -> Option<char> {
-        let character = self.peek()?;
-        self.cursor += character.len_utf8();
-        Some(character)
-    }
-
-    fn eat(&mut self, expected: char) -> bool {
-        let found = self.peek() == Some(expected);
-        if found {
-            self.cursor += expected.len_utf8();
-        }
-        found
-    }
-
-    fn skip_whitespace(&mut self) {
-        // `bump`, not `cursor += 1`: whitespace such as U+00A0 is multi-byte.
-        while self.peek().is_some_and(char::is_whitespace) {
-            self.bump();
-        }
-    }
-
-    const fn at_end(&self) -> bool {
-        self.cursor >= self.input.len()
-    }
-
+impl Parser<'_> {
     fn parse_side(&mut self) -> Result<Vec<Operand>, SubstitutionQueryError> {
         self.skip_whitespace();
         if !self.eat('(') {
@@ -343,40 +229,5 @@ impl<'a> Parser<'a> {
         }
         self.skip_whitespace();
         Ok(true)
-    }
-
-    fn parse_string(&mut self) -> Result<String, SubstitutionQueryError> {
-        if !self.eat('"') {
-            return Err(err(MUST_QUOTE));
-        }
-        let mut text = String::new();
-        loop {
-            match self.bump() {
-                None => {
-                    return Err(err(
-                        "unbalanced quotes: a quoted operand is missing its closing `\"`",
-                    ));
-                }
-                Some('"') => return Ok(text),
-                Some('\\') => text.push(self.parse_escape()?),
-                Some(character) => text.push(character),
-            }
-        }
-    }
-
-    fn parse_escape(&mut self) -> Result<char, SubstitutionQueryError> {
-        match self.bump() {
-            Some('\\') => Ok('\\'),
-            Some('"') => Ok('"'),
-            Some('n') => Ok('\n'),
-            Some('r') => Ok('\r'),
-            Some('t') => Ok('\t'),
-            Some(unknown) => Err(err(format!(
-                "unknown escape `\\{unknown}` in a quoted operand"
-            ))),
-            None => Err(err(
-                "unbalanced quotes: a quoted operand is missing its closing `\"`",
-            )),
-        }
     }
 }
