@@ -129,14 +129,85 @@ notation and the encoder for it cannot drift apart again.
 `tests/issue_715_notation.rs` holds the trace to that bar by parsing it with the
 same codec the library encodes with.
 
-A related divergence is recorded but **not** fixed here, because its blast
-radius is the seed corpus rather than this issue: `SubstitutionRuleSet` and
-`AssociativePackage` both validate an incoming document with the codec
-(`parse_indented`) and then read it with the repository's own
-`src/seed/parser.rs`, which implements the backslash dialect. The two agree
-whenever a value needs no escape, and 43 files under `data/` depend on the
-backslash reading, so unifying them is a corpus migration and is left as its
-own change.
+### One document, two readers
+
+The same divergence runs deeper than the trace, and measuring it changed the
+fix. `SubstitutionRuleSet` and `AssociativePackage` both validate an incoming
+document with the codec (`parse_indented`) and then read it with the
+repository's own `src/seed/parser.rs`. So one artifact has two readers that
+disagreed about escaping:
+
+- `src/seed/parser.rs` — a C-style backslash dialect, which is what the
+  hand-rolled escapers were written against.
+- `links_notation::parse_lino` — the real grammar, which has **no** backslash
+  escape and *doubles* a delimiter instead.
+
+They agree whenever a value needs no escape, which is why this stayed invisible
+for so long: it takes a value carrying a quote — that is, ordinary code — to
+separate them. `experiments/issue_715_round_trip_dialects.rs` runs both dialects
+past both readers, and the table has no winning column: the backslash escape is
+rejected by the *grammar* on `println!("hi");`, and the codec's output is
+rejected by the *seed reader* on a value carrying both quotes. No renderer
+could satisfy both, so the reader had to move too.
+
+It turned out the reader was simply wrong, not merely different. Links Notation
+escapes a delimiter by doubling it, and `strip_comment` in that same file
+**already** implemented the rule — only the value decoder never learned it. The
+corpus is not single-dialect either: of 1434 `.lino` files under `data/`, five
+already write the doubled form (`the subject''s name` in
+`data/cache/wikidata/property/P138.lino`; also `dollar`, `dollars`, `painted`,
+`does`) and three write the backslash form. The doubled files could not be read:
+a value carrying the delimiter had no closing quote on its own line, failed to
+decode, and fell back to raw text with the quotes still in it — live data
+corruption, predating this issue.
+
+That makes the reader fix additive rather than a migration. A single-quoted
+value containing `''` had no valid meaning before, so giving it one cannot break
+a valid document, and both corpus dialects are now read. This is why the
+`43 files` figure recorded in an earlier draft of this document was wrong on
+both counts — the number and the conclusion drawn from it.
+
+With the reader speaking the notation, the writers could follow. Seven files had
+each grown a private `escape_lino_value` — the same C-style escape, copied and
+subtly varied (some escaped `\r`/`\t`, some did not; several slots were
+interpolated with no escaping at all). They now share one encoder,
+`links_format::format_lino_value`, which does not implement the rule so much as
+borrow it: the codec's always-quoting encoder is private, so the helper formats
+a one-field record with the public `format_indented_ordered` and takes the field
+back off it. That costs an allocation per value and buys the property that
+matters — it cannot drift from the notation, because it *is* the notation's
+encoder. `tests/unit/issue_715_renderer_artifacts.rs` holds every renderer to
+both readers at once; reverting the writers makes all four cases fail on
+`println!("hi");`.
+
+### The mirror drifts by the same mechanism
+
+`tests/source/` is a hand-copied second library, wired as its own test binary,
+whose purpose is to reach private functions (`docs/case-studies/issue-559`).
+Nothing enforces that it matches `src/`, and it is only maintained where someone
+remembers: measured file by file, **51 of 143** mirrored modules differ from
+their source by more than two lines — `protocol.rs` by 907, `server.rs` by 517,
+`anthropic.rs` by 485. Two modules that predate this branch, `method_registry`
+and `cue_lexicon`, were never mirrored at all.
+
+This is the same failure as the escapers, one level up: a rule with two copies
+and no gate between them. The copies diverge silently, and the drift is only
+discovered when something forces the comparison.
+
+Ten mirrors are updated here — the ones this branch touches, including
+`normal_markov`, whose divergence was this branch's own unmirrored commit.
+`intent_formalization` is deliberately left at its inherited drift: syncing it
+requires mirroring `method_registry` and `cue_lexicon`, which in turn need
+`solver_dispatch` (173 lines behind), `solver_handler_how` (332 behind), and an
+`include_str!` path that does not resolve from `tests/source/`. That cascade is
+real work with no bearing on this issue, and the mirrored copy is dead code no
+test reaches. It is recorded here rather than fixed quietly or left unsaid.
+
+Two escapers were deliberately left alone, because they are not this rule:
+`google_trends_catalog` collapses whitespace and is lossy by design, and
+`memory` plus `links_substitution_query` are each a self-consistent
+writer/reader pair over a different language (link-cli's *query* syntax, not
+Links Notation).
 
 ### Deliberate divergences
 
@@ -162,6 +233,18 @@ Recorded rather than silently taken:
   `() ((1 1))`, whose two operands are the source and target; the index is the
   store's to assign. What `() ((5: 1 2))` should do when index 5 is already taken
   is undefined by the README, so it is rejected at parse time instead of guessed.
+- **Over memory, the link dialect reads but does not write.** The dialect itself
+  is complete — `LinkRewriteProgram::execute` creates, updates and deletes — but
+  the surface that owns the links only exposes the read half. `formal-ai memory
+  query` stores `MemoryEvent`s and derives the doublet view from them
+  (`memory_events_to_link_records`), content-addressing each record id from the
+  event's own canonical form; the projection is therefore one-way, and an edited
+  link has no inverse back to an event. `LinkStore`'s only write is
+  `append_memory_event` — an event, not a link. Accepting a link-level write
+  would mean rewriting a projection nothing reads back, which reports success for
+  a change the store never made, so the query is refused with a message naming
+  the boundary. Giving the projection an inverse is a store change, not a query
+  change, and is left as its own issue.
 - **The two sides are not wrapped in an outer paren.** link-cli's README writes
   creation as `clink '() ((1 1))'` but its read-all example as
   `clink '((($i: $s $t)) (($i: $s $t)))'`, with an extra enclosing layer. The
