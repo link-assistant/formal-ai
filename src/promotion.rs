@@ -28,13 +28,16 @@
 //! dropped, it becomes a durable `promotion_rejection` record.
 
 use std::fmt::Write as _;
-use std::fs;
-use std::io;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use crate::engine::stable_id;
 use crate::memory::MemoryEvent;
 use crate::self_improvement::LearningRun;
+
+mod gates;
+mod materialize;
+pub use gates::{replay_promotion_gates, replay_promotion_gates_with, GateCommandOutput};
+pub use materialize::apply_promotions;
 
 const CODING_MODIFICATION_SUITE_LINO: &str =
     include_str!("../data/benchmarks/coding-modification-suite.lino");
@@ -61,6 +64,12 @@ pub struct PromotionRatchet {
     pub passed: usize,
     /// Failing cases from the replay.
     pub failed: usize,
+    /// Required pass rate in basis points (`10_000` means no failures).
+    pub minimum_pass_rate_basis_points: usize,
+    /// Whether the canonical gate command exited successfully.
+    pub command_succeeded: bool,
+    /// Content-addressed digest of stdout/stderr and exit status.
+    pub evidence_digest: Option<String>,
 }
 
 impl PromotionRatchet {
@@ -79,6 +88,9 @@ impl PromotionRatchet {
             minimum_pass_count,
             passed,
             failed,
+            minimum_pass_rate_basis_points: 0,
+            command_succeeded: false,
+            evidence_digest: None,
         }
     }
 
@@ -110,13 +122,15 @@ impl PromotionRatchet {
     /// (at least one passing spec, no failures) before promotion.
     #[must_use]
     pub fn unit_specs(passed: usize, failed: usize) -> Self {
-        Self::new(
+        let mut gate = Self::new(
             "formal_ai_unit_specifications",
-            "cargo test --test unit",
+            "cargo test --test unit issue_656 -- --nocapture",
             1,
             passed,
             failed,
-        )
+        );
+        gate.minimum_pass_rate_basis_points = 10_000;
+        gate
     }
 
     fn from_manifest(manifest: &str, fallback_id: &str, passed: usize, failed: usize) -> Self {
@@ -126,18 +140,31 @@ impl PromotionRatchet {
         let minimum_pass_count = manifest_field(manifest, "minimum_pass_count")
             .and_then(|value| value.parse::<usize>().ok())
             .unwrap_or(1);
-        Self::new(suite_id, runner, minimum_pass_count, passed, failed)
+        let minimum_pass_rate_basis_points = manifest_field(manifest, "pass_rate_basis_points")
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(0);
+        let mut gate = Self::new(suite_id, runner, minimum_pass_count, passed, failed);
+        gate.minimum_pass_rate_basis_points = minimum_pass_rate_basis_points;
+        gate
     }
 
     /// Whether this ratchet permits promotion: passed at or above the floor.
     #[must_use]
-    pub const fn clears(&self) -> bool {
-        self.passed >= self.minimum_pass_count
+    pub fn clears(&self) -> bool {
+        let total = self.passed.saturating_add(self.failed);
+        let rate_clears = self.minimum_pass_rate_basis_points == 0
+            || (total > 0
+                && self.passed.saturating_mul(10_000)
+                    >= self.minimum_pass_rate_basis_points.saturating_mul(total));
+        self.command_succeeded
+            && self.evidence_digest.is_some()
+            && self.passed >= self.minimum_pass_count
+            && rate_clears
     }
 
     /// Stable slug describing the outcome of this gate.
     #[must_use]
-    pub const fn status_slug(&self) -> &'static str {
+    pub fn status_slug(&self) -> &'static str {
         if self.clears() {
             "cleared"
         } else {
@@ -151,12 +178,14 @@ impl PromotionRatchet {
     #[must_use]
     pub fn evidence_link(&self) -> String {
         format!(
-            "benchmark:{}:{}:{}/{}@floor{}",
+            "benchmark:{}:{}:{}/{}@floor{}@rate{}@{}",
             self.suite_id,
             self.status_slug(),
             self.passed,
             self.passed + self.failed,
-            self.minimum_pass_count
+            self.minimum_pass_count,
+            self.minimum_pass_rate_basis_points,
+            self.evidence_digest.as_deref().unwrap_or("unreplayed")
         )
     }
 }
@@ -439,58 +468,9 @@ pub struct PromotionApplyOutcome {
     pub rejected: Vec<String>,
     /// The branch/PR plan the reviewer runs to land the applied edits.
     pub branch_plan: PromotionBranchPlan,
-}
-
-/// Materialize the promoted seed edits under `workspace_root`, never touching
-/// the live repository and never pushing.
-///
-/// Each promoted proposal's edit is appended to `workspace_root/<seed_file>`
-/// (creating the file and parent directories when absent). Rejected proposals
-/// are *not* applied — they are returned by id so the caller can preserve them
-/// as failure records. The returned [`PromotionBranchPlan`] describes the draft
-/// pull request a human opens afterwards.
-///
-/// # Errors
-///
-/// Returns any filesystem error encountered while creating directories or
-/// writing seed files.
-pub fn apply_promotions(
-    run: &PromotionRun,
-    workspace_root: &Path,
-) -> io::Result<PromotionApplyOutcome> {
-    let mut applied = Vec::new();
-    let mut rejected = Vec::new();
-    for record in &run.records {
-        match record.outcome {
-            PromotionOutcome::Promoted => {
-                let edit = &record.proposal.edit;
-                let path = workspace_root.join(&edit.seed_file);
-                if let Some(parent) = path.parent() {
-                    fs::create_dir_all(parent)?;
-                }
-                let mut body = fs::read_to_string(&path).unwrap_or_default();
-                if !body.is_empty() && !body.ends_with('\n') {
-                    body.push('\n');
-                }
-                body.push_str(&edit.lino);
-                if !body.ends_with('\n') {
-                    body.push('\n');
-                }
-                fs::write(&path, &body)?;
-                applied.push(AppliedSeedEdit {
-                    seed_file: edit.seed_file.clone(),
-                    path,
-                    bytes_written: edit.lino.len(),
-                });
-            }
-            PromotionOutcome::Rejected => rejected.push(record.proposal.id.clone()),
-        }
-    }
-    Ok(PromotionApplyOutcome {
-        applied,
-        rejected,
-        branch_plan: run.branch_plan(),
-    })
+    /// Content-addressed deterministic Formal AI Agent session records that
+    /// authored the exact bytes written for each target file.
+    pub agent_session_ids: Vec<String>,
 }
 
 /// Bridge accumulated self-improvement proposals into promotion candidates.
@@ -504,12 +484,11 @@ pub fn promotions_from_learning_run(run: &LearningRun) -> Vec<PromotionProposal>
     run.adoptable_rules()
         .into_iter()
         .map(|rule| {
-            let gate = PromotionRatchet::coding_modification(run.gate.passed, run.gate.failed);
             PromotionProposal::new(
                 format!("learned_rule:{}", rule.id),
                 rule.summary.clone(),
                 SeedEdit::new(LEARNED_PROGRAM_RULES_SEED_FILE, rule.seed_rule_lino.clone()),
-                vec![gate],
+                gates::required_gates(),
             )
         })
         .collect()
@@ -529,7 +508,7 @@ pub fn demonstration_promotion_run() -> PromotionRun {
 /// The proposals behind [`demonstration_promotion_run`].
 #[must_use]
 pub fn demonstration_promotion_proposals() -> Vec<PromotionProposal> {
-    let promoted = PromotionProposal::new(
+    let mut promoted = PromotionProposal::new(
         "learned_rule:demo_reverse_sort",
         "Promote learned `reverse` modifier for the list-files program plan.",
         SeedEdit::new(
@@ -547,6 +526,13 @@ pub fn demonstration_promotion_proposals() -> Vec<PromotionProposal> {
             PromotionRatchet::unit_specs(1, 0),
         ],
     );
+    for gate in &mut promoted.gates {
+        gate.command_succeeded = true;
+        gate.evidence_digest = Some(stable_id(
+            "promotion_gate_output",
+            &format!("demonstration:{}", gate.suite_id),
+        ));
+    }
     let rejected = PromotionProposal::new(
         "learned_rule:demo_untested_rewrite",
         "Reject an under-benchmarked rewrite that regresses the coding-modification floor.",
@@ -696,18 +682,12 @@ pub fn render_promotion_proposals(proposals: &[PromotionProposal]) -> String {
         push_field(&mut out, 2, "summary", &proposal.summary);
         push_field(&mut out, 2, "seed_file", &proposal.edit.seed_file);
         push_field(&mut out, 2, "seed_lino", &proposal.edit.lino);
-        for gate in &proposal.gates {
+        // Proposal documents declare only canonical suite identities. Commands,
+        // floors and observations are executable evidence and are never accepted
+        // from this untrusted input document.
+        for gate in gates::required_gates() {
             out.push_str("    gate\n");
             push_field(&mut out, 3, "suite", &gate.suite_id);
-            push_field(&mut out, 3, "runner", &gate.runner);
-            push_field(
-                &mut out,
-                3,
-                "minimum_pass_count",
-                &gate.minimum_pass_count.to_string(),
-            );
-            push_field(&mut out, 3, "passed", &gate.passed.to_string());
-            push_field(&mut out, 3, "failed", &gate.failed.to_string());
         }
     }
     out.trim_end().to_owned()
@@ -763,10 +743,11 @@ pub fn parse_promotion_proposals(text: &str) -> Result<Vec<PromotionProposal>, S
             };
             match key {
                 "suite" => gate.suite = Some(value),
-                "runner" => gate.runner = Some(value),
-                "minimum_pass_count" => gate.minimum_pass_count = Some(value),
-                "passed" => gate.passed = Some(value),
-                "failed" => gate.failed = Some(value),
+                "runner" | "minimum_pass_count" | "passed" | "failed" => {
+                    return Err(format!(
+                        "proposal gates must not provide `{key}`; commands and results come from fresh canonical replay"
+                    ));
+                }
                 _ => {}
             }
             continue;
@@ -802,8 +783,7 @@ impl DraftProposal {
         let seed_file = self.seed_file.ok_or("proposal missing `seed_file`")?;
         let seed_lino = self.seed_lino.ok_or("proposal missing `seed_lino`")?;
         let summary = self.summary.unwrap_or_else(|| source.clone());
-        let gates = self
-            .gates
+        self.gates
             .into_iter()
             .map(DraftGate::finish)
             .collect::<Result<Vec<_>, _>>()?;
@@ -811,7 +791,7 @@ impl DraftProposal {
             source,
             summary,
             SeedEdit::new(seed_file, seed_lino),
-            gates,
+            gates::required_gates(),
         ))
     }
 }
@@ -819,35 +799,20 @@ impl DraftProposal {
 #[derive(Default)]
 struct DraftGate {
     suite: Option<String>,
-    runner: Option<String>,
-    minimum_pass_count: Option<String>,
-    passed: Option<String>,
-    failed: Option<String>,
 }
 
 impl DraftGate {
-    fn finish(self) -> Result<PromotionRatchet, String> {
+    fn finish(self) -> Result<(), String> {
         let suite = self.suite.ok_or("gate missing `suite`")?;
-        let runner = self.runner.unwrap_or_else(|| String::from("cargo test"));
-        let minimum_pass_count =
-            parse_count(self.minimum_pass_count.as_deref(), "minimum_pass_count")?;
-        let passed = parse_count(self.passed.as_deref(), "passed")?;
-        let failed = parse_count(self.failed.as_deref(), "failed")?;
-        Ok(PromotionRatchet::new(
-            suite,
-            runner,
-            minimum_pass_count,
-            passed,
-            failed,
-        ))
+        if gates::required_gates()
+            .iter()
+            .any(|canonical| canonical.suite_id == suite)
+        {
+            Ok(())
+        } else {
+            Err(format!("unknown promotion gate suite `{suite}`"))
+        }
     }
-}
-
-fn parse_count(value: Option<&str>, name: &str) -> Result<usize, String> {
-    value.map_or(Ok(0), |raw| {
-        raw.parse::<usize>()
-            .map_err(|_| format!("gate `{name}` is not a number: {raw}"))
-    })
 }
 
 // ---- small local helpers, mirroring src/self_improvement.rs ---------------

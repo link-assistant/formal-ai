@@ -70,10 +70,9 @@ fn general_task_runs_end_to_end() {
 
 #[test]
 fn general_task_preserves_exact_multiline_lino_payload() {
-    let payload = "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"reverse_sort\"";
-    let task = format!(
-        "Create file data/seed/learned-program-rules.lino containing\n{payload}"
-    );
+    let payload =
+        "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"reverse_sort\"";
+    let task = format!("Create file data/seed/learned-program-rules.lino containing\n{payload}");
 
     let plan = compose_general_change_plan(&task).expect("general plan");
     assert_eq!(plan.content, payload);
@@ -82,6 +81,25 @@ fn general_task_preserves_exact_multiline_lino_payload() {
     let write: serde_json::Value =
         serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
     assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
+    assert_eq!(write["content"], payload);
+}
+
+#[test]
+fn explicit_issue_named_file_write_is_not_misrouted_to_issue_reporting() {
+    let payload =
+        "learned_rules\n  id \"issue_656_agent_learning\"\n  rule \"unseen_verified_modifier\"";
+    let task = format!("Create file data/seed/issue-656-agent-learned.lino containing\n{payload}");
+
+    let outcome = run_agentic_task(&task).expect("agentic execution");
+    let tools: Vec<&str> = outcome
+        .steps
+        .iter()
+        .map(|step| step.tool.as_str())
+        .collect();
+    assert_eq!(tools, ["write_file", "write_file", "run_command"]);
+    let write: serde_json::Value =
+        serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
+    assert_eq!(write["path"], "data/seed/issue-656-agent-learned.lino");
     assert_eq!(write["content"], payload);
 }
 

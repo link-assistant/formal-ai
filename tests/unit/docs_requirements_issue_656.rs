@@ -14,13 +14,20 @@ fn issue_656_promotion_documents_are_traceable() {
         &requirements,
         &[
             "Issue #656 Benchmark-Gated Promotion Protocol",
-            "| R445 ",
-            "| R446 ",
-            "| R447 ",
-            "| R448 ",
-            "| R449 ",
-            "| R450 ",
-            "| R451 ",
+            "| R459 ",
+            "| R460 ",
+            "| R461 ",
+            "| R462 ",
+            "| R463 ",
+            "| R464 ",
+            "| R465 ",
+            "| R466 ",
+            "| R467 ",
+            "| R468 ",
+            "| R469 ",
+            "| R470 ",
+            "| R471 ",
+            "| R472 ",
             "src/promotion.rs",
             "formal-ai improve --promote",
             // R385 must now point at issue #656, not the closed #558.
@@ -45,15 +52,22 @@ fn issue_656_promotion_documents_are_traceable() {
             "promotion_applied",
             "promotion_rejection",
             "never a direct push",
+            "proposal cannot promote itself by fabricating evidence",
         ],
     );
 
     // Every file the docs cite must exist and be non-empty.
     for relative in [
         "src/promotion.rs",
+        "src/promotion/gates.rs",
+        "src/promotion/materialize.rs",
         "src/cli_improve.rs",
         "tests/unit/issue_656_promotion.rs",
         "tests/integration/issue_656_improve.rs",
+        "docs/case-studies/issue-656/README.md",
+        "docs/case-studies/issue-656/requirements.md",
+        "docs/case-studies/issue-656/solution-plans.md",
+        "docs/case-studies/issue-656/raw-data/online-research.md",
         "changelog.d/20260714_090000_issue_656_promotion.md",
     ] {
         let path = root.join(relative);
@@ -67,14 +81,14 @@ fn issue_656_promotion_documents_are_traceable() {
         );
     }
 
-    // The protocol's public API cited above must still appear in the live source.
+    // The protocol's public API cited above must still appear in the live source
+    // tree after the implementation was split into bounded modules.
     let promotion_src = read(root.join("src/promotion.rs"));
     for identifier in [
         "pub struct PromotionRatchet",
         "pub struct PromotionProposal",
         "pub struct PromotionRun",
         "pub enum PromotionOutcome",
-        "pub fn apply_promotions",
         "fn memory_events",
         "promotion_rejection",
     ] {
@@ -83,6 +97,10 @@ fn issue_656_promotion_documents_are_traceable() {
             "src/promotion.rs should still define `{identifier}`",
         );
     }
+    let materialize_src = read(root.join("src/promotion/materialize.rs"));
+    assert!(materialize_src.contains("pub fn apply_promotions"));
+    let gates_src = read(root.join("src/promotion/gates.rs"));
+    assert!(gates_src.contains("pub fn replay_promotion_gates"));
 }
 
 fn read(path: impl AsRef<Path>) -> String {

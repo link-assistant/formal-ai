@@ -203,9 +203,9 @@ pub use probability::{
 pub use promotion::{
     apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
     parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
-    AppliedSeedEdit, PromotionApplyOutcome, PromotionBranchPlan, PromotionOutcome,
-    PromotionProposal, PromotionRatchet, PromotionRecord, PromotionRun, SeedEdit,
-    LEARNED_PROGRAM_RULES_SEED_FILE,
+    replay_promotion_gates, replay_promotion_gates_with, AppliedSeedEdit, GateCommandOutput,
+    PromotionApplyOutcome, PromotionBranchPlan, PromotionOutcome, PromotionProposal,
+    PromotionRatchet, PromotionRecord, PromotionRun, SeedEdit, LEARNED_PROGRAM_RULES_SEED_FILE,
 };
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver,

@@ -1,0 +1,16 @@
+{
+  "number": 656,
+  "title": "E37: Benchmark-gated promotion protocol from proposals into seed data",
+  "url": "https://github.com/link-assistant/formal-ai/issues/656",
+  "state_at_capture": "OPEN",
+  "comments_at_capture": 0,
+  "acceptance": [
+    "promotion event protocol",
+    "coding-modification, industry, and unit gate replay",
+    "formal-ai improve --promote dry run",
+    "--apply --confirm materialization on a branch",
+    "rejected proposal evidence durability",
+    "bundle round trip",
+    "draft PR and human review outer gate"
+  ]
+}

@@ -194,9 +194,9 @@ enum Command {
         #[arg(long, default_value_t = false)]
         promote: bool,
 
-        /// Optional `promotion_proposals` Links Notation document. When omitted,
-        /// a built-in demonstration run is used so the command always shows a
-        /// real plan.
+        /// `promotion_proposals` Links Notation document containing the actual
+        /// open proposals. Required with `--promote`; synthetic demonstration
+        /// proposals are never a production default.
         #[arg(long, value_name = "PATH")]
         proposals: Option<PathBuf>,
 

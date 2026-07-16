@@ -3,8 +3,8 @@ use std::path::PathBuf;
 
 use crate::load_memory_or_empty;
 use formal_ai::{
-    agent_info, apply_promotions, demonstration_promotion_run, export_memory_full,
-    parse_promotion_proposals, BundleInfo, MemoryStore, PromotionRun,
+    agent_info, apply_promotions, export_memory_full, parse_promotion_proposals,
+    replay_promotion_gates, BundleInfo, MemoryStore, PromotionRun,
 };
 
 /// Arguments for `formal-ai improve` (issue #656, E37).
@@ -43,6 +43,15 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
 
+    // Refuse destructive use before loading proposals or spending time on gate
+    // replay. No command is run and no file is touched without acknowledgement.
+    if args.apply {
+        require_destructive_confirmation(
+            args.confirm,
+            "apply the promotion plan and materialize seed edits",
+        )?;
+    }
+
     let run = load_promotion_run(args.proposals.as_deref())?;
     println!("{}", run.links_notation());
 
@@ -61,11 +70,6 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
 
-    require_destructive_confirmation(
-        args.confirm,
-        "apply the promotion plan and materialize seed edits",
-    )?;
-
     let outcome = apply_promotions(&run, &args.seed_root)?;
     for edit in &outcome.applied {
         eprintln!(
@@ -74,6 +78,9 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
             edit.bytes_written,
             edit.path.display()
         );
+    }
+    for session_id in &outcome.agent_session_ids {
+        eprintln!("Formal AI Agent session evidence: {session_id}");
     }
     if !outcome.rejected.is_empty() {
         eprintln!(
@@ -99,10 +106,14 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
 
     let plan = outcome.branch_plan;
     eprintln!(
-        "Branch/PR plan (never executed — human review is the outer gate; E36 not yet implemented):"
+        "Created local review branch {}. Remaining PR plan (never pushed; required CI and human review remain outer gates):",
+        plan.branch
     );
-    eprintln!("  branch {}", plan.branch);
-    for command in &plan.commands {
+    for command in plan
+        .commands
+        .iter()
+        .filter(|command| !command.starts_with("git checkout -b "))
+    {
         eprintln!("    {command}");
     }
 
@@ -110,15 +121,21 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
 }
 
 fn load_promotion_run(proposals: Option<&std::path::Path>) -> Result<PromotionRun, Box<dyn Error>> {
-    match proposals {
-        None => Ok(demonstration_promotion_run()),
-        Some(path) => {
-            let text = std::fs::read_to_string(path)?;
-            let parsed = parse_promotion_proposals(&text)
-                .map_err(|error| format!("could not parse {}: {error}", path.display()))?;
-            Ok(PromotionRun::evaluate(parsed))
-        }
+    let path = proposals
+        .ok_or("no open proposal document supplied; pass --proposals <promotion_proposals.lino>")?;
+    let text = std::fs::read_to_string(path)?;
+    let parsed = parse_promotion_proposals(&text)
+        .map_err(|error| format!("could not parse {}: {error}", path.display()))?;
+    if parsed.is_empty() {
+        return Err("proposal document contains no open proposals".into());
     }
+    eprintln!(
+        "Replaying coding-modification, industry, and unit-specification gates from canonical commands..."
+    );
+    let root = std::env::current_dir()?;
+    let replayed = replay_promotion_gates(parsed, &root)
+        .map_err(|error| format!("promotion gate replay failed: {error}"))?;
+    Ok(PromotionRun::evaluate(replayed))
 }
 
 fn require_destructive_confirmation(confirm: bool, action: &str) -> Result<(), Box<dyn Error>> {

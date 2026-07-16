@@ -601,31 +601,39 @@ gate. This section is grounded by
 
 The protocol runs through `formal-ai improve --promote`:
 
-1. **Collect open proposals** — from a `promotion_proposals` Links Notation
-   document (`--proposals`) or the built-in demonstration run. Adoptable learned
-   rules bridge into promotion candidates via `promotions_from_learning_run`.
-2. **Replay each proposal's gates** — the coding-modification suite (issue #362),
-   the industry suite (issue #304), and the unit specifications. Each
-   `PromotionRatchet` reads its floor and runner from the checked-in
-   `data/benchmarks/*.lino` manifest, then compares the freshly observed pass
-   count against the floor. A proposal with no gates never promotes.
+1. **Collect actual open proposals** — from the required `--proposals`
+   `promotion_proposals` Links Notation document. The document declares source,
+   summary, and desired seed edit; it cannot supply commands, floors, or observed
+   counts. Adoptable learned rules bridge into candidates through
+   `promotions_from_learning_run`. Demonstration data is confined to tests and
+   examples, never the CLI default.
+2. **Replay one canonical gate batch** — `src/promotion/gates.rs` executes the
+   coding-modification suite (issue #362), industry suite (issue #304), and unit
+   specifications from an internal allow-list. Manifest floors and pass-rate
+   policy are authoritative. Exit failure blocks every proposal; successful
+   output without parseable pass/fail evidence fails closed. A digest binds each
+   event to the command, status, stdout, and stderr.
 3. **Decide** — a proposal that clears every ratchet is `Promoted`; any failing
    ratchet makes it `Rejected`.
 4. **Record the decision as an append-only event chain** — `promotion_proposal`,
    one `promotion_evidence` per ratchet, `promotion_decision`, then either
    `promotion_applied` (the materialized seed edit) or `promotion_rejection`.
    These custom-kind events round-trip through the bundle export/import path.
-5. **Materialize accepted edits** — `--apply` (which requires `--confirm`, like
-   `memory dream --apply --confirm`) writes each promoted `.lino` seed edit into
-   the `--seed-root` workspace. Rejected proposals are **never** applied; their
+5. **Materialize through Formal AI's Agent path** — `--apply` requires
+   `--confirm`, a clean Git worktree, and creates `promotion/<run-id>` locally.
+   Accepted edits targeting the same file are coalesced. Formal AI executes the
+   literal task through `run_agentic_task`; only an Agent-authored `write_file`
+   call whose path and content match byte-for-byte is copied into `--seed-root`.
+   The deterministic Agent session id is recorded. Rejected proposals are
+   **never** applied; their
    `promotion_rejection` record keeps the un-applied change together with the
    failing benchmark evidence, mirroring the R425 `dreaming_candidate_failure`
    durability pattern.
-6. **Emit the branch/PR step as a plan** — the run yields a `PromotionBranchPlan`
-   of `git`/`gh` commands that a human runs to open a draft pull request. The
-   protocol never executes them: E36 (the Agent-CLI branch/PR path) is not yet
-   implemented, so a promotion lands as an ordinary reviewed PR, not an automatic
-   push.
+6. **Stop on the local review branch** — the run yields a `PromotionBranchPlan`
+   for committing and opening a draft pull request, but never pushes. After an
+   authorized push, GitHub required checks run against the actual branch SHA and
+   human review remains the final outer gate; local replay does not claim to
+   predict that future CI result.
 
 ### What the protocol records
 
@@ -641,15 +649,17 @@ The protocol runs through `formal-ai improve --promote`:
 
 ```sh
 # Dry run: replay the gates and print the plan without touching any files.
-formal-ai improve --promote
+formal-ai improve --promote --proposals ./open-promotions.lino
 
 # Materialize the accepted seed edits into a workspace (never a push):
-formal-ai improve --promote --apply --confirm --seed-root ./workspace
+formal-ai improve --promote --proposals ./open-promotions.lino \
+  --apply --confirm --seed-root ./clean-git-worktree
 
 # Verify the promotion protocol end to end:
 cargo test promotion_protocol
 ```
 
-Because the ratchets read their floors from the same benchmark manifests CI
-enforces, a promotion cannot lower a gate to sneak a change through: the seed edit
-is written only when the live benchmark evidence clears the checked-in floor.
+Because proposal input cannot choose its runner, floor, rate, or result, a
+proposal cannot promote itself by fabricating evidence. The seed edit is written
+only when fresh canonical output clears every policy and the Formal AI Agent
+authors the exact requested bytes on a local review branch.
