@@ -1,6 +1,8 @@
 use std::fmt::Write as _;
 
+mod link_query;
 mod memory_write;
+use link_query::try_link_substitution_query;
 use memory_write::try_memory_write;
 
 use super::finalize_simple;
@@ -124,6 +126,16 @@ pub fn execute_memory_query(
     let normalized = normalize_prompt(prompt);
     let mut log = EventLog::new();
     log.append("impulse", prompt.to_owned());
+    // The query language comes first: a turn that *is* a link query is asking in
+    // the meta language, and lowering it through the natural-language
+    // recognisers would answer a different question than the one asked. Reads
+    // leave the store alone, so nothing is persisted for them.
+    if let Some(answer) = try_link_substitution_query(prompt, store, &mut log) {
+        return Some(MemoryQueryExecution {
+            answer,
+            changed: false,
+        });
+    }
     if let Some(answer) = try_memory_write(
         prompt,
         &normalized,

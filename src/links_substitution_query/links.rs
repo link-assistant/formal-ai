@@ -241,6 +241,26 @@ pub fn render_link_substitution_query(program: &LinkRewriteProgram) -> String {
     format!("{matching} {substituting}")
 }
 
+/// Render one stored link in the same `(index: source target)` form a query
+/// writes it in.
+///
+/// A read answers with links, so the answer has to be written in the notation
+/// the question was asked in: the reader that parses `((1: 1 1))` should be able
+/// to parse what comes back. Sharing [`render_slot`] with the query renderer is
+/// what keeps the two from drifting into separate quoting rules.
+#[must_use]
+pub fn render_link(link: &DoubletLink) -> String {
+    let pattern = LinkPattern {
+        index: Some(Slot::Value(link.index.clone())),
+        source: Slot::Value(link.from.clone()),
+        target: Slot::Value(link.to.clone()),
+    };
+    let rendered = render_link_side([Some(&pattern)].into_iter());
+    // `render_link_side` renders a whole side, so it wraps the operands in the
+    // side's own parentheses; a single link is that side without the wrapper.
+    rendered[1..rendered.len() - 1].to_owned()
+}
+
 fn render_link_side<'a>(patterns: impl Iterator<Item = Option<&'a LinkPattern>>) -> String {
     let mut rendered = String::from("(");
     for (position, pattern) in patterns.enumerate() {
