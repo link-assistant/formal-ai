@@ -5,6 +5,7 @@ use std::fmt::Write as _;
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::links_format::push_lino_node;
 use crate::normal_markov::{quoted_segment_spans, quoted_segments, QuotedSegment};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
@@ -781,24 +782,4 @@ fn text_after_colon(prompt: &str) -> Option<String> {
         })
         .trim();
     (!text.is_empty()).then(|| text.to_owned())
-}
-
-fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    for _ in 0..indent {
-        out.push(' ');
-    }
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
 }

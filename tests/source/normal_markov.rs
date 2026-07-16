@@ -133,6 +133,21 @@ pub struct RewriteOutcome {
     pub halt: RewriteHalt,
 }
 
+/// One literal slot, with the byte span of the delimiters that produced it.
+///
+/// `start` is the offset of the opening delimiter and `end` is the offset just
+/// past the closing one, so `text[start..end]` is the slot *including* its
+/// quotes while [`Self::text`] is the content between them.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QuotedSegment {
+    /// The content between the delimiters.
+    pub text: String,
+    /// Byte offset of the opening delimiter.
+    pub start: usize,
+    /// Byte offset just past the closing delimiter.
+    pub end: usize,
+}
+
 /// Extract structurally delimited literal slots, including zero-length slots.
 ///
 /// The surrounding prose is deliberately irrelevant. Callers can vary natural
@@ -141,6 +156,20 @@ pub struct RewriteOutcome {
 /// accepted. A fenced triple-backtick block is treated as one slot.
 #[must_use]
 pub fn quoted_segments(text: &str) -> Vec<String> {
+    quoted_segment_spans(text)
+        .into_iter()
+        .map(|segment| segment.text)
+        .collect()
+}
+
+/// [`quoted_segments`], keeping each slot's byte span.
+///
+/// This is the single implementation behind every literal-slot reader. Callers
+/// that only need the contents use [`quoted_segments`]; callers that must know
+/// where a slot sat in the prose — to tell "replace X with Y in Z" from
+/// "in Z replace X with Y" — use this.
+#[must_use]
+pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
     let mut result = Vec::new();
     let mut cursor = 0;
     while cursor < text.len() {
@@ -151,8 +180,13 @@ pub fn quoted_segments(text: &str) -> Vec<String> {
         let Some(content_end) = closing_delimiter(text, content_start, close) else {
             break;
         };
-        result.push(text[content_start..content_end].to_owned());
-        cursor = content_end + close.len();
+        let segment_end = content_end + close.len();
+        result.push(QuotedSegment {
+            text: text[content_start..content_end].to_owned(),
+            start: open_at,
+            end: segment_end,
+        });
+        cursor = segment_end;
     }
     result
 }

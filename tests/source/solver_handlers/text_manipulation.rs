@@ -5,6 +5,8 @@ use std::fmt::Write as _;
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::links_format::push_lino_node;
+use crate::normal_markov::{quoted_segment_spans, quoted_segments, QuotedSegment};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::text_edit_ops::{
@@ -756,64 +758,6 @@ fn hex_encode(bytes: &[u8]) -> String {
     out
 }
 
-fn quoted_segments(text: &str) -> Vec<String> {
-    quoted_segment_spans(text)
-        .into_iter()
-        .map(|segment| segment.text)
-        .collect()
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct QuotedSegment {
-    text: String,
-    start: usize,
-    end: usize,
-}
-
-fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
-    let mut segments = Vec::new();
-    let mut cursor = 0usize;
-    while cursor < text.len() {
-        let Some((relative_start, open, close)) =
-            text[cursor..]
-                .char_indices()
-                .find_map(|(index, character)| {
-                    quote_close_for(character).map(|close| (index, character, close))
-                })
-        else {
-            break;
-        };
-        let open_start = cursor + relative_start;
-        let content_start = open_start + open.len_utf8();
-        let Some(relative_end) = text[content_start..].find(close) else {
-            break;
-        };
-        let content_end = content_start + relative_end;
-        let segment_end = content_end + close.len_utf8();
-        segments.push(QuotedSegment {
-            text: text[content_start..content_end].to_owned(),
-            start: open_start,
-            end: segment_end,
-        });
-        cursor = segment_end;
-    }
-    segments
-}
-
-const fn quote_close_for(open: char) -> Option<char> {
-    match open {
-        '\'' => Some('\''),
-        '"' => Some('"'),
-        '`' => Some('`'),
-        '«' => Some('»'),
-        '“' => Some('”'),
-        '‘' => Some('’'),
-        '「' => Some('」'),
-        '『' => Some('』'),
-        _ => None,
-    }
-}
-
 fn normalize_replacement_prompt(prompt: &str) -> String {
     let mut normalized = String::with_capacity(prompt.len());
     for character in prompt.chars().flat_map(char::to_lowercase) {
@@ -838,24 +782,4 @@ fn text_after_colon(prompt: &str) -> Option<String> {
         })
         .trim();
     (!text.is_empty()).then(|| text.to_owned())
-}
-
-fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    for _ in 0..indent {
-        out.push(' ');
-    }
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
 }
