@@ -1,7 +1,7 @@
 //! Scoped post-processing for explicit edits to generated code artifacts.
 
 use crate::coding::ProgramSpec;
-use crate::normal_markov::quoted_segments;
+use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 
 pub fn apply_inline_hello_world_output_replacement(
     prompt: &str,
@@ -46,17 +46,4 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
             .or_else(|| values.last().cloned()),
         _ => None,
     }
-}
-
-fn unwrap_transport_quotes(text: &str) -> &str {
-    let trimmed = text.trim();
-    for quote in ['"', '\''] {
-        if let Some(inner) = trimmed
-            .strip_prefix(quote)
-            .and_then(|value| value.strip_suffix(quote))
-        {
-            return inner;
-        }
-    }
-    trimmed
 }

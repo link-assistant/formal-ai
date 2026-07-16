@@ -12,11 +12,13 @@ use super::planner::{
 };
 use crate::coding::{program_language_by_alias, program_task_by_alias, program_template};
 use crate::normal_markov::{
-    quoted_segments, RewriteHalt, RewriteOutcome, RewriteProgram, RewriteRule,
+    quoted_segments, unwrap_transport_quotes, RewriteHalt, RewriteOutcome, RewriteProgram,
+    RewriteRule,
 };
 use crate::protocol::ChatMessage;
 
 const MAX_REWRITE_STEPS: usize = 100_000;
+const RENDERED_TRACE_EDGE_STEPS: usize = 32;
 
 #[derive(Debug, Clone)]
 struct WorkspaceArtifact {
@@ -50,7 +52,20 @@ impl WorkspaceRewrite {
             let _ = writeln!(links, "  execution");
             link_field(&mut links, 4, "halt", &format!("{:?}", outcome.halt));
             link_field(&mut links, 4, "steps", &outcome.trace.len().to_string());
-            for step in &outcome.trace {
+            let omitted = outcome
+                .trace
+                .len()
+                .saturating_sub(RENDERED_TRACE_EDGE_STEPS * 2);
+            for (index, step) in outcome.trace.iter().enumerate() {
+                if omitted > 0 && index == RENDERED_TRACE_EDGE_STEPS {
+                    link_field(&mut links, 4, "omitted_steps", &omitted.to_string());
+                }
+                if omitted > 0
+                    && (RENDERED_TRACE_EDGE_STEPS..outcome.trace.len() - RENDERED_TRACE_EDGE_STEPS)
+                        .contains(&index)
+                {
+                    continue;
+                }
                 let _ = writeln!(
                     links,
                     "    applied rule={} byte_offset={}",
@@ -140,19 +155,6 @@ fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
         path: language.save_as.to_owned(),
         content: format!("{}\n", template.code.trim_end()),
     })
-}
-
-fn unwrap_transport_quotes(text: &str) -> &str {
-    let trimmed = text.trim();
-    for quote in ['"', '\''] {
-        if let Some(inner) = trimmed
-            .strip_prefix(quote)
-            .and_then(|value| value.strip_suffix(quote))
-        {
-            return inner;
-        }
-    }
-    trimmed
 }
 
 fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<WorkspaceRewrite> {

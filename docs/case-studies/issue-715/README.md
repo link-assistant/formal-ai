@@ -76,7 +76,7 @@ and [`formal-ai-agent-learning.log`](test-logs/formal-ai-agent-learning.log).
 | Prevent runaway or partial edits | Each execution has a step bound. A cyclic program returns `StepLimit` without a write call. | `a -> b`, `b -> a` regression |
 | Avoid language/extension gates | The active prior write may be any path; rewrite data is UTF-8 text rather than a source-language AST. | Ten catalog languages, `notes.custom-format`, and four natural languages |
 | Support multiple rules | Every ordered old/new pair becomes a rule; evaluation restarts at the highest-priority rule after every non-terminal substitution. | `Hello -> Hi`, `world -> team` integration and cyclic safety case |
-| Make execution auditable | Final responses render target, bound, each pattern/replacement/terminal flag, halt reason, applied rule, and byte offset in Links Notation. | Unit assertions and retained OpenCode JSONL/server trace |
+| Make execution auditable without unbounded responses | Outcomes retain every applied rule and byte offset; final Links Notation renders the total plus bounded head/tail trace excerpts. | Unit assertions, bounded-cycle regression, and retained OpenCode JSONL/server trace |
 | Learn without autonomous promotion | Persisted failures and linked amendments feed the production associative-learning adapter; the derived report remains `awaiting_human_review`. | Learning derivation test and built-in Agent CLI session |
 | Accept broad NL variation without hardcoded multilingual cues | The compiler consumes ordered structural literal slots independently of surrounding prose. | Ten creation/deletion phrasings in each of English, Russian, Hindi, and Chinese |
 

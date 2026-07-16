@@ -148,14 +148,31 @@ pub fn quoted_segments(text: &str) -> Vec<String> {
             break;
         };
         let content_start = open_at + open.len();
-        let Some(relative_end) = text[content_start..].find(close) else {
+        let Some(content_end) = closing_delimiter(text, content_start, close) else {
             break;
         };
-        let content_end = content_start + relative_end;
         result.push(text[content_start..content_end].to_owned());
         cursor = content_end + close.len();
     }
     result
+}
+
+/// Remove one pair of client-added framing quotes without consuming literal
+/// operands such as `'old' -> 'new'`.
+#[must_use]
+pub fn unwrap_transport_quotes(text: &str) -> &str {
+    let trimmed = text.trim();
+    for quote in ['"', '\''] {
+        if let Some(inner) = trimmed
+            .strip_prefix(quote)
+            .and_then(|value| value.strip_suffix(quote))
+        {
+            if !inner.contains(quote) {
+                return inner;
+            }
+        }
+    }
+    trimmed
 }
 
 fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
@@ -191,10 +208,32 @@ fn next_complete_pair(
                 .next_back()
                 .is_some_and(|character| character.is_ascii_alphanumeric());
         let content_start = open_at + open.len();
-        if !previous_is_ascii_word && text[content_start..].contains(close) {
+        if !previous_is_ascii_word && closing_delimiter(text, content_start, close).is_some() {
             return Some((open_at, open, close));
         }
         from = content_start;
+    }
+    None
+}
+
+fn closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
+    let mut from = cursor;
+    while let Some(relative) = text[from..].find(close) {
+        let close_at = from + relative;
+        let after_close = close_at + close.len();
+        let is_ascii_apostrophe = close == "'"
+            && text[..close_at]
+                .chars()
+                .next_back()
+                .is_some_and(|character| character.is_ascii_alphanumeric())
+            && text[after_close..]
+                .chars()
+                .next()
+                .is_some_and(|character| character.is_ascii_alphanumeric());
+        if !is_ascii_apostrophe {
+            return Some(close_at);
+        }
+        from = after_close;
     }
     None
 }
