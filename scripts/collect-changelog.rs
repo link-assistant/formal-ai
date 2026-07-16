@@ -138,13 +138,21 @@ fn collect_fragments(changelog_dir: &str) -> String {
 
 fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
     let date_str = Utc::now().format("%Y-%m-%d").to_string();
-    let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, fragments);
+    // One section, with no surrounding blank lines of its own. Each branch below
+    // adds exactly the separators its context needs, so the result matches what
+    // `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs: the
+    // marker followed by one blank line, one blank line between sections, and a
+    // single trailing newline.
+    let section = format!("## [{}] - {}\n\n{}", version, date_str, fragments);
+    let new_entry = format!("{}\n", section);
 
     if Path::new(changelog_file).exists() {
         let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
 
         if content.contains(INSERT_MARKER) {
-            content = content.replace(INSERT_MARKER, &format!("{}{}", INSERT_MARKER, new_entry));
+            // The marker is followed by "\n\n## [previous]", so the section
+            // carries no trailing newline of its own here.
+            content = content.replace(INSERT_MARKER, &format!("{}\n\n{}", INSERT_MARKER, section));
         } else {
             // Insert after the first ## heading
             let lines: Vec<&str> = content.lines().collect();
@@ -161,7 +169,9 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
                 let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
                 new_lines.push(new_entry.clone());
                 new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-                content = new_lines.join("\n");
+                // `lines()` drops the trailing newline and `join` never
+                // restores it.
+                content = format!("{}\n", new_lines.join("\n"));
             } else {
                 // Append after the main heading
                 content.push_str(&new_entry);
@@ -175,8 +185,8 @@ fn update_changelog(changelog_file: &str, version: &str, fragments: &str) {
             All notable changes to this project will be documented in this file.\n\n\
             The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\n\
             and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n\
-            {}\n{}\n",
-            INSERT_MARKER, new_entry
+            {}\n\n{}\n",
+            INSERT_MARKER, section
         );
         fs::write(changelog_file, content).expect("Failed to write changelog");
     }

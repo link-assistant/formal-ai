@@ -441,7 +441,10 @@ fn collect_changelog_with_date(
         return;
     }
 
-    let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
+    // No leading newline: `lines[..idx]` already ends with the blank line that
+    // follows the insert marker, so opening with one produced a second blank
+    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
+    let new_entry = format!("## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
 
     if !Path::new(changelog_file).exists() {
         return;
@@ -462,7 +465,9 @@ fn collect_changelog_with_date(
         let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
         new_lines.push(new_entry.clone());
         new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-        content = new_lines.join("\n");
+        // `lines()` drops the trailing newline and `join` never restores it, so
+        // every release used to strip the file's final newline.
+        content = format!("{}\n", new_lines.join("\n"));
     } else {
         content.push_str(&new_entry);
     }
@@ -554,6 +559,69 @@ bump: patch
             "2026-07-15",
         );
         assert_eq!(fs::read_to_string(&changelog).unwrap(), after_first_release);
+    }
+
+    /// The release commit must write CHANGELOG.md in exactly the shape
+    /// `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs from
+    /// git history, byte for byte. It did not: the entry was spliced in before
+    /// the first `## [` line, but `lines[..idx]` already ends with the blank
+    /// line that follows the insert marker and `new_entry` opened with another
+    /// `\n`, so every release left a second blank line after the marker. And
+    /// `lines()` drops the trailing newline that `join("\n")` never restores,
+    /// so every release also stripped the final newline. Both survived because
+    /// the check only runs when the lint job's path filter fires, which a
+    /// release commit does not trigger -- so `main` went red on the next
+    /// unrelated PR and someone hand-fixed it ("refresh reconstructed release
+    /// artifacts", repeatedly).
+    #[test]
+    fn release_writes_the_changelog_exactly_as_reconstruction_expects() {
+        let repo = temp_dir("changelog-canonical-shape");
+        let changelog_dir = repo.join("changelog.d");
+        fs::create_dir_all(&changelog_dir).unwrap();
+        fs::write(
+            changelog_dir.join("fragment.md"),
+            "---\nbump: patch\n---\n\n### Fixed\n- A representative fragment.\n",
+        )
+        .unwrap();
+
+        // The canonical shape: marker, exactly one blank line, newest section,
+        // one blank line between sections, single trailing newline.
+        let changelog = repo.join("CHANGELOG.md");
+        let before = "\
+# Changelog
+
+<!-- changelog-insert-here -->
+
+## [0.1.0] - 2026-01-01
+
+### Added
+- Initial release
+";
+        fs::write(&changelog, before).unwrap();
+
+        collect_changelog_with_date(
+            changelog_dir.to_str().unwrap(),
+            changelog.to_str().unwrap(),
+            "0.2.0",
+            "2026-07-16",
+        );
+
+        let expected = "\
+# Changelog
+
+<!-- changelog-insert-here -->
+
+## [0.2.0] - 2026-07-16
+
+### Fixed
+- A representative fragment.
+
+## [0.1.0] - 2026-01-01
+
+### Added
+- Initial release
+";
+        assert_eq!(fs::read_to_string(&changelog).unwrap(), expected);
     }
 
     fn git_ok(repo: &Path, args: &[&str]) {

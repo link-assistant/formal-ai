@@ -388,6 +388,7 @@ changelog.d/20260713_180000_issue_682_null_content.md	0.289.0	0b29af6ec538f1f8ab
 changelog.d/20260713_210000_issue_680_intent_routing.md	0.285.0	414c19ed685e9159ad3823f7e53d583c46ae0f67
 changelog.d/20260713_654_general_agentic_planner.md	0.281.0	455c692328aa06430324a460a9291022bb947032
 changelog.d/20260713_655_self_coding_replay.md	0.284.0	b9a320a5bce3950b08b56c509d2074ebae52b8bd
+changelog.d/20260714_090000_issue_656_promotion.md	0.296.0	b2064b2ad2158659a9c4b38da6c30656504c35cf
 changelog.d/20260714_090000_issue_686_associative_persistence.md	0.290.0	d191e8b34b8014c6eada85fcee0729420b3f5f06
 changelog.d/20260714_120000_issue_687_agentic_simple_requests.md	0.292.0	5725e43a26d45b5f0e8612c904b98f1fbccdd2ac
 changelog.d/20260714_220000_issue_711_consume_release_fragments.md	0.295.0	1a0a9a615da67127b4bc655f8a783c498b76316d
@@ -398,3 +399,4 @@ changelog.d/20260714_issue_714_agentic_mode.md	0.294.0	166e1c1f9969800e8d17850e0
 changelog.d/20260714_requirement_audit_doc_sync.md	0.286.0	d7b31950aad59c5fadb926d6f64cf5c9884770e3
 changelog.d/20260715_030000_issue_716_agentic_command_routing.md	0.295.2	b5234458993dd723839cdb0b8df559c246b627d1
 changelog.d/20260715_060000_issue_717_ci_audit.md	0.291.0	b75013ad8788209d795f4c643cc03c8578903625
+changelog.d/20260716_073000_issue_730_ci_audit.md	0.296.0	b2064b2ad2158659a9c4b38da6c30656504c35cf
