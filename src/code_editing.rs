@@ -30,6 +30,7 @@ pub fn apply_inline_hello_world_source_replacement(
 }
 
 fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
+    let prompt = unwrap_transport_quotes(prompt);
     if prompt.contains('?') || prompt.contains('？') {
         return None;
     }
@@ -45,4 +46,17 @@ fn inline_hello_world_replacement(prompt: &str) -> Option<String> {
             .or_else(|| values.last().cloned()),
         _ => None,
     }
+}
+
+fn unwrap_transport_quotes(text: &str) -> &str {
+    let trimmed = text.trim();
+    for quote in ['"', '\''] {
+        if let Some(inner) = trimmed
+            .strip_prefix(quote)
+            .and_then(|value| value.strip_suffix(quote))
+        {
+            return inner;
+        }
+    }
+    trimmed
 }
