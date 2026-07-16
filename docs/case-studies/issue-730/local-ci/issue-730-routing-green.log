@@ -1,0 +1,47 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 49.03s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 8 tests
+test issue_687::report_issue::bare_report_after_conversation_files_the_issue ... ok
+test issue_687::report_issue::bare_russian_report_files_the_issue ... ok
+test issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command ... FAILED
+test issue_687::report_issue::report_then_confirms_with_created_url ... FAILED
+test issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data ... FAILED
+test issue_687::report_issue::report_request_emits_gh_issue_create ... FAILED
+test issue_687::report_issue::unrelated_report_shaped_prompt_is_not_an_issue_filing ... ok
+test issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report ... ok
+
+failures:
+
+---- issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command stdout ----
+
+thread 'issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command' (30390) panicked at tests/unit/issue_687.rs:25:38:
+planner should recognise the task
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- issue_687::report_issue::report_then_confirms_with_created_url stdout ----
+
+thread 'issue_687::report_issue::report_then_confirms_with_created_url' (30393) panicked at tests/unit/issue_687.rs:25:38:
+planner should recognise the task
+
+---- issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data stdout ----
+
+thread 'issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data' (30391) panicked at tests/unit/issue_687.rs:25:38:
+planner should recognise the task
+
+---- issue_687::report_issue::report_request_emits_gh_issue_create stdout ----
+
+thread 'issue_687::report_issue::report_request_emits_gh_issue_create' (30392) panicked at tests/unit/issue_687.rs:25:38:
+planner should recognise the task
+
+
+failures:
+    issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command
+    issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data
+    issue_687::report_issue::report_request_emits_gh_issue_create
+    issue_687::report_issue::report_then_confirms_with_created_url
+
+test result: FAILED. 4 passed; 4 failed; 0 ignored; 0 measured; 1643 filtered out; finished in 2.63s
+
+error: test failed, to rerun pass `--test unit`

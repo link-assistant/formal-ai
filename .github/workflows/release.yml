@@ -29,6 +29,9 @@ on:
         required: false
         type: string
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   # Cancel superseded runs on PR branches to save CI minutes, but never cancel a
@@ -1145,6 +1148,18 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+        # Use wording different from the captured case-study run. Mentioning an
+        # existing issue beside a file request must drive the complete write plan,
+        # never the report router's real `gh issue create` side effect.
+        env:
+          PORT: 8781
+          TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
+          EXPECT_FILE: issue-730-finding.md
+          EXPECT_TEXT: provenance paths are portable
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
       - name: Run agent CLI E2E — generated programs use harness commands (issue #716)
         # The exact screenshot reproduction must create the source in the real
         # Agent CLI workspace, then ask that harness to compile and run it. The
@@ -1313,10 +1328,12 @@ jobs:
             ${{ runner.os }}-cargo-docs-
 
       - name: Generate Rust API docs (cargo doc)
+        env:
+          RUSTDOCFLAGS: -D warnings
         run: |
           # Document just the library (lib name: formal_ai). --no-deps keeps the
-          # output small and fast; RUSTDOCFLAGS is unset so doc-link warnings do
-          # not fail the deploy.
+          # output small and fast. Keep rustdoc fail-closed just like rustc so a
+          # green Pages deployment cannot conceal broken API links or markup.
           cargo doc --no-deps --lib
           # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
           # redirect so /docs/api/ lands on the crate root instead of 404ing.
@@ -1368,6 +1385,10 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        env:
+          # deploy-pages v5 still imports core punycode. Keep every other Node
+          # warning visible while upstream issue #434 removes this dependency.
+          NODE_OPTIONS: --disable-warning=DEP0040
 
   # === E2E TESTS (GITHUB PAGES) ===
   # Run Playwright tests against the live GitHub Pages URL after deployment.

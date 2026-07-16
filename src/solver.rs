@@ -93,7 +93,7 @@ impl ExecutionSurface {
     }
 }
 
-/// How the composite-program [`blueprint`](crate::coding::blueprint) synthesizer
+/// How the composite-program `blueprint` synthesizer
 /// turns its annotated recipe template into the program shown to the user.
 ///
 /// Issue #340 asked the engine to "try all directions" of program synthesis and
@@ -265,7 +265,7 @@ impl Default for SolverConfig {
 impl SolverConfig {
     /// Build a [`SolverConfig`] using the documented environment overrides.
     ///
-    /// The parsing body lives in [`crate::solver_helpers::config_from_env`] to keep
+    /// The parsing body lives in `crate::solver_helpers::config_from_env` to keep
     /// this module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
     #[must_use]
     pub fn from_env() -> Self {

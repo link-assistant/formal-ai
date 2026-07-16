@@ -19,7 +19,7 @@
 //! network, so it is committed byte-for-byte as `data/meta/question-catalog.lino` and
 //! asserted against a fresh render in the issue-#527 tests — like the self-healing and
 //! repair-strategy documents. Nothing here trains or promotes anything: the answered
-//! questions are a reviewable *recall table* ([`answer_for`]), so a question the system
+//! questions are a reviewable *recall table* (`answer_for`), so a question the system
 //! already answered is recognised and answered from the catalog instead of re-derived,
 //! while the human-gated learning ledger stays the only path that changes solver
 //! behaviour. Neural inference stays a NON-GOAL — every candidate, class, and answer is
@@ -77,9 +77,9 @@ pub struct CatalogAnswer {
 pub struct QuestionCatalog {
     /// Size of the frequency-ranked vocabulary the candidates were drawn from.
     pub vocabulary_size: usize,
-    /// The first [`CATALOG_CANDIDATE_COUNT`] candidates, smallest-first, each classified.
+    /// The first `CATALOG_CANDIDATE_COUNT` candidates, smallest-first, each classified.
     pub candidates: Vec<CatalogCandidate>,
-    /// The first [`CATALOG_ANSWER_COUNT`] grammatical-and-meaningful questions, answered.
+    /// The first `CATALOG_ANSWER_COUNT` grammatical-and-meaningful questions, answered.
     pub answered: Vec<CatalogAnswer>,
 }
 

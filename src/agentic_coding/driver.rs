@@ -59,7 +59,7 @@ pub struct DriverOutcome {
     pub final_answer: String,
     /// How many server round-trips the loop took.
     pub turns: usize,
-    /// Whether the loop stopped at [`MAX_TURNS`] rather than a final answer.
+    /// Whether the loop stopped at `MAX_TURNS` rather than a final answer.
     pub hit_turn_cap: bool,
 }
 

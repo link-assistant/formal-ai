@@ -2,7 +2,7 @@
 //!
 //! These are the surface-extraction routines that bridge the natural-
 //! language prompt and the [`crate::translation::TranslationPipeline`].
-//! Quoted-fragment extraction lives in [`crate::solver_helpers`]; this
+//! Quoted-fragment extraction lives in `crate::solver_helpers`; this
 //! module focuses on the unquoted variant introduced for issue #216
 //! (`translate apple to russian`).
 //!

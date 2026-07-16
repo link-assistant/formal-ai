@@ -76,7 +76,59 @@ pub(super) fn is_report_intent(task: &str) -> bool {
         .iter()
         .any(|word| normalize_prompt(word) == normalized);
     bare_action
-        || (action && lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT, &normalized))
+        || (action
+            && lexicon.mentions_role(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT, &normalized)
+            && report_action_governs_subject(lexicon, &normalized))
+}
+
+/// Require a report verb and issue/repository object to form one local phrase.
+/// Coding tasks often mention an existing issue elsewhere in a create-file
+/// request; treating those unrelated tokens as a report command creates a
+/// duplicate issue instead of authoring the requested file.
+fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> bool {
+    let padded = format!(" {normalized} ");
+    let matches_for = |role| {
+        lexicon
+            .words_for_role(role)
+            .iter()
+            .filter_map(|word| {
+                let word = normalize_prompt(word);
+                padded
+                    .find(&format!(" {word} "))
+                    .or_else(|| {
+                        (!normalized.contains(char::is_whitespace))
+                            .then(|| normalized.find(&word))
+                            .flatten()
+                    })
+                    .map(|position| (position, word))
+            })
+            .collect::<Vec<_>>()
+    };
+    let actions = matches_for(seed::ROLE_AGENT_ACTION_REPORT_VERB);
+    let subjects = matches_for(seed::ROLE_AGENT_ACTION_REPORT_SUBJECT);
+    let ambiguous_actions = [
+        seed::ROLE_FILE_WRITE_ACTION_CUE,
+        seed::ROLE_FILE_WRITE_TARGET_CUE,
+    ]
+    .into_iter()
+    .flat_map(|role| lexicon.words_for_role(role))
+    .map(|word| normalize_prompt(&word))
+    .collect::<Vec<_>>();
+
+    actions.iter().any(|(action_position, action)| {
+        subjects.iter().any(|(subject_position, _)| {
+            let distance = action_position.abs_diff(*subject_position);
+            let natural_order = action_position < subject_position;
+            if ambiguous_actions
+                .iter()
+                .any(|candidate| candidate == action)
+            {
+                natural_order && distance <= 16
+            } else {
+                distance <= 32
+            }
+        })
+    })
 }
 
 /// Compose the issue from the conversation: a title from the most recent

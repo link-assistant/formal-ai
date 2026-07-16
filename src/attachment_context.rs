@@ -4,7 +4,7 @@
 //! Web app, and other interface surfaces.
 //!
 //! The web app already prepends an `Attached files:` block to the prompt so the
-//! solver's [`document_originality`](crate::solver_handlers) handler can
+//! solver's `document_originality` handler can
 //! recognise and ground the request. This module lifts that block-building into
 //! one canonical, testable place so every surface — Telegram included —
 //! produces the exact same textual context the handler already parses.

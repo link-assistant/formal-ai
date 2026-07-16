@@ -5,7 +5,7 @@
 //! to reason about the failure, map it onto the source that would change, propose a
 //! fix, gate it against a benchmark, and — only with human approval — promote the
 //! lesson. [`crate::self_healing`] realises that closed loop as an auditable,
-//! proposal-only [`RepairCase`](crate::self_healing::RepairCase). This module makes
+//! proposal-only [`RepairCase`]. This module makes
 //! the loop reachable *through the agentic interface*: an external agent CLI
 //! (`Codex`, `OpenCode`, `Gemini`, `Agent CLI`) — or the in-repo driver — asks Formal AI
 //! to self-heal, and the deterministic planner walks a write → verify → final

@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.82s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 9 tests
+test ci_cd::issue_717::attestations_digest_artifacts_without_parsing_cross_platform_checksum_text ... ok
+test ci_cd::issue_717::change_detection_covers_the_complete_pull_request ... ok
+test ci_cd::issue_717::generated_api_documentation_fails_on_every_rustdoc_warning ... ok
+test ci_cd::issue_717::vscode_packaging_copies_the_repository_license ... ok
+test ci_cd::issue_717::workflows_suppress_git_default_branch_hints_at_the_source ... ok
+test ci_cd::issue_717::coverage_is_retained_and_remote_upload_is_fail_closed_when_configured ... ok
+test ci_cd::issue_717::file_size_warning_scope_uses_the_event_diff_base ... ok
+test ci_cd::issue_717::artifact_download_and_expected_adhoc_signing_are_warning_free ... ok
+test ci_cd::issue_717::agent_cli_stderr_policy_accepts_only_reviewed_upstream_warnings ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1642 filtered out; finished in 0.04s
+

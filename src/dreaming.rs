@@ -15,7 +15,7 @@
 //! amendment can re-derive the specific task/test-run records it subsumes, those
 //! specifics become safe to forget under storage pressure while the generalized
 //! amendment is retained forever. This is the issue's core rule: "as soon as
-//! [a generalization] is working, [the] specific algorithm can be forgotten",
+//! \[a generalization\] is working, \[the\] specific algorithm can be forgotten",
 //! yet "our general meta algorithm must keep changes that allow it to solve all
 //! other tasks".
 

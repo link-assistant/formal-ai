@@ -286,7 +286,7 @@ impl Context {
     /// evidence plus the *current* values of the statements it depends on
     /// (supporting dependencies raise it, contradicting ones lower it), reusing
     /// [`StatementAssessment::assess`]. Passes repeat until no snapped value
-    /// changes (converged) or the [`MAX_RECALCULATION_PASSES_PER_STATEMENT`]
+    /// changes (converged) or the `MAX_RECALCULATION_PASSES_PER_STATEMENT`
     /// bound trips. The dependency structure is mirrored into the links network
     /// so the context stays a single inspectable graph.
     pub fn recalculate(&mut self) -> RecalculationReport {
