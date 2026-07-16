@@ -2,11 +2,11 @@
 
 ## Executive result
 
-The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, two CI false negatives, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. The upstream parser fix is in `actions/attest` v4.
+The audit found one reproducible release failure, three repository-controlled warning classes, one warning-policy design problem, two CI false negatives, and several third-party package notices. The release failure was not flaky: the deprecated attestation wrapper parsed an LF-only checksum manifest on Windows using the host EOL (`\r\n`), joined every checksum line into one subject name, and GitHub rejected that subject at 256 characters. Correction from the issue 730 follow-up audit: the upstream parser fix merged after v4.1.1 and was not yet included in the released `actions/attest@v4` code on 2026-07-16.
 
 The repository changes therefore:
 
-1. use `actions/attest@v4` for both desktop and VS Code checksum manifests;
+1. use the then-current `actions/attest@v4` interface for both desktop and VS Code checksum manifests (issue 730 subsequently changed these to direct artifact paths because the released checksum parser remained broken);
 2. always retain LCOV coverage, use fail-closed Codecov v7 when configured, and use download-artifact v8, removing Node 20 and `Buffer()` deprecations controlled by this repository;
 3. configure Git's default initial branch before actions invoke Git, removing repeated runner hints;
 4. package the repository license in the VSIX;
@@ -45,7 +45,7 @@ That integration exposed a separate general Agent CLI defect: the deterministic 
 | 2026-06-24 | PR 562 pinned Pages deployment to the release commit. |
 | 2026-06-28 | PR 583 restored release badge checks. |
 | 2026-07-04 | actions/attest issue 440 reported LF checksum parsing failure on Windows. |
-| 2026-07-09 | actions/attest PR 443 fixed the parser with `/\r?\n/` and shipped in v4. |
+| 2026-07-09 | actions/attest PR 443 fixed the parser with `/\r?\n/`; issue 730 later established that the fix had merged after v4.1.1 and was not yet released. |
 | 2026-07-14 16:58 | formal-ai main run 29351401385 passed but emitted repeated file-size and Codecov Node warnings. |
 | 2026-07-14 17:30 | desktop run 29354019108 failed Windows x64 and arm64 attestations with an oversized subject name. |
 | 2026-07-15 | issue 717 audit reproduced the policy failures, compared all templates, filed upstream reports, and implemented regression coverage. |
@@ -69,8 +69,8 @@ Alternatives considered:
 
 - Emit `os.EOL` from the manifest generator. Rejected: checksum files are portable text artifacts and consumers should accept LF; it would leave the deprecated Node action warning.
 - Convert files to CRLF only on Windows. Rejected: platform-specific workaround with the same obsolete wrapper.
-- Pass individual subject paths. Rejected: it duplicates the manifest's authoritative artifact selection.
-- Upgrade to `actions/attest@v4`. Selected: fixes newline parsing upstream, removes the wrapper, and targets the supported runtime.
+- Pass individual subject paths. Initially rejected because it duplicates the manifest's authoritative artifact selection; issue 730 selected this fail-safe after proving the released v4 parser still used `os.EOL`.
+- Upgrade to `actions/attest@v4`. Initially selected because upstream PR 443 had merged. The issue 730 follow-up proved this release assumption was wrong: v4.1.1 predates the merge and its bundled parser still used `os.EOL`.
 
 ### 2. Node 20 and Buffer deprecations
 
