@@ -6,9 +6,11 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_improve;
 mod cli_memory;
 mod cli_shared_dialog;
 
+use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
@@ -179,6 +181,46 @@ enum Command {
         /// Webhook listening port (only used when --mode=webhook).
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
+    },
+    /// Benchmark-gated promotion of self-improvement proposals (issue #656, E37).
+    ///
+    /// Collects open promotion proposals, replays their benchmark ratchets, and
+    /// prints the promotion plan. `--promote` runs the protocol; without
+    /// `--apply` it is a dry run that touches no files. `--apply` materializes the
+    /// accepted seed edits into `--seed-root` and requires `--confirm`; it never
+    /// pushes — the branch/PR step is emitted as a plan for human review.
+    Improve {
+        /// Run the promotion protocol. Without it, prints usage guidance only.
+        #[arg(long, default_value_t = false)]
+        promote: bool,
+
+        /// `promotion_proposals` Links Notation document containing the actual
+        /// open proposals. Required with `--promote`; synthetic demonstration
+        /// proposals are never a production default.
+        #[arg(long, value_name = "PATH")]
+        proposals: Option<PathBuf>,
+
+        /// Workspace root the accepted seed edits are materialized into on
+        /// `--apply`. Defaults to the current directory.
+        #[arg(long, value_name = "PATH", default_value = ".")]
+        seed_root: PathBuf,
+
+        /// Optional memory file the promotion event chain is appended to on
+        /// `--apply`.
+        #[arg(long, value_name = "PATH")]
+        memory: Option<PathBuf>,
+
+        /// Materialize the accepted seed edits. Requires `--confirm`.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before applying to `--memory`.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
     },
 }
 
@@ -520,6 +562,23 @@ fn main() -> Result<(), Box<dyn Error>> {
             allowed_updates,
             host,
             port,
+        })?,
+        Command::Improve {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
+        } => run_improve(&ImproveArgs {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
         })?,
     }
 

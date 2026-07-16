@@ -113,6 +113,14 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
+    // Resolve an unambiguous literal write before keyword recipes: arbitrary
+    // filenames/payloads may legitimately contain "issue", "report", or "learning".
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| compose_general_change_plan(&task))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
     // Specific self-inspection routes precede broad formalization. Associative
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
@@ -212,13 +220,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Resolve dialogue meta-questions before open-world research.
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
-    }
-    // Probe writes before reads so a named output file is not mistaken for input.
-    if let Some(plan) = tool_for(tool_names, Capability::Write)
-        .and_then(|_| compose_general_change_plan(&task))
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
-    {
-        return Some(plan);
     }
     // Probe edits before reads for the same target-file ambiguity.
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {

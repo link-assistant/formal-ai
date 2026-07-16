@@ -348,7 +348,7 @@ Requirement-level status by area:
 | Silently-dropped chat/UX/process requirements re-verified | Not done (audit checklist compiled) | [#710](https://github.com/link-assistant/formal-ai/issues/710) |
 | Data-is-the-interface hygiene (no hardcoded NL, links-network terminology, precedence in seed) | Partial | [#659](https://github.com/link-assistant/formal-ai/issues/659), [#663](https://github.com/link-assistant/formal-ai/issues/663), [#664](https://github.com/link-assistant/formal-ai/issues/664) |
 | Delivery breadth (PWA, npm engine, VS Code Marketplace, debugger, WebVM, packages, cloud sync) | Not done | [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670), [#658](https://github.com/link-assistant/formal-ai/issues/658) |
-| Self-coding chain (workspace census → gated promotion → self-hosting metric) | Not done | [#673](https://github.com/link-assistant/formal-ai/issues/673) → [#656](https://github.com/link-assistant/formal-ai/issues/656) → [#657](https://github.com/link-assistant/formal-ai/issues/657) |
+| Self-coding chain (workspace census → gated promotion → self-hosting metric) | Partial: #656 now executes trusted gates and Agent-authored local-branch promotion; census and metric remain | [#673](https://github.com/link-assistant/formal-ai/issues/673) → [#656](https://github.com/link-assistant/formal-ai/issues/656) → [#657](https://github.com/link-assistant/formal-ai/issues/657) |
 
 **Open planning batches.** The "no vision-planning epic remains open" statement
 earlier in this file is scoped to issue #244 only. Two batches are open now:
