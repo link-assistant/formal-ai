@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.296.1] - 2026-07-16
+
+### Fixed
+- Stop the auto-release job from failing with "cannot rebase: Your index contains
+  uncommitted changes" when a concurrent release lands on `origin/main` mid-job.
+  The release now rebases onto the remote while the tree is still clean, before
+  the version bump is written and staged.
+- Only rebase when `origin/<branch>` actually has commits the release job lacks.
+  Being ahead of the remote no longer reports "Local branch is behind remote".
+- Create the release tag only after the release commit reaches the remote, so a
+  `pull --rebase` retry can no longer leave the tag on an orphaned commit.
+
+### Fixed
+- Stop the release jobs from crashing the runner with "No space left on device"
+  during the Docker build, which published the crate to crates.io but produced
+  no image and no GitHub Release. The disk reclaim that issue #523 added to the
+  Pages job now also runs in the auto-release and manual-release jobs, and lives
+  in the shared `scripts/free-runner-disk.sh`.
+- Warn when a runner is still nearly full after the reclaim, so the next
+  occurrence leaves a diagnosable annotation instead of a job that dies with no
+  failed step and no downloadable log.
+
+### Fixed
+- Stop the desktop release from reporting success when only some targets built.
+  `BUILD-PROVENANCE.txt` listed all six builders unconditionally, so a run where
+  most of the matrix failed still published a green, authoritative-looking
+  `SHA256SUMS.txt` claiming builds that never happened. The manifest now lists
+  only the builders that produced a fragment, names the missing targets, and the
+  run fails after publishing the partial manifest.
+- Verify the Linux and Windows artifacts before uploading them. Only the macOS
+  artifacts were smoke tested, so the other four targets shipped with nothing
+  checking that they were produced under the expected names and non-empty.
+- Attach the SLSA build provenance before publishing assets to the release,
+  rather than after, so assets are never downloadable without an attestation.
+- Deduplicate concurrent desktop releases on the automatic (`workflow_run`) path.
+  The concurrency group read `release.tag_name`/`inputs.tag`, neither of which
+  that event carries, so it fell through to the always-unique `run_id` and
+  concurrent runs for the same tag raced on `gh release upload --clobber` and on
+  the consolidated `SHA256SUMS.txt`.
+
+### Fixed
+- Write `CHANGELOG.md` during a release in the exact shape the reconstruction
+  check expects. The release spliced each new section in before the first
+  `## [` line, but the preceding lines already ended with the blank line that
+  follows the insert marker and the entry opened with another newline, so every
+  release left a doubled blank line; `lines()` also dropped the file's trailing
+  newline, which `join` never restored. Both defects went unnoticed because the
+  check only runs when the lint job's path filter fires, which release commits
+  do not trigger, so `main` turned red on the next unrelated pull request and
+  the artifacts were refreshed by hand instead. Applied to both the automatic
+  (`version-and-commit.rs`) and manual (`collect-changelog.rs`) release paths.
+
+### Fixed
+- Stop the issue #656 traceability test from asserting that a changelog fragment
+  exists forever. Fragments are consumed by the release that ships them, so the
+  test began failing on every run once the v0.296.0 release deleted the fragment
+  it pinned. It now follows the entry across its lifecycle: a fragment before
+  release, a `CHANGELOG.md` section after one.
+
 ## [0.296.0] - 2026-07-16
 
 ### Added
