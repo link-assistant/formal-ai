@@ -143,7 +143,13 @@ It failed on 61 warnings. The same command passes after the link corrections. Fo
 - action warning suppression is code-specific and step-scoped; and
 - existing-issue file-writing prompts cannot produce `gh issue create`.
 
-The local pre-fix and post-fix logs are stored at the root of this case study. The full all-features run passed 100 integration tests and hit four parallel loopback tests with the same `WouldBlock` resource-contention error; all four passed immediately with `--test-threads=1`, so no production timeout was changed. The captured suite and focused-rerun logs preserve that classification. Fresh GitHub run metadata and complete logs are added after the final branch SHA is pushed; only runs whose head SHA and creation timestamp postdate that commit count as remote verification.
+The local pre-fix and post-fix logs are stored at the root of this case study. The full all-features run passed 100 integration tests and hit four parallel loopback tests with the same `WouldBlock` resource-contention error; all four passed immediately with `--test-threads=1`, so no production timeout was changed. The captured suite and focused-rerun logs preserve that classification.
+
+### Fresh branch verification
+
+CI/CD Pipeline run [29482019343](https://github.com/link-assistant/formal-ai/actions/runs/29482019343) was created at 2026-07-16 08:02:34 UTC for implementation commit `13379cc32500e1b4fe786f16187baaa677096f0d` and completed successfully at 08:20:17 UTC. Every required pull-request job passed, including the new real Agent CLI existing-issue regression, strict lint and rustdoc gates, the complete Rust test suite, local-demo browser tests, coverage, changelog checks, and package construction. Release-only jobs were correctly skipped for the pull-request event.
+
+The run produced no error annotations or failed steps. Its four annotations were the two reviewed notices for Agent CLI compatibility diagnostics and retained LCOV without a Codecov token, plus preventive warnings for `src/seed.rs` at 909 lines and `src/dreaming.rs` at 903 lines; both files remain below the 1,000-line hard limit. The complete 21,226-line log, run metadata, and job/step metadata are `raw-data/ci-logs/branch-29482019343.log`, `branch-29482019343.json`, and `branch-29482019343-jobs.json`. A second run on the evidence-only follow-up commit is required before the pull request is marked ready, so remote verification cannot be invalidated by the act of committing this evidence.
 
 ## Requirements traceability
 
