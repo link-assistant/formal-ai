@@ -1,4 +1,4 @@
-//! Workspace-backed program generation and contextual source changes (#715).
+//! Workspace-backed artifact generation and contextual changes (#715).
 //!
 //! The latest user turn does not have to repeat the filename or original text:
 //! the prior tool-call history is the authoritative mutable-artifact context.
@@ -10,75 +10,53 @@ use serde_json::{json, Value};
 use super::planner::{
     plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
 };
-use crate::coding::{
-    program_language_by_alias, program_task_by_alias, program_template, PROGRAM_LANGUAGES,
+use crate::coding::{program_language_by_alias, program_task_by_alias, program_template};
+use crate::normal_markov::{
+    quoted_segments, RewriteHalt, RewriteOutcome, RewriteProgram, RewriteRule,
 };
 use crate::protocol::ChatMessage;
 
+const MAX_REWRITE_STEPS: usize = 100_000;
+
 #[derive(Debug, Clone)]
-struct CodeArtifact {
+struct WorkspaceArtifact {
     path: String,
     content: String,
 }
 
-/// A small mutable instruction graph. Conditional jumps and backward edges make
-/// it a general string-rewriting representation; execution is bounded so an
-/// agent request cannot loop forever.
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum MutableInstruction {
-    ReplaceFirst {
-        old: String,
-        new: String,
-    },
-    JumpIfContains {
-        needle: String,
-        then_step: usize,
-        else_step: usize,
-    },
-    Jump(usize),
-    Halt,
-}
-
 #[derive(Debug, Clone)]
-struct MutableCodeProgram {
+struct WorkspaceRewrite {
     target: String,
-    instructions: Vec<MutableInstruction>,
-    max_steps: usize,
+    program: RewriteProgram,
 }
 
-impl MutableCodeProgram {
-    fn apply(&self, input: &str) -> Option<String> {
-        let mut value = input.to_owned();
-        let mut cursor = 0;
-        for _ in 0..self.max_steps {
-            match self.instructions.get(cursor)? {
-                MutableInstruction::ReplaceFirst { old, new } => {
-                    value = value.replacen(old, new, 1);
-                    cursor += 1;
-                }
-                MutableInstruction::JumpIfContains {
-                    needle,
-                    then_step,
-                    else_step,
-                } => {
-                    cursor = if value.contains(needle) {
-                        *then_step
-                    } else {
-                        *else_step
-                    }
-                }
-                MutableInstruction::Jump(next) => cursor = *next,
-                MutableInstruction::Halt => return Some(value),
-            }
+impl WorkspaceRewrite {
+    fn links_notation(&self, outcome: Option<&RewriteOutcome>) -> String {
+        let mut links = String::from("normal_markov_program\n");
+        link_field(&mut links, 2, "target", &self.target);
+        link_field(
+            &mut links,
+            2,
+            "max_steps",
+            &self.program.max_steps.to_string(),
+        );
+        for (index, rule) in self.program.rules.iter().enumerate() {
+            let _ = writeln!(links, "  rewrite_rule \"{index}\"");
+            link_field(&mut links, 4, "pattern", &rule.pattern);
+            link_field(&mut links, 4, "replacement", &rule.replacement);
+            link_field(&mut links, 4, "terminal", &rule.terminal.to_string());
         }
-        None
-    }
-
-    fn links_notation(&self) -> String {
-        let mut links = format!("mutation:target:'{}'\n", self.target.replace('\'', "\\'"));
-        for (index, instruction) in self.instructions.iter().enumerate() {
-            writeln!(links, "mutation:step:{index}:{instruction:?}")
-                .expect("writing to a String cannot fail");
+        if let Some(outcome) = outcome {
+            let _ = writeln!(links, "  execution");
+            link_field(&mut links, 4, "halt", &format!("{:?}", outcome.halt));
+            link_field(&mut links, 4, "steps", &outcome.trace.len().to_string());
+            for step in &outcome.trace {
+                let _ = writeln!(
+                    links,
+                    "    applied rule={} byte_offset={}",
+                    step.rule_index, step.byte_offset
+                );
+            }
         }
         links
     }
@@ -97,21 +75,30 @@ pub(super) fn plan_code_artifact_step(
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
 
-    if let Some(artifact) = latest_code_artifact(&messages[..latest_user]) {
-        let mutation = requested_mutation(task, &artifact)?;
+    if let Some(artifact) = latest_workspace_artifact(&messages[..latest_user]) {
+        let rewrite = requested_rewrite(task, &artifact)?;
         let current_messages = &messages[latest_user + 1..];
         if let Some(result) = latest_result(current_messages, Capability::Write) {
+            let outcome = latest_result(current_messages, Capability::Read)
+                .map(|read| rewrite.program.execute(&source_from_read_result(&read)));
             return Some(AgenticPlan::Final(format!(
                 "Updated `{}` through the workspace file tools.\n\n{}\n{}",
                 artifact.path,
-                mutation.links_notation(),
+                rewrite.links_notation(outcome.as_ref()),
                 result.trim()
             )));
         }
         if let Some(read_source) = latest_result(current_messages, Capability::Read) {
             let current_source = source_from_read_result(&read_source);
-            let updated = mutation.apply(&current_source)?;
-            if updated == current_source {
+            let outcome = rewrite.program.execute(&current_source);
+            if outcome.halt == RewriteHalt::StepLimit {
+                return Some(AgenticPlan::Final(format!(
+                    "Rewrite of `{}` reached its {MAX_REWRITE_STEPS}-step safety bound; no partial bytes were written.\n\n{}",
+                    artifact.path,
+                    rewrite.links_notation(Some(&outcome))
+                )));
+            }
+            if outcome.output == current_source {
                 return Some(AgenticPlan::Final(format!(
                     "No matching source fragment was found in `{}`.",
                     artifact.path
@@ -119,13 +106,18 @@ pub(super) fn plan_code_artifact_step(
             }
             return Some(plan_one(
                 write_tool,
-                write_arguments(&artifact.path, &updated),
+                write_arguments(&artifact.path, &outcome.output),
             ));
         }
         let read_tool = tool_for(tool_names, Capability::Read)?;
         return Some(plan_one(read_tool, read_arguments(&artifact.path)));
     }
 
+    // With a command capability, let the typed `ExecutionRecipe` path own code
+    // creation and verification. Write-only harnesses still receive the source.
+    if tool_for(tool_names, Capability::Run).is_some() {
+        return None;
+    }
     let artifact = generated_artifact(task)?;
     if latest_result(&messages[latest_user + 1..], Capability::Write).is_some() {
         return Some(AgenticPlan::Final(format!(
@@ -139,12 +131,12 @@ pub(super) fn plan_code_artifact_step(
     ))
 }
 
-fn generated_artifact(task: &str) -> Option<CodeArtifact> {
+fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
     let normalized = task.to_lowercase();
     let language = program_language_by_alias(&normalized)?;
     let program_task = program_task_by_alias(&normalized)?;
     let template = program_template(program_task.slug, language.slug)?;
-    Some(CodeArtifact {
+    Some(WorkspaceArtifact {
         path: language.save_as.to_owned(),
         content: format!("{}\n", template.code.trim_end()),
     })
@@ -163,36 +155,41 @@ fn unwrap_transport_quotes(text: &str) -> &str {
     trimmed
 }
 
-fn requested_mutation(task: &str, artifact: &CodeArtifact) -> Option<MutableCodeProgram> {
+fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<WorkspaceRewrite> {
     if task.contains('?') || task.contains('？') {
         return None;
     }
     let quoted = quoted_segments(task);
-    let (old, new) = match quoted.as_slice() {
-        [new] => (last_string_literal(&artifact.content)?, new.clone()),
-        [old, new, ..] => (old.clone(), new.clone()),
+    let pairs = match quoted.as_slice() {
+        [new] => vec![(last_string_literal(&artifact.content)?, new.clone())],
+        values if !values.is_empty() && values.len() % 2 == 0 => values
+            .chunks_exact(2)
+            .map(|pair| (pair[0].clone(), pair[1].clone()))
+            .collect(),
         _ => return None,
     };
-    if old == new || !artifact.content.contains(&old) {
+    if pairs.iter().any(|(old, new)| old == new) {
         return None;
     }
-    Some(MutableCodeProgram {
+    let single_substitution = pairs.len() == 1;
+    let rules = pairs
+        .into_iter()
+        .map(|(old, new)| {
+            let rule = RewriteRule::new(old.clone(), new);
+            if single_substitution || old.is_empty() {
+                rule.terminal()
+            } else {
+                rule
+            }
+        })
+        .collect();
+    Some(WorkspaceRewrite {
         target: artifact.path.clone(),
-        instructions: vec![
-            MutableInstruction::JumpIfContains {
-                needle: old.clone(),
-                then_step: 1,
-                else_step: 3,
-            },
-            MutableInstruction::ReplaceFirst { old, new },
-            MutableInstruction::Jump(3),
-            MutableInstruction::Halt,
-        ],
-        max_steps: 16,
+        program: RewriteProgram::new(rules, MAX_REWRITE_STEPS),
     })
 }
 
-fn latest_code_artifact(messages: &[ChatMessage]) -> Option<CodeArtifact> {
+fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifact> {
     messages
         .iter()
         .rev()
@@ -204,7 +201,7 @@ fn latest_code_artifact(messages: &[ChatMessage]) -> Option<CodeArtifact> {
             let arguments: Value = serde_json::from_str(&call.function.arguments).ok()?;
             let path = argument_string(&arguments, &["path", "filePath", "file_path"])?;
             let content = argument_string(&arguments, &["content"])?;
-            is_code_path(path).then(|| CodeArtifact {
+            Some(WorkspaceArtifact {
                 path: path.to_owned(),
                 content: content.to_owned(),
             })
@@ -265,47 +262,11 @@ fn argument_string<'a>(value: &'a Value, keys: &[&str]) -> Option<&'a str> {
     keys.iter().find_map(|key| value.get(key)?.as_str())
 }
 
-fn is_code_path(path: &str) -> bool {
-    let extension = path.rsplit_once('.').map(|(_, extension)| extension);
-    extension.is_some_and(|extension| {
-        PROGRAM_LANGUAGES.iter().any(|language| {
-            language
-                .save_as
-                .rsplit_once('.')
-                .is_some_and(|(_, known)| known.eq_ignore_ascii_case(extension))
-        })
-    })
-}
-
-fn quoted_segments(text: &str) -> Vec<String> {
-    let chars: Vec<char> = text.chars().collect();
-    let mut result = Vec::new();
-    let mut index = 0;
-    while index < chars.len() {
-        let quote = chars[index];
-        let closing = match quote {
-            '\'' | '"' => quote,
-            '`' => '`',
-            '“' => '”',
-            '‘' => '’',
-            _ => {
-                index += 1;
-                continue;
-            }
-        };
-        let start = index + 1;
-        index = start;
-        while index < chars.len() && chars[index] != closing {
-            index += 1;
-        }
-        if index < chars.len() && index > start {
-            result.push(chars[start..index].iter().collect());
-        }
-        index += 1;
-    }
-    result
-}
-
 fn last_string_literal(source: &str) -> Option<String> {
     quoted_segments(source).pop()
+}
+
+fn link_field(out: &mut String, indent: usize, name: &str, value: &str) {
+    let escaped = value.replace('\\', "\\\\").replace('"', "\\\"");
+    let _ = writeln!(out, "{}{name} \"{escaped}\"", " ".repeat(indent));
 }

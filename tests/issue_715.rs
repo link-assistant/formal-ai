@@ -181,11 +181,13 @@ fn contextual_code_change_reads_then_writes_the_active_file() {
         Some(AgenticPlan::Final(answer)) => answer,
         other => panic!("expected final mutation trace, got {other:?}"),
     };
-    assert!(final_answer.contains("mutation:target:'main.rs'"));
-    assert!(final_answer.contains("JumpIfContains"));
-    assert!(final_answer.contains("ReplaceFirst"));
-    assert!(final_answer.contains("Jump(3)"));
-    assert!(final_answer.contains("Halt"));
+    assert!(final_answer.contains("normal_markov_program"));
+    assert!(final_answer.contains("target \"main.rs\""));
+    assert!(final_answer.contains("rewrite_rule \"0\""));
+    assert!(final_answer.contains("pattern \"Hello, world!\""));
+    assert!(final_answer.contains("replacement \"Hello 2\""));
+    assert!(final_answer.contains("halt \"TerminalRule(0)\""));
+    assert!(final_answer.contains("steps \"1\""));
 }
 
 #[test]

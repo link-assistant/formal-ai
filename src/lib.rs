@@ -46,6 +46,7 @@ pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
 pub mod method_registry;
+pub mod normal_markov;
 pub mod probability;
 pub(crate) mod program_coreference;
 pub mod program_plan;
