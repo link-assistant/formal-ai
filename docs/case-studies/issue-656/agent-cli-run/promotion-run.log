@@ -1,0 +1,8 @@
+Replaying coding-modification, industry, and unit-specification gates from canonical commands...
+Promotion replay: 1 considered, 1 promoted, 0 rejected.
+Materialized data/seed/issue-656-agent-learned.lino (79 byte(s)) at /tmp/tmp.HHRpb7t8zx/data/seed/issue-656-agent-learned.lino.
+Formal AI Agent session evidence: promotion_agent_session_a79a0c53e89ba5c7
+Created local review branch promotion/promotion_run_ac401d8d5e0e52ac. Remaining PR plan (never pushed; required CI and human review remain outer gates):
+    git add data/seed/issue-656-agent-learned.lino
+    git commit -m "promote 1 self-improvement proposal(s) (run promotion_run_ac401d8d5e0e52ac)"
+    gh pr create --draft --fill  # human review remains the outer gate
