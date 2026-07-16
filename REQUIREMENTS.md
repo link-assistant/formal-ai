@@ -1226,3 +1226,22 @@ PR [#690](https://github.com/link-assistant/formal-ai/pull/690) adds the
 | R470 | `formal-ai improve --promote` must operate on actual open proposals and must not silently apply a synthetic demonstration proposal. | The CLI requires a non-empty `--proposals` document; demonstration constructors remain test/example fixtures only. |
 | R471 | Preserve reproducible real-world evidence, issue/PR feedback, online research, and a requirement-by-requirement solution map. | Implemented by `docs/case-studies/issue-656/`, including external Agent CLI and canonical gate artifacts. |
 | R472 | Keep GitHub required checks and human review as the final authority; local replay cannot predict CI on the future branch SHA. | The protocol never pushes or merges. Its branch plan opens a draft PR only after an explicit external push, where required GitHub checks evaluate the actual head SHA. |
+
+## Issue #657 Release Self-Hosting Metric
+
+Issue [#657](https://github.com/link-assistant/formal-ai/issues/657) (E38) asks
+each release to disclose the share of changed lines authored by Formal AI from
+committed E36/E37 session evidence. PR
+[#735](https://github.com/link-assistant/formal-ai/pull/735) adds a deterministic
+Git-history metric, a Links Notation release ledger, and a trailing-window
+ratchet that starts honestly at 0%.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R473 | Define auditable Formal AI authorship from committed session evidence rather than author names or an unverified claim. | Implemented by paired `Formal-AI-Session` and `Formal-AI-Evidence` commit trailers. `scripts/self-hosting-metric.rs` verifies the evidence exists in the attributed commit and contains the exact session id plus a `formal-ai` marker. |
+| R474 | Measure release work deterministically as additions plus deletions across non-merge commits, excluding binary files. | Implemented with Git `rev-list` and `show --numstat --no-renames`; arithmetic uses integer basis points with deterministic half-up rounding. |
+| R475 | Provide `rust-script scripts/self-hosting-metric.rs --since <tag>` and cover it with a fixture Git repository and ledger. | Implemented by the standalone script and `recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet`, whose two-commit fixture proves an exact 3/4 or 75.00% result. |
+| R476 | Record a self-hosting row for every release as committed Links Notation data. | `scripts/version-and-commit.rs` records the new tag's row in `data/meta/self-hosting-ledger.lino` before the release commit and stages it with the version artifacts. The initial `v0.296.0` row truthfully records 0%. |
+| R477 | Include the recorded share in every GitHub release body. | Both automatic and manual paths in `.github/workflows/release.yml` pass the ledger to `scripts/create-github-release.rs`, which appends the exact tagged row under `## Self-hosting`. |
+| R478 | Enforce a monotonic non-decreasing trailing-window ratchet while accepting an honest 0% starting point. | `record_release` computes a changed-line-weighted three-release share, rejects a decrease, and treats an empty history as 0%; the fixture test covers both first-row acceptance and regression rejection. |
+| R479 | Document attribution, preserve issue/PR/research and Formal AI replay evidence, and pin pipeline integration with a specification test. | Implemented by `CONTRIBUTING.md`, `docs/case-studies/issue-657/`, and `release_pipeline_and_ledger_remain_pinned_to_the_metric`. |
