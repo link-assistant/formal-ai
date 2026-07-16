@@ -189,11 +189,59 @@ error: failed to run custom build command for `lindera-jieba v3.0.7`
   ".../mecab-jieba-0.1.1" Caused by: File exists (os error 17) }
 ```
 
-**Root cause.** `lindera-jieba`'s build script creates a directory with the
-non-idempotent `create_dir`, which fails with `AlreadyExists` (errno 17) if the
-directory is already there. docs.rs reuses `/opt/rustwide/target` across builds, so
-the second build script run in a reused sandbox always fails. `create_dir_all`, or
-tolerating `AlreadyExists`, is the fix.
+**Root cause — located exactly.** The failing code is not in `lindera-jieba`'s own
+`build.rs`; that build script just calls `lindera_dictionary::assets::fetch()`. The
+defect is in **`lindera-dictionary/src/assets.rs:284-293`**, and it is inside the
+branch written specifically to make docs.rs work:
+
+```rust
+if std::env::var("DOCS_RS").is_ok() {
+    // Create directory for dummy input directory for build docs
+    fs::create_dir(&input_dir).map_err(|err| {         // ← not create_dir_all
+        LinderaErrorKind::Io
+            .with_error(anyhow::anyhow!(err))
+            .add_context(format!("Failed to create dummy input directory: {input_dir:?}"))
+    })?;
+```
+
+`fs::create_dir` is **not idempotent**: it returns `AlreadyExists` (errno 17) if the
+directory is there. Three facts make that fatal on docs.rs:
+
+1. With `LINDERA_DICTIONARIES_PATH` unset, `build_dir` is `OUT_DIR` and `is_cache`
+   is `false` (`assets.rs:233-264`).
+2. Because `is_cache` is `false`, the early-return fast path
+   `if is_cache && output_dir.is_dir() { return Ok(()) }` (`assets.rs:279-282`) can
+   **never** fire — so a re-run always reaches the `create_dir`.
+3. The build script declares `cargo:rerun-if-env-changed=DOCS_RS`
+   (`assets.rs:226`). When docs.rs builds the crate and then re-invokes with
+   `DOCS_RS` set, cargo re-runs the build script **against the same `OUT_DIR`**,
+   where `input_dir` already exists from the first run. `create_dir` → errno 17.
+
+So the code that exists to support docs.rs is the code that breaks docs.rs.
+`create_dir_all`, or tolerating `AlreadyExists`, is the fix.
+
+**Reproduced locally.** [`experiments/lindera-docsrs-repro`](../../../experiments/lindera-docsrs-repro)
+reproduces the docs.rs failure byte-for-byte with two `cargo build` runs, and in
+doing so exposed a **second** bug that code reading alone had missed: the dummy
+dictionary is scaffolded flat into `input_dir/`, ignoring `src_subdir`, while the
+builder reads `input_dir/dict-src/` — which is what `lindera-jieba` sets. So the
+*first* build in a fresh sandbox already fails:
+
+```
+Error: LinderaError { kind: Build, source: Failed to build dictionary
+Caused by: LinderaError(kind=Io, source=Failed to open file:
+  .../out/mecab-jieba-0.1.1/dict-src/char.def) }
+```
+
+docs.rs therefore has no green path at all: fresh builds fail on the missing
+`dict-src/char.def`, re-runs fail on `File exists`.
+
+**Upgrading lindera does not help.** `lindera-dictionary` 4.0.0 is the newest
+version on crates.io and carries the **identical** `create_dir` at `assets.rs:286`
+— verified by downloading and diffing both 3.0.7 and 4.0.0 from
+`static.crates.io`. A `meta-language` bump to lindera 4.x would therefore *not*
+fix docs.rs; only an upstream `lindera` fix, or dropping/feature-gating the
+dependency, will.
 
 **Bisected precisely.** formal-ai 0.183.0 builds green; 0.184.0 fails. The only
 Cargo.toml change between them is `+meta-language = "0.39"`. The chain is
@@ -204,7 +252,7 @@ Cargo.toml change between them is `+meta-language = "0.39"`. The chain is
 `doublets`, so no feature selection here can drop `lindera`, and no
 `[package.metadata.docs.rs]` setting would help. Proof that it is upstream:
 `meta-language` 0.45.0 fails on docs.rs identically (build 3577282), with no
-formal-ai involved. `lindera` 4.0.0 exists, while `meta-language` pins `^3.0.7`.
+formal-ai involved.
 Reported upstream — see §6.
 
 ### 4.4 Defect #4 — `desktop-release.yml` reports partial releases as complete (false positive)
@@ -291,11 +339,12 @@ this PR should carry:
 
 ## 6. Upstream reports (R7)
 
-| Repository | Defect | Why it belongs there |
+| Report | Defect | Why it belongs there |
 |---|---|---|
-| `link-foundation/rust-ai-driven-development-pipeline-template` | `local != remote` mislabelled as "behind"; tag created before the push-rebase retry | Both still present in the template's `release.yml`; every repo generated from it inherits them |
-| `lindera` | `build.rs` uses non-idempotent `create_dir`; fails with `AlreadyExists` in reused sandboxes such as docs.rs | The failing code is `lindera-jieba`'s build script |
-| `link-foundation/meta-language` | Pins `lindera ^3.0.7` (non-optional), so every dependent's docs.rs build fails | `meta-language` itself fails on docs.rs (build 3577282); it can upgrade to lindera 4.x and/or gate `lindera` behind a feature |
+| [rust-…-template#94](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/94) | Tag created before the push-retry rebase → can point at an orphaned commit | Still present in the template's `scripts/version-and-commit.rs:865-905`; every repo generated from it inherits it |
+| [rust-…-template#95](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/95) | `local != remote` mislabelled as "behind" | Still present at `scripts/version-and-commit.rs:731-743`. This message is what initially misdirected our own investigation |
+| [lindera#750](https://github.com/lindera/lindera/issues/750) | **Two** bugs in `lindera-dictionary/src/assets.rs`'s `DOCS_RS` branch: the dummy dictionary ignores `src_subdir` (fails on a *fresh* sandbox), and `fs::create_dir` is not idempotent (fails on re-run) | The defect and its fix live there; it affects **every** crate depending on lindera, not just ours |
+| [meta-language#181](https://github.com/link-foundation/meta-language/issues/181) | Depends on `lindera` non-optionally, so every dependent's docs.rs build fails | `meta-language` itself fails on docs.rs (build 3577282). A lindera 4.x bump does **not** fix this (§4.3), so the ask is to feature-gate `lindera` so dependents can opt out |
 
 Each report includes a reproducible example, a workaround, and a concrete fix
 suggestion, as the issue requires.
