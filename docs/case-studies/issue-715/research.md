@@ -1,37 +1,62 @@
 # Online research
 
-Research was performed on 2026-07-15. Primary documentation was preferred
-because this behavior depends on current CLI and API contracts.
+Research was refreshed on 2026-07-16. Current product contracts come from
+official documentation; the computational-model claim is grounded in research
+literature rather than inferred from the implementation.
 
-## OpenCode tool contract
+## Normal algorithms and computational universality
 
-Source: <https://opencode.ai/docs/tools/>
+The University of St Andrews research repository preserves Eleftherios
+Papathanassiou's 1979 PhD thesis, *On the equivalence of Markov Algorithms and
+Turing machines and some consequent results*:
+<https://research-repository.st-andrews.ac.uk/handle/10023/13736>.
 
-OpenCode documents separate `read`, `write`, and `edit` tools. `read` returns
-file contents, `write` creates or overwrites a file, and `edit` performs exact
-string replacement. It also places those tools behind the client's permission
-configuration. This supports Formal AI's chosen boundary: emit capability-based
-tool calls and let the CLI own filesystem execution and authorization.
+The thesis gives constructive transformations in both directions: an arbitrary
+Markov algorithm to an equivalent Turing machine, and an arbitrary Turing
+machine to an equivalent Markov algorithm. That is the basis for describing the
+ordered rewrite representation as computationally universal. It does not imply
+that a resource-bounded execution accepts every computation; the production
+step cap is a deliberate operational restriction.
 
-The locally installed `opencode run --help` additionally confirmed that `run`
-supports `--continue`/`--session`, a custom provider model, JSON event output,
-and automatic tool approval. The durable replay uses `--continue` to preserve
-the first turn's tool history for the contextual second turn.
+Math-Net's primary-paper record for A. A. Markov's 1967 *Normal algorithms
+connected with the computation of boolean functions* includes the English paper
+and DOI: <https://www.mathnet.ru/eng/im2534>. It confirms normal algorithms as a
+formal computation and complexity model, distinct from probabilistic Markov
+chains.
 
-## OpenAI tool-calling contract
+## OpenCode tool and permission contract
 
-Source: <https://platform.openai.com/docs/quickstart/make-your-first-api-request>
+OpenCode's official tool documentation is
+<https://opencode.ai/docs/tools/>. It defines `read` as returning codebase file
+contents, `write` as creating or overwriting files, and `bash` as running
+commands in the project environment. It also documents that read, edit/write,
+and command authority remain controlled by the client's permission settings.
 
-OpenAI's current quickstart describes tools/functions as the mechanism through
-which a model takes application-defined actions. Formal AI therefore returns
-ordinary OpenAI-compatible tool calls rather than adding a CLI-specific side
-channel. The same planner is reached by API consumers and by OpenCode's generic
-OpenAI-compatible provider.
+This supports the implemented trust boundary: Formal AI plans capability-based
+calls and consumes their results, while OpenCode owns filesystem and command
+execution. The retained run also checks the locally installed CLI's actual
+serialization, session continuation, read envelope, and tool names rather than
+assuming the prose documentation is byte-for-byte protocol specification.
+
+## OpenAI-compatible tool loop
+
+OpenAI's official function-calling guide is
+<https://developers.openai.com/api/docs/guides/function-calling>. It specifies a
+multi-step loop: send available tools, receive a tool call, execute it in the
+application, return the associated tool output, and continue until a final
+response or further calls. The API reference additionally identifies
+`tool_calls` as a finish reason and requires tool outputs to reference the call
+they answer: <https://developers.openai.com/api/reference/resources/chat>.
+
+Formal AI follows that contract without a CLI-specific filesystem side channel.
+The same planner is exercised through Chat Completions, Responses, Anthropic
+Messages, Gemini, the built-in Agent CLI, and OpenCode's OpenAI-compatible
+provider.
 
 ## Related repository evidence
 
-The raw snapshots for issues 680, 681, 712, 714, and 716 are stored beside this
-document. They show that explicit write/read intent, stale routing regressions,
-agentic mode, and shell tools were already separate concerns. Issue 715 adds the
-missing invariant: an artifact established in an earlier turn must remain
-addressable without forcing the user to repeat its path and old contents.
+The raw snapshots for issues 680, 681, 712, 714, 715, and 716 are stored beside
+this document. They establish the sequence from explicit file routing, through
+agentic mode and typed execution recipes, to this issue's missing invariant: an
+artifact established in an earlier turn must remain addressable, yet its current
+contents must still be read from the client before mutation.
