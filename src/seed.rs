@@ -722,7 +722,7 @@ impl LearningSources {
     /// language-agnostic learning cue (e.g. "learn from", "узнаешь",
     /// "यहाँ से सीख", "在这里了解") **and** a reference to a declared source — its
     /// host or one of its native-language keywords. This is the single source of
-    /// truth shared by the chat handler ([`crate::solver_handlers::try_learn_from_source`])
+    /// truth shared by the chat handler (`crate::solver_handlers::try_learn_from_source`)
     /// and the Agent CLI planner
     /// ([`crate::agentic_coding::google_trends_learning::is_google_trends_learning_task`]),
     /// so the *same* natural-language teaching directive drives both the chat

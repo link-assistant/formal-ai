@@ -15,7 +15,7 @@
 //!   or a final answer, and an in-repo driver exercises the whole loop offline.
 //!
 //! This module hosts that capability. Neural inference remains a NON-GOAL:
-//! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
+//! extraction is grounded in a closed lexicon (see `lexicon`) and the planner is
 //! a pure, deterministic function of the message history.
 
 pub mod associative_learning;

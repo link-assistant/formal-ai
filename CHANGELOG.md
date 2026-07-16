@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+
+## [0.296.0] - 2026-07-16
+
+### Added
+- Add a benchmark-gated promotion protocol (issue #656): `formal-ai improve --promote`
+  executes canonical coding-modification, industry, and promotion-unit gates from
+  fresh process output and, under `--apply --confirm`, creates a clean local review
+  branch and materializes accepted `.lino` seed edits through Formal AI's Agent
+  task path. Proposal-supplied runners/results, unsafe paths, malformed evidence,
+  and failed commands are rejected; no push occurs. The promotion event chain and
+  rejected changes round-trip through bundle export/import.
+
+### Fixed
+- Attest desktop and VS Code release artifacts directly so LF checksum manifests cannot break Windows provenance.
+- Enforce rustdoc warnings, least-privilege workflow permissions, bounded desktop jobs, and fail-closed classification of known dependency diagnostics.
+- Keep file-authoring Agent CLI requests from being misrouted into duplicate GitHub issue creation.
+
 ## [0.295.2] - 2026-07-16
 
 ### Fixed

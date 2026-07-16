@@ -63,7 +63,7 @@ impl RepositoryFileFormalization {
     /// stages for the retained content statements, so the file boundary stays a
     /// thin adapter over the meta-algorithm pipeline rather than a parallel
     /// formatter. Exposed so the recursive resource summarizer in
-    /// [`super::resource`] can compose file summaries into folder summaries.
+    /// `super::resource` can compose file summaries into folder summaries.
     #[must_use]
     pub fn summary(&self, config: &SummarizationConfig) -> String {
         render_repository_file_summary(self, config)

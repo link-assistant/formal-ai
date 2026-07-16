@@ -9,7 +9,7 @@
 //! This module turns a raw text sample into a deterministic, inspectable plan:
 //! it splits the sample into statements across scripts, builds a grounding
 //! web-search query for each, and produces an assumed-true
-//! [`StatementAssessment`](crate::relative_meta_logic::StatementAssessment) plus
+//! [`StatementAssessment`] plus
 //! the trusted-source tier policy that governs how live evidence would move each
 //! statement. The solver runs offline and deterministically, so no network call
 //! is made here; instead the plan records exactly what would be checked and how
@@ -223,7 +223,7 @@ impl StatementVerificationPlan {
 }
 
 /// Split `sample` into checkable statements across scripts, trimming
-/// whitespace and dropping fragments shorter than [`MIN_STATEMENT_WORDS`].
+/// whitespace and dropping fragments shorter than `MIN_STATEMENT_WORDS`.
 #[must_use]
 pub fn extract_statements(sample: &str) -> Vec<String> {
     let mut statements = Vec::new();

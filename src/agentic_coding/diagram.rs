@@ -3,10 +3,10 @@
 //!
 //! The maintainer asked, among the issue's broader axes, for a *"generated mermaid
 //! diagram split into parts"* giving a high-level visual overview, and a diagram of
-//! *"what exactly happens when the input to the system [comes] from different
+//! *"what exactly happens when the input to the system \[comes\] from different
 //! places"*. This module is the smallest real, tested slice of that axis: the
 //! diagrams are **generated from the planner's own recipe definitions**
-//! ([`RECIPES`]) rather than hand-drawn, so they cannot drift from what the code
+//! (`RECIPES`) rather than hand-drawn, so they cannot drift from what the code
 //! actually does, and the *same* in-repo Agent CLI that enriched the tomato and
 //! potato meanings writes them.
 //!

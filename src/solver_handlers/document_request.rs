@@ -1,6 +1,6 @@
 //! Document-generation request handler (issue #425).
 //!
-//! Open-ended "make me a PDF / document / report with <subject>" prompts ask the
+//! Open-ended "make me a PDF / document / report with `<subject>`" prompts ask the
 //! deterministic solver to research arbitrary data and render a binary file —
 //! two capabilities a symbolic engine does not have. Rather than fall through to
 //! the unknown opener, this handler recognizes the request as a *document task*

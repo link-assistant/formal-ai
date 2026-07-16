@@ -234,6 +234,38 @@ mod report_issue {
     }
 
     #[test]
+    fn coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report() {
+        for prompt in [
+            // language: en (English) — solve an existing issue without duplicating it.
+            "GitHub issue 730 requires us to create portable checksum files, \
+             update the workflow, and run the regression test.",
+            "Create file docs/case-studies/issue-730/finding.md containing the result.",
+            // language: ru (Russian) — edit an existing issue without filing another.
+            "Для существующей задачи GitHub 730 создай файл finding.md с результатом.",
+            // language: hi (Hindi) — the same existing-issue file-writing request.
+            "मौजूदा GitHub issue 730 के लिए परिणाम वाली finding.md फ़ाइल बनाएँ।",
+            // language: zh (Chinese) — keep the regression language-independent.
+            "为现有 GitHub issue 730 创建包含结果的 finding.md 文件。",
+        ] {
+            let messages = vec![ChatMessage::user(prompt)];
+            if let Some(AgenticPlan::ToolCalls(calls)) =
+                formal_ai::agentic_coding::plan_chat_step(&messages, &TOOLS)
+            {
+                for call in calls {
+                    let command = arguments(&call)["command"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .to_owned();
+                    assert!(
+                        !command.contains("gh issue create"),
+                        "a request to solve an existing issue must not file a new one: {command}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
     fn report_then_confirms_with_created_url() {
         let mut messages = vec![ChatMessage::user("Report this to GitHub")];
         let create = tool_calls(&messages).remove(0);

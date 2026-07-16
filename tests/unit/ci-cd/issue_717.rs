@@ -11,17 +11,25 @@ fn workflow(name: &str) -> String {
 }
 
 #[test]
-fn checksum_attestations_use_the_lf_safe_current_action() {
+fn attestations_digest_artifacts_without_parsing_cross_platform_checksum_text() {
     let desktop = workflow("desktop-release.yml");
 
     assert_eq!(
         desktop.matches("uses: actions/attest@v4").count(),
         2,
-        "desktop and VS Code checksum manifests must use actions/attest v4, whose parser accepts LF on Windows"
+        "desktop and VS Code artifacts must use the current generic attestation action"
+    );
+    assert_eq!(desktop.matches("subject-path:").count(), 2);
+    assert!(desktop.contains("desktop/release/formal-ai-desktop-*"));
+    assert!(desktop.contains("desktop/release/latest*.yml"));
+    assert!(desktop.contains("vscode/formal-ai-vscode-*.vsix"));
+    assert!(
+        !desktop.contains("subject-checksums:"),
+        "released actions/attest v4 splits checksum text with the host EOL and fails on LF-only Windows manifests"
     );
     assert!(
         !desktop.contains("actions/attest-build-provenance@v2"),
-        "the v2 wrapper splits checksums with the host EOL and treats an LF-only Windows manifest as one oversized subject"
+        "the legacy wrapper has the same host-EOL checksum parsing failure"
     );
 }
 
@@ -139,4 +147,21 @@ fn change_detection_covers_the_complete_pull_request() {
     );
     let release = workflow("release.yml");
     assert!(release.contains("GITHUB_EVENT_BEFORE: ${{ github.event.before }}"));
+}
+
+#[test]
+fn generated_api_documentation_fails_on_every_rustdoc_warning() {
+    let release = workflow("release.yml");
+    let docs = release
+        .split("      - name: Generate Rust API docs (cargo doc)\n")
+        .nth(1)
+        .and_then(|tail| {
+            tail.split("      - name: Upload GitHub Pages artifact\n")
+                .next()
+        })
+        .expect("cargo doc step");
+
+    assert!(docs.contains("RUSTDOCFLAGS: -D warnings"));
+    assert!(docs.contains("cargo doc --no-deps --lib"));
+    assert!(!docs.contains("RUSTDOCFLAGS is unset"));
 }
