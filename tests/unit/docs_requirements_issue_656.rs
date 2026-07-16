@@ -68,7 +68,6 @@ fn issue_656_promotion_documents_are_traceable() {
         "docs/case-studies/issue-656/requirements.md",
         "docs/case-studies/issue-656/solution-plans.md",
         "docs/case-studies/issue-656/raw-data/online-research.md",
-        "changelog.d/20260714_090000_issue_656_promotion.md",
     ] {
         let path = root.join(relative);
         assert!(
@@ -80,6 +79,20 @@ fn issue_656_promotion_documents_are_traceable() {
             "{relative} must not be empty for issue #656 traceability",
         );
     }
+
+    // Release v0.296.0 consumed the changelog fragment after copying it into
+    // the durable changelog. Trace the shipped evidence rather than requiring
+    // a fragment that the release pipeline is designed to delete.
+    let changelog = read(root.join("CHANGELOG.md"));
+    assert_contains_all(
+        "CHANGELOG.md",
+        &changelog,
+        &[
+            "## [0.296.0]",
+            "benchmark-gated promotion protocol (issue #656)",
+            "`formal-ai improve --promote`",
+        ],
+    );
 
     // The protocol's public API cited above must still appear in the live source
     // tree after the implementation was split into bounded modules.
