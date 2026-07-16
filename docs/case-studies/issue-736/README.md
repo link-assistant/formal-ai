@@ -30,16 +30,25 @@ failure looked intermittent and resisted a single explanation:
 | 5 | **`desktop-release.yml` uploads Linux/Windows artifacts unverified** | ⚠️ **false negative** | code read | **Real gap** — fixed in this PR |
 | 6 | **`desktop-release.yml` runs show as `skipped`** | ℹ️ cosmetic | job `if:` at `desktop-release.yml:80-84` | **Correct behaviour**, not a defect — see §4.6 |
 | 7 | **Every release writes a `CHANGELOG.md` the reconstruction check rejects** | ❌ failure, **latent** | reproduced against `b2064b2a` | **Real bug** in both release writers — fixed in this PR, see §4.7 |
+| 8 | **A test asserts a changelog fragment exists forever; releases consume fragments** | ❌ failure, **latent** | jobs 87682984589, 87682984539 | **Real bug** — fixed in this PR, see §4.8 |
 
 Defects 1 and 2 are the serious ones, and defect 2 is worse than defect 1: by the
 time the runner died, the crate had **already been published to crates.io**, so
 those runs shipped a version with **no Docker image and no GitHub Release**.
 
-Defect 7 was not visible in any of the four analysed runs. It surfaced only when
-this PR became the first change in a while to actually trip the lint job's path
-filter, and it turned out to have been red on `main` since the `v0.296.0`
-release. It is the clearest example of what this issue asked for: a failure that
-had been repeatedly *papered over* by hand rather than fixed at source.
+Defects 7 and 8 were not visible in any of the four analysed runs. Both surfaced
+only when this PR became the first change in a while to actually run the checks,
+and **both had been red on `main` since the `v0.296.0` release commit**
+(`b2064b2a`) — which is also the commit that caused them. They are the clearest
+examples of what this issue asked for: defect 7 had been repeatedly *papered
+over* by hand rather than fixed at source, and defect 8 was invisible because the
+job that catches it does not run on the commits that break it.
+
+Both share one root cause worth stating plainly: **`main` is not actually
+verified.** `Detect Changes` path-filters the heavy jobs, and a release commit
+touches none of the triggering paths — so a release can break the lint, test and
+coverage jobs and still report ✅, because those jobs never ran. The breakage
+lands on the next contributor's unrelated PR.
 
 ---
 
@@ -87,14 +96,14 @@ annotations, not step logs.
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| **R1** | `release.yml` auto-release is failing → fix it | ✅ §4.1, §4.2, §4.7 |
+| **R1** | `release.yml` auto-release is failing → fix it | ✅ §4.1, §4.2, §4.7, §4.8 |
 | **R2** | `desktop-release.yml` — double check everything works perfectly | ✅ §4.4–§4.6 |
 | **R3** | Docs generation shows as failing → fix it | ✅ §4.3 (upstream; reported) |
 | **R4** | Compare the full file tree against the js/rust/python/csharp pipeline templates; reuse best practices; report shared defects upstream | ✅ §5 |
 | **R5** | Compile all logs/data into `./docs/case-studies/issue-736` and do a deep analysis: timeline, requirements, root causes, solution plans, known components/libraries | ✅ this document |
 | **R6** | If there is not enough data to find the root cause, add debug output / verbose mode for the next iteration | ✅ §4.2 (`RUNNER_DISK_DEBUG`, low-disk annotation) |
 | **R7** | Report issues to other affected repositories, with reproducible examples, workarounds and fix suggestions | ✅ §6 (4 upstream + [#738](https://github.com/link-assistant/formal-ai/issues/738) here) |
-| **R8** | Apply each fix across the entire codebase — if the problem exists in multiple places, fix all of them | ✅ §4.2 (3 jobs), §4.4 (both attest sites), §4.7 (both release writers) |
+| **R8** | Apply each fix across the entire codebase — if the problem exists in multiple places, fix all of them | ✅ §4.2 (3 jobs), §4.4 (both attest sites), §4.7 (both release writers), §4.8 (grepped `tests/`, sole instance) |
 | **R9** | Do everything in this single PR (#737) | ✅ |
 
 ---
@@ -394,6 +403,68 @@ the release commit itself, which does not exist until the commit is made. That
 needs a design decision (drop the SHA column, or amend post-commit) rather than a
 patch smuggled into this PR — especially as the amend route would touch the
 push/rebase path repaired in §4.1.
+
+---
+
+### 4.8 Defect #8 — a test asserts a changelog fragment exists forever
+
+**Symptom.** Two jobs on this branch failed, and both failed on the *same single
+test*:
+
+```
+---- docs_requirements_issue_656::issue_656_promotion_documents_are_traceable stdout ----
+assertion failed: path.is_file()
+changelog.d/20260714_090000_issue_656_promotion.md should exist for issue #656 traceability
+        at tests/unit/docs_requirements_issue_656.rs:74
+test result: FAILED. 1663 passed; 1 failed
+```
+
+`Test (ubuntu-latest)` (job `87682984589`) and `Code Coverage` (job
+`87682984539`) both run the same suite, so one assertion took two checks down.
+
+**Root cause.** The test listed the changelog fragment among files that "must
+exist", but **changelog fragments are consumed by the release that ships them** —
+that is their designed lifecycle. `changelog.d/*.md` is written by a contributor,
+collected into a `CHANGELOG.md` section at release time, and deleted. The
+`v0.296.0` release (`b2064b2a`) consumed exactly that fragment:
+
+```console
+$ git log --oneline -1 --diff-filter=D -- changelog.d/20260714_090000_issue_656_promotion.md
+b2064b2a chore: release v0.296.0
+```
+
+So the assertion was not wrong when it was written — it was **correct only until
+the next release**, and it has failed on every run since.
+
+**Why nobody saw it.** Same mechanism as §4.7: the release commit that deletes
+the fragment touches no path that trips `Detect Changes`, so `Test` and
+`Code Coverage` never ran on it. The release reported ✅; the red surfaced later,
+on an unrelated PR.
+
+**Scope check (R8).** Grepped the whole of `tests/` for the same shape — a
+`changelog.d/` path inside an existence assertion. This is the **only** test with
+the flaw, so the fix is a one-file change rather than a sweep.
+
+**Fix.** Follow the entry across its lifecycle instead of pinning it to one side:
+before release it is a fragment, after release it is a `CHANGELOG.md` section.
+Either satisfies the traceability intent, and the test now holds on **both** sides
+of a release.
+
+```rust
+let fragment = root.join("changelog.d/20260714_090000_issue_656_promotion.md");
+if fragment.is_file() {
+    assert!(fragment.metadata().map_or(0, |meta| meta.len()) > 0, ...);
+} else {
+    assert!(
+        read(root.join("CHANGELOG.md")).contains("issue #656"),
+        "the issue #656 changelog fragment was consumed by a release, so \
+         CHANGELOG.md must carry its entry for traceability",
+    );
+}
+```
+
+Verified locally: `test ... issue_656_promotion_documents_are_traceable ... ok`
+(`1 passed; 0 failed; 1665 filtered out`).
 
 ---
 
