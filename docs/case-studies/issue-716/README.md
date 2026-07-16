@@ -25,7 +25,7 @@ The `raw-data` directory contains the immutable inputs used in this investigatio
 - `agent-cli-typed-command/`: the post-review external Agent CLI replay using typed execution data, including its source artifact and full request trace.
 - `structured-recipe-red.log`: the pre-fix regression proving that harmless label rewording disabled the old prose scraper.
 - `agent-cli-execution-learning/`: the real Agent CLI stream, server trace, and generated associative-learning report from the post-review replay.
-- `focused-regressions.log`: the six unit and four protocol-integration regressions passing after the fix.
+- `focused-regressions.log`: the focused unit and four protocol-integration regressions passing after the fix.
 - `manifest.sha256`: checksums for the evidence files.
 
 ## Reconstructed timeline
@@ -82,7 +82,7 @@ For explicit `[agent]` actions, `try_agent_workspace_task` could run commands in
 
 ### Selected: project and lower a typed symbolic execution artifact
 
-The selected design projects the selected catalog rule into `ExecutionRecipe { language, source, path, commands }` before presentation rendering and reuses the planner's capability classifier. It stages one call per turn because agent protocols require each tool result to be returned before the next decision. A failed write/check/run ends the sequence and is surfaced verbatim; successful completion reports the actual final non-empty tool output. A catalog-wide test derives expected metadata from `PROGRAM_LANGUAGES`, so future language entries join the same path without planner changes.
+The selected design projects the selected catalog rule into `ExecutionRecipe { language, source, path, commands }` before presentation rendering and reuses the planner's capability classifier. It stages one call per turn because agent protocols require each tool result to be returned before the next decision. A failed write/check/run ends the sequence and is surfaced verbatim; successful completion reports the actual final non-empty tool output. A catalog-wide test independently pins the expected metadata for all ten supported languages, while production routing continues to pick up future catalog entries without planner changes.
 
 This keeps ordinary chat unchanged, never invents a tool the client did not advertise, preserves the existing agent-mode and per-tool permission gates, and works through each protocol adapter. Blueprint programs that need multiple files, dependencies, reviewed assumptions, or network placeholders intentionally remain non-executable until their model can express those prerequisites without fabricating a runnable workspace.
 

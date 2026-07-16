@@ -1,47 +1,29 @@
-## issue #716 unit and auto-learning regressions
    Compiling formal-ai v0.295.1 (/tmp/gh-issue-solver-1784156145581)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 39.69s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 36.24s
      Running tests/unit/mod.rs (target/debug/deps/unit-1e1699f78b224005)
 
-running 8 tests
-test issue_716_agentic_execution::follow_up_change_writes_the_updated_program_instead_of_repeating_old_code ... ok
-test issue_716_agentic_execution::follow_up_output_change_preserves_non_output_literals_in_other_languages ... ok
-test issue_716_execution_learning::client_execution_learning_is_derived_and_review_gated ... ok
+running 10 tests
+test issue_716_agentic_execution::catalog_execution_recipe_does_not_depend_on_rendered_command_labels ... ok
 test issue_716_agentic_execution::code_generation_does_not_fabricate_calls_when_required_harness_tools_are_absent ... ok
+test issue_716_agentic_execution::follow_up_change_writes_the_updated_program_instead_of_repeating_old_code ... ok
+test issue_716_execution_learning::client_execution_learning_is_derived_and_review_gated ... ok
 test issue_716_execution_learning::formal_ai_executes_execution_learning_through_agent_cli ... ok
+test issue_716_agentic_execution::every_catalog_language_projects_its_structured_execution_metadata ... ok
 test issue_716_agentic_execution::failed_compile_is_reported_and_the_run_command_is_not_attempted ... ok
-test issue_716_agentic_execution::http_api_never_executes_agent_actions_in_the_servers_embedded_workspace ... ok
+test issue_716_agentic_execution::follow_up_output_change_preserves_non_output_literals_in_other_languages ... ok
 test issue_716_agentic_execution::code_generation_writes_source_then_runs_every_catalog_command_in_cli_harness ... ok
+test issue_716_agentic_execution::http_api_never_executes_agent_actions_in_the_servers_embedded_workspace ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 1637 filtered out; finished in 1.76s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1637 filtered out; finished in 1.68s
 
-
-## typed recipe and all-language matrix
    Compiling formal-ai v0.295.1 (/tmp/gh-issue-solver-1784156145581)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.95s
-     Running unittests src/lib.rs (target/debug/deps/formal_ai-dab23d244ea2d22f)
-
-running 2 tests
-test agentic_coding::command_reroute::tests::catalog_execution_recipe_does_not_depend_on_rendered_command_labels ... ok
-test agentic_coding::command_reroute::tests::every_catalog_language_projects_its_structured_execution_metadata ... ok
-
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
-
-
-## protocol adapter regressions
-   Compiling formal-ai v0.295.1 (/tmp/gh-issue-solver-1784156145581)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 45.49s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.39s
      Running tests/integration/mod.rs (target/debug/deps/integration-307cd768cead8d2b)
 
 running 4 tests
-test issue_716_agentic_execution::gemini_routes_program_creation_to_the_advertised_cli_write_tool ... ok
-test issue_716_agentic_execution::chat_completions_routes_program_creation_to_the_advertised_cli_write_tool ... ok
 test issue_716_agentic_execution::responses_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+test issue_716_agentic_execution::gemini_routes_program_creation_to_the_advertised_cli_write_tool ... ok
 test issue_716_agentic_execution::anthropic_messages_routes_program_creation_to_the_advertised_cli_write_tool ... ok
+test issue_716_agentic_execution::chat_completions_routes_program_creation_to_the_advertised_cli_write_tool ... ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 100 filtered out; finished in 0.49s
-
-
-## release build
-   Compiling meta-language v0.45.0
-    Finished `release` profile [optimized] target(s) in 9m 12s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 100 filtered out; finished in 0.50s
