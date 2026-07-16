@@ -119,7 +119,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
     if associative_learning::is_associative_learning_task(&task) {
-        return Some(plan_associative_learning_step(messages, tool_names));
+        return Some(associative_learning::plan_step(messages, tool_names));
     }
     if routing_learning::is_routing_learning_task(&task) {
         return Some(routing_learning::plan_step(messages, tool_names));
@@ -693,20 +693,6 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
             path: dreaming_audit::DREAMING_AUDIT_PATH,
             verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
             final_answer,
-            document,
-        },
-    )
-}
-
-fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = associative_learning::render_document();
-    plan_document_recipe(
-        messages,
-        tool_names,
-        DocumentRecipe {
-            path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
-            verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
-            final_answer: associative_learning::final_answer(&document),
             document,
         },
     )

@@ -8,8 +8,10 @@
 
 use std::fmt::Write as _;
 
+use super::planner::{plan_document_recipe, AgenticPlan, DocumentRecipe};
 use crate::associative_persistence::AssociativeMemory;
 use crate::memory::parse_links_notation;
+use crate::protocol::ChatMessage;
 
 pub const ASSOCIATIVE_LEARNING_PATH: &str = "associative-learning-report.lino";
 pub const ASSOCIATIVE_LEARNING_TASK: &str =
@@ -20,6 +22,20 @@ const EMBEDDED_CASE: &str = include_str!("../../data/meta/associative-learning-c
 #[must_use]
 pub fn is_associative_learning_task(prompt: &str) -> bool {
     prompt.to_lowercase().contains(ASSOCIATIVE_LEARNING_PATH)
+}
+
+pub(super) fn plan_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = render_document();
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: ASSOCIATIVE_LEARNING_PATH,
+            verify_command: format!("cat {ASSOCIATIVE_LEARNING_PATH}"),
+            final_answer: final_answer(&document),
+            document,
+        },
+    )
 }
 
 #[must_use]
