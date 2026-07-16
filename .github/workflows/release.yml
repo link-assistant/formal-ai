@@ -1074,6 +1074,13 @@ jobs:
           bun add -g @link-assistant/agent
           echo "$HOME/.bun/bin" >> $GITHUB_PATH
 
+      - name: Install opencode CLI
+        # A second, independently-implemented harness. The issue-715 learning E2E
+        # drives both and diffs the artifacts, which only tests harness parity if
+        # both are really here — so this install is not optional, and the script
+        # fails rather than skipping when a CLI is missing.
+        run: bun add -g opencode-ai
+
       - name: Build formal-ai (release)
         # The E2E script runs against target/release/formal-ai — that's the
         # binary users invoke as `formal-ai serve`. Release mode also matches
@@ -1130,7 +1137,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
         # The user directive from issue #499 — "here you can learn the trending
         # topics from Google Trends" — is itself the task. It routes through the
         # seed learning_sources registry into the same write → verify → final
@@ -1144,7 +1151,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — general unpinned change plan (issue #654)
+      - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
         # No `*_TASK` constant names this request. The fallback planner derives the
         # target, literal payload, evidence, and verification command from the
         # formalized requirement, writes its plan event first, then executes it.
@@ -1156,7 +1163,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — file-creation routes to write not read (issue #681)
+      - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
         # The exact reproduction from issue #681: a "create a file … with the
         # content …" request used to emit a `read` on the not-yet-existing target
         # and finish with "File not found", writing nothing. Driven live through
@@ -1171,7 +1178,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+      - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
         # Use wording different from the captured case-study run. Mentioning an
         # existing issue beside a file request must drive the complete write plan,
         # never the report router's real `gh issue create` side effect.
@@ -1183,7 +1190,7 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — generated programs use harness commands (issue #716)
+      - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         # The exact screenshot reproduction must create the source in the real
         # Agent CLI workspace, then ask that harness to compile and run it. The
         # request trace preserves both shell calls so a prose-only response or
@@ -1199,7 +1206,7 @@ jobs:
             ./main
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+      - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
         # Replay the same investigation through Formal AI's associative-memory
         # adapter and real Agent CLI tools. The report remains review-gated; its
         # evidence links make the architectural promotion auditable.
@@ -1211,7 +1218,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — declarative new-file phrasing (issue #712)
+      - name: "Run agent CLI E2E — declarative new-file phrasing (issue #712)"
         # The exact declarative shape from issue #712 previously fell through to
         # the read router. The live CLI must execute the complete write plan and
         # leave the requested file behind, proving this is more than a response-
@@ -1224,20 +1231,32 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — report action executes gh (issue #714)
+      - name: "Run agent CLI E2E — report action executes gh (issue #714)"
         timeout-minutes: 3
         env:
           PORT: 8780
         run: experiments/issue_714_agentic_mode/run_report_e2e.sh
 
-      - name: Run agent CLI E2E — research, report, recall, and learn (issue #687)
+      - name: "Run agent CLI E2E — research, report, recall, and learn (issue #687)"
         # Continue four natural-language turns in one real Agent CLI session.
         # A PATH-local fake gh proves shell execution without mutating GitHub.
         env:
           PORT: 8776
         run: experiments/agent_cli_e2e/run_issue_687.sh
 
-      - name: Replay Hive Mind self-coding inner loop (issue #655)
+      - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
+        # The derived report names its own promotion gate
+        # `..._and_agent_cli_e2e_pass`, so the gate is only honest if a real
+        # external Agent CLI runs the task — until this step it had only ever run
+        # in formal-ai's own in-process harness. Driving both CLIs and diffing the
+        # two reports byte for byte is what makes "all harnesses supported in the
+        # similar way" an assertion instead of a claim.
+        timeout-minutes: 5
+        env:
+          PORT: 8879
+        run: experiments/agent_cli_e2e/run_issue_715_learning.sh
+
+      - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
         run: |

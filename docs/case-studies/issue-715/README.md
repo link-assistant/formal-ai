@@ -64,6 +64,39 @@ turns: it wrote the derived report and read it back through `run_command`. See
 [`formal-ai-agent-learning-session.json`](formal-ai-agent-learning-session.json)
 and [`formal-ai-agent-learning.log`](test-logs/formal-ai-agent-learning.log).
 
+Run the same auto-learning task through the two external CLIs:
+
+```sh
+cargo build --release --bin formal-ai
+experiments/agent_cli_e2e/run_issue_715_learning.sh
+```
+
+The report the task derives names its own promotion gate
+`normal_algorithm_laws_multilingual_slots_and_agent_cli_e2e_pass`, so that gate
+was only a claim while the task ran solely in the in-process harness — the one
+harness that cannot show the capability routing survives the wire. It now runs
+under `@link-assistant/agent` and `opencode`, and the script diffs the two
+reports byte for byte: a harness is supported "in the similar way" only if it
+derives the *same* artifact. All three harnesses — in-repo, `agent`, and
+`opencode` — produce the identical 3961-byte report, so the differing tool
+vocabularies are genuinely a routing detail and not a semantic one. The run is in
+[`agent-cli-learning`](agent-cli-learning/), and the step is wired into the
+`E2E Tests (agent CLI ↔ formal-ai)` CI job so parity is enforced rather than
+observed once.
+
+Two things in the captured `agent` stream look like failures and are not. Its
+six `tool_use` events each render `"name": "unknown"` with an empty `input`,
+which is a gap in that CLI's `--compact-json` renderer rather than a tool that
+did not run: `opencode` drove the same server over the same wire and named
+`write` and `bash`, and `formal-ai` sends `function.name` in every tool-call
+delta (`src/server.rs:584`). The report existing at all is the real evidence the
+write executed — the harness wrote it into its own workspace, which the server
+cannot reach. The stream's `warn` events are likewise benign and self-attributed
+to [agent#249](https://github.com/link-assistant/agent/issues/249): the AI SDK
+dropped token usage and the CLI recovered it from the raw SSE. They ride stdout
+as log events, which is why `scripts/classify-agent-cli-stderr.sh` never sees
+them.
+
 ## Requirements and evidence
 
 | Requirement | Implementation | Verification |
@@ -77,7 +110,8 @@ and [`formal-ai-agent-learning.log`](test-logs/formal-ai-agent-learning.log).
 | Avoid language/extension gates | The active prior write may be any path; rewrite data is UTF-8 text rather than a source-language AST. | Ten catalog languages, `notes.custom-format`, and four natural languages |
 | Support multiple rules | Every ordered old/new pair becomes a rule; evaluation restarts at the highest-priority rule after every non-terminal substitution. | `Hello -> Hi`, `world -> team` integration and cyclic safety case |
 | Make execution auditable without unbounded responses | Outcomes retain every applied rule and byte offset; final Links Notation renders the total plus bounded head/tail trace excerpts. | Unit assertions, bounded-cycle regression, and retained OpenCode JSONL/server trace |
-| Learn without autonomous promotion | Persisted failures and linked amendments feed the production associative-learning adapter; the derived report remains `awaiting_human_review`. | Learning derivation test and built-in Agent CLI session |
+| Learn without autonomous promotion | Persisted failures and linked amendments feed the production associative-learning adapter; the derived report remains `awaiting_human_review`. | Learning derivation test, built-in Agent CLI session, and a live `agent` + `opencode` E2E asserting the report never promotes itself |
+| Execute the same task on every harness | Auto-learning is planned through the shared `DocumentRecipe` router, so a harness contributes its tool vocabulary and nothing else. | `run_issue_715_learning.sh` drives `@link-assistant/agent` and `opencode` against one task and diffs the two derived reports byte for byte |
 | Accept broad NL variation without hardcoded multilingual cues | The compiler consumes ordered structural literal slots independently of surrounding prose. | Ten creation/deletion phrasings in each of English, Russian, Hindi, and Chinese |
 | Support link-cli's substitution query language | `src/links_substitution_query/` parses and renders the `(matching pattern) (substitution pattern)` shape, reusing `normal_markov` as the executor rather than adding a second engine. | Round-trip, CRUD-shape, and effect-classification tests in `tests/unit/issue_715_links_substitution_query.rs` |
 | Substitute over text sequences *and links in general* | One language, one parser core, two operand domains: `text.rs` reads quoted character sequences, `links.rs` reads `(index: source target)` doublets with `$i`/`$s`/`$t` variables. Both share the ordered, bounded Markov control model. | link-cli's own documented queries as fixtures in `tests/unit/issue_715_link_substitution_query.rs`, including read-all termination and a cycling swap hitting `StepLimit` |
