@@ -34,13 +34,26 @@ pub fn apply_promotions(
         }
         let edit = &record.proposal.edit;
         validate_seed_path(&edit.seed_file)?;
-        let entry = targets.entry(edit.seed_file.clone()).or_insert_with(|| {
-            let existing =
-                fs::read_to_string(workspace_root.join(&edit.seed_file)).unwrap_or_default();
-            (existing, 0)
-        });
+        let target_path = workspace_root.join(&edit.seed_file);
+        let existing = match fs::read_to_string(&target_path) {
+            Ok(existing) => existing,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => String::new(),
+            Err(error) => {
+                return Err(io::Error::new(
+                    error.kind(),
+                    format!(
+                        "could not read existing seed {}: {error}",
+                        target_path.display()
+                    ),
+                ));
+            }
+        };
+        let entry = targets
+            .entry(edit.seed_file.clone())
+            .or_insert((existing, 0));
         if !entry.0.is_empty() && !entry.0.ends_with('\n') {
             entry.0.push('\n');
+            entry.1 = entry.1.saturating_add(1);
         }
         entry.0.push_str(&edit.lino);
         entry.1 = entry.1.saturating_add(edit.lino.len());

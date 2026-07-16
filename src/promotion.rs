@@ -303,12 +303,11 @@ pub struct PromotionRecord {
     pub outcome: PromotionOutcome,
 }
 
-/// The branch/PR step a promotion run would take, represented as a plan.
+/// The local review branch and remaining commit/draft-PR steps for a run.
 ///
-/// E36 (the Agent-CLI branch/PR path this should ultimately drive) is not yet
-/// implemented, so the branch step is a plan a reviewer runs, never an automatic
-/// push. Materialization writes seed edits into a workspace; landing them stays a
-/// draft pull request opened through this plan.
+/// Materialization creates the branch before writing accepted edits. Committing,
+/// pushing, and opening a draft pull request remain an explicit plan for a human
+/// reviewer; the protocol never performs those network-visible actions.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PromotionBranchPlan {
     /// The branch a promotion would land on.
@@ -494,12 +493,11 @@ pub fn promotions_from_learning_run(run: &LearningRun) -> Vec<PromotionProposal>
         .collect()
 }
 
-/// A deterministic demonstration run.
+/// A deterministic demonstration run for protocol and bundle tests.
 ///
 /// One proposal clears its ratchets and is promoted; the other fails the
-/// coding-modification floor and is kept as a rejection record. Used by
-/// `formal-ai improve --promote` when no explicit proposal document is
-/// supplied, so the command always shows a real plan.
+/// coding-modification floor and is kept as a rejection record. Production CLI
+/// runs require an explicit proposal document and fresh canonical gate replay.
 #[must_use]
 pub fn demonstration_promotion_run() -> PromotionRun {
     PromotionRun::evaluate(demonstration_promotion_proposals())

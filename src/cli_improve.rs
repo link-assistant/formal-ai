@@ -28,8 +28,8 @@ pub struct ImproveArgs {
 
 /// Drive the promotion protocol: replay each proposal's benchmark ratchets,
 /// print the resulting plan, and — only under `--apply --confirm` — materialize
-/// the accepted seed edits onto a workspace. Never pushes: the branch/PR step is
-/// printed as a plan a human reviews and runs.
+/// the accepted seed edits onto a newly created local review branch. Never
+/// pushes: committing and opening the draft PR are printed for human review.
 pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     if !args.promote {
         println!(
@@ -37,8 +37,9 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
              \n\
              Pass --promote to replay open proposals against their benchmark ratchets and print the\n\
              promotion plan (dry run; touches no files). Add --apply --confirm to materialize the\n\
-             accepted `.lino` seed edits onto --seed-root. Promotion never pushes: the branch/PR step\n\
-             is emitted as a plan for human review, and rejected proposals are kept as failure records."
+             accepted `.lino` seed edits onto a local review branch in --seed-root. Promotion never\n\
+             pushes: commit/draft-PR steps require human review, and rejected proposals are kept as\n\
+             failure records."
         );
         return Ok(());
     }

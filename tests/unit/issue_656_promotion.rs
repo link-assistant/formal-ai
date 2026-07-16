@@ -189,6 +189,44 @@ fn promotion_materialization_requires_a_clean_git_review_workspace() {
 }
 
 #[test]
+fn promotion_coalesces_same_file_edits_with_separators_and_fails_on_read_errors() {
+    let first = passing_proposal();
+    let second_lino =
+        "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"second_rule\"";
+    let second = PromotionProposal::new(
+        "learned_rule:second",
+        "Promote a second independently learned rule.",
+        SeedEdit::new(LEARNED_PROGRAM_RULES_SEED_FILE, second_lino),
+        first.gates.clone(),
+    );
+    let run = PromotionRun::evaluate(vec![first.clone(), second]);
+    let workspace = tmpdir("coalesced-edits");
+    init_git(&workspace);
+    let outcome = apply_promotions(&run, &workspace).expect("coalesced promotion");
+    assert_eq!(outcome.applied.len(), 1);
+    let materialized = std::fs::read_to_string(workspace.join(LEARNED_PROGRAM_RULES_SEED_FILE))
+        .expect("coalesced seed");
+    assert_eq!(materialized, format!("{}\n{second_lino}", first.edit.lino));
+    assert_eq!(outcome.applied[0].bytes_written, materialized.len());
+
+    let unreadable = tmpdir("seed-read-error");
+    std::fs::create_dir_all(unreadable.join(LEARNED_PROGRAM_RULES_SEED_FILE))
+        .expect("directory at seed path");
+    let error = apply_promotions(
+        &PromotionRun::evaluate(vec![passing_proposal()]),
+        &unreadable,
+    )
+    .expect_err("existing seed read errors must fail closed");
+    assert!(
+        error.to_string().contains("could not read existing seed"),
+        "{error}"
+    );
+
+    let _ = std::fs::remove_dir_all(workspace);
+    let _ = std::fs::remove_dir_all(unreadable);
+}
+
+#[test]
 fn promotion_protocol_events_round_trip_through_bundle() {
     let run = demonstration_promotion_run();
     let events = run.memory_events();
