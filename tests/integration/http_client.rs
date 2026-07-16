@@ -5,11 +5,30 @@
 //! distinction the client has to draw: a pause is not a failure, a hang is.
 
 use std::io::{ErrorKind, Read as _, Write as _};
-use std::net::TcpListener;
+use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::time::Duration;
 
 use super::http_server::{http_request, http_request_with_timeout};
+
+/// Read the request up to the blank line that ends its head.
+///
+/// Draining it is not politeness: closing a socket that still has unread bytes
+/// queued makes the kernel send RST rather than FIN, and the reset discards the
+/// response already sitting in the client's buffer. The client writes its head
+/// and the terminating blank line as separate syscalls, so whether they arrive
+/// as one segment is a timing accident — a single `read` here leaves the
+/// remainder queued and turns the pause into a `ConnectionReset`.
+fn drain_request_head(stream: &mut TcpStream) {
+    let mut seen = Vec::new();
+    let mut chunk = [0_u8; 1024];
+    while !seen.windows(4).any(|window| window == b"\r\n\r\n") {
+        match stream.read(&mut chunk) {
+            Ok(0) | Err(_) => return,
+            Ok(count) => seen.extend_from_slice(&chunk[..count]),
+        }
+    }
+}
 
 /// Serve one HTTP response, going quiet for `pause` midway through the body.
 ///
@@ -20,8 +39,7 @@ fn serve_once_pausing_mid_body(pause: Duration) -> u16 {
     let port = listener.local_addr().expect("read fake server port").port();
     thread::spawn(move || {
         let (mut stream, _) = listener.accept().expect("accept client connection");
-        let mut request = [0_u8; 1024];
-        let _ = stream.read(&mut request);
+        drain_request_head(&mut stream);
         stream
             .write_all(b"HTTP/1.1 200 OK\r\ncontent-type: application/json\r\n\r\n{\"half\":")
             .expect("write the first half");

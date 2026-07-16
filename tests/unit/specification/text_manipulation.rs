@@ -851,13 +851,27 @@ fn apostrophes_in_english_prose_do_not_swallow_the_quoted_operands() {
 /// The same invariant for apostrophes used as literal operand delimiters: when
 /// the apostrophes *are* the quotes, both operands must still be recovered.
 /// This is the case the guard in `next_complete_pair` must not over-reject.
+///
+/// The delimiter is the operand-independent part, so the guard belongs to the
+/// shared reader rather than to English: every supported language reaches the
+/// same `quoted_segments` through its own verb, and a guard that over-rejects
+/// would take the operands away from all of them. Covering only the language
+/// the bug was reported in would leave that untested.
 #[test]
-fn apostrophe_delimited_operands_are_still_recognized() {
+fn apostrophe_delimited_operands_are_recognized_in_every_supported_language() {
     let solver = text_solver();
-    let response = solver.solve("replace 'cat' with 'dog' in this text: 'cat naps'");
-    assert_eq!(
-        response.answer, "dog naps",
-        "apostrophes delimiting the operands must still parse (got intent {}, answer {:?})",
-        response.intent, response.answer
-    );
+    for (language, prompt) in [
+        ("en", "replace 'cat' with 'dog' in this text: 'cat naps'"),
+        ("ru", "Замени 'cat' на 'dog': 'cat naps'"),
+        ("hi", "'cat' को 'dog' से बदलें: 'cat naps'"),
+        ("zh", "替换 'cat' 为 'dog': 'cat naps'"),
+    ] {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.answer, "dog naps",
+            "{language}: apostrophes delimiting the operands must still parse \
+             (got intent {}, answer {:?})",
+            response.intent, response.answer
+        );
+    }
 }
