@@ -45,7 +45,7 @@ pub fn format_lino_value(value: &str) -> String {
         .and_then(|rest| rest.strip_prefix(PROBE))
         .and_then(|rest| rest.strip_prefix(' '))
         .map(str::to_owned)
-        .expect("the codec writes each field as `{indent}{key} {value}` on its own line")
+        .expect("the codec writes each field as an indented key-then-value pair on its own line")
 }
 
 /// Write one `name "value"` node at `indent` spaces, the way Links Notation
