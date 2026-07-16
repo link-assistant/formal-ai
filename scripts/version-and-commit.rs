@@ -99,6 +99,51 @@ fn exec_check(command: &str, args: &[&str]) -> bool {
         .unwrap_or(false)
 }
 
+/// Run a git command inside `repo`, so the release logic can be exercised
+/// against a throwaway repository in tests instead of the process CWD.
+fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
+    let repo_str = repo.to_string_lossy().to_string();
+    let mut full: Vec<&str> = vec!["-C", &repo_str];
+    full.extend_from_slice(args);
+    exec("git", &full)
+}
+
+/// Number of commits `origin/<branch>` has that HEAD does not.
+fn commits_behind(repo: &Path, branch: &str) -> u32 {
+    git(repo, &["rev-list", "--count", &format!("HEAD..origin/{}", branch)])
+        .ok()
+        .and_then(|out| out.trim().parse().ok())
+        .unwrap_or(0)
+}
+
+/// Rebase onto the latest `origin/<branch>` so a concurrent release that landed
+/// mid-job is picked up.
+///
+/// This MUST run while the working tree is still clean, before the version bump
+/// is written and staged: `git rebase` refuses to run against a dirty index
+/// ("cannot rebase: Your index contains uncommitted changes"), which is what
+/// broke the release job. Syncing first also means the bump is computed from the
+/// newest state of the branch instead of a stale checkout.
+fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
+    // A missing remote is not fatal: the push step reports the real problem.
+    if let Err(e) = git(repo, &["fetch", "origin", branch]) {
+        eprintln!("Warning: Could not fetch origin/{}: {}", branch, e);
+        return Ok(());
+    }
+
+    let behind = commits_behind(repo, branch);
+    if behind == 0 {
+        return Ok(());
+    }
+
+    println!("Local branch is behind origin/{} by {} commit(s), rebasing...", branch, behind);
+    if let Err(e) = git(repo, &["rebase", &format!("origin/{}", branch)]) {
+        let _ = git(repo, &["rebase", "--abort"]);
+        return Err(format!("Error rebasing onto origin/{}: {}", branch, e));
+    }
+    Ok(())
+}
+
 struct Version {
     major: u32,
     minor: u32,
@@ -396,7 +441,10 @@ fn collect_changelog_with_date(
         return;
     }
 
-    let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
+    // No leading newline: `lines[..idx]` already ends with the blank line that
+    // follows the insert marker, so opening with one produced a second blank
+    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
+    let new_entry = format!("## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
 
     if !Path::new(changelog_file).exists() {
         return;
@@ -417,7 +465,9 @@ fn collect_changelog_with_date(
         let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
         new_lines.push(new_entry.clone());
         new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-        content = new_lines.join("\n");
+        // `lines()` drops the trailing newline and `join` never restores it, so
+        // every release used to strip the file's final newline.
+        content = format!("{}\n", new_lines.join("\n"));
     } else {
         content.push_str(&new_entry);
     }
@@ -432,7 +482,7 @@ fn collect_changelog_with_date(
 mod tests {
     use super::collect_changelog_with_date;
     use std::fs;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
     use std::time::{SystemTime, UNIX_EPOCH};
 
     fn temp_dir(name: &str) -> PathBuf {
@@ -510,6 +560,162 @@ bump: patch
         );
         assert_eq!(fs::read_to_string(&changelog).unwrap(), after_first_release);
     }
+
+    /// The release commit must write CHANGELOG.md in exactly the shape
+    /// `experiments/issue_711_rebuild_changelog.mjs --check` reconstructs from
+    /// git history, byte for byte. It did not: the entry was spliced in before
+    /// the first `## [` line, but `lines[..idx]` already ends with the blank
+    /// line that follows the insert marker and `new_entry` opened with another
+    /// `\n`, so every release left a second blank line after the marker. And
+    /// `lines()` drops the trailing newline that `join("\n")` never restores,
+    /// so every release also stripped the final newline. Both survived because
+    /// the check only runs when the lint job's path filter fires, which a
+    /// release commit does not trigger -- so `main` went red on the next
+    /// unrelated PR and someone hand-fixed it ("refresh reconstructed release
+    /// artifacts", repeatedly).
+    #[test]
+    fn release_writes_the_changelog_exactly_as_reconstruction_expects() {
+        let repo = temp_dir("changelog-canonical-shape");
+        let changelog_dir = repo.join("changelog.d");
+        fs::create_dir_all(&changelog_dir).unwrap();
+        fs::write(
+            changelog_dir.join("fragment.md"),
+            "---\nbump: patch\n---\n\n### Fixed\n- A representative fragment.\n",
+        )
+        .unwrap();
+
+        // The canonical shape: marker, exactly one blank line, newest section,
+        // one blank line between sections, single trailing newline.
+        let changelog = repo.join("CHANGELOG.md");
+        let before = "\
+# Changelog
+
+<!-- changelog-insert-here -->
+
+## [0.1.0] - 2026-01-01
+
+### Added
+- Initial release
+";
+        fs::write(&changelog, before).unwrap();
+
+        collect_changelog_with_date(
+            changelog_dir.to_str().unwrap(),
+            changelog.to_str().unwrap(),
+            "0.2.0",
+            "2026-07-16",
+        );
+
+        let expected = "\
+# Changelog
+
+<!-- changelog-insert-here -->
+
+## [0.2.0] - 2026-07-16
+
+### Fixed
+- A representative fragment.
+
+## [0.1.0] - 2026-01-01
+
+### Added
+- Initial release
+";
+        assert_eq!(fs::read_to_string(&changelog).unwrap(), expected);
+    }
+
+    fn git_ok(repo: &Path, args: &[&str]) {
+        super::git(repo, args).unwrap_or_else(|e| panic!("git {:?} failed: {}", args, e));
+    }
+
+    /// Set up a bare origin plus a clone whose identity is configured, so the
+    /// release helper can commit without inheriting the developer's git config.
+    fn repo_with_origin(name: &str) -> (PathBuf, PathBuf) {
+        let root = temp_dir(name);
+        let origin = root.join("origin.git");
+        let work = root.join("work");
+        git_ok(&root, &["init", "--bare", "--initial-branch=main", origin.to_str().unwrap()]);
+        git_ok(&root, &["clone", origin.to_str().unwrap(), work.to_str().unwrap()]);
+        git_ok(&work, &["config", "user.email", "ci@example.com"]);
+        git_ok(&work, &["config", "user.name", "CI"]);
+        fs::write(work.join("Cargo.toml"), "version = \"0.1.0\"\n").unwrap();
+        git_ok(&work, &["add", "-A"]);
+        git_ok(&work, &["commit", "-m", "init"]);
+        git_ok(&work, &["push", "-u", "origin", "main"]);
+        (root, work)
+    }
+
+    /// Land a commit on origin/main from an independent clone, simulating a
+    /// concurrent release that pushes while this job is running.
+    fn push_concurrent_commit(root: &Path, subject: &str) {
+        let other = root.join("other");
+        git_ok(root, &["clone", root.join("origin.git").to_str().unwrap(), other.to_str().unwrap()]);
+        git_ok(&other, &["config", "user.email", "other@example.com"]);
+        git_ok(&other, &["config", "user.name", "Other"]);
+        fs::write(other.join("NOTES.md"), "concurrent\n").unwrap();
+        git_ok(&other, &["add", "-A"]);
+        git_ok(&other, &["commit", "-m", subject]);
+        git_ok(&other, &["push", "origin", "main"]);
+    }
+
+    /// Regression test for the release failure in CI run 29484631709:
+    /// "Error rebasing onto origin/main: Command failed: error: cannot rebase:
+    /// Your index contains uncommitted changes." A concurrent release pushed to
+    /// origin/main while this job had already staged its version bump, so the
+    /// sync must happen before anything is written and staged.
+    #[test]
+    fn syncs_with_concurrent_release_then_commits_bump_on_top() {
+        let (root, work) = repo_with_origin("concurrent-release");
+        push_concurrent_commit(&root, "concurrent change");
+
+        // Order under test: sync while clean, then bump, stage and commit.
+        super::sync_with_remote(&work, "main").expect("sync must succeed against an advanced remote");
+        fs::write(work.join("Cargo.toml"), "version = \"0.2.0\"\n").unwrap();
+        git_ok(&work, &["add", "Cargo.toml"]);
+        git_ok(&work, &["commit", "-m", "chore: release v0.2.0"]);
+
+        // The release commit sits on top of the concurrent one, and both survive.
+        let log = super::git(&work, &["log", "--format=%s"]).unwrap();
+        assert_eq!(
+            log.lines().collect::<Vec<_>>(),
+            vec!["chore: release v0.2.0", "concurrent change", "init"]
+        );
+        assert_eq!(fs::read_to_string(work.join("Cargo.toml")).unwrap(), "version = \"0.2.0\"\n");
+        assert_eq!(fs::read_to_string(work.join("NOTES.md")).unwrap(), "concurrent\n");
+        assert!(super::git(&work, &["status", "--porcelain"]).unwrap().is_empty());
+    }
+
+    /// Pins the ordering itself: syncing after the bump is staged is exactly the
+    /// failure CI hit, so this must stay impossible.
+    #[test]
+    fn syncing_after_staging_the_bump_fails() {
+        let (root, work) = repo_with_origin("sync-after-staging");
+        push_concurrent_commit(&root, "concurrent change");
+
+        fs::write(work.join("Cargo.toml"), "version = \"0.2.0\"\n").unwrap();
+        git_ok(&work, &["add", "Cargo.toml"]);
+
+        let err = super::sync_with_remote(&work, "main")
+            .expect_err("rebase must refuse to run against a staged version bump");
+        assert!(err.contains("cannot rebase"), "unexpected error: {}", err);
+    }
+
+    /// Being *ahead* of origin is not a reason to rebase. The old
+    /// `local != remote` check treated ahead and diverged as "behind".
+    #[test]
+    fn does_not_rebase_when_only_ahead_of_remote() {
+        let (_root, work) = repo_with_origin("ahead-of-remote");
+
+        fs::write(work.join("Cargo.toml"), "version = \"0.2.0\"\n").unwrap();
+        git_ok(&work, &["add", "Cargo.toml"]);
+        git_ok(&work, &["commit", "-m", "chore: release v0.2.0"]);
+
+        assert_eq!(super::commits_behind(&work, "main"), 0);
+        // Clean no-op even though HEAD != origin/main.
+        super::sync_with_remote(&work, "main").expect("being ahead must not trigger a rebase");
+        let log = super::git(&work, &["log", "--format=%s"]).unwrap();
+        assert_eq!(log.lines().collect::<Vec<_>>(), vec!["chore: release v0.2.0", "init"]);
+    }
 }
 
 fn main() {
@@ -550,6 +756,14 @@ fn main() {
     // Configure git
     let _ = exec("git", &["config", "user.name", "github-actions[bot]"]);
     let _ = exec("git", &["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
+
+    // Sync with the remote while the tree is still clean, so a concurrent
+    // release is picked up before the bump is computed and staged.
+    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
+    if let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
+        eprintln!("{}", e);
+        exit(1);
+    }
 
     // Get current version
     let content = match fs::read_to_string(&package_manifest) {
@@ -643,24 +857,7 @@ fn main() {
         return;
     }
 
-    // Fetch latest remote state before committing (supports concurrent release workflows)
-    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
-    if let Err(e) = exec("git", &["fetch", "origin", &current_branch]) {
-        eprintln!("Warning: Could not fetch origin/{}: {}", current_branch, e);
-    } else {
-        let local = exec("git", &["rev-parse", "HEAD"]).unwrap_or_default();
-        let remote = exec("git", &["rev-parse", &format!("origin/{}", current_branch)]).unwrap_or_default();
-        if !local.is_empty() && !remote.is_empty() && local != remote {
-            println!("Local branch is behind remote, rebasing...");
-            if let Err(e) = exec("git", &["rebase", &format!("origin/{}", current_branch)]) {
-                eprintln!("Error rebasing onto origin/{}: {}", current_branch, e);
-                let _ = exec("git", &["rebase", "--abort"]);
-                exit(1);
-            }
-        }
-    }
-
-    // Commit changes
+    // Commit the staged release files (the rebase already happened, while clean).
     let label_suffix = release_label.as_ref().map(|l| format!(" ({})", l)).unwrap_or_default();
     let commit_msg = match &description {
         Some(desc) => format!("chore: release {}{}{}\n\n{}", tag_prefix, new_version, label_suffix, desc),
@@ -673,20 +870,7 @@ fn main() {
     }
     println!("Committed version {}", new_version);
 
-    // Create tag
-    let tag_name = format!("{}{}", tag_prefix, new_version);
-    let tag_msg = match &description {
-        Some(desc) => format!("Release {}{}\n\n{}", tag_name, label_suffix, desc),
-        None => format!("Release {}{}", tag_name, label_suffix),
-    };
-
-    if let Err(e) = exec("git", &["tag", "-a", &tag_name, "-m", &tag_msg]) {
-        eprintln!("Error creating tag: {}", e);
-        exit(1);
-    }
-    println!("Created tag {}", tag_name);
-
-    // Push changes and tag with retry (handles concurrent pushes in multi-workflow repos)
+    // Push changes with retry (handles concurrent pushes in multi-workflow repos)
     let max_push_attempts = 3;
     for attempt in 1..=max_push_attempts {
         match exec("git", &["push"]) {
@@ -707,6 +891,20 @@ fn main() {
             }
         }
     }
+
+    // Tag only once the release commit is on the remote, so a `pull --rebase`
+    // retry above can never leave the tag on an orphaned pre-rebase commit.
+    let tag_name = format!("{}{}", tag_prefix, new_version);
+    let tag_msg = match &description {
+        Some(desc) => format!("Release {}{}\n\n{}", tag_name, label_suffix, desc),
+        None => format!("Release {}{}", tag_name, label_suffix),
+    };
+
+    if let Err(e) = exec("git", &["tag", "-a", &tag_name, "-m", &tag_msg]) {
+        eprintln!("Error creating tag: {}", e);
+        exit(1);
+    }
+    println!("Created tag {}", tag_name);
 
     if let Err(e) = exec("git", &["push", "--tags"]) {
         eprintln!("Error pushing tags: {}", e);
