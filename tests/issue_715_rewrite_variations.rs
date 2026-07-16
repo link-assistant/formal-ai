@@ -169,8 +169,8 @@ fn a_cyclic_program_reaches_the_bound_without_writing_partial_bytes() {
         Some(AgenticPlan::Final(answer)) => {
             assert!(answer.contains("100000-step safety bound"));
             assert!(answer.contains("no partial bytes were written"));
-            assert!(answer.contains("halt \"StepLimit\""));
-            assert!(answer.contains("omitted_steps \"99936\""));
+            assert!(answer.contains("halt StepLimit"));
+            assert!(answer.contains("omitted_steps 99936"));
             assert!(
                 answer.len() < 20_000,
                 "bounded trace response was {} bytes",

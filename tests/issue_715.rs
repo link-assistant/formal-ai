@@ -181,13 +181,15 @@ fn contextual_code_change_reads_then_writes_the_active_file() {
         Some(AgenticPlan::Final(answer)) => answer,
         other => panic!("expected final mutation trace, got {other:?}"),
     };
+    // Values are quoted the way Links Notation quotes: only when the value needs
+    // it, with a delimiter the value itself does not contain.
     assert!(final_answer.contains("normal_markov_program"));
-    assert!(final_answer.contains("target \"main.rs\""));
+    assert!(final_answer.contains("target main.rs"));
     assert!(final_answer.contains("rewrite_rule \"0\""));
-    assert!(final_answer.contains("pattern \"Hello, world!\""));
-    assert!(final_answer.contains("replacement \"Hello 2\""));
-    assert!(final_answer.contains("halt \"TerminalRule(0)\""));
-    assert!(final_answer.contains("steps \"1\""));
+    assert!(final_answer.contains("pattern 'Hello, world!'"));
+    assert!(final_answer.contains("replacement 'Hello 2'"));
+    assert!(final_answer.contains("halt 'TerminalRule(0)'"));
+    assert!(final_answer.contains("steps 1"));
 }
 
 #[test]
@@ -394,10 +396,12 @@ fn mutation_trace_publishes_the_substitution_query_and_effects() {
         Some(AgenticPlan::Final(answer)) => answer,
         other => panic!("expected final mutation trace, got {other:?}"),
     };
+    // Links Notation picks a delimiter the value does not contain, so a query
+    // full of double quotes is carried in single quotes rather than backslashed.
     assert!(
         final_answer
-            .contains(r#"substitution_query "((\"Hello, world!\")) ((terminal: \"Hello 2\"))""#),
+            .contains(r#"substitution_query '(("Hello, world!")) ((terminal: "Hello 2"))'"#),
         "{final_answer}"
     );
-    assert!(final_answer.contains("effect \"update\""), "{final_answer}");
+    assert!(final_answer.contains("effect update"), "{final_answer}");
 }

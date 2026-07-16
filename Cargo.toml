@@ -54,6 +54,9 @@ default = ["doublets-native"]
 doublets-native = ["dep:doublets", "dep:mem"]
 
 [dev-dependencies]
+# The same codec the library encodes with, so tests can hold published
+# artifacts to the notation they claim to be written in.
+lino-objects-codec = "0.2.1"
 regex = "1"
 walkdir = "2"
 

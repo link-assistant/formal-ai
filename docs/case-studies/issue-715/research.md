@@ -89,6 +89,55 @@ exactly the links whose source and target agree. Both domains share the ordered,
 restart-at-rule-zero, bounded control model, which is what carries the Turing
 completeness argument across unchanged.
 
+### The trace has to be readable, not just look readable
+
+The mutation trace is published as the meta-language representation of the
+request, so "it renders like Links Notation" is not the bar — a Links Notation
+reader has to be able to read it back. It could not.
+
+Links Notation escapes a quote by **doubling** it (`""`), and its encoder first
+picks a delimiter the value does not already contain; `lino-objects-codec`'s
+`escape_reference` carries `println!("hi");` as `'println!("hi");'`, with no
+escape at all. Eight private `escape_lino_value` copies in `src/` had instead
+converged on a C-style backslash escape, in four mutually incompatible
+variants. A backslash leaves the quote visible to the reader, which ends the
+string early — and once the string has ended early, a code fragment's `(` is no
+longer inside a value but an unclosed group, so the document fails to parse
+outright.
+
+That is the difference between the two failure modes, and why this surfaced as
+issue #715's title rather than as garbled output:
+
+| value | backslash escape | codec's escape |
+| --- | --- | --- |
+| `Hello, world!` | survives | survives |
+| `say "hi"` | **silently dropped** | survives |
+| `println!("Hello, world!");` | **parse error** | survives |
+| `fn main() {\n …\n}` | **parse error** | survives |
+| `C:\path` | **mangled** | survives |
+| `(("Hello")) ((terminal: "Goodbye"))` | **parse error** | survives |
+
+`experiments/issue_715_lino_escaping_probe.rs` reproduces that table. Quoted
+prose survived, which is why the defect stayed invisible: it needed a value
+carrying both a quote and a paren — that is, ordinary code — to escalate from
+silent loss to a hard error. Publishing the link-cli query in the trace made it
+unconditional, because the query language always has both.
+
+The fix is not a ninth escaping variant but the removal of one: `link_field`
+delegates to the codec's own `escape_reference`, so the definition of the
+notation and the encoder for it cannot drift apart again.
+`tests/issue_715_notation.rs` holds the trace to that bar by parsing it with the
+same codec the library encodes with.
+
+A related divergence is recorded but **not** fixed here, because its blast
+radius is the seed corpus rather than this issue: `SubstitutionRuleSet` and
+`AssociativePackage` both validate an incoming document with the codec
+(`parse_indented`) and then read it with the repository's own
+`src/seed/parser.rs`, which implements the backslash dialect. The two agree
+whenever a value needs no escape, and 43 files under `data/` depend on the
+backslash reading, so unifying them is a corpus migration and is left as its
+own change.
+
 ### Deliberate divergences
 
 Recorded rather than silently taken:

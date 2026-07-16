@@ -5,6 +5,7 @@
 
 use std::fmt::Write as _;
 
+use lino_objects_codec::format::escape_reference;
 use serde_json::{json, Value};
 
 use super::planner::{
@@ -301,7 +302,20 @@ fn last_string_literal(source: &str) -> Option<String> {
     quoted_segments(source).pop()
 }
 
+/// Write one `name value` link, quoted the way Links Notation quotes.
+///
+/// The trace is published as the meta-language representation of the request,
+/// so it has to be readable by a Links Notation reader, not merely look like
+/// one. Notation escapes a quote by *doubling* it and picks a delimiter the
+/// value does not already contain; a backslash escape leaves the quote visible
+/// to the reader, which ends the string early and turns a code fragment's `(`
+/// into an unclosed group. Delegating to the codec's own escaper is what keeps
+/// the two definitions from drifting apart again.
 fn link_field(out: &mut String, indent: usize, name: &str, value: &str) {
-    let escaped = value.replace('\\', "\\\\").replace('"', "\\\"");
-    let _ = writeln!(out, "{}{name} \"{escaped}\"", " ".repeat(indent));
+    let _ = writeln!(
+        out,
+        "{}{name} {}",
+        " ".repeat(indent),
+        escape_reference(value)
+    );
 }
