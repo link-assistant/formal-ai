@@ -5,6 +5,7 @@ use std::fmt::Write as _;
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::normal_markov::{quoted_segment_spans, quoted_segments, QuotedSegment};
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::text_edit_ops::{
@@ -754,64 +755,6 @@ fn hex_encode(bytes: &[u8]) -> String {
         let _ = write!(out, "{byte:02x}");
     }
     out
-}
-
-fn quoted_segments(text: &str) -> Vec<String> {
-    quoted_segment_spans(text)
-        .into_iter()
-        .map(|segment| segment.text)
-        .collect()
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct QuotedSegment {
-    text: String,
-    start: usize,
-    end: usize,
-}
-
-fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
-    let mut segments = Vec::new();
-    let mut cursor = 0usize;
-    while cursor < text.len() {
-        let Some((relative_start, open, close)) =
-            text[cursor..]
-                .char_indices()
-                .find_map(|(index, character)| {
-                    quote_close_for(character).map(|close| (index, character, close))
-                })
-        else {
-            break;
-        };
-        let open_start = cursor + relative_start;
-        let content_start = open_start + open.len_utf8();
-        let Some(relative_end) = text[content_start..].find(close) else {
-            break;
-        };
-        let content_end = content_start + relative_end;
-        let segment_end = content_end + close.len_utf8();
-        segments.push(QuotedSegment {
-            text: text[content_start..content_end].to_owned(),
-            start: open_start,
-            end: segment_end,
-        });
-        cursor = segment_end;
-    }
-    segments
-}
-
-const fn quote_close_for(open: char) -> Option<char> {
-    match open {
-        '\'' => Some('\''),
-        '"' => Some('"'),
-        '`' => Some('`'),
-        '«' => Some('»'),
-        '“' => Some('”'),
-        '‘' => Some('’'),
-        '「' => Some('」'),
-        '『' => Some('』'),
-        _ => None,
-    }
 }
 
 fn normalize_replacement_prompt(prompt: &str) -> String {

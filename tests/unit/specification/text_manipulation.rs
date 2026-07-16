@@ -819,3 +819,45 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
         );
     }
 }
+
+/// Issue #715 requires many phrasing variations per supported language, and
+/// English prose is full of ASCII apostrophes: contractions (`doesn't`,
+/// `isn't`, `won't`) and possessives (`user's`). The apostrophe is also one of
+/// this crate's quote delimiters, so a lone one must never be taken for an
+/// opening quote that swallows the operands after it. These prompts differ from
+/// each other only in the prose before `replace`, which the parser is supposed
+/// to ignore entirely.
+#[test]
+fn apostrophes_in_english_prose_do_not_swallow_the_quoted_operands() {
+    let solver = text_solver();
+    let prompts = [
+        "It doesn't matter, replace \"cat\" with \"dog\" in this text: \"cat naps\"",
+        "I can't decide, replace \"cat\" with \"dog\" in this text: \"cat naps\"",
+        "That isn't what I meant: replace \"cat\" with \"dog\" in this text: \"cat naps\"",
+        "The user's request is to replace \"cat\" with \"dog\" in this text: \"cat naps\"",
+    ];
+
+    for prompt in prompts {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.answer, "dog naps",
+            "an apostrophe in the prose must not consume the operands of {prompt:?} \
+             (got intent {}, answer {:?})",
+            response.intent, response.answer
+        );
+    }
+}
+
+/// The same invariant for apostrophes used as literal operand delimiters: when
+/// the apostrophes *are* the quotes, both operands must still be recovered.
+/// This is the case the guard in `next_complete_pair` must not over-reject.
+#[test]
+fn apostrophe_delimited_operands_are_still_recognized() {
+    let solver = text_solver();
+    let response = solver.solve("replace 'cat' with 'dog' in this text: 'cat naps'");
+    assert_eq!(
+        response.answer, "dog naps",
+        "apostrophes delimiting the operands must still parse (got intent {}, answer {:?})",
+        response.intent, response.answer
+    );
+}
