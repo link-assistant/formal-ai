@@ -29,10 +29,17 @@ failure looked intermittent and resisted a single explanation:
 | 4 | **`desktop-release.yml` publishes partial releases as green** | ⚠️ **false positive** | code read | **Real bug** — fixed in this PR |
 | 5 | **`desktop-release.yml` uploads Linux/Windows artifacts unverified** | ⚠️ **false negative** | code read | **Real gap** — fixed in this PR |
 | 6 | **`desktop-release.yml` runs show as `skipped`** | ℹ️ cosmetic | job `if:` at `desktop-release.yml:80-84` | **Correct behaviour**, not a defect — see §4.6 |
+| 7 | **Every release writes a `CHANGELOG.md` the reconstruction check rejects** | ❌ failure, **latent** | reproduced against `b2064b2a` | **Real bug** in both release writers — fixed in this PR, see §4.7 |
 
 Defects 1 and 2 are the serious ones, and defect 2 is worse than defect 1: by the
 time the runner died, the crate had **already been published to crates.io**, so
 those runs shipped a version with **no Docker image and no GitHub Release**.
+
+Defect 7 was not visible in any of the four analysed runs. It surfaced only when
+this PR became the first change in a while to actually trip the lint job's path
+filter, and it turned out to have been red on `main` since the `v0.296.0`
+release. It is the clearest example of what this issue asked for: a failure that
+had been repeatedly *papered over* by hand rather than fixed at source.
 
 ---
 
@@ -80,14 +87,14 @@ annotations, not step logs.
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| **R1** | `release.yml` auto-release is failing → fix it | ✅ §4.1, §4.2 |
+| **R1** | `release.yml` auto-release is failing → fix it | ✅ §4.1, §4.2, §4.7 |
 | **R2** | `desktop-release.yml` — double check everything works perfectly | ✅ §4.4–§4.6 |
 | **R3** | Docs generation shows as failing → fix it | ✅ §4.3 (upstream; reported) |
 | **R4** | Compare the full file tree against the js/rust/python/csharp pipeline templates; reuse best practices; report shared defects upstream | ✅ §5 |
 | **R5** | Compile all logs/data into `./docs/case-studies/issue-736` and do a deep analysis: timeline, requirements, root causes, solution plans, known components/libraries | ✅ this document |
 | **R6** | If there is not enough data to find the root cause, add debug output / verbose mode for the next iteration | ✅ §4.2 (`RUNNER_DISK_DEBUG`, low-disk annotation) |
-| **R7** | Report issues to other affected repositories, with reproducible examples, workarounds and fix suggestions | ✅ §6 |
-| **R8** | Apply each fix across the entire codebase — if the problem exists in multiple places, fix all of them | ✅ §4.2 (3 jobs), §4.4 (both attest sites) |
+| **R7** | Report issues to other affected repositories, with reproducible examples, workarounds and fix suggestions | ✅ §6 (4 upstream + [#738](https://github.com/link-assistant/formal-ai/issues/738) here) |
+| **R8** | Apply each fix across the entire codebase — if the problem exists in multiple places, fix all of them | ✅ §4.2 (3 jobs), §4.4 (both attest sites), §4.7 (both release writers) |
 | **R9** | Do everything in this single PR (#737) | ✅ |
 
 ---
@@ -306,6 +313,88 @@ does its job. **No change.**
 Also checked and found sound: the required-asset count `17` in
 `scripts/desktop-release-resolve.sh:230` matches `expected_desktop_assets()`.
 
+### 4.7 Defect #7 — every release writes a `CHANGELOG.md` the check rejects
+
+**Symptom.** `Lint and Format Check` → step 12, `Check reconstructed changelog`:
+
+```
+Error: CHANGELOG.md differs from reconstructed Git history
+```
+
+**This was already red on `main`.** Verified directly, against a clean worktree
+of `origin/main` with nothing from this PR in it:
+
+```bash
+git worktree add --detach /tmp/mainwt origin/main
+cd /tmp/mainwt && node experiments/issue_711_rebuild_changelog.mjs --check   # exit 1
+```
+
+**Why nobody saw it.** The run on this branch's base commit (`d6c34537`) is
+listed as ✅ *success* — but its lint job was **`skipped`**, along with every
+other real check. `Detect Changes` path-filters the lint job, and a release
+commit does not touch the paths that trigger it. So the check that guards the
+release artifacts *cannot run on the release that breaks them*. The red only
+lands later, on the next unrelated PR — far from the change that caused it.
+
+**Root cause — located exactly.** `scripts/version-and-commit.rs:462-466`. The
+writer ignores the insert marker and splices the new section in before the first
+`## [` line, which produces **two** defects at once:
+
+```rust
+let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, ...);  // leading \n
+// ...
+new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
+content = new_lines.join("\n");                                             // trailing \n lost
+```
+
+1. `lines[..idx]` **already ends with the blank line that follows the marker**,
+   and `new_entry` opens with another `\n` → the marker is left followed by two
+   blank lines. The canonical form built by `issue_711_rebuild_changelog.mjs`
+   (`HEADER + "\n\n" + sections.join("\n\n") + "\n"`) allows exactly one.
+2. `.lines()` **drops the trailing newline**, and `join("\n")` never restores it
+   → every release strips the file's final newline.
+
+Both predictions were confirmed byte-for-byte before any fix was written — first
+against the real `v0.296.0` release commit:
+
+```console
+$ git show b2064b2a -- CHANGELOG.md
+ <!-- changelog-insert-here -->
+ 
++                          ← the extra blank line
++## [0.296.0] - 2026-07-16
+```
+
+and then by the regression test, which failed with exactly the two predicted
+differences and nothing else:
+
+```
+left:  "...insert-here -->\n\n\n## [0.2.0]...- Initial release"     ← 3 newlines, no trailing \n
+right: "...insert-here -->\n\n## [0.2.0]...- Initial release\n"     ← canonical
+```
+
+**The tell was in the git history.** `fix: refresh reconstructed release
+artifacts` appears over and over on `main` (`2ca32ad2`, `28a5b63a`, `facdd3c2`,
+`5fb6e19d`). Each one is a person regenerating the artifacts by hand instead of
+fixing the writer — a treadmill, once per release, for a three-line bug.
+
+**Fix.** Both release paths — automatic (`version-and-commit.rs`) and manual
+(`collect-changelog.rs`, which had the mirror-image defect: its marker branch
+emitted *zero* blank lines) — now emit the canonical shape, pinned by
+`release_writes_the_changelog_exactly_as_reconstruction_expects`, which compares
+output byte for byte rather than with the `contains()` assertions the neighbouring
+test uses (those pass on both the broken and the fixed output, which is why they
+never caught this).
+
+**Residual, reported as [#738](https://github.com/link-assistant/formal-ai/issues/738).**
+The fix stops `CHANGELOG.md` diverging, but `fragment-release-map.tsv` still goes
+stale on every release, so the treadmill continues for that one file. It is
+**not fixable inside the release commit**: the map's third column is the SHA of
+the release commit itself, which does not exist until the commit is made. That
+needs a design decision (drop the SHA column, or amend post-commit) rather than a
+patch smuggled into this PR — especially as the amend route would touch the
+push/rebase path repaired in §4.1.
+
 ---
 
 ## 5. Template comparison (R4)
@@ -348,6 +437,13 @@ this PR should carry:
 
 Each report includes a reproducible example, a workaround, and a concrete fix
 suggestion, as the issue requires.
+
+Filed in **this** repository rather than upstream, for the one defect that is a
+design decision rather than a patch:
+
+| Report | Defect | Why separate |
+|---|---|---|
+| [#738](https://github.com/link-assistant/formal-ai/issues/738) | Every release leaves `fragment-release-map.tsv` stale → `main` goes red on the next unrelated PR | Unlike the `CHANGELOG.md` half of the same check (§4.7, fixed here), this **cannot** be fixed inside the release commit: the map's third column is the release commit's own SHA. Fixing it means dropping the SHA column or amending post-commit — a design choice, and the amend route would touch the push/rebase path repaired in §4.1 |
 
 ---
 
