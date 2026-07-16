@@ -122,6 +122,26 @@ fn rust_conversation_with_latest_user(prompt: &str) -> Vec<ChatMessage> {
     ]
 }
 
+fn rewrite_current_rust_source(prompt: &str, source: &str) -> String {
+    let mut messages = rust_conversation_with_latest_user(prompt);
+    let read = one_call(&messages, &["read", "write"]);
+    assert_eq!(read.tool, "read", "{prompt}");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "read-rewrite".to_owned(),
+        "read".to_owned(),
+        read.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "read-rewrite",
+        "read",
+        source,
+    ));
+
+    let write = one_call(&messages, &["read", "write"]);
+    assert_eq!(write.tool, "write", "{prompt}");
+    args(&write)["content"].as_str().unwrap().to_owned()
+}
+
 #[test]
 fn contextual_code_change_reads_then_writes_the_active_file() {
     let mut messages =
@@ -256,4 +276,39 @@ fn explicit_old_new_change_can_rewrite_an_arbitrary_code_fragment() {
     let source = args(&write)["content"].as_str().unwrap().to_owned();
     assert!(source.contains("eprintln!(\"done\");"), "{source}");
     assert!(!source.contains("println!(\"Hello, world!\");"), "{source}");
+}
+
+#[test]
+fn empty_pattern_creates_content() {
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+    let inserted = rewrite_current_rust_source(
+        "In the current code replace '' with '// generated file\n'.",
+        source,
+    );
+    assert_eq!(inserted, format!("// generated file\n{source}"));
+}
+
+#[test]
+fn nonempty_pattern_can_be_deleted() {
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+    let deleted = rewrite_current_rust_source(
+        r#"In the current code replace '    println!("Hello, world!");
+' with ''."#,
+        source,
+    );
+    assert_eq!(deleted, "fn main() {\n}\n");
+}
+
+#[test]
+fn ordered_substitutions_apply_as_one_general_rewrite_program() {
+    let source = "fn main() {\n    println!(\"Hello, world!\");\n}\n";
+    let rewritten = rewrite_current_rust_source(
+        "Apply these ordered substitutions to the current code: 'Hello' to 'Hi', then 'world' to 'team'.",
+        source,
+    );
+
+    assert_eq!(
+        rewritten,
+        "fn main() {\n    println!(\"Hi, team!\");\n}\n"
+    );
 }
