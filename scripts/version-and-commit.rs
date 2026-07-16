@@ -34,6 +34,8 @@ use serde::Deserialize;
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+#[path = "self-hosting-metric.rs"]
+pub mod self_hosting_metric;
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -428,6 +430,32 @@ fn collect_changelog_with_date(
     println!("Collected {} changelog fragment(s)", files.len());
 }
 
+fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<PathBuf, String> {
+    let repo = PathBuf::from(exec("git", &["rev-parse", "--show-toplevel"])?);
+    let tag_pattern = format!("{tag_prefix}[0-9]*");
+    let since = exec(
+        "git",
+        &[
+            "describe",
+            "--tags",
+            "--match",
+            &tag_pattern,
+            "--abbrev=0",
+            "HEAD",
+        ],
+    )?;
+    let tag = format!("{tag_prefix}{new_version}");
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let row = self_hosting_metric::record_release(&repo, &ledger, &tag, &since, "HEAD", 3)?;
+    println!(
+        "Recorded self-hosting metric for {tag}: {} ({}/{} changed lines)",
+        self_hosting_metric::format_percentage(row.percentage_basis_points),
+        row.self_authored_lines,
+        row.changed_lines,
+    );
+    Ok(ledger)
+}
+
 #[cfg(test)]
 mod tests {
     use super::collect_changelog_with_date;
@@ -598,6 +626,14 @@ fn main() {
 
     println!("Final release version: {}", new_version);
 
+    let self_hosting_ledger = match record_self_hosting_release(&tag_prefix, &new_version) {
+        Ok(path) => path,
+        Err(e) => {
+            eprintln!("Error recording self-hosting release metric: {}", e);
+            exit(1);
+        }
+    };
+
     // Update version in Cargo.toml
     if let Err(e) = update_cargo_toml(package_manifest.to_string_lossy().as_ref(), &new_version) {
         eprintln!("Error: {}", e);
@@ -617,10 +653,17 @@ fn main() {
     // Collect changelog fragments
     collect_changelog(&changelog_dir, &changelog_file, &new_version);
 
-    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, and consumed fragments.
+    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
+    // metric ledger, and consumed fragments.
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
-    let mut add_args: Vec<&str> = vec!["add", &package_manifest_str, &changelog_file];
+    let self_hosting_ledger_str = self_hosting_ledger.to_string_lossy().to_string();
+    let mut add_args: Vec<&str> = vec![
+        "add",
+        &package_manifest_str,
+        &changelog_file,
+        &self_hosting_ledger_str,
+    ];
     if lock_updated {
         add_args.push(&cargo_lock_str);
     }

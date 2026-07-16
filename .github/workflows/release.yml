@@ -650,6 +650,7 @@ jobs:
           release_args=(
             --release-version "$RELEASE_VERSION"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
@@ -855,6 +856,7 @@ jobs:
           release_args=(
             --release-version "${{ steps.version.outputs.new_version }}"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then

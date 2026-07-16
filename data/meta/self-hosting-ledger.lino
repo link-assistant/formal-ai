@@ -1,0 +1,17 @@
+self_hosting_ledger
+  attribution_policy "commit_trailers"
+  session_trailer "Formal-AI-Session"
+  evidence_trailer "Formal-AI-Evidence"
+  line_unit "added_and_deleted"
+  default_trailing_window "3"
+  release
+    tag "v0.296.0"
+    since "v0.295.2"
+    until "9052d2caca20f74e2dc06fe294eb5a4b0c50e271"
+    self_authored_lines "0"
+    changed_lines "45277"
+    self_authored_commits "0"
+    commits "16"
+    percentage_basis_points "0"
+    trailing_window "3"
+    trailing_percentage_basis_points "0"
