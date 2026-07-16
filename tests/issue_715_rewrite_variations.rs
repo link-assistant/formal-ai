@@ -148,6 +148,12 @@ fn a_single_self_containing_substitution_is_terminal() {
 }
 
 #[test]
+fn a_concise_quoted_rule_is_not_mistaken_for_transport_framing() {
+    let updated = rewrite("notes.txt", "can't wait", "'can't' → 'can'");
+    assert_eq!(updated, "can wait");
+}
+
+#[test]
 fn a_cyclic_program_reaches_the_bound_without_writing_partial_bytes() {
     let prompt = "Apply the ordered rules 'a' to 'b', then 'b' to 'a'.";
     let mut messages = prior_artifact("cycle.txt", "a", prompt);
@@ -164,6 +170,11 @@ fn a_cyclic_program_reaches_the_bound_without_writing_partial_bytes() {
             assert!(answer.contains("100000-step safety bound"));
             assert!(answer.contains("no partial bytes were written"));
             assert!(answer.contains("halt \"StepLimit\""));
+            assert!(
+                answer.len() < 20_000,
+                "bounded trace response was {} bytes",
+                answer.len()
+            );
         }
         other => panic!("cyclic rewrite must stop safely, got {other:?}"),
     }

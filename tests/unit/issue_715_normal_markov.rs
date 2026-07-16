@@ -65,3 +65,11 @@ fn literal_slots_preserve_empty_unicode_and_fenced_content_across_prose() {
     let prompt = "Don't phrase-match; map '' to 「内容」, then ```a\\nb``` to ‘’.";
     assert_eq!(quoted_segments(prompt), ["", "内容", "a\\nb", ""]);
 }
+
+#[test]
+fn single_quoted_slots_preserve_ascii_apostrophes_inside_values() {
+    assert_eq!(
+        quoted_segments("Replace 'can\'t' with 'can'."),
+        ["can't", "can"]
+    );
+}
