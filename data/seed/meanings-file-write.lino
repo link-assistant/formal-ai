@@ -69,6 +69,8 @@ meanings
       surface
         text "with the content …"
       surface
+        text "contents …"
+      surface
         text "with the text …"
       surface
         text "with the following …"

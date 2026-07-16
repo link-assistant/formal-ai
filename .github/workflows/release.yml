@@ -39,6 +39,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
   # Support both CARGO_REGISTRY_TOKEN (cargo's native env var) and CARGO_TOKEN (for backwards compatibility)
@@ -77,6 +82,7 @@ jobs:
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
 
   # === CHANGELOG CHECK - only runs on PRs with code changes ===
@@ -188,7 +194,15 @@ jobs:
         run: cargo test --test unit semantic_grounding -- --nocapture
 
       - name: Check file size limit
+        env:
+          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
+
+      - name: Test release changelog collection
+        run: rust-script --test scripts/version-and-commit.rs
+
+      - name: Check reconstructed changelog
+        run: node experiments/issue_711_rebuild_changelog.mjs --check
 
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
@@ -354,11 +368,37 @@ jobs:
       - name: Generate code coverage
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Retain LCOV report
+        uses: actions/upload-artifact@v7
         with:
+          name: rust-lcov
+          path: lcov.info
+          if-no-files-found: error
+
+      - name: Detect Codecov configuration
+        id: codecov-config
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [[ -n "$CODECOV_TOKEN" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload coverage to Codecov when configured
+        if: steps.codecov-config.outputs.configured == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
-          fail_ci_if_error: false
+          disable_search: true
+          plugins: noop
+          fail_ci_if_error: true
+
+      - name: Report optional Codecov integration status
+        if: steps.codecov-config.outputs.configured != 'true'
+        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
 
   # === BUILD ===
   # Build package - only runs if lint and test pass
@@ -1104,6 +1144,60 @@ jobs:
           EXPECT_TEXT: hello world
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — generated programs use harness commands (issue #716)
+        # The exact screenshot reproduction must create the source in the real
+        # Agent CLI workspace, then ask that harness to compile and run it. The
+        # request trace preserves both shell calls so a prose-only response or
+        # server-private execution cannot satisfy this check.
+        env:
+          PORT: 8776
+          TASK: "Give me hello world program in Rust"
+          EXPECT_FILE: main.rs
+          EXPECT_TEXT: "Hello, world!"
+          MIN_POSTS: 4
+          EXPECT_SERVER_TEXTS: |-
+            rustc main.rs -o main
+            ./main
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+        # Replay the same investigation through Formal AI's associative-memory
+        # adapter and real Agent CLI tools. The report remains review-gated; its
+        # evidence links make the architectural promotion auditable.
+        env:
+          PORT: 8777
+          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+          EXPECT_FILE: client-execution-learning-report.lino
+          EXPECT_TEXT: "lesson:typed-execution-artifact"
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — declarative new-file phrasing (issue #712)
+        # The exact declarative shape from issue #712 previously fell through to
+        # the read router. The live CLI must execute the complete write plan and
+        # leave the requested file behind, proving this is more than a response-
+        # serialization fix.
+        env:
+          PORT: 8776
+          TASK: "new file: notes.txt, contents: hello"
+          EXPECT_FILE: notes.txt
+          EXPECT_TEXT: hello
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: Run agent CLI E2E — report action executes gh (issue #714)
+        timeout-minutes: 3
+        env:
+          PORT: 8780
+        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
+
+      - name: Run agent CLI E2E — research, report, recall, and learn (issue #687)
+        # Continue four natural-language turns in one real Agent CLI session.
+        # A PATH-local fake gh proves shell execution without mutating GitHub.
+        env:
+          PORT: 8776
+        run: experiments/agent_cli_e2e/run_issue_687.sh
 
       - name: Replay Hive Mind self-coding inner loop (issue #655)
         env:

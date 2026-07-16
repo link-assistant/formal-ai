@@ -131,11 +131,7 @@ fn rewrite_current_rust_source(prompt: &str, source: &str) -> String {
         "read".to_owned(),
         read.arguments,
     )]));
-    messages.push(ChatMessage::tool_result(
-        "read-rewrite",
-        "read",
-        source,
-    ));
+    messages.push(ChatMessage::tool_result("read-rewrite", "read", source));
 
     let write = one_call(&messages, &["read", "write"]);
     assert_eq!(write.tool, "write", "{prompt}");
@@ -307,8 +303,5 @@ fn ordered_substitutions_apply_as_one_general_rewrite_program() {
         source,
     );
 
-    assert_eq!(
-        rewritten,
-        "fn main() {\n    println!(\"Hi, team!\");\n}\n"
-    );
+    assert_eq!(rewritten, "fn main() {\n    println!(\"Hi, team!\");\n}\n");
 }

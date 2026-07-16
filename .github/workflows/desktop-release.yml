@@ -50,6 +50,13 @@ concurrency:
   group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.run_id }}
   cancel-in-progress: false
 
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
+
 jobs:
   resolve:
     name: Resolve target release
@@ -168,7 +175,7 @@ jobs:
           if [ "${#missing[@]}" -gt 0 ]; then
             echo "has_secrets=false" >> "$GITHUB_OUTPUT"
             echo "mode=adhoc" >> "$GITHUB_OUTPUT"
-            echo "::warning::Missing required macOS signing/notarization secrets: ${missing[*]}"
+            echo "::notice::macOS signing/notarization secrets are not configured: ${missing[*]}"
             echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."
           else
             echo "has_secrets=true" >> "$GITHUB_OUTPUT"
@@ -357,7 +364,7 @@ jobs:
           gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest@v4
         with:
           subject-checksums: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
 
@@ -433,7 +440,7 @@ jobs:
         run: gh release upload "$TAG" "${{ steps.package.outputs.vsix }}" --repo "$REPO" --clobber
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest@v4
         with:
           subject-checksums: vscode/SHA256SUMS-vscode.partial
 
@@ -453,7 +460,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download checksum fragments
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: checksums-*
           path: fragments
@@ -490,7 +497,7 @@ jobs:
             echo "             macos-15-intel (macos-x64), macos-14 (macos-arm64),"
             echo "             windows-latest (windows-x64), windows-11-arm (windows-arm64)"
             echo "Signing    : macOS artifacts are ad-hoc signed (no Apple Developer ID)."
-            echo "Attestation: SLSA build provenance attached via actions/attest-build-provenance."
+            echo "Attestation: SLSA build provenance attached via actions/attest."
             echo "             Verify with: gh attestation verify <file> --repo $REPO"
             echo ""
             echo "SHA-256 checksums (see SHA256SUMS.txt for the authoritative copy):"

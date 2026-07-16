@@ -208,6 +208,12 @@ pub fn memory_event_to_link_record(event: &MemoryEvent, sequence: usize) -> Link
     for evidence in &event.evidence {
         push_optional_field(&mut links, &record_id, "evidence", Some(evidence));
     }
+    let access_count = event.access_count.to_string();
+    if event.access_count > 0 {
+        push_optional_field(&mut links, &record_id, "accessCount", Some(&access_count));
+    }
+    let write_count = event.write_count.max(1).to_string();
+    push_optional_field(&mut links, &record_id, "writeCount", Some(&write_count));
 
     LinkRecord {
         stable_id: record_id,
@@ -520,6 +526,11 @@ fn canonical_memory_event(event: &MemoryEvent) -> String {
         let key = format!("evidence_{index:04}");
         fields.insert(key, evidence.clone());
     }
+    fields.insert(String::from("accessCount"), event.access_count.to_string());
+    fields.insert(
+        String::from("writeCount"),
+        event.write_count.max(1).to_string(),
+    );
     let mut out = String::new();
     for (key, value) in fields {
         let _ = write!(out, "{key}={}:{};", value.len(), value);

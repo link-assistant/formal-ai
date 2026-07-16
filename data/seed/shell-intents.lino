@@ -12,6 +12,21 @@ shell_intents
       lead "名为"
   intents
     intent
+      command "formal-ai:report-issue"
+      argument "none"
+      language en
+        cue report
+        cue "report issue"
+        cue "create issue"
+        cue "open issue"
+      language ru
+        cue "сообщить о проблеме"
+        cue "создать issue"
+      language hi
+        cue "समस्या रिपोर्ट करें"
+      language zh
+        cue 报告问题
+    intent
       command pwd
       argument "none"
       language en
