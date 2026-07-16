@@ -396,4 +396,5 @@ changelog.d/20260714_234500_issue_713_interactive_cli_args.md	0.293.0	e739d2613b
 changelog.d/20260714_doc_codebase_consistency.md	0.287.0	95827d96d13280bb69ff6f011c499cc25ed55d00
 changelog.d/20260714_issue_714_agentic_mode.md	0.294.0	166e1c1f9969800e8d17850e0c928441b5475c2f
 changelog.d/20260714_requirement_audit_doc_sync.md	0.286.0	d7b31950aad59c5fadb926d6f64cf5c9884770e3
+changelog.d/20260715_030000_issue_716_agentic_command_routing.md	0.295.2	b5234458993dd723839cdb0b8df559c246b627d1
 changelog.d/20260715_060000_issue_717_ci_audit.md	0.291.0	b75013ad8788209d795f4c643cc03c8578903625
