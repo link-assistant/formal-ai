@@ -194,7 +194,10 @@ fn opencode_transport_quotes_are_not_compiled_as_program_output() {
     let args: Value = serde_json::from_str(&write.function.arguments).unwrap();
     let source = args["content"].as_str().unwrap();
     assert!(source.contains("Hello, world!"), "{source}");
-    assert!(!source.contains("Give me a hello world program"), "{source}");
+    assert!(
+        !source.contains("Give me a hello world program"),
+        "{source}"
+    );
 }
 
 #[test]
