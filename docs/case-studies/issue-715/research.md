@@ -68,19 +68,56 @@ that stands for `index`. `$s` is for `source` and `$t` is for `target`" — and
 named references, `(child: father mother)`, persisted to a companion
 `<database-name>.names.links` file.
 
-Two deliberate divergences in this dialect, both recorded rather than silently
-taken:
+### Both operand domains, one language
 
-- **Operands are text sequences, not doublets.** link-cli's operands are link
-  indices over an associative store; a code file is a character sequence. The
-  substitution model is identical, the operand domain is not. `$i`/`$s`/`$t`
-  address a link's index/source/target, which a flat text sequence does not
-  have, so they are not carried over here.
+The dialect first shipped over text sequences only, on the reasoning that
+link-cli's operands are links over an associative store while a code file is a
+character sequence. Review feedback on #727 rejected that split — the ask was
+link-cli's substitution patterns "for text sequences and links in general" — and
+it was right to: the substitution model is the operand-independent part, so
+supporting one domain and not the other is an incomplete generalization, not a
+principled boundary.
+
+`src/links_substitution_query/` is therefore a shared parser core plus one file
+per operand domain. `parse_substitution_query` reads text; the operands are
+quoted character sequences. `parse_link_substitution_query` reads links; the
+operands are `(source target)` or `(index: source target)` doublets over
+`link_store::DoubletLink`, whose `{index, from, to}` is already link-cli's exact
+shape. `$i`/`$s`/`$t` carry over with them, binding across slots — a variable
+used twice constrains the match rather than rebinding, so `($i: $s $s)` selects
+exactly the links whose source and target agree. Both domains share the ordered,
+restart-at-rule-zero, bounded control model, which is what carries the Turing
+completeness argument across unchanged.
+
+### Deliberate divergences
+
+Recorded rather than silently taken:
+
 - **Terminal rules have no link-cli counterpart.** Normal algorithms distinguish
   terminating from continuing rules; link-cli has no such concept because it
-  does not iterate to a fixed point. Rather than invent punctuation, this
+  does not iterate to a fixed point. Rather than invent punctuation, the text
   dialect reuses link-cli's named-reference slot — the `child` in
-  `(child: father mother)` — so a terminal rule is `(terminal: "text")`.
+  `(child: father mother)` — so a terminal rule is `(terminal: "text")`. The
+  link dialect cannot reuse that slot, because there the pre-colon position is
+  the link's index; link rules are therefore always non-terminal.
+- **An unchanged store is not a state transition.** Over a set-valued store, a
+  substitution that produces the link it matched is not selected. This is forced
+  by link-cli's own documentation rather than chosen: it documents
+  `(($i: $s $t)) (($i: $s $t))` as reading "all links without modification", which
+  can only terminate and only mean that if the identity substitution is not a
+  step. The same rule makes creation terminate, via link-cli's documented
+  deduplication ("Identical sub-links are created once and reused") — otherwise
+  `() ((1 1))` would append forever. Reads are consequently answered by matching
+  (`LinkRewriteProgram::matched_links`), not by executing a rewrite.
+- **Creation may not force an index.** link-cli's creation shorthand is
+  `() ((1 1))`, whose two operands are the source and target; the index is the
+  store's to assign. What `() ((5: 1 2))` should do when index 5 is already taken
+  is undefined by the README, so it is rejected at parse time instead of guessed.
+- **The two sides are not wrapped in an outer paren.** link-cli's README writes
+  creation as `clink '() ((1 1))'` but its read-all example as
+  `clink '((($i: $s $t)) (($i: $s $t)))'`, with an extra enclosing layer. The
+  unwrapped `A B` form is the one this dialect took, for both domains; the
+  wrapped variant is not accepted, since its intended meaning is not documented.
 
 ## LinksQL's confirmation of the model
 

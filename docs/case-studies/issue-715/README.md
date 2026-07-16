@@ -79,7 +79,8 @@ and [`formal-ai-agent-learning.log`](test-logs/formal-ai-agent-learning.log).
 | Make execution auditable without unbounded responses | Outcomes retain every applied rule and byte offset; final Links Notation renders the total plus bounded head/tail trace excerpts. | Unit assertions, bounded-cycle regression, and retained OpenCode JSONL/server trace |
 | Learn without autonomous promotion | Persisted failures and linked amendments feed the production associative-learning adapter; the derived report remains `awaiting_human_review`. | Learning derivation test and built-in Agent CLI session |
 | Accept broad NL variation without hardcoded multilingual cues | The compiler consumes ordered structural literal slots independently of surrounding prose. | Ten creation/deletion phrasings in each of English, Russian, Hindi, and Chinese |
-| Support link-cli's substitution query language | `src/links_substitution_query.rs` parses and renders the `(matching pattern) (substitution pattern)` shape over text sequences, reusing `normal_markov` as the executor rather than adding a second engine. | Round-trip, CRUD-shape, and effect-classification tests in `tests/unit/issue_715_links_substitution_query.rs` |
+| Support link-cli's substitution query language | `src/links_substitution_query/` parses and renders the `(matching pattern) (substitution pattern)` shape, reusing `normal_markov` as the executor rather than adding a second engine. | Round-trip, CRUD-shape, and effect-classification tests in `tests/unit/issue_715_links_substitution_query.rs` |
+| Substitute over text sequences *and links in general* | One language, one parser core, two operand domains: `text.rs` reads quoted character sequences, `links.rs` reads `(index: source target)` doublets with `$i`/`$s`/`$t` variables. Both share the ordered, bounded Markov control model. | link-cli's own documented queries as fixtures in `tests/unit/issue_715_link_substitution_query.rs`, including read-all termination and a cycling swap hitting `StepLimit` |
 | Read literal slots the same way everywhere | `normal_markov::quoted_segments`/`quoted_segment_spans` is the single implementation; handlers import it instead of keeping private copies. | Apostrophe-prose and apostrophe-operand regressions in `tests/unit/specification/text_manipulation.rs` |
 
 ## Root causes
@@ -120,17 +121,27 @@ removes the matched sequence. Every step records its rule index and byte offset.
 That representation is reachable two ways, and both compile to the same
 `RewriteProgram` rather than to parallel engines. Natural language lowers to it
 through ordered literal slots. link-cli's substitution query language lowers to
-it through `src/links_substitution_query.rs`, which parses the documented
+it through `src/links_substitution_query/`, which parses the documented
 `(matching pattern) (substitution pattern)` shape. The identification is not an
 analogy: link-cli's README hyperlinks "substitution operation" to the Markov
 algorithm, and LinksQL states outright that its single rule "is a Markov
 algorithm over an associative store". `normal_markov` already executes that
 model, so the query language is a surface syntax over the existing executor and
 CRUD falls out of the operand shapes — an empty matching side creates, an empty
-substitution side deletes, identical sides read. `research.md` quotes both
-sources and records the two places this dialect deliberately departs from
-link-cli (text-sequence operands, so `$i`/`$s`/`$t` do not apply; and terminal
-rules, which link-cli has no counterpart for).
+substitution side deletes, identical sides read.
+
+The substitution model is the operand-independent part, so the language is
+written once and its operands are read two ways: `text.rs` reads quoted
+character sequences, `links.rs` reads `(index: source target)` doublets over
+`link_store::DoubletLink` with link-cli's `$i`/`$s`/`$t` variables. They share
+one parser core and one control model; only the operand domain differs. A
+per-operand empty link — `(() (2 2)) ((1 1) ())` — is the general form that
+link-cli's whole-side `()` shorthand abbreviates, so one query can mix effects
+and every program renders back to a query that parses to it. `research.md` quotes
+the primary sources and records where this dialect departs from link-cli: terminal
+rules, which link-cli has no counterpart for; the identity substitution not being
+a state transition, which link-cli's own read-all query forces; creation not
+forcing an index; and the unwrapped two-side form.
 
 The planner treats tool history as identity metadata, not as trusted current
 content. It first requests the active path through the advertised read
@@ -178,6 +189,7 @@ workspace tools continue through the prose solver.
 | 2026-07-16 | The first four-turn OpenCode attempt found transport-quote corruption; a dedicated red test and fix preceded the successful 14-round replay. |
 | 2026-07-16 | Review feedback named link-cli as the priority query dialect and LinksQL as secondary. `src/links_substitution_query.rs` adopted link-cli's two-sided shape over text sequences; both divergences are recorded in `research.md`. |
 | 2026-07-16 | Auditing the literal-slot readers found two private duplicates of the general one. Their apostrophe handling was a live prompt-parsing bug; the duplicates were deleted rather than repaired. |
+| 2026-07-16 | Review feedback rejected the text-only dialect: the ask was substitution "for text sequences and links in general". The link operand domain was added over `link_store::DoubletLink`, sharing the parser core and control model rather than forking a second engine. |
 
 ## Data inventory
 
