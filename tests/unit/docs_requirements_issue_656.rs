@@ -68,7 +68,6 @@ fn issue_656_promotion_documents_are_traceable() {
         "docs/case-studies/issue-656/requirements.md",
         "docs/case-studies/issue-656/solution-plans.md",
         "docs/case-studies/issue-656/raw-data/online-research.md",
-        "changelog.d/20260714_090000_issue_656_promotion.md",
     ] {
         let path = root.join(relative);
         assert!(
@@ -78,6 +77,26 @@ fn issue_656_promotion_documents_are_traceable() {
         assert!(
             path.metadata().map_or(0, |meta| meta.len()) > 0,
             "{relative} must not be empty for issue #656 traceability",
+        );
+    }
+
+    // Changelog fragments are consumed by the release that ships them, so this
+    // cannot assert the fragment exists forever: `changelog.d/..._issue_656_...`
+    // was deleted by the v0.296.0 release (b2064b2a) and the assertion failed on
+    // every run afterwards. Follow the entry across its lifecycle instead --
+    // before release it is a fragment, after release it is a CHANGELOG.md
+    // section -- so traceability stays pinned either way.
+    let fragment = root.join("changelog.d/20260714_090000_issue_656_promotion.md");
+    if fragment.is_file() {
+        assert!(
+            fragment.metadata().map_or(0, |meta| meta.len()) > 0,
+            "the issue #656 changelog fragment must not be empty",
+        );
+    } else {
+        assert!(
+            read(root.join("CHANGELOG.md")).contains("issue #656"),
+            "the issue #656 changelog fragment was consumed by a release, so \
+             CHANGELOG.md must carry its entry for traceability",
         );
     }
 
