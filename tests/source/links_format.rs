@@ -83,9 +83,54 @@ pub fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option
     out.push('\n');
 }
 
+/// Escape a value so that [`crate::seed::parser::unescape_value`] decodes back
+/// to exactly this input. Use it only where the value is *quoted* and read back.
+///
+/// The backslash goes first, and that ordering is the whole correctness
+/// argument: this function *introduces* backslashes, so escaping it afterwards
+/// would escape its own output. Escaping it at all is what makes the pair
+/// invertible. A value is otherwise free to contain a backslash — it is content,
+/// not syntax — and an unescaped one arrives at the decoder looking exactly like
+/// an escape this function wrote. That is not hypothetical for the subject of
+/// issue #715: rewriting `println!("\n")` wrote the value back verbatim, and
+/// reading it returned a real newline in place of the two characters the Rust
+/// source actually holds.
+///
+/// Prefer [`flatten_lino_value`] when nothing decodes the value.
 pub fn sanitize_lino_value(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('\r', "\\r")
+        .replace('\n', "\\n")
+        .replace('\t', "\\t")
+}
+
+/// Keep a value on one line in a document that is *rendered* rather than read
+/// back, changing nothing else about it.
+///
+/// This is what [`sanitize_lino_value`] used to be, and the split is not
+/// cosmetic: the two have different correctness conditions, because their
+/// documents have different readers.
+///
+/// A quoted value is decoded by `unescape_value`, so its escape must be
+/// invertible — the backslash has to be escaped, or content is read as syntax.
+/// These callers instead interpolate the value *unquoted* (`step_0 {kind}
+/// {payload}`, `text {statement}`), and `seed::parser` only unescapes a value it
+/// found a delimiter around. So nothing decodes these, and escaping the
+/// backslash would not survive a round trip — it would simply be shown, turning
+/// a summary of `println!("\n")` into a summary of `println!("\\n")` and
+/// misreporting the source it exists to describe.
+///
+/// What these callers do need is the line: the document is line-oriented, and a
+/// raw newline in a value would silently invent a record. That is the one job
+/// left here.
+pub fn flatten_lino_value(value: &str) -> String {
     value
         .replace('\r', "\\r")
         .replace('\n', "\\n")
         .replace('\t', "\\t")
 }
+
+#[cfg(test)]
+#[path = "source_tests/links_format/tests.rs"]
+mod tests;

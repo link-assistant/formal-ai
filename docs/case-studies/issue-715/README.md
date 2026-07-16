@@ -86,16 +86,30 @@ observed once.
 
 Two things in the captured `agent` stream look like failures and are not. Its
 six `tool_use` events each render `"name": "unknown"` with an empty `input`,
-which is a gap in that CLI's `--compact-json` renderer rather than a tool that
-did not run: `opencode` drove the same server over the same wire and named
-`write` and `bash`, and `formal-ai` sends `function.name` in every tool-call
-delta (`src/server.rs:584`). The report existing at all is the real evidence the
-write executed — the harness wrote it into its own workspace, which the server
-cannot reach. The stream's `warn` events are likewise benign and self-attributed
-to [agent#249](https://github.com/link-assistant/agent/issues/249): the AI SDK
+which is a bug in that CLI's stream-json output rather than a tool that did not
+run: `opencode` drove the same server over the same wire and named `write` and
+`bash`, and `formal-ai` sends `function.name` in every tool-call delta
+(`src/server.rs:584`). The report existing at all is the real evidence the write
+executed — the harness wrote it into its own workspace, which the server cannot
+reach.
+
+That reading is now established rather than inferred.
+`experiments/agent_cli_tool_name_probe/mock-openai-server.mjs` reproduces it in
+isolation: a mock server streams one `write` call with its name and arguments in
+`delta.tool_calls[].function`, the CLI writes the file correctly, and the event
+it prints still says `"name": "unknown", "input": {}`. The probe also corrects
+this case study's first reading of the evidence — the fault is not in
+`--compact-json`, which was the visible suspect because it is what the E2E
+passes; plain `--output-format stream-json` loses the name too. Reported upstream
+as [agent#281](https://github.com/link-assistant/agent/issues/281).
+
+The stream's `warn` events are likewise benign and self-attributed to
+[agent#249](https://github.com/link-assistant/agent/issues/249): the AI SDK
 dropped token usage and the CLI recovered it from the raw SSE. They ride stdout
 as log events, which is why `scripts/classify-agent-cli-stderr.sh` never sees
-them.
+them. The probe corroborates that one too, by accident: a mock that omits `usage`
+from its final chunk sends the CLI into a retry-with-backoff loop, so the probe
+sends it.
 
 ## Requirements and evidence
 

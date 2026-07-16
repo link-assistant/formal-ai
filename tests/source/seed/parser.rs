@@ -184,6 +184,20 @@ fn take_doubled(out: &mut String, c: char, quote: char, iter: &mut Peekable<Char
     true
 }
 
+/// Decode a double-quoted value, reading both escapes this repository writes:
+/// Links Notation's own doubled delimiter, and the backslash dialect
+/// [`crate::links_format::sanitize_lino_value`] emits for this line-based reader.
+///
+/// The `t` and `r` arms exist because that writer emits `\t` and `\r`. Without
+/// them a tab was written and then read back as the two characters `\` and `t`,
+/// which is silent corruption of exactly the content issue #715 is about: a
+/// Makefile recipe line is *required* to begin with a tab, and Go is
+/// conventionally tab-indented, so a substitution rule derived from such a
+/// fragment round-tripped into one that no longer matched the code it came from.
+///
+/// The catch-all is load-bearing and stays: it passes an unknown escape through
+/// with its backslash, which is what lets a value carrying prose or LaTeX
+/// (`\ldots`) survive a reader that has no arm for it.
 pub fn unescape_value(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
     let mut iter = raw.chars().peekable();
@@ -194,6 +208,8 @@ pub fn unescape_value(raw: &str) -> String {
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
+                Some('t') => out.push('\t'),
+                Some('r') => out.push('\r'),
                 Some('"') => out.push('"'),
                 Some('\\') | None => out.push('\\'),
                 Some(other) => {
@@ -218,6 +234,8 @@ fn unescape_single_value(raw: &str) -> String {
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
+                Some('t') => out.push('\t'),
+                Some('r') => out.push('\r'),
                 Some('\\') | None => out.push('\\'),
                 Some('x') if iter.peek() == Some(&'2') => {
                     iter.next();
