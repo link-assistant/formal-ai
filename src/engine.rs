@@ -60,6 +60,17 @@ pub struct SymbolicAnswer {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execution_recipe: Option<Box<ExecutionRecipe>>,
+}
+
+/// A code artifact whose side effects belong to the requesting agentic client.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ExecutionRecipe {
+    pub language: String,
+    pub source: String,
+    pub path: String,
+    pub commands: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy)]

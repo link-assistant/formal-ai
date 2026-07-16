@@ -20,11 +20,13 @@
 
 pub mod associative_learning;
 pub mod change_request;
+pub(crate) mod command_reroute;
 mod conversation_recall;
 pub mod corpus;
 pub mod diagram;
 pub mod dreaming_audit;
 pub mod driver;
+pub mod execution_learning;
 pub mod explain;
 mod file_read;
 pub mod formalize;
@@ -51,10 +53,14 @@ pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
 };
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use command_reroute::plan_symbolic_command_reroute;
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
+};
+pub use execution_learning::{
+    is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
 };
 pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{

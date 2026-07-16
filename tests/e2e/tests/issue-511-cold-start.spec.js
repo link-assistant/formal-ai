@@ -208,7 +208,11 @@ async function proveColdStartJourney(page) {
   await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(0);
 
   await sendPrompt(page, 'run `ls ~` in terminal');
-  await page.locator('[data-testid="command-approve"]').last().click();
+  await page
+    .locator(
+      '[data-testid="command-approval"][data-status="pending"] [data-testid="command-approve"]',
+    )
+    .click();
   await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(1);
 
   const providerRequest = await page.evaluate(() => window.__agentProviderCalls[0]);
