@@ -11,6 +11,24 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
+Seven recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other six encode a topic handler or a
+self-directed loop on top of it:
+
+| Recipe | Issue | What it reproduces |
+| --- | --- | --- |
+| [`recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino) | #559 | The general meta algorithm itself — 12 steps, 25 pinned functions |
+| [`procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino) | #444 | A chat intent handler for "how to X" |
+| [`agentic-coding-recipe.lino`](../data/meta/agentic-coding-recipe.lino) | #468 | The deterministic agentic-CLI loop |
+| [`response-language-followup-recipe.lino`](../data/meta/response-language-followup-recipe.lino) | #556 | Re-answering the previous turn in a new language |
+| [`document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino) | #535 | Verifying an attached document's claims |
+| [`market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino) | #493 | Fact-checking numeric market-price claims |
+| [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
+
+The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
+(cue sets, route/method aliases, repair cases, the self-AST census, …) that the
+recipes and handlers read — they are data, not recipes.
+
 ## Why a recipe, not just code
 
 The recipe names every part the handler is made of — seed roles, handler
@@ -63,10 +81,10 @@ instantiate every step in order:
 | Recipe record | Count | Grounded against |
 | --- | --- | --- |
 | `meta_step` | 8 | ordering 1..8 is contiguous |
-| `meta_role` | 9 | `pub const ROLE_* = "<role>"` in `src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
-| `meta_function` | 7 | `fn <name>` in `src/solver_handler_how.rs` |
-| `meta_stage` | 5 | each stage literal emitted in the handler; ordering 1..5 contiguous |
-| `meta_parity` | 3 | `fn <rust>` in Rust **and** `function <js>` in the worker |
+| `meta_role` | 11 | `pub const ROLE_* = "<role>"` in `src/seed/roles/intent.rs` **and** `role <role>` in `data/seed/meanings-how.lino` |
+| `meta_function` | 8 | `fn <name>` in `src/solver_handler_how.rs` |
+| `meta_stage` | 6 | each stage literal emitted in the handler; ordering 1..6 contiguous |
+| `meta_parity` | 4 | `fn <rust>` in Rust **and** `function <js>` in the worker |
 | `meta_external_service` | 1 | `source` + `settings_key` in `data/seed/sources-registry.lino` |
 | `meta_benchmark` | 1 | suite in fixture **and** ratchet test in `procedural_howto_benchmarks.rs` |
 
@@ -90,6 +108,72 @@ cargo test --test unit specification::meta_algorithm -- --nocapture
 Because the recipe is checked against the source, the handler and its recipe can
 never silently diverge — which is exactly what lets us treat the source as a
 reproducible artifact of the meta-algorithm.
+
+## The recursive core meta-algorithm (issue #559)
+
+The recipes on this page each reproduce *one* handler or loop. The **recursive
+core** is the algorithm they all run inside: the ordered procedure that turns
+any message into a solved, link-native knowledge base. It is the one recipe
+that describes the meta algorithm itself, which is why R335 requires it to be
+grounded data rather than prose. It lives at
+[`data/meta/recursive-core-recipe.lino`](../data/meta/recursive-core-recipe.lino)
+and is grounded by
+[`tests/unit/specification/recursive_core_recipe.rs`](../tests/unit/specification/recursive_core_recipe.rs).
+
+Two properties make it different from the topic recipes. First, it is
+**executable as data**: `src/recipe_interpreter.rs` parses the `records`
+annotation on every trace-recorded step into an ordered program and runs the
+recorder primitives in the order the data declares, and the proof obligation is
+parity — executing the recipe must reproduce, event for event, the log that
+`meta_core::record_meta_core` produces for the same input across every mode
+combination (R343). Second, it is **self-improving in proposal-only form**:
+`src/meta_self_improvement.rs` reads this recipe against the live pipeline,
+detects drift between the algorithm-as-data and the algorithm-as-code, and
+proposes the additions and stale-citation removals that reconcile them —
+gated `off` by default, never writing the recipe back, so adoption stays a
+human review step (R340).
+
+### The twelve steps
+
+Each step is one `meta_step` record in the recipe:
+
+1. **Formalize the impulse to one meaning record.**
+2. **Make the meaning a first-class problem frame** that enumerates every need.
+3. **Decompose the frame as a recursive, bounded work-unit tree** (downward
+   pass), stopping at `max_decomposition_depth`.
+4. **Account for every need in a satisfaction ledger**, so a need with no
+   method is recorded as blocked rather than silently dropped.
+5. **Catalogue the resolving methods as link data** — the method registry
+   derived from the live dispatch code.
+6. **Attach white-box recursive reasoning to every step**, in both directions.
+7. **Construct the answer back up the tree** (upward pass), composing each
+   parent from its solved children.
+8. **Resolve each atomic leaf through registry-backed method dispatch** — the
+   registry is the sole authority (R344).
+9. **Record every step as evidence in the append-only log.**
+10. **Record the method the registry selects for each leaf**, or mark it
+    unresolved.
+11. **Project the answer from the event log.**
+12. **Accumulate reusable skills and a curriculum from the outcome** —
+    proposal-only, nothing auto-promoted (R342).
+
+### What the recipe records
+
+| Recipe record | Count | Grounded against |
+| --- | --- | --- |
+| `meta_step` | 12 | ordering 1..12 is contiguous; each trace-recorded step names the recorder primitive it drives |
+| `meta_function` | 25 | `fn <name>` in the named source file (`src/meta_frame.rs`, `src/method_registry.rs`, `src/meta_reasoning.rs`, `src/meta_construction.rs`, `src/solution_evidence.rs`, `src/selection.rs`, `src/skill_ledger.rs`, `src/recipe_interpreter.rs`, …) |
+
+### Running it
+
+```sh
+# Verify the recursive-core recipe still matches the live source:
+cargo test --test unit specification::recursive_core_recipe -- --nocapture
+```
+
+Because this recipe is checked against the source too — and can be executed to
+reproduce the pipeline's own event log — the meta core and its recipe cannot
+silently diverge.
 
 ## The agentic-coding meta-algorithm (issue #468)
 

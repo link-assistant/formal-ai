@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::dreaming_application::{
     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
@@ -21,7 +22,10 @@ use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod recording;
-pub use recording::{chat_exchange_to_record, responses_exchange_to_record};
+pub use recording::{
+    chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
+    responses_exchange_to_record,
+};
 use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
@@ -128,7 +132,7 @@ impl ChatCompletionRequest {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -214,6 +218,23 @@ impl Default for MessageContent {
     fn default() -> Self {
         Self::Text(String::new())
     }
+}
+
+/// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
+/// default (empty text) instead of failing.
+///
+/// `MessageContent` is an untagged enum (`Text | Parts`) with no unit variant,
+/// so `#[serde(default)]` alone only covers an *absent* `content` key — an
+/// explicit `"content": null` is still handed to the untagged enum and fails
+/// with `data did not match any variant of untagged enum MessageContent`.
+/// `content: null` on an assistant tool-call turn is the standard OpenAI shape
+/// (emitted by e.g. Qwen Code), so we accept it by treating `null` as the
+/// default. See issue #682.
+fn deserialize_null_content<'de, D>(deserializer: D) -> Result<MessageContent, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    Ok(Option::<MessageContent>::deserialize(deserializer)?.unwrap_or_default())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -613,7 +634,23 @@ pub fn create_chat_completion_with_solver_and_memory(
     // the user restated them), not appended after the fact.
     let symbolic_answer =
         solve_with_standing_requirements(solver, &prompt, &history, memory_events);
+    if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
+        return chat_completion_from_plan(request, &prompt, plan, memory_events);
+    }
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+fn command_reroute_plan(
+    request: &ChatCompletionRequest,
+    agent_mode: bool,
+    symbolic_answer: &SymbolicAnswer,
+) -> Option<AgenticPlan> {
+    if !agent_mode || !request.requests_tool_execution() {
+        return None;
+    }
+    let owned_names = request.requested_tool_names();
+    let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+    plan_symbolic_command_reroute(&request.messages, &tool_names, symbolic_answer)
 }
 
 /// The deterministic agentic decision for a tool-bearing request. Shared by every
@@ -819,7 +856,13 @@ pub fn create_response_with_solver_and_memory(
         apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
     }
-    let symbolic_answer = solve_with_standing_requirements(solver, &prompt, &[], memory_events);
+    let symbolic_answer =
+        solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);
+    if let Some(plan) =
+        command_reroute_plan(&chat_request, solver.config.agent_mode, &symbolic_answer)
+    {
+        return response_from_plan(request, &prompt, plan, memory_events);
+    }
     response_from_symbolic(request, &prompt, symbolic_answer)
 }
 

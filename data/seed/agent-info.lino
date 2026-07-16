@@ -13,6 +13,30 @@ agent_info
     value link-assistant/formal-ai
   field issue_template_labels
     value bug
+  field issue_report_default_title
+    value "Formal AI agentic session report"
+  field issue_report_title_prefix
+    value "Formal AI: "
+  field issue_report_body_intro
+    value "Reported from an agentic session via natural language (no web UI available)."
+  field issue_report_empty_history
+    value "No prior conversation was captured."
+  field issue_report_conversation_heading
+    value Conversation
+  field issue_report_body_footer
+    value "Filed automatically by Formal AI in agentic mode."
+  field issue_report_created
+    value "Filed the issue on GitHub."
+  field issue_report_created_with_url
+    value "Filed the issue on GitHub: {url}"
+  field issue_report_ran_command
+    value "Ran {command} to file the issue on GitHub."
+  field issue_report_tool_missing
+    value "I can report this to {repository} once the client advertises a shell tool."
+  field web_research_no_content
+    value "Research completed for {query}, but the tool returned no content."
+  field web_research_source_label
+    value Source
   field memory_export_filename
     value formal-ai-memory.lino
   field bundle_export_filename

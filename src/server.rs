@@ -6,7 +6,7 @@ use serde::Serialize;
 use serde_json::{json, Value};
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
+    anthropic_message_sse, create_anthropic_message_with_solver_and_memory, AnthropicContentBlock,
     AnthropicMessagesRequest,
 };
 use crate::engine::{
@@ -19,9 +19,9 @@ use crate::gemini::{
 use crate::links_query::run_links_query;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
-    chat_exchange_to_record, create_chat_completion_with_solver_and_memory,
-    create_response_with_solver_and_memory, responses_exchange_to_record, ChatCompletion,
-    ChatCompletionRequest, ResponsesRequest,
+    chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, messages_exchange_to_record,
+    responses_exchange_to_record, ChatCompletion, ChatCompletionRequest, ResponsesRequest,
 };
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
@@ -96,11 +96,15 @@ pub fn handle_api_request_with_headers(
 /// Record a live chat exchange into the shared memory log (issue #540), never
 /// failing the request over it: a write error is logged and swallowed so the
 /// answer still reaches the client.
-fn record_exchange_best_effort(store: &mut SyncStore, exchange: Option<(String, String)>) {
+fn record_exchange_best_effort(
+    store: &mut SyncStore,
+    exchange: Option<(String, String)>,
+    tools: &[crate::memory_sync::RecordedToolExecution],
+) {
     let Some((prompt, answer)) = exchange else {
         return;
     };
-    if let Err(error) = store.record_chat_exchange(&prompt, &answer) {
+    if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
         eprintln!("[memory] failed to record live chat exchange: {error}");
     }
 }
@@ -191,6 +195,7 @@ pub fn handle_api_request_with_auth(
                     record_exchange_best_effort(
                         &mut store,
                         chat_exchange_to_record(&request, &completion),
+                        &chat_tool_executions(&request.messages),
                     );
                     if request.stream {
                         let include_usage = request
@@ -217,6 +222,7 @@ pub fn handle_api_request_with_auth(
                     record_exchange_best_effort(
                         &mut store,
                         responses_exchange_to_record(&request, &response),
+                        &chat_tool_executions(&request.to_chat_completion_request().messages),
                     );
                     if request.stream {
                         responses_sse_response(&response)
@@ -329,12 +335,25 @@ fn handle_gemini_generate_content_request(
     match serde_json::from_str::<GeminiGenerateContentRequest>(body) {
         Ok(request) => {
             let solver = http_solver();
-            let store = SyncStore::open();
+            let mut store = SyncStore::open();
+            let chat_request = request.to_chat_completion_request(&model);
             let response = create_gemini_generate_content_response_with_solver_and_memory(
                 &request,
                 &model,
                 &solver,
                 store.events(),
+            );
+            let answer = response["candidates"][0]["content"]["parts"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|part| part.get("text").and_then(Value::as_str))
+                .collect::<Vec<_>>()
+                .join("\n");
+            record_exchange_best_effort(
+                &mut store,
+                messages_exchange_to_record(&chat_request.messages, &answer),
+                &chat_tool_executions(&chat_request.messages),
             );
             if stream {
                 ApiHttpResponse {
@@ -644,9 +663,24 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
                 return response;
             }
             let solver = http_solver();
-            let store = SyncStore::open();
+            let mut store = SyncStore::open();
+            let chat_request = request.to_chat_completion_request();
             let message =
                 create_anthropic_message_with_solver_and_memory(&request, &solver, store.events());
+            let answer = message
+                .content
+                .iter()
+                .filter_map(|block| match block {
+                    AnthropicContentBlock::Text { text } => Some(text.as_str()),
+                    _ => None,
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            record_exchange_best_effort(
+                &mut store,
+                messages_exchange_to_record(&chat_request.messages, &answer),
+                &chat_tool_executions(&chat_request.messages),
+            );
             if request.stream {
                 ApiHttpResponse {
                     status_code: 200,

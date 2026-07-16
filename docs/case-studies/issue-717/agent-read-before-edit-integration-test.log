@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.86s
+     Running tests/integration/mod.rs (target/debug/deps/integration-d5434a9a5df16209)
+
+running 1 test
+test issue_680_intent_routing::chat_completions_routes_edit_intent_to_tool_call ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 87 filtered out; finished in 0.22s
+

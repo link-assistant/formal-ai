@@ -3,24 +3,6 @@
 use super::DreamingAction;
 use crate::memory::MemoryEvent;
 
-pub(super) fn searchable_text(event: &MemoryEvent) -> String {
-    let mut text = String::new();
-    push_opt(&mut text, event.kind.as_deref());
-    push_opt(&mut text, event.role.as_deref());
-    push_opt(&mut text, event.intent.as_deref());
-    push_opt(&mut text, event.tool.as_deref());
-    push_opt(&mut text, event.inputs.as_deref());
-    push_opt(&mut text, event.outputs.as_deref());
-    push_opt(&mut text, event.content.as_deref());
-    push_opt(&mut text, event.demo_label.as_deref());
-    push_opt(&mut text, event.conversation_id.as_deref());
-    push_opt(&mut text, event.conversation_title.as_deref());
-    for evidence in &event.evidence {
-        push_opt(&mut text, Some(evidence));
-    }
-    text
-}
-
 pub(super) fn estimate_event_bytes(event: &MemoryEvent) -> u64 {
     64 + string_bytes(&event.id)
         + option_bytes(event.kind.as_deref())
@@ -62,13 +44,6 @@ pub(super) fn percent_ceil(total: u64, percent: u8) -> u64 {
         return 0;
     }
     total.saturating_mul(u64::from(percent)).saturating_add(99) / 100
-}
-
-pub(super) fn push_opt(target: &mut String, value: Option<&str>) {
-    if let Some(value) = value {
-        target.push('\n');
-        target.push_str(value);
-    }
 }
 
 pub(super) fn contains_any(haystack: &str, needles: &[String]) -> bool {

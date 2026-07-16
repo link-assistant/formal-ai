@@ -75,10 +75,13 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{
-    try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
 };
-pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
+pub use {
+    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
+    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+};
 
 use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
@@ -917,6 +920,7 @@ pub fn finalize_simple(
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body.to_owned(),
+        execution_recipe: None,
         confidence,
         evidence_links,
         thinking_steps,

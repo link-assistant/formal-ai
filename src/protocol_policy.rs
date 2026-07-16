@@ -10,6 +10,7 @@ pub fn tool_call_refusal_answer() -> SymbolicAnswer {
             "Tool calls and function execution are not allowed without explicit agent mode. \
              Enable agent mode only for an isolated execution environment.",
         ),
+        execution_recipe: None,
         confidence: 1.0,
         evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
         thinking_steps: policy_thinking_steps("agent_mode_required_for_tools"),
@@ -29,6 +30,7 @@ pub fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> S
             "Tool calls are not allowed for `{capability}`: {reason}. Install or import an \
              associative package that grants this capability before enabling the tool."
         ),
+        execution_recipe: None,
         confidence: 1.0,
         evidence_links: vec![format!("policy:package_permission_required:{capability}")],
         thinking_steps: policy_thinking_steps(format!("package_permission_required:{capability}")),

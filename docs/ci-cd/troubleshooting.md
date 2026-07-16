@@ -143,7 +143,7 @@ The "Publish to Crates.io" step fails with an error.
 - name: Publish to Crates.io
   env:
     CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
-  run: node scripts/publish-crate.mjs
+  run: rust-script scripts/publish-crate.rs
 ```
 
 #### "already uploaded" or "already exists"
@@ -253,11 +253,11 @@ This template auto-detects the repository structure:
 
 If auto-detection fails, you can explicitly configure the Rust root:
 ```bash
-# Via environment variable
-RUST_ROOT=rust node scripts/publish-crate.mjs
+# Via environment variable (resolved by scripts/rust-paths.rs)
+RUST_ROOT=rust rust-script scripts/publish-crate.rs
 
 # Via CLI argument
-node scripts/publish-crate.mjs --rust-root rust
+rust-script scripts/publish-crate.rs --rust-root rust
 ```
 
 ### Workflow Configuration
@@ -270,7 +270,7 @@ defaults:
 steps:
   - name: Publish to Crates.io
     working-directory: .  # Override for scripts that handle paths themselves
-    run: node rust/scripts/publish-crate.mjs
+    run: rust-script rust/scripts/publish-crate.rs
 ```
 
 ### Reference

@@ -1,0 +1,1022 @@
+COMMIT 5caad27cfb1fea091f4062fee9d0f8daa925f2af 2026-07-14T22:21:55+05:30 Merge pull request #685 from link-assistant/issue-682-6b8246dfc2bf
+
+A	changelog.d/20260713_180000_issue_682_null_content.md
+COMMIT 0310d7f703ac918d7699c9ef30c8a5133962af33 2026-07-14T20:14:02+05:30 Merge pull request #684 from link-assistant/issue-681-5dc4419f2eb7
+
+A	changelog.d/20260713_140000_issue_681_write_not_read.md
+COMMIT 56d865bda2fa3dfe712395744c058e0bbf120e8d 2026-07-14T17:29:13+05:30 docs: reconcile documentation with the codebase
+
+A	changelog.d/20260714_doc_codebase_consistency.md
+COMMIT 24a9acc6cb7587bb81282e25fd1cca26dc38beab 2026-07-14T16:38:47+05:30 docs: sync vision/goals/roadmap with the 2026-07-14 requirement audit (issue #651)
+
+A	changelog.d/20260714_requirement_audit_doc_sync.md
+COMMIT 64cb3b8492e8e4af403287aecf3a6932efc174a3 2026-07-14T12:10:43+05:30 Merge pull request #683 from link-assistant/issue-680-795d4fb2b64f
+
+A	changelog.d/20260713_210000_issue_680_intent_routing.md
+COMMIT 4c7e99b8551baf7b2e4e6f4ac45f5952e2eb959d 2026-07-14T00:39:59+05:30 Merge pull request #679 from link-assistant/issue-655-352ae09c0c14
+
+A	changelog.d/20260713_655_self_coding_replay.md
+COMMIT b75b99e9b41d7d434590d335ecdc23edd497535d 2026-07-14T00:06:12+05:30 Merge pull request #639 from link-assistant/issue-482-aaf2da83253d
+
+A	changelog.d/20260708_201700_issue_482_nemotron_samples.md
+COMMIT 5e7bf0947dc26523c57fca86d072d180457f1525 2026-07-13T15:44:24+05:30 Merge pull request #678 from link-assistant/issue-676-ea3feeb860dc
+
+A	changelog.d/20260713_120000_issue_676_agentic_terminal_naming.md
+COMMIT d3f981fef27015d9655931611a55508f1fed25a3 2026-07-13T13:13:12+05:30 Merge pull request #677 from link-assistant/issue-654-6d834f50dc21
+
+A	changelog.d/20260713_654_general_agentic_planner.md
+COMMIT a365c8f4a367ee0b1ba292c5cc7fd36a83c02c51 2026-07-13T12:32:23+05:30 Merge pull request #675 from link-assistant/issue-649-cb862fc80246
+
+A	changelog.d/20260712_090000_issue_649_world_models.md
+COMMIT 2dcaeee4c05630570a6c7bba25e0863aabc142ac 2026-07-13T05:18:05+05:30 Merge pull request #653 from link-assistant/issue-650-412272077860
+
+A	changelog.d/20260712_200000_issue_650_with_consistency.md
+COMMIT 31d3ac7c8f9046ac7dcc59360f3f8ad5d9443dad 2026-07-12T20:19:31+05:30 Merge pull request #648 from link-assistant/issue-647-ee229e289e45
+
+A	changelog.d/20260712_020500_issue_647_with_defaults.md
+COMMIT 2eac7f70b56304c9fa1d5dd4bd389c204db0e804 2026-07-12T17:58:27+05:30 Merge pull request #645 from link-assistant/issue-540-daaf4da2188a
+
+A	changelog.d/20260708_223000_issue_540_dreaming.md
+A	changelog.d/20260709_090000_issue_540_dreaming_generalization.md
+A	changelog.d/20260711_120000_issue_540_verified_learning_tests.md
+COMMIT 0015ad212835e987292fdb804c2afe073c900f9f 2026-07-09T14:45:06+05:30 Merge pull request #641 from link-assistant/issue-499-110e4e5b9539
+
+A	changelog.d/20260709_130000_issue_499_learn_from_source.md
+COMMIT db27fddb059bcd65cb911b18eba0517a18143ee3 2026-07-09T12:22:58+05:30 Merge pull request #640 from link-assistant/issue-498-9381dddf8c21
+
+A	changelog.d/20260708_204000_issue_498_google_trends_catalog.md
+A	changelog.d/20260709_120000_issue_498_google_trends_learning.md
+COMMIT d6b3a89c397f4285bc21b7976327658f5f3d3bd8 2026-07-07T21:29:27+05:30 Merge pull request #638 from link-assistant/issue-527-6a3eb41de78a
+
+A	changelog.d/20260705_235900_issue_527_question_generation.md
+COMMIT 027df1227cfd800dd40fe6a675d5eaf158fdb1a5 2026-07-06T04:28:02+05:30 Merge pull request #637 from link-assistant/issue-558-39b8470b93dc
+
+A	changelog.d/20260704_183000_issue_558_auto_learning_case_study.md
+A	changelog.d/20260705_120000_issue_558_self_healing.md
+A	changelog.d/20260705_130000_issue_558_source_graph.md
+A	changelog.d/20260705_140000_issue_558_learning_ledger.md
+A	changelog.d/20260705_160000_issue_558_self_explanation.md
+A	changelog.d/20260705_170000_issue_558_change_request.md
+A	changelog.d/20260705_180000_issue_558_repair_strategy.md
+A	changelog.d/20260705_193000_issue_558_rebuild_plan.md
+COMMIT c1f7bbeab7c289f9aa149f3fb8b029bc30a10a3f 2026-07-04T22:32:21+05:30 Merge pull request #635 from link-assistant/issue-526-215ae32f521b
+
+A	changelog.d/20260704_030000_issue_526_translation_quality.md
+COMMIT 5a7ba80ce167da49b9ced5047bbce99b17c095dd 2026-07-04T20:21:27+05:30 Merge pull request #636 from link-assistant/issue-622-049b4f5eff46
+
+A	changelog.d/20260704_133000_issue_622_codex_wrapper_docs.md
+COMMIT fe3e243706471cf9c8aeb0e6cc865abdf59861d7 2026-07-04T17:37:52+05:30 Merge pull request #634 from link-assistant/issue-628-4d8a43226d55
+
+A	changelog.d/20260704_020000_issue_628_agentic_cli_testing_guide.md
+COMMIT 37579e62c74d161ea7c1f0b1b311fe67b2d0afe2 2026-07-04T07:23:52+05:30 Merge pull request #633 from link-assistant/issue-627-661b580408c8
+
+A	changelog.d/20260704_000000_issue_627_agent_file_reads.md
+COMMIT 200ed93a34778a7d712f4121e3baa3bd94dac48a 2026-07-04T06:53:51+05:30 Merge pull request #632 from link-assistant/issue-624-6b843e3acdbf
+
+A	changelog.d/20260704_010000_issue_624_natural_language_ls.md
+COMMIT 8ab21a48e8dca858d0e3ff8a8b9c06f930ae18dc 2026-07-04T05:47:59+05:30 Merge pull request #631 from link-assistant/issue-625-199d35c218b5
+
+A	changelog.d/20260703_235500_logging_proxy.md
+COMMIT 714a40b6b6f8db5831a0f6a7351aa8419966e00b 2026-07-04T05:02:03+05:30 Merge pull request #630 from link-assistant/issue-626-364a4b2f02e5
+
+A	changelog.d/20260703_224700_issue_626_codex_responses.md
+COMMIT 976107848e4c3568a7e8a976420b546668c71171 2026-07-04T03:59:26+05:30 Merge pull request #629 from link-assistant/issue-621-2a32af255191
+
+A	changelog.d/20260703_220000_issue_621_agent_wrapper.md
+COMMIT 6f94f490f4a2cf361991932856264086c0e2a2a8 2026-07-04T03:09:11+05:30 Merge pull request #623 from link-assistant/issue-620-eafd151b1f76
+
+A	changelog.d/20260703_210000_issue_620_gemini_wrapper_auth.md
+COMMIT 12f9c96df7fc002f6c3217c9ccc8df72c709984f 2026-07-04T02:26:33+05:30 Merge pull request #619 from link-assistant/issue-493-481b78023692
+
+A	changelog.d/20260703_130000_issue_493_ocr_market_price_fact_check.md
+COMMIT 7aee6e8ba479ecd74b0ad0fa0ed31ecca6180765 2026-07-03T18:12:15+05:30 Merge pull request #618 from link-assistant/issue-571-5e98873b3165
+
+A	changelog.d/20260703_120000_issue_571_commercial_research.md
+COMMIT 9f44c4e33cca92f88c83f647e3aad903b6dee546 2026-07-03T15:49:25+05:30 Merge pull request #617 from link-assistant/issue-600-742e96b0e805
+
+A	changelog.d/20260703_issue_600_previous_user_recall.md
+COMMIT 96cfc5e20f37c1f56abf99bcb328d1bf2ecc2635 2026-07-03T13:51:44+05:30 Merge pull request #615 from link-assistant/issue-606-3b82a4ca654b
+
+A	changelog.d/20260703_083000_issue_606_with_formal_ai.md
+COMMIT e0748b0a4fd33007e5b7feff7fbef2b4fe88ba5d 2026-07-03T12:42:17+05:30 Merge pull request #613 from link-assistant/issue-608-0df7a5925506
+
+A	changelog.d/20260702_000000_reasoning_fields.md
+COMMIT 07d8e5471fc4e0d84fe3e17ae2f4f467619aeea6 2026-07-03T07:10:51+05:30 Merge pull request #614 from link-assistant/issue-602-dd2ad19de0f3
+
+A	changelog.d/20260703_010000_issue_602_codex_responses_streaming.md
+COMMIT fd223067907185d8f9550c2a1c72f3ad39174d22 2026-07-03T06:03:03+05:30 Merge pull request #612 from link-assistant/issue-603-0e0bca520555
+
+A	changelog.d/20260702_235322_issue_603_multi_protocol_gateway.md
+COMMIT 516bd8455262516db2133ce361d2880885b68a4d 2026-07-03T05:00:59+05:30 Merge pull request #611 from link-assistant/issue-605-8bc8ebb665cd
+
+A	changelog.d/20260702_000000_formal_ai_model_id.md
+COMMIT 6646cfb355e586692a0af12e37bb606287bdbe09 2026-07-03T03:37:51+05:30 Merge pull request #610 from link-assistant/issue-604-a47624b9477a
+
+A	changelog.d/20260702_221000_issue_604_chat_streaming.md
+COMMIT 07677a91bdc436a3656363311eaf735364079f86 2026-07-03T02:30:08+05:30 Merge pull request #609 from link-assistant/issue-607-5c67ebb8d9bf
+
+A	changelog.d/20260702_215000_issue_607_agent_cli_shell.md
+COMMIT 944e5b0a89fc76fc7833c9c8f4ad8ca5297bfe46 2026-07-03T01:37:49+05:30 Merge pull request #601 from link-assistant/issue-538-eca4a11c39c6
+
+A	changelog.d/20260701_143614_issue_538_grammatical_detail.md
+COMMIT 7217ba894f3818ab1ca059d53b81c37d3374e8c7 2026-07-01T18:52:27+05:30 Merge pull request #598 from link-assistant/issue-535-a15a7ecef5a1
+
+A	changelog.d/20260630_232125_issue_535_attachment_originality.md
+COMMIT 652e72ef2aab52954313dd67d336e48827f6c789 2026-07-01T17:05:46+05:30 Merge pull request #599 from link-assistant/issue-556-4846496df8be
+
+A	changelog.d/20260630_120000_issue_556_response_language_followup.md
+COMMIT 2724b7ff25cc2a9ed21d46fe7ccc414b451cae19 2026-07-01T04:15:33+05:30 Merge pull request #597 from link-assistant/issue-529-c279ceb4e86e
+
+A	changelog.d/20260630_102900_memory_query_whole_memory.md
+COMMIT 7f6e67e5b65949a8ebdd83a8cba8877732880b58 2026-06-30T14:39:50+05:30 Merge pull request #596 from link-assistant/issue-595-01565ac9ae02
+
+A	changelog.d/20260630_issue_595_calendar_spoken_hours.md
+COMMIT 59e9f589ec2d014b67379d0926be30f95ae003fe 2026-06-30T13:50:23+05:30 Merge pull request #593 from link-assistant/issue-507-0006123832de
+
+A	changelog.d/20260630_issue_507_hackathon_search_dialog.md
+COMMIT c4b41859c3e8fb609268b2a34752427be4706a86 2026-06-30T13:15:11+05:30 Merge pull request #594 from link-assistant/issue-508-6b6c258f1332
+
+A	changelog.d/20260630_508_current_event_questions_web_search.md
+COMMIT 8817e6965f0dbbfcf48c5b7e2bbe918a34910ad2 2026-06-30T06:33:07+05:30 Merge pull request #590 from link-assistant/issue-509-f7cd5519acb3
+
+A	changelog.d/20260629_issue_509_conversation_history_recall.md
+COMMIT e84c972d48b73f6ce2e9dc89a26738df89c171d6 2026-06-30T03:11:28+05:30 Merge pull request #591 from link-assistant/issue-500-1fd944a3e208
+
+A	changelog.d/20260629_500_bare_term_web_search.md
+COMMIT ff20acb6a1b91e509aefcad01981672a5fd09307 2026-06-30T01:24:26+05:30 Merge pull request #589 from link-assistant/issue-506-466d5888efb3
+
+A	changelog.d/20260629_506_event_listing_web_search.md
+COMMIT 05da422e95a58e798031db9fe18c267595a792cf 2026-06-29T14:34:17+05:30 Merge pull request #587 from link-assistant/issue-501-72e3bf7e95f3
+
+A	changelog.d/20260628_210000_issue_501_install_how_to.md
+COMMIT 04ea1616a2a5febf16efe38cb8792ca48f95962e 2026-06-29T03:39:37+05:30 Merge pull request #586 from link-assistant/issue-497-bd6afe9528a4
+
+A	changelog.d/20260628_issue_497_github_repository_traffic.md
+COMMIT 7d652d433d4f2a6905606dc0c7828595e5828b4b 2026-06-29T02:41:28+05:30 Merge pull request #588 from link-assistant/issue-505-f2954093e4d6
+
+A	changelog.d/20260628_505_interest_topic_web_search.md
+COMMIT d5cf96f0a13735e72cb544fd359ab480dbd5d483 2026-06-29T01:44:14+05:30 Merge pull request #584 from link-assistant/issue-495-825beb6d3550
+
+A	changelog.d/20260628_193000_issue_495_behavior_rule_counts.md
+COMMIT bb570895fb8069da3c14525100206f9249e71c02 2026-06-29T01:10:40+05:30 Merge pull request #585 from link-assistant/issue-496-d6b85662687d
+
+A	changelog.d/20260628_issue_496_behavior_rule_followups.md
+COMMIT eebf995ecd414a5bab61e732f396984fded7aaa2 2026-06-28T23:53:41+05:30 Merge pull request #581 from link-assistant/issue-484-0a1576cb2a86
+
+A	changelog.d/20260628_issue_484_concept_response_language.md
+COMMIT 2b82251485cfd9e611124d53dd341c4bf74cbf8d 2026-06-28T23:39:07+05:30 Merge pull request #583 from link-assistant/issue-492-c714d50efef8
+
+A	changelog.d/20260628_issue_492_release_badges.md
+COMMIT cfa19b95ff347f2f368ff9d294c910825ee22fc7 2026-06-28T23:27:02+05:30 Merge pull request #582 from link-assistant/issue-485-c011da8f97d7
+
+A	changelog.d/20260628_172900_issue_485_multilingual_elided_how_to.md
+COMMIT 347a043f8190769e069bcfb3620bfaf02be31709 2026-06-28T22:00:11+05:30 Merge pull request #580 from link-assistant/issue-481-0f9ca0b86ab0
+
+A	changelog.d/20260628_120000_issue_481_telegraphic_how_order.md
+COMMIT 16a688e196c6abc049459d7db31e01592b4e1c49 2026-06-28T21:18:07+05:30 Merge pull request #579 from link-assistant/issue-478-44b0ac622612
+
+A	changelog.d/20260628_151649_issue_478_neural_inference.md
+COMMIT deac18768b3774411975f567af264f403052f3b5 2026-06-28T07:12:03+05:30 Merge pull request #575 from link-assistant/issue-466-1d0e1e61a36c
+
+A	changelog.d/20260627_233000_issue_466_war_and_peace_authorship.md
+COMMIT a5f09f1d083a7a7d6dfd6aa8eb35d958e77fc38f 2026-06-28T05:33:30+05:30 Merge pull request #576 from link-assistant/issue-467-6f9c4b38431a
+
+A	changelog.d/20260627_231800_issue_467_air_india_stroller.md
+COMMIT bf342de0c699ef467c00afa31001a052a1f7e571 2026-06-28T05:24:06+05:30 Merge pull request #577 from link-assistant/issue-477-9f87005e360d
+
+A	changelog.d/20260627_231910_issue_477_kubatorit_definition.md
+COMMIT 3cba48191daf28f657e9e71d6906965676d9b425 2026-06-27T19:44:46+05:30 Merge pull request #574 from link-assistant/issue-462-81111843e5e4
+
+A	changelog.d/20260627_120000_issue_462_spider_man_films.md
+COMMIT 49dc32a9758dddecf5405931a7e5d9b18e0aeae4 2026-06-27T19:19:29+05:30 Merge pull request #573 from link-assistant/issue-465-7f26da0327bb
+
+A	changelog.d/20260626_221500_issue_465_rust_creator_coreference.md
+COMMIT a1b92abde67195d376d697168fdba17947071fd1 2026-06-27T04:04:23+05:30 Merge pull request #570 from link-assistant/issue-460-150e2353fa44
+
+A	changelog.d/20260626_issue_460_train_meeting_word_problem.md
+COMMIT b2f6200bc09be537b9202b00d697fdfe041a8611 2026-06-26T17:25:33+05:30 Merge pull request #572 from link-assistant/issue-464-006f0aa809a9
+
+A	changelog.d/20260626_104742_issue_464_clock_time_duration.md
+COMMIT c3edefc28e3895e4d92e3d36919dfbcd6d67e995 2026-06-26T16:35:10+05:30 Merge pull request #567 from link-assistant/issue-458-1fb70f7869d0
+
+A	changelog.d/20260626_000000_issue_458_crypto_portfolio_blueprint.md
+COMMIT 1cacbf047bcd05c109e914102681a53be34e2daa 2026-06-26T15:55:24+05:30 Merge pull request #568 from link-assistant/issue-459-bf5fa6e29c78
+
+A	changelog.d/20260626_094759_issue_459_travel_planner.md
+COMMIT 305d0338cf31433c22f611a3478a523d29ed7bd5 2026-06-26T15:33:37+05:30 Merge pull request #569 from link-assistant/issue-461-f8a1ead1bd9b
+
+A	changelog.d/20260626_100000_issue_461_php_followup.md
+COMMIT 4eeafacd73bcf835c36a87703ab03a04f874d49d 2026-06-26T05:51:10+05:30 Merge pull request #566 from link-assistant/issue-457-84121c7f4721
+
+A	changelog.d/20260625_232500_issue_457_rust_self_source_metrics.md
+COMMIT ffe920a3b8aa572a1b01a10e954e9003cb0f6f95 2026-06-26T05:26:30+05:30 Merge pull request #565 from link-assistant/issue-456-c244f4ec8908
+
+A	changelog.d/20260625_233100_issue_456_research_result_followup.md
+COMMIT 82c933885f75c4abef6c500646e80f1bc1a13891 2026-06-26T03:40:51+05:30 Merge pull request #564 from link-assistant/issue-563-80759f540d10
+
+A	changelog.d/20260625_202040_issue_563_repository_file_summarization.md
+COMMIT e4e27b93599f99fea44129a2f377301a56ca12ba 2026-06-25T14:11:54+05:30 Merge pull request #431 from link-assistant/issue-426-b91222c50d0a
+
+A	changelog.d/20260613_120000_issue_426_records_web_search.md
+COMMIT e4953015e110644eaa22ee48e418294f650cadc4 2026-06-25T05:20:02+05:30 Merge pull request #473 from link-assistant/issue-441-c2ce86f18d5d
+
+A	changelog.d/20260614_150900_issue_441_mixed_script_language.md
+COMMIT 0ecc0c9a160eff3e362ea67b6d41e6cfaf3e49f0 2026-06-25T04:41:03+05:30 Merge pull request #471 from link-assistant/issue-439-416e69e14603
+
+A	changelog.d/20260614_151354_issue_439_unit_incompatibility.md
+COMMIT 24eb3a655818bfcc0893f827494f4cf02ca99e94 2026-06-25T03:33:47+05:30 Merge pull request #474 from link-assistant/issue-446-710c1b9886ed
+
+A	changelog.d/20260624_211251_issue_446_large_integer_exponents.md
+COMMIT 03afdde2fb54441961564d49a6852e8ab08b1b59 2026-06-25T02:27:47+05:30 Merge pull request #475 from link-assistant/issue-445-a0710028427b
+
+A	changelog.d/20260624_190500_issue_445_compound_prompt_parts.md
+COMMIT 8186eb93661945efe45cf1da4a021f8bcaa1e28d 2026-06-24T23:37:48+05:30 Merge pull request #562 from link-assistant/issue-561-4a4fbf7162b8
+
+A	changelog.d/20260624_200000_issue_561_release_pages_ref.md
+COMMIT 0ff0455f1e0ac86f09ba1a8f32254db85425ae8c 2026-06-24T21:21:12+05:30 Merge pull request #560 from link-assistant/issue-559-0655630e8231
+
+A	changelog.d/20260623_192430_issue_559_meta_algorithm_plan.md
+A	changelog.d/20260623_200000_issue_559_problem_frame.md
+A	changelog.d/20260623_210000_issue_559_work_units.md
+A	changelog.d/20260623_220000_issue_559_need_ledger.md
+A	changelog.d/20260623_230000_issue_559_method_registry.md
+A	changelog.d/20260623_233000_issue_559_recursive_core_recipe.md
+A	changelog.d/20260623_234500_issue_559_solution_evidence.md
+A	changelog.d/20260623_236000_issue_559_case_study.md
+A	changelog.d/20260624_090000_issue_559_route_method_aliases.md
+A	changelog.d/20260624_100000_issue_559_white_box_reasoning.md
+A	changelog.d/20260624_110000_issue_559_upward_construction.md
+A	changelog.d/20260624_120000_issue_559_selection_comparison.md
+A	changelog.d/20260624_130000_issue_559_meta_self_improvement.md
+A	changelog.d/20260624_140000_issue_559_cue_lexicon.md
+A	changelog.d/20260624_150000_issue_559_skill_ledger.md
+A	changelog.d/20260624_170000_issue_559_recipe_interpreter.md
+A	changelog.d/20260624_180000_issue_559_dispatch_parity.md
+A	changelog.d/20260624_190000_issue_559_live_meta_dispatch.md
+COMMIT ec472302bfd9f5951fe39d1d3e228ef7752be9c4 2026-06-22T04:40:26+05:30 Merge pull request #555 from link-assistant/issue-554-4e0842bbccb4
+
+A	changelog.d/20260621_120000_issue_554_install_landing_pages.md
+COMMIT 3f1f7bb28da61cde6c7e9b86614a055db0cbd434 2026-06-22T01:44:48+05:30 Merge pull request #553 from link-assistant/issue-552-5268f4c1c9c2
+
+A	changelog.d/20260621_120000_issue_552_shared_dialog_replay.md
+COMMIT 3ed1fea0e75f8d3cfc4f897207c794ff37267e6c 2026-06-22T00:37:08+05:30 Merge pull request #551 from link-assistant/issue-550-c636b0e4075d
+
+A	changelog.d/20260621_133148_issue_550_ui_ux_polish.md
+COMMIT b7e761fb9b8a5a440f1ddc1f4ea1f6dfceeebf51 2026-06-21T15:03:31+05:30 Merge pull request #549 from link-assistant/issue-548-60f357ad6440
+
+A	changelog.d/20260620_230000_issue_548_desktop_auto_update.md
+COMMIT a5ccda411ec57dfc168b17cf87d101cdb460e9f7 2026-06-21T04:50:55+05:30 Merge pull request #547 from link-assistant/issue-546-00172aaf4098
+
+A	changelog.d/20260620_214500_issue_546_host_shell.md
+COMMIT d760d5e692ec93194c3d0e193b0e51064fd90333 2026-06-21T02:04:23+05:30 Merge pull request #542 from link-assistant/issue-541-bf330e9c749a
+
+A	changelog.d/20260620_ui_ux_improvements_issue_541.md
+COMMIT 0f357d2e6d67804d78062a466005250708f321ea 2026-06-20T18:53:38+05:30 Merge pull request #512 from link-assistant/issue-511-26d6b8408464
+
+A	changelog.d/20260617_120000_issue_511_case_study.md
+A	changelog.d/20260617_120000_terminal_command_intent_and_mode_radio.md
+A	changelog.d/20260618_064800_issue_514_desktop_permissions.md
+A	changelog.d/20260618_100000_issue_511_web_i18n_guard.md
+A	changelog.d/20260618_120000_issue_511_i18n_catalog_split.md
+A	changelog.d/20260618_121500_issue_515_agent_server_autostart.md
+A	changelog.d/20260618_163000_issue_516_agent_provider.md
+A	changelog.d/20260618_203000_issue_517_agent_environment.md
+A	changelog.d/20260619_000000_issue_518_agent_ndjson_chat.md
+A	changelog.d/20260619_223000_issue_519_cold_start_e2e.md
+A	changelog.d/20260619_235500_issue_520_upstream_closeout.md
+A	changelog.d/20260620_123000_issue_511_closeout_docs.md
+COMMIT 966ab84730052c6a0a1dc8d5f0b94e48ec711133 2026-06-18T02:30:10+05:30 Merge pull request #470 from link-assistant/issue-438-9da4a07cbf9a
+
+A	changelog.d/20260614_150000_issue_438_prebuilt_telegram_image.md
+COMMIT 7a8e1d6bc15fdd00c57bfb0d81b751e4cc4960be 2026-06-17T23:34:59+05:30 Merge pull request #524 from link-assistant/issue-523-d811f560cba2
+
+A	changelog.d/20260617_fix_deploy_demo_disk_space.md
+COMMIT 2e740d82b830882c928cbe2610f22ec2f9ce629a 2026-06-17T21:53:24+05:30 Merge pull request #489 from link-assistant/issue-488-54ea7213044c
+
+A	changelog.d/20260615_183000_issue_488_thinking_preview.md
+COMMIT 88e6cf4e1d267f76a91989067cf17b98c7b38078 2026-06-16T12:18:50+05:30 Merge pull request #490 from link-assistant/issue-479-845c9fad1bb5
+
+A	changelog.d/20260615_201500_issue_479_macos_adhoc_signature.md
+COMMIT 43b5cfca1db16556d6edd030166c9fcc8acef0d7 2026-06-16T01:08:50+05:30 Merge pull request #487 from link-assistant/issue-479-ff9c709d56dc
+
+M	changelog.d/20260615_144217_issue_479_desktop_apps_available.md
+COMMIT 97f3c19157ea2a3b289b360d9de6d626c2093c5c 2026-06-15T20:59:22+05:30 Merge pull request #486 from link-assistant/issue-479-51f54bbe54b1
+
+M	changelog.d/20260614_issue_479_desktop_downloads_and_site_restructure.md
+A	changelog.d/20260615_144217_issue_479_desktop_apps_available.md
+COMMIT 3dd70f4ec3e52f1c49d3fcec3cacec8f64672780 2026-06-15T15:59:35+05:30 Merge pull request #414 from link-assistant/issue-410-e318f1ae5275
+
+A	changelog.d/20260615_120000_issue_410_dependency_refresh.md
+COMMIT f16d48af1a817a21e9882d551306ba5cca683042 2026-06-15T05:26:35+05:30 Merge pull request #480 from link-assistant/issue-479-33639d61f4f0
+
+A	changelog.d/20260614_issue_479_desktop_downloads_and_site_restructure.md
+COMMIT dd0e32017042929b0fba9684b442204c704ec4ad 2026-06-14T22:54:57+05:30 Merge pull request #469 from link-assistant/issue-468-87c52b65bec9
+
+A	changelog.d/20260614_140000_issue_468_agentic_tool_calls.md
+A	changelog.d/20260614_150000_issue_468_agentic_driver.md
+A	changelog.d/20260614_160000_issue_468_agentic_recipe.md
+A	changelog.d/20260614_170000_issue_468_agentic_surfaces.md
+A	changelog.d/20260614_180000_issue_468_case_study_docs.md
+COMMIT 0abd3f45b61a68ed2b819189d7655c3a7cd8aa07 2026-06-14T22:12:53+05:30 Merge pull request #472 from link-assistant/issue-440-23eab54bc87e
+
+A	changelog.d/20260614_153612_issue_440_list_files_output.md
+COMMIT 955bc4914319704ed095430024f31bca7632b6b3 2026-06-14T22:10:36+05:30 Merge pull request #432 from link-assistant/issue-425-ff7d3c7e0567
+
+A	changelog.d/20260613_000000_issue_425_document_generation.md
+COMMIT c96a81d4a0171924ddcdd89e8c1052fa11a08954 2026-06-14T05:34:48+05:30 Merge pull request #448 from link-assistant/issue-444-647f06dbb5f1
+
+A	changelog.d/20260613_154337_issue_444_procedural_elaboration_followup.md
+A	changelog.d/20260613_issue_444_procedural_meta_algorithm.md
+COMMIT af9e9bb3fb7a767e7f400c3d13fbb9b3b39277c4 2026-06-14T05:07:26+05:30 Merge pull request #452 from link-assistant/issue-451-b816faff56ec
+
+A	changelog.d/20260613_160000_issue_451_symbolic_ai_reference.md
+A	changelog.d/20260613_193000_issue_451_dpll_sat_backend.md
+COMMIT ab182c11d80b8c51acdf79f7a105bf8cb0b11699 2026-06-14T00:52:10+05:30 Merge pull request #430 from link-assistant/issue-427-f23ead64bdf7
+
+A	changelog.d/20260613_issue_427_invert_sort_coreference.md
+COMMIT 03a108e07eec3fb93ccea00d3f82f444710a931a 2026-06-14T00:32:56+05:30 Merge pull request #450 from link-assistant/issue-449-2895c0132690
+
+A	changelog.d/20260613_165237_issue_449_evidence_count_counted_utility.md
+A	changelog.d/20260613_issue_449_interpretable_learning.md
+COMMIT b672ac44ac2500a5dcb3a70eb10907e738460a0c 2026-06-13T23:29:43+05:30 Merge pull request #455 from link-assistant/issue-454-6c17bf95f9df
+
+A	changelog.d/20260613_160000_issue_454_user_journeys.md
+COMMIT a793502a199039c906534ad0be89b3034fa9a8df 2026-06-13T20:43:45+05:30 Merge pull request #419 from link-assistant/issue-404-070ec3986707
+
+A	changelog.d/20260613_140000_issue_435_relative_date_calendar.md
+COMMIT 6558bb271af631bda745ed92fa5c318328004d05 2026-06-13T18:36:26+05:30 Merge pull request #405 from skulidropek/issue-404
+
+A	changelog.d/20260609_000000_issue_404_calendar_create.md
+COMMIT 483e5b9902dd38f605be1d243954a0b3b32baae2 2026-06-13T17:08:06+05:30 Merge pull request #443 from link-assistant/issue-442-8434c56ac949
+
+A	changelog.d/20260613_120000_fix_test_job_non_code_changes.md
+COMMIT 3412d87404b54d88db2e90d69f815523d9de89ad 2026-06-13T16:44:58+05:30 Merge pull request #434 from link-assistant/issue-433-6671aae1da9e
+
+A	changelog.d/20260613_120000_issue_433_compositional_recognizers.md
+COMMIT 1b7147f6dba50a7cd78449f38ab7ab4b1d2d13be 2026-06-13T15:38:39+05:30 Merge pull request #437 from link-assistant/issue-436-e9e553c5e92f
+
+A	changelog.d/20260613_093000_metatheory_concept.md
+COMMIT b089f5bfc1b191ce56d1db4fa90af42c31323fa2 2026-06-13T14:56:40+05:30 Merge pull request #424 from link-assistant/issue-423-85026fdc955a
+
+A	changelog.d/20260612_083000_issue_423_installation_conversion.md
+COMMIT 2acdbfaf53bb08728ffb1d6cf2d7aba879d2a89f 2026-06-13T04:49:26+05:30 Merge pull request #429 from link-assistant/issue-428-7778bb0172a9
+
+A	changelog.d/20260612_233000_issue_428_meta_language_040.md
+COMMIT 7527a119e713c3aba4e25f2b363bb27fe8393ff7 2026-06-13T03:32:49+05:30 Merge pull request #416 from link-assistant/issue-408-336291b4b4ef
+
+A	changelog.d/20260611_180000_issue_408_text_replacement.md
+COMMIT a262c4917fcf1465c0f400451c8aeb180f7d2aec 2026-06-12T20:29:55+05:30 Merge pull request #418 from link-assistant/issue-406-6b5da8d41f69
+
+A	changelog.d/20260611_180000_issue_406_placeholder_equations.md
+COMMIT 698aafcff40880ac6f788872d1e69573fbede352 2026-06-12T17:46:56+05:30 Merge pull request #415 from link-assistant/issue-411-1e4094a180fd
+
+A	changelog.d/20260611_173000_issue_411_behavior_rules_shortcut.md
+COMMIT f97e69951b8addd7c1b13eb1db2ce2a16b8e1ed0 2026-06-12T17:46:04+05:30 Merge pull request #422 from link-assistant/issue-409-e4c182d83efd
+
+A	changelog.d/20260611_231500_issue_409_toolbar_icon_packs.md
+COMMIT bb76ba912c3521d5ea0f3543e02f6f5394b1432a 2026-06-12T17:45:20+05:30 Merge pull request #417 from link-assistant/issue-407-b35aacab285c
+
+A	changelog.d/20260611_180000_embedded_calculation_requests.md
+COMMIT d49a612d8f87d6895986f3bbdad2f3fda52a838c 2026-06-12T04:02:53+05:30 Merge pull request #420 from link-assistant/issue-403-f628f7845685
+
+A	changelog.d/20260611_172239_issue_403_number_riddle.md
+COMMIT 6eb586078aa5e42fa13be550c90852433bd55b3d 2026-06-12T04:02:19+05:30 Merge pull request #421 from link-assistant/issue-402-3f2cf0c98030
+
+A	changelog.d/20260611_180000_issue_402_assistant_free_time.md
+COMMIT 6903828d44f0d9922e38cdb78bc5fbcc1f78733d 2026-06-11T22:24:11+05:30 Merge pull request #413 from link-assistant/issue-412-1f5f93827186
+
+A	changelog.d/20260611_140000_issue_412_numeric_list_coreference.md
+A	changelog.d/20260611_160000_issue_412_knowledge_oracle.md
+COMMIT 29c91aeb37477f2689a6c7f7aeff0ea40ee8c5c8 2026-06-11T01:29:11+05:30 Merge pull request #396 from link-assistant/issue-395-3c3ab62d4f7c
+
+A	changelog.d/20260604_000000_issue_395_sort_numbers.md
+COMMIT 8a0edf95f216806d83b8e130ef6eb809bef6e6b4 2026-06-10T18:10:12+05:30 Merge pull request #399 from link-assistant/issue-398-b349f91c312f
+
+A	changelog.d/20260606_201500_issue_398_semantic_facets.md
+A	changelog.d/20260609_140000_issue_398_seed_readability.md
+A	changelog.d/20260609_200000_issue_398_empty_facet_fields.md
+A	changelog.d/20260609_203000_issue_398_overrides_layer.md
+A	changelog.d/20260609_213000_issue_398_lossless_codec_and_empty_fields.md
+A	changelog.d/20260609_223000_issue_398_wikidata_grounding_batch.md
+A	changelog.d/20260609_234500_issue_398_lexeme_grounding.md
+A	changelog.d/20260609_seed_reference_lists.md
+A	changelog.d/20260610_000500_issue_398_conversational_grounding.md
+A	changelog.d/20260610_001500_issue_398_programming_grounding.md
+A	changelog.d/20260610_002500_issue_398_discourse_calendar_grounding.md
+A	changelog.d/20260610_010000_issue_398_wiktionary_breadth.md
+A	changelog.d/20260610_104500_issue_398_total_closure_and_views.md
+A	changelog.d/20260610_reference_closure_role_registry.md
+COMMIT 1d7f62c2c4eedab2b0d0c4a41706ba78e1d3d600 2026-06-08T20:10:44+05:30 Merge pull request #401 from link-assistant/issue-400-a85a0ce9c93a
+
+A	changelog.d/20260608_130000_issue_400_wikinews_latest_news.md
+COMMIT e87a91d5fdc5b9bb4d281c0e61d76df7af9bcf7a 2026-06-05T05:05:38+05:30 Merge pull request #397 from link-assistant/issue-394-ffc1c872e3ab
+
+A	changelog.d/20260604_201119_russian_unknown_links_rules.md
+COMMIT 0afac1979213c780a4f417acb30c8b53e632c5bd 2026-06-04T23:03:43+05:30 Merge pull request #393 from link-assistant/issue-392-773e82f8f031
+
+A	changelog.d/20260604_issues_392_conversation_copy.md
+COMMIT d1c8c096eec888cbcd1ee0e242880395e61618bb 2026-06-04T22:16:09+05:30 Merge pull request #391 from link-assistant/issue-390-77cb1ef33735
+
+A	changelog.d/20260604_170000_issue_390_release_recovery.md
+COMMIT a8b231ded45602c1311a27f5b22e02521f2155f2 2026-06-04T21:21:36+05:30 Merge pull request #389 from link-assistant/issue-388-874e3e436c91
+
+A	changelog.d/20260604_153500_issue_388_ui_dark_topbar.md
+COMMIT c76f32c39a09c43d374e465375cd3ec352b3bccf 2026-06-04T18:55:33+05:30 Merge pull request #387 from link-assistant/issue-386-0f7c7e8a730c
+
+A	changelog.d/20260601_120000_issue_386_report_settings_copy.md
+COMMIT a49521904798ebf655274cbb02c777c15b286995 2026-06-01T07:27:33+05:30 Merge pull request #382 from link-assistant/issue-337-af94e05dd18c
+
+A	changelog.d/20260531_230000_issue_337_github_repository_extraction.md
+COMMIT 8156b95a080bd6555da62b723e5901c0bd8932a5 2026-06-01T06:55:22+05:30 Merge pull request #381 from link-assistant/issue-338-f2a015abaa68
+
+A	changelog.d/20260531_235900_issue_338_box_word_problem.md
+COMMIT 37f6d58d0d65dd43a7e1600b7748d0ebbe36321f 2026-06-01T06:28:00+05:30 Merge pull request #383 from link-assistant/issue-336-d38364ae9aa3
+
+A	changelog.d/20260601_000354_issue_336_compound_interest.md
+COMMIT fef20f5e55da3601ba71b29849cf368e8105247c 2026-06-01T06:12:07+05:30 Merge pull request #385 from link-assistant/issue-343-5a84780aaa50
+
+A	changelog.d/20260531_235500_issue_343_spec_driven_typo.md
+COMMIT 9e249086d9cdf3f55ca3eb7a3277139933176794 2026-06-01T06:10:15+05:30 Merge pull request #384 from link-assistant/issue-335-3a1d301bdab8
+
+A	changelog.d/20260531_235500_issue_335_focused_wikipedia_research.md
+COMMIT b2fb5450aba259b9bac13821aa921ede7af7615e 2026-06-01T05:45:04+05:30 Merge pull request #380 from link-assistant/issue-339-5582ebca4a27
+
+A	changelog.d/20260531_235256_issue_339_research_table.md
+COMMIT a80c99b3debf7de903ddb5a2daaf18878a4ab670 2026-06-01T03:30:24+05:30 Merge pull request #379 from link-assistant/issue-342-95cece15bf3e
+
+A	changelog.d/20260531_213109_budget_blueprint.md
+COMMIT 0e93748c0a7c705c92b08d4891710a4a362b9919 2026-06-01T03:13:49+05:30 Merge pull request #378 from link-assistant/issue-368-485e22098964
+
+A	changelog.d/20260531_220000_issue_368_agentic_cli_docs.md
+COMMIT 24e6a72ddd8629a3a972225d7be4e19bfdee3478 2026-06-01T01:49:19+05:30 Merge pull request #376 from link-assistant/issue-364-55959348860a
+
+A	changelog.d/20260531_203000_issue_364_self_improvement.md
+COMMIT 90cc68f1d23845cec9bb6521cbfd9e07cbd0f576 2026-05-31T04:06:41+05:30 Merge pull request #375 from link-assistant/issue-363-9f47b54135b1
+
+A	changelog.d/20260530_230000_issue_363_report_pressure.md
+COMMIT 02a705f69adba161804d0c5926186887313a5d0c 2026-05-31T03:44:41+05:30 Merge pull request #374 from link-assistant/issue-362-7993455d57fb
+
+A	changelog.d/20260530_214500_issue_362_coding_modification_benchmark.md
+COMMIT 34a9556e8790e5a974294f3473bea605067cd297 2026-05-31T03:31:27+05:30 Merge pull request #373 from link-assistant/issue-361-434488134615
+
+A	changelog.d/20260530_220000_issue_361_cross_runtime_parity.md
+COMMIT 7632b05cccace49fe1f129c61f31eb5b940595b9 2026-05-31T01:08:48+05:30 Merge pull request #372 from link-assistant/issue-360-38fd6ba803ec
+
+A	changelog.d/20260530_191800_issue_360_diagnostics.md
+COMMIT c20e5155252c37c30b5b5f7d2d0bc29b122075a4 2026-05-31T00:15:37+05:30 Merge pull request #371 from link-assistant/issue-359-5b5fb0777ee6
+
+A	changelog.d/20260530_183000_issue_359_rule_construction.md
+COMMIT b308b20dc9c9a9a5e1a81db1b0970bf5edbc605d 2026-05-30T23:38:22+05:30 Merge pull request #370 from link-assistant/issue-358-4e868b49d9a1
+
+A	changelog.d/20260530_180000_issue_358_program_modifiers.md
+COMMIT 0e15df8fbe20ab32222352a32ed2bb2d5c54746b 2026-05-30T22:02:52+05:30 Merge pull request #369 from link-assistant/issue-357-d87d54ecc72c
+
+A	changelog.d/20260530_140000_issue_357_program_coreference.md
+COMMIT dae8a06a2036493d4e12cefbbfb90e9ce397a158 2026-05-30T19:15:15+05:30 Merge pull request #367 from link-assistant/issue-356-5b81630408a3
+
+A	changelog.d/20260530_132315_issue_356_rule_synthesis_design.md
+COMMIT 6c2a1f5718980d2dfc68c2186acde4ea198b43ac 2026-05-30T18:46:39+05:30 Merge pull request #354 from link-assistant/issue-353-dfccdb39bce4
+
+A	changelog.d/20260530_120000_issue_353_vscode_extension.md
+COMMIT 4c002058b0a369e433af646799f6f629264e28bb 2026-05-30T18:30:40+05:30 Merge pull request #366 from link-assistant/issue-355-344578359227
+
+A	changelog.d/20260530_125000_issue_355_reverse_sort_repro.md
+COMMIT 53f89f65e8a2fdbbe32c107483ce4414ff2d0d32 2026-05-30T16:20:07+05:30 Merge pull request #352 from link-assistant/issue-333-d89656a09a4c
+
+A	changelog.d/20260530_101958_usd_rate_basis.md
+COMMIT 792cdb741037cfde6b4e28af085cb9a5d9f1979e 2026-05-30T16:06:10+05:30 Merge pull request #351 from link-assistant/issue-332-f94cd78ff46b
+
+A	changelog.d/20260530_103000_issue_332_russian_acquaintance_identity.md
+COMMIT c21d60749bb774b40b311c3c55563df77b0983e0 2026-05-30T15:32:51+05:30 Merge pull request #348 from link-assistant/issue-347-4cd6329090e8
+
+A	changelog.d/20260529_234932_issue_347_download_page.md
+COMMIT 80dc5123cd527933a455a4cea893262224f7a87c 2026-05-30T05:17:52+05:30 Merge pull request #346 from link-assistant/issue-340-dbe3f3891f1b
+
+A	changelog.d/20260529_193000_issue_340_composite_program_blueprint.md
+COMMIT f230480300987b1a9d2135fe7d6fa111bc8f9ae2 2026-05-30T01:54:02+05:30 Merge pull request #345 from link-assistant/issue-341-7e64bf1210ad
+
+A	changelog.d/20260529_190000_issue_341_software_project_followup.md
+COMMIT 7d863b6e03921f9f2944b1cfb156647da5e7d6ad 2026-05-30T01:53:07+05:30 Merge pull request #344 from link-assistant/issue-334-229eab37b96b
+
+A	changelog.d/20260529_120000_fix_agent_plan_fibonacci_word_problem.md
+COMMIT 932625b962479138222004b873653382a0253381 2026-05-30T00:15:28+05:30 Merge pull request #331 from link-assistant/issue-330-64d71bce5b77
+
+A	changelog.d/20260529_143000_issue_330_code_highlighting.md
+COMMIT 0ecdb51959bfa2b9676366ec6d96704b93f0a271 2026-05-29T18:16:32+05:30 Merge pull request #245 from link-assistant/issue-244-75334b422fcf
+
+A	changelog.d/20260525_000000_issue_244_vision_plan.md
+A	changelog.d/20260529_000000_issue_244_parity_pass.md
+COMMIT 9d620edc39243fc711e6d07b660f54d84d7456bd 2026-05-29T17:29:55+05:30 Merge pull request #328 from link-assistant/issue-326-502fcf4d3a9f
+
+A	changelog.d/20260529_091500_issue_326_operation_vocabulary.md
+COMMIT eeca8ff5ad5ab092a5c6b31977945054adbfed88 2026-05-29T17:27:54+05:30 Merge pull request #329 from link-assistant/issue-327-ca9bee51ff14
+
+A	changelog.d/20260529_090000_issue_327_browser_worker_synthesis.md
+COMMIT b37dfe772ce3b220a08732225c16620a57f9a047 2026-05-29T13:26:52+05:30 Merge pull request #325 from link-assistant/issue-324-cf8043055ef7
+
+A	changelog.d/20260528_190000_issue_324_language_aware_program_writing.md
+COMMIT acb896b5be3cc441a803af16f651819a01e8dab3 2026-05-28T18:55:34+05:30 Merge pull request #323 from link-assistant/issue-317-a2983c165b4d
+
+A	changelog.d/20260528_130000_issue_317_benchmark_ratchet.md
+COMMIT b6c2d4fd46ddeff09dc0f2d38ddd407958f15dfe 2026-05-28T18:26:43+05:30 Merge pull request #322 from link-assistant/issue-316-df2ecc9c1366
+
+A	changelog.d/20260528_122700_issue_316_text_manipulation.md
+COMMIT f4985fee743df2aa3ace4be69e0afa461e027546 2026-05-28T17:45:14+05:30 Merge pull request #321 from link-assistant/issue-315-2ed7e2a5be22
+
+A	changelog.d/20260528_113435_program_synthesis.md
+COMMIT eb63f9faa5df148be113b4d82773f83b1231c022 2026-05-28T16:55:39+05:30 Merge pull request #320 from link-assistant/issue-314-ed19d11ac015
+
+A	changelog.d/20260528_111500_issue_314_numeric_reasoning.md
+COMMIT 2e03ac735b6c5dd0469e4c2c6e1ecf8de348e61f 2026-05-28T16:23:36+05:30 Merge pull request #319 from link-assistant/issue-313-ece61791ba00
+
+A	changelog.d/20260528_000000_issue_313_synthesis.md
+COMMIT 32bcd5ad2084dc886547327ee83c21aa9aa068d3 2026-05-27T20:36:23+05:30 Merge pull request #318 from link-assistant/issue-312-d1d44d5118bd
+
+A	changelog.d/20260527_091408_issue_312_list_files.md
+COMMIT 2387027ed3be9841fc202c2ff69a5ae98c941cc1 2026-05-27T05:05:13+05:30 Merge pull request #311 from link-assistant/issue-304-23e843eb0d56
+
+A	changelog.d/20260526_230500_issue_304_industry_benchmarks.md
+COMMIT 61b7a7846240d897ea03fbccb6d686459c26fc63 2026-05-27T04:28:52+05:30 Merge pull request #310 from link-assistant/issue-303-2e2d9313f8e1
+
+A	changelog.d/20260526_223358_issue_303_agent_workspace.md
+COMMIT ddf3b9b4e101e0899066d1de1fa760e78c623db0 2026-05-27T03:53:35+05:30 Merge pull request #309 from link-assistant/issue-302-e7083056c95e
+
+A	changelog.d/20260526_220000_natural_language_tool_access.md
+COMMIT 84e7d4c1c87fc17b7d75cec6c1334b466eea4708 2026-05-27T03:20:43+05:30 Merge pull request #308 from link-assistant/issue-301-ef74e93466aa
+
+A	changelog.d/20260526_213615_substitution_rules.md
+COMMIT 70dd54f91431d8f1029a6e6f1f6a97f87d39e6ac 2026-05-27T02:55:44+05:30 Merge pull request #307 from link-assistant/issue-300-873cc5bb18f5
+
+A	changelog.d/20260526_210000_issue_300_write_program.md
+COMMIT 2a263b650de28bb5a931b6c122b3f1cce6053d7e 2026-05-27T02:04:25+05:30 Merge pull request #306 from link-assistant/issue-299-30d5d978e553
+
+A	changelog.d/20260526_200500_issue_299_intent_formalization.md
+COMMIT 903134c4539ba8540af31479e20a27bc3c88ab0c 2026-05-27T01:21:41+05:30 Merge pull request #305 from link-assistant/issue-298-2417e4679aef
+
+A	changelog.d/20260526_issue_298_unknown_reasoning.md
+COMMIT 6736cb32c49d09ef43b65e97bd50da5a3a12b5e6 2026-05-26T21:15:24+05:30 Merge pull request #297 from link-assistant/issue-292-da9aaf96e0f3
+
+A	changelog.d/20260526_153000_issue_292_behavior_rule_i18n.md
+COMMIT aaa9b1c3b7a934d9dda9f769ccea96fc30b17e7f 2026-05-26T20:35:13+05:30 Merge pull request #296 from link-assistant/issue-288-6acac66b9387
+
+A	changelog.d/20260526_145500_issue_288_false_totality.md
+COMMIT fad7bae10187ac0b9169bb8a5037fc097a18f1f3 2026-05-26T20:05:14+05:30 Merge pull request #295 from link-assistant/issue-286-61cbbdcba27e
+
+A	changelog.d/20260526_142500_issue_286_antiregime.md
+COMMIT 4d2c7aca8778fd3712a54713c82a2f6f01f1a295 2026-05-26T17:30:35+05:30 Merge pull request #294 from link-assistant/issue-284-ca54d46aaebc
+
+A	changelog.d/20260526_120000_issue_284_assistant_name_command.md
+COMMIT 990f2460cfd9c2fb2e530e44ae5401e2195867cd 2026-05-26T17:09:22+05:30 Merge pull request #293 from link-assistant/issue-283-61f53327e75b
+
+A	changelog.d/20260526_111819_issue_283_skill_compiler.md
+COMMIT 581a37e22a547fbdf72b3eeb9cb410c5a2b8ba9c 2026-05-26T16:36:37+05:30 Merge pull request #291 from link-assistant/issue-282-87c4ef549aa1
+
+A	changelog.d/20260526_102000_issue_282_wasm_parity.md
+COMMIT 56accb2e5f22b41f0c1b826fea2fbc3cd3e4ea67 2026-05-26T15:44:49+05:30 Merge pull request #290 from link-assistant/issue-281-adb3f644d22f
+
+A	changelog.d/20260526_101500_issue_281_associative_packages.md
+COMMIT 980abf3b89dc87a2bb11301a4aaadf1ce1f66da9 2026-05-26T15:12:07+05:30 Merge pull request #289 from link-assistant/issue-280-a5568cffb278
+
+A	changelog.d/20260526_091500_issue_280_desktop_wrapper.md
+COMMIT 15b4987b16f85bbf31be6ab000b9c31fd1a0461f 2026-05-26T14:29:33+05:30 Merge pull request #287 from link-assistant/issue-279-5ba4c6826050
+
+A	changelog.d/20260526_090000_issue_279_symbolic_probability.md
+COMMIT 66757266e968c67d8499ada2992a4a2d3ae6e965 2026-05-26T13:50:18+05:30 Merge pull request #285 from link-assistant/issue-278-f318cd644af7
+
+A	changelog.d/20260526_070000_issue_278_default_doublets_store.md
+COMMIT 698bd3dde54d9b37314a1be289df8f34cb1991d3 2026-05-26T12:02:03+05:30 Merge pull request #277 from link-assistant/issue-272-faddf6c692f2
+
+A	changelog.d/20260526_063000_issue_272_russian_capabilities.md
+COMMIT 45d6dbbebbfc53322fdcc74290275aead4fc68b1 2026-05-26T11:30:43+05:30 Merge pull request #276 from link-assistant/issue-262-ffbf4f8b62fc
+
+A	changelog.d/20260526_060000_issue_262_russian_courtesy.md
+COMMIT f8ec06dcf17a123e7583b74466f7359edbb762dd 2026-05-26T11:03:08+05:30 Merge pull request #275 from link-assistant/issue-259-8addd79af1e5
+
+A	changelog.d/20260526_052000_issue_259_skill_compilation.md
+COMMIT 2c875a7d408a844aca3bacde4b6c59eade75d674 2026-05-26T10:26:17+05:30 Merge pull request #274 from link-assistant/issue-258-d31b6cd36328
+
+A	changelog.d/20260526_050000_issue_258_trace_surfaces.md
+COMMIT e359994899debfe488502bdb540cb6643334aecf 2026-05-26T10:09:24+05:30 Merge pull request #273 from link-assistant/issue-257-a276337dd027
+
+A	changelog.d/20260526_042351_issue_257_openai_auth_tools.md
+COMMIT 3f3ac08247d03a7d6d33e95d5a58fe6a3f0f76f3 2026-05-26T06:07:31+05:30 Merge pull request #271 from link-assistant/issue-256-585dd1cf5c16
+
+A	changelog.d/20260526_003000_issue_256_agent_isolation.md
+COMMIT 9b63a3ef04c20b835e86cc3351bc7eaf33241762 2026-05-26T05:49:08+05:30 Merge pull request #270 from link-assistant/issue-255-4873634aa505
+
+A	changelog.d/20260526_001500_issue_255_links_network.md
+COMMIT b3670e10337a9f0cd5f1ae9be8c9a4d0ed0f6af7 2026-05-26T05:33:34+05:30 Merge pull request #269 from link-assistant/issue-254-7e0bf261bbbe
+
+A	changelog.d/20260525_234500_issue_254_transparent_state.md
+COMMIT a3a3ef195c944811834af4c8f952f2280cd554e6 2026-05-26T05:06:33+05:30 Merge pull request #268 from link-assistant/issue-253-59df91a538ab
+
+A	changelog.d/20260525_233000_issue_253_decision_procedure.md
+COMMIT b4e8448947bcdb96930204b88eeb962ae5889f24 2026-05-26T04:33:12+05:30 Merge pull request #267 from link-assistant/issue-252-b1f65d416f4a
+
+A	changelog.d/20260525_222000_issue_252_code_generation.md
+COMMIT 61f3d01c2fe1f2acb75a75826635566a391b0434 2026-05-26T03:34:01+05:30 Merge pull request #266 from link-assistant/issue-251-7d593ac4bba8
+
+A	changelog.d/20260525_220000_issue_251_translation_links.md
+COMMIT 841d262f17569907d52d89e03aebd06f7d125149 2026-05-26T03:10:45+05:30 Merge pull request #265 from link-assistant/issue-250-be761bc3dbee
+
+A	changelog.d/20260525_212527_issue_250_source_cache.md
+COMMIT 0b22f6b545ef3c36edfc8023b88e686520df28f2 2026-05-26T02:49:40+05:30 Merge pull request #264 from link-assistant/issue-249-6136f9213c76
+
+A	changelog.d/20260525_211500_issue_249_temperature_selection.md
+COMMIT 7ee6da34425b7d7e0cd5cf5735211b5ef7e109f6 2026-05-26T02:22:46+05:30 Merge pull request #263 from link-assistant/issue-248-ea3e948d0229
+
+A	changelog.d/20260525_203000_issue_248_pq_formalization.md
+COMMIT 83be126cb97eaf68b0d5faf9d095ca7a60e4db2f 2026-05-26T01:37:34+05:30 Merge pull request #261 from link-assistant/issue-247-810952870ab9
+
+A	changelog.d/20260525_200000_issue_247_universal_reasoning_loop.md
+COMMIT c0bcf3bccafeca5f5fbfd7c80479256c869e0e22 2026-05-26T01:07:46+05:30 Merge pull request #260 from link-assistant/issue-246-61ab4f8b4f3e
+
+A	changelog.d/20260525_191500_issue_246_doublet_link_store.md
+COMMIT 63c8db468ffd9234c5c0a515954893e72c91e2f2 2026-05-25T21:09:19+05:30 Merge pull request #243 from link-assistant/issue-242-589b8e1d2946
+
+A	changelog.d/20260525_142500_issue_242_dictionary_prompt.md
+COMMIT 7ac09b9da23edfa00df4dfe4155ecd8123a6c22d 2026-05-25T19:36:47+05:30 Merge pull request #241 from link-assistant/issue-196-baa4327fc44a
+
+A	changelog.d/20260524_190000_issue_196_memory_deletion.md
+COMMIT 188e0b0d44e0b43d32b21e04ea7035bda6460f8e 2026-05-24T23:32:29+05:30 Merge pull request #240 from link-assistant/issue-209-490a73a6457c
+
+A	changelog.d/20260524_151500_issue_209_russian_prime_proof.md
+COMMIT 1a3fdb7f71192d19e767f8cc34f86458d04fb3a4 2026-05-24T20:15:19+05:30 Merge pull request #238 from link-assistant/issue-135-e32feaf9ccfd
+
+A	changelog.d/20260523_issue_135_playwright_script.md
+COMMIT e59107caf23177deae34aa55caecf1861e5eb25b 2026-05-24T18:26:08+05:30 Merge pull request #239 from link-assistant/issue-223-2a1e41a20542
+
+A	changelog.d/20260523_214500_issue_223_pandas_join_docs.md
+COMMIT 8b34510ba75c20e6f390c851b0500a72b045933c 2026-05-24T18:25:18+05:30 Merge pull request #234 from link-assistant/issue-146-3f926558fe76
+
+A	changelog.d/20260523_213831_issue_146_known_facts.md
+COMMIT 93717169992b9886583d01cb3e1587328cbd0445 2026-05-24T04:26:47+05:30 Merge pull request #235 from link-assistant/issue-157-172082bc75f4
+
+A	changelog.d/20260523_213823_issue_157_formal_ai_creator.md
+COMMIT ace67a0b9b41130fb177cdfd80130ae44ecb8be6 2026-05-24T04:03:08+05:30 Merge pull request #236 from link-assistant/issue-156-70f6dbdff452
+
+A	changelog.d/20260523_213600_issue_156_assistant_name.md
+COMMIT 74d494da7115d4efe52b1569b1d69bdab4111789 2026-05-23T02:45:51+05:30 Merge pull request #233 from link-assistant/issue-232-b9341e555308
+
+A	changelog.d/20260522_200000_issue_232_russian_disambiguation.md
+COMMIT 88cab35be6f0577e802af0b1350fd1657c3a5324 2026-05-23T02:45:33+05:30 Merge pull request #231 from link-assistant/issue-230-a9436b51254d
+
+A	changelog.d/20260522_183000_issue_230_translation_phrase.md
+COMMIT 96057379e86721757c8be5e5c1d7a6893d125dc8 2026-05-22T22:58:27+05:30 Merge pull request #229 from link-assistant/issue-228-f1e6cdaa38f0
+
+A	changelog.d/20260522_142800_issue_228_enumeration_web_search.md
+COMMIT 4ec9a4051b9047dc9815d0d2bec2d2210e41a2ee 2026-05-22T21:24:45+05:30 Merge pull request #227 from link-assistant/issue-226-d5af2957ea35
+
+A	changelog.d/20260522_120000_issue_226_wikipedia_article_questions.md
+COMMIT eb02c66d2c68ce731c08d2780ac29fa91caac1f4 2026-05-22T20:08:36+05:30 Merge pull request #222 from link-assistant/issue-221-77aad836fb28
+
+A	changelog.d/20260522_000500_issue_221_translation_common_nouns.md
+COMMIT deaa6fca0476c9e92443f2bc365e791931a0caf0 2026-05-22T17:36:38+05:30 Merge pull request #225 from link-assistant/issue-224-cf105bcf1a6e
+
+A	changelog.d/20260522_120000_issue_224_implicit_research_search.md
+COMMIT 1f05273d4a7ec71e0b2df5f3e9d6e633f5a5db74 2026-05-22T04:36:13+05:30 Merge pull request #220 from link-assistant/issue-195-bed514694604
+
+A	changelog.d/20260521_230000_issue_195_dind_telegram.md
+COMMIT d7caf77c0481bd48922e2b44e825d75ca367c3f8 2026-05-22T04:22:45+05:30 Merge pull request #219 from link-assistant/issue-218-71bece6bcc84
+
+A	changelog.d/20260521_213000_issue_218_translation_apple.md
+COMMIT 3cccade43169eb38d08a5af03831c1753af80355 2026-05-22T04:13:34+05:30 Merge pull request #200 from link-assistant/issue-184-8c29f506aef9
+
+A	changelog.d/20260520_194604_openstreetmap_typo.md
+COMMIT da21fe7728a2a9c86246f147648e0f9316444ee6 2026-05-22T03:53:56+05:30 Merge pull request #198 from link-assistant/issue-187-79bc77f3d485
+
+A	changelog.d/20260520_200000_issue_187_current_day_calendar.md
+COMMIT 954c8e715dd23d924c14cfdd1bc69410e8864188 2026-05-22T03:47:15+05:30 Merge pull request #201 from link-assistant/issue-182-7747bbca426b
+
+A	changelog.d/20260520_200000_issue_182_bsd_ports.md
+COMMIT 8d69be98c06b112b0617b4213ca3e3f82be576ae 2026-05-22T03:11:41+05:30 Merge pull request #214 from link-assistant/issue-213-ccac1dba5ff0
+
+A	changelog.d/20260521_183700_issue_213_russian_behavior_rules.md
+COMMIT 8bb008ad32e34d22ddb6ce2fa3bab1a2b742b25f 2026-05-22T01:58:00+05:30 Merge pull request #215 from link-assistant/issue-212-982e59cd9627
+
+A	changelog.d/20260521_183852_issue_212_russian_web_search.md
+COMMIT 2fa5169bd25d31db1e08aceb6d75db3210005076 2026-05-22T01:33:48+05:30 Merge pull request #204 from link-assistant/issue-165-ae9e3865656f
+
+A	changelog.d/20260520_200319_issue_165_information_search.md
+COMMIT a5acafbe4492923fbce57bdde3eea6ab1540e826 2026-05-22T00:03:42+05:30 Merge pull request #202 from link-assistant/issue-161-b6fba3b370ea
+
+A	changelog.d/20260520_201500_issue_161_graph_concept.md
+COMMIT 5d5d6622e626855d55230314b26c5fd904584f94 2026-05-22T00:02:22+05:30 Merge pull request #211 from link-assistant/issue-210-4d285057dbda
+
+A	changelog.d/20260521_180300_fix_issue_210_translation.md
+COMMIT 0d8e7035b767c63c67be7465842c2d68387e9465 2026-05-21T23:28:48+05:30 Merge pull request #197 from link-assistant/issue-192-12a50e1d9874
+
+A	changelog.d/20260520_194208_issue_192_calculate_typo.md
+COMMIT 0ff1fe54659608e357f563c069e103f6bec3999e 2026-05-21T23:11:14+05:30 Merge pull request #199 from link-assistant/issue-185-5e92ccc6162c
+
+A	changelog.d/20260520_200000_issue_185_proof_request.md
+COMMIT 3c1ac856edb4e19d8a348efcab47bade91491af4 2026-05-21T21:48:12+05:30 Merge pull request #208 from link-assistant/issue-207-40aa862c0b6e
+
+A	changelog.d/20260521_140000_issue_207_natural_translation.md
+COMMIT c537d17c6b1c1de53f57ec1f4d72a22cb9e3a4a8 2026-05-21T20:51:13+05:30 Merge pull request #203 from link-assistant/issue-183-3f4b24d7b276
+
+A	changelog.d/20260520_200000_issue_183_how_x_works.md
+COMMIT 042dc575347445748418e9131788c28df198dd54 2026-05-21T20:07:52+05:30 Merge pull request #206 from link-assistant/issue-205-904afe68fe09
+
+A	changelog.d/20260520_223900_issue_205_optional_ocr.md
+COMMIT 9cdb082edfe4d799607dabb68929177d933f32bd 2026-05-21T00:51:11+05:30 Merge pull request #194 from link-assistant/issue-193-64742fb93b00
+
+A	changelog.d/20260520_190000_issue_193_web_bundle.md
+COMMIT 285684166984bf8e52323b48aecfebd7bedad51f 2026-05-21T00:21:59+05:30 Merge pull request #191 from link-assistant/issue-190-8c706a31ad6a
+
+A	changelog.d/20260520_140000_issue_190_translation_sidebar_reports.md
+COMMIT d6a5e059cb6b77d0caa35aa7320bc85149aec4c7 2026-05-20T23:23:56+05:30 Merge pull request #188 from link-assistant/issue-164-9a34163b931c
+
+A	changelog.d/20260520_170000_issue_164_calculator_update.md
+COMMIT 2d122eb98fe1fa11f324e143b135e859d4719760 2026-05-20T22:54:25+05:30 Merge pull request #189 from link-assistant/issue-162-3046a51f4c24
+
+A	changelog.d/20260520_170000_issue_162_calendar_weekday_reasoning.md
+COMMIT 9eb33d55d823332b1fdd2e92613640ef279e5fc1 2026-05-20T20:49:17+05:30 Merge pull request #174 from link-assistant/issue-159-b2a5bc9f5a56
+
+A	changelog.d/20260519_213000_issue_159_hive_mind_lookup.md
+A	changelog.d/20260520_134500_issue_159_summarization_extensions.md
+COMMIT edd91ac38c7120dbec98e16f5fc798bc2c8c5dc2 2026-05-20T19:20:16+05:30 Merge pull request #179 from link-assistant/issue-144-c99ce65d1915
+
+A	changelog.d/20260519_190000_issue_144_behavior_rules.md
+COMMIT 8a05002769c6026ba1daed8d794bc30d13420624 2026-05-20T18:31:29+05:30 Merge pull request #186 from link-assistant/issue-172-6f05b8d7064b
+
+A	changelog.d/20260520_120000_issue_172_procedural_how_to.md
+COMMIT a10242d3655c6f0b29eaa687cb5df1c829e8e5f3 2026-05-20T17:34:07+05:30 Merge pull request #171 from link-assistant/issue-169-40f964916dd2
+
+A	changelog.d/20260519_214500_issue_169_github_navigation.md
+COMMIT f93aaddf5df344a986390dc961b6ad691bfa57f5 2026-05-20T16:42:31+05:30 Merge pull request #177 from link-assistant/issue-149-47706e450c61
+
+A	changelog.d/20260519_000000_issue_149_test_status.md
+COMMIT a2c88c5c7599ba88fdf23f8458b34402f62704c4 2026-05-20T16:24:28+05:30 Merge pull request #178 from link-assistant/issue-145-45527c76ca24
+
+A	changelog.d/20260519_220000_issue_145_web_search_capability.md
+COMMIT cc5f20e6be643563d5b3ca658fd5511eb7504d9d 2026-05-20T14:23:43+05:30 Merge pull request #181 from link-assistant/issue-180-d9c09fe7795a
+
+A	changelog.d/20260519_233136_issue_180_traceable_reasoning_and_web_search_dedupe.md
+COMMIT a68a92687a7c96c6c05da767f761d99b4576b0f7 2026-05-20T04:16:29+05:30 Merge pull request #176 from link-assistant/issue-160-53f4d46ed2df
+
+A	changelog.d/20260519_220000_issue_160_courtesy_response.md
+COMMIT b270f201b0ea72b456c037f8f3bc8b15f7199715 2026-05-20T04:04:34+05:30 Merge pull request #175 from link-assistant/issue-152-3916072d4278
+
+A	changelog.d/20260519_212657_issue_152_russian_how_are_you.md
+COMMIT 1093ff036045e27f0e38b5b513685aec6928fc1d 2026-05-20T03:29:42+05:30 Merge pull request #173 from link-assistant/issue-163-d536717f895a
+
+A	changelog.d/20260519_212700_issue_163_wikimedia_term_fallbacks.md
+COMMIT cf1ce5e8cd2594c2bf0e544c416704f84797cdec 2026-05-20T03:25:40+05:30 Merge pull request #170 from link-assistant/issue-168-74facaae132a
+
+A	changelog.d/20260519_210846_issue_168_percent_currency.md
+COMMIT 8d9fa46cc6d753d007c045fcece50420d82e353b 2026-05-20T03:17:36+05:30 Merge pull request #154 from link-assistant/issue-153-9ae03e768324
+
+A	changelog.d/20260519_180000_issue_153_search_ux_dedupe.md
+COMMIT 8b4d8c56e8a3f0ffda10e7613352687a3ac882d0 2026-05-20T00:17:18+05:30 Merge pull request #158 from link-assistant/issue-140-f298777c7c24
+
+A	changelog.d/20260519_182007_issue_140_report_url_cap.md
+COMMIT 85fce6b3f341830037bff228d9a9963f951f0950 2026-05-19T22:26:22+05:30 Merge pull request #134 from link-assistant/issue-133-3a851f322caa
+
+A	changelog.d/20260519_140000_issue_133_default_duckduckgo_rrf.md
+COMMIT 17a288659627bbfa965332ce8d8cf00f85149663 2026-05-19T22:19:05+05:30 Merge pull request #151 from link-assistant/issue-136-977a3d386e2a
+
+A	changelog.d/20260519_163500_issue_136_sidebar_tools.md
+COMMIT b9813d0662d5cbb852764e6f057eb12cd9e15b14 2026-05-19T19:26:48+05:30 Merge pull request #132 from link-assistant/issue-127-02b97a60aa65
+
+A	changelog.d/20260519_130031_issue_127_fact_query_pipeline.md
+COMMIT 1e23ceb212d4952368d2e43fab789b24740adc7e 2026-05-19T18:42:26+05:30 Merge pull request #131 from link-assistant/issue-125-ee624abc83ec
+
+M	changelog.d/20260519_125000_issue_125_url_navigation.md
+COMMIT 1b32ad373c71190dc35077145d4c5b83c4a7ac82 2026-05-19T18:08:16+05:30 Merge pull request #130 from link-assistant/issue-129-9c664282dfea
+
+A	changelog.d/20260519_120500_issue_129_connectivity_tests.md
+COMMIT 122c49056a531571c0f293fd511f78c5c1161f03 2026-05-19T17:48:31+05:30 Merge pull request #128 from link-assistant/issue-127-1af8cef2ecfb
+
+A	changelog.d/20260519_120500_issue_127_russia_capital.md
+COMMIT 324468dbbc993f45078049e1e744fbf5081bf441 2026-05-19T17:46:57+05:30 Merge pull request #126 from link-assistant/issue-125-1ca670a84080
+
+A	changelog.d/20260519_125000_issue_125_url_navigation.md
+COMMIT 5529e6eb9d6f39001ee97a780ec0c52242cd0295 2026-05-19T15:19:59+05:30 Merge pull request #124 from link-assistant/issue-123-448321a27278
+
+A	changelog.d/20260519_083500_issue_123_prompt_examples.md
+COMMIT a7d56af91e8a5b710b5cefab0e8a1760c076d3a4 2026-05-19T13:09:13+05:30 Merge pull request #119 from link-assistant/issue-80-290e44192310
+
+A	changelog.d/20260518_224500_issue_80_software_project_requests.md
+COMMIT 47afc8f5fcc5bfff28f32bdc010227f86d28ef54 2026-05-19T12:30:31+05:30 Merge pull request #120 from link-assistant/issue-63-7561bb160d49
+
+A	changelog.d/20260518_221952_issue_63_definition_fusion.md
+COMMIT 1a0de05e671d9169f282cf51f229c270c6ebbd1f 2026-05-19T11:07:36+05:30 Merge pull request #116 from link-assistant/issue-115-f9977aca33fe
+
+A	changelog.d/20260518_220000_issue_115_github_logs.md
+COMMIT 89cade67b8b804665e51b46590ef975e7b9a3a5b 2026-05-19T11:06:48+05:30 Merge pull request #122 from link-assistant/issue-121-2ec52977d59a
+
+A	changelog.d/20260519_050500_issue_121_crate_package_size.md
+COMMIT 3f05450f8a70e61182f30058f8804d1a03796eab 2026-05-19T10:03:17+05:30 Merge pull request #118 from link-assistant/issue-117-65eb42b6b7fe
+
+A	changelog.d/20260518_223000_issue_117_lino_i18n_catalog.md
+COMMIT 5cc85ce17869354bd699b97d4347529a590f09b9 2026-05-19T03:09:05+05:30 Merge pull request #114 from link-assistant/issue-107-c995aabb2aac
+
+A	changelog.d/20260518_203000_issue_107_web_search.md
+COMMIT 540cb6a8c5c23cef0b473a262e420f74009ac0d6 2026-05-18T23:38:07+05:30 Merge pull request #113 from link-assistant/issue-112-248769046c3f
+
+A	changelog.d/20260518_112000_issue_112_mobile_ui.md
+COMMIT ead6d9578e5c2c3132ba7f768641f97cbc02f15c 2026-05-18T16:18:17+05:30 Merge pull request #111 from link-assistant/issue-110-2af174f3ddb8
+
+A	changelog.d/20260518_100945_issue_110_mobile_ui.md
+COMMIT 858ec37b004686f1b84f0b63c916fdfe66c8cd1e 2026-05-18T15:06:24+05:30 Merge pull request #109 from link-assistant/issue-108-e4fa776bf7e7
+
+A	changelog.d/20260518_091500_issue_108_mobile_ui.md
+COMMIT 63486db6168ec370d5acd5b963d69a8fd66eeafb 2026-05-18T01:52:08+05:30 Merge pull request #106 from link-assistant/issue-105-43de79808581
+
+A	changelog.d/20260517_201500_issue_105_russian_word_arithmetic.md
+COMMIT 89e506a3a7de56396d851e55915747946f0a21ae 2026-05-18T01:29:18+05:30 Merge pull request #104 from link-assistant/issue-103-89b7776b0010
+
+R087	changelog.d/20260512_110000_formal_ai_prototype.md	changelog.d/20260512_110000_formal_ai_initial_implementation.md
+D	changelog.d/20260514_210000_issue_12_mvp_test_suite.md
+A	changelog.d/20260514_210000_issue_12_requirements_test_suite.md
+M	changelog.d/20260515_120000_issue_14_unified_demo.md
+M	changelog.d/20260515_210000_issue_30_nazovi_tsvet.md
+M	changelog.d/20260515_220000_issue_20_concept_context.md
+M	changelog.d/20260516_000000_issue_41_kupi_slona.md
+A	changelog.d/20260517_123649_issue_103_test_matrix_architecture.md
+COMMIT f7bd316851125b0103e3875fbabb553c0e041217 2026-05-17T16:59:03+05:30 Merge pull request #102 from link-assistant/issue-82-1a6565cb42da
+
+A	changelog.d/20260517_120000_issue_82_typo_settings.md
+COMMIT aebdaab02cdc61f94009ec944fd2f66605cf7307 2026-05-17T16:37:08+05:30 Merge pull request #101 from link-assistant/issue-64-0f1b4b7009f5
+
+A	changelog.d/20260517_111500_issue_64_links_theory.md
+COMMIT 3ad0f1a4889307088e83b84b3bc5a812934f7129 2026-05-17T15:24:08+05:30 Merge pull request #99 from link-assistant/issue-68-c3ada29b16ee
+
+A	changelog.d/20260517_100000_issue_68_linear_equations.md
+COMMIT e57b650d7ad5c6023bad0278d032444614600a58 2026-05-17T15:23:13+05:30 Merge pull request #100 from link-assistant/issue-93-5c859a5dabc0
+
+A	changelog.d/20260517_094500_issue_93_combined_identity_prompt.md
+COMMIT a59f915ba18b6161695a0fa9ea3691177f8ee534 2026-05-17T15:17:47+05:30 Merge pull request #98 from link-assistant/issue-81-38c12ca65065
+
+A	changelog.d/20260517_094500_issue_81_compact_calculation.md
+COMMIT 827fff28ac647962dddcb0d030ae1cb536acb64c 2026-05-17T15:02:48+05:30 Merge pull request #97 from link-assistant/issue-96-93a44dd34f1d
+
+A	changelog.d/20260516_233000_issue_96_calculator.md
+COMMIT 3c05b453b6e4948fb4b568f2d696b74b5af23230 2026-05-17T04:40:13+05:30 Merge pull request #95 from link-assistant/issue-94-ff296a0bd279
+
+A	changelog.d/20260516_170000_issue_94_ui_ux.md
+COMMIT b2d658c1e614e3bf453a34de4b66857208bdd572 2026-05-16T22:15:05+05:30 Merge pull request #92 from link-assistant/issue-73-1b287b1b431e
+
+A	changelog.d/20260516_160000_issue_73_dialog_reported_annotation.md
+COMMIT 67024d345e616eb42a27759e4d144c3d6978fd09 2026-05-16T21:26:35+05:30 Merge pull request #87 from link-assistant/issue-78-0dcc7757ac84
+
+A	changelog.d/20260516_150000_issue_78_shorter_report.md
+COMMIT 6b5087ab78fe0241fe45c9731bcbc8025a2917f1 2026-05-16T20:38:49+05:30 Merge pull request #89 from link-assistant/issue-67-5020a69c37b6
+
+A	changelog.d/20260516_150000_issue_67_poka_farewell.md
+COMMIT ff06902fd38dcda84ee0e7f7049d8f7888693f03 2026-05-16T20:37:07+05:30 Merge pull request #88 from link-assistant/issue-71-81912fcbf3c6
+
+A	changelog.d/20260516_150000_issue_71_fetch_url.md
+COMMIT 16b1048010e15dbae19ea074d32ce8d03c9dcd2b 2026-05-16T20:28:04+05:30 Merge pull request #90 from link-assistant/issue-79-602c5f160cb3
+
+A	changelog.d/20260516_145000_issue_79_who_is_variants.md
+COMMIT e7222e80a39a816bc04f5e2274c2185f28f5841d 2026-05-16T20:27:49+05:30 Merge pull request #91 from link-assistant/issue-65-91402602272c
+
+A	changelog.d/20260516_150000_issue_65_dot_prompt_clarification.md
+COMMIT 6ccd6d7d9770e7f298deffa76ade498e04d2f418 2026-05-16T18:40:40+05:30 Merge pull request #86 from link-assistant/issue-84-a409f6cdf36b
+
+M	changelog.d/20260516_140000_issue_84_publish_crate_rate_limit.md
+COMMIT 4081237c28aa41a81b9b3b9ae4c9692bd2d123c3 2026-05-16T17:33:52+05:30 Merge pull request #85 from link-assistant/issue-84-692b1f9623db
+
+A	changelog.d/20260516_140000_issue_84_publish_crate_rate_limit.md
+COMMIT 56859b3b610977ef9a67f0a7b187866118bac00e 2026-05-16T17:05:45+05:30 Merge pull request #83 from link-assistant/issue-66-6832a673e048
+
+A	changelog.d/20260516_113000_issue_66_rasskazhi_za_telegram_ads.md
+COMMIT 6b8e8eeb84da9d5f1e9a2e5d99bf79149c13efc1 2026-05-16T16:42:36+05:30 Merge pull request #77 from link-assistant/issue-72-3c64c0a31037
+
+A	changelog.d/20260516_120000_issue_72_version_display.md
+COMMIT 08bab3fd4539291eb126d8e4942e10467443dd43 2026-05-16T16:28:14+05:30 Merge pull request #76 from link-assistant/issue-39-953cf7f12db2
+
+A	changelog.d/20260516_110000_issue_39_physical_action_question.md
+COMMIT f3ffba92b7f388b227246d9c2e431d294fc361e0 2026-05-16T16:21:03+05:30 Merge pull request #74 from link-assistant/issue-69-8073bcee0480
+
+A	changelog.d/20260516_000000_issue_69_who_is_typo_correction.md
+COMMIT 38ddfc5224855f825f5b08805158a8bd77472e46 2026-05-16T16:12:07+05:30 Merge pull request #75 from link-assistant/issue-70-44b958c4d15c
+
+A	changelog.d/20260516_110000_issue_70_wikipedia_disambiguation_fallback.md
+COMMIT 9604ed4868d355cbe142f1318a557c1f2ce491c0 2026-05-16T06:36:20+05:30 Merge pull request #36 from link-assistant/issue-35-9545df8b8566
+
+A	changelog.d/20260516_000000_issue_35_write_script_intent.md
+COMMIT a0cd37c4d5748474ddc37beffff8be720962322a 2026-05-16T06:18:15+05:30 Merge pull request #47 from link-assistant/issue-41-a76143723c45
+
+A	changelog.d/20260516_000000_issue_41_kupi_slona.md
+COMMIT c878bb20e6640b548608abd18b17cc63204965fd 2026-05-16T06:15:52+05:30 Merge pull request #56 from link-assistant/issue-49-15e56694c4fd
+
+A	changelog.d/20260515_210000_issue_49_russian_capabilities_and_confusion.md
+COMMIT ffa1ff0a94324533ae95e0676e8dd4b8c2f2a371 2026-05-16T06:05:56+05:30 Merge pull request #54 from link-assistant/issue-43-8dcfd820555c
+
+A	changelog.d/20260515_000000_fix_incompatible_unit_query.md
+COMMIT 83812c9daa96fc5fb8c22f452741bfc68b477716 2026-05-16T05:55:15+05:30 Merge pull request #59 from link-assistant/issue-50-a94d4d7b427c
+
+A	changelog.d/20260515_210000_issue_50_shabbat_shalom_greeting.md
+COMMIT d3a39ae61f8a6bad2a62b827932a5ae6ff4e5b5c 2026-05-16T05:53:06+05:30 Merge pull request #57 from link-assistant/issue-51-8693c8c9e174
+
+A	changelog.d/20260515_220000_issue_51_meta_explanation_russian.md
+COMMIT f464f97b22b599b7898dabfc3f9bb2486baa2477 2026-05-16T05:50:40+05:30 Merge pull request #46 from link-assistant/issue-42-591c9157cbbf
+
+A	changelog.d/20260516_000000_issue_42_opinion_question.md
+COMMIT 3f326f389411817f1f1701e17b4ee2f4901f9109 2026-05-16T05:45:34+05:30 Merge pull request #58 from link-assistant/issue-44-932b1a8ae8ee
+
+A	changelog.d/20260515_210000_issue_44_unknown_prompt_report_title.md
+COMMIT 319de82eddb69382aa2b558cfe6ec5219f63fbec 2026-05-16T05:45:19+05:30 Merge pull request #32 from link-assistant/issue-30-267957d5e55e
+
+A	changelog.d/20260515_210000_issue_30_nazovi_tsvet.md
+COMMIT a260d5d3179fd9af56bde928085eb827872dd677 2026-05-16T05:45:01+05:30 Merge pull request #48 from link-assistant/issue-39-4fae946b6130
+
+A	changelog.d/20260515_204450_issue_39_inappropriate_content.md
+COMMIT 7bd9693878330db1ccbdeb985768541cb904407f 2026-05-16T05:19:02+05:30 Merge pull request #61 from link-assistant/issue-53-78dd4669e4c6
+
+A	changelog.d/20260515_235900_issue_53_russian_hello_world.md
+COMMIT 4ae115e3e862d1cf2425303e5e948280e4561874 2026-05-16T03:35:22+05:30 Merge pull request #60 from link-assistant/issue-52-3fef487eb097
+
+A	changelog.d/20260515_215000_cargo_lock_release_sync.md
+A	changelog.d/20260515_235900_issue_52_how_it_works.md
+COMMIT 1fcc0be6a62d13aa539e9bcd3abc35e7c69bb852 2026-05-16T03:11:49+05:30 Merge pull request #62 from link-assistant/issue-55-b16700e01313
+
+A	changelog.d/20260515_212304_bigint_arithmetic.md
+COMMIT c4659ebe4218590db26048a2490efa8b18aeb75b 2026-05-16T02:39:34+05:30 Merge pull request #45 from link-assistant/issue-40-6687579f7e2e
+
+A	changelog.d/20260515_235000_issue_40_demo_hint.md
+COMMIT 917dfa86a35e2c279be70630ee69356f05d087a2 2026-05-16T02:33:30+05:30 Merge pull request #33 from link-assistant/issue-29-13a9db91b72a
+
+A	changelog.d/20260515_120000_clarification_intent.md
+COMMIT 83b0c4cc80dc0a5bd417fec565e7931b9c443ebf 2026-05-16T02:27:32+05:30 Merge pull request #34 from link-assistant/issue-31-5ef83b6717f8
+
+A	changelog.d/20260515_230000_issue_31_kiss_principle.md
+COMMIT 1738fc3911b77b04f708860ffb05f427731e65a2 2026-05-16T02:17:13+05:30 Merge pull request #38 from link-assistant/issue-37-43a07241273c
+
+A	changelog.d/20260515_200000_issue_37_conversation_summary_phrases.md
+COMMIT 30af5341cab033aa132d2926320dc98891777f6f 2026-05-16T01:19:25+05:30 Merge pull request #28 from link-assistant/issue-27-2a30a20dbe1d
+
+A	changelog.d/20260515_184419_issue_27_fixes_and_improvements.md
+COMMIT 8999cba5c417c173795a11ecdbdec78e5a276ef0 2026-05-15T22:10:07+05:30 Merge pull request #22 from link-assistant/issue-20-4275e3280a5a
+
+A	changelog.d/20260515_220000_issue_20_concept_context.md
+COMMIT 2bdfc6ce3811f9655407b4163553f830161d1825 2026-05-15T21:25:13+05:30 Merge pull request #23 from link-assistant/issue-21-0c5ffd5a0979
+
+D	changelog.d/20260119_best_practices_from_browser_commander.md
+A	changelog.d/20260515_190000_issue_21_multilingual_urls.md
+COMMIT 08858f1ad79a734e0dbe3cf4c64e65884730510f 2026-05-15T20:51:47+05:30 Merge pull request #26 from link-assistant/issue-24-7fe6ff27055d
+
+M	changelog.d/20260515_230000_issue_24_pages_e2e.md
+COMMIT 82419bd5d5922169e12bb2c25d20ce2d4bdfef45 2026-05-15T19:56:39+05:30 Merge pull request #25 from link-assistant/issue-24-9083bf15af21
+
+A	changelog.d/20260515_230000_issue_24_pages_e2e.md
+COMMIT 15b89087a5e28a97d204a79002c051ead0708bbf 2026-05-15T18:59:08+05:30 Merge pull request #19 from link-assistant/issue-18-65b2eb796b44
+
+A	changelog.d/20260515_220000_issue_18_full_memory.md
+COMMIT b40bc67d9264238ba77ae65528beeddc3bc3d639 2026-05-15T17:50:10+05:30 Merge pull request #17 from link-assistant/issue-16-f76f85f72657
+
+A	changelog.d/20260515_180000_issue_16_universal_seed.md
+COMMIT 4cda79789174db9a6043e91465204bc8f4760ade 2026-05-15T06:01:11+05:30 Merge pull request #15 from link-assistant/issue-14-cea6df691135
+
+A	changelog.d/20260515_120000_issue_14_unified_demo.md
+COMMIT 55f4761d6c1cb87227c18bf3d2252fb1f3587044 2026-05-15T04:45:01+05:30 Merge pull request #13 from link-assistant/issue-12-8475693e3ce5
+
+A	changelog.d/20260513_142400_issue_12_vision_docs.md
+A	changelog.d/20260514_210000_issue_12_mvp_test_suite.md
+A	changelog.d/20260514_220000_issue_12_universal_solver.md
+COMMIT cc800673b1d76d4fa9766645bd65ab9c79b417bd 2026-05-13T02:00:18+05:30 Merge pull request #9 from link-assistant/issue-8-2ef42ad47e3f
+
+A	changelog.d/20260512_193000_issue_8_telegram_bot.md
+A	changelog.d/20260512_200000_telegram_polling_cli.md
+COMMIT 0ff9ef18455f6d28ff5463401b882955e820f407 2026-05-13T01:23:19+05:30 Merge pull request #11 from link-assistant/issue-10-528ad8299bfa
+
+A	changelog.d/20260512_193000_issue_10_demo_reporting.md
+COMMIT abb285e9b06ed35bf6de39d9d1308f6f47eab0d3 2026-05-13T00:05:44+05:30 Merge pull request #7 from link-assistant/issue-6-d8cf53772b56
+
+A	changelog.d/20260512_181444_issue_6_demo_ui.md
+COMMIT 7a4dc808499fa5b182f79ea7d0dafd1a54fe4ff5 2026-05-12T22:42:49+05:30 Merge pull request #5 from link-assistant/issue-4-1e8c9b0d59e2
+
+A	changelog.d/20260512_170000_fix_pages_workflow_deploy.md
+COMMIT b9ca271ea7c6cb16932006e3a1991f8f121f030c 2026-05-12T21:39:42+05:30 Merge pull request #3 from link-assistant/issue-1-70671eb0ba20
+
+M	changelog.d/20260512_110000_formal_ai_prototype.md
+COMMIT 4dbf9947e63928aa9455c30a0386c222390e2309 2026-05-12T20:26:13+05:30 Merge pull request #2 from link-assistant/issue-1-040a21d753ca
+
+A	changelog.d/20260512_110000_formal_ai_prototype.md
+COMMIT 6f8d4a8a05770adfd2fe33fdf3c6c586efb103af 2026-05-12T15:39:06+05:30 Initial commit
+
+A	changelog.d/20251227_224645_changeset_support.md
+A	changelog.d/20251229_143823_fix_ci_workflow_dependencies.md
+A	changelog.d/20251231_115800_fix_readme_script_references.md
+A	changelog.d/20260107_apply_best_practices.md
+A	changelog.d/20260108_171124_fix_changelog_check.md
+A	changelog.d/20260108_171435_prevent_manual_version_modification.md
+A	changelog.d/20260108_apply_lino_objects_codec_fixes.md
+A	changelog.d/20260111_multi_language_support.md
+A	changelog.d/20260119_best_practices_from_browser_commander.md
+A	changelog.d/20260311_translate_scripts_to_rust.md
+A	changelog.d/20260413-ci-cd-best-practices.md
+A	changelog.d/20260413_fix_cargo_token_fallback.md
+A	changelog.d/20260413_fix_crates_io_check.md
+A	changelog.d/20260413_fix_lookahead_regex.md
+A	changelog.d/20260414_fix_per_commit_diff.md
+A	changelog.d/20260415_fix_workspace_release_scripts.md
+A	changelog.d/20260501_decouple_docs_deploy.md
+A	changelog.d/20260503_111500_ci_timeouts.md
+A	changelog.d/20260503_111700_file_size_warning_threshold.md
+A	changelog.d/20260509_031015_human_readable_release_titles.md
+A	changelog.d/20260509_205000_docker_hub_release_publishing.md
+A	changelog.d/README.md

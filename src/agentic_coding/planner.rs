@@ -1,25 +1,15 @@
 //! Deterministic agentic planner — the server's "brain" for issue #468.
 //!
-//! The maintainer's framing: *"our Formal AI system should have enough skills
-//! (meta algorithm, rust code) to actually call all the tools from any agentic
-//! CLI, understand errors from tools, and so on, call bash commands, do web fetch
-//! and web search, to actually complete the task."*
-//!
-//! This module is that meta-algorithm for the canonical issue-#468 task —
-//! formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base. It
-//! is a **pure, deterministic function of the conversation so far**: given the
-//! messages exchanged and the tool names the agentic CLI advertised, it decides
-//! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
-//! hidden state, and the same history always yields the same plan.
-//!
-//! Stored recipe: `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
-//! The general fallback is likewise bounded, advertised, and deterministic.
+//! This pure meta-algorithm chooses the next tool or final answer from the
+//! conversation and advertised capabilities. It supports stored task recipes and
+//! a bounded general fallback; neural sampling and hidden state remain non-goals.
 
 use serde_json::json;
 
 use super::change_request;
+use super::conversation_recall;
 use super::diagram;
-use super::dreaming_audit;
+use super::execution_learning;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -29,15 +19,20 @@ use super::formalize::{
 use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
+use super::intent_router;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
+use super::report_issue;
+use super::routing_learning;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::web_research;
+use super::{associative_learning, dreaming_audit};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -81,6 +76,7 @@ pub enum Capability {
     Fetch,
     Read,
     Write,
+    Edit,
     Run,
 }
 
@@ -96,6 +92,7 @@ impl Capability {
             Self::Fetch => "tool:capability:fetch",
             Self::Read => "tool:capability:read",
             Self::Write => "tool:capability:write",
+            Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
         }
     }
@@ -116,14 +113,18 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // The self-AST recipe is checked first because it is the most specific router
-    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
-    // request legitimately mentions "Links Notation" as its output format, which
-    // would otherwise be captured by the broad formalization keyword match below.
-    // The self-healing recipe is checked before self-AST: both are self-inspection
-    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
-    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
-    // guards against a request that names both.
+    // Specific self-inspection routes precede broad formalization. Associative
+    // learning comes before self-healing because both accept auto-learning terms;
+    // the requested artifact scope distinguishes their recipes.
+    if associative_learning::is_associative_learning_task(&task) {
+        return Some(plan_associative_learning_step(messages, tool_names));
+    }
+    if routing_learning::is_routing_learning_task(&task) {
+        return Some(routing_learning::plan_step(messages, tool_names));
+    }
+    if execution_learning::is_execution_learning_task(&task) {
+        return Some(execution_learning::plan_step(messages, tool_names));
+    }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
     }
@@ -202,6 +203,27 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
+    // Agent-mode counterpart of the web UI's report action (issue #687).
+    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
+        return Some(report_issue::plan_report_issue_step(
+            messages, tool_names, &request,
+        ));
+    }
+    // Resolve dialogue meta-questions before open-world research.
+    if let Some(answer) = conversation_recall::recall_answer_for(messages) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    // Probe writes before reads so a named output file is not mistaken for input.
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| compose_general_change_plan(&task))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
+    // Probe edits before reads for the same target-file ambiguity.
+    if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
@@ -216,6 +238,19 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
+    }
+    // Research is the final named recipe so more specific local actions win.
+    if let Some(query) = web_research::web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
+        }
+    }
+    // Route the remaining requests by seed-backed intent and advertised capability.
+    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+        return Some(plan);
     }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
@@ -285,21 +320,21 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
 /// so they are modelled as one struct and one planner
 /// ([`plan_document_recipe`]) rather than a dozen copy-pasted functions — the exact
 /// generalization the meta-algorithm is meant to embody.
-struct DocumentRecipe {
+pub(super) struct DocumentRecipe {
     /// The workspace-relative path the generated document is written to.
-    path: &'static str,
+    pub(super) path: &'static str,
     /// The generated Links Notation document (a pure function of committed state).
-    document: String,
+    pub(super) document: String,
     /// The sandbox-allowlisted command that reads the document back for verification.
-    verify_command: String,
+    pub(super) verify_command: String,
     /// The inline final answer returned once the write and verify steps are done.
-    final_answer: String,
+    pub(super) final_answer: String,
 }
 
 /// Plan the next step of a [`DocumentRecipe`]: `write → verify → final`. Steps whose
 /// capability the CLI did not advertise (or the conversation already satisfied) are
 /// skipped, so the loop adapts to whatever subset of tools a given CLI exposes.
-fn plan_document_recipe(
+pub(super) fn plan_document_recipe(
     messages: &[ChatMessage],
     tool_names: &[&str],
     recipe: DocumentRecipe,
@@ -325,7 +360,7 @@ fn plan_document_recipe(
     AgenticPlan::Final(recipe.final_answer)
 }
 
-/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
@@ -652,6 +687,20 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
     )
 }
 
+fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = associative_learning::render_document();
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
+            verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
+            final_answer: associative_learning::final_answer(&document),
+            document,
+        },
+    )
+}
+
 /// The issues-#498 + #558 learning-frontier recipe: write the generated
 /// learning-frontier report → verify → final. Like the other self-referential recipes
 /// it needs no web step — the report is a pure function of the committed Trends catalog
@@ -688,22 +737,25 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Which recipe capabilities the conversation already produced a result for.
-struct Progress {
-    /// Capabilities a prior `tool` result already answered.
+/// Tool results produced since the current user turn began.
+pub(super) struct Progress {
     completed: Vec<Capability>,
-    /// The latest non-errored fetch result's text, if any.
-    fetched_text: Option<String>,
-    /// The latest run/shell result's text, if any.
-    run_output: Option<String>,
+    pub(super) fetched_text: Option<String>,
+    pub(super) search_output: Option<String>,
+    pub(super) run_output: Option<String>,
 }
 
 impl Progress {
-    fn scan(messages: &[ChatMessage]) -> Self {
+    pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
+        let mut search_output = None;
         let mut run_output = None;
-        for (index, message) in messages.iter().enumerate() {
+        let current_turn = messages
+            .iter()
+            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+            .unwrap_or(0);
+        for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;
             }
@@ -716,6 +768,12 @@ impl Progress {
                     fetched_text = Some(text);
                 }
             }
+            if capability == Capability::Search {
+                let text = message.content.plain_text();
+                if !looks_like_error(&text) && !text.trim().is_empty() {
+                    search_output = Some(text);
+                }
+            }
             if capability == Capability::Run {
                 run_output = Some(message.content.plain_text());
             }
@@ -724,12 +782,13 @@ impl Progress {
         Self {
             completed,
             fetched_text,
+            search_output,
             run_output,
         }
     }
 
     /// Whether a prior tool result already covered `capability`.
-    fn done(&self, capability: Capability) -> bool {
+    pub(super) fn done(&self, capability: Capability) -> bool {
         self.completed.contains(&capability)
     }
 
@@ -739,9 +798,21 @@ impl Progress {
             .filter(|done| **done == capability)
             .count()
     }
+
+    /// The latest non-errored fetch result's text, for the [`intent_router`]
+    /// fetch probe's final answer.
+    pub(super) fn fetched_text(&self) -> Option<&str> {
+        self.fetched_text.as_deref()
+    }
+
+    /// The latest non-errored web-search result's text, for the [`intent_router`]
+    /// search probe's final answer.
+    pub(super) fn search_output(&self) -> Option<&str> {
+        self.search_output.as_deref()
+    }
 }
 
-fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
         arguments,
@@ -754,7 +825,7 @@ fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
 /// it declared and strips the rest, so the same plan drives any of them without a
 /// per-CLI special case.
-fn write_arguments(path: &str, content: &str) -> String {
+pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,
         "filePath": path,
@@ -771,7 +842,7 @@ fn write_arguments(path: &str, content: &str) -> String {
 /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
 /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
 /// of them without a per-CLI special case.
-fn fetch_arguments(url: &str) -> String {
+pub(super) fn fetch_arguments(url: &str) -> String {
     json!({
         "url": url,
         "format": "text",
@@ -780,7 +851,7 @@ fn fetch_arguments(url: &str) -> String {
 }
 
 /// The first advertised tool name that provides `capability`, if any.
-fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
     tool_names
         .iter()
         .copied()
@@ -791,13 +862,15 @@ fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a st
 /// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
 /// `run_command`, `bash`, `websearch`, `webfetch`, …).
 ///
-/// The recipe only wants five kinds of tool, and real CLIs expose *lookalikes*
-/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
-/// writer, a `codesearch` is not a web search, and `edit`/`patch`
-/// are not create-file tools. Those are ruled out first so that — even though
-/// [`requested_tool_names`](super::super::protocol) hands the planner an
-/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
-/// nor `codesearch` ahead of `websearch`.
+/// The recipe wants six kinds of tool, and real CLIs expose *lookalikes* that
+/// must not be mistaken for them: a `todowrite` scratchpad is not a file writer,
+/// a `codesearch` is not a web search, and an `edit`/`patch`/`replace` tool
+/// mutates an existing file rather than creating one. Those are separated so
+/// that — even though [`requested_tool_names`](super::super::protocol) hands the
+/// planner an alphabetically sorted list — `todowrite` can never be picked ahead
+/// of `write`, `codesearch` ahead of `websearch`, nor an `edit` tool ahead of a
+/// create-file `write` for a write intent (they carry distinct arguments, so
+/// each is its own capability class).
 fn classify_tool(name: &str) -> Option<Capability> {
     let lower = name.to_ascii_lowercase();
     // Scratchpad / navigation tools that merely *look* like recipe tools.
@@ -823,10 +896,14 @@ fn classify_tool(name: &str) -> Option<Capability> {
     {
         Some(Capability::Fetch)
     } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch; `edit`/`patch`
-        // mutate an existing one and take different arguments, so they are not
-        // interchangeable with the recipe's write step and stay unclassified.
+        // `write` / `write_file` create a file from scratch.
         Some(Capability::Write)
+    } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
+        // `edit` / `apply_patch` / `str_replace` mutate an *existing* file and
+        // take `(path, old, new)`-shaped arguments rather than `(path, content)`,
+        // so they are their own capability class — never interchangeable with the
+        // create-file write above (issue #680).
+        Some(Capability::Edit)
     } else if lower.contains("run")
         || lower.contains("bash")
         || lower.contains("command")
