@@ -21,6 +21,7 @@
 pub mod associative_learning;
 pub mod change_request;
 mod code_artifact;
+pub mod code_rewrite_learning;
 pub(crate) mod command_reroute;
 mod conversation_recall;
 pub mod corpus;
@@ -54,6 +55,9 @@ pub use associative_learning::{
     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
 };
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use code_rewrite_learning::{
+    is_code_rewrite_learning_task, CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK,
+};
 pub use command_reroute::plan_symbolic_command_reroute;
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
 pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};

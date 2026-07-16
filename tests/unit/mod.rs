@@ -67,6 +67,7 @@ mod issue_686_associative_persistence;
 mod issue_687;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;
+mod issue_715_code_rewrite_learning;
 mod issue_715_normal_markov;
 mod issue_716_agentic_execution;
 mod issue_716_execution_learning;

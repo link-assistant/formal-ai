@@ -8,6 +8,7 @@ use serde_json::json;
 
 use super::change_request;
 use super::code_artifact;
+use super::code_rewrite_learning;
 use super::conversation_recall;
 use super::diagram;
 use super::execution_learning;
@@ -122,6 +123,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if routing_learning::is_routing_learning_task(&task) {
         return Some(routing_learning::plan_step(messages, tool_names));
+    }
+    if code_rewrite_learning::is_code_rewrite_learning_task(&task) {
+        return Some(code_rewrite_learning::plan_step(messages, tool_names));
     }
     if execution_learning::is_execution_learning_task(&task) {
         return Some(execution_learning::plan_step(messages, tool_names));
