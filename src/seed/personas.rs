@@ -17,7 +17,7 @@
 //!   (callers fall back to `fallback_body` when nothing matches).
 //!
 //! The body template wraps the chosen topic body, keeping the
-//! "Roleplay frame recorded for <persona>" preface uniform regardless of
+//! "Roleplay frame recorded for `<persona>`" preface uniform regardless of
 //! which persona/topic combination fires.
 
 use super::parser::{parse_lino, split_pipe_list};

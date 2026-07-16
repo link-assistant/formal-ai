@@ -346,7 +346,7 @@ pub fn default_search_plan_ids() -> Vec<String> {
 /// Build the `web_search:*` evidence prefix for a given query/language.
 ///
 /// The browser worker appends per-provider rank lines after these prefixes;
-/// the offline solver records the same prefixes through [`EventLog`].
+/// the offline solver records the same prefixes through `EventLog`.
 #[must_use]
 pub fn build_request_evidence(query: &str, language: &str) -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();

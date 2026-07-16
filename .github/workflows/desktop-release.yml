@@ -42,9 +42,7 @@ on:
     types: [completed]
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 concurrency:
   group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.run_id }}
@@ -61,6 +59,9 @@ jobs:
   resolve:
     name: Resolve target release
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     # For workflow_run, continue after ANY completed main-branch pipeline except
     # cancelled/skipped runs (issue #479). We intentionally do NOT gate on
     # conclusion == 'success': the auto-release publishes the GitHub release in an
@@ -118,6 +119,11 @@ jobs:
           - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe" }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe" }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     defaults:
       run:
         shell: bash
@@ -147,8 +153,7 @@ jobs:
           node-version: 22
 
       - name: Install desktop dependencies
-        working-directory: desktop
-        run: npm install --no-audit --no-fund
+        run: scripts/install-node-dependencies.sh desktop
 
       - name: Prepare desktop resources (web + bundled binary + version sync)
         working-directory: desktop
@@ -366,7 +371,13 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest@v4
         with:
-          subject-checksums: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
+          # The released v4 checksum parser splits with the runner's native EOL,
+          # so it treats our intentionally portable LF manifest as one record on
+          # Windows. Digest the artifacts directly; keep the checksum fragment
+          # solely for the consolidated, user-facing SHA256SUMS.txt.
+          subject-path: |
+            desktop/release/formal-ai-desktop-*
+            desktop/release/latest*.yml
 
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
@@ -380,6 +391,11 @@ jobs:
     needs: resolve
     if: needs.resolve.outputs.should_build == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     defaults:
       run:
         shell: bash
@@ -396,8 +412,7 @@ jobs:
       # No committed lockfile under vscode/ (the extension's only deps are the
       # packaging dev-tools), so a plain install is used rather than `npm ci`.
       - name: Install extension dependencies
-        working-directory: vscode
-        run: npm install --no-audit --no-fund
+        run: scripts/install-node-dependencies.sh vscode
 
       - name: Package the .vsix
         id: package
@@ -442,7 +457,7 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest@v4
         with:
-          subject-checksums: vscode/SHA256SUMS-vscode.partial
+          subject-path: vscode/formal-ai-vscode-*.vsix
 
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
@@ -458,9 +473,18 @@ jobs:
     # publishes checksums for the arches that did build.
     if: ${{ always() && needs.resolve.outputs.should_build == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
     steps:
       - name: Download checksum fragments
         uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           pattern: checksums-*
           path: fragments

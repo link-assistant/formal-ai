@@ -188,7 +188,7 @@ pub const ROLE_PROCEDURAL_REQUEST: &str = "procedural_request";
 ///
 /// The extractor only accepts this weak prefix when the first word after the
 /// slot is listed under [`ROLE_PROCEDURAL_ACTION_VERB`], so telegraphic prompts
-/// such as "how order X" recover as procedures while arbitrary "how <word>"
+/// such as "how order X" recover as procedures while arbitrary "how `<word>`"
 /// questions keep flowing to their more specific handlers or to unknown.
 pub const ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD: &str = "procedural_request_elided_lead";
 /// Semantic role: a procedural action verb that may follow an elided

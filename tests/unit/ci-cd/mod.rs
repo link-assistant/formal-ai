@@ -11,6 +11,7 @@ mod desktop_release_resolve;
 #[path = "../../../scripts/detect-code-changes.rs"]
 mod detect_code_changes;
 mod issue_717;
+mod issue_730;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;

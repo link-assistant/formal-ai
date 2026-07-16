@@ -8,7 +8,7 @@
 //! ([the deterministic planner](super::planner)) through the **sole CST/AST engine
 //! in this repo** — the link-foundation
 //! [meta-language](https://github.com/link-foundation/meta-language) links network,
-//! the same `LinkNetwork::parse` path used by [`crate::coding::cst`] — and emits
+//! the same `LinkNetwork::parse` path used by `crate::coding::cst` — and emits
 //! the resulting abstract-syntax node census as Links Notation.
 //!
 //! Nothing here is hardcoded to one answer: [`render_ast_document`] is a pure

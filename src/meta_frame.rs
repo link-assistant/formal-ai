@@ -1,14 +1,14 @@
 //! Issue #559 Phase 1A: an explicit, link-serializable problem frame.
 //!
 //! The universal solver already formalizes every prompt into an
-//! [`IntentFormalization`](crate::intent_formalization::IntentFormalization)
+//! [`IntentFormalization`]
 //! meaning record (root requirement R157). Issue #559 generalizes the solver
 //! away from one prompt → one handler intent toward one prompt → a frame of
 //! *every* detected need. This module makes that frame first-class and
 //! link-native, without changing routing or answers: a [`ProblemFrame`] wraps
 //! the formalization, enumerates each [`Need`] found in the prompt (R7), and is
 //! serialized to Links Notation via
-//! [`format_lino_record`](crate::links_format::format_lino_record) (R311). It is
+//! `format_lino_record` (R311). It is
 //! emitted as a solver loop event so the meaning record is observable, but the
 //! existing dispatch still decides the answer. Later phases build the recursive
 //! `WorkUnit` trace, the need-satisfaction ledger, and the method registry on
