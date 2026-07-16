@@ -69,6 +69,23 @@ fn general_task_runs_end_to_end() {
 }
 
 #[test]
+fn general_task_preserves_exact_multiline_lino_payload() {
+    let payload = "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"reverse_sort\"";
+    let task = format!(
+        "Create file data/seed/learned-program-rules.lino containing\n{payload}"
+    );
+
+    let plan = compose_general_change_plan(&task).expect("general plan");
+    assert_eq!(plan.content, payload);
+
+    let outcome = run_agentic_task(&task).expect("agentic execution");
+    let write: serde_json::Value =
+        serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
+    assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
+    assert_eq!(write["content"], payload);
+}
+
+#[test]
 fn general_change_plan_fixture_pins_the_shape() {
     let fixture = include_str!("../../data/meta/general-change-plan.lino");
     for field in [

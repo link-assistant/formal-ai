@@ -400,11 +400,25 @@ fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
 
 /// Trim a recovered content span down to its literal payload, dropping the
 /// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. Returns [`None`] when nothing is left.
+/// quoting. A delimiter is removed only when the entire payload has a matching
+/// opening and closing delimiter. This matters for generated source and Links
+/// Notation: a lone terminal quote is data, not presentation punctuation.
+/// Returns [`None`] when nothing is left.
 fn clean_content(raw: &str) -> Option<String> {
     let led = raw.trim().trim_start_matches([':', '-', '—', '–']).trim();
-    let unquoted = led.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'));
-    let result = unquoted.trim();
+    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
+        led[3..led.len() - 3].trim()
+    } else if led.len() >= 2 {
+        let first = led.as_bytes()[0];
+        let last = led.as_bytes()[led.len() - 1];
+        if first == last && matches!(first, b'`' | b'"' | b'\'') {
+            led[1..led.len() - 1].trim()
+        } else {
+            led
+        }
+    } else {
+        led
+    };
     (!result.is_empty()).then(|| result.to_owned())
 }
 
