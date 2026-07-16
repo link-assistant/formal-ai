@@ -73,6 +73,7 @@ mod issue_715_code_rewrite_learning;
 mod issue_715_link_substitution_query;
 mod issue_715_links_substitution_query;
 mod issue_715_normal_markov;
+mod issue_715_renderer_artifacts;
 mod issue_716_agentic_execution;
 mod issue_716_execution_learning;
 mod local_surface;

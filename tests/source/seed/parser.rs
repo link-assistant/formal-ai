@@ -3,6 +3,13 @@
 //! Seed files are indentation trees. Historical files used `name "value"`;
 //! issue #398 migrates data to unquoted links with `#` comments and explicit
 //! codepoint metadata for text that is not yet formalized as a lexeme id.
+//!
+//! Quoting follows Links Notation: a delimiter inside a value is *doubled*. The
+//! backslash escapes below are a historical dialect the corpus still carries,
+//! and are read alongside it.
+
+use std::iter::Peekable;
+use std::str::Chars;
 
 #[derive(Debug, Default, Clone)]
 pub struct LinoNode {
@@ -135,6 +142,18 @@ fn parse_colon_definition(content: &str) -> Option<(&str, &str)> {
 }
 
 pub fn find_closing_quote(rest: &str) -> Option<usize> {
+    find_closing_delimiter(rest, b'"')
+}
+
+/// Find the quote that closes a value opened with `quote`.
+///
+/// Links Notation escapes a delimiter by *doubling* it, so a doubled quote is
+/// part of the value rather than its end. `strip_comment` already reads it that
+/// way; this did not, so a value carrying the delimiter had no closing quote on
+/// its own line, failed to decode, and fell back to raw text — quotes and
+/// doubling still in it. The corpus writes that form (`the subject''s name` in
+/// `data/cache/wikidata/property/P138.lino`), so the two had to agree.
+fn find_closing_delimiter(rest: &str, quote: u8) -> Option<usize> {
     let bytes = rest.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -142,50 +161,36 @@ pub fn find_closing_quote(rest: &str) -> Option<usize> {
             i += 2;
             continue;
         }
-        if bytes[i] == b'"' {
+        if bytes[i] == quote {
+            if bytes.get(i + 1) == Some(&quote) {
+                i += 2;
+                continue;
+            }
             return Some(i);
         }
         i += 1;
     }
     None
 }
-
-fn find_closing_single_quote(rest: &str) -> Option<usize> {
-    let bytes = rest.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() {
-        if bytes[i] == b'\\' {
-            i += 2;
-            continue;
-        }
-        if bytes[i] == b'\'' {
-            return Some(i);
-        }
-        i += 1;
+/// Collapse a delimiter the writer doubled, per Links Notation.
+///
+/// Returns `true` when `c` opened a doubled pair and the pair was consumed.
+fn take_doubled(out: &mut String, c: char, quote: char, iter: &mut Peekable<Chars<'_>>) -> bool {
+    if c != quote || iter.peek() != Some(&quote) {
+        return false;
     }
-    None
-}
-
-fn find_closing_backtick(rest: &str) -> Option<usize> {
-    let bytes = rest.as_bytes();
-    let mut i = 0;
-    while i < bytes.len() {
-        if bytes[i] == b'\\' {
-            i += 2;
-            continue;
-        }
-        if bytes[i] == b'`' {
-            return Some(i);
-        }
-        i += 1;
-    }
-    None
+    iter.next();
+    out.push(quote);
+    true
 }
 
 pub fn unescape_value(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
-    let mut iter = raw.chars();
+    let mut iter = raw.chars().peekable();
     while let Some(c) = iter.next() {
+        if take_doubled(&mut out, c, '"', &mut iter) {
+            continue;
+        }
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
@@ -207,6 +212,9 @@ fn unescape_single_value(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
     let mut iter = raw.chars().peekable();
     while let Some(c) = iter.next() {
+        if take_doubled(&mut out, c, '\'', &mut iter) {
+            continue;
+        }
         if c == '\\' {
             match iter.next() {
                 Some('n') => out.push('\n'),
@@ -267,13 +275,13 @@ fn decode_quoted_reference(raw: &str) -> Option<String> {
         }
     }
     if let Some(rest) = raw.strip_prefix('\'') {
-        let close = find_closing_single_quote(rest)?;
+        let close = find_closing_delimiter(rest, b'\'')?;
         if rest[close + 1..].trim().is_empty() {
             return Some(unescape_single_value(&rest[..close]));
         }
     }
     if let Some(rest) = raw.strip_prefix('`') {
-        let close = find_closing_backtick(rest)?;
+        let close = find_closing_delimiter(rest, b'`')?;
         if rest[close + 1..].trim().is_empty() {
             return Some(unescape_value(&rest[..close]));
         }
