@@ -10,6 +10,7 @@ use std::fmt::Write as _;
 
 use super::planner::{plan_document_recipe, AgenticPlan, DocumentRecipe};
 use crate::associative_persistence::AssociativeMemory;
+use crate::links_format::format_lino_value_verbatim;
 use crate::memory::parse_links_notation;
 use crate::protocol::ChatMessage;
 
@@ -133,7 +134,23 @@ pub fn final_answer(document: &str) -> String {
     )
 }
 
+/// Write one field the way Links Notation quotes.
+///
+/// This delegates rather than escaping in place: the notation *doubles* a
+/// delimiter and has no backslash escape, so the C-style escape this used to
+/// hand-roll wrote a value the grammar could not read — a report whose `text`
+/// carried a quote, which is to say a report about real code, was rejected
+/// outright.
+///
+/// The verbatim quoter is the right one here: nothing reads this report back
+/// through the line-based `seed::parser`, so its values keep their newlines
+/// instead of being flattened into escapes the grammar would hand back
+/// literally.
 fn field(out: &mut String, indent: usize, name: &str, value: &str) {
-    let escaped = value.replace('\\', "\\\\").replace('"', "\\\"");
-    let _ = writeln!(out, "{}{name} \"{escaped}\"", " ".repeat(indent));
+    let _ = writeln!(
+        out,
+        "{}{name} {}",
+        " ".repeat(indent),
+        format_lino_value_verbatim(value)
+    );
 }

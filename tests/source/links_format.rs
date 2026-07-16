@@ -20,7 +20,8 @@ pub fn format_lino_record(id: &str, pairs: &[(&str, String)]) -> String {
         .expect("static Links Notation records should be valid")
 }
 
-/// Quote one value the way Links Notation quotes it.
+/// Quote one value exactly the way Links Notation quotes it, and change nothing
+/// else about it.
 ///
 /// Links Notation escapes a quote by *doubling* it and picks a delimiter the
 /// value does not already carry; it has no backslash escape at all. Renderers
@@ -34,9 +35,11 @@ pub fn format_lino_record(id: &str, pairs: &[(&str, String)]) -> String {
 /// a single-field record is formatted and the field taken back off it. That
 /// costs an allocation per value and buys the property that matters — this
 /// cannot drift from the notation, because it *is* the notation's encoder.
-pub fn format_lino_value(value: &str) -> String {
-    let sanitized = sanitize_lino_value(value);
-    let record = format_indented_ordered(PROBE, &[(PROBE, sanitized.as_str())], "")
+///
+/// Prefer this whenever the grammar is the document's only reader. Use
+/// [`format_lino_value`] when `seed::parser` reads the document back.
+pub fn format_lino_value_verbatim(value: &str) -> String {
+    let record = format_indented_ordered(PROBE, &[(PROBE, value)], "")
         .expect("a one-field record under a non-empty id is always formattable");
 
     record
@@ -46,6 +49,24 @@ pub fn format_lino_value(value: &str) -> String {
         .and_then(|rest| rest.strip_prefix(' '))
         .map(str::to_owned)
         .expect("the codec writes each field as an indented key-then-value pair on its own line")
+}
+
+/// Quote one value for a reader that reads a document one line at a time.
+///
+/// This is [`format_lino_value_verbatim`] with [`sanitize_lino_value`] in front
+/// of it, and the sanitizing is the whole difference. `seed::parser` is
+/// line-based — `for line in text.lines()` — so it structurally cannot see a
+/// value that spans lines, and every document it reads back must keep each
+/// value on the line it opened on.
+///
+/// That escape is not free: it is the grammar, not `seed::parser`, that defines
+/// the notation, and the grammar carries a raw newline inside a quoted value
+/// losslessly, nesting included (`experiments/issue_715_nested_newline_probe.rs`).
+/// A sanitized value therefore reads back through the grammar with a literal
+/// backslash and `n` where the newline was. The two helpers collapse into one
+/// the day `seed::parser` can read a value that spans lines.
+pub fn format_lino_value(value: &str) -> String {
+    format_lino_value_verbatim(&sanitize_lino_value(value))
 }
 
 /// Write one `name "value"` node at `indent` spaces, the way Links Notation
