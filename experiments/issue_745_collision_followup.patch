@@ -2,10 +2,7 @@ diff --git a/data/seed/closure-generated-01.lino b/data/seed/closure-generated-0
 index 720d5107..a91c32ad 100644
 --- a/data/seed/closure-generated-01.lino
 +++ b/data/seed/closure-generated-01.lino
-@@ -99,16 +99,6 @@ meanings
-     lexeme en
-       surface
-         text "advertising platform"
+@@ -102,10 +101,0 @@ meanings
 -  agent_action_report_subject
 -    defined-by concept
 -    lexeme en
@@ -16,13 +13,7 @@ index 720d5107..a91c32ad 100644
 -    lexeme en
 -      surface
 -        text "agent action report verb"
-   agent_suggestion
-     defined-by intent
-     lexeme en
-@@ -1394,3 +1384,13 @@ meanings
-     lexeme en
-       surface
-         text "multi step"
+@@ -1396,0 +1387,10 @@ meanings
 +  mv
 +    defined-by token
 +    lexeme en
@@ -37,8 +28,7 @@ diff --git a/data/seed/closure-generated-02.lino b/data/seed/closure-generated-0
 index f7d52d7b..674d6512 100644
 --- a/data/seed/closure-generated-02.lino
 +++ b/data/seed/closure-generated-02.lino
-@@ -1,14 +1,4 @@
- meanings
+@@ -2,10 +1,0 @@ meanings
 -  mv
 -    defined-by token
 -    lexeme en
@@ -49,25 +39,13 @@ index f7d52d7b..674d6512 100644
 -    lexeme en
 -      surface
 -        text "non deterministic"
-   nondeterministic
-     defined-by word_surface
-     lexeme en
-@@ -1334,6 +1324,11 @@ meanings
-     lexeme en
-       surface
-         text "relative meta logic"
+@@ -1336,0 +1327,5 @@ meanings
 +  remainder
 +    defined-by concept
 +    lexeme en
 +      surface
 +        text "remainder"
-   remix
-     defined-by concept
-     lexeme en
-@@ -1394,3 +1389,8 @@ meanings
-     lexeme en
-       surface
-         text "response agent suggestion en"
+@@ -1396,0 +1392,5 @@ meanings
 +  response_agent_suggestion_hi
 +    defined-by response_template
 +    lexeme en
@@ -77,72 +55,41 @@ diff --git a/data/seed/closure-generated-03.lino b/data/seed/closure-generated-0
 index e07af5c1..675bf86b 100644
 --- a/data/seed/closure-generated-03.lino
 +++ b/data/seed/closure-generated-03.lino
-@@ -1,9 +1,4 @@
- meanings
+@@ -2,5 +1,0 @@ meanings
 -  response_agent_suggestion_hi
 -    defined-by response_template
 -    lexeme en
 -      surface
 -        text "response agent suggestion hi"
-   response_agent_suggestion_ru
-     defined-by response_template
-     lexeme en
-@@ -534,6 +529,11 @@ meanings
-     lexeme en
-       surface
-         text "reverse words"
+@@ -536,0 +532,5 @@ meanings
 +  rg
 +    defined-by concept
 +    lexeme en
 +      surface
 +        text "rg"
-   rm
-     defined-by token
-     lexeme en
 diff --git a/data/seed/meanings-web-search-query.lino b/data/seed/meanings-web-search-query.lino
 index bea02a07..47c738b4 100644
 --- a/data/seed/meanings-web-search-query.lino
 +++ b/data/seed/meanings-web-search-query.lino
-@@ -59,7 +59,7 @@ meanings
-       surface
-         text "… interests me"
-       surface
+@@ -62 +62 @@ meanings
 -        text "google …"
 +        text "google search for …"
-       surface
-         text "research online …"
-       surface
 diff --git a/data/seed/roles.lino b/data/seed/roles.lino
 index a149ba1a..178459d6 100644
 --- a/data/seed/roles.lino
 +++ b/data/seed/roles.lino
-@@ -169,6 +169,8 @@ roles
-     kind predicate
-   file_edit_target_cue
-     kind predicate
+@@ -171,0 +172,2 @@ roles
 +  file_read_action_cue
 +    kind predicate
-   file_write_action_cue
-     kind predicate
-   file_write_content_lead
 diff --git a/src/solver_handlers/web_requests.rs b/src/solver_handlers/web_requests.rs
 index c8398e1e..7a4c460e 100644
 --- a/src/solver_handlers/web_requests.rs
 +++ b/src/solver_handlers/web_requests.rs
-@@ -869,6 +869,9 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
-         candidate.to_owned()
-     } else {
-         let host_candidate = candidate.split(['/', '?', '#']).next().unwrap_or_default();
+@@ -871,0 +872,3 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
 +        if probable_local_file_name(host_candidate) {
 +            return None;
 +        }
-         if lower.starts_with("www.") || looks_like_hostname(host_candidate) {
-             format!("https://{candidate}")
-         } else {
-@@ -887,6 +890,38 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
-     Some(url)
- }
- 
+@@ -889,0 +893,32 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
 +/// Keep a schemeless local filename from becoming a synthetic HTTPS host.
 +///
 +/// Explicit `http(s)://` URLs remain authoritative even when their host uses an
@@ -175,42 +122,18 @@ index c8398e1e..7a4c460e 100644
 +    )
 +}
 +
- fn looks_like_hostname(value: &str) -> bool {
-     let host = value.trim();
-     if !host.contains('.') || host.starts_with('.') || host.ends_with('.') {
 diff --git a/tests/issue_745.rs b/tests/issue_745.rs
 index d9fdc49a..c2a43f4f 100644
 --- a/tests/issue_745.rs
 +++ b/tests/issue_745.rs
-@@ -1,6 +1,7 @@
- //! Issue #745: intent routing is semantic, object-typed, multilingual, and variation-complete.
- use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
- use formal_ai::protocol::ChatMessage;
+@@ -3,0 +4 @@ use formal_ai::protocol::ChatMessage;
 +use formal_ai::FormalAiEngine;
- 
- fn call(prompt: &str) -> (String, serde_json::Value) {
-     let messages = vec![ChatMessage::user(prompt)];
-@@ -356,7 +357,7 @@ fn web_search_routes_action_variations_in_every_supported_language() {
-             "web search for",
-             "find online",
-             "look up online",
+@@ -359 +360 @@ fn web_search_routes_action_variations_in_every_supported_language() {
 -            "google",
 +            "google search for",
-             "research online",
-             "investigate on the web",
-             "discover online",
-@@ -431,6 +432,7 @@ fn web_search_routes_action_variations_in_every_supported_language() {
- fn reported_object_type_collisions_choose_the_right_capability() {
-     for (prompt, tool) in [
-         ("display sample.txt", "read_file"),
+@@ -433,0 +435 @@ fn reported_object_type_collisions_choose_the_right_capability() {
 +        ("cat sample.txt", "read_file"),
-         ("load sample.txt", "read_file"),
-         ("read https://example.com", "web_fetch"),
-         ("summarize https://example.com", "web_fetch"),
-@@ -440,3 +442,17 @@ fn reported_object_type_collisions_choose_the_right_capability() {
-         assert_eq!(call(prompt).0, tool, "{prompt}");
-     }
- }
+@@ -442,0 +445,14 @@ fn reported_object_type_collisions_choose_the_right_capability() {
 +
 +#[test]
 +fn attachment_filenames_are_not_reinterpreted_as_bare_web_hosts() {
@@ -229,20 +152,11 @@ diff --git a/tests/unit/issue_627.rs b/tests/unit/issue_627.rs
 index 6b39633f..7297d1c7 100644
 --- a/tests/unit/issue_627.rs
 +++ b/tests/unit/issue_627.rs
-@@ -62,12 +62,12 @@ fn direct_file_read_prompts_emit_read_tool_calls() {
- }
- 
- #[test]
+@@ -65 +65 @@ fn direct_file_read_prompts_emit_read_tool_calls() {
 -fn cat_file_prompt_uses_bash_in_agent_mode() {
 +fn cat_file_prompt_uses_the_typed_read_capability() {
-     let messages = vec![ChatMessage::user("cat gamma.json")];
-     let call = expect_single_call(&messages);
- 
+@@ -69,2 +69,2 @@ fn cat_file_prompt_uses_bash_in_agent_mode() {
 -    assert_eq!(call.tool, "bash");
 -    assert_eq!(arguments(&call)["command"], "cat gamma.json");
 +    assert_eq!(call.tool, "read");
 +    assert_eq!(arguments(&call)["filePath"], "gamma.json");
- }
- 
- #[test]
-

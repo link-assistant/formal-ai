@@ -11,4 +11,3 @@ test local_path_object_routes_read_variations_without_web_misroutes ... ok
 test directory_listing_routes_shell_variations_in_every_supported_language ... ok
 
 test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 29.38s
-
