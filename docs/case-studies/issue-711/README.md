@@ -44,9 +44,13 @@ the repository's initial commit, `6f8d4a8a05770adfd2fe33fdf3c6c586efb103af`.
    which it appears and read its content from that tree.
 5. Omit releases with no new fragment and emit releases in descending order.
 
-The committed [fragment-release map](fragment-release-map.tsv) records the
-result. CI runs the generator with `--check` and requires byte-for-byte equality
-with both `CHANGELOG.md` and the map.
+The committed [fragment-release map](fragment-release-map.tsv) records each
+fragment and its first release. The former release-commit column was removed in
+issue 738 because a release cannot record its own not-yet-existing commit SHA.
+After collecting fragments, the automatic release path now reconstructs both
+artifacts from `HEAD` plus the pending fragment deletions and stages the map in
+the release commit itself. CI runs the generator with `--check` and requires
+byte-for-byte equality with both `CHANGELOG.md` and the map.
 
 One branch-only fragment for issue 468 was added and removed before reaching a
 release tree. It is deliberately excluded: it was never released and was

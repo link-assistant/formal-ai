@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.296.4] - 2026-07-17
+
+### Fixed
+- Regenerate the fragment-to-release map inside every release commit so later pull requests no longer inherit a stale reconstruction check.
+
+## [0.296.3] - 2026-07-17
+
+### Fixed
+- Validate fail-closed Rust API documentation before release, remove “demo” branding from production workflow jobs, and suppress advisory file-size noise for files that do not grow.
+
 ## [0.296.2] - 2026-07-17
 
 - Make agentic code generation and contextual follow-up changes use real client workspace tools across every catalog language. Follow-ups now execute auditable, bounded normal-algorithm programs with ordered/leftmost/restart/terminal semantics, empty-string creation and deletion, multi-rule and arbitrary-path support, no partial write on exhaustion, structural multilingual literal slots, and review-gated associative learning verified through built-in and OpenCode Agent CLI replays.

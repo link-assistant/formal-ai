@@ -23,19 +23,22 @@
 //! serde_json = "1"
 //! ```
 
+use chrono::Utc;
+use regex::Regex;
+use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::{Command, exit};
-use regex::Regex;
-use chrono::Utc;
-use serde::Deserialize;
+use std::process::{exit, Command};
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
 #[path = "self-hosting-metric.rs"]
 pub mod self_hosting_metric;
+
+const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
+const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -138,7 +141,10 @@ fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
         return Ok(());
     }
 
-    println!("Local branch is behind origin/{} by {} commit(s), rebasing...", branch, behind);
+    println!(
+        "Local branch is behind origin/{} by {} commit(s), rebasing...",
+        branch, behind
+    );
     if let Err(e) = git(repo, &["rebase", &format!("origin/{}", branch)]) {
         let _ = git(repo, &["rebase", "--abort"]);
         return Err(format!("Error rebasing onto origin/{}: {}", branch, e));
@@ -176,8 +182,8 @@ impl Version {
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content =
+        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
     let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
@@ -197,11 +203,7 @@ fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), Str
 ///
 /// Returns Ok(true) if Cargo.lock was updated, Ok(false) if it does not exist
 /// or no matching entry was found.
-fn update_cargo_lock(
-    cargo_lock_path: &Path,
-    crate_name: &str,
-    new_version: &str,
-) -> Result<bool, String> {
+fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str) -> Result<bool, String> {
     if !cargo_lock_path.exists() {
         println!(
             "No Cargo.lock at {} (skipping lock-file version sync)",
@@ -211,8 +213,7 @@ fn update_cargo_lock(
     }
 
     let path_str = cargo_lock_path.to_string_lossy();
-    let content = fs::read_to_string(cargo_lock_path)
-        .map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
+    let content = fs::read_to_string(cargo_lock_path).map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
 
     // Match the [[package]] entry for our crate:
     //   [[package]]
@@ -222,8 +223,7 @@ fn update_cargo_lock(
         r#"(?m)(\[\[package\]\]\s*\nname\s*=\s*"{}"\s*\nversion\s*=\s*")[^"]+(")"#,
         regex::escape(crate_name),
     );
-    let re = Regex::new(&pattern)
-        .map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
+    let re = Regex::new(&pattern).map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
 
     if !re.is_match(&content) {
         println!(
@@ -241,8 +241,7 @@ fn update_cargo_lock(
         return Ok(false);
     }
 
-    fs::write(cargo_lock_path, new_content.as_ref())
-        .map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
+    fs::write(cargo_lock_path, new_content.as_ref()).map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
 
     println!("Updated {} to version {}", path_str, new_version);
     Ok(true)
@@ -260,8 +259,8 @@ struct CratesIoVersionEntry {
 }
 
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content =
+        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).unwrap();
 
@@ -300,7 +299,9 @@ fn get_max_published_version(crate_name: &str) -> Option<(u32, u32, u32)> {
                         if let Some(versions) = data.versions {
                             let mut max: Option<(u32, u32, u32)> = None;
                             for v in &versions {
-                                if v.yanked { continue; }
+                                if v.yanked {
+                                    continue;
+                                }
                                 let base = match v.num.split('-').next() {
                                     Some(b) => b,
                                     None => continue,
@@ -336,7 +337,12 @@ fn ensure_version_exceeds_published(
     tag_prefix: &str,
     max_published: Option<(u32, u32, u32)>,
 ) -> String {
-    let parts: Vec<&str> = version_str.split('-').next().unwrap_or(version_str).split('.').collect();
+    let parts: Vec<&str> = version_str
+        .split('-')
+        .next()
+        .unwrap_or(version_str)
+        .split('.')
+        .collect();
     if parts.len() != 3 {
         return version_str.to_string();
     }
@@ -349,9 +355,15 @@ fn ensure_version_exceeds_published(
         if (major, minor, patch) <= (pub_major, pub_minor, pub_patch) {
             println!(
                 "Version {}.{}.{} is not greater than max published {}.{}.{}, adjusting to {}.{}.{}",
-                major, minor, patch,
-                pub_major, pub_minor, pub_patch,
-                pub_major, pub_minor, pub_patch + 1
+                major,
+                minor,
+                patch,
+                pub_major,
+                pub_minor,
+                pub_patch,
+                pub_major,
+                pub_minor,
+                pub_patch + 1
             );
             major = pub_major;
             minor = pub_minor;
@@ -392,26 +404,15 @@ fn strip_frontmatter(content: &str) -> String {
 
 fn remove_changelog_fragments(files: &[PathBuf]) {
     for file in files {
-        fs::remove_file(file)
-            .unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
+        fs::remove_file(file).unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
         println!("Removed changelog fragment {}", file.display());
     }
 }
 
-fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
-    let date_str = Utc::now().format("%Y-%m-%d").to_string();
-    collect_changelog_with_date(changelog_dir, changelog_file, version, &date_str);
-}
-
-fn collect_changelog_with_date(
-    changelog_dir: &str,
-    changelog_file: &str,
-    version: &str,
-    date_str: &str,
-) {
+fn collect_changelog_with_date(changelog_dir: &str, changelog_file: &str, version: &str, date_str: &str) -> bool {
     let dir_path = Path::new(changelog_dir);
     if !dir_path.exists() {
-        return;
+        return false;
     }
 
     let mut files: Vec<_> = match fs::read_dir(dir_path) {
@@ -423,11 +424,11 @@ fn collect_changelog_with_date(
                     && p.file_name().map_or(false, |name| name != "README.md")
             })
             .collect(),
-        Err(_) => return,
+        Err(_) => return false,
     };
 
     if files.is_empty() {
-        return;
+        return false;
     }
 
     files.sort();
@@ -440,7 +441,7 @@ fn collect_changelog_with_date(
         .collect();
 
     if fragments.is_empty() {
-        return;
+        return false;
     }
 
     // No leading newline: `lines[..idx]` already ends with the blank line that
@@ -449,7 +450,7 @@ fn collect_changelog_with_date(
     let new_entry = format!("## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
 
     if !Path::new(changelog_file).exists() {
-        return;
+        return false;
     }
 
     let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
@@ -478,6 +479,28 @@ fn collect_changelog_with_date(
     remove_changelog_fragments(&files);
 
     println!("Collected {} changelog fragment(s)", files.len());
+    true
+}
+
+fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, String> {
+    if !Path::new(CHANGELOG_REBUILD_SCRIPT).is_file() {
+        return Ok(false);
+    }
+    exec(
+        "node",
+        &[
+            CHANGELOG_REBUILD_SCRIPT,
+            "--write",
+            "--ref",
+            "HEAD",
+            "--pending-release",
+            version,
+            "--pending-date",
+            date,
+        ],
+    )?;
+    println!("Regenerated changelog and fragment release map");
+    Ok(true)
 }
 
 fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<PathBuf, String> {
@@ -514,10 +537,7 @@ mod tests {
     use std::time::{SystemTime, UNIX_EPOCH};
 
     fn temp_dir(name: &str) -> PathBuf {
-        let nanos = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_nanos();
+        let nanos = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos();
         let path = std::env::temp_dir().join(format!("version-and-commit-{name}-{nanos}"));
         fs::create_dir_all(&path).unwrap();
         path
@@ -662,7 +682,10 @@ bump: patch
         let root = temp_dir(name);
         let origin = root.join("origin.git");
         let work = root.join("work");
-        git_ok(&root, &["init", "--bare", "--initial-branch=main", origin.to_str().unwrap()]);
+        git_ok(
+            &root,
+            &["init", "--bare", "--initial-branch=main", origin.to_str().unwrap()],
+        );
         git_ok(&root, &["clone", origin.to_str().unwrap(), work.to_str().unwrap()]);
         git_ok(&work, &["config", "user.email", "ci@example.com"]);
         git_ok(&work, &["config", "user.name", "CI"]);
@@ -677,7 +700,14 @@ bump: patch
     /// concurrent release that pushes while this job is running.
     fn push_concurrent_commit(root: &Path, subject: &str) {
         let other = root.join("other");
-        git_ok(root, &["clone", root.join("origin.git").to_str().unwrap(), other.to_str().unwrap()]);
+        git_ok(
+            root,
+            &[
+                "clone",
+                root.join("origin.git").to_str().unwrap(),
+                other.to_str().unwrap(),
+            ],
+        );
         git_ok(&other, &["config", "user.email", "other@example.com"]);
         git_ok(&other, &["config", "user.name", "Other"]);
         fs::write(other.join("NOTES.md"), "concurrent\n").unwrap();
@@ -708,7 +738,10 @@ bump: patch
             log.lines().collect::<Vec<_>>(),
             vec!["chore: release v0.2.0", "concurrent change", "init"]
         );
-        assert_eq!(fs::read_to_string(work.join("Cargo.toml")).unwrap(), "version = \"0.2.0\"\n");
+        assert_eq!(
+            fs::read_to_string(work.join("Cargo.toml")).unwrap(),
+            "version = \"0.2.0\"\n"
+        );
         assert_eq!(fs::read_to_string(work.join("NOTES.md")).unwrap(), "concurrent\n");
         assert!(super::git(&work, &["status", "--porcelain"]).unwrap().is_empty());
     }
@@ -783,7 +816,10 @@ fn main() {
 
     // Configure git
     let _ = exec("git", &["config", "user.name", "github-actions[bot]"]);
-    let _ = exec("git", &["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
+    let _ = exec(
+        "git",
+        &["config", "user.email", "github-actions[bot]@users.noreply.github.com"],
+    );
 
     // Sync with the remote while the tree is still clean, so a concurrent
     // release is picked up before the bump is computed and staged.
@@ -827,7 +863,10 @@ fn main() {
         println!("No versions published on crates.io yet (or crate not found)");
     }
 
-    println!("Initial bump ({}) from {}.{}.{}: {}", bump_type, current.major, current.minor, current.patch, initial_bump);
+    println!(
+        "Initial bump ({}) from {}.{}.{}: {}",
+        bump_type, current.major, current.minor, current.patch, initial_bump
+    );
 
     let new_version = ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
 
@@ -864,8 +903,23 @@ fn main() {
         }
     };
 
-    // Collect changelog fragments
-    collect_changelog(&changelog_dir, &changelog_file, &new_version);
+    // Collect changelog fragments, then reconstruct the release artifacts while
+    // the deletions are still visible against HEAD. The map records only
+    // fragment -> release, so it can be committed atomically with the release
+    // instead of depending on that commit's not-yet-existing SHA.
+    let release_date = Utc::now().format("%Y-%m-%d").to_string();
+    let collected = collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+    let reconstructed = if collected {
+        match regenerate_release_artifacts(&new_version, &release_date) {
+            Ok(reconstructed) => reconstructed,
+            Err(e) => {
+                eprintln!("Error regenerating release artifacts: {}", e);
+                exit(1);
+            }
+        }
+    } else {
+        false
+    };
 
     // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
     // metric ledger, and consumed fragments.
@@ -891,6 +945,12 @@ fn main() {
             exit(1);
         }
     }
+    if reconstructed {
+        if let Err(e) = exec("git", &["add", FRAGMENT_RELEASE_MAP]) {
+            eprintln!("Error staging fragment release map: {}", e);
+            exit(1);
+        }
+    }
 
     // Check if there are changes to commit
     if exec_check("git", &["diff", "--cached", "--quiet"]) {
@@ -903,7 +963,10 @@ fn main() {
     // Commit the staged release files (the rebase already happened, while clean).
     let label_suffix = release_label.as_ref().map(|l| format!(" ({})", l)).unwrap_or_default();
     let commit_msg = match &description {
-        Some(desc) => format!("chore: release {}{}{}\n\n{}", tag_prefix, new_version, label_suffix, desc),
+        Some(desc) => format!(
+            "chore: release {}{}{}\n\n{}",
+            tag_prefix, new_version, label_suffix, desc
+        ),
         None => format!("chore: release {}{}{}", tag_prefix, new_version, label_suffix),
     };
 
