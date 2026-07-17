@@ -90,6 +90,7 @@ mod response_language_followup;
 mod response_language_meta_algorithm;
 mod route_method_alias;
 mod selection;
+mod self_hosting_metric;
 mod self_improvement;
 mod shared_dialog_replay;
 mod skill_ledger;

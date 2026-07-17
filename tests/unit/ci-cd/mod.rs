@@ -4,6 +4,7 @@ mod changelog_parsing;
 mod check_crate_package_size;
 #[path = "../../../scripts/check-file-size.rs"]
 mod check_file_size;
+#[allow(clippy::duplicate_mod)]
 #[path = "../../../scripts/create-github-release.rs"]
 mod create_github_release;
 mod desktop_release_resolve;
