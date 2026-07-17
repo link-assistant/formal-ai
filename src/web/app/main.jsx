@@ -15,6 +15,7 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
+import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
 
 const {
   createElement: h,
@@ -1221,10 +1222,10 @@ const MODE_TITLE_KEYS = {
 // per-tool grant map to the native router instead of the old all-or-nothing
 // grant. Keep this list in sync with desktop/lib/tool-router.cjs.
 const DESKTOP_TOOL_OPTIONS = Object.freeze([
-  "http_fetch",
-  "url_navigate",
   "eval_js",
-  "read_local_file",
+  "write_file",
+  "edit_file",
+  "multi_edit",
   "code_exec",
   "shell",
 ]);
@@ -4846,7 +4847,11 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       reason: "desktop tool router is unavailable",
     };
   }
-  if (typeof bridge.ensureAgentServer === "function") {
+  const readOnly = [
+    "web_search", "web_fetch", "read_file", "read_local_file", "grep", "glob",
+    "list_directory", "read_many_files",
+  ].includes(tool);
+  if (!readOnly && typeof bridge.ensureAgentServer === "function") {
     await bridge.ensureAgentServer();
   }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
@@ -7527,8 +7532,9 @@ function App() {
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
     const currentDesktopStatus = desktopStatusRef.current;
+    let answerPromise;
     if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
-      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
         if (!worker) {
           return localFallbackAnswer(text, history, prefs);
         }
@@ -7545,23 +7551,27 @@ function App() {
           });
         });
       });
-    }
-    if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text, history, prefs));
-    }
-
-    return new Promise((resolve) => {
-      const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({
-        prompt: text,
-        requestId,
-        history,
-        prefs,
-        userContext: userContextRef.current,
-        memory,
+    } else if (!worker) {
+      answerPromise = Promise.resolve(localFallbackAnswer(text, history, prefs));
+    } else {
+      answerPromise = new Promise((resolve) => {
+        const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        pendingResponses.current.set(requestId, resolve);
+        worker.postMessage({
+          prompt: text,
+          requestId,
+          history,
+          prefs,
+          userContext: userContextRef.current,
+          memory,
+        });
       });
-    });
+    }
+    const answer = await answerPromise;
+    const bridge = desktopBridge();
+    return enhanceWithDesktopReadOnlyTool(answer, (tool, input) =>
+      requestDesktopToolCall(bridge, tool, input),
+    );
   }, []);
 
   // Issue #27: assign every appended event to the current conversation, lazily

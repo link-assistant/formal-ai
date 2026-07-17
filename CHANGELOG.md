@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.297.3] - 2026-07-17
+
+### Added
+- Route permission-free desktop and VS Code web search through headless Playwright across Google, Bing, and DuckDuckGo with reciprocal-rank fusion, render JavaScript-heavy fetches through web-capture, and expose specialized common file/agent tools with write and shell effects still permission-gated.
+
+## [0.297.2] - 2026-07-17
+
+### Fixed
+- Project agentic tool calls onto each client tool's advertised JSON Schema, including required qwen fetch, search, shell, and absolute-path fields, and exclude qwen startup reminders from user intent routing.
+
 ## [0.297.1] - 2026-07-17
 
 ### Fixed

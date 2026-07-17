@@ -20,8 +20,13 @@ const DEFAULT_AGENT_CONTAINER = "formal-ai-agent";
 const DEFAULT_MODEL = "formal-ai";
 const HOST_AGENT_BINARIES = Object.freeze(["agent", "claude", "codex"]);
 const PROVIDER_TYPES = Object.freeze([DEFAULT_PROVIDER_TYPE, COMMANDER_PROVIDER_TYPE]);
-const READ_ONLY_DESKTOP_TOOLS = Object.freeze(["http_fetch", "url_navigate", "read_local_file"]);
-const WRITE_CAPABLE_DESKTOP_TOOLS = Object.freeze(["eval_js", "code_exec", "shell"]);
+const READ_ONLY_DESKTOP_TOOLS = Object.freeze([
+  "read_file", "read_local_file", "grep", "glob", "list_directory", "read_many_files",
+  "web_search", "web_fetch", "http_fetch", "url_navigate",
+]);
+const WRITE_CAPABLE_DESKTOP_TOOLS = Object.freeze([
+  "write_file", "edit_file", "multi_edit", "shell", "bash", "eval_js", "code_exec", "todo", "plan", "subagent", "task",
+]);
 const HOST_SUBSCRIPTION_ENV_KEYS = Object.freeze([
   "ANTHROPIC_API_KEY",
   "CLAUDE_API_KEY",
@@ -440,8 +445,10 @@ function grantedDesktopTools(grants) {
   if (grants.all === true) {
     return [...READ_ONLY_DESKTOP_TOOLS, ...WRITE_CAPABLE_DESKTOP_TOOLS];
   }
-  return [...READ_ONLY_DESKTOP_TOOLS, ...WRITE_CAPABLE_DESKTOP_TOOLS]
-    .filter((tool) => grants[tool] === true);
+  return [
+    ...READ_ONLY_DESKTOP_TOOLS,
+    ...WRITE_CAPABLE_DESKTOP_TOOLS.filter((tool) => grants[tool] === true),
+  ];
 }
 
 function restrictionFromDesktopGrants(grants) {

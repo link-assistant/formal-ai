@@ -1,6 +1,6 @@
 {
   "name": "formal-ai-desktop",
-  "version": "0.212.0",
+  "version": "0.297.2",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
   "homepage": "https://link-assistant.github.io/formal-ai/",
@@ -17,9 +17,11 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/tool-router.test.mjs scripts/web-tools.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs && node scripts/smoke.mjs"
   },
   "dependencies": {
+    "@link-assistant/web-capture": "^1.10.10",
+    "@link-assistant/web-search": "^0.10.3",
     "agent-commander": "^0.8.0",
     "electron-updater": "^6.8.9"
   },
@@ -49,6 +51,13 @@
       {
         "from": "bin",
         "to": "bin",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "browser-runtime",
+        "to": "browser-runtime",
         "filter": [
           "**/*"
         ]
