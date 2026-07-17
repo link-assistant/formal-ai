@@ -13,6 +13,7 @@ use lino_objects_codec::format::parse_indented;
 
 use crate::engine::{normalize_prompt, stable_id, GraphEdge, GraphNode, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
+use crate::links_format::push_lino_node;
 use crate::seed::parser::{parse_lino, LinoNode};
 use crate::skill_compiler::CompiledSkillPackage;
 
@@ -317,49 +318,49 @@ impl AssociativePackage {
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::new();
-        push_node(&mut out, 0, &self.id, None);
-        push_node(&mut out, 2, "type", Some("associative_package"));
-        push_node(
+        push_lino_node(&mut out, 0, &self.id, None);
+        push_lino_node(&mut out, 2, "type", Some("associative_package"));
+        push_lino_node(
             &mut out,
             2,
             "schema_version",
             Some(KNOWLEDGE_SCHEMA_VERSION),
         );
-        push_node(&mut out, 2, "name", Some(&self.name));
-        push_node(&mut out, 2, "version", Some(&self.version));
-        push_node(
+        push_lino_node(&mut out, 2, "name", Some(&self.name));
+        push_lino_node(&mut out, 2, "version", Some(&self.version));
+        push_lino_node(
             &mut out,
             2,
             "source",
             Some("R65 Deep.Foundation-inspired local package model"),
         );
         for dependency in &self.dependencies {
-            push_node(&mut out, 2, "dependency", Some(&dependency.package_id));
-            push_node(&mut out, 4, "version", Some(&dependency.version));
+            push_lino_node(&mut out, 2, "dependency", Some(&dependency.package_id));
+            push_lino_node(&mut out, 4, "version", Some(&dependency.version));
         }
         for handler in &self.handlers {
-            push_node(&mut out, 2, "handler", Some(&handler.id));
-            push_node(&mut out, 4, "kind", Some(&handler.kind));
-            push_node(&mut out, 4, "capability", Some(&handler.capability));
-            push_node(&mut out, 4, "response", Some(&handler.response));
+            push_lino_node(&mut out, 2, "handler", Some(&handler.id));
+            push_lino_node(&mut out, 4, "kind", Some(&handler.kind));
+            push_lino_node(&mut out, 4, "capability", Some(&handler.capability));
+            push_lino_node(&mut out, 4, "response", Some(&handler.response));
         }
         for trigger in &self.triggers {
-            push_node(&mut out, 2, "trigger", Some(&trigger.id));
-            push_node(&mut out, 4, "kind", Some(&trigger.kind));
-            push_node(&mut out, 4, "match_prompt", Some(&trigger.match_prompt));
-            push_node(
+            push_lino_node(&mut out, 2, "trigger", Some(&trigger.id));
+            push_lino_node(&mut out, 4, "kind", Some(&trigger.kind));
+            push_lino_node(&mut out, 4, "match_prompt", Some(&trigger.match_prompt));
+            push_lino_node(
                 &mut out,
                 4,
                 "normalized_match",
                 Some(&trigger.normalized_match),
             );
-            push_node(&mut out, 4, "handler", Some(&trigger.handler_id));
+            push_lino_node(&mut out, 4, "handler", Some(&trigger.handler_id));
         }
         for permission in &self.permissions {
-            push_node(&mut out, 2, "permission", Some(&permission.id));
-            push_node(&mut out, 4, "effect", Some(&permission.effect));
-            push_node(&mut out, 4, "capability", Some(&permission.capability));
-            push_node(&mut out, 4, "description", Some(&permission.description));
+            push_lino_node(&mut out, 2, "permission", Some(&permission.id));
+            push_lino_node(&mut out, 4, "effect", Some(&permission.effect));
+            push_lino_node(&mut out, 4, "capability", Some(&permission.capability));
+            push_lino_node(&mut out, 4, "description", Some(&permission.description));
         }
         out.trim_end().to_owned()
     }
@@ -564,55 +565,114 @@ impl PackageStore {
 
 #[must_use]
 pub fn default_associative_packages() -> Vec<AssociativePackage> {
-    vec![AssociativePackage::new(
-        "pkg_formal_ai_core",
-        "formal-ai core package",
-        KNOWLEDGE_SCHEMA_VERSION,
-    )
-    .with_handler(PackageHandler::new(
-        "handler_calculator",
-        "rust_handler",
-        "tool:calculator",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_calculator_tool_call",
-        "tool_invocation",
-        "calculator",
-        "handler_calculator",
-    ))
-    .with_handler(PackageHandler::new(
-        "handler_web_search",
-        "rust_handler",
-        "tool:web_search",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_web_search_tool_call",
-        "tool_invocation",
-        "web_search",
-        "handler_web_search",
-    ))
-    .with_handler(PackageHandler::new(
-        "handler_javascript_execution",
-        "rust_handler",
-        "tool:javascript_execution",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_javascript_execution_tool_call",
-        "tool_invocation",
-        "javascript_execution",
-        "handler_javascript_execution",
-    ))
-    .with_permission("tool:calculator", "local deterministic calculator tool")
-    .with_permission("tool:web_search", "browser-backed web search API")
-    .with_permission(
-        "tool:javascript_execution",
-        "bounded deterministic JavaScript expression execution",
-    )
-    .with_permission("tool:concept_lookup", "seed-backed concept lookup")
-    .with_permission(
-        "tool:write_program",
-        "seed-backed program template renderer",
-    )]
+    vec![
+        AssociativePackage::new(
+            "pkg_formal_ai_core",
+            "formal-ai core package",
+            KNOWLEDGE_SCHEMA_VERSION,
+        )
+        .with_handler(PackageHandler::new(
+            "handler_calculator",
+            "rust_handler",
+            "tool:calculator",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_calculator_tool_call",
+            "tool_invocation",
+            "calculator",
+            "handler_calculator",
+        ))
+        .with_handler(PackageHandler::new(
+            "handler_web_search",
+            "rust_handler",
+            "tool:web_search",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_web_search_tool_call",
+            "tool_invocation",
+            "web_search",
+            "handler_web_search",
+        ))
+        .with_handler(PackageHandler::new(
+            "handler_javascript_execution",
+            "rust_handler",
+            "tool:javascript_execution",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_javascript_execution_tool_call",
+            "tool_invocation",
+            "javascript_execution",
+            "handler_javascript_execution",
+        ))
+        .with_permission("tool:calculator", "local deterministic calculator tool")
+        .with_permission("tool:web_search", "browser-backed web search API")
+        .with_permission(
+            "tool:javascript_execution",
+            "bounded deterministic JavaScript expression execution",
+        )
+        .with_permission("tool:concept_lookup", "seed-backed concept lookup")
+        .with_permission(
+            "tool:write_program",
+            "seed-backed program template renderer",
+        ),
+        // Agentic-coding capability grants for issue #468. These tools are run by
+        // the *client* (an external agentic CLI, or the in-repo offline driver), not
+        // by an in-server handler, so they are permission-only. The chat tool gate
+        // still refuses every tool unless `agent_mode` is explicitly opted in, so
+        // granting them by default enables no hidden autonomous action — it only lets
+        // an agent that already opted in drive the full search → fetch → write → run
+        // loop the issue asks for. `tool:web_search` is granted by the core package.
+        AssociativePackage::new(
+            "pkg_agentic_coding",
+            "agentic-coding capability package",
+            KNOWLEDGE_SCHEMA_VERSION,
+        )
+        .with_permission(
+            "tool:web_fetch",
+            "agentic-coding HTTP source fetch (client-executed)",
+        )
+        .with_permission(
+            "tool:write_file",
+            "agentic-coding workspace file write (client-executed)",
+        )
+        .with_permission(
+            "tool:run_command",
+            "agentic-coding sandboxed command runner (client-executed)",
+        )
+        // Capability-*class* grants: an agentic client executes tools in its own
+        // isolated sandbox, so what the server authorises is a *kind* of action,
+        // not a specific tool name. Any CLI's naming for a class — `web_search`
+        // / `websearch`, `read` / `read_file`, `write` / `write_file`, `bash` /
+        // `run_command` — maps to the same grant (see
+        // `planner::Capability::permission_key`), so the gate admits every real
+        // agentic CLI's toolset without a per-name allowlist. The `agent_mode`
+        // opt-in remains the real guard on whether tools run at all; these grants
+        // only say *which kinds* an opted-in client may drive.
+        .with_permission(
+            "tool:capability:search",
+            "agentic-coding web search (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:fetch",
+            "agentic-coding source fetch (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:read",
+            "agentic-coding file read (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:write",
+            "agentic-coding file write (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:edit",
+            "agentic-coding file edit (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:run",
+            "agentic-coding command runner (any CLI naming, client-executed)",
+        ),
+    ]
 }
 
 #[must_use]
@@ -696,26 +756,6 @@ fn required_child<'a>(
     } else {
         Ok(value)
     }
-}
-
-fn push_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    out.push_str(&" ".repeat(indent));
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\r', "\\r")
-        .replace('\n', "\\n")
-        .replace('\t', "\\t")
 }
 
 fn link_record(

@@ -7,6 +7,8 @@
 use serde_json::json;
 
 use super::change_request;
+use super::code_artifact;
+use super::code_rewrite_learning;
 use super::conversation_recall;
 use super::diagram;
 use super::execution_learning;
@@ -125,13 +127,24 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
     if associative_learning::is_associative_learning_task(&task) {
-        return Some(plan_associative_learning_step(messages, tool_names));
+        return Some(associative_learning::plan_step(messages, tool_names));
     }
     if routing_learning::is_routing_learning_task(&task) {
         return Some(routing_learning::plan_step(messages, tool_names));
     }
+    if code_rewrite_learning::is_code_rewrite_learning_task(&task) {
+        return Some(code_rewrite_learning::plan_step(messages, tool_names));
+    }
     if execution_learning::is_execution_learning_task(&task) {
         return Some(execution_learning::plan_step(messages, tool_names));
+    }
+    // Workspace mutations are grounded in client-owned file bytes. This route
+    // follows the explicit learning recipes so their requested artifacts cannot
+    // be mistaken for an edit, and precedes the generic edit/read/shell routers
+    // below. Requests naming both a literal target and literal content are
+    // already claimed by the write probe above.
+    if let Some(plan) = code_artifact::plan_code_artifact_step(&task, messages, tool_names) {
+        return Some(plan);
     }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
@@ -688,20 +701,6 @@ fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> Ag
     )
 }
 
-fn plan_associative_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = associative_learning::render_document();
-    plan_document_recipe(
-        messages,
-        tool_names,
-        DocumentRecipe {
-            path: associative_learning::ASSOCIATIVE_LEARNING_PATH,
-            verify_command: format!("cat {}", associative_learning::ASSOCIATIVE_LEARNING_PATH),
-            final_answer: associative_learning::final_answer(&document),
-            document,
-        },
-    )
-}
-
 /// The issues-#498 + #558 learning-frontier recipe: write the generated
 /// learning-frontier report → verify → final. Like the other self-referential recipes
 /// it needs no web step — the report is a pure function of the committed Trends catalog
@@ -752,10 +751,11 @@ impl Progress {
         let mut fetched_text = None;
         let mut search_output = None;
         let mut run_output = None;
+        // Ignore results from earlier user turns.
         let current_turn = messages
             .iter()
             .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-            .unwrap_or(0);
+            .map_or(0, |index| index + 1);
         for (index, message) in messages.iter().enumerate().skip(current_turn) {
             if !message.role.eq_ignore_ascii_case("tool") {
                 continue;

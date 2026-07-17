@@ -39,7 +39,7 @@ use crate::engine_responses::{
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::links_format::{format_lino_record, sanitize_lino_value};
+use crate::links_format::{flatten_lino_value, format_lino_record};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-ai";
@@ -711,7 +711,7 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{index} {} {}",
                 event.kind,
-                sanitize_lino_value(&event.payload)
+                flatten_lino_value(&event.payload)
             )
         })
         .collect::<Vec<_>>()
@@ -723,10 +723,10 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{} {} {} {} {}",
                 step.order,
-                sanitize_lino_value(&step.step),
-                sanitize_lino_value(&step.level),
-                sanitize_lino_value(&step.source_event),
-                sanitize_lino_value(&step.detail)
+                flatten_lino_value(&step.step),
+                flatten_lino_value(&step.level),
+                flatten_lino_value(&step.source_event),
+                flatten_lino_value(&step.detail)
             )
         })
         .collect::<Vec<_>>()
