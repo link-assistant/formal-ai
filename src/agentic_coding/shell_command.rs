@@ -51,23 +51,38 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
 /// argument is absent is skipped so the search continues rather than emitting an
 /// argument-less command that would hang (`wc -l` on stdin).
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    vocab.intents.iter().find_map(|intent| {
-        if intent.command == REPORT_ISSUE_ACTION {
-            return None;
+    let lower = prompt.to_lowercase();
+    // Prefer the most specific matching cue across every intent. This prevents
+    // a shorter generic cue (for example "current directory" → `pwd`) from
+    // stealing a longer request ("list current directory" → `ls`).
+    let (intent, cue) = vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
+        .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
+        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .max_by_key(|(_, cue)| cue.chars().count())?;
+    match intent.argument {
+        ShellIntentArgument::None => Some(intent.command.clone()),
+        ShellIntentArgument::Path => {
+            path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
-        if !intent.cues.iter().any(|cue| lower.contains(cue)) {
-            return None;
-        }
-        match intent.argument {
-            ShellIntentArgument::None => Some(intent.command.clone()),
-            ShellIntentArgument::Path => {
-                path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
-            }
-            ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
-                .map(|arg| format!("{} {arg}", intent.command)),
-        }
-    })
+        ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
+            .map(|arg| format!("{} {arg}", intent.command)),
+        ShellIntentArgument::Remainder => remainder_argument(prompt, &lower, cue)
+            .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
+    }
+}
+
+/// Recover a safe literal query following a matched semantic cue.
+fn remainder_argument(prompt: &str, lower: &str, cue: &str) -> Option<String> {
+    let start = lower.find(cue)? + cue.len();
+    let remainder = prompt.get(start..)?.trim();
+    (!remainder.is_empty()
+        && remainder.chars().all(|c| {
+            c.is_alphanumeric() || c.is_whitespace() || matches!(c, '_' | '-' | '.' | ':')
+        }))
+    .then(|| remainder.to_owned())
 }
 
 /// The first filename-looking token in the prompt: a token carrying an interior dot

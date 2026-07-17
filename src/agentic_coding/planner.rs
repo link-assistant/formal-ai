@@ -242,6 +242,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
+    // A typed URL object is more specific than broad research prose. Resolve it
+    // before the research recipe so requests such as "tell me about URL" fetch
+    // that page instead of turning the URL itself into a search query.
+    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     // Research is the final named recipe so more specific local actions win.
     if let Some(query) = web_research::web_research_query_for(messages) {
         if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
@@ -249,9 +255,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         }
     }
     // Route the remaining requests by seed-backed intent and advertised capability.
-    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
-        return Some(plan);
-    }
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
     }

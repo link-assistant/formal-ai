@@ -180,15 +180,31 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
 
-    let content_span = if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
-        if marker_end <= clause_start {
+    if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
+        let marker_span = if marker_end <= clause_start {
             request.get(marker_end..clause_start)
         } else {
             request.get(marker_end..)
+        };
+        if let Some(content) = marker_span.and_then(clean_content) {
+            return Some((target, content));
         }
-    } else if cue_is_destination {
+    }
+
+    let content_span = if cue_is_destination {
         let action_end = first_action_cue_end(&toks)?;
         (action_end <= clause_start).then(|| request.get(action_end..clause_start))?
+    } else if let Some(value_lead) = toks
+        .iter()
+        .skip(file_index + 1)
+        .find(|token| dest_cues.contains(&clean_cue_token(token.text)))
+    {
+        // Assignment shape: "set the contents of FILE to VALUE". The target
+        // cue identifies the file object and a following destination cue
+        // introduces its literal value. Requiring a write action before the
+        // file keeps an unrelated "contents of FILE" read request out.
+        let action_end = first_action_cue_end(&toks)?;
+        (action_end <= clause_start).then(|| request.get(value_lead.end..))?
     } else {
         None
     };

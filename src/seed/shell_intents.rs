@@ -31,6 +31,8 @@ pub enum ShellIntentArgument {
     /// The command takes a name introduced by a name-lead cue such as
     /// *called*/*named* (`mkdir build`).
     NameLead,
+    /// The command takes the text after the matched intent cue (`rg QUERY .`).
+    Remainder,
 }
 
 /// One intent → command mapping: the command to emit, how to fill its argument, and
@@ -88,6 +90,7 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
         argument: match node.find_child_value("argument") {
             "path" => ShellIntentArgument::Path,
             "name_lead" => ShellIntentArgument::NameLead,
+            "remainder" => ShellIntentArgument::Remainder,
             _ => ShellIntentArgument::None,
         },
         cues: collect_language_values(node, "cue")
