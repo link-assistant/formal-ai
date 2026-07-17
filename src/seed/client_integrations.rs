@@ -63,6 +63,7 @@ pub struct ClientIntegrationInvocation {
     pub args: Vec<String>,
     pub no_summarize_args: Vec<String>,
     pub interactive_args: Vec<String>,
+    pub interactive_args_require_prompt: bool,
     pub non_interactive_args: Vec<String>,
     pub mode_arg_position: Option<ModeArgPosition>,
     pub env: Vec<TemplateEnv>,
@@ -184,6 +185,9 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "arg" => invocation.args.push(child.id.clone()),
             "no_summarize_arg" => invocation.no_summarize_args.push(child.id.clone()),
             "interactive_arg" => invocation.interactive_args.push(child.id.clone()),
+            "interactive_args_require_prompt" => {
+                invocation.interactive_args_require_prompt = child.id == "true";
+            }
             "non_interactive_arg" => invocation.non_interactive_args.push(child.id.clone()),
             "mode_arg_position" => {
                 invocation.mode_arg_position = ModeArgPosition::from_seed(&child.id);

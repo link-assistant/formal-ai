@@ -432,9 +432,47 @@ function interfaceCommandResponse(command, reportIssueUrl) {
   return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
 }
 
-function recognizeInterfaceCommand(text) {
+function recognizeSeedInterfaceCommand(text, capabilities) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized || !Array.isArray(capabilities)) return null;
+  for (const capability of capabilities) {
+    const phrases = (capability.phrases || []).map(normalizeMemoryPrompt);
+    if (!includesAnyText(normalized, phrases)) continue;
+    let value = null;
+    if (capability.kind === "enum") {
+      const option = (capability.options || []).find((candidate) =>
+        (candidate.aliases || [])
+          .map(normalizeMemoryPrompt)
+          .some((alias) => normalized.includes(alias)),
+      );
+      if (option) value = option.value;
+    } else if (capability.kind === "number") {
+      const match = normalized.match(/(\d+(?:[.,]\d+)?)/);
+      if (match) {
+        const number = Number(match[1].replace(",", "."));
+        if (Number.isFinite(number)) value = number * Number(capability.scale || 1);
+      }
+    } else if (capability.kind === "boolean") {
+      value = detectToggleCommand(normalized, phrases);
+    }
+    if (value === null) continue;
+    return {
+      kind: "set_preference",
+      key: capability.key,
+      value,
+      intent: capability.intent,
+      label: capability.label,
+    };
+  }
+  return null;
+}
+
+function recognizeInterfaceCommand(text, capabilities = []) {
   const normalized = normalizeMemoryPrompt(text);
   if (!normalized) return null;
+
+  const seedCommand = recognizeSeedInterfaceCommand(text, capabilities);
+  if (seedCommand) return seedCommand;
 
   const reportPhrases = [
     "report issue",
@@ -6073,6 +6111,7 @@ function App() {
     tools: [],
     concepts: [],
     responses: {},
+    interfaceCapabilities: [],
   });
   const initialPreferences = useRef(loadPreferences());
   const [uiLanguagePreference, setUiLanguagePreference] = useState(
@@ -8155,6 +8194,17 @@ function App() {
             ),
           );
           break;
+        case "followUpProbability":
+          setFollowUpProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.followUpProbability,
+            ),
+          );
+          break;
+        case "toolbarIconPack":
+          setToolbarIconPack(normalizeToolbarIconPack(command.value));
+          break;
         case "location":
           setLocationPreference(String(command.value || "").slice(0, 80));
           break;
@@ -8312,7 +8362,9 @@ function App() {
       return;
     }
 
-    const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
+    const interfaceCommand = hasAttachments
+      ? null
+      : recognizeInterfaceCommand(displayText, seed.interfaceCapabilities);
     if (interfaceCommand) {
       const valueLabel = commandValueLabel(interfaceCommand);
       if (interfaceCommand.kind !== "report_issue") {

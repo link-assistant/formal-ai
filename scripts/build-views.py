@@ -90,6 +90,33 @@ def _gloss_clean(gloss: str) -> str:
     return " ".join(gloss.replace('"', "'").split()).strip()
 
 
+def _lino_escape(value: str) -> str:
+    """Escape a value for the backslash dialect ``seed::parser`` reads (issue #715).
+
+    Only the backslash needs escaping here, and that is a property of the caller
+    rather than of the notation: ``_gloss_clean`` has already collapsed every run
+    of whitespace, so no tab, newline or carriage return can reach the slot, and
+    it has already replaced every double quote (lossily — see below).
+
+    An unescaped backslash is not safe to emit. ``unescape_value`` decodes ``\\n``,
+    ``\\t`` and ``\\r``, so a gloss carrying LaTeX would read back wrong: ``\\rightarrow``
+    in ``data/view/en/graph.lino`` decodes to a carriage return followed by
+    ``ightarrow``. Doubling it here means the decoder's ``\\\\`` arm returns the one
+    backslash the gloss actually holds.
+
+    This is deliberately not a general Links Notation encoder, and it must not
+    grow into one. The notation picks a delimiter the value does not contain and
+    doubles it only as a fallback, and reproducing that choice correctly in a
+    second language is what ``_gloss_clean``'s quote replacement is already
+    getting wrong: it rewrites Wiktionary's own quotation marks into apostrophes
+    because it cannot escape them, so ``"Hello!" or an equivalent greeting.``
+    is stored as ``'Hello!' or an equivalent greeting.``. Fixing that means
+    writing these values through the codec in ``src/links_format.rs`` rather than
+    adding a tenth hand-rolled escaper; it is tracked separately.
+    """
+    return value.replace("\\", "\\\\")
+
+
 def wordnet_senses(lemma: str) -> list[dict]:
     path = WORDNET_DIR / f"{lemma}.json"
     if not path.is_file():
@@ -178,7 +205,7 @@ def build_entity(lemma: str) -> tuple[str, str]:
         prov = " ".join(sorted(sense["sources"]))
         lines.append("  sense")
         lines.append(f"    part_of_speech {sense['pos']}")
-        lines.append(f'    gloss "{sense["gloss"]}"')
+        lines.append(f'    gloss "{_lino_escape(sense["gloss"])}"')
         lines.append(f"    provenance ({prov})")
     return ident, "\n".join(lines) + "\n"
 

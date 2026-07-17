@@ -112,6 +112,22 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     })
 }
 
+/// Whether `lower` (an already-lowercased request) is a file **write / create**
+/// intent — a write verb applied to something file-shaped. This is the single
+/// signal the router uses to keep a file-creation request from ever being
+/// misrouted to the file-read recipe (issue #681): a request to *produce* a file
+/// is a write, never a read of the not-yet-existing target.
+///
+/// This is intentionally the same structural parse used to compose the eventual
+/// write plan. A request is classified as a write only when the seed-defined
+/// action/target/content roles yield a safe target and non-empty payload. One
+/// parser for classification and composition cannot drift into claiming an
+/// operation that the planner is unable to execute.
+#[must_use]
+pub(super) fn has_file_write_intent(lower: &str) -> bool {
+    parse_write_request(lower).is_some()
+}
+
 /// Recover the `(target, content)` of a write request from its wording.
 ///
 /// The recogniser is entirely seed-driven (issue #680). It locates the target
@@ -126,6 +142,12 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
 /// * **Destination-led** — the "write CONTENT to FILE" shape, where a
 ///   `file_write_action_cue` opens the request and a *destination* cue (not a
 ///   positional target cue) routes the preceding span into the file.
+/// * **Action-led** — the "write FILE saying CONTENT" shape, where a
+///   `file_write_action_cue` ("write"/"create"/"save"/…) directly names the file
+///   and a content-lead marker introduces the payload after it. An action cue
+///   licenses the file just like a target cue, but only marker-led content is
+///   accepted for it, so a bare "create app.rs" (no content) still falls through
+///   to the ordinary solver rather than fabricating an empty file.
 ///
 /// Both byte offsets index the lowercased copy, which is byte-length preserving
 /// for en/ru/hi/zh, so the same offsets slice the original request and the
@@ -135,10 +157,11 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let toks = tokens(request);
     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+    let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
 
-    // The target file: the first safe, file-looking token that directly follows
-    // a target or destination cue. Requiring the cue keeps an incidental dotted
-    // token (a version, an abbreviation) out of the write path.
+    // The target file: the first safe, file-looking token that directly follows a
+    // target cue, a destination cue, or an action cue. Requiring a cue keeps an
+    // incidental dotted token (a version, an abbreviation) out of the write path.
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
@@ -147,8 +170,10 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         }
         let previous = index.checked_sub(1).map(|i| &toks[i])?;
         let previous_word = clean_cue_token(previous.text);
-        (target_cues.contains(&previous_word) || dest_cues.contains(&previous_word))
-            .then(|| (index, cleaned.to_owned()))
+        (target_cues.contains(&previous_word)
+            || dest_cues.contains(&previous_word)
+            || action_cues.contains(&previous_word))
+        .then(|| (index, cleaned.to_owned()))
     })?;
 
     let cue = &toks[file_index - 1];
@@ -209,14 +234,18 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     // cue keeps an incidental dotted token out of the edit path, exactly as the
     // write recogniser does.
     let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
+    let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
         if !looks_like_file || !safe_relative_path(cleaned) {
             return None;
         }
-        let prev_is_cue = index.checked_sub(1).is_some_and(&is_target_cue);
-        let next_is_cue = (index + 1 < toks.len()) && is_target_cue(index + 1);
+        let prev_is_cue = index
+            .checked_sub(1)
+            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+        let next_is_cue =
+            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
         (prev_is_cue || next_is_cue).then(|| (index, cleaned.to_owned()))
     })?;
     // Extend the clause boundary left over any run of target cues so a multi-word
@@ -231,10 +260,17 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     // The edit action opens the replacement clause; the new-lead separates the old
     // text from the new text. The new-lead must follow the action so a "to"/"with"
     // belonging to an earlier clause is never mistaken for the replacement lead.
-    let action_end = toks
+    // When a leading edit action names the target ("update FILE and change A to
+    // B"), prefer the later action that introduces the replacement itself.
+    let action = toks
         .iter()
-        .find(|token| action_cues.contains(&clean_cue_token(token.text)))
-        .map(|token| token.end)?;
+        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .find(|token| token.start > toks[file_index].end)
+        .or_else(|| {
+            toks.iter()
+                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
+        })?;
+    let action_end = action.end;
     let new_lead = toks.iter().find(|token| {
         token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
     })?;
@@ -364,11 +400,25 @@ fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
 
 /// Trim a recovered content span down to its literal payload, dropping the
 /// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. Returns [`None`] when nothing is left.
+/// quoting. A delimiter is removed only when the entire payload has a matching
+/// opening and closing delimiter. This matters for generated source and Links
+/// Notation: a lone terminal quote is data, not presentation punctuation.
+/// Returns [`None`] when nothing is left.
 fn clean_content(raw: &str) -> Option<String> {
     let led = raw.trim().trim_start_matches([':', '-', '—', '–']).trim();
-    let unquoted = led.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | '.' | '。'));
-    let result = unquoted.trim();
+    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
+        led[3..led.len() - 3].trim()
+    } else if led.len() >= 2 {
+        let first = led.as_bytes()[0];
+        let last = led.as_bytes()[led.len() - 1];
+        if first == last && matches!(first, b'`' | b'"' | b'\'') {
+            led[1..led.len() - 1].trim()
+        } else {
+            led
+        }
+    } else {
+        led
+    };
     (!result.is_empty()).then(|| result.to_owned())
 }
 

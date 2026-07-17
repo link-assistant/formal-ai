@@ -1,0 +1,3 @@
+#!/bin/sh
+printf '%s\n' "$@" > "$FORMAL_AI_GH_CAPTURE"
+printf '%s\n' 'https://github.com/link-assistant/formal-ai/issues/999'

@@ -187,8 +187,8 @@ pub const ROLE_ARCHITECTURE_CONCEPT: &str = "architecture_concept";
 pub const ROLE_EXPLANATION_REQUEST_LEAD: &str = "explanation_request_lead";
 /// Semantic role: a noun naming the internet as the medium to search.
 ///
-/// The same internet-naming surfaces that fill [`ROLE_WEB_SEARCH_SIGNAL`] and
-/// [`ROLE_WEB_SEARCH_SOURCE_ONLY`] (" web ", " internet ", " online ",
+/// The same internet-naming surfaces that fill `ROLE_WEB_SEARCH_SIGNAL` and
+/// `ROLE_WEB_SEARCH_SOURCE_ONLY` (" web ", " internet ", " online ",
 /// " интернете ", "इंटरनेट", "网上", …), shared here so the documentation handler
 /// can confirm that a prompt paired with an imperative search verb explicitly
 /// asks to search the web — and screen such a prompt out of its method-question

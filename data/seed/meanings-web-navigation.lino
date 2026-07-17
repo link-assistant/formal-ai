@@ -69,6 +69,8 @@ meanings
       surface
         text "fetch the page"
       surface
+        text "retrieve …"
+      surface
         text "download …"
       surface
         text "download the page at …"

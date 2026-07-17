@@ -26,6 +26,8 @@ const repoRoot = path.resolve(vscodeDir, "..");
 const sourceWeb = path.join(repoRoot, "src", "web");
 const sourceSeed = path.join(repoRoot, "data", "seed");
 const sourceLib = path.join(repoRoot, "desktop", "lib");
+const sourceLicense = path.join(repoRoot, "LICENSE");
+const outputLicense = path.join(vscodeDir, "LICENSE");
 const outputWeb = path.join(vscodeDir, "dist-web");
 const outputSeed = path.join(outputWeb, "seed");
 const outputVendor = path.join(vscodeDir, "src", "lib", "vendor");
@@ -66,6 +68,7 @@ function copyDirectory(from, to) {
 }
 
 syncExtensionVersion();
+fs.copyFileSync(sourceLicense, outputLicense);
 
 copyDirectory(sourceWeb, outputWeb);
 copyDirectory(sourceSeed, outputSeed);

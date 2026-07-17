@@ -10,9 +10,9 @@
 //!
 //! 1. **Formalize** — fetch the source-edition Wiktionary page and the
 //!    Wikidata Lexeme / Q-item that backs the surface so the surface
-//!    collapses to a language-neutral [`MeaningId`].
+//!    collapses to a language-neutral `MeaningId`.
 //!
-//! 2. **Deformalize** — render that [`MeaningId`] back into the target
+//! 2. **Deformalize** — render that `MeaningId` back into the target
 //!    language by joining on Wikidata `P5137` ("item for this sense") and
 //!    by parsing translation tables (`{{trans-top}}`, `{{перев-блок}}`,
 //!    `=== Translations ===` / `=== Перевод ===`) on either the source-
@@ -34,7 +34,7 @@
 //!   so we don't pull a TLS crate into the core.
 //! - [`cache`] — semantic-identity file cache for raw API responses, with
 //!   support for replaying responses from a committed `.lino` seed bundle.
-//! - [`meaning`] — [`MeaningId`], the semantic meta-language identity.
+//! - [`meaning`] — `MeaningId`, the semantic meta-language identity.
 //! - [`wiktionary`] — Wiktionary client + wikitext parser.
 //! - [`wikidata`] — Wikidata SPARQL + Lexeme / entity / property client.
 //! - [`formatting`] — typography mirror (case + terminal punctuation).

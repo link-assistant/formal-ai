@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.31s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 3 tests
+test ci_cd::issue_730::main_pipeline_defaults_to_read_only_permissions ... ok
+test ci_cd::issue_730::every_desktop_job_has_a_bounded_runtime_and_least_privilege ... ok
+test ci_cd::issue_730::reviewed_dependency_warnings_are_narrowly_classified ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1649 filtered out; finished in 0.01s
+

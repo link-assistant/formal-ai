@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784180023530)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.48s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 1 test
+
+thread 'issue_716_agentic_execution::opencode_transport_quotes_are_not_compiled_as_program_output' (24012) panicked at tests/unit/issue_716_agentic_execution.rs:196:5:
+fn main() {
+    println!("Give me a hello world program in Rust");
+}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_716_agentic_execution::opencode_transport_quotes_are_not_compiled_as_program_output ... FAILED
+
+failures:
+
+failures:
+    issue_716_agentic_execution::opencode_transport_quotes_are_not_compiled_as_program_output
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1654 filtered out; finished in 0.63s
+
+error: test failed, to rerun pass `--test unit`

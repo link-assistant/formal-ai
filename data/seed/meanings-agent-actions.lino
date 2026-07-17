@@ -1,0 +1,69 @@
+meanings
+  report_issue_action
+    defined-by action
+    role agent_action_report_verb
+    lexeme en
+      surface
+        text report
+      surface
+        text file
+      surface
+        text open
+      surface
+        text submit
+      surface
+        text create
+    lexeme ru
+      surface
+        text сообщи
+      surface
+        text сообщить
+      surface
+        text создай
+      surface
+        text создать
+    lexeme hi
+      surface
+        text रिपोर्ट
+    lexeme zh
+      surface
+        text 报告
+      surface
+        text 提交
+  report_issue_subject
+    defined-by inquiry
+    role agent_action_report_subject
+    lexeme en
+      surface
+        text issue
+      surface
+        text bug
+      surface
+        text problem
+      surface
+        text github
+      surface
+        text repository
+      surface
+        text repo
+    lexeme ru
+      surface
+        text проблема
+      surface
+        text проблеме
+      surface
+        text ошибка
+      surface
+        text ошибке
+      surface
+        text issue
+    lexeme hi
+      surface
+        text समस्या
+      surface
+        text त्रुटि
+    lexeme zh
+      surface
+        text 问题
+      surface
+        text 错误

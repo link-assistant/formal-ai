@@ -402,11 +402,14 @@ fn build_invocation_args(
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
     let interactive = force_interactive || (!force_non_interactive && user_args.is_empty());
-    let mode_args = if interactive {
-        &invocation.interactive_args
-    } else {
-        &invocation.non_interactive_args
-    };
+    let mode_args: &[String] =
+        if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
+            &[]
+        } else if interactive {
+            &invocation.interactive_args
+        } else {
+            &invocation.non_interactive_args
+        };
     let rendered_mode_args = if mode_args
         .iter()
         .any(|mode_arg| user_args.contains(mode_arg))
@@ -442,6 +445,14 @@ fn build_invocation_args(
     let model_arg = render_template(&invocation.model_arg, context);
     let model_value = context.model_selector.clone();
     match invocation.model_arg_position {
+        Some(ModelArgPosition::AfterFirstArg)
+            if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation)
+                && !args.is_empty() =>
+        {
+            args.insert(1, model_value);
+            args.insert(1, model_arg);
+            args.extend(effective_user_args);
+        }
         Some(ModelArgPosition::AfterFirstArg) if !effective_user_args.is_empty() => {
             args.push(effective_user_args[0].clone());
             args.push(model_arg);

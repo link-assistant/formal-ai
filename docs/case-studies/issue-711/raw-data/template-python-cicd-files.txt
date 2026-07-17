@@ -1,0 +1,13 @@
+.github/workflows/docs.yml
+.github/workflows/release.yml
+scripts/bump_version.py
+scripts/check_file_size.py
+scripts/create_github_release.py
+scripts/create_manual_changeset.py
+scripts/detect_code_changes.py
+scripts/format_release_notes.py
+scripts/publish_to_pypi.py
+scripts/release_naming.py
+scripts/smoke_test_published_package.py
+scripts/validate_changeset.py
+scripts/version_and_commit.py
