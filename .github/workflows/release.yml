@@ -201,6 +201,17 @@ jobs:
           RUSTDOCFLAGS: -D warnings
         run: cargo doc --no-deps --lib
 
+      # docs.rs builds with DOCS_RS set. Its transitive lindera-jieba build
+      # script is currently broken in that mode (lindera/lindera#750), so the
+      # published docs profile deliberately omits the optional meta-language
+      # runtime while normal/default builds retain it. Exercise that exact
+      # profile before a crate can be released.
+      - name: Validate docs.rs dependency profile
+        env:
+          DOCS_RS: 1
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --lib --no-default-features
+
       - name: Check semantic grounding
         run: cargo test --test unit semantic_grounding -- --nocapture
 

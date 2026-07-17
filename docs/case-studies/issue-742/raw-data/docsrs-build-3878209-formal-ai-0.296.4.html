@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="docs.rs 0.0.0 (964c90a45859fd8f9076e3cbe58470a5a4f4d4f7 2026-07-01 )"><link rel="stylesheet" href="/-/static/vendored.css?0-0-0-964c90a45859fd8f9076e3cbe58470a5a4f4d4f7-2026-07-01" media="all" />
+        <link rel="stylesheet" href="/-/static/style.css?0-0-0-964c90a45859fd8f9076e3cbe58470a5a4f4d4f7-2026-07-01" media="all" />
+        <link rel="stylesheet" href="/-/static/font-awesome.css?0-0-0-964c90a45859fd8f9076e3cbe58470a5a4f4d4f7-2026-07-01" media="all" />
+
+        <link rel="search" href="/-/static/opensearch.xml" type="application/opensearchdescription+xml" title="Docs.rs" />
+
+        <title>formal-ai 0.296.4 - Docs.rs</title><script nonce="1Kr3vWLtN+4IM5hVV5zDgTLzuXnvkECIegyvxbr7JzoO4kYj">(function() {
+    function applyTheme(theme) {
+        if (theme) {
+            document.documentElement.dataset.docsRsTheme = theme;
+        }
+    }
+
+    window.addEventListener("storage", ev => {
+        if (ev.key === "rustdoc-theme") {
+            applyTheme(ev.newValue);
+        }
+    });
+
+    // see ./storage-change-detection.html for details
+    window.addEventListener("message", ev => {
+        if (ev.data && ev.data.storage && ev.data.storage.key === "rustdoc-theme") {
+            applyTheme(ev.data.storage.value);
+        }
+    });
+
+    applyTheme(window.localStorage.getItem("rustdoc-theme"));
+})();</script><script defer type="text/javascript" nonce="1Kr3vWLtN+4IM5hVV5zDgTLzuXnvkECIegyvxbr7JzoO4kYj" src="/-/static/menu.js?0-0-0-964c90a45859fd8f9076e3cbe58470a5a4f4d4f7-2026-07-01"></script>
+        <script defer type="text/javascript" nonce="1Kr3vWLtN+4IM5hVV5zDgTLzuXnvkECIegyvxbr7JzoO4kYj" src="/-/static/index.js?0-0-0-964c90a45859fd8f9076e3cbe58470a5a4f4d4f7-2026-07-01"></script>
+    </head>
+
+    <body class="centered">
+<div class="nav-container">
+    <div class="container">
+        <div class="pure-menu pure-menu-horizontal" role="navigation" aria-label="Main navigation">
+            <form action="/releases/search"
+                  method="GET"
+                  id="nav-search-form"
+                  class="landing-search-form-nav  ">
+
+                
+                <a href="/" class="pure-menu-heading pure-menu-link docsrs-logo" aria-label="Docs.rs">
+                    <span title="Docs.rs"><span class="fa fa-solid fa-cubes " aria-hidden="true"></span></span>
+                    <span class="title">Docs.rs</span>
+                </a><ul class="pure-menu-list">
+    <script id="crate-metadata" type="application/json">
+        
+        {
+            "name": "formal-ai",
+            "version": "0.296.4"
+        }
+    </script><li class="pure-menu-item">
+            <a href="/crate/formal-ai/0.296.4" class="pure-menu-link crate-name" title="Formal symbolic AI implementation with OpenAI-compatible APIs">
+                <span class="fa fa-solid fa-cube " aria-hidden="true"></span>
+                <span class="title">formal-ai-0.296.4</span>
+            </a>
+        </li>
+    
+</ul><div class="spacer"></div>
+                
+                <div id="abnormalities" class="hidden"></div>
+
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-has-children">
+                        <a href="#" class="pure-menu-link" aria-label="docs.rs">docs.rs</a>
+                        <ul class="pure-menu-children aligned-icons"><li class="pure-menu-item"><a class="pure-menu-link" href="/about"><span class="fa fa-solid fa-circle-info " aria-hidden="true"></span> About docs.rs</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/badges"><span class="fa fa-brands fa-fonticons " aria-hidden="true"></span> Badges</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/builds"><span class="fa fa-solid fa-gears " aria-hidden="true"></span> Builds</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/metadata"><span class="fa fa-solid fa-table " aria-hidden="true"></span> Metadata</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/redirections"><span class="fa fa-solid fa-road " aria-hidden="true"></span> Shorthand URLs</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/download"><span class="fa fa-solid fa-download " aria-hidden="true"></span> Download</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/about/rustdoc-json"><span class="fa fa-solid fa-file-code " aria-hidden="true"></span> Rustdoc JSON</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="/releases/queue"><span class="fa fa-solid fa-gears " aria-hidden="true"></span> Build queue</a></li><li class="pure-menu-item"><a class="pure-menu-link" href="https://foundation.rust-lang.org/policies/privacy-policy/#docs.rs" target="_blank"><span class="fa fa-solid fa-shield-halved " aria-hidden="true"></span> Privacy policy</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="pure-menu-list"><li class="pure-menu-item pure-menu-has-children">
+                        <a href="#" class="pure-menu-link" aria-label="Rust">Rust</a>
+                        <ul class="pure-menu-children">
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://www.rust-lang.org/" target="_blank">Rust website</a></li>
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://doc.rust-lang.org/book/" target="_blank">The Book</a></li>
+
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://doc.rust-lang.org/std/" target="_blank">Standard Library API Reference</a></li>
+
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://doc.rust-lang.org/rust-by-example/" target="_blank">Rust by Example</a></li>
+
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://doc.rust-lang.org/cargo/guide/" target="_blank">The Cargo Guide</a></li>
+
+                            <li class="pure-menu-item"><a class="pure-menu-link" href="https://doc.rust-lang.org/nightly/clippy" target="_blank">Clippy Documentation</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <div id="search-input-nav">
+                    <label for="nav-search">
+                        <span class="fa fa-solid fa-magnifying-glass " aria-hidden="true"></span>
+                    </label>
+
+                    
+                    
+                    <input id="nav-search" name="query" type="text" aria-label="Find crate by search query" tabindex="-1"
+                        placeholder="Find crate"
+                        >
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="docsrs-package-container">
+        <div class="container">
+            <div class="description-container">
+                
+
+                
+                <h1 id="crate-title">
+                    formal-ai 0.296.4
+                    <span id="clipboard" class="svg-clipboard" title="Copy crate name and version information"></span>
+                </h1>
+
+                
+                <div class="description">Formal symbolic AI implementation with OpenAI-compatible APIs</div>
+
+
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul class="pure-menu-list">
+                        
+                        <li class="pure-menu-item"><a href="/crate/formal-ai/0.296.4"
+                                class="pure-menu-link">
+                                <span class="fa fa-solid fa-cube " aria-hidden="true"></span>
+                                <span class="title"> Crate</span>
+                            </a>
+                        </li>
+
+                        
+                        <li class="pure-menu-item">
+                            <a href="/crate/formal-ai/0.296.4/source/"
+                                class="pure-menu-link">
+                                <span class="fa fa-regular fa-folder-open " aria-hidden="true"></span>
+                                <span class="title"> Source</span>
+                            </a>
+                        </li>
+
+                        
+                        <li class="pure-menu-item">
+                            <a href="/crate/formal-ai/0.296.4/builds"
+                                class="pure-menu-link pure-menu-active">
+                                <span class="fa fa-solid fa-gears " aria-hidden="true"></span>
+                                <span class="title"> Builds</span>
+                            </a>
+                        </li>
+
+                        
+                        <li class="pure-menu-item">
+                            <a href="/crate/formal-ai/0.296.4/features"
+                               class="pure-menu-link">
+                                <span class="fa fa-solid fa-flag " aria-hidden="true"></span>
+                                <span class="title">Feature flags</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div></div>
+    </div>
+<div class="container">
+        <div class="recent-releases-container">
+            <h4>Build #3878209
+2026-07-17 10:58:02</h4><p class="build-info"><span class="fa fa-solid fa-triangle-exclamation " aria-hidden="true"></span> Build failed. If you want to re-trigger a documentation build, you can do it <a href="https://crates.io/crates/formal-ai/0.296.4/rebuild-docs">here</a>. You can find more information on <b>docs.rs</b> builds documentation on the <a href="/about/builds">builds page</a>.</p><ul><li>
+                        <a href="/crate/formal-ai/0.296.4/builds/3878209/x86_64-unknown-linux-gnu.txt" class="release">
+                            <div class="pure-g">
+                                <div class="pure-u-1 pure-u-sm-1-24 build">
+                                        <span class="fa fa-solid fa-xmark " aria-hidden="true"></span>&nbsp;&nbsp;<span class="fa fa-solid fa-file-lines " aria-hidden="true"></span>
+                                </div>
+                                <div class="pure-u-1 pure-u-sm-10-24">
+                                    
+                                        <b>x86_64-unknown-linux-gnu.txt</b>
+                                    
+                                </div>
+                            </div>
+                        </a>
+                    </li></ul><pre><p>
+# error kind
+ExecutionFailed
+</p><p>
+# pre-build errors
+command failed: exit status: 101
+
+
+</p><p>
+# rustc version
+rustc 1.99.0-nightly (3d50c25bc 2026-07-16)
+</p><p>
+# docs.rs version
+docsrs 0.0.0 (964c90a45859fd8f9076e3cbe58470a5a4f4d4f7 2026-07-01 )
+</p><p>
+# build log
+[INFO] running `Command { std: &#34;docker&#34; &#34;exec&#34; &#34;-e&#34; &#34;SOURCE_DIR=/opt/rustwide/workdir&#34; &#34;-e&#34; &#34;CARGO_HOME=/opt/rustwide/cargo-home&#34; &#34;-e&#34; &#34;RUSTUP_HOME=/opt/rustwide/rustup-home&#34; &#34;-e&#34; &#34;CARGO_TARGET_DIR=/opt/rustwide/target&#34; &#34;-e&#34; &#34;DOCS_RS=1&#34; &#34;-w&#34; &#34;/opt/rustwide/workdir&#34; &#34;--user&#34; &#34;1001:1001&#34; &#34;911d57b5af24c3ce0a6b09f018c807725a08d4ca7af72e5b3e6685f89885df7d&#34; &#34;/opt/rustwide/cargo-home/bin/cargo&#34; &#34;+nightly&#34; &#34;rustdoc&#34; &#34;--lib&#34; &#34;-Zrustdoc-map&#34; &#34;--config&#34; &#34;build.rustdocflags=[\&#34;--cfg\&#34;, \&#34;docsrs\&#34;, \&#34;-Z\&#34;, \&#34;unstable-options\&#34;, \&#34;--emit=invocation-specific\&#34;, \&#34;--resource-suffix\&#34;, \&#34;-20260716-1.99.0-nightly-3d50c25bc\&#34;, \&#34;--static-root-path\&#34;, \&#34;/-/rustdoc.static/\&#34;, \&#34;--cap-lints\&#34;, \&#34;warn\&#34;, \&#34;--extern-html-root-takes-precedence\&#34;]&#34; &#34;--offline&#34; &#34;-Zunstable-options&#34; &#34;--config=doc.extern-map.registries.crates-io=\&#34;https://docs.rs/{pkg_name}/{version}/x86_64-unknown-linux-gnu\&#34;&#34; &#34;-Zrustdoc-scrape-examples&#34; &#34;-j6&#34; &#34;--target&#34; &#34;x86_64-unknown-linux-gnu&#34;, kill_on_drop: false }`
+[INFO] [stderr] warning: target filter specified, but no targets matched; this is a no-op
+[INFO] [stderr]    Compiling lindera-jieba v3.0.7
+[INFO] [stderr]    Compiling formal-ai v0.296.4 (/opt/rustwide/workdir)
+[INFO] [stderr] error: failed to run custom build command for `lindera-jieba v3.0.7`
+[INFO] [stderr] 
+[INFO] [stderr] Caused by:
+[INFO] [stderr]   process didn&#39;t exit successfully: `/opt/rustwide/target/debug/build/lindera-jieba-7a5b3861a7db4917/build-script-build` (exit status: 1)
+[INFO] [stderr]   --- stdout
+[INFO] [stderr]   cargo:rerun-if-changed=build.rs
+[INFO] [stderr]   cargo:rerun-if-changed=Cargo.toml
+[INFO] [stderr]   cargo:rerun-if-env-changed=LINDERA_DICTIONARIES_PATH
+[INFO] [stderr]   cargo:rerun-if-env-changed=LINDERA_CACHE
+[INFO] [stderr]   cargo:rerun-if-env-changed=DOCS_RS
+[INFO] [stderr]   cargo::rustc-env=LINDERA_WORKDIR=/opt/rustwide/target/x86_64-unknown-linux-gnu/debug/build/lindera-jieba-3c1c204c1e9cd364/out
+[INFO] [stderr] 
+[INFO] [stderr]   --- stderr
+[INFO] [stderr]   Error: LinderaError { kind: Io, source: Failed to create dummy input directory: &#34;/opt/rustwide/target/x86_64-unknown-linux-gnu/debug/build/lindera-jieba-3c1c204c1e9cd364/out/mecab-jieba-0.1.1&#34;
+[INFO] [stderr] 
+[INFO] [stderr]   Caused by:
+[INFO] [stderr]       File exists (os error 17) }
+[INFO] [stderr] warning: build failed, waiting for other jobs to finish...
+[INFO] running `Command { std: &#34;docker&#34; &#34;inspect&#34; &#34;911d57b5af24c3ce0a6b09f018c807725a08d4ca7af72e5b3e6685f89885df7d&#34;, kill_on_drop: false }`
+
+</p></pre></div>
+    </div></body>
+</html>
