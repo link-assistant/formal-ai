@@ -200,6 +200,7 @@ fn local_path_object_routes_read_variations_without_web_misroutes() {
 
 #[test]
 fn explicit_content_and_file_object_route_write_variations() {
+    const ACTION_SLOT: &str = "{action}";
     let matrices = [
         (
             &[
@@ -259,7 +260,7 @@ fn explicit_content_and_file_object_route_write_variations() {
     for (actions, template) in matrices {
         let prompts: Vec<String> = actions
             .iter()
-            .map(|action| template.replace("{action}", action))
+            .map(|action| template.replace(ACTION_SLOT, action))
             .collect();
         let borrowed: Vec<&str> = prompts.iter().map(String::as_str).collect();
         assert_routes(&borrowed, "write_file");
