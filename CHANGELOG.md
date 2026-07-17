@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.297.1] - 2026-07-17
+
+### Fixed
+- Restored docs.rs generation by excluding the broken upstream Lindera build script from the documentation-only dependency profile, while retaining the complete meta-language runtime in normal builds.
+- Added fail-closed CI coverage for both the docs.rs profile and the existing `/docs/api` GitHub Pages publication path.
+
 ## [0.297.0] - 2026-07-17
 
 ### Added
