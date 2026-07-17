@@ -930,7 +930,7 @@ fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
         .iter()
         .rev()
         .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.plain_text())
+        .map(|message| message.content.user_request_text())
 }
 
 /// Keywords that mark a user turn as the canonical issue-#468 formalization task.

@@ -102,7 +102,7 @@ pub(super) fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<
         return (String::new(), Vec::new());
     };
 
-    let prompt = messages[latest_user_index].content.plain_text();
+    let prompt = messages[latest_user_index].content.user_request_text();
     let history = messages[..latest_user_index]
         .iter()
         .filter_map(chat_message_to_turn)
@@ -111,7 +111,11 @@ pub(super) fn chat_prompt_and_history(messages: &[ChatMessage]) -> (String, Vec<
 }
 
 pub(super) fn chat_message_to_turn(message: &ChatMessage) -> Option<ConversationTurn> {
-    let content = message.content.plain_text();
+    let content = if message.role.eq_ignore_ascii_case("user") {
+        message.content.user_request_text()
+    } else {
+        message.content.plain_text()
+    };
     if content.trim().is_empty() {
         return None;
     }
@@ -125,8 +129,9 @@ pub(super) fn chat_message_to_turn(message: &ChatMessage) -> Option<Conversation
 }
 
 pub(super) fn response_prompt(request: &ResponsesRequest) -> String {
-    latest_response_user_text(&request.input)
-        .unwrap_or_else(|| value_to_prompt_text(&request.input))
+    let text = latest_response_user_text(&request.input)
+        .unwrap_or_else(|| value_to_prompt_text(&request.input));
+    super::MessageContent::Text(text).user_request_text()
 }
 
 fn latest_response_user_text(input: &Value) -> Option<String> {

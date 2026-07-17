@@ -21,6 +21,7 @@ use crate::protocol_policy::{
 use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
+mod content;
 mod recording;
 pub use recording::{
     chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
@@ -243,20 +244,6 @@ pub struct MessageContentPart {
     pub kind: String,
     #[serde(default)]
     pub text: Option<String>,
-}
-
-impl MessageContent {
-    #[must_use]
-    pub fn plain_text(&self) -> String {
-        match self {
-            Self::Text(text) => text.clone(),
-            Self::Parts(parts) => parts
-                .iter()
-                .filter_map(|part| part.text.as_deref())
-                .collect::<Vec<_>>()
-                .join("\n"),
-        }
-    }
 }
 
 /// A tool call an assistant turn is requesting (OpenAI `tool_calls` shape).
@@ -732,20 +719,27 @@ fn chat_completion_from_plan(
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
-            let completion_tokens = calls
-                .iter()
-                .map(|call| {
-                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments))
-                })
-                .sum();
-            let tool_calls = calls
+            let tool_calls: Vec<_> = calls
                 .into_iter()
                 .enumerate()
                 .map(|(index, call)| {
                     let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
-                    ToolCall::function(stable_id("call", &seed), call.tool, call.arguments)
+                    let arguments = response_arguments_for_tool(
+                        &request.tools,
+                        &call.tool,
+                        call.arguments,
+                        prompt,
+                    );
+                    ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
                 .collect();
+            let completion_tokens = tool_calls
+                .iter()
+                .map(|call| {
+                    estimate_tokens(&call.function.name)
+                        .saturating_add(estimate_tokens(&call.function.arguments))
+                })
+                .sum();
             (
                 ChatMessage::assistant_tool_calls(tool_calls),
                 String::from("tool_calls"),
@@ -888,7 +882,7 @@ fn response_from_plan(
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
                 let arguments =
-                    response_arguments_for_tool(&request.tools, &tool, planned_arguments);
+                    response_arguments_for_tool(&request.tools, &tool, planned_arguments, prompt);
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
