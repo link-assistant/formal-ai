@@ -4,7 +4,6 @@ use formal_ai::protocol::ChatMessage;
 use formal_ai::FormalAiEngine;
 
 fn call(prompt: &str) -> (String, serde_json::Value) {
-    let messages = vec![ChatMessage::user(prompt)];
     let tools = [
         "web_fetch",
         "web_search",
@@ -12,7 +11,12 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
         "write_file",
         "exec_command",
     ];
-    match plan_chat_step(&messages, &tools) {
+    call_with_tools(prompt, &tools)
+}
+
+fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
+    let messages = vec![ChatMessage::user(prompt)];
+    match plan_chat_step(&messages, tools) {
         Some(AgenticPlan::ToolCalls(calls)) => {
             assert_eq!(calls.len(), 1, "expected one call for {prompt:?}");
             let call = &calls[0];
@@ -23,6 +27,13 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
         }
         other => panic!("expected a tool call for {prompt:?}, got {other:?}"),
     }
+}
+
+#[test]
+fn code_search_prefers_an_advertised_grep_capability_over_shell_lowering() {
+    let (tool, arguments) = call_with_tools("search the code for RouteIntent", &["grep_search"]);
+    assert_eq!(tool, "grep_search");
+    assert_eq!(arguments["pattern"], "RouteIntent");
 }
 
 fn assert_routes(prompts: &[&str], expected: &str) {

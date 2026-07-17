@@ -37,6 +37,24 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
         .or_else(|| intent_shell_command(prompt, &seed::shell_intent_vocabulary()))
 }
 
+/// Recover the literal subject of a seed-backed source-code search request.
+///
+/// A client may advertise a dedicated grep/code-search tool instead of a shell.
+/// The planner uses this semantic query before falling back to the `rg` lowering
+/// returned by [`shell_command_for_task`].
+pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let vocab = seed::shell_intent_vocabulary();
+    let cue = vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.command == "rg")
+        .flat_map(|intent| intent.cues.iter())
+        .filter(|cue| lower.contains(cue.as_str()))
+        .max_by_key(|cue| cue.chars().count())?;
+    remainder_argument(prompt, &lower, cue)
+}
+
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
 /// [`ShellIntentVocabulary`] (issue #680).
 ///

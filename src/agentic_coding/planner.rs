@@ -230,6 +230,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
+    if let Some(query) = shell_command::code_search_query_for_task(&task) {
+        if let Some(tool) = code_search_tool_for(tool_names) {
+            return Some(plan_one(
+                tool,
+                json!({ "query": query, "pattern": query }).to_string(),
+            ));
+        }
+    }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
     }
@@ -849,6 +857,14 @@ pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Op
         .iter()
         .copied()
         .find(|name| classify_tool(name) == Some(capability))
+}
+
+/// Prefer a client's dedicated source-search capability over shell lowering.
+fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
+    tool_names.iter().copied().find(|name| {
+        let lower = name.to_ascii_lowercase();
+        lower.contains("grep") || (lower.contains("code") && lower.contains("search"))
+    })
 }
 
 /// Classify a tool name into a [`Capability`] by substring, mirroring the naming
