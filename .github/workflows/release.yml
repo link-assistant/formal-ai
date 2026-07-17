@@ -212,6 +212,9 @@ jobs:
       - name: Test release changelog collection
         run: rust-script --test scripts/version-and-commit.rs
 
+      - name: Test fragment release map regeneration
+        run: node --test experiments/issue_738_fragment_release_map.test.mjs
+
       - name: Check reconstructed changelog
         run: node experiments/issue_711_rebuild_changelog.mjs --check
 
@@ -730,9 +733,6 @@ jobs:
 
       - name: Configure git
         run: rust-script scripts/git-config.rs
-
-      - name: Collect changelog fragments
-        run: rust-script scripts/collect-changelog.rs
 
       - name: Version and commit
         id: version
