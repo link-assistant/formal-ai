@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.296.4] - 2026-07-17
+
+### Fixed
+- Regenerate the fragment-to-release map inside every release commit so later pull requests no longer inherit a stale reconstruction check.
+
 ## [0.296.3] - 2026-07-17
 
 ### Fixed
