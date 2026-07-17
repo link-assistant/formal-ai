@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784076793622)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.66s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 1 test
+test issue_538_agentic::committed_self_ast_is_generated_and_written_by_the_driver has been running for over 60 seconds
+test issue_538_agentic::committed_self_ast_is_generated_and_written_by_the_driver ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1569 filtered out; finished in 115.30s
+
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784076793622)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.89s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 1 test
+test issue_538_agentic::committed_self_ast_session_matches_a_fresh_run has been running for over 60 seconds
+test issue_538_agentic::committed_self_ast_session_matches_a_fresh_run ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1569 filtered out; finished in 66.58s

@@ -11,6 +11,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::concepts;
+use crate::links_format::format_lino_value;
 use crate::seed;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -65,43 +66,47 @@ impl FormalizationCandidate {
         let mut out = String::from("formalization_candidate\n");
         let _ = writeln!(
             out,
-            "  source_text \"{}\"",
-            escape_lino_value(&self.source_text)
+            "  source_text {}",
+            format_lino_value(&self.source_text)
         );
-        let _ = writeln!(out, "  language \"{}\"", self.language);
-        let _ = writeln!(out, "  score \"{}\"", self.score);
+        let _ = writeln!(out, "  language {}", format_lino_value(&self.language));
+        let _ = writeln!(
+            out,
+            "  score {}",
+            format_lino_value(&self.score.to_string())
+        );
         for slot in &self.slots {
             let _ = writeln!(
                 out,
-                "  {}_surface \"{}\"",
+                "  {}_surface {}",
                 slot.role.slug(),
-                escape_lino_value(&slot.surface)
+                format_lino_value(&slot.surface)
             );
             let _ = writeln!(
                 out,
-                "  {}_{} \"{}\"",
+                "  {}_{} {}",
                 slot.role.slug(),
                 slot.anchor.kind.lino_suffix(),
-                escape_lino_value(&slot.anchor.id)
+                format_lino_value(&slot.anchor.id)
             );
             let _ = writeln!(
                 out,
-                "  {}_score \"{}\"",
+                "  {}_score {}",
                 slot.role.slug(),
-                slot.anchor.score
+                format_lino_value(&slot.anchor.score.to_string())
             );
             let _ = writeln!(
                 out,
-                "  {}_source \"{}\"",
+                "  {}_source {}",
                 slot.role.slug(),
-                escape_lino_value(&slot.anchor.source)
+                format_lino_value(&slot.anchor.source)
             );
         }
         for term in &self.unresolved_terms {
             let _ = writeln!(
                 out,
-                "  formalization_unresolved \"{}\"",
-                escape_lino_value(term)
+                "  formalization_unresolved {}",
+                format_lino_value(term)
             );
         }
         out
@@ -783,13 +788,4 @@ fn wikipedia_title(surface: &str) -> String {
         .split_whitespace()
         .collect::<Vec<_>>()
         .join("_")
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
-        .replace('\r', "\\r")
-        .replace('\t', "\\t")
 }

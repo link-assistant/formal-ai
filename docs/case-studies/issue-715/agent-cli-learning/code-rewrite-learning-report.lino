@@ -1,0 +1,111 @@
+code_rewrite_learning_report
+  issue "715"
+  decision "awaiting_human_review"
+  promotion_gate "normal_algorithm_laws_multilingual_slots_and_agent_cli_e2e_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "8"
+  validation_warning_count "0"
+  multi_hop_seed "observation:stale-prose"
+  multi_hop_recall "observation:stale-prose"
+  learned_expression_01
+    id "observation:stale-prose"
+    text "message
+user
+A follow-up code request returned prose while the Agent CLI workspace retained the previous source bytes."
+    reads "9"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-715|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "lesson:normal-algorithm-core"
+    text "learning_amendment
+assistant
+Represent edits as ordered normal-algorithm rules with leftmost matching, restart from rule zero, terminal rules, creation, deletion, and an explicit execution bound.
+observation:empty-slot-loss"
+    reads "0"
+    writes "5"
+    incoming_links "2"
+    outgoing_links "1"
+    retention_score "8"
+    qualifiers "conversation_id=issue-715|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_03
+    id "observation:empty-slot-loss"
+    text "message
+user
+Literal extraction dropped zero-length slots, reversing creation and deletion requests into unrelated output-literal edits."
+    reads "6"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-715|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:single-substitution"
+    text "message
+user
+The private mutation VM represented only one non-empty ReplaceFirst instruction and discarded later ordered substitutions."
+    reads "7"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-715|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:file-extension-gate"
+    text "message
+user
+Workspace mutation was restricted to a fixed catalog of source extensions instead of the active client-owned artifact."
+    reads "5"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "6"
+    qualifiers "conversation_id=issue-715|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:client-byte-boundary"
+    text "learning_amendment
+assistant
+Read the active artifact through the advertised Agent CLI capability, transform those returned bytes, and write only the completed non-partial result.
+lesson:normal-algorithm-core"
+    reads "0"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-715|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:structural-literal-slots"
+    text "learning_amendment
+assistant
+Compile explicit quoted old/new slots independently of surrounding natural-language wording and preserve zero-length and Unicode values.
+lesson:normal-algorithm-core"
+    reads "0"
+    writes "3"
+    incoming_links "1"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-715|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "lesson:bounded-promotion"
+    text "learning_amendment
+assistant
+Keep non-termination bounded and promotion human-reviewed until algebraic, multilingual, protocol, and external Agent CLI evidence passes.
+lesson:structural-literal-slots"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-715|kind=learning_amendment|role=assistant"
+    validation "aligned"

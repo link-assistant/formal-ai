@@ -185,6 +185,22 @@ fn code_generation_writes_source_then_runs_every_catalog_command_in_cli_harness(
 }
 
 #[test]
+fn opencode_transport_quotes_are_not_compiled_as_program_output() {
+    let messages = vec![ChatMessage::user(
+        "\"Give me a hello world program in Rust\"",
+    )];
+
+    let write = only_call(&request(messages, &["write", "bash"]));
+    let args: Value = serde_json::from_str(&write.function.arguments).unwrap();
+    let source = args["content"].as_str().unwrap();
+    assert!(source.contains("Hello, world!"), "{source}");
+    assert!(
+        !source.contains("Give me a hello world program"),
+        "{source}"
+    );
+}
+
+#[test]
 fn follow_up_change_writes_the_updated_program_instead_of_repeating_old_code() {
     let messages = vec![
         ChatMessage::user("Give me hello world program in Rust"),
