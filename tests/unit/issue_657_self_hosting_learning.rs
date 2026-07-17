@@ -142,7 +142,7 @@ fn reports_share_a_canonical_field_order() {
             .lines()
             .skip(1)
             .take_while(|line| !line.trim_start().starts_with("learned_expression_"))
-            .filter_map(|line| line.trim().split_whitespace().next())
+            .filter_map(|line| line.split_whitespace().next())
             .collect();
         let expected: &[&str] = if report.promotion_gate.is_some() {
             &[
