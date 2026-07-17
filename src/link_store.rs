@@ -102,7 +102,7 @@ pub type DefaultNativeLinkStore = MemoryStore;
 
 /// Create the default Rust-side link store for this build.
 ///
-/// Native default builds return [`DoubletsLinkStore`]. Builds compiled with
+/// Native default builds return `DoubletsLinkStore`. Builds compiled with
 /// `--no-default-features` keep the explicit `.lino` projection fallback.
 pub fn default_native_link_store() -> Result<DefaultNativeLinkStore, LinkStoreError> {
     #[cfg(all(not(target_arch = "wasm32"), feature = "doublets-native"))]

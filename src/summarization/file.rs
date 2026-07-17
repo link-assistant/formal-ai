@@ -8,6 +8,7 @@
 use std::fmt::Write as _;
 use std::path::Path;
 
+#[cfg(feature = "meta-language")]
 use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
 
 use crate::links_format::flatten_lino_value;
@@ -116,7 +117,7 @@ impl RepositoryFileFormalization {
 pub fn formalize_repository_file(path: &str, content: &str) -> RepositoryFileFormalization {
     let format = detect_repository_file_format(path);
     let meta_language = meta_language_label_for_format(format)
-        .map(|label| parse_with_meta_language(label, content));
+        .and_then(|label| parse_with_meta_language(label, content));
     let embedded_grammars = if format == "markdown" {
         formalize_markdown_embedded_grammars(content)
     } else {
@@ -283,7 +284,7 @@ fn formalize_fenced_block(block: &FencedBlock) -> EmbeddedGrammarFormalization {
         Vec::new()
     };
     let meta_language = meta_language_label_for_format(&language)
-        .map(|label| parse_with_meta_language(label, &block.source));
+        .and_then(|label| parse_with_meta_language(label, &block.source));
     EmbeddedGrammarFormalization {
         language,
         line_count: line_count(&block.source),
@@ -346,20 +347,26 @@ fn fence_language(trimmed_line: &str) -> String {
     }
 }
 
-fn parse_with_meta_language(label: &str, source: &str) -> MetaLanguageFormalization {
+#[cfg(feature = "meta-language")]
+fn parse_with_meta_language(label: &str, source: &str) -> Option<MetaLanguageFormalization> {
     let network = LinkNetwork::parse(source, label, ParseConfiguration::default());
     let verification = network.verify_full_match(None);
     let syntax_link_count = network
         .projected_links(NetworkProjection::ConcreteSyntax)
         .filter(|link| link.metadata().link_type() == Some(LinkType::Syntax))
         .count();
-    MetaLanguageFormalization {
+    Some(MetaLanguageFormalization {
         label: label.to_owned(),
         syntax_link_count,
         total_link_count: network.len(),
         has_error: !verification.is_clean(),
         text_preserved: network.reconstruct_text() == source,
-    }
+    })
+}
+
+#[cfg(not(feature = "meta-language"))]
+fn parse_with_meta_language(_label: &str, _source: &str) -> Option<MetaLanguageFormalization> {
+    None
 }
 
 fn detect_repository_file_format(path: &str) -> &'static str {
