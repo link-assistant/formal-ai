@@ -11,6 +11,7 @@ use crate::web_search_core::{
 };
 
 use super::finalize_simple;
+use super::installation_conversion::is_install_conversion_request;
 use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
@@ -411,6 +412,12 @@ fn try_project_lookup_internal(
     suppress_identity_route: bool,
     response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
+    // A repository URL can be source material rather than the requested action.
+    // Keep installation-guide/script transformations on their more specific
+    // conversion path instead of treating the embedded clone URL as a lookup.
+    if is_install_conversion_request(&lookup_prompt.to_lowercase()) {
+        return None;
+    }
     if is_text_url_extraction_prompt(lookup_prompt) {
         return None;
     }
