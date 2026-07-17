@@ -11,12 +11,14 @@
  *
  * Usage:
  *   node experiments/issue_711_rebuild_changelog.mjs --write
+ *   node experiments/issue_711_rebuild_changelog.mjs --write --pending-release 1.2.3 --pending-date 2026-07-17
  *   node experiments/issue_711_rebuild_changelog.mjs --check
  *   node experiments/issue_711_rebuild_changelog.mjs --ref origin/main
  */
 
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 const INITIAL_COMMIT = "6f8d4a8a05770adfd2fe33fdf3c6c586efb103af";
 const CHANGELOG_PATH = "CHANGELOG.md";
@@ -155,6 +157,43 @@ function reconstruct(ref) {
     if (fragments.length > 0) groups.set(release.version, { ...release, fragments });
   }
 
+  if (assignments.length === 0) {
+    throw new Error(`No released fragments found in ${ref}`);
+  }
+  return { assignments, groups };
+}
+
+export function addPendingRelease(result, release) {
+  const seen = new Set(result.assignments.map(({ path }) => path));
+  const fragments = release.fragments
+    .filter(({ path }) => !seen.has(path))
+    .sort((a, b) => a.path.localeCompare(b.path));
+  if (fragments.length === 0) {
+    throw new Error(`No pending fragments found for ${release.version}`);
+  }
+  if (result.groups.has(release.version)) {
+    throw new Error(`Release ${release.version} already exists in reconstructed history`);
+  }
+  result.groups.set(release.version, { ...release, fragments });
+  for (const { path } of fragments) {
+    result.assignments.push({ path, version: release.version });
+  }
+  return result;
+}
+
+function deletedFragments(ref) {
+  const output = git([
+    "diff", "--diff-filter=D", "--name-only", ref, "--", "changelog.d",
+  ]).trim();
+  if (!output) return [];
+  return output
+    .split("\n")
+    .filter((path) => path.endsWith(".md") && !path.endsWith("/README.md"))
+    .sort()
+    .map((path) => ({ path, body: stripFrontmatter(fileAt(ref, path)) }));
+}
+
+export function renderReconstruction(groups, assignments) {
   const sections = [...groups.values()]
     .sort((a, b) => compareVersions(b.version, a.version))
     .map((group) => {
@@ -166,36 +205,51 @@ function reconstruct(ref) {
 
   const changelog = `${HEADER}\n\n${sections.join("\n\n")}\n`;
   const map = [
-    "fragment\tfirst_release\tfirst_release_commit",
+    "fragment\tfirst_release",
     ...assignments
       .sort((a, b) => a.path.localeCompare(b.path))
-      .map(({ path, version, commit }) => `${path}\t${version}\t${commit}`),
+      .map(({ path, version }) => `${path}\t${version}`),
     "",
   ].join("\n");
 
-  if (assignments.length === 0) {
-    throw new Error(`No released fragments found in ${ref}`);
-  }
   return { changelog, map, assignments, groups };
 }
 
-const ref = argument("ref", "origin/main");
-const result = reconstruct(ref);
+function main() {
+  const ref = argument("ref", "origin/main");
+  const reconstruction = reconstruct(ref);
+  const pendingVersion = argument("pending-release");
+  if (pendingVersion) {
+    addPendingRelease(reconstruction, {
+      version: pendingVersion,
+      date: argument("pending-date", new Date().toISOString().slice(0, 10)),
+      fragments: deletedFragments(ref),
+    });
+  }
+  const result = renderReconstruction(
+    reconstruction.groups,
+    reconstruction.assignments,
+  );
 
-if (process.argv.includes("--write")) {
-  writeFileSync(CHANGELOG_PATH, result.changelog);
-  writeFileSync(MAP_PATH, result.map);
-} else if (process.argv.includes("--check")) {
-  if (readFileSync(CHANGELOG_PATH, "utf8") !== result.changelog) {
-    throw new Error("CHANGELOG.md differs from reconstructed Git history");
+  if (process.argv.includes("--write")) {
+    writeFileSync(CHANGELOG_PATH, result.changelog);
+    writeFileSync(MAP_PATH, result.map);
+  } else if (process.argv.includes("--check")) {
+    if (readFileSync(CHANGELOG_PATH, "utf8") !== result.changelog) {
+      throw new Error("CHANGELOG.md differs from reconstructed Git history");
+    }
+    if (readFileSync(MAP_PATH, "utf8") !== result.map) {
+      throw new Error(`${MAP_PATH} differs from reconstructed Git history`);
+    }
+  } else {
+    process.stdout.write(result.changelog);
   }
-  if (readFileSync(MAP_PATH, "utf8") !== result.map) {
-    throw new Error(`${MAP_PATH} differs from reconstructed Git history`);
-  }
-} else {
-  process.stdout.write(result.changelog);
+
+  process.stderr.write(
+    `Reconstructed ${result.assignments.length} fragments across ${result.groups.size} non-empty releases from ${ref}.\n`,
+  );
 }
 
-process.stderr.write(
-  `Reconstructed ${result.assignments.length} fragments across ${result.groups.size} non-empty releases from ${ref}.\n`,
-);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}
