@@ -876,7 +876,7 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
         candidate.to_owned()
     } else {
         let host_candidate = candidate.split(['/', '?', '#']).next().unwrap_or_default();
-        if probable_local_file_name(host_candidate) {
+        if super::web_search_intent::probable_local_file_name(host_candidate) {
             return None;
         }
         if lower.starts_with("www.") || looks_like_hostname(host_candidate) {
@@ -895,38 +895,6 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
         return None;
     }
     Some(url)
-}
-
-/// Keep a schemeless local filename from becoming a synthetic HTTPS host.
-///
-/// Explicit `http(s)://` URLs remain authoritative even when their host uses an
-/// unusual suffix. This boundary only applies to the ambiguous bare-token form.
-fn probable_local_file_name(candidate: &str) -> bool {
-    let Some((_, extension)) = candidate.rsplit_once('.') else {
-        return false;
-    };
-    matches!(
-        extension.to_ascii_lowercase().as_str(),
-        "txt"
-            | "md"
-            | "json"
-            | "yaml"
-            | "yml"
-            | "toml"
-            | "rs"
-            | "py"
-            | "js"
-            | "ts"
-            | "tsx"
-            | "jsx"
-            | "css"
-            | "html"
-            | "xml"
-            | "csv"
-            | "lino"
-            | "log"
-            | "sh"
-    )
 }
 
 fn looks_like_hostname(value: &str) -> bool {

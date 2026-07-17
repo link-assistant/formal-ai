@@ -55,6 +55,14 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     remainder_argument(prompt, &lower, cue)
 }
 
+/// Prefer a client's dedicated source-search capability over shell lowering.
+pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
+    tool_names.iter().copied().find(|name| {
+        let lower = name.to_ascii_lowercase();
+        lower.contains("grep") || (lower.contains("code") && lower.contains("search"))
+    })
+}
+
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
 /// [`ShellIntentVocabulary`] (issue #680).
 ///
