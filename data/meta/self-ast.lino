@@ -7,19 +7,19 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 21850
-  named_node_count 4415
+  total_link_count 21540
+  named_node_count 4343
   distinct_node_kinds 81
   node_kinds
-    arguments 306
+    arguments 297
     array_expression 2
     array_type 43
     assignment_expression 3
     attribute 6
     attribute_item 6
     binary_expression 29
-    block 113
-    call_expression 306
+    block 110
+    call_expression 297
     closure_expression 17
     closure_parameters 17
     const_item 4
@@ -32,24 +32,24 @@ self_ast
     enum_variant 8
     enum_variant_list 2
     escape_sequence 13
-    expression_statement 119
+    expression_statement 113
     field_declaration 10
     field_declaration_list 3
-    field_expression 138
-    field_identifier 174
+    field_expression 139
+    field_identifier 175
     field_initializer 26
     field_initializer_list 14
     for_expression 1
     function_item 37
     function_modifiers 1
     generic_type 13
-    identifier 1129
-    if_expression 71
+    identifier 1103
+    if_expression 68
     impl_item 2
     index_expression 2
     inner_doc_comment_marker 5
     integer_literal 5
-    let_condition 26
+    let_condition 27
     let_declaration 63
     lifetime 5
     lifetime_parameter 1
@@ -67,11 +67,11 @@ self_ast
     parenthesized_expression 1
     primitive_type 46
     range_expression 1
-    reference_expression 65
+    reference_expression 62
     reference_type 85
-    return_expression 46
-    scoped_identifier 161
-    scoped_use_list 4
+    return_expression 43
+    scoped_identifier 153
+    scoped_use_list 3
     self 10
     self_parameter 5
     shorthand_field_initializer 30
@@ -80,15 +80,15 @@ self_ast
     string_literal 82
     struct_expression 14
     struct_item 3
-    super 44
+    super 42
     token_tree 48
     try_expression 2
     tuple_pattern 1
-    tuple_struct_pattern 27
+    tuple_struct_pattern 28
     type_arguments 13
     type_identifier 103
     type_parameters 1
     unary_expression 19
-    use_declaration 28
-    use_list 4
+    use_declaration 26
+    use_list 3
     visibility_modifier 29
