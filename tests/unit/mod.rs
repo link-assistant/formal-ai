@@ -60,6 +60,7 @@ mod issue_571;
 mod issue_627;
 mod issue_649_world_model;
 mod issue_656_promotion;
+mod issue_657_self_hosting_learning;
 mod issue_676_naming;
 mod issue_676_thinking_narrative;
 mod issue_680_intent_routing;
