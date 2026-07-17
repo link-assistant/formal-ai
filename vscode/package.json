@@ -1,7 +1,7 @@
 {
   "name": "formal-ai-vscode",
   "displayName": "formal-ai",
-  "version": "0.154.0",
+  "version": "0.297.1",
   "private": true,
   "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
   "publisher": "link-assistant",
@@ -114,7 +114,7 @@
         "formal-ai.tools.allowByDefault": {
           "type": "boolean",
           "default": false,
-          "description": "Grant tool calls (http_fetch, read_local_file, host shell, and sandboxed code_exec) by default. Off means default-deny until the user opts in."
+          "description": "Grant write, edit, host shell, and sandboxed code-execution tool calls by default. Read-only file and web tools remain available when this is off."
         },
         "formal-ai.agent.defaultOn": {
           "type": "boolean",
@@ -135,5 +135,9 @@
   "devDependencies": {
     "@vscode/test-web": "^0.0.80",
     "@vscode/vsce": "^3.9.2"
+  },
+  "dependencies": {
+    "@link-assistant/web-capture": "^1.10.10",
+    "@link-assistant/web-search": "^0.10.3"
   }
 }
