@@ -1,0 +1,14 @@
+   Compiling formal-ai v0.297.1 (/tmp/gh-issue-solver-1784314259920)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.37s
+     Running tests/issue_745.rs (target/debug/deps/issue_745-74742c03aaaabf92)
+
+running 6 tests
+test reported_object_type_collisions_choose_the_right_capability ... ok
+test explicit_content_and_file_object_route_write_variations ... ok
+test web_search_routes_action_variations_in_every_supported_language ... ok
+test url_object_routes_fetch_variations_without_cross_tool_misroutes ... ok
+test local_path_object_routes_read_variations_without_web_misroutes ... ok
+test directory_listing_routes_shell_variations_in_every_supported_language ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 29.38s
+
