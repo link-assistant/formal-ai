@@ -659,7 +659,11 @@ fn issue_278_default_native_doublets_store_is_traceable() {
     assert_contains_all(
         "Cargo.toml",
         &cargo,
-        &["default = [\"doublets-native\"]", "dep:doublets", "dep:mem"],
+        &[
+            "default = [\"doublets-native\", \"meta-language\"]",
+            "dep:doublets",
+            "dep:mem",
+        ],
     );
 
     let link_store = read(root.join("src/link_store.rs"));
