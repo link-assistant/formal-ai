@@ -36,6 +36,7 @@ pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 mod intent_router;
+pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
@@ -78,6 +79,10 @@ pub use google_trends_catalog::{
 pub use google_trends_learning::{
     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
 };
+pub use learning_report::self_hosting_learning::{
+    is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
+};
+pub use learning_report::{LearningReport, REPORTS};
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
 pub use meaning_detail::{
     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,

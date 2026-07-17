@@ -686,6 +686,7 @@ jobs:
           release_args=(
             --release-version "$RELEASE_VERSION"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
@@ -897,6 +898,7 @@ jobs:
           release_args=(
             --release-version "${{ steps.version.outputs.new_version }}"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
@@ -1274,6 +1276,19 @@ jobs:
         env:
           PORT: 8879
         run: experiments/agent_cli_e2e/run_issue_715_learning.sh
+
+      - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
+        # The self-hosting metric measures the share of a release Formal AI
+        # authored, so deriving its own learning report only inside formal-ai's
+        # in-process harness would test the claim with the one harness that
+        # cannot show it. Here formal-ai serves as the model provider for both
+        # external CLIs — Formal AI executing issue #657's task using Formal AI,
+        # with no external model and no API key — and the two reports must match
+        # byte for byte.
+        timeout-minutes: 5
+        env:
+          PORT: 8881
+        run: experiments/agent_cli_e2e/run_issue_657_metric.sh
 
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:

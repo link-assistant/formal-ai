@@ -88,6 +88,23 @@ For a real GitHub issue, run `examples/self-coding/run.sh --live ISSUE_URL`.
 This invokes `solve ISSUE_URL --tool agent --model formal-ai`: Hive Mind drives
 the Agent CLI, which drives the local Formal AI server.
 
+### Recording self-authorship
+
+The release metric counts a commit as Formal AI-authored only when its commit
+message records both trailers below:
+
+```text
+Formal-AI-Session: <session-id>
+Formal-AI-Evidence: <repo-relative committed evidence path>
+```
+
+The evidence file must exist in that commit and contain both `formal-ai` and
+the exact session id. Add one pair per session when multiple sessions authored
+a commit. Do not add these trailers to a human-authored or manually corrected
+commit; an honest 0% release is valid. The metric counts additions plus
+deletions from non-merge commits and ignores binary files. Reproduce it with
+`rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+
 ## Development Setup
 
 1. **Fork and clone the repository**

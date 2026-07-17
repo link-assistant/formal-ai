@@ -8,10 +8,9 @@ use serde_json::json;
 
 use super::change_request;
 use super::code_artifact;
-use super::code_rewrite_learning;
 use super::conversation_recall;
 use super::diagram;
-use super::execution_learning;
+use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
@@ -22,19 +21,18 @@ use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLA
 use super::google_trends_catalog;
 use super::google_trends_learning;
 use super::intent_router;
+use super::learning_report;
 use super::ledger;
 use super::meaning_detail;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
 use super::report_issue;
-use super::routing_learning;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
 use super::web_research;
-use super::{associative_learning, dreaming_audit};
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -126,17 +124,8 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Specific self-inspection routes precede broad formalization. Associative
     // learning comes before self-healing because both accept auto-learning terms;
     // the requested artifact scope distinguishes their recipes.
-    if associative_learning::is_associative_learning_task(&task) {
-        return Some(associative_learning::plan_step(messages, tool_names));
-    }
-    if routing_learning::is_routing_learning_task(&task) {
-        return Some(routing_learning::plan_step(messages, tool_names));
-    }
-    if code_rewrite_learning::is_code_rewrite_learning_task(&task) {
-        return Some(code_rewrite_learning::plan_step(messages, tool_names));
-    }
-    if execution_learning::is_execution_learning_task(&task) {
-        return Some(execution_learning::plan_step(messages, tool_names));
+    if let Some(report) = learning_report::route(&task) {
+        return Some(report.plan_step(messages, tool_names));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot
