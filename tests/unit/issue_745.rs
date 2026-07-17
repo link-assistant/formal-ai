@@ -1,4 +1,6 @@
 //! Issue #745: intent routing is semantic, object-typed, multilingual, and variation-complete.
+//! Registered in the shared unit-test binary so language-coverage CI sees every locale.
+//! Coverage matrix: English, Russian, Hindi, and Chinese.
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::protocol::ChatMessage;
 use formal_ai::FormalAiEngine;
