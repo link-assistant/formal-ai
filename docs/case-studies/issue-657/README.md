@@ -42,3 +42,34 @@ exercised, but it is intentionally **not** used to attribute this manually
 integrated commit. See [requirements.md](requirements.md),
 [solution-plans.md](solution-plans.md), and
 [raw-data/online-research.md](raw-data/online-research.md).
+
+## Formal AI executing issue #657's own task
+
+That replay ran a stand-in task inside formal-ai's own harness — the one harness
+that cannot show the capability works over the wire. `agent-cli-learning/`
+records the run that does: `experiments/agent_cli_e2e/run_issue_657_metric.sh`
+drives two external Agent CLIs (`@link-assistant/agent` and `opencode`) against
+this issue's *actual* auto-learning task, with `formal-ai serve` configured as
+**their model provider**. Formal AI is therefore executing issue #657's task
+using Formal AI, with no external model and no API key.
+
+Both harnesses derived a byte-identical 5,050-byte report over 7 chat rounds.
+The parity is the assertion: two tool vocabularies that agree on the artifact
+show the derivation is the model's, not a harness's. The step runs in the
+`E2E Tests (agent CLI ↔ formal-ai)` job.
+
+The report is derived, never canned. It ranks the persisted attribution network
+in [`data/meta/issue-657-self-hosting-learning.lino`](../../../data/meta/issue-657-self-hosting-learning.lino)
+through the production `AssociativeMemory` adapter, scoring each observation by
+`reads + writes + incoming_links + outgoing_links`. Its four amendments — carry
+attribution in commit trailers, start from an honest baseline, weight by changed
+lines, ratchet on a trailing window — are the reasoning behind the metric
+contract above, recovered from the observations that forced each one. Every
+observation is grounded in this issue's measured baseline rather than invented.
+
+The report carries `decision "awaiting_human_review"` and waits on
+`promotion_gate "metric_fixture_exact_share_and_honest_ledger_ratchet_pass"`. It
+proposes; it does not promote. A learning loop that could adopt its own
+amendments to *how authorship is attributed* would be the exact failure issue
+#657 rules out — gaming the metric — so the E2E asserts the absence of a
+self-promotion alongside the presence of the ranking.
