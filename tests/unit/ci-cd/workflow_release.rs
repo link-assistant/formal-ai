@@ -6,7 +6,7 @@ use std::fs;
 use super::workflow_fixtures::*;
 
 #[test]
-fn demo_deploy_waits_for_release_ref_before_pages_upload() {
+fn pages_deploy_waits_for_release_ref_before_pages_upload() {
     let workflow = release_workflow();
     let auto_release = job_block(&workflow, "auto-release");
     let manual_release = job_block(&workflow, "manual-release");
@@ -52,7 +52,7 @@ fn rust_script_install_steps_use_retry_wrapper() {
 }
 
 #[test]
-fn demo_deploy_uses_github_pages_workflow_artifact() {
+fn pages_deploy_uses_github_pages_workflow_artifact() {
     let workflow = release_workflow();
     let deploy_demo = job_block(&workflow, "deploy-pages");
 
@@ -113,7 +113,7 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
         pages_e2e.contains(
             "PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}"
         ),
-        "live Pages e2e should wait for the same selected SHA that deploy-demo stamped"
+        "live Pages e2e should wait for the same selected SHA that deploy-pages stamped"
     );
     assert!(
         !pages_e2e.contains("run: sleep 30"),
@@ -313,7 +313,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // asserts the CLI writes the enriched meaning file. The extra headroom
         // over test-e2e-local absorbs a cold cargo build of the release binary.
         ("test-agent-cli-e2e", 20),
-        // deploy-demo also runs `cargo doc` for the /docs/api reference (issue
+        // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
         // #479), which compiles the dependency tree on a cold cargo cache.
         ("deploy-pages", 20),
         ("test-e2e-pages", 15),
@@ -472,30 +472,30 @@ fn issue_479_landing_surfaces_source_code_as_a_big_button() {
 }
 
 /// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
-/// deploy-demo job generates it with `cargo doc` and copies it into the Pages
+/// deploy-pages job generates it with `cargo doc` and copies it into the Pages
 /// artifact — and the copy must run *after* stamping (rustdoc HTML carries no
 /// version placeholders, so copying post-stamp keeps the large generated tree
 /// out of the placeholder scan).
 #[test]
-fn deploy_demo_generates_api_docs_and_copies_them_after_stamping() {
+fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
     let workflow = release_workflow();
     let deploy = job_block(&workflow, "deploy-pages");
 
     assert!(
         deploy.contains("cargo doc --no-deps --lib"),
-        "deploy-demo should build the Rust API docs with cargo doc"
+        "deploy-pages should build the Rust API docs with cargo doc"
     );
     assert!(
         deploy.contains("cp -R target/doc/. src/web/docs/api/"),
-        "deploy-demo should copy the generated docs into src/web/docs/api/"
+        "deploy-pages should copy the generated docs into src/web/docs/api/"
     );
 
     let stamp_pos = deploy
         .find("Stamp GitHub Pages artifact")
-        .expect("deploy-demo should stamp the Pages artifact");
+        .expect("deploy-pages should stamp the Pages artifact");
     let copy_pos = deploy
         .find("Copy Rust API docs into the Pages artifact")
-        .expect("deploy-demo should copy the API docs");
+        .expect("deploy-pages should copy the API docs");
     assert!(
         stamp_pos < copy_pos,
         "the API-docs copy must run after the stamp step so rustdoc HTML is not scanned for placeholders"
