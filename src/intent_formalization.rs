@@ -73,7 +73,7 @@ impl IntentFormalization {
     /// ended the value early and silently dropped the field — and once a value
     /// has ended early, a quoted code fragment's `(` is an unclosed group rather
     /// than text, so the whole document failed to parse. Delegating to
-    /// [`format_lino_record`], which the rest of the codebase already publishes
+    /// `format_lino_record`, which the rest of the codebase already publishes
     /// records through, keeps the notation's definition and this encoder from
     /// drifting apart again.
     #[must_use]

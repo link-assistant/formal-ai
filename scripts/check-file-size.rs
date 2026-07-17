@@ -238,18 +238,31 @@ fn warning_annotation(finding: &Finding) -> String {
     )
 }
 
-fn warnings_for_changed_paths<'a>(
+fn warnings_for_growing_paths<'a>(
     warnings: &'a [Finding],
-    changed_paths: &[String],
+    growing_paths: &[String],
 ) -> Vec<&'a Finding> {
     warnings
         .iter()
-        .filter(|finding| changed_paths.contains(&finding.file))
+        .filter(|finding| growing_paths.contains(&finding.file))
+        .collect()
+}
+
+fn growing_paths_from_numstat(numstat: &str) -> Vec<String> {
+    numstat
+        .lines()
+        .filter_map(|line| {
+            let mut fields = line.splitn(3, '\t');
+            let added = fields.next()?.parse::<usize>().ok()?;
+            let removed = fields.next()?.parse::<usize>().ok()?;
+            let path = fields.next()?;
+            (added > removed).then(|| path.to_string())
+        })
         .collect()
 }
 
 #[cfg(not(test))]
-fn changed_paths_since(base: &str) -> Option<Vec<String>> {
+fn growing_paths_since(base: &str) -> Option<Vec<String>> {
     if base.is_empty() || base.chars().all(|character| character == '0') {
         return None;
     }
@@ -257,7 +270,7 @@ fn changed_paths_since(base: &str) -> Option<Vec<String>> {
     let output = Command::new("git")
         .args([
             "diff",
-            "--name-only",
+            "--numstat",
             "--diff-filter=ACMR",
             base,
             "HEAD",
@@ -269,12 +282,9 @@ fn changed_paths_since(base: &str) -> Option<Vec<String>> {
         return None;
     }
 
-    Some(
-        String::from_utf8_lossy(&output.stdout)
-            .lines()
-            .map(str::to_string)
-            .collect(),
-    )
+    Some(growing_paths_from_numstat(&String::from_utf8_lossy(
+        &output.stdout,
+    )))
 }
 
 #[cfg(not(test))]
@@ -341,8 +351,8 @@ fn main() {
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);
     let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
-    if let Some(changed_paths) = changed_paths_since(&warning_base) {
-        let warnings = warnings_for_changed_paths(&result.warnings, &changed_paths);
+    if let Some(growing_paths) = growing_paths_since(&warning_base) {
+        let warnings = warnings_for_growing_paths(&result.warnings, &growing_paths);
         let warnings: Vec<Finding> = warnings.into_iter().cloned().collect();
         print_warnings(&warnings);
     } else {
@@ -457,7 +467,7 @@ mod tests {
     }
 
     #[test]
-    fn warning_annotations_are_limited_to_changed_files() {
+    fn warning_annotations_are_limited_to_growing_files() {
         let warnings = vec![
             Finding {
                 file: "src/unchanged.rs".to_string(),
@@ -476,8 +486,18 @@ mod tests {
         ];
 
         assert_eq!(
-            warnings_for_changed_paths(&warnings, &["src/changed.rs".to_string()]),
+            warnings_for_growing_paths(&warnings, &["src/changed.rs".to_string()]),
             vec![&warnings[1]]
+        );
+    }
+
+    #[test]
+    fn numstat_selects_only_files_with_net_line_growth() {
+        let numstat = "12\t0\tsrc/growing.rs\n3\t3\tsrc/unchanged.rs\n1\t8\tsrc/shrinking.rs\n-\t-\tassets/binary.png\n";
+
+        assert_eq!(
+            growing_paths_from_numstat(numstat),
+            vec!["src/growing.rs".to_string()]
         );
     }
 

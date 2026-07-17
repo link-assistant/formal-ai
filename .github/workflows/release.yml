@@ -193,6 +193,14 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
+      # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
+      # Build the same public API docs deployed by Pages before release so a
+      # broken link cannot first surface after packages have been published.
+      - name: Validate Rust API documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --lib
+
       - name: Check semantic grounding
         run: cargo test --test unit semantic_grounding -- --nocapture
 
@@ -952,7 +960,7 @@ jobs:
   # Serve src/web with a local HTTP server and run Playwright tests against it.
   # Runs on every PR so regressions are caught before merge.
   test-e2e-local:
-    name: E2E Tests (local demo)
+    name: E2E Tests (local web app)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [detect-changes]
@@ -1273,10 +1281,10 @@ jobs:
             /tmp/agent-out-*.log
           retention-days: 7
 
-  # === DEPLOY DEMO ===
-  # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
-  deploy-demo:
-    name: Deploy Demo to GitHub Pages
+  # === DEPLOY WEB APP ===
+  # Deploy the production web app from src/web/ to GitHub Pages after a successful build.
+  deploy-pages:
+    name: Deploy Web App to GitHub Pages
     needs: [build, auto-release, manual-release]
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
@@ -1427,10 +1435,10 @@ jobs:
   # Run Playwright tests against the live GitHub Pages URL after deployment.
   test-e2e-pages:
     name: E2E Tests (GitHub Pages)
-    needs: [deploy-demo]
+    needs: [deploy-pages]
     if: |
       !cancelled() &&
-      needs.deploy-demo.result == 'success'
+      needs.deploy-pages.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -1455,13 +1463,13 @@ jobs:
 
       - name: Wait for GitHub Pages deployment
         env:
-          PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}
-        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-demo.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
+          PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}
+        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
 
       - name: Run GitHub Pages e2e tests
         run: |
           cd tests/e2e
-          PAGES_URL="${{ needs.deploy-demo.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
+          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
 
       - name: Upload Playwright report on failure
         if: failure()

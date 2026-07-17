@@ -246,7 +246,7 @@ pub fn render_link_substitution_query(program: &LinkRewriteProgram) -> String {
 ///
 /// A read answers with links, so the answer has to be written in the notation
 /// the question was asked in: the reader that parses `((1: 1 1))` should be able
-/// to parse what comes back. Sharing [`render_slot`] with the query renderer is
+/// to parse what comes back. Sharing `render_slot` with the query renderer is
 /// what keeps the two from drifting into separate quoting rules.
 #[must_use]
 pub fn render_link(link: &DoubletLink) -> String {
