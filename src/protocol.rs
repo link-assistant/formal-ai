@@ -257,6 +257,34 @@ impl MessageContent {
                 .join("\n"),
         }
     }
+
+    /// User-authored request text with client-injected startup metadata removed.
+    ///
+    /// Qwen Code places `<system-reminder>` blocks in a `user` content part.
+    /// Those blocks describe the client and its deferred tools; treating them as
+    /// the task lets their keywords override the actual request that follows.
+    #[must_use]
+    pub fn user_request_text(&self) -> String {
+        strip_system_reminders(&self.plain_text())
+    }
+}
+
+fn strip_system_reminders(text: &str) -> String {
+    const OPEN: &str = "<system-reminder>";
+    const CLOSE: &str = "</system-reminder>";
+    let mut remaining = text;
+    let mut request = String::new();
+    while let Some(start) = remaining.find(OPEN) {
+        request.push_str(&remaining[..start]);
+        let after_open = &remaining[start + OPEN.len()..];
+        let Some(end) = after_open.find(CLOSE) else {
+            remaining = "";
+            break;
+        };
+        remaining = &after_open[end + CLOSE.len()..];
+    }
+    request.push_str(remaining);
+    request.trim().to_owned()
 }
 
 /// A tool call an assistant turn is requesting (OpenAI `tool_calls` shape).
@@ -732,20 +760,27 @@ fn chat_completion_from_plan(
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
-            let completion_tokens = calls
-                .iter()
-                .map(|call| {
-                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments))
-                })
-                .sum();
-            let tool_calls = calls
+            let tool_calls: Vec<_> = calls
                 .into_iter()
                 .enumerate()
                 .map(|(index, call)| {
                     let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
-                    ToolCall::function(stable_id("call", &seed), call.tool, call.arguments)
+                    let arguments = response_arguments_for_tool(
+                        &request.tools,
+                        &call.tool,
+                        call.arguments,
+                        prompt,
+                    );
+                    ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
                 .collect();
+            let completion_tokens = tool_calls
+                .iter()
+                .map(|call| {
+                    estimate_tokens(&call.function.name)
+                        .saturating_add(estimate_tokens(&call.function.arguments))
+                })
+                .sum();
             (
                 ChatMessage::assistant_tool_calls(tool_calls),
                 String::from("tool_calls"),
@@ -888,7 +923,7 @@ fn response_from_plan(
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
                 let arguments =
-                    response_arguments_for_tool(&request.tools, &tool, planned_arguments);
+                    response_arguments_for_tool(&request.tools, &tool, planned_arguments, prompt);
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
