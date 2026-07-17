@@ -22,9 +22,9 @@
 //! silent — `replacen` that matches nothing returns the string unchanged, so a
 //! report could quietly keep claiming issue #686.
 //!
-//! A [`LearningReport`] carries that identity instead, and [`render`] emits it
-//! directly. Adding a report is now a row in [`REPORTS`], which is what "the
-//! same derivation with a different identity" should have cost all along.
+//! A [`LearningReport`] carries that identity instead, and the shared renderer
+//! emits it directly. Adding a report is now a row in [`REPORTS`], which is what
+//! "the same derivation with a different identity" should have cost all along.
 
 use std::fmt::Write as _;
 
