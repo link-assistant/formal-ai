@@ -23,6 +23,7 @@ mod issue_680_intent_routing;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
 mod issue_716_agentic_execution;
+mod issue_744_qwen_tool_schema;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;
