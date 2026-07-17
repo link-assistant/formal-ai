@@ -4,3 +4,4 @@ data/cache/**/*.json text eol=lf
 docs/case-studies/issue-730/**/*.diff whitespace=-blank-at-eol,-blank-at-eof
 docs/case-studies/issue-730/**/*.jsonl whitespace=-blank-at-eof
 docs/case-studies/issue-730/**/*.log whitespace=-blank-at-eol,-blank-at-eof
+docs/case-studies/issue-742/raw-data/*.html whitespace=-blank-at-eol,-blank-at-eof
