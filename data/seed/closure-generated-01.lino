@@ -99,16 +99,6 @@ meanings
     lexeme en
       surface
         text "advertising platform"
-  agent_action_report_subject
-    defined-by concept
-    lexeme en
-      surface
-        text "agent action report subject"
-  agent_action_report_verb
-    defined-by concept
-    lexeme en
-      surface
-        text "agent action report verb"
   agent_suggestion
     defined-by intent
     lexeme en
@@ -1394,3 +1384,13 @@ meanings
     lexeme en
       surface
         text "multi step"
+  mv
+    defined-by token
+    lexeme en
+      surface
+        text "mv"
+  non-deterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "non deterministic"

@@ -1,6 +1,7 @@
 //! Issue #745: intent routing is semantic, object-typed, multilingual, and variation-complete.
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::protocol::ChatMessage;
+use formal_ai::FormalAiEngine;
 
 fn call(prompt: &str) -> (String, serde_json::Value) {
     let messages = vec![ChatMessage::user(prompt)];
@@ -356,7 +357,7 @@ fn web_search_routes_action_variations_in_every_supported_language() {
             "web search for",
             "find online",
             "look up online",
-            "google",
+            "google search for",
             "research online",
             "investigate on the web",
             "discover online",
@@ -431,6 +432,7 @@ fn web_search_routes_action_variations_in_every_supported_language() {
 fn reported_object_type_collisions_choose_the_right_capability() {
     for (prompt, tool) in [
         ("display sample.txt", "read_file"),
+        ("cat sample.txt", "read_file"),
         ("load sample.txt", "read_file"),
         ("read https://example.com", "web_fetch"),
         ("summarize https://example.com", "web_fetch"),
@@ -438,5 +440,19 @@ fn reported_object_type_collisions_choose_the_right_capability() {
         ("search the code for RouteIntent", "exec_command"),
     ] {
         assert_eq!(call(prompt).0, tool, "{prompt}");
+    }
+}
+
+#[test]
+fn attachment_filenames_are_not_reinterpreted_as_bare_web_hosts() {
+    for prompt in [
+        "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)",
+        "Проверь приложенный текст на достоверность\n\nAttached files:\n1. novost.txt (text/plain, 4.0 KB)",
+    ] {
+        assert_eq!(
+            FormalAiEngine.answer(prompt).intent,
+            "document_originality_check",
+            "{prompt}"
+        );
     }
 }
