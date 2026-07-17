@@ -46,7 +46,7 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
 
     assert!(
         index_html.contains("__FORMAL_AI_VERSION__"),
