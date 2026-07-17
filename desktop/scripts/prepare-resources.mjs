@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
@@ -10,6 +11,7 @@ const sourceSeed = path.join(repoRoot, "data", "seed");
 const outputWeb = path.join(desktopDir, "dist-web");
 const outputSeed = path.join(outputWeb, "seed");
 const outputBin = path.join(desktopDir, "bin");
+const outputBrowser = path.join(desktopDir, "browser-runtime");
 
 // Keep the desktop wrapper version in lockstep with the Rust crate so the
 // release assets (and the /download page links) always match Cargo.toml, the
@@ -46,6 +48,31 @@ function copyDirectory(from, to) {
 
 copyDirectory(sourceWeb, outputWeb);
 copyDirectory(sourceSeed, outputSeed);
+
+// Playwright stores downloaded browsers outside node_modules, where
+// electron-builder cannot see them. Install Chromium for the current target,
+// copy the complete browser directory into extraResources, and record the
+// executable relative path so every packaged desktop build is self-contained.
+const playwrightCli = path.join(desktopDir, "node_modules", "playwright", "cli.js");
+if (fs.existsSync(playwrightCli)) {
+  const install = spawnSync(process.execPath, [playwrightCli, "install", "chromium"], {
+    cwd: desktopDir,
+    stdio: "inherit",
+  });
+  if (install.status !== 0) {
+    throw new Error("Could not install the Chromium runtime required by desktop web capture");
+  }
+  const { chromium } = await import("playwright");
+  const executable = chromium.executablePath();
+  if (!fs.existsSync(executable)) {
+    throw new Error(`Playwright reported a missing Chromium executable: ${executable}`);
+  }
+  const browserSource = path.dirname(path.dirname(executable));
+  copyDirectory(browserSource, outputBrowser);
+  const relativeExecutable = path.relative(browserSource, executable);
+  fs.writeFileSync(path.join(outputBrowser, "executable-path.txt"), `${relativeExecutable}\n`);
+  console.log(`Prepared desktop browser runtime: ${outputBrowser}`);
+}
 
 fs.mkdirSync(outputBin, { recursive: true });
 const binaryName = process.platform === "win32" ? "formal-ai.exe" : "formal-ai";

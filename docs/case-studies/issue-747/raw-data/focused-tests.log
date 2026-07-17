@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: default-deny: an ungranted write-capable tool is refused and nothing executes
+ok 1 - default-deny: an ungranted write-capable tool is refused and nothing executes
+  ---
+  duration_ms: 3.128652
+  ...
+# Subtest: default-deny: empty grants refuse every supported tool before side effects
+ok 2 - default-deny: empty grants refuse every supported tool before side effects
+  ---
+  duration_ms: 1.076073
+  ...
+# Subtest: specialized common file tools provide read-only inspection and granted edits
+ok 3 - specialized common file tools provide read-only inspection and granted edits
+  ---
+  duration_ms: 70.243958
+  ...
+# Subtest: web search and rendered fetch run with agent permission off
+ok 4 - web search and rendered fetch run with agent permission off
+  ---
+  duration_ms: 1.178957
+  ...
+# Subtest: common frontend aliases route by capability instead of tool name
+ok 5 - common frontend aliases route by capability instead of tool name
+  ---
+  duration_ms: 0.756866
+  ...
+# Subtest: permission-free http_fetch is served by the local process
+ok 6 - permission-free http_fetch is served by the local process
+  ---
+  duration_ms: 0.897078
+  ...
+# Subtest: an `all` grant opts every tool in at once
+ok 7 - an `all` grant opts every tool in at once
+  ---
+  duration_ms: 0.301775
+  ...
+# Subtest: a partial grant map only permits the named tool
+ok 8 - a partial grant map only permits the named tool
+  ---
+  duration_ms: 0.492221
+  ...
+# Subtest: with permission granted, shell runs on the host by default
+ok 9 - with permission granted, shell runs on the host by default
+  ---
+  duration_ms: 2.696015
+  ...
+# Subtest: with permission granted, code_exec runs inside the box-dind container with logs captured
+ok 10 - with permission granted, code_exec runs inside the box-dind container with logs captured
+  ---
+  duration_ms: 5.569669
+  ...
+# Subtest: shell can still opt into Docker isolation
+ok 11 - shell can still opt into Docker isolation
+  ---
+  duration_ms: 0.911315
+  ...
+# Subtest: code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+ok 12 - code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+  ---
+  duration_ms: 0.418884
+  ...
+# Subtest: read_local_file is confined to the allowed root
+ok 13 - read_local_file is confined to the allowed root
+  ---
+  duration_ms: 0.62551
+  ...
+# Subtest: read_local_file rejects a sibling directory that shares the root prefix
+ok 14 - read_local_file rejects a sibling directory that shares the root prefix
+  ---
+  duration_ms: 0.357148
+  ...
+# Subtest: unknown tools are rejected without executing
+ok 15 - unknown tools are rejected without executing
+  ---
+  duration_ms: 0.568293
+  ...
+# Subtest: search visits Google, Bing, and DuckDuckGo in a headless browser and fuses with RRF
+ok 16 - search visits Google, Bing, and DuckDuckGo in a headless browser and fuses with RRF
+  ---
+  duration_ms: 2063.22705
+  ...
+# Subtest: web fetch extracts browser-rendered content from a JavaScript-heavy page
+ok 17 - web fetch extracts browser-rendered content from a JavaScript-heavy page
+  ---
+  duration_ms: 1.119735
+  ...
+# Subtest: closing web tools releases the shared browser
+ok 18 - closing web tools releases the shared browser
+  ---
+  duration_ms: 3.915174
+  ...
+# Subtest: recognized multilingual web-search answers use the native read-only tool
+ok 19 - recognized multilingual web-search answers use the native read-only tool
+  ---
+  duration_ms: 6.768682
+  ...
+# Subtest: recognized fetch answers use rendered web_fetch and preserve a safe fallback
+ok 20 - recognized fetch answers use rendered web_fetch and preserve a safe fallback
+  ---
+  duration_ms: 0.447748
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2213.496784
