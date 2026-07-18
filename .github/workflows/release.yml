@@ -1309,6 +1309,15 @@ jobs:
           PORT: 8881
         run: experiments/agent_cli_e2e/run_issue_657_metric.sh
 
+      - name: "Run agent CLI E2E — hardcoded-language auto-learning (issue #659)"
+        # Formal AI is the model provider while two external Agent CLIs execute
+        # a differently worded version of issue #659's learning task. Both must
+        # derive the same review-gated artifact from persisted evidence.
+        timeout-minutes: 5
+        env:
+          PORT: 8882
+        run: experiments/agent_cli_e2e/run_issue_659_learning.sh
+
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
