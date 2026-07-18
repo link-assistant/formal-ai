@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.298.1] - 2026-07-18
+
+### Fixed
+- Route explicit shell commands verbatim, honor strict client schemas, and cover multilingual file, VCS, build, and local-search intents.
+
 ## [0.298.0] - 2026-07-18
 
 ### Added
