@@ -5,10 +5,12 @@
 //! [`UniversalSolver`], then wraps the answer back into a
 //! `GenerateContentResponse`-shaped object.
 
-use serde::Deserialize;
-use serde_json::{json, Value};
 use std::collections::HashMap;
 
+use serde::Deserialize;
+use serde_json::{json, Value};
+
+use crate::context_capacity::{avg_utf8_bytes_per_char, ContextCapacity};
 use crate::memory::MemoryEvent;
 use crate::protocol::{
     create_chat_completion_with_solver_and_memory, ChatCompletion, ChatCompletionRequest,
@@ -233,13 +235,15 @@ pub fn gemini_model_list() -> Value {
 
 #[must_use]
 pub fn gemini_model_metadata(name: &str) -> Value {
+    let context = advertised_context_capacity();
     json!({
         "name": name,
         "version": "001",
         "displayName": canonical_model_id(),
         "description": "Formal AI symbolic solver exposed through the Gemini generateContent envelope.",
-        "inputTokenLimit": 60000,
+        "inputTokenLimit": context.context_window_tokens,
         "outputTokenLimit": 8192,
+        "context": context,
         "supportedGenerationMethods": ["generateContent", "streamGenerateContent"]
     })
 }
@@ -252,6 +256,7 @@ pub fn vertex_model_list(project: &str, location: &str) -> Value {
 }
 
 fn vertex_model_metadata(project: &str, location: &str) -> Value {
+    let context = advertised_context_capacity();
     json!({
         "name": format!(
             "projects/{project}/locations/{location}/publishers/google/models/{}",
@@ -260,11 +265,19 @@ fn vertex_model_metadata(project: &str, location: &str) -> Value {
         "versionId": "001",
         "displayName": canonical_model_id(),
         "description": "Formal AI symbolic solver exposed through the Vertex AI generateContent envelope.",
+        "inputTokenLimit": context.context_window_tokens,
+        "outputTokenLimit": 8192,
+        "context": context,
         "supportedActions": {
             "generateContent": {},
             "streamGenerateContent": {}
         }
     })
+}
+
+fn advertised_context_capacity() -> ContextCapacity {
+    ContextCapacity::current()
+        .unwrap_or_else(|_| ContextCapacity::from_bytes(0, 0, avg_utf8_bytes_per_char()))
 }
 
 fn gemini_response_from_chat_completion(completion: &ChatCompletion) -> Value {

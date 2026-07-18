@@ -10,11 +10,11 @@ use clap::{Args as ClapArgs, ValueEnum};
 use serde_json::Value;
 use toml_edit::{value as toml_value, DocumentMut, Item, Table};
 
+use crate::context_capacity::ContextCapacity;
 use crate::seed::{
     client_integrations as seed_client_integrations, ClientIntegration, ConfigFormat,
     ModeArgPosition, ModelArgPosition,
 };
-use crate::server::ADVERTISED_CONTEXT_WINDOW_TOKENS;
 use crate::DEFAULT_MODEL;
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
@@ -782,6 +782,7 @@ fn render_template(template: &str, context: &RenderContext) -> String {
 }
 
 fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
+    let context = ContextCapacity::current()?;
     let catalog = serde_json::json!({
         "models": [{
             "slug": model,
@@ -805,8 +806,9 @@ fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
             "web_search_tool_type": "text",
             "truncation_policy": {"mode": "tokens", "limit": 8192},
             "supports_parallel_tool_calls": true,
-            "context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
-            "max_context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
+            "context_window": context.context_window_tokens,
+            "max_context_window": context.context_window_tokens,
+            "context": context,
             "effective_context_window_percent": 100,
             "experimental_supported_tools": [],
             "input_modalities": ["text"]

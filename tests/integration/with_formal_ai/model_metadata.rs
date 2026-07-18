@@ -45,7 +45,10 @@ fn codex_ephemeral_uses_seeded_responses_provider_and_model_catalog() {
     assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
     assert!(captured.contains("---CODEX_MODEL_CATALOG---"));
     assert!(captured.contains("\"slug\": \"formal-ai\""));
-    assert!(captured.contains("\"context_window\": 60000"));
+    assert!(captured.contains("\"context_window\":"));
+    assert!(captured.contains("\"context_used_tokens\":"));
+    assert!(captured.contains("\"disk_free_bytes\":"));
+    assert!(!captured.contains("\"context_window\": 60000"));
     assert!(captured.contains("\"shell_type\": \"shell_command\""));
 
     let _ = std::fs::remove_dir_all(&dir);

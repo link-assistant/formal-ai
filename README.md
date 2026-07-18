@@ -137,6 +137,19 @@ curl -s http://127.0.0.1:8080/api/openai/v1/models \
   -H 'authorization: Bearer local-test-token'
 ```
 
+Model discovery reports the context window from real disk capacity instead of a
+fixed token ceiling. The server divides the free bytes on the filesystem that
+contains the shared memory store by an average UTF-8 width of 2 bytes per
+character. It reports the memory file size the same way as used context. Set
+`FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR` to a positive integer to tune that estimate;
+`FORMAL_AI_MEMORY_PATH` selects the measured memory store. Without that override,
+the measured path is `~/.formal-ai/memory.lino` on Unix/macOS or
+`%APPDATA%\formal-ai\memory.lino` on Windows. OpenAI model metadata,
+generated Codex catalogs, Gemini/Vertex model metadata, and Anthropic responses
+include the same `context` object with `context_window_tokens`,
+`context_used_tokens`, `context_used_fraction`, `disk_free_bytes`,
+`memory_used_bytes`, and `avg_utf8_bytes_per_char`. Usage cost remains zero.
+
 ### Reasoning traces over the API
 
 Every symbolic answer still includes the structured `thinking_steps` trace. The

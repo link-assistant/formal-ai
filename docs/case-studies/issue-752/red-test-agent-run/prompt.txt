@@ -1,0 +1,52 @@
+Create file tests/issue_752.rs with contents:
+```rust
+use std::sync::{Mutex, OnceLock};
+
+use formal_ai::handle_api_request;
+
+fn memory_env_lock() -> std::sync::MutexGuard<'static, ()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(())).lock().unwrap()
+}
+
+#[test]
+fn models_report_real_disk_context_and_memory_usage() {
+    let _guard = memory_env_lock();
+    let dir = std::env::temp_dir().join(format!("formal-ai-context-capacity-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).expect("create temp memory directory");
+    let memory_path = dir.join("memory.lino");
+    std::fs::write(&memory_path, vec![b'x'; 4_096]).expect("write memory fixture");
+
+    let previous_path = std::env::var_os("FORMAL_AI_MEMORY_PATH");
+    let previous_average = std::env::var_os("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR");
+    std::env::set_var("FORMAL_AI_MEMORY_PATH", &memory_path);
+    std::env::remove_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR");
+    let free_before = fs2::available_space(&dir).expect("free space before request");
+    let response = handle_api_request("GET", "/v1/models", "");
+    let free_after = fs2::available_space(&dir).expect("free space after request");
+    match previous_path {
+        Some(value) => std::env::set_var("FORMAL_AI_MEMORY_PATH", value),
+        None => std::env::remove_var("FORMAL_AI_MEMORY_PATH"),
+    }
+    match previous_average {
+        Some(value) => std::env::set_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR", value),
+        None => std::env::remove_var("FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR"),
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+
+    assert_eq!(response.status_code, 200);
+    let json: serde_json::Value = serde_json::from_str(&response.body).expect("models JSON");
+    let model = &json["models"][0];
+    let context = &model["context"];
+    let disk_free = context["disk_free_bytes"].as_u64().expect("disk_free_bytes");
+    assert!((free_after..=free_before).contains(&disk_free));
+    assert_eq!(context["memory_used_bytes"], 4_096);
+    assert_eq!(context["avg_utf8_bytes_per_char"], 2);
+    assert_eq!(context["context_used_tokens"], 2_048);
+    assert_eq!(context["context_window_tokens"], disk_free / 2);
+    assert_eq!(model["context_window"], context["context_window_tokens"]);
+    assert_ne!(model["context_window"], 60_000);
+    assert_eq!(context["context_used_fraction"].as_f64().expect("fraction"), 2_048.0 / (disk_free / 2) as f64);
+}
+```
