@@ -259,7 +259,7 @@ fn format_doublet_reduction_record() -> String {
 
 #[must_use]
 pub fn estimate_tokens(text: &str) -> u32 {
-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
+    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
 }
 
 /// A single node in the network-visualization graph.
