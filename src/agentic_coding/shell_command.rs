@@ -31,18 +31,44 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// `.lino` file rather than this function, upholding the project rule against hardcoded
 /// natural language in the solver.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
+    let prompt = strip_balanced_outer_quotes(prompt.trim());
     let vocab = seed::terminal_command_vocabulary();
-    intent_shell_command(prompt, &seed::shell_intent_vocabulary())
-        .or_else(|| explicit_shell_command(prompt, &vocab))
+    let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
+    let listing = asks_for_directory_listing(prompt);
+    let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
+
+    if let Some(command) = prefixed_shell_command(prompt, &vocab) {
+        let names_known_command = command
+            .split_whitespace()
+            .next()
+            .map(normalize_command_word)
+            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == &first));
+        if names_known_command || (intent.is_none() && !listing && !web_search) {
+            return Some(command);
+        }
+    }
+
+    listing
+        .then(|| String::from("ls"))
+        .or(intent)
         .or_else(|| named_shell_command(prompt, &vocab))
-        .or_else(|| asks_for_directory_listing(prompt).then(|| String::from("ls")))
+        .or_else(|| bare_shell_command(prompt, &vocab))
+}
+
+fn strip_balanced_outer_quotes(prompt: &str) -> &str {
+    for quote in ['"', '\'', '`'] {
+        if prompt.starts_with(quote) && prompt.ends_with(quote) && prompt.len() >= 2 {
+            return &prompt[1..prompt.len() - 1];
+        }
+    }
+    prompt
 }
 
 /// Pass an explicitly introduced command through byte-for-byte (apart from
 /// surrounding whitespace). Explicit execution is an intent boundary: the
 /// command need not appear in a maintained binary allowlist because the client
 /// still owns its normal sandbox and permission decision.
-fn explicit_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let prompt = prompt.trim();
     let lower = prompt.to_lowercase();
     if let Some(prefix) = vocab
@@ -56,16 +82,28 @@ fn explicit_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
             .strip_prefix(':')
             .unwrap_or(remainder)
             .trim_start();
-        return (!remainder.is_empty()).then(|| remainder.to_owned());
+        return (!remainder.is_empty()).then(|| strip_balanced_outer_quotes(remainder).to_owned());
     }
 
+    None
+}
+
+fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let first = prompt.split_whitespace().next()?;
     let command = normalize_command_word(first);
-    vocab
-        .shell_tokens
+    // A bare command token can also be an ordinary imperative (notably
+    // `find information about ...`).  Explicit passthrough prefixes above are
+    // unambiguous, but a seed-backed web-search request must remain available
+    // to the dedicated search router instead of becoming a shell command.
+    if crate::solver_handlers::web_search_query_for(prompt).is_some() {
+        return None;
+    }
+    let is_known = vocab
+        .bare_shell_tokens
         .iter()
-        .any(|token| token == &command)
-        .then(|| prompt.to_owned())
+        .any(|token| token == &command);
+    let words = prompt.split_whitespace().collect::<Vec<_>>();
+    (is_known && words[1..].iter().all(|word| !is_prose_word(word))).then(|| prompt.to_owned())
 }
 
 fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
@@ -136,7 +174,7 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         })
         .max_by_key(|(_, cue)| cue.chars().count())?;
     match intent.argument {
-        ShellIntentArgument::None => resolve_shell_command(&intent.command),
+        ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
         ShellIntentArgument::Path => {
             path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
@@ -231,54 +269,23 @@ fn local_search_query(prompt: &str, cue: &str, vocab: &ShellIntentVocabulary) ->
     .then_some(query)
 }
 
-fn resolve_shell_command(command: &str) -> Option<String> {
+fn resolve_shell_command(command: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let action = command.strip_prefix("formal-ai:workspace-");
     if let Some(action) = action {
-        return workspace_command(action).map(str::to_owned);
+        return workspace_command(action, vocab).map(str::to_owned);
     }
     Some(command.to_owned())
 }
 
-fn workspace_command(action: &str) -> Option<&'static str> {
-    let choices: &[(&str, &str, &str, &str)] = &[
-        ("Cargo.toml", "cargo test", "cargo fetch", "cargo build"),
-        ("bun.lock", "bun test", "bun install", "bun run build"),
-        ("pnpm-lock.yaml", "pnpm test", "pnpm install", "pnpm build"),
-        ("yarn.lock", "yarn test", "yarn install", "yarn build"),
-        ("package.json", "npm test", "npm install", "npm run build"),
-        (
-            "pyproject.toml",
-            "pytest",
-            "poetry install",
-            "python -m build",
-        ),
-        (
-            "go.mod",
-            "go test ./...",
-            "go mod download",
-            "go build ./...",
-        ),
-        (
-            "pom.xml",
-            "mvn test",
-            "mvn dependency:resolve",
-            "mvn package",
-        ),
-        (
-            "build.gradle",
-            "./gradlew test",
-            "./gradlew dependencies",
-            "./gradlew build",
-        ),
-        ("Makefile", "make test", "make install", "make"),
-    ];
-    choices
+fn workspace_command<'a>(action: &str, vocab: &'a ShellIntentVocabulary) -> Option<&'a str> {
+    vocab
+        .workspace_commands
         .iter()
-        .find(|(marker, _, _, _)| std::path::Path::new(marker).is_file())
-        .and_then(|(_, test, install, build)| match action {
-            "test" => Some(*test),
-            "install" => Some(*install),
-            "build" => Some(*build),
+        .find(|commands| std::path::Path::new(&commands.marker).is_file())
+        .and_then(|commands| match action {
+            "test" => Some(commands.test.as_str()),
+            "install" => Some(commands.install.as_str()),
+            "build" => Some(commands.build.as_str()),
             _ => None,
         })
 }

@@ -54,6 +54,16 @@ fn whole_shell_task_matrix_routes_without_web_search() {
     }
 }
 
+#[test]
+fn opencode_chat_prompt_quotes_preserve_every_argument() {
+    let arguments =
+        chat_shell_arguments("\"execute echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT\"");
+    assert_eq!(
+        arguments["command"],
+        "echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT"
+    );
+}
+
 fn responses_shell_arguments(prompt: &str) -> Value {
     enable_http_agent_mode_for_current_process();
     let body = json!({

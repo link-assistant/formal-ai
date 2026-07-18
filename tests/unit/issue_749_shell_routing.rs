@@ -70,6 +70,31 @@ fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
 }
 
 #[test]
+fn explicit_and_listing_routes_win_over_embedded_semantic_cues() {
+    assert_eq!(
+        shell_command("execute echo show current directory").as_deref(),
+        Some("echo show current directory")
+    );
+    assert_eq!(
+        shell_command("print a directory listing of the current working directory").as_deref(),
+        Some("ls")
+    );
+}
+
+#[test]
+fn bare_web_search_imperative_is_not_mistaken_for_find_command() {
+    let messages = vec![ChatMessage::user(
+        "find information about the 2022 FIFA World Cup winner",
+    )];
+    if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) {
+        assert!(
+            calls.iter().all(|call| call.tool != "bash"),
+            "web-search prose must not become a shell call: {calls:?}"
+        );
+    }
+}
+
+#[test]
 fn local_search_is_shell_routed_instead_of_web_searched() {
     for prompt in [
         "search for TODO in the code",
@@ -190,4 +215,26 @@ fn passthrough_prefixes_have_language_parity() {
             "{language}: {prompt}"
         );
     }
+}
+
+#[test]
+fn opencode_outer_prompt_quotes_do_not_hide_the_command() {
+    assert_eq!(
+        shell_command("\"execute echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT\"").as_deref(),
+        Some("echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT"),
+    );
+}
+
+#[test]
+fn committed_agent_cli_session_is_byte_reproducible() {
+    const TASK: &str = "execute printf 'issue-749-driver=passed\\n'";
+    let committed =
+        include_str!("../../docs/case-studies/issue-749/agent-cli-evidence/session.json");
+    let fresh = formal_ai::agentic_coding::run_agentic_task(TASK).expect("offline replay");
+    assert_eq!(
+        committed.trim(),
+        serde_json::to_string_pretty(&fresh.session_json())
+            .expect("session JSON")
+            .trim()
+    );
 }

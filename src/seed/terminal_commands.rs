@@ -29,6 +29,8 @@ pub struct TerminalCommandVocabulary {
     /// Explicit command-introducing prefixes whose complete remainder is passed
     /// through without consulting the command-token vocabulary.
     pub passthrough_prefixes: Vec<String>,
+    /// Unambiguous command tokens accepted without a run/execute prefix.
+    pub bare_shell_tokens: Vec<String>,
     /// Leading shell command tokens (e.g. `ls`, `git`).
     pub shell_tokens: Vec<String>,
 }
@@ -49,6 +51,7 @@ pub fn terminal_command_vocabulary() -> TerminalCommandVocabulary {
             "passthrough_prefixes" => {
                 vocab.passthrough_prefixes = collect_language_values(group, "prefix");
             }
+            "bare_shell_tokens" => vocab.bare_shell_tokens = collect_values(group, "token"),
             "shell_tokens" => vocab.shell_tokens = collect_values(group, "token"),
             _ => {}
         }

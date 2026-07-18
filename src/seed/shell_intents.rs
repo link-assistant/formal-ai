@@ -53,6 +53,19 @@ pub struct ShellIntent {
     pub cues: Vec<String>,
 }
 
+/// Commands selected from a workspace's package-manager marker file.
+#[derive(Debug, Clone, Default)]
+pub struct WorkspaceCommands {
+    /// File whose presence identifies the workspace toolchain.
+    pub marker: String,
+    /// Test command for this workspace.
+    pub test: String,
+    /// Dependency-install command for this workspace.
+    pub install: String,
+    /// Build command for this workspace.
+    pub build: String,
+}
+
 /// The semantic shell-intent vocabulary: the ordered intent table plus the
 /// name-lead cue words that introduce a `NameLead` argument.
 #[derive(Debug, Clone, Default)]
@@ -64,6 +77,8 @@ pub struct ShellIntentVocabulary {
     pub argument_noise: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
+    /// Workspace marker → test/install/build mappings in preference order.
+    pub workspace_commands: Vec<WorkspaceCommands>,
     /// Intent → command mappings in declaration (most-specific-first) order.
     pub intents: Vec<ShellIntent>,
 }
@@ -84,6 +99,19 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
             }
             "local_search_scopes" => {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
+            }
+            "workspace_commands" => {
+                vocab.workspace_commands = group
+                    .children
+                    .iter()
+                    .filter(|child| child.name == "workspace")
+                    .map(|node| WorkspaceCommands {
+                        marker: node.find_child_value("marker").to_owned(),
+                        test: node.find_child_value("test").to_owned(),
+                        install: node.find_child_value("install").to_owned(),
+                        build: node.find_child_value("build").to_owned(),
+                    })
+                    .collect();
             }
             "intents" => {
                 vocab.intents = group

@@ -80,6 +80,11 @@ terminal_commands
       prefix "运行 powershell"
       prefix 执行
       prefix 运行
+  bare_shell_tokens
+    token git
+    token bash
+    token powershell
+    token pwsh
   shell_tokens
     token ls
     token pwd
@@ -124,26 +129,3 @@ terminal_commands
     token make
     token docker
     token kubectl
-    token date
-    token env
-    token stat
-    token file
-    token id
-    token ln
-    token wc
-    token sort
-    token uniq
-    token cut
-    token tr
-    token ping
-    token rg
-    token bash
-    token powershell
-    token pwsh
-    token pnpm
-    token yarn
-    token bun
-    token poetry
-    token go
-    token mvn
-    token gradle

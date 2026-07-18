@@ -61,6 +61,7 @@ shell_intents
       word 搜索
   local_search_scopes
     language en
+      scope "the code"
       scope "in the code"
       scope "in source"
       scope "in the repository"
@@ -77,6 +78,57 @@ shell_intents
       scope 在代码中
       scope 在源码中
       scope 在仓库中
+  workspace_commands
+    workspace
+      marker Cargo.toml
+      test "cargo test"
+      install "cargo fetch"
+      build "cargo build"
+    workspace
+      marker bun.lock
+      test "bun test"
+      install "bun install"
+      build "bun run build"
+    workspace
+      marker pnpm-lock.yaml
+      test "pnpm test"
+      install "pnpm install"
+      build "pnpm build"
+    workspace
+      marker yarn.lock
+      test "yarn test"
+      install "yarn install"
+      build "yarn build"
+    workspace
+      marker package.json
+      test "npm test"
+      install "npm install"
+      build "npm run build"
+    workspace
+      marker pyproject.toml
+      test pytest
+      install "poetry install"
+      build "python -m build"
+    workspace
+      marker go.mod
+      test "go test ./..."
+      install "go mod download"
+      build "go build ./..."
+    workspace
+      marker pom.xml
+      test "mvn test"
+      install "mvn dependency:resolve"
+      build "mvn package"
+    workspace
+      marker build.gradle
+      test "./gradlew test"
+      install "./gradlew dependencies"
+      build "./gradlew build"
+    workspace
+      marker Makefile
+      test "make test"
+      install "make install"
+      build make
   intents
     intent
       command "formal-ai:report-issue"
