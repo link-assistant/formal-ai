@@ -1,0 +1,1 @@
+formal-ai proxy listening on http://127.0.0.1:18083 -> http://127.0.0.1:18082, logging to docs/case-studies/issue-751/implementation-agent-run/client-proxy.jsonl

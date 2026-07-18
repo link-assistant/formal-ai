@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -33,6 +34,12 @@ use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
+}
+
+fn response_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(1, |duration| duration.as_secs().max(1))
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -223,6 +230,24 @@ impl Default for MessageContent {
     }
 }
 
+fn message_content_tokens(content: &MessageContent) -> u32 {
+    match content {
+        MessageContent::Text(text) => estimate_tokens(text),
+        MessageContent::Parts(parts) => parts.iter().fold(0, |total, part| {
+            total.saturating_add(part.text.as_deref().map_or(0, estimate_tokens))
+        }),
+    }
+}
+
+/// Count only role-visible message content. Tool call names and arguments are
+/// excluded from input usage because they are protocol metadata, while tool
+/// result content is included like every other message body.
+fn message_input_tokens(messages: &[ChatMessage]) -> u32 {
+    messages.iter().fold(0, |total, message| {
+        total.saturating_add(message_content_tokens(&message.content))
+    })
+}
+
 /// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
 /// default (empty text) instead of failing.
 ///
@@ -363,6 +388,10 @@ impl ResponsesRequest {
             stream_options: None,
         }
     }
+}
+
+fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
+    message_input_tokens(&request.to_chat_completion_request().messages)
 }
 
 /// Append the Responses `input` (a bare string, a single item, or an array of
@@ -598,7 +627,7 @@ fn chat_completion_from_plan(
     memory_events: &[MemoryEvent],
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
-    let prompt_tokens = estimate_tokens(prompt);
+    let prompt_tokens = message_input_tokens(&request.messages);
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -643,7 +672,7 @@ fn chat_completion_from_plan(
     ChatCompletion {
         id: stable_id("chatcmpl", prompt),
         object: String::from("chat.completion"),
-        created: 0,
+        created: response_timestamp(),
         model,
         choices: vec![ChatChoice {
             index: 0,
@@ -664,7 +693,7 @@ fn chat_completion_from_symbolic(
     symbolic_answer: SymbolicAnswer,
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
-    let prompt_tokens = estimate_tokens(prompt);
+    let prompt_tokens = message_input_tokens(&request.messages);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
     let thinking_steps = symbolic_answer.thinking_steps;
     let reasoning = render_thinking_steps(&thinking_steps);
@@ -676,7 +705,7 @@ fn chat_completion_from_symbolic(
     ChatCompletion {
         id: stable_id("chatcmpl", prompt),
         object: String::from("chat.completion"),
-        created: 0,
+        created: response_timestamp(),
         model,
         choices: vec![ChatChoice {
             index: 0,
@@ -754,7 +783,7 @@ fn response_from_plan(
     memory_events: &[MemoryEvent],
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
-    let input_tokens = estimate_tokens(prompt);
+    let input_tokens = responses_input_tokens(request);
 
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -829,7 +858,7 @@ fn response_from_plan(
     ResponseObject {
         id: stable_id("resp", prompt),
         object: String::from("response"),
-        created_at: 0,
+        created_at: response_timestamp(),
         status: String::from("completed"),
         model,
         output,
@@ -849,7 +878,7 @@ fn response_from_symbolic(
     symbolic_answer: SymbolicAnswer,
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
-    let input_tokens = estimate_tokens(prompt);
+    let input_tokens = responses_input_tokens(request);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
     let answer = symbolic_answer.answer;
     let thinking_steps = symbolic_answer.thinking_steps;
@@ -870,7 +899,7 @@ fn response_from_symbolic(
     ResponseObject {
         id: stable_id("resp", prompt),
         object: String::from("response"),
-        created_at: 0,
+        created_at: response_timestamp(),
         status: String::from("completed"),
         model,
         output,
