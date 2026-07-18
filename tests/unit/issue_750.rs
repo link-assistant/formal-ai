@@ -216,6 +216,14 @@ fn status_codes_distinguish_success_from_failure() {
     );
     assert!(final_answer(&successful, &["web_fetch"]).contains("hello"));
 
+    let generic_http_success = completed_tool_turn(
+        "Fetch it",
+        "web_fetch",
+        "{}",
+        &serde_json::json!({"content": "hello", "status": 200}).to_string(),
+    );
+    assert!(final_answer(&generic_http_success, &["web_fetch"]).contains("hello"));
+
     let failed = completed_tool_turn(
         "Fetch it",
         "web_fetch",
@@ -225,6 +233,14 @@ fn status_codes_distinguish_success_from_failure() {
     let answer = final_answer(&failed, &["web_fetch"]);
     assert!(answer.starts_with("The command failed:"), "{answer}");
     assert!(answer.contains("not found"), "{answer}");
+
+    let generic_http_failure = completed_tool_turn(
+        "Fetch it",
+        "web_fetch",
+        "{}",
+        &serde_json::json!({"error": "server error", "status": 500}).to_string(),
+    );
+    assert!(final_answer(&generic_http_failure, &["web_fetch"]).starts_with("The command failed:"));
 }
 
 #[test]

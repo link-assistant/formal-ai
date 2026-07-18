@@ -145,7 +145,7 @@ fn normalize(raw: &str) -> NormalizedResult {
         .get("status_code")
         .and_then(Value::as_u64)
         .is_some_and(|status| status >= 400);
-    let failed_status = object.get("status").is_some_and(nonzero_status);
+    let failed_status = object.get("status").is_some_and(failed_status);
     let explicitly_unsuccessful = object.get("success").and_then(Value::as_bool) == Some(false);
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
@@ -236,6 +236,18 @@ fn nonzero_status(value: &Value) -> bool {
                 |status| status != 0,
             )
         })
+}
+
+fn failed_status(value: &Value) -> bool {
+    let numeric = value.as_i64().or_else(|| value.as_str()?.parse().ok());
+    numeric.map_or_else(
+        || {
+            value
+                .as_str()
+                .is_some_and(|status| !matches!(status, "ok" | "success" | "completed" | "passed"))
+        },
+        |status| status < 0 || (0 < status && status < 100) || status >= 400,
+    )
 }
 
 fn nonempty_text(value: &Value) -> Option<String> {
