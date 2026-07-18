@@ -167,6 +167,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -219,6 +220,15 @@ jobs:
         env:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
+
+      - name: Check worker JS line budget
+        run: rust-script scripts/check-worker-line-budget.rs
+
+      - name: Build Rust→WASM worker
+        run: sh src/web/wasm-worker/build.sh
+
+      - name: Check wasm-worker size budget
+        run: rust-script scripts/check-wasm-worker-size.rs
 
       - name: Test release changelog collection
         run: rust-script --test scripts/version-and-commit.rs
