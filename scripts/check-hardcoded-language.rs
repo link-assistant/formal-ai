@@ -92,6 +92,30 @@ impl Entry {
 struct RawLiteral {
     /// Canonical single-line text (control characters escaped).
     text: String,
+    /// Whether the literal occurs where Rust produces user-visible text.
+    output_position: bool,
+}
+
+/// Identify the context-sensitive phrase positions named by issue #659.
+///
+/// Whitespace is insignificant between a macro/method name and its opening
+/// delimiter. An explicit `return` is checked token-wise so an identifier such
+/// as `should_return` cannot be mistaken for the keyword.
+fn is_output_position(chars: &[char], start: usize) -> bool {
+    let prefix_start = start.saturating_sub(96);
+    let prefix: String = chars[prefix_start..start].iter().collect();
+    let compact: String = prefix.chars().filter(|ch| !ch.is_whitespace()).collect();
+    if compact.ends_with("format!(") || compact.ends_with(".push_str(") {
+        return true;
+    }
+
+    let trimmed = prefix.trim_end();
+    trimmed.strip_suffix("return").is_some_and(|before| {
+        before
+            .chars()
+            .last()
+            .is_none_or(|ch| !ch.is_alphanumeric() && ch != '_')
+    })
 }
 
 /// Walk the source of a Rust file and extract every string literal, skipping
@@ -179,6 +203,7 @@ fn extract_literals(content: &str) -> Vec<RawLiteral> {
                     let body: String = chars[start..content_end].iter().collect();
                     out.push(RawLiteral {
                         text: canonicalize_raw(&body),
+                        output_position: is_output_position(&chars, i),
                     });
                     i = after;
                     continue;
@@ -213,6 +238,7 @@ fn extract_literals(content: &str) -> Vec<RawLiteral> {
             }
             out.push(RawLiteral {
                 text: canonicalize_normal(&body),
+                output_position: is_output_position(&chars, i),
             });
             i = j + 1;
             continue;
@@ -242,7 +268,18 @@ fn canonicalize_raw(body: &str) -> String {
     for ch in body.chars() {
         push_canonical_char(&mut out, ch);
     }
-    out
+    escape_trailing_spaces(out)
+}
+
+/// Keep rows compatible with `git diff --check` without losing significant
+/// trailing spaces from format fragments.
+fn escape_trailing_spaces(mut text: String) -> String {
+    let trailing = text.chars().rev().take_while(|ch| *ch == ' ').count();
+    text.truncate(text.len() - trailing);
+    for _ in 0..trailing {
+        text.push_str("\\x20");
+    }
+    text
 }
 
 /// Canonicalize a normal-string body (escapes already captured verbatim). This
@@ -278,7 +315,7 @@ fn canonicalize_normal(body: &str) -> String {
         i += 1;
     }
 
-    out
+    escape_trailing_spaces(out)
 }
 
 /// A view of the canonical text with escapes rendered back to characters, used
@@ -348,6 +385,38 @@ fn is_user_facing_prose(canonical: &str) -> bool {
     words >= 2
 }
 
+/// Whether an unpunctuated literal reads like a phrase rather than code.
+fn is_multi_word_phrase(canonical: &str) -> bool {
+    let view = heuristic_view(canonical);
+    if !view.chars().any(char::is_whitespace) {
+        return false;
+    }
+
+    let lower = view.trim().to_ascii_lowercase();
+    if ["fn ", "let ", "use ", "pub ", "impl ", "struct "]
+        .iter()
+        .any(|prefix| lower.starts_with(prefix))
+        || view.contains("::")
+        || view.contains("=>")
+        || view.contains("```")
+    {
+        return false;
+    }
+
+    let lengths: Vec<usize> = view
+        .split(|ch: char| !ch.is_alphabetic())
+        .map(str::chars)
+        .map(Iterator::count)
+        .filter(|length| *length >= 2)
+        .collect();
+    lengths.len() >= 2 && lengths.iter().any(|length| *length >= 3)
+}
+
+fn is_user_facing_literal(literal: &RawLiteral) -> bool {
+    is_user_facing_prose(&literal.text)
+        || (literal.output_position && is_multi_word_phrase(&literal.text))
+}
+
 fn normalized_path(path: &Path) -> String {
     path.to_string_lossy()
         .replace(std::path::MAIN_SEPARATOR, "/")
@@ -383,7 +452,7 @@ fn scan(root: &Path) -> BTreeSet<Entry> {
 
         let file = relative_path(path, root);
         for literal in extract_literals(&content) {
-            if is_user_facing_prose(&literal.text) {
+            if is_user_facing_literal(&literal) {
                 entries.insert(Entry {
                     file: file.clone(),
                     text: literal.text,
@@ -583,6 +652,43 @@ mod tests {
     }
 
     #[test]
+    fn detects_multi_word_phrases_in_user_facing_positions() {
+        // Issue #659 explicitly requires phrases without sentence punctuation
+        // when they are used as formatted output, appended output, or a return
+        // value. The sentence-only heuristic used by the first draft missed all
+        // three of these production shapes.
+        let source = r#"
+fn formatted() -> String { format!("Try again") }
+fn appended(out: &mut String) { out.push_str("Please wait") }
+fn returned() -> &'static str { return "Need details"; }
+"#;
+        let literals = extract_literals(source);
+        let detected: Vec<&str> = literals
+            .iter()
+            .filter(|literal| is_user_facing_literal(literal))
+            .map(|literal| literal.text.as_str())
+            .collect();
+
+        assert_eq!(detected, ["Try again", "Please wait", "Need details"]);
+    }
+
+    #[test]
+    fn context_phrases_exclude_code_and_internal_values() {
+        let source = r#"
+let internal = "internal display name";
+let code = format!("fn main() {}");
+let languages = format!("en ru hi zh");
+"#;
+        let literals = extract_literals(source);
+        let detected: Vec<&str> = literals
+            .iter()
+            .filter(|literal| is_user_facing_literal(literal))
+            .map(|literal| literal.text.as_str())
+            .collect();
+        assert!(detected.is_empty());
+    }
+
+    #[test]
     fn ignores_non_prose_literals() {
         // No terminal punctuation.
         assert!(!is_user_facing_prose("greeting"));
@@ -603,6 +709,12 @@ mod tests {
         assert_eq!(literals.len(), 1);
         assert_eq!(literals[0].text, "Base case here resolves it.");
         assert!(is_user_facing_prose(&literals[0].text));
+    }
+
+    #[test]
+    fn trailing_spaces_are_visible_and_diff_safe() {
+        assert_eq!(canonicalize_normal("please {stem} "), "please {stem}\\x20");
+        assert_eq!(canonicalize_raw("status: "), "status:\\x20");
     }
 
     #[test]

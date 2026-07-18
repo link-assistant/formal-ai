@@ -12,45 +12,103 @@
 # named vocabulary) and delete its row. Regenerate after a legitimate migration
 # with: rust-script scripts/check-hardcoded-language.rs --write
 
+src/agent.rs	exit={:?} stdout_bytes={} stderr_bytes={}
 src/agentic_coding/associative_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino.
 src/agentic_coding/change_request.rs	I want to change Formal AI itself: please add a new capability to the system, and route my request through the same human-gated review loop that produces a requirement, a test, and a patch plan I can review as a pull request.
+src/agentic_coding/change_request.rs	Turned your change request into a reviewable pull request: it derives the requirement \"{requirement}\", proposes the test `{test}`, and a {steps}-step patch plan against the grounded module {target}. Nothing is applied — the change merges only through the same human-gated loop: a green benchmark gate and your explicit approval. Neural inference is not used; the requirement, test, and patch plan are a deterministic function of your request and its grounded target.\n\nGenerated document ({CHANGE_PATH}):\n\n{document}
 src/agentic_coding/code_artifact.rs	Created `{}` through the workspace file tools.
 src/agentic_coding/code_artifact.rs	No matching source fragment was found in `{}`.
+src/agentic_coding/code_artifact.rs	Rewrite of `{}` reached its {MAX_REWRITE_STEPS}-step safety bound; no partial bytes were written.\n\n{}
+src/agentic_coding/code_artifact.rs	Updated `{}` through the workspace file tools.\n\n{}\n{}
 src/agentic_coding/code_rewrite_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 715 workspace-rewrite failures as an associative links network, rank the observations and normal-algorithm amendments, keep promotion human-review gated, and write code-rewrite-learning-report.lino.
+src/agentic_coding/corpus.rs	Wikidata lexemes for the {} concept ({}) — Wikidata
+src/agentic_coding/corpus.rs	web_fetch error: 404 not found for {url}
+src/agentic_coding/corpus.rs	web_search: no results for {query:?}
 src/agentic_coding/diagram.rs	A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\nCLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\ndetails what happens for input handled by that recipe — the deterministic\n`search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n\nScope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\nself-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\nrebuild, Google-Trends learning/catalog, question-catalog, and the general capability\nrouter — the `otherwise` edge in Part 1 stands for all of them.\n
 src/agentic_coding/diagram.rs	Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools.
+src/agentic_coding/diagram.rs	Generated the agentic-recipe mermaid diagrams, split into {parts} parts, from the planner's own recipe table — a visual overview of how Formal AI drives its own tools.\n\nGenerated document ({DIAGRAM_PATH}):\n\n{document}
+src/agentic_coding/dreaming_audit.rs	  method \"derived at runtime by cross-referencing meta_step, meta_function, and meta_test records of the grounded recipe\"\n
+src/agentic_coding/dreaming_audit.rs	  record_type \"agent_cli_gap_analysis\"\n
 src/agentic_coding/dreaming_audit.rs	Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, identify every implementation gap from amendment application through replay, pattern learning, storage consent, and idle runtime, then record the generalization that resolves each gap as Links Notation in dreaming-gap-analysis.lino.
+src/agentic_coding/dreaming_audit.rs	Audited the grounded issue-#540 dreaming meta-algorithm through Formal AI by cross-referencing its recipe stages against the functions and test suites the recipe itself declares. {stage_count} stages analyzed, {open_gaps} open gap(s) found.\n\nGenerated document ({DREAMING_AUDIT_PATH}):\n\n{}
 src/agentic_coding/driver.rs	Fetch the text at a URL. Arguments: {\"url\": string}.
 src/agentic_coding/driver.rs	Run an allowlisted command in the workspace. Arguments: {\"command\": string}.
 src/agentic_coding/driver.rs	Search the web for sources. Arguments: {\"query\": string}.
 src/agentic_coding/driver.rs	Write a workspace file. Arguments: {\"path\": string, \"content\": string}.
+src/agentic_coding/driver.rs	command exited with status {code}\nstdout:\n{}\nstderr:\n{}
+src/agentic_coding/driver.rs	command terminated without an exit status\nstderr:\n{}
+src/agentic_coding/driver.rs	command timed out: {}
+src/agentic_coding/driver.rs	error: unsupported tool {other}
+src/agentic_coding/driver.rs	run_command produced no result for {command:?}
+src/agentic_coding/driver.rs	wrote {} byte(s) to {path}
 src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
+src/agentic_coding/explain.rs	Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({EXPLAIN_PATH}):\n\n{document}
+src/agentic_coding/file_read.rs	- `{path}`: {summary}
 src/agentic_coding/file_read.rs	I can read `{path}` when the client advertises a file read tool or a shell tool.
 src/agentic_coding/file_read.rs	I can read the selected file after listing when the client advertises a read or shell tool.
 src/agentic_coding/file_read.rs	I can resolve that file selection when the client advertises a shell tool for listing files.
 src/agentic_coding/file_read.rs	No files were listed in `{directory}`.
+src/agentic_coding/file_read.rs	Read {} file(s):
+src/agentic_coding/file_read.rs	Value of `{key}` in `{path}`: {value}
+src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##' | sort
+src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
+src/agentic_coding/general_planner.rs	cat {target}
+src/agentic_coding/general_planner.rs	workspace file {target}
+src/agentic_coding/general_planner.rs	write the requested content to {target}
+src/agentic_coding/general_planner.rs	written plan event {}
+src/agentic_coding/google_trends_catalog.rs	    source_news\n
+src/agentic_coding/google_trends_catalog.rs	  record_type \"google_trends_catalog\"\n
 src/agentic_coding/google_trends_catalog.rs	Convert the Google Trends top 10 searches into multilingual Formal AI test prompts, include two request variations in every supported language, answer each request, and record the Google Trends catalog in Links Notation.
+src/agentic_coding/google_trends_catalog.rs	Generated the Google Trends catalog from {topic_count} top searches in {geo}: produced {prompt_count} multilingual request variants and answered {answer_count} of them through the standard Formal AI engine. The catalog is generated from the checked-in Trends RSS snapshot, so tests stay offline while the converter can refresh the seed from the live RSS feed.\n\nGenerated document ({GOOGLE_TRENDS_CATALOG_PATH}):\n\n{document}
+src/agentic_coding/google_trends_catalog.rs	python3 -c p='{GOOGLE_TRENDS_CATALOG_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))
 src/agentic_coding/google_trends_learning.rs	Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation.
+src/agentic_coding/google_trends_learning.rs	Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({GOOGLE_TRENDS_LEARNING_PATH}):\n\n{document}
+src/agentic_coding/google_trends_learning.rs	python3 -c p='{GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))
 src/agentic_coding/intent_router.rs	Edited `{target}`: replaced `{old}` with `{new}`.
 src/agentic_coding/intent_router.rs	Fetched `{url}`.
 src/agentic_coding/intent_router.rs	Searched the web for `{query}`.
+src/agentic_coding/intent_router.rs	Searched the web for `{query}`. Results:\n\n{text}
+src/agentic_coding/learning_report.rs	  record_type \"agent_cli_auto_learning\"\n
+src/agentic_coding/learning_report.rs	  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n
+src/agentic_coding/learning_report.rs	  substrate \"links_network\"\n
 src/agentic_coding/learning_report.rs	Formal AI persisted and ranked {expressions} {subject} through the associative auto-learning pipeline; the reproducible Links Notation report is in {path}.
 src/agentic_coding/learning_report.rs	Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}.
 src/agentic_coding/learning_report/self_hosting_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino.
 src/agentic_coding/ledger.rs	Promote the approved lesson into your learning ledger and record the approved learning record in Links Notation so a repeated failure is answered from the ledger next time.
+src/agentic_coding/ledger.rs	Recorded the approved learning ledger: {count} lesson(s) that passed their benchmark gate and were approved by a human are now durable learning records, so a repeated failure is answered from the ledger instead of re-derived. Promotion stayed human-gated — only green, approved, faithfully round-tripping cases were recorded.\n\nGenerated document ({LEDGER_PATH}):\n\n{document}
+src/agentic_coding/meaning_detail.rs	Made the {name} meaning more detailed: every surface now pins its part of speech and grammatical number, is grounded in its Wikidata lexeme forms, and every plural surface recovered from the source is added.\n\nEnriched meaning block ({path}):\n\n{block}
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
+src/agentic_coding/planner.rs	Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}
+src/agentic_coding/planner.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
 src/agentic_coding/planner.rs	The `{command}` command completed with no output.
+src/agentic_coding/planner.rs	cat {KB_PATH}
+src/agentic_coding/planner.rs	the source text ({})
+src/agentic_coding/question_catalog.rs	  intent \"generate_all_possible_questions\"\n
+src/agentic_coding/question_catalog.rs	  record_type \"question_catalog\"\n
 src/agentic_coding/question_catalog.rs	Generate all possible questions from smallest to largest, drawing words from the frequency-tiered vocabulary, classify each candidate as grammatical or not and, among the grammatical ones, logically meaningful or not, then answer the meaningful ones and record the whole question catalog in Links Notation.
+src/agentic_coding/question_catalog.rs	Generated the question catalog from a frequency-tiered vocabulary of {vocabulary} words: classified {candidates} candidates smallest-first into the four-way distinction (grammatical-and-meaningful, grammatical open-slot, fragment, ungrammatical) and answered the first {answers} grammatical-and-meaningful questions with the deterministic engine. The answered questions are a reviewable recall table — a repeated question is answered from the catalog instead of re-derived — and nothing changes solver behaviour without the human-gated learning ledger. Neural inference is not used; every candidate, class, and answer is a deterministic function of the lexicon.\n\nGenerated document ({QUESTION_CATALOG_PATH}):\n\n{document}
 src/agentic_coding/rebuild_plan.rs	An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.
+src/agentic_coding/rebuild_plan.rs	Composed the rebuild-and-reattach plan for accepted change `{change}` (approved by {reviewer}): a {steps}-step, reversible pipeline that recompiles Formal AI, regenerates the WebAssembly worker, reattaches it to {artifacts} grounded UI artifacts, hot-swaps the local server, and verifies the UI uses the accepted version. Nothing is rebuilt or restarted — the plan is the reviewable product, and every step is observable and reversible, so keeping the swap stays a human decision. Neural inference is not used; the plan is a deterministic function of the accepted change and the grounded artifacts.\n\nGenerated document ({REBUILD_PATH}):\n\n{document}
+src/agentic_coding/repair_strategy.rs	  covers \"solver_method,data_record,test\"\n
+src/agentic_coding/repair_strategy.rs	Classified {count} failure traces, one per repair class ({targets}), and composed a grounded, human-gated repair strategy for each: the general repair loop now decides *which part* to change — a solver method, a data record, or a test — for every failure, not just one canonical case. Nothing is applied — each strategy is a reviewable plan that merges only through the same human-gated loop. Neural inference is not used; every classification and plan is a deterministic function of the trace.\n\nGenerated document ({REPAIR_STRATEGY_PATH}):\n\n{document}
 src/agentic_coding/repair_strategy.rs	Classify a failure and decide which part to repair: given a failure trace the system could not answer, determine whether the repair is a solver method, a data record, or a test change, then compose the grounded, human-gated repair strategy for it — for every class of failure, not just one.
+src/agentic_coding/report_issue.rs	gh issue create --repo {} --title {} --body {}
 src/agentic_coding/routing_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino.
 src/agentic_coding/self_ast.rs	Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.
+src/agentic_coding/self_ast.rs	Stored the CST/AST of our Rust meta algorithm ({TARGET_MODULE_PATH}) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document ({AST_PATH}):\n\n{document}
+src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({SELF_HEAL_PATH}):\n\n{document}
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_graph.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/associative_package.rs	Package handler: {}
+src/associative_package.rs	Package permission: {}
+src/associative_package.rs	Package trigger: {}
+src/associative_package.rs	no installed associative package grants {capability}
+src/associative_persistence.rs	unresolved evidence link: {reference}
+src/attachment_context.rs	{message}\n\n{context}
 src/calculation.rs	Interpreted \"{}\" as \"{}\".
 src/calculation_word_problem.rs	Box {id} = {factor} * {source_value} = {value} {result_label}.
 src/calculation_word_problem.rs	Box {id} = {source_value} + {addend} = {value} {result_label}.
@@ -62,9 +120,14 @@ src/calculation_word_problem.rs	[STEP 2] Write equation: ({first_speed_text} + {
 src/calculation_word_problem.rs	[STEP 3] Solve algebraically: t = {distance_text} / ({first_speed_text} + {second_speed_text}) = {time_text} hours. [VERIFY] {first_speed_text} + {second_speed_text} = {relative_speed_text} and {distance_text} / {relative_speed_text} = {time_text}.
 src/calculation_word_problem.rs	[STEP 4] Interpret result: the {} train travels {first_speed_text} * {time_text} = {first_distance_text} km; the {} train travels {second_speed_text} * {time_text} = {second_distance_text} km. [VERIFY] {first_distance_text} + {second_distance_text} = {distance_text} km.
 src/calculation_word_problem.rs	[STEP 5] Convert to user-friendly format: they meet after {time_text} hours, {first_distance_text} km from {} and {second_distance_text} km from {}. [VERIFY] Both distances add to the stated route length.
+src/calculation_word_problem.rs	{distance_text} / ({first_speed_text} + {second_speed_text})
+src/change_request.rs	  reviewable_pull_request\n
 src/change_request.rs	Accepted change `{}` for request \"{}\": requirement \"{}\", test `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
+src/change_request.rs	Add the failing test `{test}` that pins the requested behaviour
 src/change_request.rs	Change request `{}` maps onto {} (content id {}); it derives the requirement \"{}\", proposes test `{}`, and a {}-step patch plan — human-gated, reviewable as a pull request.
+src/change_request.rs	Edit the grounded target module `{target_module}` until the test passes
 src/change_request.rs	Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.
+src/change_request.rs	Record the derived requirement for review: {requirement}
 src/change_request.rs	The system must {}.
 src/cli_improve.rs	Appended {appended} promotion event(s) to {}; total now {}.
 src/cli_improve.rs	Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s).
@@ -74,7 +137,9 @@ src/cli_improve.rs	Promotion replay: {} considered, {promoted} promoted, {reject
 src/cli_improve.rs	Refusing to {action} without --confirm. Rerun with --apply --confirm (and preferably --backup).
 src/cli_improve.rs	Replaying coding-modification, industry, and unit-specification gates from canonical commands...
 src/cli_improve.rs	Wrote full-memory backup with {} event(s) to {}.
+src/cli_improve.rs	could not parse {}: {error}
 src/cli_improve.rs	formal-ai improve — benchmark-gated promotion of self-improvement proposals (issue #656).\n\nPass --promote to replay open proposals against their benchmark ratchets and print the\npromotion plan (dry run; touches no files). Add --apply --confirm to materialize the\naccepted `.lino` seed edits onto a local review branch in --seed-root. Promotion never\npushes: commit/draft-PR steps require human review, and rejected proposals are kept as\nfailure records.
+src/cli_improve.rs	promotion gate replay failed: {error}
 src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
@@ -85,15 +150,35 @@ src/cli_memory.rs	Refusing to apply a dreaming plan to stdin/stdout memory path 
 src/cli_memory.rs	Refusing to {action} because this operation is irreversible. Export memory first or pass --backup, then rerun with --confirm.
 src/cli_memory.rs	Reset memory at {}; permanently deleted {removed} event(s).
 src/cli_memory.rs	Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.
+src/cli_memory.rs	Wrote full memory: {} event(s) + {} seed file(s)
 src/cli_memory.rs	Wrote full-memory backup with {} event(s) to {}.
+src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
+src/client_integrations.rs	# <<< formal-ai {tool}
+src/client_integrations.rs	# >>> formal-ai {tool}
+src/client_integrations.rs	formal-ai serve did not listen on {address}
+src/client_integrations.rs	formal-ai serve exited before listening: {status}
+src/client_integrations.rs	temporary config path escapes its root: {relative}
+src/client_integrations.rs	temporary config path must be relative: {relative}
+src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}
+src/client_integrations.rs	{} does not support protocol `{protocol}`
+src/client_integrations.rs	{} exited with status {}
+src/client_integrations.rs	{} has no endpoint for {protocol}
 src/code_editing.rs	Hello, world!
 src/coding/blueprint.rs	Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: `{run_command}`.
 src/coding/blueprint.rs	Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: `{run_command}`.
 src/coding/blueprint.rs	Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: `{run_command}`.
+src/coding/blueprint.rs	Here is a {language_name} program for the requested composite task ({recipe_label}). I decomposed your request into these sub-tasks:
 src/coding/blueprint.rs	Response self-analysis:\n- Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.\n- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic.
+src/coding/blueprint.rs	Вот программа на языке {language_name}, которая решает составную задачу ({recipe_label}). Я разбил ваш запрос на следующие подзадачи:
 src/coding/blueprint.rs	Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
 src/coding/blueprint.rs	Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а встроенные допущения о данных нужно проверить перед использованием. Код приведён для проверки. Запустить самостоятельно: `{run_command}`.
+src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
+src/coding/blueprint.rs	निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: `{run_command}`।
+src/coding/blueprint.rs	यहाँ {language_name} में एक प्रोग्राम है जो इस संयुक्त कार्य को हल करता है ({recipe_label})। मैंने आपके अनुरोध को इन उप-कार्यों में विभाजित किया है:
+src/coding/blueprint.rs	执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：`{run_command}`。
+src/coding/blueprint.rs	执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：`{run_command}`。
+src/coding/blueprint.rs	这是一个解决该复合任务的 {language_name} 程序（{recipe_label}）。我已将您的请求分解为以下子任务：
 src/coding/catalog/languages.rs	1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 src/coding/catalog/languages.rs	The C# seed is returned with this warning until a dotnet-backed execution profile is available.
 src/coding/catalog/languages.rs	The C++ seed is returned with this warning until a g++-backed execution profile is available.
@@ -101,6 +186,7 @@ src/coding/catalog/languages.rs	The Java seed is returned with this warning unti
 src/coding/catalog/languages.rs	The Ruby seed is returned with this warning until a ruby-backed execution profile is available.
 src/coding/catalog/languages.rs	The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.
 src/coding/catalog/tasks.rs	Hello, world!
+src/coding/catalog/types.rs	write_program(language={}, task={})
 src/coding/guidance.rs	Check that it compiles: `{check_command}`.
 src/coding/guidance.rs	Compare the output with the expected output shown above.
 src/coding/guidance.rs	Install {setup_hint}.
@@ -119,6 +205,7 @@ src/coding/guidance.rs	The program reads the entries of the current directory, k
 src/coding/guidance.rs	The program takes the directory path from the first command-line argument (falling back to the current directory when none is given), reads that directory's entries, keeps only the regular files, sorts their names alphabetically, and prints each name on its own line.
 src/coding/guidance.rs	The program takes the directory path from the first command-line argument (falling back to the current directory when none is given), reads that directory's entries, keeps only the regular files, sorts their names in reverse alphabetical order, and prints each name on its own line.
 src/coding/guidance.rs	The program takes the string `hello`, reverses the order of its characters, and prints the result, `olleh`.
+src/coding/guidance.rs	{heading}\n{numbered}
 src/coding/guidance.rs	Запустите программу: `{run_command}`.
 src/coding/guidance.rs	Проверьте обновлённую программу так же, как и раньше: сохраните код в файл `{save_as}` и снова выполните `{run_command}`.
 src/coding/guidance.rs	Проверьте, что код компилируется: `{check_command}`.
@@ -137,13 +224,61 @@ src/coding/guidance.rs	Программа читает содержимое те
 src/coding/guidance.rs	Сохраните приведённый выше код в файл `{save_as}`.
 src/coding/guidance.rs	Сравните вывод с разделом ожидаемого вывода выше.
 src/coding/guidance.rs	Установите инструментарий: {setup_hint}.
+src/coding/guidance.rs	अपडेट किए गए प्रोग्राम को पहले की तरह ही जाँचें: कोड को `{save_as}` फ़ाइल में सहेजें और फिर से `{run_command}` चलाएँ।
+src/coding/guidance.rs	ऊपर दिए गए कोड को `{save_as}` फ़ाइल में सहेजें।
+src/coding/guidance.rs	जाँचें कि कोड संकलित होता है: `{check_command}`।
+src/coding/guidance.rs	टूलचेन इंस्टॉल करें: {setup_hint}।
+src/coding/guidance.rs	प्रोग्राम चलाएँ: `{run_command}`।
+src/coding/guidance.rs	像之前一样测试更新后的程序：将代码保存到文件 `{save_as}`，然后再次运行 `{run_command}`。
+src/coding/guidance.rs	将上面的代码保存到文件 `{save_as}`。
+src/concepts.rs	{normalized} {context}
+src/dreaming.rs	  action {:?} event={} bytes={} usage={} reason={}
+src/dreaming.rs	  candidate_task topic={} source={} passed={}
+src/dreaming.rs	  free_bytes: {free}
+src/dreaming.rs	  incoming_bytes: {}
+src/dreaming.rs	  learned_pattern topic={} occurrences={} structure={}
+src/dreaming.rs	  learned_requirement topic={} occurrences={} statement={}
+src/dreaming.rs	  meta_algorithm_amendment id={} topic={} covers={} rule={}
+src/dreaming.rs	  required_reclaim_bytes: {}
+src/dreaming.rs	  requires_bigger_storage: {}
+src/dreaming.rs	  selected_reclaim_bytes: {}
+src/dreaming.rs	  storage_capacity_bytes: {capacity}
+src/dreaming.rs	  synthesized_trial topic={} structure={} input={}
+src/dreaming.rs	  target_free_bytes: {target}
+src/dreaming.rs	  target_free_ratio_percent: {}
+src/dreaming.rs	  topic {} interactions={} tasks={} requirements={}
+src/dreaming.rs	  total_reclaimable_bytes: {}
+src/dreaming.rs	Recurring structure {} observed {} time(s)
+src/dreaming.rs	Replay of {} on topic {} diverged from the stored output; kept for refinement. Simulated: {}
+src/dreaming.rs	Trial synthesized from recurring structure {} on most-used topic {}
+src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
+src/dreaming/learning.rs	learned standing requirement ({topic}):
+src/dreaming_application.rs	Learned standing requirement ({}): {}
+src/dreaming_application.rs	Standing requirement ({}): {}
 src/dreaming_runtime.rs	[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; there is no persistent memory log to maintain, so the dreaming worker will not start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it.
+src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
 src/engine.rs	Execution status: {status_phrase} in {}.
+src/engine.rs	Here is a minimal {language_name} {task_label} program:
 src/engine.rs	I can route `write_program(language, task)`, but I do not have a template for language `{language}` and task `{task}`. Supported languages: {languages}. Supported tasks: {tasks}.
+src/engine.rs	Run command: `{}`
 src/engine.rs	Write-program template catalog is unavailable.
+src/engine.rs	rule_assistant_free_time answer={}
+src/engine.rs	rule_assistant_name answer={}
+src/engine.rs	rule_courtesy_response answer={}
+src/engine.rs	rule_greeting answer={}
+src/engine.rs	rule_identity answer={}
+src/engine.rs	rule_test_status answer={}
+src/engine.rs	rule_unknown answer={}
+src/engine.rs	rule_write_program parameters=language,task languages={} tasks={}
+src/engine.rs	step_{index} {} {}
+src/engine.rs	Вот минимальная программа на языке {language_name} ({task_label}):
 src/engine.rs	Статус выполнения: {status_phrase} в среде «{}».
 src/engine.rs	Я могу выполнить `write_program(language, task)`, но у меня нет шаблона для языка `{language}` и задачи `{task}`. Поддерживаемые языки: {languages}. Поддерживаемые задачи: {tasks}.
+src/engine.rs	निष्पादन स्थिति: {status_phrase} ({} में)।
 src/engine.rs	मैं `write_program(language, task)` रूट कर सकता हूँ, लेकिन भाषा `{language}` और कार्य `{task}` के लिए मेरे पास कोई टेम्पलेट नहीं है। समर्थित भाषाएँ: {languages}. समर्थित कार्य: {tasks}.
+src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
+src/engine.rs	我可以路由 `write_program(language, task)`，但我没有语言 `{language}` 和任务 `{task}` 的模板。支持的语言：{languages}。支持的任务：{tasks}。
+src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
 src/engine_assistant_name.rs	I'm formal AI, and currently I don't have a name. But you can name me as you like.
 src/engine_assistant_name.rs	What is your name?
 src/engine_assistant_name.rs	Как твое имя?
@@ -158,12 +293,71 @@ src/engine_responses.rs	add a rule in Links Notation, then run the request again
 src/engine_responses.rs	Что делаешь в свободное время?
 src/gemini.rs	Formal AI symbolic solver exposed through the Gemini generateContent envelope.
 src/gemini.rs	Formal AI symbolic solver exposed through the Vertex AI generateContent envelope.
+src/gemini.rs	data: {response}\n\n
+src/github_logs.rs	# GitHub log capture plan\n
+src/github_logs.rs	GitHub repository must use OWNER/REPO format, got `{repo}`
+src/github_logs.rs	GitHub repository {label} contains unsupported characters: `{value}`
+src/github_logs.rs	exit status {}: {stderr}
+src/github_logs.rs	failed to create output directory {}: {error}
+src/github_logs.rs	failed to format manifest: {error}
+src/github_logs.rs	failed to start {program}: {error}
+src/github_logs.rs	failed to write {}: {error}
+src/github_logs.rs	{} failed: {error}
+src/google_trends_catalog.rs	    record_type \"google_trend_news_item\"\n
+src/google_trends_catalog.rs	  news_item\n
+src/google_trends_catalog.rs	  record_type \"google_trend_topic\"\n
+src/google_trends_catalog.rs	  record_type \"google_trends_snapshot\"\n
+src/google_trends_catalog.rs	google_trend_topic\n
+src/google_trends_learning.rs	  frontier_prompt\n
 src/google_trends_learning.rs	Trending searches are open-domain questions, not program-plan modifiers, so the rule-synthesis learner declines to fabricate seed rules for them. The learning frontier — every trending prompt the engine cannot yet route — is recorded here and handed to the human-gated self-improvement loop for triage; nothing is auto-adopted.
+src/intent_formalization.rs	intent_formalization {}
+src/intent_formalization.rs	referent=active_program_artifact task={} language={}
+src/intent_formalization.rs	write_program task={task_slug} language={language_slug}
+src/intent_formalization.rs	{cache_state} {}
+src/json_lino.rs	aliases `{}` is not a list
+src/json_lino.rs	invalid quoted string `{raw}`
+src/json_lino.rs	invalid quoted string `{raw}`: {error}
+src/json_lino.rs	invalid scalar array `{raw}`
+src/json_lino.rs	language `{}` value is not a string
 src/knowledge.rs	Hello, World!
 src/learning_ledger.rs	Approved lesson `{}` (rule `{}`) for failure `{}` → `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
+src/link_store.rs	expected event record, got {content}
+src/link_store.rs	expected field value, got {content}
+src/link_store.rs	expected quoted value, got {rest}
+src/link_store.rs	expected {ROOT_HEADER} or {BUNDLE_HEADER}, got {other}
+src/link_store.rs	invalid field name {key}
+src/link_store.rs	unexpected indentation or record line: {content}
+src/link_store.rs	unexpected trailing content after quoted value: {}
+src/links_query.rs	  edge\n    from \"
+src/links_query.rs	\"\n    links_notation \"
+src/links_query.rs	filter needs `=` or CONTAINS: {clause}
+src/links_query.rs	filter target must be `var.field`: {clause}
+src/links_query.rs	invalid edge pattern: {text}
+src/links_query.rs	invalid node pattern: {text}
+src/links_query.rs	unknown field `{other}`
+src/links_substitution_query/links.rs	`${unbound}` is used on the substitution side but never bound on the matching side
+src/links_substitution_query/links.rs	operand count must match across sides, or one side must be `()`; the matching side has {} and the substitution side has {}
+src/links_substitution_query/links.rs	unbalanced parentheses, or too many slots: {LINK_SLOTS}
+src/links_substitution_query/links.rs	unexpected `{unexpected}`; {LINK_SLOTS}
+src/links_substitution_query/links.rs	{TWO_SIDES}; each side opens with `(`
+src/links_substitution_query/links.rs	{TWO_SIDES}; found only one
+src/links_substitution_query/links.rs	{TWO_SIDES}; found trailing input
+src/links_substitution_query/links.rs	{matching} {substituting}
+src/links_substitution_query/mod.rs	unknown escape `\\{unknown}` in a quoted operand
+src/links_substitution_query/text.rs	`{name}:` is not a recognized operand name; only `terminal:` marks a terminal rule
+src/links_substitution_query/text.rs	operand count must match across sides, or one side must be `()`; the matching side has {} and the substitution side has {}
+src/links_substitution_query/text.rs	unexpected `{unexpected}`; {MUST_QUOTE}
+src/links_substitution_query/text.rs	{TWO_SIDES}; each side opens with `(`
+src/links_substitution_query/text.rs	{TWO_SIDES}; found only one
+src/links_substitution_query/text.rs	{TWO_SIDES}; found trailing input
+src/links_substitution_query/text.rs	{matching} {substituting}
 src/main.rs	Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base covering all nine protocol primitives.
 src/main.rs	Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.
 src/main.rs	Telegram polling mode requires a bot token. Pass --token or set TELEGRAM_BOT_TOKEN.
+src/main.rs	the agentic loop did not finish within its turn cap after {} tool call(s)
+src/main.rs	{} does not appear to be a formal_ai_bundle Links Notation document
+src/memory/bundle.rs	  exported_at \"
+src/memory/bundle.rs	  seed_files\n
 src/memory/bundle.rs	Imported bundle was authored against seed version {imported_v} but the running app does not expose a seed version. Update the app to compare.
 src/memory/bundle.rs	Imported file is a legacy demo_memory log (no seed). The events were imported, but the seed at the time of capture is unknown — export from this session to upgrade to a full bundle.
 src/memory/bundle.rs	Seed version {imported_v} → {current_v}: review the new entries in data/seed/ (multilingual responses, concepts, tools) — your imported memory was authored against an older seed.
@@ -179,12 +373,37 @@ src/meta_reasoning.rs	The span cannot be split further and matches no known rout
 src/meta_reasoning.rs	The span carries more than one need, so it is not solvable by a single method: decompose it into {} sub-units and reason about each recursively.
 src/meta_reasoning.rs	The span is directly solvable by a recognized route, but no registered method resolves it yet — record the route so the gap is visible rather than decomposing further.
 src/meta_reasoning.rs	The span is directly solvable: its route resolves to the registered method `{method}`. Invoke that method; no further decomposition is needed.
+src/meta_reasoning.rs	the route `{route}` was recognized
 src/meta_self_improvement.rs	Propose citing undescribed pipeline stage(s): {add}.
 src/meta_self_improvement.rs	Propose citing {add}; propose dropping stale citation(s): {drop}.
 src/meta_self_improvement.rs	Propose dropping stale recipe citation(s): {drop}.
 src/meta_self_improvement.rs	The recipe already describes every pipeline stage; no update proposed.
+src/probability.rs	{} fetched_at={} sha256={} cached={}
+src/program_plan.rs	program_plan\n
+src/program_plan.rs	{MODIFIER_NODE} -> {cancel_op}
+src/promotion.rs	  branch_plan\n
+src/promotion.rs	Materialized seed edit for {} into {}
 src/promotion.rs	Promote learned `reverse` modifier for the list-files program plan.
+src/promotion.rs	Promotion {} for {}
 src/promotion.rs	Reject an under-benchmarked rewrite that regresses the coding-modification floor.
+src/promotion.rs	Rejected {}; kept for refinement. Failing gate(s): {}
+src/promotion.rs	git add {}
+src/promotion.rs	git checkout -b {branch}
+src/promotion.rs	git commit -m \"promote {} self-improvement proposal(s) (run {})\"
+src/promotion.rs	passed={} failed={} floor={} {}
+src/promotion.rs	proposal gates must not provide `{key}`; commands and results come from fresh canonical replay
+src/promotion.rs	substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"{rule_id}\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> {modifier}\"\n    replace \"request:task -> {base_task}\"\n      with \"request:task -> {resolved_task}\"
+src/promotion.rs	unknown promotion gate suite `{suite}`
+src/promotion/gates.rs	canonical gate `{}` succeeded without a parseable pass/fail report
+src/promotion/gates.rs	could not execute canonical gate `{}`: {error}
+src/promotion/gates.rs	failed to start `{runner}`: {error}
+src/promotion/gates.rs	suite={}\nrunner={}\nsucceeded={}\nstdout:\n{}\nstderr:\n{}
+src/promotion/gates.rs	{stdout}\n{stderr}
+src/promotion/materialize.rs	Create file {seed_file} containing\n{desired}
+src/promotion/materialize.rs	Formal AI Agent write did not match the promotion target exactly: expected {seed_file} ({} bytes), got {authored_path} ({} bytes)
+src/promotion/materialize.rs	could not read existing seed {}: {error}
+src/promotion/materialize.rs	git {} failed: {}
+src/promotion/materialize.rs	promotion target must be a relative data/seed/*.lino path: {path}
 src/proof_engine/arithmetic.rs	Compare the two values: {lhs_value} {} {rhs_value}.
 src/proof_engine/arithmetic.rs	Could not evaluate either side as a closed arithmetic expression: left side reported \"{left}\"; right side reported \"{right}\". The proof engine needs both sides to reduce to numeric values.
 src/proof_engine/arithmetic.rs	Could not evaluate the left side as a closed arithmetic expression: \"{left}\". Restate it with numeric literals and the operators + - * / ( ).
@@ -195,23 +414,36 @@ src/proof_engine/arithmetic.rs	Evaluated values: {lhs} = {lhs_value}, {rhs} = {r
 src/proof_engine/arithmetic.rs	Interpret \"{statement}\" as an arithmetic claim over the rational numbers, where each side is a closed expression.
 src/proof_engine/arithmetic.rs	The arithmetic evaluator returned no value. Please rewrite the claim using concrete numeric literals.
 src/proof_engine/arithmetic.rs	The evaluated values contradict the asserted relation \"{}\", so the original claim is false.
+src/proof_engine/arithmetic.rs	Therefore {lhs} {} {rhs}, so the claim holds. ∎
+src/proof_engine/arithmetic.rs	{lhs} {} {rhs}
+src/proof_engine/decision/boolean.rs	({premise}) implies ({conclusion})
+src/proof_engine/decision/boolean.rs	Because ¬({formula}) is unsatisfiable, every assignment satisfies {formula}, so it is a tautology. ∎
 src/proof_engine/decision/boolean.rs	DPLL returns the satisfying assignment {}, a countermodel.
 src/proof_engine/decision/boolean.rs	DPLL with unit propagation, pure-literal elimination, and backtracking finds the negation unsatisfiable.
 src/proof_engine/decision/boolean.rs	Delegate the formula to the relative-meta-logic / SMT decision procedure and enumerate the finite Boolean model space.
 src/proof_engine/decision/boolean.rs	Delegate the formula to the relative-meta-logic / SMT decision procedure. For the propositional fragment, the verified backend is an exhaustive truth-table audit over every assignment.
 src/proof_engine/decision/boolean.rs	Delegate the formula to the relative-meta-logic / SMT decision procedure. With {variable_count} variables a truth table is infeasible, so the verified backend is a DPLL satisfiability search.
 src/proof_engine/decision/boolean.rs	Delegate the formula to the relative-meta-logic / SMT decision procedure. With {variable_count} variables an exhaustive truth table (2^{variable_count} rows) is infeasible, so the verified backend is a DPLL satisfiability search.
+src/proof_engine/decision/boolean.rs	Every assignment makes {formula} true, so the formula is a tautology. ∎
 src/proof_engine/decision/boolean.rs	Negate the goal and Tseitin-encode ¬({formula}) into conjunctive normal form: {clause_count} clauses over the propositional variables plus gate auxiliaries.
 src/proof_engine/decision/boolean.rs	Normalized formula: {formula}.
 src/proof_engine/decision/boolean.rs	The assignment {} is a countermodel.
+src/proof_engine/decision/boolean.rs	Therefore {formula} is not a tautology. ∎
 src/proof_engine/decision/boolean.rs	Truth table: {}.
 src/proof_engine/decision/boolean.rs	Tseitin-encode ¬({formula}) into {clause_count} CNF clauses and search for an assignment that makes the formula false.
 src/proof_engine/decision/boolean.rs	{} makes {formula} false.
 src/proof_engine/decision/linear.rs	No assignment exists: {contradiction}.
 src/proof_engine/decision/linear.rs	The affine normal form is the constant {}, so {} is false.
+src/proof_engine/decision/linear.rs	if {} then {}
+src/proof_engine/decision/linear.rs	requires x = {}, but the interval excludes that value
+src/proof_engine/decision/linear.rs	requires x {} {} and x {} {}
+src/proof_engine/decision/linear.rs	requires {} and {} at the same time
+src/proof_engine/decision/linear.rs	{constraints} is satisfiable
+src/proof_engine/decision/linear.rs	{} is false
 src/proof_engine/decision/linear.rs	{} makes {} false.
 src/proof_engine/decision/linear.rs	{} satisfies every listed constraint.
 src/proof_engine/decision/linear.rs	{} satisfies the premises but makes {} false.
+src/proof_engine/decision/linear.rs	{}: {lower} and {upper}
 src/proof_engine/decision/linear/proofs.rs	A model search over the free variables found {}.
 src/proof_engine/decision/linear/proofs.rs	Adding the negation of the goal makes the interval system unsatisfiable; equivalently, every model of the premises satisfies {}.
 src/proof_engine/decision/linear/proofs.rs	All variable coefficients cancel, so the decision procedure checks a constant relation instead of looking up a named theorem.
@@ -226,7 +458,12 @@ src/proof_engine/decision/linear/proofs.rs	The interval solver reports an empty 
 src/proof_engine/decision/linear/proofs.rs	The premise interval is empty: {contradiction}.
 src/proof_engine/decision/linear/proofs.rs	The premises are satisfiable and reduce to {}.
 src/proof_engine/decision/linear/proofs.rs	The premises reduce to the interval {}.
+src/proof_engine/decision/linear/proofs.rs	Therefore {statement} is not valid. ∎
+src/proof_engine/decision/linear/proofs.rs	Therefore {statement} is valid in linear real arithmetic. ∎
+src/proof_engine/decision/linear/proofs.rs	Therefore {} holds in linear real arithmetic. ∎
+src/proof_engine/decision/linear/proofs.rs	Therefore {} is false. ∎
 src/proof_engine/decision/linear/proofs.rs	Under that assignment the claim is false, so {} is not universally valid.
+src/proof_engine/decision/linear/proofs.rs	With no satisfying premise model, the implication {statement} is vacuously valid. ∎
 src/proof_engine/decision/linear/proofs.rs	Witness found: {}.
 src/proof_engine/library.rs	A state of the system at time t₀ is the pair s₀ = (x(t₀), ẋ(t₀)). Newton's second law turns the dynamics into the first-order ODE (ẋ, v̇) = (v, F(x, v, t)/m).
 src/proof_engine/library.rs	Add the two equalities: a² + b² = c·p + c·q = c·(p + q) = c·c = c².
@@ -320,6 +557,8 @@ src/proof_engine/mod.rs	Сформулируйте относительный и
 src/proof_engine/mod.rs	Сформулируйте утверждение как закрытое предложение в выбранной аксиоматике (поддерживаются варианты: PA, ZFC, ньютоновская механика, специальная и общая теория относительности, классическая электродинамика).
 src/proof_engine/mod.rs	Универсальный конвейер доказательства: impulse(«{prompt}») → formalize (Викиданные) → context (math / logic / science) → план доказательства → проверка → deformalize → finalize.
 src/proof_engine/mod.rs	Чтобы это утверждение стало проверяемым, выберите конкретную аксиоматику. Для лапласовского детерминизма мы берём ньютоновскую аксиоматику N и сводим детерминизм к существованию и единственности решения системы ОДУ.
+src/proof_engine/mod.rs	सार्वभौमिक प्रमाण पाइपलाइन: impulse(\"{prompt}\") → formalize (Wikidata) → context (math / logic / science) → प्रमाण योजना → सत्यापन → deformalize → finalize।
+src/proof_engine/mod.rs	通用证明流程:impulse(\"{prompt}\") → formalize(Wikidata)→ context(math / logic / science)→ 证明计划 → 校验 → deformalize → finalize。
 src/proof_engine/presenter.rs	do you have a preferred proof technique?
 src/proof_engine/presenter.rs	do you want to weaken the claim into a checkable form (e.g. replace equality with an inequality, or restrict the domain)?
 src/proof_engine/presenter.rs	if the exact claim is required, should we add an axiom under which the counterexample is excluded?
@@ -330,6 +569,11 @@ src/proof_engine/presenter.rs	treating the request as a claim to be refuted; app
 src/proof_engine/presenter.rs	treating the request as the formal claim \"{}\" and discharging it by {} inside relative-meta-logic.
 src/proof_engine/presenter.rs	which exact statement do you want checked (one sentence)?
 src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n
+src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n{counter_label}: {counterexample}
+src/proof_engine/presenter.rs	{heading} ({method_intro}: {method_label}).\n\n{statement_label}: {statement}\n
+src/proof_engine/presenter.rs	{heading}.\n\n{reason}
+src/proof_engine/presenter.rs	{label}: {detail}
+src/proof_engine/presenter.rs	{label}\n{intro}\n
 src/proof_engine/presenter.rs	в какой системе аксиом (PA, ZFC, ньютоновская механика, …)?
 src/proof_engine/presenter.rs	если требуется ровно это утверждение, нужно ли добавить аксиому, при которой контрпример исключается?
 src/proof_engine/presenter.rs	есть ли предпочитаемая техника доказательства?
@@ -339,13 +583,23 @@ src/proof_engine/presenter.rs	пока что не хватает входных
 src/proof_engine/presenter.rs	трактуем запрос как утверждение, которое нужно опровергнуть; используем {} и приводим контрпример.
 src/proof_engine/presenter.rs	трактуем запрос как формальное утверждение «{}» и доказываем методом «{}» в relative-meta-logic.
 src/proof_engine/presenter.rs	хотите ли вы ослабить утверждение до проверяемой формы (например, заменить равенство неравенством или ограничить область)?
+src/proof_engine/presenter.rs	अंतिम निष्पादन के लिए कुछ इनपुट कम हैं; चयनित विधि: {}. नीचे योजना है — उपलब्ध जानकारी को औपचारिक सिग्नेचर में अनुवादित करें, अनुपस्थित इनपुट चिन्हित करें, और स्पष्टीकरण के प्रश्न पूछें।
 src/proof_engine/presenter.rs	किस अभिगृहीत प्रणाली में (PA, ZFC, न्यूटनीय यांत्रिकी, …)?
 src/proof_engine/presenter.rs	कौन-सा कथन परीक्षणीय है (एक वाक्य में)?
 src/proof_engine/presenter.rs	क्या आप कथन को जाँचने योग्य रूप तक शिथिल करना चाहते हैं (जैसे समता को असमिका से बदलना या क्षेत्र सीमित करना)?
 src/proof_engine/presenter.rs	क्या कोई वांछित प्रमाण-तकनीक है?
+src/proof_engine/presenter.rs	प्रश्न को औपचारिक कथन \"{}\" मानकर relative-meta-logic में \"{}\" विधि से प्रमाणित कर रहे हैं।
+src/proof_engine/presenter.rs	प्रश्न को खंडन योग्य कथन मानकर {} का उपयोग कर रहे हैं और प्रतिउदाहरण देते हैं।
 src/proof_engine/presenter.rs	यदि वही कथन ज़रूरी है, क्या आप कोई अभिगृहीत जोड़ना चाहते हैं जिससे प्रतिउदाहरण बाहर रहे?
+src/proof_engine/presenter.rs	把问题视为形式命题“{}”,在 relative-meta-logic 中用“{}”方法证明。
 src/protocol_policy.rs	Tool calls and function execution are not allowed without explicit agent mode. Enable agent mode only for an isolated execution environment.
 src/protocol_policy.rs	Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
+src/protocol_policy.rs	tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n  thinking_step \"policy_refusal package_permission_required:{capability}\"\n
+src/proxy.rs	failed to serialize proxy log: {error}
+src/proxy.rs	invalid chunk size `{size_text}`: {error}
+src/proxy.rs	proxy upstream connection failed: {error}
+src/rebuild_plan.rs	  reattached_artifacts\n
+src/rebuild_plan.rs	  rebuild_and_reattach_pipeline\n
 src/rebuild_plan.rs	Hot-swap the local server/worker to the rebuilt binary.
 src/rebuild_plan.rs	Reattach the regenerated worker to the UI.
 src/rebuild_plan.rs	Rebuild-and-reattach plan for accepted change `{}` (approved by {}): a {}-step, reversible pipeline that recompiles Formal AI, regenerates the WebAssembly worker, reattaches it to {} grounded UI artifacts, hot-swaps the local server, and verifies the UI uses the accepted version. Human-gated, proposal-only.
@@ -353,6 +607,10 @@ src/rebuild_plan.rs	Recompile Formal AI from the accepted source.
 src/rebuild_plan.rs	Regenerate the WebAssembly worker the browser UI runs.
 src/rebuild_plan.rs	The rebuilt binary must pass the whole test suite, the UI smoke test must load the regenerated worker, and the version the UI reports must match the accepted change before the hot-swap is kept; otherwise the prior binary is restored.
 src/rebuild_plan.rs	Verify the UI uses the accepted version, then keep or roll back.
+src/recipe_interpreter.rs	recipe binds unknown recorder `{other}`
+src/recipe_interpreter.rs	recipe step `{recorder}` runs before its {dependency} dependency
+src/relative_meta_logic.rs	prior={} support={} contradiction={} posterior={} ignored={}
+src/relative_meta_logic.rs	source={} tier={} stance={} strength={} mass={:.6} ignored={}
 src/repair_strategy.rs	Add a data-driven test asserting the corrected record is present and well-formed; the meaning/lexicon suite must stay green.
 src/repair_strategy.rs	Add a fixture that lowers and renders the new task; the rule-synthesis benchmark gate must be green before human review.
 src/repair_strategy.rs	Add a guard test that pins the behaviour \"{prompt}\" exposed, so the regression cannot recur.
@@ -362,6 +620,14 @@ src/repair_strategy.rs	Synthesise a new solver method (a substitution rule) that
 src/repair_strategy.rs	The new test must fail before the fix and pass after it, and the whole suite must stay green.
 src/repair_strategy.rs	What is the plural of the tomato meaning's second synonym?
 src/repair_strategy.rs	Why did the reverse-sort answer change between releases?
+src/repair_strategy.rs	the trace shows `{signal}` — a correct behaviour is unguarded by a test
+src/repair_strategy.rs	the trace shows `{signal}` — the meta algorithm could not route the task
+src/repair_strategy.rs	the trace shows `{signal}` — the seed data the task needs is absent or wrong
+src/rule_synthesis.rs	referent=active_program_artifact task={} language={}
+src/rule_synthesis.rs	write_program task={} language={}
+src/seed.rs	formal_ai_seed_bundle\n
+src/seed/meanings/parse.rs	{surface} denotes {parent_meaning}
+src/seed/meanings/parse.rs	{} defined by {}
 src/seed/summary_topics.rs	{topic} summary recorded.
 src/self_explanation.rs	An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning.
 src/self_explanation.rs	Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests.
@@ -369,26 +635,63 @@ src/self_explanation.rs	Explained how Formal AI works across {sections} grounded
 src/self_explanation.rs	Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs.
 src/self_explanation.rs	The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links.
 src/self_explanation.rs	When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review.
+src/self_healing.rs	  source_round_trip\n
 src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); a lesson was learned but the benchmark gate blocks adoption.
 src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); no lesson could be synthesised — recorded for triage.
 src/self_healing.rs	Failure `{}` maps onto {} (source {round_trip}); {} lesson(s) await human approval.
+src/self_improvement.rs	  learned_rule\n
+src/self_improvement.rs	  rejected_trace\n
 src/self_improvement.rs	Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{}` is {} ({}/{}).
+src/self_improvement.rs	invalid {name} `{value}`
+src/self_improvement.rs	learned rule does not parse: {error}
+src/self_improvement.rs	missing `{name}` in candidate
+src/self_improvement.rs	rule verification did not pass: {status}
+src/self_improvement.rs	substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"{rule_id}\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> {modifier}\"\n    replace \"request:task -> {base_task}\"\n      with \"request:task -> {resolved_task}\"
+src/self_improvement.rs	{prompt}\n{fingerprint}
 src/self_source_graph.rs	Projected {faithful}/{total} owned source modules losslessly through the meta-language links network ({permille}‰ round-trip coverage, {nodes} named AST nodes).
+src/server.rs	data: [DONE]\n\n
+src/server.rs	data: {merged}\n\n
+src/server.rs	failed to persist memory: {error}
+src/server.rs	failed to serialize response: {error}
+src/server.rs	invalid LinksQL query: {error}
+src/server.rs	invalid chat request: {error}
+src/server.rs	invalid generateContent request: {error}
+src/server.rs	invalid messages request: {error}
+src/server.rs	invalid responses request: {error}
+src/server.rs	unsupported model `{model}`; use `{}` or a configured alias
+src/shared_dialog.rs	failed to decode ChatGPT React Router stream string: {error}
+src/shared_dialog.rs	failed to parse ChatGPT React Router payload as JSON: {error}
+src/skill_compiler.rs	{normalized_trigger}\n{response}
+src/skill_compiler.rs	{trigger}\n{response}
+src/skill_compiler/structured.rs	export function {name}(input) {{\n
+src/skill_compiler/structured.rs	native_handler {name}\n
+src/skill_compiler/structured.rs	permission `{capability}` must include a capability namespace
+src/skill_compiler/structured.rs	typed input `{name}` must declare a type
+src/skill_compiler/structured.rs	unsupported handler target `{target}`
+src/skill_compiler/structured.rs	unsupported input type `{value_type}`
+src/skill_compiler/structured.rs	unsupported structured skill line `{line}`
+src/skill_compiler/structured.rs	{label} must include text
+src/skill_compiler/structured.rs	{label} must use a backtick-quoted value
+src/skill_compiler/structured.rs	{}({args}) -> deterministic_response
 src/skill_ledger.rs	A method exists but the need's chain did not connect end to end; recorded as a gap to close.
 src/skill_ledger.rs	No catalogued method resolves this need; recorded as a gap to close.
 src/skill_ledger.rs	The need resolved to a method but was not satisfied; recorded as a gap to close.
-src/solver.rs	Destructive agent actions require an explicit human confirmation. 
 src/solver.rs	Flushing the source cache is an auditable action. Confirm explicitly.
 src/solver.rs	That message contains inappropriate content. Please keep the conversation respectful.
 src/solver.rs	The action will run inside an isolated sandbox once confirmed.
+src/solver.rs	https://example.org/{source_id} fetched_at={fetched_at} sha256={sha256}
 src/solver.rs	loops are refused. Re-send a bounded version inside an isolated sandbox.
 src/solver.rs	mode runs in an isolated sandbox so the host stays safe.
 src/solver.rs	step will be appended to the action log.
+src/solver_diagnostics.rs	{answer}\n\n[diagnostic]\n{}
+src/solver_formalization.rs	formalization:{index} score={} probability={probability:.6} {}
+src/solver_formalization.rs	selected=formalization:{index} probability={probability:.6} margin={margin:.6} epsilon={epsilon:.6} reason={}
+src/solver_formalization.rs	top=formalization:{top_index} runner_up=formalization:{runner_up_index} margin={margin:.6} epsilon={epsilon:.6}
 src/solver_handler_docs.rs	pandas `DataFrame.join` joins columns from the `other` DataFrame or named Series into the caller and returns a new DataFrame.\n\nScoped to this method: by default, it performs a left join using the caller's index. If `on` is set, pandas matches that caller column or index level against the `other` object's index. The `how` parameter controls key handling (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, or `right_anti`). Use `lsuffix` and `rsuffix` when column names overlap, `sort` to order join keys, and `validate` to check one-to-one, one-to-many, many-to-one, or many-to-many relationships. For column-on-column joins, the pandas docs point to `DataFrame.merge`.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
 src/solver_handler_docs.rs	pandas `DataFrame.join` добавляет столбцы из `other` DataFrame или именованной Series к вызывающему DataFrame и возвращает новый DataFrame.\n\nВ рамках этого метода: по умолчанию это left join по индексу вызывающего DataFrame. Если задан `on`, pandas сопоставляет этот столбец или уровень индекса с индексом объекта `other`. Параметр `how` управляет объединением ключей (`left`, `right`, `outer`, `inner`, `cross`, `left_anti` или `right_anti`). `lsuffix` и `rsuffix` нужны при совпадающих именах столбцов, `sort` сортирует ключи join, а `validate` проверяет связи one-to-one, one-to-many, many-to-one или many-to-many. Для join столбец-к-столбцу документация pandas указывает на `DataFrame.merge`.\n\nИсточник: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (официальная документация pandas).
 src/solver_handler_docs.rs	pandas `DataFrame.join` कॉल करने वाले DataFrame में `other` DataFrame या named Series के columns जोड़ता है और नया DataFrame लौटाता है.\n\nइस method के दायरे में: default रूप से यह caller के index पर left join करता है. `on` देने पर pandas caller के उस column या index level को `other` object के index से मिलाता है. `how` parameter keys को मिलाने का तरीका चुनता है (`left`, `right`, `outer`, `inner`, `cross`, `left_anti`, या `right_anti`). Column नाम टकराने पर `lsuffix` और `rsuffix`, join keys को sort करने के लिए `sort`, और one-to-one, one-to-many, many-to-one, या many-to-many संबंध जांचने के लिए `validate` इस्तेमाल करें. Column-on-column joins के लिए pandas docs `DataFrame.merge` की ओर भेजते हैं.\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
 src/solver_handler_docs.rs	pandas `DataFrame.join` 会把 `other` DataFrame 或具名 Series 的列加入调用方，并返回新的 DataFrame。\n\n只看这个方法：默认情况下，它使用调用方的 index 执行 left join。设置 `on` 时，pandas 会把调用方的列或索引层级与 `other` 对象的 index 匹配。`how` 参数控制键的组合方式（`left`、`right`、`outer`、`inner`、`cross`、`left_anti` 或 `right_anti`）。列名冲突时使用 `lsuffix` 和 `rsuffix`，用 `sort` 排序 join keys，用 `validate` 检查 one-to-one、one-to-many、many-to-one 或 many-to-many 关系。对于列到列的 join，pandas 文档指向 `DataFrame.merge`。\n\nSource: [pandas.DataFrame.join]({PANDAS_DATAFRAME_JOIN_DOCS_URL}) (official pandas docs).
-src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback. 
+src/solver_handler_how.rs	For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\x20
 src/solver_handler_how.rs	I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try \"how does X work?\" where X is a concept I know (e.g. \"how does Wikipedia work?\"). The evidence and trace events are appended to the log; see the trace link for the full chain.
 src/solver_handler_how.rs	Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details.
 src/solver_handler_how.rs	Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n{}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{}` via `{}`. If those sources do not expose usable steps, the fallback path runs web search for `{}` across {} and merges the top results with reciprocal rank fusion (k = {}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{}`.
@@ -396,12 +699,23 @@ src/solver_handler_how.rs	To explain how {term} works: I know the term from the 
 src/solver_handler_how.rs	`{subject}` के लिए mechanism discovery plan.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term.
 src/solver_handler_how.rs	`{subject}` 的机制发现计划。\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {provider_summary}. If no source explains the mechanism, it should ask for a source or a narrower term.
 src/solver_handler_how.rs	`{}` के लिए procedural discovery plan (action `{}`, object `{}`).\n\n{}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{}` के लिए wikiHow का CORS-readable MediaWiki parse API `{}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{}` के लिए {} पर web search चलाता है और top results को reciprocal rank fusion (k = {}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{}` के explicit ordered या instructional steps हों.
-src/solver_handler_how.rs	Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback. 
+src/solver_handler_how.rs	`{}` 的过程发现计划（action `{}`, object `{}`）。\n\n{}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{}`，URL 为 `{}`。如果这些来源没有可用步骤，fallback 会对 `{}` 通过 {} 运行 web search，并用 reciprocal rank fusion (k = {}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{}` 的明确有序步骤或 instructional steps 的页面。
+src/solver_handler_how.rs	how to {}
+src/solver_handler_how.rs	how {subject} works
+src/solver_handler_how.rs	what is {term}
+src/solver_handler_how.rs	{target} install official documentation
+src/solver_handler_how.rs	Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback.\x20
 src/solver_handler_how.rs	План поиска механизма для `{subject}`.\n\nЯ не отвечаю на это из зашитого факта. Решатель трактует запрос как вопрос о том, как устроен или работает `{subject}`: сначала проверяет Wikipedia для обзорного источника, затем Wikidata для связей сущности, затем веб-поиск через {provider_summary}. Если источники не объясняют механизм, ответ должен попросить источник или более узкий термин, а не выдумывать детали.
 src/solver_handler_how.rs	План поиска процедуры для `{}` (действие `{}`, объект `{}`).\n\n{}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{}` через `{}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{}` через {} и объединяет верхние результаты reciprocal rank fusion (k = {}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{}`.
-src/solver_handler_how.rs	इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है. 
+src/solver_handler_how.rs	इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है.\x20
+src/solver_handler_how.rs	对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback_query}` 保留为 fallback。
 src/solver_handler_oracle.rs	Here is a minimal {} program ({}):\n\n```{}\n{}\n```\n\nOutput:\n```text\n{}\n```\nSource: {} ({}), cached locally as a popular example.
 src/solver_handler_units.rs	{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.
+src/solver_handler_units.rs	{unit_a}:{dim_a} vs {unit_b}:{dim_b}
+src/solver_handlers/agent_workspace.rs	Execution status: failed in isolated sandbox.\nWorkspace isolation: could not create the temp workspace.\nError: {error}
+src/solver_handlers/agent_workspace.rs	Execution status: {status} in isolated sandbox.\nWorkspace isolation: {} (paths are confined to this workspace; command environment is cleared).\n\nAction log:
+src/solver_handlers/agent_workspace.rs	\nTimed out: true
+src/solver_handlers/agent_workspace.rs	failed to {failed} {}: {}
 src/solver_handlers/behavior_rule_followups.rs	Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}.
 src/solver_handlers/behavior_rule_followups.rs	Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.
 src/solver_handlers/behavior_rule_followups.rs	Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.
@@ -411,6 +725,7 @@ src/solver_handlers/behavior_rule_followups.rs	Всего: {total} правил 
 src/solver_handlers/behavior_rule_followups.rs	Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.
 src/solver_handlers/behavior_rule_followups.rs	कुल व्यवहार नियम: {total} (built-in: {built_in}; dialog-local: {runtime}).
 src/solver_handlers/behavior_rule_followups.rs	कुल: {total} व्यवहार नियम ({built_in} built-in, {runtime} dialog-local). संक्षेप में: {groups}.
+src/solver_handlers/behavior_rule_followups.rs	总计：{total} 条行为规则（{built_in} 条内置，{runtime} 条来自对话）。简要：{groups}。
 src/solver_handlers/behavior_rules.rs	Behavior rule compiled for this dialog.
 src/solver_handlers/behavior_rules.rs	Lists the supported symbolic chat capabilities.
 src/solver_handlers/behavior_rules.rs	Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.
@@ -431,6 +746,9 @@ src/solver_handlers/behavior_rules.rs	When the user requests a program with a su
 src/solver_handlers/behavior_rules.rs	When the user says `Hi`, `Hello`, or `Hey` then respond with `{}`.
 src/solver_handlers/behavior_rules.rs	When the user says `bye`, `goodbye`, or `пока` then respond with `{}`.
 src/solver_handlers/behavior_rules.rs	When the user says `{}` then respond with `{}`.
+src/solver_handlers/behavior_rules.rs	`language` और `task` parameter: {}
+src/solver_handlers/behavior_rules.rs	`language` 和 `task` 参数：{}
+src/solver_handlers/behavior_rules.rs	`write_program(language, task)` with languages [{}] and tasks [{}]
 src/solver_handlers/behavior_rules.rs	`{}` अभी भेजें और मैं configured response से उत्तर दूँगा. इस rule message को dialog के साथ रखने के लिए memory export करें.
 src/solver_handlers/behavior_rules.rs	assistant-name उत्तर लौटाता है; browser surfaces assistant name setting से इसे बदल सकते हैं.
 src/solver_handlers/behavior_rules.rs	Возвращает минимальную программу из параметризованного каталога шаблонов.
@@ -448,6 +766,7 @@ src/solver_handlers/behavior_rules.rs	Когда пользователь спр
 src/solver_handlers/behavior_rules.rs	Многоязычные формы: английская ``When `X` then `Y` ``, хинди ``जब `X` तब `Y` ``, китайская ``当 `X` 时 `Y` ``.
 src/solver_handlers/behavior_rules.rs	Научить этот диалог можно так: ``Когда `ваш запрос` тогда `ваш ответ` ``. Другие формы: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``; ``Если я спрошу `ваш запрос`, ответь `ваш ответ` ``; ``Когда `ваш запрос` делай `ваш ответ` ``.
 src/solver_handlers/behavior_rules.rs	Отправьте `{}` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.
+src/solver_handlers/behavior_rules.rs	Параметры `language` и `task`: {}
 src/solver_handlers/behavior_rules.rs	Перечисляет поддерживаемые возможности символьного чата.
 src/solver_handlers/behavior_rules.rs	Правило поведения скомпилировано для этого диалога.
 src/solver_handlers/behavior_rules.rs	Прочитать одно правило можно командой `Покажи правило unknown` или `Покажи правило rule_greeting`.
@@ -468,11 +787,19 @@ src/solver_handlers/behavior_rules.rs	जब कोई पहले का rule 
 src/solver_handlers/behavior_rules.rs	बहुभाषी रूप: रूसी ``Когда `X` тогда `Y` ``, अंग्रेज़ी ``When `X` then `Y` ``, चीनी ``当 `X` 时 `Y` ``.
 src/solver_handlers/behavior_rules.rs	लेखन केवल append-only है: नियम संदेश को संवाद के साथ रखने के लिए memory export करें.
 src/solver_handlers/behavior_rules.rs	समर्थित symbolic chat क्षमताओं को सूचीबद्ध करता है.
+src/solver_handlers/behavior_rules.rs	当用户说 `Hi`、`Hello`、`Hey` 或多语言问候短语时，回答 `{}`。
+src/solver_handlers/behavior_rules.rs	当用户说 `bye`、`goodbye`、`poka` 或多语言告别短语时，回答 `{}`。
+src/solver_handlers/behavior_rules.rs	当用户说 `{}` 时，回答 `{}`。
+src/solver_handlers/behavior_rules.rs	当用户问 `Who are you?` 或 `Кто ты?` 时，回答 `{}`。
+src/solver_handlers/behavior_rules.rs	当用户问我空闲时间做什么时，回答 `{}`。
+src/solver_handlers/behavior_rules.rs	现在发送 `{}`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。
 src/solver_handlers/benchmark_prompts.rs	We can talk about {topic}. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.
 src/solver_handlers/benchmark_prompts.rs	Можем. Тема: {topic}. Я могу начать с краткого определения, контекста или конкретного вопроса; если веб-поиск доступен, публичные факты можно уточнить через внешний источник.
 src/solver_handlers/benchmark_prompts.rs	हम बात कर सकते हैं. विषय: {topic}. मैं छोटी परिभाषा, संदर्भ, या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो तो public facts बाहरी स्रोत से जाँचे जा सकते हैं.
+src/solver_handlers/benchmark_prompts.rs	可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; 如果 web search 可用, 公开事实可以通过外部来源核对。
 src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
 src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
+src/solver_handlers/calculator_rate.rs	{USD_RUB_RATE_EXPRESSION} = {}
 src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.
 src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
 src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
@@ -481,37 +808,88 @@ src/solver_handlers/calendar.rs	Create event «{title}» on {iso}. Time: {time},
 src/solver_handlers/calendar.rs	The day after {} is {}. I move {} by {} in the seven-day calendar cycle.
 src/solver_handlers/calendar.rs	The day before {} is {}. I move {} by {} in the seven-day calendar cycle.
 src/solver_handlers/calendar.rs	Today is {}, {iso_date} ({time_zone}).
+src/solver_handlers/calendar.rs	{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।
+src/solver_handlers/calendar.rs	{} के बाद {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।
+src/solver_handlers/calendar.rs	{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।
 src/solver_handlers/calendar.rs	Перед {} идёт {}. Я сдвинул {} на {} в семидневном календарном цикле.
 src/solver_handlers/calendar.rs	После {} наступает {}. Я сдвинул {} на {} в семидневном календарном цикле.
 src/solver_handlers/calendar.rs	Сегодня {}, {iso_date} ({time_zone}).
 src/solver_handlers/calendar.rs	Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить.
 src/solver_handlers/calendar.rs	आज {} है, {iso_date} ({time_zone}).
+src/solver_handlers/calendar.rs	在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。
+src/solver_handlers/compound_interest.rs	1 {source_currency} in {target_currency}
+src/solver_handlers/compound_interest.rs	1 {target_currency}
+src/solver_handlers/compound_interest.rs	Conversion: {source_currency} -> {target_currency}
+src/solver_handlers/compound_interest.rs	Final amount: {} USD
 src/solver_handlers/compound_interest.rs	I calculated the USD amount, but no {source_currency}->{target_currency} exchange rate is available locally.
 src/solver_handlers/compound_interest.rs	Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.
+src/solver_handlers/compound_interest.rs	Rate detail: {detail}
+src/solver_handlers/compound_interest.rs	Source amount: {} {}
+src/solver_handlers/compound_interest.rs	Step 1: periodic rate = r/n = {}/{} = {}
+src/solver_handlers/compound_interest.rs	Step 2: number of periods = n*t = {}*{} = {}
 src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
+src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
+src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}
 src/solver_handlers/conversation_memory/memory_write.rs	Replaced \"{old_value}\" with \"{new_value}\" in memory ({applied} occurrence(s) updated).
+src/solver_handlers/conversation_memory/memory_write.rs	append content={statement}
+src/solver_handlers/conversation_memory/memory_write.rs	replace {old_value} with {new_value} in memory
+src/solver_handlers/conversation_memory/memory_write.rs	substitute old={old_value} new={new_value}
 src/solver_handlers/conversation_memory/memory_write.rs	Заменил \"{old_value}\" на \"{new_value}\" в памяти (обновлено вхождений: {applied}).
+src/solver_handlers/conversation_memory/memory_write.rs	Запомнил: {statement}
+src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में \"{old_value}\" को \"{new_value}\" से बदला ({applied})।
+src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में सहेजा गया: {statement}
+src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
+src/solver_handlers/conversation_memory/mod.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
 src/solver_handlers/conversation_memory/mod.rs	My name is {name} — that's what you named me.
 src/solver_handlers/conversation_memory/mod.rs	Nice to meet you! I'll go by {name} from now on.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in memory.
 src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in the conversation history.
+src/solver_handlers/conversation_memory/mod.rs	The previous message ({role_label}) was: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	There is no previous message yet.
 src/solver_handlers/conversation_memory/mod.rs	Your name is {name}.
+src/solver_handlers/conversation_memory/mod.rs	Your previous question was: {content}
+src/solver_handlers/conversation_memory/mod.rs	event={} conversation={} title={} role={} {}
+src/solver_handlers/conversation_memory/mod.rs	field={name} value={value}
+src/solver_handlers/conversation_memory/mod.rs	link{stamp}: {from} -> {to}
+src/solver_handlers/conversation_memory/mod.rs	previous_message role={role}
+src/solver_handlers/conversation_memory/mod.rs	turn={} role={} content={}
+src/solver_handlers/conversation_memory/mod.rs	{name}{stamp}: {value}
+src/solver_handlers/conversation_memory/mod.rs	{title} ({conversation_id})
+src/solver_handlers/conversation_memory/mod.rs	В прошлом сообщении ({role_label}) было написано: \"{content}\"
+src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	Меня зовут {name} — так вы меня назвали.
+src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
 src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	Отлично, теперь меня зовут {name}. Приятно познакомиться!
 src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
+src/solver_handlers/conversation_memory/mod.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
 src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в памяти не найдено.
 src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
+src/solver_handlers/conversation_memory/mod.rs	आपने पूछा था: \"{content}\"
+src/solver_handlers/conversation_memory/mod.rs	पिछले संदेश ({role_label}) में लिखा था: \"{content}\"
 src/solver_handlers/conversation_memory/mod.rs	बढ़िया, अब से मेरा नाम {name} है। आपसे मिलकर अच्छा लगा!
+src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n
 src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" नहीं मिला.
 src/solver_handlers/conversation_memory/mod.rs	मेरा नाम {name} है — यह नाम आपने मुझे दिया था.
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n
 src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" नहीं मिला.
+src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
+src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
+src/solver_handlers/conversation_memory/mod.rs	好的，从现在起就叫我 {name} 吧。很高兴认识你！
+src/solver_handlers/conversation_memory/mod.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
+src/solver_handlers/conversation_memory/mod.rs	我叫 {name}，这是你给我起的名字。
+src/solver_handlers/definition_merge.rs	Merged definition of {display_term}{anchor}\nSource languages: {languages}\n\nFacts:
 src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
+src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
+src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
+src/solver_handlers/document_originality.rs	{body}\n\n{heading}:\n{summaries}
+src/solver_handlers/document_originality.rs	{name} plagiarism originality uniqueness
+src/solver_handlers/document_request.rs	 ({label} प्रारूप में)
+src/solver_handlers/document_request.rs	 in {label} format
+src/solver_handlers/document_request.rs	 в формате {label}
 src/solver_handlers/document_request.rs	Document format conversion via link-foundation/meta-language ({DOCUMENT_FORMAT_ENGINE}).
 src/solver_handlers/document_request.rs	Native target concepts: {}.
 src/solver_handlers/document_request.rs	Package layer: {} bytes in the DOCX OPC stored-entry profile.
@@ -519,6 +897,9 @@ src/solver_handlers/document_request.rs	Source: {}; target: {}.
 src/solver_handlers/document_request.rs	Supported document formats: {}.
 src/solver_handlers/document_request.rs	This is a document-generation request{format_suffix}. I am a deterministic symbolic solver: I cannot research arbitrary live data on the web and I do not render binary files directly, so I decompose the task into the formal plan the universal algorithm produces (decompose → tests → drafts → composition). The document workflow uses link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX representation/conversion, with concept profiles for headings, paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n1. Scope the document and its criteria: which items to include and which attributes distinguish them.\n2. Collect the list of items from verifiable sources and record links to those sources.\n3. Classify each item against the stated criteria.\n4. Assemble the document structure: title, sections, and a table or list.\n5. Export the finished structure to the requested format.\n\nConfirm the plan or refine the criteria and sources and I will continue with concrete steps. If you need facts that are not in the local Links Notation memory, name a source and I will add it as a links rule.
 src/solver_handlers/document_request.rs	Это запрос на создание документа{format_suffix}. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.
+src/solver_handlers/document_request.rs	यह एक दस्तावेज़ बनाने का अनुरोध है{format_suffix}. मैं एक नियतात्मक प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं और कौन-से गुण उन्हें अलग करते हैं।\n2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक दर्ज करें।\n3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\nयोजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के साथ आगे बढ़ूँगा।
+src/solver_handlers/document_request.rs	这是一个生成文档的请求{format_suffix}。我是一个确定性的符号求解器：我无法在网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n3. 根据所述标准对每个条目进行分类。\n4. 组装文档结构：标题、章节以及表格或列表。\n5. 将完成的结构导出为所请求的格式。\n\n请确认计划或细化标准与来源，我将继续给出具体步骤。
+src/solver_handlers/document_request.rs	（{label} 格式）
 src/solver_handlers/feature_capability.rs	2 + 2 क्या है?
 src/solver_handlers/feature_capability.rs	No. Web search is disabled by this configuration's offline mode or there are no configured search providers. I can still answer from local rules and cache, but I will not call search engines.
 src/solver_handlers/feature_capability.rs	No. {label} is not available in this configuration: {reason}. Example message after enabling it: `{example}`.
@@ -535,12 +916,19 @@ src/solver_handlers/feature_capability.rs	Что такое Википедия?
 src/solver_handlers/feature_capability.rs	नहीं। इस configuration में `{label}` अभी available नहीं है: {reason}. Enable करने के बाद example message: `{example}`.
 src/solver_handlers/feature_capability.rs	विकिपीडिया क्या है?
 src/solver_handlers/feature_capability.rs	हाँ। इस configuration में `{label}` available है। Example message: `{example}`.
+src/solver_handlers/feature_capability.rs	हाँ। इस configuration में web search enabled है: मैं default रूप से DuckDuckGo Instant Answer और उपलब्ध CORS-readable providers (`{providers}`) का उपयोग explicit prompts जैसे `Search the web for Nikola Tesla` के लिए कर सकता हूँ। हर provider के top-10 results reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}) से merge होते हैं। अगर browser session में providers disabled या blocked हों, तो मैं \"हाँ\" कहने के बजाय स्थिति बताऊँगा।
+src/solver_handlers/feature_capability.rs	可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {WEB_SEARCH_RRF_K}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。
 src/solver_handlers/github_repository_traffic.rs	Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}.
 src/solver_handlers/installation_conversion.rs	1. Detect the source surface and requested target surface(s).\n
 src/solver_handlers/installation_conversion.rs	2. Extract command-like install/deploy steps in original order.\n
 src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
 src/solver_handlers/installation_conversion.rs	4. Preserve commands verbatim so the conversion can round-trip.\n
 src/solver_handlers/installation_conversion.rs	Converted installation instructions for {}.
+src/solver_handlers/installation_conversion.rs	Meta algorithm for constructing conversion algorithms:\n
+src/solver_handlers/installation_conversion.rs	README.md installation guide:\n\n
+src/solver_handlers/installation_conversion.rs	Run the {} {} step
+src/solver_handlers/installation_conversion.rs	\nExisting coding solutions producible by the same meta algorithm:\n
+src/solver_handlers/installation_conversion.rs	{} output={} verifier={}
 src/solver_handlers/installation_conversion.rs	{}. {} -> {}; verification fixture: {}.
 src/solver_handlers/meta_explanation.rs	I am not an LLM runtime and I do not perform neural inference. Current environment: {} (`{}`). Runtime: {}. The project exposes OpenAI-compatible API shapes, but answers come from a deterministic solver: it checks the local Links Notation seed, rules, and memory ({}) first; web search is used only when this environment allows it: {}. The whole internet is not preloaded into local rules.
 src/solver_handlers/meta_explanation.rs	I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain.
@@ -549,6 +937,7 @@ src/solver_handlers/meta_explanation.rs	Я не LLM-рантайм и не вы�
 src/solver_handlers/meta_explanation.rs	Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Evidence-ссылки и trace-события добавлены в журнал; по trace-ссылке можно проверить всю цепочку.
 src/solver_handlers/meta_explanation.rs	मैं LLM runtime नहीं हूँ और neural inference नहीं चलाता. Current environment: {} (`{}`). Runtime: {}. Project OpenAI-compatible API shapes देता है, लेकिन जवाब deterministic solver बनाता है: पहले local Links Notation seed, rules और memory ({}) देखता है; फिर web search केवल environment अनुमति दे तो उपयोग करता है: {}. पूरा internet local rules में preload नहीं है.
 src/solver_handlers/meta_explanation.rs	मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें.
+src/solver_handlers/meta_explanation.rs	我不是 LLM runtime, 也不执行神经网络推理。当前环境: {} (`{}`)。Runtime: {}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({}); 然后只在当前环境允许时使用 web search: {}。整个互联网不会预加载到本地规则中。
 src/solver_handlers/mod.rs	Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified.
 src/solver_handlers/mod.rs	Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.
 src/solver_handlers/mod.rs	Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links.
@@ -560,12 +949,18 @@ src/solver_handlers/mod.rs	I recognized Google Trends as a data source I can lea
 src/solver_handlers/mod.rs	In the context of {context} ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind}).
 src/solver_handlers/mod.rs	No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list.
 src/solver_handlers/mod.rs	Sources disagree on this question. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved.
+src/solver_handlers/mod.rs	Step {}: {step}
 src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
+src/solver_handlers/mod.rs	{expression} = {formatted}
+src/solver_handlers/mod.rs	{intro}\n\n{summary}
 src/solver_handlers/mod.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
+src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
+src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
+src/solver_handlers/natural_language_tools.rs	Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}
 src/solver_handlers/number_riddle.rs	If real numbers are allowed, the answer is not unique; for example, x = {} also fits.
 src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits.
 src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the answer is not unique: {} all fit.
@@ -573,6 +968,9 @@ src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, the un
 src/solver_handlers/number_riddle.rs	If this is an integer-number riddle, there is no solution.
 src/solver_handlers/number_riddle.rs	Over the real numbers there is also a single solution: x = {}.
 src/solver_handlers/number_riddle.rs	Over the real numbers, these constraints are inconsistent.
+src/solver_handlers/number_riddle.rs	x {} {} and x {} {} is satisfiable
+src/solver_handlers/number_riddle.rs	{integer_line}\n\nInteger formalization: x in Z, x {} {}, x {} {}. Solver form: `{statement}`.\n\n{real_line}\n\nFormal relative-meta-logic / SMT check:\n{formal_check}
+src/solver_handlers/number_riddle.rs	{integer_line}\n\nФормализация над целыми: x in Z, x {} {}, x {} {}. Проверяемая форма для решателя: `{statement}`.\n\n{real_line}\n\nФормальная проверка relative-meta-logic / SMT:\n{formal_check}
 src/solver_handlers/number_riddle.rs	Если разрешены вещественные числа, ответ не единственный: например, x = {} тоже подходит.
 src/solver_handlers/number_riddle.rs	Если это задача про целое число, единственный ответ: {only}.
 src/solver_handlers/number_riddle.rs	Если это задача про целое число, решения нет.
@@ -580,6 +978,40 @@ src/solver_handlers/number_riddle.rs	Если это задача про цел�
 src/solver_handlers/number_riddle.rs	Если это задача про целые числа, ответ не единственный: подходят {}.
 src/solver_handlers/number_riddle.rs	На вещественных числах тоже есть единственное решение: x = {}.
 src/solver_handlers/number_riddle.rs	На вещественных числах эти ограничения несовместимы.
+src/solver_handlers/numeric_list/mod.rs	(@USER OP:{} values:[{}] value_type:{} language:{} result_kind:{} request:[code result])
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the largest of the {noun} {given}:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that finds the smallest of the {noun} {given}:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that multiplies the {noun} {given}:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that reverses the {noun} {given}:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sorts the {noun} {given} in ascending order:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sorts the {noun} {given} in descending order:
+src/solver_handlers/numeric_list/mod.rs	Here is {lang} code that sums the {noun} {given}:
+src/solver_handlers/numeric_list/mod.rs	inherited_language={} inherited_code_request={}
+src/solver_handlers/numeric_list/mod.rs	language={} task=numeric_list operation={} family={} result_kind={} value_type={}
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который находит наибольшее из чисел {given}:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который находит наименьшее из чисел {given}:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который переворачивает числа {given}:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который перемножает числа {given}:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который сортирует числа {given} по возрастанию:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который сортирует числа {given} по убыванию:
+src/solver_handlers/numeric_list/mod.rs	Вот код на {lang}, который суммирует числа {given}:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} का गुणनफल निकालता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} का योग करता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को अवरोही क्रम में क्रमबद्ध करता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को आरोही क्रम में क्रमबद्ध करता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} को उलट देता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} में से सबसे छोटी ढूँढता है:
+src/solver_handlers/numeric_list/mod.rs	यह {lang} कोड है जो संख्याओं {given} में से सबसे बड़ी ढूँढता है:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的对数字 {given} 求和的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 反转的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 按升序排序的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的将数字 {given} 按降序排序的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最大值的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的求数字 {given} 最小值的代码:
+src/solver_handlers/numeric_list/mod.rs	这是用 {lang} 编写的计算数字 {given} 乘积的代码:
+src/solver_handlers/playwright_script.rs	1. `npm init playwright@latest`\n
+src/solver_handlers/playwright_script.rs	2. `npx playwright test`\n
+src/solver_handlers/playwright_script.rs	Check it with:\n
 src/solver_handlers/playwright_script.rs	I can write a Playwright script. Please provide the page URL, the actions to perform, and the expected assertion. If you want a default example, I can use the starter scenario from the Playwright docs.
 src/solver_handlers/playwright_script.rs	I interpret `Playright` as `Playwright` and will use a starter TypeScript example based on the Playwright docs.\n\n
 src/solver_handlers/playwright_script.rs	I will use a starter TypeScript example based on the Playwright docs.\n\n
@@ -589,6 +1021,10 @@ src/solver_handlers/playwright_script.rs	Даю стартовый TypeScript-п
 src/solver_handlers/playwright_script.rs	Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright.
 src/solver_handlers/playwright_script.rs	Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright.\n\n
 src/solver_handlers/program_synthesis.rs	Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.
+src/solver_handlers/program_synthesis.rs	\n\nif __name__ == \"__main__\":\n
+src/solver_handlers/program_synthesis.rs	command={} exit={:?} timed_out={} stdout_bytes={} stderr_bytes={}
+src/solver_handlers/program_synthesis.rs	language=python function={function_name}
+src/solver_handlers/program_synthesis.rs	tests_passed assertion_count={}
 src/solver_handlers/research_table.rs	Broad family of data-driven methods; includes supervised, unsupervised, and reinforcement approaches.
 src/solver_handlers/research_table.rs	Built from weighted layers, activations, losses, and optimization; provides the base mechanism for deep learning.
 src/solver_handlers/research_table.rs	Captures nonlinear relationships and can be trained end-to-end for complex perception tasks.
@@ -611,18 +1047,22 @@ src/solver_handlers/research_table.rs	The result of the previous research step i
 src/solver_handlers/research_table.rs	There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result.
 src/solver_handlers/research_table.rs	Use the prior search sources to identify what distinguishes this topic from the others.
 src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}.
+src/solver_handlers/self_awareness.rs	- **Conversation memory**: {}。
 src/solver_handlers/self_awareness.rs	- **Execution surface**: {} (`{}`).\n
 src/solver_handlers/self_awareness.rs	- **Internet**: {}; the whole internet is not preloaded into local memory.
 src/solver_handlers/self_awareness.rs	- **Internet**: {}; पूरा internet local memory में preload नहीं है.
+src/solver_handlers/self_awareness.rs	- **Internet**: {}; 整个互联网不会预加载到本地记忆中。
 src/solver_handlers/self_awareness.rs	- **Local facts and rules**: Links Notation seed में rules, concepts, tools और response templates.
 src/solver_handlers/self_awareness.rs	- **Local facts and rules**: built-in Links Notation seed data, including rules, concepts, tools, and response templates.
 src/solver_handlers/self_awareness.rs	- **Local rules**: built-in Links Notation seed data with rules, concepts, tools, and response templates.
 src/solver_handlers/self_awareness.rs	- **Local rules**: local links rules and seed facts are checked first.\n\n
 src/solver_handlers/self_awareness.rs	- **Self facts**: model `{DEFAULT_MODEL}`, execution policy, active surface, and answer sources.
 src/solver_handlers/self_awareness.rs	- **Self facts**: model `{DEFAULT_MODEL}`, execution surface और answer sources.
+src/solver_handlers/self_awareness.rs	- **Self facts**: model `{DEFAULT_MODEL}`, execution surface 和 answer sources。
 src/solver_handlers/self_awareness.rs	- **Self facts**: model `{DEFAULT_MODEL}`, execution surface, active modes, and answer sources.
 src/solver_handlers/self_awareness.rs	- **Surface limits**: {}.
 src/solver_handlers/self_awareness.rs	- **Surface limits**: {}.\n
+src/solver_handlers/self_awareness.rs	- **Surface limits**: {}。
 src/solver_handlers/self_awareness.rs	- **Web search**: {}.\n
 src/solver_handlers/self_awareness.rs	- **Интернет**: {}; весь интернет не загружен в локальные правила.
 src/solver_handlers/self_awareness.rs	- **Интернет**: {}; это не означает, что весь интернет предзагружен в локальную память.
@@ -633,10 +1073,31 @@ src/solver_handlers/self_awareness.rs	- **Память диалога**: {}.
 src/solver_handlers/self_awareness.rs	- **Факты о себе**: модель `{DEFAULT_MODEL}`, политика исполнения, поверхность и источники ответов.
 src/solver_handlers/self_awareness.rs	- **Факты о себе**: модель `{}`, поверхность `{}` и активные режимы.
 src/solver_handlers/self_awareness.rs	Ask for a specific fact directly; I check local rules and memory first, then use web search only when this environment allows it.
+src/solver_handlers/self_awareness.rs	Here is the fact inventory I can use for this `{}` run:
+src/solver_handlers/self_awareness.rs	I can use several classes of facts in the current `{}` environment:
 src/solver_handlers/self_awareness.rs	When `prompt` then `answer` (or When I say `prompt`, answer `answer`).
+src/solver_handlers/self_awareness.rs	browser-only IndexedDB, import/export buttons, and assistant-name UI are not part of `{}`
+src/solver_handlers/self_awareness.rs	disabled because FORMAL_AI_OFFLINE is true
+src/solver_handlers/self_awareness.rs	Вот инвентарь фактов, доступный для текущей среды `{}`:
 src/solver_handlers/self_awareness.rs	Для конкретного факта задайте прямой вопрос; порядок проверки: локальные правила, память, затем веб-поиск, если он доступен в этой среде.
 src/solver_handlers/self_awareness.rs	Если нужен конкретный факт, задайте прямой вопрос; я сначала проверю локальные правила и память, затем использую веб-поиск только когда эта среда это позволяет.
+src/solver_handlers/self_awareness.rs	Я могу использовать несколько классов фактов в текущей среде `{}`:
 src/solver_handlers/self_awareness.rs	किसी खास fact के लिए सीधे पूछें; मैं local rules और memory पहले देखता हूँ, फिर environment अनुमति दे तो web search इस्तेमाल करता हूँ.
+src/solver_handlers/self_awareness.rs	मैं current `{}` environment में इन fact sources का उपयोग कर सकता हूँ:
+src/solver_handlers/self_awareness.rs	在当前 `{}` 环境中, 我可以使用这些事实来源:
+src/solver_handlers/shell_command_transform.rs	screen -dmS {session} bash -c {}
+src/solver_handlers/shell_command_transform.rs	while true; do {}; done
+src/solver_handlers/software_project.rs	  command \"apply_damage\"\n
+src/solver_handlers/software_project.rs	  command \"create_record\"\n
+src/solver_handlers/software_project.rs	  command \"export_state\"\n
+src/solver_handlers/software_project.rs	  command \"set_stacks\"\n
+src/solver_handlers/software_project.rs	  command \"tick_cooldowns\"\n
+src/solver_handlers/software_project.rs	  command \"update_record\"\n
+src/solver_handlers/software_project.rs	  state_model \"project_records\"\n
+src/solver_handlers/software_project.rs	  state_model \"unit_state\"\n
+src/solver_handlers/software_project.rs	  validation \"cooldowns_decrement_without_negative_rounds\"\n
+src/solver_handlers/software_project.rs	  validation \"damage_mitigation_floor_at_zero\"\n
+src/solver_handlers/software_project.rs	  validation \"pure_state_transitions_before_host_api\"\n
 src/solver_handlers/software_project.rs	1. Initialize a {} project in an isolated workspace.
 src/solver_handlers/software_project.rs	2. Run the language-native syntax/type check before host integration.
 src/solver_handlers/software_project.rs	Add tests for zero damage, overkill damage, stack changes, and cooldown expiry.
@@ -649,17 +1110,29 @@ src/solver_handlers/software_project.rs	Confirm the host API and data boundaries
 src/solver_handlers/software_project.rs	Confirm the {} storage and selected-token API boundaries.
 src/solver_handlers/software_project.rs	Decompose the requirement graph into {} implementation subtask(s) with category labels.
 src/solver_handlers/software_project.rs	Define `UnitState` with HP, max HP, Protection, Resistance, and cooldowns.
+src/solver_handlers/software_project.rs	Define parsers, serializers, and backup flow for {requirement}
 src/solver_handlers/software_project.rs	Define the smallest serializable state records for the requirements.
+src/solver_handlers/software_project.rs	Design focused views and state updates for {requirement}
+src/solver_handlers/software_project.rs	Encode validation rules and failure messages for {requirement}
 src/solver_handlers/software_project.rs	Extract {} requirement(s) into the meaning record before planning.
 src/solver_handlers/software_project.rs	Generate a {} starter core plus language-appropriate repository initialization and checks.
+src/solver_handlers/software_project.rs	Implement and test the smallest behavior for {requirement}
 src/solver_handlers/software_project.rs	Implementation plan pending approval for a {} targeting {}.
+src/solver_handlers/software_project.rs	Isolate host API boundaries and mocks for {requirement}
 src/solver_handlers/software_project.rs	Keep shell, Docker, or WebVM commands behind the configured approval gates.
 src/solver_handlers/software_project.rs	Map HP, Protection, Resistance, damage, and cooldown phrases to a unit-state domain model.
+src/solver_handlers/software_project.rs	Model state fields and pure transitions for {requirement}
 src/solver_handlers/software_project.rs	Review the formalized task, requirement graph, approval gates, and delivery mode with the user.
+src/solver_handlers/software_project.rs	Schedule deterministic jobs and delivery checks for {requirement}
 src/solver_handlers/software_project.rs	Select delivery mode {} and approval gates: {}.
 src/solver_handlers/software_project.rs	Wire the tested core into the extension panel and host persistence.
 src/solver_handlers/software_project.rs	Write pure transition functions for damage mitigation, stack edits, and round ticks.
+src/solver_handlers/software_project.rs	\nApproval gates:\n
+src/solver_handlers/software_project.rs	\nGenerated code checks:\n
+src/solver_handlers/software_project.rs	\nProposed plan:\n
 src/solver_handlers/software_project.rs	\nReply `approve plan` to generate the starter implementation, or describe what to change.
+src/solver_handlers/software_project.rs	\nRequirement model:\n
+src/solver_handlers/software_project_followup.rs	  approval_required true\n
 src/solver_handlers/software_project_followup.rs	Assert each requirement (parsing, extraction, counting, summary) against the fixture.
 src/solver_handlers/software_project_followup.rs	Bind the test target to {site} and keep live fetches behind the network_access gate.
 src/solver_handlers/software_project_followup.rs	Drive the artifact through a deterministic fixture before any host API or network call.
@@ -673,40 +1146,100 @@ src/solver_handlers/software_project_followup.rs	Reply `approve plan` to generat
 src/solver_handlers/software_project_followup.rs	Run the {} test command once the generated_code gate is approved.
 src/solver_handlers/software_project_followup.rs	Surface {output} from the fixture run.
 src/solver_handlers/software_project_followup.rs	The plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates.
+src/solver_handlers/software_project_followup.rs	\nVerification plan:\n
+src/solver_handlers/software_project_followup.rs	software_project_followup\n
+src/solver_handlers/text_manipulation.rs	bytes={} chars={}
+src/solver_handlers/text_manipulation.rs	stage:{index} -> {}
+src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}
 src/solver_handlers/user_intent.rs	I am a deterministic symbolic AI. I do not hold opinions, beliefs, or feelings — every answer I give is derived from an explicit Links Notation rule. If you are looking for factual information on this topic, try asking \"what is <topic>\" and I will look it up in my knowledge base.
 src/solver_handlers/user_intent.rs	I can only respond with a chat reply. Running shell commands on your behalf is not allowed without explicit agent mode opt-in, and even then only inside an isolated sandbox.
 src/solver_handlers/user_intent.rs	I don't have a Links Notation fact for \"{term}\" yet. Add a fact or rule in Links Notation and run the request again.
 src/solver_handlers/user_intent.rs	I don't have a Links Notation fact for \"{term}\" yet. Did you mean \"{corrected}\"? Add a fact or rule in Links Notation and run the request again.
 src/solver_handlers/user_intent.rs	I received only punctuation (`{trimmed}`). What would you like me to do next?
 src/solver_handlers/user_intent.rs	I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (\"what is X?\"), arithmetic, and Hello World programs.
+src/solver_handlers/user_intent.rs	Missing localized response seed: {intent}/{language}
 src/solver_handlers/user_intent.rs	\n\nSupported pipeline: impulse → formalize (Wikidata-backed) → context → proof plan → verification in relative-meta-logic → deformalize → finalize.
 src/solver_handlers/user_intent.rs	\n\nПоддерживаемый конвейер: impulse → formalize (Викиданные) → context → план доказательства → проверка в relative-meta-logic → deformalize → finalize.
+src/solver_handlers/web_requests.rs	HTTP fetch requested for `{url}`.\n\nThe browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.\n\nSource: [{url}]({url})
+src/solver_handlers/web_requests.rs	HTTP fetch requested for `{url}`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): {summary}\n\nThe browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.\n\nSource: [{url}]({url})
+src/solver_handlers/web_requests.rs	HTTP-запрос на `{url}`.\n\nЭтот URL соответствует курируемому продвигаемому проекту. Резюме README (через formalize → summarize → deformalize): {summary}\n\nВ браузерной демо-версии сначала выполняется прямой `fetch()`; если CORS блокирует ответ, проверяется frame-policy и при необходимости открывается iframe или показывается прямая ссылка.\n\nSource: [{url}]({url})
 src/solver_handlers/web_requests.rs	I suggest opening this in a new tab: [{url}]({url}).\n\nIn the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead.
 src/solver_handlers/web_requests.rs	In the {promoted_orgs} repository context, `{display_name}` should first mean [{repo_slug}]({project_url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display_name}`. Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.
+src/solver_handlers/web_requests.rs	Latest-news search requested for `{query}`.\n\nIn the browser demo formal-ai uses web search for freshness-sensitive news prompts: DuckDuckGo Instant Answer by default, then Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews (https://www.wikinews.org/) in priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and diagnostics record each provider, rank, fusion step, and final source link so the reasoning path can be inspected.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
+src/solver_handlers/web_requests.rs	Open research question detected for `{query}`.\n\nTo answer this without a local rule, the browser demo searches verifiable sources: DuckDuckGo Instant Answer by default, then Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and diagnostics record each provider, rank, fusion step, and final source link so the reasoning path can be inspected.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
 src/solver_handlers/web_requests.rs	This is a generic project_lookup request for a project or repository.\n\nI am not privileging a specific repository because associative repository promotion is disabled. The next step is to search and summarize matching projects across {provider_summary} and similar hosts.
 src/solver_handlers/web_requests.rs	This is a repository lookup for [{slug}]({url}) on {label}.\n\nThe generic project_lookup path can summarize README or project descriptions from GitHub, GitLab, and Bitbucket without a special case for any single name. If the repository belongs to a promoted organization and promotion is enabled, that repository is listed first.
+src/solver_handlers/web_requests.rs	Web search requested for `{query}`.\n\nIn the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an \"other sources\" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
 src/solver_handlers/web_requests.rs	{promoted_orgs} repository context में `{display_name}` से मेरा पहला मतलब [{repo_slug}]({project_url}) है — {description}\n\nदूसरे matching repositories और entities browser demo में `{display_name}` web search से दिखाए जाते हैं. Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). Associative repository promotion बंद करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup path से जाता है.
 src/solver_handlers/web_requests.rs	В контексте репозиториев {promoted_orgs} под `{display_name}` я прежде всего имею в виду [{repo_slug}]({project_url}) — {description}\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `{display_name}`. Провайдеры: {provider_summary}. Ранжирование: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket.
+src/solver_handlers/web_requests.rs	Запрошены последние новости для `{query}`.\n\nВ браузерной демо-версии formal-ai такой запрос идет через веб-поиск: DuckDuckGo Instant Answer по умолчанию, затем Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews (Викиновости, https://www.wikinews.org/) в указанном порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение и итоговые ссылки, чтобы рассуждение можно было проверить.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
+src/solver_handlers/web_requests.rs	Поиск в интернете запрошен для `{query}`.\n\nВ браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews в указанном порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), поэтому URL, которые встречаются у нескольких провайдеров, всплывают вверх. Дубликаты одной и той же сущности (например, Викидата + Википедия) сворачиваются в один пункт с пометкой «Другие источники». Для произвольной страницы используйте `fetch example.com`; если прямой `fetch()` заблокирован CORS, браузер проверит frame-policy перед встроенным iframe.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
+src/solver_handlers/web_requests.rs	Распознан исследовательский вопрос для `{query}`.\n\nЧтобы ответить на такой вопрос без локального правила, браузерная демо-версия formal-ai ищет проверяемые источники: по умолчанию DuckDuckGo Instant Answer (CORS-совместимый, без ключа), затем Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews в указанном порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение и итоговые ссылки, чтобы рассуждение можно было проверить.\n\nProvider: duckduckgo (default)\nProviders considered: {provider_summary}\nCombined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})
 src/solver_handlers/web_requests.rs	Это запрос о репозитории [{slug}]({url}) на {label}.\n\nОбычный путь project_lookup ищет и резюмирует README или описание проекта на GitHub, GitLab и Bitbucket без особого правила для отдельного названия. Если репозиторий находится в продвигаемых организациях и продвижение включено, он будет показан первым.
 src/solver_handlers/web_requests.rs	Это обычный запрос project_lookup о проекте или репозитории.\n\nЯ не выделяю специальный репозиторий, потому что продвижение ассоциативных репозиториев отключено. Дальше следует искать и резюмировать подходящие проекты на {provider_summary} и похожих хостингах.
 src/solver_handlers/web_requests.rs	यह project या repository के लिए generic project_lookup request है.\n\nमैं किसी specific repository को प्राथमिकता नहीं दे रहा हूँ क्योंकि associative repository promotion disabled है. अगला step {provider_summary} और similar hosts पर matching projects खोजना और summarize करना है.
 src/solver_handlers/web_requests.rs	यह {label} पर रिपॉजिटरी [{slug}]({url}) के लिए lookup है.\n\nGeneric project_lookup path GitHub, GitLab, और Bitbucket पर README या project descriptions summarize कर सकता है, किसी single name के लिए special case के बिना. अगर repository promoted organizations में है और promotion enabled है, तो वह पहले दिखाई जाएगी.
+src/solver_handlers/web_requests.rs	在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 [{repo_slug}]({project_url}) — {description}\n\n浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。
+src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{slug}]({url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。
+src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
 src/solver_handlers_policy.rs	«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет».
 src/solver_handlers_policy.rs	Нет. У меня нет физического тела.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
 src/solver_helpers/code.rs	Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.
+src/solver_helpers/code.rs	from {lang}
+src/solver_helpers/code.rs	to {lang}
+src/solver_helpers/code.rs	{} translation gap for `{subject}` from {source} to {target}
+src/solver_helpers/mod.rs	Check command: `{check}`\nRun command: `{}`
+src/solver_helpers/mod.rs	Run command: `{}`
+src/solver_synthesis.rs	({total} - {consumed}) * {price}
+src/solver_synthesis.rs	category={category_label} rule=all_listed_items
+src/solver_synthesis.rs	category={category_label} rule={}
+src/solver_synthesis.rs	composition:{} from={}
+src/solver_synthesis.rs	items={} matched={} ignored={} count={count}
+src/solver_synthesis.rs	parts={} from={}
+src/solver_synthesis.rs	sub_impulse={} independent={} intent={} answer={}
+src/solver_synthesis.rs	total={total} consumed={consumed} remainder={remainder} price={price}
 src/solver_unknown_reasoning.rs	From link memory: {} is {}.
+src/solver_unknown_reasoning.rs	Missing localized response seed: {intent}/{language}
+src/solver_unknown_reasoning.rs	gave up after {} reasoning steps; legacy_unknown_fallback
+src/solver_unknown_reasoning.rs	language={} local_search=complete prompt_state={} questioning_rigor={:.2}
 src/solver_unknown_reasoning.rs	{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).
+src/statement_verification.rs	\"{condensed}\" fact check source
+src/statement_verification.rs	asset={} period={} claimed={:.2} status={} source={} min={:.2} min_date={} max={:.2} max_date={} posterior={}
 src/statement_verification.rs	{} is contradicted: {} reports {} {} daily candles in {} stayed between ${:.2} on {} and ${:.2} on {}.
 src/statement_verification.rs	{} is within the recorded {} {} daily candle range for {} (${:.2} to ${:.2}).
+src/substitution.rs	expected `from -> to`, got `{text}`
+src/substitution.rs	invalid variable in `{raw}`
 src/summarization/file.rs	Defines {symbol}.
 src/summarization/file.rs	It has embedded grammar blocks: {}.
+src/summarization/file.rs	Key content: {content_summary}
 src/summarization/file.rs	Top-level keys: {}.
+src/summarization/file.rs	class {name}
+src/summarization/file.rs	enum {name}
+src/summarization/file.rs	function {name}
+src/summarization/file.rs	go function {name}
+src/summarization/file.rs	interface {name}
+src/summarization/file.rs	javascript binding {name}
+src/summarization/file.rs	javascript class {name}
+src/summarization/file.rs	javascript function {name}
 src/summarization/file.rs	meta-language parsed it as {} with {} syntax links.
+src/summarization/file.rs	python symbol {name}
+src/summarization/file.rs	ruby symbol {name}
+src/summarization/file.rs	rust impl {name}
+src/summarization/file.rs	rust {label} {name}
+src/summarization/file.rs	{path} is a {} data file
+src/summarization/file.rs	{path} is a {} source file
+src/summarization/file.rs	{path} is an empty {} file
 src/summarization/file.rs	{} is a {} file with {} lines and {} bytes.
 src/summarization/resource.rs	{hidden} more {} omitted for brevity.
 src/summarization/resource.rs	{} is a repository directory with {} {} and {} {} ({} {} total across {} {}).
+src/telegram.rs	</code></pre>\n
+src/telegram.rs	<blockquote expandable>💭 {body}</blockquote>
+src/telegram.rs	<pre><code class=\"{class}\">
 src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
+src/telegram.rs	\n\n/trace {trace}
+src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
+src/telegram_runtime.rs	curl exited with {status}: {stderr}
 src/thinking.rs	Add an agent task: {}.
 src/thinking.rs	Apply available context: {trimmed}.
 src/thinking.rs	Apply the available context.
@@ -774,8 +1307,23 @@ src/thinking.rs	You said goodbye, so I wished you well in return.
 src/thinking.rs	You said hello, so I greeted you back.
 src/thinking.rs	You thanked me, so I acknowledged it warmly.
 src/thinking.rs	{label}: {trimmed}.
+src/translation/cache.rs	failed to create cache directory {}: {error}
+src/translation/cache.rs	failed to write cache body {}: {error}
+src/translation/cache.rs	failed to write cache url marker {}: {error}
+src/translation/cache.rs	translation cache miss for {url} and offline mode is active; set FORMAL_AI_LIVE_API=1 to fetch and populate the cache
+src/translation/formalization.rs	please {stem}\x20
+src/translation/http.rs	curl exited with {status}: {stderr}
+src/translation/http.rs	failed to parse curl status sentinel ({status_tail:?}): {error}
+src/translation/pipeline.rs	done candidates={} primary={:?} meaning={:?}
+src/translation/pipeline.rs	source-edition blocks={}
+src/translation/pipeline.rs	source-edition error: {error}
+src/translation/pipeline.rs	start surface={surface:?} {source_lang}->{target_lang}
+src/translation/pipeline.rs	wikidata:sparql:{}->{} ({} lemmas)
 src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?
 src/translation/selection.rs	Which interpretation did you mean: {} or {}?
+src/translation/selection.rs	{impulse}\n{salt}
+src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}
+src/unknown_opener.rs	{opener} {body}
 src/web_engine_core.rs	I didn't understand you.
 src/web_engine_core.rs	I don't know how to answer that yet.
 src/web_engine_core.rs	I haven't learned to answer that yet.
