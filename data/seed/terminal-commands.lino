@@ -62,16 +62,22 @@ terminal_commands
     language ru
       prefix "выполни команду"
       prefix "запусти команду"
+      prefix "запусти bash"
+      prefix "запусти powershell"
       prefix выполни
       prefix запусти
     language hi
       prefix "कमांड चलाओ"
+      prefix "bash चलाओ"
+      prefix "powershell चलाओ"
       prefix चलाओ
       prefix चलाएँ
       prefix निष्पादित
     language zh
       prefix 执行命令
       prefix 运行命令
+      prefix "运行 bash"
+      prefix "运行 powershell"
       prefix 执行
       prefix 运行
   shell_tokens

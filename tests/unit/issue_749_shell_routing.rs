@@ -31,3 +31,163 @@ fn explicit_shell_forms_pass_the_complete_command_through() {
         assert_eq!(shell_command(prompt).as_deref(), Some(expected), "{prompt}");
     }
 }
+
+#[test]
+fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
+    for (language, prompt, expected) in [
+        ("en", "show current directory", "pwd"),
+        (
+            "en",
+            "create an empty file called note.txt",
+            "touch note.txt",
+        ),
+        ("en", "delete the file old.txt", "rm old.txt"),
+        ("en", "copy a.txt to b.txt", "cp a.txt b.txt"),
+        ("en", "rename old.txt to new.txt", "mv old.txt new.txt"),
+        ("en", "remove the directory build", "rmdir build"),
+        ("en", "create a symbolic link from a to b", "ln -s a b"),
+        ("en", "show environment variables", "env"),
+        ("en", "show metadata for Cargo.toml", "stat Cargo.toml"),
+        ("en", "show git log", "git log"),
+        ("en", "what changed in git", "git diff"),
+        ("en", "commit my changes", "git commit"),
+        ("en", "run the tests", "cargo test"),
+        ("en", "install dependencies", "cargo fetch"),
+        ("en", "build the project", "cargo build"),
+        ("ru", "удали файл old.txt", "rm old.txt"),
+        ("ru", "скопируй a.txt в b.txt", "cp a.txt b.txt"),
+        ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),
+        ("hi", "प्रोजेक्ट बनाएँ", "cargo build"),
+        ("zh", "删除文件 old.txt", "rm old.txt"),
+        ("zh", "运行测试", "cargo test"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+}
+
+#[test]
+fn local_search_is_shell_routed_instead_of_web_searched() {
+    for prompt in [
+        "search for TODO in the code",
+        "find FIXME in the repository",
+        "grep for error in local files",
+        "найди TODO в коде",
+        "कोड में TODO खोजें",
+        "在代码中搜索 TODO",
+    ] {
+        let command = shell_command(prompt).expect(prompt);
+        assert!(
+            command.starts_with("rg --fixed-strings -- '"),
+            "{prompt}: {command}"
+        );
+        assert!(command.ends_with("' ."), "{prompt}: {command}");
+    }
+}
+
+#[test]
+fn explicit_passthrough_covers_the_full_command_taxonomy() {
+    for command in [
+        "pwd",
+        "cd workspace",
+        "ls -la",
+        "whoami",
+        "id",
+        "date",
+        "uname -a",
+        "env",
+        "which cargo",
+        "stat Cargo.toml",
+        "file Cargo.toml",
+        "touch note.txt",
+        "mkdir build",
+        "rmdir build",
+        "rm note.txt",
+        "cp a.txt b.txt",
+        "mv a.txt b.txt",
+        "ln -s a b",
+        "chmod 644 note.txt",
+        "chown user note.txt",
+        "cat note.txt",
+        "head -n 5 note.txt",
+        "tail -n 5 note.txt",
+        "wc -l note.txt",
+        "sort note.txt",
+        "uniq note.txt",
+        "cut -d: -f1 note.txt",
+        "tr a-z A-Z",
+        "sed s/a/b/ note.txt",
+        "awk '{print $1}' note.txt",
+        "grep TODO note.txt",
+        "find . -name '*.rs'",
+        "du -sh .",
+        "df -h",
+        "curl https://example.com",
+        "wget https://example.com",
+        "ping localhost",
+        "git status",
+        "git log -1",
+        "git diff",
+        "git add note.txt",
+        "git commit -m test",
+        "git branch",
+        "git checkout main",
+        "git push",
+        "git pull",
+        "npm test",
+        "pnpm test",
+        "yarn test",
+        "bun test",
+        "cargo test",
+        "pip install demo",
+        "poetry install",
+        "make test",
+        "go test ./...",
+        "mvn test",
+        "gradle test",
+        "ps aux",
+        "kill 1234",
+    ] {
+        let prompt = format!("execute {command}");
+        assert_eq!(shell_command(&prompt).as_deref(), Some(command), "{prompt}");
+    }
+}
+
+#[test]
+fn passthrough_prefixes_have_language_parity() {
+    for (language, prompt, expected) in [
+        ("en", "execute date", "date"),
+        ("en", "run env", "env"),
+        ("en", "run the command stat file.txt", "stat file.txt"),
+        ("en", "run shell: wc -l file.txt", "wc -l file.txt"),
+        ("en", "run bash: echo hello world", "echo hello world"),
+        ("en", "run powershell: Get-Date", "Get-Date"),
+        ("ru", "выполни date", "date"),
+        ("ru", "запусти env", "env"),
+        ("ru", "выполни команду stat file.txt", "stat file.txt"),
+        ("ru", "запусти команду wc -l file.txt", "wc -l file.txt"),
+        ("ru", "запусти bash: echo привет мир", "echo привет мир"),
+        ("ru", "запусти powershell: Get-Date", "Get-Date"),
+        ("hi", "चलाओ date", "date"),
+        ("hi", "चलाएँ env", "env"),
+        ("hi", "कमांड चलाओ stat file.txt", "stat file.txt"),
+        ("hi", "निष्पादित wc -l file.txt", "wc -l file.txt"),
+        ("hi", "bash चलाओ: echo नमस्ते", "echo नमस्ते"),
+        ("hi", "powershell चलाओ: Get-Date", "Get-Date"),
+        ("zh", "执行 date", "date"),
+        ("zh", "运行 env", "env"),
+        ("zh", "执行命令 stat file.txt", "stat file.txt"),
+        ("zh", "运行命令 wc -l file.txt", "wc -l file.txt"),
+        ("zh", "运行 bash: echo 你好", "echo 你好"),
+        ("zh", "运行 powershell: Get-Date", "Get-Date"),
+    ] {
+        assert_eq!(
+            shell_command(prompt).as_deref(),
+            Some(expected),
+            "{language}: {prompt}"
+        );
+    }
+}

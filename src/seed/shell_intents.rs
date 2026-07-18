@@ -31,8 +31,14 @@ pub enum ShellIntentArgument {
     /// The command takes a name introduced by a name-lead cue such as
     /// *called*/*named* (`mkdir build`).
     NameLead,
+    /// One path/name recovered from the request (`rm old.txt`).
+    OnePath,
+    /// Two path/name operands recovered in request order (`cp a.txt b.txt`).
+    TwoPaths,
     /// The command takes the text after the matched intent cue (`rg QUERY .`).
     Remainder,
+    /// A local-code search query, with local-scope words removed.
+    SearchQuery,
 }
 
 /// One intent → command mapping: the command to emit, how to fill its argument, and
@@ -54,6 +60,10 @@ pub struct ShellIntentVocabulary {
     /// Name-lead cue words (*called*, *named*, …), lowercased, pooled across
     /// languages.
     pub name_leads: Vec<String>,
+    /// Natural-language glue ignored while recovering path and search operands.
+    pub argument_noise: Vec<String>,
+    /// Phrases that distinguish repository/file search from internet search.
+    pub local_search_scopes: Vec<String>,
     /// Intent → command mappings in declaration (most-specific-first) order.
     pub intents: Vec<ShellIntent>,
 }
@@ -69,6 +79,12 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
     for group in &root.children {
         match group.name.as_str() {
             "name_leads" => vocab.name_leads = collect_language_values(group, "lead"),
+            "argument_noise" => {
+                vocab.argument_noise = collect_language_values(group, "word");
+            }
+            "local_search_scopes" => {
+                vocab.local_search_scopes = collect_language_values(group, "scope");
+            }
             "intents" => {
                 vocab.intents = group
                     .children
@@ -90,7 +106,10 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
         argument: match node.find_child_value("argument") {
             "path" => ShellIntentArgument::Path,
             "name_lead" => ShellIntentArgument::NameLead,
+            "one_path" => ShellIntentArgument::OnePath,
+            "two_paths" => ShellIntentArgument::TwoPaths,
             "remainder" => ShellIntentArgument::Remainder,
+            "search_query" => ShellIntentArgument::SearchQuery,
             _ => ShellIntentArgument::None,
         },
         cues: collect_language_values(node, "cue")
