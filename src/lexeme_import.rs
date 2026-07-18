@@ -88,6 +88,9 @@ pub struct SurfaceSource {
     pub field: String,
 }
 
+/// Chosen language surfaces paired with their exact source fields.
+pub type SurfaceMaps = (BTreeMap<String, String>, BTreeMap<String, SurfaceSource>);
+
 /// A refused concept and the reason it failed validation.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Rejection {
@@ -303,7 +306,7 @@ fn resolve_surfaces(
     http: Option<&dyn HttpClient>,
     budget: usize,
     cached: &mut usize,
-) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
+) -> Result<SurfaceMaps, String> {
     let json_path = entity_json_path(&config.cache_dir, &concept.qid);
     if json_path.is_file() {
         let text = fs::read_to_string(&json_path)
@@ -334,10 +337,7 @@ fn resolve_surfaces(
 
 /// Extract the four project-language label surfaces from a trimmed Wikidata
 /// entity document (`{entities: {<qid>: {labels: …}}}`).
-pub fn surfaces_from_entity(
-    value: &Value,
-    qid: &str,
-) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
+pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, String> {
     let entity = value
         .get("entities")
         .and_then(|entities| entities.get(qid))
@@ -418,7 +418,7 @@ fn fetch_and_cache(
     cache_dir: &Path,
     qid: &str,
     http: &dyn HttpClient,
-) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
+) -> Result<SurfaceMaps, String> {
     let url = format!("https://www.wikidata.org/wiki/Special:EntityData/{qid}.json");
     let body = http
         .get(&url)
@@ -817,7 +817,9 @@ pub fn write_shards(directory: &Path, shards: &[Shard]) -> Result<(), String> {
             continue;
         };
         if file_name.starts_with("meanings-lexicon-import")
-            && file_name.ends_with(".lino")
+            && Path::new(file_name)
+                .extension()
+                .is_some_and(|ext| ext == "lino")
             && !retained.contains(file_name)
         {
             fs::remove_file(entry.path())
