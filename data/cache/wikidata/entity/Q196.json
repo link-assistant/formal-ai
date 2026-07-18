@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q196": {
+      "type": "item",
+      "id": "Q196",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cherry"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вишня"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आलूबालू"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "樱"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit of the cherry tree"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод растений подрода cerasus рода Prunus"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक खट्टा-मीठा गुठलीदार फल है"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "вишня (фрукт)"
+          },
+          {
+            "language": "ru",
+            "value": "вишенка"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "गिलास"
+          },
+          {
+            "language": "hi",
+            "value": "चेरी"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

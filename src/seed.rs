@@ -70,7 +70,9 @@ pub use grounding_overrides::{
     cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
 };
 pub use market_price_references::{market_price_assets, MarketPriceAsset, MarketPricePeriod};
-pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
+pub use meanings::{
+    lexicon, parse_lexicon_text, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm,
+};
 pub use model_aliases::{
     canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id, ModelAliasRegistry,
 };

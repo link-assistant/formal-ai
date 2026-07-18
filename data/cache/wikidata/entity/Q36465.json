@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q36465": {
+      "type": "item",
+      "id": "Q36465",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "flour"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мука"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आटा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "穀粉"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "powder which is made by grinding cereal grains"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "продукт питания, молотые зёрна злаков"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अनाज का पिसा हुआ रूप"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "92 9300"
+          },
+          {
+            "language": "ru",
+            "value": "мука́"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मैदा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "麵粉"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

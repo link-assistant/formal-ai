@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q677": {
+      "type": "item",
+      "id": "Q677",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "iron"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "железо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लोहा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鐵"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "chemical element with symbol Fe and atomic number 26"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "химический элемент с порядковым номером 26, металл и материал, имеющий в основе этот металл"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रासायनिक तत्व"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原子序數為26的化學元素"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "element 26"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "феррум"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "铁"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

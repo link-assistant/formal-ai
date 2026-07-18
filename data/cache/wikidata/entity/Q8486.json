@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q8486": {
+      "type": "item",
+      "id": "Q8486",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "coffee"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кофе"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कॉफ़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "咖啡"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "brewed beverage made from seeds of Coffea genus"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "напиток, изготавливаемый из жареных зёрен кофейного дерева"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कॉफ़िया वंश के बीजों से निर्मित पका हुआ पेय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "使用烘焙過的咖啡豆沖泡而成的飲料"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "क़हवा"
+          },
+          {
+            "language": "hi",
+            "value": "कहवा"
+          },
+          {
+            "language": "hi",
+            "value": "कॉफी"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

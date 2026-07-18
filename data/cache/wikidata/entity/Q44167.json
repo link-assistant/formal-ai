@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Q44167": {
+      "type": "item",
+      "id": "Q44167",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "engine"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "двигатель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इंजन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "发动机"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "machine designed to produce mechanical energy from another form of energy"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "устройство, преобразующее какой-либо вид энергии в механическую"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ऊर्जा परिवर्तक यंत्र"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "將其他形式能量轉化為機械能的裝置"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "motor"
+          },
+          {
+            "language": "en",
+            "value": "motor and engine"
+          },
+          {
+            "language": "en",
+            "value": "engine and motor"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Силовая установка"
+          },
+          {
+            "language": "ru",
+            "value": "Двигатели"
+          },
+          {
+            "language": "ru",
+            "value": "Двигательная установка"
+          },
+          {
+            "language": "ru",
+            "value": "Моторы"
+          },
+          {
+            "language": "ru",
+            "value": "Мотор"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मोटर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "推进器"
+          },
+          {
+            "language": "zh",
+            "value": "引擎"
+          },
+          {
+            "language": "zh",
+            "value": "馬達"
+          },
+          {
+            "language": "zh",
+            "value": "摩打"
+          },
+          {
+            "language": "zh",
+            "value": "马达"
+          },
+          {
+            "language": "zh",
+            "value": "發動機"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

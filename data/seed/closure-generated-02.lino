@@ -1,4 +1,194 @@
 meanings
+  lexeme_import_missing_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import missing provenance"
+  lexeme_import_no_clean_alias
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import no clean alias"
+  lexeme_import_no_labels_in_cache
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import no labels in cache"
+  lexeme_import_number_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import number lost"
+  lexeme_import_part_of_speech_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import part of speech lost"
+  lexeme_import_qid_absent_from_cache
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import qid absent from cache"
+  lexeme_import_qid_absent_from_fetch
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import qid absent from fetch"
+  lexeme_import_refused_batch
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import refused batch"
+  lexeme_import_reparse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import reparse failed"
+  lexeme_import_surface_changed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import surface changed"
+  lexeme_import_surface_missing
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import surface missing"
+  lexeme_import_wrong_genus
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import wrong genus"
+  lexical_database
+    defined-by kind
+    lexeme en
+      surface
+        text "lexical database"
+  lines
+    defined-by concept
+    lexeme en
+      surface
+        text "lines"
+  link-assistant
+    defined-by organization
+    lexeme en
+      surface
+        text "link assistant"
+  link-calculator
+    defined-by name
+    lexeme en
+      surface
+        text "link calculator"
+  link-cli
+    defined-by name
+    lexeme en
+      surface
+        text "link cli"
+  link-foundation
+    defined-by organization
+    lexeme en
+      surface
+        text "link foundation"
+  links-notation
+    defined-by name
+    lexeme en
+      surface
+        text "links notation"
+  linksplatform
+    defined-by organization
+    lexeme en
+      surface
+        text "linksplatform"
+  lino-objects-codec
+    defined-by name
+    lexeme en
+      surface
+        text "lino objects codec"
+  lino_text
+    defined-by concept
+    lexeme en
+      surface
+        text "lino text"
+  list_files
+    defined-by task
+    lexeme en
+      surface
+        text "list files"
+  list_files_arg
+    defined-by task
+    lexeme en
+      surface
+        text "list files arg"
+  list_files_arg_reverse_sort
+    defined-by task
+    lexeme en
+      surface
+        text "list files arg reverse sort"
+  list_files_reverse_sort
+    defined-by task
+    lexeme en
+      surface
+        text "list files reverse sort"
+  local
+    defined-by concept
+    lexeme en
+      surface
+        text "local"
+  local-library
+    defined-by isolation_mode
+    lexeme en
+      surface
+        text "local library"
+  local_shell
+    defined-by word_surface
+    lexeme en
+      surface
+        text "local shell"
+  ls
+    defined-by concept
+    lexeme en
+      surface
+        text "ls"
+  manuscript
+    defined-by word_surface
+    lexeme en
+      surface
+        text "manuscript"
+  material
+    defined-by concept
+    lexeme en
+      surface
+        text "material"
+  material-symbols
+    defined-by concept
+    lexeme en
+      surface
+        text "material symbols"
+  mathematical-logic
+    defined-by category
+    lexeme en
+      surface
+        text "mathematical logic"
+  memory_export_filename
+    defined-by field
+    lexeme en
+      surface
+        text "memory export filename"
+  memory_root_header
+    defined-by field
+    lexeme en
+      surface
+        text "memory root header"
+  meta-expression
+    defined-by name
+    lexeme en
+      surface
+        text "meta expression"
+  meta-theory
+    defined-by word_surface
+    lexeme en
+      surface
+        text "meta theory"
   meta_explanation
     defined-by intent
     lexeme en
@@ -1204,193 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question grammar context zh"
-  pattern_x_kaise_kaam_karta_suffix_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x kaise kaam karta suffix hi"
-  pattern_x_kaise_kaam_karti_suffix_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x kaise kaam karti suffix hi"
-  pattern_x_ruhej_gongzuo_suffix_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x ruhej gongzuo suffix zh"
-  pattern_x_shi_ruhej_gongzuo_de_suffix_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x shi ruhej gongzuo de suffix zh"
-  periodic_or_manual
-    defined-by concept
-    lexeme en
-      surface
-        text "periodic or manual"
-  philosophy-text
-    defined-by source_kind
-    lexeme en
-      surface
-        text "philosophy text"
-  physical_action_question
-    defined-by intent
-    lexeme en
-      surface
-        text "physical action question"
-  pip
-    defined-by token
-    lexeme en
-      surface
-        text "pip"
-  plagiaris
-    defined-by word_surface
-    lexeme en
-      surface
-        text "plagiaris"
-  plagiarism
-    defined-by word_surface
-    lexeme en
-      surface
-        text "plagiarism"
-  playright
-    defined-by word_surface
-    lexeme en
-      surface
-        text "playright"
-  political-adjective
-    defined-by category
-    lexeme en
-      surface
-        text "political adjective"
-  possessive_list
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "possessive list"
-  powershell
-    defined-by token
-    lexeme en
-      surface
-        text "powershell"
-  preferred
-    defined-by concept
-    lexeme en
-      surface
-        text "preferred"
-  prepend
-    defined-by phrase
-    lexeme en
-      surface
-        text "prepend"
-  prepend_text
-    defined-by operation
-    lexeme en
-      surface
-        text "prepend text"
-  problem
-    defined-by word_surface
-    lexeme en
-      surface
-        text "problem"
-  program_plan_rules
-    defined-by concept
-    lexeme en
-      surface
-        text "program plan rules"
-  programming-language
-    defined-by category
-    lexeme en
-      surface
-        text "programming language"
-  project
-    defined-by concept
-    lexeme en
-      surface
-        text "project"
-  project-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "project docs"
-  project_ideas
-    defined-by category
-    lexeme en
-      surface
-        text "project ideas"
-  proof-system
-    defined-by category
-    lexeme en
-      surface
-        text "proof system"
-  proposal_only
-    defined-by concept
-    lexeme en
-      surface
-        text "proposal only"
-  ps
-    defined-by concept
-    lexeme en
-      surface
-        text "ps"
-  punctuation
-    defined-by concept
-    lexeme en
-      surface
-        text "punctuation"
-  pwd
-    defined-by concept
-    lexeme en
-      surface
-        text "pwd"
-  pwsh
-    defined-by token
-    lexeme en
-      surface
-        text "pwsh"
-  pytest
-    defined-by concept
-    lexeme en
-      surface
-        text "pytest"
-  python3
-    defined-by token
-    lexeme en
-      surface
-        text "python3"
-  qa_network
-    defined-by kind
-    lexeme en
-      surface
-        text "qa network"
-  react-chat-ui
-    defined-by name
-    lexeme en
-      surface
-        text "react chat ui"
-  read_local_file
-    defined-by name
-    lexeme en
-      surface
-        text "read local file"
-  recall_name
-    defined-by concept
-    lexeme en
-      surface
-        text "recall name"
-  referrers
-    defined-by word_surface
-    lexeme en
-      surface
-        text "referrers"
-  relative-meta-logic
-    defined-by term
-    lexeme en
-      surface
-        text "relative meta logic"
-  remix
-    defined-by concept
-    lexeme en
-      surface
-        text "remix"

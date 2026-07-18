@@ -1,0 +1,15 @@
+Q8094
+  aliases
+    hi ("हवा")
+  descriptions
+    en "flow of gases or air on a large scale"
+    hi "गतिशील वायु"
+    ru "направленный, сильный поток воздушных масс у поверхности планеты"
+  id Q8094
+  labels
+    en wind
+    hi "पवन"
+    ru "ветер"
+    zh "風"
+  type item
+success 1

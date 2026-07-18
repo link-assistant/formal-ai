@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q8502": {
+      "type": "item",
+      "id": "Q8502",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mountain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "гора"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पर्वत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "山"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "large natural elevation of the Earth's surface"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "местное возвышение земной поверхности"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विशाल भू-आकृति जो एक सीमित क्षेत्र में आसपास की भूमि से काफी ऊपर उठती है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "特定的区域内，地形陡峭上升的地貌"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mount"
+          },
+          {
+            "language": "en",
+            "value": "mt."
+          },
+          {
+            "language": "en",
+            "value": "mtn."
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "вершина"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "山地"
+          },
+          {
+            "language": "zh",
+            "value": "山峰"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

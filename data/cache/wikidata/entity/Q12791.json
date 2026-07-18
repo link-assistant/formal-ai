@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q12791": {
+      "type": "item",
+      "id": "Q12791",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sword"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "меч"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तलवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "刀劍"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "bladed weapon longer than a knife or dagger"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "холодное оружие с прямым клинком"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "छुरा या चाकू से लंबा धारदार हथियार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "刀剑类冷兵器的总称"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "swords"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "तलवारें"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

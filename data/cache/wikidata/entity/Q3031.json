@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q3031": {
+      "type": "item",
+      "id": "Q3031",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "girl"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "девочка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लड़की"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "女孩"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "young female human"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ребёнок женского пола"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "年幼雌性人類"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lass"
+          },
+          {
+            "language": "en",
+            "value": "lassie"
+          },
+          {
+            "language": "en",
+            "value": "👧"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "幼女"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1318,6 +1318,14 @@ jobs:
           PORT: 8882
         run: experiments/agent_cli_e2e/run_issue_659_learning.sh
 
+      - name: "Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)"
+        # Formal AI is the model provider while two external Agent CLIs derive
+        # the same review-gated lessons from issue #660's persisted evidence.
+        timeout-minutes: 5
+        env:
+          PORT: 8883
+        run: experiments/agent_cli_e2e/run_issue_660_learning.sh
+
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774

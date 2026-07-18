@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q25294": {
+      "type": "item",
+      "id": "Q25294",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hammer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "молоток"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हथौड़ा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "槌"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "tool meant to deliver an impact to an object"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ударный ручной инструмент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जोर से प्रहार करने के लिए एक औजार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "敲打工具"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "naildriver"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鐵鎚"
+          },
+          {
+            "language": "zh",
+            "value": "榔头"
+          },
+          {
+            "language": "zh",
+            "value": "榔"
+          },
+          {
+            "language": "zh",
+            "value": "槌子"
+          },
+          {
+            "language": "zh",
+            "value": "鎚"
+          },
+          {
+            "language": "zh",
+            "value": "錘子"
+          },
+          {
+            "language": "zh",
+            "value": "鎚子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,19 @@
+Q897
+  aliases
+    en ("element 79")
+    hi ("स्वर्ण")
+    ru ("аурум" "злато")
+    zh ("黄金" "黃金" "金子")
+  descriptions
+    en "chemical element with symbol Au and atomic number 79; a dense, malleable, and corrosion-resistant precious metal widely used as currency, in jewelry, electronics, and as a financial reserve asset"
+    hi "रासायनिक तत्व, जिसका परमाणु (एटॉमिक) अंक उन्यसी है"
+    ru "благородный металл, химический элемент с атомным номером 79"
+    zh "原子序數為79的化學元素"
+  id Q897
+  labels
+    en gold
+    hi "सोना"
+    ru "золото"
+    zh "金"
+  type item
+success 1

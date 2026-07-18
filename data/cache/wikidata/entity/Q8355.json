@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q8355": {
+      "type": "item",
+      "id": "Q8355",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "violin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "скрипка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वायलिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "小提琴"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "bowed string instrument"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "смычковый струнный музыкальный инструмент высокого регистра"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक तरह का वाद्ययंत्र |"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "乐器"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "fiddle"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кеманча"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बेला"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "梵婀玲"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

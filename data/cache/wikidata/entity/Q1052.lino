@@ -1,0 +1,15 @@
+Q1052
+  aliases
+    zh ("北部省城际客运" "诺尔省城际客运")
+  descriptions
+    en "meteorological phenomenon caused by reflection, refraction and dispersion of light in water droplets"
+    ru "атмосферное оптическое и метеорологическое явление"
+    zh "光学现象"
+  id Q1052
+  labels
+    en rainbow
+    hi "इन्द्रधनुष"
+    ru "радуга"
+    zh "彩虹"
+  type item
+success 1

@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q191022": {
+      "type": "item",
+      "id": "Q191022",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "scarf"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шарф"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्कार्फ़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "圍巾"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "garment of fabric worn around neck or head"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деталь одежды"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "衣物"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Шарфы"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

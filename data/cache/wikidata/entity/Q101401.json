@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q101401": {
+      "type": "item",
+      "id": "Q101401",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bell"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "колокол"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घंटी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鐘"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "percussion musical instrument"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инструмент, источник звука, имеющий куполообразную форму и, обычно, язык, ударяющийся изнутри о стенки."
+        },
+        "zh": {
+          "language": "zh",
+          "value": "中空的敲擊樂器"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bells"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Колокола"
+          },
+          {
+            "language": "ru",
+            "value": "Колокол"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "钟"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

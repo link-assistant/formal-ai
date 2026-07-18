@@ -6,10 +6,12 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_import;
 mod cli_improve;
 mod cli_memory;
 mod cli_shared_dialog;
 
+use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
@@ -112,6 +114,13 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Import lexical semantics in bulk from external sources (issue #660,
+    /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
+    /// validate-then-write pipeline.
+    Import {
+        #[command(subcommand)]
+        action: ImportAction,
+    },
     /// Plan or collect GitHub issue, PR, review, and Actions run evidence
     /// into a case-study directory.
     GithubLogs {
@@ -516,6 +525,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {

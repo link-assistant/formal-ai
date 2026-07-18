@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q41415": {
+      "type": "item",
+      "id": "Q41415",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "soup"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "суп"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सूप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "湯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "primarily liquid food"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "жидкое первое блюдо"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一种食物"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "похлёбка"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "湯水"
+          },
+          {
+            "language": "zh",
+            "value": "湯品"
+          },
+          {
+            "language": "zh",
+            "value": "汤"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

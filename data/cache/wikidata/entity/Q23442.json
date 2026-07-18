@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q23442": {
+      "type": "item",
+      "id": "Q23442",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "island"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "остров"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द्वीप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "島嶼"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "piece of sub-continental land completely surrounded by water"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "участок суши, окружённый со всех сторон водой и постоянно возвышающийся над водой даже в период наибольшего прилива"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्थलखण्ड के ऐसे भाग होतें हैं, जिनके चारों ओर जल का विस्तार हो"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "被水包圍的次大陸土地"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "isle"
+          },
+          {
+            "language": "en",
+            "value": "islands"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "टापू"
+          },
+          {
+            "language": "hi",
+            "value": "द्वीपों"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "島"
+          },
+          {
+            "language": "zh",
+            "value": "嶼"
+          },
+          {
+            "language": "zh",
+            "value": "岛"
+          },
+          {
+            "language": "zh",
+            "value": "岛屿"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

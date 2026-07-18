@@ -1,0 +1,16 @@
+Q45199
+  aliases
+    en (seaman mariner seafarer "merchant sailor" "merchant seaman" "merchant mariner")
+    ru ("торговый моряк" "моряк торгового флота" "морячка" "торговая морячка" "морячка торгового флота")
+    zh ("船員")
+  descriptions
+    en "person who navigates water-borne vessels or assists in doing so"
+    zh "职业"
+  id Q45199
+  labels
+    en sailor
+    hi "नाविक"
+    ru "моряк"
+    zh "海員"
+  type item
+success 1
