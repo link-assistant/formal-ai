@@ -76,6 +76,16 @@ pub struct GroundedLexeme {
     pub qid: String,
     /// Language code → single-token surface, one entry per [`IMPORT_LANGUAGES`].
     pub labels: BTreeMap<String, String>,
+    /// Language code → the exact cache record field that supplied the surface.
+    /// Item labels are not misrepresented as Wikidata Lexeme (`L…`) records.
+    pub sources: BTreeMap<String, SurfaceSource>,
+}
+
+/// Auditable provenance for one imported surface.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SurfaceSource {
+    pub record_id: String,
+    pub field: String,
 }
 
 /// A refused concept and the reason it failed validation.
@@ -99,6 +109,28 @@ pub struct ImportReport {
     pub accepted: Vec<GroundedLexeme>,
     pub rejected: Vec<Rejection>,
     pub shards: Vec<Shard>,
+    pub coverage: ImportCoverage,
+}
+
+/// Explicit coverage denominator for an import run.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct ImportCoverage {
+    pub requested_concepts: usize,
+    pub accepted_concepts: usize,
+    pub expected_surfaces: usize,
+    pub emitted_surfaces: usize,
+}
+
+impl ImportCoverage {
+    /// Surface coverage in parts per thousand; an empty request is complete.
+    #[must_use]
+    pub fn permille(&self) -> u32 {
+        if self.expected_surfaces == 0 {
+            return 1_000;
+        }
+        u32::try_from(self.emitted_surfaces.saturating_mul(1_000) / self.expected_surfaces)
+            .unwrap_or(u32::MAX)
+    }
 }
 
 /// How to run the importer.
@@ -217,8 +249,8 @@ pub fn run(
             continue;
         }
 
-        let labels = match resolve_labels(config, concept, http, budget, &mut cached) {
-            Ok(labels) => labels,
+        let (labels, sources) = match resolve_surfaces(config, concept, http, budget, &mut cached) {
+            Ok(surfaces) => surfaces,
             Err(reason) => {
                 reject(&mut report, events, concept, reason);
                 continue;
@@ -229,6 +261,7 @@ pub fn run(
             slug: concept.slug.clone(),
             qid: concept.qid.clone(),
             labels,
+            sources,
         };
         if let Err(reason) = validate(&lexeme) {
             reject(&mut report, events, concept, reason);
@@ -241,6 +274,12 @@ pub fn run(
     }
 
     report.shards = shard(&report.accepted);
+    report.coverage = ImportCoverage {
+        requested_concepts: config.concepts.len(),
+        accepted_concepts: report.accepted.len(),
+        expected_surfaces: config.concepts.len().saturating_mul(IMPORT_LANGUAGES.len()),
+        emitted_surfaces: report.accepted.len().saturating_mul(IMPORT_LANGUAGES.len()),
+    };
     report
 }
 
@@ -258,20 +297,20 @@ fn reject(report: &mut ImportReport, events: &mut EventLog, concept: &Concept, r
 
 /// Resolve the four labels for `concept`, reading the committed cache or (when
 /// online and within budget) fetching and populating it.
-fn resolve_labels(
+fn resolve_surfaces(
     config: &ImportConfig,
     concept: &Concept,
     http: Option<&dyn HttpClient>,
     budget: usize,
     cached: &mut usize,
-) -> Result<BTreeMap<String, String>, String> {
+) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
     let json_path = entity_json_path(&config.cache_dir, &concept.qid);
     if json_path.is_file() {
         let text = fs::read_to_string(&json_path)
             .map_err(|error| format!("cache {} unreadable: {error}", json_path.display()))?;
         let value: Value = serde_json::from_str(&text)
             .map_err(|error| format!("cache {} invalid json: {error}", json_path.display()))?;
-        return labels_from_entity(&value, &concept.qid);
+        return surfaces_from_entity(&value, &concept.qid);
     }
 
     if !config.online {
@@ -295,22 +334,80 @@ fn resolve_labels(
 
 /// Extract the four project-language label surfaces from a trimmed Wikidata
 /// entity document (`{entities: {<qid>: {labels: …}}}`).
-pub fn labels_from_entity(value: &Value, qid: &str) -> Result<BTreeMap<String, String>, String> {
+pub fn surfaces_from_entity(
+    value: &Value,
+    qid: &str,
+) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
+    let entity = value
+        .get("entities")
+        .and_then(|entities| entities.get(qid))
+        .ok_or_else(|| format!("{qid} is absent from cache"))?;
     let labels = value
         .get("entities")
         .and_then(|entities| entities.get(qid))
         .and_then(|entity| entity.get("labels"))
         .ok_or_else(|| format!("{qid} has no labels in cache"))?;
     let mut out = BTreeMap::new();
+    let mut sources = BTreeMap::new();
     for language in IMPORT_LANGUAGES {
-        let surface = labels
+        let label = labels
             .get(language)
             .and_then(|label| label.get("value"))
             .and_then(Value::as_str)
             .ok_or_else(|| format!("{qid} missing {language} label"))?;
+        let (surface, field) = if surface_matches_language(label, language) {
+            (label, format!("labels.{language}.value"))
+        } else {
+            entity
+                .get("aliases")
+                .and_then(|aliases| aliases.get(language))
+                .and_then(Value::as_array)
+                .and_then(|aliases| {
+                    aliases.iter().enumerate().find_map(|(index, alias)| {
+                        let value = alias.get("value").and_then(Value::as_str)?;
+                        surface_matches_language(value, language)
+                            .then(|| (value, format!("aliases.{language}[{index}].value")))
+                    })
+                })
+                .ok_or_else(|| {
+                    format!(
+                        "{qid} {language} label `{label}` does not match its language script and no clean alias exists"
+                    )
+                })?
+        };
         out.insert(language.to_string(), surface.to_string());
+        sources.insert(
+            language.to_string(),
+            SurfaceSource {
+                record_id: qid.to_string(),
+                field,
+            },
+        );
     }
-    Ok(out)
+    Ok((out, sources))
+}
+
+/// Compatibility projection for callers that only need the chosen surfaces.
+pub fn labels_from_entity(value: &Value, qid: &str) -> Result<BTreeMap<String, String>, String> {
+    surfaces_from_entity(value, qid).map(|(labels, _)| labels)
+}
+
+fn surface_matches_language(surface: &str, language: &str) -> bool {
+    let contains = |start: u32, end: u32| {
+        surface
+            .chars()
+            .map(u32::from)
+            .any(|codepoint| (start..=end).contains(&codepoint))
+    };
+    match language {
+        "en" => surface
+            .chars()
+            .any(|character| character.is_ascii_alphabetic()),
+        "ru" => contains(0x0400, 0x052f),
+        "hi" => contains(0x0900, 0x097f),
+        "zh" => contains(0x3400, 0x9fff) || contains(0xf900, 0xfaff),
+        _ => false,
+    }
 }
 
 /// Fetch, trim, and cache `qid` from the live Wikidata `Special:EntityData`
@@ -321,7 +418,7 @@ fn fetch_and_cache(
     cache_dir: &Path,
     qid: &str,
     http: &dyn HttpClient,
-) -> Result<BTreeMap<String, String>, String> {
+) -> Result<(BTreeMap<String, String>, BTreeMap<String, SurfaceSource>), String> {
     let url = format!("https://www.wikidata.org/wiki/Special:EntityData/{qid}.json");
     let body = http
         .get(&url)
@@ -341,7 +438,7 @@ fn fetch_and_cache(
         json_cache_file(qid, &value),
     )
     .map_err(|error| format!("cannot write {qid}.lino: {error}"))?;
-    labels_from_entity(&value, qid)
+    surfaces_from_entity(&value, qid)
 }
 
 /// Trim a full entity document to the four project languages, keeping the
@@ -529,6 +626,21 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
                 "{language} label `{surface}` is not a clean single token"
             ));
         }
+        let source = lexeme
+            .sources
+            .get(language)
+            .ok_or_else(|| format!("missing {language} source provenance"))?;
+        let label_field = format!("labels.{language}.value");
+        let alias_prefix = format!("aliases.{language}[");
+        if source.record_id != lexeme.qid
+            || (source.field != label_field
+                && !(source.field.starts_with(&alias_prefix) && source.field.ends_with("].value")))
+        {
+            return Err(format!(
+                "{language} source provenance does not identify a supported field in {}",
+                lexeme.qid
+            ));
+        }
     }
 
     // Parse the rendered block back through the real loader and confirm the
@@ -614,7 +726,12 @@ pub fn render_block(lexeme: &GroundedLexeme) -> String {
         let surface = &lexeme.labels[language];
         let _ = writeln!(block, "    lexeme {language}");
         let _ = writeln!(block, "      surface");
-        let _ = writeln!(block, "        text {surface}");
+        let source = &lexeme.sources[language];
+        let _ = writeln!(
+            block,
+            "        text {surface} # source {} {}",
+            source.record_id, source.field
+        );
         let _ = writeln!(block, "        part_of_speech {PART_OF_SPEECH}");
         let _ = writeln!(block, "        grammatical_number {GRAMMATICAL_NUMBER}");
     }
@@ -649,4 +766,70 @@ pub fn shard(accepted: &[GroundedLexeme]) -> Vec<Shard> {
             Shard { file_name, content }
         })
         .collect()
+}
+
+/// Project the import event stream into the portable memory wire format.
+///
+/// The CLI persists this document beside the generated shards, so rejected
+/// entries remain replayable after the importing process exits.
+#[must_use]
+pub fn render_import_events(events: &EventLog) -> String {
+    let mut out = String::from("demo_memory\n");
+    for event in events.events() {
+        let _ = writeln!(out, "  event \"{}\"", escape_lino(&event.id));
+        let _ = writeln!(out, "    kind \"{}\"", escape_lino(event.kind));
+        out.push_str("    role \"assistant\"\n");
+        out.push_str("    intent \"lexeme_import\"\n");
+        let _ = writeln!(out, "    content \"{}\"", escape_lino(&event.payload));
+        out.push_str("    conversationId \"issue-660\"\n");
+        out.push_str("    writeCount \"1\"\n");
+    }
+    out
+}
+
+/// Replace the complete generated shard set without leaving stale files.
+///
+/// Each new file is staged in the destination directory before being renamed,
+/// then obsolete importer-owned shards are removed. Unrelated seed files are
+/// never touched.
+pub fn write_shards(directory: &Path, shards: &[Shard]) -> Result<(), String> {
+    fs::create_dir_all(directory)
+        .map_err(|error| format!("cannot create {}: {error}", directory.display()))?;
+
+    for shard in shards {
+        let staged = directory.join(format!(".{}.staged", shard.file_name));
+        fs::write(&staged, &shard.content)
+            .map_err(|error| format!("cannot stage {}: {error}", staged.display()))?;
+        fs::rename(&staged, directory.join(&shard.file_name))
+            .map_err(|error| format!("cannot install {}: {error}", shard.file_name))?;
+    }
+
+    let retained: std::collections::BTreeSet<&str> = shards
+        .iter()
+        .map(|shard| shard.file_name.as_str())
+        .collect();
+    let entries = fs::read_dir(directory)
+        .map_err(|error| format!("cannot list {}: {error}", directory.display()))?;
+    for entry in entries {
+        let entry = entry.map_err(|error| format!("cannot inspect output: {error}"))?;
+        let file_name = entry.file_name();
+        let Some(file_name) = file_name.to_str() else {
+            continue;
+        };
+        if file_name.starts_with("meanings-lexicon-import")
+            && file_name.ends_with(".lino")
+            && !retained.contains(file_name)
+        {
+            fs::remove_file(entry.path())
+                .map_err(|error| format!("cannot remove stale {file_name}: {error}"))?;
+        }
+    }
+    Ok(())
+}
+
+fn escape_lino(text: &str) -> String {
+    text.replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
 }

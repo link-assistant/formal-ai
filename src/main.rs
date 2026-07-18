@@ -263,6 +263,11 @@ enum ImportAction {
         /// Print the batch to stdout instead of writing shard files.
         #[arg(long, default_value_t = false)]
         dry_run: bool,
+
+        /// Durable rejection-event document. Defaults beside `--concepts`
+        /// with the extension `.import-events.lino` when a rejection occurs.
+        #[arg(long, value_name = "PATH")]
+        events: Option<PathBuf>,
     },
 }
 
@@ -636,6 +641,7 @@ fn run_import(action: ImportAction) -> Result<(), Box<dyn Error>> {
             out,
             offline,
             dry_run,
+            events: event_path,
         } => {
             let text = std::fs::read_to_string(&concepts)?;
             let parsed = lexeme_import::parse_concepts(&text);
@@ -662,21 +668,35 @@ fn run_import(action: ImportAction) -> Result<(), Box<dyn Error>> {
                 );
             }
 
+            if !report.rejected.is_empty() {
+                let event_path =
+                    event_path.unwrap_or_else(|| concepts.with_extension("import-events.lino"));
+                if let Some(parent) = event_path.parent() {
+                    std::fs::create_dir_all(parent)?;
+                }
+                std::fs::write(&event_path, lexeme_import::render_import_events(&events))?;
+                return Err(format!(
+                    "refused {} concept(s); existing shards were not changed; events: {}",
+                    report.rejected.len(),
+                    event_path.display()
+                )
+                .into());
+            }
+
             if dry_run {
                 for shard in &report.shards {
                     print!("{}", shard.content);
                 }
             } else {
-                std::fs::create_dir_all(&out)?;
-                for shard in &report.shards {
-                    std::fs::write(out.join(&shard.file_name), &shard.content)?;
-                }
+                lexeme_import::write_shards(&out, &report.shards)?;
             }
 
             eprintln!(
-                "imported {} lexeme(s) into {} shard(s); rejected {}",
+                "imported {} concept(s) / {} surface(s) into {} shard(s); coverage {}‰; rejected {}",
                 report.accepted.len(),
+                report.coverage.emitted_surfaces,
                 report.shards.len(),
+                report.coverage.permille(),
                 report.rejected.len()
             );
         }

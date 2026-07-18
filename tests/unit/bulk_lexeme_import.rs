@@ -11,8 +11,8 @@ use std::path::PathBuf;
 
 use formal_ai::event_log::EventLog;
 use formal_ai::lexeme_import::{
-    self, Concept, GroundedLexeme, ImportConfig, DEFINED_BY, GRAMMATICAL_NUMBER, IMPORT_LANGUAGES,
-    PART_OF_SPEECH,
+    self, Concept, GroundedLexeme, ImportConfig, SurfaceSource, DEFINED_BY, GRAMMATICAL_NUMBER,
+    IMPORT_LANGUAGES, PART_OF_SPEECH,
 };
 use formal_ai::seed::parse_lexicon_text;
 
@@ -70,28 +70,29 @@ fn template_emission_matches_contract() {
             .zip(["dog", "собака", "कुत्ता", "犬"])
             .map(|(language, surface)| (language.to_string(), surface.to_string()))
             .collect(),
+        sources: sample_sources("Q144"),
     };
     let expected = "  dog
     grounded-in Q144
     defined-by entity
     lexeme en
       surface
-        text dog
+        text dog # source Q144 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text собака
+        text собака # source Q144 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कुत्ता
+        text कुत्ता # source Q144 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 犬
+        text 犬 # source Q144 labels.zh.value
         part_of_speech noun
         grammatical_number singular
 ";
@@ -296,6 +297,133 @@ fn invalid_concepts_are_rejected_not_written() {
     );
 }
 
+/// Rejections must survive process exit. The CLI writes this projection next
+/// to the generated shards, and the document remains parseable as ordinary
+/// Links Notation rather than disappearing with the in-process `EventLog`.
+#[test]
+fn rejection_events_have_a_durable_replayable_projection() {
+    let config = ImportConfig {
+        concepts: vec![Concept {
+            slug: "missing".to_string(),
+            qid: "Q999999999".to_string(),
+        }],
+        cache_dir: cache_dir(),
+        online: false,
+    };
+    let mut events = EventLog::new();
+    let report = lexeme_import::run(&config, None, &mut events);
+    let document = lexeme_import::render_import_events(&events);
+
+    assert_eq!(report.rejected.len(), 1);
+    assert!(document.starts_with("demo_memory\n"));
+    assert!(document.contains("kind \"import_rejected\""));
+    assert!(document.contains("intent \"lexeme_import\""));
+    assert!(document.contains("missing Q999999999"));
+    assert_eq!(
+        formal_ai::memory::parse_links_notation(&document).len(),
+        1,
+        "the durable audit document must replay through the normal memory parser"
+    );
+}
+
+/// A run reports the denominator as well as the successes, so a batch that
+/// silently rejects most concepts cannot still claim complete coverage.
+#[test]
+fn coverage_accounts_for_requested_concepts_languages_and_surfaces() {
+    let config = ImportConfig {
+        concepts: vec![Concept {
+            slug: "dog".to_string(),
+            qid: "Q144".to_string(),
+        }],
+        cache_dir: cache_dir(),
+        online: false,
+    };
+    let mut events = EventLog::new();
+    let report = lexeme_import::run(&config, None, &mut events);
+
+    assert_eq!(report.coverage.requested_concepts, 1);
+    assert_eq!(report.coverage.accepted_concepts, 1);
+    assert_eq!(report.coverage.expected_surfaces, IMPORT_LANGUAGES.len());
+    assert_eq!(report.coverage.emitted_surfaces, IMPORT_LANGUAGES.len());
+    assert_eq!(report.coverage.permille(), 1_000);
+}
+
+/// The importer carries the exact external record and field that supplied each
+/// surface. This deliberately does not invent a Wikidata `L…` id for item
+/// labels: entity-label provenance is explicit and mechanically checkable.
+#[test]
+fn every_surface_carries_truthful_source_record_provenance() {
+    let config = ImportConfig {
+        concepts: vec![Concept {
+            slug: "dog".to_string(),
+            qid: "Q144".to_string(),
+        }],
+        cache_dir: cache_dir(),
+        online: false,
+    };
+    let mut events = EventLog::new();
+    let report = lexeme_import::run(&config, None, &mut events);
+    let dog = report.accepted.first().expect("dog accepted");
+
+    for language in IMPORT_LANGUAGES {
+        assert_eq!(
+            dog.sources.get(language),
+            Some(&SurfaceSource {
+                record_id: "Q144".to_string(),
+                field: format!("labels.{language}.value"),
+            })
+        );
+    }
+}
+
+/// A malformed cross-script item label must not become a Hindi lexeme merely
+/// because Wikidata stored it under `hi`; a clean same-record alias is a
+/// deterministic fallback and its exact array field remains visible.
+#[test]
+fn cross_script_label_uses_a_same_language_alias_with_exact_provenance() {
+    let value: serde_json::Value = serde_json::from_str(
+        r#"{"entities":{"Q188075":{"labels":{"en":{"value":"box"},"ru":{"value":"коробка"},"hi":{"value":"m"},"zh":{"value":"盒子"}},"aliases":{"hi":[{"value":"डब्बा"}]}}}}"#,
+    )
+    .expect("fixture json");
+    let (labels, sources) =
+        lexeme_import::surfaces_from_entity(&value, "Q188075").expect("surface resolution");
+
+    assert_eq!(labels.get("hi").map(String::as_str), Some("डब्बा"));
+    assert_eq!(
+        sources.get("hi"),
+        Some(&SurfaceSource {
+            record_id: "Q188075".to_string(),
+            field: "aliases.hi[0].value".to_string(),
+        })
+    );
+}
+
+/// Re-running with fewer accepted concepts must not leave an obsolete shard
+/// that the seed loader would continue to ingest as if it were current output.
+#[test]
+fn shard_write_replaces_the_previous_generated_set() {
+    let directory = std::env::temp_dir().join(format!(
+        "formal-ai-bulk-lexeme-import-{}",
+        std::process::id()
+    ));
+    if directory.exists() {
+        fs::remove_dir_all(&directory).expect("remove exact stale test directory");
+    }
+    fs::create_dir_all(&directory).expect("create test directory");
+    fs::write(
+        directory.join("meanings-lexicon-import-99.lino"),
+        "obsolete",
+    )
+    .expect("write stale shard");
+
+    let shards = lexeme_import::shard(&[sample()]);
+    lexeme_import::write_shards(&directory, &shards).expect("replace generated set");
+
+    assert!(directory.join("meanings-lexicon-import.lino").is_file());
+    assert!(!directory.join("meanings-lexicon-import-99.lino").exists());
+    fs::remove_dir_all(&directory).expect("remove exact test directory");
+}
+
 /// A canonical sample lexeme, mirroring the `dog`/`Q144` template.
 fn sample() -> GroundedLexeme {
     GroundedLexeme {
@@ -306,7 +434,23 @@ fn sample() -> GroundedLexeme {
             .zip(["dog", "собака", "कुत्ता", "犬"])
             .map(|(language, surface)| (language.to_string(), surface.to_string()))
             .collect(),
+        sources: sample_sources("Q144"),
     }
+}
+
+fn sample_sources(qid: &str) -> std::collections::BTreeMap<String, SurfaceSource> {
+    IMPORT_LANGUAGES
+        .iter()
+        .map(|language| {
+            (
+                language.to_string(),
+                SurfaceSource {
+                    record_id: qid.to_string(),
+                    field: format!("labels.{language}.value"),
+                },
+            )
+        })
+        .collect()
 }
 
 /// Concept parsing keeps only well-formed `<slug> <Qid>` pairs, ignoring

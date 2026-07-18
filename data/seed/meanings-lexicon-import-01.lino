@@ -7,22 +7,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text actor
+        text actor # source Q33999 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text актёр
+        text актёр # source Q33999 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text अभिनयशिल्पी
+        text अभिनयशिल्पी # source Q33999 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 演員
+        text 演員 # source Q33999 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   anchor
@@ -30,22 +30,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text anchor
+        text anchor # source Q168432 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text якорь
+        text якорь # source Q168432 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text लंगर
+        text लंगर # source Q168432 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 锚
+        text 锚 # source Q168432 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   art
@@ -53,22 +53,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text art
+        text art # source Q735 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text искусство
+        text искусство # source Q735 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कला
+        text कला # source Q735 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 藝術
+        text 藝術 # source Q735 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   axe
@@ -76,22 +76,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text axe
+        text axe # source Q39397 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text топор
+        text топор # source Q39397 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कुल्हाड़ी
+        text कुल्हाड़ी # source Q39397 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 斧
+        text 斧 # source Q39397 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bag
@@ -99,22 +99,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bag
+        text bag # source Q1323314 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text сумка
+        text сумка # source Q1323314 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text थैला
+        text थैला # source Q1323314 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 袋
+        text 袋 # source Q1323314 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   ball
@@ -122,22 +122,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text ball
+        text ball # source Q18545 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text мяч
+        text мяч # source Q18545 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text गेंद
+        text गेंद # source Q18545 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 球
+        text 球 # source Q18545 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   banana
@@ -145,22 +145,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text banana
+        text banana # source Q503 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text банан
+        text банан # source Q503 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text केला
+        text केला # source Q503 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 香蕉
+        text 香蕉 # source Q503 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bean
@@ -168,22 +168,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bean
+        text bean # source Q379813 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text бобы
+        text бобы # source Q379813 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सेम
+        text सेम # source Q379813 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 豆类
+        text 豆类 # source Q379813 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   beauty
@@ -191,22 +191,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text beauty
+        text beauty # source Q7242 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text красота
+        text красота # source Q7242 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सुन्दरता
+        text सुन्दरता # source Q7242 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 美
+        text 美 # source Q7242 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bed
@@ -214,22 +214,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bed
+        text bed # source Q42177 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кровать
+        text кровать # source Q42177 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text पलंग
+        text पलंग # source Q42177 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 床
+        text 床 # source Q42177 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   beer
@@ -237,22 +237,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text beer
+        text beer # source Q44 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text пиво
+        text пиво # source Q44 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बियर
+        text बियर # source Q44 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 啤酒
+        text 啤酒 # source Q44 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bell
@@ -260,22 +260,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bell
+        text bell # source Q101401 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text колокол
+        text колокол # source Q101401 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text घंटी
+        text घंटी # source Q101401 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鐘
+        text 鐘 # source Q101401 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   belt
@@ -283,22 +283,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text belt
+        text belt # source Q134560 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text ремень
+        text ремень # source Q134560 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बेल्ट
+        text बेल्ट # source Q134560 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 腰帶
+        text 腰帶 # source Q134560 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bicycle
@@ -306,22 +306,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bicycle
+        text bicycle # source Q11442 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text велосипед
+        text велосипед # source Q11442 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सायकिल
+        text सायकिल # source Q11442 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 自行車
+        text 自行車 # source Q11442 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bird
@@ -329,22 +329,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bird
+        text bird # source Q5113 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text птицы
+        text птицы # source Q5113 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text पक्षी
+        text पक्षी # source Q5113 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鳥綱
+        text 鳥綱 # source Q5113 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   blanket
@@ -352,22 +352,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text blanket
+        text blanket # source Q5852 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text одеяло
+        text одеяло # source Q5852 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कम्बल
+        text कम्बल # source Q5852 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 毯子
+        text 毯子 # source Q5852 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   blood
@@ -375,22 +375,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text blood
+        text blood # source Q7873 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кровь
+        text кровь # source Q7873 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text रक्त
+        text रक्त # source Q7873 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 血液
+        text 血液 # source Q7873 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   boat
@@ -398,22 +398,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text boat
+        text boat # source Q35872 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text лодка
+        text лодка # source Q35872 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text नाव
+        text नाव # source Q35872 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 艇
+        text 艇 # source Q35872 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bottle
@@ -421,22 +421,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bottle
+        text bottle # source Q80228 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text бутылка
+        text бутылка # source Q80228 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बोतल
+        text बोतल # source Q80228 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 瓶
+        text 瓶 # source Q80228 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bowl
@@ -444,22 +444,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bowl
+        text bowl # source Q153988 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text миска
+        text миска # source Q153988 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कटोरा
+        text कटोरा # source Q153988 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 碗
+        text 碗 # source Q153988 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   box
@@ -467,22 +467,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text box
+        text box # source Q188075 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text коробка
+        text коробка # source Q188075 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text m
+        text डब्बा # source Q188075 aliases.hi[0].value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 盒子
+        text 盒子 # source Q188075 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   boy
@@ -490,22 +490,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text boy
+        text boy # source Q3010 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text мальчик
+        text мальчик # source Q3010 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text लड़का
+        text लड़का # source Q3010 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 男孩
+        text 男孩 # source Q3010 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   brick
@@ -513,22 +513,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text brick
+        text brick # source Q40089 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кирпич
+        text кирпич # source Q40089 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text ईंट
+        text ईंट # source Q40089 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 磚
+        text 磚 # source Q40089 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bridge
@@ -536,22 +536,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bridge
+        text bridge # source Q12280 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text мост
+        text мост # source Q12280 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सेतु
+        text सेतु # source Q12280 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 桥
+        text 桥 # source Q12280 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   bus
@@ -559,22 +559,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text bus
+        text bus # source Q5638 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text автобус
+        text автобус # source Q5638 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बस
+        text बस # source Q5638 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 巴士
+        text 巴士 # source Q5638 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   button
@@ -582,22 +582,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text button
+        text button # source Q160464 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text пуговица
+        text пуговица # source Q160464 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बटन
+        text बटन # source Q160464 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鈕扣
+        text 鈕扣 # source Q160464 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cake
@@ -605,22 +605,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cake
+        text cake # source Q13276 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text пирожное
+        text пирожное # source Q13276 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text केक
+        text केक # source Q13276 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 蛋糕
+        text 蛋糕 # source Q13276 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   car
@@ -628,22 +628,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text car
+        text car # source Q1420 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text автомобиль
+        text автомобиль # source Q1420 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text गाड़ी
+        text गाड़ी # source Q1420 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 汽车
+        text 汽车 # source Q1420 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   carpet
@@ -651,22 +651,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text carpet
+        text carpet # source Q163446 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text ковёр
+        text ковёр # source Q163446 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text क़ालीन
+        text क़ालीन # source Q163446 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 地毯
+        text 地毯 # source Q163446 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cement
@@ -674,22 +674,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cement
+        text cement # source Q45190 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text цемент
+        text цемент # source Q45190 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सीमेंट
+        text सीमेंट # source Q45190 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 水泥
+        text 水泥 # source Q45190 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   chain
@@ -697,22 +697,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text chain
+        text chain # source Q552299 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text чейн
+        text чейн # source Q552299 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text जंजीर
+        text जंजीर # source Q552299 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鏈
+        text 鏈 # source Q552299 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   chair
@@ -720,22 +720,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text chair
+        text chair # source Q15026 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text стул
+        text стул # source Q15026 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कुर्सी
+        text कुर्सी # source Q15026 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 椅
+        text 椅 # source Q15026 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cheese
@@ -743,22 +743,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cheese
+        text cheese # source Q10943 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text сыр
+        text сыр # source Q10943 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text चीज़
+        text चीज़ # source Q10943 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 奶酪
+        text 奶酪 # source Q10943 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cherry
@@ -766,22 +766,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cherry
+        text cherry # source Q196 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text вишня
+        text вишня # source Q196 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text आलूबालू
+        text आलूबालू # source Q196 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 樱
+        text 樱 # source Q196 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   chicken
@@ -789,22 +789,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text chicken
+        text chicken # source Q780 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text курица
+        text курица # source Q780 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text मुर्गी
+        text मुर्गी # source Q780 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鸡
+        text 鸡 # source Q780 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   child
@@ -812,22 +812,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text child
+        text child # source Q7569 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text ребёнок
+        text ребёнок # source Q7569 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बच्चा
+        text बच्चा # source Q7569 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 儿童
+        text 儿童 # source Q7569 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   chocolate
@@ -835,22 +835,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text chocolate
+        text chocolate # source Q195 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text шоколад
+        text шоколад # source Q195 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text चॉकलेट
+        text चॉकलेट # source Q195 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 巧克力
+        text 巧克力 # source Q195 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   clock
@@ -858,22 +858,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text clock
+        text clock # source Q376 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text часы
+        text часы # source Q376 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text घडी
+        text घडी # source Q376 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 時鐘
+        text 時鐘 # source Q376 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cloud
@@ -881,22 +881,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cloud
+        text cloud # source Q8074 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text облако
+        text облако # source Q8074 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text बादल
+        text बादल # source Q8074 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 云
+        text 云 # source Q8074 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   coconut
@@ -904,22 +904,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text coconut
+        text coconut # source Q3342808 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кокос
+        text кокос # source Q3342808 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text नारियल
+        text नारियल # source Q3342808 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 椰子
+        text 椰子 # source Q3342808 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   coffee
@@ -927,22 +927,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text coffee
+        text coffee # source Q8486 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кофе
+        text кофе # source Q8486 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कॉफ़ी
+        text कॉफ़ी # source Q8486 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 咖啡
+        text 咖啡 # source Q8486 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   coin
@@ -950,22 +950,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text coin
+        text coin # source Q41207 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text монета
+        text монета # source Q41207 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सिक्का
+        text सिक्का # source Q41207 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 硬幣
+        text 硬幣 # source Q41207 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   comb
@@ -973,22 +973,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text comb
+        text comb # source Q23834 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text расчёска
+        text расчёска # source Q23834 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कंघा
+        text कंघा # source Q23834 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 梳篦
+        text 梳篦 # source Q23834 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   copper
@@ -996,22 +996,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text copper
+        text copper # source Q753 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text медь
+        text медь # source Q753 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text ताम्र
+        text ताम्र # source Q753 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 銅
+        text 銅 # source Q753 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   cup
@@ -1019,22 +1019,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text cup
+        text cup # source Q81727 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text чашка
+        text чашка # source Q81727 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text गिलास
+        text गिलास # source Q81727 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 杯
+        text 杯 # source Q81727 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   curtain
@@ -1042,22 +1042,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text curtain
+        text curtain # source Q49005 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text штора
+        text штора # source Q49005 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text पर्दा
+        text पर्दा # source Q49005 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 簾
+        text 簾 # source Q49005 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   death
@@ -1065,22 +1065,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text death
+        text death # source Q4 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text смерть
+        text смерть # source Q4 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text मृत्यु
+        text मृत्यु # source Q4 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 死亡
+        text 死亡 # source Q4 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   desert
@@ -1088,22 +1088,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text desert
+        text desert # source Q8514 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text пустыня
+        text пустыня # source Q8514 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text मरुस्थल
+        text मरुस्थल # source Q8514 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 荒漠
+        text 荒漠 # source Q8514 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   diamond
@@ -1111,22 +1111,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text diamond
+        text diamond # source Q5283 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text алмаз
+        text алмаз # source Q5283 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text हीरा
+        text हीरा # source Q5283 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 钻石
+        text 钻石 # source Q5283 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   dog
@@ -1134,22 +1134,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text dog
+        text dog # source Q144 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text собака
+        text собака # source Q144 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कुत्ता
+        text कुत्ता # source Q144 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 犬
+        text 犬 # source Q144 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   doll
@@ -1157,22 +1157,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text doll
+        text doll # source Q168658 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text кукла
+        text кукла # source Q168658 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text गुड़िया
+        text गुड़िया # source Q168658 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 玩偶
+        text 玩偶 # source Q168658 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   dolphin
@@ -1180,22 +1180,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text dolphin
+        text dolphin # source Q7369 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text дельфин
+        text дельфин # source Q7369 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text सूंस
+        text सूंस # source Q7369 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 海豚
+        text 海豚 # source Q7369 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   door
@@ -1203,22 +1203,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text door
+        text door # source Q36794 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text дверь
+        text дверь # source Q36794 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text द्वार
+        text द्वार # source Q36794 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 門
+        text 門 # source Q36794 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   dream
@@ -1226,22 +1226,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text dream
+        text dream # source Q36348 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text сновидение
+        text сновидение # source Q36348 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text स्वप्न
+        text स्वप्न # source Q36348 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 夢
+        text 夢 # source Q36348 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   drum
@@ -1249,22 +1249,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text drum
+        text drum # source Q11404 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text барабан
+        text барабан # source Q11404 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text ड्रम
+        text ड्रम # source Q11404 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 鼓
+        text 鼓 # source Q11404 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   ear
@@ -1272,22 +1272,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text ear
+        text ear # source Q7362 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text ухо
+        text ухо # source Q7362 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text कान
+        text कान # source Q7362 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 耳
+        text 耳 # source Q7362 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   egg
@@ -1295,22 +1295,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text egg
+        text egg # source Q17147 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text яйцо
+        text яйцо # source Q17147 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text अंडा
+        text अंडा # source Q17147 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 卵
+        text 卵 # source Q17147 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   elephant
@@ -1318,22 +1318,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text elephant
+        text elephant # source Q7378 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text слон
+        text слон # source Q7378 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text हाथी
+        text हाथी # source Q7378 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 象
+        text 象 # source Q7378 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   engine
@@ -1341,22 +1341,22 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text engine
+        text engine # source Q44167 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text двигатель
+        text двигатель # source Q44167 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text इंजन
+        text इंजन # source Q44167 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 发动机
+        text 发动机 # source Q44167 labels.zh.value
         part_of_speech noun
         grammatical_number singular
   engineer
@@ -1364,21 +1364,21 @@ meanings
     defined-by entity
     lexeme en
       surface
-        text engineer
+        text engineer # source Q81096 labels.en.value
         part_of_speech noun
         grammatical_number singular
     lexeme ru
       surface
-        text инженер
+        text инженер # source Q81096 labels.ru.value
         part_of_speech noun
         grammatical_number singular
     lexeme hi
       surface
-        text अभियन्ता
+        text अभियन्ता # source Q81096 labels.hi.value
         part_of_speech noun
         grammatical_number singular
     lexeme zh
       surface
-        text 工程师
+        text 工程师 # source Q81096 labels.zh.value
         part_of_speech noun
         grammatical_number singular
