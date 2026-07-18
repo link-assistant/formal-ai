@@ -123,6 +123,18 @@ Gemini, and Vertex also accept `@link-assistant/formal-ai`,
 `link-assistant/formal-ai`, `formal-ai-latest`, and `latest` as
 case-insensitive aliases; response payloads return the canonical `formal-ai` id.
 
+Model capacity is disk-backed rather than hard-coded. The server measures free
+space on the filesystem containing `FORMAL_AI_MEMORY_PATH` (or
+`~/.formal-ai/memory.lino` on Unix/macOS and
+`%APPDATA%\formal-ai\memory.lino` on Windows), then divides both free bytes and
+on-disk memory bytes by `FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR` (default `2`). OpenAI discovery,
+generated Codex catalogs, Gemini/Vertex metadata, and Anthropic responses expose
+the same `context` metadata: `context_window_tokens`, `context_used_tokens`,
+`context_used_fraction`, `disk_free_bytes`, `memory_used_bytes`, and
+`avg_utf8_bytes_per_char`. OpenAI model entries also expose these fields at the
+top level for clients that do not retain extension objects. This capacity
+advertisement does not introduce billing; cost remains zero.
+
 ### Reasoning Fields
 
 The solver records structured `thinking_steps` for every symbolic answer. The

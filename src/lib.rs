@@ -15,6 +15,7 @@ pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
+pub mod context_capacity;
 pub mod cue_lexicon;
 pub mod document_formats;
 pub mod dreaming;
