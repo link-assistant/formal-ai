@@ -106,10 +106,17 @@ Unknown methods are reported, never thrown, so a malformed message can never cra
 ```
 ../../src/web           -> vscode/dist-web
 ../../data/seed         -> vscode/dist-web/seed
-../../desktop/lib/*.cjs -> vscode/src/lib/vendor   (tool-router.cjs, memory-sync.cjs)
+../../desktop/lib/*.cjs -> vscode/src/lib/vendor   (tool-router.cjs, memory-sync.cjs, shared-memory.cjs)
 ```
 
 It also syncs the extension version from `Cargo.toml` (the single source of truth for the formal-ai version), mirroring `desktop/scripts/prepare-resources.mjs`. Both generated trees (`vscode/dist-web/`, `vscode/src/lib/vendor/`) are **git-ignored** — they are mirrors of already-committed source. `chat-view.cjs` prefers `dist-web/` and falls back to the dev layout; `extension.node.cjs` prefers `src/lib/vendor/` and falls back to `<repo>/desktop/lib`.
+
+The Node host passes the same zero-configuration memory path as the desktop and
+CLI (`~/.formal-ai/memory.lino` on Unix/macOS,
+`%APPDATA%\formal-ai\memory.lino` on Windows) to its local server. An explicit
+`FORMAL_AI_MEMORY_PATH` override is preserved. VS Code Web cannot access the
+host filesystem; its IndexedDB store remains a browser cache and reconciles
+through the native server when that surface is available.
 
 > The issue-103 deferred-label guard and the docs-requirements scan skip these two mirror trees by exact path (see `tests/unit/docs_requirements.rs`), because scanning the committed originals is sufficient and a local `prepare-resources` run must not change which files the guards inspect.
 

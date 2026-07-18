@@ -1,7 +1,7 @@
 {
   "name": "formal-ai-vscode",
   "displayName": "formal-ai",
-  "version": "0.297.2",
+  "version": "0.298.2",
   "private": true,
   "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
   "publisher": "link-assistant",

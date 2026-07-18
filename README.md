@@ -493,6 +493,8 @@ TELEGRAM_BOT_TOKEN=123:abc docker compose up
 
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-telegram-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest
 
@@ -530,7 +532,9 @@ docker compose --profile all up -d                # all services
 
 All three containers (`formal-ai-telegram`, `formal-ai-server`, and
 `formal-ai-agent`) are the **exact same ones the desktop app manages with one
-click** — see
+click**. They bind the host's `~/.formal-ai` directory to `/root/.formal-ai`,
+so Telegram, API, Agent CLI, desktop, and host CLI writes converge on the same
+`memory.lino`; their inner-Docker volumes remain separate. See
 [One-click services and agent environment](docs/desktop/service-control.md) for
 the full desktop + server walkthrough.
 
@@ -562,6 +566,12 @@ npm run desktop:smoke
 ```
 
 In desktop mode, prompt sends use `POST /v1/chat/completions` on the local Rust API, and the network link points to `GET /v1/graph`. The same **Export memory** and **Import memory** controls read and write the full `formal_ai_bundle`; no separate desktop memory format exists. Agent mode remains off by default, and the desktop sidebar shows whether agent/tool-call actions are permission-gated or explicitly opted in.
+
+Persistent memory needs no configuration. Formal AI creates
+`~/.formal-ai/memory.lino` on Unix/macOS or
+`%APPDATA%\formal-ai\memory.lino` on Windows and uses it for the CLI, local
+server, desktop shell, dreaming worker, and VS Code desktop host. Set
+`FORMAL_AI_MEMORY_PATH` only when an explicit alternate file is required.
 
 Packaging starts from the same shell:
 
