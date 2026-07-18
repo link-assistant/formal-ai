@@ -260,7 +260,10 @@ is pinned to the Formal AI model rather than a remote fallback.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
-provider overrides through `-c` before appending your remaining arguments.
+provider overrides through `-c` before appending your remaining arguments. It
+also generates a model catalog inside the temporary Codex home and passes it as
+`model_catalog_json`, so Codex recognizes the Formal AI model's context window
+and capabilities without a missing-metadata warning.
 
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
@@ -280,6 +283,7 @@ with-formal-ai -g --undo codex
 ```
 
 Persistent targets are `~/.codex/config.toml`,
+`~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
 `~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.

@@ -7,6 +7,8 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
+mod model_metadata;
+
 fn tmpdir() -> PathBuf {
     let seq = TMPDIR_SEQ.fetch_add(1, Ordering::SeqCst);
     let thread_id = format!("{:?}", std::thread::current().id())
@@ -60,6 +62,20 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "OPENAI_MODEL=$OPENAI_MODEL"
   echo "XAI_API_KEY=$XAI_API_KEY"
   echo "XAI_BASE_URL=$XAI_BASE_URL"
+  model_catalog_path=""
+  for arg in "$@"; do
+    case "$arg" in
+      model_catalog_json=*)
+        model_catalog_path=${arg#model_catalog_json=}
+        model_catalog_path=${model_catalog_path#\"}
+        model_catalog_path=${model_catalog_path%\"}
+        ;;
+    esac
+  done
+  if [ -n "$model_catalog_path" ] && [ -f "$model_catalog_path" ]; then
+    echo "---CODEX_MODEL_CATALOG---"
+    cat "$model_catalog_path"
+  fi
   if [ -n "$OPENCODE_CONFIG" ] && [ -f "$OPENCODE_CONFIG" ]; then
     echo "---OPENCODE_CONFIG---"
     cat "$OPENCODE_CONFIG"
@@ -157,56 +173,15 @@ fn captured_args(capture: &str) -> Vec<&str> {
         .collect()
 }
 
-#[test]
-fn with_formal_ai_codex_ephemeral_uses_seeded_responses_provider_config() {
-    let dir = tmpdir();
-    let home = dir.join("home");
-    let bin_dir = dir.join("bin");
-    std::fs::create_dir_all(&home).expect("home");
-    std::fs::create_dir_all(&bin_dir).expect("bin");
-    write_fake_cli(&bin_dir, "codex");
-    let capture = dir.join("capture.txt");
-
-    let output = run_with_capture(
-        &home,
-        &bin_dir,
-        &capture,
-        &[
-            "with",
-            "--base-url",
-            "http://127.0.0.1:18080",
-            "codex",
-            "hi",
-        ],
-    );
-
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    assert!(output.status.success(), "stderr: {stderr}");
-    assert_eq!(
-        String::from_utf8_lossy(&output.stdout).trim(),
-        "Hi, how may I help you?"
-    );
-    let captured = std::fs::read_to_string(&capture).expect("capture");
-    assert!(captured.contains("arg[0]=exec"), "capture:\n{captured}");
-    assert!(
-        captured.contains("arg[1]=--skip-git-repo-check"),
-        "capture:\n{captured}"
-    );
-    assert!(
-        captured.contains("arg[2]=--sandbox"),
-        "capture:\n{captured}"
-    );
-    assert!(
-        captured.contains("arg[3]=read-only"),
-        "capture:\n{captured}"
-    );
-    assert!(captured.contains("model_provider=\"formalai\""));
-    assert!(captured.contains("model=\"formal-ai\""));
-    assert!(captured.contains("wire_api=\"responses\""));
-    assert!(captured.contains("base_url=\"http://127.0.0.1:18080/api/openai/v1\""));
-    assert!(captured.contains("FORMAL_AI_API_KEY=formal-ai"));
-
-    let _ = std::fs::remove_dir_all(&dir);
+fn captured_args_without_model_catalog(capture: &str) -> Vec<&str> {
+    let mut args = captured_args(capture);
+    if let Some(index) = args
+        .iter()
+        .position(|arg| arg.starts_with("model_catalog_json="))
+    {
+        args.drain(index - 1..=index);
+    }
+    args
 }
 
 #[test]
@@ -418,7 +393,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         );
         let captured = std::fs::read_to_string(&interactive_capture).expect("interactive capture");
         assert_eq!(
-            captured_args(&captured),
+            captured_args_without_model_catalog(&captured),
             expected_interactive,
             "{tool} interactive capture:\n{captured}"
         );
@@ -437,7 +412,7 @@ fn with_formal_ai_selects_uniform_interactive_and_non_interactive_modes() {
         );
         let captured = std::fs::read_to_string(&print_capture).expect("print capture");
         assert_eq!(
-            captured_args(&captured),
+            captured_args_without_model_catalog(&captured),
             expected_non_interactive,
             "{tool} non-interactive capture:\n{captured}"
         );
@@ -879,6 +854,11 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
         "approval_policy = \"never\"\n",
     )
     .expect("seed codex config");
+    std::fs::write(
+        home.join(".codex/formal-ai-model-catalog.json"),
+        "user-managed catalog\n",
+    )
+    .expect("seed codex catalog");
 
     let first = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args([
@@ -901,9 +881,17 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
     assert!(codex_config.contains("approval_policy = \"never\""));
     assert!(codex_config.contains("model_provider = \"formalai\""));
     assert!(codex_config.contains("model = \"formal-ai\""));
+    assert!(codex_config.contains("model_catalog_json = "));
     assert!(codex_config.contains("[model_providers.formalai]"));
     assert!(codex_config.contains("base_url = \"http://127.0.0.1:18080/api/openai/v1\""));
     assert!(home.join(".codex/config.toml.formal-ai.bak").exists());
+    let codex_catalog = std::fs::read_to_string(home.join(".codex/formal-ai-model-catalog.json"))
+        .expect("codex catalog");
+    assert!(codex_catalog.contains("\"slug\": \"formal-ai\""));
+    assert!(codex_catalog.contains("\"context_window\": 60000"));
+    assert!(home
+        .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
+        .exists());
 
     let opencode_config =
         std::fs::read_to_string(home.join(".config/opencode/opencode.json")).expect("opencode");
@@ -960,6 +948,14 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
         std::fs::read_to_string(home.join(".codex/config.toml")).expect("restored codex"),
         "approval_policy = \"never\"\n"
     );
+    assert_eq!(
+        std::fs::read_to_string(home.join(".codex/formal-ai-model-catalog.json"))
+            .expect("restored codex catalog"),
+        "user-managed catalog\n"
+    );
+    assert!(!home
+        .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
+        .exists());
     assert!(!home.join(".config/opencode/opencode.json").exists());
     assert!(!home
         .join(".config/link-assistant-agent/opencode.json")
