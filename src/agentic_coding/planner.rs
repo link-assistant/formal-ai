@@ -219,11 +219,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             messages, tool_names, &request,
         ));
     }
-    // Resolve dialogue meta-questions before open-world research.
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
-    // Probe edits before reads for the same target-file ambiguity.
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
