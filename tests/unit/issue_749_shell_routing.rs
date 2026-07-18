@@ -35,7 +35,7 @@ fn explicit_shell_forms_pass_the_complete_command_through() {
 #[test]
 fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
     for (language, prompt, expected) in [
-        ("en", "show current directory", "pwd"),
+        ("English", "show current directory", "pwd"),
         (
             "en",
             "create an empty file called note.txt",

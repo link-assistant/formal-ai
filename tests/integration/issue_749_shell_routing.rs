@@ -20,7 +20,7 @@ fn codex_responses_preserves_arbitrary_commands_and_uses_cmd() {
 #[test]
 fn strict_shell_schema_gets_required_extras_for_every_language() {
     for (language, prompt, expected) in [
-        ("en", "delete the file old.txt", "rm old.txt"),
+        ("English", "delete the file old.txt", "rm old.txt"),
         ("ru", "удали файл old.txt", "rm old.txt"),
         ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),
         ("zh", "删除文件 old.txt", "rm old.txt"),
