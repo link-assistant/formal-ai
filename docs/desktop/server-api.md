@@ -271,7 +271,10 @@ the Agent config file before launching the command.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
-provider overrides through `-c` before appending your remaining arguments.
+provider overrides through `-c` before appending your remaining arguments. A
+generated catalog in the temporary Codex home is selected with
+`model_catalog_json`, which supplies Codex's internal registry with the Formal
+AI model context window and capabilities.
 
 If the loopback port is idle, the wrapper starts `formal-ai serve --agent-mode`
 for the duration of the invocation and prints a notice because agent mode enables
@@ -300,6 +303,7 @@ with-formal-ai -g --undo codex
 ```
 
 The persistent files are `~/.codex/config.toml`,
+`~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed Formal AI block
 in `~/.profile` for environment-configured tools. Re-running `-g` is idempotent.
