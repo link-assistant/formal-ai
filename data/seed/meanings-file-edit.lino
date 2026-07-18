@@ -17,6 +17,14 @@ meanings
         text "swap"
       surface
         text "correct"
+      surface
+        text "update"
+      surface
+        text "patch"
+      surface
+        text "rewrite"
+      surface
+        text "refactor"
     lexeme ru
       surface
         text замени

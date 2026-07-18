@@ -12,10 +12,10 @@ pub const ROLE_PROGRAM_ARTIFACT: &str = "program_artifact";
 /// program (sort, reverse, cancel, change, …) — additive or subtractive.
 pub const ROLE_PROGRAM_MODIFICATION: &str = "program_modification";
 /// Semantic role: a kind of program artifact a user can ask to be authored
-/// (a program, a script, code, a function). The noun side of "write a <kind>".
+/// (a program, a script, code, a function). The noun side of "write a `<kind>`".
 pub const ROLE_PROGRAM_KIND: &str = "program_kind";
 /// Semantic role: a verb that requests a program artifact be produced (write,
-/// create, show, generate, make, build). The verb side of "write a <kind>".
+/// create, show, generate, make, build). The verb side of "write a `<kind>`".
 pub const ROLE_PROGRAM_REQUEST: &str = "program_request";
 /// Semantic role: the program *genus* itself — the broad "program" noun
 /// (program / программа / प्रोग्राम / 程序).
@@ -136,8 +136,8 @@ pub const ROLE_OUTPUT_DISPLAY_REQUEST: &str = "output_display_request";
 /// Semantic role: a verb that requests a software artifact be authored.
 ///
 /// Surfaces include write, build, create, implement, develop, design, scaffold,
-/// … — the verb side of "build me a <artifact>". Distinct from
-/// `program_request`, which gates the narrower "write a <program>" synthesis
+/// … — the verb side of "build me a `<artifact>`". Distinct from
+/// `program_request`, which gates the narrower "write a `<program>`" synthesis
 /// path; the two overlap on the shared verbs, but a software-authoring verb
 /// need not trip program synthesis.
 pub const ROLE_SOFTWARE_AUTHORING_ACTION: &str = "software_authoring_action";

@@ -34,7 +34,7 @@ use crate::solver_dispatch::{
 pub enum MethodSurface {
     /// A method that runs before the ordered handler table.
     Prelude,
-    /// A handler in the ordered [`SPECIALIZED_HANDLERS`] table.
+    /// A handler in the ordered `SPECIALIZED_HANDLERS` table.
     Specialized,
     /// A context-dependent override evaluated by `try_contextual_override`.
     Contextual,

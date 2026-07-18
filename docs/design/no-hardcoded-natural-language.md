@@ -96,8 +96,8 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    then another letter — i.e. two words a human reads). Dynamic values —
    `t(...)`, variables, ternaries, template literals — pass by construction, so
    the only way to render visible text is through the catalog. A short,
-   documented `ALLOWED_LITERALS` allowlist holds a handful of pre-i18n `<dt>`
-   labels coupled to other suites; **new prose must never be added there.** The
+   documented `ALLOWED_LITERALS` allowlist currently holds exactly one pre-i18n
+   label (`Tool calls`); **new prose must never be added there.** The
    companion `check-i18n-catalog.mjs` guard asserts every required key exists in
    all four locales (en/ru/zh/hi) and that representative interpolations render.
    Both run in `.github/workflows/release.yml` and locally with:
@@ -111,6 +111,43 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    block in `src/web/i18n-catalog.lino` for **all four** locales, register the
    key in `REQUIRED_KEYS` in `check-i18n-catalog.mjs`, and render it with
    `t("<key>", params)` — never a literal.
+
+5. **Rust `src/` hardcoded-language burn-down (#659).**
+   `scripts/check-hardcoded-language.rs` (rust-script) scans every `src/**/*.rs`
+   file for user-facing prose string literals. Punctuated sentences are
+   recognized globally when they contain a space, end in terminal punctuation
+   (`.`, `!`, `?`), and hold at least two real words. Unpunctuated multi-word
+   phrases are recognized only where lexer context identifies an
+   output-producing `format!`, `push_str`, or explicit `return` position. This
+   contextual second rule catches labels such as `format!("Try again")` without
+   classifying arbitrary internal values as interface text. Comments, character
+   literals, code fragments, and trace/event slugs are ignored. The committed
+   allowlist,
+   `scripts/hardcoded-language-allowlist.txt`, is the sorted, tab-separated
+   inventory of *today's* debt (`<relative-path>\t<canonical-literal-text>`). The
+   check **fails the build two ways**, so the debt can only shrink:
+
+   - a literal in `src/` that is **not** in the allowlist (new debt is blocked);
+   - an allowlist row whose literal **no longer occurs** in `src/` (a migrated
+     row must be pruned, keeping the inventory honest).
+
+   Regenerate the allowlist after an intentional change with:
+
+   ```sh
+   rust-script scripts/check-hardcoded-language.rs --write
+   ```
+
+   The burn-down loop: move a hardcoded answer into a grounded meaning in
+   `data/seed/*.lino`, read it back through `seed::response_for(...)` (never a
+   literal), then re-run `--write` so the migrated rows drop out of the
+   allowlist. PR #692 seeded the allowlist and migrated the duplicated
+   `src/engine_responses.rs` English fallbacks — which already existed for all
+   four languages in `data/seed/multilingual-responses.lino` — to prove the loop.
+   The check runs in `.github/workflows/release.yml` and locally with:
+
+   ```sh
+   rust-script scripts/check-hardcoded-language.rs
+   ```
 
 ## Worked example: the terminal-command intent (#513)
 

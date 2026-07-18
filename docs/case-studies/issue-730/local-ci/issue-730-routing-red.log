@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.38s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 1 test
+test issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1647 filtered out; finished in 1.64s
+

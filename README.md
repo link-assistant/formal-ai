@@ -10,7 +10,7 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
-It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings.
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack; the design study in [docs/case-studies/issue-649](docs/case-studies/issue-649/README.md) audits how the same stack expresses symbolic **world models** — a current-state and target-state context, their difference, context merge/split, and predicting the consequences of an action, all as links networks rather than embeddings; and the study in [docs/case-studies/issue-686](docs/case-studies/issue-686/README.md) adds **usage-weighted persistence** of meta-language expressions — counting reads and writes and incoming/outgoing link degree so the most used, most changed, and most connected knowledge persists longest, all as a links network.
 
 The current implementation covers the surface area requested in issue #1:
 
@@ -260,7 +260,10 @@ is pinned to the Formal AI model rather than a remote fallback.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
-provider overrides through `-c` before appending your remaining arguments.
+provider overrides through `-c` before appending your remaining arguments. It
+also generates a model catalog inside the temporary Codex home and passes it as
+`model_catalog_json`, so Codex recognizes the Formal AI model's context window
+and capabilities without a missing-metadata warning.
 
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
@@ -280,6 +283,7 @@ with-formal-ai -g --undo codex
 ```
 
 Persistent targets are `~/.codex/config.toml`,
+`~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
 `~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.
@@ -617,6 +621,8 @@ still be handled by compiling with `--no-default-features` when a pure
 cargo run -- memory export --from memory.lino --path full.lino           # default: full bundle
 cargo run -- memory export --from memory.lino --path events.lino --events-only  # legacy demo_memory
 cargo run -- memory import --path full.lino --into memory.lino           # accepts either format
+cargo run -- memory show --path memory.lino                              # print every recorded event
+cargo run -- memory query --path memory.lino --query "Find Rust in another conversation"
 cargo run -- memory dream --path memory.lino                             # plan low-priority cleanup
 cargo run -- memory dream --path memory.lino --storage-capacity-bytes 1000000 --free-bytes 50000
 cargo run -- memory dream --path memory.lino --apply --confirm           # persist learning; cleanup asks consent
@@ -754,7 +760,7 @@ Seed rules currently cover:
 - behavior-rule inspection and dialog-local rule updates through `List behavior rules` (grouped by topic, each rendered as a `When X then Y` statement), `Show behavior rule unknown`, and the multilingual `When ... then ...` / `When ... do ...` / `When I say ... answer ...` grammar
 - unknown prompts, which return a larger learnable-rule fallback with exact commands for inspecting rules, teaching the current dialog, exporting memory, or reporting a missing built-in rule
 
-Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because `tsc` is not configured in the current repository runtime.
+Hello-world answers include execution metadata. Rust, Python, JavaScript, Go, and C examples are compiled or syntax-checked and run by the issue-8 local verification harness with captured output. TypeScript is returned with an explicit warning because no `tsc` toolchain is installed in the current repository runtime.
 
 No GPU, neural network, remote model, or random sampling is used.
 

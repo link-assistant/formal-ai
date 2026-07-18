@@ -10,6 +10,8 @@
 
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
+const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
+
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
 /// Two data-driven strategies, in order of specificity:
@@ -35,6 +37,34 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
         .or_else(|| intent_shell_command(prompt, &seed::shell_intent_vocabulary()))
 }
 
+/// Recover the literal subject of a seed-backed source-code search request.
+///
+/// A client may advertise a dedicated grep/code-search tool instead of a shell.
+/// The planner uses this semantic query before falling back to the `rg` lowering
+/// returned by [`shell_command_for_task`].
+pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let vocab = seed::shell_intent_vocabulary();
+    let cue = vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.command == "rg")
+        .flat_map(|intent| intent.cues.iter())
+        .filter(|cue| lower.contains(cue.as_str()))
+        .max_by_key(|cue| cue.chars().count())?;
+    remainder_argument(prompt, &lower, cue)
+}
+
+/// Prefer a client's dedicated source-search capability over shell lowering.
+pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
+    tool_names.iter().copied().find(|name| {
+        let lower = name.to_ascii_lowercase();
+        lower.contains("grep")
+            || lower == "file_search"
+            || (lower.contains("code") && lower.contains("search"))
+    })
+}
+
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
 /// [`ShellIntentVocabulary`] (issue #680).
 ///
@@ -49,20 +79,38 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
 /// argument is absent is skipped so the search continues rather than emitting an
 /// argument-less command that would hang (`wc -l` on stdin).
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    vocab.intents.iter().find_map(|intent| {
-        if !intent.cues.iter().any(|cue| lower.contains(cue)) {
-            return None;
+    let lower = prompt.to_lowercase();
+    // Prefer the most specific matching cue across every intent. This prevents
+    // a shorter generic cue (for example "current directory" → `pwd`) from
+    // stealing a longer request ("list current directory" → `ls`).
+    let (intent, cue) = vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
+        .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
+        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .max_by_key(|(_, cue)| cue.chars().count())?;
+    match intent.argument {
+        ShellIntentArgument::None => Some(intent.command.clone()),
+        ShellIntentArgument::Path => {
+            path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
-        match intent.argument {
-            ShellIntentArgument::None => Some(intent.command.clone()),
-            ShellIntentArgument::Path => {
-                path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
-            }
-            ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
-                .map(|arg| format!("{} {arg}", intent.command)),
-        }
-    })
+        ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
+            .map(|arg| format!("{} {arg}", intent.command)),
+        ShellIntentArgument::Remainder => remainder_argument(prompt, &lower, cue)
+            .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
+    }
+}
+
+/// Recover a safe literal query following a matched semantic cue.
+fn remainder_argument(prompt: &str, lower: &str, cue: &str) -> Option<String> {
+    let start = lower.find(cue)? + cue.len();
+    let remainder = prompt.get(start..)?.trim();
+    (!remainder.is_empty()
+        && remainder.chars().all(|c| {
+            c.is_alphanumeric() || c.is_whitespace() || matches!(c, '_' | '-' | '.' | ':')
+        }))
+    .then(|| remainder.to_owned())
 }
 
 /// The first filename-looking token in the prompt: a token carrying an interior dot

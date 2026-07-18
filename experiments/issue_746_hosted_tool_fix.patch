@@ -1,0 +1,150 @@
+diff --git a/src/protocol_policy.rs b/src/protocol_policy.rs
+index 90d45892..6aa9a97e 100644
+--- a/src/protocol_policy.rs
++++ b/src/protocol_policy.rs
+@@ -88,24 +88,47 @@ pub fn is_tool_choice_request(value: &Value) -> bool {
+ pub fn tool_choice_function_name(value: &Value) -> Option<String> {
+     match value {
+         Value::Object(object) => object
+             .get("function")
+             .and_then(|function| function.get("name"))
+             .or_else(|| object.get("name"))
+             .and_then(Value::as_str)
+-            .map(ToOwned::to_owned),
++            .map(ToOwned::to_owned)
++            .or_else(|| hosted_tool_type_name(object).map(ToOwned::to_owned)),
+         _ => None,
+     }
+ }
+ 
+ pub fn tool_definition_name(value: &Value) -> Option<String> {
+     match value {
+         Value::Object(object) => object
+             .get("function")
+             .and_then(|function| function.get("name"))
+             .or_else(|| object.get("name"))
+             .and_then(Value::as_str)
+-            .map(ToOwned::to_owned),
++            .map(ToOwned::to_owned)
++            .or_else(|| hosted_tool_type_name(object).map(ToOwned::to_owned)),
+         _ => None,
+     }
+ }
++
++/// Canonical capability name for OpenAI/Anthropic hosted tools whose wire
++/// definition carries only `type`. Function tools are deliberately excluded:
++/// their executable name must still come from `function.name` or top-level
++/// `name`.
++fn hosted_tool_type_name(object: &serde_json::Map<String, Value>) -> Option<&'static str> {
++    match object.get("type").and_then(Value::as_str)? {
++        "web_search" | "web_search_preview" => Some("web_search"),
++        "file_search" => Some("file_search"),
++        "computer_use" | "computer_use_preview" => Some("computer_use"),
++        "code_interpreter" => Some("code_interpreter"),
++        kind if kind.starts_with("web_search_") => Some("web_search"),
++        _ => None,
++    }
++}
+ 
+ pub fn matches_tool_choice_none(value: &Value) -> bool {
+diff --git a/src/gemini.rs b/src/gemini.rs
+index d41ccaca..e3a7c3e5 100644
+--- a/src/gemini.rs
++++ b/src/gemini.rs
+@@ -166,15 +166,28 @@ fn gemini_role_to_chat_role(role: Option<&str>) -> String {
+ }
+ 
+ fn gemini_tools_to_openai(tools: &[Value]) -> Vec<Value> {
+-    tools
+-        .iter()
+-        .flat_map(|tool| {
+-            tool.get("functionDeclarations")
+-                .and_then(Value::as_array)
+-                .into_iter()
+-                .flatten()
+-                .filter_map(gemini_function_declaration_to_openai)
+-        })
+-        .collect()
++    let mut definitions = Vec::new();
++    for tool in tools {
++        definitions.extend(
++            tool.get("functionDeclarations")
++                .and_then(Value::as_array)
++                .into_iter()
++                .flatten()
++                .filter_map(gemini_function_declaration_to_openai),
++        );
++        if tool.get("google_search").is_some() || tool.get("googleSearch").is_some() {
++            definitions.push(hosted_gemini_tool("web_search"));
++        }
++        if tool.get("url_context").is_some() || tool.get("urlContext").is_some() {
++            definitions.push(hosted_gemini_tool("web_fetch"));
++        }
++    }
++    definitions
++}
++
++fn hosted_gemini_tool(name: &str) -> Value {
++    json!({
++        "type": "function",
++        "function": {"name": name, "parameters": {"type": "object"}}
++    })
+ }
+ 
+ fn gemini_function_declaration_to_openai(declaration: &Value) -> Option<Value> {
+diff --git a/src/agentic_coding/planner.rs b/src/agentic_coding/planner.rs
+index 791f9b01..db95aee0 100644
+--- a/src/agentic_coding/planner.rs
++++ b/src/agentic_coding/planner.rs
+@@ -885,7 +885,11 @@ fn classify_tool(name: &str) -> Option<Capability> {
+     if lower.contains("todo") {
+         return None;
+     }
+-    if lower.contains("search") {
++    if matches!(lower.as_str(), "computer_use" | "code_interpreter") {
++        Some(Capability::Run)
++    } else if lower == "file_search" {
++        // Routed by `code_search_tool_for`; classify for the shared permission gate.
++        Some(Capability::Search)
++    } else if lower.contains("search") {
+         // A code search is not the web search the recipe issues its query to.
+         (!lower.contains("code")).then_some(Capability::Search)
+     } else if lower == "read"
+diff --git a/src/agentic_coding/shell_command.rs b/src/agentic_coding/shell_command.rs
+index 6c0f0341..19cfec71 100644
+--- a/src/agentic_coding/shell_command.rs
++++ b/src/agentic_coding/shell_command.rs
+@@ -60,7 +60,9 @@ pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str
+     tool_names.iter().copied().find(|name| {
+         let lower = name.to_ascii_lowercase();
+-        lower.contains("grep") || (lower.contains("code") && lower.contains("search"))
++        lower.contains("grep")
++            || lower == "file_search"
++            || (lower.contains("code") && lower.contains("search"))
+     })
+ }
+diff --git a/data/seed/environments.lino b/data/seed/environments.lino
+index 7ca60efb..c1862134 100644
+--- a/data/seed/environments.lino
++++ b/data/seed/environments.lino
+@@ -34,7 +34,8 @@ environments
+     memory_export_command "GET /v1/bundle (returns formal_ai_seed_bundle)"
+     bundle_export_command "GET /v1/bundle"
+     bundle_import_command "n/a (use the formal-ai CLI to ingest)"
+-    tools ("v1_chat_completions" "v1_responses" "v1_graph" "v1_bundle" "telegram_webhook")
++    tool_routing "Protocol-native and function tool advertisements normalize to shared capabilities; web search/fetch calls execute in the advertising host harness"
++    tools ("v1_chat_completions" "v1_responses" "v1_graph" "v1_bundle" "telegram_webhook" "agent_permission_gate" "tool_router" "web_search" "web_fetch" "http_fetch")
+   environment desktop
+diff --git a/tests/integration/issue_746_hosted_tools.rs b/tests/integration/issue_746_hosted_tools.rs
+index 36422f58..ff6a92ac 100644
+--- a/tests/integration/issue_746_hosted_tools.rs
++++ b/tests/integration/issue_746_hosted_tools.rs
+@@ -62,7 +62,7 @@ fn anthropic_server_web_search_type_routes_to_tool_use() {
+         json!({
+             "model": "formal-ai",
+             "max_tokens": 1024,
+-            "messages": [{"role": "user", "content": "वेब पर Rust ownership खोजें"}],
++            "messages": [{"role": "user", "content": "वेब पर खोजें Rust ownership"}],
+             "tools": [{
+                 "type": "web_search_20250305",
+                 "name": "web_search",

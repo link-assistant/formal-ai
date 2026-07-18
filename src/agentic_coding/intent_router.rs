@@ -32,7 +32,7 @@ pub(super) fn plan_web_fetch_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let url = crate::solver_handlers::http_fetch_url_for(task)?;
+    let url = crate::solver_handlers::agentic_fetch_url_for(task)?;
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Fetch) {
@@ -54,7 +54,19 @@ pub(super) fn plan_web_search_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let query = crate::solver_handlers::web_search_query_for(task)?;
-    let tool = tool_for(tool_names, Capability::Search)?;
+    let Some(tool) = tool_for(tool_names, Capability::Search) else {
+        let discovery = tool_names
+            .iter()
+            .copied()
+            .find(|name| name.eq_ignore_ascii_case("tool_search"))?;
+        if tool_result_exists(messages, discovery) {
+            return None;
+        }
+        return Some(plan_one(
+            discovery,
+            json!({"query": "web search", "max_results": 5}).to_string(),
+        ));
+    };
     let progress = Progress::scan(messages);
     if progress.done(Capability::Search) {
         return Some(AgenticPlan::Final(web_search_final_answer(
@@ -65,13 +77,48 @@ pub(super) fn plan_web_search_step(
     Some(plan_one(tool, json!({ "query": query }).to_string()))
 }
 
+fn tool_result_exists(messages: &[ChatMessage], tool_name: &str) -> bool {
+    let current_turn = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .map_or(0, |index| index + 1);
+    messages
+        .iter()
+        .enumerate()
+        .skip(current_turn)
+        .any(|(index, message)| {
+            if !message.role.eq_ignore_ascii_case("tool") {
+                return false;
+            }
+            if message
+                .name
+                .as_deref()
+                .is_some_and(|name| name.eq_ignore_ascii_case(tool_name))
+            {
+                return true;
+            }
+            let Some(call_id) = message.tool_call_id.as_deref() else {
+                return false;
+            };
+            messages[..index]
+                .iter()
+                .flat_map(|prior| &prior.tool_calls)
+                .any(|call| {
+                    call.id == call_id && call.function.name.eq_ignore_ascii_case(tool_name)
+                })
+        })
+}
+
 /// General file-edit routing (issue #680): when the request carries a
 /// file-modification intent — an edit action, a replacement lead, and a named
 /// target file, in any phrasing/language — *and* the CLI advertised an edit tool,
-/// emit a real edit `tool_call` that replaces the recovered old text with the new
-/// text. Returns [`None`] when there is no edit intent or no edit tool was
-/// advertised, so the planner keeps looking (and ultimately falls through to the
-/// prose answer) rather than fabricating a call the client cannot honour.
+/// read the target first when a read tool is available, then emit a real edit
+/// `tool_call` that replaces the recovered old text with the new text. Reading
+/// first satisfies editing clients that enforce read-before-write and grounds the
+/// replacement in the current file. Returns [`None`] when there is no edit intent
+/// or no edit tool was advertised, so the planner keeps looking (and ultimately
+/// falls through to the prose answer) rather than fabricating a call the client
+/// cannot honour.
 ///
 /// The `(target, old, new)` triple is recovered entirely from the seed lexicon
 /// (the `file_edit_*` roles), not from any pinned phrasing, and the edit tool's
@@ -90,7 +137,21 @@ pub(super) fn plan_edit_step(
             "Edited `{target}`: replaced `{old}` with `{new}`."
         )));
     }
+    if let Some(read_tool) =
+        tool_for(tool_names, Capability::Read).filter(|_| !progress.done(Capability::Read))
+    {
+        return Some(plan_one(read_tool, read_arguments(&target)));
+    }
     Some(plan_one(tool, edit_arguments(&target, &old, &new)))
+}
+
+fn read_arguments(path: &str) -> String {
+    json!({
+        "path": path,
+        "filePath": path,
+        "file_path": path,
+    })
+    .to_string()
 }
 
 /// The final answer once a web-fetch tool call has returned. Surfaces the fetched

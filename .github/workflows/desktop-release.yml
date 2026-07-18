@@ -42,18 +42,31 @@ on:
     types: [completed]
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 concurrency:
-  group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.run_id }}
+  # The workflow_run path (the automatic one) carries neither release.tag_name
+  # nor inputs.tag, so this fell through to the always-unique run_id and never
+  # actually deduped: concurrent runs for the same tag raced each other on
+  # `gh release upload --clobber` and on finalize's SHA256SUMS.txt. Key on the
+  # commit for that path, which is what resolve maps to a tag.
+  group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.event.workflow_run.head_sha || github.run_id }}
   cancel-in-progress: false
+
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
 
 jobs:
   resolve:
     name: Resolve target release
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
     # For workflow_run, continue after ANY completed main-branch pipeline except
     # cancelled/skipped runs (issue #479). We intentionally do NOT gate on
     # conclusion == 'success': the auto-release publishes the GitHub release in an
@@ -111,6 +124,11 @@ jobs:
           - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe" }
           - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe" }
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     defaults:
       run:
         shell: bash
@@ -140,8 +158,7 @@ jobs:
           node-version: 22
 
       - name: Install desktop dependencies
-        working-directory: desktop
-        run: npm install --no-audit --no-fund
+        run: scripts/install-node-dependencies.sh desktop
 
       - name: Prepare desktop resources (web + bundled binary + version sync)
         working-directory: desktop
@@ -168,7 +185,7 @@ jobs:
           if [ "${#missing[@]}" -gt 0 ]; then
             echo "has_secrets=false" >> "$GITHUB_OUTPUT"
             echo "mode=adhoc" >> "$GITHUB_OUTPUT"
-            echo "::warning::Missing required macOS signing/notarization secrets: ${missing[*]}"
+            echo "::notice::macOS signing/notarization secrets are not configured: ${missing[*]}"
             echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."
           else
             echo "has_secrets=true" >> "$GITHUB_OUTPUT"
@@ -304,6 +321,59 @@ jobs:
             fi
           done
 
+      # The macOS smoke test above is the only artifact verification this
+      # workflow had, so the four Linux/Windows targets were uploaded to the
+      # release with nothing checking that electron-builder actually produced
+      # them under the expected names. A rename or a partial package silently
+      # shipped. The deep checks are macOS-only by nature (hdiutil, codesign),
+      # but existence and non-emptiness are checkable everywhere.
+      - name: Smoke test Linux/Windows release artifacts
+        if: matrix.ebflag != '--mac'
+        shell: bash
+        working-directory: desktop
+        run: |
+          set -euo pipefail
+
+          VERSION="$(node -p "require('./package.json').version")"
+          case "${{ matrix.label }}" in
+            linux-x64|linux-arm64)
+              ARCH="${{ matrix.label }}"; ARCH="${ARCH#linux-}"
+              required=(
+                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.AppImage"
+                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.deb"
+                "release/formal-ai-desktop-linux-${ARCH}-${VERSION}.tar.gz"
+              )
+              ;;
+            windows-x64|windows-arm64)
+              ARCH="${{ matrix.label }}"; ARCH="${ARCH#windows-}"
+              required=(
+                "release/formal-ai-desktop-windows-installer-${ARCH}-${VERSION}.exe"
+                "release/formal-ai-desktop-windows-portable-${ARCH}-${VERSION}.exe"
+              )
+              ;;
+            *)
+              echo "::error::Unexpected matrix label for the Linux/Windows smoke test: ${{ matrix.label }}"
+              exit 1
+              ;;
+          esac
+
+          failed=0
+          for artifact in "${required[@]}"; do
+            if [ ! -f "$artifact" ]; then
+              echo "::error file=$artifact::Expected versioned release artifact was not created."
+              failed=1
+            elif [ ! -s "$artifact" ]; then
+              echo "::error file=$artifact::Release artifact is empty."
+              failed=1
+            else
+              echo "ok $artifact ($(wc -c < "$artifact") bytes)"
+            fi
+          done
+          if [ "$failed" -ne 0 ]; then
+            ls -la release || true
+            exit 1
+          fi
+
       - name: Collect artifacts and checksums
         id: collect
         working-directory: desktop
@@ -337,6 +407,20 @@ jobs:
           ' > "release/SHA256SUMS-${{ matrix.label }}.partial"
           cat "release/SHA256SUMS-${{ matrix.label }}.partial"
 
+      # Attest before publishing, not after: uploading first left the assets
+      # downloadable for the length of the attest step, and permanently so if
+      # attest failed, with `gh attestation verify` unable to vouch for them.
+      - name: Attest build provenance
+        uses: actions/attest@v4
+        with:
+          # The released v4 checksum parser splits with the runner's native EOL,
+          # so it treats our intentionally portable LF manifest as one record on
+          # Windows. Digest the artifacts directly; keep the checksum fragment
+          # solely for the consolidated, user-facing SHA256SUMS.txt.
+          subject-path: |
+            desktop/release/formal-ai-desktop-*
+            desktop/release/latest*.yml
+
       - name: Upload assets to release
         working-directory: desktop
         env:
@@ -356,11 +440,6 @@ jobs:
           done
           gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
 
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-checksums: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
-
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
         with:
@@ -373,6 +452,11 @@ jobs:
     needs: resolve
     if: needs.resolve.outputs.should_build == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     defaults:
       run:
         shell: bash
@@ -389,8 +473,7 @@ jobs:
       # No committed lockfile under vscode/ (the extension's only deps are the
       # packaging dev-tools), so a plain install is used rather than `npm ci`.
       - name: Install extension dependencies
-        working-directory: vscode
-        run: npm install --no-audit --no-fund
+        run: scripts/install-node-dependencies.sh vscode
 
       - name: Package the .vsix
         id: package
@@ -424,6 +507,12 @@ jobs:
           ' > SHA256SUMS-vscode.partial
           cat SHA256SUMS-vscode.partial
 
+      # Attest before publishing; see the same step in the desktop build job.
+      - name: Attest build provenance
+        uses: actions/attest@v4
+        with:
+          subject-path: vscode/formal-ai-vscode-*.vsix
+
       - name: Upload .vsix to release
         working-directory: vscode
         env:
@@ -431,11 +520,6 @@ jobs:
           REPO: ${{ github.repository }}
           TAG: ${{ needs.resolve.outputs.tag }}
         run: gh release upload "$TAG" "${{ steps.package.outputs.vsix }}" --repo "$REPO" --clobber
-
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-checksums: vscode/SHA256SUMS-vscode.partial
 
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
@@ -451,15 +535,25 @@ jobs:
     # publishes checksums for the arches that did build.
     if: ${{ always() && needs.resolve.outputs.should_build == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
     steps:
       - name: Download checksum fragments
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           pattern: checksums-*
           path: fragments
           merge-multiple: true
 
       - name: Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt
+        id: manifest
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -478,6 +572,29 @@ jobs:
           echo "=== SHA256SUMS.txt ==="
           cat SHA256SUMS.txt
           commit="$(gh release view "$TAG" --repo "$REPO" --json targetCommitish --jq .targetCommitish || echo unknown)"
+
+          # Report the builders that actually produced a fragment. Hardcoding the
+          # full matrix here claimed builds that never happened whenever an arch
+          # failed under fail-fast: false.
+          declare -A builder_of=(
+            [linux-x64]="ubuntu-latest"
+            [linux-arm64]="ubuntu-24.04-arm"
+            [macos-x64]="macos-15-intel"
+            [macos-arm64]="macos-14"
+            [windows-x64]="windows-latest"
+            [windows-arm64]="windows-11-arm"
+            [vscode]="ubuntu-latest"
+          )
+          built=()
+          missing=()
+          for label in linux-x64 linux-arm64 macos-x64 macos-arm64 windows-x64 windows-arm64 vscode; do
+            if [ -f "fragments/SHA256SUMS-${label}.partial" ]; then
+              built+=("${builder_of[$label]} (${label})")
+            else
+              missing+=("$label")
+            fi
+          done
+
           {
             echo "formal-ai Desktop build provenance"
             echo "=================================="
@@ -486,19 +603,33 @@ jobs:
             echo "Commitish  : $commit"
             echo "Workflow   : Desktop Release"
             echo "Run        : $RUN_URL"
-            echo "Builders   : ubuntu-latest (linux-x64), ubuntu-24.04-arm (linux-arm64),"
-            echo "             macos-15-intel (macos-x64), macos-14 (macos-arm64),"
-            echo "             windows-latest (windows-x64), windows-11-arm (windows-arm64)"
+            printf 'Builders   : %s\n' "${built[0]}"
+            printf '             %s\n' "${built[@]:1}"
+            if [ ${#missing[@]} -gt 0 ]; then
+              echo "INCOMPLETE : no artifacts from: ${missing[*]}"
+              echo "             This release is missing those targets; the checksums"
+              echo "             below cover only the builders listed above."
+            fi
             echo "Signing    : macOS artifacts are ad-hoc signed (no Apple Developer ID)."
-            echo "Attestation: SLSA build provenance attached via actions/attest-build-provenance."
+            echo "Attestation: SLSA build provenance attached via actions/attest."
             echo "             Verify with: gh attestation verify <file> --repo $REPO"
             echo ""
-            echo "SHA-256 checksums (see SHA256SUMS.txt for the authoritative copy):"
+            # Deliberately not "authoritative": when `missing` is non-empty this
+            # manifest covers only part of the release, and calling it
+            # authoritative is exactly the false positive we are fixing.
+            echo "SHA-256 checksums of the artifacts listed above (SHA256SUMS.txt is the machine-readable copy):"
             echo ""
             cat SHA256SUMS.txt
           } > BUILD-PROVENANCE.txt
           echo "=== BUILD-PROVENANCE.txt ==="
           cat BUILD-PROVENANCE.txt
+
+          # Still upload what we have (a partial manifest beats none), but never
+          # report success for it: a green run here means "all desktop assets
+          # shipped", and callers rely on that.
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload SHA256SUMS.txt and BUILD-PROVENANCE.txt to release
         env:
@@ -508,3 +639,11 @@ jobs:
         run: |
           set -euo pipefail
           gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt --repo "$REPO" --clobber
+
+      # Runs after the upload so the partial manifest is still published for
+      # debugging, but the run ends red.
+      - name: Fail if any target produced no artifacts
+        if: ${{ steps.manifest.outputs.incomplete != '' }}
+        run: |
+          echo "::error title=Incomplete desktop release::No artifacts from: ${{ steps.manifest.outputs.incomplete }}. SHA256SUMS.txt was published but covers only the targets that built."
+          exit 1

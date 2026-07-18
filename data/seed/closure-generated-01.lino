@@ -199,6 +199,11 @@ meanings
     lexeme en
       surface
         text "authenticity"
+  automatic
+    defined-by concept
+    lexeme en
+      surface
+        text "automatic"
   awk
     defined-by token
     lexeme en
@@ -209,6 +214,16 @@ meanings
     lexeme en
       surface
         text "behavior rules list"
+  bootstrap
+    defined-by concept
+    lexeme en
+      surface
+        text "bootstrap"
+  bootstrap-icons
+    defined-by concept
+    lexeme en
+      surface
+        text "bootstrap icons"
   brainstorm_names
     defined-by intent
     lexeme en
@@ -220,7 +235,7 @@ meanings
       surface
         text "brainstorm project ideas"
   brief
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "brief"
@@ -400,10 +415,45 @@ meanings
       surface
         text "concept lookup in context no alias"
   concise
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "concise"
+  configure_follow_up_probability
+    defined-by intent
+    lexeme en
+      surface
+        text "configure follow up probability"
+  configure_message_animation
+    defined-by intent
+    lexeme en
+      surface
+        text "configure message animation"
+  configure_mode
+    defined-by intent
+    lexeme en
+      surface
+        text "configure mode"
+  configure_preferred_language
+    defined-by intent
+    lexeme en
+      surface
+        text "configure preferred language"
+  configure_response_language
+    defined-by intent
+    lexeme en
+      surface
+        text "configure response language"
+  configure_thinking_detail
+    defined-by intent
+    lexeme en
+      surface
+        text "configure thinking detail"
+  configure_toolbar_icon_pack
+    defined-by intent
+    lexeme en
+      surface
+        text "configure toolbar icon pack"
   context_bsd_operating_systems
     defined-by context
     lexeme en
@@ -589,6 +639,11 @@ meanings
     lexeme en
       surface
         text "desktop to cli"
+  detailed
+    defined-by concept
+    lexeme en
+      surface
+        text "detailed"
   df
     defined-by token
     lexeme en
@@ -669,6 +724,11 @@ meanings
     lexeme en
       surface
         text "echo"
+  enum
+    defined-by kind
+    lexeme en
+      surface
+        text "enum"
   enumerate_possessive
     defined-by coverage_group
     lexeme en
@@ -764,6 +824,11 @@ meanings
     lexeme en
       surface
         text "fizzbuzz"
+  fontawesome
+    defined-by concept
+    lexeme en
+      surface
+        text "fontawesome"
   for
     defined-by word_surface
     lexeme en
@@ -1014,16 +1079,81 @@ meanings
     lexeme en
       surface
         text "intent write program"
+  interface
+    defined-by concept
+    lexeme en
+      surface
+        text "interface"
   invert
     defined-by concept
     lexeme en
       surface
         text "invert"
+  ionicons
+    defined-by concept
+    lexeme en
+      surface
+        text "ionicons"
+  issue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "issue"
   issue_364_unknown_trace_learning
     defined-by concept
     lexeme en
       surface
         text "issue 364 unknown trace learning"
+  issue_report_body_footer
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body footer"
+  issue_report_body_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body intro"
+  issue_report_conversation_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report conversation heading"
+  issue_report_created
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created"
+  issue_report_created_with_url
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created with url"
+  issue_report_default_title
+    defined-by field
+    lexeme en
+      surface
+        text "issue report default title"
+  issue_report_empty_history
+    defined-by field
+    lexeme en
+      surface
+        text "issue report empty history"
+  issue_report_ran_command
+    defined-by field
+    lexeme en
+      surface
+        text "issue report ran command"
+  issue_report_title_prefix
+    defined-by field
+    lexeme en
+      surface
+        text "issue report title prefix"
+  issue_report_tool_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report tool missing"
   issue_template_labels
     defined-by field
     lexeme en
@@ -1089,6 +1219,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  last_message
+    defined-by concept
+    lexeme en
+      surface
+        text "last message"
   learn_from_source
     defined-by intent
     lexeme en
@@ -1180,7 +1315,7 @@ meanings
       surface
         text "local shell"
   ls
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "ls"
@@ -1189,6 +1324,16 @@ meanings
     lexeme en
       surface
         text "manuscript"
+  material
+    defined-by concept
+    lexeme en
+      surface
+        text "material"
+  material-symbols
+    defined-by concept
+    lexeme en
+      surface
+        text "material symbols"
   mathematical-logic
     defined-by category
     lexeme en
@@ -1225,10 +1370,15 @@ meanings
       surface
         text "misinformation"
   mkdir
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "mkdir"
+  mode
+    defined-by concept
+    lexeme en
+      surface
+        text "mode"
   multi-step
     defined-by word_surface
     lexeme en
@@ -1244,153 +1394,3 @@ meanings
     lexeme en
       surface
         text "non deterministic"
-  nondeterministic
-    defined-by word_surface
-    lexeme en
-      surface
-        text "nondeterministic"
-  normalize
-    defined-by concept
-    lexeme en
-      surface
-        text "normalize"
-  normalize_whitespace
-    defined-by operation
-    lexeme en
-      surface
-        text "normalize whitespace"
-  npm
-    defined-by token
-    lexeme en
-      surface
-        text "npm"
-  npx
-    defined-by token
-    lexeme en
-      surface
-        text "npx"
-  number_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "number lines"
-  official-docs
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official docs"
-  official-repository
-    defined-by source_kind
-    lexeme en
-      surface
-        text "official repository"
-  olleh
-    defined-by concept
-    lexeme en
-      surface
-        text "olleh"
-  one-paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  one_paragraph
-    defined-by concept
-    lexeme en
-      surface
-        text "one paragraph"
-  open_textbook
-    defined-by kind
-    lexeme en
-      surface
-        text "open textbook"
-  openai
-    defined-by word_surface
-    lexeme en
-      surface
-        text "openai"
-  original_journalism
-    defined-by kind
-    lexeme en
-      surface
-        text "original journalism"
-  originality
-    defined-by word_surface
-    lexeme en
-      surface
-        text "originality"
-  outdent
-    defined-by concept
-    lexeme en
-      surface
-        text "outdent"
-  outdent_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "outdent lines"
-  owlbear
-    defined-by word_surface
-    lexeme en
-      surface
-        text "owlbear"
-  package-management
-    defined-by category
-    lexeme en
-      surface
-        text "package management"
-  paper
-    defined-by word_surface
-    lexeme en
-      surface
-        text "paper"
-  pascal
-    defined-by concept
-    lexeme en
-      surface
-        text "pascal"
-  pascal_case
-    defined-by operation
-    lexeme en
-      surface
-        text "pascal case"
-  passage
-    defined-by word_surface
-    lexeme en
-      surface
-        text "passage"
-  path_argument
-    defined-by operation
-    lexeme en
-      surface
-        text "path argument"
-  path_argument_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files"
-  path_argument_list_files_reverse_sort
-    defined-by rule
-    lexeme en
-      surface
-        text "path argument list files reverse sort"
-  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
-  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
-  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"

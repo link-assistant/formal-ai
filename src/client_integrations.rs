@@ -14,6 +14,7 @@ use crate::seed::{
     client_integrations as seed_client_integrations, ClientIntegration, ConfigFormat,
     ModeArgPosition, ModelArgPosition,
 };
+use crate::server::ADVERTISED_CONTEXT_WINDOW_TOKENS;
 use crate::DEFAULT_MODEL;
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
@@ -119,6 +120,7 @@ struct RenderContext {
     api_key: String,
     protocol_base_env: String,
     google_auth_type: String,
+    model_catalog_path: String,
 }
 
 struct TempConfigDir {
@@ -279,6 +281,7 @@ fn render_context(
         api_key,
         protocol_base_env,
         google_auth_type,
+        model_catalog_path: String::new(),
     };
     context.model_selector = if integration.model_selector.is_empty() {
         context.model.clone()
@@ -297,19 +300,20 @@ fn run_ephemeral(
     force_non_interactive: bool,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
+    let mut context = context.clone();
     let mut temp_dirs = Vec::new();
     let mut command = Command::new(&integration.command);
     for env in &invocation.env {
         command.env(
-            render_template(&env.key, context),
-            render_template(&env.value, context),
+            render_template(&env.key, &context),
+            render_template(&env.value, &context),
         );
     }
     if !invocation.config_json_settings.is_empty() {
-        let config_json = render_json_settings(&invocation.config_json_settings, context)?;
+        let config_json = render_json_settings(&invocation.config_json_settings, &context)?;
         if !invocation.config_content_env.is_empty() {
             command.env(
-                render_template(&invocation.config_content_env, context),
+                render_template(&invocation.config_content_env, &context),
                 &config_json,
             );
         }
@@ -329,27 +333,33 @@ fn run_ephemeral(
     if !invocation.temp_home_env.is_empty() {
         let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
         if !invocation.temp_home_config_path.is_empty() {
-            let relative_config_path = render_template(&invocation.temp_home_config_path, context);
+            let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
             let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
             if let Some(parent) = config_path.parent() {
                 fs::create_dir_all(parent)?;
             }
             fs::write(
                 &config_path,
-                render_json_settings(&invocation.temp_home_json_settings, context)?,
+                render_json_settings(&invocation.temp_home_json_settings, &context)?,
             )?;
         }
         command.env(
-            render_template(&invocation.temp_home_env, context),
+            render_template(&invocation.temp_home_env, &context),
             &temp.path,
         );
+        if !invocation.model_catalog_path.is_empty() {
+            let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
+            let catalog_path = temp_scoped_path(&temp.path, &relative_catalog_path)?;
+            context.model_catalog_path = catalog_path.display().to_string();
+            write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
+        }
         temp_dirs.push(temp);
     }
 
     let final_args = build_invocation_args(
         integration,
         user_args,
-        context,
+        &context,
         keep_summarization,
         force_interactive,
         force_non_interactive,
@@ -402,11 +412,14 @@ fn build_invocation_args(
         .map(|arg| render_template(arg, context))
         .collect::<Vec<_>>();
     let interactive = force_interactive || (!force_non_interactive && user_args.is_empty());
-    let mode_args = if interactive {
-        &invocation.interactive_args
-    } else {
-        &invocation.non_interactive_args
-    };
+    let mode_args: &[String] =
+        if interactive && invocation.interactive_args_require_prompt && user_args.is_empty() {
+            &[]
+        } else if interactive {
+            &invocation.interactive_args
+        } else {
+            &invocation.non_interactive_args
+        };
     let rendered_mode_args = if mode_args
         .iter()
         .any(|mode_arg| user_args.contains(mode_arg))
@@ -442,6 +455,14 @@ fn build_invocation_args(
     let model_arg = render_template(&invocation.model_arg, context);
     let model_value = context.model_selector.clone();
     match invocation.model_arg_position {
+        Some(ModelArgPosition::AfterFirstArg)
+            if invocation.mode_arg_position == Some(ModeArgPosition::BeforeInvocation)
+                && !args.is_empty() =>
+        {
+            args.insert(1, model_value);
+            args.insert(1, model_arg);
+            args.extend(effective_user_args);
+        }
         Some(ModelArgPosition::AfterFirstArg) if !effective_user_args.is_empty() => {
             args.push(effective_user_args[0].clone());
             args.push(model_arg);
@@ -466,7 +487,14 @@ fn write_global_config(
     integration: &ClientIntegration,
     args: &WithFormalAiArgs,
 ) -> Result<(), Box<dyn Error>> {
-    let context = render_context(integration, args)?;
+    let mut context = render_context(integration, args)?;
+    if !integration.global_config.model_catalog_path.is_empty() {
+        let catalog_path = global_config_path(&integration.global_config.model_catalog_path)?;
+        let catalog_backup = backup_path(&catalog_path, &integration.global_config.backup_suffix);
+        ensure_backup(&catalog_path, &catalog_backup)?;
+        context.model_catalog_path = catalog_path.display().to_string();
+        write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
+    }
     let path = global_config_path(&integration.global_config.path)?;
     let backup_path = backup_path(&path, &integration.global_config.backup_suffix);
     ensure_backup(&path, &backup_path)?;
@@ -491,8 +519,23 @@ fn write_global_config(
 
 fn undo_global_config(integration: &ClientIntegration) -> Result<(), Box<dyn Error>> {
     let path = global_config_path(&integration.global_config.path)?;
-    let backup_path = backup_path(&path, &integration.global_config.backup_suffix);
-    if !backup_path.exists() {
+    let config_backup_path = backup_path(&path, &integration.global_config.backup_suffix);
+    let mut restored = if config_backup_path.exists() {
+        restore_backup(&path, &config_backup_path)?;
+        true
+    } else {
+        false
+    };
+    if !integration.global_config.model_catalog_path.is_empty() {
+        let catalog_path = global_config_path(&integration.global_config.model_catalog_path)?;
+        let catalog_backup_path =
+            backup_path(&catalog_path, &integration.global_config.backup_suffix);
+        if catalog_backup_path.exists() {
+            restore_backup(&catalog_path, &catalog_backup_path)?;
+            restored = true;
+        }
+    }
+    if !restored {
         println!(
             "no formal-ai backup for {} at {}",
             integration.id,
@@ -500,18 +543,29 @@ fn undo_global_config(integration: &ClientIntegration) -> Result<(), Box<dyn Err
         );
         return Ok(());
     }
-    let backup = fs::read_to_string(&backup_path)?;
+    println!(
+        "restored {} from {}",
+        integration.id,
+        config_backup_path.display()
+    );
+    Ok(())
+}
+
+fn restore_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> {
+    if !backup_path.exists() {
+        return Ok(());
+    }
+    let backup = fs::read_to_string(backup_path)?;
     if backup == EMPTY_BACKUP_SENTINEL {
-        match fs::remove_file(&path) {
+        match fs::remove_file(path) {
             Ok(()) => {}
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
             Err(error) => return Err(error.into()),
         }
     } else {
-        write_file(&path, &backup)?;
+        write_file(path, &backup)?;
     }
-    fs::remove_file(&backup_path)?;
-    println!("restored {} from {}", integration.id, backup_path.display());
+    fs::remove_file(backup_path)?;
     Ok(())
 }
 
@@ -724,6 +778,41 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{api_key}", &context.api_key)
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
+        .replace("{model_catalog_path}", &context.model_catalog_path)
+}
+
+fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
+    let catalog = serde_json::json!({
+        "models": [{
+            "slug": model,
+            "display_name": model,
+            "description": "Formal AI symbolic model",
+            "default_reasoning_level": "none",
+            "supported_reasoning_levels": [],
+            "shell_type": "shell_command",
+            "visibility": "list",
+            "supported_in_api": true,
+            "priority": 0,
+            "availability_nux": null,
+            "upgrade": null,
+            "base_instructions": "",
+            "supports_reasoning_summaries": false,
+            "supports_reasoning_summary_parameter": false,
+            "default_reasoning_summary": "none",
+            "support_verbosity": false,
+            "default_verbosity": null,
+            "apply_patch_tool_type": "freeform",
+            "web_search_tool_type": "text",
+            "truncation_policy": {"mode": "tokens", "limit": 8192},
+            "supports_parallel_tool_calls": true,
+            "context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
+            "max_context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
+            "effective_context_window_percent": 100,
+            "experimental_supported_tools": [],
+            "input_modalities": ["text"]
+        }]
+    });
+    Ok(format!("{}\n", serde_json::to_string_pretty(&catalog)?))
 }
 
 fn global_config_path(relative: &str) -> Result<PathBuf, Box<dyn Error>> {

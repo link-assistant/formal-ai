@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784088123474)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.17s
+     Running tests/unit/mod.rs (target/debug/deps/unit-0d5c182732133188)
+
+running 13 tests
+test issue_680_intent_routing::edit_second_step_reports_completion_not_a_repeated_call ... ok
+test issue_680_intent_routing::shell_intent_without_run_tool_does_not_emit_run_call ... ok
+test issue_680_intent_routing::read_intent_is_not_stolen_by_the_write_router ... ok
+test issue_680_intent_routing::web_fetch_intent_routes_to_fetch_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::edit_intent_routes_to_edit_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::edit_intent_without_edit_tool_does_not_emit_edit_call ... ok
+test issue_680_intent_routing::web_search_is_deterministic ... ok
+test issue_680_intent_routing::web_intent_without_matching_tool_falls_through_to_prose ... ok
+test issue_680_intent_routing::write_intent_is_not_stolen_by_the_edit_router ... ok
+test issue_680_intent_routing::write_intent_without_write_tool_does_not_emit_write_call ... ok
+test issue_680_intent_routing::shell_intent_routes_to_run_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::web_search_intent_routes_to_search_tool_in_any_phrasing ... ok
+test issue_680_intent_routing::write_intent_routes_to_write_tool_in_any_phrasing ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 1564 filtered out; finished in 0.38s
+

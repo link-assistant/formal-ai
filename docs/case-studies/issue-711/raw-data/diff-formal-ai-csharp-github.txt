@@ -1,0 +1,3 @@
+Only in .github/workflows: desktop-release.yml
+Only in /tmp/issue-711-templates/csharp/.github/workflows: docs.yml
+Files .github/workflows/release.yml and /tmp/issue-711-templates/csharp/.github/workflows/release.yml differ

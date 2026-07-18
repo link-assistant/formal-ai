@@ -24,7 +24,7 @@
 //!   which is exactly what `lino_to_json` reconstructs.
 //!
 //! The decoder uses its own quote-preserving tokenizer (not the seed
-//! [`parse_lino`](crate::seed::parser::parse_lino), which decodes quotes
+//! `parse_lino`, which decodes quotes
 //! eagerly) so a string that *looks* like a number — e.g. the external-id
 //! value `"146"` — is never silently retyped: ambiguous strings are quoted on
 //! encode and recognised as strings on decode.

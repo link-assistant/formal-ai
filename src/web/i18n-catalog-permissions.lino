@@ -18,6 +18,15 @@ en
       read_local_file
         label "Read local file"
         description "Read a file from the allowed local workspace."
+      write_file
+        label "Write file"
+        description "Create or replace a file in the allowed workspace."
+      edit_file
+        label "Edit file"
+        description "Replace selected text in a workspace file."
+      multi_edit
+        label "Multi-edit"
+        description "Apply several text edits to a workspace file."
       code_exec
         label "Code exec"
         description "Run code inside the Docker sandbox."
@@ -130,6 +139,15 @@ ru
       read_local_file
         label "Чтение локального файла"
         description "Прочитать файл из разрешённого локального рабочего пространства."
+      write_file
+        label "Запись файла"
+        description "Создать или заменить файл в разрешённом рабочем пространстве."
+      edit_file
+        label "Изменение файла"
+        description "Заменить выбранный текст в файле рабочего пространства."
+      multi_edit
+        label "Несколько изменений"
+        description "Применить несколько изменений к файлу рабочего пространства."
       code_exec
         label "Выполнение кода"
         description "Запустить код в песочнице Docker."
@@ -242,6 +260,15 @@ zh
       read_local_file
         label "读取本地文件"
         description "从允许的本地工作区读取文件。"
+      write_file
+        label "写入文件"
+        description "在允许的工作区中创建或替换文件。"
+      edit_file
+        label "编辑文件"
+        description "替换工作区文件中的选定文本。"
+      multi_edit
+        label "多项编辑"
+        description "对工作区文件应用多项文本编辑。"
       code_exec
         label "执行代码"
         description "在 Docker 沙箱中运行代码。"
@@ -354,6 +381,15 @@ hi
       read_local_file
         label "लोकल फ़ाइल पढ़ें"
         description "अनुमत लोकल वर्कस्पेस से एक फ़ाइल पढ़ें।"
+      write_file
+        label "फ़ाइल लिखें"
+        description "अनुमत वर्कस्पेस में फ़ाइल बनाएँ या बदलें।"
+      edit_file
+        label "फ़ाइल संपादित करें"
+        description "वर्कस्पेस फ़ाइल में चुना हुआ पाठ बदलें।"
+      multi_edit
+        label "बहु-संपादन"
+        description "वर्कस्पेस फ़ाइल में कई पाठ संपादन लागू करें।"
       code_exec
         label "कोड चलाएँ"
         description "Docker सैंडबॉक्स में कोड चलाएँ।"

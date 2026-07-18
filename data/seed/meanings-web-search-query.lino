@@ -58,6 +58,22 @@ meanings
         text "i am interested in …"
       surface
         text "… interests me"
+      surface
+        text "google search for …"
+      surface
+        text "research online …"
+      surface
+        text "investigate on the web …"
+      surface
+        text "discover online …"
+      surface
+        text "query the web for …"
+      surface
+        text "browse the web for …"
+      surface
+        text "seek online …"
+      surface
+        text "check the web for …"
     lexeme ru
       surface
         text "найди в интернете …"
@@ -129,6 +145,26 @@ meanings
         text "интересует …"
       surface
         text "меня интересует …"
+      surface
+        text "поиск в сети …"
+      surface
+        text "посмотри в интернете …"
+      surface
+        text "загугли …"
+      surface
+        text "исследуй онлайн …"
+      surface
+        text "проверь в сети …"
+      surface
+        text "отыщи в интернете …"
+      surface
+        text "выполни веб поиск …"
+      surface
+        text "запроси сеть о …"
+      surface
+        text "изучи в интернете …"
+      surface
+        text "разыщи онлайн …"
     lexeme hi
       surface
         text "इंटरनेट पर खोजें …"
@@ -146,6 +182,30 @@ meanings
         text "… में रुचि है"
       surface
         text "… में दिलचस्पी है"
+      surface
+        text "वेब खोज …"
+      surface
+        text "ऑनलाइन ढूँढें …"
+      surface
+        text "इंटरनेट पर देखें …"
+      surface
+        text "गूगल करें …"
+      surface
+        text "ऑनलाइन शोध करें …"
+      surface
+        text "वेब पर जाँचें …"
+      surface
+        text "ऑनलाइन पता लगाएँ …"
+      surface
+        text "वेब से पूछें …"
+      surface
+        text "इंटरनेट खंगालें …"
+      surface
+        text "ऑनलाइन तलाशें …"
+      surface
+        text "वेब में खोजें …"
+      surface
+        text "नेट पर खोजें …"
     lexeme zh
       surface
         text 在网上搜索…
@@ -159,6 +219,32 @@ meanings
         text 对…感兴趣
       surface
         text 我对…感兴趣
+      surface
+        text 搜索网络…
+      surface
+        text 在线搜索…
+      surface
+        text 网页搜索…
+      surface
+        text 在线查找…
+      surface
+        text 谷歌搜索…
+      surface
+        text 在线研究…
+      surface
+        text 在网络上调查…
+      surface
+        text 在线发现…
+      surface
+        text 查询网络…
+      surface
+        text 浏览网络查找…
+      surface
+        text 在线寻找…
+      surface
+        text 在互联网上查找…
+      surface
+        text 检查网络上的…
   topic_connective
     defined-by relation
     role web_search_topic_marker

@@ -1,0 +1,1678 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.483Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": true,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.486Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino. --disable-stdin --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.ua5ynOQNnf",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.486Z",
+  "service": "default",
+  "directory": "/tmp/tmp.ua5ynOQNnf",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.487Z",
+  "service": "project",
+  "directory": "/tmp/tmp.ua5ynOQNnf",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.628Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.632Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.637Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.638Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.641Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.644Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.645Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.645Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.653Z",
+  "service": "config",
+  "path": "/tmp/tmp.ua5ynOQNnf/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.723Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.724Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:16.903Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.031Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.082Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.085Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.086Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.086Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.087Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.087Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.087Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 446,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.102Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.102Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.103Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.140Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.140Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.145Z",
+  "service": "session",
+  "id": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.ua5ynOQNnf",
+  "title": "New session - 2026-07-15T23:26:17.145Z",
+  "time": {
+    "created": 1784157977145,
+    "updated": 1784157977145
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.152Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.153Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.153Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 13,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.158Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.161Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_097e5c5c7ffeU2YYyumJn4YJEk/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.161Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_097e5c5c7ffeU2YYyumJn4YJEk/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.179Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 18,
+  "method": "POST",
+  "path": "/session/ses_097e5c5c7ffeU2YYyumJn4YJEk/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.192Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.204Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.206Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.212Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.222Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.223Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.225Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.227Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.227Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.227Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.228Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.229Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.230Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:17.232Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.431Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.456Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.491Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.513Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.640Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784157978640,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a3fe90016YfF5suu4GBKLD",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a3f520015gbf6ujxyejF6Z",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.644Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978644,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4011001L5NPZ52wd1qeuV",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a3f520015gbf6ujxyejF6Z",
+    "type": "tool",
+    "callID": "call_4ddc5ed3c891ec20",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.648Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978648,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4011001L5NPZ52wd1qeuV",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a3f520015gbf6ujxyejF6Z",
+    "type": "tool",
+    "callID": "call_4ddc5ed3c891ec20",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "client_execution_learning_report\n  issue \"716\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"protocol_matrix_presentation_variations_and_agent_cli_e2e_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"7\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:presentation-coupling\"\n  multi_hop_recall \"observation:presentation-coupling\"\n  learned_expression_01\n    id \"observation:presentation-coupling\"\n    text \"message\nuser\nClient-side execution was inferred by scraping Check command and Run command labels from a rendered answer.\"\n    reads \"8\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"9\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"lesson:typed-execution-artifact\"\n    text \"learning_amendment\nassistant\nCarry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.\nobservation:follow-up-source\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"2\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:workspace-ownership\"\n    text \"message\nuser\nAn HTTP response described server-private execution while the requesting agentic client workspace remained unchanged.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"observation:client-capability\"\n    text \"message\nuser\nThe Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:follow-up-source\"\n    text \"message\nuser\nA follow-up output edit changed presentation without reliably changing the source artifact sent to the client.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"lesson:side-effect-boundary\"\n    text \"learning_amendment\nassistant\nHTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:presentation-independence\"\n    text \"learning_amendment\nassistant\nHuman-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"2\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"3\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "filePath": "client-execution-learning-report.lino",
+        "file_path": "client-execution-learning-report.lino",
+        "path": "client-execution-learning-report.lino"
+      },
+      "time": {
+        "start": 1784157978644
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.708Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978708,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4011001L5NPZ52wd1qeuV",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a3f520015gbf6ujxyejF6Z",
+    "type": "tool",
+    "callID": "call_4ddc5ed3c891ec20",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "client_execution_learning_report\n  issue \"716\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"protocol_matrix_presentation_variations_and_agent_cli_e2e_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"7\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:presentation-coupling\"\n  multi_hop_recall \"observation:presentation-coupling\"\n  learned_expression_01\n    id \"observation:presentation-coupling\"\n    text \"message\nuser\nClient-side execution was inferred by scraping Check command and Run command labels from a rendered answer.\"\n    reads \"8\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"9\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"lesson:typed-execution-artifact\"\n    text \"learning_amendment\nassistant\nCarry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.\nobservation:follow-up-source\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"2\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:workspace-ownership\"\n    text \"message\nuser\nAn HTTP response described server-private execution while the requesting agentic client workspace remained unchanged.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"observation:client-capability\"\n    text \"message\nuser\nThe Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:follow-up-source\"\n    text \"message\nuser\nA follow-up output edit changed presentation without reliably changing the source artifact sent to the client.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"lesson:side-effect-boundary\"\n    text \"learning_amendment\nassistant\nHTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:presentation-independence\"\n    text \"learning_amendment\nassistant\nHuman-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"2\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"3\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "filePath": "client-execution-learning-report.lino",
+        "file_path": "client-execution-learning-report.lino",
+        "path": "client-execution-learning-report.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.ua5ynOQNnf/client-execution-learning-report.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.ua5ynOQNnf/client-execution-learning-report.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1784157978644,
+        "end": 1784157978699
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-15T23:26:18.733Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 30,
+    "output": 271,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 30,
+  "sseCompletionTokens": 271,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.759Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784157978759,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4082001K2hGCsKdiV30CH",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a3f520015gbf6ujxyejF6Z",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 30,
+      "output": 271,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 301,
+      "headroom": 38555,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.759Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.762Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.784Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.797Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.805Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.806Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.806Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.811Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.811Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.814Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.814Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.827Z",
+  "service": "session.prompt",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.827Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.827Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.828Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.828Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 301,
+  "providerTokens": 301,
+  "estimatedInputTokens": 45,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 30,
+    "cacheRead": 0,
+    "output": 271
+  },
+  "overflow": false,
+  "headroom": 51507,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.829Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.843Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.849Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.901Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784157978901,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a40fc001RGCb4nK63arYRs",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.902Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978902,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4115001i7my1t7EvzsMXI",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "tool",
+    "callID": "call_641b9f7f9c4e9fcb",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.903Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978903,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4115001i7my1t7EvzsMXI",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "tool",
+    "callID": "call_641b9f7f9c4e9fcb",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat client-execution-learning-report.lino"
+      },
+      "time": {
+        "start": 1784157978902
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.907Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978907,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4115001i7my1t7EvzsMXI",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "tool",
+    "callID": "call_641b9f7f9c4e9fcb",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat client-execution-learning-report.lino"
+      },
+      "metadata": {
+        "output": "client_execution_learning_report\n  issue \"716\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"protocol_matrix_presentation_variations_and_agent_cli_e2e_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"7\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:presentation-coupling\"\n  multi_hop_recall \"observation:presentation-coupling\"\n  learned_expression_01\n    id \"observation:presentation-coupling\"\n    text \"message\nuser\nClient-side execution was inferred by scraping Check command and Run command labels from a rendered answer.\"\n    reads \"8\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"9\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"lesson:typed-execution-artifact\"\n    text \"learning_amendment\nassistant\nCarry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.\nobservation:follow-up-source\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"2\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:workspace-ownership\"\n    text \"message\nuser\nAn HTTP response described server-private execution while the requesting agentic client workspace remained unchanged.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"observation:client-capability\"\n    text \"message\nuser\nThe Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:follow-up-source\"\n    text \"message\nuser\nA follow-up output edit changed presentation without reliably changing the source artifact sent to the client.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"lesson:side-effect-boundary\"\n    text \"learning_amendment\nassistant\nHTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:presentation-independence\"\n    text \"learning_amendment\nassistant\nHuman-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"2\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"3\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n"
+      },
+      "time": {
+        "start": 1784157978906
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784157978930,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4115001i7my1t7EvzsMXI",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "tool",
+    "callID": "call_641b9f7f9c4e9fcb",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat client-execution-learning-report.lino"
+      },
+      "output": "client_execution_learning_report\n  issue \"716\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"protocol_matrix_presentation_variations_and_agent_cli_e2e_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"7\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:presentation-coupling\"\n  multi_hop_recall \"observation:presentation-coupling\"\n  learned_expression_01\n    id \"observation:presentation-coupling\"\n    text \"message\nuser\nClient-side execution was inferred by scraping Check command and Run command labels from a rendered answer.\"\n    reads \"8\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"9\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"lesson:typed-execution-artifact\"\n    text \"learning_amendment\nassistant\nCarry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.\nobservation:follow-up-source\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"2\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:workspace-ownership\"\n    text \"message\nuser\nAn HTTP response described server-private execution while the requesting agentic client workspace remained unchanged.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"observation:client-capability\"\n    text \"message\nuser\nThe Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:follow-up-source\"\n    text \"message\nuser\nA follow-up output edit changed presentation without reliably changing the source artifact sent to the client.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"lesson:side-effect-boundary\"\n    text \"learning_amendment\nassistant\nHTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:presentation-independence\"\n    text \"learning_amendment\nassistant\nHuman-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"2\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"3\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+      "title": "cat client-execution-learning-report.lino",
+      "metadata": {
+        "output": "client_execution_learning_report\n  issue \"716\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"protocol_matrix_presentation_variations_and_agent_cli_e2e_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"7\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:presentation-coupling\"\n  multi_hop_recall \"observation:presentation-coupling\"\n  learned_expression_01\n    id \"observation:presentation-coupling\"\n    text \"message\nuser\nClient-side execution was inferred by scraping Check command and Run command labels from a rendered answer.\"\n    reads \"8\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"9\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"lesson:typed-execution-artifact\"\n    text \"learning_amendment\nassistant\nCarry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.\nobservation:follow-up-source\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"2\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:workspace-ownership\"\n    text \"message\nuser\nAn HTTP response described server-private execution while the requesting agentic client workspace remained unchanged.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"observation:client-capability\"\n    text \"message\nuser\nThe Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:follow-up-source\"\n    text \"message\nuser\nA follow-up output edit changed presentation without reliably changing the source artifact sent to the client.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-716|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"lesson:side-effect-boundary\"\n    text \"learning_amendment\nassistant\nHTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:presentation-independence\"\n    text \"learning_amendment\nassistant\nHuman-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.\nlesson:typed-execution-artifact\"\n    reads \"0\"\n    writes \"2\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"3\"\n    qualifiers \"conversation_id=issue-716|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "exit": 0
+      },
+      "time": {
+        "start": 1784157978902,
+        "end": 1784157978929
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-15T23:26:18.930Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 30,
+    "output": 3,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 30,
+  "sseCompletionTokens": 3,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784157978932,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a4132001QfGbJinSG2EP2R",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a40cc001tnSWpMeq6X9iSa",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 30,
+      "output": 3,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 33,
+      "headroom": 38823,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.935Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.935Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.969Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.969Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.977Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.978Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.989Z",
+  "service": "session.prompt",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.989Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.990Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.996Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:18.996Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 33,
+  "providerTokens": 33,
+  "estimatedInputTokens": 842,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 30,
+    "cacheRead": 0,
+    "output": 3
+  },
+  "overflow": false,
+  "headroom": 51775,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.001Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.014Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.020Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.055Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784157979055,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a41aa001167LNBvrFBSaUJ",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a4175001dIcfQe9EZTJmXC",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.067Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.069Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784157979069,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a41b9001KeGgN2xHZ3Apa1",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a4175001dIcfQe9EZTJmXC",
+    "type": "text",
+    "text": "Formal AI ranked 7 client-execution observations and amendments; the human-review-gated report is in client-execution-learning-report.lino.",
+    "time": {
+      "start": 1784157979068,
+      "end": 1784157979068
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-15T23:26:19.070Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 30,
+    "output": 14,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 30,
+  "sseCompletionTokens": 14,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.071Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784157979072,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "part": {
+    "id": "prt_f681a41be001RsSwwfhWy6Hk94",
+    "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+    "messageID": "msg_f681a4175001dIcfQe9EZTJmXC",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 30,
+      "output": 14,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 44,
+      "headroom": 38812,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.073Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.082Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.083Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.096Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.096Z",
+  "service": "session.summary",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "hint": "Using compaction model to reduce rate-limit pressure on main model",
+  "mainModelID": "formal-ai",
+  "message": "loading model for summarization"
+}
+
+AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.098Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.098Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.099Z",
+  "service": "session.prompt",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.100Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.118Z",
+  "service": "session.prompt",
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.119Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784157979119,
+  "sessionID": "ses_097e5c5c7ffeU2YYyumJn4YJEk"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.119Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.119Z",
+  "service": "default",
+  "directory": "/tmp/tmp.ua5ynOQNnf",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.120Z",
+  "service": "state",
+  "key": "/tmp/tmp.ua5ynOQNnf",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.123Z",
+  "service": "state",
+  "key": "/tmp/tmp.ua5ynOQNnf",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-15T23:26:19.126Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}

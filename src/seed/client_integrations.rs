@@ -63,6 +63,7 @@ pub struct ClientIntegrationInvocation {
     pub args: Vec<String>,
     pub no_summarize_args: Vec<String>,
     pub interactive_args: Vec<String>,
+    pub interactive_args_require_prompt: bool,
     pub non_interactive_args: Vec<String>,
     pub mode_arg_position: Option<ModeArgPosition>,
     pub env: Vec<TemplateEnv>,
@@ -73,6 +74,7 @@ pub struct ClientIntegrationInvocation {
     pub temp_home_env: String,
     pub temp_home_config_path: String,
     pub temp_home_json_settings: Vec<(String, String)>,
+    pub model_catalog_path: String,
     pub model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
 }
@@ -82,6 +84,7 @@ pub struct ClientIntegrationGlobalConfig {
     pub format: ConfigFormat,
     pub path: String,
     pub backup_suffix: String,
+    pub model_catalog_path: String,
     pub toml_settings: Vec<(String, String)>,
     pub json_settings: Vec<(String, String)>,
     pub shell_env: Vec<TemplateEnv>,
@@ -184,6 +187,9 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "arg" => invocation.args.push(child.id.clone()),
             "no_summarize_arg" => invocation.no_summarize_args.push(child.id.clone()),
             "interactive_arg" => invocation.interactive_args.push(child.id.clone()),
+            "interactive_args_require_prompt" => {
+                invocation.interactive_args_require_prompt = child.id == "true";
+            }
             "non_interactive_arg" => invocation.non_interactive_args.push(child.id.clone()),
             "mode_arg_position" => {
                 invocation.mode_arg_position = ModeArgPosition::from_seed(&child.id);
@@ -208,6 +214,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                     invocation.temp_home_json_settings.push((key, value));
                 }
             }
+            "model_catalog_path" => invocation.model_catalog_path.clone_from(&child.id),
             "model_arg" => invocation.model_arg.clone_from(&child.id),
             "model_arg_position" => {
                 invocation.model_arg_position = ModelArgPosition::from_seed(&child.id);
@@ -224,6 +231,7 @@ fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrati
         format,
         path: node.find_child_value("path").to_string(),
         backup_suffix: node.find_child_value("backup_suffix").to_string(),
+        model_catalog_path: node.find_child_value("model_catalog_path").to_string(),
         toml_settings: Vec::new(),
         json_settings: Vec::new(),
         shell_env: Vec::new(),

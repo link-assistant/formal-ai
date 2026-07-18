@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::dreaming_application::{
     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
@@ -13,15 +14,21 @@ use crate::engine::{
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
-    agentic_tool_permission_denial, is_tool_choice_request, matches_tool_choice_none,
-    tool_call_refusal_answer, tool_choice_function_name, tool_definition_name,
-    tool_permission_refusal_answer,
+    agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
+    matches_tool_choice_none, tool_call_refusal_answer, tool_choice_function_name,
+    tool_definition_name, tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
+mod content;
+mod output;
 mod recording;
-pub use recording::{chat_exchange_to_record, responses_exchange_to_record};
+pub use output::*;
+pub use recording::{
+    chat_exchange_to_record, chat_tool_executions, messages_exchange_to_record,
+    responses_exchange_to_record,
+};
 use recording::{chat_prompt_and_history, response_prompt, value_to_prompt_text};
 
 fn resolved_request_model(model: Option<&str>) -> String {
@@ -128,7 +135,7 @@ impl ChatCompletionRequest {
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_content")]
     pub content: MessageContent,
     /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -216,26 +223,29 @@ impl Default for MessageContent {
     }
 }
 
+/// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
+/// default (empty text) instead of failing.
+///
+/// `MessageContent` is an untagged enum (`Text | Parts`) with no unit variant,
+/// so `#[serde(default)]` alone only covers an *absent* `content` key — an
+/// explicit `"content": null` is still handed to the untagged enum and fails
+/// with `data did not match any variant of untagged enum MessageContent`.
+/// `content: null` on an assistant tool-call turn is the standard OpenAI shape
+/// (emitted by e.g. Qwen Code), so we accept it by treating `null` as the
+/// default. See issue #682.
+fn deserialize_null_content<'de, D>(deserializer: D) -> Result<MessageContent, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    Ok(Option::<MessageContent>::deserialize(deserializer)?.unwrap_or_default())
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MessageContentPart {
     #[serde(rename = "type")]
     pub kind: String,
     #[serde(default)]
     pub text: Option<String>,
-}
-
-impl MessageContent {
-    #[must_use]
-    pub fn plain_text(&self) -> String {
-        match self {
-            Self::Text(text) => text.clone(),
-            Self::Parts(parts) => parts
-                .iter()
-                .filter_map(|part| part.text.as_deref())
-                .collect::<Vec<_>>()
-                .join("\n"),
-        }
-    }
 }
 
 /// A tool call an assistant turn is requesting (OpenAI `tool_calls` shape).
@@ -450,125 +460,6 @@ fn append_response_item(
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseObject {
-    pub id: String,
-    pub object: String,
-    pub created_at: u64,
-    pub status: String,
-    pub model: String,
-    pub output: Vec<ResponseOutputItem>,
-    pub usage: ResponseUsage,
-    #[serde(default)]
-    pub evidence_links: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub thinking_steps: Vec<ThinkingStep>,
-}
-
-impl ResponseObject {
-    /// The assistant message items in `output` (text), skipping any tool calls.
-    #[must_use]
-    pub fn output_messages(&self) -> Vec<&ResponseOutputMessage> {
-        self.output
-            .iter()
-            .filter_map(|item| match item {
-                ResponseOutputItem::Message(message) => Some(message),
-                ResponseOutputItem::FunctionCall(_) | ResponseOutputItem::Reasoning(_) => None,
-            })
-            .collect()
-    }
-
-    /// The function tool calls this response is requesting (issue #468 agentic
-    /// loop), if any. Non-empty exactly when the agentic planner emitted a step.
-    #[must_use]
-    pub fn function_calls(&self) -> Vec<&ResponseFunctionToolCall> {
-        self.output
-            .iter()
-            .filter_map(|item| match item {
-                ResponseOutputItem::FunctionCall(call) => Some(call),
-                ResponseOutputItem::Message(_) | ResponseOutputItem::Reasoning(_) => None,
-            })
-            .collect()
-    }
-}
-
-/// One item in a Responses `output` array: an assistant message, a tool call, or
-/// a reasoning summary.
-///
-/// A `FunctionCall` is a tool the client must execute (issue #468). Serialized
-/// untagged so each item keeps its native OpenAI shape — a message carries
-/// `type:"message"`, a call carries `type:"function_call"`, and reasoning
-/// carries `type:"reasoning"`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ResponseOutputItem {
-    /// A function tool call (`type:"function_call"`).
-    FunctionCall(ResponseFunctionToolCall),
-    /// An assistant message (`type:"message"`).
-    Message(ResponseOutputMessage),
-    /// A reasoning summary (`type:"reasoning"`).
-    Reasoning(ResponseReasoningItem),
-}
-
-/// A function tool call emitted on the Responses surface (`type:"function_call"`).
-///
-/// It mirrors the Chat Completions `tool_calls` shape so an agentic CLI can execute
-/// it and feed the result back as a `function_call_output` item.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseFunctionToolCall {
-    pub id: String,
-    #[serde(rename = "type", default = "function_call_kind")]
-    pub kind: String,
-    pub call_id: String,
-    pub name: String,
-    pub arguments: String,
-    pub status: String,
-}
-
-fn function_call_kind() -> String {
-    String::from("function_call")
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseOutputMessage {
-    pub id: String,
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub role: String,
-    pub content: Vec<ResponseOutputContent>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub thinking_steps: Vec<ThinkingStep>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseOutputContent {
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub text: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseReasoningItem {
-    pub id: String,
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub summary: Vec<ResponseReasoningSummaryText>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseReasoningSummaryText {
-    #[serde(rename = "type")]
-    pub kind: String,
-    pub text: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ResponseUsage {
-    pub input_tokens: u32,
-    pub output_tokens: u32,
-    pub total_tokens: u32,
-}
-
 #[must_use]
 pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion {
     create_chat_completion_with_solver(request, &UniversalSolver::default())
@@ -613,7 +504,23 @@ pub fn create_chat_completion_with_solver_and_memory(
     // the user restated them), not appended after the fact.
     let symbolic_answer =
         solve_with_standing_requirements(solver, &prompt, &history, memory_events);
+    if let Some(plan) = command_reroute_plan(request, solver.config.agent_mode, &symbolic_answer) {
+        return chat_completion_from_plan(request, &prompt, plan, memory_events);
+    }
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+fn command_reroute_plan(
+    request: &ChatCompletionRequest,
+    agent_mode: bool,
+    symbolic_answer: &SymbolicAnswer,
+) -> Option<AgenticPlan> {
+    if !agent_mode || !request.requests_tool_execution() {
+        return None;
+    }
+    let owned_names = request.requested_tool_names();
+    let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+    plan_symbolic_command_reroute(&request.messages, &tool_names, symbolic_answer)
 }
 
 /// The deterministic agentic decision for a tool-bearing request. Shared by every
@@ -695,20 +602,27 @@ fn chat_completion_from_plan(
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
-            let completion_tokens = calls
-                .iter()
-                .map(|call| {
-                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments))
-                })
-                .sum();
-            let tool_calls = calls
+            let tool_calls: Vec<_> = calls
                 .into_iter()
                 .enumerate()
                 .map(|(index, call)| {
                     let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
-                    ToolCall::function(stable_id("call", &seed), call.tool, call.arguments)
+                    let arguments = response_arguments_for_tool(
+                        &request.tools,
+                        &call.tool,
+                        call.arguments,
+                        prompt,
+                    );
+                    ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
                 .collect();
+            let completion_tokens = tool_calls
+                .iter()
+                .map(|call| {
+                    estimate_tokens(&call.function.name)
+                        .saturating_add(estimate_tokens(&call.function.arguments))
+                })
+                .sum();
             (
                 ChatMessage::assistant_tool_calls(tool_calls),
                 String::from("tool_calls"),
@@ -819,7 +733,13 @@ pub fn create_response_with_solver_and_memory(
         apply_retained_amendments(&prompt, &mut symbolic_answer, memory_events);
         return response_from_symbolic(request, &prompt, symbolic_answer);
     }
-    let symbolic_answer = solve_with_standing_requirements(solver, &prompt, &[], memory_events);
+    let symbolic_answer =
+        solve_with_standing_requirements(solver, memory_prompt, &history, memory_events);
+    if let Some(plan) =
+        command_reroute_plan(&chat_request, solver.config.agent_mode, &symbolic_answer)
+    {
+        return response_from_plan(request, &prompt, plan, memory_events);
+    }
     response_from_symbolic(request, &prompt, symbolic_answer)
 }
 
@@ -845,18 +765,47 @@ fn response_from_plan(
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
                 let arguments =
-                    response_arguments_for_tool(&request.tools, &tool, planned_arguments);
+                    response_arguments_for_tool(&request.tools, &tool, planned_arguments, prompt);
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
-                items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
-                    id: stable_id("fc", &seed),
-                    kind: function_call_kind(),
-                    call_id: stable_id("call", &seed),
-                    name: tool,
-                    arguments,
-                    status: String::from("completed"),
-                }));
+                if request
+                    .tools
+                    .iter()
+                    .any(|definition| is_hosted_tool_definition(definition, &tool))
+                    && tool == "web_search"
+                {
+                    let query = serde_json::from_str::<Value>(&arguments)
+                        .ok()
+                        .and_then(|value| {
+                            value
+                                .get("query")
+                                .and_then(Value::as_str)
+                                .map(str::to_owned)
+                        })
+                        .unwrap_or_else(|| prompt.to_owned());
+                    items.push(ResponseOutputItem::WebSearchCall(
+                        ResponseWebSearchToolCall {
+                            id: stable_id("ws", &seed),
+                            kind: String::from("web_search_call"),
+                            status: String::from("completed"),
+                            action: ResponseWebSearchAction {
+                                kind: String::from("search"),
+                                queries: vec![query.clone()],
+                                query,
+                            },
+                        },
+                    ));
+                } else {
+                    items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
+                        id: stable_id("fc", &seed),
+                        kind: function_call_kind(),
+                        call_id: stable_id("call", &seed),
+                        name: tool,
+                        arguments,
+                        status: String::from("completed"),
+                    }));
+                }
             }
             (items, output_tokens)
         }
