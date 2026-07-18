@@ -61,6 +61,19 @@ pub(super) fn latest_turn_answer(
     Some(render(&label, &result.content.plain_text(), prompt))
 }
 
+pub(super) fn has_latest_turn_result(messages: &[ChatMessage]) -> bool {
+    let Some(start) = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+    else {
+        return false;
+    };
+    messages
+        .iter()
+        .skip(start + 1)
+        .any(|message| message.role.eq_ignore_ascii_case("tool"))
+}
+
 fn is_write_run_recipe(messages: &[ChatMessage], tool_names: &[&str]) -> bool {
     let is_write = |name: &str| {
         let lower = name.to_ascii_lowercase();
