@@ -14,8 +14,15 @@ bump: minor
   `FORMAL_AI_LIVE_API` and honours the bounded-cache policy `min(1%, 512)`.
 - The importer validates on import: every generated block is parsed back through
   the real seed loader and must parse, denote its meaning, and carry both facets;
-  a concept that fails is refused and recorded as an `import_rejected` event
-  rather than written to the seed.
+  a concept that fails is refused, persisted as a replayable `import_rejected`
+  event, and leaves the previous shard set unchanged. Each accepted surface
+  carries its exact Q-record JSON field, language scripts are checked with a
+  deterministic same-record alias fallback, obsolete importer-owned shards are
+  removed, and the CLI reports requested/accepted and expected/emitted coverage.
 - A bulk batch of common concrete nouns grounded from Wikidata, growing the seed
-  by well over 100 grounded meanings across en/ru/hi/zh, each backed by a
+  by 208 grounded meanings and 832 surfaces across en/ru/hi/zh, each backed by a
   committed `data/cache/wikidata/entity/<Qid>.{json,lino}` record.
+- A generalized, human-review-gated learning report derives reusable importer
+  amendments from persisted observations. CI executes the task through two real
+  Agent CLI clients with Formal AI as their model provider and requires the
+  resulting reports to be byte-identical.
