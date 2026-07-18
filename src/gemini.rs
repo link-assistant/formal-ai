@@ -167,16 +167,30 @@ fn gemini_role_to_chat_role(role: Option<&str>) -> String {
 }
 
 fn gemini_tools_to_openai(tools: &[Value]) -> Vec<Value> {
-    tools
-        .iter()
-        .flat_map(|tool| {
+    let mut definitions = Vec::new();
+    for tool in tools {
+        definitions.extend(
             tool.get("functionDeclarations")
                 .and_then(Value::as_array)
                 .into_iter()
                 .flatten()
-                .filter_map(gemini_function_declaration_to_openai)
-        })
-        .collect()
+                .filter_map(gemini_function_declaration_to_openai),
+        );
+        if tool.get("google_search").is_some() || tool.get("googleSearch").is_some() {
+            definitions.push(hosted_gemini_tool("web_search"));
+        }
+        if tool.get("url_context").is_some() || tool.get("urlContext").is_some() {
+            definitions.push(hosted_gemini_tool("web_fetch"));
+        }
+    }
+    definitions
+}
+
+fn hosted_gemini_tool(name: &str) -> Value {
+    json!({
+        "type": "function",
+        "function": {"name": name, "parameters": {"type": "object"}}
+    })
 }
 
 fn gemini_function_declaration_to_openai(declaration: &Value) -> Option<Value> {

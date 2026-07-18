@@ -34,7 +34,8 @@ environments
     memory_export_command "GET /v1/bundle (returns formal_ai_seed_bundle)"
     bundle_export_command "GET /v1/bundle"
     bundle_import_command "n/a (use the formal-ai CLI to ingest)"
-    tools ("v1_chat_completions" "v1_responses" "v1_graph" "v1_bundle" "telegram_webhook")
+    tool_routing "Protocol-native and function tool advertisements normalize to shared capabilities; web search/fetch calls execute in the advertising host harness"
+    tools ("v1_chat_completions" "v1_responses" "v1_graph" "v1_bundle" "telegram_webhook" "agent_permission_gate" "tool_router" "web_search" "web_fetch" "http_fetch")
   environment desktop
     label "Electron desktop shell"
     runtime "Electron main process; in-process agent by default, optional local Rust HTTP API"

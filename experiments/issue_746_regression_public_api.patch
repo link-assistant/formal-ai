@@ -1,0 +1,42 @@
+diff --git a/tests/integration/issue_746_hosted_tools.rs b/tests/integration/issue_746_hosted_tools.rs
+index f45ead67..36422f58 100644
+--- a/tests/integration/issue_746_hosted_tools.rs
++++ b/tests/integration/issue_746_hosted_tools.rs
+@@ -1,6 +1,5 @@
+ //! Issue #746: hosted and protocol-native tool advertisements reach the shared router.
+ 
+-use formal_ai::protocol_policy::tool_definition_name;
+ use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
+ use serde_json::{json, Value};
+ 
+@@ -125,15 +124,24 @@ fn gemini_url_context_routes_as_web_fetch() {
+ }
+ 
+ #[test]
+-fn every_specified_hosted_type_has_a_stable_capability_name() {
+-    for (definition, expected) in [
+-        (json!({"type": "web_search"}), "web_search"),
+-        (json!({"type": "web_search_preview"}), "web_search"),
+-        (json!({"type": "file_search"}), "file_search"),
+-        (json!({"type": "computer_use_preview"}), "computer_use"),
+-        (json!({"type": "code_interpreter"}), "code_interpreter"),
++fn every_specified_hosted_type_reaches_its_capability_through_the_public_api() {
++    for (definition, prompt, expected) in [
++        (json!({"type": "web_search"}), "Search online for Rust", "web_search"),
++        (json!({"type": "web_search_preview"}), "Search online for Rust", "web_search"),
++        (json!({"type": "file_search"}), "Search the code for TODO", "file_search"),
++        (json!({"type": "computer_use_preview"}), "Execute pwd", "computer_use"),
++        (json!({"type": "code_interpreter"}), "Execute pwd", "code_interpreter"),
+     ] {
+-        assert_eq!(tool_definition_name(&definition).as_deref(), Some(expected));
++        let response = post(
++            "/v1/responses",
++            json!({
++                "model": "formal-ai",
++                "input": prompt,
++                "tools": [definition]
++            }),
++        );
++        assert_eq!(responses_call(&response)["name"], expected);
+     }
+ }

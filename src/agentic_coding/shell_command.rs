@@ -59,7 +59,9 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
 pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
     tool_names.iter().copied().find(|name| {
         let lower = name.to_ascii_lowercase();
-        lower.contains("grep") || (lower.contains("code") && lower.contains("search"))
+        lower.contains("grep")
+            || lower == "file_search"
+            || (lower.contains("code") && lower.contains("search"))
     })
 }
 
