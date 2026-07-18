@@ -1,4 +1,9 @@
 meanings
+  pattern_wikipedia_article_question_grammar_context_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context en"
   pattern_wikipedia_article_question_grammar_context_hi
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response mcp tool description en"
-  response_meta_explanation_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation en"

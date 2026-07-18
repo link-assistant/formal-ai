@@ -825,6 +825,10 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
 
 pub fn serve(address: &str) -> std::io::Result<()> {
     crate::dreaming_runtime::start_core_dreaming();
+    eprintln!(
+        "formal-ai shared memory: {}",
+        crate::shared_memory::shared_memory_path().display()
+    );
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 

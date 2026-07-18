@@ -241,17 +241,17 @@ enum MemoryAction {
     /// legacy events-only `demo_memory` shape. `--path -` streams to stdout.
     Export {
         /// Destination file. Use `-` to write to stdout. Defaults to
-        /// `formal-ai-memory.lino` in the current directory.
+        /// the shared per-user memory file.
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
         /// Source file to read the log from. Defaults to `--path` when
         /// `--path` is a real file, and to `FORMAL_AI_MEMORY_PATH` /
-        /// `formal-ai-memory.lino` when `--path -` is used.
+        /// the shared per-user memory file when `--path -` is used.
         #[arg(long)]
         from: Option<PathBuf>,
 
@@ -271,7 +271,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -280,7 +280,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
     },
@@ -289,7 +289,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -305,7 +305,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -349,7 +349,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -368,7 +368,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -403,7 +403,7 @@ enum BundleAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },

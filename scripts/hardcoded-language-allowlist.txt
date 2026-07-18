@@ -65,10 +65,6 @@ src/agentic_coding/google_trends_catalog.rs	python3 -c p='{GOOGLE_TRENDS_CATALOG
 src/agentic_coding/google_trends_learning.rs	Collect the Google Trends learning frontier — the trending searches Formal AI cannot yet resolve — route them through the human-gated self-improvement loop, and record the learning report in Links Notation.
 src/agentic_coding/google_trends_learning.rs	Routed the Google Trends learning frontier through the human-gated self-improvement loop: of {total} trending prompts, the engine already resolves {handled} and leaves {frontier} on the learning frontier. Every frontier trace was handed to the issue-#558 learner, which — because trending searches are open-domain questions, not program-plan modifiers — proposed {proposals} rules and adopted {adopted}: nothing changes without human review. The report is a pure function of the committed catalog.\n\nGenerated document ({GOOGLE_TRENDS_LEARNING_PATH}):\n\n{document}
 src/agentic_coding/google_trends_learning.rs	python3 -c p='{GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))
-src/agentic_coding/intent_router.rs	Edited `{target}`: replaced `{old}` with `{new}`.
-src/agentic_coding/intent_router.rs	Fetched `{url}`.
-src/agentic_coding/intent_router.rs	Searched the web for `{query}`.
-src/agentic_coding/intent_router.rs	Searched the web for `{query}`. Results:\n\n{text}
 src/agentic_coding/learning_report.rs	  record_type \"agent_cli_auto_learning\"\n
 src/agentic_coding/learning_report.rs	  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n
 src/agentic_coding/learning_report.rs	  substrate \"links_network\"\n
@@ -83,7 +79,6 @@ src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning ric
 src/agentic_coding/planner.rs	Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}
 src/agentic_coding/planner.rs	Formalized {subject} into a Links Notation knowledge base: {records} records realising all nine protocol primitives ({coverage}).\n\nKnowledge base ({KB_PATH}):\n\n{kb}
 src/agentic_coding/planner.rs	I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
-src/agentic_coding/planner.rs	The `{command}` command completed with no output.
 src/agentic_coding/planner.rs	cat {KB_PATH}
 src/agentic_coding/planner.rs	the source text ({})
 src/agentic_coding/question_catalog.rs	  intent \"generate_all_possible_questions\"\n
@@ -255,7 +250,6 @@ src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
 src/dreaming/learning.rs	learned standing requirement ({topic}):
 src/dreaming_application.rs	Learned standing requirement ({}): {}
 src/dreaming_application.rs	Standing requirement ({}): {}
-src/dreaming_runtime.rs	[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; there is no persistent memory log to maintain, so the dreaming worker will not start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it.
 src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
 src/engine.rs	Execution status: {status_phrase} in {}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:

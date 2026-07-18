@@ -20,10 +20,7 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             let source = match from {
                 Some(explicit) => explicit,
                 None if path.as_os_str() == "-" => std::env::var_os("FORMAL_AI_MEMORY_PATH")
-                    .map_or_else(
-                        || std::path::PathBuf::from("formal-ai-memory.lino"),
-                        std::path::PathBuf::from,
-                    ),
+                    .map_or_else(formal_ai::shared_memory_path, std::path::PathBuf::from),
                 None => path.clone(),
             };
             let store = load_memory_or_empty(&source)?;
@@ -256,6 +253,7 @@ pub fn load_memory_or_empty(path: &Path) -> Result<MemoryStore, Box<dyn Error>> 
     if path.as_os_str() == "-" {
         return Ok(MemoryStore::new());
     }
+    formal_ai::ensure_shared_memory_file(path)?;
     Ok(MemoryStore::load_from_file(path)?)
 }
 

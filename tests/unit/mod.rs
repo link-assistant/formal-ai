@@ -86,6 +86,7 @@ mod issue_716_agentic_execution;
 mod issue_716_execution_learning;
 mod issue_745;
 mod issue_749_shell_routing;
+mod issue_750;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

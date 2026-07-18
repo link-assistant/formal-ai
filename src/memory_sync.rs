@@ -130,15 +130,11 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
 
 /// Resolve the shared memory log path the server reads/writes for sync.
 ///
-/// Honours `FORMAL_AI_MEMORY_PATH`; returns `None` when sync is not configured
-/// (the endpoints then operate on an empty, in-memory log so they never panic).
+/// Honours `FORMAL_AI_MEMORY_PATH` and otherwise returns the platform's shared
+/// per-user memory file.
 #[must_use]
 pub fn configured_memory_path() -> Option<PathBuf> {
-    std::env::var("FORMAL_AI_MEMORY_PATH")
-        .ok()
-        .map(|value| value.trim().to_owned())
-        .filter(|value| !value.is_empty())
-        .map(PathBuf::from)
+    Some(crate::shared_memory::shared_memory_path())
 }
 
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
@@ -178,6 +174,11 @@ impl SyncStore {
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
+        if let Err(error) = crate::shared_memory::ensure_shared_memory_file(path) {
+            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                eprintln!("[memory] could not initialize {}: {error}", path.display());
+            }
+        }
         let events = std::fs::read_to_string(path)
             .map(|text| parse_links_notation(&text))
             .unwrap_or_default();

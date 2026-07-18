@@ -77,6 +77,7 @@ pub mod self_improvement;
 pub mod self_source_graph;
 pub mod server;
 pub mod shared_dialog;
+pub mod shared_memory;
 pub mod skill_compiler;
 pub mod skill_ledger;
 pub mod solution_evidence;
@@ -191,10 +192,11 @@ pub use links_query::{
 };
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
-    export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
-    import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    seed_cache_events, suggest_migrations as suggest_memory_migrations, write_locked_atomic,
-    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle,
+    export_links_notation, export_links_notation as export_memory_links_notation,
+    extract_memory_from_bundle, import_full_memory as import_memory_full,
+    parse_links_notation as parse_memory_links_notation, seed_cache_events,
+    suggest_migrations as suggest_memory_migrations, write_locked_atomic, BundleInfo, MemoryEvent,
+    MemoryStore, ParsedBundle,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
@@ -266,6 +268,9 @@ pub use server::{
 pub use shared_dialog::{
     convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
     SharedDialog, SharedDialogError, SharedDialogFormat, SharedDialogMetadata, SharedDialogTurn,
+};
+pub use shared_memory::{
+    ensure_shared_memory_file, resolve_memory_path_from, shared_memory_path, MEMORY_PATH_ENV,
 };
 pub use skill_compiler::{
     compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
