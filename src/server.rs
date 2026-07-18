@@ -308,7 +308,6 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "object": "model",
-                "created": 0,
                 "owned_by": "link-assistant"
             }],
             "models": [{

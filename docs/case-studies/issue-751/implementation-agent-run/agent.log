@@ -1,0 +1,1006 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:30.973Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "configContent": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"formalai/formal-ai\",\n  \"provider\": {\n    \"formalai\": {\n      \"models\": {\n        \"formal-ai\": {\n          \"name\": \"formal-ai\"\n        }\n      },\n      \"name\": \"formal-ai server\",\n      \"npm\": \"@ai-sdk/openai-compatible\",\n      \"options\": {\n        \"apiKey\": \"{env:FORMAL_AI_API_KEY}\",\n        \"baseURL\": \"http://127.0.0.1:18083/api/openai/v1\"\n      }\n    }\n  }\n}\n",
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:30.977Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --no-summarize-session --compaction-model same --model formalai/formal-ai -p Привет",
+  "workingDirectory": "/tmp/gh-issue-solver-1784394250823",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:30.981Z",
+  "service": "default",
+  "directory": "/tmp/gh-issue-solver-1784394250823",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:30.982Z",
+  "service": "project",
+  "directory": "/tmp/gh-issue-solver-1784394250823",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.091Z",
+  "service": "project",
+  "status": "started",
+  "message": "git.rev-parse"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.365Z",
+  "service": "project",
+  "status": "completed",
+  "duration": 274,
+  "message": "git.rev-parse"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.394Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.412Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.420Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formalai/formal-ai",
+    "-p",
+    "Привет"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formalai/formal-ai",
+    "-p",
+    "Привет"
+  ],
+  "cliModelArg": "formalai/formal-ai",
+  "yargsModel": "formalai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.425Z",
+  "service": "default",
+  "rawModel": "formalai/formal-ai",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.438Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.454Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.457Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.457Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.616Z",
+  "service": "models.dev",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.616Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:31.897Z",
+  "service": "models.dev",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.156Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.250Z",
+  "service": "claude-oauth",
+  "path": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.254Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 816,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.262Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.263Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.263Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.318Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.318Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.329Z",
+  "service": "session",
+  "id": "ses_089b77996ffehpq07634gIYZmk",
+  "version": "agent-cli-1.0.0",
+  "projectID": "2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "directory": "/tmp/gh-issue-solver-1784394250823",
+  "title": "New session - 2026-07-18T17:31:32.329Z",
+  "time": {
+    "created": 1784395892329,
+    "updated": 1784395892329
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.335Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.346Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 27,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.350Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.353Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_089b77996ffehpq07634gIYZmk/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.353Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_089b77996ffehpq07634gIYZmk/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.397Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 44,
+  "method": "POST",
+  "path": "/session/ses_089b77996ffehpq07634gIYZmk/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.429Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.446Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.504Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.514Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.605Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.605Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.609Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.611Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formalai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.615Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.618Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.619Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 8,
+  "providerID": "formalai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.624Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.625Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:32.626Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:34.803Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:34.816Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:34.819Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784394250823",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.325Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.477Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.582Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.582Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.583Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:35.585Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:36.713Z",
+  "service": "snapshot",
+  "message": "initialized"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.923Z",
+  "service": "snapshot",
+  "hash": "f010c8f50fd68822178d99fb8c0a2d4ecc7bc189\n",
+  "cwd": "/tmp/gh-issue-solver-1784394250823",
+  "git": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784395914929,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "part": {
+    "id": "prt_f7648deac001xOYEj0XMG0KaRq",
+    "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+    "messageID": "msg_f7648901b001mZjnFM5V1bSXYK",
+    "type": "step-start",
+    "snapshot": "f010c8f50fd68822178d99fb8c0a2d4ecc7bc189"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.937Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.942Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:54.945Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784395914945,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "part": {
+    "id": "prt_f7648deb9001YE2CVNXKjIQnfe",
+    "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+    "messageID": "msg_f7648901b001mZjnFM5V1bSXYK",
+    "type": "text",
+    "text": "Здравствуйте! Чем могу помочь?",
+    "time": {
+      "start": 1784395914944,
+      "end": 1784395914944
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-18T17:31:54.952Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 14560,
+    "output": 30,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 14560,
+  "sseCompletionTokens": 30,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.125Z",
+  "service": "snapshot",
+  "hash": "ba1b0e00f7fcd05fa2d5cb946594a82213c263c4\n",
+  "cwd": "/tmp/gh-issue-solver-1784394250823",
+  "git": "/tmp/formal-ai-agent-home-config-15601-1784395887106338407/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.130Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784395915130,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "part": {
+    "id": "prt_f7648dec800107ALedYenhEwdD",
+    "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+    "messageID": "msg_f7648901b001mZjnFM5V1bSXYK",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "ba1b0e00f7fcd05fa2d5cb946594a82213c263c4",
+    "cost": 0,
+    "tokens": {
+      "input": 14560,
+      "output": 30,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14590,
+      "headroom": 24266,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.131Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.268Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.269Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.272Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.273Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "message": "loop"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.343Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.344Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.348Z",
+  "service": "session.prompt",
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.349Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.352Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.352Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.381Z",
+  "service": "session.prompt",
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.381Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784395915381,
+  "sessionID": "ses_089b77996ffehpq07634gIYZmk"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.381Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.381Z",
+  "service": "default",
+  "directory": "/tmp/gh-issue-solver-1784394250823",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.382Z",
+  "service": "state",
+  "key": "/tmp/gh-issue-solver-1784394250823",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.391Z",
+  "service": "state",
+  "key": "/tmp/gh-issue-solver-1784394250823",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-18T17:31:55.410Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 28,
+  "message": "Agent exiting"
+}
