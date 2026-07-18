@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use formal_ai::seed::client_integrations;
+use formal_ai::seed::{client_integrations, response_for};
 use formal_ai::{handle_api_request, handle_api_request_with_auth, ApiAuthConfig};
 
 use crate::http_server::{http_request, reserve_loopback_port, spawn_formal_ai_server};
@@ -50,6 +50,24 @@ fn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {
         .temp_home_json_settings
         .iter()
         .any(|(path, value)| path == "mcpServers.formal-ai.url" && value == "{base_url}/mcp"));
+}
+
+#[test]
+fn mcp_descriptions_cover_english_russian_hindi_and_chinese() {
+    for intent in [
+        "mcp_instructions",
+        "mcp_tool_description",
+        "mcp_prompt_description",
+    ] {
+        let english = response_for(intent, "en").expect("English MCP text");
+        for language in ["ru", "hi", "zh"] {
+            let localized = response_for(intent, language).expect("localized MCP text");
+            assert_ne!(
+                localized, english,
+                "{intent} should be localized for {language}"
+            );
+        }
+    }
 }
 
 #[test]
