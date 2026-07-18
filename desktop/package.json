@@ -17,7 +17,7 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/tool-router.test.mjs scripts/web-tools.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/tool-router.test.mjs scripts/web-tools.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs scripts/agent-provider.test.mjs scripts/docker-detect.test.mjs scripts/data-migration.test.mjs scripts/auto-update.test.mjs scripts/vscode-install.test.mjs scripts/dreaming.test.mjs scripts/issue-756.test.mjs && node scripts/smoke.mjs"
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.10.10",

@@ -250,7 +250,6 @@ src/dreaming.rs	duplicate recomputable event; retained {} with usage {}
 src/dreaming/learning.rs	learned standing requirement ({topic}):
 src/dreaming_application.rs	Learned standing requirement ({}): {}
 src/dreaming_application.rs	Standing requirement ({}): {}
-src/dreaming_runtime.rs	[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; there is no persistent memory log to maintain, so the dreaming worker will not start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it.
 src/engine.rs	Check command: `{check_command}`\nRun command: `{}`
 src/engine.rs	Execution status: {status_phrase} in {}.
 src/engine.rs	Here is a minimal {language_name} {task_label} program:
