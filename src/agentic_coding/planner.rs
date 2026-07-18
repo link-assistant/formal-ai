@@ -32,6 +32,7 @@ use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::tool_result;
 use super::web_research;
 use crate::protocol::ChatMessage;
 
@@ -222,6 +223,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
+    if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
+        return Some(AgenticPlan::Final(answer));
+    }
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -264,6 +268,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
     }
+    if let Some(answer) = tool_result::latest_turn_answer(messages, &task) {
+        return Some(AgenticPlan::Final(answer));
+    }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
 }
@@ -300,16 +307,14 @@ fn plan_general_change_step(
     ))
 }
 
-/// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
-/// directory listing, then summarize the tool result. Execution still happens in
-/// the client-side agent workspace/permission model; this server only emits the
-/// OpenAI-compatible `tool_calls` turn.
+/// Run a shell command through the client-owned tool loop, then present its result.
 fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
     let progress = Progress::scan(messages);
     if progress.done(Capability::Run) {
-        return AgenticPlan::Final(shell_final_answer(
+        return AgenticPlan::Final(tool_result::render(
             command,
             progress.run_output.as_deref().unwrap_or_default(),
+            latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }
 
@@ -741,6 +746,8 @@ pub(super) struct Progress {
     pub(super) fetched_text: Option<String>,
     pub(super) search_output: Option<String>,
     pub(super) run_output: Option<String>,
+    pub(super) fetch_result: Option<String>,
+    pub(super) search_result: Option<String>,
 }
 
 impl Progress {
@@ -749,6 +756,8 @@ impl Progress {
         let mut fetched_text = None;
         let mut search_output = None;
         let mut run_output = None;
+        let mut fetch_result = None;
+        let mut search_result = None;
         // Ignore results from earlier user turns.
         let current_turn = messages
             .iter()
@@ -763,12 +772,14 @@ impl Progress {
             };
             if capability == Capability::Fetch {
                 let text = message.content.plain_text();
+                fetch_result = Some(text.clone());
                 if !looks_like_error(&text) && !text.trim().is_empty() {
                     fetched_text = Some(text);
                 }
             }
             if capability == Capability::Search {
                 let text = message.content.plain_text();
+                search_result = Some(text.clone());
                 if !looks_like_error(&text) && !text.trim().is_empty() {
                     search_output = Some(text);
                 }
@@ -783,6 +794,8 @@ impl Progress {
             fetched_text,
             search_output,
             run_output,
+            fetch_result,
+            search_result,
         }
     }
 
@@ -798,16 +811,12 @@ impl Progress {
             .count()
     }
 
-    /// The latest non-errored fetch result's text, for the [`intent_router`]
-    /// fetch probe's final answer.
-    pub(super) fn fetched_text(&self) -> Option<&str> {
-        self.fetched_text.as_deref()
+    pub(super) fn fetch_result(&self) -> Option<&str> {
+        self.fetch_result.as_deref()
     }
 
-    /// The latest non-errored web-search result's text, for the [`intent_router`]
-    /// search probe's final answer.
-    pub(super) fn search_output(&self) -> Option<&str> {
-        self.search_output.as_deref()
+    pub(super) fn search_result(&self) -> Option<&str> {
+        self.search_result.as_deref()
     }
 }
 
@@ -988,13 +997,4 @@ fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
         coverage = coverage_line(summary),
         kb = formalized.links_notation.trim_end(),
     )
-}
-
-fn shell_final_answer(command: &str, output: &str) -> String {
-    let trimmed = output.trim_end();
-    if trimmed.is_empty() {
-        format!("The `{command}` command completed with no output.")
-    } else {
-        format!("The `{command}` command completed. Output:\n\n```text\n{trimmed}\n```")
-    }
 }

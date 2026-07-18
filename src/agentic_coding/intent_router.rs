@@ -19,6 +19,7 @@ use serde_json::json;
 
 use super::general_planner::compose_edit_request;
 use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+use super::tool_result;
 use crate::protocol::ChatMessage;
 
 /// General web-fetch routing (issue #680): when the request carries HTTP-fetch
@@ -36,9 +37,10 @@ pub(super) fn plan_web_fetch_step(
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Fetch) {
-        return Some(AgenticPlan::Final(web_fetch_final_answer(
-            &url,
-            progress.fetched_text(),
+        return Some(AgenticPlan::Final(tool_result::render(
+            "web_fetch",
+            progress.fetch_result().unwrap_or_default(),
+            task,
         )));
     }
     Some(plan_one(tool, fetch_arguments(&url)))
@@ -69,9 +71,10 @@ pub(super) fn plan_web_search_step(
     };
     let progress = Progress::scan(messages);
     if progress.done(Capability::Search) {
-        return Some(AgenticPlan::Final(web_search_final_answer(
-            &query,
-            progress.search_output(),
+        return Some(AgenticPlan::Final(tool_result::render(
+            "web_search",
+            progress.search_result().unwrap_or_default(),
+            task,
         )));
     }
     Some(plan_one(tool, json!({ "query": query }).to_string()))
@@ -133,9 +136,7 @@ pub(super) fn plan_edit_step(
     let tool = tool_for(tool_names, Capability::Edit)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Edit) {
-        return Some(AgenticPlan::Final(format!(
-            "Edited `{target}`: replaced `{old}` with `{new}`."
-        )));
+        return tool_result::latest_turn_answer(messages, task).map(AgenticPlan::Final);
     }
     if let Some(read_tool) =
         tool_for(tool_names, Capability::Read).filter(|_| !progress.done(Capability::Read))
@@ -152,31 +153,6 @@ fn read_arguments(path: &str) -> String {
         "file_path": path,
     })
     .to_string()
-}
-
-/// The final answer once a web-fetch tool call has returned. Surfaces the fetched
-/// text verbatim when the tool succeeded, otherwise states the URL that was
-/// requested so the conversation stays grounded in the real tool result.
-fn web_fetch_final_answer(url: &str, fetched_text: Option<&str>) -> String {
-    fetched_text
-        .map(str::trim)
-        .filter(|text| !text.is_empty())
-        .map_or_else(
-            || format!("Fetched `{url}`."),
-            |text| format!("Fetched `{url}`. Response body:\n\n```text\n{text}\n```"),
-        )
-}
-
-/// The final answer once a web-search tool call has returned. Surfaces the search
-/// results verbatim when the tool produced any, otherwise states the query.
-fn web_search_final_answer(query: &str, search_output: Option<&str>) -> String {
-    search_output
-        .map(str::trim)
-        .filter(|text| !text.is_empty())
-        .map_or_else(
-            || format!("Searched the web for `{query}`."),
-            |text| format!("Searched the web for `{query}`. Results:\n\n{text}"),
-        )
 }
 
 /// Arguments for an edit step that satisfy whichever key an advertised edit tool

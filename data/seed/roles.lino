@@ -437,6 +437,16 @@ roles
     kind meaning
   tool_invocation_cue
     kind meaning
+  tool_result_detail_request
+    kind meaning
+  tool_result_first_reference
+    kind meaning
+  tool_result_line_request
+    kind meaning
+  tool_result_second_reference
+    kind meaning
+  tool_result_url_request
+    kind meaning
   topic_scan_stop_word
     kind meaning
   translation_action

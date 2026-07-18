@@ -132,3 +132,118 @@ meanings
         text 查询
       surface
         text 用于
+  tool_result_detail_request
+    defined-by action
+    role tool_result_detail_request
+    lexeme en
+      surface
+        text "full result"
+      surface
+        text "more detail"
+      surface
+        text "original result"
+    lexeme ru
+      surface
+        text "полный результат"
+      surface
+        text подробнее
+      surface
+        text "исходный результат"
+    lexeme hi
+      surface
+        text "पूरा परिणाम"
+      surface
+        text "अधिक विवरण"
+      surface
+        text "मूल परिणाम"
+    lexeme zh
+      surface
+        text 完整结果
+      surface
+        text 更多详情
+      surface
+        text 原始结果
+  tool_result_url_request
+    defined-by entity
+    role tool_result_url_request
+    lexeme en
+      surface
+        text url
+      surface
+        text link
+    lexeme ru
+      surface
+        text ссылка
+    lexeme hi
+      surface
+        text यूआरएल
+      surface
+        text लिंक
+    lexeme zh
+      surface
+        text 网址
+      surface
+        text 链接
+  tool_result_line_request
+    defined-by entity
+    role tool_result_line_request
+    lexeme en
+      surface
+        text line
+    lexeme ru
+      surface
+        text строка
+      surface
+        text строку
+    lexeme hi
+      surface
+        text पंक्ति
+    lexeme zh
+      surface
+        text 行
+  tool_result_first_reference
+    defined-by attribute
+    role tool_result_first_reference
+    lexeme en
+      surface
+        text first
+    lexeme ru
+      surface
+        text первый
+      surface
+        text первого
+      surface
+        text первую
+    lexeme hi
+      surface
+        text पहले
+      surface
+        text पहली
+    lexeme zh
+      surface
+        text 第一个
+      surface
+        text 第一
+  tool_result_second_reference
+    defined-by attribute
+    role tool_result_second_reference
+    lexeme en
+      surface
+        text second
+    lexeme ru
+      surface
+        text второй
+      surface
+        text второго
+      surface
+        text вторую
+    lexeme hi
+      surface
+        text दूसरे
+      surface
+        text दूसरी
+    lexeme zh
+      surface
+        text 第二个
+      surface
+        text 第二
