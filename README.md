@@ -278,6 +278,21 @@ also generates a model catalog inside the temporary Codex home and passes it as
 `model_catalog_json`, so Codex recognizes the Formal AI model's context window
 and capabilities without a missing-metadata warning.
 
+After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
+session artifact created by that invocation and a copy-pasteable resume command
+when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
+OpenCode, Agent CLI, Claude, and Grok. Only a new or changed artifact is printed;
+the wrapper does not guess a path when the client did not create one. Session
+artifacts written inside an isolated temporary client home are preserved so the
+reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
+existing proxy log, that path is included in the same final block.
+
+```text
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
+  server log: /work/proxy.jsonl
+```
+
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
