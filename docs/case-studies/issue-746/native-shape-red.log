@@ -1,0 +1,37 @@
+   Compiling formal-ai v0.297.4 (/tmp/gh-issue-solver-1784370359116)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.81s
+     Running tests/integration/mod.rs (target/debug/deps/integration-6d7da555056c3a64)
+
+running 7 tests
+test issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use ... ok
+
+thread 'issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability' (23542) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a native web_search_call, got {"created_at":0,"evidence_links":[],"id":"resp_72c80fd9e5002920","model":"formal-ai","object":"response","output":[{"arguments":"{\"query\":\"в интернете rust ownership\"}","call_id":"call_5d250568881de5d0","id":"fc_5d250568881de5d0","name":"web_search","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":5,"output_tokens":5,"total_tokens":10}}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability ... FAILED
+
+thread 'issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols' (23544) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a native web_search_call, got {"created_at":0,"evidence_links":[],"id":"resp_ba08028399279d83","model":"formal-ai","object":"response","output":[{"arguments":"{\"query\":\"the web for rust\"}","call_id":"call_20b1d3450a957dac","id":"fc_20b1d3450a957dac","name":"web_search","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":5,"output_tokens":5,"total_tokens":10}}
+test issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols ... FAILED
+
+thread 'issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api' (23539) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a native web_search_call, got {"created_at":0,"evidence_links":[],"id":"resp_5423456f9aa7f383","model":"formal-ai","object":"response","output":[{"arguments":"{\"query\":\"online for rust\"}","call_id":"call_7613375b41321a34","id":"fc_7613375b41321a34","name":"web_search","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":4,"output_tokens":4,"total_tokens":8}}
+test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... FAILED
+
+thread 'issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal' (23543) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a native web_search_call, got {"created_at":0,"evidence_links":[],"id":"resp_e963b9321523124b","model":"formal-ai","object":"response","output":[{"arguments":"{\"query\":\"online for elon musk\"}","call_id":"call_81928b2cf4a688b0","id":"fc_81928b2cf4a688b0","name":"web_search","status":"completed","type":"function_call"}],"status":"completed","usage":{"input_tokens":5,"output_tokens":5,"total_tokens":10}}
+test issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal ... FAILED
+test issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch ... ok
+test issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route ... ok
+
+failures:
+
+failures:
+    issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api
+    issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability
+    issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal
+    issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols
+
+test result: FAILED. 3 passed; 4 failed; 0 ignored; 0 measured; 119 filtered out; finished in 0.88s
+
+error: test failed, to rerun pass `--test integration`
