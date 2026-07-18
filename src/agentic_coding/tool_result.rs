@@ -145,10 +145,10 @@ fn requested_index(lexicon: &crate::seed::Lexicon, prompt: &str) -> usize {
 fn normalize(raw: &str) -> NormalizedResult {
     let trimmed = raw.trim();
     let Ok(value) = serde_json::from_str::<Value>(trimmed) else {
-        return from_payload(strip_transport_envelope(trimmed), None);
+        return from_payload(&strip_transport_envelope(trimmed), None);
     };
     let Some(object) = value.as_object() else {
-        return from_payload(pretty_json(&value), None);
+        return from_payload(&pretty_json(&value), None);
     };
     let nonzero_exit = ["exit_code", "exitCode"]
         .iter()
@@ -178,7 +178,7 @@ fn normalize(raw: &str) -> NormalizedResult {
                     .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
             })
             .unwrap_or_default();
-        return from_payload(String::new(), Some(error));
+        return from_payload("", Some(error));
     }
     if let Some(payload) = ["output", "stdout", "content", "result"]
         .iter()
@@ -186,14 +186,13 @@ fn normalize(raw: &str) -> NormalizedResult {
     {
         let payload = payload
             .as_str()
-            .map(strip_transport_envelope)
-            .unwrap_or_else(|| pretty_json(payload));
-        return from_payload(payload, None);
+            .map_or_else(|| pretty_json(payload), strip_transport_envelope);
+        return from_payload(&payload, None);
     }
-    from_payload(pretty_json(&value), None)
+    from_payload(&pretty_json(&value), None)
 }
 
-fn from_payload(payload: String, error: Option<String>) -> NormalizedResult {
+fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
     let trimmed = payload.trim().to_owned();
     if let Ok(json) = serde_json::from_str::<Value>(&trimmed) {
         return NormalizedResult {
@@ -359,11 +358,16 @@ fn fill(
     payload: &str,
     error: &str,
 ) -> String {
+    const TOOL_PLACEHOLDER: &str = "{tool}";
+    const FORMAT_PLACEHOLDER: &str = "{format}";
+    const PAYLOAD_PLACEHOLDER: &str = "{payload}";
+    const ERROR_PLACEHOLDER: &str = "{error}";
+
     crate::seed::response_for(intent, language)
         .or_else(|| crate::seed::response_for(intent, "en"))
         .unwrap_or_default()
-        .replace("{tool}", tool)
-        .replace("{format}", format)
-        .replace("{payload}", payload)
-        .replace("{error}", error)
+        .replace(TOOL_PLACEHOLDER, tool)
+        .replace(FORMAT_PLACEHOLDER, format)
+        .replace(PAYLOAD_PLACEHOLDER, payload)
+        .replace(ERROR_PLACEHOLDER, error)
 }
