@@ -14,9 +14,9 @@ use crate::engine::{
 use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
-    agentic_tool_permission_denial, is_tool_choice_request, matches_tool_choice_none,
-    tool_call_refusal_answer, tool_choice_function_name, tool_definition_name,
-    tool_permission_refusal_answer,
+    agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
+    matches_tool_choice_none, tool_call_refusal_answer, tool_choice_function_name,
+    tool_definition_name, tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
@@ -481,7 +481,9 @@ impl ResponseObject {
             .iter()
             .filter_map(|item| match item {
                 ResponseOutputItem::Message(message) => Some(message),
-                ResponseOutputItem::FunctionCall(_) | ResponseOutputItem::Reasoning(_) => None,
+                ResponseOutputItem::FunctionCall(_)
+                | ResponseOutputItem::WebSearchCall(_)
+                | ResponseOutputItem::Reasoning(_) => None,
             })
             .collect()
     }
@@ -494,7 +496,9 @@ impl ResponseObject {
             .iter()
             .filter_map(|item| match item {
                 ResponseOutputItem::FunctionCall(call) => Some(call),
-                ResponseOutputItem::Message(_) | ResponseOutputItem::Reasoning(_) => None,
+                ResponseOutputItem::Message(_)
+                | ResponseOutputItem::WebSearchCall(_)
+                | ResponseOutputItem::Reasoning(_) => None,
             })
             .collect()
     }
@@ -512,10 +516,32 @@ impl ResponseObject {
 pub enum ResponseOutputItem {
     /// A function tool call (`type:"function_call"`).
     FunctionCall(ResponseFunctionToolCall),
+    /// A server-hosted web search (`type:"web_search_call"`).
+    WebSearchCall(ResponseWebSearchToolCall),
     /// An assistant message (`type:"message"`).
     Message(ResponseOutputMessage),
     /// A reasoning summary (`type:"reasoning"`).
     Reasoning(ResponseReasoningItem),
+}
+
+/// A completed server-hosted web search on the Responses surface. Unlike a
+/// `function_call`, this item is observational: the client must not attempt to
+/// execute a local function named `web_search`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseWebSearchToolCall {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub status: String,
+    pub action: ResponseWebSearchAction,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseWebSearchAction {
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub query: String,
+    pub queries: Vec<String>,
 }
 
 /// A function tool call emitted on the Responses surface (`type:"function_call"`).
@@ -886,14 +912,43 @@ fn response_from_plan(
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );
-                items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
-                    id: stable_id("fc", &seed),
-                    kind: function_call_kind(),
-                    call_id: stable_id("call", &seed),
-                    name: tool,
-                    arguments,
-                    status: String::from("completed"),
-                }));
+                if request
+                    .tools
+                    .iter()
+                    .any(|definition| is_hosted_tool_definition(definition, &tool))
+                    && tool == "web_search"
+                {
+                    let query = serde_json::from_str::<Value>(&arguments)
+                        .ok()
+                        .and_then(|value| {
+                            value
+                                .get("query")
+                                .and_then(Value::as_str)
+                                .map(str::to_owned)
+                        })
+                        .unwrap_or_else(|| prompt.to_owned());
+                    items.push(ResponseOutputItem::WebSearchCall(
+                        ResponseWebSearchToolCall {
+                            id: stable_id("ws", &seed),
+                            kind: String::from("web_search_call"),
+                            status: String::from("completed"),
+                            action: ResponseWebSearchAction {
+                                kind: String::from("search"),
+                                queries: vec![query.clone()],
+                                query,
+                            },
+                        },
+                    ));
+                } else {
+                    items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
+                        id: stable_id("fc", &seed),
+                        kind: function_call_kind(),
+                        call_id: stable_id("call", &seed),
+                        name: tool,
+                        arguments,
+                        status: String::from("completed"),
+                    }));
+                }
             }
             (items, output_tokens)
         }

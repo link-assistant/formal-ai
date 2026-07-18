@@ -54,7 +54,19 @@ pub(super) fn plan_web_search_step(
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
     let query = crate::solver_handlers::web_search_query_for(task)?;
-    let tool = tool_for(tool_names, Capability::Search)?;
+    let Some(tool) = tool_for(tool_names, Capability::Search) else {
+        let discovery = tool_names
+            .iter()
+            .copied()
+            .find(|name| name.eq_ignore_ascii_case("tool_search"))?;
+        if tool_result_exists(messages, discovery) {
+            return None;
+        }
+        return Some(plan_one(
+            discovery,
+            json!({"query": "web search", "max_results": 5}).to_string(),
+        ));
+    };
     let progress = Progress::scan(messages);
     if progress.done(Capability::Search) {
         return Some(AgenticPlan::Final(web_search_final_answer(
@@ -63,6 +75,38 @@ pub(super) fn plan_web_search_step(
         )));
     }
     Some(plan_one(tool, json!({ "query": query }).to_string()))
+}
+
+fn tool_result_exists(messages: &[ChatMessage], tool_name: &str) -> bool {
+    let current_turn = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .map_or(0, |index| index + 1);
+    messages
+        .iter()
+        .enumerate()
+        .skip(current_turn)
+        .any(|(index, message)| {
+            if !message.role.eq_ignore_ascii_case("tool") {
+                return false;
+            }
+            if message
+                .name
+                .as_deref()
+                .is_some_and(|name| name.eq_ignore_ascii_case(tool_name))
+            {
+                return true;
+            }
+            let Some(call_id) = message.tool_call_id.as_deref() else {
+                return false;
+            };
+            messages[..index]
+                .iter()
+                .flat_map(|prior| &prior.tool_calls)
+                .any(|call| {
+                    call.id == call_id && call.function.name.eq_ignore_ascii_case(tool_name)
+                })
+        })
 }
 
 /// General file-edit routing (issue #680): when the request carries a

@@ -878,9 +878,12 @@ fn classify_tool(name: &str) -> Option<Capability> {
     if lower.contains("todo") {
         return None;
     }
-    if lower.contains("search") {
-        // A code search is not the web search the recipe issues its query to.
-        (!lower.contains("code")).then_some(Capability::Search)
+    if matches!(lower.as_str(), "computer_use" | "code_interpreter") {
+        Some(Capability::Run)
+    } else if lower.contains("search") {
+        // Repository/file search and deferred-tool discovery are not internet
+        // search. They have dedicated routes and must never receive a web query.
+        (lower.contains("web") && lower != "tool_search").then_some(Capability::Search)
     } else if lower == "read"
         || lower.contains("read_file")
         || lower.contains("read_local_file")
