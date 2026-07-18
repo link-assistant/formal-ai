@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.297.4] - 2026-07-18
+
+### Fixed
+- Route multilingual file reads, URL fetches, web searches, writes, directory listings, and code searches by semantic intent and typed object instead of narrow English phrasing.
+
 ## [0.297.3] - 2026-07-17
 
 ### Added
