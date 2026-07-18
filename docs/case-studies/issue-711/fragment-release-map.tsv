@@ -390,6 +390,7 @@ changelog.d/20260713_654_general_agentic_planner.md	0.281.0
 changelog.d/20260713_655_self_coding_replay.md	0.284.0
 changelog.d/20260714_090000_issue_656_promotion.md	0.296.0
 changelog.d/20260714_090000_issue_686_associative_persistence.md	0.290.0
+changelog.d/20260714_120000_hardcoded_language_burndown.md	0.298.0
 changelog.d/20260714_120000_issue_658_wasm_worker_groundwork.md	0.297.5
 changelog.d/20260714_120000_issue_687_agentic_simple_requests.md	0.292.0
 changelog.d/20260714_220000_issue_711_consume_release_fragments.md	0.295.0
@@ -416,3 +417,4 @@ changelog.d/20260717_192800_issue_745_intent_routing.md	0.297.4
 changelog.d/20260717_210000_desktop_web_capture.md	0.297.3
 changelog.d/20260717_657_self_hosting_auto_learning.md	0.297.0
 changelog.d/20260718_110000_issue_748_codex_model_metadata.md	0.297.5
+changelog.d/20260718_120000_issue_746_hosted_tools.md	0.298.0
