@@ -1,4 +1,49 @@
 meanings
+  pattern_x_kaise_kaam_karta_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karta suffix hi"
+  pattern_x_kaise_kaam_karti_suffix_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x kaise kaam karti suffix hi"
+  pattern_x_ruhej_gongzuo_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x ruhej gongzuo suffix zh"
+  pattern_x_shi_ruhej_gongzuo_de_suffix_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern x shi ruhej gongzuo de suffix zh"
+  periodic_or_manual
+    defined-by concept
+    lexeme en
+      surface
+        text "periodic or manual"
+  philosophy-text
+    defined-by source_kind
+    lexeme en
+      surface
+        text "philosophy text"
+  physical_action_question
+    defined-by intent
+    lexeme en
+      surface
+        text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
+  plagiaris
+    defined-by word_surface
+    lexeme en
+      surface
+        text "plagiaris"
   plagiarism
     defined-by word_surface
     lexeme en
@@ -19,6 +64,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  powershell
+    defined-by token
+    lexeme en
+      surface
+        text "powershell"
   preferred
     defined-by concept
     lexeme en
@@ -49,6 +99,11 @@ meanings
     lexeme en
       surface
         text "programming language"
+  project
+    defined-by concept
+    lexeme en
+      surface
+        text "project"
   project-docs
     defined-by source_kind
     lexeme en
@@ -84,6 +139,16 @@ meanings
     lexeme en
       surface
         text "pwd"
+  pwsh
+    defined-by token
+    lexeme en
+      surface
+        text "pwsh"
+  pytest
+    defined-by concept
+    lexeme en
+      surface
+        text "pytest"
   python3
     defined-by token
     lexeme en
@@ -119,11 +184,6 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
-  remainder
-    defined-by concept
-    lexeme en
-      surface
-        text "remainder"
   remix
     defined-by concept
     lexeme en
@@ -1334,63 +1394,3 @@ meanings
     lexeme en
       surface
         text "response physical action question ru"
-  response_physical_action_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question zh"
-  response_test_status_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status en"
-  response_test_status_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status hi"
-  response_test_status_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status ru"
-  response_test_status_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response test status zh"
-  response_unknown_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown en"
-  response_unknown_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown hi"
-  response_unknown_reasoning_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question en"
-  response_unknown_reasoning_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question hi"
-  response_unknown_reasoning_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question ru"
-  response_unknown_reasoning_question_unknown
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question unknown"
-  response_unknown_reasoning_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response unknown reasoning question zh"

@@ -1,4 +1,34 @@
 meanings
+  lexeme_import_missing_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import missing provenance"
+  lexeme_import_no_clean_alias
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import no clean alias"
+  lexeme_import_no_labels_in_cache
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import no labels in cache"
+  lexeme_import_number_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import number lost"
+  lexeme_import_part_of_speech_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import part of speech lost"
+  lexeme_import_qid_absent_from_cache
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import qid absent from cache"
   lexeme_import_qid_absent_from_fetch
     defined-by intent
     lexeme en
@@ -99,6 +129,11 @@ meanings
     lexeme en
       surface
         text "list files reverse sort"
+  local
+    defined-by concept
+    lexeme en
+      surface
+        text "local"
   local-library
     defined-by isolation_mode
     lexeme en
@@ -180,10 +215,15 @@ meanings
       surface
         text "multi step"
   mv
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "mv"
+  named
+    defined-by concept
+    lexeme en
+      surface
+        text "named"
   non-deterministic
     defined-by word_surface
     lexeme en
@@ -249,6 +289,11 @@ meanings
     lexeme en
       surface
         text "one paragraph"
+  one_path
+    defined-by concept
+    lexeme en
+      surface
+        text "one path"
   open_textbook
     defined-by kind
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question grammar context zh"
-  pattern_x_kaise_kaam_karta_suffix_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x kaise kaam karta suffix hi"
-  pattern_x_kaise_kaam_karti_suffix_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x kaise kaam karti suffix hi"
-  pattern_x_ruhej_gongzuo_suffix_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x ruhej gongzuo suffix zh"
-  pattern_x_shi_ruhej_gongzuo_de_suffix_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern x shi ruhej gongzuo de suffix zh"
-  periodic_or_manual
-    defined-by concept
-    lexeme en
-      surface
-        text "periodic or manual"
-  philosophy-text
-    defined-by source_kind
-    lexeme en
-      surface
-        text "philosophy text"
-  physical_action_question
-    defined-by intent
-    lexeme en
-      surface
-        text "physical action question"
-  pip
-    defined-by token
-    lexeme en
-      surface
-        text "pip"
-  plagiaris
-    defined-by word_surface
-    lexeme en
-      surface
-        text "plagiaris"

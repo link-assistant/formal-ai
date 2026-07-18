@@ -1,4 +1,64 @@
 meanings
+  response_physical_action_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question zh"
+  response_test_status_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status en"
+  response_test_status_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status hi"
+  response_test_status_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status ru"
+  response_test_status_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response test status zh"
+  response_unknown_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown en"
+  response_unknown_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown hi"
+  response_unknown_reasoning_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question en"
+  response_unknown_reasoning_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question hi"
+  response_unknown_reasoning_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question ru"
+  response_unknown_reasoning_question_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question unknown"
+  response_unknown_reasoning_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question zh"
   response_unknown_reasoning_trace_en
     defined-by response_template
     lexeme en
@@ -90,12 +150,12 @@ meanings
       surface
         text "rg"
   rm
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "rm"
   rmdir
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "rmdir"
@@ -144,6 +204,16 @@ meanings
     lexeme en
       surface
         text "sdk"
+  search
+    defined-by concept
+    lexeme en
+      surface
+        text "search"
+  search_query
+    defined-by concept
+    lexeme en
+      surface
+        text "search query"
   sed
     defined-by token
     lexeme en
@@ -249,6 +319,11 @@ meanings
     lexeme en
       surface
         text "standard"
+  stat
+    defined-by concept
+    lexeme en
+      surface
+        text "stat"
   statement
     defined-by word_surface
     lexeme en
@@ -460,7 +535,7 @@ meanings
       surface
         text "total"
   touch
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "touch"
@@ -509,6 +584,11 @@ meanings
     lexeme en
       surface
         text "tue"
+  two_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "two paths"
   ui
     defined-by concept
     lexeme en

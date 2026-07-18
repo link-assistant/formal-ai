@@ -164,6 +164,11 @@ meanings
     lexeme en
       surface
         text "article"
+  as
+    defined-by concept
+    lexeme en
+      surface
+        text "as"
   assistant_free_time
     defined-by intent
     lexeme en
@@ -294,6 +299,11 @@ meanings
     lexeme en
       surface
         text "bundle root header"
+  called
+    defined-by concept
+    lexeme en
+      surface
+        text "called"
   camel
     defined-by concept
     lexeme en
@@ -509,6 +519,11 @@ meanings
     lexeme en
       surface
         text "copied"
+  copy
+    defined-by concept
+    lexeme en
+      surface
+        text "copy"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -565,7 +580,7 @@ meanings
       surface
         text "courtesy response"
   cp
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "cp"
@@ -654,6 +669,11 @@ meanings
     lexeme en
       surface
         text "did"
+  directory
+    defined-by concept
+    lexeme en
+      surface
+        text "directory"
   dirven
     defined-by word_surface
     lexeme en
@@ -734,6 +754,11 @@ meanings
     lexeme en
       surface
         text "enumerate possessive"
+  env
+    defined-by concept
+    lexeme en
+      surface
+        text "env"
   essay
     defined-by word_surface
     lexeme en
@@ -824,6 +849,11 @@ meanings
     lexeme en
       surface
         text "fizzbuzz"
+  folder
+    defined-by concept
+    lexeme en
+      surface
+        text "folder"
   fontawesome
     defined-by concept
     lexeme en
@@ -900,7 +930,7 @@ meanings
       surface
         text "grammar context"
   grep
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "grep"
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import missing label"
-  lexeme_import_missing_provenance
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import missing provenance"
-  lexeme_import_no_clean_alias
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import no clean alias"
-  lexeme_import_no_labels_in_cache
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import no labels in cache"
-  lexeme_import_number_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import number lost"
-  lexeme_import_part_of_speech_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import part of speech lost"
-  lexeme_import_qid_absent_from_cache
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import qid absent from cache"
