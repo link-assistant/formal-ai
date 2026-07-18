@@ -202,7 +202,7 @@ meanings
       surface
         text 行
   tool_result_first_reference
-    defined-by attribute
+    defined-by concept
     role tool_result_first_reference
     lexeme en
       surface
@@ -225,7 +225,7 @@ meanings
       surface
         text 第一
   tool_result_second_reference
-    defined-by attribute
+    defined-by concept
     role tool_result_second_reference
     lexeme en
       surface

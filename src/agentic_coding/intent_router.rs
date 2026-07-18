@@ -136,7 +136,7 @@ pub(super) fn plan_edit_step(
     let tool = tool_for(tool_names, Capability::Edit)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Edit) {
-        return tool_result::latest_turn_answer(messages, task).map(AgenticPlan::Final);
+        return tool_result::latest_turn_answer(messages, tool_names, task).map(AgenticPlan::Final);
     }
     if let Some(read_tool) =
         tool_for(tool_names, Capability::Read).filter(|_| !progress.done(Capability::Read))

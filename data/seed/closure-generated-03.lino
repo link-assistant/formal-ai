@@ -1,4 +1,9 @@
 meanings
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
   response_agent_suggestion_ru
     defined-by response_template
     lexeme en
@@ -409,6 +414,106 @@ meanings
     lexeme en
       surface
         text "response test status zh"
+  response_tool_result_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed en"
+  response_tool_result_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed hi"
+  response_tool_result_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed ru"
+  response_tool_result_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed zh"
+  response_tool_result_empty_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic en"
+  response_tool_result_empty_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic hi"
+  response_tool_result_empty_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic ru"
+  response_tool_result_empty_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic zh"
+  response_tool_result_empty_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list en"
+  response_tool_result_empty_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list hi"
+  response_tool_result_empty_list_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list ru"
+  response_tool_result_empty_list_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list zh"
+  response_tool_result_empty_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search en"
+  response_tool_result_empty_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search hi"
+  response_tool_result_empty_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search ru"
+  response_tool_result_empty_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search zh"
+  response_tool_result_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed en"
+  response_tool_result_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed hi"
+  response_tool_result_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed ru"
+  response_tool_result_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed zh"
   response_unknown_en
     defined-by response_template
     lexeme en
@@ -869,6 +974,31 @@ meanings
     lexeme en
       surface
         text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
+  tool_result_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed"
   tool_roleplay
     defined-by tool
     lexeme en

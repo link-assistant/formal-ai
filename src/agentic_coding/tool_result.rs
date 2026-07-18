@@ -40,7 +40,11 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
     )
 }
 
-pub(super) fn latest_turn_answer(messages: &[ChatMessage], prompt: &str) -> Option<String> {
+pub(super) fn latest_turn_answer(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    prompt: &str,
+) -> Option<String> {
     let start = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
@@ -50,8 +54,32 @@ pub(super) fn latest_turn_answer(messages: &[ChatMessage], prompt: &str) -> Opti
         .skip(start + 1)
         .rev()
         .find(|(_, message)| message.role.eq_ignore_ascii_case("tool"))?;
+    if is_write_run_recipe(messages, tool_names) {
+        return None;
+    }
     let label = result_label(messages, index);
     Some(render(&label, &result.content.plain_text(), prompt))
+}
+
+fn is_write_run_recipe(messages: &[ChatMessage], tool_names: &[&str]) -> bool {
+    let is_write = |name: &str| {
+        let lower = name.to_ascii_lowercase();
+        lower.contains("write") || lower.contains("create_file")
+    };
+    let is_run = |name: &str| {
+        let lower = name.to_ascii_lowercase();
+        lower.contains("run")
+            || lower.contains("bash")
+            || lower.contains("command")
+            || lower.contains("exec")
+            || lower.contains("shell")
+    };
+    tool_names.iter().copied().any(is_write)
+        && tool_names.iter().copied().any(is_run)
+        && messages
+            .iter()
+            .flat_map(|message| &message.tool_calls)
+            .any(|call| is_write(&call.function.name))
 }
 
 pub(super) fn follow_up_answer(messages: &[ChatMessage], prompt: &str) -> Option<String> {

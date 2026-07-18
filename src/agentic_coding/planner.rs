@@ -268,7 +268,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(answer) = tool_result::latest_turn_answer(messages, &task) {
+    if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
         return Some(AgenticPlan::Final(answer));
     }
     compose_general_change_plan(&task)
