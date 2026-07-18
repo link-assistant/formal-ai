@@ -18,10 +18,12 @@ services:
     privileged: true
     environment:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN to your Telegram bot token}
+      FORMAL_AI_MEMORY_PATH: /root/.formal-ai/memory.lino
       FORMAL_AI_TELEGRAM_ALLOWED_UPDATES: ${FORMAL_AI_TELEGRAM_ALLOWED_UPDATES:-message,edited_message}
       FORMAL_AI_TELEGRAM_TIMEOUT: ${FORMAL_AI_TELEGRAM_TIMEOUT:-30}
       FORMAL_AI_TELEGRAM_LIMIT: ${FORMAL_AI_TELEGRAM_LIMIT:-100}
     volumes:
+      - ${HOME}/.formal-ai:/root/.formal-ai
       - formal-ai-telegram-docker:/var/lib/docker
 
   # OpenAI-compatible API server for agentic mode. Opt-in via the `server`
@@ -32,10 +34,13 @@ services:
     profiles: ["server", "all"]
     restart: unless-stopped
     privileged: true
+    environment:
+      FORMAL_AI_MEMORY_PATH: /root/.formal-ai/memory.lino
     command: ["formal-ai", "serve", "--host", "0.0.0.0", "--port", "${FORMAL_AI_SERVER_PORT:-8080}"]
     ports:
       - "127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}:${FORMAL_AI_SERVER_PORT:-8080}"
     volumes:
+      - ${HOME}/.formal-ai:/root/.formal-ai
       - formal-ai-server-docker:/var/lib/docker
 
   # Idle, health-checkable container for Agent CLI execution through
@@ -48,8 +53,11 @@ services:
     profiles: ["agent", "all"]
     restart: unless-stopped
     privileged: true
+    environment:
+      FORMAL_AI_MEMORY_PATH: /root/.formal-ai/memory.lino
     command: ["sleep", "infinity"]
     volumes:
+      - ${HOME}/.formal-ai:/root/.formal-ai
       - formal-ai-agent-docker:/var/lib/docker
 
 volumes:
