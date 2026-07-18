@@ -15,6 +15,7 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
+import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
 
 const {
   createElement: h,
@@ -432,9 +433,47 @@ function interfaceCommandResponse(command, reportIssueUrl) {
   return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
 }
 
-function recognizeInterfaceCommand(text) {
+function recognizeSeedInterfaceCommand(text, capabilities) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized || !Array.isArray(capabilities)) return null;
+  for (const capability of capabilities) {
+    const phrases = (capability.phrases || []).map(normalizeMemoryPrompt);
+    if (!includesAnyText(normalized, phrases)) continue;
+    let value = null;
+    if (capability.kind === "enum") {
+      const option = (capability.options || []).find((candidate) =>
+        (candidate.aliases || [])
+          .map(normalizeMemoryPrompt)
+          .some((alias) => normalized.includes(alias)),
+      );
+      if (option) value = option.value;
+    } else if (capability.kind === "number") {
+      const match = normalized.match(/(\d+(?:[.,]\d+)?)/);
+      if (match) {
+        const number = Number(match[1].replace(",", "."));
+        if (Number.isFinite(number)) value = number * Number(capability.scale || 1);
+      }
+    } else if (capability.kind === "boolean") {
+      value = detectToggleCommand(normalized, phrases);
+    }
+    if (value === null) continue;
+    return {
+      kind: "set_preference",
+      key: capability.key,
+      value,
+      intent: capability.intent,
+      label: capability.label,
+    };
+  }
+  return null;
+}
+
+function recognizeInterfaceCommand(text, capabilities = []) {
   const normalized = normalizeMemoryPrompt(text);
   if (!normalized) return null;
+
+  const seedCommand = recognizeSeedInterfaceCommand(text, capabilities);
+  if (seedCommand) return seedCommand;
 
   const reportPhrases = [
     "report issue",
@@ -1183,10 +1222,10 @@ const MODE_TITLE_KEYS = {
 // per-tool grant map to the native router instead of the old all-or-nothing
 // grant. Keep this list in sync with desktop/lib/tool-router.cjs.
 const DESKTOP_TOOL_OPTIONS = Object.freeze([
-  "http_fetch",
-  "url_navigate",
   "eval_js",
-  "read_local_file",
+  "write_file",
+  "edit_file",
+  "multi_edit",
   "code_exec",
   "shell",
 ]);
@@ -4808,7 +4847,11 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       reason: "desktop tool router is unavailable",
     };
   }
-  if (typeof bridge.ensureAgentServer === "function") {
+  const readOnly = [
+    "web_search", "web_fetch", "read_file", "read_local_file", "grep", "glob",
+    "list_directory", "read_many_files",
+  ].includes(tool);
+  if (!readOnly && typeof bridge.ensureAgentServer === "function") {
     await bridge.ensureAgentServer();
   }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
@@ -6073,6 +6116,7 @@ function App() {
     tools: [],
     concepts: [],
     responses: {},
+    interfaceCapabilities: [],
   });
   const initialPreferences = useRef(loadPreferences());
   const [uiLanguagePreference, setUiLanguagePreference] = useState(
@@ -7488,8 +7532,9 @@ function App() {
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
     const currentDesktopStatus = desktopStatusRef.current;
+    let answerPromise;
     if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
-      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
         if (!worker) {
           return localFallbackAnswer(text, history, prefs);
         }
@@ -7506,23 +7551,27 @@ function App() {
           });
         });
       });
-    }
-    if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text, history, prefs));
-    }
-
-    return new Promise((resolve) => {
-      const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({
-        prompt: text,
-        requestId,
-        history,
-        prefs,
-        userContext: userContextRef.current,
-        memory,
+    } else if (!worker) {
+      answerPromise = Promise.resolve(localFallbackAnswer(text, history, prefs));
+    } else {
+      answerPromise = new Promise((resolve) => {
+        const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        pendingResponses.current.set(requestId, resolve);
+        worker.postMessage({
+          prompt: text,
+          requestId,
+          history,
+          prefs,
+          userContext: userContextRef.current,
+          memory,
+        });
       });
-    });
+    }
+    const answer = await answerPromise;
+    const bridge = desktopBridge();
+    return enhanceWithDesktopReadOnlyTool(answer, (tool, input) =>
+      requestDesktopToolCall(bridge, tool, input),
+    );
   }, []);
 
   // Issue #27: assign every appended event to the current conversation, lazily
@@ -8155,6 +8204,17 @@ function App() {
             ),
           );
           break;
+        case "followUpProbability":
+          setFollowUpProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.followUpProbability,
+            ),
+          );
+          break;
+        case "toolbarIconPack":
+          setToolbarIconPack(normalizeToolbarIconPack(command.value));
+          break;
         case "location":
           setLocationPreference(String(command.value || "").slice(0, 80));
           break;
@@ -8312,7 +8372,9 @@ function App() {
       return;
     }
 
-    const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
+    const interfaceCommand = hasAttachments
+      ? null
+      : recognizeInterfaceCommand(displayText, seed.interfaceCapabilities);
     if (interfaceCommand) {
       const valueLabel = commandValueLabel(interfaceCommand);
       if (interfaceCommand.kind !== "report_issue") {

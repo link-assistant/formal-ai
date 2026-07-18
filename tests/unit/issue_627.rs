@@ -62,12 +62,12 @@ fn direct_file_read_prompts_emit_read_tool_calls() {
 }
 
 #[test]
-fn cat_file_prompt_uses_bash_in_agent_mode() {
+fn cat_file_prompt_uses_the_typed_read_capability() {
     let messages = vec![ChatMessage::user("cat gamma.json")];
     let call = expect_single_call(&messages);
 
-    assert_eq!(call.tool, "bash");
-    assert_eq!(arguments(&call)["command"], "cat gamma.json");
+    assert_eq!(call.tool, "read");
+    assert_eq!(arguments(&call)["filePath"], "gamma.json");
 }
 
 #[test]

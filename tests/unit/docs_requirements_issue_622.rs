@@ -12,11 +12,18 @@ fn issue_622_wrapper_docs_match_current_cli_seed_behavior() {
         .find(|integration| integration.id == "codex")
         .expect("codex integration");
 
-    let sandbox_window = codex.invocation.args.windows(3).any(|args| {
-        args[0] == "--skip-git-repo-check" && args[1] == "--sandbox" && args[2] == "read-only"
-    });
+    let exec_window = codex
+        .invocation
+        .non_interactive_args
+        .windows(2)
+        .any(|args| args == ["exec", "--skip-git-repo-check"]);
+    let sandbox_window = codex
+        .invocation
+        .args
+        .windows(2)
+        .any(|args| args == ["--sandbox", "read-only"]);
     assert!(
-        sandbox_window,
+        exec_window && sandbox_window,
         "Codex one-shot wrapper should match the documented git and sandbox flags"
     );
 

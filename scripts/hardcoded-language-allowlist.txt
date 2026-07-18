@@ -12,14 +12,19 @@
 # named vocabulary) and delete its row. Regenerate after a legitimate migration
 # with: rust-script scripts/check-hardcoded-language.rs --write
 
+src/agentic_coding/associative_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 686 memory as an associative links network, perform bounded multi-hop recall, rank expressions by reads, writes, incoming links, and outgoing links, retain validation warnings, and write associative-learning-report.lino.
 src/agentic_coding/change_request.rs	I want to change Formal AI itself: please add a new capability to the system, and route my request through the same human-gated review loop that produces a requirement, a test, and a patch plan I can review as a pull request.
-src/agentic_coding/diagram.rs	A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\nCLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\ndetails what happens for input handled by that recipe — the deterministic\n`search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n
+src/agentic_coding/code_artifact.rs	Created `{}` through the workspace file tools.
+src/agentic_coding/code_artifact.rs	No matching source fragment was found in `{}`.
+src/agentic_coding/code_rewrite_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 715 workspace-rewrite failures as an associative links network, rank the observations and normal-algorithm amendments, keep promotion human-review gated, and write code-rewrite-learning-report.lino.
+src/agentic_coding/diagram.rs	A high-level, split-into-parts visual overview of how Formal AI drives its own agentic\nCLI to complete a task. Part 1 shows how a request is routed to a recipe; each later part\ndetails what happens for input handled by that recipe — the deterministic\n`search -> fetch -> write -> verify -> final` state machine in `src/agentic_coding/`.\n\nScope: these diagrams cover the issue #468/#538 recipe slice. The planner also routes\nself-heal, dreaming-audit, source-graph, ledger, explain, change-request, repair-strategy,\nrebuild, Google-Trends learning/catalog, question-catalog, and the general capability\nrouter — the `otherwise` edge in Part 1 stands for all of them.\n
 src/agentic_coding/diagram.rs	Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools.
 src/agentic_coding/dreaming_audit.rs	Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, identify every implementation gap from amendment application through replay, pattern learning, storage consent, and idle runtime, then record the generalization that resolves each gap as Links Notation in dreaming-gap-analysis.lino.
 src/agentic_coding/driver.rs	Fetch the text at a URL. Arguments: {\"url\": string}.
 src/agentic_coding/driver.rs	Run an allowlisted command in the workspace. Arguments: {\"command\": string}.
 src/agentic_coding/driver.rs	Search the web for sources. Arguments: {\"query\": string}.
 src/agentic_coding/driver.rs	Write a workspace file. Arguments: {\"path\": string, \"content\": string}.
+src/agentic_coding/execution_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino.
 src/agentic_coding/explain.rs	Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.
 src/agentic_coding/file_read.rs	I can read `{path}` when the client advertises a file read tool or a shell tool.
 src/agentic_coding/file_read.rs	I can read the selected file after listing when the client advertises a read or shell tool.
@@ -30,6 +35,9 @@ src/agentic_coding/google_trends_learning.rs	Collect the Google Trends learning 
 src/agentic_coding/intent_router.rs	Edited `{target}`: replaced `{old}` with `{new}`.
 src/agentic_coding/intent_router.rs	Fetched `{url}`.
 src/agentic_coding/intent_router.rs	Searched the web for `{query}`.
+src/agentic_coding/learning_report.rs	Formal AI persisted and ranked {expressions} {subject} through the associative auto-learning pipeline; the reproducible Links Notation report is in {path}.
+src/agentic_coding/learning_report.rs	Formal AI ranked {expressions} {subject}; the human-review-gated report is in {path}.
+src/agentic_coding/learning_report/self_hosting_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino.
 src/agentic_coding/ledger.rs	Promote the approved lesson into your learning ledger and record the approved learning record in Links Notation so a repeated failure is answered from the ledger next time.
 src/agentic_coding/meaning_detail.rs	Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.
 src/agentic_coding/meaning_detail.rs	Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.
@@ -38,8 +46,10 @@ src/agentic_coding/planner.rs	The `{command}` command completed with no output.
 src/agentic_coding/question_catalog.rs	Generate all possible questions from smallest to largest, drawing words from the frequency-tiered vocabulary, classify each candidate as grammatical or not and, among the grammatical ones, logically meaningful or not, then answer the meaningful ones and record the whole question catalog in Links Notation.
 src/agentic_coding/rebuild_plan.rs	An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.
 src/agentic_coding/repair_strategy.rs	Classify a failure and decide which part to repair: given a failure trace the system could not answer, determine whether the repair is a solver method, a data record, or a test change, then compose the grounded, human-gated repair strategy for it — for every class of failure, not just one.
+src/agentic_coding/routing_learning.rs	Use Formal AI auto-learning to inspect the persisted issue 712 tool-routing failures as an associative links network, rank the observations and semantic-frame amendments, keep the result human-review gated, and write tool-routing-learning-report.lino.
 src/agentic_coding/self_ast.rs	Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
+src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
 src/agentic_coding/source_graph.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
 src/calculation.rs	Interpreted \"{}\" as \"{}\".
 src/calculation_word_problem.rs	Box {id} = {factor} * {source_value} = {value} {result_label}.
@@ -56,6 +66,15 @@ src/change_request.rs	Accepted change `{}` for request \"{}\": requirement \"{}\
 src/change_request.rs	Change request `{}` maps onto {} (content id {}); it derives the requirement \"{}\", proposes test `{}`, and a {}-step patch plan — human-gated, reviewable as a pull request.
 src/change_request.rs	Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.
 src/change_request.rs	The system must {}.
+src/cli_improve.rs	Appended {appended} promotion event(s) to {}; total now {}.
+src/cli_improve.rs	Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s).
+src/cli_improve.rs	Materialized {} ({} byte(s)) at {}.
+src/cli_improve.rs	Preserved {} rejected proposal(s) as failure record(s); their edits were NOT applied.
+src/cli_improve.rs	Promotion replay: {} considered, {promoted} promoted, {rejected} rejected.
+src/cli_improve.rs	Refusing to {action} without --confirm. Rerun with --apply --confirm (and preferably --backup).
+src/cli_improve.rs	Replaying coding-modification, industry, and unit-specification gates from canonical commands...
+src/cli_improve.rs	Wrote full-memory backup with {} event(s) to {}.
+src/cli_improve.rs	formal-ai improve — benchmark-gated promotion of self-improvement proposals (issue #656).\n\nPass --promote to replay open proposals against their benchmark ratchets and print the\npromotion plan (dry run; touches no files). Add --apply --confirm to materialize the\naccepted `.lino` seed edits onto a local review branch in --seed-root. Promotion never\npushes: commit/draft-PR steps require human review, and rejected proposals are kept as\nfailure records.
 src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
@@ -164,6 +183,8 @@ src/meta_self_improvement.rs	Propose citing undescribed pipeline stage(s): {add}
 src/meta_self_improvement.rs	Propose citing {add}; propose dropping stale citation(s): {drop}.
 src/meta_self_improvement.rs	Propose dropping stale recipe citation(s): {drop}.
 src/meta_self_improvement.rs	The recipe already describes every pipeline stage; no update proposed.
+src/promotion.rs	Promote learned `reverse` modifier for the list-files program plan.
+src/promotion.rs	Reject an under-benchmarked rewrite that regresses the coding-modification floor.
 src/proof_engine/arithmetic.rs	Compare the two values: {lhs_value} {} {rhs_value}.
 src/proof_engine/arithmetic.rs	Could not evaluate either side as a closed arithmetic expression: left side reported \"{left}\"; right side reported \"{right}\". The proof engine needs both sides to reduce to numeric values.
 src/proof_engine/arithmetic.rs	Could not evaluate the left side as a closed arithmetic expression: \"{left}\". Restate it with numeric literals and the operators + - * / ( ).
@@ -467,6 +488,7 @@ src/solver_handlers/calendar.rs	Создать событие «{title}» на {
 src/solver_handlers/calendar.rs	आज {} है, {iso_date} ({time_zone}).
 src/solver_handlers/compound_interest.rs	I calculated the USD amount, but no {source_currency}->{target_currency} exchange rate is available locally.
 src/solver_handlers/compound_interest.rs	Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator.
+src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 src/solver_handlers/conversation_memory/memory_write.rs	Replaced \"{old_value}\" with \"{new_value}\" in memory ({applied} occurrence(s) updated).
 src/solver_handlers/conversation_memory/memory_write.rs	Заменил \"{old_value}\" на \"{new_value}\" в памяти (обновлено вхождений: {applied}).
 src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n

@@ -1,4 +1,159 @@
 meanings
+  nondeterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "nondeterministic"
+  normal
+    defined-by concept
+    lexeme en
+      surface
+        text "normal"
+  normalize
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize"
+  normalize_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "normalize whitespace"
+  npm
+    defined-by token
+    lexeme en
+      surface
+        text "npm"
+  npx
+    defined-by token
+    lexeme en
+      surface
+        text "npx"
+  number_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "number lines"
+  official-docs
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official docs"
+  official-repository
+    defined-by source_kind
+    lexeme en
+      surface
+        text "official repository"
+  olleh
+    defined-by concept
+    lexeme en
+      surface
+        text "olleh"
+  one-paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  one_paragraph
+    defined-by concept
+    lexeme en
+      surface
+        text "one paragraph"
+  open_textbook
+    defined-by kind
+    lexeme en
+      surface
+        text "open textbook"
+  openai
+    defined-by word_surface
+    lexeme en
+      surface
+        text "openai"
+  original_journalism
+    defined-by kind
+    lexeme en
+      surface
+        text "original journalism"
+  originality
+    defined-by word_surface
+    lexeme en
+      surface
+        text "originality"
+  outdent
+    defined-by concept
+    lexeme en
+      surface
+        text "outdent"
+  outdent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "outdent lines"
+  owlbear
+    defined-by word_surface
+    lexeme en
+      surface
+        text "owlbear"
+  package-management
+    defined-by category
+    lexeme en
+      surface
+        text "package management"
+  paper
+    defined-by word_surface
+    lexeme en
+      surface
+        text "paper"
+  pascal
+    defined-by concept
+    lexeme en
+      surface
+        text "pascal"
+  pascal_case
+    defined-by operation
+    lexeme en
+      surface
+        text "pascal case"
+  passage
+    defined-by word_surface
+    lexeme en
+      surface
+        text "passage"
+  path_argument
+    defined-by operation
+    lexeme en
+      surface
+        text "path argument"
+  path_argument_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files"
+  path_argument_list_files_reverse_sort
+    defined-by rule
+    lexeme en
+      surface
+        text "path argument list files reverse sort"
+  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
+  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
   pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
     defined-by prompt_pattern
     lexeme en
@@ -1069,6 +1224,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  preferred
+    defined-by concept
+    lexeme en
+      surface
+        text "preferred"
   prepend
     defined-by phrase
     lexeme en
@@ -1079,6 +1239,11 @@ meanings
     lexeme en
       surface
         text "prepend text"
+  problem
+    defined-by word_surface
+    lexeme en
+      surface
+        text "problem"
   program_plan_rules
     defined-by concept
     lexeme en
@@ -1110,7 +1275,7 @@ meanings
       surface
         text "proposal only"
   ps
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "ps"
@@ -1120,7 +1285,7 @@ meanings
       surface
         text "punctuation"
   pwd
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "pwd"
@@ -1159,6 +1324,21 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remainder
+    defined-by concept
+    lexeme en
+      surface
+        text "remainder"
+  remix
+    defined-by concept
+    lexeme en
+      surface
+        text "remix"
+  remix-icon
+    defined-by concept
+    lexeme en
+      surface
+        text "remix icon"
   remove_punctuation
     defined-by operation
     lexeme en
@@ -1214,183 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agent suggestion hi"
-  response_agent_suggestion_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion ru"
-  response_agent_suggestion_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion zh"
-  response_assistant_free_time_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time en"
-  response_assistant_free_time_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time hi"
-  response_assistant_free_time_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time ru"
-  response_assistant_free_time_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time zh"
-  response_assistant_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name en"
-  response_assistant_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name hi"
-  response_assistant_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name ru"
-  response_assistant_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name zh"
-  response_capabilities_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities en"
-  response_capabilities_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities hi"
-  response_capabilities_more_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more en"
-  response_capabilities_more_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more hi"
-  response_capabilities_more_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more ru"
-  response_capabilities_more_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more zh"
-  response_capabilities_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities ru"
-  response_capabilities_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities zh"
-  response_clarification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification en"
-  response_clarification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification hi"
-  response_clarification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification ru"
-  response_clarification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification zh"
-  response_concept_lookup_in_context_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context en"
-  response_concept_lookup_in_context_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context hi"
-  response_concept_lookup_in_context_no_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias en"
-  response_concept_lookup_in_context_no_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"
-  response_courtesy_response_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response en"
-  response_courtesy_response_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response hi"
-  response_courtesy_response_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response ru"
-  response_courtesy_response_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response zh"
-  response_document_originality_check_sample_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing en"
-  response_document_originality_check_sample_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing hi"

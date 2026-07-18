@@ -29,6 +29,9 @@ on:
         required: false
         type: string
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   # Cancel superseded runs on PR branches to save CI minutes, but never cancel a
@@ -39,6 +42,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: '10'
+  CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
   # Support both CARGO_REGISTRY_TOKEN (cargo's native env var) and CARGO_TOKEN (for backwards compatibility)
@@ -77,6 +85,7 @@ jobs:
         id: changes
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
 
   # === CHANGELOG CHECK - only runs on PRs with code changes ===
@@ -158,6 +167,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -184,10 +194,31 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
+      # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
+      # Build the same public API docs deployed by Pages before release so a
+      # broken link cannot first surface after packages have been published.
+      - name: Validate Rust API documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --lib
+
+      # docs.rs builds with DOCS_RS set. Its transitive lindera-jieba build
+      # script is currently broken in that mode (lindera/lindera#750), so the
+      # published docs profile deliberately omits the optional meta-language
+      # runtime while normal/default builds retain it. Exercise that exact
+      # profile before a crate can be released.
+      - name: Validate docs.rs dependency profile
+        env:
+          DOCS_RS: 1
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --lib --no-default-features
+
       - name: Check semantic grounding
         run: cargo test --test unit semantic_grounding -- --nocapture
 
       - name: Check file size limit
+        env:
+          FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
 
       # Issue #659 (R379): fail the build when src/ gains user-facing prose
@@ -198,6 +229,24 @@ jobs:
       # docs/design/no-hardcoded-natural-language.md.
       - name: Check hardcoded natural language
         run: rust-script scripts/check-hardcoded-language.rs
+
+      - name: Check worker JS line budget
+        run: rust-script scripts/check-worker-line-budget.rs
+
+      - name: Build Rust→WASM worker
+        run: sh src/web/wasm-worker/build.sh
+
+      - name: Check wasm-worker size budget
+        run: rust-script scripts/check-wasm-worker-size.rs
+
+      - name: Test release changelog collection
+        run: rust-script --test scripts/version-and-commit.rs
+
+      - name: Test fragment release map regeneration
+        run: node --test experiments/issue_738_fragment_release_map.test.mjs
+
+      - name: Check reconstructed changelog
+        run: node experiments/issue_711_rebuild_changelog.mjs --check
 
       - name: Install web bundle dependencies
         run: bun install --frozen-lockfile
@@ -363,11 +412,37 @@ jobs:
       - name: Generate code coverage
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+      - name: Retain LCOV report
+        uses: actions/upload-artifact@v7
         with:
+          name: rust-lcov
+          path: lcov.info
+          if-no-files-found: error
+
+      - name: Detect Codecov configuration
+        id: codecov-config
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [[ -n "$CODECOV_TOKEN" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload coverage to Codecov when configured
+        if: steps.codecov-config.outputs.configured == 'true'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
-          fail_ci_if_error: false
+          disable_search: true
+          plugins: noop
+          fail_ci_if_error: true
+
+      - name: Report optional Codecov integration status
+        if: steps.codecov-config.outputs.configured != 'true'
+        run: echo "::notice title=Codecov upload not configured::The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload."
 
   # === BUILD ===
   # Build package - only runs if lint and test pass
@@ -486,6 +561,20 @@ jobs:
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
+
+      # Same "No space left on device" runner crash as issue #523, which was only
+      # fixed for the Pages job. `Build release` above already filled `/` with a
+      # multi-GB `target/`, and the Docker build below compiles the crate a second
+      # time inside the image on top of a large base image. Without this the runner
+      # dies mid-build-push: the crate is published to crates.io but no image and
+      # no GitHub Release are produced (runs 29312084458 and 29485000765).
+      - name: Free up runner disk space
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: bash scripts/free-runner-disk.sh
 
       - name: Log in to GitHub Container Registry
         if: |
@@ -616,6 +705,7 @@ jobs:
           release_args=(
             --release-version "$RELEASE_VERSION"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
@@ -675,9 +765,6 @@ jobs:
       - name: Configure git
         run: rust-script scripts/git-config.rs
 
-      - name: Collect changelog fragments
-        run: rust-script scripts/collect-changelog.rs
-
       - name: Version and commit
         id: version
         env:
@@ -703,6 +790,15 @@ jobs:
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
+
+      # See the auto-release job: the Docker build below needs headroom that
+      # `Build release` has already consumed.
+      - name: Free up runner disk space
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: bash scripts/free-runner-disk.sh
 
       - name: Log in to GitHub Container Registry
         if: |
@@ -821,6 +917,7 @@ jobs:
           release_args=(
             --release-version "${{ steps.version.outputs.new_version }}"
             --repository "${{ github.repository }}"
+            --self-hosting-ledger data/meta/self-hosting-ledger.lino
           )
           release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
@@ -895,7 +992,7 @@ jobs:
   # Serve src/web with a local HTTP server and run Playwright tests against it.
   # Runs on every PR so regressions are caught before merge.
   test-e2e-local:
-    name: E2E Tests (local demo)
+    name: E2E Tests (local web app)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [detect-changes]
@@ -1017,6 +1114,13 @@ jobs:
           bun add -g @link-assistant/agent
           echo "$HOME/.bun/bin" >> $GITHUB_PATH
 
+      - name: Install opencode CLI
+        # A second, independently-implemented harness. The issue-715 learning E2E
+        # drives both and diffs the artifacts, which only tests harness parity if
+        # both are really here — so this install is not optional, and the script
+        # fails rather than skipping when a CLI is missing.
+        run: bun add -g opencode-ai
+
       - name: Build formal-ai (release)
         # The E2E script runs against target/release/formal-ai — that's the
         # binary users invoke as `formal-ai serve`. Release mode also matches
@@ -1073,7 +1177,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+      - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"
         # The user directive from issue #499 — "here you can learn the trending
         # topics from Google Trends" — is itself the task. It routes through the
         # seed learning_sources registry into the same write → verify → final
@@ -1087,7 +1191,7 @@ jobs:
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Run agent CLI E2E — general unpinned change plan (issue #654)
+      - name: "Run agent CLI E2E — general unpinned change plan (issue #654)"
         # No `*_TASK` constant names this request. The fallback planner derives the
         # target, literal payload, evidence, and verification command from the
         # formalized requirement, writes its plan event first, then executes it.
@@ -1099,7 +1203,113 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
-      - name: Replay Hive Mind self-coding inner loop (issue #655)
+      - name: "Run agent CLI E2E — file-creation routes to write not read (issue #681)"
+        # The exact reproduction from issue #681: a "create a file … with the
+        # content …" request used to emit a `read` on the not-yet-existing target
+        # and finish with "File not found", writing nothing. Driven live through
+        # the real CLI, the request must now walk the write/create plan (write plan
+        # → write target → verify → final = 4 posts) and leave hello.txt on disk
+        # carrying its content — never a read of the file it was asked to create.
+        env:
+          PORT: 8775
+          TASK: "Create a file named hello.txt with the content hello world"
+          EXPECT_FILE: hello.txt
+          EXPECT_TEXT: hello world
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: "Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)"
+        # Use wording different from the captured case-study run. Mentioning an
+        # existing issue beside a file request must drive the complete write plan,
+        # never the report router's real `gh issue create` side effect.
+        env:
+          PORT: 8781
+          TASK: "For existing issue-730, create file issue-730-finding.md containing provenance paths are portable"
+          EXPECT_FILE: issue-730-finding.md
+          EXPECT_TEXT: provenance paths are portable
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
+        # The exact screenshot reproduction must create the source in the real
+        # Agent CLI workspace, then ask that harness to compile and run it. The
+        # request trace preserves both shell calls so a prose-only response or
+        # server-private execution cannot satisfy this check.
+        env:
+          PORT: 8776
+          TASK: "Give me hello world program in Rust"
+          EXPECT_FILE: main.rs
+          EXPECT_TEXT: "Hello, world!"
+          MIN_POSTS: 4
+          EXPECT_SERVER_TEXTS: |-
+            rustc main.rs -o main
+            ./main
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: "Run agent CLI E2E — auto-learn client execution architecture (issue #716)"
+        # Replay the same investigation through Formal AI's associative-memory
+        # adapter and real Agent CLI tools. The report remains review-gated; its
+        # evidence links make the architectural promotion auditable.
+        env:
+          PORT: 8777
+          TASK: "Use Formal AI auto-learning to inspect the persisted issue 716 client-execution failures as an associative links network, rank the observations and architectural amendments, keep promotion human-review gated, and write client-execution-learning-report.lino."
+          EXPECT_FILE: client-execution-learning-report.lino
+          EXPECT_TEXT: "lesson:typed-execution-artifact"
+          MIN_POSTS: 3
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: "Run agent CLI E2E — declarative new-file phrasing (issue #712)"
+        # The exact declarative shape from issue #712 previously fell through to
+        # the read router. The live CLI must execute the complete write plan and
+        # leave the requested file behind, proving this is more than a response-
+        # serialization fix.
+        env:
+          PORT: 8776
+          TASK: "new file: notes.txt, contents: hello"
+          EXPECT_FILE: notes.txt
+          EXPECT_TEXT: hello
+          MIN_POSTS: 4
+        run: experiments/agent_cli_e2e/run_agent_cli.sh
+
+      - name: "Run agent CLI E2E — report action executes gh (issue #714)"
+        timeout-minutes: 3
+        env:
+          PORT: 8780
+        run: experiments/issue_714_agentic_mode/run_report_e2e.sh
+
+      - name: "Run agent CLI E2E — research, report, recall, and learn (issue #687)"
+        # Continue four natural-language turns in one real Agent CLI session.
+        # A PATH-local fake gh proves shell execution without mutating GitHub.
+        env:
+          PORT: 8776
+        run: experiments/agent_cli_e2e/run_issue_687.sh
+
+      - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
+        # The derived report names its own promotion gate
+        # `..._and_agent_cli_e2e_pass`, so the gate is only honest if a real
+        # external Agent CLI runs the task — until this step it had only ever run
+        # in formal-ai's own in-process harness. Driving both CLIs and diffing the
+        # two reports byte for byte is what makes "all harnesses supported in the
+        # similar way" an assertion instead of a claim.
+        timeout-minutes: 5
+        env:
+          PORT: 8879
+        run: experiments/agent_cli_e2e/run_issue_715_learning.sh
+
+      - name: "Run agent CLI E2E — self-hosting auto-learning (issue #657)"
+        # The self-hosting metric measures the share of a release Formal AI
+        # authored, so deriving its own learning report only inside formal-ai's
+        # in-process harness would test the claim with the one harness that
+        # cannot show it. Here formal-ai serves as the model provider for both
+        # external CLIs — Formal AI executing issue #657's task using Formal AI,
+        # with no external model and no API key — and the two reports must match
+        # byte for byte.
+        timeout-minutes: 5
+        env:
+          PORT: 8881
+        run: experiments/agent_cli_e2e/run_issue_657_metric.sh
+
+      - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774
         run: |
@@ -1116,10 +1326,10 @@ jobs:
             /tmp/agent-out-*.log
           retention-days: 7
 
-  # === DEPLOY DEMO ===
-  # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
-  deploy-demo:
-    name: Deploy Demo to GitHub Pages
+  # === DEPLOY WEB APP ===
+  # Deploy the production web app from src/web/ to GitHub Pages after a successful build.
+  deploy-pages:
+    name: Deploy Web App to GitHub Pages
     needs: [build, auto-release, manual-release]
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
@@ -1179,20 +1389,11 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Reclaim runner disk before the heavy doc build. The hosted ubuntu image
-      # ships with ~14 GB free on `/`; pre-installed SDKs we never touch (dotnet,
-      # Android, GHC, CodeQL) eat most of it. Removing them gives `cargo doc`
-      # plus the web bundle, the docs copy and the Pages artifact tar enough
-      # headroom and prevents the "No space left on device" runner crash that
-      # failed this job in issue #523.
+      # Reclaim runner disk before the heavy doc build: `cargo doc` plus the web
+      # bundle, the docs copy and the Pages artifact tar need headroom, and
+      # without this the runner crashed with "No space left on device" (#523).
       - name: Free up runner disk space
-        run: |
-          echo "Disk usage before cleanup:"
-          df -h /
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
-          sudo docker image prune --all --force >/dev/null 2>&1 || true
-          echo "Disk usage after cleanup:"
-          df -h /
+        run: bash scripts/free-runner-disk.sh
 
       # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
       # `target/` directory. The other Rust jobs (notably `lint`, which runs
@@ -1213,10 +1414,12 @@ jobs:
             ${{ runner.os }}-cargo-docs-
 
       - name: Generate Rust API docs (cargo doc)
+        env:
+          RUSTDOCFLAGS: -D warnings
         run: |
           # Document just the library (lib name: formal_ai). --no-deps keeps the
-          # output small and fast; RUSTDOCFLAGS is unset so doc-link warnings do
-          # not fail the deploy.
+          # output small and fast. Keep rustdoc fail-closed just like rustc so a
+          # green Pages deployment cannot conceal broken API links or markup.
           cargo doc --no-deps --lib
           # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
           # redirect so /docs/api/ lands on the crate root instead of 404ing.
@@ -1268,15 +1471,19 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
+        env:
+          # deploy-pages v5 still imports core punycode. Keep every other Node
+          # warning visible while upstream issue #434 removes this dependency.
+          NODE_OPTIONS: --disable-warning=DEP0040
 
   # === E2E TESTS (GITHUB PAGES) ===
   # Run Playwright tests against the live GitHub Pages URL after deployment.
   test-e2e-pages:
     name: E2E Tests (GitHub Pages)
-    needs: [deploy-demo]
+    needs: [deploy-pages]
     if: |
       !cancelled() &&
-      needs.deploy-demo.result == 'success'
+      needs.deploy-pages.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -1301,13 +1508,13 @@ jobs:
 
       - name: Wait for GitHub Pages deployment
         env:
-          PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}
-        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-demo.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
+          PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}
+        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-pages.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
 
       - name: Run GitHub Pages e2e tests
         run: |
           cd tests/e2e
-          PAGES_URL="${{ needs.deploy-demo.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
+          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
 
       - name: Upload Playwright report on failure
         if: failure()

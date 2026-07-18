@@ -1,0 +1,12 @@
+bun add v1.3.14 (0d9b296a)
+Resolving dependencies
+Resolved, downloaded and extracted [470]
+warn: incorrect peer dependency "solid-js@1.9.14"
+Saved lockfile
+
+installed @link-assistant/agent@0.25.0 with binaries:
+ - agent
+
+505 packages installed [163.66s]
+
+Blocked 2 postinstalls. Run `bun pm untrusted` for details.

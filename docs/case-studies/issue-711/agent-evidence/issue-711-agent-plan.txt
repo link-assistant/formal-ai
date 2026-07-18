@@ -1,0 +1,1 @@
+reproduce stale fragment reuse; delete consumed fragments only after CHANGELOG succeeds; stage deletions; prove a second collection is empty; reconstruct every historical fragment exactly once from Git release trees

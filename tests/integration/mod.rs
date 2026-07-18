@@ -1,4 +1,5 @@
 mod formal_ai_cli;
+mod http_client;
 mod http_server;
 mod issue_349_reverse_sort;
 mod issue_386_cancel_sort;
@@ -17,7 +18,12 @@ mod issue_558_self_explanation;
 mod issue_558_self_healing;
 mod issue_558_source_graph;
 mod issue_624_agent_mode;
+mod issue_656_improve;
 mod issue_680_intent_routing;
+mod issue_712_intent_routing;
+mod issue_714_agentic_mode;
+mod issue_716_agentic_execution;
+mod issue_744_qwen_tool_schema;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

@@ -10,6 +10,7 @@ const path = require("node:path");
 const { URL } = require("node:url");
 
 const { createToolRouter, SUPPORTED_TOOLS } = require("./lib/tool-router.cjs");
+const { createWebTools } = require("./lib/web-tools.cjs");
 const { createAgentProvider } = require("./lib/agent-provider.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
@@ -36,6 +37,18 @@ const {
 } = require("./lib/local-server.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
+
+function packagedBrowserExecutable() {
+  if (!app.isPackaged) return "";
+  const browserRoot = path.join(process.resourcesPath, "browser-runtime");
+  try {
+    const relative = fs.readFileSync(path.join(browserRoot, "executable-path.txt"), "utf8").trim();
+    const executable = path.resolve(browserRoot, relative);
+    return executable.startsWith(browserRoot) && fs.existsSync(executable) ? executable : "";
+  } catch (_error) {
+    return "";
+  }
+}
 
 function desktopMemoryPath() {
   return process.env.FORMAL_AI_MEMORY_PATH || path.join(app.getPath("userData"), "formal-ai-memory.lino");
@@ -334,6 +347,7 @@ async function shutdown() {
     staticServer = null;
   }
   localServerManager.shutdown();
+  await webTools.close();
 }
 
 // R5d (ROADMAP D2): route the agent's side effects through the local process and
@@ -540,14 +554,19 @@ ipcMain.handle("formalAiDesktop:ensureAgentServer", async () => {
   }
 });
 
+const webTools = createWebTools({ browserExecutablePath: packagedBrowserExecutable() });
 const toolRouter = createToolRouter({
   fetchImpl: globalThis.fetch,
   readFile: (filePath) => fs.promises.readFile(filePath, "utf8"),
+  writeFile: (filePath, body) => fs.promises.writeFile(filePath, body, "utf8"),
+  readDirectory: (directory) => fs.promises.readdir(directory, { withFileTypes: true }),
   allowedReadRoot: REPO_ROOT,
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,
   runOnHost,
+  webSearch: webTools.search,
+  webFetch: webTools.fetch,
 });
 
 // Issue #516 / E4: swappable execution seam. The in-process provider is the
@@ -567,6 +586,9 @@ const agentProvider = createAgentProvider({
 ipcMain.handle("formalAiDesktop:setToolGrants", (_event, grants) => toolRouter.setGrants(grants));
 ipcMain.handle("formalAiDesktop:invokeTool", async (_event, request) => {
   const tool = request && request.tool ? String(request.tool) : "";
+  if (toolRouter.isReadOnly(tool)) {
+    return toolRouter.invoke(request);
+  }
   if (!SUPPORTED_TOOLS.includes(tool) || !toolRouter.isPermitted(tool)) {
     return toolRouter.invoke(request);
   }

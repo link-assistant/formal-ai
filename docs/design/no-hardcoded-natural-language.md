@@ -96,8 +96,8 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    then another letter — i.e. two words a human reads). Dynamic values —
    `t(...)`, variables, ternaries, template literals — pass by construction, so
    the only way to render visible text is through the catalog. A short,
-   documented `ALLOWED_LITERALS` allowlist holds a handful of pre-i18n `<dt>`
-   labels coupled to other suites; **new prose must never be added there.** The
+   documented `ALLOWED_LITERALS` allowlist currently holds exactly one pre-i18n
+   label (`Tool calls`); **new prose must never be added there.** The
    companion `check-i18n-catalog.mjs` guard asserts every required key exists in
    all four locales (en/ru/zh/hi) and that representative interpolations render.
    Both run in `.github/workflows/release.yml` and locally with:

@@ -1,0 +1,162 @@
+diff --git a/data/seed/closure-generated-01.lino b/data/seed/closure-generated-01.lino
+index 720d5107..a91c32ad 100644
+--- a/data/seed/closure-generated-01.lino
++++ b/data/seed/closure-generated-01.lino
+@@ -102,10 +101,0 @@ meanings
+-  agent_action_report_subject
+-    defined-by concept
+-    lexeme en
+-      surface
+-        text "agent action report subject"
+-  agent_action_report_verb
+-    defined-by concept
+-    lexeme en
+-      surface
+-        text "agent action report verb"
+@@ -1396,0 +1387,10 @@ meanings
++  mv
++    defined-by token
++    lexeme en
++      surface
++        text "mv"
++  non-deterministic
++    defined-by word_surface
++    lexeme en
++      surface
++        text "non deterministic"
+diff --git a/data/seed/closure-generated-02.lino b/data/seed/closure-generated-02.lino
+index f7d52d7b..674d6512 100644
+--- a/data/seed/closure-generated-02.lino
++++ b/data/seed/closure-generated-02.lino
+@@ -2,10 +1,0 @@ meanings
+-  mv
+-    defined-by token
+-    lexeme en
+-      surface
+-        text "mv"
+-  non-deterministic
+-    defined-by word_surface
+-    lexeme en
+-      surface
+-        text "non deterministic"
+@@ -1336,0 +1327,5 @@ meanings
++  remainder
++    defined-by concept
++    lexeme en
++      surface
++        text "remainder"
+@@ -1396,0 +1392,5 @@ meanings
++  response_agent_suggestion_hi
++    defined-by response_template
++    lexeme en
++      surface
++        text "response agent suggestion hi"
+diff --git a/data/seed/closure-generated-03.lino b/data/seed/closure-generated-03.lino
+index e07af5c1..675bf86b 100644
+--- a/data/seed/closure-generated-03.lino
++++ b/data/seed/closure-generated-03.lino
+@@ -2,5 +1,0 @@ meanings
+-  response_agent_suggestion_hi
+-    defined-by response_template
+-    lexeme en
+-      surface
+-        text "response agent suggestion hi"
+@@ -536,0 +532,5 @@ meanings
++  rg
++    defined-by concept
++    lexeme en
++      surface
++        text "rg"
+diff --git a/data/seed/meanings-web-search-query.lino b/data/seed/meanings-web-search-query.lino
+index bea02a07..47c738b4 100644
+--- a/data/seed/meanings-web-search-query.lino
++++ b/data/seed/meanings-web-search-query.lino
+@@ -62 +62 @@ meanings
+-        text "google …"
++        text "google search for …"
+diff --git a/data/seed/roles.lino b/data/seed/roles.lino
+index a149ba1a..178459d6 100644
+--- a/data/seed/roles.lino
++++ b/data/seed/roles.lino
+@@ -171,0 +172,2 @@ roles
++  file_read_action_cue
++    kind predicate
+diff --git a/src/solver_handlers/web_requests.rs b/src/solver_handlers/web_requests.rs
+index c8398e1e..7a4c460e 100644
+--- a/src/solver_handlers/web_requests.rs
++++ b/src/solver_handlers/web_requests.rs
+@@ -871,0 +872,3 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
++        if probable_local_file_name(host_candidate) {
++            return None;
++        }
+@@ -889,0 +893,32 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
++/// Keep a schemeless local filename from becoming a synthetic HTTPS host.
++///
++/// Explicit `http(s)://` URLs remain authoritative even when their host uses an
++/// unusual suffix. This boundary only applies to the ambiguous bare-token form.
++fn probable_local_file_name(candidate: &str) -> bool {
++    let Some((_, extension)) = candidate.rsplit_once('.') else {
++        return false;
++    };
++    matches!(
++        extension.to_ascii_lowercase().as_str(),
++        "txt"
++            | "md"
++            | "json"
++            | "yaml"
++            | "yml"
++            | "toml"
++            | "rs"
++            | "py"
++            | "js"
++            | "ts"
++            | "tsx"
++            | "jsx"
++            | "css"
++            | "html"
++            | "xml"
++            | "csv"
++            | "lino"
++            | "log"
++            | "sh"
++    )
++}
++
+diff --git a/tests/issue_745.rs b/tests/issue_745.rs
+index d9fdc49a..c2a43f4f 100644
+--- a/tests/issue_745.rs
++++ b/tests/issue_745.rs
+@@ -3,0 +4 @@ use formal_ai::protocol::ChatMessage;
++use formal_ai::FormalAiEngine;
+@@ -359 +360 @@ fn web_search_routes_action_variations_in_every_supported_language() {
+-            "google",
++            "google search for",
+@@ -433,0 +435 @@ fn reported_object_type_collisions_choose_the_right_capability() {
++        ("cat sample.txt", "read_file"),
+@@ -442,0 +445,14 @@ fn reported_object_type_collisions_choose_the_right_capability() {
++
++#[test]
++fn attachment_filenames_are_not_reinterpreted_as_bare_web_hosts() {
++    for prompt in [
++        "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)",
++        "Проверь приложенный текст на достоверность\n\nAttached files:\n1. novost.txt (text/plain, 4.0 KB)",
++    ] {
++        assert_eq!(
++            FormalAiEngine.answer(prompt).intent,
++            "document_originality_check",
++            "{prompt}"
++        );
++    }
++}
+diff --git a/tests/unit/issue_627.rs b/tests/unit/issue_627.rs
+index 6b39633f..7297d1c7 100644
+--- a/tests/unit/issue_627.rs
++++ b/tests/unit/issue_627.rs
+@@ -65 +65 @@ fn direct_file_read_prompts_emit_read_tool_calls() {
+-fn cat_file_prompt_uses_bash_in_agent_mode() {
++fn cat_file_prompt_uses_the_typed_read_capability() {
+@@ -69,2 +69,2 @@ fn cat_file_prompt_uses_bash_in_agent_mode() {
+-    assert_eq!(call.tool, "bash");
+-    assert_eq!(arguments(&call)["command"], "cat gamma.json");
++    assert_eq!(call.tool, "read");
++    assert_eq!(arguments(&call)["filePath"], "gamma.json");

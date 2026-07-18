@@ -255,18 +255,18 @@ test("commander provider maps read-only mode for all backends to read-only", () 
 
 test("commander provider maps desktop grants to coarse execution flags", () => {
   assert.equal(restrictionFromDesktopGrants(), "");
-  assert.equal(restrictionFromDesktopGrants({ all: false }), "plan-only");
+  assert.equal(restrictionFromDesktopGrants({ all: false }), "read-only");
   assert.equal(restrictionFromDesktopGrants({ read_local_file: true }), "read-only");
   assert.equal(restrictionFromDesktopGrants({ shell: true }), "approve-each");
   assert.equal(restrictionFromDesktopGrants({ all: true }), "approve-each");
 
-  const planOnlyArgs = buildCommanderArgs({
+  const readOnlyArgs = buildCommanderArgs({
     mode: "agent",
     prompt: "Create a file",
     grants: { all: false, shell: false },
   });
-  assert.ok(planOnlyArgs.includes("--plan-only"));
-  assert.ok(!planOnlyArgs.includes("--approve-each"));
+  assert.ok(readOnlyArgs.includes("--read-only"));
+  assert.ok(!readOnlyArgs.includes("--approve-each"));
 });
 
 test("read-only shell command detection covers the first terminal journey", () => {
