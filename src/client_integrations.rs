@@ -368,7 +368,8 @@ fn run_ephemeral(
     });
     let server_log = std::env::var_os("FORMAL_AI_PROXY_LOG")
         .map(PathBuf::from)
-        .filter(|path| path.exists());
+        .filter(|path| path.exists())
+        .map(|path| fs::canonicalize(&path).unwrap_or(path));
     print_session_files(integration, session_file.as_deref(), server_log.as_deref());
     let preserve_temp = session_file
         .as_deref()

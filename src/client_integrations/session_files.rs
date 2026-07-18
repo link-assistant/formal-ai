@@ -170,6 +170,11 @@ fn session_id(path: &Path) -> Option<String> {
         .take(256 * 1024)
         .read_to_string(&mut contents)
         .ok()?;
+    if let Ok(value) = serde_json::from_str::<Value>(&contents) {
+        if let Some(id) = find_session_id(&value) {
+            return Some(id);
+        }
+    }
     for line in contents.lines().take(64) {
         let Ok(value) = serde_json::from_str::<Value>(line) else {
             continue;
@@ -185,18 +190,20 @@ fn session_id(path: &Path) -> Option<String> {
 }
 
 fn find_session_id(value: &Value) -> Option<String> {
-    let object = value.as_object()?;
-    for key in ["sessionId", "session_id"] {
-        if let Some(id) = object.get(key).and_then(Value::as_str) {
-            return Some(id.to_string());
+    if let Some(object) = value.as_object() {
+        for key in ["sessionId", "session_id"] {
+            if let Some(id) = object.get(key).and_then(Value::as_str) {
+                return Some(id.to_string());
+            }
         }
-    }
-    if value.get("type").and_then(Value::as_str) == Some("session_meta") {
-        if let Some(id) = value.pointer("/payload/id").and_then(Value::as_str) {
-            return Some(id.to_string());
+        if value.get("type").and_then(Value::as_str) == Some("session_meta") {
+            if let Some(id) = value.pointer("/payload/id").and_then(Value::as_str) {
+                return Some(id.to_string());
+            }
         }
+        return object.values().find_map(find_session_id);
     }
-    object.values().find_map(find_session_id)
+    value.as_array()?.iter().find_map(find_session_id)
 }
 
 fn looks_like_uuid(value: &str) -> bool {

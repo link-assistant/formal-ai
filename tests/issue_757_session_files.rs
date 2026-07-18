@@ -57,6 +57,8 @@ esac
 mkdir -p "$dir"
 if [ "$tool" = opencode ]; then
   printf 'SQLite format 3\000' > "$file"
+elif [ "$tool" = gemini ]; then
+  printf '%s\n' '{' '  "records": [' '    {' "      \"sessionId\": \"$session_id\"" '    }' '  ]' '}' > "$file"
 else
   printf '%s\n' "{\"sessionId\":\"$session_id\"}" > "$file"
 fi
