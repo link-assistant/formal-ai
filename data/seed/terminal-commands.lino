@@ -51,6 +51,29 @@ terminal_commands
     verb 执行
     verb 跑一下
     verb 跑下
+  passthrough_prefixes
+    language en
+      prefix "run the command"
+      prefix "run bash"
+      prefix "run shell"
+      prefix "run powershell"
+      prefix execute
+      prefix run
+    language ru
+      prefix "выполни команду"
+      prefix "запусти команду"
+      prefix выполни
+      prefix запусти
+    language hi
+      prefix "कमांड चलाओ"
+      prefix चलाओ
+      prefix चलाएँ
+      prefix निष्पादित
+    language zh
+      prefix 执行命令
+      prefix 运行命令
+      prefix 执行
+      prefix 运行
   shell_tokens
     token ls
     token pwd
@@ -95,3 +118,26 @@ terminal_commands
     token make
     token docker
     token kubectl
+    token date
+    token env
+    token stat
+    token file
+    token id
+    token ln
+    token wc
+    token sort
+    token uniq
+    token cut
+    token tr
+    token ping
+    token rg
+    token bash
+    token powershell
+    token pwsh
+    token pnpm
+    token yarn
+    token bun
+    token poetry
+    token go
+    token mvn
+    token gradle

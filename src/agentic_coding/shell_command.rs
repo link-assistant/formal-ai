@@ -32,9 +32,48 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// natural language in the solver.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let vocab = seed::terminal_command_vocabulary();
-    named_shell_command(prompt, &vocab)
+    explicit_shell_command(prompt, &vocab)
+        .or_else(|| named_shell_command(prompt, &vocab))
         .or_else(|| asks_for_directory_listing(prompt).then(|| String::from("ls")))
         .or_else(|| intent_shell_command(prompt, &seed::shell_intent_vocabulary()))
+}
+
+/// Pass an explicitly introduced command through byte-for-byte (apart from
+/// surrounding whitespace). Explicit execution is an intent boundary: the
+/// command need not appear in a maintained binary allowlist because the client
+/// still owns its normal sandbox and permission decision.
+fn explicit_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+    let prompt = prompt.trim();
+    let lower = prompt.to_lowercase();
+    if let Some(prefix) = vocab
+        .passthrough_prefixes
+        .iter()
+        .filter(|prefix| prefix_boundary(&lower, prefix))
+        .max_by_key(|prefix| prefix.chars().count())
+    {
+        let remainder = prompt.get(prefix.len()..)?.trim_start();
+        let remainder = remainder
+            .strip_prefix(':')
+            .unwrap_or(remainder)
+            .trim_start();
+        return (!remainder.is_empty()).then(|| remainder.to_owned());
+    }
+
+    let first = prompt.split_whitespace().next()?;
+    let command = normalize_command_word(first);
+    vocab
+        .shell_tokens
+        .iter()
+        .any(|token| token == &command)
+        .then(|| prompt.to_owned())
+}
+
+fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
+    prompt.starts_with(prefix)
+        && prompt
+            .get(prefix.len()..)
+            .and_then(|rest| rest.chars().next())
+            .is_some_and(|c| c.is_whitespace() || c == ':')
 }
 
 /// Recover the literal subject of a seed-backed source-code search request.
