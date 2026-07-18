@@ -60,8 +60,8 @@ fn write_fake_cli(bin_dir: &Path, name: &str) {
   echo "OPENAI_BASE_URL=$OPENAI_BASE_URL"
   echo "OPENAI_API_BASE=$OPENAI_API_BASE"
   echo "OPENAI_MODEL=$OPENAI_MODEL"
-  echo "XAI_API_KEY=$XAI_API_KEY"
-  echo "XAI_BASE_URL=$XAI_BASE_URL"
+  echo "GROK_API_KEY=$GROK_API_KEY"
+  echo "GROK_BASE_URL=$GROK_BASE_URL"
   model_catalog_path=""
   for arg in "$@"; do
     case "$arg" in
@@ -158,6 +158,7 @@ fn run_with_capture(
         .env_remove("GEMINI_CLI_HOME")
         .env_remove("GOOGLE_GEMINI_BASE_URL")
         .env_remove("GOOGLE_VERTEX_BASE_URL")
+        .env_remove("GROK_API_KEY")
         .output()
         .expect("run formal-ai with")
 }
@@ -584,8 +585,8 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
                 assert!(captured.contains("arg[1]=formal-ai"));
             }
             "grok" => {
-                assert!(captured.contains("XAI_API_KEY=formal-ai"));
-                assert!(captured.contains("XAI_BASE_URL=http://127.0.0.1:8080/api/openai/v1"));
+                assert!(captured.contains("GROK_API_KEY=formal-ai-local"));
+                assert!(captured.contains("GROK_BASE_URL=http://127.0.0.1:8080/api/openai/v1"));
                 assert!(captured.contains("arg[0]=--model"));
                 assert!(captured.contains("arg[1]=formal-ai"));
             }
