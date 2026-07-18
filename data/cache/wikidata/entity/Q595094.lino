@@ -1,0 +1,16 @@
+Q595094
+  aliases
+    ru ("единоутробная сестра" "полнородная сестра" "родная сестра")
+    zh ("姐妹花" "姊妹")
+  descriptions
+    en "female sibling"
+    hi "महिला सहोदर"
+    ru "девочка/женщина тех же родителей"
+  id Q595094
+  labels
+    en sister
+    hi "बहन"
+    ru "сестра"
+    zh "姐妹"
+  type item
+success 1

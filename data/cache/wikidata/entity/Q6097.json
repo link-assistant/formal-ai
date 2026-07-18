@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q6097": {
+      "type": "item",
+      "id": "Q6097",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tea"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "чай"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चाय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "茶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "brewed drink made from tea leaves"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "напиток, получаемый варкой, завариванием и/или настаиванием листа чайного куста"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一種飲品"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "茶水"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,1 @@
+formal-ai proxy listening on http://127.0.0.1:8791 -> http://127.0.0.1:8790, logging to docs/case-studies/issue-749/cli-matrix/proxy.jsonl

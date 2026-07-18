@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q43663": {
+      "type": "item",
+      "id": "Q43663",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sock"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "носок"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जुराब"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "短襪"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "garment worn on foot and leg; made from materials like cotton, wool, or synthetics, they provide protection, warmth, comfort, and reduce friction inside shoes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "короткий чулок, не доходящий до колена"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "socks"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "носки"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "短袜"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

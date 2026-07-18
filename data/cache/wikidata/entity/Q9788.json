@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q9788": {
+      "type": "item",
+      "id": "Q9788",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "letter"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "буква"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अक्षर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "字母"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "grapheme in an alphabetic system of writing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "отдельный символ какого-либо алфавита, графема, монограф"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हिन्दी भाषा में प्रयुक्त सबसे छोटी इकाई"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "буквы"
+          },
+          {
+            "language": "ru",
+            "value": "литера"
+          },
+          {
+            "language": "ru",
+            "value": "монограф"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वर्ण विभाग"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

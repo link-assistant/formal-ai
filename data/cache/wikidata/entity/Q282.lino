@@ -1,0 +1,15 @@
+Q282
+  aliases
+    en (vino)
+  descriptions
+    en "alcoholic drink typically made from grapes through the fermentation process"
+    ru "алкогольный напиток"
+    zh "以葡萄為原材料釀造的酒"
+  id Q282
+  labels
+    en wine
+    hi "शराब"
+    ru "вино"
+    zh "葡萄酒"
+  type item
+success 1

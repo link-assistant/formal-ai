@@ -1,0 +1,16 @@
+Q12097
+  aliases
+    ru ("царь" "монарх")
+    zh ("君主")
+  descriptions
+    en "title given to the name of a male monarch"
+    ru "титул монарха"
+    zh "國王"
+  id Q12097
+  labels
+    en king
+    hi "राजा"
+    ru "король"
+    zh "王"
+  type item
+success 1

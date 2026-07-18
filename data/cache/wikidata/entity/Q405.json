@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "Q405": {
+      "type": "item",
+      "id": "Q405",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Moon"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Луна"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चन्द्रमा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "月球"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Earth's only natural satellite"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "естественный спутник Земли"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पृथ्वी का एकमात्र प्राकृतिक उपग्रह"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "地球唯一的天然衛星"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "The Moon"
+          },
+          {
+            "language": "en",
+            "value": "☾"
+          },
+          {
+            "language": "en",
+            "value": "Luna"
+          },
+          {
+            "language": "en",
+            "value": "☽"
+          },
+          {
+            "language": "en",
+            "value": "Earth I"
+          },
+          {
+            "language": "en",
+            "value": "Sol IIIa"
+          },
+          {
+            "language": "en",
+            "value": "moon"
+          },
+          {
+            "language": "en",
+            "value": "Lua"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Месяц"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चांद"
+          },
+          {
+            "language": "hi",
+            "value": "शशि"
+          },
+          {
+            "language": "hi",
+            "value": "सोम"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "月亮"
+          },
+          {
+            "language": "zh",
+            "value": "太陰"
+          },
+          {
+            "language": "zh",
+            "value": "月"
+          },
+          {
+            "language": "zh",
+            "value": "地卫一"
+          },
+          {
+            "language": "zh",
+            "value": "玄兔"
+          },
+          {
+            "language": "zh",
+            "value": "嬋娟"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

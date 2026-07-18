@@ -1,0 +1,16 @@
+Q1074
+  aliases
+    hi ("चर्म")
+    zh ("皮" "皮肤")
+  descriptions
+    en "soft outer covering organ of vertebrates"
+    ru "плёнка-покров позвоночных для защиты от вредоносного воздействия внешней среды"
+    zh "包住脊椎動物的軟層"
+  id Q1074
+  labels
+    en skin
+    hi "त्वचा"
+    ru "кожа"
+    zh "皮膚"
+  type item
+success 1

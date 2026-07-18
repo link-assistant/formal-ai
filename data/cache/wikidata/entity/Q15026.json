@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q15026": {
+      "type": "item",
+      "id": "Q15026",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "chair"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "стул"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कुर्सी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "椅"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "piece of furniture for sitting on"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мебельное изделие для сидения одного человека"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बैठने के लिए फर्नीचर का टुकड़ा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "椅子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "seat"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "座椅"
+          },
+          {
+            "language": "zh",
+            "value": "椅子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

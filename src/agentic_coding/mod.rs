@@ -84,6 +84,9 @@ pub use learning_report::hardcoded_language_learning::{
     is_hardcoded_language_learning_task, HARDCODED_LANGUAGE_LEARNING_PATH,
     HARDCODED_LANGUAGE_LEARNING_TASK,
 };
+pub use learning_report::lexeme_import_learning::{
+    is_lexeme_import_learning_task, LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK,
+};
 pub use learning_report::self_hosting_learning::{
     is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
 };

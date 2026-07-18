@@ -26,6 +26,11 @@ pub struct TerminalCommandVocabulary {
     pub run_verbs: Vec<String>,
     /// Chinese run/execute verbs (substring-matched — CJK has no word breaks).
     pub cjk_run_verbs: Vec<String>,
+    /// Explicit command-introducing prefixes whose complete remainder is passed
+    /// through without consulting the command-token vocabulary.
+    pub passthrough_prefixes: Vec<String>,
+    /// Unambiguous command tokens accepted without a run/execute prefix.
+    pub bare_shell_tokens: Vec<String>,
     /// Leading shell command tokens (e.g. `ls`, `git`).
     pub shell_tokens: Vec<String>,
 }
@@ -43,6 +48,10 @@ pub fn terminal_command_vocabulary() -> TerminalCommandVocabulary {
             "terminal_phrases" => vocab.terminal_phrases = collect_language_values(group, "phrase"),
             "run_verbs" => vocab.run_verbs = collect_language_values(group, "verb"),
             "cjk_run_verbs" => vocab.cjk_run_verbs = collect_values(group, "verb"),
+            "passthrough_prefixes" => {
+                vocab.passthrough_prefixes = collect_language_values(group, "prefix");
+            }
+            "bare_shell_tokens" => vocab.bare_shell_tokens = collect_values(group, "token"),
             "shell_tokens" => vocab.shell_tokens = collect_values(group, "token"),
             _ => {}
         }

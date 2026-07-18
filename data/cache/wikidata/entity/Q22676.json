@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Q22676": {
+      "type": "item",
+      "id": "Q22676",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "shoe"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "туфли"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शू"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鞋"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "footwear"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид обуви"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "保護人腳的一種物品"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "shoes"
+          },
+          {
+            "language": "en",
+            "value": "pair of shoes"
+          },
+          {
+            "language": "en",
+            "value": "footwear"
+          },
+          {
+            "language": "en",
+            "value": "foot gear"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лёгкая обувь"
+          },
+          {
+            "language": "ru",
+            "value": "туфля"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "जूता"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鞋底"
+          },
+          {
+            "language": "zh",
+            "value": "鞋子"
+          },
+          {
+            "language": "zh",
+            "value": "屨"
+          },
+          {
+            "language": "zh",
+            "value": "履"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,16 @@
+Q83180
+  aliases
+    ru ("чердак" "покрытие")
+    zh ("屋頂" "厝頂")
+  descriptions
+    en "top covering of a building"
+    ru "верхнее покрытие здания"
+    zh "房屋的頂蓋"
+  id Q83180
+  labels
+    en roof
+    hi "छत"
+    ru "крыша"
+    zh "屋顶"
+  type item
+success 1

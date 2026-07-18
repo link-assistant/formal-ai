@@ -1,0 +1,18 @@
+Q870
+  aliases
+    en ("railway train" "railroad train" railtrain "rail train" rail-train "🚆" trains)
+    hi ("ट्रेन" "लौह पथ गामिनी")
+    zh ("列車" "火車" "鐵路列車")
+  descriptions
+    en "form of rail transport consisting of a series of connected vehicles"
+    hi "रेल परिवहन का एक रूप जिसमें जुड़े हुए वाहनों की एक श्रृंखला शामिल होती है"
+    ru "состав сцепленных железнодорожных вагонов, приводимых в движение локомотивом или моторным вагоном"
+    zh "沿著固定軌道移動以運送乘客或貨物的一種或多種自行式車輛"
+  id Q870
+  labels
+    en train
+    hi "रेलगाड़ी"
+    ru "поезд"
+    zh "铁路列车"
+  type item
+success 1

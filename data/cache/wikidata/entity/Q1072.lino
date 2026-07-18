@@ -1,0 +1,17 @@
+Q1072
+  aliases
+    hi ("दिल")
+    zh ("心臟")
+  descriptions
+    en "inner organ for the circulation of blood"
+    hi "रक्त परिसंचरण तंत्र में रक्त के संचलन के लिए अंग"
+    ru "орган, обеспечивающий ток крови по кровеносным сосудам"
+    zh "较高等动物循环系统中一个主要器官"
+  id Q1072
+  labels
+    en heart
+    hi "हृदय"
+    ru "сердце"
+    zh "心脏"
+  type item
+success 1

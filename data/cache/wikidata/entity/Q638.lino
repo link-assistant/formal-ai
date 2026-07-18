@@ -1,0 +1,18 @@
+Q638
+  aliases
+    en ("musical art")
+    hi ("संगीत" "म्यूजिक")
+    zh ("樂律")
+  descriptions
+    en "art using sound"
+    hi "रसवान ध्वनि तथा कला का एक रूप"
+    ru "искусство, средство воплощения художественных образов"
+    zh "以聲音為媒介的藝術形式和文化活動"
+  id Q638
+  labels
+    en music
+    hi "सङ्गीत"
+    ru "музыка"
+    zh "音樂"
+  type item
+success 1

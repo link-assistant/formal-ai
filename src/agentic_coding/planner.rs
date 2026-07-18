@@ -229,9 +229,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(file_task) = file_read_task_for(&task) {
-        return Some(plan_file_read_step(&file_task, messages, tool_names));
-    }
     if let Some(query) = shell_command::code_search_query_for_task(&task) {
         if let Some(tool) = shell_command::code_search_tool_for(tool_names) {
             return Some(plan_one(
@@ -242,6 +239,9 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
+    }
+    if let Some(file_task) = file_read_task_for(&task) {
+        return Some(plan_file_read_step(&file_task, messages, tool_names));
     }
     if is_formalization_task(&task) {
         return Some(plan_formalization_step(messages, tool_names));

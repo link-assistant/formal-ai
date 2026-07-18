@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q36864": {
+      "type": "item",
+      "id": "Q36864",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "nail"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ногти"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाखून"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "指甲"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "hard projection of digit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "роговые пластины"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शारिरिक अंग"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "unguis"
+          },
+          {
+            "language": "en",
+            "value": "onychium"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ноготь"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "趾甲"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

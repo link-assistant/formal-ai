@@ -164,6 +164,11 @@ meanings
     lexeme en
       surface
         text "article"
+  as
+    defined-by concept
+    lexeme en
+      surface
+        text "as"
   assistant_free_time
     defined-by intent
     lexeme en
@@ -294,6 +299,11 @@ meanings
     lexeme en
       surface
         text "bundle root header"
+  called
+    defined-by concept
+    lexeme en
+      surface
+        text "called"
   camel
     defined-by concept
     lexeme en
@@ -509,6 +519,11 @@ meanings
     lexeme en
       surface
         text "copied"
+  copy
+    defined-by concept
+    lexeme en
+      surface
+        text "copy"
   coreference_program_artifact
     defined-by intent
     lexeme en
@@ -565,7 +580,7 @@ meanings
       surface
         text "courtesy response"
   cp
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "cp"
@@ -654,6 +669,11 @@ meanings
     lexeme en
       surface
         text "did"
+  directory
+    defined-by concept
+    lexeme en
+      surface
+        text "directory"
   dirven
     defined-by word_surface
     lexeme en
@@ -734,6 +754,11 @@ meanings
     lexeme en
       surface
         text "enumerate possessive"
+  env
+    defined-by concept
+    lexeme en
+      surface
+        text "env"
   essay
     defined-by word_surface
     lexeme en
@@ -829,6 +854,11 @@ meanings
     lexeme en
       surface
         text "fizzbuzz"
+  folder
+    defined-by concept
+    lexeme en
+      surface
+        text "folder"
   fontawesome
     defined-by concept
     lexeme en
@@ -905,7 +935,7 @@ meanings
       surface
         text "grammar context"
   grep
-    defined-by token
+    defined-by concept
     lexeme en
       surface
         text "grep"
@@ -1239,158 +1269,128 @@ meanings
     lexeme en
       surface
         text "learning resource"
-  lexical_database
-    defined-by kind
-    lexeme en
-      surface
-        text "lexical database"
-  lines
-    defined-by concept
-    lexeme en
-      surface
-        text "lines"
-  link-assistant
-    defined-by organization
-    lexeme en
-      surface
-        text "link assistant"
-  link-calculator
-    defined-by name
-    lexeme en
-      surface
-        text "link calculator"
-  link-cli
-    defined-by name
-    lexeme en
-      surface
-        text "link cli"
-  link-foundation
-    defined-by organization
-    lexeme en
-      surface
-        text "link foundation"
-  links-notation
-    defined-by name
-    lexeme en
-      surface
-        text "links notation"
-  linksplatform
-    defined-by organization
-    lexeme en
-      surface
-        text "linksplatform"
-  lino-objects-codec
-    defined-by name
-    lexeme en
-      surface
-        text "lino objects codec"
-  lino_text
-    defined-by concept
-    lexeme en
-      surface
-        text "lino text"
-  list_files
-    defined-by task
-    lexeme en
-      surface
-        text "list files"
-  list_files_arg
-    defined-by task
-    lexeme en
-      surface
-        text "list files arg"
-  list_files_arg_reverse_sort
-    defined-by task
-    lexeme en
-      surface
-        text "list files arg reverse sort"
-  list_files_reverse_sort
-    defined-by task
-    lexeme en
-      surface
-        text "list files reverse sort"
-  local-library
-    defined-by isolation_mode
-    lexeme en
-      surface
-        text "local library"
-  local_shell
-    defined-by word_surface
-    lexeme en
-      surface
-        text "local shell"
-  ls
-    defined-by concept
-    lexeme en
-      surface
-        text "ls"
-  manuscript
-    defined-by word_surface
-    lexeme en
-      surface
-        text "manuscript"
-  material
-    defined-by concept
-    lexeme en
-      surface
-        text "material"
-  material-symbols
-    defined-by concept
-    lexeme en
-      surface
-        text "material symbols"
-  mathematical-logic
-    defined-by category
-    lexeme en
-      surface
-        text "mathematical logic"
-  memory_export_filename
-    defined-by field
-    lexeme en
-      surface
-        text "memory export filename"
-  memory_root_header
-    defined-by field
-    lexeme en
-      surface
-        text "memory root header"
-  meta-expression
-    defined-by name
-    lexeme en
-      surface
-        text "meta expression"
-  meta-theory
-    defined-by word_surface
-    lexeme en
-      surface
-        text "meta theory"
-  meta_explanation
+  lexeme_import_block_parse_failed
     defined-by intent
     lexeme en
       surface
-        text "meta explanation"
-  misinformation
-    defined-by word_surface
+        text "lexeme import block parse failed"
+  lexeme_import_cache_budget_reached
+    defined-by intent
     lexeme en
       surface
-        text "misinformation"
-  mkdir
-    defined-by concept
+        text "lexeme import cache budget reached"
+  lexeme_import_cache_invalid_json
+    defined-by intent
     lexeme en
       surface
-        text "mkdir"
-  mode
-    defined-by concept
+        text "lexeme import cache invalid json"
+  lexeme_import_cache_miss_offline
+    defined-by intent
     lexeme en
       surface
-        text "mode"
-  multi-step
-    defined-by word_surface
+        text "lexeme import cache miss offline"
+  lexeme_import_cache_unreadable
+    defined-by intent
     lexeme en
       surface
-        text "multi step"
-  mv
-    defined-by token
+        text "lexeme import cache unreadable"
+  lexeme_import_cannot_create
+    defined-by intent
     lexeme en
       surface
-        text "mv"
+        text "lexeme import cannot create"
+  lexeme_import_cannot_inspect
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot inspect"
+  lexeme_import_cannot_install
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot install"
+  lexeme_import_cannot_list
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot list"
+  lexeme_import_cannot_remove_stale
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot remove stale"
+  lexeme_import_cannot_stage
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot stage"
+  lexeme_import_cannot_write_json
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot write json"
+  lexeme_import_cannot_write_lino
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot write lino"
+  lexeme_import_denotation_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import denotation lost"
+  lexeme_import_duplicate_qid
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import duplicate qid"
+  lexeme_import_duplicate_slug
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import duplicate slug"
+  lexeme_import_fetch_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import fetch failed"
+  lexeme_import_fetch_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import fetch invalid json"
+  lexeme_import_grounding_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import grounding lost"
+  lexeme_import_invalid_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid provenance"
+  lexeme_import_invalid_qid
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid qid"
+  lexeme_import_invalid_slug
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid slug"
+  lexeme_import_invalid_surface
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid surface"
+  lexeme_import_lexeme_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import lexeme lost"
+  lexeme_import_missing_cached_label
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import missing cached label"

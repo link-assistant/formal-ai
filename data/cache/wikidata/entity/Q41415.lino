@@ -1,0 +1,16 @@
+Q41415
+  aliases
+    ru ("похлёбка")
+    zh ("湯水" "湯品" "汤")
+  descriptions
+    en "primarily liquid food"
+    ru "жидкое первое блюдо"
+    zh "一种食物"
+  id Q41415
+  labels
+    en soup
+    hi "सूप"
+    ru "суп"
+    zh "湯"
+  type item
+success 1

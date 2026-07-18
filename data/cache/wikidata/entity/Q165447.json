@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q165447": {
+      "type": "item",
+      "id": "Q165447",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pen"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ручка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लेखनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "硬筆"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "writing and drawing implement using liquid or paste ink"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "письменная принадлежность"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिख ने का परिकर"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Pens"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "कलम"
+          },
+          {
+            "language": "hi",
+            "value": "पेन"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "笔"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

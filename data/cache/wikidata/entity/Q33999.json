@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Q33999": {
+      "type": "item",
+      "id": "Q33999",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "actor"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "актёр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अभिनयशिल्पी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "演員"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who acts in a dramatic or comic production and works in film, television, theatre, or radio"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "артист, исполняющий роли персонажей в сценических, экранных постановках и/или в озвучивании"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पुरुष कलाकार है जो एक चलचित्र या नाटक में किसी चरित्र का अभिनय करता है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "从事表演艺术的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "actress"
+          },
+          {
+            "language": "en",
+            "value": "actors"
+          },
+          {
+            "language": "en",
+            "value": "actresses"
+          },
+          {
+            "language": "en",
+            "value": "movie actresses"
+          },
+          {
+            "language": "en",
+            "value": "movie actress"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "актриса"
+          },
+          {
+            "language": "ru",
+            "value": "исполнитель ролей"
+          },
+          {
+            "language": "ru",
+            "value": "лицедей"
+          },
+          {
+            "language": "ru",
+            "value": "исполнительница ролей"
+          },
+          {
+            "language": "ru",
+            "value": "лицедейка"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "अभिनेत्री"
+          },
+          {
+            "language": "hi",
+            "value": "फिल्म अभिनेता"
+          },
+          {
+            "language": "hi",
+            "value": "अभिनेता"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "男演员"
+          },
+          {
+            "language": "zh",
+            "value": "女演员"
+          },
+          {
+            "language": "zh",
+            "value": "戏子"
+          },
+          {
+            "language": "zh",
+            "value": "女演員"
+          },
+          {
+            "language": "zh",
+            "value": "演员"
+          },
+          {
+            "language": "zh",
+            "value": "舞台演員"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

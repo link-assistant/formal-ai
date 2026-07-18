@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q553": {
+      "type": "item",
+      "id": "Q553",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tooth"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "зуб"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दाँत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "牙齿"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "hard, calcified structure found in the jaws (or mouths) of many vertebrates and used to break down food"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "костное образование в ротовой полости большинства позвоночных"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "teeth"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

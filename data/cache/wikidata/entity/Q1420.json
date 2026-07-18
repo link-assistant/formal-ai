@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Q1420": {
+      "type": "item",
+      "id": "Q1420",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "car"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "автомобиль"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गाड़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "汽车"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "motorized road vehicle designed to carry one to eight people rather than primarily goods"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "безрельсовая транспортная машина на колёсном ходу с приводом от собственного двигателя, предназначенная для перевозки людей и грузов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मोटर चालित सड़क वाहन मुख्य रूप से माल के बजाय एक से आठ लोगों को ले जाने के लिए अभिकल्प किया गया है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由动力驱动，具有4个或4个以上车轮的非轨道承载的机动车"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "auto"
+          },
+          {
+            "language": "en",
+            "value": "autocar"
+          },
+          {
+            "language": "en",
+            "value": "automobile"
+          },
+          {
+            "language": "en",
+            "value": "motorcar"
+          },
+          {
+            "language": "en",
+            "value": "motor vehicle"
+          },
+          {
+            "language": "en",
+            "value": "automobiles"
+          },
+          {
+            "language": "en",
+            "value": "motor cars"
+          },
+          {
+            "language": "en",
+            "value": "cars"
+          },
+          {
+            "language": "en",
+            "value": "motor car"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "автомашина"
+          },
+          {
+            "language": "ru",
+            "value": "автотранспортное средство"
+          },
+          {
+            "language": "ru",
+            "value": "🚗"
+          },
+          {
+            "language": "ru",
+            "value": "машина"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मोटरवाहन"
+          },
+          {
+            "language": "hi",
+            "value": "कार"
+          },
+          {
+            "language": "hi",
+            "value": "मोटरकार"
+          },
+          {
+            "language": "hi",
+            "value": "ऑटोमोबाइल"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "轿车"
+          },
+          {
+            "language": "zh",
+            "value": "轎車"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
