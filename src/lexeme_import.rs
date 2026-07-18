@@ -61,7 +61,16 @@ pub const CONCEPTS_PER_SHARD: usize = 60;
 /// a damaged seed observable without introducing a second wording authority.
 #[must_use]
 pub fn diagnostic(intent: &str, values: &[(&str, &str)]) -> String {
-    let mut rendered = response_for(intent, "en").unwrap_or_else(|| intent.to_owned());
+    diagnostic_for_language(intent, "en", values)
+}
+
+/// Render a localized importer diagnostic, falling back to English when the
+/// requested locale has no grounded record.
+#[must_use]
+pub fn diagnostic_for_language(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let mut rendered = response_for(intent, language)
+        .or_else(|| response_for(intent, "en"))
+        .unwrap_or_else(|| intent.to_owned());
     for (name, value) in values {
         rendered = rendered.replace(&format!("{{{name}}}"), value);
     }

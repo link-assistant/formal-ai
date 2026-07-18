@@ -31,6 +31,17 @@ fn importer_diagnostics_are_grounded_and_parameterized() {
         ),
         "refused 2 concept(s); existing shards were not changed; events: rejects.lino"
     );
+    for language in ["ru", "hi", "zh"] {
+        let localized = lexeme_import::diagnostic_for_language(
+            "lexeme_import_refused_batch",
+            language,
+            &[("count", "2"), ("events", "rejects.lino")],
+        );
+        assert!(localized.contains('2'));
+        assert!(localized.contains("rejects.lino"));
+        assert!(!localized.contains("{count}"));
+        assert_ne!(localized, "lexeme_import_refused_batch");
+    }
 }
 use formal_ai::seed::parse_lexicon_text;
 
