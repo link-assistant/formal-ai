@@ -844,6 +844,11 @@ meanings
     lexeme en
       surface
         text "filesystem"
+  first
+    defined-by word_surface
+    lexeme en
+      surface
+        text "first"
   fizzbuzz
     defined-by task
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import missing cached label"
-  lexeme_import_missing_label
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import missing label"

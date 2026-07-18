@@ -79,6 +79,10 @@ fn explicit_and_listing_routes_win_over_embedded_semantic_cues() {
         shell_command("print a directory listing of the current working directory").as_deref(),
         Some("ls")
     );
+    assert_eq!(
+        shell_command("Run ls to list files here").as_deref(),
+        Some("ls")
+    );
 }
 
 #[test]

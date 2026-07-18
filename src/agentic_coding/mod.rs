@@ -50,6 +50,7 @@ pub mod self_ast;
 pub mod self_heal;
 mod shell_command;
 pub mod source_graph;
+mod tool_result;
 mod web_research;
 
 pub use associative_learning::{

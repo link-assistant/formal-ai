@@ -248,6 +248,17 @@ pub const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION: &str = "github_repository_tra
 /// for self-description. Read by the Rust feature-capability handler and its JS
 /// worker mirror.
 pub const ROLE_FEATURE_ACTION_ARITHMETIC: &str = "feature_action_arithmetic";
+
+/// A follow-up asks for the complete retained tool result rather than its summary.
+pub const ROLE_TOOL_RESULT_DETAIL_REQUEST: &str = "tool_result_detail_request";
+/// A follow-up asks for a URL retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_URL_REQUEST: &str = "tool_result_url_request";
+/// A follow-up asks for a numbered line retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_LINE_REQUEST: &str = "tool_result_line_request";
+/// A follow-up refers to the first retained item.
+pub const ROLE_TOOL_RESULT_FIRST_REFERENCE: &str = "tool_result_first_reference";
+/// A follow-up refers to the second retained item.
+pub const ROLE_TOOL_RESULT_SECOND_REFERENCE: &str = "tool_result_second_reference";
 /// Semantic role: an action frame asking the assistant to perform a planning task.
 ///
 /// Carried by the `feature_action_planning` meaning. When a capability question
