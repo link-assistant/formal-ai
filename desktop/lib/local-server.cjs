@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const http = require("node:http");
 const net = require("node:net");
 const path = require("node:path");
+const { resolveSharedMemoryPath } = require("./shared-memory.cjs");
 
 const SERVER_OPT_IN_ENV = "FORMAL_AI_DESKTOP_SERVER";
 const MODEL_ID = "formal-ai";
@@ -46,6 +47,7 @@ function scrubbedEnvironment(port, env = process.env) {
     ...env,
     FORMAL_AI_HOST: "127.0.0.1",
     FORMAL_AI_PORT: String(port),
+    FORMAL_AI_MEMORY_PATH: resolveSharedMemoryPath(env),
   };
   for (const key of API_AUTH_ENV_KEYS) {
     delete childEnv[key];

@@ -4,7 +4,6 @@ use std::path::{Path, PathBuf};
 
 use serde::Serialize;
 
-use crate::memory_sync::configured_memory_path;
 use crate::storage_policy::measure_storage;
 
 pub const DEFAULT_AVG_UTF8_BYTES_PER_CHAR: u64 = 2;
@@ -71,24 +70,7 @@ pub fn avg_utf8_bytes_per_char() -> u64 {
 
 #[must_use]
 pub fn context_memory_path() -> PathBuf {
-    configured_memory_path().unwrap_or_else(default_memory_path)
-}
-
-fn default_memory_path() -> PathBuf {
-    #[cfg(windows)]
-    {
-        std::env::var_os("APPDATA")
-            .map_or_else(|| PathBuf::from("."), PathBuf::from)
-            .join("formal-ai")
-            .join("memory.lino")
-    }
-    #[cfg(not(windows))]
-    {
-        std::env::var_os("HOME")
-            .map_or_else(|| PathBuf::from("."), PathBuf::from)
-            .join(".formal-ai")
-            .join("memory.lino")
-    }
+    crate::shared_memory::shared_memory_path()
 }
 
 fn memory_used_bytes(path: &Path) -> io::Result<u64> {

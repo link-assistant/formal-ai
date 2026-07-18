@@ -19,6 +19,10 @@ const { createDataMigration } = require("./lib/data-migration.cjs");
 const { createAutoUpdateController } = require("./lib/auto-update.cjs");
 const { createVsCodeInstaller } = require("./lib/vscode-install.cjs");
 const { createDreamingScheduler } = require("./lib/dreaming.cjs");
+const {
+  ensureSharedMemoryDirectory,
+  resolveSharedMemoryPath,
+} = require("./lib/shared-memory.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -51,7 +55,8 @@ function packagedBrowserExecutable() {
 }
 
 function desktopMemoryPath() {
-  return process.env.FORMAL_AI_MEMORY_PATH || path.join(app.getPath("userData"), "formal-ai-memory.lino");
+  ensureSharedMemoryDirectory(process.env);
+  return resolveSharedMemoryPath(process.env);
 }
 
 function autoFreeSpacePreferencePath() {

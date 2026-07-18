@@ -36,7 +36,12 @@ const outputBrowser = path.join(vscodeDir, "browser-runtime");
 
 // Reused desktop modules copied verbatim into the package so the Node host can
 // `require` them without reaching outside the extension.
-const VENDOR_MODULES = ["tool-router.cjs", "memory-sync.cjs", "web-tools.cjs"];
+const VENDOR_MODULES = [
+  "tool-router.cjs",
+  "memory-sync.cjs",
+  "web-tools.cjs",
+  "shared-memory.cjs",
+];
 
 // Keep the extension version in lockstep with the Rust crate so the Marketplace
 // listing always matches Cargo.toml, the single source of truth for the

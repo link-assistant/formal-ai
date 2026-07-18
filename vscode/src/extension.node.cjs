@@ -48,6 +48,7 @@ function requireReused(name) {
 const { createToolRouter } = requireReused("tool-router.cjs");
 const { createWebTools } = requireReused("web-tools.cjs");
 const { createMemorySync } = requireReused("memory-sync.cjs");
+const { resolveSharedMemoryPath } = requireReused("shared-memory.cjs");
 
 function currentConfig() {
   return vscode.workspace.getConfiguration("formal-ai");
@@ -273,7 +274,7 @@ function activate(context) {
           host: status.host,
           port: status.port,
           repoRoot: REPO_ROOT,
-          env: serverEnv(config),
+          env: serverEnv(config, { memoryPath: resolveSharedMemoryPath(process.env) }),
           log,
         });
         serverProc = started.process;
