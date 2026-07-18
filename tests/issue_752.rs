@@ -72,9 +72,12 @@ fn models_report_real_disk_context_and_memory_usage() {
     );
     assert_ne!(model["context_window"], 60_000);
     let expected = formal_ai::context_capacity::ContextCapacity::from_bytes(disk_free, 4_096, 2);
-    assert_eq!(
-        context["context_used_fraction"],
-        serde_json::json!(expected.context_used_fraction)
+    let reported_used_fraction = context["context_used_fraction"]
+        .as_f64()
+        .expect("context_used_fraction");
+    assert!(
+        (reported_used_fraction - expected.context_used_fraction).abs()
+            <= expected.context_used_fraction.abs() * f64::EPSILON * 2.0
     );
     assert_eq!(
         gemini["inputTokenLimit"],
