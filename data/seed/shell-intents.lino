@@ -130,6 +130,21 @@ shell_intents
       command ls
       argument "none"
       language en
+        cue "list files in this folder"
+        cue "show files in this folder"
+        cue "what files are in this folder"
+        cue "display the files here"
+        cue "give me a directory listing"
+        cue "enumerate files in the current directory"
+        cue "show directory contents"
+        cue "which files are here"
+        cue "list this directory"
+        cue "print the file list"
+        cue "inspect this folder"
+        cue "show me local files"
+        cue "what is in the current folder"
+        cue "reveal folder contents"
+        cue "scan the current directory"
         cue "what's in this folder"
         cue "what is in this folder"
         cue "what's in this directory"
@@ -139,14 +154,75 @@ shell_intents
         cue "what's here"
         cue "what is here"
       language ru
+        cue "покажи файлы в этой папке"
+        cue "список файлов"
+        cue "какие файлы в этой папке"
+        cue "перечисли файлы здесь"
+        cue "покажи содержимое каталога"
+        cue "выведи список файлов"
+        cue "что находится в текущей папке"
+        cue "отобрази файлы каталога"
+        cue "перечисли текущий каталог"
+        cue "покажи локальные файлы"
+        cue "просмотри эту папку"
+        cue "какие файлы здесь"
+        cue "дай список каталога"
+        cue "покажи содержимое текущего каталога"
+        cue "просканируй текущую папку"
         cue "что в этой папке"
         cue "что в этом каталоге"
         cue "что здесь есть"
       language hi
+        cue "इस फ़ोल्डर में फ़ाइलें दिखाएँ"
+        cue "फ़ाइलों की सूची"
+        cue "इस फ़ोल्डर में कौन सी फ़ाइलें हैं"
+        cue "यहाँ फ़ाइलें सूचीबद्ध करें"
+        cue "निर्देशिका की सामग्री दिखाएँ"
+        cue "फ़ाइल सूची प्रिंट करें"
+        cue "वर्तमान फ़ोल्डर में क्या है"
+        cue "निर्देशिका फ़ाइलें प्रदर्शित करें"
+        cue "वर्तमान निर्देशिका सूचीबद्ध करें"
+        cue "स्थानीय फ़ाइलें दिखाएँ"
+        cue "इस फ़ोल्डर को देखें"
+        cue "यहाँ कौन सी फ़ाइलें हैं"
+        cue "निर्देशिका सूची दें"
+        cue "वर्तमान निर्देशिका की सामग्री दिखाएँ"
+        cue "वर्तमान फ़ोल्डर स्कैन करें"
         cue "इस फ़ोल्डर में क्या है"
       language zh
+        cue 显示这个文件夹里的文件
+        cue 文件列表
+        cue 这个文件夹里有哪些文件
+        cue 列出这里的文件
+        cue 显示目录内容
+        cue 打印文件列表
+        cue 当前文件夹里有什么
+        cue 展示目录文件
+        cue 列出当前目录
+        cue 显示本地文件
+        cue 查看这个文件夹
+        cue 这里有哪些文件
+        cue 给出目录列表
+        cue 显示当前目录的内容
+        cue 扫描当前文件夹
         cue 这个文件夹里有什么
         cue 当前目录里有什么
+    intent
+      command rg
+      argument remainder
+      language en
+        cue "search the code for"
+        cue "search source for"
+        cue "find in the code"
+      language ru
+        cue "найди в коде"
+        cue "поищи в исходниках"
+      language hi
+        cue "कोड में खोजें"
+        cue "स्रोत में ढूँढें"
+      language zh
+        cue 在代码中搜索
+        cue 在源码中查找
     intent
       command "wc -l"
       argument "path"

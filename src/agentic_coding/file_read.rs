@@ -5,6 +5,7 @@ use serde_json::json;
 use super::general_planner::has_file_write_intent;
 use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
 use crate::protocol::{ChatMessage, ToolCall};
+use crate::seed;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum FileReadTask {
@@ -176,7 +177,7 @@ fn plan_list_then_read(
 }
 
 pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
-    let lower = prompt.to_ascii_lowercase();
+    let lower = prompt.to_lowercase();
 
     // Issue #681: a file-creation / write request must never be routed to the read
     // recipe — the target does not exist yet, so reading it is always the wrong
@@ -192,7 +193,7 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
         return Some(FileReadTask::Direct {
             path,
             mode: FileReadMode::Full,
-            prefer_run: true,
+            prefer_run: false,
         });
     }
 
@@ -234,22 +235,7 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
 }
 
 fn has_file_read_intent(lower: &str) -> bool {
-    [
-        "read",
-        "show",
-        "contents",
-        "content",
-        "inside",
-        "what does",
-        " say",
-        "open ",
-        "print",
-        "first line",
-        "value of",
-        "summarize",
-    ]
-    .iter()
-    .any(|needle| lower.contains(needle))
+    seed::lexicon().mentions_role(seed::ROLE_FILE_READ_ACTION_CUE, lower)
 }
 
 fn asks_to_read_every_file(lower: &str) -> bool {

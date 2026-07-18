@@ -1,9 +1,4 @@
 meanings
-  response_agent_suggestion_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion hi"
   response_agent_suggestion_ru
     defined-by response_template
     lexeme en
@@ -534,6 +529,11 @@ meanings
     lexeme en
       surface
         text "reverse words"
+  rg
+    defined-by concept
+    lexeme en
+      surface
+        text "rg"
   rm
     defined-by token
     lexeme en

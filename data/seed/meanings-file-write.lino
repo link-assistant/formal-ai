@@ -1,4 +1,145 @@
 meanings
+  file_read_action
+    defined-by action
+    role file_read_action_cue
+    lexeme en
+      surface
+        text "read"
+      surface
+        text "read the file"
+      surface
+        text "show me the contents of"
+      surface
+        text "open"
+      surface
+        text "print"
+      surface
+        text "show"
+      surface
+        text "get the contents of"
+      surface
+        text "display"
+      surface
+        text "view the file"
+      surface
+        text "load"
+      surface
+        text "what is in"
+      surface
+        text "tell me what"
+      surface
+        text "cat"
+      surface
+        text "inspect"
+      surface
+        text "preview"
+      surface
+        text "contents"
+      surface
+        text "inside"
+      surface
+        text "what does"
+      surface
+        text "say"
+      surface
+        text "first line"
+      surface
+        text "value of"
+      surface
+        text "summarize"
+    lexeme ru
+      surface
+        text прочитай
+      surface
+        text "прочитай файл"
+      surface
+        text "покажи содержимое"
+      surface
+        text открой
+      surface
+        text выведи
+      surface
+        text покажи
+      surface
+        text "получи содержимое"
+      surface
+        text отобрази
+      surface
+        text "просмотри файл"
+      surface
+        text загрузи
+      surface
+        text "что в"
+      surface
+        text "расскажи содержимое"
+      surface
+        text посмотри
+      surface
+        text "проверь файл"
+      surface
+        text предпросмотр
+    lexeme hi
+      surface
+        text पढ़ें
+      surface
+        text "फ़ाइल पढ़ें"
+      surface
+        text "सामग्री दिखाएँ"
+      surface
+        text खोलें
+      surface
+        text "प्रिंट करें"
+      surface
+        text दिखाएँ
+      surface
+        text "सामग्री प्राप्त करें"
+      surface
+        text "प्रदर्शित करें"
+      surface
+        text "फ़ाइल देखें"
+      surface
+        text "लोड करें"
+      surface
+        text "में क्या है"
+      surface
+        text "सामग्री बताएँ"
+      surface
+        text देखें
+      surface
+        text "फ़ाइल जाँचें"
+      surface
+        text "पूर्वावलोकन करें"
+    lexeme zh
+      surface
+        text 读取
+      surface
+        text 读取文件
+      surface
+        text 显示内容
+      surface
+        text 打开
+      surface
+        text 打印
+      surface
+        text 显示
+      surface
+        text 获取内容
+      surface
+        text 展示
+      surface
+        text 查看文件
+      surface
+        text 加载
+      surface
+        text 里面有什么
+      surface
+        text 告诉我内容
+      surface
+        text 查看
+      surface
+        text 检查文件
+      surface
+        text 预览
   file_write_action
     defined-by action
     role file_write_action_cue
@@ -19,6 +160,8 @@ meanings
         text "add"
       surface
         text "put"
+      surface
+        text "set"
     lexeme ru
       surface
         text создай
@@ -119,6 +262,8 @@ meanings
         text "in"
       surface
         text "inside"
+      surface
+        text "of"
     lexeme ru
       surface
         text файл

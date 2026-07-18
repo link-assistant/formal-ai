@@ -736,6 +736,17 @@ function looksLikeHostname(value) {
   );
 }
 
+// Mirror probable_local_file_name in src/solver_handlers/web_search_intent.rs.
+// A schemeless attachment/path such as report.txt is a local object, not an
+// HTTPS host. Explicit http(s) URLs still take the authoritative branch below.
+function probableLocalFileName(candidate) {
+  const extension = String(candidate || "").split(".").pop().toLowerCase();
+  return [
+    "txt", "md", "json", "yaml", "yml", "toml", "rs", "py", "js", "ts",
+    "tsx", "jsx", "css", "html", "xml", "csv", "lino", "log", "sh",
+  ].includes(extension);
+}
+
 function normalizeUrlCandidate(candidate) {
   const text = String(candidate || "").trim();
   if (!text || /\s/.test(text) || text.includes("@")) return null;
@@ -745,7 +756,10 @@ function normalizeUrlCandidate(candidate) {
     url = text;
   } else {
     const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
-    if (lower.startsWith("www.") || looksLikeHostname(hostCandidate)) {
+    if (
+      !probableLocalFileName(hostCandidate) &&
+      (lower.startsWith("www.") || looksLikeHostname(hostCandidate))
+    ) {
       url = `https://${text}`;
     }
   }

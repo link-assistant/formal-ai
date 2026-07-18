@@ -38,6 +38,38 @@ use crate::seed::{
 
 use super::web_requests::normalize_url_candidate;
 
+/// Keep a schemeless local filename from becoming a synthetic HTTPS host.
+///
+/// Explicit `http(s)://` URLs remain authoritative even when their host uses an
+/// unusual suffix. This boundary only applies to the ambiguous bare-token form.
+pub(super) fn probable_local_file_name(candidate: &str) -> bool {
+    let Some((_, extension)) = candidate.rsplit_once('.') else {
+        return false;
+    };
+    matches!(
+        extension.to_ascii_lowercase().as_str(),
+        "txt"
+            | "md"
+            | "json"
+            | "yaml"
+            | "yml"
+            | "toml"
+            | "rs"
+            | "py"
+            | "js"
+            | "ts"
+            | "tsx"
+            | "jsx"
+            | "css"
+            | "html"
+            | "xml"
+            | "csv"
+            | "lino"
+            | "log"
+            | "sh"
+    )
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WebSearchQueryKind {
     ExplicitPrefix,

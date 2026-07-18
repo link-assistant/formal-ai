@@ -1,0 +1,754 @@
+diff --git a/data/seed/meanings-file-write.lino b/data/seed/meanings-file-write.lino
+index 6af5e7ca..49869c77 100644
+--- a/data/seed/meanings-file-write.lino
++++ b/data/seed/meanings-file-write.lino
+@@ -1,4 +1,145 @@
+ meanings
++  file_read_action
++    defined-by action
++    role file_read_action_cue
++    lexeme en
++      surface
++        text "read"
++      surface
++        text "read the file"
++      surface
++        text "show me the contents of"
++      surface
++        text "open"
++      surface
++        text "print"
++      surface
++        text "show"
++      surface
++        text "get the contents of"
++      surface
++        text "display"
++      surface
++        text "view the file"
++      surface
++        text "load"
++      surface
++        text "what is in"
++      surface
++        text "tell me what"
++      surface
++        text "cat"
++      surface
++        text "inspect"
++      surface
++        text "preview"
++      surface
++        text "contents"
++      surface
++        text "inside"
++      surface
++        text "what does"
++      surface
++        text "say"
++      surface
++        text "first line"
++      surface
++        text "value of"
++      surface
++        text "summarize"
++    lexeme ru
++      surface
++        text прочитай
++      surface
++        text "прочитай файл"
++      surface
++        text "покажи содержимое"
++      surface
++        text открой
++      surface
++        text выведи
++      surface
++        text покажи
++      surface
++        text "получи содержимое"
++      surface
++        text отобрази
++      surface
++        text "просмотри файл"
++      surface
++        text загрузи
++      surface
++        text "что в"
++      surface
++        text "расскажи содержимое"
++      surface
++        text посмотри
++      surface
++        text "проверь файл"
++      surface
++        text предпросмотр
++    lexeme hi
++      surface
++        text पढ़ें
++      surface
++        text "फ़ाइल पढ़ें"
++      surface
++        text "सामग्री दिखाएँ"
++      surface
++        text खोलें
++      surface
++        text "प्रिंट करें"
++      surface
++        text दिखाएँ
++      surface
++        text "सामग्री प्राप्त करें"
++      surface
++        text "प्रदर्शित करें"
++      surface
++        text "फ़ाइल देखें"
++      surface
++        text "लोड करें"
++      surface
++        text "में क्या है"
++      surface
++        text "सामग्री बताएँ"
++      surface
++        text देखें
++      surface
++        text "फ़ाइल जाँचें"
++      surface
++        text "पूर्वावलोकन करें"
++    lexeme zh
++      surface
++        text 读取
++      surface
++        text 读取文件
++      surface
++        text 显示内容
++      surface
++        text 打开
++      surface
++        text 打印
++      surface
++        text 显示
++      surface
++        text 获取内容
++      surface
++        text 展示
++      surface
++        text 查看文件
++      surface
++        text 加载
++      surface
++        text 里面有什么
++      surface
++        text 告诉我内容
++      surface
++        text 查看
++      surface
++        text 检查文件
++      surface
++        text 预览
+   file_write_action
+     defined-by action
+     role file_write_action_cue
+@@ -19,6 +160,8 @@ meanings
+         text "add"
+       surface
+         text "put"
++      surface
++        text "set"
+     lexeme ru
+       surface
+         text создай
+@@ -119,6 +262,8 @@ meanings
+         text "in"
+       surface
+         text "inside"
++      surface
++        text "of"
+     lexeme ru
+       surface
+         text файл
+diff --git a/data/seed/meanings-web-navigation.lino b/data/seed/meanings-web-navigation.lino
+index bbceac88..dca34f36 100644
+--- a/data/seed/meanings-web-navigation.lino
++++ b/data/seed/meanings-web-navigation.lino
+@@ -76,6 +76,22 @@ meanings
+         text "download the page at …"
+       surface
+         text "download from …"
++      surface
++        text "read …"
++      surface
++        text "summarize …"
++      surface
++        text "check …"
++      surface
++        text "grab …"
++      surface
++        text "pull the page …"
++      surface
++        text "tell me about …"
++      surface
++        text "what does …"
++      surface
++        text "what is on …"
+     lexeme ru
+       surface
+         text "сделай запрос …"
+@@ -125,6 +141,20 @@ meanings
+         text "скачай …"
+       surface
+         text "скачай страницу …"
++      surface
++        text "прочитай …"
++      surface
++        text "проверь …"
++      surface
++        text "возьми …"
++      surface
++        text "извлеки …"
++      surface
++        text "подведи итог …"
++      surface
++        text "расскажи о …"
++      surface
++        text "что на …"
+     lexeme hi
+       surface
+         text "अनुरोध भेजें"
+@@ -132,6 +162,30 @@ meanings
+         text "अनुरोध करें"
+       surface
+         text "डाउनलोड करें"
++      surface
++        text "लाएँ …"
++      surface
++        text "प्राप्त करें …"
++      surface
++        text "डाउनलोड करें …"
++      surface
++        text "लोड करें …"
++      surface
++        text "पढ़ें …"
++      surface
++        text "दिखाएँ …"
++      surface
++        text "जाँचें …"
++      surface
++        text "सारांश दें …"
++      surface
++        text "पृष्ठ लें …"
++      surface
++        text "इसके बारे में बताएँ …"
++      surface
++        text "क्या लिखा है …"
++      surface
++        text "क्या है …"
+     lexeme zh
+       surface
+         text 发送请求
+@@ -139,6 +193,24 @@ meanings
+         text 获取
+       surface
+         text 下载
++      surface
++        text 加载…
++      surface
++        text 读取…
++      surface
++        text 显示…
++      surface
++        text 检查…
++      surface
++        text 抓取…
++      surface
++        text 拉取页面…
++      surface
++        text 总结…
++      surface
++        text 告诉我关于…
++      surface
++        text 上面有什么…
+   url_navigate
+     defined-by inquiry
+     defined-by action
+@@ -283,6 +355,12 @@ meanings
+         text खोलें
+       surface
+         text देखें
++      surface
++        text "खोलें …"
++      surface
++        text "देखें …"
++      surface
++        text "वेबसाइट पर जाएँ …"
+     lexeme zh
+       surface
+         text 打开
+@@ -292,3 +370,11 @@ meanings
+         text 前往
+       surface
+         text 查看
++      surface
++        text 打开…
++      surface
++        text 访问…
++      surface
++        text 前往…
++      surface
++        text 查看…
+diff --git a/data/seed/meanings-web-search-query.lino b/data/seed/meanings-web-search-query.lino
+index bf1913e5..bea02a07 100644
+--- a/data/seed/meanings-web-search-query.lino
++++ b/data/seed/meanings-web-search-query.lino
+@@ -58,6 +58,22 @@ meanings
+         text "i am interested in …"
+       surface
+         text "… interests me"
++      surface
++        text "google …"
++      surface
++        text "research online …"
++      surface
++        text "investigate on the web …"
++      surface
++        text "discover online …"
++      surface
++        text "query the web for …"
++      surface
++        text "browse the web for …"
++      surface
++        text "seek online …"
++      surface
++        text "check the web for …"
+     lexeme ru
+       surface
+         text "найди в интернете …"
+@@ -129,6 +145,26 @@ meanings
+         text "интересует …"
+       surface
+         text "меня интересует …"
++      surface
++        text "поиск в сети …"
++      surface
++        text "посмотри в интернете …"
++      surface
++        text "загугли …"
++      surface
++        text "исследуй онлайн …"
++      surface
++        text "проверь в сети …"
++      surface
++        text "отыщи в интернете …"
++      surface
++        text "выполни веб поиск …"
++      surface
++        text "запроси сеть о …"
++      surface
++        text "изучи в интернете …"
++      surface
++        text "разыщи онлайн …"
+     lexeme hi
+       surface
+         text "इंटरनेट पर खोजें …"
+@@ -146,6 +182,30 @@ meanings
+         text "… में रुचि है"
+       surface
+         text "… में दिलचस्पी है"
++      surface
++        text "वेब खोज …"
++      surface
++        text "ऑनलाइन ढूँढें …"
++      surface
++        text "इंटरनेट पर देखें …"
++      surface
++        text "गूगल करें …"
++      surface
++        text "ऑनलाइन शोध करें …"
++      surface
++        text "वेब पर जाँचें …"
++      surface
++        text "ऑनलाइन पता लगाएँ …"
++      surface
++        text "वेब से पूछें …"
++      surface
++        text "इंटरनेट खंगालें …"
++      surface
++        text "ऑनलाइन तलाशें …"
++      surface
++        text "वेब में खोजें …"
++      surface
++        text "नेट पर खोजें …"
+     lexeme zh
+       surface
+         text 在网上搜索…
+@@ -159,6 +219,32 @@ meanings
+         text 对…感兴趣
+       surface
+         text 我对…感兴趣
++      surface
++        text 搜索网络…
++      surface
++        text 在线搜索…
++      surface
++        text 网页搜索…
++      surface
++        text 在线查找…
++      surface
++        text 谷歌搜索…
++      surface
++        text 在线研究…
++      surface
++        text 在网络上调查…
++      surface
++        text 在线发现…
++      surface
++        text 查询网络…
++      surface
++        text 浏览网络查找…
++      surface
++        text 在线寻找…
++      surface
++        text 在互联网上查找…
++      surface
++        text 检查网络上的…
+   topic_connective
+     defined-by relation
+     role web_search_topic_marker
+diff --git a/data/seed/shell-intents.lino b/data/seed/shell-intents.lino
+index 5fd3acd0..ebe70a67 100644
+--- a/data/seed/shell-intents.lino
++++ b/data/seed/shell-intents.lino
+@@ -130,6 +130,21 @@ shell_intents
+       command ls
+       argument "none"
+       language en
++        cue "list files in this folder"
++        cue "show files in this folder"
++        cue "what files are in this folder"
++        cue "display the files here"
++        cue "give me a directory listing"
++        cue "enumerate files in the current directory"
++        cue "show directory contents"
++        cue "which files are here"
++        cue "list this directory"
++        cue "print the file list"
++        cue "inspect this folder"
++        cue "show me local files"
++        cue "what is in the current folder"
++        cue "reveal folder contents"
++        cue "scan the current directory"
+         cue "what's in this folder"
+         cue "what is in this folder"
+         cue "what's in this directory"
+@@ -139,14 +154,75 @@ shell_intents
+         cue "what's here"
+         cue "what is here"
+       language ru
++        cue "покажи файлы в этой папке"
++        cue "список файлов"
++        cue "какие файлы в этой папке"
++        cue "перечисли файлы здесь"
++        cue "покажи содержимое каталога"
++        cue "выведи список файлов"
++        cue "что находится в текущей папке"
++        cue "отобрази файлы каталога"
++        cue "перечисли текущий каталог"
++        cue "покажи локальные файлы"
++        cue "просмотри эту папку"
++        cue "какие файлы здесь"
++        cue "дай список каталога"
++        cue "покажи содержимое текущего каталога"
++        cue "просканируй текущую папку"
+         cue "что в этой папке"
+         cue "что в этом каталоге"
+         cue "что здесь есть"
+       language hi
++        cue "इस फ़ोल्डर में फ़ाइलें दिखाएँ"
++        cue "फ़ाइलों की सूची"
++        cue "इस फ़ोल्डर में कौन सी फ़ाइलें हैं"
++        cue "यहाँ फ़ाइलें सूचीबद्ध करें"
++        cue "निर्देशिका की सामग्री दिखाएँ"
++        cue "फ़ाइल सूची प्रिंट करें"
++        cue "वर्तमान फ़ोल्डर में क्या है"
++        cue "निर्देशिका फ़ाइलें प्रदर्शित करें"
++        cue "वर्तमान निर्देशिका सूचीबद्ध करें"
++        cue "स्थानीय फ़ाइलें दिखाएँ"
++        cue "इस फ़ोल्डर को देखें"
++        cue "यहाँ कौन सी फ़ाइलें हैं"
++        cue "निर्देशिका सूची दें"
++        cue "वर्तमान निर्देशिका की सामग्री दिखाएँ"
++        cue "वर्तमान फ़ोल्डर स्कैन करें"
+         cue "इस फ़ोल्डर में क्या है"
+       language zh
++        cue 显示这个文件夹里的文件
++        cue 文件列表
++        cue 这个文件夹里有哪些文件
++        cue 列出这里的文件
++        cue 显示目录内容
++        cue 打印文件列表
++        cue 当前文件夹里有什么
++        cue 展示目录文件
++        cue 列出当前目录
++        cue 显示本地文件
++        cue 查看这个文件夹
++        cue 这里有哪些文件
++        cue 给出目录列表
++        cue 显示当前目录的内容
++        cue 扫描当前文件夹
+         cue 这个文件夹里有什么
+         cue 当前目录里有什么
++    intent
++      command rg
++      argument remainder
++      language en
++        cue "search the code for"
++        cue "search source for"
++        cue "find in the code"
++      language ru
++        cue "найди в коде"
++        cue "поищи в исходниках"
++      language hi
++        cue "कोड में खोजें"
++        cue "स्रोत में ढूँढें"
++      language zh
++        cue 在代码中搜索
++        cue 在源码中查找
+     intent
+       command "wc -l"
+       argument "path"
+diff --git a/src/agentic_coding/file_read.rs b/src/agentic_coding/file_read.rs
+index f584fa9a..d64ee4db 100644
+--- a/src/agentic_coding/file_read.rs
++++ b/src/agentic_coding/file_read.rs
+@@ -5,6 +5,7 @@ use serde_json::json;
+ use super::general_planner::has_file_write_intent;
+ use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
+ use crate::protocol::{ChatMessage, ToolCall};
++use crate::seed;
+
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub(super) enum FileReadTask {
+@@ -176,7 +177,7 @@ fn plan_list_then_read(
+ }
+
+ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
+-    let lower = prompt.to_ascii_lowercase();
++    let lower = prompt.to_lowercase();
+
+     // Issue #681: a file-creation / write request must never be routed to the read
+     // recipe — the target does not exist yet, so reading it is always the wrong
+@@ -192,7 +193,7 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
+         return Some(FileReadTask::Direct {
+             path,
+             mode: FileReadMode::Full,
+-            prefer_run: true,
++            prefer_run: false,
+         });
+     }
+
+@@ -234,22 +235,7 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
+ }
+
+ fn has_file_read_intent(lower: &str) -> bool {
+-    [
+-        "read",
+-        "show",
+-        "contents",
+-        "content",
+-        "inside",
+-        "what does",
+-        " say",
+-        "open ",
+-        "print",
+-        "first line",
+-        "value of",
+-        "summarize",
+-    ]
+-    .iter()
+-    .any(|needle| lower.contains(needle))
++    seed::lexicon().mentions_role(seed::ROLE_FILE_READ_ACTION_CUE, lower)
+ }
+
+ fn asks_to_read_every_file(lower: &str) -> bool {
+diff --git a/src/agentic_coding/general_planner.rs b/src/agentic_coding/general_planner.rs
+index 7063c301..ea7d6ad0 100644
+--- a/src/agentic_coding/general_planner.rs
++++ b/src/agentic_coding/general_planner.rs
+@@ -180,15 +180,31 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
+     let clause_start = cue.start;
+     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
+
+-    let content_span = if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
+-        if marker_end <= clause_start {
++    if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
++        let marker_span = if marker_end <= clause_start {
+             request.get(marker_end..clause_start)
+         } else {
+             request.get(marker_end..)
++        };
++        if let Some(content) = marker_span.and_then(clean_content) {
++            return Some((target, content));
+         }
+-    } else if cue_is_destination {
++    }
++
++    let content_span = if cue_is_destination {
+         let action_end = first_action_cue_end(&toks)?;
+         (action_end <= clause_start).then(|| request.get(action_end..clause_start))?
++    } else if let Some(value_lead) = toks
++        .iter()
++        .skip(file_index + 1)
++        .find(|token| dest_cues.contains(&clean_cue_token(token.text)))
++    {
++        // Assignment shape: "set the contents of FILE to VALUE". The target
++        // cue identifies the file object and a following destination cue
++        // introduces its literal value. Requiring a write action before the
++        // file keeps an unrelated "contents of FILE" read request out.
++        let action_end = first_action_cue_end(&toks)?;
++        (action_end <= clause_start).then(|| request.get(value_lead.end..))?
+     } else {
+         None
+     };
+diff --git a/src/agentic_coding/planner.rs b/src/agentic_coding/planner.rs
+index 463343bc..e2b0802d 100644
+--- a/src/agentic_coding/planner.rs
++++ b/src/agentic_coding/planner.rs
+@@ -242,6 +242,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
+     if diagram::is_diagram_task(&task) {
+         return Some(plan_diagram_step(messages, tool_names));
+     }
++    // A typed URL object is more specific than broad research prose. Resolve it
++    // before the research recipe so requests such as "tell me about URL" fetch
++    // that page instead of turning the URL itself into a search query.
++    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
++        return Some(plan);
++    }
+     // Research is the final named recipe so more specific local actions win.
+     if let Some(query) = web_research::web_research_query_for(messages) {
+         if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+@@ -249,9 +255,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
+         }
+     }
+     // Route the remaining requests by seed-backed intent and advertised capability.
+-    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
+-        return Some(plan);
+-    }
+     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+         return Some(plan);
+     }
+diff --git a/src/agentic_coding/shell_command.rs b/src/agentic_coding/shell_command.rs
+index 1734c8e0..4b6ee4e7 100644
+--- a/src/agentic_coding/shell_command.rs
++++ b/src/agentic_coding/shell_command.rs
+@@ -51,23 +51,38 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
+ /// argument is absent is skipped so the search continues rather than emitting an
+ /// argument-less command that would hang (`wc -l` on stdin).
+ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+-    let lower = prompt.to_ascii_lowercase();
+-    vocab.intents.iter().find_map(|intent| {
+-        if intent.command == REPORT_ISSUE_ACTION {
+-            return None;
+-        }
+-        if !intent.cues.iter().any(|cue| lower.contains(cue)) {
+-            return None;
+-        }
+-        match intent.argument {
+-            ShellIntentArgument::None => Some(intent.command.clone()),
+-            ShellIntentArgument::Path => {
+-                path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
+-            }
+-            ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
+-                .map(|arg| format!("{} {arg}", intent.command)),
++    let lower = prompt.to_lowercase();
++    // Prefer the most specific matching cue across every intent. This prevents
++    // a shorter generic cue (for example "current directory" → `pwd`) from
++    // stealing a longer request ("list current directory" → `ls`).
++    let (intent, cue) = vocab
++        .intents
++        .iter()
++        .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
++        .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
++        .filter(|(_, cue)| lower.contains(cue.as_str()))
++        .max_by_key(|(_, cue)| cue.chars().count())?;
++    match intent.argument {
++        ShellIntentArgument::None => Some(intent.command.clone()),
++        ShellIntentArgument::Path => {
++            path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
+         }
+-    })
++        ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
++            .map(|arg| format!("{} {arg}", intent.command)),
++        ShellIntentArgument::Remainder => remainder_argument(prompt, &lower, cue)
++            .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
++    }
++}
++
++/// Recover a safe literal query following a matched semantic cue.
++fn remainder_argument(prompt: &str, lower: &str, cue: &str) -> Option<String> {
++    let start = lower.find(cue)? + cue.len();
++    let remainder = prompt.get(start..)?.trim();
++    (!remainder.is_empty()
++        && remainder.chars().all(|c| {
++            c.is_alphanumeric() || c.is_whitespace() || matches!(c, '_' | '-' | '.' | ':')
++        }))
++    .then(|| remainder.to_owned())
+ }
+
+ /// The first filename-looking token in the prompt: a token carrying an interior dot
+diff --git a/src/seed.rs b/src/seed.rs
+index 5dad76e0..09f055c5 100644
+--- a/src/seed.rs
++++ b/src/seed.rs
+@@ -109,10 +109,10 @@ pub use roles::{
+     ROLE_ENUMERATION_REQUEST_OPENER, ROLE_EXCHANGE_RATE_REFERENCE, ROLE_EXPLANATION_REQUEST_LEAD,
+     ROLE_FACT_RELATION, ROLE_FEATURE_ACTION_ARITHMETIC, ROLE_FEATURE_ACTION_PLANNING,
+     ROLE_FEATURE_CAPABILITY_ALIAS, ROLE_FEATURE_CAPABILITY_QUESTION, ROLE_FILE_EDIT_ACTION_CUE,
+-    ROLE_FILE_EDIT_NEW_LEAD_CUE, ROLE_FILE_EDIT_TARGET_CUE, ROLE_FILE_WRITE_ACTION_CUE,
+-    ROLE_FILE_WRITE_CONTENT_LEAD, ROLE_FILE_WRITE_DESTINATION_CUE, ROLE_FILE_WRITE_TARGET_CUE,
+-    ROLE_FINAL_AMOUNT_REFERENCE, ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_GAME_TRACKER_DOMAIN,
+-    ROLE_GAME_TRACKER_MECHANIC, ROLE_GITHUB_REPOSITORY_PLATFORM,
++    ROLE_FILE_EDIT_NEW_LEAD_CUE, ROLE_FILE_EDIT_TARGET_CUE, ROLE_FILE_READ_ACTION_CUE,
++    ROLE_FILE_WRITE_ACTION_CUE, ROLE_FILE_WRITE_CONTENT_LEAD, ROLE_FILE_WRITE_DESTINATION_CUE,
++    ROLE_FILE_WRITE_TARGET_CUE, ROLE_FINAL_AMOUNT_REFERENCE, ROLE_FOLLOWUP_INSTRUCTION_VERB,
++    ROLE_GAME_TRACKER_DOMAIN, ROLE_GAME_TRACKER_MECHANIC, ROLE_GITHUB_REPOSITORY_PLATFORM,
+     ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION, ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL,
+     ROLE_HELLO_WORLD_REFERENCE, ROLE_HTTP_FETCH, ROLE_IMPLEMENTATION_LANGUAGE_NOUN,
+     ROLE_IMPLEMENTATION_LANGUAGE_PREPOSITION, ROLE_INTEREST_CUE, ROLE_INTERROGATIVE_OPENER,
+diff --git a/src/seed/roles/tooling.rs b/src/seed/roles/tooling.rs
+index 041a3300..dafa9d19 100644
+--- a/src/seed/roles/tooling.rs
++++ b/src/seed/roles/tooling.rs
+@@ -99,6 +99,13 @@ pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+ pub const ROLE_AGENT_ACTION_REPORT_VERB: &str = "agent_action_report_verb";
+ /// Semantic role: the issue/bug/repository object of a report action.
+ pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject";
++/// Semantic role: an action asking to read an explicitly named local file.
++///
++/// Multilingual surfaces live in `data/seed/meanings-file-write.lino` alongside
++/// the other general file-operation roles. The file-read router combines this
++/// language signal with a local-path object, keeping broad verbs such as
++/// "display" and "load" object-typed instead of treating them as web actions.
++pub const ROLE_FILE_READ_ACTION_CUE: &str = "file_read_action_cue";
+ /// Semantic role: a verb that commands the in-place modification of an existing
+ /// file (issue #680).
+ ///
+diff --git a/src/seed/shell_intents.rs b/src/seed/shell_intents.rs
+index 30eef915..ae4acb90 100644
+--- a/src/seed/shell_intents.rs
++++ b/src/seed/shell_intents.rs
+@@ -31,6 +31,8 @@ pub enum ShellIntentArgument {
+     /// The command takes a name introduced by a name-lead cue such as
+     /// *called*/*named* (`mkdir build`).
+     NameLead,
++    /// The command takes the text after the matched intent cue (`rg QUERY .`).
++    Remainder,
+ }
+
+ /// One intent → command mapping: the command to emit, how to fill its argument, and
+@@ -88,6 +90,7 @@ fn parse_intent(node: &LinoNode) -> ShellIntent {
+         argument: match node.find_child_value("argument") {
+             "path" => ShellIntentArgument::Path,
+             "name_lead" => ShellIntentArgument::NameLead,
++            "remainder" => ShellIntentArgument::Remainder,
+             _ => ShellIntentArgument::None,
+         },
+         cues: collect_language_values(node, "cue")

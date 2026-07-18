@@ -1,14 +1,4 @@
 meanings
-  mv
-    defined-by token
-    lexeme en
-      surface
-        text "mv"
-  non-deterministic
-    defined-by word_surface
-    lexeme en
-      surface
-        text "non deterministic"
   nondeterministic
     defined-by word_surface
     lexeme en
@@ -1334,6 +1324,11 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remainder
+    defined-by concept
+    lexeme en
+      surface
+        text "remainder"
   remix
     defined-by concept
     lexeme en
@@ -1394,3 +1389,8 @@ meanings
     lexeme en
       surface
         text "response agent suggestion en"
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
