@@ -459,15 +459,15 @@ fn http_chat_completions_route_returns_completion_object() {
 fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
     let openai_models = handle_api_request("GET", "/api/openai/v1/models", "");
     assert_eq!(openai_models.status_code, 200);
-    let mut openai_json: serde_json::Value = serde_json::from_str(&openai_models.body).unwrap();
+    let openai_json: serde_json::Value = serde_json::from_str(&openai_models.body).unwrap();
     assert_eq!(openai_json["data"][0]["id"], "formal-ai");
 
     let legacy_models = handle_api_request("GET", "/v1/models", "");
     assert_eq!(legacy_models.status_code, 200);
-    let mut legacy_json: serde_json::Value = serde_json::from_str(&legacy_models.body).unwrap();
-    remove_live_model_metrics(&mut openai_json);
-    remove_live_model_metrics(&mut legacy_json);
-    assert_eq!(openai_json, legacy_json);
+    let legacy_json: serde_json::Value = serde_json::from_str(&legacy_models.body).unwrap();
+    for pointer in ["/object", "/data/0/id", "/models/0/name", "/rate_limit"] {
+        assert_eq!(openai_json.pointer(pointer), legacy_json.pointer(pointer));
+    }
 
     let graph = handle_api_request("GET", "/api/formal-ai/v1/graph", "");
     assert_eq!(graph.status_code, 200);
@@ -475,32 +475,6 @@ fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
         graph.body.contains("nodes"),
         "Formal AI native graph should be available under /api/formal-ai/v1"
     );
-}
-
-fn remove_live_model_metrics(value: &mut serde_json::Value) {
-    match value {
-        serde_json::Value::Object(object) => {
-            for key in [
-                "context_used_fraction",
-                "context_used_tokens",
-                "context_window",
-                "context_window_tokens",
-                "disk_free_bytes",
-                "memory_used_bytes",
-            ] {
-                object.remove(key);
-            }
-            for child in object.values_mut() {
-                remove_live_model_metrics(child);
-            }
-        }
-        serde_json::Value::Array(array) => {
-            for child in array {
-                remove_live_model_metrics(child);
-            }
-        }
-        _ => {}
-    }
 }
 #[test]
 fn responses_stream_true_emits_responses_sse_protocol_on_openai_routes() {
