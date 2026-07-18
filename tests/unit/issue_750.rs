@@ -59,6 +59,7 @@ fn structured_inner_payload_uses_a_json_fence() {
 
 #[test]
 fn successful_empty_list_results_are_explained_in_the_request_language() {
+    // English, Russian, Hindi, and Chinese must all receive natural empty results.
     let cases = [
         ("Run ls", "This folder is empty."),
         ("Выполни ls", "Эта папка пуста."),
