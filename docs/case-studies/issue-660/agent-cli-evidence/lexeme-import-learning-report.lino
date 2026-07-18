@@ -1,0 +1,111 @@
+lexeme_import_learning_report
+  issue "660"
+  decision "awaiting_human_review"
+  promotion_gate "bulk_lexeme_import_integrity_and_dual_agent_cli_e2e_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "8"
+  validation_warning_count "0"
+  multi_hop_seed "observation:entity-label-provenance"
+  multi_hop_recall "observation:entity-label-provenance|lesson:truthful-surface-source"
+  learned_expression_01
+    id "observation:entity-label-provenance"
+    text "message
+user
+The initial importer read Wikidata item labels, so it must identify Q-record label fields honestly instead of claiming unsupported Lexeme L-record provenance."
+    reads "10"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "12"
+    qualifiers "conversation_id=issue-660|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "observation:coverage-denominator"
+    text "message
+user
+Accepted counts without requested and expected-surface denominators can conceal a batch whose rejected portion is large."
+    reads "7"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-660|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:ephemeral-rejections"
+    text "message
+user
+The first implementation appended import_rejected to an in-process EventLog and then discarded that log when the CLI exited."
+    reads "8"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-660|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:stale-shards"
+    text "message
+user
+Writing only current shard names leaves obsolete importer-owned shards active when a later batch becomes smaller."
+    reads "6"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-660|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "lesson:truthful-surface-source"
+    text "learning_amendment
+assistant
+Carry record id and JSON field per surface, validate them before emission, and print them inline so source closure is reviewable without invented identifiers.
+observation:entity-label-provenance"
+    reads "1"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-660|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:durable-fail-closed-import"
+    text "learning_amendment
+assistant
+Persist rejection events in the portable memory format and leave the existing shard set unchanged whenever any requested concept is refused.
+observation:stale-shards"
+    reads "0"
+    writes "4"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-660|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:explicit-coverage-ratio"
+    text "learning_amendment
+assistant
+Report requested concepts, accepted concepts, expected surfaces, emitted surfaces, and the computed permille ratio on every import.
+observation:coverage-denominator"
+    reads "0"
+    writes "3"
+    incoming_links "1"
+    outgoing_links "1"
+    retention_score "5"
+    qualifiers "conversation_id=issue-660|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "lesson:self-hosted-review-gate"
+    text "learning_amendment
+assistant
+Have two real external Agent CLIs ask Formal AI to derive the learning artifact, require byte parity, and retain human review before promotion.
+lesson:explicit-coverage-ratio"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-660|kind=learning_amendment|role=assistant"
+    validation "aligned"
