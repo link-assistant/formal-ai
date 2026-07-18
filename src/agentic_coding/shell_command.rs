@@ -36,21 +36,32 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
     let listing = asks_for_directory_listing(prompt);
     let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
+    let semantic = listing.then(|| String::from("ls")).or(intent);
 
     if let Some(command) = prefixed_shell_command(prompt, &vocab) {
-        let names_known_command = command
+        let first = command
             .split_whitespace()
             .next()
-            .map(normalize_command_word)
-            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == &first));
-        if names_known_command || (intent.is_none() && !listing && !web_search) {
+            .map(normalize_command_word);
+        let names_known_command = first
+            .as_ref()
+            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == first));
+        let names_semantic_command = semantic.as_ref().is_some_and(|semantic| {
+            semantic
+                .split_whitespace()
+                .next()
+                .map(normalize_command_word)
+                == first
+        });
+        if names_semantic_command {
+            return semantic;
+        }
+        if names_known_command || (semantic.is_none() && !web_search) {
             return Some(command);
         }
     }
 
-    listing
-        .then(|| String::from("ls"))
-        .or(intent)
+    semantic
         .or_else(|| named_shell_command(prompt, &vocab))
         .or_else(|| bare_shell_command(prompt, &vocab))
 }

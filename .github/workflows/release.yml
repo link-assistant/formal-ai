@@ -364,6 +364,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
+      # The shared target cache can retain binaries for test files removed on
+      # another branch. Rebuild this package's artifacts while preserving its
+      # cached dependencies so Cargo never executes an orphaned test binary.
+      - name: Clean stale package test artifacts
+        run: cargo clean -p formal-ai
+
       - name: Check LiNo data integrity
         run: cargo test --test unit data_files -- --nocapture
 
@@ -408,6 +414,9 @@ jobs:
 
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Clean stale coverage artifacts
+        run: cargo llvm-cov clean --workspace
 
       - name: Generate code coverage
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
