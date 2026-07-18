@@ -1,6 +1,7 @@
 # Issue 756: zero-configuration shared memory
 
-Issue: <https://github.com/link-assistant/formal-ai/issues/756>  
+Issue: <https://github.com/link-assistant/formal-ai/issues/756>
+
 Pull request: <https://github.com/link-assistant/formal-ai/pull/779>
 
 ## Root cause
