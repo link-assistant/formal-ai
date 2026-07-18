@@ -39,6 +39,7 @@ fn gemini_call(response: &Value) -> &Value {
 
 #[test]
 fn responses_type_only_web_search_routes_instead_of_wildcard_refusal() {
+    // Explicit language: "en" coverage complements the multilingual protocol cases below.
     let response = post(
         "/v1/responses",
         &json!({
