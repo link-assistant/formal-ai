@@ -103,6 +103,24 @@ fn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {
 }
 
 #[test]
+fn mcp_endpoint_returns_json_rpc_errors_for_bad_requests() {
+    let malformed = handle_api_request("POST", "/mcp", "{");
+    let malformed: serde_json::Value =
+        serde_json::from_str(&malformed.body).expect("parse error JSON");
+    assert_eq!(malformed["error"]["code"], -32700);
+
+    let unknown = handle_api_request(
+        "POST",
+        "/mcp",
+        r#"{"jsonrpc":"2.0","id":7,"method":"unknown"}"#,
+    );
+    let unknown: serde_json::Value =
+        serde_json::from_str(&unknown.body).expect("method error JSON");
+    assert_eq!(unknown["id"], 7);
+    assert_eq!(unknown["error"]["code"], -32601);
+}
+
+#[test]
 fn mcp_endpoint_enforces_authentication_and_origin_checks() {
     let body = r#"{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}"#;
     let auth = ApiAuthConfig::bearer_token("local-test-token");
@@ -140,14 +158,8 @@ fn mcp_endpoint_enforces_authentication_and_origin_checks() {
 fn mcp_method_errors_keep_their_status_on_the_http_wire() {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server(port);
-    let response = http_request(
-        "GET",
-        port,
-        "/mcp",
-        Some("sk-local-agentic-tools"),
-        None,
-    )
-    .expect("GET /mcp should complete");
+    let response = http_request("GET", port, "/mcp", Some("sk-local-agentic-tools"), None)
+        .expect("GET /mcp should complete");
     assert_eq!(response.status_code, 405);
 }
 

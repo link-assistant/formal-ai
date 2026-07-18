@@ -1,4 +1,34 @@
 meanings
+  response_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation hi"
+  response_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation ru"
+  response_meta_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation zh"
+  response_physical_action_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question en"
+  response_physical_action_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question hi"
+  response_physical_action_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question ru"
   response_physical_action_question_zh
     defined-by response_template
     lexeme en

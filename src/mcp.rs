@@ -105,26 +105,3 @@ fn json_response(value: &Value) -> ApiHttpResponse {
         body: value.to_string(),
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn malformed_json_is_a_parse_error() {
-        let response = handle_mcp_request("{", &UniversalSolver::default());
-        let body: Value = serde_json::from_str(&response.body).expect("JSON response");
-        assert_eq!(body["error"]["code"], -32700);
-    }
-
-    #[test]
-    fn unknown_method_is_a_method_error() {
-        let response = handle_mcp_request(
-            r#"{"jsonrpc":"2.0","id":7,"method":"unknown"}"#,
-            &UniversalSolver::default(),
-        );
-        let body: Value = serde_json::from_str(&response.body).expect("JSON response");
-        assert_eq!(body["id"], 7);
-        assert_eq!(body["error"]["code"], -32601);
-    }
-}
