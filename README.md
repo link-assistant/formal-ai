@@ -465,6 +465,13 @@ read-only listing command. Use `--permission-mode plan` when read-only shell
 commands such as `ls` may run, and use hard `--read-only` when shell execution
 should be disabled entirely.
 
+Formal AI keeps each client tool result unchanged in the conversation transcript,
+then presents a normalized, localized answer after the client returns it. This
+means a later turn can ask for the full result, a numbered line, or a URL without
+losing the original bytes. To retain those tool calls beyond the current client
+conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
+tool names, arguments, and raw outputs are then appended to the durable memory log.
+
 Example Telegram webhook update:
 
 ```bash
