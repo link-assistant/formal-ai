@@ -4,25 +4,25 @@ diff --git a/src/engine.rs b/src/engine.rs
 --- a/src/engine.rs
 +++ b/src/engine.rs
 @@ -273,7 +273,7 @@ fn format_doublet_reduction_record() -> String {
- 
+
  #[must_use]
  pub fn estimate_tokens(text: &str) -> u32 {
 -    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
 +    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
  }
- 
+
  /// A single node in the network-visualization graph.
 diff --git a/tests/source/engine.rs b/tests/source/engine.rs
 --- a/tests/source/engine.rs
 +++ b/tests/source/engine.rs
 @@ -259,7 +259,7 @@ fn format_doublet_reduction_record() -> String {
- 
+
  #[must_use]
  pub fn estimate_tokens(text: &str) -> u32 {
 -    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
 +    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
  }
- 
+
  /// A single node in the network-visualization graph.
 diff --git a/src/protocol.rs b/src/protocol.rs
 --- a/src/protocol.rs
@@ -30,13 +30,13 @@ diff --git a/src/protocol.rs b/src/protocol.rs
 @@ -1,4 +1,5 @@
  use std::collections::HashMap;
 +use std::time::{SystemTime, UNIX_EPOCH};
- 
+
  use serde::{Deserialize, Serialize};
  use serde_json::Value;
 @@ -30,6 +31,13 @@ fn resolved_request_model(model: Option<&str>) -> String {
      crate::seed::resolve_model_id(model)
  }
- 
+
 +fn response_timestamp() -> u64 {
 +    SystemTime::now()
 +        .duration_since(UNIX_EPOCH)
@@ -48,7 +48,7 @@ diff --git a/src/protocol.rs b/src/protocol.rs
 @@ -182,6 +190,27 @@ impl Default for MessageContent {
      }
  }
- 
+
 +fn message_content_tokens(content: &MessageContent) -> u32 {
 +    match content {
 +        MessageContent::Text(text) => estimate_tokens(text),
@@ -72,7 +72,7 @@ diff --git a/src/protocol.rs b/src/protocol.rs
 @@ -370,6 +399,11 @@ impl ResponsesRequest {
      }
  }
- 
+
 +fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
 +    message_input_tokens(&request.to_chat_completion_request().messages)
 +}
@@ -85,7 +85,7 @@ diff --git a/src/protocol.rs b/src/protocol.rs
      let model = resolved_request_model(request.model.as_deref());
 -    let prompt_tokens = estimate_tokens(prompt);
 +    let prompt_tokens = message_input_tokens(&request.messages);
- 
+
      let (message, finish_reason, completion_tokens) = match plan {
 @@ -643,7 +677,7 @@ fn chat_completion_from_plan(
      ChatCompletion {
@@ -117,7 +117,7 @@ diff --git a/src/protocol.rs b/src/protocol.rs
      let model = resolved_request_model(request.model.as_deref());
 -    let input_tokens = estimate_tokens(prompt);
 +    let input_tokens = responses_input_tokens(request);
- 
+
      let (output, output_tokens) = match plan {
 @@ -827,7 +861,7 @@ fn response_from_plan(
      ResponseObject {

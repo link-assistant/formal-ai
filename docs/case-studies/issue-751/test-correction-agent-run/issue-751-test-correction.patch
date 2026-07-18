@@ -23,7 +23,7 @@ diff --git a/tests/integration/issue_751_token_usage.rs b/tests/integration/issu
 @@ -145,8 +146,8 @@ fn responses_use_real_timestamps_and_omit_fake_cache_and_cost_metadata() {
      let models = get_json("/v1/models");
      assert!(models["data"][0].get("created").is_none());
- 
+
 -    for payload in [&chat, &responses] {
 -        let serialized = payload.to_string().to_ascii_lowercase();
 +    for usage in [&chat["usage"], &responses["usage"]] {

@@ -9,4 +9,3 @@ test issue_751_token_usage::streaming_client_surfaces_preserve_exact_usage ... o
 test issue_751_token_usage::all_protocols_count_unicode_scalars_and_all_visible_input_messages ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 132 filtered out; finished in 1.59s
-
