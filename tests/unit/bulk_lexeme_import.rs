@@ -14,6 +14,24 @@ use formal_ai::lexeme_import::{
     self, Concept, GroundedLexeme, ImportConfig, SurfaceSource, DEFINED_BY, GRAMMATICAL_NUMBER,
     IMPORT_LANGUAGES, PART_OF_SPEECH,
 };
+
+#[test]
+fn importer_diagnostics_are_grounded_and_parameterized() {
+    assert_eq!(
+        lexeme_import::diagnostic(
+            "lexeme_import_cache_unreadable",
+            &[("path", "Q1.json"), ("error", "denied")],
+        ),
+        "cache Q1.json unreadable: denied"
+    );
+    assert_eq!(
+        lexeme_import::diagnostic(
+            "lexeme_import_refused_batch",
+            &[("count", "2"), ("events", "rejects.lino")],
+        ),
+        "refused 2 concept(s); existing shards were not changed; events: rejects.lino"
+    );
+}
 use formal_ai::seed::parse_lexicon_text;
 
 fn repo_root() -> PathBuf {

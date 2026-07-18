@@ -533,3 +533,155 @@ multilingual_responses
     variant 谢谢——你在向我指出一个我可以学习的数据来源。
     variant 明白了：你在告诉我从哪里获取用于推理和学习的数据。
     variant 了解——这是一个我可以研究以自我改进的来源。
+  response response_lexeme_import_refused_batch_en
+    intent lexeme_import_refused_batch
+    language en
+    text "refused {count} concept(s); existing shards were not changed; events: {events}"
+  response response_lexeme_import_duplicate_slug_en
+    intent lexeme_import_duplicate_slug
+    language en
+    text "duplicate slug (also {other})"
+  response response_lexeme_import_duplicate_qid_en
+    intent lexeme_import_duplicate_qid
+    language en
+    text "duplicate qid (also {other})"
+  response response_lexeme_import_cache_unreadable_en
+    intent lexeme_import_cache_unreadable
+    language en
+    text "cache {path} unreadable: {error}"
+  response response_lexeme_import_cache_invalid_json_en
+    intent lexeme_import_cache_invalid_json
+    language en
+    text "cache {path} invalid json: {error}"
+  response response_lexeme_import_cache_miss_offline_en
+    intent lexeme_import_cache_miss_offline
+    language en
+    text "cache miss for {qid} and offline mode is active (set FORMAL_AI_LIVE_API to populate)"
+  response response_lexeme_import_cache_budget_reached_en
+    intent lexeme_import_cache_budget_reached
+    language en
+    text "cache budget {budget} reached ({cached}); skipping {qid} to respect the bounded-cache policy"
+  response response_lexeme_import_qid_absent_from_cache_en
+    intent lexeme_import_qid_absent_from_cache
+    language en
+    text "{qid} is absent from cache"
+  response response_lexeme_import_no_labels_in_cache_en
+    intent lexeme_import_no_labels_in_cache
+    language en
+    text "{qid} has no labels in cache"
+  response response_lexeme_import_missing_cached_label_en
+    intent lexeme_import_missing_cached_label
+    language en
+    text "{qid} missing {language} label"
+  response response_lexeme_import_no_clean_alias_en
+    intent lexeme_import_no_clean_alias
+    language en
+    text "{qid} {language} label `{label}` does not match its language script and no clean alias exists"
+  response response_lexeme_import_fetch_failed_en
+    intent lexeme_import_fetch_failed
+    language en
+    text "fetch {qid} failed: {error}"
+  response response_lexeme_import_fetch_invalid_json_en
+    intent lexeme_import_fetch_invalid_json
+    language en
+    text "fetch {qid} returned invalid json: {error}"
+  response response_lexeme_import_cannot_create_en
+    intent lexeme_import_cannot_create
+    language en
+    text "cannot create {path}: {error}"
+  response response_lexeme_import_reparse_failed_en
+    intent lexeme_import_reparse_failed
+    language en
+    text "re-parse of trimmed {qid} failed: {error}"
+  response response_lexeme_import_cannot_write_json_en
+    intent lexeme_import_cannot_write_json
+    language en
+    text "cannot write {qid}.json: {error}"
+  response response_lexeme_import_cannot_write_lino_en
+    intent lexeme_import_cannot_write_lino
+    language en
+    text "cannot write {qid}.lino: {error}"
+  response response_lexeme_import_qid_absent_from_fetch_en
+    intent lexeme_import_qid_absent_from_fetch
+    language en
+    text "{qid} not present in fetched document"
+  response response_lexeme_import_invalid_qid_en
+    intent lexeme_import_invalid_qid
+    language en
+    text "{qid} is not a Wikidata item id"
+  response response_lexeme_import_invalid_slug_en
+    intent lexeme_import_invalid_slug
+    language en
+    text "slug `{slug}` is not a bare identifier"
+  response response_lexeme_import_missing_label_en
+    intent lexeme_import_missing_label
+    language en
+    text "missing {language} label"
+  response response_lexeme_import_invalid_surface_en
+    intent lexeme_import_invalid_surface
+    language en
+    text "{language} label `{surface}` is not a clean single token"
+  response response_lexeme_import_missing_provenance_en
+    intent lexeme_import_missing_provenance
+    language en
+    text "missing {language} source provenance"
+  response response_lexeme_import_invalid_provenance_en
+    intent lexeme_import_invalid_provenance
+    language en
+    text "{language} source provenance does not identify a supported field in {qid}"
+  response response_lexeme_import_block_parse_failed_en
+    intent lexeme_import_block_parse_failed
+    language en
+    text "rendered block for {slug} did not parse"
+  response response_lexeme_import_grounding_lost_en
+    intent lexeme_import_grounding_lost
+    language en
+    text "{slug} lost its grounding on parse"
+  response response_lexeme_import_wrong_genus_en
+    intent lexeme_import_wrong_genus
+    language en
+    text "{slug} is not defined-by {defined_by}"
+  response response_lexeme_import_lexeme_lost_en
+    intent lexeme_import_lexeme_lost
+    language en
+    text "{slug} lost its {language} lexeme"
+  response response_lexeme_import_surface_missing_en
+    intent lexeme_import_surface_missing
+    language en
+    text "{slug} {language} lexeme has no surface"
+  response response_lexeme_import_surface_changed_en
+    intent lexeme_import_surface_changed
+    language en
+    text "{slug} {language} surface changed on parse"
+  response response_lexeme_import_denotation_lost_en
+    intent lexeme_import_denotation_lost
+    language en
+    text "{slug} {language} surface does not denote its meaning"
+  response response_lexeme_import_part_of_speech_lost_en
+    intent lexeme_import_part_of_speech_lost
+    language en
+    text "{slug} {language} surface lost its part_of_speech"
+  response response_lexeme_import_number_lost_en
+    intent lexeme_import_number_lost
+    language en
+    text "{slug} {language} surface lost its grammatical_number"
+  response response_lexeme_import_cannot_stage_en
+    intent lexeme_import_cannot_stage
+    language en
+    text "cannot stage {path}: {error}"
+  response response_lexeme_import_cannot_install_en
+    intent lexeme_import_cannot_install
+    language en
+    text "cannot install {file}: {error}"
+  response response_lexeme_import_cannot_list_en
+    intent lexeme_import_cannot_list
+    language en
+    text "cannot list {path}: {error}"
+  response response_lexeme_import_cannot_inspect_en
+    intent lexeme_import_cannot_inspect
+    language en
+    text "cannot inspect output: {error}"
+  response response_lexeme_import_cannot_remove_stale_en
+    intent lexeme_import_cannot_remove_stale
+    language en
+    text "cannot remove stale {file}: {error}"

@@ -85,10 +85,12 @@ pub fn run_import(action: ImportAction) -> Result<(), Box<dyn Error>> {
                     std::fs::create_dir_all(parent)?;
                 }
                 std::fs::write(&event_path, lexeme_import::render_import_events(&events))?;
-                return Err(format!(
-                    "refused {} concept(s); existing shards were not changed; events: {}",
-                    report.rejected.len(),
-                    event_path.display()
+                return Err(lexeme_import::diagnostic(
+                    "lexeme_import_refused_batch",
+                    &[
+                        ("count", &report.rejected.len().to_string()),
+                        ("events", &event_path.display().to_string()),
+                    ],
                 )
                 .into());
             }

@@ -34,7 +34,7 @@ use serde_json::Value;
 use crate::event_log::EventLog;
 use crate::json_lino::json_cache_file;
 use crate::knowledge::cache_capacity;
-use crate::seed::parse_lexicon_text;
+use crate::seed::{parse_lexicon_text, response_for};
 use crate::translation::http::HttpClient;
 
 /// The four project languages, in canonical emission order.
@@ -54,6 +54,20 @@ pub const DEFINED_BY: &str = "entity";
 /// `tests/unit/data_files.rs`.
 pub const CONCEPTS_PER_SHARD: usize = 60;
 
+/// Render an importer diagnostic from the grounded seed response registry.
+///
+/// Callers provide semantic placeholder names rather than embedding prose in
+/// Rust. Missing records deliberately degrade to the stable intent key, making
+/// a damaged seed observable without introducing a second wording authority.
+#[must_use]
+pub fn diagnostic(intent: &str, values: &[(&str, &str)]) -> String {
+    let mut rendered = response_for(intent, "en").unwrap_or_else(|| intent.to_owned());
+    for (name, value) in values {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
+    }
+    rendered
+}
+
 /// The comment header prepended to every generated shard.
 const SHARD_HEADER: &str = "\
 # `Bulk Wikidata lexeme import for issue 660, R378.`
@@ -61,6 +75,7 @@ const SHARD_HEADER: &str = "\
 # `Source records live under data/cache/wikidata/entity/<Qid>.json.`
 meanings
 ";
+const MEANINGS_HEAD: &str = "meanings";
 
 /// A concept to import: a meaning slug bound to a Wikidata entity id.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -238,7 +253,7 @@ pub fn run(
                 &mut report,
                 events,
                 concept,
-                format!("duplicate slug (also {other})"),
+                diagnostic("lexeme_import_duplicate_slug", &[("other", other)]),
             );
             continue;
         }
@@ -247,7 +262,7 @@ pub fn run(
                 &mut report,
                 events,
                 concept,
-                format!("duplicate qid (also {other})"),
+                diagnostic("lexeme_import_duplicate_qid", &[("other", other)]),
             );
             continue;
         }
@@ -309,23 +324,41 @@ fn resolve_surfaces(
 ) -> Result<SurfaceMaps, String> {
     let json_path = entity_json_path(&config.cache_dir, &concept.qid);
     if json_path.is_file() {
-        let text = fs::read_to_string(&json_path)
-            .map_err(|error| format!("cache {} unreadable: {error}", json_path.display()))?;
-        let value: Value = serde_json::from_str(&text)
-            .map_err(|error| format!("cache {} invalid json: {error}", json_path.display()))?;
+        let text = fs::read_to_string(&json_path).map_err(|error| {
+            diagnostic(
+                "lexeme_import_cache_unreadable",
+                &[
+                    ("path", &json_path.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
+        let value: Value = serde_json::from_str(&text).map_err(|error| {
+            diagnostic(
+                "lexeme_import_cache_invalid_json",
+                &[
+                    ("path", &json_path.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
         return surfaces_from_entity(&value, &concept.qid);
     }
 
     if !config.online {
-        return Err(format!(
-            "cache miss for {} and offline mode is active (set FORMAL_AI_LIVE_API to populate)",
-            concept.qid
+        return Err(diagnostic(
+            "lexeme_import_cache_miss_offline",
+            &[("qid", &concept.qid)],
         ));
     }
     if *cached >= budget {
-        return Err(format!(
-            "cache budget {budget} reached ({}); skipping {} to respect the bounded-cache policy",
-            *cached, concept.qid
+        return Err(diagnostic(
+            "lexeme_import_cache_budget_reached",
+            &[
+                ("budget", &budget.to_string()),
+                ("cached", &cached.to_string()),
+                ("qid", &concept.qid),
+            ],
         ));
     }
     let client =
@@ -341,12 +374,12 @@ pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, Str
     let entity = value
         .get("entities")
         .and_then(|entities| entities.get(qid))
-        .ok_or_else(|| format!("{qid} is absent from cache"))?;
+        .ok_or_else(|| diagnostic("lexeme_import_qid_absent_from_cache", &[("qid", qid)]))?;
     let labels = value
         .get("entities")
         .and_then(|entities| entities.get(qid))
         .and_then(|entity| entity.get("labels"))
-        .ok_or_else(|| format!("{qid} has no labels in cache"))?;
+        .ok_or_else(|| diagnostic("lexeme_import_no_labels_in_cache", &[("qid", qid)]))?;
     let mut out = BTreeMap::new();
     let mut sources = BTreeMap::new();
     for language in IMPORT_LANGUAGES {
@@ -354,7 +387,12 @@ pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, Str
             .get(language)
             .and_then(|label| label.get("value"))
             .and_then(Value::as_str)
-            .ok_or_else(|| format!("{qid} missing {language} label"))?;
+            .ok_or_else(|| {
+                diagnostic(
+                    "lexeme_import_missing_cached_label",
+                    &[("qid", qid), ("language", language)],
+                )
+            })?;
         let (surface, field) = if surface_matches_language(label, language) {
             (label, format!("labels.{language}.value"))
         } else {
@@ -370,8 +408,9 @@ pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, Str
                     })
                 })
                 .ok_or_else(|| {
-                    format!(
-                        "{qid} {language} label `{label}` does not match its language script and no clean alias exists"
+                    diagnostic(
+                        "lexeme_import_no_clean_alias",
+                        &[("qid", qid), ("language", language), ("label", label)],
                     )
                 })?
         };
@@ -420,24 +459,51 @@ fn fetch_and_cache(
     http: &dyn HttpClient,
 ) -> Result<SurfaceMaps, String> {
     let url = format!("https://www.wikidata.org/wiki/Special:EntityData/{qid}.json");
-    let body = http
-        .get(&url)
-        .map_err(|error| format!("fetch {qid} failed: {error}"))?;
-    let full: Value = serde_json::from_str(&body)
-        .map_err(|error| format!("fetch {qid} returned invalid json: {error}"))?;
+    let body = http.get(&url).map_err(|error| {
+        diagnostic(
+            "lexeme_import_fetch_failed",
+            &[("qid", qid), ("error", &error.to_string())],
+        )
+    })?;
+    let full: Value = serde_json::from_str(&body).map_err(|error| {
+        diagnostic(
+            "lexeme_import_fetch_invalid_json",
+            &[("qid", qid), ("error", &error.to_string())],
+        )
+    })?;
     let trimmed = trim_entity(&full, qid)?;
     let json = serialize_trimmed(&trimmed);
-    fs::create_dir_all(cache_dir)
-        .map_err(|error| format!("cannot create {}: {error}", cache_dir.display()))?;
-    let value: Value = serde_json::from_str(&json)
-        .map_err(|error| format!("re-parse of trimmed {qid} failed: {error}"))?;
-    fs::write(entity_json_path(cache_dir, qid), &json)
-        .map_err(|error| format!("cannot write {qid}.json: {error}"))?;
+    fs::create_dir_all(cache_dir).map_err(|error| {
+        diagnostic(
+            "lexeme_import_cannot_create",
+            &[
+                ("path", &cache_dir.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
+    let value: Value = serde_json::from_str(&json).map_err(|error| {
+        diagnostic(
+            "lexeme_import_reparse_failed",
+            &[("qid", qid), ("error", &error.to_string())],
+        )
+    })?;
+    fs::write(entity_json_path(cache_dir, qid), &json).map_err(|error| {
+        diagnostic(
+            "lexeme_import_cannot_write_json",
+            &[("qid", qid), ("error", &error.to_string())],
+        )
+    })?;
     fs::write(
         entity_lino_path(cache_dir, qid),
         json_cache_file(qid, &value),
     )
-    .map_err(|error| format!("cannot write {qid}.lino: {error}"))?;
+    .map_err(|error| {
+        diagnostic(
+            "lexeme_import_cannot_write_lino",
+            &[("qid", qid), ("error", &error.to_string())],
+        )
+    })?;
     surfaces_from_entity(&value, qid)
 }
 
@@ -449,7 +515,7 @@ fn trim_entity(full: &Value, qid: &str) -> Result<Ordered, String> {
     let entity = full
         .get("entities")
         .and_then(|entities| entities.get(qid))
-        .ok_or_else(|| format!("{qid} not present in fetched document"))?;
+        .ok_or_else(|| diagnostic("lexeme_import_qid_absent_from_fetch", &[("qid", qid)]))?;
     let mut trimmed = Vec::new();
     if let Some(kind) = entity.get("type").and_then(Value::as_str) {
         trimmed.push(("type".to_string(), Ordered::Str(kind.to_string())));
@@ -611,34 +677,43 @@ fn escape_json(text: &str) -> String {
 /// grammatical-number facets on every surface.
 pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
     if !is_entity_id(&lexeme.qid) {
-        return Err(format!("{} is not a Wikidata item id", lexeme.qid));
+        return Err(diagnostic(
+            "lexeme_import_invalid_qid",
+            &[("qid", &lexeme.qid)],
+        ));
     }
     if lexeme.slug.is_empty() || !slug_is_clean(&lexeme.slug) {
-        return Err(format!("slug `{}` is not a bare identifier", lexeme.slug));
+        return Err(diagnostic(
+            "lexeme_import_invalid_slug",
+            &[("slug", &lexeme.slug)],
+        ));
     }
     for language in IMPORT_LANGUAGES {
         let surface = lexeme
             .labels
             .get(language)
-            .ok_or_else(|| format!("missing {language} label"))?;
+            .ok_or_else(|| diagnostic("lexeme_import_missing_label", &[("language", language)]))?;
         if !surface_is_clean(surface) {
-            return Err(format!(
-                "{language} label `{surface}` is not a clean single token"
+            return Err(diagnostic(
+                "lexeme_import_invalid_surface",
+                &[("language", language), ("surface", surface)],
             ));
         }
-        let source = lexeme
-            .sources
-            .get(language)
-            .ok_or_else(|| format!("missing {language} source provenance"))?;
+        let source = lexeme.sources.get(language).ok_or_else(|| {
+            diagnostic(
+                "lexeme_import_missing_provenance",
+                &[("language", language)],
+            )
+        })?;
         let label_field = format!("labels.{language}.value");
         let alias_prefix = format!("aliases.{language}[");
         if source.record_id != lexeme.qid
             || (source.field != label_field
                 && !(source.field.starts_with(&alias_prefix) && source.field.ends_with("].value")))
         {
-            return Err(format!(
-                "{language} source provenance does not identify a supported field in {}",
-                lexeme.qid
+            return Err(diagnostic(
+                "lexeme_import_invalid_provenance",
+                &[("language", language), ("qid", &lexeme.qid)],
             ));
         }
     }
@@ -646,18 +721,31 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
     // Parse the rendered block back through the real loader and confirm the
     // grounded structure — this is the "validate on import" contract.
     let block = render_block(lexeme);
-    let document = format!("meanings\n{block}");
+    let mut document = String::from(MEANINGS_HEAD);
+    document.push('\n');
+    document.push_str(&block);
     let lexicon = parse_lexicon_text(&document);
     let meaning = lexicon
         .meanings
         .iter()
         .find(|meaning| meaning.slug == lexeme.slug)
-        .ok_or_else(|| format!("rendered block for {} did not parse", lexeme.slug))?;
+        .ok_or_else(|| {
+            diagnostic(
+                "lexeme_import_block_parse_failed",
+                &[("slug", &lexeme.slug)],
+            )
+        })?;
     if meaning.wikidata != lexeme.qid {
-        return Err(format!("{} lost its grounding on parse", lexeme.slug));
+        return Err(diagnostic(
+            "lexeme_import_grounding_lost",
+            &[("slug", &lexeme.slug)],
+        ));
     }
     if !meaning.defined_by.iter().any(|target| target == DEFINED_BY) {
-        return Err(format!("{} is not defined-by {DEFINED_BY}", lexeme.slug));
+        return Err(diagnostic(
+            "lexeme_import_wrong_genus",
+            &[("slug", &lexeme.slug), ("defined_by", DEFINED_BY)],
+        ));
     }
     for language in IMPORT_LANGUAGES {
         let expected = &lexeme.labels[language];
@@ -665,33 +753,40 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
             .lexemes
             .iter()
             .find(|lexeme| lexeme.language == language)
-            .ok_or_else(|| format!("{} lost its {language} lexeme", meaning.slug))?;
-        let form = lexeme_block
-            .words
-            .first()
-            .ok_or_else(|| format!("{} {language} lexeme has no surface", meaning.slug))?;
+            .ok_or_else(|| {
+                diagnostic(
+                    "lexeme_import_lexeme_lost",
+                    &[("slug", &meaning.slug), ("language", language)],
+                )
+            })?;
+        let form = lexeme_block.words.first().ok_or_else(|| {
+            diagnostic(
+                "lexeme_import_surface_missing",
+                &[("slug", &meaning.slug), ("language", language)],
+            )
+        })?;
         if &form.text != expected {
-            return Err(format!(
-                "{} {language} surface changed on parse",
-                meaning.slug
+            return Err(diagnostic(
+                "lexeme_import_surface_changed",
+                &[("slug", &meaning.slug), ("language", language)],
             ));
         }
         if !form.denotations().any(|target| target == meaning.slug) {
-            return Err(format!(
-                "{} {language} surface does not denote its meaning",
-                meaning.slug
+            return Err(diagnostic(
+                "lexeme_import_denotation_lost",
+                &[("slug", &meaning.slug), ("language", language)],
             ));
         }
         if form.part_of_speech() != Some(PART_OF_SPEECH) {
-            return Err(format!(
-                "{} {language} surface lost its part_of_speech",
-                meaning.slug
+            return Err(diagnostic(
+                "lexeme_import_part_of_speech_lost",
+                &[("slug", &meaning.slug), ("language", language)],
             ));
         }
         if form.grammatical_number() != Some(GRAMMATICAL_NUMBER) {
-            return Err(format!(
-                "{} {language} surface lost its grammatical_number",
-                meaning.slug
+            return Err(diagnostic(
+                "lexeme_import_number_lost",
+                &[("slug", &meaning.slug), ("language", language)],
             ));
         }
     }
@@ -778,13 +873,17 @@ pub fn render_import_events(events: &EventLog) -> String {
     for event in events.events() {
         let _ = writeln!(out, "  event \"{}\"", escape_lino(&event.id));
         let _ = writeln!(out, "    kind \"{}\"", escape_lino(event.kind));
-        out.push_str("    role \"assistant\"\n");
-        out.push_str("    intent \"lexeme_import\"\n");
+        write_event_field(&mut out, "role", "assistant");
+        write_event_field(&mut out, "intent", "lexeme_import");
         let _ = writeln!(out, "    content \"{}\"", escape_lino(&event.payload));
-        out.push_str("    conversationId \"issue-660\"\n");
-        out.push_str("    writeCount \"1\"\n");
+        write_event_field(&mut out, "conversationId", "issue-660");
+        write_event_field(&mut out, "writeCount", "1");
     }
     out
+}
+
+fn write_event_field(out: &mut String, field: &str, value: &str) {
+    let _ = writeln!(out, "    {field} \"{value}\"");
 }
 
 /// Replace the complete generated shard set without leaving stale files.
@@ -793,25 +892,55 @@ pub fn render_import_events(events: &EventLog) -> String {
 /// then obsolete importer-owned shards are removed. Unrelated seed files are
 /// never touched.
 pub fn write_shards(directory: &Path, shards: &[Shard]) -> Result<(), String> {
-    fs::create_dir_all(directory)
-        .map_err(|error| format!("cannot create {}: {error}", directory.display()))?;
+    fs::create_dir_all(directory).map_err(|error| {
+        diagnostic(
+            "lexeme_import_cannot_create",
+            &[
+                ("path", &directory.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
 
     for shard in shards {
         let staged = directory.join(format!(".{}.staged", shard.file_name));
-        fs::write(&staged, &shard.content)
-            .map_err(|error| format!("cannot stage {}: {error}", staged.display()))?;
-        fs::rename(&staged, directory.join(&shard.file_name))
-            .map_err(|error| format!("cannot install {}: {error}", shard.file_name))?;
+        fs::write(&staged, &shard.content).map_err(|error| {
+            diagnostic(
+                "lexeme_import_cannot_stage",
+                &[
+                    ("path", &staged.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
+        fs::rename(&staged, directory.join(&shard.file_name)).map_err(|error| {
+            diagnostic(
+                "lexeme_import_cannot_install",
+                &[("file", &shard.file_name), ("error", &error.to_string())],
+            )
+        })?;
     }
 
     let retained: std::collections::BTreeSet<&str> = shards
         .iter()
         .map(|shard| shard.file_name.as_str())
         .collect();
-    let entries = fs::read_dir(directory)
-        .map_err(|error| format!("cannot list {}: {error}", directory.display()))?;
+    let entries = fs::read_dir(directory).map_err(|error| {
+        diagnostic(
+            "lexeme_import_cannot_list",
+            &[
+                ("path", &directory.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
     for entry in entries {
-        let entry = entry.map_err(|error| format!("cannot inspect output: {error}"))?;
+        let entry = entry.map_err(|error| {
+            diagnostic(
+                "lexeme_import_cannot_inspect",
+                &[("error", &error.to_string())],
+            )
+        })?;
         let file_name = entry.file_name();
         let Some(file_name) = file_name.to_str() else {
             continue;
@@ -822,8 +951,12 @@ pub fn write_shards(directory: &Path, shards: &[Shard]) -> Result<(), String> {
                 .is_some_and(|ext| ext == "lino")
             && !retained.contains(file_name)
         {
-            fs::remove_file(entry.path())
-                .map_err(|error| format!("cannot remove stale {file_name}: {error}"))?;
+            fs::remove_file(entry.path()).map_err(|error| {
+                diagnostic(
+                    "lexeme_import_cannot_remove_stale",
+                    &[("file", file_name), ("error", &error.to_string())],
+                )
+            })?;
         }
     }
     Ok(())
