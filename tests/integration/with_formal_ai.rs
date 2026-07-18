@@ -890,7 +890,10 @@ fn with_formal_ai_global_configures_idempotently_and_undo_restores_backups() {
     let codex_catalog = std::fs::read_to_string(home.join(".codex/formal-ai-model-catalog.json"))
         .expect("codex catalog");
     assert!(codex_catalog.contains("\"slug\": \"formal-ai\""));
-    assert!(codex_catalog.contains("\"context_window\": 60000"));
+    assert!(codex_catalog.contains("\"context_window\":"));
+    assert!(codex_catalog.contains("\"context_used_tokens\":"));
+    assert!(codex_catalog.contains("\"disk_free_bytes\":"));
+    assert!(!codex_catalog.contains("\"context_window\": 60000"));
     assert!(home
         .join(".codex/formal-ai-model-catalog.json.formal-ai.bak")
         .exists());
