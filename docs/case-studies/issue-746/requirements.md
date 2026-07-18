@@ -8,4 +8,3 @@
 6. Preserve multilingual web intent routing through the normalized capability set.
 7. Declare search/fetch routing as a first-class HTTP-server environment capability.
 8. Verify each requirement and their composition through public HTTP surfaces and real installed agentic CLIs.
-

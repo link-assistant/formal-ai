@@ -12,4 +12,3 @@ test issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertiseme
 test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... ok
 
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 119 filtered out; finished in 1.41s
-
