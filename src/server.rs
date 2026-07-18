@@ -9,6 +9,7 @@ use crate::anthropic::{
     anthropic_message_sse, create_anthropic_message_with_solver_and_memory, AnthropicContentBlock,
     AnthropicMessagesRequest,
 };
+use crate::context_capacity::ContextCapacity;
 use crate::engine::{
     is_known_trace_id, knowledge_graph, knowledge_graph_dot, render_thinking_steps,
 };
@@ -30,7 +31,6 @@ use crate::telegram::handle_telegram_webhook;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
-pub const ADVERTISED_CONTEXT_WINDOW_TOKENS: i64 = 60_000;
 pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -300,6 +300,11 @@ fn handle_dynamic_protocol_route(
 
 fn handle_openai_models_request() -> ApiHttpResponse {
     let model_id = canonical_model_id();
+    let context = match ContextCapacity::current() {
+        Ok(context) => context,
+        Err(error) => return error_response(500, &error.to_string()),
+    };
+    let context_metadata = json!(context);
     json_response(
         200,
         &json!({
@@ -308,15 +313,29 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "object": "model",
-                "created": 0,
-                "owned_by": "link-assistant"
+                "owned_by": "link-assistant",
+                "context_window": context.context_window_tokens,
+                "context_window_tokens": context.context_window_tokens,
+                "context_used_tokens": context.context_used_tokens,
+                "context_used_fraction": context.context_used_fraction,
+                "disk_free_bytes": context.disk_free_bytes,
+                "memory_used_bytes": context.memory_used_bytes,
+                "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
+                "context": context_metadata
             }],
             "models": [{
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
-                "context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
-                "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS
+                "context_window": context.context_window_tokens,
+                "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS,
+                "context_window_tokens": context.context_window_tokens,
+                "context_used_tokens": context.context_used_tokens,
+                "context_used_fraction": context.context_used_fraction,
+                "disk_free_bytes": context.disk_free_bytes,
+                "memory_used_bytes": context.memory_used_bytes,
+                "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
+                "context": context_metadata
             }],
             "rate_limit": {
                 "requests_per_minute": 60,
