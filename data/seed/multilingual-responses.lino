@@ -1,4 +1,16 @@
 multilingual_responses
+  response response_mcp_instructions_en
+    intent mcp_instructions
+    language en
+    text "Call formal_ai_chat for every user request and return its answer to the user."
+  response response_mcp_tool_description_en
+    intent mcp_tool_description
+    language en
+    text "Ask the local Formal AI reasoning server to answer the user's request."
+  response response_mcp_prompt_description_en
+    intent mcp_prompt_description
+    language en
+    text "The complete user request to answer."
   response response_greeting_en
     intent greeting
     language en

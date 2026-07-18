@@ -96,7 +96,7 @@ pub struct WithFormalAiArgs {
     #[arg(long, default_value = DEFAULT_MODEL)]
     pub model: String,
 
-    /// External CLI: codex, opencode, agent, gemini, claude, qwen, grok, or aider.
+    /// External CLI: codex, opencode, agent, cursor, gemini, claude, qwen, grok, or aider.
     #[arg(value_name = "TOOL")]
     pub tool: Option<String>,
 
