@@ -159,7 +159,6 @@ fn run_with_capture(
         .env_remove("GOOGLE_GEMINI_BASE_URL")
         .env_remove("GOOGLE_VERTEX_BASE_URL")
         .env_remove("GROK_API_KEY")
-        .env_remove("GROK_BASE_URL")
         .output()
         .expect("run formal-ai with")
 }
