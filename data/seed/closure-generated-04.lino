@@ -1,4 +1,49 @@
 meanings
+  response_mcp_instructions_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions zh"
+  response_mcp_prompt_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description en"
+  response_mcp_prompt_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description hi"
+  response_mcp_prompt_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description ru"
+  response_mcp_prompt_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description zh"
+  response_mcp_tool_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description en"
+  response_mcp_tool_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description hi"
+  response_mcp_tool_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description ru"
+  response_mcp_tool_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description zh"
   response_meta_explanation_en
     defined-by response_template
     lexeme en
