@@ -520,11 +520,12 @@ fn write_global_config(
 fn undo_global_config(integration: &ClientIntegration) -> Result<(), Box<dyn Error>> {
     let path = global_config_path(&integration.global_config.path)?;
     let config_backup_path = backup_path(&path, &integration.global_config.backup_suffix);
-    let mut restored = false;
-    if config_backup_path.exists() {
+    let mut restored = if config_backup_path.exists() {
         restore_backup(&path, &config_backup_path)?;
-        restored = true;
-    }
+        true
+    } else {
+        false
+    };
     if !integration.global_config.model_catalog_path.is_empty() {
         let catalog_path = global_config_path(&integration.global_config.model_catalog_path)?;
         let catalog_backup_path =
