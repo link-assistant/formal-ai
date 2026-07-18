@@ -30,6 +30,9 @@ use crate::telegram::handle_telegram_webhook;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
+pub const ADVERTISED_CONTEXT_WINDOW_TOKENS: i64 = 60_000;
+pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApiHttpResponse {
     pub status_code: u16,
@@ -312,8 +315,8 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
-                "context_window": 60_000,
-                "max_output_tokens": 8_192
+                "context_window": ADVERTISED_CONTEXT_WINDOW_TOKENS,
+                "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS
             }],
             "rate_limit": {
                 "requests_per_minute": 60,
