@@ -1,4 +1,44 @@
 meanings
+  meta_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "meta explanation"
+  misinformation
+    defined-by word_surface
+    lexeme en
+      surface
+        text "misinformation"
+  mkdir
+    defined-by concept
+    lexeme en
+      surface
+        text "mkdir"
+  mode
+    defined-by concept
+    lexeme en
+      surface
+        text "mode"
+  multi-step
+    defined-by word_surface
+    lexeme en
+      surface
+        text "multi step"
+  mv
+    defined-by concept
+    lexeme en
+      surface
+        text "mv"
+  named
+    defined-by concept
+    lexeme en
+      surface
+        text "named"
+  non-deterministic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "non deterministic"
   nondeterministic
     defined-by word_surface
     lexeme en
@@ -59,6 +99,11 @@ meanings
     lexeme en
       surface
         text "one paragraph"
+  one_path
+    defined-by concept
+    lexeme en
+      surface
+        text "one path"
   open_textbook
     defined-by kind
     lexeme en
@@ -1224,6 +1269,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  powershell
+    defined-by token
+    lexeme en
+      surface
+        text "powershell"
   preferred
     defined-by concept
     lexeme en
@@ -1254,6 +1304,11 @@ meanings
     lexeme en
       surface
         text "programming language"
+  project
+    defined-by concept
+    lexeme en
+      surface
+        text "project"
   project-docs
     defined-by source_kind
     lexeme en
@@ -1289,6 +1344,16 @@ meanings
     lexeme en
       surface
         text "pwd"
+  pwsh
+    defined-by token
+    lexeme en
+      surface
+        text "pwsh"
+  pytest
+    defined-by concept
+    lexeme en
+      surface
+        text "pytest"
   python3
     defined-by token
     lexeme en
@@ -1324,73 +1389,8 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
-  remainder
-    defined-by concept
-    lexeme en
-      surface
-        text "remainder"
   remix
     defined-by concept
     lexeme en
       surface
         text "remix"
-  remix-icon
-    defined-by concept
-    lexeme en
-      surface
-        text "remix icon"
-  remove_punctuation
-    defined-by operation
-    lexeme en
-      surface
-        text "remove punctuation"
-  remove_text
-    defined-by operation
-    lexeme en
-      surface
-        text "remove text"
-  repo
-    defined-by word_surface
-    lexeme en
-      surface
-        text "repo"
-  repositories
-    defined-by word_surface
-    lexeme en
-      surface
-        text "repositories"
-  reserved-role
-    defined-by concept
-    lexeme en
-      surface
-        text "reserved role"
-  response_agent_suggestion_active_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active en"
-  response_agent_suggestion_active_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active hi"
-  response_agent_suggestion_active_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active ru"
-  response_agent_suggestion_active_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion active zh"
-  response_agent_suggestion_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion en"
-  response_agent_suggestion_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agent suggestion hi"

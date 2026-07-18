@@ -31,10 +31,87 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// `.lino` file rather than this function, upholding the project rule against hardcoded
 /// natural language in the solver.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
+    let prompt = strip_balanced_outer_quotes(prompt.trim());
     let vocab = seed::terminal_command_vocabulary();
-    named_shell_command(prompt, &vocab)
-        .or_else(|| asks_for_directory_listing(prompt).then(|| String::from("ls")))
-        .or_else(|| intent_shell_command(prompt, &seed::shell_intent_vocabulary()))
+    let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
+    let listing = asks_for_directory_listing(prompt);
+    let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
+
+    if let Some(command) = prefixed_shell_command(prompt, &vocab) {
+        let names_known_command = command
+            .split_whitespace()
+            .next()
+            .map(normalize_command_word)
+            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == &first));
+        if names_known_command || (intent.is_none() && !listing && !web_search) {
+            return Some(command);
+        }
+    }
+
+    listing
+        .then(|| String::from("ls"))
+        .or(intent)
+        .or_else(|| named_shell_command(prompt, &vocab))
+        .or_else(|| bare_shell_command(prompt, &vocab))
+}
+
+fn strip_balanced_outer_quotes(prompt: &str) -> &str {
+    for quote in ['"', '\'', '`'] {
+        if prompt.starts_with(quote) && prompt.ends_with(quote) && prompt.len() >= 2 {
+            return &prompt[1..prompt.len() - 1];
+        }
+    }
+    prompt
+}
+
+/// Pass an explicitly introduced command through byte-for-byte (apart from
+/// surrounding whitespace). Explicit execution is an intent boundary: the
+/// command need not appear in a maintained binary allowlist because the client
+/// still owns its normal sandbox and permission decision.
+fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+    let prompt = prompt.trim();
+    let lower = prompt.to_lowercase();
+    if let Some(prefix) = vocab
+        .passthrough_prefixes
+        .iter()
+        .filter(|prefix| prefix_boundary(&lower, prefix))
+        .max_by_key(|prefix| prefix.chars().count())
+    {
+        let remainder = prompt.get(prefix.len()..)?.trim_start();
+        let remainder = remainder
+            .strip_prefix(':')
+            .unwrap_or(remainder)
+            .trim_start();
+        return (!remainder.is_empty()).then(|| strip_balanced_outer_quotes(remainder).to_owned());
+    }
+
+    None
+}
+
+fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
+    let first = prompt.split_whitespace().next()?;
+    let command = normalize_command_word(first);
+    // A bare command token can also be an ordinary imperative (notably
+    // `find information about ...`).  Explicit passthrough prefixes above are
+    // unambiguous, but a seed-backed web-search request must remain available
+    // to the dedicated search router instead of becoming a shell command.
+    if crate::solver_handlers::web_search_query_for(prompt).is_some() {
+        return None;
+    }
+    let is_known = vocab
+        .bare_shell_tokens
+        .iter()
+        .any(|token| token == &command);
+    let words = prompt.split_whitespace().collect::<Vec<_>>();
+    (is_known && words[1..].iter().all(|word| !is_prose_word(word))).then(|| prompt.to_owned())
+}
+
+fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
+    prompt.starts_with(prefix)
+        && prompt
+            .get(prefix.len()..)
+            .and_then(|rest| rest.chars().next())
+            .is_some_and(|c| c.is_whitespace() || c == ':')
 }
 
 /// Recover the literal subject of a seed-backed source-code search request.
@@ -45,14 +122,15 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let vocab = seed::shell_intent_vocabulary();
-    let cue = vocab
+    let (_, cue) = vocab
         .intents
         .iter()
         .filter(|intent| intent.command == "rg")
         .flat_map(|intent| intent.cues.iter())
         .filter(|cue| lower.contains(cue.as_str()))
-        .max_by_key(|cue| cue.chars().count())?;
-    remainder_argument(prompt, &lower, cue)
+        .map(|cue| (cue.chars().count(), cue))
+        .max_by_key(|(length, _)| *length)?;
+    local_search_query(prompt, cue, &vocab)
 }
 
 /// Prefer a client's dedicated source-search capability over shell lowering.
@@ -88,18 +166,130 @@ fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<S
         .iter()
         .filter(|intent| intent.command != REPORT_ISSUE_ACTION)
         .flat_map(|intent| intent.cues.iter().map(move |cue| (intent, cue)))
-        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .filter(|(intent, cue)| {
+            lower.contains(cue.as_str())
+                && (intent.argument != ShellIntentArgument::SearchQuery
+                    || vocab
+                        .local_search_scopes
+                        .iter()
+                        .any(|scope| lower.contains(scope)))
+        })
         .max_by_key(|(_, cue)| cue.chars().count())?;
     match intent.argument {
-        ShellIntentArgument::None => Some(intent.command.clone()),
+        ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
         ShellIntentArgument::Path => {
             path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
         ShellIntentArgument::NameLead => name_lead_argument(prompt, &vocab.name_leads)
             .map(|arg| format!("{} {arg}", intent.command)),
+        ShellIntentArgument::OnePath => {
+            path_arguments(prompt, cue, vocab, 1).map(|args| format!("{} {args}", intent.command))
+        }
+        ShellIntentArgument::TwoPaths => {
+            path_arguments(prompt, cue, vocab, 2).map(|args| format!("{} {args}", intent.command))
+        }
         ShellIntentArgument::Remainder => remainder_argument(prompt, &lower, cue)
             .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
+        ShellIntentArgument::SearchQuery => local_search_query(prompt, cue, vocab)
+            .map(|arg| format!("{} --fixed-strings -- '{arg}' .", intent.command)),
     }
+}
+
+fn path_arguments(
+    prompt: &str,
+    cue: &str,
+    vocab: &ShellIntentVocabulary,
+    count: usize,
+) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let after_cue = lower
+        .find(cue)
+        .and_then(|start| prompt.get(start + cue.len()..))
+        .unwrap_or_default();
+    let mut arguments = collect_path_arguments(after_cue, "", vocab, count);
+    if arguments.len() < count {
+        arguments = collect_path_arguments(prompt, cue, vocab, count);
+    }
+    (arguments.len() == count).then(|| arguments.join(" "))
+}
+
+fn collect_path_arguments(
+    text: &str,
+    cue: &str,
+    vocab: &ShellIntentVocabulary,
+    count: usize,
+) -> Vec<String> {
+    let cue = cue.to_lowercase();
+    let mut arguments = Vec::new();
+    for word in text.split_whitespace() {
+        let candidate = word
+            .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?'));
+        let normalized = candidate.to_lowercase();
+        if candidate.is_empty()
+            || !is_safe_path(candidate)
+            || cue.split_whitespace().any(|part| part == normalized)
+            || vocab
+                .argument_noise
+                .iter()
+                .any(|noise| noise == &normalized)
+        {
+            continue;
+        }
+        arguments.push(candidate.to_owned());
+        if arguments.len() == count {
+            break;
+        }
+    }
+    arguments
+}
+
+fn local_search_query(prompt: &str, cue: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    let cue_words: Vec<String> = cue.split_whitespace().map(str::to_lowercase).collect();
+    let scope_words: Vec<String> = vocab
+        .local_search_scopes
+        .iter()
+        .flat_map(|scope| scope.split_whitespace().map(str::to_lowercase))
+        .collect();
+    let query = prompt
+        .split_whitespace()
+        .map(|word| {
+            word.trim_matches(|c: char| !c.is_alphanumeric() && !matches!(c, '_' | '-' | '.' | ':'))
+        })
+        .filter(|word| !word.is_empty())
+        .filter(|word| {
+            let lower = word.to_lowercase();
+            !cue_words.contains(&lower)
+                && !scope_words.contains(&lower)
+                && !vocab.argument_noise.contains(&lower)
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    (!query.is_empty()
+        && query.chars().all(|c| {
+            c.is_alphanumeric() || c.is_whitespace() || matches!(c, '_' | '-' | '.' | ':')
+        }))
+    .then_some(query)
+}
+
+fn resolve_shell_command(command: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    let action = command.strip_prefix("formal-ai:workspace-");
+    if let Some(action) = action {
+        return workspace_command(action, vocab).map(str::to_owned);
+    }
+    Some(command.to_owned())
+}
+
+fn workspace_command<'a>(action: &str, vocab: &'a ShellIntentVocabulary) -> Option<&'a str> {
+    vocab
+        .workspace_commands
+        .iter()
+        .find(|commands| std::path::Path::new(&commands.marker).is_file())
+        .and_then(|commands| match action {
+            "test" => Some(commands.test.as_str()),
+            "install" => Some(commands.install.as_str()),
+            "build" => Some(commands.build.as_str()),
+            _ => None,
+        })
 }
 
 /// Recover a safe literal query following a matched semantic cue.
