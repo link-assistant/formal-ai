@@ -1,0 +1,13 @@
+   Compiling formal-ai v0.297.4 (/tmp/gh-issue-solver-1784371666002)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.19s
+     Running tests/unit/mod.rs (target/debug/deps/unit-e0f9301b5290d51b)
+
+running 6 tests
+test issue_659_hardcoded_language_learning::issue_659_report_is_derived_from_persisted_observations ... ok
+test issue_659_hardcoded_language_learning::generalized_table_routes_different_issue_659_wording ... ok
+test issue_659_hardcoded_language_learning::issue_659_learning_remains_human_review_gated ... ok
+test issue_659_hardcoded_language_learning::committed_agent_cli_artifact_is_byte_reproducible ... ok
+test docs_requirements_issue_659::issue_659_evidence_and_ci_are_traceable ... ok
+test issue_659_hardcoded_language_learning::formal_ai_executes_the_whole_issue_659_learning_task ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 1752 filtered out; finished in 0.20s

@@ -45,8 +45,10 @@ pub static REPORTS: &[&LearningReport] = &[
     &code_rewrite_learning::REPORT,
     &execution_learning::REPORT,
     &self_hosting_learning::REPORT,
+    &hardcoded_language_learning::REPORT,
 ];
 
+pub mod hardcoded_language_learning;
 pub mod self_hosting_learning;
 
 /// Resolve the report a task asks for, if any.
