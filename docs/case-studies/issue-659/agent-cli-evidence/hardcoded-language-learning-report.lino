@@ -1,0 +1,135 @@
+hardcoded_language_learning_report
+  issue "659"
+  decision "awaiting_human_review"
+  promotion_gate "hardcoded_language_fixture_context_gate_and_agent_cli_e2e_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "10"
+  validation_warning_count "0"
+  multi_hop_seed "observation:sentence-only-gap"
+  multi_hop_recall "observation:sentence-only-gap"
+  learned_expression_01
+    id "observation:sentence-only-gap"
+    text "message
+user
+The first scanner detected punctuated sentences but missed unpunctuated phrases in format, push-string, and return output positions required by issue 659."
+    reads "11"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "12"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "observation:existing-debt"
+    text "message
+user
+After merging current main, the sentence inventory contained 774 admitted source literals; context-sensitive phrase detection exposed 548 additional existing rows."
+    reads "9"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "10"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:new-debt"
+    text "message
+user
+A source literal absent from the committed inventory must fail before it can silently become a user interface."
+    reads "8"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:stale-debt"
+    text "message
+user
+An inventory row whose source literal disappeared hides completed migration unless the same gate rejects stale rows."
+    reads "7"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:seed-duplication"
+    text "message
+user
+Eight engine response fallbacks duplicated multilingual answers already available through the seeded response lookup."
+    reads "6"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "observation:lexer-noise"
+    text "message
+user
+Comments, character literals, trace slugs, and code fragments are not user-facing language and must not inflate the migration inventory."
+    reads "5"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "7"
+    qualifiers "conversation_id=issue-659|kind=message|role=user"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:context-sensitive-detection"
+    text "learning_amendment
+assistant
+Classify punctuation-bearing sentences globally, then admit unpunctuated multi-word phrases only when lexer context proves an output-producing position.
+observation:lexer-noise"
+    reads "0"
+    writes "5"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-659|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_08
+    id "lesson:two-way-ratchet"
+    text "learning_amendment
+assistant
+Compare detected and admitted sets in both directions so new debt and stale debt both fail and the inventory can only shrink honestly.
+observation:stale-debt"
+    reads "0"
+    writes "4"
+    incoming_links "1"
+    outgoing_links "1"
+    retention_score "6"
+    qualifiers "conversation_id=issue-659|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_09
+    id "lesson:seed-first-migration"
+    text "learning_amendment
+assistant
+Replace duplicated source prose with meaning or intent lookups into seed data, then regenerate the inventory to prove an actual burn-down.
+observation:seed-duplication"
+    reads "0"
+    writes "3"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "4"
+    qualifiers "conversation_id=issue-659|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_10
+    id "lesson:review-gated-self-hosting"
+    text "learning_amendment
+assistant
+Run the audit-learning task through Formal AI behind a real external Agent CLI, preserve the transcript, and require human review before promoting amendments.
+lesson:two-way-ratchet"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-659|kind=learning_amendment|role=assistant"
+    validation "aligned"

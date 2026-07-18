@@ -168,8 +168,11 @@ deletions from non-merge commits and ignores binary files. Reproduce it with
    # Check file sizes (requires rust-script)
    rust-script scripts/check-file-size.rs
 
+   # Check for hardcoded natural language in src/ (R379, requires rust-script)
+   rust-script scripts/check-hardcoded-language.rs
+
    # Run all checks together
-   cargo fmt --check && cargo clippy --all-targets --all-features && rust-script scripts/check-file-size.rs
+   cargo fmt --check && cargo clippy --all-targets --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
 4. **Run tests**
