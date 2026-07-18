@@ -114,10 +114,15 @@ the same seed (the Rust crate via `include_str!`, the browser via the
 
 5. **Rust `src/` hardcoded-language burn-down (#659).**
    `scripts/check-hardcoded-language.rs` (rust-script) scans every `src/**/*.rs`
-   file for user-facing prose string literals — a sentence heuristic: a literal
-   that contains a space, ends in terminal punctuation (`.`, `!`, `?`), and holds
-   at least two real words. Comments, char literals, and single-token
-   trace/event slugs are ignored by construction. The committed allowlist,
+   file for user-facing prose string literals. Punctuated sentences are
+   recognized globally when they contain a space, end in terminal punctuation
+   (`.`, `!`, `?`), and hold at least two real words. Unpunctuated multi-word
+   phrases are recognized only where lexer context identifies an
+   output-producing `format!`, `push_str`, or explicit `return` position. This
+   contextual second rule catches labels such as `format!("Try again")` without
+   classifying arbitrary internal values as interface text. Comments, character
+   literals, code fragments, and trace/event slugs are ignored. The committed
+   allowlist,
    `scripts/hardcoded-language-allowlist.txt`, is the sorted, tab-separated
    inventory of *today's* debt (`<relative-path>\t<canonical-literal-text>`). The
    check **fails the build two ways**, so the debt can only shrink:
