@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q8495": {
+      "type": "item",
+      "id": "Q8495",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "milk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "молоко"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दूध"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "奶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "white liquid produced by the mammary glands of mammals"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "питательная жидкость, вырабатываемая молочными железами самок млекопитающих"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "哺乳類生物的乳房分泌出來的液體"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "乳"
+          },
+          {
+            "language": "zh",
+            "value": "乳汁"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

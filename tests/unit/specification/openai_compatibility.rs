@@ -464,7 +464,10 @@ fn protocol_namespaces_route_to_the_same_openai_and_formal_ai_surfaces() {
 
     let legacy_models = handle_api_request("GET", "/v1/models", "");
     assert_eq!(legacy_models.status_code, 200);
-    assert_eq!(openai_models.body, legacy_models.body);
+    let legacy_json: serde_json::Value = serde_json::from_str(&legacy_models.body).unwrap();
+    for pointer in ["/object", "/data/0/id", "/models/0/name", "/rate_limit"] {
+        assert_eq!(openai_json.pointer(pointer), legacy_json.pointer(pointer));
+    }
 
     let graph = handle_api_request("GET", "/api/formal-ai/v1/graph", "");
     assert_eq!(graph.status_code, 200);

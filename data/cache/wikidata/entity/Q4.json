@@ -1,0 +1,347 @@
+{
+  "entities": {
+    "Q4": {
+      "type": "item",
+      "id": "Q4",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "death"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "смерть"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मृत्यु"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "死亡"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "permanent cessation of vital functions"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "полное прекращение жизнедеятельности организма"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जीव के जीवन की स्थायी समाप्ति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "生物停止生命活動"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bereft of life"
+          },
+          {
+            "language": "en",
+            "value": "perish"
+          },
+          {
+            "language": "en",
+            "value": "oblivion"
+          },
+          {
+            "language": "en",
+            "value": "mortis"
+          },
+          {
+            "language": "en",
+            "value": "fallen"
+          },
+          {
+            "language": "en",
+            "value": "meeting the Reaper"
+          },
+          {
+            "language": "en",
+            "value": "deaths"
+          },
+          {
+            "language": "en",
+            "value": "succumbs"
+          },
+          {
+            "language": "en",
+            "value": "final rest"
+          },
+          {
+            "language": "en",
+            "value": "dies"
+          },
+          {
+            "language": "en",
+            "value": "fatal"
+          },
+          {
+            "language": "en",
+            "value": "passes away"
+          },
+          {
+            "language": "en",
+            "value": "cessation"
+          },
+          {
+            "language": "en",
+            "value": "deceased"
+          },
+          {
+            "language": "en",
+            "value": "morbidity"
+          },
+          {
+            "language": "en",
+            "value": "has died"
+          },
+          {
+            "language": "en",
+            "value": "has succumbed"
+          },
+          {
+            "language": "en",
+            "value": "has passed away"
+          },
+          {
+            "language": "en",
+            "value": "has kicked the bucket"
+          },
+          {
+            "language": "en",
+            "value": "went to the afterlife"
+          },
+          {
+            "language": "en",
+            "value": "mortem"
+          },
+          {
+            "language": "en",
+            "value": "passing away"
+          },
+          {
+            "language": "en",
+            "value": "exit"
+          },
+          {
+            "language": "en",
+            "value": "decease"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "умер"
+          },
+          {
+            "language": "ru",
+            "value": "гибель"
+          },
+          {
+            "language": "ru",
+            "value": "умереть"
+          },
+          {
+            "language": "ru",
+            "value": "уход из жизни"
+          },
+          {
+            "language": "ru",
+            "value": "кончина"
+          },
+          {
+            "language": "ru",
+            "value": "уйти из жизни"
+          },
+          {
+            "language": "ru",
+            "value": "ушёл из жизни"
+          },
+          {
+            "language": "ru",
+            "value": "ушла из жизни"
+          },
+          {
+            "language": "ru",
+            "value": "умерла"
+          },
+          {
+            "language": "ru",
+            "value": "скончался"
+          },
+          {
+            "language": "ru",
+            "value": "скончалась"
+          },
+          {
+            "language": "ru",
+            "value": "скончаться"
+          },
+          {
+            "language": "ru",
+            "value": "помер"
+          },
+          {
+            "language": "ru",
+            "value": "померла"
+          },
+          {
+            "language": "ru",
+            "value": "помереть"
+          },
+          {
+            "language": "ru",
+            "value": "преставление"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मौत"
+          },
+          {
+            "language": "hi",
+            "value": "मरण"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "死"
+          },
+          {
+            "language": "zh",
+            "value": "逝世"
+          },
+          {
+            "language": "zh",
+            "value": "过世"
+          },
+          {
+            "language": "zh",
+            "value": "离世"
+          },
+          {
+            "language": "zh",
+            "value": "往生"
+          },
+          {
+            "language": "zh",
+            "value": "辞世"
+          },
+          {
+            "language": "zh",
+            "value": "卒"
+          },
+          {
+            "language": "zh",
+            "value": "殁"
+          },
+          {
+            "language": "zh",
+            "value": "逝"
+          },
+          {
+            "language": "zh",
+            "value": "亡"
+          },
+          {
+            "language": "zh",
+            "value": "崩"
+          },
+          {
+            "language": "zh",
+            "value": "驾崩"
+          },
+          {
+            "language": "zh",
+            "value": "薨"
+          },
+          {
+            "language": "zh",
+            "value": "与世长辞"
+          },
+          {
+            "language": "zh",
+            "value": "身亡"
+          },
+          {
+            "language": "zh",
+            "value": "亡故"
+          },
+          {
+            "language": "zh",
+            "value": "遇难"
+          },
+          {
+            "language": "zh",
+            "value": "仙逝"
+          },
+          {
+            "language": "zh",
+            "value": "大行"
+          },
+          {
+            "language": "zh",
+            "value": "龙驭上宾"
+          },
+          {
+            "language": "zh",
+            "value": "宾天"
+          },
+          {
+            "language": "zh",
+            "value": "毙命"
+          },
+          {
+            "language": "zh",
+            "value": "毙"
+          },
+          {
+            "language": "zh",
+            "value": "作古"
+          },
+          {
+            "language": "zh",
+            "value": "别世"
+          },
+          {
+            "language": "zh",
+            "value": "归西"
+          },
+          {
+            "language": "zh",
+            "value": "殉"
+          },
+          {
+            "language": "zh",
+            "value": "长辞"
+          },
+          {
+            "language": "zh",
+            "value": "驾鹤西去"
+          },
+          {
+            "language": "zh",
+            "value": "撒手尘寰"
+          },
+          {
+            "language": "zh",
+            "value": "一命呜呼"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

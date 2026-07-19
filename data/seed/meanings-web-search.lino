@@ -422,6 +422,8 @@ meanings
       surface
         text " investigate "
       surface
+        text " learn "
+      surface
         text "search for …"
       surface
         text "search …"
@@ -433,6 +435,12 @@ meanings
         text "research …"
       surface
         text "investigate …"
+      surface
+        text "learn about …"
+      surface
+        text "learn more about …"
+      surface
+        text "google …"
     lexeme ru
       surface
         text " поищи "
@@ -443,11 +451,19 @@ meanings
       surface
         text " ищи "
       surface
+        text " изучи "
+      surface
+        text " узнай "
+      surface
         text "поищи …"
       surface
         text "поискать …"
       surface
         text "ищи …"
+      surface
+        text "изучи …"
+      surface
+        text "узнай о …"
     lexeme hi
       surface
         text खोज
@@ -469,6 +485,8 @@ meanings
         text "ढूंढें …"
       surface
         text "ढूँढें …"
+      surface
+        text "… के बारे में जानें"
     lexeme zh
       surface
         text 搜索
@@ -498,6 +516,8 @@ meanings
         text 搜一下…
       surface
         text 查一下…
+      surface
+        text 了解…
   act_find_weak
     defined-by inquiry
     defined-by action

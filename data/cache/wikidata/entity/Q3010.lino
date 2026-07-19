@@ -1,0 +1,16 @@
+Q3010
+  aliases
+    en (boys lad)
+    ru ("парень")
+  descriptions
+    en "young male human"
+    ru "ребёнок мужского пола"
+    zh "年幼雄性人类"
+  id Q3010
+  labels
+    en boy
+    hi "लड़का"
+    ru "мальчик"
+    zh "男孩"
+  type item
+success 1

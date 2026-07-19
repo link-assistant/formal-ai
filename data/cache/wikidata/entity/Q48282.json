@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q48282": {
+      "type": "item",
+      "id": "Q48282",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "student"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ученик"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विद्यार्थी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "学生"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "learner, or someone who attends an educational institution"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "учащийся высшего, среднего или начального учебного заведения"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "學習者或參加教育機構的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "pupil"
+          },
+          {
+            "language": "en",
+            "value": "students"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "студентка"
+          },
+          {
+            "language": "ru",
+            "value": "студенты"
+          },
+          {
+            "language": "ru",
+            "value": "студиозус"
+          },
+          {
+            "language": "ru",
+            "value": "студенчество"
+          },
+          {
+            "language": "ru",
+            "value": "обучающийся"
+          },
+          {
+            "language": "ru",
+            "value": "студент"
+          },
+          {
+            "language": "ru",
+            "value": "учащаяся"
+          },
+          {
+            "language": "ru",
+            "value": "ученица"
+          },
+          {
+            "language": "ru",
+            "value": "учащийся"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "學生"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,16 @@
+Q42962
+  aliases
+    en (oils)
+    ru ("масла")
+  descriptions
+    en "viscous water-insoluble liquid"
+    ru "собирательное название ряда химических веществ и смесей, не растворяющихся в воде"
+    zh "物质类型"
+  id Q42962
+  labels
+    en oil
+    hi "तेल्"
+    ru "масло"
+    zh "油"
+  type item
+success 1

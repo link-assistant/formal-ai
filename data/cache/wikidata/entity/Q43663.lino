@@ -1,0 +1,16 @@
+Q43663
+  aliases
+    en (socks)
+    ru ("носки")
+    zh ("短袜")
+  descriptions
+    en "garment worn on foot and leg; made from materials like cotton, wool, or synthetics, they provide protection, warmth, comfort, and reduce friction inside shoes"
+    ru "короткий чулок, не доходящий до колена"
+  id Q43663
+  labels
+    en sock
+    hi "जुराब"
+    ru "носок"
+    zh "短襪"
+  type item
+success 1

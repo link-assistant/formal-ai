@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q454": {
+      "type": "item",
+      "id": "Q454",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "peace"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мир"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शान्ति"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "和平"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "state of harmony characterized by lack of violent conflict and freedom from fear of violence"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "эпоха в истории, обозначенная отсутствием открытых военных конфликтов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सद्भाव की स्थिति, जिसमें हिंसक संघर्ष की कमी और हिंसा के भय से मुक्ति शामिल है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "沒有暴力衝突或不畏懼暴力的狀態"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "शांति"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

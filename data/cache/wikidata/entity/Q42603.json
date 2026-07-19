@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "Q42603": {
+      "type": "item",
+      "id": "Q42603",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "priest"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "священник"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पादरी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "祭司"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who consecrates his life to some divinity and whose main functions are to direct religious rites and offer sacrifices to the divinity (for a minister use Q1423891)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек, имеющий право проводить религиозные ритуалы; представитель церкви"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "被授權領導宗教神聖儀式的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "reverend"
+          },
+          {
+            "language": "en",
+            "value": "priestess"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "поп"
+          },
+          {
+            "language": "ru",
+            "value": "священнослужитель"
+          },
+          {
+            "language": "ru",
+            "value": "служитель культа"
+          },
+          {
+            "language": "ru",
+            "value": "священница"
+          },
+          {
+            "language": "ru",
+            "value": "служительница культа"
+          },
+          {
+            "language": "ru",
+            "value": "жрец"
+          },
+          {
+            "language": "ru",
+            "value": "духовник"
+          },
+          {
+            "language": "ru",
+            "value": "духовный отец"
+          },
+          {
+            "language": "ru",
+            "value": "отец"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "司鐸"
+          },
+          {
+            "language": "zh",
+            "value": "司祭"
+          },
+          {
+            "language": "zh",
+            "value": "神父"
+          },
+          {
+            "language": "zh",
+            "value": "神甫"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

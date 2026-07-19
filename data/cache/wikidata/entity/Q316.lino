@@ -1,0 +1,19 @@
+Q316
+  aliases
+    en (affection)
+    hi ("प्रेम" "मोहब्बत" "आसक्ति" "स्नेह" "इश्क़" "चाहत" "प्रीति" "इश्क" "प्रणय" "जहान" "जान")
+    ru ("чувства")
+    zh ("喜歡" "爱情" "愛情")
+  descriptions
+    en "strong, positive emotion based on affection"
+    hi "स्नेह पर आधारित एक प्रबल, सकारात्मक भावना"
+    ru "совокупность факторов во взаимоотношениях с человеком"
+    zh "基於感情的強烈、積極的情感"
+  id Q316
+  labels
+    en love
+    hi "प्यार"
+    ru "любовь"
+    zh "愛"
+  type item
+success 1

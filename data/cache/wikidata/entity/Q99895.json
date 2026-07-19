@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q99895": {
+      "type": "item",
+      "id": "Q99895",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "pillow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "подушка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तकिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "枕頭"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "cushion for the head"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "постельная принадлежность"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Подушка"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q35197": {
+      "type": "item",
+      "id": "Q35197",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mirror"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "зеркало"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दर्पण"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鏡"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "surface, typically glass coated with a metal amalgam, which reflects a clear image"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "нечто, отражающее свет"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "反射光线的物体"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "looking glass"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "зеркало, оптическое"
+          },
+          {
+            "language": "ru",
+            "value": "зеркала"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "शीशा"
+          },
+          {
+            "language": "hi",
+            "value": "आईना"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

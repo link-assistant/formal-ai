@@ -1,0 +1,18 @@
+Q177220
+  aliases
+    en (vocalist songstress songster)
+    hi ("गायिका")
+    ru ("певица" "вокалист" "вокалистка")
+    zh ("演唱家" "女歌手" "歌星" "歌唱家" "男歌手" "聲樂家" "歌唱演员")
+  descriptions
+    en "person singing for a listening audience"
+    ru "артист, профессионально занимающийся пением"
+    zh "歌曲演唱者"
+  id Q177220
+  labels
+    en singer
+    hi "गायक"
+    ru "певец"
+    zh "歌手"
+  type item
+success 1

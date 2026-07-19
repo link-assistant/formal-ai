@@ -12,6 +12,11 @@ use crate::http_server::{
 /// hands the client the write, keeping adoption human-gated.
 #[test]
 fn agent_mode_routes_self_healing_request_to_a_repair_case_write() {
+    // Build the deterministic repair document before starting the timed HTTP
+    // assertion. Under the full parallel integration suite, competing server
+    // tests can otherwise stretch this one-time CST/AST initialization past
+    // the socket deadline even though the route itself is healthy.
+    let expected_document = formal_ai::agentic_coding::self_heal::render_document();
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
@@ -80,11 +85,7 @@ fn agent_mode_routes_self_healing_request_to_a_repair_case_write() {
         );
         // The written document is the generated repair case — closed loop, human-gated.
         let content = arguments["content"].as_str().unwrap();
-        assert_eq!(
-            content,
-            formal_ai::agentic_coding::self_heal::render_document(),
-            "{prompt}"
-        );
+        assert_eq!(content, expected_document, "{prompt}");
         assert!(content.contains("outcome \"awaiting_review\""), "{prompt}");
         assert!(content.contains("human_gated \"true\""), "{prompt}");
     }

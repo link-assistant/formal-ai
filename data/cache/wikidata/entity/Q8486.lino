@@ -1,0 +1,16 @@
+Q8486
+  aliases
+    hi ("क़हवा" "कहवा" "कॉफी")
+  descriptions
+    en "brewed beverage made from seeds of Coffea genus"
+    hi "कॉफ़िया वंश के बीजों से निर्मित पका हुआ पेय"
+    ru "напиток, изготавливаемый из жареных зёрен кофейного дерева"
+    zh "使用烘焙過的咖啡豆沖泡而成的飲料"
+  id Q8486
+  labels
+    en coffee
+    hi "कॉफ़ी"
+    ru "кофе"
+    zh "咖啡"
+  type item
+success 1

@@ -1,7 +1,8 @@
 "use strict";
 
-// AgentProvider seam for issue #516. The commander implementation invokes the
-// `agent-commander` CLI (`start-agent`) rather than native host agent binaries.
+// AgentProvider seam for issue #516/#759. Passthrough engines are controlled
+// through agent-commander's JavaScript API; desktop code never spawns a host
+// agent binary directly.
 
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
@@ -20,8 +21,13 @@ const DEFAULT_AGENT_CONTAINER = "formal-ai-agent";
 const DEFAULT_MODEL = "formal-ai";
 const HOST_AGENT_BINARIES = Object.freeze(["agent", "claude", "codex"]);
 const PROVIDER_TYPES = Object.freeze([DEFAULT_PROVIDER_TYPE, COMMANDER_PROVIDER_TYPE]);
-const READ_ONLY_DESKTOP_TOOLS = Object.freeze(["http_fetch", "url_navigate", "read_local_file"]);
-const WRITE_CAPABLE_DESKTOP_TOOLS = Object.freeze(["eval_js", "code_exec", "shell"]);
+const READ_ONLY_DESKTOP_TOOLS = Object.freeze([
+  "read_file", "read_local_file", "grep", "glob", "list_directory", "read_many_files",
+  "web_search", "web_fetch", "http_fetch", "url_navigate",
+]);
+const WRITE_CAPABLE_DESKTOP_TOOLS = Object.freeze([
+  "write_file", "edit_file", "multi_edit", "shell", "bash", "eval_js", "code_exec", "todo", "plan", "subagent", "task",
+]);
 const HOST_SUBSCRIPTION_ENV_KEYS = Object.freeze([
   "ANTHROPIC_API_KEY",
   "CLAUDE_API_KEY",
@@ -420,6 +426,92 @@ function commanderEnvironment(request = {}, options = {}) {
   return env;
 }
 
+function formalAiEndpoint(apiBase, suffix) {
+  const base = String(apiBase || "").replace(/\/+$/, "");
+  return base ? `${base}${suffix}` : "";
+}
+
+function commanderToolOptions(request = {}, options = {}) {
+  const provider = providerConfigFrom(request);
+  const tool = String(request.commanderTool || options.commanderTool || DEFAULT_COMMANDER_TOOL);
+  const apiKey = String(options.apiKey || request.apiKey || "formal-ai-local");
+  const openAiBase = formalAiEndpoint(provider.apiBase, "/api/openai/v1");
+  const anthropicBase = formalAiEndpoint(provider.apiBase, "/api/anthropic");
+  if (tool === "agent") {
+    return {
+      compactJson: true,
+      extraEnv: {
+        FORMAL_AI_API_KEY: apiKey,
+        LINK_ASSISTANT_AGENT_CONFIG_CONTENT: JSON.stringify({
+          provider: {
+            formalai: {
+              name: "Formal AI",
+              npm: "@ai-sdk/openai-compatible",
+              options: { baseURL: openAiBase, apiKey: "{env:FORMAL_AI_API_KEY}" },
+              models: { "formal-ai": { name: "Formal AI" } },
+            },
+          },
+          model: "formalai/formal-ai",
+        }),
+      },
+    };
+  }
+  if (tool === "codex") {
+    return {
+      extraEnv: { FORMAL_AI_API_KEY: apiKey },
+      extraArgs: [
+        "-c", "model_providers.formalai.name=\"Formal AI\"",
+        "-c", `model_providers.formalai.base_url=\"${openAiBase}\"`,
+        "-c", "model_providers.formalai.env_key=\"FORMAL_AI_API_KEY\"",
+        "-c", "model_providers.formalai.wire_api=\"responses\"",
+        "-c", "model_provider=\"formalai\"",
+      ],
+    };
+  }
+  if (tool === "claude") {
+    return {
+      extraEnv: {
+        ANTHROPIC_API_KEY: apiKey,
+        ANTHROPIC_BASE_URL: anthropicBase,
+        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1",
+      },
+    };
+  }
+  return { extraEnv: {} };
+}
+
+function commanderControllerOptions(request = {}, options = {}) {
+  const provider = providerConfigFrom(request);
+  const restriction = commanderRestrictionArgs(request, options)[0] || "";
+  const tool = String(request.commanderTool || options.commanderTool || DEFAULT_COMMANDER_TOOL);
+  const model = tool === "agent" ? "formalai/formal-ai" : provider.model;
+  const approveEach = restriction === "--approve-each" && ["agent", "claude"].includes(tool);
+  let toolOptions = commanderToolOptions(request, options);
+  if (restriction === "--approve-each" && tool === "codex") {
+    toolOptions = {
+      ...toolOptions,
+      sandboxMode: "workspace-write",
+      approvalMode: "never",
+      skipDefaultSafetyFlags: true,
+    };
+  }
+  return {
+    tool,
+    workingDirectory: String(request.workingDirectory || options.workingDirectory || process.cwd()),
+    prompt: promptFromRequest(request),
+    systemPrompt: String(request.systemPrompt || ""),
+    model,
+    isolation: "none",
+    json: true,
+    resume: String(request.resume || "") || undefined,
+    readOnly: restriction === "--read-only",
+    planOnly: restriction === "--plan-only",
+    approveEach,
+    onPermissionRequest: approveEach ? async () => "once" : undefined,
+    toolOptions,
+  };
+}
+
 function commanderToolEnvArgs(request = {}, options = {}) {
   const provider = providerConfigFrom(request);
   const apiKey = String(options.apiKey || request.apiKey || "formal-ai-local");
@@ -440,8 +532,10 @@ function grantedDesktopTools(grants) {
   if (grants.all === true) {
     return [...READ_ONLY_DESKTOP_TOOLS, ...WRITE_CAPABLE_DESKTOP_TOOLS];
   }
-  return [...READ_ONLY_DESKTOP_TOOLS, ...WRITE_CAPABLE_DESKTOP_TOOLS]
-    .filter((tool) => grants[tool] === true);
+  return [
+    ...READ_ONLY_DESKTOP_TOOLS,
+    ...WRITE_CAPABLE_DESKTOP_TOOLS.filter((tool) => grants[tool] === true),
+  ];
 }
 
 function restrictionFromDesktopGrants(grants) {
@@ -513,41 +607,78 @@ function buildCommanderArgs(request = {}, options = {}) {
 }
 
 function createCommanderProvider(options = {}) {
-  const runner = options.processRunner || spawnAndCollect;
-  const command = String(options.commanderCommand || DEFAULT_COMMANDER_COMMAND);
-  return {
+  const activeRuns = new Set();
+  const sessions = new Map();
+  const loadAgentCommander = options.loadAgentCommander || (() => import("agent-commander"));
+  const provider = {
     type: COMMANDER_PROVIDER_TYPE,
     status() {
       return {
         type: COMMANDER_PROVIDER_TYPE,
-        commanderCommand: command,
         defaultTool: String(options.commanderTool || DEFAULT_COMMANDER_TOOL),
-        isolation: "docker",
+        isolation: "direct",
+        api: "agent-commander-js",
       };
     },
     async run(request = {}) {
-      const args = buildCommanderArgs(request, options);
-      const result = normalizeRunnerResult(
-        await runner(command, args, {
-          cwd: options.workingDirectory || request.workingDirectory || process.cwd(),
-          env: commanderEnvironment(request, options),
-        }),
-      );
-      const events = parseNdjsonEvents(result.stdout);
-      return withChatAnswer({
-        ok: result.code === 0,
-        provider: COMMANDER_PROVIDER_TYPE,
-        status: result.code === 0 ? "ok" : "error",
-        executed: result.code === 0,
-        command,
-        args,
-        exitCode: result.code,
-        body: result.stdout,
-        stderr: result.stderr,
-        events,
-      }, request);
+      const module = options.agentFactory ? null : await loadAgentCommander();
+      const agentFactory = options.agentFactory || module.agent;
+      if (typeof agentFactory !== "function") {
+        throw new Error("agent-commander JavaScript API is unavailable");
+      }
+      const sessionKey = String(request.sessionKey || "");
+      const controllerOptions = commanderControllerOptions({
+        ...request,
+        resume: request.resume || (sessionKey ? sessions.get(sessionKey) : ""),
+      }, options);
+      const controller = agentFactory(controllerOptions);
+      const events = [];
+      const run = { controller, resultPromise: null };
+      activeRuns.add(run);
+      const publish = (event) => {
+        if (event === undefined || event === null) return;
+        const normalized = typeof event === "string"
+          ? (parseNdjsonEvents(event)[0] || { type: "text", content: event })
+          : event;
+        events.push(normalized);
+        if (typeof options.onEvent === "function") {
+          options.onEvent(normalized, request);
+        }
+      };
+      try {
+        await controller.start({ attached: false, onMessage: publish });
+        run.resultPromise = controller.stop();
+        const result = await run.resultPromise;
+        if (events.length === 0 && result.output && Array.isArray(result.output.parsed)) {
+          result.output.parsed.forEach(publish);
+        }
+        const sessionId = String(result.sessionId || result.metadata && result.metadata.sessionId || "");
+        if (sessionKey && sessionId) sessions.set(sessionKey, sessionId);
+        const body = String(result.output && result.output.plain || "");
+        return withChatAnswer({
+          ok: result.exitCode === 0,
+          provider: COMMANDER_PROVIDER_TYPE,
+          engine: controllerOptions.tool,
+          status: result.exitCode === 0 ? "ok" : "error",
+          executed: result.exitCode === 0,
+          exitCode: result.exitCode,
+          body,
+          stderr: "",
+          events,
+          sessionId,
+          usage: result.usage || null,
+          metadata: result.metadata || null,
+        }, request);
+      } finally {
+        activeRuns.delete(run);
+      }
+    },
+    async stop() {
+      await Promise.allSettled([...activeRuns].map((run) => run.resultPromise || run.controller.stop()));
+      activeRuns.clear();
     },
   };
+  return provider;
 }
 
 function createAgentProvider(options = {}) {
@@ -594,6 +725,8 @@ module.exports = {
   commanderRestrictionArgs,
   restrictionFromDesktopGrants,
   commanderEnvironment,
+  commanderToolOptions,
+  commanderControllerOptions,
   packagedFormalAiPath,
   inProcessEnvironment,
   inProcessAgentCandidates,

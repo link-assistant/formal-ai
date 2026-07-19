@@ -46,7 +46,7 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-demo");
+    let deploy_demo = job_block(&workflow, "deploy-pages");
 
     assert!(
         index_html.contains("__FORMAL_AI_VERSION__"),
@@ -78,13 +78,13 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     );
     assert!(
         deploy_demo.contains("Read formal-ai version from Cargo.toml"),
-        "deploy-demo should detect the crate version before stamping the artifact"
+        "deploy-pages should detect the crate version before stamping the artifact"
     );
     assert!(
         deploy_demo.contains(
             "scripts/stamp-pages-artifact.sh src/web \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.formal_ai_version.outputs.version }}\""
         ),
-        "deploy-demo should forward the selected deployment SHA and resolved crate version to the stamp script"
+        "deploy-pages should forward the selected deployment SHA and resolved crate version to the stamp script"
     );
 
     let wait_script = fs::read_to_string(format!(
@@ -356,6 +356,44 @@ fn build_job_checks_generated_crate_archive_size() {
     assert!(
         build.contains("rust-script scripts/check-crate-package-size.rs"),
         "build job should run the crate size guard"
+    );
+}
+
+#[test]
+fn lint_job_guards_the_wasm_worker_migration() {
+    // Issue #658 (E39 / R380): the JavaScript worker logic is being absorbed
+    // into the Rust→WASM worker. Three guards keep that migration honest and
+    // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
+    // the shipped `.wasm` from source (which caught a latent no_std break), and
+    // its size budget.
+    let workflow = release_workflow();
+    let lint = job_block(&workflow, "lint");
+
+    assert!(
+        lint.contains("targets: wasm32-unknown-unknown"),
+        "lint job should install the wasm32 target so the worker can be rebuilt"
+    );
+
+    let line_budget = lint
+        .find("rust-script scripts/check-worker-line-budget.rs")
+        .expect("lint job should ratchet the worker JS line budget");
+    let build_wasm = lint
+        .find("sh src/web/wasm-worker/build.sh")
+        .expect("lint job should rebuild the Rust→WASM worker from source");
+    let wasm_size = lint
+        .find("rust-script scripts/check-wasm-worker-size.rs")
+        .expect("lint job should check the shipped .wasm size budget");
+    let install_rust_script = lint
+        .find("- name: Install rust-script")
+        .expect("lint job should install rust-script before running script guards");
+
+    assert!(
+        install_rust_script < line_budget,
+        "lint job should install rust-script before the worker line-budget guard"
+    );
+    assert!(
+        build_wasm < wasm_size,
+        "lint job should rebuild the .wasm before checking its size budget"
     );
 }
 

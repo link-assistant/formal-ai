@@ -24,7 +24,7 @@
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
-    response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
+    response_link_for_intent, stable_id, ExecutionRecipe, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
@@ -93,7 +93,7 @@ impl ExecutionSurface {
     }
 }
 
-/// How the composite-program [`blueprint`](crate::coding::blueprint) synthesizer
+/// How the composite-program `blueprint` synthesizer
 /// turns its annotated recipe template into the program shown to the user.
 ///
 /// Issue #340 asked the engine to "try all directions" of program synthesis and
@@ -185,11 +185,11 @@ pub struct SolverConfig {
     /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
     /// trace the upward construction pass. Trace-only either way (R13).
     pub recursion_mode: crate::meta_construction::RecursionMode,
-    /// Whether the meta core records the legacy-vs-registry method-selection
-    /// comparison (issue #559, R339): `Legacy` (default) records nothing and the
-    /// hardcoded authority alone selects; `Registry` records the registry-driven
-    /// choice per leaf; `Compare` records the full comparison plus divergence and
-    /// contradiction counts. Trace-only in every mode (R13).
+    /// Whether the meta core records the method-selection trace (issue #559,
+    /// R339): `Off` (default) records nothing; `Record` names the method the
+    /// registry resolves for every atomic leaf, or marks the leaf unresolved.
+    /// The registry is the sole dispatch authority (R344), so there is no
+    /// legacy baseline to compare against. Trace-only in either mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
     /// Whether the meta core records the skill-accumulation ledger (issue #559,
     /// R342): `Off` (default) records nothing; `Accumulate` distills each satisfied
@@ -265,7 +265,7 @@ impl Default for SolverConfig {
 impl SolverConfig {
     /// Build a [`SolverConfig`] using the documented environment overrides.
     ///
-    /// The parsing body lives in [`crate::solver_helpers::config_from_env`] to keep
+    /// The parsing body lives in `crate::solver_helpers::config_from_env` to keep
     /// this module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
     #[must_use]
     pub fn from_env() -> Self {
@@ -465,6 +465,22 @@ impl UniversalSolver {
         record_intent_formalization(&mut log, &intent_entry);
         let intent_formalization = intent_entry.formalization;
 
+        // Issue #661 (R384): before any contextual handler runs (a language
+        // directive would otherwise be replayed by the response-language
+        // follow-up), check whether this newly formalized requirement
+        // contradicts a retained one. A clash — same subject, opposite polarity
+        // — is surfaced as a warning naming both statements, their weights, and
+        // a resolution that reuses the append-only retraction protocol.
+        if let Some(answer) = crate::requirement_contradiction::detect_and_report(
+            prompt,
+            language,
+            history,
+            self.config.temperature,
+            &mut log,
+        ) {
+            return answer;
+        }
+
         // Issue #559: record the general recursive meta core — problem frame
         // (R330), recursive work-unit decomposition (R332), need-satisfaction
         // ledger (R333), method registry (R331), and the end-to-end solution
@@ -588,7 +604,7 @@ impl UniversalSolver {
             }
         }
 
-        if let Some(answer) = Self::handle_policy(prompt, &mut log, language) {
+        if let Some(answer) = self.handle_policy(prompt, &mut log, language) {
             return answer;
         }
 
@@ -673,6 +689,27 @@ impl UniversalSolver {
         let answer =
             append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
+        let execution_recipe = match &rule {
+            SelectedRule::WriteProgram(spec) => Some(Box::new(ExecutionRecipe {
+                language: spec.language.code_fence.to_owned(),
+                source: crate::code_editing::apply_inline_hello_world_source_replacement(
+                    prompt,
+                    spec.template.code,
+                    *spec,
+                ),
+                path: spec.language.save_as.to_owned(),
+                commands: spec
+                    .language
+                    .execution
+                    .check_command
+                    .into_iter()
+                    .chain(std::iter::once(spec.language.execution.run_command))
+                    .map(str::to_owned)
+                    .collect(),
+            })),
+            _ => None,
+        };
+
         SymbolicAnswer {
             intent,
             answer,
@@ -680,10 +717,12 @@ impl UniversalSolver {
             evidence_links,
             thinking_steps,
             links_notation,
+            execution_recipe,
         }
     }
 
     fn handle_policy(
+        &self,
         prompt: &str,
         log: &mut EventLog,
         language: Language,
@@ -783,8 +822,15 @@ impl UniversalSolver {
         }
 
         if is_agent_request(&normalized) {
-            if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
-                return Some(answer);
+            // The HTTP surface is embedded in an agentic CLI harness. Executing
+            // here would mutate the server's private temporary workspace while
+            // the caller sees no tool call and cannot audit or approve it. API
+            // requests therefore stay declarative; `protocol` routes concrete
+            // actions through the tools advertised by the client.
+            if self.config.execution_surface != ExecutionSurface::HttpServer {
+                if let Some(answer) = try_agent_workspace_task(prompt, &normalized, log) {
+                    return Some(answer);
+                }
             }
             log.append("agent_mode:opted_in", prompt.to_owned());
             log.append("agent_mode:active", prompt.to_owned());

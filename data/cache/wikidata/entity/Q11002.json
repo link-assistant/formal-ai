@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q11002": {
+      "type": "item",
+      "id": "Q11002",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sugar"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сахар"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शक्कर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "糖"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "short-chain, water-soluble carbohydrate"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "распространённый продовольственный товар"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ग्लूकोज और फ्रक्टोज मिलकर शक्कर(सुक्रॉज) अणु तैयार होता है।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可食用的带有甜味的晶体"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sugars"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "91 1100"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सुक्रोज"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "食糖"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

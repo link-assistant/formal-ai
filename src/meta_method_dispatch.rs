@@ -222,6 +222,7 @@ fn try_diagnostic(
     Some(SymbolicAnswer {
         intent: inner.intent,
         answer,
+        execution_recipe: inner.execution_recipe,
         confidence: inner.confidence,
         evidence_links,
         thinking_steps,

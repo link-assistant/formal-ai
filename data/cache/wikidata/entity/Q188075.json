@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q188075": {
+      "type": "item",
+      "id": "Q188075",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "box"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "коробка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "m"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "盒子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "container (usually cuboidal) with at least one roughly rectangular cross-section"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Вид ёмкости или ящика из плотного материала"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "boxes"
+          },
+          {
+            "language": "en",
+            "value": "storage box"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Ящик"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "डब्बा"
+          },
+          {
+            "language": "hi",
+            "value": "डिब्बा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "箱子"
+          },
+          {
+            "language": "zh",
+            "value": "盒"
+          },
+          {
+            "language": "zh",
+            "value": "箱"
+          },
+          {
+            "language": "zh",
+            "value": "整理箱"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

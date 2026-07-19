@@ -1,0 +1,19 @@
+Q3
+  aliases
+    en (biota)
+    hi ("प्राण" "जान" "जीव" "ज़िन्दगी" "जिंदगी" "जिन्दगी" "जीवनकाल" "ज़िंदगी")
+    ru ("биота")
+    zh ("性命")
+  descriptions
+    en "matter capable of extracting energy from the environment for replication"
+    hi "जन्म से मृत्यु के बीच की स्थिति"
+    ru "совокупность биохимических процессов, позволяющих организмам использовать энергию из окружающей среды для развития и размножения"
+    zh "能够从环境中提取能量用于保存和复制自我的物体"
+  id Q3
+  labels
+    en life
+    hi "जीवन"
+    ru "жизнь"
+    zh "生命"
+  type item
+success 1

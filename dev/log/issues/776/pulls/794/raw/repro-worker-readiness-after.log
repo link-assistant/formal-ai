@@ -1,0 +1,9 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:80004) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/issue-776.spec.js:55:3 › Issue #776 source-first translation › composer waits for the browser worker before accepting a prompt (4.5s)
+
+  1 passed (10.2s)

@@ -1,0 +1,20 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784064801495)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.30s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-21e58504f4f22eba)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-53886f1820ceac7b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/with-formal-ai.rs (target/debug/deps/with_formal_ai-d57cc42e8b9ea875)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,15 @@
+Q13276
+  aliases
+    ru ("пирожные" "пироженое" "торт")
+    zh ("卵清糕")
+  descriptions
+    en "baked dessert"
+    ru "десерт из муки, масла и сахара"
+  id Q13276
+  labels
+    en cake
+    hi "केक"
+    ru "пирожное"
+    zh "蛋糕"
+  type item
+success 1

@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q169031": {
+      "type": "item",
+      "id": "Q169031",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "glove"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "перчатка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दस्ताने"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "手套"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "covering worn on the hand"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид одежды для кистей рук с отделениями для каждого пальца"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "人类服饰"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "gloves"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "перчатки"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

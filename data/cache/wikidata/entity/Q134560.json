@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q134560": {
+      "type": "item",
+      "id": "Q134560",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "belt"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ремень"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बेल्ट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "腰帶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "worn band or braid, usually around the waist or hips"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "腰带"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,122 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:85518) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+issue747 debug {
+  calls: [],
+  bridge: [33mtrue[39m,
+  answer: {
+    kind: [32m'message'[39m,
+    requestId: [32m'request-1784448282632-6a1928e1a00f08'[39m,
+    intent: [32m'web_search'[39m,
+    content: [32m'No CORS-enabled web search results were returned for `formal ai`.\n'[39m +
+      [32m'\n'[39m +
+      [32m'Providers tried: DuckDuckGo Instant Answer.'[39m,
+    confidence: [33m0.35[39m,
+    evidence: [
+      [32m'web_search:request:formal ai'[39m,
+      [32m'web_search:language:en'[39m,
+      [32m'web_search:provider:duckduckgo'[39m,
+      [32m'web_search:provider:internet-archive'[39m,
+      [32m'web_search:provider:wikipedia'[39m,
+      [32m'web_search:provider:wikidata'[39m,
+      [32m'web_search:provider:wiktionary'[39m,
+      [32m'web_search:provider:wikinews'[39m,
+      [32m'web_search:combined:rrf:k=60'[39m,
+      [32m'web_search:query_kind:explicit_prefix'[39m,
+      [32m'web_search:available:duckduckgo'[39m,
+      [32m'web_search:disabled:internet-archive'[39m,
+      [32m'web_search:disabled:wikipedia'[39m,
+      [32m'web_search:disabled:wikidata'[39m,
+      [32m'web_search:disabled:wiktionary'[39m,
+      [32m'web_search:disabled:wikinews'[39m,
+      [32m'web_search:provider:duckduckgo:count:0'[39m,
+      [32m'trace:impulse:search the web for formal ai'[39m,
+      [32m'trace:formalization:(@USER OP:search ?formal ai)'[39m,
+      [32m'trace:language:en'[39m,
+      [32m'trace:handler:web_search'[39m,
+      [32m'trace:deformalize:(@USER OP:search ?formal ai):web_search'[39m,
+      [32m'user_context:ui_language:en'[39m,
+      [32m'user_context:browser_language:en-US'[39m,
+      [32m'user_context:color_scheme:light'[39m,
+      [32m'user_context:time_zone:UTC'[39m,
+      [32m'user_context:location_inference:time zone / locale only; exact geolocation was not requested'[39m
+    ],
+    steps: [
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m
+    ],
+    toolCalls: [ [36m[Object][39m ],
+    iframeUrl: [1mnull[22m,
+    diagnostics: {
+      query: [32m'formal ai'[39m,
+      language: [32m'en'[39m,
+      providers: [36m[Array][39m,
+      httpExchanges: [36m[Array][39m,
+      fused: []
+    },
+    memoryOperation: [1mnull[22m
+  }
+}
+(node:85529) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API (24.0s)
+
+
+  1) [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last()
+    Timeout: 20000ms
+    [32m- Expected substring  - 1[39m
+    [31m+ Received string     + 3[39m
+
+    [32m- F[7mused Google, Bing, and DuckDuckGo results[27m[39m
+    [31m+ F[7mAformal-ai08:04 AMCopy as MarkdownThinkingExpandYou pointed me at the web, so I fetched what you needed and summarized it.Compose the answer: “No CORS-enabled web search results were returned for `formal ai`.”.Applied available context: ui language en, browser language en us, color scheme light, time zone utc, location inference....No CORS-enabled web search results were returned for formal ai.[27m[39m
+    [31m+ Providers tried: DuckDuckGo Instant Answer.[39m
+    [31m+[39m
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 20000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last()[22m
+    [2m    3 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m      - unexpected value "FAformal-ai08:04 AMCopy as MarkdownThinkingExpandYou pointed me at the web, so I fetched what you needed and summarized it.Read the request: “search the web for formal ai”.No CORS-enabled web search results were returned for formal ai.[22m
+    [2mProviders tried: DuckDuckGo Instant Answer.[22m
+    [2m"[22m
+    [2m    2 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m      - unexpected value "FAformal-ai08:04 AMCopy as MarkdownThinkingExpandYou pointed me at the web, so I fetched what you needed and summarized it.Read the request: “search the web for formal ai”.Detect the request language: English.No CORS-enabled web search results were returned for formal ai.[22m
+    [2mProviders tried: DuckDuckGo Instant Answer.[22m
+    [2m"[22m
+    [2m    - locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m    - unexpected value "FAformal-ai08:04 AMCopy as MarkdownThinkingExpandYou pointed me at the web, so I fetched what you needed and summarized it.Route to the web search response.Compose the answer: “No CORS-enabled web search results were returned for `formal ai`.”.No CORS-enabled web search results were returned for formal ai.[22m
+    [2mProviders tried: DuckDuckGo Instant Answer.[22m
+    [2m"[22m
+    [2m    36 × locator resolved to <article class="message assistant" data-testid="chat-message">…</article>[22m
+    [2m       - unexpected value "FAformal-ai08:04 AMCopy as MarkdownThinkingExpandYou pointed me at the web, so I fetched what you needed and summarized it.Compose the answer: “No CORS-enabled web search results were returned for `formal ai`.”.Applied available context: ui language en, browser language en us, color scheme light, time zone utc, location inference....No CORS-enabled web search results were returned for formal ai.[22m
+    [2mProviders tried: DuckDuckGo Instant Answer.[22m
+    [2m"[22m
+
+
+      63 |       answer: window.__issue747Answer,
+      64 |     })));
+    > 65 |     await expect(messages.last()).toContainText(
+         |                                   ^
+      66 |       'Fused Google, Bing, and DuckDuckGo results',
+      67 |       {
+      68 |         timeout: 20_000,
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-747.spec.js:65:35
+
+    Error Context: test-results/issue-747-multilingual-des-e5f2d-ission-off-and-no-local-API-chromium/error-context.md
+
+  1 failed
+    [chromium] › tests/issue-747.spec.js:15:1 › multilingual desktop web search works with agent permission off and no local API 

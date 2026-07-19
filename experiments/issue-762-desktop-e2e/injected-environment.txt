@@ -1,0 +1,3 @@
+OPENCODE_CONFIG=/tmp/formal-ai-opencode-desktop-config-24005-1784429472068261902/opencode-desktop.json
+OPENCODE_CONFIG_DIR=/tmp/formal-ai-opencode-desktop-config-24005-1784429472068261902
+FORMAL_AI_API_KEY=formal-ai-local

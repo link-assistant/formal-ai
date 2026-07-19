@@ -6,8 +6,6 @@
 //! ranges in the prompt — no neural inference and no external service. See
 //! `VISION.md` and `REQUIREMENTS.md` for the rules.
 
-use std::cell::Cell;
-
 /// Detected language slug used inside `language:<slug>` evidence links.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Language {
@@ -18,14 +16,62 @@ pub enum Language {
     Unknown,
 }
 
-thread_local! {
-    /// Issue #556: during a response-language follow-up the solver replays the
-    /// previous request with a language forced onto every localizable handler.
-    /// Handlers derive their output language from [`detect`], so the forced
-    /// language is applied at that single seam — mirroring
-    /// `FORCED_RESPONSE_LANGUAGE` in the JS worker. The value is thread-local
-    /// so concurrent solves never see each other's forced language.
-    static FORCED_LANGUAGE: Cell<Option<Language>> = const { Cell::new(None) };
+/// Issue #556: during a response-language follow-up the solver replays the
+/// previous request with a language forced onto every localizable handler.
+/// Handlers derive their output language from [`detect`], so the forced
+/// language is applied at that single seam — mirroring
+/// `FORCED_RESPONSE_LANGUAGE` in the JS worker.
+///
+/// On native builds the slot is thread-local so concurrent solves never see
+/// each other's forced language. The Rust→WASM worker (issue #658) is
+/// `no_std` and single-threaded, so `thread_local!`/`std` are unavailable
+/// there; the `wasm32` build keeps the value in a plain `static` cell instead.
+#[cfg(not(target_arch = "wasm32"))]
+mod forced_language {
+    use super::Language;
+    use std::cell::Cell;
+
+    thread_local! {
+        static FORCED_LANGUAGE: Cell<Option<Language>> = const { Cell::new(None) };
+    }
+
+    pub(super) fn replace(language: Option<Language>) -> Option<Language> {
+        FORCED_LANGUAGE.with(|slot| slot.replace(language))
+    }
+
+    pub(super) fn set(language: Option<Language>) {
+        FORCED_LANGUAGE.with(|slot| slot.set(language));
+    }
+
+    pub(super) fn get() -> Option<Language> {
+        FORCED_LANGUAGE.with(Cell::get)
+    }
+}
+
+#[cfg(target_arch = "wasm32")]
+mod forced_language {
+    use super::Language;
+    use core::cell::Cell;
+
+    struct Slot(Cell<Option<Language>>);
+
+    // SAFETY: `wasm32-unknown-unknown` runs single-threaded, so the cell is
+    // never accessed concurrently.
+    unsafe impl Sync for Slot {}
+
+    static FORCED_LANGUAGE: Slot = Slot(Cell::new(None));
+
+    pub(super) fn replace(language: Option<Language>) -> Option<Language> {
+        FORCED_LANGUAGE.0.replace(language)
+    }
+
+    pub(super) fn set(language: Option<Language>) {
+        FORCED_LANGUAGE.0.set(language);
+    }
+
+    pub(super) fn get() -> Option<Language> {
+        FORCED_LANGUAGE.0.get()
+    }
 }
 
 /// Force [`detect`] to return `language` until the returned guard is dropped.
@@ -35,7 +81,7 @@ thread_local! {
 /// solve).
 #[must_use]
 pub fn set_forced_language(language: Option<Language>) -> ForcedLanguageGuard {
-    let previous = FORCED_LANGUAGE.with(|slot| slot.replace(language));
+    let previous = forced_language::replace(language);
     ForcedLanguageGuard { previous }
 }
 
@@ -58,7 +104,7 @@ pub struct ForcedLanguageGuard {
 
 impl Drop for ForcedLanguageGuard {
     fn drop(&mut self) {
-        FORCED_LANGUAGE.with(|slot| slot.set(self.previous));
+        forced_language::set(self.previous);
     }
 }
 
@@ -96,7 +142,7 @@ impl Language {
 pub fn detect(prompt: &str) -> Language {
     // Issue #556: a forced response language overrides detection for the whole
     // replay, so every localizable handler renders in the requested language.
-    if let Some(forced) = FORCED_LANGUAGE.with(Cell::get) {
+    if let Some(forced) = forced_language::get() {
         return forced;
     }
     let mut latin = 0usize;

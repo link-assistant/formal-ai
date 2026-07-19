@@ -1,0 +1,16 @@
+Q196
+  aliases
+    hi ("गिलास" "चेरी")
+    ru ("вишня (фрукт)" "вишенка")
+  descriptions
+    en "fruit of the cherry tree"
+    hi "एक खट्टा-मीठा गुठलीदार फल है"
+    ru "плод растений подрода cerasus рода Prunus"
+  id Q196
+  labels
+    en cherry
+    hi "आलूबालू"
+    ru "вишня"
+    zh "樱"
+  type item
+success 1

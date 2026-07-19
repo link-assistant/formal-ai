@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q44619": {
+      "type": "item",
+      "id": "Q44619",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "fear"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "страх"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "डर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "恐惧"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "emotion induced by perceived danger or threat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "внутреннее состояние, обусловленное грозящим реальным или предполагаемым бедствием"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "感知威脅引起的基本情緒"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "😱"
+          },
+          {
+            "language": "en",
+            "value": "fearful"
+          },
+          {
+            "language": "en",
+            "value": "scared"
+          },
+          {
+            "language": "en",
+            "value": "😨"
+          },
+          {
+            "language": "en",
+            "value": "😰"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ужас"
+          },
+          {
+            "language": "ru",
+            "value": "испуг"
+          },
+          {
+            "language": "ru",
+            "value": "ужаса"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "Fear"
+          },
+          {
+            "language": "hi",
+            "value": "भय"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "怕"
+          },
+          {
+            "language": "zh",
+            "value": "恐"
+          },
+          {
+            "language": "zh",
+            "value": "恐怖"
+          },
+          {
+            "language": "zh",
+            "value": "恐懼"
+          },
+          {
+            "language": "zh",
+            "value": "惧"
+          },
+          {
+            "language": "zh",
+            "value": "害怕"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

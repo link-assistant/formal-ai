@@ -725,7 +725,13 @@ meanings
       surface
         text "what did we talk about"
       surface
+        text "what we were talking about"
+      surface
+        text "what were we talking about"
+      surface
         text "what have we discussed"
+      surface
+        text "remind me what we discussed"
       surface
         text "summary of our chat"
       surface

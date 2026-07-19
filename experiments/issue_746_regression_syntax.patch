@@ -1,0 +1,13 @@
+diff --git a/tests/integration/issue_746_hosted_tools.rs b/tests/integration/issue_746_hosted_tools.rs
+index cbe9964b..f45ead67 100644
+--- a/tests/integration/issue_746_hosted_tools.rs
++++ b/tests/integration/issue_746_hosted_tools.rs
+@@ -91,7 +91,7 @@ fn gemini_function_declarations_and_hosted_google_search_both_route() {
+             "contents": [{"role": "user", "parts": [{"text": "搜索网络 Rust ownership"}]}],
+             "tools": [{"functionDeclarations": [{
+                 "name": "google_web_search",
+-                "parameters": {"type": "object", "properties": {"query": {"type": "string"}}
++                "parameters": {"type": "object", "properties": {"query": {"type": "string"}}}
+             }]}]
+         }),
+     );

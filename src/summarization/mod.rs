@@ -301,14 +301,20 @@ impl SummarizationConfig {
 }
 
 /// Split a paragraph of free-form text into [`Statement`]s. Each sentence
-/// ends at `.`, `!`, `?`, `。`, `…` or a newline. Empty fragments are dropped.
+/// ends at `.`, `!`, `?`, `。`, `…`, the Devanagari danda `।` or double danda
+/// `॥`, or a newline. Empty fragments are dropped.
+///
+/// The dandas matter because Hindi prose ends its sentences with them and not
+/// with a full stop. Without them a Hindi page is one enormous statement, so
+/// anything that ranks or trims sentences — the web-research extract of issue
+/// #771, for one — degrades to returning the whole document.
 #[must_use]
 pub fn formalize(text: &str) -> Vec<Statement> {
     let mut out = Vec::new();
     let mut buffer = String::new();
     for ch in text.chars() {
         buffer.push(ch);
-        if matches!(ch, '.' | '!' | '?' | '。' | '…' | '\n') {
+        if matches!(ch, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '\n') {
             push_sentence(&mut buffer, &mut out);
         }
     }
@@ -450,7 +456,7 @@ pub fn deformalize(statements: &[Statement]) -> String {
 fn ends_with_terminal_punct(text: &str) -> bool {
     text.chars()
         .last()
-        .is_some_and(|c| matches!(c, '.' | '!' | '?' | '。' | '…' | '」' | '"'))
+        .is_some_and(|c| matches!(c, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '」' | '"'))
 }
 
 /// Render the topic label (1–5 words) for the supplied statements.
