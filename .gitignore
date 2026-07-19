@@ -88,3 +88,4 @@ data/wikidata-cache/
 data/wiktionary-cache/
 data/http-cache/
 experiments/composer-out/
+experiments/message-out/

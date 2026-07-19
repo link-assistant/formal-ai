@@ -320,6 +320,17 @@ keep their test ids" test plus the composer visual-regression matrix; the glass
 composer baselines were refreshed to the transparent-text snapshot style and the
 enabled (accent) send orb.
 
+A follow-up close-inspection pass captured tight crops of the **chat transcript**
+(user bubble, assistant card, THINKING sections, avatars, and the "Demo is
+running" banner) across all five skins in light and dark with
+[`experiments/message-closeups.mjs`](../../../experiments/message-closeups.mjs).
+The message cards held their intended per-skin surface — flat/contrast bordered
+cards, Material elevated cards with tonal wash, and frosted glass panels over the
+gradient — with no leaked MUI-specificity or non-uniform-background defects of the
+class fixed above. That script (like the composer/topbar close-up scripts) writes
+to a gitignored scratch dir for inspection; nothing new needed fixing in the
+transcript.
+
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
 (every skin's marker class and transparent textarea, the MUI framework root
