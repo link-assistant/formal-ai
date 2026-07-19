@@ -129,13 +129,31 @@ fn plan_deeper_round(tool_names: &[&str], progress: &Progress, query: &str) -> O
         return None;
     }
     let open = uncovered_aspects(query, progress);
-    // A refinement has to actually refine. Nothing uncovered means the question
-    // is answered; *everything* uncovered means the evidence bears on none of it
-    // — usually because the sources answer in another language than the question
-    // was asked in — and re-issuing the same terms would return the same pages.
-    // Requiring a proper subset rules both out, and makes the loop terminate on
-    // its own: uncovered aspects only ever shrink as evidence accumulates.
-    if open.is_empty() || open.len() >= aspects_of(query).len() {
+    // Another round is only worth spending on a gap we can actually name, and
+    // this rule is deliberately strict about that: exactly one aspect of a
+    // several-aspect question is unsupported by everything read so far.
+    //
+    // The strictness is not tuning, it is a response to how weak the underlying
+    // signal is. Token coverage is a poor proxy for "answered": a page that
+    // genuinely answers "when are elections in usa" does not repeat every word
+    // of the question, and how many words it echoes varies with the language it
+    // is written in — the same page shape leaves two aspects open in Hindi and
+    // none in English. Anything looser turns that variation into wasted rounds
+    // on questions that were already answered.
+    //
+    // A single open aspect is different in kind. It is the shape of a real
+    // follow-up — the specifications were found and only the warranty is
+    // missing — and it yields a refinement worth issuing, because the refined
+    // query is that aspect alone rather than a restatement of the question.
+    //
+    // The cost is that genuinely partial answers with two or more gaps are
+    // returned as-is instead of researched further. That is the intended
+    // trade: answering with what was actually found beats spending a round on
+    // a guess about what is missing.
+    //
+    // This also makes the loop terminate on its own, independently of the round
+    // budget: uncovered aspects only ever shrink as evidence accumulates.
+    if open.len() != 1 || aspects_of(query).len() < 3 {
         return None;
     }
     let tool = tool_for(tool_names, Capability::Search)?;

@@ -70,6 +70,27 @@ executed_fetches="$(grep -c '"tool": "webfetch"' "$AGENT_LOG" | tr -d ' ')"
 [ "$executed_fetches" -ge 3 ] \
   || fail "expected the Agent CLI to execute three webfetches, got $executed_fetches events"
 
+# The research loop now deepens across rounds, so it can plan a second search
+# and further fetches. Whatever the live web returns, one invariant must hold:
+# a source already read is never read again. That is what bounds the loop, and
+# unlike a round count it does not depend on which pages the search engine
+# surfaces today, so it can be asserted here without flaking.
+#
+# The URLs are recovered by pulling every http token off the lines that mention
+# webfetch. If the trace format changes and nothing is recovered, this reports
+# that it could not check rather than passing silently or failing spuriously.
+fetched_urls="$(grep -h 'webfetch' "$LOG" "$AGENT_LOG" 2>/dev/null \
+  | grep -o 'https\?://[^"\\ ,}]*' | sed 's#/$##' | sort)"
+url_count="$(printf '%s\n' "$fetched_urls" | grep -c . | tr -d ' ')"
+if [ "$url_count" -ge 2 ]; then
+  repeated="$(printf '%s\n' "$fetched_urls" | uniq -d)"
+  [ -z "$repeated" ] \
+    || fail "a source was fetched more than once, so the loop is not converging: $repeated"
+  echo "-- no source was read twice across $url_count fetch references"
+else
+  echo "-- note: could not recover fetch URLs from the traces; repeat-fetch check skipped" >&2
+fi
+
 if [ -n "$ARTIFACT_DIR" ]; then
   mkdir -p "$ARTIFACT_DIR"
   cp "$LOG" "$ARTIFACT_DIR/formal-ai.log"
