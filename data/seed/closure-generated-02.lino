@@ -1,4 +1,24 @@
 meanings
+  lexeme_import_invalid_qid
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid qid"
+  lexeme_import_invalid_slug
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid slug"
+  lexeme_import_invalid_surface
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import invalid surface"
+  lexeme_import_lexeme_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import lexeme lost"
   lexeme_import_missing_cached_label
     defined-by intent
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
-  pattern_wellbeing_phrase_zuijin_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase zuijin zenmeyang zh"
-  pattern_wikipedia_article_question_exact_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wikipedia article question exact en"
-  pattern_wikipedia_article_question_exact_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wikipedia article question exact hi"
-  pattern_wikipedia_article_question_exact_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wikipedia article question exact ru"

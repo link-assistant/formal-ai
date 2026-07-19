@@ -159,6 +159,11 @@ meanings
     lexeme en
       surface
         text "are"
+  arrange
+    defined-by word_surface
+    lexeme en
+      surface
+        text "arrange"
   article
     defined-by word_surface
     lexeme en
@@ -784,6 +789,11 @@ meanings
     lexeme en
       surface
         text "export memory"
+  express
+    defined-by word_surface
+    lexeme en
+      surface
+        text "express"
   expression-language
     defined-by category
     lexeme en
@@ -894,6 +904,11 @@ meanings
     lexeme en
       surface
         text "genuine"
+  get
+    defined-by word_surface
+    lexeme en
+      surface
+        text "get"
   git
     defined-by token
     lexeme en
@@ -909,6 +924,11 @@ meanings
     lexeme en
       surface
         text "github repository traffic"
+  gives
+    defined-by word_surface
+    lexeme en
+      surface
+        text "gives"
   golang
     defined-by word_surface
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import invalid provenance"
-  lexeme_import_invalid_qid
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import invalid qid"
-  lexeme_import_invalid_slug
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import invalid slug"
-  lexeme_import_invalid_surface
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import invalid surface"
-  lexeme_import_lexeme_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import lexeme lost"

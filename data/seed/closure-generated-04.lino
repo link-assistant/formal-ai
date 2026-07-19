@@ -1,4 +1,29 @@
 meanings
+  response_lexeme_import_wrong_genus_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus en"
+  response_lexeme_import_wrong_genus_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus hi"
+  response_lexeme_import_wrong_genus_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus ru"
+  response_lexeme_import_wrong_genus_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus zh"
+  response_mcp_instructions_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions en"
   response_mcp_instructions_hi
     defined-by response_template
     lexeme en

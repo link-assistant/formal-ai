@@ -337,6 +337,12 @@ roles
     kind predicate
   quantity_conversion_cue
     kind predicate
+  reachability_operand_framing
+    kind meaning
+  reachability_search_cue
+    kind predicate
+  reachability_target_marker
+    kind meaning
   repository_reference
     kind meaning
   research_criterion
