@@ -102,6 +102,8 @@ pub struct ClientIntegration {
     pub aliases: Vec<String>,
     pub label: String,
     pub command: String,
+    pub command_env: String,
+    pub platform_commands: Vec<TemplateEnv>,
     pub provider_id: String,
     pub default_protocol: String,
     pub supported_protocols: Vec<String>,
@@ -164,6 +166,21 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
     let aliases = split_pipe_list(tool.find_child_value("aliases"));
     let label = tool.find_child_value("label").to_string();
     let command = tool.find_child_value("command").to_string();
+    let command_env = tool.find_child_value("command_env").to_string();
+    let platform_commands = tool
+        .children
+        .iter()
+        .filter_map(|child| {
+            child
+                .name
+                .strip_prefix("command_")
+                .filter(|platform| *platform != "env")
+                .map(|platform| TemplateEnv {
+                    key: platform.to_string(),
+                    value: child.id.clone(),
+                })
+        })
+        .collect();
     let provider_id = tool.find_child_value("provider_id").to_string();
     let default_protocol = tool.find_child_value("default_protocol").to_string();
     let supported_protocols = split_pipe_list(tool.find_child_value("supported_protocols"));
@@ -201,6 +218,8 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         aliases,
         label,
         command,
+        command_env,
+        platform_commands,
         provider_id,
         default_protocol,
         supported_protocols,

@@ -100,6 +100,34 @@ with-formal-ai --base-url http://127.0.0.1:8090 opencode run "list the files in 
 
 Expected protocol path: OpenAI `chat/completions`.
 
+### OpenCode Desktop
+
+Treat the packaged desktop application as a separate client, not as an alias
+for the OpenCode CLI. Launch it through the wrapper:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-desktop
+```
+
+The test must use an official packaged executable or an extracted AppImage.
+Set `FORMAL_AI_OPENCODE_DESKTOP_BIN` when the package is not installed in its
+normal platform location. In the renderer, verify the selected model reads
+`formal-ai`, submit a prompt that requires file Write and Shell calls, and
+expand the changed-file row in the session. Preserve all of the following:
+
+- the desktop version and package URL;
+- the injected `OPENCODE_CONFIG` JSON and environment names;
+- a rendered transcript showing the tool calls and `formal-ai` model badge;
+- an expanded diff from the same session;
+- the resulting workspace file and server/desktop log.
+
+The issue #762 reference run used OpenCode Desktop v1.18.3 on Linux. It produced
+two Write calls, one Shell call, and a two-file rendered diff. The preserved
+[tool-call screenshot](../../experiments/issue-762-desktop-e2e/tool-calls.png),
+[expanded diff](../../experiments/issue-762-desktop-e2e/final-diff.png), and
+[case-study index](../case-studies/issue-762/README.md) are the baseline entry
+for the multi-client matrix tracked by #671.
+
 ### Agent CLI
 
 The wrapper injects an OpenCode-shaped provider JSON through
@@ -220,6 +248,7 @@ Cover all protocol paths because bugs can hide in one surface while another
 passes:
 
 - OpenAI `chat/completions`: `opencode` and `agent`.
+- OpenAI `chat/completions`: `opencode-desktop` through the embedded sidecar.
 - OpenAI `responses`: `codex`.
 - Gemini `streamGenerateContent`: `gemini`.
 
@@ -284,6 +313,7 @@ step 6):
 
 1. Build `formal-ai` and `with-formal-ai`.
 2. Install pinned CLI versions.
+   Install the pinned OpenCode Desktop package under Xvfb for its matrix row.
 3. Create the fixture workspace and marker files.
 4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
 5. Start `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.
