@@ -55,6 +55,12 @@ The recorded run completed in two chat rounds and reported 8 statements, 1 contr
 
 The release workflow runs the same harness, while unit tests establish that ordinary truth questions do not accidentally route to this repository-wide tool.
 
+## Full-repository scale check
+
+The final implementation was also run against the complete 7,482-path Git snapshot at commit `dcfd8810b61a9b33d4e356c193542b26e971159a`. It audited 181,885 recognized statements, exposed 4,069 contradictions and 18,523 issue candidates, and explicitly listed 218 skipped paths. The resulting 131,592,919-byte Links Notation network contains 3,481,890 lines, so it remains in temporary test storage rather than bloating the repository; the compact [measurement record](full-repository-summary.json) is committed.
+
+On this runner, the release binary completed the warm-cache scan in 13.59 seconds with a 706,232 KiB process high-water mark. The original point-score renderer remained CPU-bound beyond 27 minutes on the pre-optimization working tree. The bulk implementation removes that statement-by-association cross-product, while the fixture replay test proves the optimized renderer is byte-identical for the same audit.
+
 ## Learning and follow-up work
 
 Statements, evidence captures, conflicts, and findings are persisted as an associative network. Reads, writes, incoming links, and outgoing links produce deterministic retention scores; bulk export computes all scores in one association pass, growing with expressions plus links instead of their cross-product. The multilingual polarity vocabulary is data-driven, so adding learned markers widens requirement recognition without adding another language-specific control-flow branch.
