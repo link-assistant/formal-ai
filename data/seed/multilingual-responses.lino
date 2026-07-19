@@ -1269,3 +1269,35 @@ multilingual_responses
     intent lexeme_import_cannot_remove_stale
     language zh
     text "无法删除过期文件 {file}：{error}"
+  response response_shared_dialog_capture_parse_failed_en
+    intent shared_dialog_capture_parse_failed
+    language en
+    text "failed to parse web-capture shared-dialog JSON: {error}"
+  response response_shared_dialog_capture_parse_failed_hi
+    intent shared_dialog_capture_parse_failed
+    language hi
+    text "web-capture shared-dialog JSON को पार्स करने में विफल: {error}"
+  response response_shared_dialog_capture_parse_failed_ru
+    intent shared_dialog_capture_parse_failed
+    language ru
+    text "Не удалось разобрать JSON shared-dialog из web-capture: {error}"
+  response response_shared_dialog_capture_parse_failed_zh
+    intent shared_dialog_capture_parse_failed
+    language zh
+    text "无法解析 web-capture shared-dialog JSON：{error}"
+  response response_shared_dialog_capture_unsupported_en
+    intent shared_dialog_capture_unsupported
+    language en
+    text "web-capture provider {provider} reported {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_hi
+    intent shared_dialog_capture_unsupported
+    language hi
+    text "web-capture प्रदाता {provider} ने {reason} की सूचना दी: {message}"
+  response response_shared_dialog_capture_unsupported_ru
+    intent shared_dialog_capture_unsupported
+    language ru
+    text "Провайдер web-capture {provider} сообщил {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_zh
+    intent shared_dialog_capture_unsupported
+    language zh
+    text "web-capture 提供程序 {provider} 报告了 {reason}：{message}"

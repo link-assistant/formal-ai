@@ -790,6 +790,7 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
 pub(super) struct Progress {
     completed: Vec<Capability>,
     pub(super) fetched_text: Option<String>,
+    pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) search_output: Option<String>,
     pub(super) run_output: Option<String>,
     pub(super) fetch_result: Option<String>,
@@ -800,6 +801,7 @@ impl Progress {
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut fetched_text = None;
+        let mut fetched_pages = Vec::new();
         let mut search_output = None;
         let mut run_output = None;
         let mut fetch_result = None;
@@ -820,6 +822,9 @@ impl Progress {
                 let text = message.content.plain_text();
                 fetch_result = Some(text.clone());
                 if !looks_like_error(&text) && !text.trim().is_empty() {
+                    if let Some(url) = result_tool_call(messages, index).and_then(fetch_call_url) {
+                        fetched_pages.push((url, text.clone()));
+                    }
                     fetched_text = Some(text);
                 }
             }
@@ -838,6 +843,7 @@ impl Progress {
         Self {
             completed,
             fetched_text,
+            fetched_pages,
             search_output,
             run_output,
             fetch_result,
@@ -918,12 +924,25 @@ fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capabilit
             return Some(capability);
         }
     }
-    let call_id = message.tool_call_id.as_ref()?;
+    result_tool_call(messages, index).and_then(|call| classify_tool(&call.function.name))
+}
+
+fn result_tool_call(messages: &[ChatMessage], index: usize) -> Option<&crate::protocol::ToolCall> {
+    let call_id = messages[index].tool_call_id.as_ref()?;
     messages[..index]
         .iter()
+        .rev()
         .flat_map(|prior| prior.tool_calls.iter())
         .find(|call| &call.id == call_id)
-        .and_then(|call| classify_tool(&call.function.name))
+}
+
+fn fetch_call_url(call: &crate::protocol::ToolCall) -> Option<String> {
+    let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).ok()?;
+    arguments
+        .get("url")
+        .and_then(serde_json::Value::as_str)
+        .filter(|url| !url.trim().is_empty())
+        .map(str::to_owned)
 }
 
 /// The text of the most recent `user` turn.

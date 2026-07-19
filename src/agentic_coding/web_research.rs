@@ -7,7 +7,9 @@
 
 use serde_json::json;
 
-use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
+use super::planner::{
+    fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, PlannedToolCall, Progress,
+};
 use crate::engine::FormalAiEngine;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
@@ -66,8 +68,17 @@ pub(super) fn plan_web_research_step(
     }
     if progress.done(Capability::Search) {
         if let Some(tool) = tool_for(tool_names, Capability::Fetch) {
-            if let Some(url) = progress.search_output.as_deref().and_then(preferred_url) {
-                return Some(plan_one(tool, fetch_arguments(&url)));
+            if let Some(output) = progress.search_output.as_deref() {
+                let calls = research_urls(output)
+                    .into_iter()
+                    .map(|url| PlannedToolCall {
+                        tool: tool.to_owned(),
+                        arguments: fetch_arguments(&url),
+                    })
+                    .collect::<Vec<_>>();
+                if !calls.is_empty() {
+                    return Some(AgenticPlan::ToolCalls(calls));
+                }
             }
         }
         return Some(AgenticPlan::Final(final_answer(query, &progress)));
@@ -87,6 +98,20 @@ const VERBATIM_EVIDENCE_LIMIT: usize = 600;
 const EXTRACT_SENTENCES: usize = 3;
 
 fn final_answer(query: &str, progress: &Progress) -> String {
+    if !progress.fetched_pages.is_empty() {
+        return progress
+            .fetched_pages
+            .iter()
+            .map(|(url, evidence)| {
+                format!(
+                    "{}\n\n{}: {url}",
+                    extract_answer(query, evidence.trim()),
+                    seed_text("web_research_source_label")
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n\n");
+    }
     let evidence = progress
         .fetched_text
         .as_deref()
@@ -224,11 +249,24 @@ fn render_seed_text(key: &str, name: &str, value: &str) -> String {
 /// the search provider's ordering. The complete fetched URL is retained in the
 /// final answer for auditability.
 pub(super) fn preferred_url(text: &str) -> Option<String> {
-    let urls = urls_in(text);
-    urls.iter()
-        .find(|url| authoritative_host(url))
-        .cloned()
-        .or_else(|| urls.into_iter().next())
+    research_urls(text).into_iter().next()
+}
+
+/// Bound the breadth of one research round while retaining independent sources.
+/// The first authoritative host is moved to the front; the search provider's
+/// ranking determines the remaining order. Three captures are enough to
+/// triangulate a claim without turning a single question into an unbounded crawl.
+const MAX_RESEARCH_SOURCES: usize = 3;
+
+fn research_urls(text: &str) -> Vec<String> {
+    let mut urls = urls_in(text);
+    let mut seen = std::collections::BTreeSet::new();
+    urls.retain(|url| seen.insert(url.clone()));
+    if let Some(position) = urls.iter().position(|url| authoritative_host(url)) {
+        urls.swap(0, position);
+    }
+    urls.truncate(MAX_RESEARCH_SOURCES);
+    urls
 }
 
 fn urls_in(text: &str) -> Vec<String> {

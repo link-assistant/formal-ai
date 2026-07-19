@@ -3,7 +3,7 @@ use std::path::Path;
 
 use formal_ai::{
     convert_shared_dialog_to_demo_memory, parse_memory_links_notation, parse_shared_dialog,
-    SharedDialogFormat, SharedDialogMetadata,
+    SharedDialogError, SharedDialogFormat, SharedDialogMetadata,
 };
 
 const CHATGPT_SHARE_URL: &str = "https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24";
@@ -103,6 +103,57 @@ A: while true; do sleep 30m && hive-cleanup -f; done
         events[1].content.as_deref(),
         Some("while true; do sleep 30m && hive-cleanup -f; done")
     );
+}
+
+#[test]
+fn normalized_web_capture_json_converts_provider_turns() {
+    let capture = r#"{
+      "provider":"chatgpt", "status":"ok", "conversationId":"share-781",
+      "title":"Adapter search", "turns":[
+        {"id":"u1","role":"user","content":"Find a compatible adapter"},
+        {"id":"a1","role":"assistant","content":"Verify voltage and connector"}
+      ], "diagnostics":{"status":"ok"}
+    }"#;
+    let exported = convert_shared_dialog_to_demo_memory(
+        capture,
+        SharedDialogFormat::Auto,
+        &SharedDialogMetadata {
+            source_url: Some(String::from("https://chatgpt.com/share/share-781")),
+            ..SharedDialogMetadata::default()
+        },
+    )
+    .expect("normalized web-capture JSON should convert");
+    let events = parse_memory_links_notation(&exported);
+
+    assert_eq!(events.len(), 2);
+    assert_eq!(events[0].role.as_deref(), Some("user"));
+    assert_eq!(events[1].role.as_deref(), Some("assistant"));
+    assert_eq!(events[0].conversation_id.as_deref(), Some("share-781"));
+    assert_eq!(
+        events[0].conversation_title.as_deref(),
+        Some("Adapter search")
+    );
+}
+
+#[test]
+fn normalized_google_capture_preserves_the_upstream_diagnostic() {
+    let capture = r#"{
+      "provider":"google_ai_mode", "status":"unsupported", "turns":[],
+      "diagnostics":{
+        "status":"unsupported", "unsupportedReason":"no_transcript_in_captured_dom",
+        "message":"The captured DOM did not contain replayable transcript data."
+      }
+    }"#;
+    let error = parse_shared_dialog(
+        capture,
+        SharedDialogFormat::WebCaptureJson,
+        &SharedDialogMetadata::default(),
+    )
+    .expect_err("an unsupported capture must not be presented as a dialog");
+
+    assert!(matches!(error, SharedDialogError::UnsupportedFormat(_)));
+    assert!(error.to_string().contains("google_ai_mode"));
+    assert!(error.to_string().contains("no_transcript_in_captured_dom"));
 }
 
 fn read_fixture(relative_path: &str) -> String {

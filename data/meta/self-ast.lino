@@ -7,24 +7,24 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 21688
-  named_node_count 4352
-  distinct_node_kinds 78
+  total_link_count 22412
+  named_node_count 4511
+  distinct_node_kinds 81
   node_kinds
-    arguments 287
+    arguments 302
     array_expression 2
-    array_type 42
+    array_type 43
     assignment_expression 5
     attribute 6
     attribute_item 6
     binary_expression 11
-    block 107
-    call_expression 287
-    closure_expression 16
-    closure_parameters 16
+    block 110
+    call_expression 302
+    closure_expression 17
+    closure_parameters 17
     const_item 4
     continue_expression 2
-    crate 1
+    crate 3
     declaration_list 2
     doc_comment 143
     else_clause 1
@@ -32,25 +32,25 @@ self_ast
     enum_variant 15
     enum_variant_list 2
     escape_sequence 9
-    expression_statement 125
-    field_declaration 12
+    expression_statement 127
+    field_declaration 13
     field_declaration_list 3
-    field_expression 115
-    field_identifier 153
+    field_expression 128
+    field_identifier 167
     field_initializer 26
     field_initializer_list 14
     for_expression 1
-    function_item 36
+    function_item 38
     function_modifiers 2
-    generic_type 14
-    identifier 1172
-    if_expression 68
+    generic_type 17
+    identifier 1209
+    if_expression 69
     impl_item 2
-    index_expression 2
+    index_expression 3
     inner_doc_comment_marker 5
     integer_literal 5
-    let_condition 33
-    let_declaration 63
+    let_condition 34
+    let_declaration 65
     lifetime 3
     line_comment 223
     macro_invocation 26
@@ -58,34 +58,37 @@ self_ast
     match_block 2
     match_expression 2
     match_pattern 26
-    mutable_specifier 6
+    mutable_specifier 7
     ordered_field_declaration_list 2
     outer_doc_comment_marker 138
-    parameter 58
-    parameters 36
-    primitive_type 43
+    parameter 61
+    parameters 38
+    primitive_type 44
     range_expression 1
-    reference_expression 68
-    reference_type 81
+    reference_expression 69
+    reference_type 84
     return_expression 47
-    scoped_identifier 182
+    scoped_identifier 189
+    scoped_type_identifier 3
     scoped_use_list 3
     self 12
     self_parameter 6
-    shorthand_field_initializer 32
+    shorthand_field_initializer 33
     source_file 1
-    string_content 82
-    string_literal 78
+    string_content 83
+    string_literal 79
     struct_expression 14
     struct_item 3
-    super 48
+    super 49
     token_tree 48
-    try_expression 2
+    try_expression 3
+    tuple_expression 1
     tuple_pattern 1
-    tuple_struct_pattern 34
-    type_arguments 14
-    type_identifier 104
-    unary_expression 19
+    tuple_struct_pattern 35
+    tuple_type 1
+    type_arguments 17
+    type_identifier 114
+    unary_expression 20
     use_declaration 29
     use_list 3
-    visibility_modifier 32
+    visibility_modifier 33

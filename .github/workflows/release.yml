@@ -1307,6 +1307,15 @@ jobs:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
 
+      - name: "Run agent CLI E2E — compatibility research triangulates sources (issue #781)"
+        # A real marketplace compatibility question must not stop after the
+        # first result. The server trace proves one search fans out to at least
+        # three fetches and the real Agent CLI executes each one. Deterministic
+        # coverage checks the following synthesis round and its citations.
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_781.sh
+
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
         # `..._and_agent_cli_e2e_pass`, so the gate is only honest if a real
