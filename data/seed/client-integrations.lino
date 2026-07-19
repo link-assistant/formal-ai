@@ -73,6 +73,8 @@ client_integrations
       env "ANTHROPIC_AUTH_TOKEN={api_key}"
       env "ANTHROPIC_API_KEY="
       env "ANTHROPIC_BASE_URL={anthropic_endpoint_base_url}"
+      session_root "sessions"
+      session_file_suffix ".jsonl"
     global "openai"
       kind "toml"
       path ".codex/config.toml"

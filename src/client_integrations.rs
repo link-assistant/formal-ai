@@ -486,6 +486,7 @@ fn build_invocation_args(
         args.extend(effective_user_args);
         return args;
     }
+
     let model_arg = render_template(&invocation.model_arg, context);
     let model_value = context.model_selector.clone();
     match invocation.model_arg_position {
