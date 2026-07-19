@@ -12,9 +12,10 @@ agent-client testing round (#744–#762). The implementation was traced against:
 - the merged implementations and tests for Cursor (#754), multilingual routing
   (#745), hosted tools (#746), Desktop web tools (#747), schema/capability and
   shell routing (#744/#749/#758), friendly output (#750), usage/context
-  (#751/#752), shared memory (#756), session files (#757), and T3 Code (#760);
-- open issues #759 and #762 and open PR #783, whose not-yet-released behavior is
-  labeled as pending rather than presented as a current command.
+  (#751/#752), shared memory (#756), session files (#757), Desktop passthrough
+  (#759), and T3 Code (#760);
+- open issue #762, whose not-yet-released OpenCode Desktop launcher is labeled
+  as pending rather than presented as a current command.
 
 ## Reproducing the documentation gap
 

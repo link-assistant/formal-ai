@@ -110,6 +110,8 @@ fn modes_and_tools_are_documented_from_capability_to_fallback() {
             "passthrough",
             "Agent CLI",
             "agent-commander",
+            "engine selector",
+            "installed Agent",
             "default",
             "engine",
         ],

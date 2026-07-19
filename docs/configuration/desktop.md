@@ -7,9 +7,11 @@ curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scrip
 ```
 
 For development, build the Rust binary, install Electron dependencies, then run
-`npm run desktop:dev`. Desktop starts with the native out-of-box engine; agent
-actions remain permission-gated. See [Modes](modes.md) for the pending external
-engine selector and agent-commander passthrough status.
+`npm run desktop:dev`. The engine selector always offers the native out-of-box
+engine and adds installed Agent, Codex, and Claude CLIs. An installed Agent is
+the first-launch default; otherwise Desktop starts native, and a later explicit
+available choice is persisted. Agent actions remain permission-gated. See
+[Modes](modes.md) for the `agent-commander` passthrough boundary.
 
 The Services panel can start the Telegram bot, OpenAI-compatible server, and an
 isolated Agent environment from the root container image. Docker is required

@@ -1,10 +1,10 @@
 # Out-of-box and passthrough modes
 
-The current Desktop and VS Code default is the native **out-of-box** engine. It
-runs the symbolic engine in-process, needs no third-party agent installation,
-and keeps agent mode off until the user opts in. Chat, Agent, and Full Auto are
-permission levels within that engine: Chat does not execute actions, Agent
-gates mutations, and Full Auto permits configured actions automatically.
+The native **out-of-box** engine runs the symbolic engine in-process, needs no
+third-party agent installation, and keeps agent mode off until the user opts
+in. Chat, Agent, and Full Auto are permission levels within that engine: Chat
+does not execute actions, Agent gates mutations, and Full Auto permits
+configured actions automatically.
 
 **Passthrough** sends the same chat turn to an external agent engine while
 keeping Formal AI's UI, local server, and shared memory boundary. The desktop
@@ -13,13 +13,14 @@ adapter uses [agent-commander](https://github.com/link-assistant/agent-commander
 This keeps stream normalization, session resume, environment filtering, and
 read/write permission policy in one controller.
 
-Selectable Agent/Codex/Claude passthrough and “default to Agent CLI when it is
-installed” are implemented in PR #783 for issue #759 but are not part of the
-current main release yet. Until that lands, Desktop remains out-of-box by
-default; use `formal-ai with agent`, `codex`, or `claude` for an external
-engine. After it lands, select the engine in Desktop settings; a saved explicit
-choice wins, otherwise a detected Agent CLI becomes the default and native
-Formal AI remains available in the same selector.
+Desktop detects installed Agent, Codex, and Claude executables and lists the
+available passthrough engines beside **Out of the box** in its engine selector.
+On first launch an installed Agent CLI is preferred; without one, the native
+engine remains the default. A saved available selection wins on later launches.
+Switching the selector affects the next turn without changing the conversation
+or shared-memory location. This behavior shipped through PR #783 for issue
+#759. Outside Desktop, `formal-ai with agent`, `codex`, or `claude` provides the
+same local-server integration without a UI selector.
 
 The Docker **Agent environment** is different from engine selection: it
 installs an isolated container containing Agent and agent-commander. It never
