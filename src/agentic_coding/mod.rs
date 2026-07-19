@@ -42,6 +42,7 @@ pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;

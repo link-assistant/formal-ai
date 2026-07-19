@@ -797,12 +797,15 @@ fn render_demand(demand: &Demand) -> String {
             unit,
             comparison,
         } => {
-            let symbol = match comparison {
+            let mut rendered = String::from(match comparison {
                 Comparison::Equal => "=",
                 Comparison::AtLeast => ">=",
                 Comparison::AtMost => "<=",
-            };
-            format!("{symbol}{} {unit}", render_fixed(*value))
+            });
+            rendered.push_str(&render_fixed(*value));
+            rendered.push(' ');
+            rendered.push_str(unit);
+            rendered
         }
     }
 }
