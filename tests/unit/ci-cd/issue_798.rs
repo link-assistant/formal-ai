@@ -88,7 +88,15 @@ fn both_release_paths_smoke_test_the_registry_artifact() {
     );
 
     let smoke = read("scripts/smoke-test-published-crate.sh");
-    for contract in ["cargo install formal-ai", "--version \"=${version}\"", "--locked", "--help"] {
-        assert!(smoke.contains(contract), "published-crate smoke test must contain `{contract}`");
+    for contract in [
+        "cargo install formal-ai",
+        "--version \"=${version}\"",
+        "--locked",
+        "--help",
+    ] {
+        assert!(
+            smoke.contains(contract),
+            "published-crate smoke test must contain `{contract}`"
+        );
     }
 }
