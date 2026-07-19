@@ -91,7 +91,7 @@ pub struct MethodRegistry {
 impl MethodRegistry {
     /// Derive the registry from the live dispatch constants.
     ///
-    /// The specialized surface is built from [`specialized_handlers`], whose
+    /// The specialized surface is built from `specialized_handlers`, whose
     /// precedence comes from `data/seed/handler-precedence.lino` joined with the
     /// registered function pointers — so the registry reflects the seed-declared
     /// order while staying grounded in the code that actually runs.

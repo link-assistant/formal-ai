@@ -41,6 +41,27 @@ fn agentic_general_planner_rejects_unsafe_or_ambiguous_requests() {
 }
 
 #[test]
+fn agentic_general_planner_rejects_non_referential_payload() {
+    // A "save it to FILE" / "write this to FILE" request names no literal
+    // content: the pronoun points back at content a keyword recipe must still
+    // compose, so the generic write probe must decline and let that recipe win
+    // (issue #663). It would otherwise fabricate a file whose body is "it".
+    for request in [
+        "save it to handler-precedence-learning-report.lino",
+        "please write this to notes/output.txt",
+    ] {
+        assert!(
+            compose_general_change_plan(request).is_none(),
+            "non-referential payload must not compose a literal write: {request}",
+        );
+    }
+    // A payload that merely *begins* with such a word is still literal content.
+    let plan = compose_general_change_plan("write to notes/quote.txt saying to be or not to be")
+        .expect("literal content beginning with a function word is still a write");
+    assert_eq!(plan.content, "to be or not to be");
+}
+
+#[test]
 fn general_plan_is_emitted_before_execution() {
     let messages = vec![ChatMessage::user(EN_TASK)];
     let tools = ["write_file", "run_command"];
