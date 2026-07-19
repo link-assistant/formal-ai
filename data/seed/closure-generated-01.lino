@@ -294,6 +294,11 @@ meanings
     lexeme en
       surface
         text "browser to vscode"
+  budget_search_solution
+    defined-by intent
+    lexeme en
+      surface
+        text "budget search solution"
   bundle_export_filename
     defined-by field
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import grounding lost"
-  lexeme_import_invalid_provenance
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import invalid provenance"

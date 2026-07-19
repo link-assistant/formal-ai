@@ -216,8 +216,12 @@ fn budget_search_recognizes_reachability_across_supported_languages() {
             "[{language}] the search stage should recognize the localized reachability problem; got: {}",
             answer.links_notation,
         );
+        // The reply is localized to the prompt's language (the English phrase
+        // "budget-driven search" only appears in the English variant), so the
+        // language-neutral proof that the puzzle was solved is the equation
+        // itself: the solved expression equals the target 26.
         assert!(
-            answer.answer.contains("budget-driven search") && answer.answer.contains("26"),
+            answer.answer.contains("= 26"),
             "[{language}] a sufficient budget should solve the localized puzzle; got: {}",
             answer.answer,
         );
@@ -226,6 +230,32 @@ fn budget_search_recognizes_reachability_across_supported_languages() {
             "[{language}] the solved answer should carry the budget-search intent",
         );
     }
+}
+
+#[test]
+fn budget_search_reply_is_localized_from_the_seed() {
+    // The reply prose is looked up from the seed knowledge base by the prompt's
+    // detected language (R379: data is the interface), so a Russian puzzle is
+    // answered in Russian — not in the English canonical phrasing.
+    let solver = solver_with_budget(256);
+    let answer = solver
+        .solve("Используя числа 3, 5 и 7 с операциями + и *, найдите выражение, которое равно 26.");
+
+    assert!(
+        answer.answer.contains("бюджетным поиском"),
+        "the Russian puzzle should be answered with the Russian seed reply; got: {}",
+        answer.answer,
+    );
+    assert!(
+        !answer.answer.contains("budget-driven search"),
+        "a localized reply must not fall back to the English phrasing; got: {}",
+        answer.answer,
+    );
+    assert!(
+        answer.answer.contains("= 26"),
+        "the localized reply still states the solved equation; got: {}",
+        answer.answer,
+    );
 }
 
 #[test]

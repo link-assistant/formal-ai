@@ -17,6 +17,7 @@
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::language::detect as detect_language;
 use crate::links_format::format_lino_record;
 use crate::seed;
 use crate::solver::SolverConfig;
@@ -158,15 +159,11 @@ pub fn try_budget_search(
 ) -> Option<SymbolicAnswer> {
     let problem = parse_search_problem(prompt)?;
 
-    log.append(
-        "search:problem",
-        format!(
-            "reach target={} using numbers=[{}] with ops=[{}]",
-            problem.target,
-            join_numbers(&problem.numbers),
-            join_ops(&problem.ops),
-        ),
-    );
+    // Trace payloads stay structured (one atomic field per event, no prose) so
+    // they read as machine data, matching the rest of the engine's event log.
+    log.append("search:problem:target", problem.target.to_string());
+    log.append("search:problem:numbers", join_numbers(&problem.numbers));
+    log.append("search:problem:ops", join_ops(&problem.ops));
     log.append("search:budget", config.compute_budget.to_string());
     record_generated_tests(log, &problem);
 
@@ -208,7 +205,8 @@ fn run_search(
     budget: u32,
 ) -> Option<SearchSolution> {
     if budget == 0 {
-        log.append("search:exhausted", "evaluations=0 budget=0".to_owned());
+        log.append("search:exhausted:evaluations", 0.to_string());
+        log.append("search:exhausted:budget", 0.to_string());
         return None;
     }
 
@@ -236,13 +234,12 @@ fn run_search(
         remember_best(&mut best, &candidate, diff);
         insert_population(&mut population, candidate, diff, POPULATION);
     }
+    log.append("search:random:sampled", evaluations.to_string());
     log.append(
-        "search:random",
-        format!(
-            "sampled={} best_diff={}",
-            evaluations,
-            best.as_ref().map_or(i64::MAX, |(_, diff)| *diff)
-        ),
+        "search:random:best_diff",
+        best.as_ref()
+            .map_or(i64::MAX, |(_, diff)| *diff)
+            .to_string(),
     );
 
     // Evolutionary search: mutate and cross over the best-scoring candidates,
@@ -254,10 +251,8 @@ fn run_search(
         let diff = score(&child, problem);
         evaluations += 1;
         if diff == 0 {
-            log.append(
-                "search:evolutionary",
-                format!("generation={generation} best_diff=0"),
-            );
+            log.append("search:evolutionary:generation", generation.to_string());
+            log.append("search:evolutionary:best_diff", 0.to_string());
             return Some(finish_solution(
                 log,
                 problem,
@@ -269,22 +264,22 @@ fn run_search(
         remember_best(&mut best, &child, diff);
         insert_population(&mut population, child, diff, POPULATION);
         if generation.is_multiple_of(GENERATION_LOG_STRIDE) {
+            log.append("search:evolutionary:generation", generation.to_string());
             log.append(
-                "search:evolutionary",
-                format!(
-                    "generation={generation} best_diff={}",
-                    best.as_ref().map_or(i64::MAX, |(_, diff)| *diff)
-                ),
+                "search:evolutionary:best_diff",
+                best.as_ref()
+                    .map_or(i64::MAX, |(_, diff)| *diff)
+                    .to_string(),
             );
         }
     }
 
+    log.append("search:exhausted:evaluations", evaluations.to_string());
     log.append(
-        "search:exhausted",
-        format!(
-            "evaluations={evaluations} best_diff={}",
-            best.as_ref().map_or(i64::MAX, |(_, diff)| *diff)
-        ),
+        "search:exhausted:best_diff",
+        best.as_ref()
+            .map_or(i64::MAX, |(_, diff)| *diff)
+            .to_string(),
     );
     None
 }
@@ -302,12 +297,11 @@ fn finish_solution(
     evaluations: u32,
     phase: &'static str,
 ) -> SearchSolution {
+    log.append("search:candidate:phase", phase.to_owned());
+    log.append("search:candidate:evaluations", evaluations.to_string());
     log.append(
-        "search:candidate",
-        format!(
-            "phase={phase} evaluations={evaluations} expression={}",
-            candidate.render(&problem.numbers)
-        ),
+        "search:candidate:expression",
+        candidate.render(&problem.numbers),
     );
     SearchSolution {
         expression: candidate.render(&problem.numbers),
@@ -401,20 +395,11 @@ fn record_generated_tests(log: &mut EventLog, problem: &SearchProblem) {
     // Step 6 of the loop generates a test per requirement before an answer is
     // committed; these are the fitness constraints the search must satisfy.
     log.append(
-        "search:test",
-        format!(
-            "uses each of [{}] exactly once",
-            join_numbers(&problem.numbers)
-        ),
+        "search:test:each_number_once",
+        join_numbers(&problem.numbers),
     );
-    log.append(
-        "search:test",
-        format!("uses only operators [{}]", join_ops(&problem.ops)),
-    );
-    log.append(
-        "search:test",
-        format!("expression evaluates to {}", problem.target),
-    );
+    log.append("search:test:only_operators", join_ops(&problem.ops));
+    log.append("search:test:evaluates_to", problem.target.to_string());
 }
 
 fn build_answer(
@@ -424,22 +409,19 @@ fn build_answer(
     solution: &SearchSolution,
     budget: u32,
 ) -> SymbolicAnswer {
-    let body = format!(
-        concat!(
-            "Found by budget-driven search: {expression} = {target}.\n",
-            "No reusable part or rule matched, so the solver combined the given ",
-            "numbers with the allowed operators and scored each candidate against ",
-            "the generated equality tests as the fitness function.\n",
-            "Search budget: {budget} candidate evaluations; a satisfying ",
-            "composition was found after {evaluations} evaluations.\n",
-            "Search path: {trace_id}",
-        ),
-        expression = solution.expression,
-        target = problem.target,
-        budget = budget,
-        evaluations = solution.evaluations,
-        trace_id = stable_id("search", prompt),
-    );
+    // The reply prose lives in the seed knowledge base (R379: "data is the
+    // interface"), localized to the prompt's language with an English fallback,
+    // and its `{...}` placeholders are filled with this run's values.
+    let language = detect_language(prompt);
+    let template = seed::response_for("budget_search_solution", language.slug())
+        .or_else(|| seed::response_for("budget_search_solution", "en"))
+        .unwrap_or_default();
+    let body = template
+        .replace("{expression}", &solution.expression)
+        .replace("{target}", &problem.target.to_string())
+        .replace("{budget}", &budget.to_string())
+        .replace("{evaluations}", &solution.evaluations.to_string())
+        .replace("{trace_id}", &stable_id("search", prompt));
     finalize_simple(
         prompt,
         log,

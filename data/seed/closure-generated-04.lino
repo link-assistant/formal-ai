@@ -1,4 +1,29 @@
 meanings
+  response_lexeme_import_surface_changed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed zh"
+  response_lexeme_import_surface_missing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing en"
+  response_lexeme_import_surface_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing hi"
+  response_lexeme_import_surface_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing ru"
+  response_lexeme_import_surface_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing zh"
   response_lexeme_import_wrong_genus_en
     defined-by response_template
     lexeme en

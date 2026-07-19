@@ -1,4 +1,9 @@
 meanings
+  pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
   pattern_wellbeing_phrase_zuijin_zenmeyang_zh
     defined-by prompt_pattern
     lexeme en
@@ -354,6 +359,26 @@ meanings
     lexeme en
       surface
         text "response assistant name zh"
+  response_budget_search_solution_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution en"
+  response_budget_search_solution_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution hi"
+  response_budget_search_solution_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution ru"
+  response_budget_search_solution_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution zh"
   response_capabilities_en
     defined-by response_template
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface changed ru"
-  response_lexeme_import_surface_changed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed zh"
-  response_lexeme_import_surface_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing en"
-  response_lexeme_import_surface_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing hi"
-  response_lexeme_import_surface_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing ru"
-  response_lexeme_import_surface_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing zh"
