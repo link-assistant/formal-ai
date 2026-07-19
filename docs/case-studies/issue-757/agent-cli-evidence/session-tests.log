@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784408223896)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.06s
+     Running tests/issue_757_session_files.rs (target/debug/deps/issue_757_session_files-c196afe33fffb7b1)
+
+running 2 tests
+test prints_persistent_session_file_after_one_shot_and_interactive_runs ... ok
+test reports_every_requested_tool_session_and_proxy_log ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
