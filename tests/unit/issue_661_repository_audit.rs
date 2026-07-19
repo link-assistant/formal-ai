@@ -353,3 +353,54 @@ fn evidence_json_rejects_ambiguous_selectors_and_unknown_provenance_values() {
     .expect_err("unoriginal search output must be classified explicitly");
     assert!(unknown_tier.to_string().contains("tier"), "{unknown_tier}");
 }
+
+#[test]
+fn committed_case_study_is_a_byte_replay_of_the_generalized_core() {
+    let fixture = corpus(&[
+        (
+            "README.md",
+            include_str!("../../examples/issue-661-statement-audit/README.md"),
+        ),
+        (
+            "REQUIREMENTS.md",
+            include_str!("../../examples/issue-661-statement-audit/REQUIREMENTS.md"),
+        ),
+        (
+            "config.toml",
+            include_str!("../../examples/issue-661-statement-audit/config.toml"),
+        ),
+        (
+            "src/runtime.rs",
+            include_str!("../../examples/issue-661-statement-audit/src/runtime.rs"),
+        ),
+    ]);
+    let captures = parse_evidence_json(include_str!(
+        "../../examples/issue-661-statement-audit-evidence.json"
+    ))
+    .expect("case-study evidence must remain replayable");
+
+    let without_external_evidence = audit_corpus(&fixture, &[], AuditConfig::default());
+    assert_eq!(
+        without_external_evidence.to_links_notation(),
+        include_str!(
+            "../../docs/case-studies/issue-661/agent-cli-evidence/statement-audit.lino"
+        ),
+        "the real Agent CLI result must stay reproducible by the public core",
+    );
+
+    let with_external_evidence = audit_corpus(&fixture, &captures, AuditConfig::default());
+    let replay = with_external_evidence.to_links_notation();
+    assert_eq!(
+        replay,
+        include_str!(
+            "../../docs/case-studies/issue-661/replay-evidence/statement-audit-with-evidence.lino"
+        ),
+        "captured original-source evidence must replay byte-for-byte",
+    );
+    assert!(replay.contains("https://www.w3.org/TR/prov-o/"));
+    assert!(replay.contains(
+        "sha256:6b96671ab84faf12ce3f041aca12c3f93a6df2ed242348810743179a68e69555"
+    ));
+    assert!(replay.contains("effective_mass \"0\""));
+    assert!(replay.contains("disposition \"issue_candidate\""));
+}

@@ -383,7 +383,8 @@ impl AssociativeMemory {
     /// [`Self::retention_score`] for every expression. The latter intentionally
     /// remains convenient for point lookups, but each point lookup scans the
     /// association set; this method indexes every incoming and outgoing degree
-    /// once, so sparse-network exports grow linearly with the finished graph.
+    /// once, so sparse-network exports grow with expressions plus links instead
+    /// of their cross-product.
     #[must_use]
     pub fn retention_score_map(&self) -> BTreeMap<String, u64> {
         let weights = RetentionWeights::uniform();

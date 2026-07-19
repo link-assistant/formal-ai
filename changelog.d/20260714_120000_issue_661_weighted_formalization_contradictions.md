@@ -25,3 +25,12 @@ bump: minor
   control flow. The check runs before the contextual handlers so a
   contradictory language directive is flagged instead of being silently
   replayed.
+- A generalized `formal-ai statement-audit` command now snapshots repository
+  prose, code comments, and structured facts; gives every recognized statement
+  an evidence-adjusted probability and stable source location; verifies path
+  claims against the Git index; and exports contradictions, issue candidates,
+  provenance, and learned associations as deterministic Links Notation.
+  Original-source captures contribute Relative Meta-Logic mass while preserved
+  unoriginal reposts contribute zero mass. A committed case study and release
+  test replay the fixture both directly and through the real
+  `@link-assistant/agent` CLI.
