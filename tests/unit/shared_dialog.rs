@@ -3,7 +3,7 @@ use std::path::Path;
 
 use formal_ai::{
     convert_shared_dialog_to_demo_memory, parse_memory_links_notation, parse_shared_dialog,
-    SharedDialogError, SharedDialogFormat, SharedDialogMetadata,
+    response_for, SharedDialogError, SharedDialogFormat, SharedDialogMetadata,
 };
 
 const CHATGPT_SHARE_URL: &str = "https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24";
@@ -154,6 +154,24 @@ fn normalized_google_capture_preserves_the_upstream_diagnostic() {
     assert!(matches!(error, SharedDialogError::UnsupportedFormat(_)));
     assert!(error.to_string().contains("google_ai_mode"));
     assert!(error.to_string().contains("no_transcript_in_captured_dom"));
+}
+
+#[test]
+fn web_capture_diagnostics_are_seeded_for_every_supported_language() {
+    // Pin the English, Russian, Hindi, and Chinese diagnostic records together.
+    for (language, expected_text) in [
+        ("en", "provider"),
+        ("ru", "Провайдер"),
+        ("hi", "प्रदाता"),
+        ("zh", "提供程序"),
+    ] {
+        let response = response_for("shared_dialog_capture_unsupported", language)
+            .expect("capture diagnostic should be seeded");
+        assert!(
+            response.contains(expected_text),
+            "missing {expected_text:?} in {language}: {response}"
+        );
+    }
 }
 
 fn read_fixture(relative_path: &str) -> String {
