@@ -94,7 +94,7 @@ fn agentic_cli_page_covers_every_registry_entry_and_mode() {
             "model",
             "OpenCode Desktop",
             "opencode-desktop",
-            "not yet",
+            "FORMAL_AI_OPENCODE_DESKTOP_BIN",
             "verify",
         ],
     );
