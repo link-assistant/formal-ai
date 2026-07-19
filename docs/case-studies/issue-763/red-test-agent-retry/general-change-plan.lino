@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_5644b1da6bb04beb"
+  goal "Create a minimal Unix Rust integration regression test in tests/issue_763.rs for issue 763. The test must create a fake code executable that captures every argument, FORMAL_AI_API_KEY, and the contents of the file named by OPENCODE_CONFIG; run the built formal-ai binary with: with --no-start-server --base-url http://127.0.0.1:18080 opencode-vscode; and assert success, that VS Code receives --new-window and --wait, and that the isolated OpenCode JSON config contains provider formalai, model formalai/formal-ai, dummy API key through FORMAL_AI_API_KEY, and baseURL http://127.0.0.1:18080/api/openai/v1. It must also run the alias opencode-code and prove it invokes the same target. Run cargo test --test issue_763 and stop after confirming the expected baseline failure. Do not edit production files, docs, workflows, or GitHub."
+  target "tests/issue_763.rs"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_888f7d6a3f019c93"
+  step 2
+    capability "Write"
+    action "write the requested content to tests/issue_763.rs"
+    expected_evidence "workspace file tests/issue_763.rs"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "of the file named by OPENCODE_CONFIG; run the built formal-ai binary with: with --no-start-server --base-url http://127.0.0.1:18080 opencode-vscode; and assert success, that VS Code receives --new-window and --wait, and that the isolated OpenCode JSON config contains provider formalai, model formalai/formal-ai, dummy API key through FORMAL_AI_API_KEY, and baseURL http://127.0.0.1:18080/api/openai/v1. It must also run the alias opencode-code and prove it invokes the same target. Run cargo test --test issue_763 and stop after confirming the expected baseline failure. Do not edit production files, docs, workflows, or GitHub."
+    command "cat tests/issue_763.rs"
+  verification_command "cat tests/issue_763.rs"
