@@ -1,0 +1,32 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784406101753)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.08s
+     Running tests/integration/mod.rs (target/debug/deps/integration-af9fb3831f49414c)
+
+running 3 tests
+
+thread 'issue_754_cursor::mcp_endpoint_supports_initialize_list_and_formal_ai_chat' (21695) panicked at tests/integration/issue_754_cursor.rs:60:5:
+assertion `left == right` failed
+  left: 404
+ right: 200
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_754_cursor::mcp_endpoint_supports_initialize_list_and_formal_ai_chat ... FAILED
+
+thread 'issue_754_cursor::cursor_is_seeded_as_cursor_agent_with_mcp_configuration' (21693) panicked at tests/integration/issue_754_cursor.rs:41:10:
+cursor integration
+test issue_754_cursor::cursor_is_seeded_as_cursor_agent_with_mcp_configuration ... FAILED
+
+thread 'issue_754_cursor::formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config' (21694) panicked at tests/integration/issue_754_cursor.rs:110:5:
+Error: "unsupported tool `cursor`; supported tools: codex, opencode, agent, gemini, claude, qwen, grok, aider"
+
+test issue_754_cursor::formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config ... FAILED
+
+failures:
+
+failures:
+    issue_754_cursor::cursor_is_seeded_as_cursor_agent_with_mcp_configuration
+    issue_754_cursor::formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config
+    issue_754_cursor::mcp_endpoint_supports_initialize_list_and_formal_ai_chat
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 136 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `--test integration`
