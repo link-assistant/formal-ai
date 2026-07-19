@@ -6152,7 +6152,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
-  const [workerState, setWorkerState] = useState("wasm worker");
+  const [workerState, setWorkerState] = useState("loading worker");
+  const [workerReady, setWorkerReady] = useState(false);
   const [memoryStatus, setMemoryStatus] = useState("");
   const [composerMenuOpen, setComposerMenuOpen] = useState(false);
   const [attachments, setAttachments] = useState([]);
@@ -6829,7 +6830,7 @@ function App() {
   }, [userContext]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.FormalAiSeed) return;
+    if (!workerReady || typeof window === "undefined" || !window.FormalAiSeed) return;
     let cancelled = false;
     window.FormalAiSeed.loadAll().then((loaded) => {
       if (cancelled) return;
@@ -6838,7 +6839,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [workerReady]);
 
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a
@@ -7376,6 +7377,7 @@ function App() {
     worker.onmessage = (event) => {
       if (event.data.kind === "ready") {
         setWorkerState(event.data.mode);
+        setWorkerReady(true);
         return;
       }
 
@@ -8912,7 +8914,7 @@ function App() {
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
           display: "none"
-        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode} data-testid="chat-composer-input" /><button className="send-button" type="submit" disabled={pending || demoMode || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><button type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</button><textarea ref={composerInputRef} value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode || !workerReady} data-testid="chat-composer-input" /><button className="send-button" type="submit" disabled={pending || demoMode || !workerReady || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit">{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></button></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
 }
 
 function wait(milliseconds) {

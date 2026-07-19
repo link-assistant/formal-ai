@@ -51,4 +51,37 @@ test.describe('Issue #776 source-first translation', () => {
       await expect(await sendPrompt(page, prompt)).toContainText(expected);
     }
   });
+
+  test('composer waits for the browser worker before accepting a prompt', async ({ page }) => {
+    let agentInfoRequests = 0;
+    page.on('request', (request) => {
+      if (/\/seed\/agent-info\.lino(?:\?|$)/.test(request.url())) {
+        agentInfoRequests += 1;
+      }
+    });
+    let releaseWasm;
+    let markWasmBlocked;
+    const wasmRelease = new Promise((resolve) => {
+      releaseWasm = resolve;
+    });
+    const wasmBlocked = new Promise((resolve) => {
+      markWasmBlocked = resolve;
+    });
+    await page.route('**/formal_ai_worker.wasm*', async (route) => {
+      markWasmBlocked();
+      await wasmRelease;
+      await route.continue();
+    });
+
+    await page.reload();
+    await wasmBlocked;
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    try {
+      await expect(input).toBeDisabled();
+      expect(agentInfoRequests).toBe(1);
+    } finally {
+      releaseWasm();
+    }
+    await expect(input).toBeEnabled({ timeout: 15_000 });
+  });
 });
