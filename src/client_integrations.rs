@@ -306,7 +306,8 @@ fn run_ephemeral(
     let mut context = context.clone();
     let mut temp_dirs = Vec::new();
     let mut session_home = None;
-    let mut command = Command::new(&integration.command);
+    let resolved_command = resolve_integration_command(integration);
+    let mut command = Command::new(&resolved_command);
     for env in &invocation.env {
         command.env(
             render_template(&env.key, &context),
@@ -407,12 +408,58 @@ fn run_ephemeral(
     }
     Err(format!(
         "{} exited with status {}",
-        integration.command,
+        resolved_command.display(),
         status
             .code()
             .map_or_else(|| String::from("signal"), |code| code.to_string())
     )
     .into())
+}
+
+fn resolve_integration_command(integration: &ClientIntegration) -> PathBuf {
+    if !integration.command_env.is_empty() {
+        if let Some(command) =
+            std::env::var_os(&integration.command_env).filter(|value| !value.is_empty())
+        {
+            return PathBuf::from(command);
+        }
+    }
+
+    let primary = PathBuf::from(&integration.command);
+    if command_available(&primary) {
+        return primary;
+    }
+
+    integration
+        .platform_commands
+        .iter()
+        .filter(|candidate| candidate.key == std::env::consts::OS)
+        .map(|candidate| PathBuf::from(expand_command_path(&candidate.value)))
+        .find(|candidate| command_available(candidate))
+        .unwrap_or(primary)
+}
+
+fn expand_command_path(value: &str) -> String {
+    let home = user_home_dir().map_or_else(|_| String::new(), |path| path.display().to_string());
+    let local_app_data = std::env::var_os("LOCALAPPDATA")
+        .map(PathBuf::from)
+        .or_else(|| (!home.is_empty()).then(|| PathBuf::from(&home).join("AppData/Local")))
+        .map_or_else(String::new, |path| path.display().to_string());
+    value
+        .replace("{home}", &home)
+        .replace("{local_app_data}", &local_app_data)
+}
+
+fn command_available(command: &Path) -> bool {
+    if command.is_absolute() || command.components().count() > 1 {
+        return command.is_file();
+    }
+    std::env::var_os("PATH").is_some_and(|path| {
+        std::env::split_paths(&path).any(|directory| {
+            let candidate = directory.join(command);
+            candidate.is_file() || (cfg!(windows) && candidate.with_extension("exe").is_file())
+        })
+    })
 }
 
 fn temp_scoped_path(root: &Path, relative: &str) -> Result<PathBuf, Box<dyn Error>> {
