@@ -1,0 +1,6 @@
+425:Package VS Code extension (.vsix)	UNKNOWN STEP	2026-07-19T14:44:12.5214072Z ##[warning]This extension consists of 9015 files, out of which 4608 are JavaScript files. For performance reasons, you should bundle your extension: https://aka.ms/vscode-bundle-extension. You should also exclude unnecessary files by adding them to your .vscodeignore: https://aka.ms/vscode-vscodeignore.
+5738:Build windows-arm64	Build formal-ai binary (release)	2026-07-19T14:45:35.1631597Z ^[[1m^[[93mwarning^[[0m^[[1m^[[97m: unused variable: `existed`^[[0m
+5746:Build windows-arm64	Build formal-ai binary (release)	2026-07-19T14:47:00.3812062Z ^[[1m^[[93mwarning^[[0m: `formal-ai` (lib) generated 1 warning (run `cargo fix --lib -p formal-ai` to apply 1 suggestion)
+13696:Build windows-x64	Build formal-ai binary (release)	2026-07-19T14:44:59.7911430Z ^[[1m^[[93mwarning^[[0m^[[1m^[[97m: unused variable: `existed`^[[0m
+13704:Build windows-x64	Build formal-ai binary (release)	2026-07-19T14:46:39.1609470Z ^[[1m^[[93mwarning^[[0m: `formal-ai` (lib) generated 1 warning (run `cargo fix --lib -p formal-ai` to apply 1 suggestion)
+14328:Publish SHA256SUMS.txt + provenance	Download checksum fragments	2026-07-19T15:04:30.6686251Z   NODE_OPTIONS: --disable-warning=DEP0005
