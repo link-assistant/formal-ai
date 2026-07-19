@@ -90,6 +90,7 @@ mod issue_750;
 mod issue_758;
 mod issue_771;
 mod issue_781;
+mod issue_781_option_evidence;
 mod issue_781_option_network;
 mod local_surface;
 mod memory_learning;
