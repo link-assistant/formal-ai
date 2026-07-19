@@ -1042,6 +1042,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+          # Avoid racing lint/agent E2E for setup-bun's shared executable key.
+          no-cache: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -1138,6 +1140,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+          # Avoid racing lint/local E2E for setup-bun's shared executable key.
+          no-cache: true
 
       - name: Install @link-assistant/agent CLI
         # The E2E script talks to formal-ai through the same CLI users install

@@ -77,6 +77,17 @@ fn pull_request_ci_rejects_an_unsynchronized_cargo_lock() {
 }
 
 #[test]
+fn parallel_e2e_jobs_do_not_race_to_save_the_bun_cache() {
+    let workflow = read(".github/workflows/release.yml");
+
+    assert_eq!(
+        workflow.matches("no-cache: true").count(),
+        2,
+        "both parallel E2E jobs must leave the shared setup-bun cache write to lint"
+    );
+}
+
+#[test]
 fn both_release_paths_smoke_test_the_registry_artifact() {
     let workflow = read(".github/workflows/release.yml");
     let invocation = "scripts/smoke-test-published-crate.sh";
