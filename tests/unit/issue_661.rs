@@ -76,7 +76,7 @@ fn weighted_formalization_stays_out_of_reply_when_diagnostics_default_off() {
 }
 
 #[test]
-fn requirement_contradiction_warns_with_both_statements_and_a_resolution() {
+fn english_requirement_contradiction_warns_with_both_statements_and_a_resolution() {
     let solver = UniversalSolver::default();
 
     let first_prompt = "always answer in Russian";
