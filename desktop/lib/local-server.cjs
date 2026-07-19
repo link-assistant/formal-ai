@@ -60,6 +60,9 @@ function apiCandidates(port, options = {}) {
   const env = options.env || process.env;
   const existsSync = options.existsSync || fs.existsSync;
   const args = ["serve", "--host", "127.0.0.1", "--port", String(port)];
+  if (options.agentMode === true) {
+    args.push("--agent-mode");
+  }
   const candidates = [];
   if (env.FORMAL_AI_DESKTOP_BINARY) {
     candidates.push({

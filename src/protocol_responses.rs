@@ -57,7 +57,10 @@ pub fn response_arguments_for_tool(
                     .then(|| schema_default(property_schema, name, user_prompt))
             });
         if let Some(value) = value {
-            projected.insert(name.clone(), constrain_to_schema(value, property_schema));
+            projected.insert(
+                name.clone(),
+                constrain_to_schema(value, property_schema, name, user_prompt),
+            );
         }
     }
     let projected = Value::Object(projected).to_string();
@@ -93,6 +96,7 @@ fn semantic_alias(name: &str, source: &Map<String, Value>, user_prompt: &str) ->
         }
         "command" | "cmd" => &["command", "cmd"],
         "query" | "pattern" => &["query", "pattern"],
+        "paths" | "file_paths" | "files" => &["paths", "file_paths", "files"],
         "old" | "oldString" | "old_string" | "old_str" => {
             &["old", "oldString", "old_string", "old_str"]
         }
@@ -146,13 +150,73 @@ fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
     }
 }
 
-fn constrain_to_schema(value: Value, schema: &Value) -> Value {
-    let Some(allowed) = schema.get("enum").and_then(Value::as_array) else {
-        return value;
-    };
-    if allowed.contains(&value) {
-        value
-    } else {
-        allowed.first().cloned().unwrap_or(value)
+fn constrain_to_schema(value: Value, schema: &Value, name: &str, user_prompt: &str) -> Value {
+    if let Some(allowed) = schema.get("enum").and_then(Value::as_array) {
+        if !allowed.contains(&value) {
+            return allowed.first().cloned().unwrap_or(value);
+        }
+    }
+    match schema.get("type").and_then(Value::as_str) {
+        Some("object") => {
+            let Some(source) = value.as_object() else {
+                return schema_default(schema, name, user_prompt);
+            };
+            let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+                return value;
+            };
+            let required = schema
+                .get("required")
+                .and_then(Value::as_array)
+                .map(Vec::as_slice)
+                .unwrap_or_default();
+            let mut projected = Map::new();
+            for (child_name, child_schema) in properties {
+                let child = source.get(child_name).cloned().or_else(|| {
+                    required
+                        .iter()
+                        .any(|entry| entry.as_str() == Some(child_name))
+                        .then(|| schema_default(child_schema, child_name, user_prompt))
+                });
+                if let Some(child) = child {
+                    projected.insert(
+                        child_name.clone(),
+                        constrain_to_schema(child, child_schema, child_name, user_prompt),
+                    );
+                }
+            }
+            Value::Object(projected)
+        }
+        Some("array") => {
+            let Some(values) = value.as_array() else {
+                return schema_default(schema, name, user_prompt);
+            };
+            let mut values = values.clone();
+            if let Some(item_schema) = schema.get("items") {
+                values = values
+                    .into_iter()
+                    .map(|item| constrain_to_schema(item, item_schema, name, user_prompt))
+                    .collect();
+                let minimum = schema
+                    .get("minItems")
+                    .and_then(Value::as_u64)
+                    .and_then(|minimum| usize::try_from(minimum).ok())
+                    // Client-provided schemas must not be able to force an
+                    // unbounded allocation while defaults are projected.
+                    .unwrap_or(0)
+                    .min(64);
+                while values.len() < minimum {
+                    values.push(schema_default(item_schema, name, user_prompt));
+                }
+            }
+            Value::Array(values)
+        }
+        Some("string") if !value.is_string() => schema_default(schema, name, user_prompt),
+        Some("boolean") if !value.is_boolean() => schema_default(schema, name, user_prompt),
+        Some("integer") if !value.is_i64() && !value.is_u64() => {
+            schema_default(schema, name, user_prompt)
+        }
+        Some("number") if !value.is_number() => schema_default(schema, name, user_prompt),
+        Some("null") if !value.is_null() => Value::Null,
+        _ => value,
     }
 }

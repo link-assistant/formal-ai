@@ -1,0 +1,68 @@
+agentic_tool_capabilities
+  capability "web_search"
+    aliases ("web_search" "websearch" "google_web_search" "search_web" "WebSearch")
+  capability "web_fetch"
+    aliases ("web_fetch" "webfetch" "fetch" "WebFetch" "open_url" "read_url")
+  capability "read_file"
+    aliases ("read" "read_file" "view_file" "Read" "openFile" "open_file" "read_local_file" "file_read")
+  capability "write_file"
+    aliases ("write" "write_file" "create_file" "Write")
+  capability "edit_file"
+    aliases ("edit" "str_replace_editor" "str_replace" "apply_patch" "Edit" "patch" "replace")
+  capability "multi_edit"
+    aliases ("multi_edit" "MultiEdit")
+    cues
+      en ("edit multiple files" "edit all files" "replace in multiple files" "replace across files" "change several files" "update multiple files" "modify all files" "apply edits to files" "bulk edit files" "make the same edit")
+      ru ("измени несколько файлов" "измени все файлы" "замени в нескольких файлах" "замени во всех файлах" "обнови несколько файлов" "отредактируй файлы" "массово измени файлы" "примени правки к файлам" "одинаковая правка" "замени в файлах")
+      hi ("कई फ़ाइलें संपादित करें" "सभी फ़ाइलें संपादित करें" "कई फ़ाइलों में बदलें" "फ़ाइलों में प्रतिस्थापित करें" "अनेक फ़ाइलें अपडेट करें" "सभी फ़ाइलें बदलें" "फ़ाइलों पर संपादन लागू करें" "थोक फ़ाइल संपादन" "एक ही संपादन करें" "फ़ाइलों को संशोधित करें")
+      zh ("编辑多个文件" "编辑所有文件" "在多个文件中替换" "跨文件替换" "更新多个文件" "修改所有文件" "批量编辑文件" "对文件应用编辑" "做相同的编辑" "替换文件中的内容")
+  capability "read_many"
+    aliases "read_many_files"
+    cues
+      en ("read all" "read multiple files" "read these files" "open all files" "show several files" "load multiple files" "inspect these files" "read every file" "display all files" "read files together")
+      ru ("прочитай все файлы" "прочитай несколько файлов" "прочитай эти файлы" "открой все файлы" "покажи несколько файлов" "загрузи несколько файлов" "проверь эти файлы" "прочитай каждый файл" "покажи все файлы" "прочитай файлы вместе")
+      hi ("सभी फ़ाइलें पढ़ें" "कई फ़ाइलें पढ़ें" "इन फ़ाइलों को पढ़ें" "सभी फ़ाइलें खोलें" "कई फ़ाइलें दिखाएँ" "अनेक फ़ाइलें लोड करें" "इन फ़ाइलों की जाँच करें" "हर फ़ाइल पढ़ें" "सभी फ़ाइलें दिखाएँ" "फ़ाइलें एक साथ पढ़ें")
+      zh ("读取所有文件" "读取多个文件" "读取这些文件" "打开所有文件" "显示多个文件" "加载多个文件" "检查这些文件" "读取每个文件" "显示所有文件" "一起读取文件")
+  capability "shell"
+    aliases ("bash" "exec_command" "shell" "run_command" "run_shell_command" "Bash" "computer_use" "code_interpreter")
+  capability "grep"
+    aliases ("grep" "grep_search" "search" "codesearch" "Grep" "file_search")
+    cues
+      en ("search the code" "search code" "search the repository" "search the local" "find in the code" "find in the repository" "grep for" "look through source" "locate in source" "scan the code")
+      ru ("найди в коде" "поиск в коде" "найди в репозитории" "поищи в файлах" "найди в исходниках" "выполни grep" "просмотри код" "отыщи в коде" "сканируй код" "поиск по репозиторию")
+      hi ("कोड में खोजें" "कोड खोजें" "रिपॉजिटरी में खोजें" "स्थानीय फ़ाइलों में खोजें" "कोड में ढूँढें" "स्रोत में खोजें" "grep करें" "कोड देखें" "स्रोत में पता लगाएँ" "कोड स्कैन करें")
+      zh ("在代码中搜索" "搜索代码" "在仓库中搜索" "搜索本地文件" "在代码中查找" "在源代码中查找" "执行 grep" "查看代码" "定位源代码" "扫描代码")
+  capability "glob"
+    aliases ("glob" "Glob" "find_files")
+    cues
+      en ("files matching" "find all files" "match file paths" "glob for files" "search by filename pattern" "locate files named" "list matching files" "discover files matching" "find paths matching" "scan for files")
+      ru ("найди файлы по шаблону" "найди все файлы" "сопоставь пути файлов" "выполни glob" "поиск по шаблону имени" "найди файлы с именем" "покажи подходящие файлы" "отыщи файлы по шаблону" "найди пути по шаблону" "сканируй файлы")
+      hi ("पैटर्न से फ़ाइलें खोजें" "सभी फ़ाइलें खोजें" "फ़ाइल पथ मिलाएँ" "फ़ाइलों के लिए glob करें" "नाम पैटर्न से खोजें" "नाम वाली फ़ाइलें ढूँढें" "मेल खाती फ़ाइलें दिखाएँ" "पैटर्न वाली फ़ाइलें खोजें" "पथ पैटर्न खोजें" "फ़ाइलें स्कैन करें")
+      zh ("按模式查找文件" "查找所有文件" "匹配文件路径" "对文件执行 glob" "按文件名模式搜索" "查找指定名称的文件" "列出匹配文件" "发现匹配文件" "查找匹配路径" "扫描文件")
+  capability "list_dir"
+    aliases ("list_directory" "list" "ls" "LS")
+    cues
+      en ("list files in" "show files in" "directory listing" "list this directory" "directory contents" "contents of" "what files are here" "display folder contents" "enumerate this folder" "inspect this directory")
+      ru ("покажи файлы в" "список файлов" "список каталога" "перечисли каталог" "покажи содержимое каталога" "содержимое папки" "какие файлы здесь" "отобрази содержимое папки" "перечисли эту папку" "проверь этот каталог")
+      hi ("फ़ाइलें सूचीबद्ध करें" "फ़ाइलों की सूची" "निर्देशिका सूची" "यह निर्देशिका दिखाएँ" "निर्देशिका की सामग्री दिखाएँ" "फ़ोल्डर की सामग्री" "यहाँ कौन सी फ़ाइलें हैं" "फ़ोल्डर सामग्री प्रदर्शित करें" "इस फ़ोल्डर को सूचीबद्ध करें" "इस निर्देशिका की जाँच करें")
+      zh ("列出文件" "文件列表" "目录列表" "列出此目录" "显示目录内容" "文件夹内容" "这里有哪些文件" "展示文件夹内容" "枚举此文件夹" "检查此目录")
+  capability "todo"
+    aliases ("todo_write" "todowrite" "update_plan" "create_todo_list" "update_todo_list" "TodoWrite")
+    cues
+      en ("create a todo list" "make a todo list" "write the todos" "update the todo list" "add a todo" "plan the work" "create a plan" "update the plan" "track these tasks" "record the tasks")
+      ru ("создай список задач" "сделай список задач" "запиши задачи" "обнови список задач" "добавь задачу" "составь план работы" "создай план" "обнови план" "отслеживай задачи" "запиши план")
+      hi ("कार्य सूची बनाएँ" "टूडू सूची बनाएँ" "कार्य लिखें" "कार्य सूची अपडेट करें" "कार्य जोड़ें" "काम की योजना बनाएँ" "योजना बनाएँ" "योजना अपडेट करें" "इन कार्यों को ट्रैक करें" "कार्य दर्ज करें")
+      zh ("待办列表" "制作待办列表" "写下待办事项" "更新待办列表" "添加待办事项" "规划工作" "创建计划" "更新计划" "跟踪这些任务" "记录任务")
+  capability "subagent"
+    aliases ("task" "multi_agent_v1" "invoke_agent" "Task" "Agent")
+    cues
+      en ("subagent" "ask a subagent" "spawn an agent" "invoke an agent" "hand this to an agent" "delegate this task" "run a subagent" "assign to an agent" "have an agent investigate" "send this task to an agent")
+      ru ("подагенту" "спроси подагента" "запусти агента" "вызови агента" "передай это агенту" "делегируй задачу" "запусти подагента" "назначь агенту" "пусть агент исследует" "отправь задачу агенту")
+      hi ("उपएजेंट को सौंपें" "उपएजेंट से पूछें" "एजेंट शुरू करें" "एजेंट को बुलाएँ" "इसे एजेंट को दें" "कार्य सौंपें" "उपएजेंट चलाएँ" "एजेंट को असाइन करें" "एजेंट से जाँच कराएँ" "कार्य एजेंट को भेजें")
+      zh ("委托给子代理" "询问子代理" "启动代理" "调用代理" "交给代理" "委派此任务" "运行子代理" "分配给代理" "让代理调查" "将任务发送给代理")
+  capability "save_memory"
+    aliases "save_memory"
+  capability "view_image"
+    aliases "view_image"
+  capability "ask_user"
+    aliases "request_user_input"
