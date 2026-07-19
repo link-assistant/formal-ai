@@ -1,0 +1,5 @@
+
+> formal-ai-e2e@1.0.0 check:web-hardcoded-ui
+> node scripts/check-web-hardcoded-ui-strings.mjs
+
+check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (src/web/app/main.jsx, allowlist: 1 legacy labels).

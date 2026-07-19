@@ -1,0 +1,58 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784437815860)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.09s
+     Running tests/integration/mod.rs (target/debug/deps/integration-af9fb3831f49414c)
+
+running 1 test
+
+thread 'issue_776_translation::proposition_survives_every_supported_language_round_trip' (16137) panicked at src/translation/cache.rs:264:13:
+assertion failed: self.is_char_boundary(new_len)
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/std/src/panicking.rs:689:5
+   1: core::panicking::panic_fmt
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/panicking.rs:80:14
+   2: core::panicking::panic
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/panicking.rs:150:5
+   3: alloc::string::String::truncate
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/alloc/src/string.rs:1475:13
+   4: formal_ai::translation::cache::sanitize_segment
+             at ./src/translation/cache.rs:264:13
+   5: core::ops::function::FnOnce::call_once
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/ops/function.rs:250:5
+   6: core::option::Option<T>::map_or_else
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/option.rs:1277:24
+   7: formal_ai::translation::cache::classify_wikidata
+             at ./src/translation/cache.rs:231:14
+   8: formal_ai::translation::cache::cache_location
+             at ./src/translation/cache.rs:152:29
+   9: formal_ai::translation::cache::CachedHttpClient<T>::cache_paths
+             at ./src/translation/cache.rs:120:24
+  10: <formal_ai::translation::cache::CachedHttpClient<T> as formal_ai::translation::http::HttpClient>::get
+             at ./src/translation/cache.rs:344:43
+  11: formal_ai::translation::wikidata::Wikidata<T>::search_lexeme
+             at ./src/translation/wikidata.rs:93:30
+  12: formal_ai::translation::pipeline::upgrade_meaning_via_wikidata
+             at ./src/translation/pipeline.rs:482:31
+  13: formal_ai::translation::pipeline::TranslationPipeline<T>::translate
+             at ./src/translation/pipeline.rs:118:27
+  14: formal_ai::translation::translate_via_default_pipeline
+             at ./src/translation/mod.rs:112:14
+  15: integration::issue_776_translation::proposition_survives_every_supported_language_round_trip
+             at ./tests/integration/issue_776_translation.rs:41:27
+  16: integration::issue_776_translation::proposition_survives_every_supported_language_round_trip::{{closure}}
+             at ./tests/integration/issue_776_translation.rs:31:62
+  17: core::ops::function::FnOnce::call_once
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/ops/function.rs:250:5
+  18: <fn() -> core::result::Result<(), alloc::string::String> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+test issue_776_translation::proposition_survives_every_supported_language_round_trip ... FAILED
+
+failures:
+
+failures:
+    issue_776_translation::proposition_survives_every_supported_language_round_trip
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 151 filtered out; finished in 0.38s
+
+error: test failed, to rerun pass `--test integration`
