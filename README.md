@@ -238,6 +238,7 @@ config, and then runs the external CLI with the remaining arguments unchanged:
 formal-ai with codex "hi"
 formal-ai with t3code
 formal-ai with opencode run "hi"
+formal-ai with opencode-vscode
 formal-ai with opencode-desktop
 formal-ai with agent -p "hi"
 formal-ai with cursor -p "hi"
@@ -310,6 +311,25 @@ API key such as `formal-ai`. For a Claude-backed session, run with
 `formal-ai with --global --protocol openai t3code` (or `anthropic`) to persist
 the corresponding provider configuration, and `--undo` to restore its backup.
 
+The official OpenCode VS Code extension (`sst-dev.opencode`) launches the
+installed OpenCode CLI in a VS Code terminal and reads the same OpenCode
+configuration. Install both prerequisites, then launch a fresh VS Code window
+with an isolated Formal AI provider and temporary local server:
+
+```bash
+code --install-extension sst-dev.opencode
+formal-ai with opencode-vscode
+```
+
+`opencode-code` is an equivalent alias. The wrapper keeps the temporary server
+alive with VS Code's `--wait` option; close the launched window to stop it. In
+that window, run **Open opencode** from the Command Palette (or press
+Ctrl+Escape / Cmd+Escape) and select `formalai/formal-ai`. Existing OpenCode
+and VS Code settings remain unchanged because the wrapper supplies an isolated
+`OPENCODE_CONFIG`. Since VS Code may reuse an already-running extension host,
+the wrapper deliberately uses `--new-window`; launch it from a shell rather
+than attaching it to an existing window.
+
 OpenCode Desktop is a separate integration from the `opencode` terminal client:
 
 ```bash
@@ -355,6 +375,7 @@ provider without removing unrelated settings, and can restore the backup:
 with-formal-ai -g codex
 with-formal-ai -g t3code
 with-formal-ai -g opencode
+with-formal-ai -g opencode-vscode
 with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
 with-formal-ai -g cursor
