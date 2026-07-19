@@ -234,6 +234,7 @@ config, and then runs the external CLI with the remaining arguments unchanged:
 formal-ai with codex "hi"
 formal-ai with opencode run "hi"
 formal-ai with agent -p "hi"
+formal-ai with cursor -p "hi"
 formal-ai with gemini -p "hi"
 formal-ai with claude -p "hi"
 formal-ai with qwen -p "hi"
@@ -250,6 +251,12 @@ an already-running server. Use `--base-url` when the server is not on
 adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+Cursor CLI uses the MCP path instead of a custom model base URL. For a one-shot
+run, the wrapper launches the `cursor-agent` binary with a temporary
+`~/.cursor/mcp.json` that registers the local `/mcp` endpoint; the server
+exposes `formal_ai_chat` and instructs Cursor to use it for each request. Both
+interactive mode and headless `-p` mode are supported.
 
 The existing explicit form remains supported:
 
@@ -278,6 +285,21 @@ also generates a model catalog inside the temporary Codex home and passes it as
 `model_catalog_json`, so Codex recognizes the Formal AI model's context window
 and capabilities without a missing-metadata warning.
 
+After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
+session artifact created by that invocation and a copy-pasteable resume command
+when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
+OpenCode, Agent CLI, Claude, and Grok. Only a new or changed artifact is printed;
+the wrapper does not guess a path when the client did not create one. Session
+artifacts written inside an isolated temporary client home are preserved so the
+reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
+existing proxy log, that path is included in the same final block.
+
+```text
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
+  server log: /work/proxy.jsonl
+```
+
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
@@ -286,6 +308,7 @@ provider without removing unrelated settings, and can restore the backup:
 with-formal-ai -g codex
 with-formal-ai -g opencode
 with-formal-ai -g agent
+with-formal-ai -g cursor
 with-formal-ai -g gemini
 with-formal-ai -g claude
 with-formal-ai -g qwen
@@ -299,7 +322,8 @@ Persistent targets are `~/.codex/config.toml`,
 `~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
-`~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.
+`~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
+Cursor. Re-running `-g` is idempotent.
 
 ### Codex CLI
 

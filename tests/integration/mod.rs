@@ -27,6 +27,7 @@ mod issue_744_qwen_tool_schema;
 mod issue_746_hosted_tools;
 mod issue_749_shell_routing;
 mod issue_751_token_usage;
+mod issue_754_cursor;
 mod issue_758_capability_routing;
 mod logging_proxy;
 mod memory_query;

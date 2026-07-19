@@ -4,7 +4,7 @@ use std::fs;
 use std::net::TcpStream;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command};
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant};
 
 use clap::{Args as ClapArgs, ValueEnum};
 use serde_json::Value;
@@ -16,6 +16,12 @@ use crate::seed::{
     ModeArgPosition, ModelArgPosition,
 };
 use crate::DEFAULT_MODEL;
+
+mod session_files;
+use session_files::{
+    newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
+    TempConfigDir,
+};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
@@ -96,7 +102,7 @@ pub struct WithFormalAiArgs {
     #[arg(long, default_value = DEFAULT_MODEL)]
     pub model: String,
 
-    /// External CLI: codex, opencode, agent, gemini, claude, qwen, grok, or aider.
+    /// External CLI: codex, opencode, agent, cursor, gemini, claude, qwen, grok, or aider.
     #[arg(value_name = "TOOL")]
     pub tool: Option<String>,
 
@@ -121,28 +127,6 @@ struct RenderContext {
     protocol_base_env: String,
     google_auth_type: String,
     model_catalog_path: String,
-}
-
-struct TempConfigDir {
-    path: PathBuf,
-}
-
-impl TempConfigDir {
-    fn new(tool: &str) -> Result<Self, Box<dyn Error>> {
-        let nanos = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
-        let path = std::env::temp_dir().join(format!(
-            "formal-ai-{tool}-config-{}-{nanos}",
-            std::process::id()
-        ));
-        fs::create_dir_all(&path)?;
-        Ok(Self { path })
-    }
-}
-
-impl Drop for TempConfigDir {
-    fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.path);
-    }
 }
 
 struct ServerGuard {
@@ -302,6 +286,7 @@ fn run_ephemeral(
     let invocation = &integration.invocation;
     let mut context = context.clone();
     let mut temp_dirs = Vec::new();
+    let mut session_home = None;
     let mut command = Command::new(&integration.command);
     for env in &invocation.env {
         command.env(
@@ -332,6 +317,7 @@ fn run_ephemeral(
     }
     if !invocation.temp_home_env.is_empty() {
         let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
+        session_home = Some(temp.path.clone());
         if !invocation.temp_home_config_path.is_empty() {
             let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
             let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
@@ -356,6 +342,17 @@ fn run_ephemeral(
         temp_dirs.push(temp);
     }
 
+    let session_root = if invocation.session_root.is_empty() {
+        None
+    } else {
+        let base = session_home.map_or_else(user_home_dir, Ok)?;
+        Some(base.join(&invocation.session_root))
+    };
+    let session_before = session_root
+        .as_deref()
+        .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
+        .unwrap_or_default();
+
     let final_args = build_invocation_args(
         integration,
         user_args,
@@ -366,7 +363,24 @@ fn run_ephemeral(
     );
     command.args(final_args);
     let status = command.status()?;
-    drop(temp_dirs);
+    let session_file = session_root.as_deref().and_then(|root| {
+        newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
+    });
+    let server_log = std::env::var_os("FORMAL_AI_PROXY_LOG")
+        .map(PathBuf::from)
+        .filter(|path| path.exists())
+        .map(|path| fs::canonicalize(&path).unwrap_or(path));
+    print_session_files(integration, session_file.as_deref(), server_log.as_deref());
+    let preserve_temp = session_file
+        .as_deref()
+        .is_some_and(|path| temp_dirs.iter().any(|temp| path.starts_with(&temp.path)));
+    if preserve_temp {
+        for temp in temp_dirs {
+            temp.preserve();
+        }
+    } else {
+        drop(temp_dirs);
+    }
     if status.success() {
         return Ok(());
     }
