@@ -239,6 +239,11 @@ meanings
     lexeme en
       surface
         text "repositories"
+  requirement_contradiction
+    defined-by intent
+    lexeme en
+      surface
+        text "requirement contradiction"
   reserved-role
     defined-by concept
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response mcp instructions en"
-  response_mcp_instructions_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions hi"

@@ -1268,7 +1268,7 @@ multilingual_responses
   response response_requirement_contradiction_en
     intent requirement_contradiction
     language en
-    text "Warning: two of your requirements contradict each other.\n- Statement 1 (weight {prior_weight}): \"{prior}\"\n- Statement 2 (weight {current_weight}): \"{current}\"\nThey make opposite demands on the same subject ({subject}), so both cannot hold at once.\nProposed resolution: keep one and retract the other by sending a superseding requirement. The requirement network is append-only, so retraction records a new event without erasing history. Alternatively, split the meanings or scope each requirement to a different context."
+    text "Warning: two of your requirements contradict each other.\n- Statement 1 (weight {prior_weight}): “{prior}”\n- Statement 2 (weight {current_weight}): “{current}”\nThey make opposite demands on the same subject ({subject}), so both cannot hold at once.\nProposed resolution: keep one and retract the other by sending a superseding requirement. The requirement network is append-only, so retraction records a new event without erasing history. Alternatively, split the meanings or scope each requirement to a different context."
   response response_requirement_contradiction_ru
     intent requirement_contradiction
     language ru
