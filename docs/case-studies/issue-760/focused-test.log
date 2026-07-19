@@ -9,4 +9,3 @@ test unix::launch_mode_controls_browser_opening ... ok
 test unix::global_and_all_setup_include_t3code_for_both_protocols ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
-

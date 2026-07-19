@@ -23,4 +23,3 @@ test with_formal_ai::with_formal_ai_selects_uniform_interactive_and_non_interact
 test with_formal_ai::with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty ... ok
 
 test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 120 filtered out; finished in 2.54s
-
