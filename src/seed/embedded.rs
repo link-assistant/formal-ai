@@ -10,6 +10,8 @@
 
 /// Raw embedded contents (used by `merged_bundle` and by tests).
 pub const AGENT_INFO_LINO: &str = include_str!("../../data/seed/agent-info.lino");
+pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
+    include_str!("../../data/seed/agentic-tool-capabilities.lino");
 pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
@@ -120,6 +122,10 @@ pub const PROJECTS_LINO: &str = include_str!("../../data/seed/projects.lino");
 pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     vec![
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
+        (
+            "data/seed/agentic-tool-capabilities.lino",
+            AGENTIC_TOOL_CAPABILITIES_LINO,
+        ),
         (
             "data/seed/interface-capabilities.lino",
             INTERFACE_CAPABILITIES_LINO,

@@ -133,25 +133,22 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let vocab = seed::shell_intent_vocabulary();
-    let (_, cue) = vocab
+    let intent_cues = vocab
         .intents
         .iter()
         .filter(|intent| intent.command == "rg")
-        .flat_map(|intent| intent.cues.iter())
+        .flat_map(|intent| intent.cues.iter());
+    let capability_registry = seed::agentic_tool_capabilities();
+    let capability_cues = capability_registry
+        .iter()
+        .filter(|capability| capability.id == "grep")
+        .flat_map(|capability| capability.cues.iter());
+    let (_, cue) = intent_cues
+        .chain(capability_cues)
         .filter(|cue| lower.contains(cue.as_str()))
         .map(|cue| (cue.chars().count(), cue))
         .max_by_key(|(length, _)| *length)?;
     local_search_query(prompt, cue, &vocab)
-}
-
-/// Prefer a client's dedicated source-search capability over shell lowering.
-pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
-    tool_names.iter().copied().find(|name| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("grep")
-            || lower == "file_search"
-            || (lower.contains("code") && lower.contains("search"))
-    })
 }
 
 /// Resolve a semantic *intent* to its concrete command, backed by the seed
