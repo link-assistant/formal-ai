@@ -6,6 +6,8 @@
 
 use serde_json::json;
 
+use super::capability_router;
+pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
 use super::conversation_recall;
@@ -79,6 +81,13 @@ pub enum Capability {
     Write,
     Edit,
     Run,
+    Grep,
+    Glob,
+    ListDir,
+    Todo,
+    Subagent,
+    ReadMany,
+    MultiEdit,
 }
 
 impl Capability {
@@ -95,6 +104,31 @@ impl Capability {
             Self::Write => "tool:capability:write",
             Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
+            Self::Grep => "tool:capability:grep",
+            Self::Glob => "tool:capability:glob",
+            Self::ListDir => "tool:capability:list_dir",
+            Self::Todo => "tool:capability:todo",
+            Self::Subagent => "tool:capability:subagent",
+            Self::ReadMany => "tool:capability:read_many",
+            Self::MultiEdit => "tool:capability:multi_edit",
+        }
+    }
+
+    pub(super) const fn registry_id(self) -> &'static str {
+        match self {
+            Self::Search => "web_search",
+            Self::Fetch => "web_fetch",
+            Self::Read => "read_file",
+            Self::Write => "write_file",
+            Self::Edit => "edit_file",
+            Self::Run => "shell",
+            Self::Grep => "grep",
+            Self::Glob => "glob",
+            Self::ListDir => "list_dir",
+            Self::Todo => "todo",
+            Self::Subagent => "subagent",
+            Self::ReadMany => "read_many",
+            Self::MultiEdit => "multi_edit",
         }
     }
 }
@@ -229,9 +263,21 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
+    // Preserve the established stateful list/read recipe whenever the client
+    // exposes its typed read capability. The shared read-many route remains
+    // available for CLIs that advertise only a batch reader.
+    if tool_for(tool_names, Capability::Read).is_some() {
+        if let Some(file_task) = file_read_task_for(&task) {
+            return Some(plan_file_read_step(&file_task, messages, tool_names));
+        }
+    }
+    if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
     if !tool_result::has_latest_turn_result(messages) {
         if let Some(query) = shell_command::code_search_query_for_task(&task) {
-            if let Some(tool) = shell_command::code_search_tool_for(tool_names) {
+            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
                 return Some(plan_one(
                     tool,
                     json!({ "query": query, "pattern": query }).to_string(),
@@ -858,73 +904,8 @@ pub(super) fn fetch_arguments(url: &str) -> String {
     .to_string()
 }
 
-/// The first advertised tool name that provides `capability`, if any.
-pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
-    tool_names
-        .iter()
-        .copied()
-        .find(|name| classify_tool(name) == Some(capability))
-}
-
-/// Classify a tool name into a [`Capability`] by substring, mirroring the naming
-/// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
-/// `run_command`, `bash`, `websearch`, `webfetch`, …).
-///
-/// The recipe wants six kinds of tool, and real CLIs expose *lookalikes* that
-/// must not be mistaken for them: a `todowrite` scratchpad is not a file writer,
-/// a `codesearch` is not a web search, and an `edit`/`patch`/`replace` tool
-/// mutates an existing file rather than creating one. Those are separated so
-/// that — even though [`requested_tool_names`](super::super::protocol) hands the
-/// planner an alphabetically sorted list — `todowrite` can never be picked ahead
-/// of `write`, `codesearch` ahead of `websearch`, nor an `edit` tool ahead of a
-/// create-file `write` for a write intent (they carry distinct arguments, so
-/// each is its own capability class).
 fn classify_tool(name: &str) -> Option<Capability> {
-    let lower = name.to_ascii_lowercase();
-    // Scratchpad / navigation tools that merely *look* like recipe tools.
-    if lower.contains("todo") {
-        return None;
-    }
-    if matches!(lower.as_str(), "computer_use" | "code_interpreter") {
-        Some(Capability::Run)
-    } else if lower.contains("search") {
-        // Repository/file search and deferred-tool discovery are not internet
-        // search. They have dedicated routes and must never receive a web query.
-        (lower.contains("web") && lower != "tool_search").then_some(Capability::Search)
-    } else if lower == "read"
-        || lower.contains("read_file")
-        || lower.contains("read_local_file")
-        || lower.contains("file_read")
-        || lower.contains("open_file")
-        || lower.contains("view_file")
-    {
-        Some(Capability::Read)
-    } else if lower.contains("fetch")
-        || lower.contains("open")
-        || lower.contains("browse")
-        || lower.contains("get_url")
-        || lower.contains("read_url")
-    {
-        Some(Capability::Fetch)
-    } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch.
-        Some(Capability::Write)
-    } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
-        // `edit` / `apply_patch` / `str_replace` mutate an *existing* file and
-        // take `(path, old, new)`-shaped arguments rather than `(path, content)`,
-        // so they are their own capability class — never interchangeable with the
-        // create-file write above (issue #680).
-        Some(Capability::Edit)
-    } else if lower.contains("run")
-        || lower.contains("bash")
-        || lower.contains("command")
-        || lower.contains("exec")
-        || lower.contains("shell")
-    {
-        Some(Capability::Run)
-    } else {
-        None
-    }
+    capability_router::classify_tool(name)
 }
 
 /// Resolve which capability the tool result at `index` answers. Prefer the
