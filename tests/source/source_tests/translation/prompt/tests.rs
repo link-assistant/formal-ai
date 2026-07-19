@@ -25,6 +25,16 @@ fn extracts_unquoted_russian_surface() {
 }
 
 #[test]
+fn extracts_surface_before_postpositive_translation_frame() {
+    assert_eq!(
+        extract_unquoted_translation_surface(
+            "любая формальная система либо неполна, либо противоречива - translate to english",
+        ),
+        Some("любая формальная система либо неполна, либо противоречива".to_owned()),
+    );
+}
+
+#[test]
 fn extracts_unquoted_hindi_surface() {
     assert_eq!(
         extract_unquoted_translation_surface("apple का हिंदी में अनुवाद करो"),

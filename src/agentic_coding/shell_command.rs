@@ -36,21 +36,32 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
     let listing = asks_for_directory_listing(prompt);
     let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
+    let semantic = listing.then(|| String::from("ls")).or(intent);
 
     if let Some(command) = prefixed_shell_command(prompt, &vocab) {
-        let names_known_command = command
+        let first = command
             .split_whitespace()
             .next()
-            .map(normalize_command_word)
-            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == &first));
-        if names_known_command || (intent.is_none() && !listing && !web_search) {
+            .map(normalize_command_word);
+        let names_known_command = first
+            .as_ref()
+            .is_some_and(|first| vocab.shell_tokens.iter().any(|token| token == first));
+        let names_semantic_command = semantic.as_ref().is_some_and(|semantic| {
+            semantic
+                .split_whitespace()
+                .next()
+                .map(normalize_command_word)
+                == first
+        });
+        if names_semantic_command {
+            return semantic;
+        }
+        if names_known_command || (semantic.is_none() && !web_search) {
             return Some(command);
         }
     }
 
-    listing
-        .then(|| String::from("ls"))
-        .or(intent)
+    semantic
         .or_else(|| named_shell_command(prompt, &vocab))
         .or_else(|| bare_shell_command(prompt, &vocab))
 }
@@ -122,25 +133,22 @@ fn prefix_boundary(prompt: &str, prefix: &str) -> bool {
 pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let vocab = seed::shell_intent_vocabulary();
-    let (_, cue) = vocab
+    let intent_cues = vocab
         .intents
         .iter()
         .filter(|intent| intent.command == "rg")
-        .flat_map(|intent| intent.cues.iter())
+        .flat_map(|intent| intent.cues.iter());
+    let capability_registry = seed::agentic_tool_capabilities();
+    let capability_cues = capability_registry
+        .iter()
+        .filter(|capability| capability.id == "grep")
+        .flat_map(|capability| capability.cues.iter());
+    let (_, cue) = intent_cues
+        .chain(capability_cues)
         .filter(|cue| lower.contains(cue.as_str()))
         .map(|cue| (cue.chars().count(), cue))
         .max_by_key(|(length, _)| *length)?;
     local_search_query(prompt, cue, &vocab)
-}
-
-/// Prefer a client's dedicated source-search capability over shell lowering.
-pub(super) fn code_search_tool_for<'a>(tool_names: &[&'a str]) -> Option<&'a str> {
-    tool_names.iter().copied().find(|name| {
-        let lower = name.to_ascii_lowercase();
-        lower.contains("grep")
-            || lower == "file_search"
-            || (lower.contains("code") && lower.contains("search"))
-    })
 }
 
 /// Resolve a semantic *intent* to its concrete command, backed by the seed

@@ -146,14 +146,28 @@ fn commit_has_formal_ai_evidence(repo: &Path, commit: &str) -> Result<bool, Stri
     Ok(true)
 }
 
+/// Collects `key: value` trailers from a commit message.
+///
+/// This deliberately scans the whole commit body instead of using git's
+/// `%(trailers:key=...)` placeholder. Git only recognises the *last* paragraph
+/// of a message as the trailer block, so a blank line between two trailers
+/// makes every trailer above it invisible. Release commit
+/// 59650f2b45ebebf29ed67d33c9a19c1e82e7c003 separated its `Formal-AI-Session`
+/// and `Formal-AI-Evidence` trailers with a blank line, git reported only the
+/// evidence trailer, and the resulting "must record both" error failed the
+/// whole Auto Release job (issue #796).
 fn trailer_values(repo: &Path, commit: &str, key: &str) -> Result<Vec<String>, String> {
-    let format = format!("%(trailers:key={key},valueonly,separator=%x1f)");
-    let format_arg = format!("--format={format}");
-    let output = git(repo, &["show", "-s", &format_arg, commit])?;
-    Ok(output
-        .trim()
-        .split('\x1f')
-        .map(str::trim)
+    let body = git(repo, &["show", "-s", "--format=%B", commit])?;
+    let prefix = format!("{key}:");
+    Ok(body
+        .lines()
+        .filter_map(|line| {
+            let line = line.trim();
+            // Trailer keys are case-insensitive per `git interpret-trailers`.
+            line.get(..prefix.len())
+                .filter(|candidate| candidate.eq_ignore_ascii_case(&prefix))
+                .map(|_| line[prefix.len()..].trim())
+        })
         .filter(|value| !value.is_empty())
         .map(str::to_owned)
         .collect())

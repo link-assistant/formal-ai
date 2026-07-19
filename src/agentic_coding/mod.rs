@@ -19,6 +19,7 @@
 //! a pure, deterministic function of the message history.
 
 pub mod associative_learning;
+mod capability_router;
 pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
@@ -41,6 +42,7 @@ pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
@@ -50,6 +52,7 @@ pub mod self_ast;
 pub mod self_heal;
 mod shell_command;
 pub mod source_graph;
+mod tool_result;
 mod web_research;
 
 pub use associative_learning::{

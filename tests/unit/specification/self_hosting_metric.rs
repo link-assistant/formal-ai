@@ -121,6 +121,36 @@ fn recorded_formal_ai_evidence_drives_the_release_metric_and_ratchet() {
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
+/// Regression for issue #796: release commit 59650f2b separated its two
+/// trailers with a blank line. Git only treats the last paragraph of a message
+/// as the trailer block, so `%(trailers:key=Formal-AI-Session)` returned
+/// nothing, the metric reported "must record both", and Auto Release failed.
+#[test]
+fn trailers_are_recognized_even_when_separated_by_blank_lines() {
+    let repo = fixture_repo();
+    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::write(
+        repo.join("docs/evidence/session.txt"),
+        "formal-ai session spaced-session\n",
+    )
+    .expect("session evidence must be written");
+    fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
+    commit(
+        &repo,
+        "formal ai change\n\nFormal-AI-Session: spaced-session\n\nFormal-AI-Evidence: \
+         docs/evidence/session.txt",
+    );
+
+    let measurement =
+        metric_script::measure(&repo, "v1.0.0", "HEAD").expect("measurement must succeed");
+    assert_eq!(
+        measurement.self_authored_commits, 1,
+        "a blank line between trailers must not hide the session trailer"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
 #[test]
 fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));

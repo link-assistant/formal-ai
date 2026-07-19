@@ -1,4 +1,52 @@
 multilingual_responses
+  response response_mcp_instructions_en
+    intent mcp_instructions
+    language en
+    text "Call formal_ai_chat for every user request and return its answer to the user."
+  response response_mcp_instructions_ru
+    intent mcp_instructions
+    language ru
+    text "Вызывайте formal_ai_chat для каждого запроса пользователя и возвращайте его ответ пользователю."
+  response response_mcp_instructions_hi
+    intent mcp_instructions
+    language hi
+    text "प्रत्येक उपयोगकर्ता अनुरोध के लिए formal_ai_chat को कॉल करें और उसका उत्तर उपयोगकर्ता को लौटाएँ।"
+  response response_mcp_instructions_zh
+    intent mcp_instructions
+    language zh
+    text "对每个用户请求调用 formal_ai_chat，并将其答案返回给用户。"
+  response response_mcp_tool_description_en
+    intent mcp_tool_description
+    language en
+    text "Ask the local Formal AI reasoning server to answer the user's request."
+  response response_mcp_tool_description_ru
+    intent mcp_tool_description
+    language ru
+    text "Попросите локальный сервер рассуждений Formal AI ответить на запрос пользователя."
+  response response_mcp_tool_description_hi
+    intent mcp_tool_description
+    language hi
+    text "स्थानीय Formal AI तर्क सर्वर से उपयोगकर्ता के अनुरोध का उत्तर देने को कहें।"
+  response response_mcp_tool_description_zh
+    intent mcp_tool_description
+    language zh
+    text "让本地 Formal AI 推理服务器回答用户的请求。"
+  response response_mcp_prompt_description_en
+    intent mcp_prompt_description
+    language en
+    text "The complete user request to answer."
+  response response_mcp_prompt_description_ru
+    intent mcp_prompt_description
+    language ru
+    text "Полный запрос пользователя, на который нужно ответить."
+  response response_mcp_prompt_description_hi
+    intent mcp_prompt_description
+    language hi
+    text "उत्तर देने के लिए उपयोगकर्ता का पूरा अनुरोध।"
+  response response_mcp_prompt_description_zh
+    intent mcp_prompt_description
+    language zh
+    text "需要回答的完整用户请求。"
   response response_greeting_en
     intent greeting
     language en
@@ -533,6 +581,86 @@ multilingual_responses
     variant 谢谢——你在向我指出一个我可以学习的数据来源。
     variant 明白了：你在告诉我从哪里获取用于推理和学习的数据。
     variant 了解——这是一个我可以研究以自我改进的来源。
+  response response_tool_result_completed_en
+    intent tool_result_completed
+    language en
+    text "The `{tool}` command completed. Output:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_ru
+    intent tool_result_completed
+    language ru
+    text "Команда `{tool}` выполнена. Результат:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_hi
+    intent tool_result_completed
+    language hi
+    text "`{tool}` कमांड पूरी हुई। परिणाम:\n\n```{format}\n{payload}\n```"
+  response response_tool_result_completed_zh
+    intent tool_result_completed
+    language zh
+    text "`{tool}` 命令已完成。输出：\n\n```{format}\n{payload}\n```"
+  response response_tool_result_failed_en
+    intent tool_result_failed
+    language en
+    text "The command failed: {error}"
+  response response_tool_result_failed_ru
+    intent tool_result_failed
+    language ru
+    text "Команда завершилась с ошибкой: {error}"
+  response response_tool_result_failed_hi
+    intent tool_result_failed
+    language hi
+    text "कमांड विफल रही: {error}"
+  response response_tool_result_failed_zh
+    intent tool_result_failed
+    language zh
+    text "命令失败：{error}"
+  response response_tool_result_empty_list_en
+    intent tool_result_empty_list
+    language en
+    text "This folder is empty."
+  response response_tool_result_empty_list_ru
+    intent tool_result_empty_list
+    language ru
+    text "Эта папка пуста."
+  response response_tool_result_empty_list_hi
+    intent tool_result_empty_list
+    language hi
+    text "यह फ़ोल्डर खाली है।"
+  response response_tool_result_empty_list_zh
+    intent tool_result_empty_list
+    language zh
+    text "此文件夹为空。"
+  response response_tool_result_empty_search_en
+    intent tool_result_empty_search
+    language en
+    text "No matches were found."
+  response response_tool_result_empty_search_ru
+    intent tool_result_empty_search
+    language ru
+    text "Совпадений не найдено."
+  response response_tool_result_empty_search_hi
+    intent tool_result_empty_search
+    language hi
+    text "कोई मिलान नहीं मिला।"
+  response response_tool_result_empty_search_zh
+    intent tool_result_empty_search
+    language zh
+    text "未找到匹配项。"
+  response response_tool_result_empty_generic_en
+    intent tool_result_empty_generic
+    language en
+    text "The command completed successfully without output."
+  response response_tool_result_empty_generic_ru
+    intent tool_result_empty_generic
+    language ru
+    text "Команда успешно выполнена без вывода."
+  response response_tool_result_empty_generic_hi
+    intent tool_result_empty_generic
+    language hi
+    text "कमांड बिना आउटपुट के सफलतापूर्वक पूरी हुई।"
+  response response_tool_result_empty_generic_zh
+    intent tool_result_empty_generic
+    language zh
+    text "命令已成功完成，但没有输出。"
   response response_lexeme_import_refused_batch_en
     intent lexeme_import_refused_batch
     language en
@@ -1141,3 +1269,35 @@ multilingual_responses
     intent lexeme_import_cannot_remove_stale
     language zh
     text "无法删除过期文件 {file}：{error}"
+  response response_shared_dialog_capture_parse_failed_en
+    intent shared_dialog_capture_parse_failed
+    language en
+    text "failed to parse web-capture shared-dialog JSON: {error}"
+  response response_shared_dialog_capture_parse_failed_hi
+    intent shared_dialog_capture_parse_failed
+    language hi
+    text "web-capture shared-dialog JSON को पार्स करने में विफल: {error}"
+  response response_shared_dialog_capture_parse_failed_ru
+    intent shared_dialog_capture_parse_failed
+    language ru
+    text "Не удалось разобрать JSON shared-dialog из web-capture: {error}"
+  response response_shared_dialog_capture_parse_failed_zh
+    intent shared_dialog_capture_parse_failed
+    language zh
+    text "无法解析 web-capture shared-dialog JSON：{error}"
+  response response_shared_dialog_capture_unsupported_en
+    intent shared_dialog_capture_unsupported
+    language en
+    text "web-capture provider {provider} reported {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_hi
+    intent shared_dialog_capture_unsupported
+    language hi
+    text "web-capture प्रदाता {provider} ने {reason} की सूचना दी: {message}"
+  response response_shared_dialog_capture_unsupported_ru
+    intent shared_dialog_capture_unsupported
+    language ru
+    text "Провайдер web-capture {provider} сообщил {reason}: {message}"
+  response response_shared_dialog_capture_unsupported_zh
+    intent shared_dialog_capture_unsupported
+    language zh
+    text "web-capture 提供程序 {provider} 报告了 {reason}：{message}"

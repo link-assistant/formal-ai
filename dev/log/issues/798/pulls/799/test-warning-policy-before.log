@@ -1,0 +1,48 @@
+   Compiling formal-ai v0.299.0 (/tmp/gh-issue-solver-1784475913185)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 39s
+     Running tests/unit/mod.rs (target/debug/deps/unit-4eed4ab380bdc0fb)
+
+running 3 tests
+
+thread 'ci_cd::issue_798::direct_wasm_rustc_build_rejects_warnings' (14742) panicked at tests/unit/ci-cd/issue_798.rs:16:5:
+RUSTFLAGS does not affect a direct rustc invocation; the worker build must deny warnings explicitly
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'ci_cd::issue_798::desktop_release_rejects_rust_warnings_on_every_platform' (14741) panicked at tests/unit/ci-cd/issue_798.rs:30:5:
+desktop cargo builds must not silently accept compiler warnings
+
+thread 'ci_cd::issue_798::wasm_only_partial_modules_document_their_intentional_dead_code' (14743) panicked at tests/unit/ci-cd/issue_798.rs:42:9:
+the partially reused `language` module must scope its intentional wasm-only dead-code allowance
+test ci_cd::issue_798::desktop_release_rejects_rust_warnings_on_every_platform ... FAILED
+test ci_cd::issue_798::direct_wasm_rustc_build_rejects_warnings ... FAILED
+test ci_cd::issue_798::wasm_only_partial_modules_document_their_intentional_dead_code ... FAILED
+
+failures:
+
+failures:
+    ci_cd::issue_798::desktop_release_rejects_rust_warnings_on_every_platform
+    ci_cd::issue_798::direct_wasm_rustc_build_rejects_warnings
+    ci_cd::issue_798::wasm_only_partial_modules_document_their_intentional_dead_code
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 1847 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`
+   Compiling formal-ai v0.299.0 (/tmp/gh-issue-solver-1784475913185)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.13s
+     Running tests/unit/mod.rs (target/debug/deps/unit-4eed4ab380bdc0fb)
+
+running 1 test
+
+thread 'ci_cd::issue_798::platform_specific_shared_memory_state_is_platform_gated' (15522) panicked at tests/unit/ci-cd/issue_798.rs:53:5:
+the state used only by the Unix permissions branch must not warn on Windows
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test ci_cd::issue_798::platform_specific_shared_memory_state_is_platform_gated ... FAILED
+
+failures:
+
+failures:
+    ci_cd::issue_798::platform_specific_shared_memory_state_is_platform_gated
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1850 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

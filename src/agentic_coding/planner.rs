@@ -6,6 +6,8 @@
 
 use serde_json::json;
 
+use super::capability_router;
+pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
 use super::conversation_recall;
@@ -24,6 +26,7 @@ use super::intent_router;
 use super::learning_report;
 use super::ledger;
 use super::meaning_detail;
+pub(super) use super::progress::Progress;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
@@ -32,6 +35,7 @@ use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::tool_result;
 use super::web_research;
 use crate::protocol::ChatMessage;
 
@@ -78,6 +82,13 @@ pub enum Capability {
     Write,
     Edit,
     Run,
+    Grep,
+    Glob,
+    ListDir,
+    Todo,
+    Subagent,
+    ReadMany,
+    MultiEdit,
 }
 
 impl Capability {
@@ -94,6 +105,31 @@ impl Capability {
             Self::Write => "tool:capability:write",
             Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
+            Self::Grep => "tool:capability:grep",
+            Self::Glob => "tool:capability:glob",
+            Self::ListDir => "tool:capability:list_dir",
+            Self::Todo => "tool:capability:todo",
+            Self::Subagent => "tool:capability:subagent",
+            Self::ReadMany => "tool:capability:read_many",
+            Self::MultiEdit => "tool:capability:multi_edit",
+        }
+    }
+
+    pub(super) const fn registry_id(self) -> &'static str {
+        match self {
+            Self::Search => "web_search",
+            Self::Fetch => "web_fetch",
+            Self::Read => "read_file",
+            Self::Write => "write_file",
+            Self::Edit => "edit_file",
+            Self::Run => "shell",
+            Self::Grep => "grep",
+            Self::Glob => "glob",
+            Self::ListDir => "list_dir",
+            Self::Todo => "todo",
+            Self::Subagent => "subagent",
+            Self::ReadMany => "read_many",
+            Self::MultiEdit => "multi_edit",
         }
     }
 }
@@ -222,15 +258,32 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
+    if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
+        return Some(AgenticPlan::Final(answer));
+    }
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(query) = shell_command::code_search_query_for_task(&task) {
-        if let Some(tool) = shell_command::code_search_tool_for(tool_names) {
-            return Some(plan_one(
-                tool,
-                json!({ "query": query, "pattern": query }).to_string(),
-            ));
+    // Preserve the established stateful list/read recipe whenever the client
+    // exposes its typed read capability. The shared read-many route remains
+    // available for CLIs that advertise only a batch reader.
+    if tool_for(tool_names, Capability::Read).is_some() {
+        if let Some(file_task) = file_read_task_for(&task) {
+            return Some(plan_file_read_step(&file_task, messages, tool_names));
+        }
+    }
+    if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
+    if !tool_result::has_latest_turn_result(messages) {
+        if let Some(query) = shell_command::code_search_query_for_task(&task) {
+            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
+                return Some(plan_one(
+                    tool,
+                    json!({ "query": query, "pattern": query }).to_string(),
+                ));
+            }
         }
     }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
@@ -254,15 +307,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
         return Some(plan);
     }
-    // Research is the final named recipe so more specific local actions win.
     if let Some(query) = web_research::web_research_query_for(messages) {
         if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
             return Some(plan);
         }
     }
-    // Route the remaining requests by seed-backed intent and advertised capability.
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
+    }
+    if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
+        return Some(AgenticPlan::Final(answer));
     }
     compose_general_change_plan(&task)
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
@@ -300,16 +354,14 @@ fn plan_general_change_step(
     ))
 }
 
-/// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
-/// directory listing, then summarize the tool result. Execution still happens in
-/// the client-side agent workspace/permission model; this server only emits the
-/// OpenAI-compatible `tool_calls` turn.
+/// Run a shell command through the client-owned tool loop, then present its result.
 fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
     let progress = Progress::scan(messages);
     if progress.done(Capability::Run) {
-        return AgenticPlan::Final(shell_final_answer(
+        return AgenticPlan::Final(tool_result::render(
             command,
             progress.run_output.as_deref().unwrap_or_default(),
+            latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }
 
@@ -735,82 +787,6 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Tool results produced since the current user turn began.
-pub(super) struct Progress {
-    completed: Vec<Capability>,
-    pub(super) fetched_text: Option<String>,
-    pub(super) search_output: Option<String>,
-    pub(super) run_output: Option<String>,
-}
-
-impl Progress {
-    pub(super) fn scan(messages: &[ChatMessage]) -> Self {
-        let mut completed = Vec::new();
-        let mut fetched_text = None;
-        let mut search_output = None;
-        let mut run_output = None;
-        // Ignore results from earlier user turns.
-        let current_turn = messages
-            .iter()
-            .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-            .map_or(0, |index| index + 1);
-        for (index, message) in messages.iter().enumerate().skip(current_turn) {
-            if !message.role.eq_ignore_ascii_case("tool") {
-                continue;
-            }
-            let Some(capability) = result_capability(messages, index) else {
-                continue;
-            };
-            if capability == Capability::Fetch {
-                let text = message.content.plain_text();
-                if !looks_like_error(&text) && !text.trim().is_empty() {
-                    fetched_text = Some(text);
-                }
-            }
-            if capability == Capability::Search {
-                let text = message.content.plain_text();
-                if !looks_like_error(&text) && !text.trim().is_empty() {
-                    search_output = Some(text);
-                }
-            }
-            if capability == Capability::Run {
-                run_output = Some(message.content.plain_text());
-            }
-            completed.push(capability);
-        }
-        Self {
-            completed,
-            fetched_text,
-            search_output,
-            run_output,
-        }
-    }
-
-    /// Whether a prior tool result already covered `capability`.
-    pub(super) fn done(&self, capability: Capability) -> bool {
-        self.completed.contains(&capability)
-    }
-
-    fn count(&self, capability: Capability) -> usize {
-        self.completed
-            .iter()
-            .filter(|done| **done == capability)
-            .count()
-    }
-
-    /// The latest non-errored fetch result's text, for the [`intent_router`]
-    /// fetch probe's final answer.
-    pub(super) fn fetched_text(&self) -> Option<&str> {
-        self.fetched_text.as_deref()
-    }
-
-    /// The latest non-errored web-search result's text, for the [`intent_router`]
-    /// search probe's final answer.
-    pub(super) fn search_output(&self) -> Option<&str> {
-        self.search_output.as_deref()
-    }
-}
-
 pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
@@ -849,91 +825,8 @@ pub(super) fn fetch_arguments(url: &str) -> String {
     .to_string()
 }
 
-/// The first advertised tool name that provides `capability`, if any.
-pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
-    tool_names
-        .iter()
-        .copied()
-        .find(|name| classify_tool(name) == Some(capability))
-}
-
-/// Classify a tool name into a [`Capability`] by substring, mirroring the naming
-/// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
-/// `run_command`, `bash`, `websearch`, `webfetch`, …).
-///
-/// The recipe wants six kinds of tool, and real CLIs expose *lookalikes* that
-/// must not be mistaken for them: a `todowrite` scratchpad is not a file writer,
-/// a `codesearch` is not a web search, and an `edit`/`patch`/`replace` tool
-/// mutates an existing file rather than creating one. Those are separated so
-/// that — even though [`requested_tool_names`](super::super::protocol) hands the
-/// planner an alphabetically sorted list — `todowrite` can never be picked ahead
-/// of `write`, `codesearch` ahead of `websearch`, nor an `edit` tool ahead of a
-/// create-file `write` for a write intent (they carry distinct arguments, so
-/// each is its own capability class).
-fn classify_tool(name: &str) -> Option<Capability> {
-    let lower = name.to_ascii_lowercase();
-    // Scratchpad / navigation tools that merely *look* like recipe tools.
-    if lower.contains("todo") {
-        return None;
-    }
-    if matches!(lower.as_str(), "computer_use" | "code_interpreter") {
-        Some(Capability::Run)
-    } else if lower.contains("search") {
-        // Repository/file search and deferred-tool discovery are not internet
-        // search. They have dedicated routes and must never receive a web query.
-        (lower.contains("web") && lower != "tool_search").then_some(Capability::Search)
-    } else if lower == "read"
-        || lower.contains("read_file")
-        || lower.contains("read_local_file")
-        || lower.contains("file_read")
-        || lower.contains("open_file")
-        || lower.contains("view_file")
-    {
-        Some(Capability::Read)
-    } else if lower.contains("fetch")
-        || lower.contains("open")
-        || lower.contains("browse")
-        || lower.contains("get_url")
-        || lower.contains("read_url")
-    {
-        Some(Capability::Fetch)
-    } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch.
-        Some(Capability::Write)
-    } else if lower.contains("edit") || lower.contains("patch") || lower.contains("replace") {
-        // `edit` / `apply_patch` / `str_replace` mutate an *existing* file and
-        // take `(path, old, new)`-shaped arguments rather than `(path, content)`,
-        // so they are their own capability class — never interchangeable with the
-        // create-file write above (issue #680).
-        Some(Capability::Edit)
-    } else if lower.contains("run")
-        || lower.contains("bash")
-        || lower.contains("command")
-        || lower.contains("exec")
-        || lower.contains("shell")
-    {
-        Some(Capability::Run)
-    } else {
-        None
-    }
-}
-
-/// Resolve which capability the tool result at `index` answers. Prefer the
-/// result's own `name`; otherwise map its `tool_call_id` back to the tool name in
-/// a prior assistant `tool_calls` turn.
-fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
-    let message = &messages[index];
-    if let Some(name) = &message.name {
-        if let Some(capability) = classify_tool(name) {
-            return Some(capability);
-        }
-    }
-    let call_id = message.tool_call_id.as_ref()?;
-    messages[..index]
-        .iter()
-        .flat_map(|prior| prior.tool_calls.iter())
-        .find(|call| &call.id == call_id)
-        .and_then(|call| classify_tool(&call.function.name))
+pub(super) fn classify_tool(name: &str) -> Option<Capability> {
+    capability_router::classify_tool(name)
 }
 
 /// The text of the most recent `user` turn.
@@ -964,14 +857,6 @@ fn is_formalization_task(prompt: &str) -> bool {
         .any(|keyword| lower.contains(keyword))
 }
 
-/// Whether a tool result looks like an error the planner should not trust.
-fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
-}
-
 /// The self-contained final answer: a natural-language summary, the coverage
 /// line, and the Links Notation knowledge base inline.
 fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
@@ -988,13 +873,4 @@ fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
         coverage = coverage_line(summary),
         kb = formalized.links_notation.trim_end(),
     )
-}
-
-fn shell_final_answer(command: &str, output: &str) -> String {
-    let trimmed = output.trim_end();
-    if trimmed.is_empty() {
-        format!("The `{command}` command completed with no output.")
-    } else {
-        format!("The `{command}` command completed. Output:\n\n```text\n{trimmed}\n```")
-    }
 }

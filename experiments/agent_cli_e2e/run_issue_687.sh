@@ -30,7 +30,10 @@ cat > opencode.json <<EOF
         "apiKey": "local"
       },
       "models": {
-        "formal-ai": { "name": "Formal AI Symbolic Production" }
+        "formal-ai": {
+          "name": "Formal AI Symbolic Production",
+          "limit": { "context": 200000, "output": 65536 }
+        }
       }
     }
   }

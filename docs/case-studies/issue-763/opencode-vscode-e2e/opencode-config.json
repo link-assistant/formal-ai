@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "formalai/formal-ai",
+  "provider": {
+    "formalai": {
+      "models": {
+        "formal-ai": {
+          "name": "formal-ai"
+        }
+      },
+      "name": "formal-ai server",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "{env:FORMAL_AI_API_KEY}",
+        "baseURL": "http://127.0.0.1:8873/api/openai/v1"
+      }
+    }
+  }
+}

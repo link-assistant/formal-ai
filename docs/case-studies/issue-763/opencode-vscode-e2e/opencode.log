@@ -1,0 +1,13 @@
+[0m
+> build · formal-ai
+[0m
+[0m$ [0mls
+issue-763-marker.txt
+opencode-config
+[0m
+The `ls` command completed. Output:
+
+```text
+issue-763-marker.txt
+opencode-config
+```

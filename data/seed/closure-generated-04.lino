@@ -1,9 +1,134 @@
 meanings
+  response_mcp_instructions_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions ru"
+  response_mcp_instructions_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions zh"
+  response_mcp_prompt_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description en"
+  response_mcp_prompt_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description hi"
+  response_mcp_prompt_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description ru"
+  response_mcp_prompt_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description zh"
+  response_mcp_tool_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description en"
+  response_mcp_tool_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description hi"
+  response_mcp_tool_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description ru"
+  response_mcp_tool_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description zh"
+  response_meta_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation en"
+  response_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation hi"
+  response_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation ru"
+  response_meta_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation zh"
+  response_physical_action_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question en"
+  response_physical_action_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question hi"
+  response_physical_action_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response physical action question ru"
   response_physical_action_question_zh
     defined-by response_template
     lexeme en
       surface
         text "response physical action question zh"
+  response_shared_dialog_capture_parse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed en"
+  response_shared_dialog_capture_parse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed hi"
+  response_shared_dialog_capture_parse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed ru"
+  response_shared_dialog_capture_parse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed zh"
+  response_shared_dialog_capture_unsupported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported en"
+  response_shared_dialog_capture_unsupported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported hi"
+  response_shared_dialog_capture_unsupported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported ru"
+  response_shared_dialog_capture_unsupported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported zh"
   response_test_status_en
     defined-by response_template
     lexeme en
@@ -24,6 +149,106 @@ meanings
     lexeme en
       surface
         text "response test status zh"
+  response_tool_result_completed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed en"
+  response_tool_result_completed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed hi"
+  response_tool_result_completed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed ru"
+  response_tool_result_completed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result completed zh"
+  response_tool_result_empty_generic_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic en"
+  response_tool_result_empty_generic_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic hi"
+  response_tool_result_empty_generic_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic ru"
+  response_tool_result_empty_generic_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty generic zh"
+  response_tool_result_empty_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list en"
+  response_tool_result_empty_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list hi"
+  response_tool_result_empty_list_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list ru"
+  response_tool_result_empty_list_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty list zh"
+  response_tool_result_empty_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search en"
+  response_tool_result_empty_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search hi"
+  response_tool_result_empty_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search ru"
+  response_tool_result_empty_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty search zh"
+  response_tool_result_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed en"
+  response_tool_result_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed hi"
+  response_tool_result_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed ru"
+  response_tool_result_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result failed zh"
   response_unknown_en
     defined-by response_template
     lexeme en
@@ -229,6 +454,16 @@ meanings
     lexeme en
       surface
         text "sentence case"
+  shared_dialog_capture_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture parse failed"
+  shared_dialog_capture_unsupported
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture unsupported"
   shell-helpers
     defined-by category
     lexeme en
@@ -499,6 +734,31 @@ meanings
     lexeme en
       surface
         text "tool read local file"
+  tool_result_completed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result completed"
+  tool_result_empty_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty generic"
+  tool_result_empty_list
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty list"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
+  tool_result_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed"
   tool_roleplay
     defined-by tool
     lexeme en

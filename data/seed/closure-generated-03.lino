@@ -1,4 +1,29 @@
 meanings
+  pattern_wikipedia_article_question_exact_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact zh"
+  pattern_wikipedia_article_question_grammar_context_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context en"
+  pattern_wikipedia_article_question_grammar_context_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context hi"
+  pattern_wikipedia_article_question_grammar_context_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context ru"
+  pattern_wikipedia_article_question_grammar_context_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question grammar context zh"
   pattern_x_kaise_kaam_karta_suffix_hi
     defined-by prompt_pattern
     lexeme en
@@ -1359,38 +1384,13 @@ meanings
     lexeme en
       surface
         text "response lexeme import wrong genus zh"
-  response_meta_explanation_en
+  response_mcp_instructions_en
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation en"
-  response_meta_explanation_hi
+        text "response mcp instructions en"
+  response_mcp_instructions_hi
     defined-by response_template
     lexeme en
       surface
-        text "response meta explanation hi"
-  response_meta_explanation_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation ru"
-  response_meta_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation zh"
-  response_physical_action_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question en"
-  response_physical_action_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question hi"
-  response_physical_action_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question ru"
+        text "response mcp instructions hi"

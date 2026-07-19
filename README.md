@@ -29,6 +29,10 @@ Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), an
 
 ## Install
 
+For one end-to-end reference covering every client, runtime mode, tool,
+memory/API setting, transcript location, language, and user surface, start with
+the **[Configuration guide](docs/configuration/README.md)**.
+
 Every interface has a dedicated landing page on the
 [site](https://link-assistant.github.io/formal-ai/) with copy-paste install
 instructions, and a single universal installer covers all of them. The script is
@@ -232,8 +236,12 @@ config, and then runs the external CLI with the remaining arguments unchanged:
 
 ```bash
 formal-ai with codex "hi"
+formal-ai with t3code
 formal-ai with opencode run "hi"
+formal-ai with opencode-vscode
+formal-ai with opencode-desktop
 formal-ai with agent -p "hi"
+formal-ai with cursor -p "hi"
 formal-ai with gemini -p "hi"
 formal-ai with claude -p "hi"
 formal-ai with qwen -p "hi"
@@ -250,6 +258,12 @@ an already-running server. Use `--base-url` when the server is not on
 adds the tool's protocol path such as `/api/openai/v1` or `/api/gemini` from
 seed data. `--protocol vertex` switches Gemini-shaped setup to
 `GOOGLE_VERTEX_BASE_URL` and `/api/vertex`.
+
+Cursor CLI uses the MCP path instead of a custom model base URL. For a one-shot
+run, the wrapper launches the `cursor-agent` binary with a temporary
+`~/.cursor/mcp.json` that registers the local `/mcp` endpoint; the server
+exposes `formal_ai_chat` and instructs Cursor to use it for each request. Both
+interactive mode and headless `-p` mode are supported.
 
 The existing explicit form remains supported:
 
@@ -278,14 +292,93 @@ also generates a model catalog inside the temporary Codex home and passes it as
 `model_catalog_json`, so Codex recognizes the Formal AI model's context window
 and capabilities without a missing-metadata warning.
 
+T3 Code can be launched with either `formal-ai with t3code` or the shorter
+`formal-ai with t3`. The wrapper runs the installed `t3` executable with an
+isolated `CODEX_HOME`, a generated Responses provider, the local model catalog,
+and a dummy `FORMAL_AI_API_KEY` when no key is set. The browser opens normally;
+add the wrapper flag `--non-interactive` to pass T3 Code's `--no-browser` flag:
+
+```bash
+formal-ai with --base-url http://127.0.0.1:8080 t3code
+formal-ai with --non-interactive t3
+```
+
+In T3 Code's provider settings, choose **Codex**, provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8080/api/openai/v1`, and any non-empty
+API key such as `formal-ai`. For a Claude-backed session, run with
+`--protocol anthropic`; the wrapper supplies `ANTHROPIC_BASE_URL` as
+`http://127.0.0.1:8080/api/anthropic` and the same dummy token. Use
+`formal-ai with --global --protocol openai t3code` (or `anthropic`) to persist
+the corresponding provider configuration, and `--undo` to restore its backup.
+
+The official OpenCode VS Code extension (`sst-dev.opencode`) launches the
+installed OpenCode CLI in a VS Code terminal and reads the same OpenCode
+configuration. Install both prerequisites, then launch a fresh VS Code window
+with an isolated Formal AI provider and temporary local server:
+
+```bash
+code --install-extension sst-dev.opencode
+formal-ai with opencode-vscode
+```
+
+`opencode-code` is an equivalent alias. The wrapper keeps the temporary server
+alive with VS Code's `--wait` option; close the launched window to stop it. In
+that window, run **Open opencode** from the Command Palette (or press
+Ctrl+Escape / Cmd+Escape) and select `formalai/formal-ai`. Existing OpenCode
+and VS Code settings remain unchanged because the wrapper supplies an isolated
+`OPENCODE_CONFIG`. Since VS Code may reuse an already-running extension host,
+the wrapper deliberately uses `--new-window`; launch it from a shell rather
+than attaching it to an existing window.
+
+OpenCode Desktop is a separate integration from the `opencode` terminal client:
+
+```bash
+formal-ai with opencode-desktop
+```
+
+The wrapper launches the installed Electron app without adding the CLI-only
+`run` or `-m` arguments. It supplies an isolated `OPENCODE_CONFIG` containing
+provider `formalai`, model `formalai/formal-ai`, and the local
+`/api/openai/v1` endpoint, so a one-shot launch does not modify the user's
+configuration. Installed packages are discovered at `/opt/OpenCode/ai.opencode.desktop`
+on Linux, `/Applications/OpenCode.app/Contents/MacOS/OpenCode` on macOS, and
+`%LOCALAPPDATA%\Programs\OpenCode\OpenCode.exe` on Windows. Set
+`FORMAL_AI_OPENCODE_DESKTOP_BIN` to an AppImage, unpacked executable, or custom
+install path when needed.
+
+OpenCode CLI and Desktop intentionally share
+`~/.config/opencode/opencode.json` for permanent setup. Run
+`formal-ai with --global opencode-desktop` to merge the provider and create
+`opencode.json.formal-ai.bak`; run `formal-ai with --undo opencode-desktop` to
+restore that backup. The desktop target is also included in `--global --all`
+and `--undo --all`.
+
+After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
+session artifact created by that invocation and a copy-pasteable resume command
+when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
+OpenCode, Agent CLI, Claude, and Grok. Only a new or changed artifact is printed;
+the wrapper does not guess a path when the client did not create one. Session
+artifacts written inside an isolated temporary client home are preserved so the
+reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
+existing proxy log, that path is included in the same final block.
+
+```text
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
+  server log: /work/proxy.jsonl
+```
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
 
 ```bash
 with-formal-ai -g codex
+with-formal-ai -g t3code
 with-formal-ai -g opencode
+with-formal-ai -g opencode-vscode
+with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
+with-formal-ai -g cursor
 with-formal-ai -g gemini
 with-formal-ai -g claude
 with-formal-ai -g qwen
@@ -299,7 +392,8 @@ Persistent targets are `~/.codex/config.toml`,
 `~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed block in
-`~/.profile` for Gemini environment variables. Re-running `-g` is idempotent.
+`~/.profile` for environment-configured clients, plus `~/.cursor/mcp.json` for
+Cursor. Re-running `-g` is idempotent.
 
 ### Codex CLI
 
@@ -478,6 +572,13 @@ read-only listing command. Use `--permission-mode plan` when read-only shell
 commands such as `ls` may run, and use hard `--read-only` when shell execution
 should be disabled entirely.
 
+Formal AI keeps each client tool result unchanged in the conversation transcript,
+then presents a normalized, localized answer after the client returns it. This
+means a later turn can ask for the full result, a numbered line, or a URL without
+losing the original bytes. To retain those tool calls beyond the current client
+conversation, start the server with `FORMAL_AI_MEMORY_PATH=memory.lino`; completed
+tool names, arguments, and raw outputs are then appended to the durable memory log.
+
 Example Telegram webhook update:
 
 ```bash
@@ -493,6 +594,8 @@ TELEGRAM_BOT_TOKEN=123:abc docker compose up
 
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
+  -e FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino \
+  -v "$HOME/.formal-ai:/root/.formal-ai" \
   -v formal-ai-telegram-docker:/var/lib/docker \
   ghcr.io/link-assistant/formal-ai:latest
 
@@ -530,7 +633,9 @@ docker compose --profile all up -d                # all services
 
 All three containers (`formal-ai-telegram`, `formal-ai-server`, and
 `formal-ai-agent`) are the **exact same ones the desktop app manages with one
-click** — see
+click**. They bind the host's `~/.formal-ai` directory to `/root/.formal-ai`,
+so Telegram, API, Agent CLI, desktop, and host CLI writes converge on the same
+`memory.lino`; their inner-Docker volumes remain separate. See
 [One-click services and agent environment](docs/desktop/service-control.md) for
 the full desktop + server walkthrough.
 
@@ -562,6 +667,12 @@ npm run desktop:smoke
 ```
 
 In desktop mode, prompt sends use `POST /v1/chat/completions` on the local Rust API, and the network link points to `GET /v1/graph`. The same **Export memory** and **Import memory** controls read and write the full `formal_ai_bundle`; no separate desktop memory format exists. Agent mode remains off by default, and the desktop sidebar shows whether agent/tool-call actions are permission-gated or explicitly opted in.
+
+Persistent memory needs no configuration. Formal AI creates
+`~/.formal-ai/memory.lino` on Unix/macOS or
+`%APPDATA%\formal-ai\memory.lino` on Windows and uses it for the CLI, local
+server, desktop shell, dreaming worker, and VS Code desktop host. Set
+`FORMAL_AI_MEMORY_PATH` only when an explicit alternate file is required.
 
 Packaging starts from the same shell:
 

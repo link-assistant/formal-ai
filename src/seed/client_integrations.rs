@@ -74,13 +74,19 @@ pub struct ClientIntegrationInvocation {
     pub temp_home_env: String,
     pub temp_home_config_path: String,
     pub temp_home_json_settings: Vec<(String, String)>,
+    pub temp_home_toml_settings: Vec<(String, String)>,
     pub model_catalog_path: String,
     pub model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
+    pub session_root: String,
+    pub session_file_suffix: String,
+    pub resume_command: String,
+    pub session_id_query_args: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
 pub struct ClientIntegrationGlobalConfig {
+    pub protocol: String,
     pub format: ConfigFormat,
     pub path: String,
     pub backup_suffix: String,
@@ -93,8 +99,11 @@ pub struct ClientIntegrationGlobalConfig {
 #[derive(Debug, Clone)]
 pub struct ClientIntegration {
     pub id: String,
+    pub aliases: Vec<String>,
     pub label: String,
     pub command: String,
+    pub command_env: String,
+    pub platform_commands: Vec<TemplateEnv>,
     pub provider_id: String,
     pub default_protocol: String,
     pub supported_protocols: Vec<String>,
@@ -103,7 +112,10 @@ pub struct ClientIntegration {
     pub api_key_default: String,
     pub model_selector: String,
     pub invocation: ClientIntegrationInvocation,
+    /// The default-protocol global configuration, retained for callers that
+    /// inspect the registry directly.
     pub global_config: ClientIntegrationGlobalConfig,
+    pub global_configs: Vec<ClientIntegrationGlobalConfig>,
 }
 
 impl ClientIntegration {
@@ -112,6 +124,19 @@ impl ClientIntegration {
         self.endpoints
             .iter()
             .find_map(|(candidate, path)| (candidate == protocol).then_some(path.as_str()))
+    }
+
+    #[must_use]
+    pub fn global_config_for(&self, protocol: &str) -> &ClientIntegrationGlobalConfig {
+        self.global_configs
+            .iter()
+            .find(|config| config.protocol == protocol)
+            .or_else(|| {
+                self.global_configs
+                    .iter()
+                    .find(|config| config.protocol.is_empty())
+            })
+            .unwrap_or(&self.global_config)
     }
 }
 
@@ -138,8 +163,24 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
     if id.is_empty() {
         return None;
     }
+    let aliases = split_pipe_list(tool.find_child_value("aliases"));
     let label = tool.find_child_value("label").to_string();
     let command = tool.find_child_value("command").to_string();
+    let command_env = tool.find_child_value("command_env").to_string();
+    let platform_commands = tool
+        .children
+        .iter()
+        .filter_map(|child| {
+            child
+                .name
+                .strip_prefix("command_")
+                .filter(|platform| *platform != "env")
+                .map(|platform| TemplateEnv {
+                    key: platform.to_string(),
+                    value: child.id.clone(),
+                })
+        })
+        .collect();
     let provider_id = tool.find_child_value("provider_id").to_string();
     let default_protocol = tool.find_child_value("default_protocol").to_string();
     let supported_protocols = split_pipe_list(tool.find_child_value("supported_protocols"));
@@ -158,15 +199,27 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         .find(|node| node.name == "ephemeral")
         .map(parse_invocation)
         .unwrap_or_default();
-    let global_config = tool
+    let global_configs = tool
         .children
         .iter()
-        .find(|node| node.name == "global")
-        .and_then(parse_global_config)?;
+        .filter(|node| node.name == "global")
+        .filter_map(parse_global_config)
+        .collect::<Vec<_>>();
+    if global_configs.is_empty() {
+        return None;
+    }
+    let global_config = global_configs
+        .iter()
+        .find(|config| config.protocol == default_protocol)
+        .unwrap_or(&global_configs[0])
+        .clone();
     Some(ClientIntegration {
         id,
+        aliases,
         label,
         command,
+        command_env,
+        platform_commands,
         provider_id,
         default_protocol,
         supported_protocols,
@@ -176,6 +229,7 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         model_selector,
         invocation,
         global_config,
+        global_configs,
     })
 }
 
@@ -214,11 +268,20 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                     invocation.temp_home_json_settings.push((key, value));
                 }
             }
+            "temp_home_toml_set" => {
+                if let Some((key, value)) = split_once_equals(&child.id) {
+                    invocation.temp_home_toml_settings.push((key, value));
+                }
+            }
             "model_catalog_path" => invocation.model_catalog_path.clone_from(&child.id),
             "model_arg" => invocation.model_arg.clone_from(&child.id),
             "model_arg_position" => {
                 invocation.model_arg_position = ModelArgPosition::from_seed(&child.id);
             }
+            "session_root" => invocation.session_root.clone_from(&child.id),
+            "session_file_suffix" => invocation.session_file_suffix.clone_from(&child.id),
+            "resume_command" => invocation.resume_command.clone_from(&child.id),
+            "session_id_query_arg" => invocation.session_id_query_args.push(child.id.clone()),
             _ => {}
         }
     }
@@ -228,6 +291,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
 fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrationGlobalConfig> {
     let format = ConfigFormat::from_seed(node.find_child_value("kind"))?;
     let mut config = ClientIntegrationGlobalConfig {
+        protocol: node.id.clone(),
         format,
         path: node.find_child_value("path").to_string(),
         backup_suffix: node.find_child_value("backup_suffix").to_string(),

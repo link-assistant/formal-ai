@@ -23,6 +23,8 @@ agent_info
     value "No prior conversation was captured."
   field issue_report_conversation_heading
     value Conversation
+  field issue_report_transcript_trimmed
+    value "The remaining conversation was trimmed to keep this report within GitHub's issue size limit."
   field issue_report_body_footer
     value "Filed automatically by Formal AI in agentic mode."
   field issue_report_created

@@ -18,6 +18,7 @@ use crate::gemini::{
     gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
 };
 use crate::links_query::run_links_query;
+use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
     chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
@@ -136,6 +137,9 @@ pub fn handle_api_request_with_auth(
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
 
+    if normalized_path == "/mcp" && !mcp_origin_allowed(headers) {
+        return error_response(403, "MCP origin is not allowed");
+    }
     if requires_bearer_auth(method, normalized_path) && !auth.allows(headers) {
         return error_response(401, "missing or invalid bearer token");
     }
@@ -236,6 +240,8 @@ pub fn handle_api_request_with_auth(
                 Err(error) => error_response(400, &format!("invalid responses request: {error}")),
             }
         }
+        ("POST", "/mcp") => handle_mcp_request(body, &http_solver()),
+        ("GET", "/mcp") => error_response(405, "MCP SSE streams are not supported"),
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
             Ok(None) => ApiHttpResponse {
@@ -251,7 +257,29 @@ pub fn handle_api_request_with_auth(
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
     method != "OPTIONS"
-        && (normalized_path.starts_with("/v1/") || normalized_path.starts_with("/api/"))
+        && (normalized_path == "/mcp"
+            || normalized_path.starts_with("/v1/")
+            || normalized_path.starts_with("/api/"))
+}
+
+fn mcp_origin_allowed(headers: &[(&str, &str)]) -> bool {
+    let Some(origin) = headers
+        .iter()
+        .find_map(|(name, value)| name.eq_ignore_ascii_case("origin").then_some(*value))
+    else {
+        return true;
+    };
+    let Some(host) = headers
+        .iter()
+        .find_map(|(name, value)| name.eq_ignore_ascii_case("host").then_some(*value))
+    else {
+        return false;
+    };
+    let origin = origin.trim_end_matches('/');
+    origin
+        .strip_prefix("http://")
+        .or_else(|| origin.strip_prefix("https://"))
+        .is_some_and(|authority| authority.eq_ignore_ascii_case(host))
 }
 
 fn handle_dynamic_protocol_route(
@@ -797,6 +825,10 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
 
 pub fn serve(address: &str) -> std::io::Result<()> {
     crate::dreaming_runtime::start_core_dreaming();
+    eprintln!(
+        "formal-ai shared memory: {}",
+        crate::shared_memory::shared_memory_path().display()
+    );
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 
@@ -883,7 +915,9 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         204 => "204 No Content",
         400 => "400 Bad Request",
         401 => "401 Unauthorized",
+        403 => "403 Forbidden",
         404 => "404 Not Found",
+        405 => "405 Method Not Allowed",
         _ => "500 Internal Server Error",
     };
 

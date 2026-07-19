@@ -49,6 +49,21 @@ test('multilingual desktop web search works with agent permission off and no loc
     };
   });
 
+  // Keep this regression hermetic: the desktop bridge must be used even when
+  // every browser-side provider is unavailable.
+  await page.route('**/*', async (route) => {
+    const url = new URL(route.request().url());
+    if (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      url.hostname !== '127.0.0.1' &&
+      url.hostname !== 'localhost'
+    ) {
+      await route.abort('blockedbyclient');
+      return;
+    }
+    await route.continue();
+  });
+
   await page.goto('./');
   const input = page.locator('[data-testid="chat-composer-input"]');
   await expect(input).toBeEnabled({ timeout: 10_000 });
