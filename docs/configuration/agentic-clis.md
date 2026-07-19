@@ -35,6 +35,7 @@ and confirm its transcript contains the advertised read/shell call and result.
 | Codex | Responses, `/api/openai/v1` | isolated `HOME`, read-only `codex exec` | `~/.codex/config.toml` |
 | T3 Code | Responses or Anthropic | isolated `CODEX_HOME`, browser by default | Codex config or `~/.profile` |
 | OpenCode | Chat Completions, `/api/openai/v1` | temporary `opencode.json` | `~/.config/opencode/opencode.json` |
+| OpenCode VS Code | Chat Completions, `/api/openai/v1` | fresh window with temporary `opencode.json` | `~/.config/opencode/opencode.json` |
 | Agent | Chat Completions, `/api/openai/v1` | inline provider JSON | `~/.config/link-assistant-agent/opencode.json` |
 | Cursor | MCP, `/mcp` | isolated `~/.cursor/mcp.json` | `~/.cursor/mcp.json` |
 | Gemini | Gemini or Vertex | isolated `GEMINI_CLI_HOME` | managed variables in `~/.profile` |
@@ -79,6 +80,14 @@ formal-ai with --interactive opencode
 
 The model selector is `formalai/formal-ai`. The wrapper enables the Exa search
 bridge and otherwise passes OpenCode arguments through unchanged.
+
+The official `sst-dev.opencode` VS Code extension uses the same provider
+configuration. Install the extension and OpenCode CLI, then launch an isolated
+window with `formal-ai with opencode-vscode`. The `opencode-code` alias is
+equivalent. Run **Open opencode** in that window and select
+`formalai/formal-ai`. Use `formal-ai with --global opencode-vscode` for
+persistent configuration and `formal-ai with --undo opencode-vscode` to restore
+the backup.
 
 OpenCode Desktop shares the persistent `opencode.json`, so
 `formal-ai with --global opencode` prepares the provider that the GUI can

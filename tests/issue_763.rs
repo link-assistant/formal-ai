@@ -167,6 +167,9 @@ mod unix {
         let readme = std::fs::read_to_string(root.join("README.md")).expect("README");
         let matrix = std::fs::read_to_string(root.join("docs/testing/agentic-cli-tools.md"))
             .expect("agentic client matrix");
+        let configuration =
+            std::fs::read_to_string(root.join("docs/configuration/agentic-clis.md"))
+                .expect("agentic client configuration guide");
 
         for expected in [
             "tool \"opencode-vscode\"",
@@ -198,6 +201,16 @@ mod unix {
             assert!(
                 matrix.contains(expected),
                 "missing matrix contract: {expected}"
+            );
+        }
+        for expected in [
+            "OpenCode VS Code",
+            "formal-ai with opencode-vscode",
+            "formal-ai with --global opencode-vscode",
+        ] {
+            assert!(
+                configuration.contains(expected),
+                "missing configuration guide contract: {expected}"
             );
         }
         assert!(
