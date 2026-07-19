@@ -190,6 +190,109 @@ mod research_answer {
     }
 }
 
+// Requirement 1, in every supported language. Extraction depends on splitting a
+// page into sentences and ranking them against the query, and both steps are
+// script-sensitive: Hindi ends its sentences with a danda rather than a full
+// stop, and Chinese writes without spaces so word tokenization never overlaps.
+// A page dump in one language is the same defect as issue #771 in another.
+mod multilingual_extraction {
+    use super::*;
+
+    /// One reported session per language: a question, a page whose chrome and
+    /// trailing boilerplate bury the one sentence that answers it, and the
+    /// phrase the extract must keep.
+    struct Case {
+        language: &'static str,
+        query: &'static str,
+        chrome: &'static str,
+        answer: &'static str,
+        boilerplate: &'static str,
+        expected: &'static str,
+    }
+
+    const CASES: [Case; 4] = [
+        Case {
+            language: "en",
+            query: "What countries have private space companies?",
+            chrome: "TECHNOLOGY, ENGINEERING, INNOVATION\n\
+                     Main menu Skip to content About us News\n",
+            answer: "Private space companies operate in the USA, the United Kingdom and India.\n",
+            boilerplate: "Subscribe to our newsletter and read other blog posts.",
+            expected: "Private space companies operate in the USA",
+        },
+        Case {
+            language: "ru",
+            query: "В каких странах есть частные космические компании?",
+            chrome: "ТЕХНОЛОГИИ, ИНЖИНИРИНГ, ИННОВАЦИИ\n\
+                     Главное меню Перейти к основному содержимому О нас Новости\n",
+            answer: "Частные космические компании работают в США, Великобритании и Индии.\n",
+            boilerplate: "Подписывайтесь на нашу рассылку и читайте другие записи блога.",
+            expected: "Частные космические компании работают в США",
+        },
+        Case {
+            language: "hi",
+            query: "किन देशों में निजी अंतरिक्ष कंपनियाँ हैं?",
+            chrome: "प्रौद्योगिकी, इंजीनियरिंग, नवाचार\n\
+                     मुख्य मेनू हमारे बारे में समाचार।\n",
+            answer: "निजी अंतरिक्ष कंपनियाँ अमेरिका, ब्रिटेन और भारत में हैं।\n",
+            boilerplate: "सदस्यता लें और अन्य ब्लॉग पोस्ट पढ़ें।",
+            expected: "निजी अंतरिक्ष कंपनियाँ अमेरिका",
+        },
+        Case {
+            language: "zh",
+            query: "哪些国家有私营航天公司？",
+            chrome: "技术、工程、创新\n主菜单 关于我们 新闻。\n",
+            answer: "私营航天公司位于美国、英国和印度。\n",
+            boilerplate: "订阅我们的通讯并阅读其他博客文章。",
+            expected: "私营航天公司位于美国",
+        },
+    ];
+
+    /// The same shape as [`scraped_page`], in the case's language.
+    fn page(case: &Case) -> String {
+        let mut page = String::from(case.chrome);
+        page.push_str(case.answer);
+        for index in 0..400 {
+            writeln!(page, "{index}: {}", case.boilerplate)
+                .expect("writing to a String cannot fail");
+        }
+        page
+    }
+
+    fn answer_for(case: &Case) -> String {
+        let mut messages = vec![ChatMessage::user(case.query)];
+        let search = tool_calls(&messages).remove(0);
+        answer_tool_call(&mut messages, &search, "https://example.invalid/space");
+        let fetch = tool_calls(&messages).remove(0);
+        answer_tool_call(&mut messages, &fetch, &page(case));
+        final_answer(&messages)
+    }
+
+    #[test]
+    fn every_supported_language_gets_an_extract_and_not_a_page_dump() {
+        for case in &CASES {
+            let language = case.language;
+            let page = page(case);
+            let answer = answer_for(case);
+            assert!(
+                answer.chars().count() < page.chars().count() / 4,
+                "[{language}] answer must extract, not dump the {} character page; \
+                 got {}:\n{answer}",
+                page.chars().count(),
+                answer.chars().count()
+            );
+            assert!(
+                answer.contains(case.expected),
+                "[{language}] the answering sentence must survive extraction:\n{answer}"
+            );
+            assert!(
+                !answer.contains(case.boilerplate),
+                "[{language}] trailing site boilerplate must not survive:\n{answer}"
+            );
+        }
+    }
+}
+
 // Requirement 2: every transcribed turn stays inside its own attributed block.
 mod report_format {
     use super::*;

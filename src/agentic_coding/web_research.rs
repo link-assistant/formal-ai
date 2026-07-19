@@ -113,7 +113,8 @@ fn final_answer(query: &str, progress: &Progress) -> String {
 /// overlap with the query — the same non-neural similarity the ranker uses — and
 /// the best few are returned in document order so the extract still reads as
 /// prose. Scoring is deterministic and carries no natural-language vocabulary,
-/// so it works in every supported language.
+/// so it works in every supported language — see [`relevance`] for how the
+/// space-less scripts are handled.
 fn extract_answer(query: &str, evidence: &str) -> String {
     if evidence.chars().count() <= VERBATIM_EVIDENCE_LIMIT {
         return evidence.to_owned();
@@ -125,7 +126,7 @@ fn extract_answer(query: &str, evidence: &str) -> String {
         .map(|(position, statement)| {
             (
                 position,
-                crate::probability::symbolic_cosine_similarity(query, &statement.text),
+                relevance(query, &statement.text),
                 statement.text.as_str(),
             )
         })
@@ -151,6 +152,46 @@ fn extract_answer(query: &str, evidence: &str) -> String {
         .map(|(_, _, text)| *text)
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// How much `sentence` bears on `query`, in `0.0..=1.0`.
+///
+/// Bag-of-words cosine is the primary measure. It tokenizes on non-alphanumeric
+/// boundaries, which is exactly right for the space-separated scripts but scores
+/// every Chinese sentence 0.0: a run of Han characters with no spaces is a
+/// single token, so query and sentence never share one. The codebase's existing
+/// answer for that (see `coding::catalog::contains_cjk` and its callers) is to
+/// match on characters rather than words, so that is the fallback here.
+fn relevance(query: &str, sentence: &str) -> f32 {
+    let cosine = crate::probability::symbolic_cosine_similarity(query, sentence);
+    if cosine > 0.0 || !crate::coding::contains_cjk(query) {
+        return cosine;
+    }
+    character_overlap(query, sentence)
+}
+
+/// The fraction of the query's distinct ideographs that `sentence` also uses.
+///
+/// Punctuation and spacing are ignored, so the score reflects shared content
+/// characters only. Common function characters inflate it slightly, which costs
+/// nothing here because the score is only ever used to rank sentences of the
+/// same document against each other.
+fn character_overlap(query: &str, sentence: &str) -> f32 {
+    let sentence: std::collections::BTreeSet<char> =
+        sentence.chars().filter(|c| c.is_alphanumeric()).collect();
+    let query: std::collections::BTreeSet<char> =
+        query.chars().filter(|c| c.is_alphanumeric()).collect();
+    if query.is_empty() {
+        return 0.0;
+    }
+    let shared = query.iter().filter(|c| sentence.contains(c)).count();
+    #[expect(
+        clippy::cast_precision_loss,
+        reason = "character counts are far below f32's exact-integer range"
+    )]
+    {
+        shared as f32 / query.len() as f32
+    }
 }
 
 /// Truncate to at most `max` characters on a char boundary, appending an
