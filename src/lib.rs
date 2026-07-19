@@ -96,6 +96,7 @@ pub(crate) mod solver_helpers;
 pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
+pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
 pub mod substitution;

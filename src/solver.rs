@@ -471,9 +471,13 @@ impl UniversalSolver {
         // contradicts a retained one. A clash — same subject, opposite polarity
         // — is surfaced as a warning naming both statements, their weights, and
         // a resolution that reuses the append-only retraction protocol.
-        if let Some(answer) =
-            crate::requirement_contradiction::detect_and_report(prompt, language, history, &mut log)
-        {
+        if let Some(answer) = crate::requirement_contradiction::detect_and_report(
+            prompt,
+            language,
+            history,
+            self.config.temperature,
+            &mut log,
+        ) {
             return answer;
         }
 

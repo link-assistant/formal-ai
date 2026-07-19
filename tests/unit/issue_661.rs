@@ -163,3 +163,42 @@ fn requirement_contradiction_reply_is_in_the_prompt_language() {
         response.answer,
     );
 }
+
+#[test]
+fn requirement_contradiction_warning_has_seed_backed_hindi_and_chinese_variants() {
+    let cases = [
+        ("हमेशा हिंदी में उत्तर दें", "कभी नहीं हिंदी में उत्तर दें", "चेतावनी"),
+        ("始终用中文回答", "永远不要用中文回答", "警告"),
+    ];
+
+    for (first_prompt, second_prompt, warning_marker) in cases {
+        let solver = UniversalSolver::default();
+        let first = solver.solve(first_prompt);
+        let history = [
+            ConversationTurn::user(first_prompt),
+            ConversationTurn::assistant(first.answer),
+        ];
+        let response = solver.solve_with_history(second_prompt, &history);
+
+        assert_eq!(
+            response.intent, "requirement_contradiction",
+            "opposing directives must be detected in every supported script: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains(warning_marker),
+            "warning must use the prompt language: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.contains(first_prompt) && response.answer.contains(second_prompt),
+            "warning must preserve both source statements: {}",
+            response.answer,
+        );
+        assert!(
+            response.answer.matches("0.500000").count() == 2,
+            "the localized template must expose both calculated weights: {}",
+            response.answer,
+        );
+    }
+}

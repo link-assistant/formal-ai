@@ -1265,6 +1265,22 @@ multilingual_responses
     intent lexeme_import_cannot_inspect
     language zh
     text "无法检查输出：{error}"
+  response response_requirement_contradiction_en
+    intent requirement_contradiction
+    language en
+    text "Warning: two of your requirements contradict each other.\n- Statement 1 (weight {prior_weight}): \"{prior}\"\n- Statement 2 (weight {current_weight}): \"{current}\"\nThey make opposite demands on the same subject ({subject}), so both cannot hold at once.\nProposed resolution: keep one and retract the other by sending a superseding requirement. The requirement network is append-only, so retraction records a new event without erasing history. Alternatively, split the meanings or scope each requirement to a different context."
+  response response_requirement_contradiction_ru
+    intent requirement_contradiction
+    language ru
+    text "Предупреждение: два ваших требования противоречат друг другу.\n- Утверждение 1 (вес {prior_weight}): «{prior}»\n- Утверждение 2 (вес {current_weight}): «{current}»\nОни предъявляют противоположные требования к одному предмету ({subject}), поэтому оба не могут выполняться одновременно.\nПредлагаемое решение: оставьте одно требование и отзовите другое замещающим требованием. Сеть требований работает только на добавление, поэтому отзыв записывается новым событием без удаления истории. Либо разделите смыслы или ограничьте требования разными контекстами."
+  response response_requirement_contradiction_hi
+    intent requirement_contradiction
+    language hi
+    text "चेतावनी: आपकी दो आवश्यकताएँ एक-दूसरे का खंडन करती हैं।\n- कथन 1 (भार {prior_weight}): «{prior}»\n- कथन 2 (भार {current_weight}): «{current}»\nये एक ही विषय ({subject}) पर विपरीत माँग करती हैं, इसलिए दोनों एक साथ लागू नहीं हो सकतीं।\nप्रस्तावित समाधान: एक को रखें और दूसरी को अधिभावी आवश्यकता भेजकर वापस लें। आवश्यकता नेटवर्क केवल जोड़ने वाला है, इसलिए वापसी इतिहास मिटाए बिना नई घटना के रूप में दर्ज होती है। अथवा अर्थों को अलग करें या आवश्यकताओं को अलग संदर्भों में सीमित करें।"
+  response response_requirement_contradiction_zh
+    intent requirement_contradiction
+    language zh
+    text "警告：您的两条要求相互矛盾。\n- 陈述 1（权重 {prior_weight}）：「{prior}」\n- 陈述 2（权重 {current_weight}）：「{current}」\n它们对同一主题（{subject}）提出相反的要求，因此二者不能同时成立。\n建议的解决方案：保留其中一条，并通过发送取代性要求来撤回另一条。要求网络仅追加，因此撤回会记录为新事件而不会抹去历史。或者拆分含义，或将要求限定在不同上下文中。"
   response response_lexeme_import_cannot_remove_stale_zh
     intent lexeme_import_cannot_remove_stale
     language zh

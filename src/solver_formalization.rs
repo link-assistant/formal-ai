@@ -60,10 +60,12 @@ pub fn record_formalization_selection(log: &mut EventLog, selection: &Formalizat
         let weight = selection.probabilities.get(index).copied().unwrap_or(0.0);
         log.append(
             "statement_weight",
-            format!(
-                "formalization:{index} weight={weight:.6} {}",
-                candidate.compact_summary()
-            ),
+            [
+                format!("formalization:{index}"),
+                format!("weight={weight:.6}"),
+                candidate.compact_summary(),
+            ]
+            .join(" "),
         );
     }
 

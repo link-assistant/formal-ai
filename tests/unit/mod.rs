@@ -68,6 +68,7 @@ mod issue_657_self_hosting_learning;
 mod issue_659_hardcoded_language_learning;
 mod issue_660_lexeme_import_learning;
 mod issue_661;
+mod issue_661_repository_audit;
 mod issue_676_naming;
 mod issue_676_thinking_narrative;
 mod issue_680_intent_routing;
