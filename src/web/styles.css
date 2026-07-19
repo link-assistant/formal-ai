@@ -640,6 +640,39 @@
   opacity: 0.55;
 }
 
+/* Issue #557 (PR #643, comment 39): the same MUI-emotion specificity trap that
+ * hit the composer strips the surface off the TOOLBAR action buttons in the
+ * mui-flat / material skins — light mode only, since the dark theme's compound
+ * `:root[data-theme="dark"] .mode-toggle` rule (0,3,0) already out-specifies
+ * MUI's `.MuiIconButton-root` (0,1,0). In light the base surface rule (0,1,0)
+ * ties and loses, leaving bare "wild" icons beside the still-boxed anchor
+ * controls (source / download / report stay Chakra links). These skin-scoped
+ * rules (0,2,0) restore the same boxed surface the dark theme already applies,
+ * so every toolbar control reads as a button in both themes. The dark compound
+ * rule keeps winning in dark; the active-toggle accent rule (0,2,0, later in
+ * source) keeps winning for the pressed mode option. */
+.ui-skin-mui-flat .mode-toggle,
+.ui-skin-mui-flat .diagnostics-toggle,
+.ui-skin-mui-flat .mode-option,
+.ui-skin-mui-flat .mobile-menu-toggle,
+.ui-skin-mui-flat .sidebar-toggle,
+.ui-skin-mui-flat .drawer-close,
+.ui-skin-mui-flat .drawer-action,
+.ui-skin-mui-flat .memory-button,
+.ui-skin-material .mode-toggle,
+.ui-skin-material .diagnostics-toggle,
+.ui-skin-material .mode-option,
+.ui-skin-material .mobile-menu-toggle,
+.ui-skin-material .sidebar-toggle,
+.ui-skin-material .drawer-close,
+.ui-skin-material .drawer-action,
+.ui-skin-material .memory-button {
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e252b;
+}
+
 .ui-skin-contrast .topbar,
 .ui-skin-contrast .context-panel,
 .ui-skin-contrast .composer-grid,
