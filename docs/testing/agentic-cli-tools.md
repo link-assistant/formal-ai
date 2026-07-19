@@ -100,6 +100,43 @@ with-formal-ai --base-url http://127.0.0.1:8090 opencode run "list the files in 
 
 Expected protocol path: OpenAI `chat/completions`.
 
+### OpenCode VS Code extension
+
+The official `sst-dev.opencode` extension is a separate surface from the
+OpenCode CLI/TUI and desktop app. Its extension command creates a VS Code
+terminal and runs `opencode --port <port>`, so it consumes OpenCode's standard
+provider config and the extension host's environment. Install the extension
+and CLI, then start a fresh, isolated window through the wrapper:
+
+```bash
+code --install-extension sst-dev.opencode
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-vscode
+```
+
+Run **Open opencode** in that window and ask, using different wording from the
+CLI row, to list the workspace files. The extension terminal must show model
+`formalai/formal-ai`; the logging proxy must record a Chat Completions request
+and at least one tool call/result round trip. Record `OPENCODE_CALLER=vscode`,
+the extension version, request path, tool name, and result in the #671 matrix.
+Use `opencode-code` as an equivalent wrapper alias. For persistent setup, use
+`with-formal-ai --global opencode-vscode`; it manages the same
+`~/.config/opencode/opencode.json` file as the CLI target and `--undo` restores
+the backup.
+
+The automated Linux harness installs the real Marketplace extension into an
+isolated VS Code profile, invokes its command through a development-only test
+driver, verifies the created terminal and caller environment, and exports the
+exact provider config inherited by the extension host. It then replays that
+config through OpenCode's non-interactive runner and asserts the proxy's
+tool-call/result evidence. The replay avoids depending on TUI keystroke timing
+while exercising the same OpenCode provider configuration:
+
+```bash
+experiments/opencode_vscode_e2e/run.sh
+```
+
+Expected protocol path: OpenAI `chat/completions`.
+
 ### Agent CLI
 
 The wrapper injects an OpenCode-shaped provider JSON through
