@@ -54,6 +54,49 @@ fn budget_search_solves_reachability_under_sufficient_budget() {
 }
 
 #[test]
+fn budget_search_success_proposes_a_gated_skill() {
+    // A solved composition is a demonstrated capability, so the stage records a
+    // proposal-only auto-learning event. It must be human-gated: proposed, never
+    // promotable, and nothing about routing or the answer changes.
+    let solver = solver_with_budget(256);
+    let answer = solver.solve(SEARCH_PROMPT);
+
+    assert!(
+        answer.links_notation.contains("search:skill"),
+        "a search success should record a proposal-only skill event; got: {}",
+        answer.links_notation,
+    );
+    assert!(
+        answer.links_notation.contains("status \"proposed\""),
+        "the proposed skill must be recorded as `proposed`, not promoted; got: {}",
+        answer.links_notation,
+    );
+    assert!(
+        answer.links_notation.contains("promotable \"false\""),
+        "the proposed skill must not be promotable without review; got: {}",
+        answer.links_notation,
+    );
+    assert!(
+        answer.links_notation.contains("search:skill:promotable"),
+        "the auditable promotable count must be recorded; got: {}",
+        answer.links_notation,
+    );
+}
+
+#[test]
+fn budget_search_zero_budget_proposes_no_skill() {
+    // Nothing was demonstrated, so no skill is proposed.
+    let solver = solver_with_budget(0);
+    let answer = solver.solve(SEARCH_PROMPT);
+
+    assert!(
+        !answer.links_notation.contains("search:skill"),
+        "an unsolved search must not propose a skill; got: {}",
+        answer.links_notation,
+    );
+}
+
+#[test]
 fn budget_search_stays_unknown_with_evidence_under_zero_budget() {
     let solver = solver_with_budget(0);
     let answer = solver.solve(SEARCH_PROMPT);

@@ -54,7 +54,7 @@ fn fake_gate_bin() -> std::path::PathBuf {
         r#"#!/bin/sh
 case "$*" in
   *issue_362*) echo "coding-modification benchmark pass/fail counts: passed=4 failed=0 total=4 minimum_pass_count=4" ;;
-  *issue_304*) echo "benchmark pass/fail counts: passed=10 failed=2 total=12 minimum_pass_count=10" ;;
+  *issue_304*) echo "benchmark pass/fail counts: passed=13 failed=0 total=13 minimum_pass_count=12" ;;
   *) echo "test result: ok. 1653 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out" ;;
 esac
 "#,
