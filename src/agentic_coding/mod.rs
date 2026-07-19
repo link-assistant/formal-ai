@@ -83,6 +83,10 @@ pub use google_trends_catalog::{
 pub use google_trends_learning::{
     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
 };
+pub use learning_report::handler_precedence_learning::{
+    is_handler_precedence_learning_task, HANDLER_PRECEDENCE_LEARNING_PATH,
+    HANDLER_PRECEDENCE_LEARNING_TASK,
+};
 pub use learning_report::hardcoded_language_learning::{
     is_hardcoded_language_learning_task, HARDCODED_LANGUAGE_LEARNING_PATH,
     HARDCODED_LANGUAGE_LEARNING_TASK,
