@@ -1,0 +1,58 @@
+name: Publish Docker Hub Image
+description: Publish a Docker image to Docker Hub with npm release tags.
+
+inputs:
+  context:
+    description: Docker build context path.
+    required: false
+    default: .
+  file:
+    description: Dockerfile path.
+    required: false
+    default: ./Dockerfile
+  image:
+    description: Docker Hub image name, for example namespace/image.
+    required: true
+  token:
+    description: Docker Hub access token.
+    required: true
+  username:
+    description: Docker Hub username.
+    required: true
+  version:
+    description: Published npm package version used for the Docker tag.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker Buildx (resilient)
+      uses: ./.github/actions/setup-buildx-resilient
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ inputs.username }}
+        password: ${{ inputs.token }}
+
+    - name: Extract Docker metadata
+      id: metadata
+      uses: docker/metadata-action@v6
+      with:
+        images: ${{ inputs.image }}
+        tags: |
+          type=raw,value=latest
+          type=raw,value=${{ inputs.version }}
+        labels: |
+          org.opencontainers.image.version=${{ inputs.version }}
+
+    - name: Publish Docker image to Docker Hub
+      uses: docker/build-push-action@v7
+      with:
+        context: ${{ inputs.context }}
+        file: ${{ inputs.file }}
+        push: true
+        tags: ${{ steps.metadata.outputs.tags }}
+        labels: ${{ steps.metadata.outputs.labels }}
+        build-args: |
+          NPM_PACKAGE_VERSION=${{ inputs.version }}

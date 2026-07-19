@@ -1,0 +1,3 @@
+- Fixed macOS desktop ad-hoc signing so the bundled Playwright browser keeps its valid framework seal on both architectures.
+- Made direct WASM and all desktop Rust builds reject warnings, with platform-specific code and intentional partial modules scoped correctly.
+- Bundled VS Code extension runtime dependencies instead of shipping thousands of `node_modules` files.

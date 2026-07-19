@@ -16,6 +16,7 @@ mod issue_730;
 mod issue_739;
 mod issue_742;
 mod issue_796;
+mod issue_798;
 mod release_publishing;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;

@@ -49,6 +49,7 @@ pub fn ensure_shared_memory_file(path: &std::path::Path) -> io::Result<()> {
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
     {
+        #[cfg(unix)]
         let existed = parent.exists();
         fs::create_dir_all(parent)?;
         #[cfg(unix)]
