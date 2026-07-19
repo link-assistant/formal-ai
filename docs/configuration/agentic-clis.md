@@ -81,6 +81,8 @@ formal-ai with --interactive opencode
 The model selector is `formalai/formal-ai`. The wrapper enables the Exa search
 bridge and otherwise passes OpenCode arguments through unchanged.
 
+## `opencode-vscode`
+
 The official `sst-dev.opencode` VS Code extension uses the same provider
 configuration. Install the extension and OpenCode CLI, then launch an isolated
 window with `formal-ai with opencode-vscode`. The `opencode-code` alias is
