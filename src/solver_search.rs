@@ -402,6 +402,7 @@ fn record_generated_tests(log: &mut EventLog, problem: &SearchProblem) {
     log.append("search:test:evaluates_to", problem.target.to_string());
 }
 
+#[allow(clippy::literal_string_with_formatting_args)]
 fn build_answer(
     prompt: &str,
     log: &mut EventLog,
@@ -416,12 +417,21 @@ fn build_answer(
     let template = seed::response_for("budget_search_solution", language.slug())
         .or_else(|| seed::response_for("budget_search_solution", "en"))
         .unwrap_or_default();
-    let body = template
-        .replace("{expression}", &solution.expression)
-        .replace("{target}", &problem.target.to_string())
-        .replace("{budget}", &budget.to_string())
-        .replace("{evaluations}", &solution.evaluations.to_string())
-        .replace("{trace_id}", &stable_id("search", prompt));
+    // The `{...}` tokens are seed template placeholders, not Rust format args;
+    // clippy's nursery lint mistakes `{budget}` for a captured binding because a
+    // local `budget` is in scope, so it is silenced for this literal substitution.
+    let substitutions = [
+        ("{expression}", solution.expression.clone()),
+        ("{target}", problem.target.to_string()),
+        ("{budget}", budget.to_string()),
+        ("{evaluations}", solution.evaluations.to_string()),
+        ("{trace_id}", stable_id("search", prompt)),
+    ];
+    let body = substitutions
+        .iter()
+        .fold(template, |acc, (placeholder, value)| {
+            acc.replace(placeholder, value)
+        });
     finalize_simple(
         prompt,
         log,
