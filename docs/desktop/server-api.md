@@ -240,6 +240,8 @@ The same loopback server can answer several agentic terminal clients:
 - `codex` uses `POST /api/openai/v1/responses` through the Responses wire API.
 - `opencode` and `agent` use `POST /api/openai/v1/chat/completions` through
   `@ai-sdk/openai-compatible`.
+- Cursor CLI uses the Streamable HTTP MCP endpoint at `POST /mcp` and the
+  `formal_ai_chat` tool because Cursor does not expose a custom model base URL.
 - `claude` uses the built-in Anthropic adapter at
   `POST /api/anthropic/v1/messages`.
 - Gemini-compatible clients use
@@ -264,6 +266,7 @@ command text:
 with-formal-ai codex "hi"
 with-formal-ai opencode run "hi"
 with-formal-ai agent -p "hi"
+with-formal-ai cursor -p "hi"
 with-formal-ai gemini -p "hi"
 with-formal-ai claude -p "hi"
 with-formal-ai qwen -p "hi"
@@ -280,6 +283,11 @@ and enables workspace trust. That prevents cached OAuth settings in
 For one-shot Agent CLI runs, the wrapper passes the OpenCode-compatible provider
 JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so it does not have to write
 the Agent config file before launching the command.
+
+For one-shot Cursor runs, the wrapper executes `cursor-agent` with an isolated
+home containing `.cursor/mcp.json`. The file registers the server's `/mcp`
+endpoint and is removed after Cursor exits. Interactive mode uses the same MCP
+configuration; headless mode adds Cursor's `-p` flag.
 
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
@@ -305,6 +313,7 @@ settings:
 with-formal-ai -g codex
 with-formal-ai -g opencode
 with-formal-ai -g agent
+with-formal-ai -g cursor
 with-formal-ai -g gemini
 with-formal-ai -g claude
 with-formal-ai -g qwen
@@ -318,7 +327,8 @@ The persistent files are `~/.codex/config.toml`,
 `~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed Formal AI block
-in `~/.profile` for environment-configured tools. Re-running `-g` is idempotent.
+in `~/.profile` for environment-configured tools, plus `~/.cursor/mcp.json`.
+Re-running `-g` is idempotent.
 
 Non-global runs never write these persistent targets. Agent CLI summarization is
 disabled by default with `--no-summarize-session`; pass `--summarize` (or

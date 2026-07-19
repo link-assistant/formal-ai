@@ -4,7 +4,7 @@ use std::fs;
 use std::net::TcpStream;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Child, Command};
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant};
 
 use clap::{Args as ClapArgs, ValueEnum};
 use serde_json::Value;
@@ -16,6 +16,14 @@ use crate::seed::{
     ModeArgPosition, ModelArgPosition,
 };
 use crate::DEFAULT_MODEL;
+
+mod session_files;
+mod url;
+use session_files::{
+    newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
+    TempConfigDir,
+};
+use url::{base_url_with_port, join_url_path};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
@@ -51,6 +59,7 @@ pub struct WithFormalAiArgs {
         default_value_t = false
     )]
     pub global: bool,
+
     /// Restore the backup created by a previous global configuration.
     #[arg(long, default_value_t = false)]
     pub undo: bool,
@@ -95,7 +104,7 @@ pub struct WithFormalAiArgs {
     #[arg(long, default_value = DEFAULT_MODEL)]
     pub model: String,
 
-    /// External CLI: codex, opencode, agent, gemini, claude, qwen, grok, or aider.
+    /// External CLI: codex, opencode, agent, cursor, gemini, claude, qwen, grok, or aider.
     #[arg(value_name = "TOOL")]
     pub tool: Option<String>,
 
@@ -125,28 +134,6 @@ struct RenderContext {
     model_catalog_path: String,
 }
 
-struct TempConfigDir {
-    path: PathBuf,
-}
-
-impl TempConfigDir {
-    fn new(tool: &str) -> Result<Self, Box<dyn Error>> {
-        let nanos = SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos();
-        let path = std::env::temp_dir().join(format!(
-            "formal-ai-{tool}-config-{}-{nanos}",
-            std::process::id()
-        ));
-        fs::create_dir_all(&path)?;
-        Ok(Self { path })
-    }
-}
-
-impl Drop for TempConfigDir {
-    fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.path);
-    }
-}
-
 struct ServerGuard {
     child: Child,
 }
@@ -171,6 +158,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         }
         return Ok(());
     }
+
     if args.all {
         return Err("--all is only valid with --global or --undo".into());
     }
@@ -282,6 +270,7 @@ fn render_context(
         _ => "",
     }
     .to_string();
+
     let mut context = RenderContext {
         protocol: protocol.to_string(),
         base_url,
@@ -316,6 +305,7 @@ fn run_ephemeral(
     let invocation = &integration.invocation;
     let mut context = context.clone();
     let mut temp_dirs = Vec::new();
+    let mut session_home = None;
     let mut command = Command::new(&integration.command);
     for env in &invocation.env {
         command.env(
@@ -346,6 +336,7 @@ fn run_ephemeral(
     }
     if !invocation.temp_home_env.is_empty() {
         let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
+        session_home = Some(temp.path.clone());
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
             let catalog_path = temp_scoped_path(&temp.path, &relative_catalog_path)?;
@@ -371,6 +362,18 @@ fn run_ephemeral(
         );
         temp_dirs.push(temp);
     }
+
+    let session_root = if invocation.session_root.is_empty() {
+        None
+    } else {
+        let base = session_home.map_or_else(user_home_dir, Ok)?;
+        Some(base.join(&invocation.session_root))
+    };
+    let session_before = session_root
+        .as_deref()
+        .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
+        .unwrap_or_default();
+
     let final_args = build_invocation_args(
         integration,
         user_args,
@@ -381,7 +384,24 @@ fn run_ephemeral(
     );
     command.args(final_args);
     let status = command.status()?;
-    drop(temp_dirs);
+    let session_file = session_root.as_deref().and_then(|root| {
+        newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
+    });
+    let server_log = std::env::var_os("FORMAL_AI_PROXY_LOG")
+        .map(PathBuf::from)
+        .filter(|path| path.exists())
+        .map(|path| fs::canonicalize(&path).unwrap_or(path));
+    print_session_files(integration, session_file.as_deref(), server_log.as_deref());
+    let preserve_temp = session_file
+        .as_deref()
+        .is_some_and(|path| temp_dirs.iter().any(|temp| path.starts_with(&temp.path)));
+    if preserve_temp {
+        for temp in temp_dirs {
+            temp.preserve();
+        }
+    } else {
+        drop(temp_dirs);
+    }
     if status.success() {
         return Ok(());
     }
@@ -709,6 +729,7 @@ fn set_json_string(
     let Some((last, parents)) = parts.split_last() else {
         return Err("empty JSON setting path".into());
     };
+
     let mut current = root;
     for part in parents {
         let object = current
@@ -871,51 +892,6 @@ fn write_file(path: &Path, contents: &str) -> Result<(), Box<dyn Error>> {
     }
     fs::write(path, contents)?;
     Ok(())
-}
-
-fn base_url_with_port(base_url: &str, port: Option<u16>) -> String {
-    let trimmed = base_url.trim().trim_end_matches('/').to_string();
-    let Some(port) = port else {
-        return trimmed;
-    };
-    replace_url_port(&trimmed, port)
-}
-
-fn replace_url_port(url: &str, port: u16) -> String {
-    let Some((scheme, rest)) = url.split_once("://") else {
-        return format!("{url}:{port}");
-    };
-    let (authority, path) = rest.split_once('/').unwrap_or((rest, ""));
-    let host = authority.strip_prefix('[').map_or_else(
-        || unbracketed_authority_host(authority),
-        |stripped| bracketed_authority_host(authority, stripped),
-    );
-    if path.is_empty() {
-        format!("{scheme}://{host}:{port}")
-    } else {
-        format!("{scheme}://{host}:{port}/{path}")
-    }
-}
-
-fn bracketed_authority_host(authority: &str, stripped: &str) -> String {
-    stripped.split_once(']').map_or_else(
-        || authority.to_string(),
-        |(inside, _after)| format!("[{inside}]"),
-    )
-}
-
-fn unbracketed_authority_host(authority: &str) -> String {
-    authority
-        .split_once(':')
-        .map_or_else(|| authority.to_string(), |(host, _)| host.to_string())
-}
-
-fn join_url_path(base_url: &str, endpoint_path: &str) -> String {
-    let base = base_url.trim_end_matches('/');
-    if base.ends_with(endpoint_path) {
-        return base.to_string();
-    }
-    format!("{base}/{}", endpoint_path.trim_start_matches('/'))
 }
 
 fn ensure_trailing_newline(mut value: String) -> String {

@@ -78,6 +78,10 @@ pub struct ClientIntegrationInvocation {
     pub model_catalog_path: String,
     pub model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
+    pub session_root: String,
+    pub session_file_suffix: String,
+    pub resume_command: String,
+    pub session_id_query_args: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -255,6 +259,10 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
             "model_arg_position" => {
                 invocation.model_arg_position = ModelArgPosition::from_seed(&child.id);
             }
+            "session_root" => invocation.session_root.clone_from(&child.id),
+            "session_file_suffix" => invocation.session_file_suffix.clone_from(&child.id),
+            "resume_command" => invocation.resume_command.clone_from(&child.id),
+            "session_id_query_arg" => invocation.session_id_query_args.push(child.id.clone()),
             _ => {}
         }
     }
