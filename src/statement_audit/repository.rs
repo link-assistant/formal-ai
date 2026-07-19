@@ -19,7 +19,15 @@ impl RepositoryCorpus {
         for path in paths {
             let normalized = path.to_string_lossy().replace('\\', "/");
             corpus.tracked_paths.insert(normalized.clone());
-            match fs::read(root.join(&path)) {
+            let absolute = root.join(&path);
+            let metadata = fs::symlink_metadata(&absolute);
+            if !metadata
+                .is_ok_and(|metadata| metadata.is_file() && !metadata.file_type().is_symlink())
+            {
+                corpus.skipped_paths.push(normalized);
+                continue;
+            }
+            match fs::read(absolute) {
                 Ok(bytes) if !bytes.contains(&0) => match String::from_utf8(bytes) {
                     Ok(content) => corpus
                         .documents
@@ -70,14 +78,17 @@ fn walk_directory(root: &Path, directory: &Path, paths: &mut Vec<PathBuf>) {
     };
     for entry in entries.filter_map(Result::ok) {
         let path = entry.path();
-        if path.is_dir() {
+        let Ok(file_type) = entry.file_type() else {
+            continue;
+        };
+        if file_type.is_dir() {
             if !matches!(
                 entry.file_name().to_str(),
                 Some(".git" | "target" | "node_modules")
             ) {
                 walk_directory(root, &path, paths);
             }
-        } else if path.is_file() {
+        } else if file_type.is_file() {
             if let Ok(relative) = path.strip_prefix(root) {
                 paths.push(relative.to_path_buf());
             }

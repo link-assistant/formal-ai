@@ -34,8 +34,11 @@ fn repository_audit_falls_back_to_the_tree_for_an_untracked_git_fixture() {
         std::process::id()
     ));
     fs::create_dir_all(&root).expect("fixture directory");
-    fs::write(root.join("README.md"), "The implementation is inspectable.\n")
-        .expect("fixture prose");
+    fs::write(
+        root.join("README.md"),
+        "The implementation is inspectable.\n",
+    )
+    .expect("fixture prose");
     let status = Command::new("git")
         .arg("init")
         .arg("--quiet")
@@ -49,6 +52,50 @@ fn repository_audit_falls_back_to_the_tree_for_an_untracked_git_fixture() {
 
     assert_eq!(snapshot.documents.len(), 1, "{snapshot:#?}");
     assert_eq!(snapshot.documents[0].path, "README.md");
+}
+
+#[cfg(unix)]
+#[test]
+fn repository_audit_does_not_follow_tracked_symlinks_outside_the_root() {
+    use std::os::unix::fs::symlink;
+
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock after epoch")
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-661-symlink-{}-{nonce}",
+        std::process::id()
+    ));
+    let outside = std::env::temp_dir().join(format!(
+        "formal-ai-issue-661-outside-{}-{nonce}.md",
+        std::process::id()
+    ));
+    fs::create_dir_all(&root).expect("fixture directory");
+    fs::write(&outside, "External content must stay outside the audit.\n")
+        .expect("external fixture");
+    symlink(&outside, root.join("README.md")).expect("fixture symlink");
+    let init = Command::new("git")
+        .args(["init", "--quiet"])
+        .arg(&root)
+        .status()
+        .expect("git available");
+    assert!(init.success());
+    let add = Command::new("git")
+        .args(["-C"])
+        .arg(&root)
+        .args(["add", "README.md"])
+        .status()
+        .expect("git available");
+    assert!(add.success());
+
+    let snapshot = RepositoryCorpus::from_repository(&root).expect("repository snapshot");
+    fs::remove_dir_all(&root).expect("remove isolated fixture");
+    fs::remove_file(&outside).expect("remove external fixture");
+
+    assert!(snapshot.documents.is_empty(), "{snapshot:#?}");
+    assert!(snapshot.tracked_paths.contains("README.md"));
+    assert_eq!(snapshot.skipped_paths, ["README.md"]);
 }
 
 #[test]
@@ -382,9 +429,7 @@ fn committed_case_study_is_a_byte_replay_of_the_generalized_core() {
     let without_external_evidence = audit_corpus(&fixture, &[], AuditConfig::default());
     assert_eq!(
         without_external_evidence.to_links_notation(),
-        include_str!(
-            "../../docs/case-studies/issue-661/agent-cli-evidence/statement-audit.lino"
-        ),
+        include_str!("../../docs/case-studies/issue-661/agent-cli-evidence/statement-audit.lino"),
         "the real Agent CLI result must stay reproducible by the public core",
     );
 
@@ -398,9 +443,9 @@ fn committed_case_study_is_a_byte_replay_of_the_generalized_core() {
         "captured original-source evidence must replay byte-for-byte",
     );
     assert!(replay.contains("https://www.w3.org/TR/prov-o/"));
-    assert!(replay.contains(
-        "sha256:6b96671ab84faf12ce3f041aca12c3f93a6df2ed242348810743179a68e69555"
-    ));
+    assert!(
+        replay.contains("sha256:6b96671ab84faf12ce3f041aca12c3f93a6df2ed242348810743179a68e69555")
+    );
     assert!(replay.contains("effective_mass \"0\""));
     assert!(replay.contains("disposition \"issue_candidate\""));
 }

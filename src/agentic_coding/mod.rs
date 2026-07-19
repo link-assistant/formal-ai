@@ -111,6 +111,4 @@ pub use routing_learning::{
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
 pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};
-pub use statement_audit::{
-    is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH,
-};
+pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};
