@@ -111,12 +111,13 @@ fn compatible_shell_fallback_quotes_each_file_path() {
 
 #[test]
 fn capability_detection_has_supported_language_parity() {
-    for (prompt, tool) in [
-        ("найди файлы по шаблону *.rs", "glob"),
-        ("इस निर्देशिका की सामग्री दिखाएँ", "list_directory"),
-        ("创建这个更改的待办列表", "todo_write"),
-        ("поручи эту задачу подагенту", "task"),
+    for (prompt, tool, language) in [
+        ("search the local code for marker", "grep", "English"),
+        ("найди файлы по шаблону *.rs", "glob", "Russian"),
+        ("इस निर्देशिका की सामग्री दिखाएँ", "list_directory", "Hindi"),
+        ("创建这个更改的待办列表", "todo_write", "Chinese"),
+        ("поручи эту задачу подагенту", "task", "Russian"),
     ] {
-        assert_eq!(routed_tool(prompt, &[tool]), tool, "{prompt}");
+        assert_eq!(routed_tool(prompt, &[tool]), tool, "{language}: {prompt}");
     }
 }
