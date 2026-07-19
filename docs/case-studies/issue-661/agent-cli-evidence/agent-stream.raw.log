@@ -210,4 +210,3 @@ AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS 
 {"type":"log","level":"info","timestamp":"2026-07-19T15:23:48.402Z","service":"state","key":"/tmp/tmp.M8PMcpFE2q","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-07-19T15:23:48.403Z","service":"default","hasError":false,"uptimeSeconds":9,"message":"Agent exiting"}
-
