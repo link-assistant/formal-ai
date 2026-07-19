@@ -312,6 +312,23 @@ impl Meaning {
 /// returned by [`Lexicon::arithmetic_normalization_tables`] share this shape.
 pub type WordValueTable = Vec<(String, String)>;
 
+/// One arithmetic operator grounded in the seed: its language-neutral `symbol`
+/// value surface (`+`, `-`, `*`, `/`, `%`) paired with its `spelled` surfaces
+/// across every language.
+///
+/// [`Lexicon::arithmetic_operators`] materialises these in declaration order so
+/// a recogniser can build its operator toolbox from the data — division and
+/// modulo appear the moment the seed lists them, and no per-language operator
+/// table lives in Rust (issue #386).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArithmeticOperator {
+    /// The single non-alphanumeric value surface — the notation symbol.
+    pub symbol: char,
+    /// Every spelled surface (words carrying an alphabetic character) across all
+    /// languages, in declaration order.
+    pub spelled: Vec<String>,
+}
+
 /// The parsed set of meanings.
 #[derive(Debug, Clone, Default)]
 pub struct Lexicon {
@@ -550,6 +567,36 @@ impl Lexicon {
         });
         phrases.dedup();
         (tokens, phrases)
+    }
+
+    /// Every arithmetic operator grounded in the seed, in declaration order.
+    ///
+    /// Each [`ArithmeticOperator`] pairs an operator meaning's symbol value
+    /// surface with its spelled surfaces across every language. A meaning that
+    /// carries [`ROLE_ARITHMETIC_OPERATOR_WORD`](super::roles::ROLE_ARITHMETIC_OPERATOR_WORD)
+    /// but lists no single-character symbol is skipped. Declaration order is
+    /// preserved so a caller that indexes the list with a seeded pseudo-random
+    /// stream (the budget-driven search stage) stays deterministic across runs.
+    #[must_use]
+    pub fn arithmetic_operators(&self) -> Vec<ArithmeticOperator> {
+        let mut operators = Vec::new();
+        for meaning in self.meanings_with_role(super::roles::ROLE_ARITHMETIC_OPERATOR_WORD) {
+            let mut symbol = None;
+            let mut spelled = Vec::new();
+            for word in meaning.words() {
+                let mut chars = word.chars();
+                match (chars.next(), chars.next()) {
+                    // A one-character surface with no alphanumeric content is the
+                    // notation symbol; everything else is a spelled surface.
+                    (Some(only), None) if !only.is_alphanumeric() => symbol = Some(only),
+                    _ => spelled.push(word.to_string()),
+                }
+            }
+            if let Some(symbol) = symbol {
+                operators.push(ArithmeticOperator { symbol, spelled });
+            }
+        }
+        operators
     }
 
     /// Distinct surface words contributed by every meaning carrying `role`,

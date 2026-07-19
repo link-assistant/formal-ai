@@ -703,6 +703,11 @@ pub fn config_from_env() -> SolverConfig {
             config.cache_ttl_seconds = parsed;
         }
     }
+    if let Ok(value) = std::env::var("FORMAL_AI_COMPUTE_BUDGET") {
+        if let Ok(parsed) = value.trim().parse::<u32>() {
+            config.compute_budget = parsed;
+        }
+    }
     if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
         .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
     {

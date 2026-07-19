@@ -420,3 +420,31 @@ pub const ROLE_CALCULATION_DOMAIN_TERM: &str = "calculation_domain_term";
 /// `logarithm`, `natural_logarithm`); read by the Rust calculation router and the
 /// JS worker.
 pub const ROLE_MATH_FUNCTION_NAME: &str = "math_function_name";
+/// Semantic role: the "combine the numbers" framing of a reachability search.
+///
+/// The word that signals a prompt is about combining given *numbers* — "number"
+/// (en), the Cyrillic stem "числ" (числа / чисел / числами), Devanagari "संख्या",
+/// and CJK "数字". Matched as a raw substring so every inflected form is caught.
+/// `crate::solver_search` requires it *together with* [`ROLE_REACHABILITY_SEARCH_CUE`]
+/// to recognise a budget-driven reachability search, so a plain calculation never
+/// reaches that path. Carried by `reachability_operand_framing`; read by the Rust
+/// solver's budget-search stage.
+pub const ROLE_REACHABILITY_OPERAND_FRAMING: &str = "reachability_operand_framing";
+/// Semantic role: the search verb of a reachability problem.
+///
+/// "find" / "combine" / "reach" / "make" / "express" / "arrange" and their
+/// translations, recorded as bare stems and matched as raw substrings so inflected
+/// forms (найдите, संयोजित) still hit. Read together with
+/// [`ROLE_REACHABILITY_OPERAND_FRAMING`] to gate the budget-search stage.
+/// Carried by `reachability_search_action`; read by the Rust solver's budget-search
+/// stage.
+pub const ROLE_REACHABILITY_SEARCH_CUE: &str = "reachability_search_cue";
+/// Semantic role: the target-value marker of a reachability problem.
+///
+/// "equals" / "equal to" / "results in" and their translations ("равно", "बराबर",
+/// "等于", …), recorded as surfaces and matched as raw substrings. The byte
+/// position nearest such a marker anchors which integer in the prompt is the
+/// *target* the search must reach, so the operand-then-target and
+/// target-then-marker orders both resolve without a language branch. Carried by
+/// `reachability_target_marker`; read by the Rust solver's budget-search stage.
+pub const ROLE_REACHABILITY_TARGET_MARKER: &str = "reachability_target_marker";

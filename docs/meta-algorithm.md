@@ -663,3 +663,87 @@ Because proposal input cannot choose its runner, floor, rate, or result, a
 proposal cannot promote itself by fabricating evidence. The seed edit is written
 only when fresh canonical output clears every policy and the Formal AI Agent
 authors the exact requested bytes on a local review branch.
+
+## The budget-driven search meta-algorithm (issue #662)
+
+Every handler above reaches an answer by *recognising* a request and *reusing* a
+catalogued method. Issue #662 (journey F4) covers the case where neither applies:
+`GOALS.md` asks that, "when no reusable part exists, combine reasoning, random
+search, and evolutionary search according to the available compute budget instead
+of giving up". This is the **budget-driven search** synthesis stage. Deterministic
+reuse and rule reasoning run first in step 7 of the loop; only when they produce no
+candidate does [`src/solver_search.rs`](../src/solver_search.rs)`::try_budget_search`
+activate. It recognises an arithmetic-reachability problem ("combine the numbers …
+to reach TARGET"), derives its operator toolbox from the seed, and evolves candidate
+compositions against the generated equality tests as the fitness function. This
+section is grounded by
+[`data/meta/budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) and
+pinned by
+[`tests/unit/specification/budget_search_meta_algorithm.rs`](../tests/unit/specification/budget_search_meta_algorithm.rs)
+and [`tests/unit/budget_search.rs`](../tests/unit/budget_search.rs).
+
+### The nine steps
+
+1. **Recognise by role** — `parse_search_problem` gates on the seed roles
+   `reachability_operand_framing` and `reachability_search_cue`, read from
+   [`data/seed/meanings-search.lino`](../data/seed/meanings-search.lino) by meaning,
+   never a hardcoded per-language phrase table (issue #386). A plain calculation
+   never reaches this path.
+2. **Anchor the target** — `target_marker_positions` reads the
+   `reachability_target_marker` surfaces from the seed and takes the integer nearest
+   a marker as the target; the rest are operands. Both `equals 26` and `26 के बराबर`
+   orders work without naming a keyword in Rust.
+3. **Derive the operators** — `parse_ops` builds the toolbox from
+   `seed::Lexicon::arithmetic_operators` (every `arithmetic_operator_word` meaning in
+   [`data/seed/meanings-calculator.lino`](../data/seed/meanings-calculator.lino)), so
+   division and modulo joined the set the moment the seed listed them; no operator
+   table lives in code.
+4. **Generate the fitness tests** — `record_generated_tests` emits the equality
+   constraints (each number once, only the allowed operators, evaluates to the
+   target) that `score` optimises against.
+5. **Seed determinism** — `seed_from_prompt` hashes the impulse (FNV-1a) into the
+   `splitmix64` `Prng`, so the same prompt yields the same search path and answer
+   across runs and solver instances.
+6. **Random search** — half the compute budget samples random compositions, keeping
+   the best as the seed population.
+7. **Evolutionary search** — the remaining budget crosses over and mutates the kept
+   population (`breed`, `insert_population`) until a composition reaches fitness 0 or
+   the budget is exhausted.
+8. **Propose a gated skill** — on success, `record_skill_proposal` records the
+   composition as a `candidate_skill` in status `proposed`, `promotable false`
+   (proposal-only auto-learning, R21/R340). The `search:skill:promotable` count is
+   always `0`: nothing is auto-promoted without review (C3/R13).
+9. **Decline with evidence** — on exhaustion or budget `0`, the stage records
+   `search:exhausted` and returns, leaving its `search:` evidence attached so the
+   honest unknown-reasoning reply takes over and "why did you answer that?" still
+   explains the attempted search path.
+
+### What the recipe records
+
+| Record kind | What it captures |
+| --- | --- |
+| `meta_step` | the nine ordered steps and the source each was produced from |
+| `meta_role` | the three reachability trigger roles plus the operator-vocabulary role |
+| `meta_grounding` | the external Wikidata entity each meaning is grounded in (with its checked-in cache) |
+| `meta_function` | the recognise/derive/generate/search/propose functions and their source files |
+| `meta_integration` | the step-7 call site plus the `--compute-budget` flag and `FORMAL_AI_COMPUTE_BUDGET` variable |
+| `meta_test` | the unit suite and this grounding spec that pin the behaviour |
+
+### Running it
+
+```sh
+# Solve a reachability puzzle via budget-driven search (default budget 512):
+formal-ai chat "Using the numbers 3, 5, and 7 with the operations + and *, find an expression that equals 26."
+
+# Raise or lower the compute budget (0 disables the search):
+FORMAL_AI_COMPUTE_BUDGET=256 formal-ai chat "…"
+formal-ai chat --compute-budget 256 "…"
+
+# Verify the budget-search recipe still matches the live source:
+cargo test budget_search
+```
+
+Because recognition is by meaning and the operator toolbox is seed data, the whole
+reach-a-target class widens without touching Rust: add the trigger surfaces and the
+operator meanings to the seed, and the same recogniser, deterministic search,
+fitness scoring, and proposal-only auto-learning apply unchanged.

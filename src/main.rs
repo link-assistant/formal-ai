@@ -65,6 +65,12 @@ enum Command {
         /// their parent. The same trace the web UI and API surfaces expose.
         #[arg(long, default_value_t = false)]
         thinking: bool,
+
+        /// Compute budget for the step-7 random/evolutionary search stage
+        /// (issue #662), counted in candidate evaluations. Overrides
+        /// `FORMAL_AI_COMPUTE_BUDGET`. `0` disables the search.
+        #[arg(long, env = "FORMAL_AI_COMPUTE_BUDGET")]
+        compute_budget: Option<u32>,
     },
     Dataset,
     Serve {
@@ -515,6 +521,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         format: OutputFormat::Text,
         definition_fusion: None,
         thinking: false,
+        compute_budget: None,
     });
 
     match command {
@@ -523,7 +530,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             format,
             definition_fusion,
             thinking,
-        } => run_chat(&prompt, format, definition_fusion, thinking)?,
+            compute_budget,
+        } => run_chat(&prompt, format, definition_fusion, thinking, compute_budget)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Memory { action } => run_memory(action)?,
         Command::SharedDialog { action } => run_shared_dialog(action)?,
@@ -676,11 +684,17 @@ struct TelegramRunArgs {
     port: u16,
 }
 
-fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> UniversalSolver {
+fn solver_for_chat(
+    definition_fusion: Option<DefinitionFusionMode>,
+    compute_budget: Option<u32>,
+) -> UniversalSolver {
     let mut config = SolverConfig::from_env();
     config.execution_surface = ExecutionSurface::Cli;
     if let Some(mode) = definition_fusion {
         config.definition_fusion_by_default = matches!(mode, DefinitionFusionMode::Auto);
+    }
+    if let Some(budget) = compute_budget {
+        config.compute_budget = budget;
     }
     UniversalSolver::new(config)
 }
@@ -717,8 +731,9 @@ fn run_chat(
     format: OutputFormat,
     definition_fusion: Option<DefinitionFusionMode>,
     thinking: bool,
+    compute_budget: Option<u32>,
 ) -> Result<(), Box<dyn Error>> {
-    let solver = solver_for_chat(definition_fusion);
+    let solver = solver_for_chat(definition_fusion, compute_budget);
     match format {
         OutputFormat::Text => {
             let response = solver.solve(prompt);

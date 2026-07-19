@@ -731,6 +731,7 @@ fn assert_case_passes_by_derivation(case: &BenchmarkCase, links_notation: &str) 
         "gsm8k" => "composition:remainder",
         "math" => "composition:substitution",
         "bigbench_object_counting" => "composition:count",
+        "arithmetic_reachability_search" => "search:solution",
         source => panic!("missing derivation marker rule for benchmark source {source}"),
     };
     assert!(
