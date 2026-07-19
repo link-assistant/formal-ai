@@ -1386,6 +1386,16 @@ jobs:
           PORT: 8883
         run: experiments/agent_cli_e2e/run_issue_660_learning.sh
 
+      - name: "Run agent CLI E2E — handler-precedence auto-learning (issue #663)"
+        # Formal AI serves as the model provider while the real Agent CLI
+        # executes a differently-worded version of issue #663's learning task and
+        # re-derives the specialized-handler precedence itself. The authored
+        # report must match the byte-for-byte committed evidence.
+        timeout-minutes: 5
+        env:
+          PORT: 8885
+        run: experiments/agent_cli_e2e/run_issue_663_learning.sh
+
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         # The real Agent CLI delegates the repository scan to the public release
         # binary in its own workspace, then consumes the command result before

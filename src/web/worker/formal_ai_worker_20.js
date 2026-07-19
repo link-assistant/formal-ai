@@ -575,8 +575,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     // requested by a program_request verb ("написать"/"write"), a bare
     // "напиши … playwright скрипт" now also looks like a write_program with no
     // task — so the Playwright handler must win first. This mirrors the Rust
-    // dispatch, where try_playwright_script runs ahead of the SPECIALIZED_HANDLERS
-    // group that owns write_program (src/solver.rs).
+    // dispatch, where try_playwright_script runs ahead of the specialized-handler
+    // group that owns write_program (precedence in data/seed/handler-precedence.lino).
     {
       name: "tryPlaywrightScript",
       run: () => tryPlaywrightScript(prompt, preferences, language),

@@ -210,7 +210,30 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     };
 
     let content = clean_content(content_span?)?;
+    // A recovered payload that is *only* a non-referential subject ("save it to
+    // FILE", "write this to FILE") names no literal content — the pronoun points
+    // back at content the request expects the recipe to still compose. Treating
+    // it as a literal write both fabricates the wrong file (the string "it") and
+    // steals the request from the keyword recipe that would author the real
+    // artifact, so fall through instead (issue #663).
+    if is_non_referential_content(&content) {
+        return None;
+    }
     Some((target, content))
+}
+
+/// Whether a recovered write payload is nothing but a non-referential subject —
+/// a bare pronoun/function word ("it", "this", "that", …) that refers back to
+/// context rather than naming literal content. The surfaces carry the
+/// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role; only whole-word
+/// ([`Slot::Bare`]) forms are rejected, so legitimate content that merely
+/// *begins* with such a word ("to be or not to be") is still accepted.
+fn is_non_referential_content(content: &str) -> bool {
+    let lower = content.to_lowercase();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
+        .iter()
+        .any(|form| form.slot() == Slot::Bare && lower == form.text)
 }
 
 /// Recover the `(target, old, new)` of a file-edit request from its wording
