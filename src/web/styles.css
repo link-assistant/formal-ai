@@ -606,6 +606,40 @@
   background: var(--fa-material-user);
 }
 
+/* Issue #557 (PR #643, comment 39): the `mui-flat` skin renders the composer
+ * controls as real MUI IconButtons (framework switch to MUI) but should keep
+ * the flat Chakra look. MUI injects its emotion reset (`.MuiIconButton-root {
+ * background-color: transparent }`, specificity 0,1,0) into <head> AFTER
+ * styles.css, so it ties and beats the base `.send-button`/`.composer-action-
+ * button` fills (also 0,1,0) — in light mode the send arrow lost its accent
+ * fill and the attach circle its surface, reading as bare "wild" icons. The
+ * dark theme already had a compound `:root[data-theme="dark"] .send-button`
+ * (0,3,0) rule that out-specified MUI, which is why only light broke. These
+ * skin-scoped rules (0,2,0) restore the flat affordance in every theme. */
+.ui-skin-mui-flat .composer-action-button {
+  border: 1px solid var(--fa-composer-control-border);
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+}
+
+.ui-skin-mui-flat .composer-action-button:hover {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.ui-skin-mui-flat .send-button {
+  border: 1px solid var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
+  color: #ffffff;
+}
+
+.ui-skin-mui-flat .send-button:disabled {
+  border-color: var(--fa-composer-control-border);
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+  opacity: 0.55;
+}
+
 .ui-skin-contrast .topbar,
 .ui-skin-contrast .context-panel,
 .ui-skin-contrast .composer-grid,
