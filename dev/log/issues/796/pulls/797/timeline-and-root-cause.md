@@ -190,19 +190,26 @@ makes the placeholder unpredictable in the other direction too.
 | R8 | Report issues upstream where applicable | See §7 |
 | R9 | Add debug output / verbose mode, default off | `INSTALL_NODE_DEPENDENCIES_VERBOSE`, off by default, test-enforced |
 
-## 7. Upstream reports to file
+## 7. Upstream reports filed
 
-1. **`@link-assistant/web-capture`** — bump `archiver` (or override `glob` to
-   13.x) to clear `glob@10.5.0` from both workspaces at source.
-2. **All three pipeline templates** — the Rust template's `release.yml` has no
-   top-level `permissions:` block, so jobs inherit the repository default
-   `GITHUB_TOKEN` scope. formal-ai fixes this with `permissions: contents:
-   read`.
-3. **All three templates** — `cargo install rust-script` is unretried;
-   formal-ai's `scripts/install-rust-script.sh` short-circuits, uses `--locked`
-   and retries with backoff.
-4. **Rust/Python templates** — `codecov/codecov-action` pinned to `@v5`/`@v4`
-   (v4 deprecated); formal-ai is on `@v7`.
+| Report | Repository | Verified by |
+| --- | --- | --- |
+| [web-capture#144](https://github.com/link-assistant/web-capture/issues/144) — `archiver@7` pulls deprecated `glob@10.5.0` | `link-assistant/web-capture` | `js/package.json` declares `archiver: ^7.0.1`; registry shows `archiver-utils@5.0.2` still declares `glob ^10.0.0` |
+| [rust#97](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/97), [js#104](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/104), [python#33](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/33) — no top-level `permissions:` in `release.yml` | all three templates | `grep '^permissions:'` returns nothing in each |
+| [rust#98](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/98) — `cargo install rust-script` unretried/unlocked | Rust template only | three call sites at `release.yml:76,101,124` |
+| [python#34](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/34), [rust#99](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/99) — outdated `codecov/codecov-action` | Python (`@v4`, deprecated), Rust (`@v5`) | current major is `v7.0.0`, released 2026-06-07 |
+
+**Correction to an earlier draft of this analysis.** It claimed `cargo install
+rust-script` was unretried in *all three* templates. Verified against the actual
+files: only the Rust template invokes it at all. The report was filed against
+the Rust template only.
+
+**A concrete fix exists for the glob chain.** `archiver@8.0.0` drops the
+`archiver-utils` dependency entirely and replaces the glob-based walker with
+`readdir-glob@^3`, whose only dependency is `minimatch@^10`. There is no `glob`
+anywhere in its tree, so bumping web-capture to `archiver@^8.0.0` removes the
+warning at source rather than suppressing it. The one caveat is that
+`archiver@8` requires `node >= 18`, noted in the upstream report.
 
 ## 8. Regression coverage
 

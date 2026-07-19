@@ -39,7 +39,10 @@ Remaining findings:
 | D | No multi-line `run:` block in `release.yml` sets `set -euo pipefail`; `desktop-release.yml` does (177, 245, 335, 381, 431). Piped steps can mask failures. | `release.yml` |
 | E | Bare `if: always()` at three sites; the repo uses the preferred `!cancelled()` elsewhere | release.yml:727,939,1066 |
 
-## 3. Fixes here that the templates still lack — report upstream
+## 3. Fixes here that the templates still lack — reported upstream
+
+All items below have been filed; links and verification commands are in
+`timeline-and-root-cause.md` §7.
 
 1. **Rust template `release.yml` has no top-level `permissions:` block at all**
    (goes `on:` → `concurrency:`). Jobs inherit the repository default
@@ -47,12 +50,15 @@ Remaining findings:
    `release.yml:32-33`. The js/python templates set it in secondary workflows
    but **not** in their `release.yml` either. File against all three; Rust is
    the worst case.
-2. **`cargo install rust-script` is unretried in all templates.** This repo
-   replaced it with `scripts/install-rust-script.sh` (short-circuits if
-   present, `--locked`, 3 retries with backoff) — consistent with the templates
-   already setting `CARGO_NET_RETRY: '10'`.
+2. **`cargo install rust-script` is unretried and unlocked** at `release.yml:76,101,124`
+   in the **Rust template only** — verified that the js/python templates never
+   invoke it, correcting an earlier draft of this document that said all three.
+   This repo replaced it with `scripts/install-rust-script.sh` (short-circuits
+   if present, `--locked`, 3 retries with backoff) — consistent with the
+   templates already setting `CARGO_NET_RETRY: '10'`.
 3. **Outdated codecov action**: rust template `@v5`, python template `@v4`
-   (deprecated); this repo is on `@v7`.
+   (deprecated — last major on the retired bash uploader); current major is
+   `v7.0.0` (2026-06-07) and this repo is on `@v7`.
 4. **No rustdoc validation in the Rust template.** This repo gates releases on
    `cargo doc` with `RUSTDOCFLAGS: -D warnings` plus a `DOCS_RS=1` profile
    (`release.yml:200-215`). The template deploys docs but never lints them, so
