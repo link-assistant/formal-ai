@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Q376": {
+      "type": "item",
+      "id": "Q376",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "clock"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घडी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "時鐘"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "instrument that measures the passage of time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "прибор для измерения времени"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "समय दीखनेका वस्"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可報時的儀器"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "chronoscope"
+          },
+          {
+            "language": "en",
+            "value": "watch"
+          },
+          {
+            "language": "en",
+            "value": "timepiece"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "хронометр"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "घड़ी"
+          },
+          {
+            "language": "hi",
+            "value": "क्लॉक"
+          },
+          {
+            "language": "hi",
+            "value": "समयमापी यंत्र"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "时钟"
+          },
+          {
+            "language": "zh",
+            "value": "钟"
+          },
+          {
+            "language": "zh",
+            "value": "鐘"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q21546392": {
+      "type": "item",
+      "id": "Q21546392",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "garlic"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "чеснок"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लहसुन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "大蒜"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "culinary ingredient (for the species use Q23400)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "как пищевой продукт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पाक सामग्री"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "烹饪佐料"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "head of garlic"
+          },
+          {
+            "language": "en",
+            "value": "bulb of garlic"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "головка чеснока"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "蒜"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

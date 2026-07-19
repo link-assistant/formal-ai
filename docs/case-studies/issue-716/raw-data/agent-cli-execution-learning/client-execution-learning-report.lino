@@ -1,0 +1,98 @@
+client_execution_learning_report
+  issue "716"
+  decision "awaiting_human_review"
+  promotion_gate "protocol_matrix_presentation_variations_and_agent_cli_e2e_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "7"
+  validation_warning_count "0"
+  multi_hop_seed "observation:presentation-coupling"
+  multi_hop_recall "observation:presentation-coupling"
+  learned_expression_01
+    id "observation:presentation-coupling"
+    text "message
+user
+Client-side execution was inferred by scraping Check command and Run command labels from a rendered answer."
+    reads "8"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "9"
+    qualifiers "conversation_id=issue-716|kind=message|role=user"
+    validation "aligned"
+  learned_expression_02
+    id "lesson:typed-execution-artifact"
+    text "learning_amendment
+assistant
+Carry language, source, path, and ordered commands as typed symbolic data from the selected program rule to protocol planning.
+observation:follow-up-source"
+    reads "0"
+    writes "4"
+    incoming_links "2"
+    outgoing_links "1"
+    retention_score "7"
+    qualifiers "conversation_id=issue-716|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_03
+    id "observation:workspace-ownership"
+    text "message
+user
+An HTTP response described server-private execution while the requesting agentic client workspace remained unchanged."
+    reads "6"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "7"
+    qualifiers "conversation_id=issue-716|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:client-capability"
+    text "message
+user
+The Agent CLI advertised write and shell capabilities but Formal AI returned prose instead of structured tool calls."
+    reads "5"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "6"
+    qualifiers "conversation_id=issue-716|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:follow-up-source"
+    text "message
+user
+A follow-up output edit changed presentation without reliably changing the source artifact sent to the client."
+    reads "4"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "6"
+    qualifiers "conversation_id=issue-716|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "lesson:side-effect-boundary"
+    text "learning_amendment
+assistant
+HTTP planning must emit only advertised client capabilities; embedded execution remains restricted to explicitly local isolated surfaces.
+lesson:typed-execution-artifact"
+    reads "0"
+    writes "3"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "4"
+    qualifiers "conversation_id=issue-716|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_07
+    id "lesson:presentation-independence"
+    text "learning_amendment
+assistant
+Human-facing wording and localization may change without altering executable intent because protocol adapters consume the typed artifact.
+lesson:typed-execution-artifact"
+    reads "0"
+    writes "2"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "3"
+    qualifiers "conversation_id=issue-716|kind=learning_amendment|role=assistant"
+    validation "aligned"

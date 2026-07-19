@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_9e780b96f1b736e7"
+  goal "Add a minimal Node regression test for issue 759. Create desktop/scripts/engine-manager.test.mjs and add it to the desktop npm test command. The test must require ../lib/engine-manager.cjs and prove: out-of-box is always available; installed agent, codex, and claude commands are detected; agent is the default when installed; out-of-box is the default when agent is absent; an available saved selection wins; and an unavailable saved selection is ignored. Do not implement engine-manager.cjs or change production behavior. Run the new test to capture the expected failing state, then stop."
+  target "desktop/scripts/engine-manager.test.mjs"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_6c47a10e10bcc717"
+  step 2
+    capability "Write"
+    action "write the requested content to desktop/scripts/engine-manager.test.mjs"
+    expected_evidence "workspace file desktop/scripts/engine-manager.test.mjs"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "desktop engine manager regression"
+    command "cat desktop/scripts/engine-manager.test.mjs"
+  verification_command "cat desktop/scripts/engine-manager.test.mjs"

@@ -77,6 +77,28 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
     } else {
         incoming.evidence.clone()
     };
+    let payload_changed = [
+        (&base.kind, &incoming.kind),
+        (&base.role, &incoming.role),
+        (&base.intent, &incoming.intent),
+        (&base.tool, &incoming.tool),
+        (&base.inputs, &incoming.inputs),
+        (&base.outputs, &incoming.outputs),
+        (&base.content, &incoming.content),
+        (&base.sent_at, &incoming.sent_at),
+        (&base.demo_label, &incoming.demo_label),
+        (&base.conversation_id, &incoming.conversation_id),
+        (&base.conversation_title, &incoming.conversation_title),
+    ]
+    .iter()
+    .any(|(left, right)| right.as_ref().is_some_and(|value| !value.is_empty()) && left != right)
+        || (!incoming.evidence.is_empty() && base.evidence != incoming.evidence);
+    let observed_writes = base.write_count.max(1).max(incoming.write_count.max(1));
+    let write_count = if payload_changed && incoming.write_count <= base.write_count {
+        observed_writes.saturating_add(1)
+    } else {
+        observed_writes
+    };
     MemoryEvent {
         id: base.id.clone(),
         kind: pick(base.kind.as_ref(), incoming.kind.as_ref()),
@@ -100,20 +122,19 @@ pub fn merge_event(base: &MemoryEvent, incoming: &MemoryEvent) -> MemoryEvent {
         // Access counts are monotone per event; the larger side has seen more
         // reads, so max is the lossless merge.
         access_count: base.access_count.max(incoming.access_count),
+        // A peer can bring a newer monotone count. Legacy/uncounted edits are
+        // recognized from their changed payload and become one durable write.
+        write_count,
     }
 }
 
 /// Resolve the shared memory log path the server reads/writes for sync.
 ///
-/// Honours `FORMAL_AI_MEMORY_PATH`; returns `None` when sync is not configured
-/// (the endpoints then operate on an empty, in-memory log so they never panic).
+/// Honours `FORMAL_AI_MEMORY_PATH` and otherwise returns the platform's shared
+/// per-user memory file.
 #[must_use]
 pub fn configured_memory_path() -> Option<PathBuf> {
-    std::env::var("FORMAL_AI_MEMORY_PATH")
-        .ok()
-        .map(|value| value.trim().to_owned())
-        .filter(|value| !value.is_empty())
-        .map(PathBuf::from)
+    Some(crate::shared_memory::shared_memory_path())
 }
 
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
@@ -135,6 +156,14 @@ pub struct SyncStore {
     events: Vec<MemoryEvent>,
 }
 
+/// One client-executed tool step recovered from an agentic API transcript.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RecordedToolExecution {
+    pub tool: String,
+    pub inputs: String,
+    pub outputs: String,
+}
+
 impl SyncStore {
     /// Open the configured store, loading any existing events from disk.
     #[must_use]
@@ -145,6 +174,11 @@ impl SyncStore {
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
+        if let Err(error) = crate::shared_memory::ensure_shared_memory_file(path) {
+            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                eprintln!("[memory] could not initialize {}: {error}", path.display());
+            }
+        }
         let events = std::fs::read_to_string(path)
             .map(|text| parse_links_notation(&text))
             .unwrap_or_default();
@@ -207,29 +241,69 @@ impl SyncStore {
     /// # Errors
     /// Returns an [`std::io::Error`] when the backing file cannot be written.
     pub fn record_chat_exchange(&mut self, prompt: &str, answer: &str) -> std::io::Result<usize> {
+        self.record_chat_exchange_with_tools(prompt, answer, &[])
+    }
+
+    /// Record a completed exchange plus the actual tool work delegated to and
+    /// returned by an agentic API client. The tool events use the same durable
+    /// schema as browser-side tool traces, and the final task cites them as
+    /// evidence. Stable ids omit transient protocol call ids, so a retried
+    /// exchange merges instead of duplicating learned evidence.
+    ///
+    /// # Errors
+    /// Returns an [`std::io::Error`] when the backing file cannot be written.
+    pub fn record_chat_exchange_with_tools(
+        &mut self,
+        prompt: &str,
+        answer: &str,
+        tools: &[RecordedToolExecution],
+    ) -> std::io::Result<usize> {
         if self.path.is_none() || !chat_recording_enabled() {
             return Ok(0);
         }
         let seed = format!("{prompt}\0{answer}");
-        let recorded = vec![
-            MemoryEvent {
-                id: crate::engine::stable_id("chat_user", &seed),
-                kind: Some(String::from("message")),
-                role: Some(String::from("user")),
-                content: Some(prompt.to_owned()),
-                ..MemoryEvent::default()
-            },
-            MemoryEvent {
-                id: crate::engine::stable_id("chat_task", &seed),
-                kind: Some(String::from("task")),
+        let user_id = crate::engine::stable_id("chat_user", &seed);
+        let mut recorded = vec![MemoryEvent {
+            id: user_id.clone(),
+            kind: Some(String::from("message")),
+            role: Some(String::from("user")),
+            content: Some(prompt.to_owned()),
+            write_count: 1,
+            ..MemoryEvent::default()
+        }];
+        let mut evidence = vec![user_id.clone()];
+        for execution in tools {
+            let tool_seed = format!(
+                "{prompt}\0{}\0{}\0{}",
+                execution.tool, execution.inputs, execution.outputs
+            );
+            let id = crate::engine::stable_id("chat_tool", &tool_seed);
+            evidence.push(id.clone());
+            recorded.push(MemoryEvent {
+                id,
+                kind: Some(String::from("tool_call")),
                 role: Some(String::from("assistant")),
-                intent: Some(String::from("solve")),
-                inputs: Some(prompt.to_owned()),
-                outputs: Some(answer.to_owned()),
-                evidence: vec![crate::engine::stable_id("chat_user", &seed)],
+                intent: Some(String::from("execute_tool")),
+                tool: Some(execution.tool.clone()),
+                inputs: Some(execution.inputs.clone()),
+                outputs: Some(execution.outputs.clone()),
+                content: Some(format!("tool:{}", execution.tool)),
+                evidence: vec![user_id.clone()],
+                write_count: 1,
                 ..MemoryEvent::default()
-            },
-        ];
+            });
+        }
+        recorded.push(MemoryEvent {
+            id: crate::engine::stable_id("chat_task", &seed),
+            kind: Some(String::from("task")),
+            role: Some(String::from("assistant")),
+            intent: Some(String::from("solve")),
+            inputs: Some(prompt.to_owned()),
+            outputs: Some(answer.to_owned()),
+            evidence,
+            write_count: 1,
+            ..MemoryEvent::default()
+        });
         let before = self.events.len();
         self.events = merge_union_by_id(&self.events, &recorded);
         let added = self.events.len() - before;

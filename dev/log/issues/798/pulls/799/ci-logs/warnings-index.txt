@@ -1,0 +1,9 @@
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11834:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0106108Z warning: function `set_forced_language` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11842:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0109047Z warning: function `from_slug` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11848:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0110850Z warning: struct `ForcedLanguageGuard` is never constructed
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11854:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0112598Z warning: method `slug` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11863:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0115147Z warning: function `replace` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11869:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0116863Z warning: function `set` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11875:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0118013Z warning: variant `Calculator` is never constructed
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11886:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.0120950Z warning: function `tokenize_prompt` is never used
+dev/log/issues/798/pulls/799/ci-logs/run-29690721137.log:11892:Lint and Format Check	UNKNOWN STEP	2026-07-19T14:28:58.7258345Z warning: 8 warnings emitted

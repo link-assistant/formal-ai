@@ -1,0 +1,10 @@
+diff --git a/src/agentic_coding/general_planner.rs b/src/agentic_coding/general_planner.rs
+--- a/src/agentic_coding/general_planner.rs
++++ b/src/agentic_coding/general_planner.rs
+@@ -333,5 +333,1 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+-    let action_end = if action.end <= toks[file_index].start {
+-        toks[file_index].end
+-    } else {
+-        action.end
+-    };
++    let action_end = action.end;

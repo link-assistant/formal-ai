@@ -1,0 +1,15 @@
+Q1323314
+  aliases
+    en (sack)
+    ru ("ноша")
+  descriptions
+    en "simple tool used to hold and carry things inside it, made of some flexible material such as paper, fabric, or leather; closed on all sides except the top and easy to handle"
+    ru "мягкая упаковка для переноски предметов в руках или на плече"
+  id Q1323314
+  labels
+    en bag
+    hi "थैला"
+    ru "сумка"
+    zh "袋"
+  type item
+success 1

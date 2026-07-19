@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q16363": {
+      "type": "item",
+      "id": "Q16363",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "shoulder"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плечо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कंधा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "肩"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "part of the body; movable joint between arm and upper body"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть тела около плечевого сустава и шеи"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "плечевой сустав"
+          },
+          {
+            "language": "ru",
+            "value": "плечо (в бытовом смысле)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

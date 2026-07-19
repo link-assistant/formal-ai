@@ -109,6 +109,8 @@ meanings
         text "do you know …"
       surface
         text "do …"
+      surface
+        text "what does …"
     lexeme ru
       surface
         text "что такое …"

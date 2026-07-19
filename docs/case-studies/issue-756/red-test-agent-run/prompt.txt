@@ -1,0 +1,12 @@
+Work only on regression tests for GitHub issue 756. Do not change production code.
+
+Add the smallest automated tests that currently fail and jointly prove every requested local-memory requirement:
+
+1. Rust resolves FORMAL_AI_MEMORY_PATH when non-empty, otherwise uses $HOME/.formal-ai/memory.lino on Unix/macOS and %APPDATA%/formal-ai/memory.lino on Windows. The resolver must have testable helpers that do not race global process environment; write tests against explicit environment inputs where possible.
+2. Opening the default native SyncStore creates its parent directory and an empty memory.lino on first use, with Unix directory permissions 0700.
+3. The default store is persistent (not the current in-memory None path), so one surface importing a Links Notation event is visible when a second store opens the same default path.
+4. Desktop local-server child environment preserves/sets the exact shared memory path.
+5. VS Code serverEnv preserves/sets the exact shared memory path.
+6. Desktop Docker Telegram, API server, and agent definitions all bind the same host memory directory to /root/.formal-ai and set FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino, while retaining their separate /var/lib/docker volumes.
+
+Use existing test style in tests/source/source_tests/memory_sync/tests.rs, desktop/scripts/local-server.test.mjs, desktop/scripts/service-control.test.mjs, and vscode/scripts/config.test.mjs. Prefer extending those tests plus a focused tests/issue_756.rs only if integration coverage is needed. Make the tests precise and deterministic. Do not weaken existing assertions. Do not implement the fix. Run the focused tests and leave them failing for the expected missing behavior. Report the changed files and exact failures.

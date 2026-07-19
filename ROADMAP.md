@@ -246,7 +246,7 @@ evidence is recorded in
 | [#364](https://github.com/link-assistant/formal-ai/issues/364) | [#376](https://github.com/link-assistant/formal-ai/pull/376) | White-box unknown-trace self-improvement loop. |
 | [#365](https://github.com/link-assistant/formal-ai/issues/365) | [#377](https://github.com/link-assistant/formal-ai/pull/377) | Final closure report and verification map. |
 
-## Issue #408 Text And Code Editing - current PR
+## Issue #408 Text And Code Editing - merged (PR #416)
 
 PR [#416](https://github.com/link-assistant/formal-ai/pull/416) fixes the issue
 [#408](https://github.com/link-assistant/formal-ai/issues/408) Russian follow-up
@@ -263,7 +263,7 @@ checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. Each of the
 the stronger ratchet requires 30/30 per source, so the benchmark work requested
 for #408 is closed in this PR.
 
-## Issue #538 Detailed Meanings and Words - current PR
+## Issue #538 Detailed Meanings and Words - merged (PR #601)
 
 PR [#601](https://github.com/link-assistant/formal-ai/pull/601) answers the
 concrete, verifiable core of issue
@@ -303,7 +303,7 @@ next step:
   reproduces one atomic edit (e.g. adding `томаты`) in a scratch repo and capture
   its session JSON; documented as the way-forward in `CONTRIBUTING.md`.
 
-## Issue #526 Translation Quality - current PR
+## Issue #526 Translation Quality - merged (PR #635)
 
 PR [#635](https://github.com/link-assistant/formal-ai/pull/635) closes the
 translation-quality gap from issue
@@ -314,6 +314,52 @@ ru, hi, and zh using the seeded apple meaning. Code translation now normalizes
 the simple add-function slice to one code meaning and verifies Rust ->
 JavaScript -> Rust preserves the same `meaning:` evidence link. The case study
 and online research live in `docs/case-studies/issue-526/`.
+
+## 2026-07-14 Requirement-Status Audit (issue #651)
+
+An eighth pass on 2026-07-14 audited **all 329 closed issues and all 317 merged
+PRs** against the maintainer's original requirements. Per issue
+[#651](https://github.com/link-assistant/formal-ai/issues/651), this roadmap now
+tracks **requirements, not issues**: each area below carries an honest
+done / partial / not-done status. The audit's headline finding is that the
+dominant historical failure mode was *silent scope-narrowing* — the reported
+prompt got fixed while the attached generalization, benchmark, or integration
+requirement was dropped. The consolidated regression backlog is tracked in
+[#710](https://github.com/link-assistant/formal-ai/issues/710).
+
+Requirement-level status by area:
+
+| Area (standing requirement) | Status | Owning issues |
+| --- | --- | --- |
+| Universal 11-step solver runs for every prompt | Done | — (pillar 2) |
+| Only memory + meta algorithm; no specialized Rust handlers (#559 mandate) | Not done (36 handler files, 82 `try_*` dispatch entries remain) | [#663](https://github.com/link-assistant/formal-ai/issues/663), [#699](https://github.com/link-assistant/formal-ai/issues/699) |
+| Real upstream benchmarks with honest scores (10% → all; #408/#440/#303) | Not done (repository-local proxies only) | [#698](https://github.com/link-assistant/formal-ai/issues/698) |
+| Self-improvement that compounds (promotion, adoption, self-hosting metric) | Partial (promotion and honest release metric exist; adoption remains unproven) | [#656](https://github.com/link-assistant/formal-ai/issues/656), [#657](https://github.com/link-assistant/formal-ai/issues/657), [#701](https://github.com/link-assistant/formal-ai/issues/701), [#705](https://github.com/link-assistant/formal-ai/issues/705) |
+| Symbolic world models: current/target contexts, diff, sync, consequence prediction (#649) | Partial (design + substrate audit merged in PR #675; behaviors unimplemented) | [#686](https://github.com/link-assistant/formal-ai/issues/686), [#702](https://github.com/link-assistant/formal-ai/issues/702) |
+| Agentic-CLI server correctness (tools fire by intent in every phrasing) | Partial (capability router merged for #680; write/read routing and qwen wire fix in flight) | [#681](https://github.com/link-assistant/formal-ai/issues/681), [#682](https://github.com/link-assistant/formal-ai/issues/682), [#671](https://github.com/link-assistant/formal-ai/issues/671), [#687](https://github.com/link-assistant/formal-ai/issues/687) |
+| Formal AI as orchestrator of external agent CLIs (agent/claude/codex/gemini/qwen), Hive-Mind dispatch | Not done (#655's headline scenario blocked upstream) | [#703](https://github.com/link-assistant/formal-ai/issues/703) |
+| Parallel candidate portfolios + budget-driven search (F4) | Not done | [#662](https://github.com/link-assistant/formal-ai/issues/662), [#704](https://github.com/link-assistant/formal-ai/issues/704) |
+| Anticipatory learning (predict next requests, pre-learn) | Not done | [#705](https://github.com/link-assistant/formal-ai/issues/705) |
+| "All languages" through the meta language (beyond en/ru/hi/zh) | Partial (4 seed languages; round-trip contract exists) | [#660](https://github.com/link-assistant/formal-ai/issues/660), [#706](https://github.com/link-assistant/formal-ai/issues/706) |
+| General computer-use without vision (files/shell/structured web plans) | Partial (bounded agent + pinned recipes only) | [#707](https://github.com/link-assistant/formal-ai/issues/707) |
+| Turing-complete NL memory queries (#529) | Partial (append + single substitution shipped) | [#708](https://github.com/link-assistant/formal-ai/issues/708) |
+| Multi-source search fusion through the meta language (#505/#444/#63/#153) | Not done (routing only) | [#709](https://github.com/link-assistant/formal-ai/issues/709) |
+| Measuring units via si-units (#439) | Not done | [#700](https://github.com/link-assistant/formal-ai/issues/700) |
+| Silently-dropped chat/UX/process requirements re-verified | Not done (audit checklist compiled) | [#710](https://github.com/link-assistant/formal-ai/issues/710) |
+| Data-is-the-interface hygiene (no hardcoded NL, links-network terminology, precedence in seed) | Partial | [#659](https://github.com/link-assistant/formal-ai/issues/659), [#663](https://github.com/link-assistant/formal-ai/issues/663), [#664](https://github.com/link-assistant/formal-ai/issues/664) |
+| Delivery breadth (PWA, npm engine, VS Code Marketplace, debugger, WebVM, packages, cloud sync) | Not done | [#665](https://github.com/link-assistant/formal-ai/issues/665)-[#670](https://github.com/link-assistant/formal-ai/issues/670), [#658](https://github.com/link-assistant/formal-ai/issues/658) |
+| Self-coding chain (workspace census → gated promotion → self-hosting metric) | Partial: #656 executes trusted gates and Agent-authored local-branch promotion; #657 now records the release metric; workspace census remains | [#673](https://github.com/link-assistant/formal-ai/issues/673) → [#656](https://github.com/link-assistant/formal-ai/issues/656) → [#657](https://github.com/link-assistant/formal-ai/issues/657) |
+
+**Open planning batches.** The "no vision-planning epic remains open" statement
+earlier in this file is scoped to issue #244 only. Two batches are open now:
+
+- **E37–E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)–[#674](https://github.com/link-assistant/formal-ai/issues/674)),
+  created from issue #651's gap analysis; first implementation PRs are in
+  flight (#688–#697).
+- **E56–E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)–[#710](https://github.com/link-assistant/formal-ai/issues/710)),
+  created from the 2026-07-14 full-history requirement audit; all are
+  sub-issues of #651 with explicit blocked-by relationships recorded through
+  the GitHub dependencies API.
 
 ## Verification Contract
 

@@ -1,0 +1,19 @@
+Q44167
+  aliases
+    en (motor "motor and engine" "engine and motor")
+    hi ("मोटर")
+    ru ("Силовая установка" "Двигатели" "Двигательная установка" "Моторы" "Мотор")
+    zh ("推进器" "引擎" "馬達" "摩打" "马达" "發動機")
+  descriptions
+    en "machine designed to produce mechanical energy from another form of energy"
+    hi "ऊर्जा परिवर्तक यंत्र"
+    ru "устройство, преобразующее какой-либо вид энергии в механическую"
+    zh "將其他形式能量轉化為機械能的裝置"
+  id Q44167
+  labels
+    en engine
+    hi "इंजन"
+    ru "двигатель"
+    zh "发动机"
+  type item
+success 1

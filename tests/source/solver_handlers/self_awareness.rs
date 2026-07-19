@@ -3,6 +3,7 @@
 use crate::engine::{identity_answer, normalize_prompt, stable_id, SymbolicAnswer, DEFAULT_MODEL};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::links_format::format_lino_value;
 use crate::seed;
 use crate::solver::{BlueprintComposition, ExecutionSurface};
 
@@ -209,7 +210,7 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
             "self_fact_model\n",
             "  subject \"formal-ai\"\n",
             "  relation \"model\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_policy\n",
             "  subject \"formal-ai\"\n",
             "  relation \"policy\"\n",
@@ -217,39 +218,39 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
             "self_fact_environment\n",
             "  subject \"formal-ai\"\n",
             "  relation \"execution_surface\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_runtime\n",
             "  subject \"formal-ai\"\n",
             "  relation \"runtime\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_memory\n",
             "  subject \"formal-ai\"\n",
             "  relation \"memory\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_web_search\n",
             "  subject \"formal-ai\"\n",
             "  relation \"web_search\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_assistant_name\n",
             "  subject \"formal-ai\"\n",
             "  relation \"assistant_name\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_agent_mode\n",
             "  subject \"formal-ai\"\n",
             "  relation \"agent_mode\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_diagnostics\n",
             "  subject \"formal-ai\"\n",
             "  relation \"diagnostic_mode\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_definition_fusion\n",
             "  subject \"formal-ai\"\n",
             "  relation \"definition_fusion\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "self_fact_blueprint_composition\n",
             "  subject \"formal-ai\"\n",
             "  relation \"blueprint_composition\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "```\n\n",
             "Read behavior with `List behavior rules`; teach one with ",
             "When `prompt` then `answer` (or When I say `prompt`, answer `answer`)."
@@ -260,20 +261,20 @@ fn render_self_facts(runtime: SelfAwarenessRuntime) -> String {
         surface_memory(runtime),
         surface_web_search(runtime),
         surface_limits(runtime),
-        DEFAULT_MODEL,
-        runtime.surface.slug(),
-        escape_lino_value(surface_runtime(runtime)),
-        escape_lino_value(surface_memory(runtime)),
-        escape_lino_value(surface_web_search(runtime)),
-        escape_lino_value(&assistant_name),
-        mode_status(runtime.agent_mode),
-        mode_status(runtime.diagnostic_mode),
-        if runtime.definition_fusion_by_default {
+        format_lino_value(DEFAULT_MODEL),
+        format_lino_value(runtime.surface.slug()),
+        format_lino_value(surface_runtime(runtime)),
+        format_lino_value(surface_memory(runtime)),
+        format_lino_value(surface_web_search(runtime)),
+        format_lino_value(&assistant_name),
+        format_lino_value(mode_status(runtime.agent_mode)),
+        format_lino_value(mode_status(runtime.diagnostic_mode)),
+        format_lino_value(if runtime.definition_fusion_by_default {
             "enabled_by_default"
         } else {
             "explicit_only"
-        },
-        runtime.blueprint_composition.slug()
+        }),
+        format_lino_value(runtime.blueprint_composition.slug())
     )
 }
 
@@ -433,33 +434,33 @@ fn known_facts_links(runtime: SelfAwarenessRuntime) -> String {
             "  scope \"built-in rules, concepts, facts, tools, and response templates\"\n",
             "known_fact_internet\n",
             "  source \"environment_aware_web_search\"\n",
-            "  scope \"{}\"\n",
+            "  scope {}\n",
             "known_fact_memory\n",
             "  source \"conversation_memory\"\n",
-            "  scope \"{}\"\n",
+            "  scope {}\n",
             "known_fact_environment\n",
             "  subject \"formal-ai\"\n",
             "  relation \"execution_surface\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "known_fact_self\n",
             "  subject \"formal-ai\"\n",
             "  relation \"model\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "known_fact_assistant_name\n",
             "  subject \"formal-ai\"\n",
             "  relation \"assistant_name_setting\"\n",
-            "  object \"{}\"\n",
+            "  object {}\n",
             "known_fact_surface_limits\n",
             "  source \"environment_directory\"\n",
-            "  scope \"{}\"\n",
+            "  scope {}\n",
             "```"
         ),
-        escape_lino_value(surface_web_search(runtime)),
-        escape_lino_value(surface_memory(runtime)),
-        runtime.surface.slug(),
-        DEFAULT_MODEL,
-        escape_lino_value(&assistant_name_status(runtime)),
-        escape_lino_value(&surface_limits(runtime))
+        format_lino_value(surface_web_search(runtime)),
+        format_lino_value(surface_memory(runtime)),
+        format_lino_value(runtime.surface.slug()),
+        format_lino_value(DEFAULT_MODEL),
+        format_lino_value(&assistant_name_status(runtime)),
+        format_lino_value(&surface_limits(runtime))
     )
 }
 
@@ -548,11 +549,4 @@ fn stable_variant_index(tag: &str, prompt: &str, count: usize) -> usize {
     id.bytes().fold(0usize, |acc, byte| {
         acc.wrapping_mul(33).wrapping_add(byte as usize)
     }) % count
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
 }

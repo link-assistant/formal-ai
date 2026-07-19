@@ -1,0 +1,41 @@
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T01:36:23.992Z",
+  "service": "default",
+  "directory": "/tmp/tmp.EnatQf3gW0",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T01:36:23.992Z",
+  "service": "state",
+  "key": "/tmp/tmp.EnatQf3gW0",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T01:36:23.994Z",
+  "service": "state",
+  "key": "/tmp/tmp.EnatQf3gW0",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T01:36:23.994Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
+E2E OK: Agent CLI executed local grep and returned ISSUE_758_CAPABILITY_MARKER

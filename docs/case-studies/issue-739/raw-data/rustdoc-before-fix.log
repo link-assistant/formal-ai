@@ -1,0 +1,86 @@
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.296.2 (/tmp/gh-issue-solver-1784275739235)
+ Documenting formal-ai v0.296.2 (/tmp/gh-issue-solver-1784275739235)
+error: public documentation for `to_links_notation` links to private item `format_lino_record`
+  --> src/intent_formalization.rs:76:11
+   |
+76 |     /// [`format_lino_record`], which the rest of the codebase already publishes
+   |           ^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+   = note: `-D rustdoc::private-intra-doc-links` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(rustdoc::private_intra_doc_links)]`
+
+error: public documentation for `render_link` links to private item `render_slot`
+   --> src/links_substitution_query/links.rs:249:41
+    |
+249 | /// to parse what comes back. Sharing [`render_slot`] with the query renderer is
+    |                                         ^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: could not document `formal-ai`
+    Checking streaming-iterator v0.1.9
+    Checking unicode-blocks v0.1.9
+    Checking allocator-api2 v0.4.0
+    Checking maplit v1.0.2
+    Checking strum v0.27.2
+    Checking iana-time-zone v0.1.65
+    Checking chrono v0.4.44
+    Checking lingua v1.8.0
+    Checking platform-mem v0.3.0
+    Checking ctor v0.4.3
+    Checking platform-data v2.0.0
+    Checking toml_parser v1.1.2+spec-1.1.0
+    Checking json5_nodes v2.0.2
+    Checking num-rational v0.4.2
+    Checking wasm-bindgen-futures v0.4.71
+    Checking web-sys v0.3.98
+    Checking serde-wasm-bindgen v0.6.5
+    Checking platform-trees v0.3.4
+    Checking whatlang v0.18.0
+    Checking console_error_panic_hook v0.1.7
+   Compiling formal-ai v0.296.2 (/tmp/gh-issue-solver-1784275739235)
+    Checking tap v1.0.1
+    Checking lino-env v0.1.0
+    Checking toml_writer v1.1.1+spec-1.1.0
+    Checking lazy_static v1.5.0
+    Checking unicode-bidi v0.3.18
+    Checking dotenvy v0.15.7
+    Checking toml_datetime v1.1.1+spec-1.1.0
+    Checking leak_slice v0.2.0
+    Checking toml_edit v0.25.11+spec-1.1.0
+    Checking doublets v0.4.0
+    Checking lino-objects-codec v0.2.1
+    Checking lino-arguments v0.3.0
+    Checking thread-priority v1.2.0
+    Checking fs2 v0.4.3
+    Checking link-calculator v0.19.0
+   Compiling rustls-webpki v0.103.13
+   Compiling tokio-rustls v0.26.4
+   Compiling rustls-platform-verifier v0.7.0
+   Compiling hyper-rustls v0.27.9
+   Compiling reqwest v0.13.4
+   Compiling lindera-jieba v3.0.7
+    Checking lindera v3.0.7
+    Checking meta-language v0.45.0
+ Documenting formal-ai v0.296.2 (/tmp/gh-issue-solver-1784275739235)
+error: public documentation for `to_links_notation` links to private item `format_lino_record`
+  --> src/intent_formalization.rs:76:11
+   |
+76 |     /// [`format_lino_record`], which the rest of the codebase already publishes
+   |           ^^^^^^^^^^^^^^^^^^ this item is private
+   |
+   = note: this link will resolve properly if you pass `--document-private-items`
+   = note: `-D rustdoc::private-intra-doc-links` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(rustdoc::private_intra_doc_links)]`
+
+error: public documentation for `render_link` links to private item `render_slot`
+   --> src/links_substitution_query/links.rs:249:41
+    |
+249 | /// to parse what comes back. Sharing [`render_slot`] with the query renderer is
+    |                                         ^^^^^^^^^^^ this item is private
+    |
+    = note: this link will resolve properly if you pass `--document-private-items`
+
+error: could not document `formal-ai`

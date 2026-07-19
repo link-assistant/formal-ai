@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Q34038": {
+      "type": "item",
+      "id": "Q34038",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "waterfall"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "водопад"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "झरना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "瀑布"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "place where water flows over a steep or vertical drop"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "падение воды в реке с уступа, пересекающего речное русло"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "从河床纵剖面陡坡或悬崖处倾泻下来的水流"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "falls"
+          },
+          {
+            "language": "en",
+            "value": "cascade"
+          },
+          {
+            "language": "en",
+            "value": "water fall"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Катаракт"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "जलप्रपात"
+          },
+          {
+            "language": "hi",
+            "value": "जल प्रपात"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "跌水"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

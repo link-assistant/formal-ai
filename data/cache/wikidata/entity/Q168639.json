@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q168639": {
+      "type": "item",
+      "id": "Q168639",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ladder"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лестница-стремянка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सीढ़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "梯子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "vertical set of rungs or steps for climbing or descending"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "специальная, как правило, переносная лестница"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "攀登工具"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "стремянка"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "梯"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

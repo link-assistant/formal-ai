@@ -1,0 +1,18 @@
+Q3947
+  aliases
+    en (accommodation "living house")
+    hi ("मकान")
+    ru ("жилой дом" "жилище")
+    zh ("房屋" "房子" "徛家" "屋仔" "屋" "厝" "民宅" "民家" "邸" "宅" "茨" "厝宅" "宅第" "住房" "宅邸" "屋舍" "府邸" "家屋")
+  descriptions
+    en "building usually intended for living in"
+    ru "сооружение, предназначенное для жилья"
+    zh "用于居住的建筑物"
+  id Q3947
+  labels
+    en house
+    hi "घर"
+    ru "дом"
+    zh "住宅"
+  type item
+success 1

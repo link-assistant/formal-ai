@@ -1,0 +1,17 @@
+Q41207
+  aliases
+    en (coins)
+    ru ("монеты" "монета, деньги" "полноценная монета")
+    zh ("錢幣" "硬币" "銅板")
+  descriptions
+    en "piece of hard material produced in large quantities to facilitate trade"
+    ru "кусок твёрдого материала, используемый при обмене и торговле"
+    zh "用於貿易、大量生產的硬質金屬"
+  id Q41207
+  labels
+    en coin
+    hi "सिक्का"
+    ru "монета"
+    zh "硬幣"
+  type item
+success 1

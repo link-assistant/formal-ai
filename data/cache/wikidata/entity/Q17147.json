@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q17147": {
+      "type": "item",
+      "id": "Q17147",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "egg"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "яйцо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंडा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "卵"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organic vessel in which an embryo first begins to develop"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "как стадия развития (яйцеклетка)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गोल या अण्डाकार जीवित वस्तु है जो बहुत से प्राणियों के मादा द्वारा पैदा की जाती है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "胚胎的一种"
+        }
+      }
+    }
+  },
+  "success": 1
+}

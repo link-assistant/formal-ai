@@ -10,7 +10,9 @@ const path = require("node:path");
 const { URL } = require("node:url");
 
 const { createToolRouter, SUPPORTED_TOOLS } = require("./lib/tool-router.cjs");
+const { createWebTools } = require("./lib/web-tools.cjs");
 const { createAgentProvider } = require("./lib/agent-provider.cjs");
+const { createEngineManager, OUT_OF_BOX_ENGINE } = require("./lib/engine-manager.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
 const { createDockerDetector } = require("./lib/docker-detect.cjs");
@@ -18,6 +20,10 @@ const { createDataMigration } = require("./lib/data-migration.cjs");
 const { createAutoUpdateController } = require("./lib/auto-update.cjs");
 const { createVsCodeInstaller } = require("./lib/vscode-install.cjs");
 const { createDreamingScheduler } = require("./lib/dreaming.cjs");
+const {
+  ensureSharedMemoryDirectory,
+  resolveSharedMemoryPath,
+} = require("./lib/shared-memory.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -37,8 +43,21 @@ const {
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 
+function packagedBrowserExecutable() {
+  if (!app.isPackaged) return "";
+  const browserRoot = path.join(process.resourcesPath, "browser-runtime");
+  try {
+    const relative = fs.readFileSync(path.join(browserRoot, "executable-path.txt"), "utf8").trim();
+    const executable = path.resolve(browserRoot, relative);
+    return executable.startsWith(browserRoot) && fs.existsSync(executable) ? executable : "";
+  } catch (_error) {
+    return "";
+  }
+}
+
 function desktopMemoryPath() {
-  return process.env.FORMAL_AI_MEMORY_PATH || path.join(app.getPath("userData"), "formal-ai-memory.lino");
+  ensureSharedMemoryDirectory(process.env);
+  return resolveSharedMemoryPath(process.env);
 }
 
 function autoFreeSpacePreferencePath() {
@@ -122,6 +141,9 @@ const updateController = createAutoUpdateController({
   log: debugLog,
   onStatusChange: publishUpdaterStatus,
 });
+const engineManager = createEngineManager({
+  preferencePath: `${desktopMemoryPath()}.desktop-engine.json`,
+});
 let desktopStatus = {
   shell: "Electron",
   appVersion: updateController.status().currentVersion,
@@ -136,6 +158,7 @@ let desktopStatus = {
   agentModeDefault: false,
   toolCallPolicy: "explicit-permission",
   agentExecutionProvider: { type: "in-process" },
+  ...engineManager.status(),
   updater: updateController.status(),
   apiReady: false,
   apiError: "",
@@ -246,6 +269,10 @@ const localServerManager = createLocalServerManager({
   env: process.env,
   resourcesPath: process.resourcesPath,
   platform: process.platform,
+  // External agentic clients include tool schemas in their protocol requests.
+  // Match `formal-ai with`, which explicitly opts the loopback server into
+  // handling those requests; agent-commander still enforces desktop grants.
+  agentMode: true,
   stdout: process.stdout,
   stderr: process.stderr,
 });
@@ -256,7 +283,8 @@ function applyLocalServerStatus(status) {
     ...status,
     appVersion: updateController.status().currentVersion,
     updater: updateController.status(),
-    agentExecutionProvider: agentProvider.status(),
+    agentExecutionProvider: activeAgentProvider().status(),
+    ...engineManager.status(),
   };
   return desktopStatus;
 }
@@ -288,7 +316,8 @@ async function createMainWindow() {
     traceUrl: "",
     apiReady: false,
     apiError: "",
-    agentExecutionProvider: agentProvider.status(),
+    agentExecutionProvider: activeAgentProvider().status(),
+    ...engineManager.status(),
   };
   if (serverModeRequested()) {
     await ensureAgentServer();
@@ -334,6 +363,8 @@ async function shutdown() {
     staticServer = null;
   }
   localServerManager.shutdown();
+  await commanderAgentProvider.stop();
+  await webTools.close();
 }
 
 // R5d (ROADMAP D2): route the agent's side effects through the local process and
@@ -540,26 +571,48 @@ ipcMain.handle("formalAiDesktop:ensureAgentServer", async () => {
   }
 });
 
+const webTools = createWebTools({ browserExecutablePath: packagedBrowserExecutable() });
 const toolRouter = createToolRouter({
   fetchImpl: globalThis.fetch,
   readFile: (filePath) => fs.promises.readFile(filePath, "utf8"),
+  writeFile: (filePath, body) => fs.promises.writeFile(filePath, body, "utf8"),
+  readDirectory: (directory) => fs.promises.readdir(directory, { withFileTypes: true }),
   allowedReadRoot: REPO_ROOT,
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,
   runOnHost,
+  webSearch: webTools.search,
+  webFetch: webTools.fetch,
 });
 
-// Issue #516 / E4: swappable execution seam. The in-process provider is the
-// default hermetic path; FORMAL_AI_AGENT_PROVIDER=commander selects the
-// agent-commander adapter, which drives @link-assistant/agent through
-// `start-agent` inside the Formal-AI container contract.
-const agentProvider = createAgentProvider({
-  type: process.env.FORMAL_AI_AGENT_PROVIDER,
+// Issue #759: native and installed-CLI passthrough engines share one provider
+// boundary. The commander adapter uses its JavaScript API and publishes parsed
+// messages while the turn is running.
+const inProcessAgentProvider = createAgentProvider({
+  type: "in-process",
   toolRouter,
   workingDirectory: REPO_ROOT,
-  containerName: "formal-ai-agent",
 });
+const commanderAgentProvider = createAgentProvider({
+  type: "commander",
+  workingDirectory: REPO_ROOT,
+  onEvent: (agentEvent, request) => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send("formalAiDesktop:agentEvent", {
+        requestId: String(request.requestId || ""),
+        engine: String(request.commanderTool || engineManager.status().activeEngine),
+        event: agentEvent,
+      });
+    }
+  },
+});
+
+function activeAgentProvider() {
+  return engineManager.status().activeEngine === OUT_OF_BOX_ENGINE
+    ? inProcessAgentProvider
+    : commanderAgentProvider;
+}
 
 // The renderer's permission toggles (desktop-tool-permission / -agent-permission)
 // drive the default-deny grant map. Until the user opts in, every tool call is
@@ -567,6 +620,9 @@ const agentProvider = createAgentProvider({
 ipcMain.handle("formalAiDesktop:setToolGrants", (_event, grants) => toolRouter.setGrants(grants));
 ipcMain.handle("formalAiDesktop:invokeTool", async (_event, request) => {
   const tool = request && request.tool ? String(request.tool) : "";
+  if (toolRouter.isReadOnly(tool)) {
+    return toolRouter.invoke(request);
+  }
   if (!SUPPORTED_TOOLS.includes(tool) || !toolRouter.isPermitted(tool)) {
     return toolRouter.invoke(request);
   }
@@ -591,13 +647,16 @@ ipcMain.handle("formalAiDesktop:runAgentProvider", async (_event, request) => {
   if (payload.grants && typeof payload.grants === "object") {
     toolRouter.setGrants(payload.grants);
   }
-  const readyStatus = agentProvider.type === "commander"
+  const selection = engineManager.status();
+  const provider = activeAgentProvider();
+  const readyStatus = provider.type === "commander"
     ? desktopStatus.apiReady
       ? desktopStatus
       : await ensureAgentServer()
     : desktopStatus;
-  return agentProvider.run({
+  return provider.run({
     ...payload,
+    commanderTool: selection.activeEngine,
     apiBase: readyStatus.apiBase,
     agentProvider: readyStatus.agentProvider,
     workingDirectory: payload.workingDirectory || REPO_ROOT,
@@ -708,6 +767,15 @@ ipcMain.handle("formalAiDesktop:installVsCodeExtension", async () => {
 ipcMain.handle("formalAiDesktop:checkForUpdates", () => updateController.checkForUpdates());
 ipcMain.handle("formalAiDesktop:installUpdate", () => updateController.installUpdate());
 ipcMain.handle("formalAiDesktop:getStatus", () => desktopStatus);
+ipcMain.handle("formalAiDesktop:setEngine", (_event, engine) => {
+  const selection = engineManager.setActiveEngine(engine);
+  desktopStatus = {
+    ...desktopStatus,
+    ...selection,
+    agentExecutionProvider: activeAgentProvider().status(),
+  };
+  return desktopStatus;
+});
 ipcMain.handle("formalAiDesktop:openExternal", async (_event, url) => {
   if (typeof url === "string" && /^https?:\/\//i.test(url)) {
     await shell.openExternal(url);

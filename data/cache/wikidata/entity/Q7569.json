@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Q7569": {
+      "type": "item",
+      "id": "Q7569",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "child"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ребёнок"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बच्चा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "儿童"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "human between birth and puberty"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек в период детства"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "व्यक्ति जो शिशु से बड़ा है और आदमी से छोटा है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "从出生到青春期的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "children"
+          },
+          {
+            "language": "en",
+            "value": "kid"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "дети"
+          },
+          {
+            "language": "ru",
+            "value": "дитя"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "संतान"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "童年"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

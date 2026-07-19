@@ -1,0 +1,18 @@
+Q506
+  aliases
+    en (bloom flowers blossom "solitary infloresence")
+    hi ("फूल का खिलना" "फूल" "सुमन" "कुसुम" "मंजरी" "मन्जरी" "प्रसून" "फुल्ल")
+    ru ("цветы")
+  descriptions
+    en "sexual reproductive structure found on flowering plants"
+    hi "पुष्पीय पौधों पर पाई जाने वाली लैंगिक प्रजनन संरचना"
+    ru "орган семенного размножения цветковых растений"
+    zh "被子植物的生殖器官"
+  id Q506
+  labels
+    en flower
+    hi "पुष्प"
+    ru "цветок"
+    zh "花"
+  type item
+success 1

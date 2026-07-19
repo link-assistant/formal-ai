@@ -1,0 +1,16 @@
+Q15173
+  aliases
+    en (lips)
+    ru ("губа")
+    zh ("唇结节")
+  descriptions
+    en "visible body part at the mouth"
+    ru "кожно-мышечные складки, окружающие вход в полость рта"
+  id Q15173
+  labels
+    en lip
+    hi "होंठ"
+    ru "губы"
+    zh "唇"
+  type item
+success 1

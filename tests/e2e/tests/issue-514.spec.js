@@ -118,11 +118,11 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
       '1/6 tools granted',
     );
 
-    await page.locator('[data-testid="desktop-permission-panel-sidebar-decline-http_fetch"]').click();
+    await page.locator('[data-testid="desktop-permission-panel-sidebar-decline-write_file"]').click();
     await expect(
-      page.locator('[data-testid="desktop-permission-panel-sidebar-state-http_fetch"]'),
+      page.locator('[data-testid="desktop-permission-panel-sidebar-state-write_file"]'),
     ).toHaveText('Declined');
-    await expect.poll(() => page.evaluate(() => window.__toolGrants.http_fetch)).toBe(false);
+    await expect.poll(() => page.evaluate(() => window.__toolGrants.write_file)).toBe(false);
 
     await page.reload();
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
@@ -135,7 +135,7 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     ).toContain('agentOnboardingSeen "on"');
     await expect.poll(() =>
       page.evaluate((prefKey) => window.localStorage.getItem(prefKey), PREF_KEY),
-    ).toContain('desktopToolGrants "http_fetch:off,shell:on"');
+    ).toContain('desktopToolGrants "write_file:off,shell:on"');
   });
 
   test('permission panel renders catalog translations per UI language', async ({ page }) => {
@@ -222,7 +222,11 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     await expect.poll(() => page.evaluate(() => window.__toolInvocations.length)).toBe(0);
 
     await sendPrompt(page, 'run `ls ~` in terminal');
-    await page.locator('[data-testid="command-approve"]').last().click();
+    await page
+      .locator(
+        '[data-testid="command-approval"][data-status="pending"] [data-testid="command-approve"]',
+      )
+      .click();
     await expect.poll(() => page.evaluate(() => window.__toolInvocations.length)).toBe(1);
     await expect(page.locator('[data-testid="chat-message"]').last()).toContainText('ran ls ~');
   });
@@ -237,10 +241,10 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     await expect.poll(() => page.evaluate(() => window.__toolInvocations.length)).toBe(1);
     await expect(page.locator('[data-testid="chat-message"]').last()).toContainText('ran ls ~');
 
-    const fetchResult = await page.evaluate(() =>
-      window.formalAiDesktopToolCall('http_fetch', { url: 'https://example.com' }),
+    const writeResult = await page.evaluate(() =>
+      window.formalAiDesktopToolCall('write_file', { path: 'blocked.txt', content: 'blocked' }),
     );
-    expect(fetchResult.executed).toBe(false);
-    expect(fetchResult.status).toBe('refused');
+    expect(writeResult.executed).toBe(false);
+    expect(writeResult.status).toBe('refused');
   });
 });

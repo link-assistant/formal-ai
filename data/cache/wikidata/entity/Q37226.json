@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q37226": {
+      "type": "item",
+      "id": "Q37226",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "teacher"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "учитель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शिक्षक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "教师"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person who helps others to acquire knowledge, competences or values"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек, обучающий других людей"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वह व्यक्ति जो दूसरों को ज्ञान, योग्यता या मूल्य प्राप्त करने में मदद करता है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "教育學生、傳授知識與技藝的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "schoolmaster"
+          },
+          {
+            "language": "en",
+            "value": "schoolmistress"
+          },
+          {
+            "language": "en",
+            "value": "educator"
+          },
+          {
+            "language": "en",
+            "value": "professor"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "учительница"
+          },
+          {
+            "language": "ru",
+            "value": "педагог"
+          },
+          {
+            "language": "ru",
+            "value": "преподаватель"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "शिक्षिका"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "教職員"
+          },
+          {
+            "language": "zh",
+            "value": "教師"
+          },
+          {
+            "language": "zh",
+            "value": "教工"
+          },
+          {
+            "language": "zh",
+            "value": "老师"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

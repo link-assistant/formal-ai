@@ -5,6 +5,7 @@ pub mod agentic_coding;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
+pub mod associative_persistence;
 pub mod attachment_context;
 pub(crate) mod calculation;
 pub(crate) mod calculation_time;
@@ -14,6 +15,7 @@ pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
+pub mod context_capacity;
 pub mod cue_lexicon;
 pub mod document_formats;
 pub mod dreaming;
@@ -33,9 +35,12 @@ pub mod json_lino;
 pub mod knowledge;
 pub mod language;
 pub mod learning_ledger;
+pub mod lexeme_import;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
+pub mod links_substitution_query;
+pub(crate) mod mcp;
 pub mod memory;
 pub mod memory_sync;
 pub mod meta_construction;
@@ -45,9 +50,13 @@ pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
 pub mod method_registry;
+pub mod normal_markov;
+pub mod option_evidence;
+pub mod option_network;
 pub mod probability;
 pub(crate) mod program_coreference;
 pub mod program_plan;
+pub mod promotion;
 pub mod proof_engine;
 pub mod protocol;
 pub(crate) mod protocol_memory;
@@ -59,6 +68,7 @@ pub mod rebuild_plan;
 pub mod recipe_interpreter;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
+pub mod requirement_contradiction;
 pub(crate) mod responses_stream;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
@@ -70,6 +80,7 @@ pub mod self_improvement;
 pub mod self_source_graph;
 pub mod server;
 pub mod shared_dialog;
+pub mod shared_memory;
 pub mod skill_compiler;
 pub mod skill_ledger;
 pub mod solution_evidence;
@@ -88,6 +99,7 @@ pub(crate) mod solver_search;
 pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
+pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
 pub mod substitution;
@@ -115,6 +127,9 @@ pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+};
+pub use associative_persistence::{
+    AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
@@ -182,10 +197,11 @@ pub use links_query::{
 };
 pub use memory::{
     export_bundle as export_memory_bundle, export_full_memory as export_memory_full,
-    export_links_notation as export_memory_links_notation, extract_memory_from_bundle,
-    import_full_memory as import_memory_full, parse_links_notation as parse_memory_links_notation,
-    seed_cache_events, suggest_migrations as suggest_memory_migrations, write_locked_atomic,
-    BundleInfo, MemoryEvent, MemoryStore, ParsedBundle,
+    export_links_notation, export_links_notation as export_memory_links_notation,
+    extract_memory_from_bundle, import_full_memory as import_memory_full,
+    parse_links_notation as parse_memory_links_notation, seed_cache_events,
+    suggest_migrations as suggest_memory_migrations, write_locked_atomic, BundleInfo, MemoryEvent,
+    MemoryStore, ParsedBundle,
 };
 pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
@@ -196,13 +212,21 @@ pub use probability::{
     ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
     RankedProbabilityCandidate, SimilarEvidence,
 };
+pub use promotion::{
+    apply_promotions, demonstration_promotion_proposals, demonstration_promotion_run,
+    parse_promotion_proposals, promotions_from_learning_run, render_promotion_proposals,
+    replay_promotion_gates, replay_promotion_gates_with, AppliedSeedEdit, GateCommandOutput,
+    PromotionApplyOutcome, PromotionBranchPlan, PromotionOutcome, PromotionProposal,
+    PromotionRatchet, PromotionRecord, PromotionRun, SeedEdit, LEARNED_PROGRAM_RULES_SEED_FILE,
+};
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver,
     create_chat_completion_with_solver_and_memory, create_response, create_response_with_solver,
     create_response_with_solver_and_memory, ChatChoice, ChatCompletion, ChatCompletionRequest,
     ChatMessage, FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall,
     ResponseObject, ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage,
-    ResponseUsage, ResponsesRequest, TokenUsage, ToolCall,
+    ResponseUsage, ResponseWebSearchAction, ResponseWebSearchToolCall, ResponsesRequest,
+    TokenUsage, ToolCall,
 };
 pub use proxy::{
     run_proxy, summarize_proxy_exchange, ProxyConfig, ProxyExchangeLog, ProxyToolCallLog,
@@ -249,6 +273,9 @@ pub use server::{
 pub use shared_dialog::{
     convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
     SharedDialog, SharedDialogError, SharedDialogFormat, SharedDialogMetadata, SharedDialogTurn,
+};
+pub use shared_memory::{
+    ensure_shared_memory_file, resolve_memory_path_from, shared_memory_path, MEMORY_PATH_ENV,
 };
 pub use skill_compiler::{
     compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,

@@ -1,0 +1,18 @@
+Q34038
+  aliases
+    en (falls cascade "water fall")
+    hi ("जलप्रपात" "जल प्रपात")
+    ru ("Катаракт")
+    zh ("跌水")
+  descriptions
+    en "place where water flows over a steep or vertical drop"
+    ru "падение воды в реке с уступа, пересекающего речное русло"
+    zh "从河床纵剖面陡坡或悬崖处倾泻下来的水流"
+  id Q34038
+  labels
+    en waterfall
+    hi "झरना"
+    ru "водопад"
+    zh "瀑布"
+  type item
+success 1

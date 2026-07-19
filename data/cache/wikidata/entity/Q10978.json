@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q10978": {
+      "type": "item",
+      "id": "Q10978",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "grape"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "виноград"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंगूर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "葡萄"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "edible berry of a flowering plant in the family Vitaceae"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плоды растений рода Виноград"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "植物及其果实"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "grapes"
+          },
+          {
+            "language": "en",
+            "value": "🍇"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

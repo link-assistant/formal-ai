@@ -1,7 +1,20 @@
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
+
+/// How long a response may take in total before the harness calls it a hang.
+///
+/// This is a liveness guard, not a latency assertion: the suite runs many debug
+/// builds of the server at once, so a slow response is ordinary and only a
+/// wedged one is a failure. Call sites that need longer still say so through
+/// [`http_post_json_with_read_timeout`].
+const RESPONSE_TIMEOUT: Duration = Duration::from_secs(30);
+
+/// How long a single read may block before the deadline is re-checked.
+const POLL_SLICE: Duration = Duration::from_millis(100);
+
+const HEALTH_TIMEOUT: Duration = Duration::from_secs(5);
 
 pub struct FormalAiServer {
     child: Child,
@@ -14,6 +27,7 @@ impl Drop for FormalAiServer {
     }
 }
 
+#[derive(Debug)]
 pub struct HttpResponse {
     pub status_code: u16,
     pub content_type: String,
@@ -64,15 +78,20 @@ fn spawn_formal_ai_server_with_args(port: u16, extra_args: &[&str]) -> FormalAiS
 }
 
 fn wait_for_health(port: u16, child: &mut Child) {
-    let deadline = Instant::now() + Duration::from_secs(5);
+    let deadline = Instant::now() + HEALTH_TIMEOUT;
     let mut last_error = String::from("server was not probed");
 
-    while Instant::now() < deadline {
+    // Each probe gets whatever is left of the overall budget, so a probe can
+    // never outlive the deadline it is being raced against.
+    while let Some(remaining) = deadline
+        .checked_duration_since(Instant::now())
+        .filter(|left| !left.is_zero())
+    {
         if let Some(status) = child.try_wait().expect("check server process") {
             panic!("formal-ai server exited before becoming healthy: {status}");
         }
 
-        match http_request("GET", port, "/health", None, None) {
+        match http_request_with_timeout("GET", port, "/health", None, None, remaining) {
             Ok(response) if response.status_code == 200 => return,
             Ok(response) => {
                 last_error = format!(
@@ -118,7 +137,7 @@ pub fn http_post_json(
     serde_json::from_str(&response.body).expect("POST response should be JSON")
 }
 
-/// POST a JSON body but allow the server a longer read window than the default 2s.
+/// POST a JSON body, allowing longer than [`RESPONSE_TIMEOUT`] for the response.
 ///
 /// Used by recipes whose *first* response performs genuinely heavy deterministic
 /// work — e.g. the issue-#558 self-healing recipe parses a real module through the
@@ -130,12 +149,18 @@ pub fn http_post_json_with_read_timeout(
     path: &str,
     bearer_token: Option<&str>,
     body: &serde_json::Value,
-    read_timeout: Duration,
+    response_timeout: Duration,
 ) -> serde_json::Value {
     let body = body.to_string();
-    let response =
-        http_request_with_timeout("POST", port, path, bearer_token, Some(&body), read_timeout)
-            .expect("POST should complete");
+    let response = http_request_with_timeout(
+        "POST",
+        port,
+        path,
+        bearer_token,
+        Some(&body),
+        response_timeout,
+    )
+    .expect("POST should complete");
     assert_eq!(
         response.status_code, 200,
         "POST {path} should return 200, got {} with body {}",
@@ -151,30 +176,25 @@ pub fn http_request(
     bearer_token: Option<&str>,
     body: Option<&str>,
 ) -> std::io::Result<HttpResponse> {
-    http_request_with_timeout(
-        method,
-        port,
-        path,
-        bearer_token,
-        body,
-        Duration::from_secs(2),
-    )
+    http_request_with_timeout(method, port, path, bearer_token, body, RESPONSE_TIMEOUT)
 }
 
-fn http_request_with_timeout(
+pub fn http_request_with_timeout(
     method: &str,
     port: u16,
     path: &str,
     bearer_token: Option<&str>,
     body: Option<&str>,
-    read_timeout: Duration,
+    response_timeout: Duration,
 ) -> std::io::Result<HttpResponse> {
     let address = format!("127.0.0.1:{port}");
     let mut stream = TcpStream::connect_timeout(
         &address.parse().expect("loopback address should parse"),
         Duration::from_secs(2),
     )?;
-    stream.set_read_timeout(Some(read_timeout))?;
+    // The socket timeout bounds one read syscall, not the whole response, so it
+    // is only the polling slice; `read_response` owns the actual deadline.
+    stream.set_read_timeout(Some(POLL_SLICE))?;
     stream.set_write_timeout(Some(Duration::from_secs(2)))?;
 
     let body = body.unwrap_or_default();
@@ -197,9 +217,41 @@ fn http_request_with_timeout(
     }
     write!(stream, "\r\n{body}")?;
 
-    let mut raw = String::new();
-    stream.read_to_string(&mut raw)?;
-    Ok(parse_http_response(&raw))
+    let raw = read_response(&mut stream, response_timeout)?;
+    Ok(parse_http_response(&String::from_utf8_lossy(&raw)))
+}
+
+/// Read until the server closes the connection or the deadline passes.
+///
+/// A socket read timeout fires per syscall, so reading to EOF through one is a
+/// bound on silence, not on the response: a busy server that pauses longer than
+/// the timeout between chunks looks identical to a wedged one, and the bytes
+/// already read are discarded with it. Polling against a single deadline instead
+/// makes a quiet stretch cost nothing and keeps only a genuine hang fatal.
+fn read_response(stream: &mut TcpStream, timeout: Duration) -> std::io::Result<Vec<u8>> {
+    let deadline = Instant::now() + timeout;
+    let mut raw = Vec::new();
+    let mut chunk = [0_u8; 8192];
+    loop {
+        match stream.read(&mut chunk) {
+            Ok(0) => return Ok(raw),
+            Ok(count) => raw.extend_from_slice(&chunk[..count]),
+            // `WouldBlock`/`TimedOut` mean the slice elapsed with nothing to
+            // read; `Interrupted` means a signal landed. Neither ends the
+            // response, so both just re-check the deadline.
+            Err(error)
+                if matches!(
+                    error.kind(),
+                    ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+                ) =>
+            {
+                if Instant::now() >= deadline {
+                    return Err(error);
+                }
+            }
+            Err(error) => return Err(error),
+        }
+    }
 }
 
 fn parse_http_response(raw: &str) -> HttpResponse {

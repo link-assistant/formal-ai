@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q16533": {
+      "type": "item",
+      "id": "Q16533",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "judge"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "судья"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "न्यायधीश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "法官"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "official who presides over court proceedings"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "должностное лицо, входящее в состав суда и осуществляющее правосудие"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "主持法庭訴訟的官員"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "magistrate"
+          },
+          {
+            "language": "en",
+            "value": "justice"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "न्यायाधीश"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

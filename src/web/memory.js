@@ -49,6 +49,8 @@
     "sentAt",
     "demoLabel",
     "evidence",
+    "accessCount",
+    "writeCount",
     // Issue #27: conversation grouping. Events keep their global ordering in
     // the append-only log; conversationId/conversationTitle just attribute each
     // event to a specific chat thread so the UI can filter on read.
@@ -289,6 +291,8 @@
       role: String(event.role || ""),
       content: String(event.content || ""),
       sentAt: String(event.sentAt || new Date().toISOString()),
+      accessCount: Math.max(0, Number(event.accessCount) || 0),
+      writeCount: Math.max(1, Number(event.writeCount) || 1),
     };
     if (event.kind) record.kind = String(event.kind);
     if (event.intent) record.intent = String(event.intent);
@@ -373,6 +377,8 @@
           role: String(raw.role || ""),
           content: String(raw.content || ""),
           sentAt: String(raw.sentAt || new Date().toISOString()),
+          accessCount: Math.max(0, Number(raw.accessCount) || 0),
+          writeCount: Math.max(1, Number(raw.writeCount) || 1),
         };
         if (raw.kind) record.kind = String(raw.kind);
         if (raw.intent) record.intent = String(raw.intent);
@@ -506,6 +512,7 @@
           }
         }
         if (changed) {
+          value.writeCount = Math.max(1, Number(value.writeCount) || 1) + 1;
           var update = cursor.update(value);
           update.onsuccess = function () {
             cursor.continue();

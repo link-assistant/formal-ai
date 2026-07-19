@@ -446,7 +446,7 @@ impl Lexicon {
     /// Mirrors the CJK-substring vs. whitespace-token contract used across the
     /// solver: CJK scripts have no inter-word spaces, so a CJK surface word is
     /// matched as a substring, while space-delimited scripts match a whole
-    /// whitespace token or phrase (see [`crate::coding::contains_cjk`]).
+    /// whitespace token or phrase (see `crate::coding::contains_cjk`).
     #[must_use]
     pub fn mentions_role(&self, role: &str, normalized: &str) -> bool {
         self.meanings_with_role(role)
@@ -477,10 +477,10 @@ impl Lexicon {
     /// Does `normalized` contain any surface word of any meaning in `role` as a
     /// raw substring (`str::contains`), ignoring whitespace-token boundaries?
     ///
-    /// This is the deliberately *looser* sibling of [`mentions_role`]. Many
+    /// This is the deliberately *looser* sibling of [`Self::mentions_role`]. Many
     /// legacy recognisers matched an inflectable stem — `правил` to catch
     /// `правила`/`правило`/`правил`, `расчёт` to catch `при расчёте` — by raw
-    /// substring. Those stems are not whole tokens, so [`mentions_role`]'s
+    /// substring. Those stems are not whole tokens, so [`Self::mentions_role`]'s
     /// token-bounded contract would miss them. A meaning whose surface forms are
     /// such stems (recorded as [`Slot::Bare`] words) is queried through this
     /// method instead, preserving the original byte-faithful substring match
@@ -560,7 +560,7 @@ impl Lexicon {
     /// stems (matched clause-initially) versus the head-final Hindi/Chinese stems
     /// (matched anywhere, gated by a target marker) — while keeping every surface
     /// word in the data. Language codes are the legitimate code-resident bridge
-    /// (see [`crate::translation::language_markers`]); the words stay in the seed.
+    /// (see `crate::translation::language_markers`); the words stay in the seed.
     #[must_use]
     pub fn words_for_role_in_languages(&self, role: &str, languages: &[&str]) -> Vec<String> {
         let mut out: Vec<String> = Vec::new();
@@ -662,7 +662,7 @@ impl Lexicon {
     }
 
     /// The single meaning that roots the merged ontology — the one carrying
-    /// [`ROLE_ONTOLOGY_ROOT`] (the `link` meaning), or `None` if absent.
+    /// `ROLE_ONTOLOGY_ROOT` (the `link` meaning), or `None` if absent.
     #[must_use]
     pub fn ontology_root(&self) -> Option<&Meaning> {
         self.meanings
@@ -700,7 +700,7 @@ impl Lexicon {
     }
 
     /// The type-system sub-root of the ontology — the meaning carrying
-    /// [`ROLE_ONTOLOGY_TYPE`] (the `type` meaning), or `None` if absent.
+    /// `ROLE_ONTOLOGY_TYPE` (the `type` meaning), or `None` if absent.
     ///
     /// A distinguished node directly under the [`ontology_root`](Self::ontology_root):
     /// the broadest classifications descend from it, so a reasoner can ask "what
@@ -713,7 +713,7 @@ impl Lexicon {
     }
 
     /// The top-level ontological categories — every meaning carrying
-    /// [`ROLE_ONTOLOGY_CATEGORY`] (entity, concept, relation, action, property).
+    /// `ROLE_ONTOLOGY_CATEGORY` (entity, concept, relation, action, property).
     ///
     /// These are the genera each domain cluster roots in, so generic reasoning
     /// can classify any meaning into a small, fixed set of categories rather
@@ -749,4 +749,15 @@ fn surface_present(normalized: &str, expected: &str) -> bool {
 pub fn lexicon() -> &'static Lexicon {
     static CACHE: OnceLock<Lexicon> = OnceLock::new();
     CACHE.get_or_init(|| parse_lexicon(&MEANING_FILES.join("\n")))
+}
+
+/// Parse an in-memory meaning-lexicon document into a [`Lexicon`].
+///
+/// The bulk lexeme importer (issue #660) uses this to validate a generated
+/// batch: it renders each `meaning` block, parses it back through the real
+/// loader, and confirms the surfaces denote their meaning and carry their
+/// facets before the batch is written to the seed.
+#[must_use]
+pub fn parse_lexicon_text(text: &str) -> Lexicon {
+    parse_lexicon(text)
 }

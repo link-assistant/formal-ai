@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q168658": {
+      "type": "item",
+      "id": "Q168658",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "doll"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кукла"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गुड़िया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "玩偶"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "model of a character or a human being, often used as a toy for children or an artistic hobby for adults"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предмет в виде человека или животного"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "puppet"
+          },
+          {
+            "language": "en",
+            "value": "poppet"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "игра в куклы"
+          },
+          {
+            "language": "ru",
+            "value": "куклы"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "娃娃"
+          },
+          {
+            "language": "zh",
+            "value": "布偶"
+          },
+          {
+            "language": "zh",
+            "value": "洋娃娃"
+          },
+          {
+            "language": "zh",
+            "value": "人偶"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

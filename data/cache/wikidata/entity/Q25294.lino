@@ -1,0 +1,17 @@
+Q25294
+  aliases
+    en (naildriver)
+    zh ("鐵鎚" "榔头" "榔" "槌子" "鎚" "錘子" "鎚子")
+  descriptions
+    en "tool meant to deliver an impact to an object"
+    hi "जोर से प्रहार करने के लिए एक औजार"
+    ru "ударный ручной инструмент"
+    zh "敲打工具"
+  id Q25294
+  labels
+    en hammer
+    hi "हथौड़ा"
+    ru "молоток"
+    zh "槌"
+  type item
+success 1

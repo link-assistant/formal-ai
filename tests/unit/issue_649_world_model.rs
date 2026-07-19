@@ -138,6 +138,20 @@ fn dependent_statements_recalculate_to_a_fixpoint() {
     );
 }
 
+#[test]
+fn bulk_statement_insertion_recalculates_once_and_preserves_every_statement() {
+    let mut context = Context::new("bulk-audit");
+    let statements = (0..128)
+        .map(|index| WorldStatement::new(format!("repository statement {index}")))
+        .collect::<Vec<_>>();
+
+    let report = context.extend_statements(statements);
+
+    assert_eq!(context.statements().len(), 128);
+    assert!(report.converged);
+    assert!(report.iterations <= 2, "{report:#?}");
+}
+
 /// Recalculation converges even with a two-node negative-feedback cycle (the
 /// bounded-pass backstop guarantees termination).
 #[test]

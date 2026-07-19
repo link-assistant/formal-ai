@@ -1,0 +1,202 @@
+repository_statement_audit
+  summary
+    statement_count "8"
+    contradiction_count "1"
+    finding_count "2"
+    skipped_path_count "0"
+  statements
+    audited_statement_bc6b61e9fd732560
+      type "audited_statement"
+      text "The runtime implementation lives in src/runtime.rs."
+      posterior "1"
+      relative_weight "1"
+      source_location
+        path "README.md"
+        line "3"
+        kind "prose"
+      claim
+        subject "src/runtime.rs"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "2"
+      evidence
+        evidence_provenance_5dc100769ab17a25
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "supports"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_810eb223334a5b98
+      type "audited_statement"
+      text "The retired implementation lives in src/missing_runtime.rs."
+      posterior "0"
+      relative_weight "0"
+      source_location
+        path "README.md"
+        line "5"
+        kind "prose"
+      claim
+        subject "src/missing_runtime.rs"
+        predicate "path_exists"
+        value "true"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+      evidence
+        evidence_provenance_b8378d1fd12cc130
+          source_label "repository_index"
+          source_url "git:index"
+          source_tier "original_first_party"
+          stance "contradicts"
+          asserted_strength "1"
+          effective_mass "1"
+          captured_at "repository_snapshot"
+          sha256 "tracked_path_set"
+    audited_statement_45624adc05b6aa73
+      type "audited_statement"
+      text "The provenance vocabulary follows W3C PROV-O."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "README.md"
+        line "7"
+        kind "prose"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_dbf03f8d4371b1f0
+      type "audited_statement"
+      text "Always write release reports as Links Notation."
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "REQUIREMENTS.md"
+        line "3"
+        kind "prose"
+      claim
+        subject "write release reports as links notation"
+        predicate "requirement_state"
+        value "required"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_0aa9e378ed11e268
+      type "audited_statement"
+      text "Never write release reports as Links Notation."
+      posterior "0.6"
+      relative_weight "0.5"
+      source_location
+        path "REQUIREMENTS.md"
+        line "4"
+        kind "prose"
+      claim
+        subject "write release reports as links notation"
+        predicate "requirement_state"
+        value "forbidden"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "3"
+    audited_statement_c34e1f7d907db778
+      type "audited_statement"
+      text 'protocol = "links"'
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "config.toml"
+        line "1"
+        kind "structured"
+      claim
+        subject "config.toml"
+        predicate "protocol"
+        value "links"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_7f4fbe79137f9765
+      type "audited_statement"
+      text "retry_limit = 3"
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "config.toml"
+        line "2"
+        kind "structured"
+      claim
+        subject "config.toml"
+        predicate "retry_limit"
+        value "3"
+        exclusive "true"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+    audited_statement_b5346d4bcac41f8f
+      type "audited_statement"
+      text "The retry limit is always three."
+      posterior "0.6"
+      relative_weight "0.6"
+      source_location
+        path "src/runtime.rs"
+        line "1"
+        kind "code_comment"
+      learning
+        reads "0"
+        writes "1"
+        retention_score "1"
+  contradictions
+    requirement_contradiction_aeef0409af9a771b
+      type "requirement_contradiction"
+      subject "write release reports as links notation"
+      predicate "requirement_state"
+      statement_ids "audited_statement_dbf03f8d4371b1f0 audited_statement_0aa9e378ed11e268"
+      proposed_resolution "retract the lower-weight statement and append its replacement"
+  findings
+    audit_finding_7a112c4e096fd80b
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "improbable_claim"
+      statement_ids "audited_statement_810eb223334a5b98"
+    audit_finding_3ab9393dc3c91734
+      type "audit_finding"
+      disposition "issue_candidate"
+      kind "requirement_contradiction"
+      statement_ids "audited_statement_dbf03f8d4371b1f0 audited_statement_0aa9e378ed11e268"
+  associations
+    audit_association_a233197cb41ba2f3
+      from "audit_finding_3ab9393dc3c91734"
+      to "audited_statement_0aa9e378ed11e268"
+    audit_association_b101e56986c782ac
+      from "audit_finding_3ab9393dc3c91734"
+      to "audited_statement_dbf03f8d4371b1f0"
+    audit_association_fa82ba22ea11dc93
+      from "audit_finding_7a112c4e096fd80b"
+      to "audited_statement_810eb223334a5b98"
+    audit_association_53724b09253b4034
+      from "audited_statement_810eb223334a5b98"
+      to "evidence_provenance_b8378d1fd12cc130"
+    audit_association_597be248faf042af
+      from "audited_statement_bc6b61e9fd732560"
+      to "evidence_provenance_5dc100769ab17a25"
+    audit_association_18cd42894f07e298
+      from "requirement_contradiction_aeef0409af9a771b"
+      to "audited_statement_0aa9e378ed11e268"
+    audit_association_83c2a0d6aa2870b3
+      from "requirement_contradiction_aeef0409af9a771b"
+      to "audited_statement_dbf03f8d4371b1f0"
+  skipped_paths

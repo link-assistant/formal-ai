@@ -2,6 +2,7 @@
 set -eu
 
 rustc \
+  -D warnings \
   --target wasm32-unknown-unknown \
   --crate-type cdylib \
   -C opt-level=z \

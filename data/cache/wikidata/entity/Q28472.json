@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q28472": {
+      "type": "item",
+      "id": "Q28472",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hair"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "волосы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बाल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "毛髮"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "protein filament that grows from follicles found in the dermis, or skin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "защитный покров в виде растущих из кожи нитей"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "从真皮中发现的毛囊生长的丝状生物材料"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "hairs"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "волос"
+          },
+          {
+            "language": "ru",
+            "value": "волосяной покров"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "髮"
+          },
+          {
+            "language": "zh",
+            "value": "毛"
+          },
+          {
+            "language": "zh",
+            "value": "真发"
+          },
+          {
+            "language": "zh",
+            "value": "毛发"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

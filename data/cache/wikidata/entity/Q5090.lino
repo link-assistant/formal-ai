@@ -1,0 +1,17 @@
+Q5090
+  aliases
+    en (Rice)
+    zh ("稻米" "米" "大米")
+  descriptions
+    en "staple food grain of Oryza and Zizania species, for the plant see Q161426"
+    hi "अनाज का एक प्रकार"
+    ru "пищевой продукт"
+    zh "禾本目禾本科稻属植物的果实-稻谷经脱壳、碾磨粗皮后的成品，可食用"
+  id Q5090
+  labels
+    en rice
+    hi "चावल"
+    ru "рис"
+    zh "稻"
+  type item
+success 1

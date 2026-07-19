@@ -1,0 +1,11 @@
+{
+  "number": 657,
+  "title": "E38: Self-hosting metric: measure the share of each release authored by Formal AI",
+  "state": "OPEN",
+  "author": "konard",
+  "createdAt": "2026-07-12T19:40:34Z",
+  "updatedAt": "2026-07-12T19:40:34Z",
+  "url": "https://github.com/link-assistant/formal-ai/issues/657",
+  "comments": [],
+  "body": "Parent: #651. E38 asks for authorship attribution from recorded E36/E37 Formal AI session evidence, changed-line measurement between release tags, scripts/self-hosting-metric.rs, GitHub release-body publication, a .lino trend ledger, an honest 0% start, and a monotonic non-decreasing trailing-window ratchet."
+}

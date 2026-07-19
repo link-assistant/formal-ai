@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q42962": {
+      "type": "item",
+      "id": "Q42962",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "oil"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "масло"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तेल्"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "油"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "viscous water-insoluble liquid"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "собирательное название ряда химических веществ и смесей, не растворяющихся в воде"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "物质类型"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "oils"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "масла"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,13 @@
+## fetch https://example.com
+HTTP fetch requested for `https://example.com`.
+
+The browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.
+
+Source: [https://example.com](https://example.com)
+exit=0
+## search the code for TODO
+Research completed for the code for todo, but the tool returned no content.
+exit=0
+## execute pwd
+I can run `pwd` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`.
+exit=0

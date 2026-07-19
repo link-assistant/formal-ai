@@ -15,6 +15,7 @@ function fakeRouter() {
       grants = next;
       return grants;
     },
+    isReadOnly: (tool) => ["web_search", "web_fetch"].includes(tool),
     invoke: async (request) => {
       calls.push(request);
       return { ok: true, tool: request.tool, status: "ok", executed: true, servedBy: "fake" };
@@ -51,6 +52,15 @@ test("invokeTool routes to the tool router when the server is enabled", async ()
   const router = fakeRouter();
   const bridge = createBridge({ toolRouter: router, serverEnabled: true });
   const result = await bridge.invokeTool({ tool: "http_fetch", input: { url: "https://x" } });
+  assert.equal(result.ok, true);
+  assert.equal(result.executed, true);
+  assert.equal(router.calls.length, 1);
+});
+
+test("read-only web tools route without enabling the local server", async () => {
+  const router = fakeRouter();
+  const bridge = createBridge({ toolRouter: router, serverEnabled: false });
+  const result = await bridge.invokeTool({ tool: "web_search", input: { query: "formal ai" } });
   assert.equal(result.ok, true);
   assert.equal(result.executed, true);
   assert.equal(router.calls.length, 1);

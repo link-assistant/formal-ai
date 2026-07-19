@@ -164,6 +164,8 @@ The same symbolic core should be available through:
 - GitHub Pages chat demo backed by a Rust WebAssembly worker.
 - Telegram private and public chat surfaces.
 - Desktop and embedded agent modes share the same library boundary; the desktop wrapper is tracked by issue [#280](https://github.com/link-assistant/formal-ai/issues/280).
+- VS Code extension (desktop and web/`vscode.dev`) embedding the same chat; Marketplace publication is tracked by issue [#666](https://github.com/link-assistant/formal-ai/issues/666).
+- OpenAI-compatible backend for agentic CLIs (codex, opencode, gemini, qwen, claude, agent), and — the mirror direction — an orchestrator that drives those same CLIs as permissioned tools (issue [#703](https://github.com/link-assistant/formal-ai/issues/703)).
 
 Code-generation tasks should be a first focus area. The assistant should generate algorithms in popular languages, compile or run generated code when the environment supports it, report execution limits honestly, and preserve logs for failed reasoning or failed execution. Browser-only mode can start with JavaScript evaluation and later experiment with WebVM.
 
@@ -235,6 +237,45 @@ ratchet, reasoning-first report behavior, and the white-box self-improvement
 loop. The final epic #365 records that the original Russian dialog now produces
 a `write_program` answer with reverse-sorted output instead of `unknown`, and
 that the behavior is covered across runtime and benchmark surfaces.
+
+Since then the meta-algorithm layer has grown four self-directed capabilities,
+each delivered as a grounded recipe pinned to the live source
+(see [`docs/meta-algorithm.md`](docs/meta-algorithm.md)): the recursive meta
+core with a live method registry and proposal-only self-improvement (issue
+[#559](https://github.com/link-assistant/formal-ai/issues/559)), background
+**dreaming** that learns topics and requirements from memory and generalizes
+them into meta-algorithm amendments (issue
+[#540](https://github.com/link-assistant/formal-ai/issues/540)), the human-gated
+**self-healing** repair loop over the system's own source (issue
+[#558](https://github.com/link-assistant/formal-ai/issues/558)), and the
+**agentic-coding** mode that lets external agent CLIs drive the same
+deterministic loop through the OpenAI-compatible server (issues
+[#468](https://github.com/link-assistant/formal-ai/issues/468),
+[#680](https://github.com/link-assistant/formal-ai/issues/680)). The symbolic
+**world models** design — current-state and target-state contexts as links
+networks, their difference, merge/split, and action-consequence prediction — is
+specified in [`docs/case-studies/issue-649`](docs/case-studies/issue-649/README.md)
+with implementation tracked by issue
+[#702](https://github.com/link-assistant/formal-ai/issues/702).
+
+The self-evolution frontier is explicit and benchmark-gated: proposals must
+pass tests and benchmark ratchets before a reviewed promotion materializes them
+as seed edits (issues [#656](https://github.com/link-assistant/formal-ai/issues/656),
+[#701](https://github.com/link-assistant/formal-ai/issues/701)); the share of
+each release authored by Formal AI itself is measured honestly from 0% upward
+(issue [#657](https://github.com/link-assistant/formal-ai/issues/657)); the
+solver should try multiple candidate drafts in parallel and record why the
+winner won (issue [#704](https://github.com/link-assistant/formal-ai/issues/704),
+following the drafts→selection→composition shape of
+[konard/problem-solving](https://github.com/konard/problem-solving)); and the
+meta-algorithm should predict the user's likely next requests per topic and
+pre-learn them while idle (issue
+[#705](https://github.com/link-assistant/formal-ai/issues/705)). Language
+breadth grows by data alone through the meta language (issue
+[#706](https://github.com/link-assistant/formal-ai/issues/706)), and computer-use
+tasks are handled as verified algorithmic plans over files, shell, and
+structured web — no vision required at this stage (issue
+[#707](https://github.com/link-assistant/formal-ai/issues/707)).
 
 Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
 the same deterministic path to user-requested text and code edits: follow-up

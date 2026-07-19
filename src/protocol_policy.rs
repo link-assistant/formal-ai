@@ -10,6 +10,7 @@ pub fn tool_call_refusal_answer() -> SymbolicAnswer {
             "Tool calls and function execution are not allowed without explicit agent mode. \
              Enable agent mode only for an isolated execution environment.",
         ),
+        execution_recipe: None,
         confidence: 1.0,
         evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
         thinking_steps: policy_thinking_steps("agent_mode_required_for_tools"),
@@ -29,6 +30,7 @@ pub fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> S
             "Tool calls are not allowed for `{capability}`: {reason}. Install or import an \
              associative package that grants this capability before enabling the tool."
         ),
+        execution_recipe: None,
         confidence: 1.0,
         evidence_links: vec![format!("policy:package_permission_required:{capability}")],
         thinking_steps: policy_thinking_steps(format!("package_permission_required:{capability}")),
@@ -88,7 +90,8 @@ pub fn tool_choice_function_name(value: &Value) -> Option<String> {
             .and_then(|function| function.get("name"))
             .or_else(|| object.get("name"))
             .and_then(Value::as_str)
-            .map(ToOwned::to_owned),
+            .map(ToOwned::to_owned)
+            .or_else(|| hosted_tool_type_name(object).map(ToOwned::to_owned)),
         _ => None,
     }
 }
@@ -100,9 +103,35 @@ pub fn tool_definition_name(value: &Value) -> Option<String> {
             .and_then(|function| function.get("name"))
             .or_else(|| object.get("name"))
             .and_then(Value::as_str)
-            .map(ToOwned::to_owned),
+            .map(ToOwned::to_owned)
+            .or_else(|| hosted_tool_type_name(object).map(ToOwned::to_owned)),
         _ => None,
     }
+}
+
+/// Canonical capability name for OpenAI/Anthropic hosted tools whose wire
+/// definition carries only `type`. Function tools are deliberately excluded:
+/// their executable name must still come from `function.name` or top-level
+/// `name`.
+fn hosted_tool_type_name(object: &serde_json::Map<String, Value>) -> Option<&'static str> {
+    match object.get("type").and_then(Value::as_str)? {
+        "web_search" | "web_search_preview" => Some("web_search"),
+        "file_search" => Some("file_search"),
+        "computer_use" | "computer_use_preview" => Some("computer_use"),
+        "code_interpreter" => Some("code_interpreter"),
+        kind if kind.starts_with("web_search_") => Some("web_search"),
+        _ => None,
+    }
+}
+
+/// Whether this definition is an OpenAI hosted tool (as opposed to a function
+/// tool whose implementation lives in the client).
+#[must_use]
+pub fn is_hosted_tool_definition(value: &Value, capability: &str) -> bool {
+    value
+        .as_object()
+        .and_then(hosted_tool_type_name)
+        .is_some_and(|name| name == capability)
 }
 
 pub fn matches_tool_choice_none(value: &Value) -> bool {

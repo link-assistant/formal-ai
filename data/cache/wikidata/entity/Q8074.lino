@@ -1,0 +1,17 @@
+Q8074
+  aliases
+    en (clouds)
+    ru ("облака")
+    zh ("雲" "云朵" "云层" "雲朵" "雲層")
+  descriptions
+    en "visible mass of liquid droplets or frozen crystals suspended in the atmosphere"
+    ru "взвешенные в атмосфере продукты конденсации водяного пара"
+    zh "大气层中的液滴或冰晶集合体"
+  id Q8074
+  labels
+    en cloud
+    hi "बादल"
+    ru "облако"
+    zh "云"
+  type item
+success 1
