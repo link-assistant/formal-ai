@@ -377,6 +377,39 @@ impl AssociativeMemory {
             .saturating_add(weights.outgoing.saturating_mul(outgoing))
     }
 
+    /// Every expression's retention score, calculated in one links pass.
+    ///
+    /// Repository-scale renderers should prefer this bulk view to calling
+    /// [`Self::retention_score`] for every expression. The latter intentionally
+    /// remains convenient for point lookups, but each point lookup scans the
+    /// association set; this method indexes every incoming and outgoing degree
+    /// once, so sparse-network exports grow with expressions plus links instead
+    /// of their cross-product.
+    #[must_use]
+    pub fn retention_score_map(&self) -> BTreeMap<String, u64> {
+        let weights = RetentionWeights::uniform();
+        let mut scores = self
+            .expressions
+            .iter()
+            .map(|(id, expression)| {
+                let base = weights
+                    .read
+                    .saturating_mul(expression.reads)
+                    .saturating_add(weights.write.saturating_mul(expression.writes));
+                (id.clone(), base)
+            })
+            .collect::<BTreeMap<_, _>>();
+        for link in self.associations.links() {
+            if let Some(score) = scores.get_mut(&link.from) {
+                *score = score.saturating_add(weights.outgoing);
+            }
+            if let Some(score) = scores.get_mut(&link.to) {
+                *score = score.saturating_add(weights.incoming);
+            }
+        }
+        scores
+    }
+
     /// Every expression id, ranked most-retained first (score descending).
     ///
     /// Ties break by id ascending so the ranking is fully deterministic.
@@ -392,12 +425,9 @@ impl AssociativeMemory {
     #[must_use]
     pub fn retention_scores(&self) -> Vec<ScoredExpression> {
         let mut scored: Vec<ScoredExpression> = self
-            .expressions
-            .keys()
-            .map(|id| ScoredExpression {
-                id: id.clone(),
-                score: self.retention_score(id),
-            })
+            .retention_score_map()
+            .into_iter()
+            .map(|(id, score)| ScoredExpression { id, score })
             .collect();
         // Most-retained first; deterministic id tie-break.
         scored.sort_by(|left, right| {

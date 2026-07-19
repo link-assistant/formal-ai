@@ -465,6 +465,22 @@ impl UniversalSolver {
         record_intent_formalization(&mut log, &intent_entry);
         let intent_formalization = intent_entry.formalization;
 
+        // Issue #661 (R384): before any contextual handler runs (a language
+        // directive would otherwise be replayed by the response-language
+        // follow-up), check whether this newly formalized requirement
+        // contradicts a retained one. A clash — same subject, opposite polarity
+        // — is surfaced as a warning naming both statements, their weights, and
+        // a resolution that reuses the append-only retraction protocol.
+        if let Some(answer) = crate::requirement_contradiction::detect_and_report(
+            prompt,
+            language,
+            history,
+            self.config.temperature,
+            &mut log,
+        ) {
+            return answer;
+        }
+
         // Issue #559: record the general recursive meta core — problem frame
         // (R330), recursive work-unit decomposition (R332), need-satisfaction
         // ledger (R333), method registry (R331), and the end-to-end solution

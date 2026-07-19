@@ -10,11 +10,13 @@ mod cli_import;
 mod cli_improve;
 mod cli_memory;
 mod cli_shared_dialog;
+mod cli_statement_audit;
 
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
+use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
@@ -127,6 +129,8 @@ enum Command {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Weigh statement-bearing repository text against captured provenance.
+    StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
@@ -527,6 +531,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Environments => run_environments(),
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
             task,

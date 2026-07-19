@@ -123,6 +123,10 @@ fn retention_score_combines_reads_writes_and_degree() {
     };
     // a: 1*1 + 2*1 + 1*0 + 1*1 = 4
     assert_eq!(memory.retention_score_with(&a, weights), 4);
+
+    let bulk = memory.retention_score_map();
+    assert_eq!(bulk.get(&a), Some(&memory.retention_score(&a)));
+    assert_eq!(bulk.get(&b), Some(&memory.retention_score(&b)));
 }
 
 #[test]
