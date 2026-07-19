@@ -13,6 +13,7 @@
 9. 2026-07-19 06:39:58 — run 29676805792 started for SHA `483497be`; its version check rejected a manual crate-version edit. The edit was reverted and the repository's changelog-fragment release trigger retained.
 10. 2026-07-19 06:44:00 — run 29676916779 started for corrected SHA `ab2fd90a`; version and changelog checks passed. Lint exposed a 20-line worker-budget overage, and the agent-CLI suite independently reported that issue 687's report request did not execute its fake `gh` command.
 11. 2026-07-19 — the seed-driven browser fallback was compacted without changing behavior. The worker ratchet passes at exactly 26,809 lines; the issue's two Rust integration and two Chromium regressions pass locally.
+12. 2026-07-19 — issue 687's Agent CLI failure reproduced locally. OpenCode compacted its session before the second turn because the custom test model supplied no context-window metadata, replacing the report request with synthetic continuation messages. Declaring the documented model limits made the unchanged four-turn E2E pass in nine chat rounds.
 
 ## Complete requirements
 
@@ -58,6 +59,10 @@ The web app recognizes interface commands before dispatching a prompt to the wor
 ### RC7 — CI worker-mirror ratchet
 
 The functional JavaScript fallback initially added 20 physical lines, but issue 658's CI ratchet prohibits any net growth under `src/web/worker/*.js` while solver logic migrates to WASM. This was a presentation/duplication-budget failure rather than a semantic failure. The same role-driven extraction was expressed within the existing 26,809-line ceiling and reverified with syntax, focused browser, and worker-budget checks.
+
+### CI-only blocker — incomplete custom-model metadata
+
+The unrelated issue 687 Agent CLI experiment configured a custom OpenCode model with a name but no token limits. With the current client and its large tool schema, OpenCode treated the model as having a 60,000-token context and compacted after the research turn. The next server request contained OpenCode's synthetic `What did we do so far?` summary and `Continue if you have next steps` prompt, so the historical report instruction was not the active turn and the fake `gh` command correctly remained unused. OpenCode's documented `limit.context` and `limit.output` fields now describe the test server's model, preventing premature compaction. This is a harness configuration defect, not an issue-776 translation defect or an upstream OpenCode defect.
 
 ## Solution and alternatives
 

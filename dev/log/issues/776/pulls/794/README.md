@@ -17,7 +17,9 @@ Collected on 2026-07-19 UTC for [issue 776](https://github.com/link-assistant/fo
   26,809-line ratchet. The fallback was compacted back to the exact ceiling.
 - `ci-logs/agent-cli-e2e-29676916779.log`: the same run's unrelated agent-CLI
   failure (`report request did not execute gh` at line 1833), preserved for the
-  subsequent authoritative rerun.
+  subsequent authoritative rerun. The failure reproduced locally because the
+  custom OpenCode model omitted its context limits; `raw/agent-cli-issue-687-after.log`
+  records the unchanged four-turn scenario passing after declaring those limits.
 - `raw/reproduction-before.txt`: exact CLI reproduction of the reported fallback.
 - `raw/repro-*-before.log`: failing automated regression evidence.
 - `raw/repro-*-after.log`: focused verification after the fix.

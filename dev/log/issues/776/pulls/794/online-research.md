@@ -29,3 +29,9 @@ Inference: `any formal system is either incomplete or inconsistent` is the faith
 | `nom` (already a dependency) | Could implement a larger grammar but would duplicate seed slot semantics for this case. | Not needed. |
 
 No upstream project defect was found: all failures are in Formal AI's own routing, extraction, formalization, and seed coverage, so no external issue was filed.
+
+## CI client configuration
+
+- OpenCode's custom-provider documentation defines `limit.context` as the maximum accepted input and `limit.output` as the maximum generated output, and states that these fields let the client calculate remaining context: <https://opencode.ai/docs/providers/>.
+
+The unrelated Agent CLI CI failure was therefore fixed by completing Formal AI's local test-model configuration. There was no evidence of an OpenCode implementation defect to report upstream.
