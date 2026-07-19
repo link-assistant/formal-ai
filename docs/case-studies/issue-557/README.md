@@ -331,6 +331,20 @@ class fixed above. That script (like the composer/topbar close-up scripts) write
 to a gitignored scratch dir for inspection; nothing new needed fixing in the
 transcript.
 
+The same close-inspection pass was then extended to the two remaining card-like
+surfaces — the **example-prompts** sidebar list
+([`experiments/prompts-closeups.mjs`](../../../experiments/prompts-closeups.mjs))
+and the **command-approval tool card** that appears in Agent mode
+([`experiments/toolcard-closeups.mjs`](../../../experiments/toolcard-closeups.mjs),
+which mocks the Electron desktop bridge, switches to Agent mode, grants `shell`
+and leaves the approval pending). Both were cropped tight across all five skins in
+light and dark. The prompt buttons held one uniform per-skin surface each (flat/
+contrast/mui-flat bordered pills, Material tonal-filled buttons, glass frosted
+pills) and the approval card kept a single consistent panel with its command chip,
+"Pending" badge and Approve/Deny controls — no leaked backgrounds or the
+light-mode MUI-specificity defect on any skin. (The app has no modal dialog or
+drawer; Settings is an inline sidebar section, already close-inspected above.)
+
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
 (every skin's marker class and transparent textarea, the MUI framework root
