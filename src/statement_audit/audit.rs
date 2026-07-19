@@ -296,6 +296,7 @@ impl RepositoryAudit {
     #[must_use]
     pub fn to_links_notation(&self) -> String {
         let mut output = String::new();
+        let retention_scores = self.learning.retention_score_map();
         push_lino_node(&mut output, 0, "repository_statement_audit", None);
         push_lino_node(&mut output, 2, "summary", None);
         push_lino_node(
@@ -377,7 +378,13 @@ impl RepositoryAudit {
                 &mut output,
                 8,
                 "retention_score",
-                Some(&self.learning.retention_score(&statement.id).to_string()),
+                Some(
+                    &retention_scores
+                        .get(&statement.id)
+                        .copied()
+                        .unwrap_or_default()
+                        .to_string(),
+                ),
             );
             if !statement.evidence.is_empty() {
                 push_lino_node(&mut output, 6, "evidence", None);
