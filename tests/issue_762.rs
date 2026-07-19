@@ -48,7 +48,7 @@ mod unix {
         let executable = root.join("fake-opencode-desktop");
         std::fs::write(
             &executable,
-            r##"#!/bin/sh
+            r#"#!/bin/sh
 {
   printf 'arg_count=%s\n' "$#"
   printf 'FORMAL_AI_API_KEY=%s\n' "${FORMAL_AI_API_KEY-}"
@@ -59,7 +59,7 @@ mod unix {
     cat "$OPENCODE_CONFIG"
   fi
 } > "$FORMAL_AI_CAPTURE"
-"##,
+"#,
         )
         .expect("fake desktop");
         let mut permissions = std::fs::metadata(&executable)

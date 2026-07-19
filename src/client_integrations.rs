@@ -440,14 +440,16 @@ fn resolve_integration_command(integration: &ClientIntegration) -> PathBuf {
 }
 
 fn expand_command_path(value: &str) -> String {
+    const HOME_PLACEHOLDER: &str = "{home}";
+    const LOCAL_APP_DATA_PLACEHOLDER: &str = "{local_app_data}";
     let home = user_home_dir().map_or_else(|_| String::new(), |path| path.display().to_string());
     let local_app_data = std::env::var_os("LOCALAPPDATA")
         .map(PathBuf::from)
         .or_else(|| (!home.is_empty()).then(|| PathBuf::from(&home).join("AppData/Local")))
         .map_or_else(String::new, |path| path.display().to_string());
     value
-        .replace("{home}", &home)
-        .replace("{local_app_data}", &local_app_data)
+        .replace(HOME_PLACEHOLDER, &home)
+        .replace(LOCAL_APP_DATA_PLACEHOLDER, &local_app_data)
 }
 
 fn command_available(command: &Path) -> bool {
