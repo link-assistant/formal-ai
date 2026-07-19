@@ -229,7 +229,10 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
                     .map(shell_quote)
                     .collect::<Vec<_>>()
                     .join(" ");
-                format!("cat {paths}")
+                let mut command = String::from("cat");
+                command.push(' ');
+                command.push_str(&paths);
+                command
             })
         }
         _ => None,
