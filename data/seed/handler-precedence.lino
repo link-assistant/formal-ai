@@ -1,0 +1,56 @@
+handler_precedence
+  http_fetch
+  url_navigate
+  github_repository_traffic
+  document_originality_check
+  web_search
+  learn_from_source # issue 499 learn-from-source directive sits after url and search handlers and above general lookups
+  research_comparison_table
+  research_result_followup
+  docs_method_explanation
+  procedural_how_to
+  procedural_how_to_followup # issue 444 a bare follow-up rebinds to the prior how-to procedure
+  conversation_memory
+  software_project_followup # issue 341 a decomposed step stays bound to the active software-project dialogue
+  summarization
+  text_manipulation
+  brainstorming
+  conversation_topic
+  fact_lookup
+  coreference
+  roleplay
+  translation
+  response_language_followup
+  capabilities
+  calendar_reasoning
+  calendar_create_event
+  compound_interest
+  numeric_list # issue 395 generated code plus deterministic result beats arithmetic and the generic algorithm handler
+  shell_command_transform # issue 552 a shell-command rewrite beats generic script writing and terminal-command refusal
+  number_constraint_reasoning
+  arithmetic
+  javascript_execution
+  definition_merge
+  concept_lookup
+  who_is
+  how_it_works
+  meta_explanation
+  network_query
+  execution_failure # runs before write_script so an explicit failure prompt surfaces a trace instead of a passing snippet
+  installation_conversion # issue 423 an install or deploy guide conversion beats a generic write_script request
+  write_script
+  program_synthesis
+  document_generation_plan # issue 425 a document request beats the software_project build
+  software_project
+  algorithm
+  source_refresh
+  source_conflict
+  clarification
+  punctuation_only_prompt
+  ill_formed
+  physical_action_question
+  kupi_slona
+  shell_refusal
+  proof_request # a proof request beats opinion_question so it reaches the formalization pipeline explanation
+  opinion_question
+  incompatible_units

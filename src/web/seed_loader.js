@@ -34,6 +34,7 @@
     "seed/language-detection.lino",
     "seed/prompt-patterns.lino",
     "seed/intent-routing.lino",
+    "seed/handler-precedence.lino",
     "seed/operation-vocabulary.lino",
     "seed/numeric-list-operations.lino",
     "seed/coding-idioms.lino",

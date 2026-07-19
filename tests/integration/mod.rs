@@ -29,6 +29,7 @@ mod issue_746_hosted_tools;
 mod issue_749_shell_routing;
 mod issue_751_token_usage;
 mod issue_754_cursor;
+mod issue_755_file_read_write;
 mod issue_758_capability_routing;
 mod issue_776_translation;
 mod logging_proxy;

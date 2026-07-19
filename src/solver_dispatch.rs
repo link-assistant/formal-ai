@@ -178,14 +178,20 @@ pub fn try_contextual_override(
     answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)
 }
 
-/// Ordered dispatch table for the universal solver's specialized handlers.
+/// The specialized-handler function registry: handler name → executable Rust
+/// function.
 ///
-/// Order matters: the first handler that returns `Some` wins, and several
-/// downstream tests rely on the resolution order (for example, conversation
-/// memory must trigger before the concept lookup when both could match).
-/// New handlers should be slotted into the position that preserves intent
-/// precedence rather than appended unconditionally.
-pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
+/// This is the *code* half of the dispatch table — the function pointers, which
+/// cannot live in seed data. The *order* in which handlers are tried (the
+/// behaviour) lives in `data/seed/handler-precedence.lino` and is applied by
+/// [`specialized_handlers`]; issue #663 retired the precedence remnant that used
+/// to be baked into this constant's declaration order into that seed file.
+///
+/// The declaration order here is kept aligned with the shipped seed purely for
+/// reviewability — it is not the dispatch authority. [`specialized_handlers`]
+/// asserts the two are an exact permutation, so this registry and the seed can
+/// never silently drift.
+const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     ("http_fetch", try_http_fetch),
     ("url_navigate", try_url_navigate),
     ("github_repository_traffic", try_github_repository_traffic),
@@ -289,11 +295,58 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("incompatible_units", try_incompatible_units),
 ];
 
+/// The ordered specialized-handler table, with precedence read from
+/// `data/seed/handler-precedence.lino` (issue #663).
+///
+/// The seed supplies the *order* (behaviour); [`HANDLER_FUNCTIONS`] supplies the
+/// executable *functions* (code). This joins them and validates that the seed is
+/// an exact permutation of the registered handlers — every handler present once
+/// and only once — panicking otherwise so a seed edit can never silently drop or
+/// duplicate a handler.
+#[must_use]
+pub fn specialized_handlers() -> Vec<(&'static str, SpecializedHandler)> {
+    let precedence = crate::seed::handler_precedence();
+    assert_eq!(
+        precedence.len(),
+        HANDLER_FUNCTIONS.len(),
+        "handler-precedence.lino lists {} handlers but {} are registered in \
+         HANDLER_FUNCTIONS; the seed must be an exact permutation of the registry",
+        precedence.len(),
+        HANDLER_FUNCTIONS.len(),
+    );
+    let mut seen = std::collections::BTreeSet::new();
+    let ordered: Vec<(&'static str, SpecializedHandler)> = precedence
+        .iter()
+        .map(|name| {
+            assert!(
+                seen.insert(name.clone()),
+                "handler-precedence.lino lists handler `{name}` more than once"
+            );
+            let entry = HANDLER_FUNCTIONS
+                .iter()
+                .find(|(candidate, _)| candidate == name)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "handler-precedence.lino names handler `{name}`, which is not \
+                         registered in HANDLER_FUNCTIONS"
+                    )
+                });
+            *entry
+        })
+        .collect();
+    debug_assert_eq!(
+        seen.len(),
+        HANDLER_FUNCTIONS.len(),
+        "every registered handler must appear in handler-precedence.lino exactly once"
+    );
+    ordered
+}
+
 /// Return the executable handler for a registry method name implemented by the
 /// regular solver-handler table.
 #[must_use]
 pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
-    SPECIALIZED_HANDLERS
+    HANDLER_FUNCTIONS
         .iter()
         .find_map(|(candidate, handler)| (*candidate == name).then_some(*handler))
 }

@@ -47,8 +47,10 @@ pub static REPORTS: &[&LearningReport] = &[
     &self_hosting_learning::REPORT,
     &hardcoded_language_learning::REPORT,
     &lexeme_import_learning::REPORT,
+    &handler_precedence_learning::REPORT,
 ];
 
+pub mod handler_precedence_learning;
 pub mod hardcoded_language_learning;
 pub mod lexeme_import_learning;
 pub mod self_hosting_learning;
