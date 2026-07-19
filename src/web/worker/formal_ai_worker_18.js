@@ -278,17 +278,24 @@ async function tryUrlNavigate(prompt) {
   };
 }
 
-// Reciprocal Rank Fusion constant — Cormack et al. 2009 use k = 60 and we
-// match that so combined ranks stay comparable across the CLI, server, and
-// browser surfaces (issue #133).
-//
-// The authoritative value lives in `web_search_core::WEB_SEARCH_RRF_K` and is
-// fetched from the WASM worker once it boots; the JS constants below are
-// pre-WASM fallbacks used during init() and on browsers where the worker
-// could not instantiate. The Rust→WASM port is the source of truth (R194).
+// WASM owns these web-search constants; fallbacks cover JS-only browsers.
 const WEB_SEARCH_RRF_K_FALLBACK = 60;
 const WEB_SEARCH_CONCURRENCY_FALLBACK = 5;
 const WEB_SEARCH_PROVIDER_LIMIT_FALLBACK = 10;
+const WEB_SEARCH_FETCH_TIMEOUT_MS = 2000;
+
+async function fetchWebSearch(url, options) {
+  if (typeof AbortController !== "function") return fetch(url, options || { mode: "cors" });
+  const controller = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, WEB_SEARCH_FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, Object.assign({}, options || { mode: "cors" }, { signal: controller.signal }));
+  } catch (error) {
+    if (timedOut) throw new Error(`timeout after ${WEB_SEARCH_FETCH_TIMEOUT_MS}ms`);
+    throw error;
+  } finally { clearTimeout(timer); }
+}
 
 const WEB_SEARCH_TEXT_ENCODER = new TextEncoder();
 const WEB_SEARCH_TEXT_DECODER = new TextDecoder();
@@ -544,7 +551,7 @@ async function fetchProviderJson(providerId, url, options) {
   }
   const startedAt = Date.now();
   try {
-    const response = await fetch(url, options || { mode: "cors" });
+    const response = await fetchWebSearch(url, options);
     const status = response ? response.status : 0;
     const statusText = response ? response.statusText : "";
     if (!response || !response.ok) {
@@ -735,9 +742,7 @@ function providerDisplayLabel(providerId, language) {
 }
 
 async function searchDuckDuckGo(query, language, limit) {
-  // DuckDuckGo Instant Answer — CORS-readable, no key. Returns the abstract
-  // and a flat list of related-topic links. We treat the abstract link plus
-  // the related topics as the ranked result list (issue #133).
+  // DuckDuckGo Instant Answer is CORS-readable and requires no key.
   //
   // Issue #153: the previous signature was (query, limit) but the dispatcher
   // calls every provider as (query, language, providerLimit). That meant
@@ -1099,11 +1104,6 @@ const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS.reduce((acc, provider,
   return acc;
 }, Object.create(null));
 
-// Issue #180: pre-probe every provider exactly once per browser session. The
-// result lives in `WEB_SEARCH_AVAILABLE` / `WEB_SEARCH_DISABLED` for the rest
-// of the worker's lifetime so subsequent queries skip CORS-blocked endpoints
-// without re-burning a socket. We return a shared promise so concurrent
-// callers cooperate on the same probe batch.
 function ensureWebSearchProviderProbes() {
   if (WEB_SEARCH_PROBE_PROMISE) return WEB_SEARCH_PROBE_PROMISE;
   if (typeof fetch !== "function") {
@@ -1115,7 +1115,7 @@ function ensureWebSearchProviderProbes() {
       if (!provider.probeUrl) return null;
       const startedAt = Date.now();
       try {
-        const response = await fetch(provider.probeUrl, { mode: "cors" });
+        const response = await fetchWebSearch(provider.probeUrl, { mode: "cors" });
         const status = response ? response.status : 0;
         if (response && response.ok) {
           webSearchMarkAvailable(provider.id, { probedAt: startedAt, status });
