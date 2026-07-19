@@ -6,4 +6,3 @@ running 1 test
 test reference_closure::meaning_definition_references_resolve_to_defined_meanings ... ok
 
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1803 filtered out; finished in 0.23s
-

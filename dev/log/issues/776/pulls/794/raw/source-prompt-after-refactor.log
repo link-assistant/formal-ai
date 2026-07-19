@@ -15,4 +15,3 @@ test translation::prompt::tests::returns_none_without_preposition ... ok
 test translation::prompt::tests::returns_none_without_verb ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 471 filtered out; finished in 0.17s
-

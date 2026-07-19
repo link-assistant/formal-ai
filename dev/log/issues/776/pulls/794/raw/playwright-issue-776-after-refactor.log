@@ -9,7 +9,7 @@ Running 2 tests using 1 worker
   ✘  3 [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh (retry #1) (801ms)
 
 
-  1) [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh 
+  1) [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh
 
     Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3456/app/
     Call log:
@@ -54,5 +54,5 @@ Running 2 tests using 1 worker
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   1 failed
-    [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh 
+    [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh
   1 passed (22.5s)

@@ -55,7 +55,7 @@ Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0114869Z   RUSTFLAGS:
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0115447Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0115962Z   CARGO_TOKEN: ***
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0116423Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0116980Z   DOCKERHUB_IMAGE: 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0116980Z   DOCKERHUB_IMAGE:
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0117418Z ##[endgroup]
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0944021Z Syncing repository: link-assistant/formal-ai
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:01.0946152Z ##[group]Getting Git version info
@@ -775,22 +775,22 @@ Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:17.2926381Z [command]/us
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:17.2927916Z ##[group]Checking out the ref
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:17.2928551Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/794/merge
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2167531Z Note: switching to 'refs/remotes/pull/794/merge'.
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2168308Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2168308Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2168687Z You are in 'detached HEAD' state. You can look around, make experimental
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2169470Z changes and commit them, and you can discard any commits you make in this
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2170543Z state without impacting any branches by switching back to a branch.
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2171073Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2171073Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2171434Z If you want to create a new branch to retain commits you create, you may
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2172177Z do so (now or later) by using -c with the switch command. Example:
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2172538Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2172538Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2172868Z   git switch -c <new-branch-name>
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173149Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173149Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173367Z Or undo this operation with:
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173609Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173609Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2173844Z   git switch -
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2174105Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2174105Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2174472Z Turn off this advice by setting config variable advice.detachedHead to false
-Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2174869Z 
+Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2174869Z
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2175427Z HEAD is now at b2cad172 Merge 9191515e8d5b39b6ef13e56aa45535f863955681 into 727f21f3153dda8076402ad83912ff287f800f78
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2203294Z ##[endgroup]
 Detect Changes	Run actions/checkout@v6	2026-07-19T05:11:18.2238387Z [command]/usr/bin/git log -1 --format=%H
@@ -809,7 +809,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.2515857Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2516499Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2516896Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2517246Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.2517657Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.2517657Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2517952Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2616616Z ##[group]Run : parse toolchain version
 Detect Changes	Setup Rust	2026-07-19T05:11:18.2617148Z ^[[36;1m: parse toolchain version^[[0m
@@ -842,7 +842,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.4406537Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4407093Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4407506Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4407842Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4408213Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4408213Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4408547Z   toolchain: stable
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4408847Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4554049Z ##[group]Run : construct rustup command line
@@ -862,9 +862,9 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.4592832Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4593547Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4594021Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4594433Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4594828Z   DOCKERHUB_IMAGE: 
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4595145Z   targets: 
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4595476Z   components: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4594828Z   DOCKERHUB_IMAGE:
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4595145Z   targets:
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4595476Z   components:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4595794Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4685120Z ##[group]Run : set $CARGO_HOME
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4685550Z ^[[36;1m: set $CARGO_HOME^[[0m
@@ -881,7 +881,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.4718228Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4718759Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4719171Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4719501Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4719863Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4719863Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4720483Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4801784Z ##[group]Run : install rustup if needed
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4802212Z ^[[36;1m: install rustup if needed^[[0m
@@ -901,7 +901,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.4834943Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4835418Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4835822Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4836143Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4836516Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4836516Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4836857Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4837204Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4917259Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
@@ -918,7 +918,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:18.4947700Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4948205Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4948561Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4948889Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:18.4949236Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:18.4949236Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4949672Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4950038Z   RUSTUP_PERMIT_COPY_RENAME: 1
 Detect Changes	Setup Rust	2026-07-19T05:11:18.4950583Z ##[endgroup]
@@ -930,9 +930,9 @@ Detect Changes	Setup Rust	2026-07-19T05:11:19.5147124Z info: removing previous v
 Detect Changes	Setup Rust	2026-07-19T05:11:19.5927872Z info: removing previous version of component rust-std
 Detect Changes	Setup Rust	2026-07-19T05:11:19.6273565Z info: removing previous version of component rustc
 Detect Changes	Setup Rust	2026-07-19T05:11:19.7018036Z info: downloading 5 components
-Detect Changes	Setup Rust	2026-07-19T05:11:28.0972367Z 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.0972367Z
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1047610Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.97.1 (8bab26f4f 2026-07-14) (from rustc 1.97.0 (2d8144b78 2026-07-07))
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1048423Z 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1048423Z
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1127487Z ##[group]Run rustup default stable
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1127975Z ^[[36;1mrustup default stable^[[0m
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1176822Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
@@ -947,14 +947,14 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.1180420Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1181069Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1181529Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1181970Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1182422Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1182422Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1182839Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1183255Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1296619Z info: using existing install for stable-x86_64-unknown-linux-gnu
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1304677Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1305209Z 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1305209Z
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1366892Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1367649Z 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1367649Z
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1419636Z ##[group]Run : create cachekey
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1420443Z ^[[36;1m: create cachekey^[[0m
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1421107Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
@@ -972,7 +972,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.1455385Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1455839Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1456214Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1456525Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1456864Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1456864Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1457147Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1457464Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1771972Z ##[group]Run : disable incremental compilation
@@ -992,7 +992,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.1807251Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1807715Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1808064Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1808347Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1808669Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1808669Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1808949Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1809213Z ##[endgroup]
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1885330Z ##[group]Run : enable colors in Cargo output
@@ -1012,7 +1012,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.1918945Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1919357Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1919659Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1919967Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.1920423Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.1920423Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1920761Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1921054Z   CARGO_INCREMENTAL: 0
 Detect Changes	Setup Rust	2026-07-19T05:11:28.1921298Z ##[endgroup]
@@ -1040,7 +1040,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.2032803Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2033345Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2033669Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2033972Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.2034288Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.2034288Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2034714Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2035013Z   CARGO_INCREMENTAL: 0
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2035273Z ##[endgroup]
@@ -1062,7 +1062,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.2380008Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2380718Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2381203Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2381638Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.2382140Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.2382140Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2382528Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2382974Z   CARGO_INCREMENTAL: 0
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2383347Z ##[endgroup]
@@ -1080,7 +1080,7 @@ Detect Changes	Setup Rust	2026-07-19T05:11:28.2604309Z   RUSTFLAGS: -Dwarnings
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2604746Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2605082Z   CARGO_TOKEN: ***
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2605363Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Setup Rust	2026-07-19T05:11:28.2605810Z   DOCKERHUB_IMAGE: 
+Detect Changes	Setup Rust	2026-07-19T05:11:28.2605810Z   DOCKERHUB_IMAGE:
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2606085Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2606404Z   CARGO_INCREMENTAL: 0
 Detect Changes	Setup Rust	2026-07-19T05:11:28.2606691Z ##[endgroup]
@@ -1105,7 +1105,7 @@ Detect Changes	Install rust-script	2026-07-19T05:11:28.2847876Z   RUSTFLAGS: -Dw
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2848289Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2848599Z   CARGO_TOKEN: ***
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2848914Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Install rust-script	2026-07-19T05:11:28.2849219Z   DOCKERHUB_IMAGE: 
+Detect Changes	Install rust-script	2026-07-19T05:11:28.2849219Z   DOCKERHUB_IMAGE:
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2849501Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2849786Z   CARGO_INCREMENTAL: 0
 Detect Changes	Install rust-script	2026-07-19T05:11:28.2850025Z ##[endgroup]
@@ -1246,30 +1246,30 @@ Detect Changes	Detect changes	2026-07-19T05:11:59.8959576Z   RUSTFLAGS: -Dwarnin
 Detect Changes	Detect changes	2026-07-19T05:11:59.8960658Z   CARGO_REGISTRY_TOKEN: ***
 Detect Changes	Detect changes	2026-07-19T05:11:59.8960990Z   CARGO_TOKEN: ***
 Detect Changes	Detect changes	2026-07-19T05:11:59.8961209Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Detect Changes	Detect changes	2026-07-19T05:11:59.8961456Z   DOCKERHUB_IMAGE: 
+Detect Changes	Detect changes	2026-07-19T05:11:59.8961456Z   DOCKERHUB_IMAGE:
 Detect Changes	Detect changes	2026-07-19T05:11:59.8961647Z   CARGO_HOME: /home/runner/.cargo
 Detect Changes	Detect changes	2026-07-19T05:11:59.8961863Z   CARGO_INCREMENTAL: 0
 Detect Changes	Detect changes	2026-07-19T05:11:59.8962062Z   GITHUB_EVENT_NAME: pull_request
-Detect Changes	Detect changes	2026-07-19T05:11:59.8962320Z   GITHUB_EVENT_BEFORE: 
+Detect Changes	Detect changes	2026-07-19T05:11:59.8962320Z   GITHUB_EVENT_BEFORE:
 Detect Changes	Detect changes	2026-07-19T05:11:59.8962509Z ##[endgroup]
 Detect Changes	Detect changes	2026-07-19T05:12:07.6308885Z Detecting file changes for CI/CD...
-Detect Changes	Detect changes	2026-07-19T05:12:07.6309172Z 
+Detect Changes	Detect changes	2026-07-19T05:12:07.6309172Z
 Detect Changes	Detect changes	2026-07-19T05:12:07.6320368Z Merge commit detected (pull_request event)
 Detect Changes	Detect changes	2026-07-19T05:12:07.6320789Z Comparing HEAD^ to HEAD^2 (complete pull request diff)
 Detect Changes	Detect changes	2026-07-19T05:12:07.6335450Z Changed files:
 Detect Changes	Detect changes	2026-07-19T05:12:07.6335690Z   .gitkeep
-Detect Changes	Detect changes	2026-07-19T05:12:07.6335842Z 
+Detect Changes	Detect changes	2026-07-19T05:12:07.6335842Z
 Detect Changes	Detect changes	2026-07-19T05:12:07.6335940Z rs-changed=false
 Detect Changes	Detect changes	2026-07-19T05:12:07.6336154Z toml-changed=false
 Detect Changes	Detect changes	2026-07-19T05:12:07.6336648Z mjs-changed=false
 Detect Changes	Detect changes	2026-07-19T05:12:07.6336920Z docs-changed=false
 Detect Changes	Detect changes	2026-07-19T05:12:07.6337162Z workflow-changed=false
-Detect Changes	Detect changes	2026-07-19T05:12:07.6337323Z 
+Detect Changes	Detect changes	2026-07-19T05:12:07.6337323Z
 Detect Changes	Detect changes	2026-07-19T05:12:07.6337451Z Files considered as code changes:
 Detect Changes	Detect changes	2026-07-19T05:12:07.6337744Z   .gitkeep
-Detect Changes	Detect changes	2026-07-19T05:12:07.6337846Z 
+Detect Changes	Detect changes	2026-07-19T05:12:07.6337846Z
 Detect Changes	Detect changes	2026-07-19T05:12:07.6340357Z any-code-changed=false
-Detect Changes	Detect changes	2026-07-19T05:12:07.6340653Z 
+Detect Changes	Detect changes	2026-07-19T05:12:07.6340653Z
 Detect Changes	Detect changes	2026-07-19T05:12:07.6340869Z Change detection completed.
 Detect Changes	Post Run actions/checkout@v6	﻿2026-07-19T05:12:07.6432799Z Post job cleanup.
 Detect Changes	Post Run actions/checkout@v6	2026-07-19T05:12:07.7121841Z [command]/usr/bin/git version
@@ -1367,7 +1367,7 @@ Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0979791Z 
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0980447Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0981029Z   CARGO_TOKEN: ***
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0981514Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0982109Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0982109Z   DOCKERHUB_IMAGE:
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.0982542Z ##[endgroup]
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.2120098Z Syncing repository: link-assistant/formal-ai
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:01.2122844Z ##[group]Getting Git version info
@@ -2092,22 +2092,22 @@ Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7918380Z 
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7919321Z Updating files: 100% (7247/7247)
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7919722Z Updating files: 100% (7247/7247), done.
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7998572Z Note: switching to 'refs/remotes/pull/794/merge'.
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7999470Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7999470Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.7999983Z You are in 'detached HEAD' state. You can look around, make experimental
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8001255Z changes and commit them, and you can discard any commits you make in this
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8002185Z state without impacting any branches by switching back to a branch.
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8002794Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8002794Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8003642Z If you want to create a new branch to retain commits you create, you may
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8004633Z do so (now or later) by using -c with the switch command. Example:
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8005148Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8005148Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8005452Z   git switch -c <new-branch-name>
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8005860Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8005860Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8006082Z Or undo this operation with:
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8006405Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8006405Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8006603Z   git switch -
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8008629Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8008629Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8009395Z Turn off this advice by setting config variable advice.detachedHead to false
-Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8010030Z 
+Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8010030Z
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8010714Z HEAD is now at b2cad172 Merge 9191515e8d5b39b6ef13e56aa45535f863955681 into 727f21f3153dda8076402ad83912ff287f800f78
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8086301Z ##[endgroup]
 Version Modification Check	Run actions/checkout@v6	2026-07-19T05:11:15.8148199Z [command]/usr/bin/git log -1 --format=%H
@@ -2126,7 +2126,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.8540192Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8540764Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8541079Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8541327Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.8541632Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.8541632Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8541842Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8642748Z ##[group]Run : parse toolchain version
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8643179Z ^[[36;1m: parse toolchain version^[[0m
@@ -2159,7 +2159,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.8738457Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8738892Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8739422Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8739668Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.8739966Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.8739966Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8740177Z   toolchain: stable
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8740383Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8920392Z ##[group]Run : construct rustup command line
@@ -2179,9 +2179,9 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.8985477Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8985886Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986188Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986431Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986724Z   DOCKERHUB_IMAGE: 
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986928Z   targets: 
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.8987122Z   components: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986724Z   DOCKERHUB_IMAGE:
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.8986928Z   targets:
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.8987122Z   components:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.8987319Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9106266Z ##[group]Run : set $CARGO_HOME
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9106555Z ^[[36;1m: set $CARGO_HOME^[[0m
@@ -2198,7 +2198,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.9168307Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9168745Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9169301Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9169553Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.9169854Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.9169854Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9170063Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9290740Z ##[group]Run : install rustup if needed
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9291093Z ^[[36;1m: install rustup if needed^[[0m
@@ -2218,7 +2218,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.9356535Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9356953Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9357266Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9357516Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.9357816Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.9357816Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9358048Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9358342Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9479206Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
@@ -2235,7 +2235,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:15.9541414Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9541812Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9542110Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9542352Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:15.9542647Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:15.9542647Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9543121Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9543397Z   RUSTUP_PERMIT_COPY_RENAME: 1
 Version Modification Check	Setup Rust	2026-07-19T05:11:15.9543634Z ##[endgroup]
@@ -2247,9 +2247,9 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:17.8373316Z info: removin
 Version Modification Check	Setup Rust	2026-07-19T05:11:17.8423458Z info: removing previous version of component rust-std
 Version Modification Check	Setup Rust	2026-07-19T05:11:17.8502403Z info: removing previous version of component rustc
 Version Modification Check	Setup Rust	2026-07-19T05:11:17.8589536Z info: downloading 5 components
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2158595Z 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2158595Z
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2235403Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.97.1 (8bab26f4f 2026-07-14) (from rustc 1.97.0 (2d8144b78 2026-07-07))
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2236046Z 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2236046Z
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2359737Z ##[group]Run rustup default stable
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2360062Z ^[[36;1mrustup default stable^[[0m
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2421630Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
@@ -2264,14 +2264,14 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.2423648Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2424096Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2424391Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2424738Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2425117Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2425117Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2482536Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2482839Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2625274Z info: using existing install for stable-x86_64-unknown-linux-gnu
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2632564Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2632931Z 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2632931Z
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2701957Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2702351Z 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2702351Z
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2745828Z ##[group]Run : create cachekey
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2746135Z ^[[36;1m: create cachekey^[[0m
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2746652Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
@@ -2289,7 +2289,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.2812945Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2813448Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2813747Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2813987Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.2814281Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.2814281Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2814498Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.2814742Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3223747Z ##[group]Run : disable incremental compilation
@@ -2309,7 +2309,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.3292559Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3293025Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3293332Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3293569Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.3293891Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.3293891Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3294120Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3294372Z ##[endgroup]
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3416236Z ##[group]Run : enable colors in Cargo output
@@ -2329,7 +2329,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.3482665Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3483086Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3483381Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3483619Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.3483915Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.3483915Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3484132Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3484402Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3484845Z ##[endgroup]
@@ -2357,7 +2357,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.3671654Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3672075Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3672371Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3672608Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.3672897Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.3672897Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3673304Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3673570Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.3673784Z ##[endgroup]
@@ -2379,7 +2379,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.4120909Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4121323Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4121623Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4121859Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.4122144Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.4122144Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4122357Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4122605Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4122814Z ##[endgroup]
@@ -2397,7 +2397,7 @@ Version Modification Check	Setup Rust	2026-07-19T05:11:26.4452445Z   RUSTFLAGS: 
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4452879Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4453184Z   CARGO_TOKEN: ***
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4453451Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Setup Rust	2026-07-19T05:11:26.4453762Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Setup Rust	2026-07-19T05:11:26.4453762Z   DOCKERHUB_IMAGE:
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4453982Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4454236Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Setup Rust	2026-07-19T05:11:26.4454445Z ##[endgroup]
@@ -2422,7 +2422,7 @@ Version Modification Check	Install rust-script	2026-07-19T05:11:26.4807302Z   RU
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4807759Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4808090Z   CARGO_TOKEN: ***
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4808333Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Install rust-script	2026-07-19T05:11:26.4808625Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Install rust-script	2026-07-19T05:11:26.4808625Z   DOCKERHUB_IMAGE:
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4809023Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4809290Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Install rust-script	2026-07-19T05:11:26.4809505Z ##[endgroup]
@@ -2563,7 +2563,7 @@ Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2492785Z   CARGO_REGISTRY_TOKEN: ***
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2493153Z   CARGO_TOKEN: ***
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2493397Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
-Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2493694Z   DOCKERHUB_IMAGE: 
+Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2493694Z   DOCKERHUB_IMAGE:
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2493913Z   CARGO_HOME: /home/runner/.cargo
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2494160Z   CARGO_INCREMENTAL: 0
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2494384Z   GITHUB_EVENT_NAME: pull_request
@@ -2571,7 +2571,7 @@ Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2494955Z   GITHUB_BASE_REF: main
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:02.2495170Z ##[endgroup]
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:11.1832441Z Checking for manual version modifications in Cargo.toml...
-Version Modification Check	Check for manual version changes	2026-07-19T05:12:11.1833410Z 
+Version Modification Check	Check for manual version changes	2026-07-19T05:12:11.1833410Z
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:11.4780807Z No changes to Cargo.toml detected.
 Version Modification Check	Check for manual version changes	2026-07-19T05:12:11.4781415Z Version check passed.
 Version Modification Check	Post Run actions/checkout@v6	﻿2026-07-19T05:12:11.4907848Z Post job cleanup.

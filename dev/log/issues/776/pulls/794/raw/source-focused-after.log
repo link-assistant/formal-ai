@@ -84,4 +84,3 @@ test translation::formalization::tests::relation_prompt_extracts_subject_predica
 test translation::parity::translation_cluster_matches_frozen_behaviour ... ok
 
 test result: ok. 79 passed; 0 failed; 0 ignored; 0 measured; 402 filtered out; finished in 0.25s
-

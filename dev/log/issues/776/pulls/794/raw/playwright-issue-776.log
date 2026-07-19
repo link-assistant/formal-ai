@@ -9,7 +9,7 @@ Running 2 tests using 1 worker
   ✓  3 [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh (4.1s)
 
 
-  1) [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker 
+  1) [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker
 
     Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
 
@@ -88,5 +88,5 @@ Running 2 tests using 1 worker
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
   1 failed
-    [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker 
+    [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker
   1 passed (50.3s)

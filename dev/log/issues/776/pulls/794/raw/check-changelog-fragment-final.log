@@ -9,19 +9,19 @@
 [2026-07-19T06:36:01Z INFO  rust_script::manifest] manifest: [[bin]]
     name = "check-changelog-fragment_31433919db6255b90933786c"
     path = "/tmp/gh-issue-solver-1784437815860/scripts/check-changelog-fragment.rs"
-    
+
     [dependencies]
     regex = "1"
-    
+
     [package]
     authors = ["Anonymous"]
     edition = "2021"
     name = "check-changelog-fragment_31433919db6255b90933786c"
     version = "0.1.0"
-    
+
     [profile.release]
     strip = true
-    
+
 [2026-07-19T06:36:01Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/31433919db6255b90933786c", script_path: "/tmp/gh-issue-solver-1784437815860/scripts/check-changelog-fragment.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-changelog-fragment_31433919db6255b90933786c\"\npath = \"/tmp/gh-issue-solver-1784437815860/scripts/check-changelog-fragment.rs\"\n\n[dependencies]\nregex = \"1\"\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-changelog-fragment_31433919db6255b90933786c\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-changelog-fragment_31433919db6255b90933786c", original_script_path: Some("scripts/check-changelog-fragment.rs") }
 [2026-07-19T06:36:01Z INFO  rust_script] creating pkg dir...
 [2026-07-19T06:36:01Z INFO  rust_script] generating Cargo package...
