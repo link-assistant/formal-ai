@@ -1239,6 +1239,11 @@ jobs:
           MIN_POSTS: 4
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
+      - name: "Run agent CLI E2E — capability-first local code search (issue #758)"
+        env:
+          PORT: 8782
+        run: experiments/agent_cli_e2e/run_issue_758.sh
+
       - name: "Run agent CLI E2E — generated programs use harness commands (issue #716)"
         # The exact screenshot reproduction must create the source in the real
         # Agent CLI workspace, then ask that harness to compile and run it. The

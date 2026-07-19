@@ -671,6 +671,34 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         .with_permission(
             "tool:capability:run",
             "agentic-coding command runner (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:grep",
+            "agentic-coding code search (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:glob",
+            "agentic-coding file glob (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:list_dir",
+            "agentic-coding directory listing (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:todo",
+            "agentic-coding planning scratchpad (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:subagent",
+            "agentic-coding delegation (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:read_many",
+            "agentic-coding multi-file read (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:multi_edit",
+            "agentic-coding multi-file edit (any CLI naming, client-executed)",
         ),
     ]
 }

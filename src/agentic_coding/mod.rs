@@ -19,6 +19,7 @@
 //! a pure, deterministic function of the message history.
 
 pub mod associative_learning;
+mod capability_router;
 pub mod change_request;
 mod code_artifact;
 pub mod code_rewrite_learning;
