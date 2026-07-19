@@ -12,9 +12,6 @@ pub const STATEMENT_AUDIT_PATH: &str = "statement-audit.lino";
 pub const STATEMENT_AUDIT_COMMAND: &str =
     "formal-ai statement-audit --root . --output statement-audit.lino";
 
-/// Canonical task used by executable Agent CLI case studies.
-pub const STATEMENT_AUDIT_TASK: &str = "Audit all statement-bearing repository prose, code comments, and structured facts; weigh conflicting requirements and captured original-source evidence with probabilities; persist findings and associations; and write statement-audit.lino.";
-
 /// Whether a task requests the generalized repository statement audit.
 #[must_use]
 pub fn is_statement_audit_task(prompt: &str) -> bool {
