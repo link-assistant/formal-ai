@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "formal-ai": {
+      "type": "http",
+      "url": "http://127.0.0.1:18874/mcp",
+      "headers": {
+        "Authorization": "Bearer formal-ai"
+      }
+    }
+  }
+}

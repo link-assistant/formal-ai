@@ -1,0 +1,14 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784406101753)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.93s
+     Running tests/integration/mod.rs (target/debug/deps/integration-af9fb3831f49414c)
+
+running 7 tests
+test issue_754_cursor::cursor_is_seeded_as_cursor_agent_with_mcp_configuration ... ok
+test issue_754_cursor::mcp_endpoint_returns_json_rpc_errors_for_bad_requests ... ok
+test issue_754_cursor::mcp_method_errors_keep_their_status_on_the_http_wire ... ok
+test issue_754_cursor::formal_ai_with_cursor_global_config_is_merge_preserving_and_reversible ... ok
+test issue_754_cursor::mcp_endpoint_enforces_authentication_and_origin_checks ... ok
+test issue_754_cursor::formal_ai_with_cursor_runs_both_modes_through_launch_scoped_mcp_config ... ok
+test issue_754_cursor::mcp_endpoint_supports_initialize_list_and_formal_ai_chat ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 138 filtered out; finished in 1.32s
