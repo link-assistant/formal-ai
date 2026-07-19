@@ -18,6 +18,7 @@ import MuiIconButton from "@mui/material/IconButton";
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
+import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
 
 // Issue #557: multi-framework UI skins. The `glass` skin renders Apple "Liquid
 // Glass" on top of Chakra UI via rdev/liquid-glass-react (GlassBacking), and the
@@ -249,6 +250,16 @@ function matchesAnyPattern(value, patterns) {
   return patterns.some((pattern) => pattern.test(value));
 }
 
+function containsThemeObject(normalized) {
+  return matchesAnyPattern(normalized, [
+    /(?:^|[^\p{L}\p{N}])theme(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])dark mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])light mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])тема(?:$|[^\p{L}\p{N}])/u,
+    /主题/u,
+  ]);
+}
+
 const COMMAND_ON_TERMS = [
   "turn on",
   "enable",
@@ -442,9 +453,47 @@ function interfaceCommandResponse(command, reportIssueUrl) {
   return `Done. ${command.label} is now ${commandValueLabel(command)}.`;
 }
 
-function recognizeInterfaceCommand(text) {
+function recognizeSeedInterfaceCommand(text, capabilities) {
+  const normalized = normalizeMemoryPrompt(text);
+  if (!normalized || !Array.isArray(capabilities)) return null;
+  for (const capability of capabilities) {
+    const phrases = (capability.phrases || []).map(normalizeMemoryPrompt);
+    if (!includesAnyText(normalized, phrases)) continue;
+    let value = null;
+    if (capability.kind === "enum") {
+      const option = (capability.options || []).find((candidate) =>
+        (candidate.aliases || [])
+          .map(normalizeMemoryPrompt)
+          .some((alias) => normalized.includes(alias)),
+      );
+      if (option) value = option.value;
+    } else if (capability.kind === "number") {
+      const match = normalized.match(/(\d+(?:[.,]\d+)?)/);
+      if (match) {
+        const number = Number(match[1].replace(",", "."));
+        if (Number.isFinite(number)) value = number * Number(capability.scale || 1);
+      }
+    } else if (capability.kind === "boolean") {
+      value = detectToggleCommand(normalized, phrases);
+    }
+    if (value === null) continue;
+    return {
+      kind: "set_preference",
+      key: capability.key,
+      value,
+      intent: capability.intent,
+      label: capability.label,
+    };
+  }
+  return null;
+}
+
+function recognizeInterfaceCommand(text, capabilities = []) {
   const normalized = normalizeMemoryPrompt(text);
   if (!normalized) return null;
+
+  const seedCommand = recognizeSeedInterfaceCommand(text, capabilities);
+  if (seedCommand) return seedCommand;
 
   const reportPhrases = [
     "report issue",
@@ -613,7 +662,10 @@ function recognizeInterfaceCommand(text) {
     };
   }
 
-  if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
+  // Match the preference object as a complete word. In particular, `тема`
+  // must not match inside Russian words such as `система`; otherwise ordinary
+  // prose can be intercepted before it reaches the solver (issue #776).
+  if (containsThemeObject(normalized)) {
     if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
       return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
     }
@@ -1256,10 +1308,10 @@ const MODE_TITLE_KEYS = {
 // per-tool grant map to the native router instead of the old all-or-nothing
 // grant. Keep this list in sync with desktop/lib/tool-router.cjs.
 const DESKTOP_TOOL_OPTIONS = Object.freeze([
-  "http_fetch",
-  "url_navigate",
   "eval_js",
-  "read_local_file",
+  "write_file",
+  "edit_file",
+  "multi_edit",
   "code_exec",
   "shell",
 ]);
@@ -4909,6 +4961,21 @@ function normalizeDesktopStatus(status) {
           model: String(status.agentProvider.model || "formal-ai"),
         }
       : null;
+  const engineSelectionAvailable = Array.isArray(status.engines) && status.engines.length > 0;
+  const engines = engineSelectionAvailable
+    ? status.engines
+        .filter((engine) => engine && engine.available !== false && engine.id)
+        .map((engine) => ({
+          id: String(engine.id),
+          label: String(engine.label || engine.id),
+          type: String(engine.type || (engine.id === "out-of-box" ? "native" : "passthrough")),
+          available: true,
+        }))
+    : [{ id: "out-of-box", label: "Out of the box", type: "native", available: true }];
+  const requestedEngine = String(status.activeEngine || "out-of-box");
+  const activeEngine = engines.some((engine) => engine.id === requestedEngine)
+    ? requestedEngine
+    : "out-of-box";
   return {
     shell: String(status.shell || "Electron"),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
@@ -4923,6 +4990,9 @@ function normalizeDesktopStatus(status) {
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
     agentProvider,
+    engines,
+    activeEngine,
+    engineSelectionAvailable,
     updater: normalizeDesktopUpdaterStatus(status.updater, appVersion),
   };
 }
@@ -4958,7 +5028,21 @@ function desktopStatusLabel(status, agentMode) {
       ? "API unavailable"
       : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
-  return `${desktopSurfaceLabel(status)} - ${api} - ${agent}`;
+  const engine = status.engineSelectionAvailable
+    ? ` - ${String(status.activeEngine || "out-of-box")}`
+    : "";
+  return `${desktopSurfaceLabel(status)}${engine} - ${api} - ${agent}`;
+}
+
+function desktopAgentEventLabel(payload) {
+  const event = payload && payload.event && typeof payload.event === "object"
+    ? payload.event
+    : payload;
+  if (!event || typeof event !== "object") return String(event || "");
+  return String(
+    event.content || event.text || event.part && event.part.text || event.message || event.summary ||
+    event.type || "agent event",
+  );
 }
 
 function desktopMessages(history, text) {
@@ -5006,7 +5090,11 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       reason: "desktop tool router is unavailable",
     };
   }
-  if (typeof bridge.ensureAgentServer === "function") {
+  const readOnly = [
+    "web_search", "web_fetch", "read_file", "read_local_file", "grep", "glob",
+    "list_directory", "read_many_files",
+  ].includes(tool);
+  if (!readOnly && typeof bridge.ensureAgentServer === "function") {
     await bridge.ensureAgentServer();
   }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
@@ -5933,7 +6021,73 @@ function PendingAssistantBubble({ t }) {
   return <article className="message assistant pending"><div className="avatar" aria-hidden="true">{"FA"}</div><div className="message-body"><ThinkingPreview steps={pendingPhases} t={t} isPending={true} /></div></article>;
 }
 
-function ThinkingPreview({ steps, t, isPending = false }) {
+// Issue #676 (R8): map the resolved intent to a per-intent narrative catalog
+// key, mirroring the Rust `thinking_narrative`. Grouped so related routes share
+// one human headline (all lookups read the same, all web tools read the same).
+const THINKING_NARRATIVE_KEYS = {
+  greeting: "narrativeGreeting",
+  wellbeing: "narrativeWellbeing",
+  assistant_free_time: "narrativeAssistantFreeTime",
+  farewell: "narrativeFarewell",
+  gratitude: "narrativeGratitude",
+  thanks: "narrativeGratitude",
+  courtesy_response: "narrativeGratitude",
+  courtesy: "narrativeGratitude",
+  identity: "narrativeIdentity",
+  assistant_name: "narrativeIdentity",
+  set_assistant_name: "narrativeIdentity",
+  recall_name: "narrativeIdentity",
+  naming: "narrativeIdentity",
+  assistant_naming: "narrativeIdentity",
+  self_facts: "narrativeIdentity",
+  who_is_question: "narrativeIdentity",
+  calculation: "narrativeCalculation",
+  arithmetic: "narrativeCalculation",
+  calculation_error: "narrativeCalculation",
+  object_counting: "narrativeCalculation",
+  fact_lookup: "narrativeLookup",
+  fact_query: "narrativeLookup",
+  concept_lookup: "narrativeLookup",
+  concept_lookup_in_context: "narrativeLookup",
+  known_facts: "narrativeLookup",
+  wikipedia_lookup: "narrativeLookup",
+  wikipedia_article_question: "narrativeLookup",
+  definition_merge: "narrativeLookup",
+  translation: "narrativeTranslation",
+  web_search: "narrativeWeb",
+  http_fetch: "narrativeWeb",
+  url_navigate: "narrativeWeb",
+  write_program: "narrativeCode",
+  software_project_plan: "narrativeCode",
+  software_project_implementation: "narrativeCode",
+  algorithm: "narrativeCode",
+  test_status: "narrativeTests",
+  self_healing: "narrativeSelfHealing",
+  self_heal: "narrativeSelfHealing",
+  meta_explanation: "narrativeMetaExplanation",
+  learn_from_source: "narrativeLearn",
+  clarification: "narrativeClarification",
+  unknown: "narrativeUnknown",
+  fallback: "narrativeUnknown",
+  no_match: "narrativeUnknown",
+};
+
+// Issue #676 (R8): produce the single human, first-person headline that leads a
+// thinking trace ("You asked how I'm doing, so I told you and offered to
+// help."). Unknown routes still get a human sentence via the generic template.
+// Returns "" only when there is no intent to summarize (e.g. the pending
+// placeholder), so callers can skip the headline entirely.
+function thinkingNarrative(intent, t) {
+  const route = String(intent || "").trim().toLowerCase();
+  if (!route) return "";
+  const key = THINKING_NARRATIVE_KEYS[route];
+  if (key) return t(`message.thinkingStep.${key}`);
+  return t("message.thinkingStep.narrativeGeneric", {
+    task: humanizeThinkingIdentifier(route),
+  });
+}
+
+function ThinkingPreview({ steps, t, isPending = false, narrative = "" }) {
   const [expanded, setExpanded] = useState(false);
   const safeSteps = Array.isArray(steps)
     ? steps.map((step) => String(step || "").trim()).filter(Boolean)
@@ -5954,7 +6108,7 @@ function ThinkingPreview({ steps, t, isPending = false }) {
       // Issue #488: show a subtle "live" affordance while pending so the user
       // understands the trace is updating in real time (the dot pulses via
       // CSS; the visible label stays unchanged for screen readers).
-      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
+      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{narrative ? <p className="thinking-preview-narrative" data-testid="thinking-narrative">{narrative}</p> : null}{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
 }
 
 function DesktopPermissionPanel({
@@ -6117,7 +6271,7 @@ function Message({
     // the message), so it belongs at the top of the message body, not below it.
     // Issue #541 (R6): during the staged reveal only the steps unveiled so far
     // are shown, so the trace visibly fills in before the answer appears.
-    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
       })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
@@ -6196,7 +6350,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [pending, setPending] = useState(false);
-  const [workerState, setWorkerState] = useState("wasm worker");
+  const [workerState, setWorkerState] = useState("loading worker");
+  const [workerReady, setWorkerReady] = useState(false);
   const [memoryStatus, setMemoryStatus] = useState("");
   const [composerMenuOpen, setComposerMenuOpen] = useState(false);
   const [attachments, setAttachments] = useState([]);
@@ -6205,6 +6360,7 @@ function App() {
     tools: [],
     concepts: [],
     responses: {},
+    interfaceCapabilities: [],
   });
   const initialPreferences = useRef(loadPreferences());
   const [uiLanguagePreference, setUiLanguagePreference] = useState(
@@ -6370,6 +6526,7 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  const [desktopAgentStream, setDesktopAgentStream] = useState([]);
   // Issue #438 (follow-up): one-click start/stop of the prepared Docker
   // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
   // the latest snapshot from the desktop bridge; `serviceBusy` names the service
@@ -6634,6 +6791,15 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.onAgentEvent !== "function") return undefined;
+    const unsubscribe = bridge.onAgentEvent((payload) => {
+      setDesktopAgentStream((current) => [...current.slice(-19), payload]);
+    });
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, []);
+
+  useEffect(() => {
     // Push the explicit per-tool grant map to the local router whenever either
     // the operating mode or a grant decision changes.
     syncDesktopToolGrants(desktopBridge(), mode, desktopToolGrants);
@@ -6887,7 +7053,7 @@ function App() {
   }, [userContext]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.FormalAiSeed) return;
+    if (!workerReady || typeof window === "undefined" || !window.FormalAiSeed) return;
     let cancelled = false;
     window.FormalAiSeed.loadAll().then((loaded) => {
       if (cancelled) return;
@@ -6896,7 +7062,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [workerReady]);
 
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a
@@ -7444,6 +7610,7 @@ function App() {
     worker.onmessage = (event) => {
       if (event.data.kind === "ready") {
         setWorkerState(event.data.mode);
+        setWorkerReady(true);
         return;
       }
 
@@ -7667,8 +7834,29 @@ function App() {
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
     const currentDesktopStatus = desktopStatusRef.current;
-    if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
-      return requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
+    let answerPromise;
+    if (currentDesktopStatus && currentDesktopStatus.activeEngine !== "out-of-box") {
+      const bridge = desktopBridge();
+      const requestId = `agent-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      setDesktopAgentStream([]);
+      answerPromise = requestDesktopAgentProvider(bridge, {
+        requestId,
+        sessionKey: currentConversationRef.current || "new-conversation",
+        mode: modeRef.current,
+        prompt: text,
+        systemPrompt: desktopMessages(history, "")
+          .filter((entry) => entry.content.trim())
+          .map((entry) => `${entry.role}: ${entry.content}`).join("\n"),
+        grants: desktopToolRouterGrants(modeRef.current, desktopToolGrantsRef.current),
+      }).then((result) => chatAnswerFromAgentProviderResult(result) || {
+        intent: "agent_cli_error",
+        content: String(result && result.reason || "The selected desktop engine did not return an answer."),
+        evidence: [`desktop_engine:${currentDesktopStatus.activeEngine}`],
+        steps: [],
+        toolCalls: [],
+      });
+    } else if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
+      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
         if (!worker) {
           return localFallbackAnswer(text, history, prefs);
         }
@@ -7685,23 +7873,27 @@ function App() {
           });
         });
       });
-    }
-    if (!worker) {
-      return Promise.resolve(localFallbackAnswer(text, history, prefs));
-    }
-
-    return new Promise((resolve) => {
-      const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      pendingResponses.current.set(requestId, resolve);
-      worker.postMessage({
-        prompt: text,
-        requestId,
-        history,
-        prefs,
-        userContext: userContextRef.current,
-        memory,
+    } else if (!worker) {
+      answerPromise = Promise.resolve(localFallbackAnswer(text, history, prefs));
+    } else {
+      answerPromise = new Promise((resolve) => {
+        const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        pendingResponses.current.set(requestId, resolve);
+        worker.postMessage({
+          prompt: text,
+          requestId,
+          history,
+          prefs,
+          userContext: userContextRef.current,
+          memory,
+        });
       });
-    });
+    }
+    const answer = await answerPromise;
+    const bridge = desktopBridge();
+    return enhanceWithDesktopReadOnlyTool(answer, (tool, input) =>
+      requestDesktopToolCall(bridge, tool, input),
+    );
   }, []);
 
   // Issue #27: assign every appended event to the current conversation, lazily
@@ -8349,6 +8541,17 @@ function App() {
             ),
           );
           break;
+        case "followUpProbability":
+          setFollowUpProbability(
+            normalizeSliderPreference(
+              command.value,
+              PREFERENCE_DEFAULTS.followUpProbability,
+            ),
+          );
+          break;
+        case "toolbarIconPack":
+          setToolbarIconPack(normalizeToolbarIconPack(command.value));
+          break;
         case "location":
           setLocationPreference(String(command.value || "").slice(0, 80));
           break;
@@ -8506,7 +8709,9 @@ function App() {
       return;
     }
 
-    const interfaceCommand = hasAttachments ? null : recognizeInterfaceCommand(displayText);
+    const interfaceCommand = hasAttachments
+      ? null
+      : recognizeInterfaceCommand(displayText, seed.interfaceCapabilities);
     if (interfaceCommand) {
       const valueLabel = commandValueLabel(interfaceCommand);
       if (interfaceCommand.kind !== "report_issue") {
@@ -8912,6 +9117,19 @@ function App() {
   const glassModeSetting = isGlassSkin ? <label className="setting-row"><span>{t("settings.glassMode")}</span><select data-testid="setting-glass-mode" value={glassMode} onChange={event => setGlassMode(normalizeGlassMode(event.target.value))}><option value="balanced">{t("settings.glassMode.balanced")}</option><option value="clear">{t("settings.glassMode.clear")}</option><option value="frosted">{t("settings.glassMode.frosted")}</option></select></label> : null;
   const renderDesktopPermissionPanel = (testId) =>
     <DesktopPermissionPanel grants={desktopToolGrants} mode={mode} onDecision={setDesktopToolGrant} onGrantAll={grantAllAndRunPending} hasPendingTask={hasPendingAgentTask} testId={testId} t={t} />;
+  const handleDesktopEngineChange = async (event) => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.setEngine !== "function") return;
+    try {
+      setDesktopStatus(normalizeDesktopStatus(await bridge.setEngine(event.target.value)));
+      setDesktopAgentStream([]);
+    } catch (error) {
+      setDesktopStatus((current) => normalizeDesktopStatus({
+        ...(current || {}),
+        apiError: error && error.message ? error.message : String(error),
+      }));
+    }
+  };
 
   const appTree = <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")} data-color-theme={colorTheme} data-glass-mode={glassModeValue} style={glassStyleVariables}><chakra.header className="topbar">
       <ToolbarButton className="mobile-menu-toggle topbar-menu-toggle" testId="mobile-menu-toggle" ariaLabel={mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu")} title={mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen")} onClick={() => setMobileMenuOpen(value => !value)} extraProps={{
@@ -8972,7 +9190,7 @@ function App() {
       </chakra.div>
     </chakra.header>{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
     "--context-panel-width": `${contextPanelWidth}px`
-  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel"><div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
+  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel">{desktopStatus.engineSelectionAvailable ? <div className="desktop-engine-row"><dt>{"Engine"}</dt><dd><select data-testid="desktop-engine-selector" aria-label="Desktop engine" value={desktopStatus.activeEngine} onChange={handleDesktopEngineChange}>{desktopStatus.engines.map(engine => <option key={engine.id} value={engine.id}>{engine.label}</option>)}</select></dd></div> : null}<div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)
               })} /> : null}<div className="desktop-update-actions"><button type="button" data-testid="desktop-update-check" disabled={!canCheckForUpdates} onClick={handleCheckForUpdates}>{updateBusy === "check" || updater && updater.state === "checking" ? t("updates.checking") : t("updates.check")}</button><button type="button" className="desktop-update-install" data-testid="desktop-update-install" disabled={!canInstallUpdate} onClick={handleInstallUpdate}>{updateBusy === "install" || updater && updater.state === "installing" ? t("updates.updating") : t("updates.update")}</button></div></div></dd></div> : null}<div className="desktop-vscode-row" data-testid="desktop-vscode-install-row"><dt>{t("vscodeInstall.title")}</dt><dd><div className="desktop-vscode-panel" data-testid="desktop-vscode-install-panel"><p className="desktop-vscode-summary">{t("vscodeInstall.summary")}</p><div className="desktop-vscode-actions"><button type="button" className="desktop-vscode-install" data-testid="desktop-vscode-install" disabled={vscodeInstallBusy} onClick={handleInstallVsCodeExtension}>{vscodeInstallBusy ? t("vscodeInstall.installing") : t("vscodeInstall.install")}</button></div>{vscodeInstallResult ? <p className={`desktop-vscode-status${vscodeInstallResult.ok ? " is-ok" : " is-error"}`} data-testid="desktop-vscode-install-status" role="status">{vscodeInstallStateLabel(vscodeInstallResult, t)}{vscodeInstallResult.ok || !vscodeInstallResult.reason ? "" : ` — ${vscodeInstallResult.reason}`}</p> : null}</div></dd></div></dl>} /> : null}{serviceStatus ? <SidebarSection title={t("services.title")} testId="sidebar-services" collapsed={sidebarServicesCollapsed} onToggle={() => setSidebarServicesCollapsed(value => !value)} className="desktop-services-section" children={<div className="desktop-services-panel" data-testid="desktop-services-panel">{serviceStatus.dockerAvailable === false ? <p className="desktop-services-note" data-testid="desktop-services-docker-missing">{t("services.dockerMissing")}</p> : null}{(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(service => {
         const running = Boolean(service.running);
@@ -9021,12 +9239,12 @@ function App() {
           })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
-        }) : null} />)}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
+        }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
         event.preventDefault();
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
           display: "none"
-        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</ComposerControlButton><textarea ref={composerInputRef} className="composer-input" value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode} data-testid="chat-composer-input" /><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} className="send-button" type="submit" disabled={pending || demoMode || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit" aria-label={pending ? t("composer.sending") : t("composer.send")} title={pending ? t("composer.sending") : t("composer.send")}>{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></ComposerControlButton></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
+        }} data-testid="composer-attachment-input" onChange={handleAttachFiles} />{demoMode ? <p className="composer-demo-hint" data-testid="composer-demo-hint">{t("composer.demoHint.before")}<ToolbarIcon action="demo" pack={toolbarIconPack} className="composer-demo-hint-icon" />{t("composer.demoHint.after")}</p> : null}{composerMenuOpen ? <div className="composer-menu" data-testid="composer-menu"><button type="button" className="composer-menu-item" onClick={triggerAttachFiles}>{t("buttons.attachFiles")}</button><button type="button" className="composer-menu-item" onClick={handleExportMemory}>{t("buttons.exportMemory")}</button><button type="button" className="composer-menu-item" onClick={triggerImportMemory}>{t("buttons.importMemory")}</button><a className="composer-menu-item" href={currentReportUrl} target="_blank" rel="noopener noreferrer">{t("buttons.reportIssue")}</a></div> : null}<div className="composer-grid"><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} type="button" className="composer-action-button" data-testid="composer-menu-toggle" aria-expanded={composerMenuOpen} aria-label={t("buttons.composerMenu")} title={t("titles.composerMenu")} onClick={() => setComposerMenuOpen(value => !value)}>{composerActionIcon}</ComposerControlButton><textarea ref={composerInputRef} className="composer-input" value={prompt} rows={1} placeholder={agentMode ? t("composer.placeholder.agent") : t("composer.placeholder.chat")} autoComplete="off" autoCorrect="off" autoCapitalize="sentences" enterKeyHint="send" inputMode="text" spellCheck={true} onChange={event => setPrompt(event.target.value)} onKeyDown={handleKeyDown} disabled={demoMode || !workerReady} data-testid="chat-composer-input" /><ComposerControlButton framework={uiFramework} glass={isGlassSkin} glassConfig={glassConfig} className="send-button" type="submit" disabled={pending || demoMode || !workerReady || !prompt.trim() && attachments.length === 0} data-testid="chat-composer-submit" aria-label={pending ? t("composer.sending") : t("composer.send")} title={pending ? t("composer.sending") : t("composer.send")}>{pending ? <span className="send-spinner" aria-hidden="true" data-testid="send-spinner" /> : <span className="send-icon" aria-hidden="true">{"↑"}</span>}<span className="send-label">{pending ? t("composer.sending") : t("composer.send")}</span></ComposerControlButton></div>{attachmentStatus ? <p className="composer-attachment-status" data-testid="composer-attachment-status">{attachmentStatus}</p> : null}</form></section></section></main>;
   const frameworkTree = (
     <UiFrameworkContext.Provider value={uiFramework}>
       {appTree}

@@ -50,7 +50,7 @@ test("serviceKeys exposes telegram, server, and agent environment services", () 
 });
 
 test("telegram run args keep the default command and inject the token", () => {
-  const services = serviceDefinitions();
+  const services = serviceDefinitions({ HOME: "/home/alice" });
   const args = services.telegram.buildRunArgs({ token: "secret-token" });
   assert.deepEqual(args, [
     "run",
@@ -62,6 +62,10 @@ test("telegram run args keep the default command and inject the token", () => {
     "--privileged",
     "-e",
     "TELEGRAM_BOT_TOKEN=secret-token",
+    "-v",
+    "/home/alice/.formal-ai:/root/.formal-ai",
+    "-e",
+    "FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino",
     "-v",
     "formal-ai-telegram-docker:/var/lib/docker",
     DEFAULT_IMAGE,
@@ -85,7 +89,7 @@ test("server run args publish a loopback port and override the command to serve"
 });
 
 test("agent environment run args keep an idle ready container with its own Docker volume", () => {
-  const services = serviceDefinitions();
+  const services = serviceDefinitions({ HOME: "/home/alice" });
   const args = services.agent.buildRunArgs();
   assert.deepEqual(args, [
     "run",
@@ -95,6 +99,10 @@ test("agent environment run args keep an idle ready container with its own Docke
     "--restart",
     "unless-stopped",
     "--privileged",
+    "-v",
+    "/home/alice/.formal-ai:/root/.formal-ai",
+    "-e",
+    "FORMAL_AI_MEMORY_PATH=/root/.formal-ai/memory.lino",
     "-v",
     "formal-ai-agent-docker:/var/lib/docker",
     DEFAULT_IMAGE,

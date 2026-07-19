@@ -1,0 +1,12 @@
+ Downloading crates ...
+  Downloaded walkdir v2.5.0
+  Downloaded same-file v1.0.6
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784437815860)
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 17s
+     Running tests/unit/mod.rs (target/debug/deps/unit-edf035f2f6b5be4f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1804 filtered out; finished in 0.01s

@@ -1,0 +1,17 @@
+Q41607
+  aliases
+    en (brolly parapluie rainshade gamp bumbershoot umbrolly en-tout-cas shields shield umbrollies bumbershoots gamps rainshades parapluies brollies umbrellas brella brellas chatta chattas chattah chattahs parasol)
+    ru ("зонтик")
+    zh ("晴雨伞" "繖" "太阳伞" "陽傘" "雨傘" "洋傘" "雨伞")
+  descriptions
+    en "canopy designed to protect against inclement weather, particularly rain and sun"
+    hi "मौसम से बचने का उपकरण"
+    ru "приспособление от дождя и солнца"
+  id Q41607
+  labels
+    en umbrella
+    hi "छाता"
+    ru "зонт"
+    zh "傘"
+  type item
+success 1

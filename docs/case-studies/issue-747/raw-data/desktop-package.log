@@ -1,0 +1,22 @@
+
+> formal-ai-desktop@0.297.1 prebuild
+> node scripts/prepare-resources.mjs
+
+Desktop version already in sync with Cargo.toml: 0.297.1
+Prepared desktop browser runtime: /tmp/gh-issue-solver-1784320659012/desktop/browser-runtime
+Prepared desktop binary: /tmp/gh-issue-solver-1784320659012/desktop/bin/formal-ai
+Prepared desktop web resources: /tmp/gh-issue-solver-1784320659012/desktop/dist-web
+
+> formal-ai-desktop@0.297.1 build
+> electron-builder --dir
+
+  • electron-builder  version=26.15.3 os=6.8.0-134-generic
+  • loaded configuration  file=package.json ("build" field)
+  • executing @electron/rebuild  electronVersion=42.7.0 arch=x64 buildFromSource=false workspaceRoot=/tmp/gh-issue-solver-1784320659012/desktop projectDir=./ appDir=./
+  • installing native dependencies  arch=x64
+  • completed installing native dependencies
+  • packaging       platform=linux arch=x64 electron=42.7.0 appOutDir=release/linux-unpacked
+  • downloaded      label=electron progress=100%
+  • downloaded electron zip extracted successfully  output=/tmp/gh-issue-solver-1784320659012/desktop/release/linux-unpacked
+  • searching for node modules  pm=npm searchDir=/tmp/gh-issue-solver-1784320659012/desktop
+  • duplicate dependency references  dependencies=["strip-ansi@7.2.0","ansi-styles@4.3.0","strip-ansi@6.0.1","string-width@5.1.2","strip-ansi@7.2.0","readable-stream@4.7.0","streamx@2.28.0","streamx@2.28.0","archiver-utils@5.0.2","readable-stream@4.7.0","readable-stream@4.7.0","readable-stream@4.7.0","playwright@1.61.1","puppeteer@24.43.1","domhandler@5.0.3","domutils@3.2.2","domhandler@5.0.3","domutils@3.2.2","domhandler@5.0.3","dom-serializer@2.0.0","domhandler@5.0.3","iconv-lite@0.6.3","iconv-lite@0.6.3","domhandler@5.0.3","domutils@3.2.2","domhandler@5.0.3","parse5@7.3.0","parse5@7.3.0","http-errors@2.0.1","on-finished@2.4.1","qs@6.15.3","http-errors@2.0.1","type-is@1.6.18","on-finished@2.4.1","get-intrinsic@1.3.0","call-bind-apply-helpers@1.0.2","call-bind-apply-helpers@1.0.2","es-object-atoms@1.1.2","call-bound@1.0.4","get-intrinsic@1.3.0","side-channel-map@1.0.1","http-errors@2.0.1","on-finished@2.4.1","send@0.19.2","mime-types@2.1.35","strip-ansi@6.0.1","string-width@4.2.3","strip-ansi@6.0.1","debug@4.4.3","@types/node@25.9.5","debug@4.4.3","pump@3.0.4","debug@4.4.3","debug@4.4.3","debug@4.4.3","debug@4.4.3","debug@4.4.3","http-proxy-agent@7.0.2","https-proxy-agent@7.0.6","socks-proxy-agent@8.0.5","debug@4.4.3","bare-fs@4.7.4","once@1.4.0","once@1.4.0","tar-stream@3.2.0","yargs@17.7.3","@puppeteer/browsers@2.13.2","chromium-bidi@14.0.0","js-yaml@4.3.0","puppeteer-core@24.43.1","mime-types@3.0.2","debug@4.4.3","http-errors@2.0.1","on-finished@2.4.1","qs@6.15.3","http-errors@2.0.1","iconv-lite@0.7.3","type-is@2.1.0","debug@4.4.3","debug@4.4.3","on-finished@2.4.1","http-errors@2.0.1","on-finished@2.4.1","proxy-addr@2.0.7","qs@6.15.3","debug@4.4.3","debug@4.4.3","http-errors@2.0.1","mime-types@3.0.2","on-finished@2.4.1","send@1.2.1","mime-types@3.0.2","debug@4.4.3"]

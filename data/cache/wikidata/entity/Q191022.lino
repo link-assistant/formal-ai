@@ -1,0 +1,15 @@
+Q191022
+  aliases
+    ru ("Шарфы")
+  descriptions
+    en "garment of fabric worn around neck or head"
+    ru "деталь одежды"
+    zh "衣物"
+  id Q191022
+  labels
+    en scarf
+    hi "स्कार्फ़"
+    ru "шарф"
+    zh "圍巾"
+  type item
+success 1

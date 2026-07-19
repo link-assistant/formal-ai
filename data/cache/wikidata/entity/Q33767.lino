@@ -1,0 +1,17 @@
+Q33767
+  aliases
+    en (manus)
+    ru ("трехгранная кость" "кисть руки" "рука" "трёхгранная кость")
+    zh ("雙手" "手部")
+  descriptions
+    en "extremity at the end of an arm or forelimb"
+    ru "дистальная часть верхней конечности"
+    zh "手臂或前肢末端的四肢"
+  id Q33767
+  labels
+    en hand
+    hi "हाथ"
+    ru "кисть"
+    zh "手"
+  type item
+success 1

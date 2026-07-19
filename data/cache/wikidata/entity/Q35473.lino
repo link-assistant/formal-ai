@@ -1,0 +1,18 @@
+Q35473
+  aliases
+    en (windows)
+    hi ("खिड़कियों" "खिड़कियाँ" "झरोखा")
+    ru ("окошко" "окошечко")
+    zh ("窗户" "廔" "窗戶")
+  descriptions
+    en "opening to admit light or air"
+    ru "элемент архитектуры"
+    zh "建筑部件"
+  id Q35473
+  labels
+    en window
+    hi "खिड़की"
+    ru "окно"
+    zh "窗"
+  type item
+success 1

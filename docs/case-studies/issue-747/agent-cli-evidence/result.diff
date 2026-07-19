@@ -1,0 +1,8 @@
+diff --git a/self-coding-result.txt b/self-coding-result.txt
+new file mode 100644
+index 0000000..39e9ae9
+--- /dev/null
++++ b/self-coding-result.txt
+@@ -0,0 +1 @@
++self-coding=passed
+\ No newline at end of file

@@ -9,6 +9,10 @@
 # kind meaning   -> the role name is also a defined meaning slug
 # kind predicate -> the role name is a reserved role-only identifier
 roles
+  agent_action_report_subject
+    kind predicate
+  agent_action_report_verb
+    kind predicate
   answer_rationale_lead
     kind predicate
   architecture_concept
@@ -159,6 +163,22 @@ roles
     kind predicate
   feature_capability_question
     kind meaning
+  file_edit_action_cue
+    kind predicate
+  file_edit_new_lead_cue
+    kind predicate
+  file_edit_target_cue
+    kind predicate
+  file_read_action_cue
+    kind predicate
+  file_write_action_cue
+    kind predicate
+  file_write_content_lead
+    kind predicate
+  file_write_destination_cue
+    kind predicate
+  file_write_target_cue
+    kind predicate
   final_amount_reference
     kind predicate
   followup_instruction_verb
@@ -416,6 +436,16 @@ roles
   tool_argument_marker
     kind meaning
   tool_invocation_cue
+    kind meaning
+  tool_result_detail_request
+    kind meaning
+  tool_result_first_reference
+    kind meaning
+  tool_result_line_request
+    kind meaning
+  tool_result_second_reference
+    kind meaning
+  tool_result_url_request
     kind meaning
   topic_scan_stop_word
     kind meaning

@@ -20,6 +20,7 @@
 
   var DEFAULT_FILES = [
     "seed/agent-info.lino",
+    "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
@@ -37,6 +38,7 @@
     "seed/numeric-list-operations.lino",
     "seed/coding-idioms.lino",
     "seed/terminal-commands.lino",
+    "seed/shell-intents.lino",
     "seed/program-plan-rules.lino",
     "seed/market-price-references.lino",
     "seed/meanings.lino",
@@ -49,6 +51,9 @@
     "seed/meanings-docs.lino",
     "seed/meanings-facts.lino",
     "seed/meanings-feature-capability.lino",
+    "seed/meanings-file-write.lino",
+    "seed/meanings-file-edit.lino",
+    "seed/meanings-agent-actions.lino",
     "seed/meanings-finance.lino",
     "seed/meanings-how.lino",
     "seed/meanings-intent.lino",
@@ -310,6 +315,36 @@
   function findChildValueAlias(node, primary, fallback) {
     var value = findChildValue(node, primary);
     return value || findChildValue(node, fallback);
+  }
+
+  function extractInterfaceCapabilities(root) {
+    if (!root) return [];
+    var section = root.name === "interface_capabilities"
+      ? root
+      : findChildren(root, "interface_capabilities")[0];
+    if (!section) return [];
+    return findChildren(section, "capability").map(function (capability) {
+      return {
+        key: capability.id,
+        kind: findChildValue(capability, "kind"),
+        label: findChildValue(capability, "label"),
+        intent: findChildValue(capability, "intent"),
+        scale: Number(findChildValue(capability, "scale") || 1),
+        phrases: findChildren(capability, "phrase").map(function (phrase) {
+          return phrase.id;
+        }).filter(Boolean),
+        options: findChildren(capability, "option").map(function (option) {
+          return {
+            value: option.id,
+            aliases: findChildren(option, "alias").map(function (alias) {
+              return alias.id;
+            }).filter(Boolean),
+          };
+        }),
+      };
+    }).filter(function (capability) {
+      return capability.key && capability.kind && capability.phrases.length > 0;
+    });
   }
 
   function extractMultilingualResponses(node) {
@@ -994,6 +1029,7 @@
       coreferenceSeeds: { pronouns: [], antecedents: [] },
       tools: [],
       agentInfo: {},
+      interfaceCapabilities: [],
       languageRules: [],
       promptPatterns: [],
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
@@ -1030,6 +1066,8 @@
         seed.tools = seed.tools.concat(extractTools(root));
       } else if (item.file.indexOf("agent-info") !== -1) {
         Object.assign(seed.agentInfo, extractAgentInfo(root));
+      } else if (item.file.indexOf("interface-capabilities") !== -1) {
+        seed.interfaceCapabilities = extractInterfaceCapabilities(root);
       } else if (item.file.indexOf("language-detection") !== -1) {
         seed.languageRules = seed.languageRules.concat(extractLanguageRules(root));
       } else if (item.file.indexOf("prompt-patterns") !== -1) {
@@ -1050,6 +1088,7 @@
     parseBundle: parseBundle,
     extractMultilingualResponses: extractMultilingualResponses,
     extractAgentInfo: extractAgentInfo,
+    extractInterfaceCapabilities: extractInterfaceCapabilities,
     extractLanguageRules: extractLanguageRules,
     extractPromptPatterns: extractPromptPatterns,
     extractConcepts: extractConcepts,

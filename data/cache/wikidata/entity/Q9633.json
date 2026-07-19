@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q9633": {
+      "type": "item",
+      "id": "Q9633",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "neck"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "шея"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गर्दन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "頸"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "part of the body, on many terrestrial or secondarily aquatic vertebrates, that distinguishes the head from the torso or trunk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть тела позвоночных, соединяющая голову с туловищем"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "neck (body part)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

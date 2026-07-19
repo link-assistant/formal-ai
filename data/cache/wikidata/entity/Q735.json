@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q735": {
+      "type": "item",
+      "id": "Q735",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "art"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "искусство"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "藝術"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general concept that creates expressive work for its beauty or emotional power (use Q838948 for the resulting work, use Q2018526 for the group of creative disciplines)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "образное осмысление действительности"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भावनाओं और सौंदर्य के माध्यम से भौतिक मूल्य की चीजें बनाने की प्रक्रिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一个总体概念，指为了其美感或情感力量而创作的表达性作品（使用Q838948表示由此产生的作品，使用Q2018526表示创意学科的集合"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Art"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "艺术"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

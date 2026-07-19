@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_1b344e0988daa2e2"
+  goal "Create file data/seed/issue-656-agent-learned.lino containing\nlearned_rules\n  id \"issue_656_agent_learning\"\n  rule \"unseen_verified_modifier\""
+  target "data/seed/issue-656-agent-learned.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_e490d0bc8accb893"
+  step 2
+    capability "Write"
+    action "write the requested content to data/seed/issue-656-agent-learned.lino"
+    expected_evidence "workspace file data/seed/issue-656-agent-learned.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "learned_rules\n  id \"issue_656_agent_learning\"\n  rule \"unseen_verified_modifier\""
+    command "cat data/seed/issue-656-agent-learned.lino"
+  verification_command "cat data/seed/issue-656-agent-learned.lino"

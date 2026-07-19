@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Q177220": {
+      "type": "item",
+      "id": "Q177220",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "singer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "певец"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गायक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歌手"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person singing for a listening audience"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "артист, профессионально занимающийся пением"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歌曲演唱者"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "vocalist"
+          },
+          {
+            "language": "en",
+            "value": "songstress"
+          },
+          {
+            "language": "en",
+            "value": "songster"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "певица"
+          },
+          {
+            "language": "ru",
+            "value": "вокалист"
+          },
+          {
+            "language": "ru",
+            "value": "вокалистка"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "गायिका"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "演唱家"
+          },
+          {
+            "language": "zh",
+            "value": "女歌手"
+          },
+          {
+            "language": "zh",
+            "value": "歌星"
+          },
+          {
+            "language": "zh",
+            "value": "歌唱家"
+          },
+          {
+            "language": "zh",
+            "value": "男歌手"
+          },
+          {
+            "language": "zh",
+            "value": "聲樂家"
+          },
+          {
+            "language": "zh",
+            "value": "歌唱演员"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -75,10 +75,13 @@ pub use user_intent::{
     try_who_is_question,
 };
 pub use web_requests::{
-    try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
+    detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
 };
-pub use {web_requests::answer_web_search_query, web_search_intent::WebSearchQueryKind};
+pub use {
+    web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
+    web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,
+};
 
 use crate::calculation::{
     calculation_expression_candidates, evaluate_calculation, interpretation_statements,
@@ -509,6 +512,7 @@ pub fn try_translation(
     }
 
     let target = detect_target_language(normalized);
+    let unquoted_surface = extract_unquoted_translation_surface(prompt);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in
     // data/seed/meanings-translation.lino; this code knows the concept and the
@@ -526,6 +530,11 @@ pub fn try_translation(
             .words_for_role_in_languages(crate::seed::ROLE_TRANSLATION_ACTION, &["hi", "zh"])
             .iter()
             .any(|stem| normalized.contains(stem.as_str()));
+    let source_first_command = crate::translation::prompt::is_source_first_translation_request(
+        normalized,
+        target.is_some(),
+        unquoted_surface.is_some(),
+    );
     // Issue #386: the define-in-Links-Notation request is recognised by *meaning*
     // too, not by literal verbs and format strings. The imperative verb lives once
     // as the `definition_command` meaning and the target-format phrases as
@@ -546,7 +555,8 @@ pub fn try_translation(
                 .any(|marker| normalized.contains(format!(" {marker}").as_str()))
     };
     let define_in_links = is_define_in_links();
-    let is_translation_request = head_initial_command || head_final_command || define_in_links;
+    let is_translation_request =
+        head_initial_command || head_final_command || source_first_command || define_in_links;
     if !is_translation_request {
         return None;
     }
@@ -588,7 +598,7 @@ pub fn try_translation(
     // verb and the target preposition so the Wiktionary pipeline still
     // receives a non-empty surface. See issue #216.
     let surface = extract_quoted_phrase(prompt)
-        .or_else(|| extract_unquoted_translation_surface(prompt))
+        .or(unquoted_surface)
         .unwrap_or_default();
     let source_slug = source.unwrap_or("en");
     let target_slug = target.unwrap_or("en");
@@ -917,6 +927,7 @@ pub fn finalize_simple(
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body.to_owned(),
+        execution_recipe: None,
         confidence,
         evidence_links,
         thinking_steps,

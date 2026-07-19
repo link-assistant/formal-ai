@@ -1,0 +1,40 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784180023530)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.47s
+     Running tests/issue_715.rs (target/debug/deps/issue_715-31dd5adae2836050)
+
+running 8 tests
+
+thread 'empty_pattern_creates_content' (12980) panicked at tests/issue_715.rs:288:5:
+assertion `left == right` failed
+  left: "fn main() {\n    println!(\"// generated file\n\");\n}\n"
+ right: "// generated file\nfn main() {\n    println!(\"Hello, world!\");\n}\n"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test explicit_old_new_change_can_rewrite_an_arbitrary_code_fragment ... ok
+test contextual_code_change_reads_then_writes_the_active_file ... ok
+test empty_pattern_creates_content ... FAILED
+
+thread 'nonempty_pattern_can_be_deleted' (12982) panicked at tests/issue_715.rs:299:5:
+assertion `left == right` failed
+  left: "fn main() {\n    println!(\"    println!(\"Hello, world!\");\n\");\n}\n"
+ right: "fn main() {\n}\n"
+
+thread 'ordered_substitutions_apply_as_one_general_rewrite_program' (12983) panicked at tests/issue_715.rs:310:5:
+assertion `left == right` failed
+  left: "fn main() {\n    println!(\"Hi, world!\");\n}\n"
+ right: "fn main() {\n    println!(\"Hi, team!\");\n}\n"
+test nonempty_pattern_can_be_deleted ... FAILED
+test ordered_substitutions_apply_as_one_general_rewrite_program ... FAILED
+test contextual_change_is_language_independent_across_ten_phrasings_each ... ok
+test contextual_change_rewrites_workspace_source_for_every_catalog_language ... ok
+test code_generation_writes_a_real_workspace_file_for_every_catalog_language ... ok
+
+failures:
+
+failures:
+    empty_pattern_creates_content
+    nonempty_pattern_can_be_deleted
+    ordered_substitutions_apply_as_one_general_rewrite_program
+
+test result: FAILED. 5 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+error: test failed, to rerun pass `--test issue_715`

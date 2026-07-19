@@ -508,9 +508,13 @@ meanings
     lexeme en
       surface
         text "translate … to "
+      surface
+        text "… translate to "
     lexeme ru
       surface
         text "переведи … на "
+      surface
+        text "… переведи на "
     lexeme hi
       surface
         text अनुवाद
@@ -519,6 +523,10 @@ meanings
         text 翻译
       surface
         text 翻譯
+      surface
+        text …翻译成
+      surface
+        text …翻譯成
   translation_into_marker
     defined-by translate
     defined-by translation_direction_target
@@ -1103,3 +1111,18 @@ meanings
     lexeme zh
       surface
         text 你好吗
+  formal_system_incomplete_or_inconsistent
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
+        text "any formal system is either incomplete or inconsistent"
+    lexeme ru
+      surface
+        text "любая формальная система либо неполна, либо противоречива"
+    lexeme hi
+      surface
+        text "कोई भी औपचारिक प्रणाली या तो अपूर्ण होती है या असंगत"
+    lexeme zh
+      surface
+        text "任何形式系统要么是不完备的，要么是不一致的"

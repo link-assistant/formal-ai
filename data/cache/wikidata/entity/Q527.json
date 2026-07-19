@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q527": {
+      "type": "item",
+      "id": "Q527",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sky"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "небо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आकाश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "天空"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "region of the atmosphere and outer space visible from the surface of the Earth"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пространство над поверхностью астрономического объекта"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "天体表面的观测者看到的大气层或太空的部分"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "celestial dome"
+          },
+          {
+            "language": "en",
+            "value": "celestial vault"
+          },
+          {
+            "language": "en",
+            "value": "firmament"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "небеса"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

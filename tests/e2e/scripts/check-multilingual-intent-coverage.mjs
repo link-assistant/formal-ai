@@ -345,33 +345,36 @@ function assertPromptPatternCoverageGroups(intent) {
   }
 }
 
-const howAreYouGreetingPhrases = {
+// Issue #676: "how are you?" small talk is its own `wellbeing` intent, distinct
+// from a bare greeting, so the reply differs from "Hello". Keep the family
+// routed and documented under wellbeing across every supported language.
+const howAreYouWellbeingPhrases = {
   en: ['how are you', 'how are you doing'],
   ru: ['как дела', 'как твои дела'],
   hi: ['कैसे हो', 'आप कैसे हैं'],
   zh: ['你好吗', '你怎么样'],
 };
 
-assertMatrixMatchesSupportedLanguages('howAreYouGreetingPhrases', howAreYouGreetingPhrases);
+assertMatrixMatchesSupportedLanguages('howAreYouWellbeingPhrases', howAreYouWellbeingPhrases);
 
-const greetingRoute = routes.get('intent_greeting');
-assert(greetingRoute, 'intent-routing.lino must define intent_greeting');
+const wellbeingRoute = routes.get('intent_wellbeing');
+assert(wellbeingRoute, 'intent-routing.lino must define intent_wellbeing');
 
-for (const [language, phrases] of Object.entries(howAreYouGreetingPhrases)) {
+for (const [language, phrases] of Object.entries(howAreYouWellbeingPhrases)) {
   for (const phrase of phrases) {
     assert(
-      greetingRoute?.phrases.includes(phrase),
-      `intent_greeting must route ${language} how-are-you phrase ${JSON.stringify(phrase)}`,
+      wellbeingRoute?.phrases.includes(phrase),
+      `intent_wellbeing must route ${language} how-are-you phrase ${JSON.stringify(phrase)}`,
     );
     assert(
       patterns.some(
         (pattern) =>
-          pattern.intent === 'greeting' &&
+          pattern.intent === 'wellbeing' &&
           pattern.language === language &&
           pattern.kind === 'phrase' &&
           pattern.text === phrase,
       ),
-      `prompt-patterns.lino must document ${language} greeting phrase ${JSON.stringify(phrase)}`,
+      `prompt-patterns.lino must document ${language} wellbeing phrase ${JSON.stringify(phrase)}`,
     );
   }
 }
@@ -853,6 +856,7 @@ assertBalancedLanguageCaseCounts(
 
 const requiredLocalizedResponseIntents = [
   'greeting',
+  'wellbeing',
   'farewell',
   'courtesy_response',
   'assistant_free_time',

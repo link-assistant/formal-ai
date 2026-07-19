@@ -1,0 +1,15 @@
+Q8495
+  aliases
+    zh ("乳" "乳汁")
+  descriptions
+    en "white liquid produced by the mammary glands of mammals"
+    ru "питательная жидкость, вырабатываемая молочными железами самок млекопитающих"
+    zh "哺乳類生物的乳房分泌出來的液體"
+  id Q8495
+  labels
+    en milk
+    hi "दूध"
+    ru "молоко"
+    zh "奶"
+  type item
+success 1

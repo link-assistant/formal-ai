@@ -1,0 +1,17 @@
+Q11442
+  aliases
+    en (bike pushbike "pedal bike" "pedal cycle" cycle "🚲" Bicycles)
+    ru ("велик" "бицикл")
+    zh ("自由車" "單車" "自行车" "单车" "自由车" "腳車" "腳踏車" "雙輪車")
+  descriptions
+    en "pedal-driven two-wheel vehicle"
+    ru "двухколёсное транспортное средство, приводимое в движение посредством педалей"
+    zh "载具"
+  id Q11442
+  labels
+    en bicycle
+    hi "सायकिल"
+    ru "велосипед"
+    zh "自行車"
+  type item
+success 1

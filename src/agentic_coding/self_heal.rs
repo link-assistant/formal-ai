@@ -5,7 +5,7 @@
 //! to reason about the failure, map it onto the source that would change, propose a
 //! fix, gate it against a benchmark, and — only with human approval — promote the
 //! lesson. [`crate::self_healing`] realises that closed loop as an auditable,
-//! proposal-only [`RepairCase`](crate::self_healing::RepairCase). This module makes
+//! proposal-only [`RepairCase`]. This module makes
 //! the loop reachable *through the agentic interface*: an external agent CLI
 //! (`Codex`, `OpenCode`, `Gemini`, `Agent CLI`) — or the in-repo driver — asks Formal AI
 //! to self-heal, and the deterministic planner walks a write → verify → final
@@ -57,16 +57,46 @@ const SELF_HEAL_KEYWORDS: [&str; 6] = [
     "repair loop",
 ];
 
+/// Self-directed repair phrasings — the object of the fix/debug/heal is the system
+/// *itself*, not an arbitrary user file.
+///
+/// Issue #676: plain-language requests such as "Can you fix it yourself?" should run
+/// the self-healing loop, but the narrow keyword set above missed them. These phrases
+/// all pin the action to the assistant ("yourself", "your own", "on your own"), so
+/// they stay clear of ordinary "fix this file" / "fix the bug in main.rs" requests.
+const SELF_REPAIR_PHRASES: [&str; 16] = [
+    "fix it yourself",
+    "fix yourself",
+    "fix your self",
+    "fix your own",
+    "fix them yourself",
+    "fix this yourself",
+    "solve it yourself",
+    "solve this yourself",
+    "debug yourself",
+    "debug it yourself",
+    "heal yourself",
+    "repair yourself",
+    "correct yourself",
+    "fix on your own",
+    "fix it on your own",
+    "learn from your mistake",
+];
+
 /// Whether `prompt` asks the system to run its self-healing / auto-learning loop
-/// (issue #558).
+/// (issue #558, extended for issue #676).
 #[must_use]
 pub fn is_self_heal_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
-    // A dedicated keyword, or the phrase pairing a failure with self-repair, routes
-    // here. Kept narrow so ordinary "fix this" requests do not match.
+    // A dedicated keyword, a self-directed repair phrasing, or the phrase pairing a
+    // failure with self-repair routes here. Kept narrow so ordinary "fix this"
+    // requests (with no self-reference) do not match.
     SELF_HEAL_KEYWORDS
         .iter()
         .any(|keyword| lower.contains(keyword))
+        || SELF_REPAIR_PHRASES
+            .iter()
+            .any(|phrase| lower.contains(phrase))
         || ((lower.contains("cannot answer")
             || lower.contains("can't answer")
             || lower.contains("failure"))

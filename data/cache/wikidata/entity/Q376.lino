@@ -1,0 +1,19 @@
+Q376
+  aliases
+    en (chronoscope watch timepiece)
+    hi ("घड़ी" "क्लॉक" "समयमापी यंत्र")
+    ru ("хронометр")
+    zh ("时钟" "钟" "鐘")
+  descriptions
+    en "instrument that measures the passage of time"
+    hi "समय दीखनेका वस्"
+    ru "прибор для измерения времени"
+    zh "可報時的儀器"
+  id Q376
+  labels
+    en clock
+    hi "घडी"
+    ru "часы"
+    zh "時鐘"
+  type item
+success 1

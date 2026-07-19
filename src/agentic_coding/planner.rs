@@ -1,51 +1,43 @@
 //! Deterministic agentic planner — the server's "brain" for issue #468.
 //!
-//! The maintainer's framing: *"our Formal AI system should have enough skills
-//! (meta algorithm, rust code) to actually call all the tools from any agentic
-//! CLI, understand errors from tools, and so on, call bash commands, do web fetch
-//! and web search, to actually complete the task."*
-//!
-//! This module is that meta-algorithm for the canonical issue-#468 task —
-//! formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base. It
-//! is a **pure, deterministic function of the conversation so far**: given the
-//! messages exchanged and the tool names the agentic CLI advertised, it decides
-//! the next step. Neural inference stays a NON-GOAL — there is no sampling, no
-//! hidden state, and the same history always yields the same plan.
-//!
-//! The recipe is a small state machine:
-//!
-//! ```text
-//! web_search → web_fetch → write_file(formalize) → run_command(verify) → final
-//! ```
-//!
-//! Each step is taken only if (a) the conversation does not already contain a
-//! tool result for that capability and (b) the CLI advertised a tool with that
-//! capability. Steps whose tool is unavailable are skipped, so the planner adapts
-//! to whatever subset of tools a given CLI exposes. Tool *errors* are observed:
-//! a fetch result that [`looks_like_error`] is ignored, and the formalizer falls
-//! back to the canonical synopsis so the loop still completes with a stable
-//! knowledge base.
+//! This pure meta-algorithm chooses the next tool or final answer from the
+//! conversation and advertised capabilities. It supports stored task recipes and
+//! a bounded general fallback; neural sampling and hidden state remain non-goals.
 
 use serde_json::json;
 
+use super::capability_router;
+pub(super) use super::capability_router::tool_for;
 use super::change_request;
+use super::code_artifact;
+use super::conversation_recall;
 use super::diagram;
+use super::dreaming_audit;
 use super::explain;
 use super::file_read::{file_read_task_for, plan_file_read_step};
 use super::formalize::{
     coverage_line, formalize_text_to_links, FormalizedKnowledgeBase, CANONICAL_FISHERMAN_SYNOPSIS,
     FISHERMAN_DOC_ID,
 };
+use super::general_planner::{compose_general_change_plan, GeneralChangePlan, PLAN_PATH};
 use super::google_trends_catalog;
 use super::google_trends_learning;
+use super::intent_router;
+use super::learning_report;
 use super::ledger;
 use super::meaning_detail;
+pub(super) use super::progress::Progress;
 use super::question_catalog;
 use super::rebuild_plan;
 use super::repair_strategy;
+use super::report_issue;
 use super::self_ast;
 use super::self_heal;
+use super::shell_command;
 use super::source_graph;
+use super::statement_audit;
+use super::tool_result;
+use super::web_research;
 use crate::protocol::ChatMessage;
 
 /// The Russian web-search query the planner issues when a search tool exists.
@@ -89,7 +81,15 @@ pub enum Capability {
     Fetch,
     Read,
     Write,
+    Edit,
     Run,
+    Grep,
+    Glob,
+    ListDir,
+    Todo,
+    Subagent,
+    ReadMany,
+    MultiEdit,
 }
 
 impl Capability {
@@ -104,7 +104,33 @@ impl Capability {
             Self::Fetch => "tool:capability:fetch",
             Self::Read => "tool:capability:read",
             Self::Write => "tool:capability:write",
+            Self::Edit => "tool:capability:edit",
             Self::Run => "tool:capability:run",
+            Self::Grep => "tool:capability:grep",
+            Self::Glob => "tool:capability:glob",
+            Self::ListDir => "tool:capability:list_dir",
+            Self::Todo => "tool:capability:todo",
+            Self::Subagent => "tool:capability:subagent",
+            Self::ReadMany => "tool:capability:read_many",
+            Self::MultiEdit => "tool:capability:multi_edit",
+        }
+    }
+
+    pub(super) const fn registry_id(self) -> &'static str {
+        match self {
+            Self::Search => "web_search",
+            Self::Fetch => "web_fetch",
+            Self::Read => "read_file",
+            Self::Write => "write_file",
+            Self::Edit => "edit_file",
+            Self::Run => "shell",
+            Self::Grep => "grep",
+            Self::Glob => "glob",
+            Self::ListDir => "list_dir",
+            Self::Todo => "todo",
+            Self::Subagent => "subagent",
+            Self::ReadMany => "read_many",
+            Self::MultiEdit => "multi_edit",
         }
     }
 }
@@ -119,26 +145,48 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
     classify_tool(name)
 }
 
-/// Plan the next agentic step from the conversation so far and the tool names the
-/// CLI advertised.
-///
-/// Returns [`None`] when the latest user turn is neither of the recipes the
-/// planner knows (formalize a text — issue #468, or make a meaning more detailed
-/// — issue #538) — the server then falls back to its ordinary solver text, so
-/// unrelated requests are untouched.
+/// Plan the next agentic step from the conversation and advertised tools.
+/// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
     let task = latest_user_text(messages)?;
-    // The self-AST recipe is checked first because it is the most specific router
-    // (it requires both an AST/CST intent word *and* a self-reference). A self-AST
-    // request legitimately mentions "Links Notation" as its output format, which
-    // would otherwise be captured by the broad formalization keyword match below.
-    // The self-healing recipe is checked before self-AST: both are self-inspection
-    // recipes, but self-healing has its own dedicated keywords (self-heal, repair
-    // case, auto-learning) that never overlap the AST/CST keywords, so ordering only
-    // guards against a request that names both.
+    // Resolve an unambiguous literal write before keyword recipes: arbitrary
+    // filenames/payloads may legitimately contain "issue", "report", or "learning".
+    if let Some(plan) = tool_for(tool_names, Capability::Write)
+        .and_then(|_| compose_general_change_plan(&task))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+    {
+        return Some(plan);
+    }
+    // Specific self-inspection routes precede broad formalization. Associative
+    // learning comes before self-healing because both accept auto-learning terms;
+    // the requested artifact scope distinguishes their recipes.
+    if let Some(report) = learning_report::route(&task) {
+        return Some(report.plan_step(messages, tool_names));
+    }
+    // Repository statement audits run through the same public CLI a human can
+    // replay. Route before generic file/code changes because the task names its
+    // output artifact but does not ask the planner to fabricate that content.
+    if statement_audit::is_statement_audit_task(&task) {
+        return Some(plan_shell_step(
+            messages,
+            tool_names,
+            statement_audit::STATEMENT_AUDIT_COMMAND,
+        ));
+    }
+    // Workspace mutations are grounded in client-owned file bytes. This route
+    // follows the explicit learning recipes so their requested artifacts cannot
+    // be mistaken for an edit, and precedes the generic edit/read/shell routers
+    // below. Requests naming both a literal target and literal content are
+    // already claimed by the write probe above.
+    if let Some(plan) = code_artifact::plan_code_artifact_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
     if self_heal::is_self_heal_task(&task) {
         return Some(plan_self_heal_step(messages, tool_names));
+    }
+    if dreaming_audit::is_dreaming_audit_task(&task) {
+        return Some(plan_dreaming_audit_step(messages, tool_names));
     }
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
@@ -212,11 +260,48 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
+    // Agent-mode counterpart of the web UI's report action (issue #687).
+    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
+        return Some(report_issue::plan_report_issue_step(
+            messages, tool_names, &request,
+        ));
+    }
+    if let Some(answer) = conversation_recall::recall_answer_for(messages) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    // Preserve the established stateful list/read recipe whenever the client
+    // exposes its typed read capability. The shared read-many route remains
+    // available for CLIs that advertise only a batch reader.
+    if tool_for(tool_names, Capability::Read).is_some() {
+        if let Some(file_task) = file_read_task_for(&task) {
+            return Some(plan_file_read_step(&file_task, messages, tool_names));
+        }
+    }
+    if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
+    {
+        return Some(plan);
+    }
+    if !tool_result::has_latest_turn_result(messages) {
+        if let Some(query) = shell_command::code_search_query_for_task(&task) {
+            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
+                return Some(plan_one(
+                    tool,
+                    json!({ "query": query, "pattern": query }).to_string(),
+                ));
+            }
+        }
+    }
+    if let Some(command) = shell_command::shell_command_for_task(&task) {
+        return Some(plan_shell_step(messages, tool_names, &command));
+    }
     if let Some(file_task) = file_read_task_for(&task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
-    }
-    if let Some(command) = shell_command_for_task(&task) {
-        return Some(plan_shell_step(messages, tool_names, &command));
     }
     if is_formalization_task(&task) {
         return Some(plan_formalization_step(messages, tool_names));
@@ -227,19 +312,67 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if diagram::is_diagram_task(&task) {
         return Some(plan_diagram_step(messages, tool_names));
     }
-    None
+    // A typed URL object is more specific than broad research prose. Resolve it
+    // before the research recipe so requests such as "tell me about URL" fetch
+    // that page instead of turning the URL itself into a search query.
+    if let Some(plan) = intent_router::plan_web_fetch_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(query) = web_research::web_research_query_for(messages) {
+        if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+            return Some(plan);
+        }
+    }
+    if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
+        return Some(AgenticPlan::Final(answer));
+    }
+    compose_general_change_plan(&task)
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
 }
 
-/// The issue-#607 shell recipe: ask the CLI's shell/run tool to execute a simple
-/// directory listing, then summarize the tool result. Execution still happens in
-/// the client-side agent workspace/permission model; this server only emits the
-/// OpenAI-compatible `tool_calls` turn.
+fn plan_general_change_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan: &GeneralChangePlan,
+) -> AgenticPlan {
+    let progress = Progress::scan(messages);
+    let writes = progress.count(Capability::Write);
+    if let Some(tool) = tool_for(tool_names, Capability::Write) {
+        if writes == 0 {
+            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
+        }
+        if writes == 1 {
+            return plan_one(tool, write_arguments(&plan.target, &plan.content));
+        }
+    }
+    if let Some(tool) =
+        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
+    {
+        return plan_one(
+            tool,
+            json!({ "command": plan.verification_command }).to_string(),
+        );
+    }
+    AgenticPlan::Final(format!(
+        "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
+        plan.target,
+        plan.verification_command,
+        PLAN_PATH,
+        plan.links_notation().trim_end(),
+    ))
+}
+
+/// Run a shell command through the client-owned tool loop, then present its result.
 fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
     let progress = Progress::scan(messages);
     if progress.done(Capability::Run) {
-        return AgenticPlan::Final(shell_final_answer(
+        return AgenticPlan::Final(tool_result::render(
             command,
             progress.run_output.as_deref().unwrap_or_default(),
+            latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }
 
@@ -262,21 +395,21 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
 /// so they are modelled as one struct and one planner
 /// ([`plan_document_recipe`]) rather than a dozen copy-pasted functions — the exact
 /// generalization the meta-algorithm is meant to embody.
-struct DocumentRecipe {
+pub(super) struct DocumentRecipe {
     /// The workspace-relative path the generated document is written to.
-    path: &'static str,
+    pub(super) path: &'static str,
     /// The generated Links Notation document (a pure function of committed state).
-    document: String,
+    pub(super) document: String,
     /// The sandbox-allowlisted command that reads the document back for verification.
-    verify_command: String,
+    pub(super) verify_command: String,
     /// The inline final answer returned once the write and verify steps are done.
-    final_answer: String,
+    pub(super) final_answer: String,
 }
 
 /// Plan the next step of a [`DocumentRecipe`]: `write → verify → final`. Steps whose
 /// capability the CLI did not advertise (or the conversation already satisfied) are
 /// skipped, so the loop adapts to whatever subset of tools a given CLI exposes.
-fn plan_document_recipe(
+pub(super) fn plan_document_recipe(
     messages: &[ChatMessage],
     tool_names: &[&str],
     recipe: DocumentRecipe,
@@ -302,7 +435,7 @@ fn plan_document_recipe(
     AgenticPlan::Final(recipe.final_answer)
 }
 
-/// The issue-#468 recipe: search → fetch → formalize → verify → final.
+// State machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final.
 fn plan_formalization_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
     let search_tool = tool_for(tool_names, Capability::Search);
     let fetch_tool = tool_for(tool_names, Capability::Fetch);
@@ -614,6 +747,21 @@ fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> 
     )
 }
 
+fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = dreaming_audit::render_document();
+    let final_answer = dreaming_audit::final_answer(&document);
+    plan_document_recipe(
+        messages,
+        tool_names,
+        DocumentRecipe {
+            path: dreaming_audit::DREAMING_AUDIT_PATH,
+            verify_command: format!("cat {}", dreaming_audit::DREAMING_AUDIT_PATH),
+            final_answer,
+            document,
+        },
+    )
+}
+
 /// The issues-#498 + #558 learning-frontier recipe: write the generated
 /// learning-frontier report → verify → final. Like the other self-referential recipes
 /// it needs no web step — the report is a pure function of the committed Trends catalog
@@ -650,55 +798,7 @@ fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]
     )
 }
 
-/// Which recipe capabilities the conversation already produced a result for.
-struct Progress {
-    /// Capabilities a prior `tool` result already answered.
-    completed: Vec<Capability>,
-    /// The latest non-errored fetch result's text, if any.
-    fetched_text: Option<String>,
-    /// The latest run/shell result's text, if any.
-    run_output: Option<String>,
-}
-
-impl Progress {
-    fn scan(messages: &[ChatMessage]) -> Self {
-        let mut completed = Vec::new();
-        let mut fetched_text = None;
-        let mut run_output = None;
-        for (index, message) in messages.iter().enumerate() {
-            if !message.role.eq_ignore_ascii_case("tool") {
-                continue;
-            }
-            let Some(capability) = result_capability(messages, index) else {
-                continue;
-            };
-            if capability == Capability::Fetch {
-                let text = message.content.plain_text();
-                if !looks_like_error(&text) && !text.trim().is_empty() {
-                    fetched_text = Some(text);
-                }
-            }
-            if capability == Capability::Run {
-                run_output = Some(message.content.plain_text());
-            }
-            if !completed.contains(&capability) {
-                completed.push(capability);
-            }
-        }
-        Self {
-            completed,
-            fetched_text,
-            run_output,
-        }
-    }
-
-    /// Whether a prior tool result already covered `capability`.
-    fn done(&self, capability: Capability) -> bool {
-        self.completed.contains(&capability)
-    }
-}
-
-fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
     AgenticPlan::ToolCalls(vec![PlannedToolCall {
         tool: tool.to_owned(),
         arguments,
@@ -711,7 +811,7 @@ fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
 /// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
 /// it declared and strips the rest, so the same plan drives any of them without a
 /// per-CLI special case.
-fn write_arguments(path: &str, content: &str) -> String {
+pub(super) fn write_arguments(path: &str, content: &str) -> String {
     json!({
         "path": path,
         "filePath": path,
@@ -728,7 +828,7 @@ fn write_arguments(path: &str, content: &str) -> String {
 /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
 /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
 /// of them without a per-CLI special case.
-fn fetch_arguments(url: &str) -> String {
+pub(super) fn fetch_arguments(url: &str) -> String {
     json!({
         "url": url,
         "format": "text",
@@ -736,82 +836,8 @@ fn fetch_arguments(url: &str) -> String {
     .to_string()
 }
 
-/// The first advertised tool name that provides `capability`, if any.
-fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
-    tool_names
-        .iter()
-        .copied()
-        .find(|name| classify_tool(name) == Some(capability))
-}
-
-/// Classify a tool name into a [`Capability`] by substring, mirroring the naming
-/// conventions agentic CLIs use (`web_search`, `web_fetch`, `read`, `write_file`,
-/// `run_command`, `bash`, `websearch`, `webfetch`, …).
-///
-/// The recipe only wants five kinds of tool, and real CLIs expose *lookalikes*
-/// that must not be mistaken for them: a `todowrite` scratchpad is not a file
-/// writer, a `codesearch` is not a web search, and `edit`/`patch`
-/// are not create-file tools. Those are ruled out first so that — even though
-/// [`requested_tool_names`](super::super::protocol) hands the planner an
-/// alphabetically sorted list — `todowrite` can never be picked ahead of `write`
-/// nor `codesearch` ahead of `websearch`.
-fn classify_tool(name: &str) -> Option<Capability> {
-    let lower = name.to_ascii_lowercase();
-    // Scratchpad / navigation tools that merely *look* like recipe tools.
-    if lower.contains("todo") {
-        return None;
-    }
-    if lower.contains("search") {
-        // A code search is not the web search the recipe issues its query to.
-        (!lower.contains("code")).then_some(Capability::Search)
-    } else if lower == "read"
-        || lower.contains("read_file")
-        || lower.contains("read_local_file")
-        || lower.contains("file_read")
-        || lower.contains("open_file")
-        || lower.contains("view_file")
-    {
-        Some(Capability::Read)
-    } else if lower.contains("fetch")
-        || lower.contains("open")
-        || lower.contains("browse")
-        || lower.contains("get_url")
-        || lower.contains("read_url")
-    {
-        Some(Capability::Fetch)
-    } else if lower.contains("write") || lower.contains("create_file") {
-        // `write` / `write_file` create a file from scratch; `edit`/`patch`
-        // mutate an existing one and take different arguments, so they are not
-        // interchangeable with the recipe's write step and stay unclassified.
-        Some(Capability::Write)
-    } else if lower.contains("run")
-        || lower.contains("bash")
-        || lower.contains("command")
-        || lower.contains("exec")
-        || lower.contains("shell")
-    {
-        Some(Capability::Run)
-    } else {
-        None
-    }
-}
-
-/// Resolve which capability the tool result at `index` answers. Prefer the
-/// result's own `name`; otherwise map its `tool_call_id` back to the tool name in
-/// a prior assistant `tool_calls` turn.
-fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
-    let message = &messages[index];
-    if let Some(name) = &message.name {
-        if let Some(capability) = classify_tool(name) {
-            return Some(capability);
-        }
-    }
-    let call_id = message.tool_call_id.as_ref()?;
-    messages[..index]
-        .iter()
-        .flat_map(|prior| prior.tool_calls.iter())
-        .find(|call| &call.id == call_id)
-        .and_then(|call| classify_tool(&call.function.name))
+pub(super) fn classify_tool(name: &str) -> Option<Capability> {
+    capability_router::classify_tool(name)
 }
 
 /// The text of the most recent `user` turn.
@@ -820,7 +846,7 @@ fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
         .iter()
         .rev()
         .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.plain_text())
+        .map(|message| message.content.user_request_text())
 }
 
 /// Keywords that mark a user turn as the canonical issue-#468 formalization task.
@@ -842,94 +868,6 @@ fn is_formalization_task(prompt: &str) -> bool {
         .any(|keyword| lower.contains(keyword))
 }
 
-/// Whether `prompt` asks the CLI to run `ls` / list the current workspace.
-///
-/// This intentionally starts narrow: it resolves only read-only directory-listing
-/// language to `ls`. Broader shell synthesis belongs in a richer command parser,
-/// not in a one-off fallback that might accidentally execute an invented command.
-fn shell_command_for_task(prompt: &str) -> Option<String> {
-    let lower = prompt.to_ascii_lowercase();
-    let mentions_ls = contains_word(&lower, "ls");
-    let run_context = ["run", "execute", "command", "terminal", "shell"]
-        .iter()
-        .any(|word| contains_word(&lower, word));
-    let listing_context = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "files here",
-            "current directory",
-            "working directory",
-        ],
-    );
-
-    if mentions_ls && (run_context || listing_context) {
-        return Some(String::from("ls"));
-    }
-
-    let asks_for_listing = contains_any(
-        &lower,
-        &[
-            "list files",
-            "list the files",
-            "list local files",
-            "list directory",
-            "directory listing",
-            "directory contents",
-            "folder contents",
-            "contents of this directory",
-            "contents of the current directory",
-            "contents of this folder",
-            "contents of the current folder",
-        ],
-    );
-    let asks_which_files = contains_any(
-        &lower,
-        &[
-            "what files",
-            "which files",
-            "files are in",
-            "files exist",
-            "files are here",
-        ],
-    );
-    let local_scope = contains_any(
-        &lower,
-        &[
-            "here",
-            "current directory",
-            "working directory",
-            "current working directory",
-            "this directory",
-            "current folder",
-            "this folder",
-            "local files",
-        ],
-    );
-
-    ((asks_for_listing || asks_which_files) && local_scope).then(|| String::from("ls"))
-}
-
-fn contains_any(text: &str, phrases: &[&str]) -> bool {
-    phrases.iter().any(|phrase| text.contains(phrase))
-}
-
-fn contains_word(text: &str, word: &str) -> bool {
-    text.split(|character: char| !character.is_ascii_alphanumeric())
-        .any(|part| part == word)
-}
-
-/// Whether a tool result looks like an error the planner should not trust.
-fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
-}
-
 /// The self-contained final answer: a natural-language summary, the coverage
 /// line, and the Links Notation knowledge base inline.
 fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
@@ -946,13 +884,4 @@ fn final_answer(formalized: &FormalizedKnowledgeBase) -> String {
         coverage = coverage_line(summary),
         kb = formalized.links_notation.trim_end(),
     )
-}
-
-fn shell_final_answer(command: &str, output: &str) -> String {
-    let trimmed = output.trim_end();
-    if trimmed.is_empty() {
-        format!("The `{command}` command completed with no output.")
-    } else {
-        format!("The `{command}` command completed. Output:\n\n```text\n{trimmed}\n```")
-    }
 }

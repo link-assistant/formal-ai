@@ -1978,6 +1978,16 @@ body.is-resizing-context {
   font-weight: 700;
 }
 
+.desktop-engine-row select {
+  width: 100%;
+  border: 1px solid #b8c5cc;
+  border-radius: 7px;
+  padding: 7px 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
 /* Issue #438 (follow-up): one-click start/stop panel for the prepared Docker
    containers (Telegram bot + OpenAI-compatible server). */
 .desktop-services-panel {
@@ -2159,6 +2169,23 @@ body.is-resizing-context {
   gap: 14px;
   overflow: auto;
   padding: 24px clamp(14px, 4vw, 48px);
+}
+
+.desktop-agent-stream {
+  display: flex;
+  gap: 8px;
+  width: min(820px, 100%);
+  border-left: 3px solid #2d6cdf;
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: #eef4ff;
+  color: #29445f;
+  font-size: 13px;
+}
+
+.desktop-agent-stream span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .message {
@@ -2758,6 +2785,16 @@ body.is-resizing-context {
   letter-spacing: 0;
   line-height: 1.2;
   text-transform: uppercase;
+}
+
+/* Issue #676 (R8): the human, first-person headline that leads the trace. It
+   sits above the collapsed/expanded steps and reads as a sentence, so it is
+   styled a touch larger and darker than the robotic step detail beneath it. */
+.thinking-preview-narrative {
+  margin: 0 0 6px;
+  color: #2b3a45;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .thinking-preview-toggle {
@@ -4380,6 +4417,10 @@ textarea:disabled,
   color: #d8d0c4;
 }
 
+:root[data-theme="dark"] .thinking-preview-narrative {
+  color: #e4ddd0;
+}
+
 :root[data-theme="dark"] .thinking-preview-toggle {
   border-color: #4a524e;
   background: #202322;
@@ -4810,6 +4851,10 @@ textarea:disabled,
   :root:not([data-theme="light"]) .thinking-preview-title,
   :root:not([data-theme="light"]) .thinking-preview-current {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-narrative {
+    color: #e4ddd0;
   }
 
   :root:not([data-theme="light"]) .thinking-preview-toggle {

@@ -21,6 +21,7 @@ const DEFAULT_SERVER_PORT = 8080;
 const TELEGRAM_VOLUME = "formal-ai-telegram-docker:/var/lib/docker";
 const SERVER_VOLUME = "formal-ai-server-docker:/var/lib/docker";
 const AGENT_VOLUME = "formal-ai-agent-docker:/var/lib/docker";
+const { dockerMemoryArgs } = require("./shared-memory.cjs");
 
 // Resolve the image once so a locally built image or an optional Docker Hub
 // mirror can be substituted with the same `FORMAL_AI_DOCKER_IMAGE` override the
@@ -72,6 +73,7 @@ function serviceDefinitions(env = {}) {
           "--privileged",
           "-e",
           `TELEGRAM_BOT_TOKEN=${token}`,
+          ...dockerMemoryArgs(env),
           "-v",
           TELEGRAM_VOLUME,
           this.image,
@@ -97,6 +99,7 @@ function serviceDefinitions(env = {}) {
           "--privileged",
           "-p",
           `127.0.0.1:${this.port}:${this.port}`,
+          ...dockerMemoryArgs(env),
           "-v",
           SERVER_VOLUME,
           this.image,
@@ -126,6 +129,7 @@ function serviceDefinitions(env = {}) {
           "--restart",
           "unless-stopped",
           "--privileged",
+          ...dockerMemoryArgs(env),
           "-v",
           AGENT_VOLUME,
           this.image,

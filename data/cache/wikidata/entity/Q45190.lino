@@ -1,0 +1,17 @@
+Q45190
+  aliases
+    hi ("सिमेंट")
+    zh ("紅毛土" "英泥" "熟料" "水門汀" "洋灰" "士敏土" "塞門德土" "紅毛塗" "紅文塗")
+  descriptions
+    en "hydraulic binder used in the composition of mortar and concrete"
+    hi "सीमेंट बंधक सामाग्री है,जो पानी से अभिक्रिया कर गिट्टी रेत को आपस मे बांध कर ठोस बनाती है।"
+    ru "строительный материал"
+    zh "建筑材料"
+  id Q45190
+  labels
+    en cement
+    hi "सीमेंट"
+    ru "цемент"
+    zh "水泥"
+  type item
+success 1

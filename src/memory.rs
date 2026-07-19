@@ -44,7 +44,7 @@ pub mod bundle;
 
 pub use bundle::{
     export_bundle, export_full_memory, extract_memory_from_bundle, import_full_memory,
-    suggest_migrations, BundleInfo, ParsedBundle,
+    seed_cache_events, suggest_migrations, BundleInfo, ParsedBundle,
 };
 
 pub(crate) const ROOT_HEADER: &str = "demo_memory";
@@ -70,6 +70,20 @@ pub struct MemoryEvent {
     pub conversation_id: Option<String>,
     pub conversation_title: Option<String>,
     pub evidence: Vec<String>,
+    /// How many times this event has been read back (recalled) so far.
+    ///
+    /// Issue #494 asks that usage be *counted on access*, not inferred from
+    /// citations: recall paths call [`MemoryStore::record_access`], and the
+    /// dreaming planner adds this count to the citation count so
+    /// frequently-read data is not evicted as "unused".
+    pub access_count: u64,
+    /// How many durable writes have created or changed this event.
+    ///
+    /// The first persistence is write one. Explicit substitutions and repeated
+    /// stable-id assertions increment the count, allowing the dreaming retention
+    /// policy to protect frequently changed knowledge as well as frequently read
+    /// knowledge (issue #686).
+    pub write_count: u64,
 }
 
 impl MemoryEvent {
@@ -108,11 +122,15 @@ impl MemoryStore {
     /// Build a store from an existing list. Useful for tests and for the
     /// `from_links_notation` factory below.
     #[must_use]
-    pub const fn from_events(events: Vec<MemoryEvent>) -> Self {
+    pub fn from_events(mut events: Vec<MemoryEvent>) -> Self {
+        for event in &mut events {
+            initialize_write_count(event);
+        }
         Self { events }
     }
 
-    pub fn append(&mut self, event: MemoryEvent) {
+    pub fn append(&mut self, mut event: MemoryEvent) {
+        initialize_write_count(&mut event);
         self.events.push(event);
     }
 
@@ -120,7 +138,10 @@ impl MemoryStore {
     /// events appended.
     pub fn import(&mut self, other: &[MemoryEvent]) -> usize {
         let initial = self.events.len();
-        self.events.extend_from_slice(other);
+        self.events.extend(other.iter().cloned().map(|mut event| {
+            initialize_write_count(&mut event);
+            event
+        }));
         self.events.len() - initial
     }
 
@@ -170,6 +191,20 @@ impl MemoryStore {
         &self.events
     }
 
+    /// Count one read access on each event at `indices` (issue #494: usage is
+    /// counted on access, not inferred from citations alone). Out-of-range
+    /// indices are ignored. Returns how many events were actually counted.
+    pub fn record_access(&mut self, indices: &[usize]) -> usize {
+        let mut counted = 0;
+        for &index in indices {
+            if let Some(event) = self.events.get_mut(index) {
+                event.access_count = event.access_count.saturating_add(1);
+                counted += 1;
+            }
+        }
+        counted
+    }
+
     /// Rewrite every textual field of every stored event, replacing each
     /// occurrence of `old` with `new`. This is the *write* half of the
     /// natural-language substitution primitive (issue #529): a recall reads the
@@ -188,6 +223,7 @@ impl MemoryStore {
         }
         let mut replacements = 0;
         for event in &mut self.events {
+            let before = replacements;
             for value in [
                 &mut event.content,
                 &mut event.inputs,
@@ -202,6 +238,10 @@ impl MemoryStore {
             }
             for entry in &mut event.evidence {
                 replacements += replace_counting(entry, old, new);
+            }
+            if replacements > before {
+                initialize_write_count(event);
+                event.write_count = event.write_count.saturating_add(1);
             }
         }
         replacements
@@ -247,16 +287,49 @@ impl MemoryStore {
     }
 
     /// Persist the full store back to a file on disk. Creates parent
-    /// directories as needed.
+    /// directories as needed. The write is atomic (temp file + rename) and
+    /// serialized against other writers via an advisory lock — see
+    /// [`write_locked_atomic`].
     pub fn save_to_file<P: AsRef<Path>>(&self, path: P) -> io::Result<()> {
-        let path = path.as_ref();
-        if let Some(parent) = path.parent() {
-            if !parent.as_os_str().is_empty() {
-                fs::create_dir_all(parent)?;
-            }
-        }
-        fs::write(path, self.export_links_notation())
+        write_locked_atomic(path.as_ref(), &self.export_links_notation())
     }
+}
+
+/// Write `contents` to `path` atomically while holding an exclusive advisory
+/// lock on `{path}.lock`.
+///
+/// The foreground server and the background dreaming thread share one memory
+/// log (issue #540 §6): the lock keeps their read-modify-write cycles from
+/// interleaving, and the temp-file + rename step guarantees a reader never
+/// observes a torn, half-written document even if the process dies mid-write.
+///
+/// # Errors
+/// Returns an [`io::Error`] when the lock file, temp file, or rename fails.
+pub fn write_locked_atomic(path: &Path, contents: &str) -> io::Result<()> {
+    use fs2::FileExt as _;
+    if let Some(parent) = path.parent() {
+        if !parent.as_os_str().is_empty() {
+            fs::create_dir_all(parent)?;
+        }
+    }
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("memory.lino");
+    let lock_path = path.with_file_name(format!("{file_name}.lock"));
+    let lock_file = fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .write(true)
+        .open(&lock_path)?;
+    lock_file.lock_exclusive()?;
+    let temp_path = path.with_file_name(format!("{file_name}.tmp.{}", std::process::id()));
+    let result = fs::write(&temp_path, contents).and_then(|()| fs::rename(&temp_path, path));
+    if result.is_err() {
+        let _ = fs::remove_file(&temp_path);
+    }
+    let _ = fs2::FileExt::unlock(&lock_file);
+    result
 }
 
 /// Replace every occurrence of `old` with `new` inside `value`, rewriting it in
@@ -268,6 +341,12 @@ fn replace_counting(value: &mut String, old: &str, new: &str) -> usize {
     let count = value.matches(old).count();
     *value = value.replace(old, new);
     count
+}
+
+const fn initialize_write_count(event: &mut MemoryEvent) {
+    if event.write_count == 0 {
+        event.write_count = 1;
+    }
 }
 
 /// Serialize a slice of events as a `demo_memory` Links Notation document.
@@ -315,6 +394,14 @@ pub(crate) fn format_event_into(event: &MemoryEvent, out: &mut String) {
         out.push_str(&escape_value(&joined));
         out.push_str("\"\n");
     }
+    if event.access_count > 0 {
+        out.push_str("    accessCount \"");
+        out.push_str(&event.access_count.to_string());
+        out.push_str("\"\n");
+    }
+    out.push_str("    writeCount \"");
+    out.push_str(&event.write_count.max(1).to_string());
+    out.push_str("\"\n");
 }
 
 /// Parse a `demo_memory` Links Notation document into events.
@@ -378,6 +465,8 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
                 "demoLabel" => current.demo_label = Some(value),
                 "conversationId" => current.conversation_id = Some(value),
                 "conversationTitle" => current.conversation_title = Some(value),
+                "accessCount" => current.access_count = value.parse().unwrap_or(0),
+                "writeCount" => current.write_count = value.parse().unwrap_or(1).max(1),
                 "evidence" => {
                     current.evidence = value
                         .split('|')
@@ -391,6 +480,9 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
     }
     if let Some(existing) = current.take() {
         events.push(existing);
+    }
+    for event in &mut events {
+        initialize_write_count(event);
     }
     events
 }

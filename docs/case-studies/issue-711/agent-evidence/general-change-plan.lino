@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_6eabe6477029a61b"
+  goal "Create a file named experiments/issue-711-agent-plan.txt containing reproduce stale fragment reuse; delete consumed fragments only after CHANGELOG succeeds; stage deletions; prove a second collection is empty; reconstruct every historical fragment exactly once from Git release trees."
+  target "experiments/issue-711-agent-plan.txt"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_42f729db09c0f903"
+  step 2
+    capability "Write"
+    action "write the requested content to experiments/issue-711-agent-plan.txt"
+    expected_evidence "workspace file experiments/issue-711-agent-plan.txt"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "reproduce stale fragment reuse; delete consumed fragments only after CHANGELOG succeeds; stage deletions; prove a second collection is empty; reconstruct every historical fragment exactly once from Git release trees"
+    command "cat experiments/issue-711-agent-plan.txt"
+  verification_command "cat experiments/issue-711-agent-plan.txt"

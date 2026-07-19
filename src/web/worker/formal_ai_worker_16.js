@@ -338,6 +338,12 @@ function tryHistorical(prompt, history) {
     return trySummarizeConversation(history);
   }
   if (!normalized) return null;
+  // Issue #676: set/recall the assistant's own name from dialog-local history so
+  // "Now your name is Ineffa" is acknowledged and later recalled, instead of
+  // falling through to the unknown opener. Mirrors try_assistant_name in the
+  // Rust conversation-memory handler and runs before the user-name recall below.
+  const assistantName = tryAssistantName(prompt, normalized, history);
+  if (assistantName) return assistantName;
   if (normalized === "what is my name" || normalized === "what s my name") {
     const hit = tryRecallName(history);
     if (hit) return hit;
@@ -730,6 +736,17 @@ function looksLikeHostname(value) {
   );
 }
 
+// Mirror probable_local_file_name in src/solver_handlers/web_search_intent.rs.
+// A schemeless attachment/path such as report.txt is a local object, not an
+// HTTPS host. Explicit http(s) URLs still take the authoritative branch below.
+function probableLocalFileName(candidate) {
+  const extension = String(candidate || "").split(".").pop().toLowerCase();
+  return [
+    "txt", "md", "json", "yaml", "yml", "toml", "rs", "py", "js", "ts",
+    "tsx", "jsx", "css", "html", "xml", "csv", "lino", "log", "sh",
+  ].includes(extension);
+}
+
 function normalizeUrlCandidate(candidate) {
   const text = String(candidate || "").trim();
   if (!text || /\s/.test(text) || text.includes("@")) return null;
@@ -739,7 +756,10 @@ function normalizeUrlCandidate(candidate) {
     url = text;
   } else {
     const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
-    if (lower.startsWith("www.") || looksLikeHostname(hostCandidate)) {
+    if (
+      !probableLocalFileName(hostCandidate) &&
+      (lower.startsWith("www.") || looksLikeHostname(hostCandidate))
+    ) {
       url = `https://${text}`;
     }
   }
@@ -1051,6 +1071,7 @@ function webSearchMarkers() {
     explicitCircumfixes: circumfixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
     actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
     strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+    strongImperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
     signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
     topicAfterMarkers: prefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
     topicBeforeMarkers: suffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
@@ -1058,6 +1079,14 @@ function webSearchMarkers() {
     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMarkers: bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+    sourceMediumMarkers: bareLiterals(ROLE_WEB_MEDIUM),
+    informationMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL).filter(
+      (marker) =>
+        !bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY).some(
+          (source) => source.trim() === marker.trim(),
+        ),
+    ),
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),

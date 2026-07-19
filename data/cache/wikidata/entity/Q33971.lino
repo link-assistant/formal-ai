@@ -1,0 +1,19 @@
+Q33971
+  aliases
+    en (leaves "tree leaf" "plant leaves")
+    hi ("पत्ते" "पत्तियों" "पत्तियाँ" "पत्तों" "पत्‍तियाँ")
+    ru ("листья" "листва" "листовая пластинка")
+    zh ("葉子" "叶尖" "叶柄" "叶子" "葉片" "纵脉" "羽状脉" "樹葉" "叶序" "叶基")
+  descriptions
+    en "main organ of photosynthesis and transpiration in higher plants, usually consisting of a flat green blade attached to the stem directly or by a stalk"
+    hi "पौधे के अंग"
+    ru "орган сосудистых растений"
+    zh "植物的营养器官"
+  id Q33971
+  labels
+    en leaf
+    hi "पत्ती"
+    ru "лист"
+    zh "葉"
+  type item
+success 1

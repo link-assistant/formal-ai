@@ -123,6 +123,18 @@ Gemini, and Vertex also accept `@link-assistant/formal-ai`,
 `link-assistant/formal-ai`, `formal-ai-latest`, and `latest` as
 case-insensitive aliases; response payloads return the canonical `formal-ai` id.
 
+Model capacity is disk-backed rather than hard-coded. The server measures free
+space on the filesystem containing `FORMAL_AI_MEMORY_PATH` (or
+`~/.formal-ai/memory.lino` on Unix/macOS and
+`%APPDATA%\formal-ai\memory.lino` on Windows), then divides both free bytes and
+on-disk memory bytes by `FORMAL_AI_AVG_UTF8_BYTES_PER_CHAR` (default `2`). OpenAI discovery,
+generated Codex catalogs, Gemini/Vertex metadata, and Anthropic responses expose
+the same `context` metadata: `context_window_tokens`, `context_used_tokens`,
+`context_used_fraction`, `disk_free_bytes`, `memory_used_bytes`, and
+`avg_utf8_bytes_per_char`. OpenAI model entries also expose these fields at the
+top level for clients that do not retain extension objects. This capacity
+advertisement does not introduce billing; cost remains zero.
+
 ### Reasoning Fields
 
 The solver records structured `thinking_steps` for every symbolic answer. The
@@ -228,6 +240,8 @@ The same loopback server can answer several agentic terminal clients:
 - `codex` uses `POST /api/openai/v1/responses` through the Responses wire API.
 - `opencode` and `agent` use `POST /api/openai/v1/chat/completions` through
   `@ai-sdk/openai-compatible`.
+- Cursor CLI uses the Streamable HTTP MCP endpoint at `POST /mcp` and the
+  `formal_ai_chat` tool because Cursor does not expose a custom model base URL.
 - `claude` uses the built-in Anthropic adapter at
   `POST /api/anthropic/v1/messages`.
 - Gemini-compatible clients use
@@ -249,11 +263,16 @@ variables plus Agent CLI inline config in seed data instead of hardcoded
 command text:
 
 ```bash
-formal-ai serve --host 127.0.0.1 --port 8080
 with-formal-ai codex "hi"
 with-formal-ai opencode run "hi"
+with-formal-ai opencode-desktop
 with-formal-ai agent -p "hi"
+with-formal-ai cursor -p "hi"
 with-formal-ai gemini -p "hi"
+with-formal-ai claude -p "hi"
+with-formal-ai qwen -p "hi"
+with-formal-ai grok -p "hi"
+with-formal-ai aider --message "hi"
 # Hi, how may I help you?
 ```
 
@@ -266,15 +285,25 @@ For one-shot Agent CLI runs, the wrapper passes the OpenCode-compatible provider
 JSON through `LINK_ASSISTANT_AGENT_CONFIG_CONTENT`, so it does not have to write
 the Agent config file before launching the command.
 
+For one-shot Cursor runs, the wrapper executes `cursor-agent` with an isolated
+home containing `.cursor/mcp.json`. The file registers the server's `/mcp`
+endpoint and is removed after Cursor exits. Interactive mode uses the same MCP
+configuration; headless mode adds Cursor's `-p` flag.
+
 For one-shot Codex runs, the wrapper starts from
 `codex exec --skip-git-repo-check --sandbox read-only` and injects the Responses
-provider overrides through `-c` before appending your remaining arguments.
+provider overrides through `-c` before appending your remaining arguments. A
+generated catalog in the temporary Codex home is selected with
+`model_catalog_json`, which supplies Codex's internal registry with the Formal
+AI model context window and capabilities.
 
-If the server is not already running, the wrapper can start it for the duration
-of the invocation:
+If the loopback port is idle, the wrapper starts `formal-ai serve --agent-mode`
+for the duration of the invocation and prints a notice because agent mode enables
+tool and shell execution. An existing listener is reused. Opt out when server
+lifecycle is managed separately:
 
 ```bash
-formal-ai with --start-server codex "hi"
+formal-ai with --no-start-server codex "hi"
 ```
 
 Permanent setup uses the same seed templates, creates a `*.formal-ai.bak`
@@ -284,16 +313,28 @@ settings:
 ```bash
 with-formal-ai -g codex
 with-formal-ai -g opencode
+with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
+with-formal-ai -g cursor
 with-formal-ai -g gemini
+with-formal-ai -g claude
+with-formal-ai -g qwen
+with-formal-ai -g grok
+with-formal-ai -g aider
 with-formal-ai -g --all
 with-formal-ai -g --undo codex
 ```
 
 The persistent files are `~/.codex/config.toml`,
+`~/.codex/formal-ai-model-catalog.json`,
 `~/.config/opencode/opencode.json`,
 `~/.config/link-assistant-agent/opencode.json`, and a managed Formal AI block
-in `~/.profile` for Gemini. Re-running `-g` is idempotent.
+in `~/.profile` for environment-configured tools, plus `~/.cursor/mcp.json`.
+Re-running `-g` is idempotent.
+
+Non-global runs never write these persistent targets. Agent CLI summarization is
+disabled by default with `--no-summarize-session`; pass `--summarize` (or
+`--keep-summarization`) to keep its normal behavior.
 
 ### 4a. `codex` (OpenAI Codex CLI) - Responses API
 
@@ -377,6 +418,44 @@ opencode run -m formalai/formal-ai "hi"
 See the upstream [OpenCode provider documentation](https://opencode.ai/docs/providers/)
 for custom provider fields and the [OpenCode configuration reference](https://opencode.ai/docs/config/)
 for the `provider` and `model` options.
+
+#### OpenCode Desktop
+
+`opencode-desktop` is a distinct wrapper target because the packaged Electron
+application must not receive OpenCode CLI's `run` subcommand or model flags:
+
+```bash
+formal-ai with opencode-desktop
+```
+
+For a one-shot launch the wrapper writes the same provider object shown above
+to an isolated JSON file, exports it through both `OPENCODE_CONFIG` and
+`OPENCODE_CONFIG_DIR`, and removes it when the app exits. The user's
+`~/.config/opencode/opencode.json` remains untouched. The desktop sidecar reads
+provider `formalai`, model `formalai/formal-ai`, and
+`http://127.0.0.1:8080/api/openai/v1` from that file.
+
+The resolver first honors `FORMAL_AI_OPENCODE_DESKTOP_BIN`, then an
+`opencode-desktop` executable on `PATH`, then the packaged path for the current
+platform:
+
+| Platform | Packaged executable |
+| --- | --- |
+| Linux | `/opt/OpenCode/ai.opencode.desktop` |
+| macOS | `/Applications/OpenCode.app/Contents/MacOS/OpenCode` |
+| Windows | `%LOCALAPPDATA%\Programs\OpenCode\OpenCode.exe` |
+
+Permanent setup deliberately shares OpenCode's native config with the CLI:
+
+```bash
+formal-ai with --global opencode-desktop
+formal-ai with --undo opencode-desktop
+```
+
+The first command merges the provider without removing unrelated settings and
+creates `~/.config/opencode/opencode.json.formal-ai.bak`; the second restores
+that backup exactly. Desktop also participates in `--global --all` and
+`--undo --all`.
 
 ### 4c. `agent` (link-assistant/agent) - OpenCode-compatible client
 

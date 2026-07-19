@@ -86,6 +86,11 @@ module.exports = defineConfig({
     '**/issue-554-site.spec.js',
     '**/issue-556.spec.js',
     '**/issue-557.spec.js',
+    '**/issue-676-thinking-narrative.spec.js',
+    '**/issue-687.spec.js',
+    '**/issue-747.spec.js',
+    '**/issue-759.spec.js',
+    '**/issue-776.spec.js',
     '**/issue-1963.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
@@ -120,7 +125,7 @@ module.exports = defineConfig({
     // The seed mirror under src/web/seed/ is generated from the canonical
     // data/seed/ tree on every server start so we never serve stale data.
     command:
-      `bun --cwd ../.. run build:web && ../../scripts/sync-seed.sh && npx serve ../../src/web --listen ${PORT} --no-clipboard`,
+      `bun run --cwd ../.. build:web && ../../scripts/sync-seed.sh && npx serve ../../src/web --listen ${PORT} --no-clipboard`,
     url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,

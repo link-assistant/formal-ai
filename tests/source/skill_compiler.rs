@@ -11,7 +11,7 @@ use std::fmt;
 
 use crate::engine::{normalize_prompt, stable_id, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
-use crate::links_format::format_lino_record;
+use crate::links_format::{format_lino_record, push_lino_node};
 use crate::seed::{self, Slot};
 
 mod structured;
@@ -754,25 +754,6 @@ fn push_doublet(links: &mut Vec<DoubletLink>, from: &str, to: &str) {
         from: from.to_owned(),
         to: to.to_owned(),
     });
-}
-
-fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    out.push_str(&" ".repeat(indent));
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\r', "\\r")
-        .replace('\n', "\\n")
 }
 
 #[path = "source_tests/skill_compiler/tests.rs"]

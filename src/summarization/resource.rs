@@ -32,7 +32,7 @@
 
 use std::fmt::Write as _;
 
-use crate::links_format::sanitize_lino_value;
+use crate::links_format::flatten_lino_value;
 
 use super::file::{formalize_repository_file, RepositoryFileFormalization};
 use super::{SummarizationConfig, SummarizationMode};
@@ -350,5 +350,5 @@ fn push_field(out: &mut String, indent: usize, name: &str, value: &str) {
     for _ in 0..indent {
         out.push_str("  ");
     }
-    let _ = writeln!(out, "{name} {}", sanitize_lino_value(value));
+    let _ = writeln!(out, "{name} {}", flatten_lino_value(value));
 }

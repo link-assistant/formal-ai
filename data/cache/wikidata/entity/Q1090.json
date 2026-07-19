@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q1090": {
+      "type": "item",
+      "id": "Q1090",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "silver"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "серебро"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चाँदी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "銀"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "chemical element with symbol Ag and atomic number 47"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "химический элемент (переходный металл) с порядковым номером 47"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "原子序數為47的化學元素"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "element 47"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "аргентум"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

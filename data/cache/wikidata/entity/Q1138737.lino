@@ -1,0 +1,17 @@
+Q1138737
+  aliases
+    en (lamps "light source")
+    hi ("दिया")
+    zh ("燈飾" "燈" "格栅灯" "灯具" "燈具")
+  descriptions
+    en "part of a light fixture that produces the light"
+    ru "искусственный источник света"
+    zh "照明用具"
+  id Q1138737
+  labels
+    en lamp
+    hi "चिराग़"
+    ru "лампа"
+    zh "灯"
+  type item
+success 1

@@ -1,0 +1,17 @@
+Q3710
+  aliases
+    en (ft feet "′")
+    ru ("английский фут" "русский фут")
+    zh ("英呎" "呎")
+  descriptions
+    en "unit of length"
+    ru "единица измерения длины в английской системе мер"
+    zh "長度單位"
+  id Q3710
+  labels
+    en foot
+    hi "फुट"
+    ru "фут"
+    zh "英尺"
+  type item
+success 1

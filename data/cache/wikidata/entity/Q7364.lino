@@ -1,0 +1,18 @@
+Q7364
+  aliases
+    en (eyes eyeball "👀" "👁👁" eyeballs)
+    ru ("око" "глазное яблоко")
+    zh ("眼球" "眼珠" "眼睛" "目")
+  descriptions
+    en "organ that detects light and converts it into electro-chemical impulses in neurons"
+    hi "नेत्र, ऐसा अंग जो प्रकाश का पता लगाता है।"
+    ru "сенсорный орган, обеспечивающий зрение"
+    zh "感知光線並將其轉換成神經訊號的器官"
+  id Q7364
+  labels
+    en eye
+    hi "आँख"
+    ru "глаз"
+    zh "眼"
+  type item
+success 1

@@ -1,0 +1,1778 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.626Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": true,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.629Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам? --disable-stdin --model formal-ai/formal-ai --no-summarize-session --read-only",
+  "workingDirectory": "/tmp/tmp.nsRpcdl6Lb",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.631Z",
+  "service": "default",
+  "directory": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.631Z",
+  "service": "project",
+  "directory": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.700Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам?",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session",
+    "--read-only"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.701Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.704Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.706Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.707Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.713Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.720Z",
+  "service": "config",
+  "path": "/tmp/tmp.nsRpcdl6Lb/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.768Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 2924925,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.769Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.849Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.887Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.888Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 184,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.890Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.890Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.891Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.931Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.931Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.936Z",
+  "service": "session",
+  "id": "ses_086903ec8ffepC3j348zuf9xm2",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.nsRpcdl6Lb",
+  "title": "New session - 2026-07-19T08:13:14.936Z",
+  "time": {
+    "created": 1784448794936,
+    "updated": 1784448794936
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.940Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.941Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.941Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 10,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.945Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.950Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_086903ec8ffepC3j348zuf9xm2/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.950Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_086903ec8ffepC3j348zuf9xm2/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.964Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 14,
+  "method": "POST",
+  "path": "/session/ses_086903ec8ffepC3j348zuf9xm2/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.977Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.986Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.991Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:14.995Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.006Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.007Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.008Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.010Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.010Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.011Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.011Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.013Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:15.014Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.032Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.096Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.115Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.156Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.157Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.158Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.158Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784448796309,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fc680001u0X9rBrbDpHgAr",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fc58c0018bnyrq5J2JV6Ss",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.313Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448796313,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fc695001PsJsMUGMDXYlAN",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fc58c0018bnyrq5J2JV6Ss",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:16.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448796315,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fc695001PsJsMUGMDXYlAN",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fc58c0018bnyrq5J2JV6Ss",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "time": {
+        "start": 1784448796313
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.046Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798046,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fc695001PsJsMUGMDXYlAN",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fc58c0018bnyrq5J2JV6Ss",
+    "type": "tool",
+    "callID": "call_8fae7e7af4742300",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам"
+      },
+      "output": "Title: ACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/\nPublished: 2025-03-18T09:57:45.000Z\nAuthor: N/A\nHighlights:\nACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\n...\nACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n# ACER 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.1mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : ( 19V 2.37A) 45W ( 1.1 mm ) Micro pin\n- Pin Size: 3.0mm*1.1mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 45W power adapter delivers the power you need with an Acer standard 1.1 mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | Lenovo Original |\n| Specifications | 19V 2.37A (1.1 mm ) Micro pin |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0mm*1.1mm |\n| Power Cord | Three Pin Indian Cord ( No Warranty ) |\n...\n## Fit Laptop Models ( use ” ctrl+F” to find your model)\n...\n| Spin 3 SP313-51N-3555 | Aspire 5 A515-54G-50F2 | Aspire 5 A515-54 |\n| --- | --- | --- |\n| Aspire 3 A315-54 | Aspire 3 A315-42 | Aspire 5 A515-54G |\n| Aspire 5 A515-54-57EN | Aspire 3 A315-54K | Aspire 5 A515-54-N78Y |\n| Aspire 3 A315-42G | Aspire 5 A515-44 | Aspire 5 A515-43 |\n| Aspire 5 A515-54G-53GP | Spin 3 SP314-54N | Aspire 5 A515-54G-74FC |\n| Aspire 5 A515-43-R19L | Aspire 3 A315-42G-R7EH | Aspire 3 A315-54-A54D |\n| Aspire 5 A515-54G-517L | Aspire 5 A515-44G | Aspire 5 A515-44-R93E |\n\n---\n\nTitle: 45W Laptop Charger for Aspire 1 3 5 N20C5 N23C3 N20C4 N19H2 A315-24P-R7VH A515-45-R74Z A515-46 A315-23 A315-24P A515-56 ADP-45FE F PA-1450-26 Small Pin 3.0 * 1.1mm AC Adapter Laptop Power - Newegg.com\nURL: https://www.newegg.com/p/16J-02UW-000D6\nPublished: N/A\nAuthor: N/A\nHighlights:\n45W Laptop Charger for Aspire 1 3 5 N20C5 N23C3 N20C4 N19H2 A315-24P-R7VH A515-45-R74Z A515-46 A315-23 A315-24P A515-56 ADP-45FE F PA-1450-26 Small Pin 3.0 * 1.1mm AC Adapter Laptop Power - Newegg.com\n...\n# 45W Laptop Charger for Aspire 1 3 5 N20C5 N23C3 N20C4 N19H2 A315-24P-R7VH A515-45-R74Z A515-46 A315-23 A315-24P A515-56 ADP-45FE F PA-1450-26 Small Pin 3.0 * 1.1mm AC Adapter Laptop Power\n...\n- About this item\n- Output: 19V 2.37A 45W; Input: 100V-240V 50/60Hz; Connector Size: Small pin 3.0*1.1mm\n...\n- Compatible with 45W Acer Aspire 1 3 5 N20C5 N23C3 N20C4 N19H2 A315-24P-R7VH A115-31 A115-32 A115-32-C96U A314-23P A314-23P-R3QA A314-35 A314-36P-35UU A315-35 A315-23 A315-24P A315-43 A315-35 A317; A515-44 A515-46 A515-54 A517-52 A515-55 A515-56 A515-44-R41B A515-45-R74Z A515-46-R3UB A515-55-56UK A515-56-32DK A515-56-36UT A515-57-53T2\n...\n- Compatible with 45W Acer Chromebook R11 C720 C731 C738T C740 CB3-111 CB3-131. Compatible with P/N: ADP-45FE F A13-045N2A PA-1450-26 AK.045AP.075\n...\n- Secure and Stable: All products go through strict quality control procedures to ensure safety, including short circuit, overvoltage, overcurrent, and internal overheating protection. Charging does not harm the device.\n...\n- How to choose the right charger: 1. Check your laptop specs to make sure it uses the 45W power supply, 19V 2.37A 45W. 2. Check the charging port of your laptop, ensure that the charging port of your laptop charger is 3.0*1.1mm.\n...\n- Dimensions: 7.95 x 4.76 x 1.73 inches.\n...\n## Learn more about the Detailed Specifications\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/\nPublished: 2023-12-24T10:24:20.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0x1.1MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A314, A315, Aspire 5 A514, A A315, Extensa 15 EX215, Travelmate P2, X514 Series (19V, 2.37A) 3.0×1.1MM Pin\n...\n00 out of\n...\n- Power: 45W | Voltage: 19V | Current: 2.37A\n- Pin Size: 3.0*1.1mm\n- Power cord included with charger\n- Highly Compatible for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptop Charger.\n...\n## How To Choose The Right Charger?\n...\n1. Make sure that the Current Adapter parameters marked as Output (voltage and current) match the Output parameters given on the Techie\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage input, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer 45W Laptop Charger! This charger is purpose-built for Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 1 SP, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- 45W Output: Swift and efficient charging for work or play.\n- Wide Compatibility: Seamlessly fits a range of Acer Aspire 3 A314, Aspire 3 A315, Aspire 5 A514, Aspire A A315, Extensa 15 EX215, Travelmate P2, Spin 3 SP, Swift 1 SF114 and Travelmate X514 Series laptops.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 3.0*1.1MM pin connector.\n...\nCompatible Adapter Part Number\n...\n- 0A001-00230000\n- 0A001-00230200\n- 0A200-00021000\n...\n- 90-N45W-01\n...\n- AD890M26\n- EXAX81XA\n...\n- KP.04501.003\n...\n- KP.04501.012\n...\n- KP.04503.001\n...\n- KP.0450H.001\n- KP.0450H.013\n...\n- W15-045N4A\n...\n- W15-045N4B\n- W15-045N4C\n...\n- KP.04501.004\n...\n- KP.04501.017\n...\n- KP.0450H.007\n...\nKP.04503.011\n...\nADP-45\n...\n- A045R016\n...\n- KP.\n...\n3.0\n...\n- KP04503011\n...\n- KP.0\n...\n01.001\n...\n045\n...\n045\n...\n3-045\n...\n- ADP-45\n...\n- NC.20411.01Y\n...\n- AK.\n...\n.060\n...\nAK.045\n...\n.070\n...\n- ADP-45ZD BA\n...\n- KP.0450H.017\n...\n- KP.0450H.003\n...\n- KP.0450H.015\n...\n4501017\n...\n- KP.0450H.019\n...\n- KP.04501.006\n...\n- KP.04501.018\n...\n- KP.04501.025\n- KP.04501.013\n...\n- NP.ADT0A.077\n...\n- KP.04501.027\n...\n- PA-1450-26AL\n...\n- 5.71178E+12\n...\n- 5.71251E+12\n...\nCompatible Laptop Models\n...\n-45\n\n---\n\nTitle: Acer 45W Adapter for Aspire 3 A315 Series | My Laptop Spares\nURL: https://mylaptopspares.com/products/acer-original-19v-2-37a-45w-adapter-for-aspire-3-a315-41-a315-42-a315-51-a315-53-a315-54-a315-54k-a315-56\nPublished: N/A\nAuthor: N/A\nHighlights:\nAcer 45W Adapter for Aspire 3 A315 Series | My Laptop Spares\n...\n# Acer Original 19V 2.37A 45W Adapter for Aspire 3 A315-41, A315-42, A315-51, A315-53, A315-54, A315-54K, A315-56\n...\n- BIS certified product ensures standardization and quality of product\n- 15 days easy replacement\n- Get confirmation on chat support\n- A guided assurance on compatibility\n- 1-year warranty provided directly by Acer's authorized service center.\n- Output: 19v, 2.37amp 50/60hz,5.5*1.7 mm pin\n- Input:100-240v, 1.5amp 50-60hz, 3 pin\n- 45-watt charger\n...\nPlease match the PIN size before ordering as there are 3 ACER Adapters having same wattage but different PIN sizes. If in doubt, send the picture of your existing adapter throughWhatsApp on 8595645005 / 8826483963\n...\n## Product Specification\n...\n- Wattage: 45\n- Connector: 5.5*1.7mm\n- Height: 5 cm\n- Width: 13 cm\n- Length: 19 cm\n- Laptop Make: Acer\n- Brand: Acer\n- Weight: 0.25 kg\n...\n- This adapter includes nationwide warranty for peace of mind.\n- Check your existing adapter or laptop model number if you’re unsure,contact our support team for assistance.\n- Ensure the adapter is compatible with your exact laptop model before purchase.\n...\nCompatibility Model :\n...\n- Travel Mate TMB116-M\n- Travel Mate P2 TMP449-M\n- Travel Mate P2 TMP449-G2-M\n- Travel Mate P2 TMP446-M\n- Travel Mate P2 TMP259-M\n- Travel Mate P2 TMP259-G2-M\n- Travel Mate P2 TMP258-M\n- Travel Mate P2 TMP257-MG\n- Travel Mate P2 TMP257-M\n- Travel Mate P2 TMP249-M\n- Travel Mate P2 TMP249-G3-M\n- Travel Mate P2 TMP249-G2-M\n- Travel Mate P2 TMP248-M\n- Travel Mate P2 TMP246-M\n- Travel Mate P2 TMP2410-M\n...\n- Gateway NE571\n- Gateway NE411\n...\n- Extensa EX2540-37\n- Extensa 15 EX215-52\n- Extensa 15 EX215-51\n...\n- Aspire V3-575\n...\n- Aspire R7-371T\n...\n- Aspire R3-131T\n...\n- Aspire F5-573\n...\n- Aspire F5-571\n...\nES1-\n...\n53K\n...\n515\n...\n52K\n...\n15-51\n...\n15-43\n...\n14-51K\n- Aspire 3 A315-56\n- Aspire 3 A315-54K\n- Aspire 3 A315-54\n- Aspire 3 A315-53\n- Aspire 3 A315-51\n- Aspire 3 A315-42\n- Aspire 3 A315-41\n- Aspire 3 A315-33\n- Aspire 3 A315-32\n- Aspire 3 A315-31\n- Aspire 3 A315-21\n- Aspire 3 A314-41\n- Aspire 3 A314-32\n- Aspire 3 A314-31\n- Aspire 3 A311-31\n- Aspire 1 A114-32\n- Aspire 1 A111-31\n...\nThis Frequently Asked Questions (FAQ) section provides detailed information about Acer laptop adapters, covering topics such as warranty, policies, and replacement guidelines to help you optimize performance and safety. For any additional questions or personalized assistance, please feel free to contact Dell’s customer support team through our website or support hotline.\n...\n-Yes, it comes with a one-year replacement warranty from Acer.\n...\n### What if my ordered product is not compatible?\n...\nIf you have any doubt with respect to compatibility, we suggest you to check the compatibility with us before ordering. Our team provides guided assurance on compatibility.\n...\nBIS Certified Product\n...\n## Customer Reviews\n...\nPoor quality and high prices. Never recommend this vendor to purchase\n\n---\n\nTitle: ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\nURL: https://superpc.in/product/acer-45w-19v-2-37a-genuine-original-laptop-adapter-charger-3-0-mm/\nPublished: 2024-05-21T09:52:13.000Z\nAuthor: N/A\nHighlights:\nACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm) - Super Pc\n...\nHome» Shop» ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n# ACER 45W 19V 2.37A Genuine Original Laptop Adapter Charger (3.0 mm)\n...\n- Acer Smart AC Power Adapter\n- 100% Genuine Original Acer Product\n- Specifications : (19V 2.37A) 45W (3.0 mm)\n- Pin Size: 3.0 mm (Check Photographs)\n- One Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n- 15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- Supplied Model no may Vary. Specifications will be the Same.\n...\nSKU: ACER45A40w17MM-1-2 Category: Laptop Adapter\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like ACER, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 40W power adapter delivers the power you need with an Toshiba standard 3.0mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | ACER Original |\n| Specifications | 19V 2.37A (3.0mm) |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 3.0 mm |\n| Power Cord/Connector | Three Pin Indian Cord ( No Warranty ) |\n...\n## Compatible Part Numbers\n...\n| R 14 R5471T | R5471T51UN | R5471T52EE |\n| --- | --- | --- |\n| R5471T71W2 | R5471T50UD |\n...\n| Weight | 0.5 kg |\n| --- | --- |\n| Dimensions | 30 × 15 × 5 cm |\n| Brand | ACER |\n| Adapter Type | Original |\n| AC Power Adapter | Yes |\n| Condition | NEW |\n| Color | Black |\n| Laptops Batteries | Genuine original Adapters, Laptop Chargers |\n\n---\n\nTitle: Acer 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.7mm) UP/N : A045R016L – Laptop Gallery\nURL: https://laptopgallery.co.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-7mm-up-n-a045r016l/\nPublished: N/A\nAuthor: N/A\nHighlights:\nAcer 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.7mm) UP/N : A045R016L – Laptop Gallery\n...\n# Acer 45w Original Laptop Charger – 19V 2.37A Genuine AC Power Adapter (1.7mm) UP/N : A045R016L\n...\n- Supplied Model no may Vary. Specifications will be the Same.\n- Complimentary: Three Pin Power Cord (No Warranty)\n- One Year Carry In Warranty\n- Pin Size: 5.5mm*1.7mm (Check Photographs)\n- Specifications : ( 19V 2.37A) 45W ( 1.7 mm )\n- 100% Genuine Original Acer Product\n- Acer Smart AC Power Adapter\n...\nSKU: ACER45WAP11D3F0001-1-1 Category: Original Laptop Adapter\n...\n| Reliable power. Day in. Day out. | Getting a trusted AC adapter shouldn’t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price. |\n| --- | --- |\n| Standard power | This 45W power adapter delivers the power you need with an Acer standard 1.7 mm connector. |\n| Protected from the unexpected | The built-in surge-protector helps keep your laptop safe from sudden power changes. |\n| Forget broken cables | A quality cable specifically designed to alleviate stress from bending. |\n| Stress-free connector | The connector reduces cord stress and allows easy access to your other ports. |\n| Easy organization | Keep your cable neat and organized with the attached hook and loop fastener. |\n| Peace-of-mind coverage | Rest easy with standard one-year limited warranty. |\n...\n| Color | Black |\n| --- | --- |\n| Condition | New |\n| Brand | Acer Original |\n| Specifications | 19V 2.37A (1.7 mm ) |\n| Warranty | One Year Carry In Warranty |\n| Pin Size | 5.5mm*1.7mm |\n| Power Cord | Three Pin Indian Cord ( No Warranty ) |\n...\n## Compatible Part Numbers\n...\n| 3ICP5/67/90 | AP11D3F | AP11D4F |\n| --- | --- | --- |\n| 3ICP5/65/88 | BT00303026 batteries | BT.00303.026 |\n| KB1097 | BT.00304.010 | BT00304010 |\n...\n### Fit Laptop Models ( use ” ctrl+F” to find your model)\n...\n| Aspire S3-951 | MS2346 | Aspire S3-331 |\n| --- | --- | --- |\n| Aspire S3-371 | Aspire S3 Ultrabook 13.3 | Aspire S3-391-6407 |\n| Aspire S3 Series | Aspire S3-391-73514G52add | ASPIRE S3-391-33214G52ADD |\n| Aspire S3-951-6675 | ASPIRE S3-951-2634G24ISS | Aspire S3-951-2634G25nss |\n| ASPIRE S3-391-73514G12ADD | ASPIRE S3-391-53314G12ADD | ASPIRE S3-951-2634G52ISS |\n| ASPIRE S3-951-2464G25NSS | Aspire S3-391-9695 | Aspire S3-391-9813 |\n| ASPIRE S3 13.3 | Aspire S3-391-53314G25ADD | Aspire S3-391-9499 |\n| Aspire S3-391-9415 | Aspire S3-391-6466 | Aspire S3-391-6470 |\n| Aspire S3-391-6811 | Aspire S3-951-2464G52nss | Aspire S3-951-6826 |\n...\n| Aspire S3-391-9445 | Aspire S3-951-6646 | Aspire S3-951-F34C |\n| Aspire S3-951-6464 | Aspire C720 | Aspire S3-951-6828 |\n| Aspire S3-951-2464G34iss | Aspire S3-951-2464G24iss | Aspire S3-391-323a4G52add |\n...\n| ASPIRE S3-391-6046 | ASPIRE S3-391-33214G12ADD | ASPIRE S3-391-53334G52ADD |\n| Aspire S3-951-6432 | ASPIRE S3-391-6862 | Aspire S3-391-6423 |\n| Aspire S3-391-6448 | Aspire S3-951-2464G34IS | ASPIRE S3-391-6428 |\n...\n| Aspire S3-391-32364G52A | Aspire S3-391-6676 | Aspire S3-391-2634G25ISS |\n...\n| Aspire S3-391 Series | ASPIRE S3-391-6647 | ASPIRE S3-951-2364G34ISS |\n...\n| Aspire S3-391-33224G52ADD | Aspire S3-391-6899 | Aspire S3-391-53314G52add |\n...\n| ASPIRE S3-391-6677 | ASPIRE S3-391-73514G25ADD | ASPIRE S3-391-323A4G12ADD |\n...\n| ASPIRE S3-391-6859 | Aspire S3-391-9606 | Aspire S3-391-323A4G34ADD |\n...\n| Aspire S3-951-F34C 0C52862 | ASPIRE S3-951-6688 | ASPIRE S3-391-6666 |\n...\n| ASPIRE S3-371-33214G50ADD | ASPIRE S3-391-6874 | ASPIRE S3-391-6844 |\n...\n| ASPIRE S3-951-6672 | ASPIRE S3-391-F54D | ASPIRE S3-391-6845 |\n...\n| ASPIRE S3-391-6411 | Aspire S3-391-6497 | ASPIRE S3-951-6450 |\n...\n| ASPIRE S3-391-6835 | ASPIRE S3-951-6665 | ASPIRE S3-951-6601 |\n...\n| ASPIRE S3-391-6616 | Aspire S3-391-H34D | Aspire S3-951-2634G52NSS |\n...\n| ASPIRE S3-391-6632 | ASPIRE S3-391-52464G52 | ASPIRE S3-951-6698 |\n...\n| ASPIRE S3-951-6697 | ASPIRE S3-391-6639 | ASPIRE S3-951-6629 |\n...\n| Aspire S3-951-52464G34NSS | ASPIRE S3-391-6405 | Aspire S3-391-73534G52ADD |\n...\n| ASPIRE S3-391-6408 | ASPIRE S3-391-6445 | ASPIRE S3-391-6692 |\n...\n| ASPIRE S3-391-3484 | ASPIRE S3-951-6893 | ASPIRE S3-391-6400 |\n...\n| ASPIRE S3-951-6673 | ASPIRE S3-951-6835 | ASPIRE S3-951-6845 |\n...\n| ASPIRE S3-951-6636 | Aspire S3-391-53334G12ADD | ASPIRE S3-331-987B4G50ADD |\n...\n| ASPIRE S3-951-6612 | Aspire S3-391-6686 | ASPIRE S3-951-6871 |\n...\n| ASPIRE S3-371-53334G50ADD | ASPIRE S3-391-6465 | ASPIRE S3-391-6802 |\n...\n| ASPIRE S3-391-6441 | ASPIRE S3-371-6663 | ASPIRE S3-391-6460 |\n...\n| ASPIRE S3-391-6604 | ASPIRE S3-391-6496 | ASPIRE S3-391-6644 |\n...\n| Aspire S3-391-53314G34ADD | ASPIRE S3-391-6624 | ASPIRE S3-391-6613 |\n...\n| ASPIRE S3-391-6664 | ASPIRE S3-951-6405 | ASPIRE S3-391-6653 |\n...\n| ASPIRE S3-391-6601 | ASPIRE S3-391-9497 | ASPIRE S3-391-6825 |\n...\n| ASPIRE S3-951-6855 | ASPIRE S3-391-9430 | ASPIRE S3-391-6681 |\n...\n| ASPIRE S3-391-6673 | Aspire S3-391-73534G25ADD | ASPIRE S3-951-6837 |\n...\n| ASPIRE S3-391-9650 | Aspire S3-951-6673-ES | ASPIRE S3-391-9487 |\n...\n| Aspire S3-951-6665-MX | ASPIRE S3-391-6847 | ASPIRE S3-391-6808 |\n...\n| ASPIRE S3-951-6836 | ASPIRE S3-951-6899 | Aspire S3-951-6672-ES |\n...\n| ASPIRE S3-951-6690 | ASPIRE S3-951-6627 | ASPIRE S3-951-6633 |\n...\n| Aspire S3-951-32364G34NSS | Aspire S3-951-32364G52NSS | ASPIRE S3-951-6637 |\n...\n| ASPIRE S3-951-6459 | Aspire S3-391-73534G12ADD | Aspire S3-951-6828S3 |\n...\n| ASPIRE S3-331-10174G32ADD | ASPIRE S3-371-323C4G50ADD | ASPIRE S3-951-6616 |\n| ASPIRE S3-391-53314G52ADD ULTRABOOK | ASPIRE S3-951-6610 | Aspire 391-53314G52add |\n| ASPIRE S3-951-52464G3 | Aspire S3-951-72634G52NSS |\n...\n4.0 mm X 1.7 mm\n...\n| Weight | 0.5 kg |\n| --- | --- |\n| Dimensions | 15 × 15 × 10 cm |\n| Brand |\n| Condition |\n| Adapter Pin Size |\n...\nAcer 45\n...\nOriginal Laptop Charger – 19\n...\n### Acer\n...\n5w Original Laptop\n...\n– 1\n...\n11D\n\n---\n\nTitle: Techie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\nURL: https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-5-5mm-x-1-7mm-compatible-acer-laptop-charger/\nPublished: 2025-11-01T06:51:01.000Z\nAuthor: N/A\nHighlights:\nTechie 45W Laptop Charger For Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin - Techie Store\n...\n# Techie 45W Laptop Charger for Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Travelmate P259 Series (19V, 2.37A) 5.5*1.7MM Pin\n...\n0 out of\n...\n- Highly Compatible for Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptop Charger.\n- Power cord included with charger\n- Pin Size: 5.5*1.7mm\n- Power: 45W | Voltage: 19V | Current: 2.37A\n...\n## How To Choose The Right Charger?\n...\n. Make sure that the Current Adapter parameters marked as Output (voltage and current) match the Output parameters given on the Techie Adapter.\n...\nand size of the\n...\nEngineered to withstand the test of time, every Techie charger is built using high-quality components for long-term performance. A built-in mains filter ensures stable voltage input, while an enhanced radiator efficiently dissipates heat — keeping the charger cool and consistent, even with heavy usage.\n...\nElevate your laptop charging experience with the Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series Laptop Charger! This charger is purpose-built for Acer 45W Series laptops, delivering high-performance power that keeps your device ready to conquer your day.\n...\n### Key Features:\n...\n- User-Friendly Design: Say goodbye to tangled cords and adapters with an easy-to-use 5.5*1.7MM pin connector.\n- Steady Power: 19V output and 2.37A current rating for dependable power.\n- Wide Compatibility: Seamlessly fits a range of Techie Compatible Acer Aspire 3 A315, A317, Aspire V3, Extensa EX215, Aspire One, Aspire ES1 and Travelmate P259 Series laptops.\n- 45W Output: Swift and efficient charging for work or play.\n...\nCompatible Adapter Part\n...\nCompatible Laptop Models\n\n---\n\nTitle: 19V 2.37A 45W Acer 3.0mm 1.1mm AC Adapter Charger - Buy A Battery Shop\nURL: https://www.buy-a-charger.co.uk/pcbattery/product/19v-2-37a-45w-acer-3-0mm-1-1mm-ac-adapter-charger/\nPublished: 2025-09-20T05:03:49.000Z\nAuthor: N/A\nHighlights:\n19V 2.37A 45W Acer 3.0mm 1.1mm AC Adapter Charger - Buy A Battery Shop\n...\n# 19V 2.37A 45W Acer 3.0mm 1.1mm AC Adapter Charger\n...\n✅ Comprehensive protection: over-voltage, over-current, short circuit, over-temperature, over-power & surge safety.\n...\nSKU: Acer19V2.37A3011 Category: Charger for Acer Tag: Acer 3.0mm 1.1mm AC Adapter Brand: Acer\n...\n- Item Condition: Brand New\n- Input: 100 ~ 240V 50 ~ 60Hz\n- Color: Black\n- Voltage (Volts):19 V\n- Current (Amps):2.37 A\n- Output power (Watt):45 W\n- Connector Size:3.0 mm / 1.1 mm\n- Package includes:1 x Acer Charger + 1 x Power Cord(Fit Your Country)\n- Warranty: 12 Months / 30-Day Return\n...\nCompatible Part Numbers (not all): Acer A045R016L,Acer A045R097A,Acer A13-045N2A,Acer A18-045N2A,Acer ADP-45BW Z,Acer ADP45-FE F,Acer ADP-45FE FBS,Acer ADP-45HE B,Acer ADP-45ZD BA,Acer KP.04501.001,Acer KP.04501.003,Acer KP.04501.004,Acer KP.04501.006,Acer KP.04501.012,Acer KP.04501.013,Acer KP.04501.017,Acer KP.04501.018,Acer KP.04501.022,Acer KP.04501.025,Acer KP.04501.027,Acer KP.04501.029,Acer KP.04503.001,Acer KP.04503.004,Acer KP.04503.011,Acer KP.0450H.001,Acer KP.0450H.003,Acer KP.0450H.007,Acer KP.0450H.013,Acer KP.0450H.015,Acer KP.0450H.017,Acer KP.0450H.019,Acer KP04501006,Acer KP04501017,Acer KP04501018,Acer KP04501025,Acer KP04501029,Acer KP04503011,Acer KP0450H001,Acer KP0450H007,Acer KP0450H017,Acer ND4512,Acer NP.ADT0A.077,Acer NP.ADT0A.084,Acer PA-1450-26,Acer W15-045N4B,Acer ADP-45FE F…\n...\nCompatible Model Series (partial list): Acer Aspire S40,Acer Aspire Z3,Acer Aspire 1 A114,Acer Aspire 1 A115,Acer Aspire 3 A314,Acer Aspire 3 A315,Acer Aspire 3 A317,Acer Aspire 3 Spin A3SP14,Acer Aspire 5 A514,Acer Aspire 5 A515,Acer Aspire 5 A517,Acer Aspire One Cloudbook 11 AO1,Acer Aspire R13 R7,Acer Aspire R14 R5,Acer Aspire R15 R5,Acer Aspire S13 S5,Acer Aspire S7 S7,Acer Aspire TC,Acer Aspire V3,Acer Aspire Vero 15 AV15,Acer Asprie 1 A115,Acer Asprie 5 A515,Acer Chromebook 11 C730E,Acer Chromebook 11 C735,Acer Chromebook 11 CB3,Acer Chromebook 11 N7 C731,Acer Chromebook 11 N7 C731T,Acer Chromebook 14 CB3,Acer Chromebook 15 CB3,Acer Chromebook 311 CB311,Acer Chromebook 315 CB315,Acer Chromebook R 11 C738T,Acer Chromebook R11 CB5,Acer Chromebook Spin 13 CP713,Acer Enduro N3 EN314,Acer Enduro Urban N3 EUN314,Acer Enduro Urban N3 EUN314A,Acer Enduro Urban N3 EUN314LA,Acer Extensa EX215,Acer Extensa 15 EX215,Acer Spin SP513,Acer Spin 1 SP111,Acer Spin 1 SP113,Acer Spin 1 SP114,Acer Spin 3 SP314,Acer Spin 3 SP315,Acer Spin 5 SP513,Acer Spin 5 SP514,Acer Spin 5 Pro SP513,Acer Swift S40,Acer Swift 1 11,Acer Swift 1 SF113,Acer Swift 1 SF114,Acer Swift 3 SF313,Acer Swift 3 SF314,Acer Swift 3 SF315,Acer Swift 5 SF514,Acer Swift 5 SF515,Acer Swift 5 Pro SF514,Acer Switch 11 SW5,Acer Switch 11 V SW5,Acer Switch 11 V Pro SW5,Acer Switch 12 SW5,Acer Switch 12 S SW7,Acer Switch 3 SW312,Acer Switch 5 SW512,Acer Switch Alpha 12 SA5,Acer Switch Pro 11 SW5,Acer TravelMate B1 B114,Acer TravelMate B1 B118,Acer TravelMate B1 TMB114,Acer TravelMate B1 TMB117,Acer TravelMate B1 TMB118,Acer TravelMate B3 TMB311,Acer TravelMate B5 TMB514,Acer TravelMate P2 P214,Acer TravelMate P2 P215,Acer TravelMate P2 P236,Acer TravelMate P2 P238,Acer TravelMate P2 TMP214,Acer TravelMate P2 TMP215,Acer TravelMate P6 P614,Acer TravelMate Spin B1 B118,Acer TravelMate Spin B1 TMB118,Acer TravelMate Spin B3 TMB311,Acer TravelMate Spin B3 TMB311R,Acer TravelMate Spin B3 TMB311RA,Acer TravelMate Spin B3 TMB311RN,Acer TravelMate Spin B3 TMB311RNA,Acer TravelMate X3 TMX314,Acer TravelMate X3 TMX349,Acer TravelMate X4 TMX40,Acer TravelMate X5 TMX514,Wortmann Terra Mobile 1417,Acer Aspire 3 (A314-37M),Acer Aspire 3 (B315-35),Acer Aspire Z3 (AZ3-700),Acer Chromebook R11 (C738T),Acer TravelMate P2 (TMP214-42)Series…\n...\n🔑 Before Purchase – Check Compatibility\n...\n- ✔ Voltage (V) must match your original adapter\n- ✔ Current (A) / Watt (W) should be the same or higher\n- ✔ Connector size & tip must be identical\n- ✔ Input 100–240V – confirm plug type (UK/EU/US/AU)\n- ✔ Match with your laptop model or part number\n...\n23.00",
+      "title": "Web search: Подбери совместимое зарядное устройство для Acer Aspire 3 A325-45 в Amazon India и проверь характеристики по независимым веб-источникам",
+      "metadata": {},
+      "time": {
+        "start": 1784448796313,
+        "end": 1784448798040
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T08:13:18.054Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10403,
+    "output": 156,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10403,
+  "sseCompletionTokens": 156,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.063Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784448798064,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fcd66001VYEJC2fPRGnyvN",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fc58c0018bnyrq5J2JV6Ss",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10403,
+      "output": 156,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10559,
+      "headroom": 28297,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.069Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.074Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.074Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.077Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.080Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.080Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.080Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.098Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.098Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10559,
+  "providerTokens": 10559,
+  "estimatedInputTokens": 9138,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10403,
+    "cacheRead": 0,
+    "output": 156
+  },
+  "overflow": false,
+  "headroom": 41249,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.099Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.125Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.130Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.243Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784448798243,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce1c001EeAfeEbdLUeDPn",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.244Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798244,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce23001iDbUWR1Exk3O0K",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_07e31b2e55b94261",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.245Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798245,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce23001iDbUWR1Exk3O0K",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_07e31b2e55b94261",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/"
+      },
+      "time": {
+        "start": 1784448798245
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.249Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798249,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce29001zgXeMyI08nk7cv",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_229984c54ba734ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.250Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798250,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce29001zgXeMyI08nk7cv",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_229984c54ba734ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://www.newegg.com/p/16J-02UW-000D6"
+      },
+      "time": {
+        "start": 1784448798250
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.252Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798252,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce2c001BVfrpUC2Ng5346",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_729b6d69cf4b10ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.253Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798253,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce2c001BVfrpUC2Ng5346",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_729b6d69cf4b10ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/"
+      },
+      "time": {
+        "start": 1784448798252
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.450Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798450,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce23001iDbUWR1Exk3O0K",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_07e31b2e55b94261",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/"
+      },
+      "output": "ACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) - Super Pc\n\n\n\n\n\n\n\n\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\t\n\n\n\n\n\t\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\n\n\n\n\n\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\tSkip to navigation\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\tSkip to main content\t\t\t\n\t\t\n\t\t\t\n\t\n\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\t\n\t\t\n\t\t\t\n\t\n [email&#160;protected]\n\n\t\t\t\t \t\t\t\n\n +91-9824415090\n\n\n\t\n\n\t\n\n\t\n[email&#160;protected]\n\n\t\t\n\t\n\n\n\n\t\n\t\t\n\t\t\t\n\t\n\t\n\t\t\t\n\t\t\t\t\t\t \t\t\t\t\t\n\t\t\t\n\t\n\n\n\n\n\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\n\t\n\t\t\n\t\t\n\n\t\t\n\n\t\t\n\t\t\n\t\t\t\n\t\t\t\tSearch\t\t\t\n\t\t\t\t\t\n\t\n\n\t\n\n\n\n\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tSign in\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tCreate an Account\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tUsername or email address&nbsp;*Required\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tPassword&nbsp;*Required\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tLog in\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\tLost your password?\n\t\t\t\t\t\n\t\t\t\t\t\t Remember me\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\n\n\n\n\t\t\t\t \t\t\t\t\t\t \t\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t0 items\n\t\t\n\t\t\t\t\t\t/\n\t\t\t\t\t\n\t\t\t\t\t\t\t&#8377;0.00\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\n\n\n\t\n\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n\n\n\n\t\n\t\n\t\t\n\t\t\t\n\t\n\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\n\t\n\n\t\t\n\t\n\n\n\n\t\n\t\t\n\t\t\t\n\t\n\tASUS\nDELL\nMSI\nSAMSUNG\nSONY\n\n\n\n\t\n\n\t\t\t\t \t\t\tTrack order\n\n\t\n\t\t\n\t\n\n\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\n\t\t\t\t\t \t\t\t\n\t\t\n\t\t\t\t\n\n\t\n\t\n\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\n\t\n\t\n\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\tHome » Shop » ACER 45w Original Laptop Charger &#8211; 19V 2.37A Genuine AC Power Adapter (1.1mm)\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\n\n\t\n\n\t\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\n\t\n\t\t\n\n\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t\n\t\t\t\t-43%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\n\t\t\t\t\t\t \t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tClick to enlarge\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\n\t\t\n\n\t\t\t\n\n\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\nQuery On Whatsapp\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\n\t\n\tACER 45w Original Laptop Charger &#8211; 19V 2.37A Genuine AC Power Adapter (1.1mm)\n\t\n&#8377;2,999.00 Original price was: &#8377;2,999.00.&#8377;1,699.00Current price is: &#8377;1,699.00. ( FREE DELIVERY )\n\t\n\t\t\n\n\t\t Check Pincode \n\t\n\t\n\t\n\t\nAcer Smart AC Power Adapter\n100% Genuine Original Acer Product\nSpecifications : ( 19V 2.37A) 45W ( 1.1 mm ) Micro pin\nPin Size: 3.0mm*1.1mm (Check Photographs)\nOne Year Carry In Warranty. You need to send it back to us for replacement to our support center or direct company warranty whichever is applicable.\n15 Days Money Back Guarantee cover : Valid for any of the following condition like : faulty product, product compatibility issue or any other technical issue. Customer needs to send it back to us. We will check and provide solution . if not possible then 100% money will be refunded.\nComplimentary: Three Pin Power Cord (No Warranty)\nSupplied Model no may Vary. Specifications will be the Same.\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\t\n\t\t\n\t\t\n\n\t\n\t\t\t\n\t\n\tACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) quantity\n\t\n\n\t\t\t\n\t\n\t\n\n\t\tAdd to cart\n\n\t\t\t\t\t\n\t\t\t\tBuy now\t\t\t\n\t\t\n\t\n\n\t\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tAdd to wishlist\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\n\t\t\t464\n\t\t\tPeople watching this product now!\n\t\t\n\t\t\n\n\t\n\t\t\t\n\t\t\n\t\t\t\n\t\t\t\tSKU:\t\t\t\n\t\t\t\n\t\t\t\tACER45AC00001\t\t\t\n\t\t\n\t\n\t\t\tCategory: Laptop Adapter\t\n\t\t\t\t\n\t\n\t\n\t\t\t\n\t\t\t\t\t\t\t \t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tShare:\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\n\n\t\t\n\t\n\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tDescription\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tAdditional information\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\tQ&amp;A\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tDescription\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\nDescription\n\n\n\n\nReliable power. Day in. Day out.\nGetting a trusted AC adapter shouldn&#8217;t be a shot in the dark. With a reliable name like Acer, this standard power adapter delivers a safe, powerful charge every time, and at an affordable price.\n\n\nStandard power\nThis 45W power adapter delivers the power you need with an Acer standard 1.1 mm connector.\n\n\nProtected from the unexpected\nThe built-in surge-protector helps keep your laptop safe from sudden power changes.\n\n\nForget broken cables\nA quality cable specifically designed to alleviate stress from bending.\n\n\nStress-free connector\nThe connector reduces cord stress and allows easy access to your other ports.\n\n\nEasy organization\nKeep your cable neat and organized with the attached hook and loop fastener.\n\n\nPeace-of-mind coverage\nRest easy with  standard one-year limited warranty.\n\n\n\nProduct Detail\n\n\n\nColor\nBlack\n\n\nCondition\nNew\n\n\nBrand\nLenovo Original\n\n\nSpecifications\n19V 2.37A (1.1 mm ) Micro pin\n\n\nWarranty\nOne Year Carry In Warranty\n\n\nPin Size\n3.0mm*1.1mm\n\n\nPower Cord\nThree Pin Indian Cord ( No Warranty )\n\n\n\nCompatible Part Numbers\n\n\n\nAP18C4K\n KT.00304.012\n\n\n\nFit Laptop Models ( use &#8221; ctrl+F&#8221; to find your model)\n\n\n\nSpin 3 SP313-51N-3555\n Aspire 5 A515-54G-50F2\n Aspire 5 A515-54\n\n\n Aspire 3 A315-54\n Aspire 3 A315-42\n Aspire 5 A515-54G\n\n\n Aspire 5 A515-54-57EN\n Aspire 3 A315-54K\n Aspire 5 A515-54-N78Y\n\n\n  Aspire 3 A315-42G\n Aspire 5 A515-44\n Aspire 5 A515-43\n\n\n Aspire 5 A515-54G-53GP\n  Spin 3 SP314-54N\n Aspire 5 A515-54G-74FC\n\n\n  Aspire 5 A515-43-R19L\n  Aspire 3 A315-42G-R7EH\n Aspire 3 A315-54-A54D\n\n\n Aspire 5 A515-54G-517L\n Aspire 5 A515-44G\n Aspire 5 A515-44-R93E\n\n\n Spin 3 SP314-54N-59HF\n Aspire 3(A315-54-54LR)\n  Aspire 5 A515-54-717S\n\n\n Aspire 5(A515-43-R5LF)\n Aspire 5 A515-54G-59WR\n Aspire 5 A515-54G-73Y1\n\n\n Aspire 5 A515-43-R7QN\n  Aspire 5 A515-54G-59C0\n Aspire 5 A515-54-59W2\n\n\n Aspire 5 A515-54G-5362\n Aspire 5 A515-43G-R1SJ\n Aspire 5 A515-54-50S7\n\n\n  Aspire 5 A515-44-R2SA\n Aspire 5 A515-44-R41B\n Aspire 3 A315-54-53M1\n\n\n Aspire 5 A515-43-R7MS\n Aspire 5 A515-54G-75EF\n Aspire 5 A515-43G-R0HD\n\n\n Aspire 3 A315-54-54B1\n Aspire 3 A315-54-56KY\n Aspire 5 A515-54G-76PK\n\n\n Aspire 5 A515-43G\n Aspire 5 A515-54G-78KU\n Aspire 5 A515-43G-R54V\n\n\n ASPIRE 5 A515-44-R2X2\n Aspire 5 A515-43G-R05T\n ASPIRE 5 A515-44-R19M\n\n\n  ASPIRE 3 A315-54K-5618\n Aspire 5 A515-54G-7895\n Aspire 5 A515-54G-56XE\n\n\n Aspire 5 A515-54-587L\n Aspire 3 A315-54-55WY\n Aspire 3(A315-42G-R2QU)\n\n\n Aspire 5 A515-54-30BQ\n  Aspire 5 A515-54G-71ZY\n Aspire 3 A315-54-561D\n\n\n Aspire 5 A515-44-R0NR\n Aspire 5 A515-54-P1VY\n Spin 3 SP314-54N-53GH\n\n\n ASPIRE 5 A515-44-R97H\n  Aspire 5 A515-43-R4YY\n Spin 3 SP314-54N-56S5\n\n\n Aspire 5 A515-54G-54QQ\n Aspire 5 A515-54-51DJ\n ASPIRE 5 A515-44-R93G\n\n\n Aspire 5 A515-54G-575Z\n  Aspire 5 A515-54-37U3\n SPIN 3 SP313-51N-71U4\n\n\n Aspire 5 A515-44-R4M5\n Spin 3 SP314-54N-58Q7\n Aspire 5 A515-43G-R9MJ\n\n\n Aspire 5 A515-43-R4AZ\n Aspire 3 A315-54-52HT\n Aspire 5 A515-54G-78RC\n\n\n Aspire 5 A515-44-R8VV\n Aspire 3 A315-54K-N19C1\n Aspire 5 A515-44-R158\n\n\n Aspire 3(A315-54-33R2)\n  Aspire 5 A515-44G-R83X\n Aspire 5 A515-43-R6WW\n\n\n TravelMate TMP214-53-53XD\n SPIN 3 SP313-51N-59YL\n  Aspire 5 A515-54G-5928\n\n\n  Aspire 5 A515-54-71FS\n Aspire 5 A515-43-R6DE\n Aspire 5 A515-54G-71LK\n\n\n Aspire 5 A515-44-R1DM\n Aspire 5 A515-44-R8HD\n Aspire 3 A315-54-51H7\n\n\n SPIN 3 SP314-54N-57DA\n Spin 3 SP314-54N-314V\n Aspire 5 A515-54G-31S7\n\n\n SPIN 3 SP314-54N-30EQ\n  Aspire 5 A515-54G-73WC\n Aspire 5 A515-43-R5RE\n\n\n Aspire 5 A515-54G-73HU\n Aspire 5 A515-54-55ZD\n ASPIRE 5 A515-44-R0SQ\n\n\n SPIN 3 SP313-51N-38R5\n Aspire 5 A515-54-76TA\n  Aspire 5 A515-44G-R3HD\n\n\n Aspire 5 A515-44G-R9KE\n Aspire 5 A515-54-359G\n TRAVELMATE P2 TMP214-53-73KC\n\n\n Spin 3 SP314-54N-50W3\n TravelMate TMP214-53-53NS\n Aspire 5 A515-54G-54KW\n\n\n Aspire 5 A515-54G-51H\n Aspire 5 A515-54G-585S\n Spin 3 SP313-51N-58LR\n\n\n SPIN 3 SP313-51N-5556\n TravelMate TMP214-53-T003\n Aspire 5 A515-43-R057\n\n\n Aspire 5 A515-44-R7F8\n Aspire 5 A515-54G-792B\n Aspire 5 A515-54G-573C\n\n\n Spin 3 SP314-54N-38F9\n Aspire 5 A515-54-597W\n Spin 3 SP313-51N-56YV\n\n\n Spin 3 SP314-54N-52G8\n Aspire 3 A315-42G-R60T\n Aspire 5 A515-43-R3GE\n\n\n ASPIRE 5 A515-54-5725\n  Aspire 5 A515-54-56ST\n ASPIRE 5 A515-54-564G\n\n\n  Aspire 3(A315-42-R7DR)\n Aspire 5 A515-44G-R67L\n Aspire 5 A515-44G-R6YK\n\n\n TravelMate TMP214-53-57UM\n Aspire 5 A515-54G-52C4\n ASPIRE 5 A515-54-5649\n\n\n Aspire 5 A515-54G-51JC\n Aspire 5 A515-44-R88A\n Aspire 5 A515-54G-50NK\n\n\n Aspire 5 A515-44G-R6Q3\n Aspire 5 A515-54G-722H\n Aspire 3 A315-42-R5P7\n\n\n Aspire 5 A515-54G-70TZ\n  Aspire 5 A515-54G-51YT\n Spin 3 SP314-54N-31MF\n\n\n  Aspire 3 A315-42-R25U\n Aspire 5 A515-44-R52A\n Aspire 5 A515-44G-R0HR\n\n\n Aspire 5 A515-54G-570X\n Spin 3 SP314-54N-572R\n Aspire 5 A515-44-R58P\n\n\n SPIN 3 SP314-54N-59CC\n SPIN 3 SP313-51N-32X2\n  Aspire 5 A515-54G-56WR\n\n\n  Aspire 5 A515-54G-79U5\n  Aspire 5 A515-54G-50LM\n Aspire 3 A315-54-39RC\n\n\n Aspire 5 A515-54G-79A3\n Aspire 5 A515-54-39BR\n Aspire 5 A515-44-R2LN\n\n\n Aspire 5 A515-43-R9MG\n Aspire 5 A515-54G-542A\n Aspire 5 A515-54G-53H6\n\n\n  Aspire 5 A515-54G-50Z1\n SPIN 3 SP313-51N-70EV\n Aspire 5 A515-54G-56GT\n\n\n Aspire 5 A515-54G-51QB\n Aspire 5 A515-54G-54PC\n Aspire 5 A515-44-R612\n\n\n Aspire 5 A515-54G-53GT\n Aspire 5 A515-54G-51MD\n Aspire 5 A515-44-R6VG\n\n\n Aspire 5 A515-54G-576M\n ASPIRE 5 A515-54-74MM\n Aspire 3(A315-54K-37X3)\n\n\n Aspire 3 A315-42-R4XX\n  Aspire 5 A515-54G-73N7\n SPIN 3 SP313-51N-36V9\n\n\n Aspire 5 A515-54G-798V\n Aspire A A515-54\n  Aspire 5 A515-44-R7WZ\n\n\n  ASPIRE 3 A315-54K-37B0\n Aspire 3(A315-54K-33QM)\n TravelMate P2 TMP214-53-78AK\n\n\n Aspire 5 A515-44-R4XL\n ASPIRE 5 A515-44-R5QH\n ASPIRE 5 A515-54G-59HT\n\n\n Aspire 5 A515-43-R4TQ\n SPIN 3 SP314-54N-78QS\n Aspire 3(A315-54-53AC)\n\n\n Aspire 5 A515-54G-5981\n ASPIRE 3 A315-54K-3889\n ASPIRE 5 A515-44-R5B5\n\n\n ASPIRE 5 A515-54-5319\n Aspire 3 A315-54-52SF\n ASPIRE 5 A515-54G-54AE\n\n\n ASPIRE 5 A515-44-R36K\n Aspire 3 A315-54K-379T\n Aspire 5 A515-54G-759Q\n\n\n Spin 3 SP314-54N-77L5\n Aspire 5 A515-44-R73A\n SPIN 3 SP313-51N-7337\n\n\n Aspire 5 A515-44-R4BC\n ASPIRE 5 A515-44G-R6ML\n Aspire 3 A315-42-R2CN\n\n\n  ASPIRE 5 A515-44-R4N6\n ASPIRE 5 A515-44-R76E\n Aspire 5(A515-43G-R77W)\n\n\n Aspire 3 A315-54K-34SC\n Aspire 5 A515-44-R1N0\n SPIN 3 SP314-54N-33X8\n\n\n  ASPIRE 3 A315-54K-34P6\n Spin 3 SP314-54N-36EL\n Aspire 5 A515-54-36HG\n\n\n Aspire 5 A515-44G-R8AB\n SPIN 3 SP314-54N-31X5\n Aspire 5 A515-54G-52F4\n\n\n Spin 3-SP314-54N-57RT\n Aspire 3(A315-42-R6VW)\n Aspire 5 A515-54G-7768\n\n\n Aspire 5 A515-54-53Z2\n  Aspire A A515-43\n Aspire 3 A315-54-30JA\n\n\n ASPIRE 5 A515-54-513C\n Aspire 5 A515-43-R1JA\n Aspire 5 A515-44G-R26L\n\n\n Aspire 5 A515-43-R8B3\n  Aspire 5 A515-43-R7B8\n  Aspire 3 A315-54-5580\n\n\n SPIN 3 SP314-54N-59ZF\n ASPIRE 5 A515-54G-77HG\n ASPIRE 5 A515-44-R3PN\n\n\n Spin 3 SP313-51N-56CM\n TravelMate TMP214-53-37AP\n Aspire 5 A515-43-R63F\n\n\n ASPIRE 5 A515-44G-R2XN\n Aspire 3 A315-54K-34G9\n Aspire 5 A515-44-R7VS\n\n\n Aspire 3 A315-54-52UL\n  Aspire 5 A515-44-R4W0\n Spin 3 SP314-54N-54FB\n\n\n  Aspire 3(A315-42-R8MN)\n ASPIRE 5 A515-54-58WW\n ASPIRE 3 A315-54-33SG\n\n\n ASPIRE 5 A515-54-789H\n Aspire 3 A315-54K-385T\n Aspire 3 A315-54-54L5\n\n\n Aspire 5 A515-54-55AA\n Spin 3 SP314-54N-57VR\n Aspire 5 A515-44G-R895\n\n\n Spin 3 SP314-54N-50SH\n Spin 3 SP313-51N-58RG\n  Aspire 5 A515-54G-72KB\n\n\n Spin 3 SP314-54N-54RU\n Spin 3 SP313-51N-71WB\n ASPIRE 5 A515-54-735N\n\n\n  ASPIRE 5 A515-54-305U\n Aspire 5 A515-43-R82V\n ASPIRE 5 A515-54-53RR\n\n\n Aspire 5 A515-43-R4MG\n Aspire 5 A515-44G-R4EB\n Aspire 5 A515-44G-R0RS\n\n\n  Aspire 3(A315-54K-38QB)\n Aspire 3 A315-54-5436\n Aspire 5 A515-54-57BU\n\n\n Aspire 3 A315-54-530D\n Aspire 5 A515-54-528V\n Aspire 5 A515-54-P21P\n\n\n  Aspire 3 A315-54-52ZG\n Aspire 5 A515-54G-55D8\n ASPIRE 3 A315-54-5069\n\n\n ASPIRE 5 A515-44-R7NZ\n Aspire 5 A515-43G-R5A6\n Aspire 5 A515-44G R6D3\n\n\n Aspire 5 A515-54G-774N\n Aspire 5 A515-44G-R8H2\n Aspire 3 A315-54K-50DC\n\n\n TravelMate TMP214-53-T01C\n Aspire 5 A515-54-51WF\n Aspire 5 A515-43-R4Q7\n\n\n ASPIRE 5 A515-44-R17Q\n Aspire 5 A515-54G-56QR\n SPIN 3 SP313-51N-7116\n\n\n Aspire 5 A515-43-R7GV\n ASPIRE 3 A315-54K-30FK\n  Aspire 3 A315-54-391D\n\n\n  Aspire 5 A515-54-59KT\n  Aspire 3(A315-54-P08H)\n Spin 3 SP314-54N-56DK\n\n\n ASPIRE 3 A315-54K-36CE\n  ASPIRE 5 A515-54-568B\n Aspire 5 A515-43-R53N\n\n\n Aspire 3(A315-54-567J)\n  Aspire 3(A315-42-R0NP)\n  Aspire 5 A515-54G-31DX\n\n\n Aspire 3 A315-54-367E\n ASPIRE 3 A315-54-5202\n Aspire 3 A315-54-32WU\n\n\n Aspire 3 A315-54-58JQ\n ASPIRE 3 A315-54K-57Q9\n  ASPIRE 5 A515-44-R7FZ\n\n\n ASPIRE 5 A515-54-50CY\n Aspire 5 A515-54G-73VG\n  Aspire 5 A515-54G-365A\n\n\n ASPIRE 5 A515-54G-53B7\n Aspire 5 A515-54-52VX\n Aspire 3 A315-54-578F\n\n\n ASPIRE 3 A315-54-54NF\n ASPIRE 5 A515-54G-56V7\n ASPIRE 5 A515-54-55U6\n\n\n Aspire 5 A515-54G-71WP\n Aspire 5 A515-43-R6F6\n Spin SP314-54N-30TM\n\n\n  Aspire A A514-52\n Aspire 3 A315-54K-31C4\n TravelMate P2 TMP214-53-5543\n\n\n Aspire 5 A515-43-R2MQ\n  Aspire 3 A315-54-39U4\n Aspire 5 A515-43-R3YU\n\n\n ASPIRE 3 A315-54K-35B8\n Aspire 5 A515-54-77W5\n Aspire 5 A515-54G-72V2\n\n\n Spin 3 SP313-51N-56HP\n Aspire 5 A515-43-R3DZ\n  Aspire 5 A515-54G-504U\n\n\n Aspire 3 A315-54K-38B1\n Aspire 5 A515-43-R9TY\n Aspire 3(A315-54-55W8)\n\n\n Aspire 5 A515-54-34B1\n Spin 3 SP314-54N-53BF\n  Aspire 5 A515-43-R37S\n\n\n ASPIRE 3 A315-54-5337\n Aspire 3 A315-54K-32JR\n Aspire 5 A515-54G-738P\n\n\n Aspire 5 A515-44G-R7NU\n ASPIRE 5 A515-54G-59EZ\n Aspire A A514-52G\n\n\n Aspire 5 A515-54-71TG\n Aspire 5 A515-54-79J5\n Aspire 5 A515-54G-307L\n\n\n Aspire 3 A315-54-32QP\n Aspire 3 A315-54-56PB\n Aspire A A515-43G\n\n\n Aspire 5 A515-43G-R9ZW\n SPIN 3 SP314-54N-33Z1\n ASPIRE 3 A315-54-59WU\n\n\n Aspire 3 A315-54-57PJ\n  Aspire 3 A315-54-38KM\n Aspire 3 A315-54-36KT\n\n\n ASPIRE 3 A315-54K-34B8\n Aspire 5 A515-54-77GZ\n Aspire 5 A515-54G-5764\n\n\n Aspire 3(A315-54-55M6)\n ASPIRE 5 A515-54-359Y\n  Aspire 3 A315-54K-30QQ\n\n\n SPIN 3 SP314-54N-507R\n Aspire 3 A315-54-38XA\n Aspire 5 A515-54G-3825\n\n\n ASPIRE 3 A315-54-558R\n Spin 3 SP314-54N-57C3\n Aspire 3 A315-54K-37RE\n\n\n Aspire 5 A515-54G-385Z\n Aspire 5 A515-54G-3525\n Aspire 3(A315-42-R8PY)\n\n\n  Aspire 5 A515-54-78WW\n ASPIRE 5 A515-44-R54F\n Aspire 5 A515-44-R5UZ\n\n\n Aspire 5 A515-43-R7WA\n Aspire 5 A515-54G-37FT\n Aspire 5 A515-44-R7LG\n\n\n Aspire 3 A315-54K-336C\n Aspire 5 A515-54G-712P\n  ASPIRE 5 A515-44G-R18H\n\n\n  Aspire 5 A515-44-R2HP\n  Aspire 5 A515-54G-797L\n  ASPIRE 3 A315-54-39M9\n\n\n Aspire 5 A515-54G-58DT\n Aspire 5 A515-54-75VH\n  Aspire 5 A515-54G-59U5\n\n\n Aspire 5 A515-54G-55JG\n  Spin 3 SP313-51N-75NC\n  TravelMate P2 TMP214-53-534K\n\n\n Aspire 5 A515-54-71SK\n ASPIRE 3 A315-54K-3761\n Aspire 5 A515-54G-51CR\n\n\n Spin 3 SP313-51N-714D\n ASPIRE 3 A315-54K-3469\n Aspire 5 A515-54-73GE\n\n\n Aspire 5 A515-54-75EB\n Spin 3 SP314-54N-72W6\n Aspire 5 A515-54G-5227\n\n\n SPIN 3 SP314-54N-32Z5\n Aspire 5 A515-44-R7EC\n  ASPIRE 5 A515-44-R6YA\n\n\n Aspire 5 A515-44G-R23T\n Aspire 5 A515-54G-7341\n Aspire 5 A515-43-R89G\n\n\n  ASPIRE 3 A315-54-524T\n Aspire 3 A315-54k-303b\n Spin 3 SP314-54N-56UU\n\n\n ASPIRE 3 A315-54-5801\n Aspire 5 A515-54-3571\n  Spin 3 SP314-54N-34UU\n\n\n Aspire 5 A515-54G-52ZP\n  TRAVELMATE P2 TMP214-53-59EM\n  TRAVELMATE P2 TMP214-53-747N\n\n\n Aspire 5 A515-54-54XP\n Aspire 5 A515-44-R7DD\n Aspire 3 A315-54-31GB\n\n\n Aspire 5 A515-54G-59MW\n Aspire 5 A515-44G-R9F3\n Aspire 5 A515-54G-75LV\n\n\n  ASPIRE 5 A515-44-R5WS\n ASPIRE 3 A315-54K-3254\n Spin 3 SP314-54N-52H9\n\n\n ASPIRE 3 A315-54K-5116\n ASPIRE 3 A315-54K-55V1\n ASPIRE 3 A315-54-514N\n\n\n Aspire 3 A315-54K-557S\n SPIN 3 SP314-54N-55KX\n Spin 3 SP313-51N-53F0\n\n\n  Aspire 5 A515-54G-74Y8\n Aspire 3 A315-54K-31XX\n Aspire 3 A315-54-50PG\n\n\n Spin 3 SP313-51N-50R3\n SPIN 3 SP314-54N-55J9\n Aspire 5 A515-54G-502N\n\n\n Aspire 5 A515-43-ROBV\n Aspire 3 A315-54-36VF\n SPIN 3 SP314-54N-53TS\n\n\n Aspire 5 A515-54G-764U\n ASPIRE 3 A315-54K-3301\n TRAVELMATE P2 TMP214-53-75QG\n\n\n ASPIRE 3 A315-54K-33WU\n ASPIRE 5 A515-44-R27Y\n ASPIRE 3 A315-54-5774\n\n\n TRAVELMATE P2 TMP214-53-591K\n ASPIRE 5 A515-44-R2FS\n Aspire 5 A515-54-54AM\n\n\n Aspire 5 A515-54-79QJ\n  Aspire 5 A515-44-R6CL\n ASPIRE 3 A315-54K-58QE\n\n\n Aspire 5 A515-54G-75DL\n Aspire 5 A515-43-R33M\n ASPIRE 3 A315-54K-5532\n\n\n Aspire 5 A515-44-R4KZ\n ASPIRE 3 A315-54K-376M\n Aspire 5 A515-44-R3YH\n\n\n ASPIRE 3 A315-54K-331D\n Aspire 5 A515-54G-75PF\n Aspire 5 A515-44G-R7XL\n\n\n SPIN 3 SP313-51N-55G4\n ASPIRE 5 A515-54G-53PS\n  Spin 3 SP314-54N-52QQ\n\n\n  Aspire 5 A515-54G-75RE\n ASPIRE 3 A315-54K-358L\n Aspire 5 A515-54-34TN\n\n\n Aspire 3(A315-54K-32YC)\n ASPIRE 5 A515-54-55QN\n ASPIRE 3 A315-54K-35RX\n\n\n Aspire 5 A515-54G-58J7\n  Spin 3 SP313-51N-56J4\n  Aspire 5 A515-54G-73U9\n\n\n Spin 3 SP314-54N-563D\n ASPIRE 5 A515-54G-71SW\n SPIN 3 SP313-51N-509V\n\n\n Aspire 5 A515-43-R4HV\n  ASPIRE 3 A315-54K-389H\n SPIN 3 SP313-51N-55ED\n\n\n ASPIRE 3 A315-54K-3622\n SPIN 3 SP313-51N-33KW\n Spin 3 SP314-54N-51HV\n\n\n Aspire 3 A315-54-55EM\n Spin 3 SP314-54N-311V\n Spin 3 SP314 54N-38RV\n\n\n ASPIRE 5 A515-54G-70AG\n Aspire 3 A315-42-R5RW\n  ASPIRE 3 A315-54K-5102\n\n\n ASPIRE 5 A515-54G-37YR\n Aspire 5 A515-54G-50TD\n Aspire 5 A515-44G-R90V\n\n\n Aspire 5 A515-54G-58QG\n Aspire 5 A515-54G-75WF\n ASPIRE 5 A515-44G-R4F1\n\n\n Aspire 5 A515-44-R3TG\n Spin 3 SP314-54N-524Z\n  ASPIRE 3 A315-54K-553Y\n\n\n Aspire 5 A515-43-R5QW\n Aspire 5 A515-54-59CP\n Aspire 3 A315-42G-R05V\n\n\n ASPIRE 3 A315-54K-33V3\n  ASPIRE 5 A515-44-R9CH\n Aspire 5 A515-54-38ZW\n\n\n SPIN 3 SP313-51N-7924\n Aspire 5 A515-54G-52ED\n ASPIRE 3 A315-54K-5821\n\n\n Aspire 5 A515-43-R3J6\n Aspire 5 A515-43-R5HG\n ASPIRE 5 A515-44-R68R\n\n\n Aspire 3(A315-42G-R3QW)\n Aspire 3 A315-54K-36QU\n Aspire 5 A515-44-R6H3\n\n\n Aspire 3 A315-54-58H0\n Aspire 5 A515-54-596V\n ASPIRE 5 A515-54-59SC\n\n\n  Aspire 3 A315-54K-34WJ\n Aspire 5 A515-43-R4Z2\n Aspire 5 A515-44-R72R\n\n\n ASPIRE 5 A515-43-R0XF\n Aspire 5 A515-54-52BQ\n ASPIRE 3 A315-54-583R\n\n\n ASPIRE 5 A515-54-71FE\n ASPIRE 3 A315-54K-59KK\n  Aspire 5 A515-44-R3M0\n\n\n ASPIRE 3 A315-54K-529G\n Aspire 5 A515-54-71ST\n ASPIRE 5 A515-54G-5141\n\n\n Aspire 5 A515-54G-711H\n SPIN 3 SP313-51N-545D\n Aspire 3 A315-54-336C\n\n\n Aspire 5 A515-54G-73WV\n Aspire 5 A515-54G-56SB\n Aspire 5 A515-54G-56DC\n\n\n Spin 3 SP313-51N-529G\n ASPIRE 5 A515-44-R329\n Spin 3 SP313-51N-727Z\n\n\n SPIN 3 SP313-51N-52RU\n Aspire 5 A515-43-R22T\n Spin 3 SP314-54N-543C\n\n\n ASPIRE 3 A315-54K-31Z5\n  Aspire 5 A515-54G-58YP\n Aspire 5 A515-54G-51QS\n\n\n  ASPIRE 3 A315-54K-35F8\n Aspire 5 A515-54G-301X\n ASPIRE 3 A315-54K-30QW\n\n\n ASPIRE 3 A315-54K-319L\n ASPIRE 3 A315-54K-36KM\n Aspire 5 A515-43G-R2W2\n\n\n Aspire 3 A315-54K-33LA\n Aspire 3 A315-54K-30UG\n Aspire 3 A315-54K-33GL\n\n\n  ASPIRE 3 A315-54K-34DV\n ASPIRE 5 A515-44-R4YQ\n Aspire 5 A515-54G-752X\n\n\n  Aspire 5 A515-54G-50JW\n ASPIRE 3 A315-54K-38GN\n Aspire 5 A515-54G-78J8\n\n\n ASPIRE 3 A315-54K-398R\n ASPIRE 5 A515-54G-59A3\n ASPIRE 3 A315-54K-34YP\n\n\n Aspire 5(A515-43-R4A1)\n Spin 3 SP314-54N-53PM\n SPIN 3 SP313-51N-501E\n\n\n  Aspire 5 A515-54G-36CU\n  Aspire 5 A515-54G-77SX\n ASPIRE 3 A315-54K-567C\n\n\n Aspire 3 A315-54-32FZ\n ASPIRE 3 A315-54K-37TH\n Aspire 5 A515-44-R5K1\n\n\n Aspire 5 A515-54G-75AH\n Aspire 5 A515-54-54T3\n ASPIRE 5 A515-54G-75L9\n\n\n ASPIRE 5 A515-54-58ZU\n Aspire 5 A515-54G-7140\n  ASPIRE 3 A315-54-526Y\n\n\n ASPIRE 5 A515-44-R58H\n ASPIRE 5 A515-54G-5972\n ASPIRE 3 A315-54-55QN\n\n\n Aspire 5 A515-44-R3EK\n ASPIRE 5 A515-44-R98B\n ASPIRE 5 A515-44-R2KF\n\n\n Aspire 5 A515-54G-56VE\n Aspire 3 A315-54-542E\n  ASPIRE 3 A315-54K-31DB\n\n\n ASPIRE 5 A515-54G-552T\n TravelMate P2 TMP214-53-59N4\n Aspire 3(A315-54-58ZK)\n\n\n SPIN 3 SP314-54N-51NV\n Aspire 5 A515-54G-70UD\n ASPIRE 5 A515-54-56HU\n\n\n ASPIRE 5 A515-44-R6WZ\n Aspire 5 A515-54G-34DM\n Aspire 5 A515-54G-573R\n\n\n  Aspire 5 A515-44G-R5F0\n ASPIRE 3 A315-54K-36LE\n Aspire 3 A315-54K-363D\n\n\n ASPIRE 5 A515-54G-500P\n Aspire 3 A315-54K-31UG\n ASPIRE 3 A315-54K-35LE\n\n\n  Aspire 3 A315-54-57HA\n Aspire 3(A315-54-34RS)\n ASPIRE 3 A315-54-543L\n\n\n Aspire 5 A515-43G-R967\n Aspire 5 A515-54-776L\n  Aspire 5 A515-54G-38MG\n\n\n Aspire 5 A515-54G-772F\n Aspire 5 A515-43G-R5UC\n ASPIRE 3 A315-54K-37RF\n\n\n  Aspire A A315-54-30JA\n Aspire 3 A315-54-35NG\n ASPIRE 3 A315-54-548G\n\n\n ASPIRE 3 A315-54-50JG\n Aspire 5 A515-54G-70WQ\n ASPIRE 3 A315-54K-37EK\n\n\n Aspire 5 A515-43-R9XL\n Aspire 5 A515-54G-5071\n Aspire 3 A315-54K-313L\n\n\n ASPIRE 5 A515-44-R9U2\n Aspire 3 A315-54K-38F5\n ASPIRE 5 A515-44-R2SD\n\n\n Aspire 5 A515-44G-R0RJ\n  Aspire 5 A515-54G-755T\n ASPIRE 5 A515-44-R0GT\n\n\n ASPIRE 3 A315-54K-59QG\n ASPIRE 5 A515-44-R2W7\n  ASPIRE 5 A515-44-R1NW\n\n\n ASPIRE 3 A315-54K-36CQ\n  ASPIRE 3 A315-54K-31MC\n TravelMate P214-53-53NS\n\n\n Aspire 5 A515-54-764J\n Aspire 5 A515-54G-715Y\n ASPIRE 3 A315-54-54M0\n\n\n Aspire 5 A515-54G-55G2\n ASPIRE 3 A315-54K-38KZ\n Aspire 3 A315-54-50P8\n\n\n TRAVELMATE P2 TMP214-53-77CQ\n Aspire 5 A515-54G-51UA\n  ASPIRE 5 A515-44G-R49U\n\n\n Aspire 5 A515-54G-73Q2\n Aspire 5 A515-54-79Q3\n ASPIRE 3 A315-54K-35SF\n\n\n Aspire 3 A315-54K-35S4\n ASPIRE 3 A315-54-53UN\n ASPIRE 5 A515-44-R8MN\n\n\n ASPIRE 5 A515-54-73WM\n Aspire 3 A315-54-50AZ\n Aspire A A315-54\n\n\n  TravelMate P2 TMP214-53-764D\n Aspire 5 A515-44G-R9HT\n Aspire 5 A515-54G-597f\n\n\n Aspire 3 A315-54K-391F\n Aspire 5 A515-54-56D4\n Aspire 5 A515-43-R9B1\n\n\n ASPIRE 3 A315-54K-380S\n ASPIRE 5 A515-44G-R036\n Aspire 3 A315-54K-52U3\n\n\n Aspire A A315-54-52ZG\n Spin 3 SP313-51N-740X\n  ASPIRE 3 A315-54K-368E\n\n\n ASPIRE 5 A515-54-56T2\n Aspire 3 A315-54-51ZQ\n ASPIRE 3 A315-54K-333E\n\n\n ASPIRE 3 A315-54-55W9\n ASPIRE 5 A515-54-320J\n Aspire 3 A315-54-54NV\n\n\n ASPIRE 3 A315-54-71FC\n ASPIRE 5 A515-44-R908\n Aspire 3 A315-54-36X5\n\n\n  Aspire A A315-54-30C3\n ASPIRE 5 A515-44-R9GL\n Aspire 5 A515-54G-52HW\n\n\n SPIN 3 SP314-54N-545P\n Aspire 5 A515-54G-784J\n Aspire A A315-54-53AC\n\n\n ASPIRE 3 A315-54-38DE\n Aspire 5 A515-54G-51QF\n Aspire 5 A515-54-77SO\n\n\n  TRAVELMATE P2 TMP214-53-7753\n  ASPIRE 3 A315-54K-30ZX\n ASPIRE 3 A315-54K-36DF\n\n\n ASPIRE 3 A315-54K-31NM\n ASPIRE 3 A315-54K-324S\n Aspire 3 A315-54-57VU\n\n\n Aspire 3(A315-42-R5LC)\n  Aspire 3 A315-54K-387D\n ASPIRE 3 A315-54K-38XT\n\n\n Aspire A A315-42-R9BB\n Spin 3 SP313-51N-55QM\n Aspire 5 A515-44G-R65C\n\n\n Aspire 5 A515-54G-76SZ\n ASPIRE 3 A315-54K-35BE\n ASPIRE 3 A315-54-383G\n\n\n ASPIRE 3 A315-54K-59BQ\n Aspire A A315-54-51ZQ\n Aspire 3(A315-42-R7ZC)\n\n\n  Aspire 5 A515-54-554S\n Aspire A A315-54-52SF\n Aspire 3 A315-54K-33EU\n\n\n ASPIRE 3 A315-54K-30QG\n Aspire A A315-54-38XA\n Aspire A A515-54-58WW\n\n\n ASPIRE 3 A315-54K-34J1\n  Aspire A A515-54-52VX\n Aspire 3 A315-42-R6PT\n\n\n ASPIRE 3 A315-54K-339A\n ASPIRE 3 A315-54-50TE\n Aspire 3 A315-54-50YF\n\n\n Aspire 3(A315-54-56ZH)\n ASPIRE 3 A315-54-55F2\n Aspire A A315-42-R9VG\n\n\n ASPIRE 3 A315-54K-30D1\n Aspire 5 A515-54G-725Z\n SPIN 3 SP314-54N-53Q4\n\n\n ASPIRE 3 A315-54K-301S\n ASPIRE 3 A315-54-51XU\n Aspire 5 A515-44G-R2PM\n\n\n Aspire 5 A515-54G-79ZJ\n ASPIRE 3 A315-54K-377W\n ASPIRE 3 A315-54K-39NX\n\n\n Aspire 5 A515-44-R42X\n ASPIRE 3 A315-54K-38J5\n Aspire 5(A515-43-R41R)\n\n\n Aspire 5 A515-54G-33K6\n ASPIRE 3 A315-54K-57XG\n  ASPIRE 5 A515-54-38WN\n\n\n ASPIRE 5 A515-54-70WZ\n ASPIRE 3 A315-54K-32VF\n Aspire 3 A315-54K-3248\n\n\n TravelMate P2 TMP214-53-5839\n SPIN 3 SP314-54N-59VS\n ASPIRE 3 A315-54K-34WY\n\n\n ASPIRE 5 A515-54-52SK\n Aspire A A515-54-53RR\n ASPIRE 5 A515-44-R8EQ\n\n\n Aspire 3 A315-54-37A0\n Aspire 3 A315-54K-34E2\n Spin 3 SP314-54N-5930\n\n\n ASPIRE 3 A315-54K-515F\n Aspire 3 A315-54K-38NE\n Aspire A A515-54-55F6\n\n\n  Aspire 3 A315-54K-34AS\n Spin 3 SP314-54N-37MS\n Aspire 5 A515-44-R0F5\n\n\n ASPIRE 3 A315-54K-59GL\n Aspire 5 A515-54G-53S7\n ASPIRE 3 A315-54K-35GJ\n\n\n Aspire 5 A515-54-7551\n Aspire 5 A515-44-R6MT\n ASPIRE 3 A315-54K-54JG\n\n\n  ASPIRE 3 A315-54-52TS\n Aspire 5 A515-44G-R2LJ\n  Aspire 5 A515-54G-58KG\n\n\n Aspire 5 A515-54G-77UY\n  ASPIRE 3 A315-54-541Y\n  Aspire 3 A315-54-54VL\n\n\n  ASPIRE 3 A315-54K-50J3\n  ASPIRE 3 A315-54K-333N\n ASPIRE 3 A315-54K-385H\n\n\n ASPIRE 3 A315-54-534C\n Aspire 5 A515-44-R0G2\n Aspire A A515-54-77GZ\n\n\n Aspire 5 A515-44-R6T1\n ASPIRE 3 A315-54K-39HY\n  ASPIRE 5 A515-54-728W\n\n\n ASPIRE 3 A315-54-53TV\n ASPIRE 5 A515-44-R1BU\n  Aspire 5 A515-54G-59CL\n\n\n TravelMate P2 TMP214-53-31X4\n SPIN 3 SP314-54N-56JD\n Aspire 5 A515-43-R1YQ\n\n\n ASPIRE 5 A515-43-R1KW\n  ASPIRE 5 A515-44-R3L5\n ASPIRE 3 A315-54K-34LU\n\n\n SPIN 3 SP314-54N-5855\n Aspire 3 A315-54K-35V8\n ASPIRE 5 A515-54-731N\n\n\n ASPIRE 3 A315-54-50D7\n ASPIRE 3 A315-54K-37U3\n  Aspire A A515-56-57EZ\n\n\n ASPIRE 5 A515-54G-75W2\n  SPIN 3 SP314-54N-31SQ\n Aspire 5 A515-54-72A8\n\n\n ASPIRE 5 A515-54G-51K8\n ASPIRE 5 A515-54-52FN\n ASPIRE 3 A315-54-59DD\n\n\n Aspire 5 A515-54G-340D\n ASPIRE 5 A515-44-R64Z\n ASPIRE 3 A315-54K-35FS\n\n\n ASPIRE 5 A515-54-73FQ\n Aspire A A514-52-531Q\n  SPIN 3 SP314-54N-542L\n\n\n  ASPIRE 3 A315-54K-32YL\n Aspire A A515-56-511V\n Aspire A A514-52-396M\n\n\n SPIN 3 SP314-54N-387V\n Aspire A A514-52-39T8\n Aspire 5 A515-44G-R7S5\n\n\n  Aspire 3 A315-54-59LV\n Aspire 3 A315-54-52VR\n  Spin 3 SP314-54N-59QV\n\n\n Aspire A A515-56-54C1\n Aspire A A515-56-7404\n Aspire A A515-56-56DJ\n\n\n ASPIRE 3 A315-54-501W\n Aspire A A515-56-57M3\n ASPIRE 3 A315-54K-37L5\n\n\n ASPIRE 5 A515-54G-74G0\n SPIN 3 SP313-51N-50UG\n Aspire 5 A515-54G-7046\n\n\n ASPIRE 5 A515-54G-58CN\n ASPIRE 3 A315-54K-51YP\n SPIN 3 SP314-54N-57EK\n\n\n ASPIRE 3 A315-54K-38CV\n ASPIRE 5 A515-54G-761G\n ASPIRE 3 A315-54K-34ZC\n\n\n Aspire 3 A315-54-57ZC\n ASPIRE 5 A515-54G-51J3\n Aspire 5 A515-54G-50SW\n\n\n Aspire A A514-52-58NK\n ASPIRE 5 A515-44-R85K\n Aspire 3 A315-54-36KX\n\n\n ASPIRE 3 A315-54K-34XS\n Aspire 5 A515-54G-54WA\n ASPIRE 3 A315-54K-58LK\n\n\n ASPIRE 3 A315-54K-39L3\n ASPIRE 3 A315-54K-53PZ\n ASPIRE 3 A315-54-57LJ\n\n\n SPIN 3 SP314-54N-536B\n ASPIRE 5 A515-54G-50FR\n TravelMate P2 TMP214-53-58GN\n\n\n ASPIRE 3 A315-54-57VK\n  Spin 3 SP314-54N-50JD\n ASPIRE 5 A515-54-50RS\n\n\n Aspire 5 A515-54G-58MG\n ASPIRE 3 A315-54K-30K7\n Aspire 5 A515-44G-R46B\n\n\n Aspire 5 A515-44-R30Z\n ASPIRE 3 A315-54-38HQ\n Aspire 3 A315-54-342S\n\n\n Aspire 5 A515-54-51JE\n ASPIRE 3 A315-54-58VX\n SPIN 3 SP314-54N-33NZ\n\n\n Aspire 5 A515-43G-R5NP\n ASPIRE 3 A315-54K-32XR\n  Aspire 5 A515-54G-50SG\n\n\n Aspire A A514-52-5390\n ASPIRE 3 A315-54K-311J\n ASPIRE 3 A315-54-39WB\n\n\n TravelMate P2 TMP214-53-568H\n ASPIRE 3 A315-54K-57W7\n Spin 3 SP313-51N-550U\n\n\n ASPIRE 3 A315-54K-53KT\n  TRAVELMATE P2 TMP214-53-58U8\n ASPIRE 3 A315-54-50HN\n\n\n Aspire A A514-52-35JS\n Aspire A A514-52-32ZG\n ASPIRE 3 A315-54K-555Q\n\n\n ASPIRE 3 A315-54-56SJ\n Aspire 5 A515-43-R61P\n  Aspire 5 A515-54G-77LY\n\n\n ASPIRE 3 A315-54K-32XX\n ASPIRE 5 A515-44-R6TV\n Aspire 5 A515-54G-50S2\n\n\n ASPIRE 3 A315-54K-39CN\n ASPIRE 3 A315-54K-368V\n ASPIRE 3 A315-54K-57WL\n\n\n Aspire 3 A315-54K-37AS\n ASPIRE 3 A315-54K-32HE\n ASPIRE 3 A315-54-39YQ\n\n\n  ASPIRE 3 A315-54K-52R4\n ASPIRE 5 A515-54-59R0\n Aspire 5 A515-54-56DT\n\n\n Aspire 3(A315-42-R6Y5)\n ASPIRE 3 A315-54-38N6\n Aspire A A514-52-7060\n\n\n Aspire A A514-52-58MS\n  ASPIRE 3 A315-54-55A1\n ASPIRE 3 A315-54K-31J0\n\n\n Aspire 5 A515-44G-R61W\n ASPIRE 3 A315-54-593C\n Aspire A A514-52-56E6\n\n\n ASPIRE 5 A515-43-R4J9\n Aspire 5 A515-44-R0KN\n ASPIRE 5 A515-54-5615\n\n\n Aspire 5 A515-43G-R996\n ASPIRE 3 A315-54K-30V5\n ASPIRE 3 A315-54-38QG\n\n\n ASPIRE 5 A515-54G-701A\n Aspire 3 A315-54-50VX\n SPIN 3 SP314-54N-3496\n\n\n Travelmate P2 TMP214-53-39E3\n ASPIRE 5 A515-54-708W\n ASPIRE 3 A315-54K-51EL\n\n\n TRAVELMATE P2 TMP214-53-583C\n Aspire 5 A515-54G-76UJ\n ASPIRE 3 A315-54K-522U\n\n\n SPIN 3 SP313-51N-7464\n Aspire 5 A515-54G-52CL\n  ASPIRE 3 A315-54-58R8\n\n\n Aspire 5 A515-43-R0NX\n Aspire 3 A315-54-55B9\n SPIN 3 SP313-51N-70YB\n\n\n Spin 3 SP314-54N-54XS\n  ASPIRE 3 A315-54K-52XB\n Aspire 5 A515-43-R17X\n\n\n Aspire 5 A515-54-585X\n  ASPIRE 5 A515-44-R1RQ\n Aspire 3 A315-54-31J3\n\n\n Aspire 3 A315-54K-33C6\n ASPIRE 3 A315-54K-57SL\n Spin 3 SP313-51N-76EC\n\n\n SPIN 3 SP314-54N-36MF\n Aspire 3 A315-54-57LA\n Aspire 5 A515-43G-R7AD\n\n\n ASPIRE 5 A515-44-R2TC\n Aspire 3 A315-42-R4BX\n Aspire 5 A515-54G-52DU\n\n\n ASPIRE 3 A315-54K-376P\n  SPIN 3 SP313-51N-51RP\n Aspire 3 A315-54-50BH\n\n\n  Aspire 5 A515-43G-R4YU\n Aspire 5 A515-44-R1J3\n ASPIRE 5 A515-54-39ZH\n\n\n ASPIRE 3 A315-54K-52GN\n ASPIRE 3 A315-54-500D\n Aspire 5 A515-52-78A9\n\n\n Aspire 5 A515-44-R6UJ\n  ASPIRE 5 A515-44-R0WX\n ASPIRE 5 A515-44G-R35S\n\n\n Aspire 3 A315-54-77SP\n Aspire 3 A315-54-369Z\n  Aspire 5 A515-43-R0BV\n\n\n ASPIRE 3 A315-54K-52ZT\n ASPIRE 3 A315-54K-53U7\n ASPIRE 5 A515-44-R2QE\n\n\n Spin 3 SP314-54N-73J4\n Spin 3 SP314-54N 2020\n  Aspire 5 A515-44G-R0P1\n\n\n Aspire 5 A515-54-56XH\n Aspire 5 A515-43G-R8U3\n Aspire 3 A315-54 3551\n\n\n Aspire 5 A515-54-520Z\n Aspire 5 A515-54G-5398\n Aspire 5 A515-54G-535P\n\n\n Aspire 5 A515-54G-53NB\n ASPIRE 5 A515-44-R176\n Aspire 5 A515-44-R744\n\n\n Spin 3 SP313-51N-58JR\n Aspire 5 A515-44-R68D\n ASPIRE 3 A315-54-539B\n\n\n Aspire 5 A515-54-37SH\n ASPIRE 3 A315-54-58UQ\n  TravelMate P2 TMP214-53-7384\n\n\n TRAVELMATE P2 TMP214-53-72K8\n Aspire 5 A515-54-509T\n Aspire 5 A515-54G-59S0\n\n\n ASPIRE 3 A315-54K-38WS\n Aspire 5 A515-54G-59L2\n Aspire 5 A515-54-74ZS\n\n\n  ASPIRE 5 A515-44-R2YZ\n Spin 3 SP313-51N-58CR\n  ASPIRE 3 A315-54-39EH\n\n\n ASPIRE 5 A515-44G-R2Y6\n ASPIRE 5 A515-44-R4E8\n Aspire 5 A515-54G-72J5\n\n\n Travelmate P2 TMP214-53G-5534\n ASPIRE 3 A315-54K-30C2\n  ASPIRE 5 A515-44-R0PX\n\n\n Aspire 5 A515-44-R0BR\n ASPIRE 3 A315-54K-34X3\n Aspire 5 A515-54-59Q6\n\n\n  ASPIRE 5 A515-44G-R0XP\n Aspire 5 A515-54G-586Z\n ASPIRE 5 A515-54-31XB\n\n\n Aspire 5 A515-44-R9S2\n TravelMate P2 TMP214-53-559U\n Aspire 5 A515-54G-53QQ\n\n\n ASPIRE 3 A315-54K-31ZY\n ASPIRE 3 A315-54K-33CA\n Aspire 5 A515-54G-70Y9\n\n\n ASPIRE 3 A315-54K-39HD\n Aspire 5 A515-43G-R9VS\n Aspire 5 A515-54G-78AJ\n\n\n SPIN 3 SP313-51N-541B\n ASPIRE 5 A515-54-73LA\n ASPIRE 5 A515-43-R7A5\n\n\n Spin 3 SP314-54N-530C\n ASPIRE 3 A315-54K-34ZU\n ASPIRE 3 A315-54-59G5\n\n\n TravelMate TMP214-53-53TV\n ASPIRE 5 A515-44G-R4RU\n Aspire 3 A315-54-34S5\n\n\n Aspire 3 A315-54-575J\n Aspire 5 A515-54G-52T9\n ASPIRE 3 A315-54K-38ZE\n\n\n  ASPIRE 5 A515-44G-R4YP\n  ASPIRE 5 A515-54G-740P\n Spin 3 SP314-54N-58HA\n\n\n ASPIRE 5 A515-43-R1JF\n Aspire 5 A515-54G-704H\n TravelMate P2 TMP214-53-54ZM\n\n\n  SPIN 3 SP314-54N-58BP\n SPIN 3 SP314-54N-56ZQ\n ASPIRE 5 A515-44G-R2ZB\n\n\n ASPIRE 5 A515-54G-729Z\n Aspire 5 A515-54-3508\n ASPIRE 5 A515-54-5990\n\n\n Aspire 3 A315-54-35U1\n ASPIRE 5 A515-44-R87L\n ASPIRE 3 A315-54-52C6\n\n\n  ASPIRE 5 A515-54G-57D1\n ASPIRE 5 A515-54G-75K6\n Aspire 3 A315-54-58TX\n\n\n  Aspire 3 A315-54-55MZ\n Aspire 5 A515-44G-R274\n Aspire 5 A515-54-55uu\n\n\n ASPIRE 5 A515-54G-59PW\n Aspire 5 A515-54-55F6\n ASPIRE 3 A315-54-564P\n\n\n TRAVELMATE P2 TMP214-53-72JR\n ASPIRE 5 A515-44-R9ZT\n Aspire 5 A515-54G-72B6\n\n\n Aspire 5 A515-54-57M0\n ASPIRE 5 A515-44-R0A8\n Aspire 3 A315-54-51J1\n\n\n Aspire 5 A515-54-71QE\n ASPIRE 5 A515-43-R7R4\n Aspire 5 A515-54G-37CE\n\n\n ASPIRE 3 A315-54-567N\n  ASPIRE 5 A515-54-701R\n Aspire 5 A515-54G-59WU\n\n\n Aspire 3 A315-42G-R1UF\n Aspire 5 A515-43G-R9TF\n Aspire 5 A515-44G-R73C\n\n\n ASPIRE 3 A315-54-55EQ\n ASPIRE 5 A515-44-R2MB\n ASPIRE 3 A315-54-59BC\n\n\n ASPIRE 5 A515-44-R91Z\n TRAVELMATE P2 TMP214-53-74B5\n Aspire 5 A515-44G-R8TD\n\n\n TRAVELMATE P2 TMP214-53-59PG\n Aspire 5 A515-54G-7588\n  Aspire 5 A515-43-R6MB\n\n\n Aspire 3 A315-54K-34A7\n  Aspire 5 A515-54-76FM\n Aspire 5 A515-54-56FY\n\n\n Aspire 5 A515-54-58ZK\n Spin 3 SP314-54N-56NU\n ASPIRE 5 A515-54G-582J\n\n\n Aspire 5 A515-54-553G\n ASPIRE 5 A515-43-R6DS\n ASPIRE 5 A515-44-R5QE\n\n\n Aspire 5 A515-43G-R613\n  Aspire 5(A515-43G-R4ZA)\n Aspire 3 A315-56-52Q3\n\n\n Aspire 5 A515-54-59NE\n  Spin 3 SP314-54N-30QZ\n  ASPIRE 5 A515-44-R0Z4\n\n\n Aspire 3 A315-54K-397J\n Aspire 5 A515-44G-R5ZA\n  ASPIRE 5 A515-54-35XZ\n\n\n ASPIRE 5 A515-43G-R079\n Aspire 5 A515-54G-50ZY\n ASPIRE 5 A515-44G-R0XR\n\n\n TravelMate TMP214-53-78QY\n  Aspire 5 A515-54-52KV\n Aspire 5 A515-54G-58XT\n\n\n  ASPIRE 5 A515-54G-526L\n ASPIRE 5 A515-44-R38P\n ASPIRE 5 A515-54G-30ZS\n\n\n Aspire 5 A515-54G-59ND\n  ASPIRE 5 A515-44-R4XH\n ASPIRE 5 A515-54G-55MX\n\n\n Aspire 5 A515-54G-50T2\n  Aspire 5 A515-54-77S0\n ASPIRE 5 A515-54-77R1\n\n\n Aspire 5 A515-43G-R1D6\n ASPIRE 5 A515-44-R1UB\n  Aspire 5 A515-54G-77N1\n\n\n Aspire 3 A315-54-58RQ\n  ASPIRE 5 A515-54G-58GV\n TravelMate P214-53-53P4\n\n\n Aspire 5 A515-54G-79AB\n Aspire 5 A515-54G-36F3\n Aspire 5 A515-43G-R4ZZ\n\n\n Aspire 3 A315-54-59W9\n Aspire 3 A315-54-58XN\n ASPIRE 5 A515-43G-R6E9\n\n\n ASPIRE 5 A515-54G-33BQ\n Aspire 5 A515-44G-R9YM\n ASPIRE 5 A515-54G-52QW\n\n\n  ASPIRE 5 A515-54G-515P\n TravelMate P2 TMP214-53-51LF\n Aspire 3 A315-54-54DW\n\n\n ASPIRE 3 A315-54-78GW\n ASPIRE 5 A515-54G-788R\n ASPIRE 5 A515-54-52NT\n\n\n  TravelMate P2 TMP214-53-72NM\n ASPIRE 5 A515-43G-R156\n Aspire 3 A315-54K-57BP\n\n\n Aspire 3 A315-54K-31K1\n ASPIRE 5 A515-54G-55S9\n ASPIRE 5 A515-44-R82L\n\n\n ASPIRE 5 A515-54-59X6\n ASPIRE 5 A515-54G-52FY\n Aspire 5 A515-54-50ZH\n\n\n Aspire 5 A515-43G-R4GD\n ASPIRE 5 A515-54-32NA\n Aspire 5 A515-44-R3T5\n\n\n Aspire 3 A315-54-54AA\n ASPIRE 5 A515-54G-734T\n ASPIRE 5 A515-43-R96S\n\n\n ASPIRE 5 A515-43-R0DG\n Aspire 3 A315-54-303W\n Aspire 5 A515-43G-R01C\n\n\n ASPIRE 5 A515-54G-7326\n ASPIRE 5 A515-43G-R3EY\n Aspire 5 A515-54G-30S3\n\n\n Aspire 5 A515-54-76YY\n Spin 3 SP314-54N-3683\n SPIN 3 SP314-54N-53HB\n\n\n Aspire 5 A515-44G-R7JZ\n Aspire 5 A515-54-53Y8\n Aspire 5 A515-54-70Z6\n\n\n Aspire 3 A315-54K-35P6\n  Aspire 5 A515-54G-57FE\n ASPIRE 5 A515-44-R4UN\n\n\n  Aspire 3 A315-54-35CL\n Aspire 5 A515-54G-50QX\n ASPIRE 5 A515-54G-55GU\n\n\n ASPIRE 5 A515-54G-59X0\n ASPIRE 3 A315-54-582X\n Aspire 5 A515-54G-58E5\n\n\n Aspire 5 A515-54-5530\n ASPIRE 5 A515-44G-R6RE\n ASPIRE 5 A515-54-53KJ\n\n\n ASPIRE 5 A515-44-R046\n Aspire 5 A515-43-R6FB\n  Aspire 5 A515-54G-717S\n\n\n ASPIRE 5 A515-54G-526Q\n ASPIRE 5 A515-44-R9YT\n Aspire 5 A515-54G-59S7\n\n\n Aspire 5 A515-43G-R363\n Aspire 5 A515-54-552P\n Aspire 5 A515-54g-788g\n\n\n ASPIRE 5 A515-44-R79P\n ASPIRE 3 A315-54-38H3\n ASPIRE 5 A515-54-58TR\n\n\n TravelMate TMP214-53-52BN\n Aspire 3 A315-54K-32EH\n Aspire 5 A515-54-51VJ\n\n\n  ASPIRE 5 A515-54G-31SR\n ASPIRE 5 A515-54-7994\n ASPIRE 5 A515-54-51M4\n\n\n Aspire 5 A515-54G-76EM\n Aspire 5 A515-43G-R7SX\n ASPIRE 5 A515-54G-72NL\n\n\n ASPIRE 5 A515-54G-540Q\n ASPIRE 5 A515-43-R7UK\n Aspire 5 A515-54-58T0\n\n\n ASPIRE 5 A515-54-77QP\n ASPIRE 5 A515-44-R3KT\n  Aspire 5 A515-43G-R61Y\n\n\n ASPIRE 5 A515-43G-R1HN\n Aspire 5 A515-54G-71QV\n ASPIRE 5 A515-54G-78SC\n\n\n ASPIRE 5 A515-43-R2ND\n  Aspire 5 A515-54-57MX\n ASPIRE 5 A515-54G-37N8\n\n\n ASPIRE 5 A515-44G-R8HL\n  ASPIRE 5 A515-43-R6X9\n TravelMate P2 TMP214-53-57L2\n\n\n ASPIRE 5 A515-54G-78KV\n SPIN 3 SP313-51N-70F5\n Aspire 5 A515-54-73F0\n\n\n ASPIRE 5 A515-43-R2QW\n ASPIRE 5 A515-54G-55G1\n  Aspire 5 A515-54G-55S1\n\n\n Aspire 3 A315-54-39Z3\n ASPIRE 5 A515-54G-77WF\n TravelMate TMP214-53-7753\n\n\n ASPIRE 5 A515-54-33CM\n ASPIRE 5 A515-54G-59ZS\n ASPIRE 5 A515-54G-52D5\n\n\n Aspire 3(A315-54-59VK)\n  Aspire 5 A515-54G-561F\n ASPIRE 5 A515-54-7927\n\n\n Aspire 3 A315-54K-34SY\n Spin 3 SP314-54N-5043\n ASPIRE 5 A515-54G-77XH\n\n\n Aspire 5 A515-44G-R19R\n Aspire 5 A515-54G-58LV\n Aspire 3 A315-54K-38LV\n\n\n ASPIRE 5 A515-54G-554Q\n SPIN 3 SP313-51N-54W0\n Aspire 3(A315-54K-31FP)\n\n\n ASPIRE 5 A515-43-R2FP\n Aspire 5 A515-44-R0ZN\n ASPIRE 5 A515-43-R5P8\n\n\n ASPIRE 5 A515-43G-R1JN\n ASPIRE 5 A515-43-R8DR\n ASPIRE 5 A515-44-R8E2\n\n\n Aspire 5 A515-43G-R5KP\n Aspire 5 A515-54G-70D0\n ASPIRE 5 A515-54G-7985\n\n\n ASPIRE 5 A515-54-50V8\n ASPIRE 5 A515-43-R550\n Aspire 5 A515-54-337M\n\n\n ASPIRE 5 A515-54G-324M\n ASPIRE 5 A515-44-R61A\n Aspire 5 A515-54G-7513\n\n\n ASPIRE 5 A515-54G-74SZ\n ASPIRE 5 A515-54G-52BN\n ASPIRE 5 A515-54-50N6\n\n\n ASPIRE 5 A515-54-798T\n ASPIRE 5 A515-44G-R0WY\n Aspire 5 A515-54-389W\n\n\n Spin 3 SP313-51N-35GA\n ASPIRE 5 A515-44-R8XJ\n  SPIN 3 SP313-51N-577P\n\n\n ASPIRE 5 A515-54G-7124\n SWIFT3 S40-10-51QH\n ASPIRE 5 A515-54G-53S4\n\n\n Aspire 5 A515-54G-70SQ\n ASPIRE 5 A515-54G-34WS\n  SPIN 3 SP313-51N-736N\n\n\n ASPIRE 5 A515-54-3793\n ASPIRE 5 A515-54G-567W\n  ASPIRE 5 A515-43-R20V\n\n\n ASPIRE 5 A515-44-R0YB\n  Aspire 3 A315-54-30LK\n ASPIRE 5 A515-44-R0FM\n\n\n  Aspire 5 A515-54G-58Z6\n Aspire 5 A515-54-52QA\n ASPIRE 5 A515-44G-R21U\n\n\n  ASPIRE 5 A515-54-51R2\n Aspire 5 A515-54G-518Y\n  Aspire 5 A515-54-71QB\n\n\n  Aspire 3 A315-54-51BC\n  Aspire 5 A515-54G-57GK\n ASPIRE 5 A515-54G-576K\n\n\n  ASPIRE 5 A515-54-74QB\n Aspire 3(A315-54K-36NA)\n ASPIRE 5 A515-54G-79VJ\n\n\n ASPIRE 5 A515-54G-322Z\n Spin 3 SP314-54N-724Q\n SPIN 3 SP314-54N-33PM\n\n\n ASPIRE 5 A515-54G-59Y6\n ASPIRE 5 A515-43-R20Q\n ASPIRE 5 A515-54G-799E\n\n\n  ASPIRE 5 A515-44-R419\n SPIN 3 SP314-54N-56H4\n Aspire 5 A515-54G-74DU\n\n\n ASPIRE 5 A515-54G-76WD\n  ASPIRE 5 A515-44G-R1XV\n ASPIRE 5 A515-44G-R4WM\n\n\n TravelMate P2 TMP214-53-7509\n SPIN 3 SP313-51N-52TH\n ASPIRE 5 A515-54G-77DT\n\n\n ASPIRE 5 A515-43-R1YX\n ASPIRE 5 A515-54-50Y8\n  ASPIRE 5 A515-54G-75LT\n\n\n  ASPIRE 5 A515-43-R2WH\n  ASPIRE 5 A515-43-R2SS\n Aspire 5 A515-54-71T1\n\n\n Aspire 5 A515-54-59F7\n ASPIRE 5 A515-54G-70EZ\n ASPIRE 5 A515-54-54XM\n\n\n ASPIRE 5 A515-54G-57NC\n SPIN 3 SP314-54N-30TM\n ASPIRE 5 A515-54G-76Z4\n\n\n Aspire 5 A515-54G-77XN\n ASPIRE 5 A515-54-376J\n Aspire 5 A515-54-504D\n\n\n ASPIRE 5 A515-54G-38DW\n ASPIRE 5 A515-44-R0SN\n  ASPIRE 5 A515-44G-R61V\n\n\n ASPIRE 5 A515-44-R8EL\n ASPIRE 5 A515-54-781Y\n  ASPIRE 5 A515-44-R61T\n\n\n ASPIRE 5 A515-54G-58L0\n Spin 3 SP313-51N-785G\n aspire 3 a315-54k-375u\n\n\n  Aspire 3 A315-54-34G6\n SPIN 3 SP314-54N-7024\n ASPIRE 5 A515-54G-52NC\n\n\n ASPIRE 5 A515-44-R1EP\n ASPIRE 5 A515-54G-52ZM\n  Aspire 5 A515-54G-77CW\n\n\n ASPIRE 5 A515-54G-35CR\n ASPIRE 5 A515-54G-794A\n  ASPIRE 5 A515-44G-R634\n\n\n ASPIRE 5 A515-43-R4L2\n ASPIRE 5 A515-43-R5YU\n  ASPIRE 5 A515-54-72EF\n\n\n ASPIRE 5 A515-43G-R58N\n  ASPIRE 5 A515-44-R4VR\n ASPIRE 5 A515-54G-39DW\n\n\n  ASPIRE 5 A515-54G-54AN\n ASPIRE 5 A515-54G-5712\n ASPIRE 5 A515-54G-32B1\n\n\n ASPIRE 5 A515-54G-50XU\n ASPIRE 5 A515-44G-R0NY\n ASPIRE 5 A515-54G-340T\n\n\n ASPIRE 5 A515-44G-R84K\n  Aspire 5 A515-54-371E\n Aspire 5 A515-54G-73EY\n\n\n ASPIRE 5 A515-54G-378C\n ASPIRE 5 A515-44-R2AK\n Aspire 5 A515-54-55G6\n\n\n ASPIRE 5 A515-54G-31C3\n ASPIRE 5 A515-44G-R9VW\n ASPIRE 5 A515-54G-7736\n\n\n ASPIRE 5 A515-44-R415\n ASPIRE 5 A515-44-R87C\n Aspire 3 A315-54K-396U\n\n\n  ASPIRE 5 A515-54G-35L1\n ASPIRE 5 A515-44G-R9N1\n ASPIRE 5 A515-54-712B\n\n\n Aspire 5 A515-54G-55Z8\n ASPIRE 5 A515-54-787C\n ASPIRE 5 A515-44G-R2MT\n\n\n ASPIRE 5 A515-54-799L\n Spin 3 SP314-54N-50UP\n Aspire 5 A515-54-7724\n\n\n ASPIRE 5 A515-54G-78M5\n ASPIRE 5 A515-54-72SS\n ASPIRE 5 A515-54G-31G2\n\n\n ASPIRE 5 A515-44-R6VQ\n ASPIRE 5 A515-54G-51VC\n ASPIRE 5 A515-54G-58QZ\n\n\n ASPIRE 5 A515-54G-51M3\n  Aspire 3 A315-54-398N\n ASPIRE 5 A515-54G-50LU\n\n\n  ASPIRE 5 A515-44G-R6SD\n ASPIRE 5 A515-54G-50CG\n ASPIRE 5 A515-54G-55BX\n\n\n ASPIRE 5 A515-44-R94B\n  ASPIRE 5 A515-54G-74PE\n ASPIRE 5 A515-54G-76QD\n\n\n ASPIRE 5 A515-44-R97B\n ASPIRE 5 A515-44-R76L\n ASPIRE 5 A515-54-56GT\n\n\n TRAVELMATE P2 TMP214-53-71C5\n ASPIRE 5 A515-54-56DU\n  ASPIRE 5 A515-54G-52WM\n\n\n ASPIRE 5 A515-44G-R9GK\n ASPIRE 5 A515-44-R54M\n ASPIRE 5 A515-54G-517H\n\n\n ASPIRE 5 A515-54G-55N9\n  ASPIRE 5 A515-44-R2DE\n ASPIRE 5 A515-54-576U\n\n\n ASPIRE 5 A515-54G-756Z\n ASPIRE 5 A515-54G-744C\n ASPIRE 5 A515-54G-50A1\n\n\n ASPIRE 5 A515-54G-50D2\n ASPIRE 5 A515-54-56D6\n ASPIRE 5 A515-54G-52RN\n\n\n ASPIRE 5 A515-54G-51G4\n Aspire 3(A315-42G-R5Y2)\n ASPIRE 5 A515-54-56LR\n\n\n Aspire 3(A315-42G-R7QB)\n ASPIRE 5 A515-54G-518Z\n  ASPIRE 5 A515-54G-784Q\n\n\n ASPIRE 5 A515-54G-57W6\n SPIN 3 SP314-54N-56RE\n TRAVELMATE P2 TMP214-53-798S\n\n\n ASPIRE 5 A515-43-R9M8\n  ASPIRE 5 A515-54G-74H5\n ASPIRE 5 A515-54G-77P3\n\n\n Aspire A A315-54-56KY\n ASPIRE 3 A315-54-56NN\n Aspire 5 A515-54G-531V\n\n\n ASPIRE 5 A515-54G-75C3\n ASPIRE 5 A515-44-R4PR\n ASPIRE 5 A515-54G-591K\n\n\n  ASPIRE 5 A515-54-56ZL\n ASPIRE 5 A515-54G-37NB\n ASPIRE 5 A515-44-R65Z\n\n\n ASPIRE 5 A515-44-R2XN\n ASPIRE 5 A515-44G-R5E0\n  Aspire A A515-56-57DM\n\n\n Aspire A A515-56-7699\n ASPIRE 5 A515-43-R6EG\n ASPIRE 5 A515-54-75BU\n\n\n ASPIRE 5 A515-44-R4GM\n ASPIRE 5 A515-54G-77XW\n ASPIRE 5 A515-54-31S8\n\n\n  ASPIRE 5 A515-54G-52QR\n TravelMate P2 TMP214-53-50VZ\n Aspire A A515-56-54PK\n\n\n ASPIRE 5 A515-44-R44H\n Aspire 5 A515-44G-R3MU\n ASPIRE 3 A315-54K-35BR\n\n\n  Aspire A A315-42-R5RW\n ASPIRE 5 A515-44-R23D\n Aspire A A515-56-5820\n\n\n Aspire 5 A515-54-74LM\n Aspire A A515-56-52UY\n SPIN 3 SP313-51N-57MK\n\n\n  TRAVELMATE P2 TMP214-53-78MF\n SPIN 3 SP314-54N-54DB\n SPIN 3 SP314-54N-33MU\n\n\n Aspire A A515-43-R7MS\n ASPIRE 5 A515-54G-50GD\n ASPIRE 5 A515-54-51AY\n\n\n Aspire 5 A515-54-749U\n TravelMate TMP214-53-78AK\n Aspire A A315-42-R7DR\n\n\n Aspire A A315-54-38KM\n ASPIRE 5 A515-44G-R6P8\n SPIN 3 SP314-54N-58WJ\n\n\n Aspire 5 A515-54G-72WM\n ASPIRE 5 A515-44-R6JD\n ASPIRE 5 A515-54-797V\n\n\n Aspire A A515-43G-R9MJ\n  Aspire A A515-43-R3GE\n ASPIRE 5 A515-44G-R3W7\n\n\n ASPIRE 5 A515-54-36D3\n ASPIRE 3 A315-54-57N8\n Aspire A A515-56-59KV\n\n\n ASPIRE 5 A515-43-R4DS\n  Aspire A A315-54-54NF\n  ASPIRE 5 A515-44G-R3J9\n\n\n SPIN 3 SP314-54N-33SR\n ASPIRE 5 A515-44-R5XX\n ASPIRE 5 A515-54-58E0\n\n\n Aspire A A315-54-39U4\n ASPIRE 5 A515-54G-53F9\n Aspire A A515-56-33NT\n\n\n Aspire A A515-54-59CP\n ASPIRE 5 A515-43-R8PS\n  Aspire A A514-52K\n\n\n ASPIRE 3 A315-54K-38A7\n ASPIRE 5 A515-44-R3ZW\n  Aspire A A515-56-70XN\n\n\n Aspire A A515-54G-50F2\n ASPIRE 5 A515-43-R2C8\n ASPIRE 5 A515-54G-7527\n\n\n Aspire A A515-54G\n Aspire A A315-54-59VK\n Aspire A A515-56-511A\n\n\n Aspire 3 A315-54K-39J1\n ASPIRE 5 A515-44G-R6MX\n Aspire A A515-56-55Y3\n\n\n Spin 3 SP314-54N-59YA\n ASPIRE 5 A515-44G-R2LZ\n ASPIRE 5 A515-54-362H\n\n\n ASPIRE 5 A515-54G-73KM\n ASPIRE 5 A515-54G-75QV\n Aspire A A515-43-R19L\n\n\n Aspire A A515-52KG\n  Swift 3 S40-51\n ASPIRE 5 A515-54G-500N\n\n\n ASPIRE 5 A515-54-50M3\n SPIN 3 SP313-51N-53YR\n Aspire A A315-54-54LR\n\n\n SPIN 3 SP314-54N-53XW\n ASPIRE 3 A315-54K-5217\n Aspire 5 A515-54G-7547\n\n\n ASPIRE 5 A515-54G-74CP\n Aspire 5 A515-54G-33P3\n ASPIRE 5 A515-54G-5548\n\n\n ASPIRE 5 A515-44-R8KD\n Spin 3 SP313-51N-74VK\n ASPIRE 5 A515-44-R6S0\n\n\n ASPIRE 5 A515-44-R208\n ASPIRE 5 A515-43-R8JP\n SPIN 3 SP314-54N-56FW\n\n\n ASPIRE 5 A515-43-R0B6\n ASPIRE 5 A515-54-556R\n SPIN 3 SP314-54N-751D\n\n\n  Aspire 5 A515-54-356J\n ASPIRE 5 A515-54G-74W1\n ASPIRE 5 A515-44-R4KH\n\n\n ASPIRE 5 A515-54G-73UU\n Aspire A A515-54G-56GT\n ASPIRE 5 A515-54G-511F\n\n\n SPIN 3 SP314-54N-58K1\n Aspire 5 A515-43-R04Z\n Aspire A A515-56-55LT\n\n\n ASPIRE 5 A515-44-R0XW\n TRAVELMATE P2 TMP214-53-74HJ\n  Aspire A A315-54-363S\n\n\n ASPIRE 5 A515-54G-57K4\n SPIN 3 SP313-51N-558W\n ASPIRE 5 A515-54-500R\n\n\n Aspire A A515-54-5319\n ASPIRE 5 A515-44G-R7ZL\n ASPIRE 5 A515-43-R566\n\n\n Aspire A A515-54-776L\n  Aspire A A315-42-R8MN\n Aspire A A515-52KG-39FM\n\n\n ASPIRE 5 A515-54G-50LC\n Spin 3 SP314-54N-57UC\n Aspire 5 A515-54G-50ZJ\n\n\n Aspire A A515-56-51UF\n ASPIRE 5 A515-44-R0QY\n Aspire 3 A315-54-581P\n\n\n Aspire A A515-54G-78KU\n ASPIRE 5 A515-54G-5765\n ASPIRE 5 A515-54-56S9\n\n\n ASPIRE 5 A515-54-59EF\n ASPIRE 5 A515-44G-R3Z7\n SPIN 3 SP314-54N-55LZ\n\n\n Aspire A A514-52KG\n ASPIRE 5 A515-44-R4YN\n Aspire A A514-52-38YW\n\n\n ASPIRE 5 A515-54G-31VQ\n  Aspire A A315-42-R6PT\n Aspire A A315-54-367E\n\n\n ASPIRE 5 A515-44G-R6CZ\n ASPIRE 3 A315-54-P8JJ\n SPIN 3 SP313-51N-77XG\n\n\n Aspire A A514-52-37H1\n Aspire A A515-54G-755T\n Aspire A A515-54G-79EH\n\n\n ASPIRE 5 A515-44G-R67A\n Aspire A A515-54G-715Y\n SPIN 3 SP314-54N-51NQ\n\n\n ASPIRE 5 A515-54-59Z4\n Aspire A A315-54-391D\n Aspire A A315-42-R4XX\n\n\n ASPIRE 5 A515-44G-R15B\n ASPIRE 5 A515-44-R2XV\n Aspire A A315-42-R0HD\n\n\n Aspire 3 A315-54K-33ZJ\n Aspire A A315-54-59W9\n Aspire A A514-52G-8GK\n\n\n SPIN 3 SP314-54N-367U\n ASPIRE 5 A515-54-76EX\n Aspire A A315-42-R42Q\n\n\n SPIN 3 SP313-51N-565S\n ASPIRE 5 A515-44-R81N\n SPIN 3 SP314-54N-546M\n\n\n ASPIRE 5 A515-54G-7226\n SPIN 3 SP313-51N-79QU\n ASPIRE 5 A515-44G-R58Y\n\n\n ASPIRE 5 A515-44-R9EN\n SPIN 3 SP314-54N-50M5\n Aspire 3 A315-54K-301V\n\n\n SPIN 3 SP313-51N-503K\n Aspire A A315-42-R3CX\n Aspire A A515-52KG-34NK\n\n\n ASPIRE 5 A515-54G-716G\n Aspire A A514-52-37K4\n ASPIRE 5 A515-43-R5RD\n\n\n Aspire A A515-54-789H\n ASPIRE 5 A515-44-R1JE\n ASPIRE 5 A515-54-30CX\n\n\n SPIN 3 SP314-54N-54VW\n ASPIRE 5 A515-54G-738V\n Aspire A A515-54G-79U5\n\n\n ASPIRE 5 A515-44G-R6C5\n ASPIRE 5 A515-44-R69J\n SPIN 3 SP314-54N-371NY\n\n\n ASPIRE 5 A515-54-77Y6\n Aspire A A315-42-R5P7\n Aspire 5 A515-54G-73XU\n\n\n Aspire A A515-45-R36S\n TravelMate TMP214-53-56L9\n Aspire 5 A515-44G-R4S9\n\n\n SPIN 3 SP313-51N-583U\n ASPIRE 5 A515-54G-78L7\n ASPIRE 5 A515-44-R2L1\n\n\n ASPIRE 5 A515-54-38GP\n ASPIRE 5 A515-54G-55TL\n ASPIRE 5 A515-43-R53A\n\n\n  Aspire 5 A515-54G-52RH\n ASPIRE 5 A515-44G-R9J1\n ASPIRE 5 A515-44-R539\n\n\n Aspire A A515-56-31JK\n Aspire A A515-52KG-37CZ\n SPIN 3 SP313-51N-31S7\n\n\n TRAVELMATE P2 TMP214-53-58E9\n  Aspire A A515-54G-74FC\n ASPIRE 5 A515-44-R63Y\n\n\n SPIN 3 SP314-54N-52V7\n ASPIRE 5 A515-54G-59QU\n Aspire A A515-52KG-35R5\n\n\n ASPIRE 5 A515-54-71A5\n TRAVELMATE P2 TMP214-53-5832\n Aspire A A515-54G-7895\n\n\n Aspire A A515-43G-R77W\n  SPIN 3 SP314-54N-714H\n Aspire A A515-54-79QJ\n\n\n Aspire A A515-56-509F\n Aspire A A515-45-R944\n Aspire A A515-56G\n\n\n Aspire A A514-52-542Q\n SPIN 3 SP313-51N-55BT\n Aspire A A515-45-R4R1\n\n\n ASPIRE 5 A515-54G-74P6\n Aspire A A514-52KG-31Z0\n Aspire A A515-45-R382\n\n\n ASPIRE 5 A515-54G-53NV\n  Aspire A A515-56-363A\n Aspire 3 A315-54-502F\n\n\n ASPIRE 5 A515-54G-597Q\n ASPIRE 5 A515-44-R7KM\n Aspire A A515-43-R057\n\n\n ASPIRE 5 A515-54G-79RT\n SPIN 3 SP314-54N-36RRY\n Aspire A A515-54G-72KB\n\n\n Aspire A A315-54-567J\n Aspire A A515-56-32HF\n Aspire A A515-52KG-394L\n\n\n ASPIRE 5 A515-44-R5U1\n Aspire A A315-54-32WU\n SPIN 3 SP313-51N-54WE\n\n\n ASPIRE 5 A515-44-R9RC\n  Aspire A A515-45\n ASPIRE 5 A515-54-59LQ\n\n\n Spin 3 SP314-54N-36GW\n ASPIRE 5 A515-44-R76F\n Spin 3 SP314-54N-556D\n\n\n ASPIRE 5 A515-54G-52SS\n  SPIN 3 SP314-54N-32T7\n ASPIRE 5 A515-54G-547S\n\n\n Aspire A A514-52-396B\n Aspire A A515-56G-70MB\n ASPIRE 5 A515-54G-796P\n\n\n Aspire A A515-56-50Q6\n ASPIRE 5 A515-44-R75V\n  ASPIRE 5 A515-44-R8CQ\n\n\n SPIN 3 SP313-51N-72C7\n ASPIRE 5 A515-54G-568U\n Spin 3 SP314-54N-52UY\n\n\n Aspire A A515-56-38G9\n  Aspire A A515-54G-54WA\n ASPIRE 5 A515-44-R8WK\n\n\n  Aspire A A515-45-R8BM\n ASPIRE 5 A515-54-52EQ\n Aspire A A515-54G-717S\n\n\n ASPIRE 5 A515-44-R1D6\n Aspire A A515-54G-58J7\n ASPIRE 5 A515-54G-51G7\n\n\n ASPIRE 3 A315-54K-583G\n Aspire 5 A515-54G-79V7\n Aspire A A515-54G-7341\n\n\n Aspire A A315-54-541Y\n Aspire A A515-45G\n Aspire A A515-54G-53GT\n\n\n Aspire A A315-54-34DH\n Aspire A A515-54G-79A3\n Aspire A A514-52-50LU\n\n\n ASPIRE 5 A515-54G-5781\n  Aspire A A315-54-51H7\n ASPIRE 5 A515-44-R21J\n\n\n Aspire A A515-43-R4A1\n ASPIRE 5 A515-54G-79Q6\n Aspire A A515-45G-R1RP\n\n\n Aspire A A315-42-R4BX\n Aspire A A515-45-R6AV\n  ASPIRE 5 A515-44-R6NN\n\n\n Aspire A A315-54-50VX\n Aspire A A514-52KG-34LC\n Aspire 3 A315-54K-382N\n\n\n Aspire A A515-54-51JE\n Travelmate TMP214-53-30SL\n Aspire A A515-45-R9GZ\n\n\n Aspire A A514-52-570U\n Aspire A A515-56-70D5\n ASPIRE 5 A515-44G-R9GV\n\n\n SPIN 3 SP314-54N-32F4\n Aspire A A515-54G-51QS\n Aspire A A515-45-R588\n\n\n ASPIRE 5 A515-44G-R56A\n ASPIRE 5 A515-44-R6DH\n Aspire A A315-54-50PG\n\n\n Aspire A A515-45G-R381\n Aspire A A515-54G-75LV\n ASPIRE 5 A515-44G-R3LB\n\n\n Aspire A A315-54-578F\n  SPIN 3 SP313-51N-78HA\n Aspire A A515-43G-R1SJ\n\n\n Aspire A A315-42-R2M0\n TravelMate TMP214-53-37QW\n  Aspire A A515-56G-73SK\n\n\n Aspire A A515-54G-51CR\n Aspire A A515-54G-77SX\n ASPIRE 5 A515-44-R6BW\n\n\n Aspire A A515-56G-57BP\n Aspire A A315-54-56SQ\n ASPIRE 5 A515-54-73CR\n\n\n  Aspire A A515-43G-R05T\n ASPIRE 5 A515-43-R74J\n Aspire A A515-54G-50LM\n\n\n  ASPIRE 5 A515-54G-55TM\n Aspire A A514-52-58U3\n Aspire A A515-56-70ZB\n\n\n Aspire A A514-52KG-30Y9\n SPIN 3 SP314-54N-57F7\n Aspire 3 A315-54-35HR\n\n\n Aspire A A514-52G-516T\n ASPIRE 5 A515-43-R6V5\n  Aspire A A515-54G-74Y8\n\n\n Aspire A A515-45-R3YX\n Aspire 5 A515-44-R1XZ\n  ASPIRE 5 A515-54G-742X\n\n\n  Aspire A A515-56G-51YF\n Aspire A A515-54G-722H\n Aspire A A315-54-530D\n\n\n TravelMate TMP214-53-72K8\n Aspire A A515-45-R2Q9\n Aspire A A515-52KG-362S\n\n\n Aspire A A515-43-R6WW\n Aspire A A515-54G-78AJ\n SPIN 3 SP313-51N-54K7\n\n\n Spin 3 SP314-54N-55SG\n  Aspire A A515-45G-R3HY\n Aspire A A515-54G-75PF\n\n\n Aspire A A315-54-57LA\n Aspire A A315-54-36C9\n  Aspire A A515-45-R9GQ\n\n\n Aspire A A515-56G-36U4\n  TRAVELMATE P2 TMP214-53-57UM\n Aspire 5 A515-44-R48W\n\n\n Aspire A A515-54G-73WV\n TRAVELMATE P2 TMP214-53-79NC\n ASPIRE 3 A315-54K-5217Z\n\n\n ASPIRE 5 A515-54G-75HC\n Aspire A A515-56-58F6\n ASPIRE 5 A515-54G-599W\n\n\n Aspire A A515-56G-73HW\n ASPIRE 5 A515-54G-55WD\n Aspire A A515-56G-56XJ\n\n\n  Aspire A A515-56-73KP\n Aspire A A514-52KG-31B8\n ASPIRE 5 A515-44-R5U4\n\n\n SPIN 3 SP313-51N-749S\n Aspire A A315-42-R0NP\n Aspire A A515-45-R00P\n\n\n Aspire A A515-45G-R4F8\n Spin 3 SP314-54N-59S1\n Aspire A A515-56G-72JM\n\n\n Aspire A A514-52G-518K\n Aspire A A514-52KG-35CD\n SPIN 3 SP313-51N-70GW\n\n\n Aspire A A515-45-R41H\n SPIN 3 SP313-51N-52BK\n Aspire A A515-43G-R4GD\n\n\n Aspire A A515-56G-54EA\n Aspire A A514-52KG-30HB\n Aspire A A515-54-752M\n\n\n Aspire A A515-45-R2QJ\n SPIN 3 SP314-54N-7555\n SPIN 3 SP314-54N-54BT\n\n\n Aspire A A514-52G-59FW\n TravelMate TMP214-53-55XM\n SPIN 3 SP313-51N-73ZE\n\n\n Aspire A A515-43-R7GV\n Aspire A A514-52K-39AD\n Aspire A A515-54G-59MW\n\n\n Aspire A A515-45G-R3YL\n ASPIRE 5 A515-44-R4N1\n Aspire A A515-56G-71JH\n\n\n Aspire A A315-42-R6Y5\n Aspire A A515-43-R3Z3\n  Aspire A A515-54G-75RE\n\n\n Aspire A A514-52G-77RY\n Aspire A A515-54G-56V6\n Aspire A A515-43G-R3EY\n\n\n TRAVELMATE P2 TMP214-53-72EQ\n Aspire A A515-56G-51JE\n Aspire A A315-42-R3ZH\n\n\n Aspire A A515-45G-R7EW\n Aspire A A514-52G-53GU\n ASPIRE 5 A515-44-R5EJ\n\n\n ASPIRE 5 A515-54G-718M\n Travelmate TMP214-53-32X6\n Aspire A A515-56G-7008\n\n\n  Aspire A A514-52G-30Q2\n Aspire A A515-56-75FG\n Aspire A A514-52KG-339Z\n\n\n Aspire A A515-56G-761Z\n Aspire A A515-45-R3QX\n Aspire A A514-52G-73CP\n\n\n Aspire A A515-54-356J\n Travel Mate TMP214-53-32U0\n Aspire A A515-56-58TN\n\n\n  SPIN 3 SP314-54N-58HM\n Aspire A A514-52K-31LQ\n  Aspire A A515-54-59W2\n\n\n Aspire A A515-45G-R5N7\n Aspire A A514-52G-5303\n Aspire A A315-42-R9QN\n\n\n Aspire A A514-52K-3472\n Aspire A A515-54G-58YP\n Aspire A A515-43G-R5A6\n\n\n Aspire A A515-45G-R2LF\n Aspire A A514-52-78MD\n Aspire A A515-54G-738P\n\n\n SPIN 3 SP314-54N-54UH\n Aspire A A515-45-R81U\n Aspire A A515-54-59LB\n\n\n Aspire A A315-42-R1BU\n Aspire A A515-45G-R5A1\n Aspire A A515-56G-7327\n\n\n  Aspire A A515-43-R4HV\n Aspire A A515-54G-76PK\n Aspire A A515-54G-58DT\n\n\n ASPIRE 5 A515-44-R95G\n Aspire A A515-43G-R4YU\n Aspire A A515-45G-R1X1\n\n\n Aspire A A515-56G-54P1\n  Aspire A A515-45G-R9F9\n Aspire A A515-45-R6RZ\n\n\n Aspire A A515-54-58ZU\n SPIN 3 SP314-54N-50TR\n Aspire A A515-45G-R49R\n\n\n Aspire A A515-56G-71RB\n Aspire A A514-52KG-34P2\n Aspire A A515-54-52BQ\n\n\n Aspire A A515-43G-R3TJ\n Aspire A A515-45G-R089\n Aspire A A515-56-70N0\n\n\n Aspire A A514-52KG-304T\n Aspire A A515-54-73EG\n TRAVELMATE P2 TMP214-53-77BX\n\n\n Aspire A A515-45G-R80K\n Aspire A A515-45-R5SM\n Aspire A A514-52K-3879\n\n\n Aspire A A514-52G-32K1\n  Aspire A A515-56-75VG\n SPIN 3 SP314-54N-71CF\n\n\n Aspire A A514-52KG-34H4\n Aspire A A515-54-P1VY\n Aspire A A315-42-R6QT\n\n\n  Aspire A A515-56G-78TR\n Aspire A A515-45-R3SU\n Aspire A A514-52G-75MR\n\n\n  Aspire A A515-43G-R2W2\n  Aspire A A514-52K-31VK\n ASPIRE 5 A515-44G-R0GQ\n\n\n  TRAVELMATE P2 TMP214-53-75SR\n Aspire A A315-54-52UL\n SPIN 3 SP314-54N-52LT\n\n\n  Aspire A A515-45G-R76Y\n ASPIRE 5 A515-44-R4XX\n Aspire A A515-56G-74M0\n\n\n Aspire A A514-52G-5335\n Aspire A A515-54G-51QF\n Aspire A A515-45-R4SQ\n\n\n  SPIN 3 SP314-54N-572RY\n  Aspire A A515-54-53Y8\n ASPIRE 5 A515-44-R6BY\n\n\n Aspire A A515-54G-58Z6\n Aspire A A515-45G-R32W\n Aspire A A515-56G-5885\n\n\n Aspire A A515-56-74N4\n Aspire A A514-52KG-32TH\n Aspire A A315-42-R6B5\n\n\n Aspire A A515-54-34B1\n Aspire A A515-54-59R0\n Aspire A A315-42-R2G4\n\n\n Aspire A A514-52G-5294\n  Aspire A A515-54G-517L\n Aspire A A515-43-R4Z2\n\n\n  Aspire A A515-45-R4LJ\n Aspire A A515-54G-774N\n Aspire A A514-52K-32NL\n\n\n Aspire A A515-43G-R4ZA\n Aspire A A515-45G-R24K\n Aspire A A515-54G-7547\n\n\n SPIN 3 SP314-54N-54RUY\n Aspire A A514-52G-7045\n Aspire A A515-45-R77P\n\n\n Aspire A A514-52K-30A5\n Aspire A A515-54G-701A\n SPIN 3 SP313-51N-552M\n\n\n  Aspire A A515-54G-76EM\n  Spin 3 SP314-54N-53CR\n  Aspire A A515-54-52FN\n\n\n Aspire A A515-54G-575Z\n Aspire 3 A315-54K-3536\n Aspire A A515-54G-72J5\n\n\n Aspire A A515-45G-R8J6\n Aspire A A315-54-55B9\n  Aspire A A515-54G-52ED\n\n\n  TravelMate TMP214-53-58GN\n SPIN 3 SP314-54N-50PE\n Aspire A A515-43G-R9ZW\n\n\n Aspire A A514-52G-355Y\n  Aspire A A515-45-R3UG\n  Spin 3 SP314-54N-57QU\n\n\n Aspire A A315-54-36SU\n SPIN 3 SP313-51N-79PL\n SPIN 3 SP314-54N-58S5\n\n\n Aspire A A515-54-72FM\n Aspire A A515-54G-71ZY\n Aspire A A515-45-R2KM\n\n\n  ASPIRE 5 A515-44-R80U\n Aspire A A515-43-R5RE\n SPIN 3 SP314-54N-57C9\n\n\n Aspire A A514-52K-36GL\n Aspire A A515-54G-597F\n Aspire 3 A315-54-38S1\n\n\n ASPIRE 5 A515-44G-R90F\n  Aspire A A515-54G-7456\n Aspire A A315-54-54Z3\n\n\n Aspire A A515-54G-55S1\n Aspire A A515-54G-71SW\n  SPIN 3 SP314-54N-51PA\n\n\n  Aspire A A515-45-R1JH\n ASPIRE 5 A515-44-R7TL\n SPIN 3 SP313-51N-59PT\n\n\n TRAVELMATE P2 TMP214-53-P2C6\n Aspire A A315-54-501W\n Aspire A A514-52G-71XL\n\n\n Aspire A A515-54G-53H6\n ASPIRE 5 A515-44-R8QS\n Aspire A A315-54-34RS\n\n\n SPIN 3 SP313-51N-751F\n Aspire A A514-52K-30AZ\n  Aspire A A515-45-R0HB\n\n\n Aspire A A514-52G-51Y3\n SPIN 3 SP313-51N-58AA\n  Aspire A A315-42-R8PY\n\n\n  Aspire A A515-45-R4F1\n Aspire A A514-52K-320X\n Aspire A A515-54-76YY\n\n\n Aspire A A315-54-53L7\n Aspire A A515-45-R2QQ\n Aspire A A514-52G-59VP\n\n\n Aspire A A515-54G-53B7\n Aspire A A515-54G-78T1\n  Aspire A A514-52K-305A\n\n\n  Aspire A A515-54G-59PW\n  Aspire A A315-54-514N\n Travelmate P2 TMP214-53-59YN\n\n\n Aspire A A515-54G-5071\n Aspire A A515-43-R41R\n Aspire A A515-54G-764U\n\n\n ASPIRE 5 A515-44G-R462\n Aspire A A515-54G-56XE\n ASPIRE 5 A515-44G-R9HU\n\n\n Aspire A A514-52G-58MM\n Aspire A A515-54G-52D5\n Aspire A A515-54-585X\n\n\n Aspire A A515-54G-59CL\n Aspire A A315-54-50TE\n Aspire A A515-54G-74DU\n\n\n Aspire A A315-54-5580\n Aspire A A515-54-51DJ\n  TRAVELMATE P2 TMP214-53-71X3\n\n\n Aspire A A515-54-72A8\n Aspire A A515-54G-71WP\n Aspire A A515-45-R1MA\n\n\n Aspire A A515-54G-788G\n Aspire A A514-52K-35J2\n Aspire 5 A515-54G-52EH\n\n\n  Aspire A A315-54-50P8\n Aspire A A515-43G-R613\n Aspire A A515-45-R3AR\n\n\n Aspire A A515-54G-75EF\n  Aspire A A315-54-56ZH\n Aspire A A514-52G-736H\n\n\n Aspire A A515-43G-R0HD\n  Aspire A A514-52K-30NA\n Aspire A A315-54-524P\n\n\n  Aspire A A515-45-R1HC\n Aspire A A515-45G-R5MD\n  SPIN 3 SP313-51N-590H\n\n\n Aspire A A515-43-R0BV\n TRAVELMATE P2 TMP214-53-78QY\n  SPIN 3 SP314-54N-51BU\n\n\n Spin 3 SP314-54N-51AU\n SPIN 3 SP314-54N-599N\n  SPIN 3 SP313-51N-5622\n\n\n SPIN 3 SP314-54N-71FC\n Aspire 5 A515-54G-50T9\n Aspire A A515-43-R5LF\n\n\n Aspire 5 A515-54G-55E8\n Aspire 5 A515-54G-781V\n TravelMate P2 TMP214-53-38MJ\n\n\n Aspire 3 A315-54-31H3\n SPIN 3 SP313-51N-76W8\n Aspire 5 A515-44G-R1WW\n\n\n Aspire 3 a315-54-31N0\n Spin 3 SP314-54N-38TM\n TravelMate TMP214-53-55L4\n\n\n TravelMate TMP214-53-568H\n TravelMate TMP214-53-544H\n Aspire 5 515-54G-53GP\n\n\n Aspire 5 A515-44-R7UM\n swift 3 S40-51-70RM\n TravelMate P2 TMP214-53-534KS\n\n\n  Swift 3 S40-51-54WR\n  Aspire 5 A515-54G-514C\n Aspire 5 A515-54G-70ZN\n\n\n Aspire 5 A515-54-N78K\n swift 3 S40-51-53M8\n Aspire 5 A515-54G-51BQ\n\n\n Spin 3 SP313-51N-55S6\n Swift 3 S40-10-56Q0\n Aspire 5 A515-54G-52YD\n\n\n TravelMate TMP214-53-7509\n SPIN 3 SP314-54N-57JG\n SPIN 3 SP314-54N-37NU\n\n\n Spin 3 SP314-54N-58C3\n  ASPIRE 5 A515-44-R7W3\n\n\n\n\n&nbsp;\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tAdditional information\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\nWeight0.5 kgDimensions30 &times; 15 &times; 5 cmBrandACERAdapter TypeOriginalAC Power AdapterYesConditionNEWColorBlackLaptops BatteriesGenuine original Adapters, Laptop Chargers\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tQ&amp;A\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n    \n        Questions &amp; Answers\n        \n            Ask a Question        \n    \n\n    \n\n\n    \n        \n        \n        \n            \n                All                0\n            \n            \n                Answered                0\n            \n                    \n\n        \n            Newest\n            Oldest\n        \n    \n\n    \n        \n    \n\n\n    \n    \n    \n        &times;\n        Ask a Question\n        \n    \n\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\n\t\t\t\t\t\n\t\t\t\n\t\t\t \t\t\t\t\t\n\t\t\t\n\t\n\t\t\n\t\t\t0 reviews for ACER 45w Original Laptop Charger &#8211; 19V 2.37A Genuine AC Power Adapter (1.1mm)\t\t\n\n\t\t\t\t\n\t\t\tCustomer reviews\t\t\n\t\t\n                   \n                       \n                           \n                           \n                       \n                   \n                   No reviews found\n                   No reviews match your current filters. Try adjusting or clearing your filters to see more reviews.\n\t\t\t\t   Clear all filters\n               \t\t\t\n\n\t\t\tOnly logged in customers who have purchased this product may leave a review.\n\t\n\t\t\n\t\t\t\t\t\n\t\t\n\t\n\t\n\t\n\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\tRelated products\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-53%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tASUS 180W Model : ADP-180MB 19.5V 9.23A Genuine Original Laptop Adapter Charger  ( 2.5 mm )\n\t\tASUS\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;6,999.00 Original price was: &#8377;6,999.00.&#8377;3,290.00Current price is: &#8377;3,290.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-40%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tDELL 130w Model : LA130PM121 Original Laptop Charger &#8211; 19.5V 6.7A Genuine AC Power Adapter  ( 7.4 mm )\n\t\tDELL\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;4,999.00 Original price was: &#8377;4,999.00.&#8377;2,990.00Current price is: &#8377;2,990.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-50%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tDELL 180W DP/N : 0WW4XY Original Laptop Charger &#8211; 19.5V 9.23A Genuine AC Power Adapter  ( 7.4 mm )\n\t\tDELL\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;6,999.00 Original price was: &#8377;6,999.00.&#8377;3,490.00Current price is: &#8377;3,490.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-60%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tDELL 45w Original Laptop Charger &#8211; 5V/9V/15V/20V  3A/2.25A Genuine AC Power Adapter ( USB TYPE C )\n\t\tDELL\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;4,999.00 Original price was: &#8377;4,999.00.&#8377;1,990.00Current price is: &#8377;1,990.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-25%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tDELL 65w DP / N : 0G6J41 Original Laptop Charger &#8211; 19.5V 3.34A Genuine AC Power Adapter ( 4.5 mm )\n\t\tDELL\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;1,999.00 Original price was: &#8377;1,999.00.&#8377;1,490.00Current price is: &#8377;1,490.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-34%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tDELL 90W Model : LA90PM111 19.5V 4.62A Genuine Original Laptop Adapter Charger ( 7.4 mm )\n\t\tDELL\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;2,999.00 Original price was: &#8377;2,999.00.&#8377;1,990.00Current price is: &#8377;1,990.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-50%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 170w Original Laptop Charger &#8211; 20V 8.5A Genuine AC Power Adapter ( Square Yellow )\n\t\tLENOVO\t\t\t\t\t⭐⭐⭐⭐⭐\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;5,999.00 Original price was: &#8377;5,999.00.&#8377;2,990.00Current price is: &#8377;2,990.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-58%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 45w Original Laptop Charger &#8211; 20V 2.25A Genuine AC Power Adapter (TYPE -C )\n\t\tLENOVO\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;3,999.00 Original price was: &#8377;3,999.00.&#8377;1,690.00Current price is: &#8377;1,690.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-30%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 65w Model : ADLX65NCT3A Original Laptop Charger &#8211; 20V 3.25A Genuine AC Power Adapter ( 5.5 mm )\n\t\tLENOVO\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;1,999.00 Original price was: &#8377;1,999.00.&#8377;1,390.00Current price is: &#8377;1,390.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-58%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 90W Model : ADLX90NLC3A Original Laptop Charger &#8211; 20V 4.5A Genuine AC Power Adapter ( Square Yellow )\n\t\tLENOVO\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;3,999.00 Original price was: &#8377;3,999.00.&#8377;1,690.00Current price is: &#8377;1,690.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-58%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 65W 20V 3.25A Genuine Original Laptop Adapter Charger ( USB TYPE C )\n\t\tLENOVO\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;3,999.00 Original price was: &#8377;3,999.00.&#8377;1,690.00Current price is: &#8377;1,690.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\n\t\n\n\t\n\t\n\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t-44%\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tQuick view\t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\n\t\n\n\t\n\n\t\tLENOVO 90W Model : ADP-90DD B &#8211; 20V 4.5A Genuine Original Laptop Adapter Charger ( 2.5 mm )\n\t\tLENOVO\t\t\t\t\t\t\t\n\t\t\n\t\t\n\t\t\t\n\t&#8377;2,999.00 Original price was: &#8377;2,999.00.&#8377;1,690.00Current price is: &#8377;1,690.00. ( FREE DELIVERY )\n\n\t\t\t\t\t\n\n\t\t\n\t\t\t\n\t\t\tAdd to cart\t\t\n\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t \t\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\n\n\n\n\t\n\t\n\t\t\t\n\t\t\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t \t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tPrivacy Policy |\r\nSecure Payment |\r\nShipping &amp; Returns |\r\nTerms &amp; Conditions |\r\nAbout Us |\r\nContact Us\r\n\r\nCopyright   2025 | All Rights Reserved. CREATED BY CODAKE. \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tMenu\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tCategories\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\tLaptop Parts\n\n\t\t\n\t\t\n\t\t\n\t\t\tBack\t\t\n\t\t\n\t\t\tLaptop Adapter\n\tLaptop Battery\n\n\nRefurbished\nHome\nShop\nAbout us\nContact us\n\t\t\t\n\t\t\t\tWishlist\n\t\t\t\n\t\t\tCompareLogin / Register\n\t\t\t\t\t \t\t\t\t\t\t \t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tShopping cart\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tClose\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t \t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tShop\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tWishlist\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t0 items\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tCart\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tMy account\t\t\t\t\n\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t \t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tACER 45w Original Laptop Charger &#8211; 19V 2.37A Genuine AC Power Adapter (1.1mm)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t&#8377;2,999.00 Original price was: &#8377;2,999.00.&#8377;1,699.00Current price is: &#8377;1,699.00. ( FREE DELIVERY )\n\t\t\t\t\t\t\t\t\t\t\t\t\t\n\t\n\t\n\t\t\n\t\t\n\n\t\n\t\t\t\n\t\n\tACER 45w Original Laptop Charger - 19V 2.37A Genuine AC Power Adapter (1.1mm) quantity\n\t\n\n\t\t\t\n\t\n\t\n\n\t\tAdd to cart\n\n\t\t\t\t\t\n\t\t\t\tBuy now\t\t\t\n\t\t\n\t\n\n\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tCompare\n\t\t\t\n\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\tAdd to wishlist\n\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\n\t\t\t\t\n\t\t\t\n\t\t\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nerror: Content is protected !!\r\n\t\n\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\tProducts search\t\t\t\n\n\t\t\t\n\t\t\t\n\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\tProducts search\t\t\t\n\n\t\t\t\n\t\t\t\n\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\tProducts search\t\t\t\n\n\t\t\t\n\t\t\t\n\n\t\t\t\n\n\t\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\t\n\t\n\n\n\t\t\n\t\t\n\t\t\t\t\t\t\n\t\t\t\tProducts search",
+      "title": "https://superpc.in/product/acer-45w-original-laptop-charger-19v-2-37a-genuine-ac-power-adapter-1-1mm/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1784448798245,
+        "end": 1784448798448
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.518Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798519,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce2c001BVfrpUC2Ng5346",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_729b6d69cf4b10ad",
+    "tool": "webfetch",
+    "state": {
+      "status": "error",
+      "input": {
+        "format": "text",
+        "url": "https://techiestore.in/product/techie-45w-19v-2-37a-pin-size-3-0mm-x-1-1mm-compatible-acer-laptop-charger/"
+      },
+      "error": "Error: Request failed with status code: 403",
+      "time": {
+        "start": 1784448798252,
+        "end": 1784448798516
+      }
+    }
+  }
+}
+{
+  "type": "error",
+  "timestamp": 1784448798519,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "error": "Error: Request failed with status code: 403"
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.612Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784448798612,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fce29001zgXeMyI08nk7cv",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "tool",
+    "callID": "call_229984c54ba734ea",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://www.newegg.com/p/16J-02UW-000D6"
+      },
+      "output": "Are you a human?\n\n\n\n\n\n    \n\t    \n\t        \n\t    \n    \n    \n\t\tHuman?\n\t    Are you a human?\n\t    We apologize for the confusion, but we can't quite tell if you're a person or a script.\n\t    Please don't take this personally. Bots and scripts can be very much lifelike these days!\n\t    To help us better protect your account security, please check the CAPTCHA box below.\n\t    \n         detecting...\n        If you're interested in accessing Newegg API service, please submit a request.\n\t    We would love to hear your opinion. Let us know your feedback.",
+      "title": "https://www.newegg.com/p/16J-02UW-000D6 (text/html)",
+      "metadata": {},
+      "time": {
+        "start": 1784448798250,
+        "end": 1784448798610
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T08:13:18.616Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 37150,
+    "output": 348,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 37150,
+  "sseCompletionTokens": 348,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.618Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784448798618,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fcf98001PJhbcsU9GNNCFr",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fcd92001ejo3IYh6n5pGy4",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 37150,
+      "output": 348,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 37498,
+      "headroom": 1358,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.619Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.626Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.640Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.640Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.656Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.660Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.661Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.671Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.671Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.672Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.769Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.770Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 37498,
+  "providerTokens": 37498,
+  "estimatedInputTokens": 39812,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 37150,
+    "cacheRead": 0,
+    "output": 348
+  },
+  "overflow": false,
+  "headroom": 14310,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.771Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.790Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.804Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.925Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784448798925,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fd0ca001B8XwSXO3yTOeKo",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fd032001nUsCbU7Fy0RcFg",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.930Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784448798930,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fd0ce0013XxAGGsOVwn71Z",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fd032001nUsCbU7Fy0RcFg",
+    "type": "text",
+    "text": "Are you a human?\n\n\n\n\n\n    \n\t    \n\t        \n\t    \n    \n    \n\t\tHuman?\n\t    Are you a human?\n\t    We apologize for the confusion, but we can't quite tell if you're a person or a script.\n\t    Please don't take this personally. Bots and scripts can be very much lifelike these days!\n\t    To help us better protect your account security, please check the CAPTCHA box below.\n\t    \n         detecting...\n        If you're interested in accessing Newegg API service, please submit a request.\n\t    We would love to hear your opinion. Let us know your feedback.\n\nSource: https://www.newegg.com/p/16J-02UW-000D6",
+    "time": {
+      "start": 1784448798929,
+      "end": 1784448798929
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-19T08:13:18.930Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 101769,
+    "output": 599,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 101769,
+  "sseCompletionTokens": 599,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784448798931,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "part": {
+    "id": "prt_f796fd0d3001pAtXF4t0o0DVxH",
+    "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+    "messageID": "msg_f796fd032001nUsCbU7Fy0RcFg",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 101769,
+      "output": 599,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 102368,
+      "headroom": -63512,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.932Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.933Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.937Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.937Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.966Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.967Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.967Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.968Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.968Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.969Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.979Z",
+  "service": "session.prompt",
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.980Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.980Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784448798980,
+  "sessionID": "ses_086903ec8ffepC3j348zuf9xm2"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.980Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.980Z",
+  "service": "default",
+  "directory": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.981Z",
+  "service": "state",
+  "key": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.983Z",
+  "service": "state",
+  "key": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.984Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+

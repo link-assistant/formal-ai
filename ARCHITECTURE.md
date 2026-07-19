@@ -148,7 +148,7 @@ following Rust modules:
 | Step | Module | Status |
 | --- | --- | --- |
 | 1. Input | `src/engine.rs::FormalAiEngine::answer` and `solve_with_history` in `src/solver.rs` | Implemented |
-| 2. Translate to Links Notation | `event_log::Event::Impulse` in `src/event_log.rs` | Implemented |
+| 2. Translate to Links Notation | `EventLog::append("impulse", …)` in `src/event_log.rs` | Implemented |
 | 3. Record in memory | `MemoryStore::append` in `src/memory.rs` | Implemented |
 | 4. Formalization | `src/concepts.rs` plus `src/translation/formalization.rs` for scored P/Q-id, Wikipedia, Wiktionary, and raw fallback anchors | Implemented |
 | 5. Temperature interpretation selection | `src/translation/selection.rs`, `src/probability.rs`, plus `SolverConfig::{temperature, guess_probability, questioning_rigor}` in `src/solver.rs` | Implemented |
@@ -168,7 +168,7 @@ branched on by domain at the top level.
 
 ## 3. Translating Input to Links Notation
 
-The chat surface stores the raw impulse as a Links Notation node first, then
+The chat surface stores the raw impulse as a Links Notation link first, then
 optionally re-parses it into a sequence of statements or questions. The
 canonical shape is:
 
@@ -222,7 +222,59 @@ User-facing surfaces guard these operations with an export-first path and an
 irreversible confirmation, while the CLI requires `--confirm` and can write a
 full-bundle `--backup` before modifying the memory file.
 
-### 4.2 Default native doublets-rs / doublets-web store
+### 4.2 Dreaming maintenance planner
+
+Issue #540 adds `src/dreaming.rs`, a default-on, low-priority maintenance
+planner over the same `MemoryEvent` projection. Dreaming reads memory and emits
+an inspectable plan; it does not mutate memory unless the caller explicitly
+uses `formal-ai memory dream --apply --confirm`, with the same optional
+full-bundle `--backup` as reset and purge-deleted.
+
+The planner classifies events into five `DreamingDurability` classes:
+
+- `IrreplaceableRaw` for raw user/assistant/system experience;
+- `RetainedLearning` for learning ledgers, promoted lessons, generalized
+  algorithms, and baked-in meta-algorithm amendments;
+- `DeletedConversation` for data already attached to a soft-deleted thread;
+- `RecomputableCache` for public-source cache and fetch/tool output;
+- `RecomputableIntermediate` for derived summaries and conclusions.
+
+Only deleted conversation data, recomputable cache data, and recomputable
+intermediate data are reclaimable. Duplicate cleanup is limited to the
+recomputable classes and recalculates usage by scanning current event text and
+evidence links before deciding which duplicate to keep. Under storage pressure,
+`DreamingConfig` targets a 20% free-space reserve by default, subtracts the
+next known `incoming_bytes`, and selects the lowest-use reclaimable records
+first. If reclaimable records cannot satisfy the target, the plan reports
+`requires_bigger_storage` instead of selecting raw or learned experience.
+
+Dreaming also *learns from memory links and generalizes*. `event_topic` ranks
+frequent topics, `requirement_statement` reads multilingual cues from
+`data/meta/dreaming-cues.lino`, and `mine_patterns` derives recurring task
+structures directly from records. Proposed `MetaAlgorithmAmendment` values are
+replayed against discovered candidate tasks; only an exact normalized replay
+may mark a specific as covered. Applied amendments are retained as structured
+`meta_algorithm_amendment` events, and `src/dreaming_application.rs` reads those
+events on later OpenAI-compatible requests so the learned rule changes similar
+future answers without being repeated. Under pressure, only replay-verified
+specifics can be forgotten via `ForgetCoveredSpecific`.
+
+`src/storage_policy.rs` measures actual filesystem capacity/free bytes and the
+next incoming write. Automatic removal requires a persisted `.auto-free-space`
+choice; both CLI and Electron can ask, and Electron warns when larger storage is
+still required. `src/dreaming_runtime.rs` runs the same learning loop in the
+core server, guarded by foreground activity, while Electron additionally uses
+system-idle detection and lowest practical cross-platform process priority.
+The thirteen-stage recipe in `data/meta/dreaming-recipe.lino` is pinned to all
+of these live source modules.
+
+The Electron desktop shell starts `desktop/lib/dreaming.cjs` by default as a
+plan-only background task. It waits before its first run, repeats infrequently,
+unrefs timers/processes, and wraps the CLI with `nice -n 19` on Unix-like
+platforms. Operators can disable that scheduler with
+`FORMAL_AI_DESKTOP_DREAMING=off`.
+
+### 4.3 Default native doublets-rs / doublets-web store
 
 Native Rust builds select `LinkStoreBackend::DoubletsRs` by default because
 Cargo's default feature set enables `doublets-native`. The library exposes
@@ -232,7 +284,7 @@ flags themselves. Compiling with `--no-default-features` keeps the explicit
 `MemoryStore` / `.lino` projection fallback for small builds and recovery
 tools.
 
-The native backend mirrors each `MemoryEvent` into a `doublets-rs` graph using
+The native backend mirrors each `MemoryEvent` into the `doublets-rs` links network using
 the `Type -> SubType -> Value` reduction in `src/link_store.rs`. Links
 Notation remains the deterministic projection for inspection, backup,
 recovery, and migration: `import_memory_links_notation` accepts both legacy
@@ -267,7 +319,7 @@ Implemented migration surface:
 6. Keep the browser IndexedDB/doublets-web mirror on the same projection
    contract.
 
-### 4.3 Public-knowledge cache
+### 4.4 Public-knowledge cache
 
 When the local memory does not contain enough evidence to satisfy a prompt,
 the solver follows the **source cache protocol** (see
@@ -286,7 +338,7 @@ This is the architectural answer to "instead of GPU and neural networks, use
 reasoning with internet as a public database with our local memory as
 cache."
 
-### 4.4 Fact-query reasoning pipeline (Issue #127)
+### 4.5 Fact-query reasoning pipeline (Issue #127)
 
 Structured factual prompts — "what is the capital of France?", "столица
 Германии", "भारत की राजधानी", "中国的首都" — are answered by a dedicated
@@ -519,7 +571,7 @@ The solver follows the universal loop documented in `VISION.md` (Section
 "Universal Problem-Solving Algorithm"). The implementation is in
 `src/solver.rs`:
 
-1. **Impulse** — `Event::Impulse` is appended.
+1. **Impulse** — an `impulse` event is appended through `EventLog::append`.
 2. **Formalization** — alias resolution plus P/Q-id lookup with fallbacks.
 3. **Context and domain data** — language detection, surface, mode flags.
 4. **History lookup** — search local doublets first; record `cache_hit`
@@ -554,7 +606,7 @@ The pipeline has three pieces:
    localisations, topic label, and aliases for each project. The seed file is
    embedded at compile time and parsed once per process via
    `src/seed/projects.rs::projects_registry()`.
-2. **Formalize → summarize → deformalize pipeline.** `src/summarization.rs`
+2. **Formalize → summarize → deformalize pipeline.** `src/summarization/mod.rs`
    exposes a deterministic three-stage pipeline. `formalize` (or
    `Statement::from_seed`) turns free-form prose or curated statements into a
    homogeneous `Vec<Statement>` with a `StatementKind` (identity, purpose,
@@ -639,7 +691,7 @@ The same pipeline also drives four additional surfaces:
   `summarization:language` so the path from URL → curated record → summary
   is fully visible.
 
-The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `src/summarization.rs`
+The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `src/summarization/mod.rs`
 documents the default cap on retained statements; any caller can raise or
 lower it with `SummarizationConfig::with_max_statements`.
 
@@ -674,7 +726,7 @@ get a step-by-step explanation at any depth.
 
 ## 9. Transformation and Substitution Rules
 
-The associative store supports four kinds of rules. They are listed in
+The associative store supports five kinds of rules. They are listed in
 order from "lowest privilege" to "highest privilege":
 
 1. **Pure data rules** — `when LHS then RHS` doublet patterns. No code is
@@ -732,7 +784,7 @@ interpreted one step at a time without ever being lowered to Rust/JS.
 
 Because formalization is language-independent (a Wikidata Q-id is the same
 whether it is named in English, Russian, Hindi, or Chinese), translation is
-not a separate model — it is a re-rendering of the same formalized graph
+not a separate model — it is a re-rendering of the same formalized links network
 into the target language's labels.
 
 ```text
@@ -750,9 +802,9 @@ render_zh  -> "快速排序是一种排序算法"
 The same machinery translates between natural and programming languages.
 When the formalizer recognizes the input as a programming-language
 construct (Rust function, Python class, SQL query), it lifts the construct
-to a formalized graph the same way and re-renders into any other language
+to a formalized links network the same way and re-renders into any other language
 the renderer supports. The renderer is a transformation rule (Section 9):
-the input is `(graph, target_language)`; the output is rendered text.
+the input is `(links_network, target_language)`; the output is rendered text.
 
 ### 10.1 Formalize → Meaning → Deformalize Pipeline
 
@@ -830,7 +882,7 @@ language-to-meta-to-same-language survival for every supported natural language
 and a directed pair round trip across en, ru, hi, and zh. Code translation uses
 the same shape and the same anti-`N * N` rule: `translate_program` never matches
 on a `(source, target)` pair. It formalizes source code into a language-neutral
-`CodeMeaning` (`src/solver_helpers.rs::formalize_code_meaning`) and renders that
+`CodeMeaning` (`src/solver_helpers/code.rs::formalize_code_meaning`) and renders that
 meaning into the target (`render_code_meaning`), so adding a language is one
 formalizer plus one renderer, not a new pair. Because the source language never
 enters the formalizer, any pair — including ones with no hardcoded arm, such as
@@ -863,9 +915,22 @@ session. The knobs:
 | `offline` | bool | `false` | refuse external lookups (also `FORMAL_AI_OFFLINE`). |
 | `cache_ttl_seconds` | u64 | `5_184_000` | TTL for `source_cache` entries (≈ 60 days). |
 | `temperature` | f32 in `[0, 1]` | `0.7` | softmax temperature for interpretation selection. |
+| `follow_up_probability` | f32 in `[0, 1]` | see `SolverConfig::default` | how often the proof engine invites the user to refine proof inputs before final execution. |
+| `definition_fusion_by_default` | bool | see default | plain definition prompts use cross-language fusion before concept lookup (also `FORMAL_AI_DEFINITION_FUSION`). |
+| `associative_project_promotion` | bool | see default | repository questions prefer known Link Assistant / Link Foundation / LinksPlatform projects first. |
+| `recursion_mode` | `RecursionMode` | `Down` | which directions of the meta core's recursion are traced (`down`/`up`/`both`); trace-only (R338). |
+| `selection_mode` | `SelectionMode` | `Off` | whether the registry-resolved method per atomic leaf is recorded (`off`/`record`); trace-only (R339). |
+| `skill_mode` | `SkillMode` | `Off` | whether the skill/curriculum ledger is accumulated (`off`/`accumulate`); proposal-only (R342, also `FORMAL_AI_SKILL_MODE`). |
+| `execution_surface` | `ExecutionSurface` | see default | embedding surface used for environment-aware self-description. |
+| `blueprint_composition` | `BlueprintComposition` | see default | how composite-program blueprints project their recipe template (issue #340). |
+| `probability_policy` | `ProbabilityDecisionPolicy` | paper baseline | `CU`/`TU`/`TC`/`SS` knobs governing how symbolic probability evidence ranks candidates. |
+| `forced_response_language` | `Option<&'static str>` | `None` | forces one replay's response language and guards recursion (issue #556, R337-adjacent). |
 
 The same prompt + same config produces the same answer. Random choices are
-seeded from the impulse content hash.
+seeded from the impulse content hash. The defaults live in
+`SolverConfig::default` in `src/solver.rs`; the trace-verbosity knobs
+(`recursion_mode`, `selection_mode`, `skill_mode`) change neither routing nor
+the answer.
 
 ---
 
@@ -874,13 +939,19 @@ seeded from the impulse content hash.
 Every event written by the pipeline carries:
 
 - a content-addressed `id` (FNV-1a 64-bit);
-- a `kind` from a fixed vocabulary (`impulse`, `language_detected`,
-  `local_search`, `external_search`, `sub_impulse`, `candidate`, `test`,
-  `validation`, `policy`, `agent_action`, `cache_hit`, `source`, `trace`,
-  `error`, `simplification`, `source_refresh`);
-- the `parent_id` it belongs to (so nested traces preserve depth);
-- the original `language` and `surface`;
+- a `kind` naming what was recorded — representative kinds include `impulse`,
+  `sub_impulse`, `candidate`, `validation`, `cache_hit`, `source`,
+  `source_refresh`, `agent_action`, `trace`, and `error`. The vocabulary is
+  open rather than fixed: `EventLog::append` takes any `&'static str`, and many
+  kinds use a `prefix:detail` convention (`policy:offline`,
+  `formalization:*`, `trace:execution_failure`, `summarization:mode`,
+  `meta_algorithm_amendment`, …), which is what the evidence-link namespace
+  projects;
 - a `payload` that varies by kind (Links Notation snippet).
+
+The in-process `Event` struct (`src/event_log.rs`) is deliberately minimal —
+`id`, `kind`, `payload`. Nesting depth, language, and surface are carried by
+the payload and the surrounding trace rather than by dedicated fields.
 
 The log is the system of record. The user-facing `answer` field is a
 projection. The Links Notation trace is the canonical export form.
@@ -946,17 +1017,36 @@ The same `FormalAiEngine` answers prompts in every surface:
   events only for requests that enable extended thinking. This keeps
   thinking-capable CLIs on their native protocol fields without inventing a
   separate display contract.
-- **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
+- **VS Code extension** — `vscode/`, shipped for both hosts: the desktop
+  (Node) host drives the local `POST /v1/chat/completions` route, while the
+  web/`vscode.dev` host runs the in-process WASM engine. Marketplace and Open
+  VSX publication is tracked by issue
+  [#666](https://github.com/link-assistant/formal-ai/issues/666).
+- **Browser demo** — `src/web/formal_ai_worker.js` (a small loader shim) plus
+  the solver logic it `importScripts`-loads from
+  `src/web/worker/formal_ai_worker_00.js` … `_21.js`, alongside the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 
-The browser boundary is intentionally narrow. Rust/WASM owns deterministic
-domain primitives that must match the native solver byte-for-byte: prompt
-normalization, language detection, arithmetic evaluation, stable FNV-1a ids,
-unknown-answer opener selection, intent-route matching semantics, web-search
-provider constants, request evidence, and reciprocal-rank fusion. JavaScript
-keeps the browser-only responsibilities: UI state, seed-file fetch/parsing,
-network/CORS orchestration, DOM integration, and compatibility fallbacks when
-WASM cannot be instantiated.
+Rust/WASM owns deterministic domain primitives that must match the native
+solver byte-for-byte: prompt normalization, language detection, arithmetic
+evaluation, stable FNV-1a ids, unknown-answer opener selection, intent-route
+matching semantics, web-search provider constants, request evidence, and
+reciprocal-rank fusion. JavaScript keeps the browser-only responsibilities: UI
+state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
+and compatibility fallbacks when WASM cannot be instantiated.
+
+**The browser boundary is not yet narrow, and this is the honest current
+state.** The WASM bridge (`src/web/wasm-worker/src/lib.rs`) is ~500 lines,
+while `src/web/worker/*.js` still carries roughly 26,700 lines of solver logic
+mirroring the ~90,000-line Rust core — the cross-runtime parity (E34) and
+issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
+into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
+UI/glue") therefore describes the target, not today's split. Absorbing the
+remaining worker logic into Rust→WASM — after which the JavaScript surface is
+capped and lint-enforced as UI/glue — is tracked by issue
+[#658](https://github.com/link-assistant/formal-ai/issues/658) (R380), and is
+the blocker for the npm-published engine in issue
+[#665](https://github.com/link-assistant/formal-ai/issues/665).
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
@@ -1062,7 +1152,27 @@ that the parity batch is **now closed and merged**:
    browser-worker parity precedent; WebAssembly stays the bridge for shared
    primitives and JavaScript stays UI/glue per pillar 18.
 
-With E1-E34 all merged, no vision-planning epic remains open for issue #244.
+With E1-E34 all merged, no vision-planning epic remains open **for issue #244
+specifically**. That statement does not mean planning is finished: two later
+batches are open, and `ROADMAP.md` tracks their requirement-level status
+(done / partial / not done):
+
+- **E37-E55** ([#656](https://github.com/link-assistant/formal-ai/issues/656)-[#674](https://github.com/link-assistant/formal-ai/issues/674)),
+  created from the issue [#651](https://github.com/link-assistant/formal-ai/issues/651)
+  gap analysis.
+- **E56-E68** ([#698](https://github.com/link-assistant/formal-ai/issues/698)-[#710](https://github.com/link-assistant/formal-ai/issues/710)),
+  created from the 2026-07-14 audit of every closed issue and merged PR.
+
+The largest architectural gaps those batches own are: the #559 mandate to
+retire the specialized handlers in favour of memory + the meta algorithm
+([#663](https://github.com/link-assistant/formal-ai/issues/663),
+[#699](https://github.com/link-assistant/formal-ai/issues/699)), real upstream
+benchmark execution ([#698](https://github.com/link-assistant/formal-ai/issues/698)),
+absorbing the JavaScript worker into WASM
+([#658](https://github.com/link-assistant/formal-ai/issues/658)), symbolic
+world-model behaviors ([#702](https://github.com/link-assistant/formal-ai/issues/702)),
+and driving external agent CLIs as an orchestrator
+([#703](https://github.com/link-assistant/formal-ai/issues/703)).
 
 A later issue #349 roadmap closed the concrete program-modification gap that the
 parity batch exposed in a user dialog: after an active program artifact exists,
@@ -1102,7 +1212,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 ... R305).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R444, plus per-issue blocks such as R499-1…R499-8).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
@@ -1132,3 +1242,43 @@ the table in Section 2 and link the new module.
   `src/proof_engine/decision/sat.rs`; wide claims are
   [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
   in `src/proof_engine/decision/boolean.rs` before being handed to it.
+
+### Symbolic world models and contexts (issue #649)
+
+- The design case study in `docs/case-studies/issue-649/README.md` audits how the
+  associative stack realizes symbolic **world models**: a **current-state** and a
+  **target-state** context, their difference, context **merge/split**, and
+  **predicting the consequences of an action** — each context being a **links
+  network** rather than an embedding. It maps the request onto the classical
+  prior art ([STRIPS/PDDL](https://en.wikipedia.org/wiki/Stanford_Research_Institute_Problem_Solver)
+  planning, [truth-maintenance systems](https://en.wikipedia.org/wiki/Reason_maintenance)
+  JTMS/ATMS, and [AGM belief revision](https://en.wikipedia.org/wiki/Belief_revision))
+  and onto [relative-meta-logic](https://github.com/link-foundation/relative-meta-logic),
+  whose kernel already lives in `src/relative_meta_logic.rs`. Statement
+  dependency edges and the change-driven recalculation cascade reuse
+  `SubstitutionGraph::apply_rules`; the concept-by-concept status is in
+  `docs/case-studies/issue-649/world-model-mapping.md`.
+
+### Usage-weighted associative persistence (issue #686)
+
+- `src/associative_persistence.rs` keeps a **persistent** version of
+  **meta-language expressions** saved in an **associative links network**: an
+  `AssociativeMemory` stores each expression as a content-addressed node (via
+  `stable_id`, so one meaning is one node) in an embedded `SubstitutionGraph`,
+  counts **usages (reads)** and **changes (writes)** per expression, and derives an
+  independent usage signal from each node's **incoming and outgoing link degree**.
+  A single `retention_score` (reads + writes + in-degree + out-degree, under
+  configurable `RetentionWeights`) drives an LFU-style policy so the **most used,
+  most changed, and most connected** knowledge **persists longest**; eviction
+  forgets the lowest-scored first. Everything — expressions, read/write counts, and
+  associations — is **a link** (never a separate edge/vertex type) and serializes to
+  Links Notation. The design case study in
+  `docs/case-studies/issue-686/README.md` maps the request onto its prior art
+  ([Wikontic](https://huggingface.co/papers/2512.00590) entity-degree↔retrieval,
+  [LFU cache replacement](https://en.wikipedia.org/wiki/Cache_replacement_policies),
+  [reference counting](https://en.wikipedia.org/wiki/Reference_counting), and
+  [degree centrality](https://en.wikipedia.org/wiki/Centrality#Degree_centrality)),
+  and the concept-by-concept status is in
+  `docs/case-studies/issue-686/persistence-mapping.md`. It generalizes the
+  read-count LFU precursor already present in `src/dreaming.rs` (`usage_counts`) and
+  bridges to the issue #649 world model via `AssociativeMemory::from_context`.

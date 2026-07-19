@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q7368": {
+      "type": "item",
+      "id": "Q7368",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sheep"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "овца"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भेड़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "羊"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "domesticated ruminant bred for meat, wool, and milk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "парнокопытное млекопитающее из рода баранов семейства полорогих"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "домашняя овца"
+          },
+          {
+            "language": "ru",
+            "value": "баран"
+          },
+          {
+            "language": "ru",
+            "value": "ярка"
+          },
+          {
+            "language": "ru",
+            "value": "ягнёнок"
+          },
+          {
+            "language": "ru",
+            "value": "овцы"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

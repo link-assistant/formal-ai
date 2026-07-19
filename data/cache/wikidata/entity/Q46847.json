@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q46847": {
+      "type": "item",
+      "id": "Q46847",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ring"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кольцо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंगूठी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "戒指"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "circular object worn as a type of ornamental jewellery"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предмет, носимый на пальце"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "圓形帶子作為手指周圍的一種裝飾性珠寶佩戴"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "перстень"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "指環"
+          },
+          {
+            "language": "zh",
+            "value": "腳趾指環"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

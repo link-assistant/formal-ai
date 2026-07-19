@@ -1,0 +1,16 @@
+Q7561
+  aliases
+    en (snowfall snowfalls)
+    ru ("снегопад")
+  descriptions
+    en "precipitation in the form of ice crystal flakes"
+    ru "атмосферные осадки в виде многочисленных мелких кристаллов льда"
+    zh "從雲中降落的結晶狀固體冰"
+  id Q7561
+  labels
+    en snow
+    hi "हिम"
+    ru "снег"
+    zh "雪"
+  type item
+success 1

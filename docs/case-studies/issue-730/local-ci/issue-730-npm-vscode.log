@@ -1,0 +1,9 @@
+
+up to date in 6s
+Unexpected npm stderr; update dependencies or explicitly classify the diagnostic:
+npm warn allow-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn allow-scripts   @playwright/browser-chromium@1.61.1 (install: node install.js)
+npm warn allow-scripts   @vscode/vsce-sign@2.0.9 (postinstall: node ./src/postinstall.js)
+npm warn allow-scripts   keytar@7.9.0 (install: node-gyp rebuild)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.

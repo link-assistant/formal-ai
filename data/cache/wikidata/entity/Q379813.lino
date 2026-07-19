@@ -1,0 +1,16 @@
+Q379813
+  aliases
+    en (pulse beans)
+    zh ("豆子" "豆" "豆類")
+  descriptions
+    en "seed of several plants in the legume family"
+    ru "имя для больших семян растений"
+    zh "植物"
+  id Q379813
+  labels
+    en bean
+    hi "सेम"
+    ru "бобы"
+    zh "豆类"
+  type item
+success 1

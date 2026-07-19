@@ -23,17 +23,22 @@
 //! serde_json = "1"
 //! ```
 
+use chrono::Utc;
+use regex::Regex;
+use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::io::Write;
-use std::path::Path;
-use std::process::{Command, exit};
-use regex::Regex;
-use chrono::Utc;
-use serde::Deserialize;
+use std::path::{Path, PathBuf};
+use std::process::{exit, Command};
 
 #[path = "rust-paths.rs"]
 mod rust_paths;
+#[path = "self-hosting-metric.rs"]
+pub mod self_hosting_metric;
+
+const CHANGELOG_REBUILD_SCRIPT: &str = "experiments/issue_711_rebuild_changelog.mjs";
+const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release-map.tsv";
 
 fn get_arg(name: &str) -> Option<String> {
     let args: Vec<String> = env::args().collect();
@@ -99,6 +104,54 @@ fn exec_check(command: &str, args: &[&str]) -> bool {
         .unwrap_or(false)
 }
 
+/// Run a git command inside `repo`, so the release logic can be exercised
+/// against a throwaway repository in tests instead of the process CWD.
+fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
+    let repo_str = repo.to_string_lossy().to_string();
+    let mut full: Vec<&str> = vec!["-C", &repo_str];
+    full.extend_from_slice(args);
+    exec("git", &full)
+}
+
+/// Number of commits `origin/<branch>` has that HEAD does not.
+fn commits_behind(repo: &Path, branch: &str) -> u32 {
+    git(repo, &["rev-list", "--count", &format!("HEAD..origin/{}", branch)])
+        .ok()
+        .and_then(|out| out.trim().parse().ok())
+        .unwrap_or(0)
+}
+
+/// Rebase onto the latest `origin/<branch>` so a concurrent release that landed
+/// mid-job is picked up.
+///
+/// This MUST run while the working tree is still clean, before the version bump
+/// is written and staged: `git rebase` refuses to run against a dirty index
+/// ("cannot rebase: Your index contains uncommitted changes"), which is what
+/// broke the release job. Syncing first also means the bump is computed from the
+/// newest state of the branch instead of a stale checkout.
+fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
+    // A missing remote is not fatal: the push step reports the real problem.
+    if let Err(e) = git(repo, &["fetch", "origin", branch]) {
+        eprintln!("Warning: Could not fetch origin/{}: {}", branch, e);
+        return Ok(());
+    }
+
+    let behind = commits_behind(repo, branch);
+    if behind == 0 {
+        return Ok(());
+    }
+
+    println!(
+        "Local branch is behind origin/{} by {} commit(s), rebasing...",
+        branch, behind
+    );
+    if let Err(e) = git(repo, &["rebase", &format!("origin/{}", branch)]) {
+        let _ = git(repo, &["rebase", "--abort"]);
+        return Err(format!("Error rebasing onto origin/{}: {}", branch, e));
+    }
+    Ok(())
+}
+
 struct Version {
     major: u32,
     minor: u32,
@@ -129,8 +182,8 @@ impl Version {
 }
 
 fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content =
+        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^(version\s*=\s*")[^"]+(")"#).unwrap();
     let new_content = re.replace(&content, format!("${{1}}{}${{2}}", new_version).as_str());
@@ -150,11 +203,7 @@ fn update_cargo_toml(cargo_toml_path: &str, new_version: &str) -> Result<(), Str
 ///
 /// Returns Ok(true) if Cargo.lock was updated, Ok(false) if it does not exist
 /// or no matching entry was found.
-fn update_cargo_lock(
-    cargo_lock_path: &Path,
-    crate_name: &str,
-    new_version: &str,
-) -> Result<bool, String> {
+fn update_cargo_lock(cargo_lock_path: &Path, crate_name: &str, new_version: &str) -> Result<bool, String> {
     if !cargo_lock_path.exists() {
         println!(
             "No Cargo.lock at {} (skipping lock-file version sync)",
@@ -164,8 +213,7 @@ fn update_cargo_lock(
     }
 
     let path_str = cargo_lock_path.to_string_lossy();
-    let content = fs::read_to_string(cargo_lock_path)
-        .map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
+    let content = fs::read_to_string(cargo_lock_path).map_err(|e| format!("Failed to read {}: {}", path_str, e))?;
 
     // Match the [[package]] entry for our crate:
     //   [[package]]
@@ -175,8 +223,7 @@ fn update_cargo_lock(
         r#"(?m)(\[\[package\]\]\s*\nname\s*=\s*"{}"\s*\nversion\s*=\s*")[^"]+(")"#,
         regex::escape(crate_name),
     );
-    let re = Regex::new(&pattern)
-        .map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
+    let re = Regex::new(&pattern).map_err(|e| format!("Failed to build Cargo.lock regex: {}", e))?;
 
     if !re.is_match(&content) {
         println!(
@@ -194,8 +241,7 @@ fn update_cargo_lock(
         return Ok(false);
     }
 
-    fs::write(cargo_lock_path, new_content.as_ref())
-        .map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
+    fs::write(cargo_lock_path, new_content.as_ref()).map_err(|e| format!("Failed to write {}: {}", path_str, e))?;
 
     println!("Updated {} to version {}", path_str, new_version);
     Ok(true)
@@ -213,8 +259,8 @@ struct CratesIoVersionEntry {
 }
 
 fn get_crate_name(cargo_toml_path: &str) -> Result<String, String> {
-    let content = fs::read_to_string(cargo_toml_path)
-        .map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
+    let content =
+        fs::read_to_string(cargo_toml_path).map_err(|e| format!("Failed to read {}: {}", cargo_toml_path, e))?;
 
     let re = Regex::new(r#"(?m)^name\s*=\s*"([^"]+)""#).unwrap();
 
@@ -253,7 +299,9 @@ fn get_max_published_version(crate_name: &str) -> Option<(u32, u32, u32)> {
                         if let Some(versions) = data.versions {
                             let mut max: Option<(u32, u32, u32)> = None;
                             for v in &versions {
-                                if v.yanked { continue; }
+                                if v.yanked {
+                                    continue;
+                                }
                                 let base = match v.num.split('-').next() {
                                     Some(b) => b,
                                     None => continue,
@@ -289,7 +337,12 @@ fn ensure_version_exceeds_published(
     tag_prefix: &str,
     max_published: Option<(u32, u32, u32)>,
 ) -> String {
-    let parts: Vec<&str> = version_str.split('-').next().unwrap_or(version_str).split('.').collect();
+    let parts: Vec<&str> = version_str
+        .split('-')
+        .next()
+        .unwrap_or(version_str)
+        .split('.')
+        .collect();
     if parts.len() != 3 {
         return version_str.to_string();
     }
@@ -302,9 +355,15 @@ fn ensure_version_exceeds_published(
         if (major, minor, patch) <= (pub_major, pub_minor, pub_patch) {
             println!(
                 "Version {}.{}.{} is not greater than max published {}.{}.{}, adjusting to {}.{}.{}",
-                major, minor, patch,
-                pub_major, pub_minor, pub_patch,
-                pub_major, pub_minor, pub_patch + 1
+                major,
+                minor,
+                patch,
+                pub_major,
+                pub_minor,
+                pub_patch,
+                pub_major,
+                pub_minor,
+                pub_patch + 1
             );
             major = pub_major;
             minor = pub_minor;
@@ -343,10 +402,17 @@ fn strip_frontmatter(content: &str) -> String {
     }
 }
 
-fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
+fn remove_changelog_fragments(files: &[PathBuf]) {
+    for file in files {
+        fs::remove_file(file).unwrap_or_else(|e| panic!("Failed to remove {}: {}", file.display(), e));
+        println!("Removed changelog fragment {}", file.display());
+    }
+}
+
+fn collect_changelog_with_date(changelog_dir: &str, changelog_file: &str, version: &str, date_str: &str) -> bool {
     let dir_path = Path::new(changelog_dir);
     if !dir_path.exists() {
-        return;
+        return false;
     }
 
     let mut files: Vec<_> = match fs::read_dir(dir_path) {
@@ -358,11 +424,11 @@ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
                     && p.file_name().map_or(false, |name| name != "README.md")
             })
             .collect(),
-        Err(_) => return,
+        Err(_) => return false,
     };
 
     if files.is_empty() {
-        return;
+        return false;
     }
 
     files.sort();
@@ -375,38 +441,97 @@ fn collect_changelog(changelog_dir: &str, changelog_file: &str, version: &str) {
         .collect();
 
     if fragments.is_empty() {
-        return;
+        return false;
     }
 
-    let date_str = Utc::now().format("%Y-%m-%d").to_string();
-    let new_entry = format!("\n## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
+    // No leading newline: `lines[..idx]` already ends with the blank line that
+    // follows the insert marker, so opening with one produced a second blank
+    // line that `issue_711_rebuild_changelog.mjs --check` rejects.
+    let new_entry = format!("## [{}] - {}\n\n{}\n", version, date_str, fragments.join("\n\n"));
 
-    if Path::new(changelog_file).exists() {
-        let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
-        let lines: Vec<&str> = content.lines().collect();
-        let mut insert_index = None;
-
-        for (i, line) in lines.iter().enumerate() {
-            if line.starts_with("## [") {
-                insert_index = Some(i);
-                break;
-            }
-        }
-
-        if let Some(idx) = insert_index {
-            let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
-            new_lines.push(new_entry.clone());
-            new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
-            content = new_lines.join("\n");
-        } else {
-            content.push_str(&new_entry);
-        }
-
-        fs::write(changelog_file, content).expect("Failed to write changelog");
+    if !Path::new(changelog_file).exists() {
+        return false;
     }
+
+    let mut content = fs::read_to_string(changelog_file).unwrap_or_default();
+    let lines: Vec<&str> = content.lines().collect();
+    let mut insert_index = None;
+
+    for (i, line) in lines.iter().enumerate() {
+        if line.starts_with("## [") {
+            insert_index = Some(i);
+            break;
+        }
+    }
+
+    if let Some(idx) = insert_index {
+        let mut new_lines: Vec<String> = lines[..idx].iter().map(|s| s.to_string()).collect();
+        new_lines.push(new_entry.clone());
+        new_lines.extend(lines[idx..].iter().map(|s| s.to_string()));
+        // `lines()` drops the trailing newline and `join` never restores it, so
+        // every release used to strip the file's final newline.
+        content = format!("{}\n", new_lines.join("\n"));
+    } else {
+        content.push_str(&new_entry);
+    }
+
+    fs::write(changelog_file, content).expect("Failed to write changelog");
+    remove_changelog_fragments(&files);
 
     println!("Collected {} changelog fragment(s)", files.len());
+    true
 }
+
+fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, String> {
+    if !Path::new(CHANGELOG_REBUILD_SCRIPT).is_file() {
+        return Ok(false);
+    }
+    exec(
+        "node",
+        &[
+            CHANGELOG_REBUILD_SCRIPT,
+            "--write",
+            "--ref",
+            "HEAD",
+            "--pending-release",
+            version,
+            "--pending-date",
+            date,
+        ],
+    )?;
+    println!("Regenerated changelog and fragment release map");
+    Ok(true)
+}
+
+fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<PathBuf, String> {
+    let repo = PathBuf::from(exec("git", &["rev-parse", "--show-toplevel"])?);
+    let tag_pattern = format!("{tag_prefix}[0-9]*");
+    let since = exec(
+        "git",
+        &[
+            "describe",
+            "--tags",
+            "--match",
+            &tag_pattern,
+            "--abbrev=0",
+            "HEAD",
+        ],
+    )?;
+    let tag = format!("{tag_prefix}{new_version}");
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    let row = self_hosting_metric::record_release(&repo, &ledger, &tag, &since, "HEAD", 3)?;
+    println!(
+        "Recorded self-hosting metric for {tag}: {} ({}/{} changed lines)",
+        self_hosting_metric::format_percentage(row.percentage_basis_points),
+        row.self_authored_lines,
+        row.changed_lines,
+    );
+    Ok(ledger)
+}
+
+#[cfg(test)]
+#[path = "version-and-commit-tests.rs"]
+mod tests;
 
 fn main() {
     let bump_type = match get_arg("bump-type") {
@@ -445,7 +570,18 @@ fn main() {
 
     // Configure git
     let _ = exec("git", &["config", "user.name", "github-actions[bot]"]);
-    let _ = exec("git", &["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
+    let _ = exec(
+        "git",
+        &["config", "user.email", "github-actions[bot]@users.noreply.github.com"],
+    );
+
+    // Sync with the remote while the tree is still clean, so a concurrent
+    // release is picked up before the bump is computed and staged.
+    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
+    if let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
+        eprintln!("{}", e);
+        exit(1);
+    }
 
     // Get current version
     let content = match fs::read_to_string(&package_manifest) {
@@ -481,7 +617,10 @@ fn main() {
         println!("No versions published on crates.io yet (or crate not found)");
     }
 
-    println!("Initial bump ({}) from {}.{}.{}: {}", bump_type, current.major, current.minor, current.patch, initial_bump);
+    println!(
+        "Initial bump ({}) from {}.{}.{}: {}",
+        bump_type, current.major, current.minor, current.patch, initial_bump
+    );
 
     let new_version = ensure_version_exceeds_published(&initial_bump, &crate_name, &tag_prefix, max_published);
 
@@ -493,6 +632,14 @@ fn main() {
     }
 
     println!("Final release version: {}", new_version);
+
+    let self_hosting_ledger = match record_self_hosting_release(&tag_prefix, &new_version) {
+        Ok(path) => path,
+        Err(e) => {
+            eprintln!("Error recording self-hosting release metric: {}", e);
+            exit(1);
+        }
+    };
 
     // Update version in Cargo.toml
     if let Err(e) = update_cargo_toml(package_manifest.to_string_lossy().as_ref(), &new_version) {
@@ -510,17 +657,54 @@ fn main() {
         }
     };
 
-    // Collect changelog fragments
-    collect_changelog(&changelog_dir, &changelog_file, &new_version);
+    // Collect changelog fragments, then reconstruct the release artifacts while
+    // the deletions are still visible against HEAD. The map records only
+    // fragment -> release, so it can be committed atomically with the release
+    // instead of depending on that commit's not-yet-existing SHA.
+    let release_date = Utc::now().format("%Y-%m-%d").to_string();
+    let collected = collect_changelog_with_date(&changelog_dir, &changelog_file, &new_version, &release_date);
+    let reconstructed = if collected {
+        match regenerate_release_artifacts(&new_version, &release_date) {
+            Ok(reconstructed) => reconstructed,
+            Err(e) => {
+                eprintln!("Error regenerating release artifacts: {}", e);
+                exit(1);
+            }
+        }
+    } else {
+        false
+    };
 
-    // Stage Cargo.toml, Cargo.lock (when bumped), and CHANGELOG.md
+    // Stage Cargo.toml, Cargo.lock (when bumped), CHANGELOG.md, the release
+    // metric ledger, and consumed fragments.
     let package_manifest_str = package_manifest.to_string_lossy().to_string();
     let cargo_lock_str = cargo_lock_path.to_string_lossy().to_string();
-    let mut add_args: Vec<&str> = vec!["add", &package_manifest_str, &changelog_file];
+    let self_hosting_ledger_str = self_hosting_ledger.to_string_lossy().to_string();
+    let mut add_args: Vec<&str> = vec![
+        "add",
+        &package_manifest_str,
+        &changelog_file,
+        &self_hosting_ledger_str,
+    ];
     if lock_updated {
         add_args.push(&cargo_lock_str);
     }
-    let _ = exec("git", &add_args);
+    if let Err(e) = exec("git", &add_args) {
+        eprintln!("Error staging release files: {}", e);
+        exit(1);
+    }
+    if Path::new(&changelog_dir).exists() {
+        if let Err(e) = exec("git", &["add", "-A", &changelog_dir]) {
+            eprintln!("Error staging consumed changelog fragments: {}", e);
+            exit(1);
+        }
+    }
+    if reconstructed {
+        if let Err(e) = exec("git", &["add", FRAGMENT_RELEASE_MAP]) {
+            eprintln!("Error staging fragment release map: {}", e);
+            exit(1);
+        }
+    }
 
     // Check if there are changes to commit
     if exec_check("git", &["diff", "--cached", "--quiet"]) {
@@ -530,27 +714,13 @@ fn main() {
         return;
     }
 
-    // Fetch latest remote state before committing (supports concurrent release workflows)
-    let current_branch = exec("git", &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "main".to_string());
-    if let Err(e) = exec("git", &["fetch", "origin", &current_branch]) {
-        eprintln!("Warning: Could not fetch origin/{}: {}", current_branch, e);
-    } else {
-        let local = exec("git", &["rev-parse", "HEAD"]).unwrap_or_default();
-        let remote = exec("git", &["rev-parse", &format!("origin/{}", current_branch)]).unwrap_or_default();
-        if !local.is_empty() && !remote.is_empty() && local != remote {
-            println!("Local branch is behind remote, rebasing...");
-            if let Err(e) = exec("git", &["rebase", &format!("origin/{}", current_branch)]) {
-                eprintln!("Error rebasing onto origin/{}: {}", current_branch, e);
-                let _ = exec("git", &["rebase", "--abort"]);
-                exit(1);
-            }
-        }
-    }
-
-    // Commit changes
+    // Commit the staged release files (the rebase already happened, while clean).
     let label_suffix = release_label.as_ref().map(|l| format!(" ({})", l)).unwrap_or_default();
     let commit_msg = match &description {
-        Some(desc) => format!("chore: release {}{}{}\n\n{}", tag_prefix, new_version, label_suffix, desc),
+        Some(desc) => format!(
+            "chore: release {}{}{}\n\n{}",
+            tag_prefix, new_version, label_suffix, desc
+        ),
         None => format!("chore: release {}{}{}", tag_prefix, new_version, label_suffix),
     };
 
@@ -560,20 +730,7 @@ fn main() {
     }
     println!("Committed version {}", new_version);
 
-    // Create tag
-    let tag_name = format!("{}{}", tag_prefix, new_version);
-    let tag_msg = match &description {
-        Some(desc) => format!("Release {}{}\n\n{}", tag_name, label_suffix, desc),
-        None => format!("Release {}{}", tag_name, label_suffix),
-    };
-
-    if let Err(e) = exec("git", &["tag", "-a", &tag_name, "-m", &tag_msg]) {
-        eprintln!("Error creating tag: {}", e);
-        exit(1);
-    }
-    println!("Created tag {}", tag_name);
-
-    // Push changes and tag with retry (handles concurrent pushes in multi-workflow repos)
+    // Push changes with retry (handles concurrent pushes in multi-workflow repos)
     let max_push_attempts = 3;
     for attempt in 1..=max_push_attempts {
         match exec("git", &["push"]) {
@@ -594,6 +751,20 @@ fn main() {
             }
         }
     }
+
+    // Tag only once the release commit is on the remote, so a `pull --rebase`
+    // retry above can never leave the tag on an orphaned pre-rebase commit.
+    let tag_name = format!("{}{}", tag_prefix, new_version);
+    let tag_msg = match &description {
+        Some(desc) => format!("Release {}{}\n\n{}", tag_name, label_suffix, desc),
+        None => format!("Release {}{}", tag_name, label_suffix),
+    };
+
+    if let Err(e) = exec("git", &["tag", "-a", &tag_name, "-m", &tag_msg]) {
+        eprintln!("Error creating tag: {}", e);
+        exit(1);
+    }
+    println!("Created tag {}", tag_name);
 
     if let Err(e) = exec("git", &["push", "--tags"]) {
         eprintln!("Error pushing tags: {}", e);

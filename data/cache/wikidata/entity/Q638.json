@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q638": {
+      "type": "item",
+      "id": "Q638",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "music"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "музыка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सङ्गीत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "音樂"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "art using sound"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "искусство, средство воплощения художественных образов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रसवान ध्वनि तथा कला का एक रूप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "以聲音為媒介的藝術形式和文化活動"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "musical art"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "संगीत"
+          },
+          {
+            "language": "hi",
+            "value": "म्यूजिक"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "樂律"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

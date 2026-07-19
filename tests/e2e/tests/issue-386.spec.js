@@ -110,6 +110,7 @@ test.describe('Issue #386 - trimmed issue report', () => {
 
     // A long, Cyrillic-heavy dialog forces the URL fitter to drop earlier
     // turns, which marks the dialog as incomplete.
+    let report = { body: '', href: '' };
     for (let i = 0; i < 12; i += 1) {
       const count = await messages.count();
       await input.fill(
@@ -119,9 +120,12 @@ test.describe('Issue #386 - trimmed issue report', () => {
       );
       await page.locator('[data-testid="chat-composer-submit"]').click();
       await expect(messages).toHaveCount(count + 2, { timeout: 20_000 });
+
+      report = await reportBody(page);
+      if (report.body.includes('omitted')) break;
     }
 
-    const { body, href } = await reportBody(page);
+    const { body, href } = report;
     expect(href.length).toBeLessThanOrEqual(8192);
     // Earlier turns were omitted, so the trace must not appear.
     expect(body).toContain('omitted');

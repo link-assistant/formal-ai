@@ -15,33 +15,62 @@
 //!   or a final answer, and an in-repo driver exercises the whole loop offline.
 //!
 //! This module hosts that capability. Neural inference remains a NON-GOAL:
-//! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
+//! extraction is grounded in a closed lexicon (see `lexicon`) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod associative_learning;
+mod capability_router;
 pub mod change_request;
+mod code_artifact;
+pub mod code_rewrite_learning;
+pub(crate) mod command_reroute;
+mod conversation_recall;
 pub mod corpus;
 pub mod diagram;
+pub mod dreaming_audit;
 pub mod driver;
+pub mod execution_learning;
 pub mod explain;
 mod file_read;
 pub mod formalize;
+pub mod general_planner;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
+mod intent_router;
+pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
 pub mod planner;
+mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
+mod report_issue;
+pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;
+mod shell_command;
 pub mod source_graph;
+pub mod statement_audit;
+mod tool_result;
+mod web_research;
 
+pub use associative_learning::{
+    is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
+};
 pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use code_rewrite_learning::{
+    is_code_rewrite_learning_task, CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK,
+};
+pub use command_reroute::plan_symbolic_command_reroute;
 pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
+pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
 pub use driver::{
     run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
+};
+pub use execution_learning::{
+    is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
 };
 pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
 pub use formalize::{
@@ -54,6 +83,17 @@ pub use google_trends_catalog::{
 pub use google_trends_learning::{
     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
 };
+pub use learning_report::hardcoded_language_learning::{
+    is_hardcoded_language_learning_task, HARDCODED_LANGUAGE_LEARNING_PATH,
+    HARDCODED_LANGUAGE_LEARNING_TASK,
+};
+pub use learning_report::lexeme_import_learning::{
+    is_lexeme_import_learning_task, LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK,
+};
+pub use learning_report::self_hosting_learning::{
+    is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
+};
+pub use learning_report::{LearningReport, REPORTS};
 pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
 pub use meaning_detail::{
     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
@@ -66,6 +106,10 @@ pub use question_catalog::{
 };
 pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
 pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
+pub use routing_learning::{
+    is_routing_learning_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
+};
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
 pub use source_graph::{is_source_graph_task, SOURCE_GRAPH_PATH, SOURCE_GRAPH_TASK};
+pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};

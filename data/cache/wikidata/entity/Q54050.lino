@@ -1,0 +1,17 @@
+Q54050
+  aliases
+    en (hills elevation)
+    ru ("холмы")
+    zh ("山丘")
+  descriptions
+    en "landform that extends above the surrounding terrain in lower mountain ranges, smaller than a mountain"
+    ru "форма рельефа в виде небольшой возвышенности, высотой ниже, чем гора"
+    zh "微許隆起的地方"
+  id Q54050
+  labels
+    en hill
+    hi "पहाड़ी"
+    ru "холм"
+    zh "丘"
+  type item
+success 1

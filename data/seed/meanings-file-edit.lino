@@ -1,0 +1,110 @@
+meanings
+  file_edit_action
+    defined-by action
+    role file_edit_action_cue
+    lexeme en
+      surface
+        text "change"
+      surface
+        text "replace"
+      surface
+        text "edit"
+      surface
+        text "modify"
+      surface
+        text "substitute"
+      surface
+        text "swap"
+      surface
+        text "correct"
+      surface
+        text "update"
+      surface
+        text "patch"
+      surface
+        text "rewrite"
+      surface
+        text "refactor"
+    lexeme ru
+      surface
+        text замени
+      surface
+        text заменить
+      surface
+        text измени
+      surface
+        text изменить
+      surface
+        text поменяй
+      surface
+        text исправь
+    lexeme hi
+      surface
+        text बदलो
+      surface
+        text बदलें
+      surface
+        text बदलिए
+    lexeme zh
+      surface
+        text 替换
+      surface
+        text 修改
+      surface
+        text 更改
+  file_edit_new_lead
+    defined-by relation
+    role file_edit_new_lead_cue
+    lexeme en
+      surface
+        text "to"
+      surface
+        text "with"
+      surface
+        text "into"
+      surface
+        text "by"
+    lexeme ru
+      surface
+        text на
+    lexeme hi
+      surface
+        text से
+    lexeme zh
+      surface
+        text 为
+      surface
+        text 成
+  file_edit_target
+    defined-by relation
+    role file_edit_target_cue
+    lexeme en
+      surface
+        text "in"
+      surface
+        text "within"
+      surface
+        text "inside"
+      surface
+        text "of"
+      surface
+        text "file"
+    lexeme ru
+      surface
+        text в
+      surface
+        text во
+      surface
+        text файле
+    lexeme hi
+      surface
+        text में
+      surface
+        text फ़ाइल
+    lexeme zh
+      surface
+        text 在
+      surface
+        text 文件
+      surface
+        text 中

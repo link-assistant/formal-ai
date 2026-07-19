@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q165": {
+      "type": "item",
+      "id": "Q165",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sea"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "море"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सागर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "海"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "large body of saline water"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть Мирового океана, крупный солёный водоём, отделённый сушей или возвышениями подводного рельефа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खारे पानी का विशाल जलस्त्रोत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "較大面積的鹹水區域"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "seas"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "समुद्र"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "海域"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

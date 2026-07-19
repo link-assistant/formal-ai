@@ -1,0 +1,139 @@
+{
+  "entities": {
+    "Q33971": {
+      "type": "item",
+      "id": "Q33971",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "leaf"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лист"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पत्ती"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "葉"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "main organ of photosynthesis and transpiration in higher plants, usually consisting of a flat green blade attached to the stem directly or by a stalk"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орган сосудистых растений"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पौधे के अंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "植物的营养器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "leaves"
+          },
+          {
+            "language": "en",
+            "value": "tree leaf"
+          },
+          {
+            "language": "en",
+            "value": "plant leaves"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "листья"
+          },
+          {
+            "language": "ru",
+            "value": "листва"
+          },
+          {
+            "language": "ru",
+            "value": "листовая пластинка"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पत्ते"
+          },
+          {
+            "language": "hi",
+            "value": "पत्तियों"
+          },
+          {
+            "language": "hi",
+            "value": "पत्तियाँ"
+          },
+          {
+            "language": "hi",
+            "value": "पत्तों"
+          },
+          {
+            "language": "hi",
+            "value": "पत्‍तियाँ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "葉子"
+          },
+          {
+            "language": "zh",
+            "value": "叶尖"
+          },
+          {
+            "language": "zh",
+            "value": "叶柄"
+          },
+          {
+            "language": "zh",
+            "value": "叶子"
+          },
+          {
+            "language": "zh",
+            "value": "葉片"
+          },
+          {
+            "language": "zh",
+            "value": "纵脉"
+          },
+          {
+            "language": "zh",
+            "value": "羽状脉"
+          },
+          {
+            "language": "zh",
+            "value": "樹葉"
+          },
+          {
+            "language": "zh",
+            "value": "叶序"
+          },
+          {
+            "language": "zh",
+            "value": "叶基"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

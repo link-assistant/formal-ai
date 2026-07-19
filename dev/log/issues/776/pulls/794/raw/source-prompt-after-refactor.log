@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.298.2 (/tmp/gh-issue-solver-1784437815860)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.02s
+     Running tests/source/mod.rs (target/debug/deps/source-5fab51603da0b480)
+
+running 10 tests
+test translation::prompt::tests::extracts_unquoted_hindi_surface ... ok
+test translation::prompt::tests::extracts_unquoted_russian_surface ... ok
+test translation::prompt::tests::extracts_unquoted_english_surface ... ok
+test translation::prompt::tests::extracts_surface_before_postpositive_translation_frame ... ok
+test translation::prompt::tests::ignores_trailing_punctuation ... ok
+test translation::prompt::tests::preserves_capitalization ... ok
+test translation::prompt::tests::extracts_unquoted_chinese_surface ... ok
+test translation::prompt::tests::returns_none_for_quoted_prompts ... ok
+test translation::prompt::tests::returns_none_without_preposition ... ok
+test translation::prompt::tests::returns_none_without_verb ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 471 filtered out; finished in 0.17s

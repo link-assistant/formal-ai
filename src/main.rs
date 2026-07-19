@@ -6,20 +6,27 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_import;
+mod cli_improve;
+mod cli_memory;
 mod cli_shared_dialog;
+mod cli_statement_audit;
 
+use cli_import::{run_import, ImportAction};
+use cli_improve::{run_improve, ImproveArgs};
+use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
+use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, enable_http_agent_mode_for_current_process, environment_records,
-    execute_memory_query, export_memory_bundle, export_memory_full, import_memory_full,
-    knowledge_links_notation, merged_bundle, naturalize_thinking_step, parse_bundle,
-    render_github_log_plan, run_proxy, run_telegram_polling, run_telegram_webhook_server,
-    run_with_formal_ai, seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest,
-    ChatMessage, ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ProxyConfig,
-    ResponsesRequest, SolverConfig, SymbolicAnswer, TelegramPollingConfig, UniversalSolver,
-    WithFormalAiArgs, DEFAULT_MODEL,
+    export_memory_bundle, import_memory_full, knowledge_links_notation, merged_bundle,
+    naturalize_thinking_step, parse_bundle, render_github_log_plan, run_proxy,
+    run_telegram_polling, run_telegram_webhook_server, run_with_formal_ai, seed_files,
+    suggest_memory_migrations, ChatCompletionRequest, ChatMessage, ExecutionSurface,
+    GithubLogCollectorConfig, MemoryStore, ProxyConfig, ResponsesRequest, SolverConfig,
+    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, WithFormalAiArgs, DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -109,12 +116,21 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Import lexical semantics in bulk from external sources (issue #660,
+    /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
+    /// validate-then-write pipeline.
+    Import {
+        #[command(subcommand)]
+        action: ImportAction,
+    },
     /// Plan or collect GitHub issue, PR, review, and Actions run evidence
     /// into a case-study directory.
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Weigh statement-bearing repository text against captured provenance.
+    StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
@@ -179,6 +195,46 @@ enum Command {
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
     },
+    /// Benchmark-gated promotion of self-improvement proposals (issue #656, E37).
+    ///
+    /// Collects open promotion proposals, replays their benchmark ratchets, and
+    /// prints the promotion plan. `--promote` runs the protocol; without
+    /// `--apply` it is a dry run that touches no files. `--apply` materializes the
+    /// accepted seed edits into `--seed-root` and requires `--confirm`; it never
+    /// pushes — the branch/PR step is emitted as a plan for human review.
+    Improve {
+        /// Run the promotion protocol. Without it, prints usage guidance only.
+        #[arg(long, default_value_t = false)]
+        promote: bool,
+
+        /// `promotion_proposals` Links Notation document containing the actual
+        /// open proposals. Required with `--promote`; synthetic demonstration
+        /// proposals are never a production default.
+        #[arg(long, value_name = "PATH")]
+        proposals: Option<PathBuf>,
+
+        /// Workspace root the accepted seed edits are materialized into on
+        /// `--apply`. Defaults to the current directory.
+        #[arg(long, value_name = "PATH", default_value = ".")]
+        seed_root: PathBuf,
+
+        /// Optional memory file the promotion event chain is appended to on
+        /// `--apply`.
+        #[arg(long, value_name = "PATH")]
+        memory: Option<PathBuf>,
+
+        /// Materialize the accepted seed edits. Requires `--confirm`.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before applying to `--memory`.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -189,17 +245,17 @@ enum MemoryAction {
     /// legacy events-only `demo_memory` shape. `--path -` streams to stdout.
     Export {
         /// Destination file. Use `-` to write to stdout. Defaults to
-        /// `formal-ai-memory.lino` in the current directory.
+        /// the shared per-user memory file.
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
         /// Source file to read the log from. Defaults to `--path` when
         /// `--path` is a real file, and to `FORMAL_AI_MEMORY_PATH` /
-        /// `formal-ai-memory.lino` when `--path -` is used.
+        /// the shared per-user memory file when `--path -` is used.
         #[arg(long)]
         from: Option<PathBuf>,
 
@@ -219,7 +275,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -228,7 +284,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
     },
@@ -237,13 +293,58 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
         /// Natural-language memory query, for example "Find Rust in another conversation".
         #[arg(long)]
         prompt: String,
+    },
+    /// Plan low-priority memory dreaming: recomputable duplicate cleanup,
+    /// cache/intermediate eviction under storage pressure, and deleted-thread
+    /// purge candidates. Prints the plan by default; `--apply --confirm` is
+    /// required before the memory file is changed.
+    Dream {
+        #[arg(
+            long,
+            env = "FORMAL_AI_MEMORY_PATH",
+            default_value_os_t = formal_ai::shared_memory_path()
+        )]
+        path: PathBuf,
+
+        /// Total capacity, in bytes, of the storage area that holds memory.
+        #[arg(long)]
+        storage_capacity_bytes: Option<u64>,
+
+        /// Current free bytes in the storage area.
+        #[arg(long)]
+        free_bytes: Option<u64>,
+
+        /// Bytes expected for the next write/fetch before the free-space target
+        /// is evaluated.
+        #[arg(long, default_value_t = 0)]
+        incoming_bytes: u64,
+
+        /// Desired free-space ratio after the next write. Defaults to 20%.
+        #[arg(long, default_value_t = 20)]
+        target_free_ratio_percent: u8,
+
+        /// Turn off the default background dreaming planner for this run.
+        #[arg(long, default_value_t = false)]
+        disable_daydreaming: bool,
+
+        /// Apply the selected plan actions to the memory file.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before deletion.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
     },
     /// Permanently remove every event attached to conversations that were
     /// already soft-deleted in the browser conversation list. Irreversible:
@@ -252,7 +353,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -271,7 +372,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -306,7 +407,7 @@ enum BundleAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -428,7 +529,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
             task,
@@ -474,6 +577,23 @@ fn main() -> Result<(), Box<dyn Error>> {
             allowed_updates,
             host,
             port,
+        })?,
+        Command::Improve {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
+        } => run_improve(&ImproveArgs {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
         })?,
     }
 
@@ -645,136 +765,6 @@ fn run_chat(
     Ok(())
 }
 
-fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
-    match action {
-        MemoryAction::Export {
-            path,
-            from,
-            events_only,
-        } => {
-            let source = match from {
-                Some(explicit) => explicit,
-                None if path.as_os_str() == "-" => std::env::var_os("FORMAL_AI_MEMORY_PATH")
-                    .map_or_else(|| PathBuf::from("formal-ai-memory.lino"), PathBuf::from),
-                None => path.clone(),
-            };
-            let store = load_memory_or_empty(&source)?;
-            let (text, summary) = if events_only {
-                let text = store.export_links_notation();
-                let summary = format!("Wrote {} events (events-only)", store.len());
-                (text, summary)
-            } else {
-                let seed = seed_files();
-                let info = BundleInfo {
-                    version: agent_info().get("version").cloned(),
-                    ..BundleInfo::default()
-                };
-                let text = export_memory_full(&seed, store.events(), &[], &info);
-                let summary = format!(
-                    "Wrote full memory: {} event(s) + {} seed file(s)",
-                    store.len(),
-                    seed.len(),
-                );
-                (text, summary)
-            };
-            if path.as_os_str() == "-" {
-                print!("{text}");
-            } else {
-                std::fs::write(&path, text)?;
-                eprintln!("{summary} to {}", path.display());
-            }
-        }
-        MemoryAction::Import { path, into } => {
-            let inbound = read_input(&path)?;
-            let parsed = import_memory_full(&inbound);
-            let parsed_count = parsed.events.len();
-            let mut store = load_memory_or_empty(&into)?;
-            store.import(&parsed.events);
-            store.save_to_file(&into)?;
-            eprintln!(
-                "Imported {parsed_count} event(s) into {}; total now {}.",
-                into.display(),
-                store.len()
-            );
-            let suggestions = suggest_memory_migrations(&parsed, &agent_info());
-            for message in suggestions {
-                eprintln!("Migration: {message}");
-            }
-        }
-        MemoryAction::Show { path } => {
-            let store = load_memory_or_empty(&path)?;
-            if store.is_empty() {
-                println!("(no events recorded at {})", path.display());
-                return Ok(());
-            }
-            for (index, event) in store.events().iter().enumerate() {
-                let role = event.role.as_deref().unwrap_or("?");
-                let intent = event.intent.as_deref().unwrap_or("");
-                let content = event.content.as_deref().unwrap_or("");
-                let stamp = event.sent_at.as_deref().unwrap_or("");
-                println!("{index:>3}. [{role}] {intent:<12} {stamp}  {content}");
-            }
-        }
-        MemoryAction::Query { path, prompt } => {
-            let mut store = load_memory_or_empty(&path)?;
-            match execute_memory_query(&prompt, &mut store, None) {
-                Some(execution) => {
-                    if execution.changed {
-                        store.save_to_file(&path)?;
-                    }
-                    println!("{}", execution.answer.answer);
-                }
-                None => println!("No natural-language memory query recognized."),
-            }
-        }
-        MemoryAction::PurgeDeleted {
-            path,
-            backup,
-            confirm,
-        } => {
-            require_destructive_confirmation(confirm, "purge deleted conversations from memory")?;
-            let mut store = load_memory_or_empty(&path)?;
-            if let Some(backup_path) = backup.as_deref() {
-                write_full_memory_backup(backup_path, &store)?;
-            } else {
-                eprintln!(
-                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
-                    path.display()
-                );
-            }
-            let removed = store.purge_deleted_conversations();
-            store.save_to_file(&path)?;
-            eprintln!(
-                "Permanently deleted {removed} event(s) from deleted conversation(s) in {}.",
-                path.display()
-            );
-        }
-        MemoryAction::Reset {
-            path,
-            backup,
-            confirm,
-        } => {
-            require_destructive_confirmation(confirm, "reset memory")?;
-            let mut store = load_memory_or_empty(&path)?;
-            if let Some(backup_path) = backup.as_deref() {
-                write_full_memory_backup(backup_path, &store)?;
-            } else {
-                eprintln!(
-                    "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
-                    path.display()
-                );
-            }
-            let removed = store.reset();
-            store.save_to_file(&path)?;
-            eprintln!(
-                "Reset memory at {}; permanently deleted {removed} event(s).",
-                path.display()
-            );
-        }
-    }
-    Ok(())
-}
-
 fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
     match action {
         BundleAction::Export { path, memory } => {
@@ -812,6 +802,18 @@ fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
             let parsed_seed = parse_bundle(&text);
             let mut store = load_memory_or_empty(&into)?;
             store.import(&parsed.events);
+            // Seed files become recomputable `seed_cache` events so seed data
+            // participates in usage/eviction accounting (issue #494).
+            let known: std::collections::BTreeSet<String> = store
+                .events()
+                .iter()
+                .map(|event| event.id.clone())
+                .collect();
+            let fresh_seed: Vec<_> = formal_ai::seed_cache_events(&parsed.seed_files)
+                .into_iter()
+                .filter(|event| !known.contains(&event.id))
+                .collect();
+            store.import(&fresh_seed);
             store.save_to_file(&into)?;
             eprintln!(
                 "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
@@ -850,47 +852,6 @@ fn run_environments() {
         }
         println!();
     }
-}
-
-fn load_memory_or_empty(path: &std::path::Path) -> Result<MemoryStore, Box<dyn Error>> {
-    if path.as_os_str() == "-" {
-        return Ok(MemoryStore::new());
-    }
-    Ok(MemoryStore::load_from_file(path)?)
-}
-
-fn require_destructive_confirmation(confirm: bool, action: &str) -> Result<(), Box<dyn Error>> {
-    if confirm {
-        return Ok(());
-    }
-    Err(format!(
-        "Refusing to {action} because this operation is irreversible. Export memory first or pass --backup, then rerun with --confirm."
-    )
-    .into())
-}
-
-fn write_full_memory_backup(
-    path: &std::path::Path,
-    store: &MemoryStore,
-) -> Result<(), Box<dyn Error>> {
-    let seed = seed_files();
-    let info = BundleInfo {
-        version: agent_info().get("version").cloned(),
-        ..BundleInfo::default()
-    };
-    let text = export_memory_full(&seed, store.events(), &[], &info);
-    if let Some(parent) = path.parent() {
-        if !parent.as_os_str().is_empty() {
-            std::fs::create_dir_all(parent)?;
-        }
-    }
-    std::fs::write(path, text)?;
-    eprintln!(
-        "Wrote full-memory backup with {} event(s) to {}.",
-        store.len(),
-        path.display()
-    );
-    Ok(())
 }
 
 pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {

@@ -1,0 +1,18 @@
+Q49757
+  aliases
+    en (poetess bard "poetry writer" "poetry author")
+    ru ("поэтесса" "стихотворец" "поэты")
+    zh ("詩人")
+  descriptions
+    en "person who writes poetry"
+    hi "जो व्यक्ति कविता लिखता है"
+    ru "человек, пишущий стихи"
+    zh "編寫詩詞的人"
+  id Q49757
+  labels
+    en poet
+    hi "कवि"
+    ru "поэт"
+    zh "诗人"
+  type item
+success 1

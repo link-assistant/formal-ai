@@ -1,0 +1,16 @@
+Q57216
+  aliases
+    en (dish)
+    zh ("盤")
+  descriptions
+    en "flat vessel on which food can be served"
+    hi "फ्लैट पोत जिस पर भोजन परोसा जा सकता है"
+    ru "вид столовой посуды"
+  id Q57216
+  labels
+    en plate
+    hi "प्लेट"
+    ru "тарелка"
+    zh "碟"
+  type item
+success 1

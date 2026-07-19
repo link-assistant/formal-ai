@@ -1,0 +1,14 @@
+Q7368
+  aliases
+    ru ("домашняя овца" "баран" "ярка" "ягнёнок" "овцы")
+  descriptions
+    en "domesticated ruminant bred for meat, wool, and milk"
+    ru "парнокопытное млекопитающее из рода баранов семейства полорогих"
+  id Q7368
+  labels
+    en sheep
+    hi "भेड़"
+    ru "овца"
+    zh "羊"
+  type item
+success 1

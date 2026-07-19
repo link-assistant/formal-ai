@@ -1,0 +1,24 @@
+{
+  "captures": [
+    {
+      "statement": "The provenance vocabulary follows W3C PROV-O.",
+      "source_label": "W3C PROV-O Recommendation",
+      "source_url": "https://www.w3.org/TR/prov-o/",
+      "tier": "original_first_party",
+      "stance": "supports",
+      "strength": 1.0,
+      "captured_at": "2026-07-19T15:10:43Z",
+      "sha256": "sha256:6b96671ab84faf12ce3f041aca12c3f93a6df2ed242348810743179a68e69555"
+    },
+    {
+      "statement": "The provenance vocabulary follows W3C PROV-O.",
+      "source_label": "synthetic repost counterexample",
+      "source_url": "https://example.invalid/prov-o-repost",
+      "tier": "unoriginal",
+      "stance": "contradicts",
+      "strength": 1.0,
+      "captured_at": "fixture",
+      "sha256": "sha256:synthetic-unoriginal-counterexample"
+    }
+  ]
+}

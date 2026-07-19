@@ -1,0 +1,17 @@
+Q901
+  aliases
+    en ("natural philosopher")
+    ru ("научный работник")
+    zh ("科学家")
+  descriptions
+    en "person who uses scientific methods to study in an area of interest"
+    ru "человек, профессионально использующий научный метод"
+    zh "使用科學方法做研究的人"
+  id Q901
+  labels
+    en scientist
+    hi "वैज्ञानिक"
+    ru "учёный"
+    zh "科學家"
+  type item
+success 1

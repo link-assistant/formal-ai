@@ -333,6 +333,51 @@ fn cli_shared_dialog_convert_chatgpt_share_writes_demo_memory() {
 }
 
 #[test]
+fn cli_shared_dialog_convert_accepts_web_capture_adapter_json() {
+    let dir = tmpdir();
+    let input = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("docs/case-studies/issue-781/raw-data/chatgpt-web-capture.json");
+    let output = dir.join("chatgpt-web-capture.lino");
+    let share_url = "https://chatgpt.com/share/6a5be9fe-34e8-83ee-aaa2-4279cac118fa";
+
+    let converted = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "shared-dialog",
+            "convert",
+            "--input",
+            input.to_str().unwrap(),
+            "--output",
+            output.to_str().unwrap(),
+            "--format",
+            "web-capture-json",
+            "--source-url",
+            share_url,
+            "--demo-label",
+            "issue-781-chatgpt-share",
+        ])
+        .output()
+        .expect("shared-dialog adapter conversion");
+
+    assert!(
+        converted.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&converted.stderr)
+    );
+    let text = std::fs::read_to_string(&output).expect("read converted demo_memory");
+    let events = parse_memory_links_notation(&text);
+    assert_eq!(events.len(), 35);
+    assert_eq!(events[0].role.as_deref(), Some("user"));
+    assert_eq!(events[1].role.as_deref(), Some("assistant"));
+    assert_eq!(
+        events[0].conversation_title.as_deref(),
+        Some("Зарядка для Acer Aspire")
+    );
+    assert_eq!(events[0].evidence, vec![String::from(share_url)]);
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn cli_memory_export_import_show_round_trips_events() {
     // R107: a `demo_memory` Links Notation file written by the CLI must
     // round-trip back through `memory import` and `memory show` without

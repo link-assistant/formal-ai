@@ -23,21 +23,23 @@ use crate::engine_assistant_name::{
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, chinese_unknown_answer, farewell_answer, greeting_answer,
     hindi_unknown_answer, identity_answer, russian_unknown_answer, unknown_answer,
-    unknown_language_fallback_answer,
+    unknown_language_fallback_answer, wellbeing_answer,
 };
 use crate::engine_responses::{
     chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
     chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
-    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
-    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
+    chinese_wellbeing_answer, courtesy_response_answer, hindi_assistant_free_time_answer,
+    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
+    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
     russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
     russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
-    test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES,
-    GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES,
+    russian_wellbeing_answer, test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES,
+    COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES,
+    UNKNOWN_EXAMPLES,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::links_format::{format_lino_record, sanitize_lino_value};
+use crate::links_format::{flatten_lino_value, format_lino_record};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-ai";
@@ -46,7 +48,7 @@ pub const DEFAULT_MODEL: &str = "formal-ai";
 // re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
 pub use crate::thinking::{
     humanize_meta_identifier, naturalize_thinking_step, render_thinking_steps,
-    thinking_language_label, ThinkingStep,
+    thinking_language_label, thinking_narrative, ThinkingStep,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -58,6 +60,17 @@ pub struct SymbolicAnswer {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execution_recipe: Option<Box<ExecutionRecipe>>,
+}
+
+/// A code artifact whose side effects belong to the requesting agentic client.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ExecutionRecipe {
+    pub language: String,
+    pub source: String,
+    pub path: String,
+    pub commands: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy)]
@@ -260,7 +273,7 @@ fn format_doublet_reduction_record() -> String {
 
 #[must_use]
 pub fn estimate_tokens(text: &str) -> u32 {
-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
+    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
 }
 
 /// A single node in the network-visualization graph.
@@ -493,6 +506,7 @@ pub fn stable_id(prefix: &str, text: &str) -> String {
 
 pub(crate) enum SelectedRule {
     Greeting,
+    Wellbeing,
     Farewell,
     TestStatus,
     CourtesyResponse,
@@ -511,6 +525,7 @@ impl SelectedRule {
     pub(crate) fn intent(&self) -> String {
         match self {
             Self::Greeting => String::from("greeting"),
+            Self::Wellbeing => String::from("wellbeing"),
             Self::Farewell => String::from("farewell"),
             Self::TestStatus => String::from("test_status"),
             Self::CourtesyResponse => String::from("courtesy_response"),
@@ -526,6 +541,7 @@ impl SelectedRule {
     pub(crate) fn response_link(&self) -> String {
         match self {
             Self::Greeting => String::from("response:greeting"),
+            Self::Wellbeing => String::from("response:wellbeing"),
             Self::Farewell => String::from("response:farewell"),
             Self::TestStatus => String::from("response:test_status"),
             Self::CourtesyResponse => String::from("response:courtesy_response"),
@@ -543,6 +559,7 @@ impl SelectedRule {
     pub(crate) fn answer(&self) -> String {
         match self {
             Self::Greeting => String::from(greeting_answer()),
+            Self::Wellbeing => String::from(wellbeing_answer()),
             Self::Farewell => String::from(farewell_answer()),
             Self::TestStatus => String::from(test_status_answer()),
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
@@ -574,6 +591,9 @@ pub(crate) fn language_aware_answer_for(
         (SelectedRule::Greeting, Language::Russian) => String::from(russian_greeting_answer()),
         (SelectedRule::Greeting, Language::Hindi) => String::from(hindi_greeting_answer()),
         (SelectedRule::Greeting, Language::Chinese) => String::from(chinese_greeting_answer()),
+        (SelectedRule::Wellbeing, Language::Russian) => String::from(russian_wellbeing_answer()),
+        (SelectedRule::Wellbeing, Language::Hindi) => String::from(hindi_wellbeing_answer()),
+        (SelectedRule::Wellbeing, Language::Chinese) => String::from(chinese_wellbeing_answer()),
         (SelectedRule::Farewell, Language::Russian) => String::from(russian_farewell_answer()),
         (SelectedRule::Farewell, Language::Hindi) => String::from(hindi_farewell_answer()),
         (SelectedRule::Farewell, Language::Chinese) => String::from(chinese_farewell_answer()),
@@ -691,7 +711,7 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{index} {} {}",
                 event.kind,
-                sanitize_lino_value(&event.payload)
+                flatten_lino_value(&event.payload)
             )
         })
         .collect::<Vec<_>>()
@@ -703,10 +723,10 @@ pub(crate) fn answer_links_notation(
             format!(
                 "step_{} {} {} {} {}",
                 step.order,
-                sanitize_lino_value(&step.step),
-                sanitize_lino_value(&step.level),
-                sanitize_lino_value(&step.source_event),
-                sanitize_lino_value(&step.detail)
+                flatten_lino_value(&step.step),
+                flatten_lino_value(&step.level),
+                flatten_lino_value(&step.source_event),
+                flatten_lino_value(&step.detail)
             )
         })
         .collect::<Vec<_>>()

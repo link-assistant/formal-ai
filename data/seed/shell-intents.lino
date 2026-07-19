@@ -1,0 +1,604 @@
+shell_intents
+  name_leads
+    language en
+      lead "called"
+      lead "named"
+    language ru
+      lead "называется"
+      lead "названием"
+    language hi
+      lead "नामक"
+    language zh
+      lead "名为"
+  argument_noise
+    language en
+      word the
+      word file
+      word folder
+      word directory
+      word project
+      word from
+      word to
+      word into
+      word as
+      word called
+      word named
+      word for
+      word in
+      word local
+      word code
+      word repository
+      word repo
+      word search
+      word find
+      word grep
+    language ru
+      word файл
+      word папку
+      word папка
+      word каталог
+      word в
+      word из
+      word коде
+      word репозитории
+      word найди
+      word поиск
+    language hi
+      word फ़ाइल
+      word फ़ोल्डर
+      word में
+      word कोड
+      word खोजें
+      word हटाओ
+      word बनाएँ
+    language zh
+      word 删除文件
+      word 复制文件
+      word 移动文件
+      word 在代码中搜索
+      word 代码
+      word 中
+      word 搜索
+  local_search_scopes
+    language en
+      scope "the code"
+      scope "in the code"
+      scope "in source"
+      scope "in the repository"
+      scope "in the repo"
+      scope "in local files"
+    language ru
+      scope "в коде"
+      scope "в исходниках"
+      scope "в репозитории"
+    language hi
+      scope "कोड में"
+      scope "स्थानीय फ़ाइलों में"
+    language zh
+      scope 在代码中
+      scope 在源码中
+      scope 在仓库中
+  workspace_commands
+    workspace
+      marker Cargo.toml
+      test "cargo test"
+      install "cargo fetch"
+      build "cargo build"
+    workspace
+      marker bun.lock
+      test "bun test"
+      install "bun install"
+      build "bun run build"
+    workspace
+      marker pnpm-lock.yaml
+      test "pnpm test"
+      install "pnpm install"
+      build "pnpm build"
+    workspace
+      marker yarn.lock
+      test "yarn test"
+      install "yarn install"
+      build "yarn build"
+    workspace
+      marker package.json
+      test "npm test"
+      install "npm install"
+      build "npm run build"
+    workspace
+      marker pyproject.toml
+      test pytest
+      install "poetry install"
+      build "python -m build"
+    workspace
+      marker go.mod
+      test "go test ./..."
+      install "go mod download"
+      build "go build ./..."
+    workspace
+      marker pom.xml
+      test "mvn test"
+      install "mvn dependency:resolve"
+      build "mvn package"
+    workspace
+      marker build.gradle
+      test "./gradlew test"
+      install "./gradlew dependencies"
+      build "./gradlew build"
+    workspace
+      marker Makefile
+      test "make test"
+      install "make install"
+      build make
+  intents
+    intent
+      command "formal-ai:report-issue"
+      argument "none"
+      language en
+        cue report
+        cue "report issue"
+        cue "create issue"
+        cue "open issue"
+      language ru
+        cue "сообщить о проблеме"
+        cue "создать issue"
+      language hi
+        cue "समस्या रिपोर्ट करें"
+      language zh
+        cue 报告问题
+    intent
+      command pwd
+      argument "none"
+      language en
+        cue "working directory"
+        cue "where am i"
+        cue "where i am"
+        cue "which directory am i"
+        cue "current path"
+        cue "show current directory"
+      language ru
+        cue "рабочий каталог"
+        cue "рабочем каталоге"
+        cue "рабочую директорию"
+        cue "текущий путь"
+      language hi
+        cue "वर्तमान निर्देशिका"
+        cue "कार्यशील निर्देशिका"
+      language zh
+        cue 当前目录
+        cue 工作目录
+    intent
+      command whoami
+      argument "none"
+      language en
+        cue "my username"
+        cue "my user name"
+        cue "who am i"
+        cue "current user"
+        cue "logged in as"
+      language ru
+        cue "моё имя пользователя"
+        cue "мое имя пользователя"
+        cue "кто я"
+        cue "текущий пользователь"
+      language hi
+        cue "मेरा उपयोगकर्ता नाम"
+        cue "मैं कौन हूँ"
+      language zh
+        cue 我的用户名
+        cue 当前用户
+    intent
+      command "df -h"
+      argument "none"
+      language en
+        cue "disk space"
+        cue "free space"
+        cue "space is free"
+        cue "space is available"
+        cue "space left"
+      language ru
+        cue "свободного места"
+        cue "места на диске"
+        cue "свободное место"
+      language hi
+        cue "डिस्क स्थान"
+        cue "खाली जगह"
+      language zh
+        cue 磁盘空间
+        cue 剩余空间
+    intent
+      command date
+      argument "none"
+      language en
+        cue "today's date"
+        cue "todays date"
+        cue "current date"
+        cue "what day is it"
+        cue "what's the date"
+        cue "what is the date"
+        cue "the current time"
+      language ru
+        cue "какое сегодня число"
+        cue "текущую дату"
+        cue "сегодняшнюю дату"
+        cue "текущее время"
+      language hi
+        cue "आज की तारीख"
+        cue "वर्तमान समय"
+      language zh
+        cue 今天的日期
+        cue 当前时间
+    intent
+      command ps
+      argument "none"
+      language en
+        cue "running processes"
+        cue "process list"
+        cue "list of processes"
+        cue "which processes"
+        cue "list processes"
+      language ru
+        cue "запущенные процессы"
+        cue "список процессов"
+        cue "работающие процессы"
+      language hi
+        cue "चल रही प्रक्रियाएं"
+        cue "प्रक्रियाओं की सूची"
+      language zh
+        cue 正在运行的进程
+        cue 进程列表
+    intent
+      command ls
+      argument "none"
+      language en
+        cue "list files in this folder"
+        cue "show files in this folder"
+        cue "what files are in this folder"
+        cue "display the files here"
+        cue "give me a directory listing"
+        cue "enumerate files in the current directory"
+        cue "show directory contents"
+        cue "which files are here"
+        cue "list this directory"
+        cue "print the file list"
+        cue "inspect this folder"
+        cue "show me local files"
+        cue "what is in the current folder"
+        cue "reveal folder contents"
+        cue "scan the current directory"
+        cue "what's in this folder"
+        cue "what is in this folder"
+        cue "what's in this directory"
+        cue "what is in this directory"
+        cue "what's in the current"
+        cue "what is in the current"
+        cue "what's here"
+        cue "what is here"
+      language ru
+        cue "покажи файлы в этой папке"
+        cue "список файлов"
+        cue "какие файлы в этой папке"
+        cue "перечисли файлы здесь"
+        cue "покажи содержимое каталога"
+        cue "выведи список файлов"
+        cue "что находится в текущей папке"
+        cue "отобрази файлы каталога"
+        cue "перечисли текущий каталог"
+        cue "покажи локальные файлы"
+        cue "просмотри эту папку"
+        cue "какие файлы здесь"
+        cue "дай список каталога"
+        cue "покажи содержимое текущего каталога"
+        cue "просканируй текущую папку"
+        cue "что в этой папке"
+        cue "что в этом каталоге"
+        cue "что здесь есть"
+      language hi
+        cue "इस फ़ोल्डर में फ़ाइलें दिखाएँ"
+        cue "फ़ाइलों की सूची"
+        cue "इस फ़ोल्डर में कौन सी फ़ाइलें हैं"
+        cue "यहाँ फ़ाइलें सूचीबद्ध करें"
+        cue "निर्देशिका की सामग्री दिखाएँ"
+        cue "फ़ाइल सूची प्रिंट करें"
+        cue "वर्तमान फ़ोल्डर में क्या है"
+        cue "निर्देशिका फ़ाइलें प्रदर्शित करें"
+        cue "वर्तमान निर्देशिका सूचीबद्ध करें"
+        cue "स्थानीय फ़ाइलें दिखाएँ"
+        cue "इस फ़ोल्डर को देखें"
+        cue "यहाँ कौन सी फ़ाइलें हैं"
+        cue "निर्देशिका सूची दें"
+        cue "वर्तमान निर्देशिका की सामग्री दिखाएँ"
+        cue "वर्तमान फ़ोल्डर स्कैन करें"
+        cue "इस फ़ोल्डर में क्या है"
+      language zh
+        cue 显示这个文件夹里的文件
+        cue 文件列表
+        cue 这个文件夹里有哪些文件
+        cue 列出这里的文件
+        cue 显示目录内容
+        cue 打印文件列表
+        cue 当前文件夹里有什么
+        cue 展示目录文件
+        cue 列出当前目录
+        cue 显示本地文件
+        cue 查看这个文件夹
+        cue 这里有哪些文件
+        cue 给出目录列表
+        cue 显示当前目录的内容
+        cue 扫描当前文件夹
+        cue 这个文件夹里有什么
+        cue 当前目录里有什么
+    intent
+      command rg
+      argument search_query
+      language en
+        cue "search the code for"
+        cue "search source for"
+        cue "find in the code"
+        cue "search for"
+        cue "find"
+        cue "grep for"
+      language ru
+        cue "найди в коде"
+        cue "поищи в исходниках"
+        cue найди
+      language hi
+        cue "कोड में खोजें"
+        cue "स्रोत में ढूँढें"
+        cue खोजें
+      language zh
+        cue 在代码中搜索
+        cue 在源码中查找
+        cue 搜索
+        cue 查找
+    intent
+      command "wc -l"
+      argument "path"
+      language en
+        cue "number of lines"
+        cue "how many lines"
+        cue "count the lines"
+        cue "count lines"
+        cue "line count"
+      language ru
+        cue "количество строк"
+        cue "сколько строк"
+        cue "число строк"
+      language hi
+        cue "पंक्तियों की संख्या"
+        cue "कितनी पंक्तियाँ"
+      language zh
+        cue 有多少行
+        cue 行数
+    intent
+      command mkdir
+      argument "name_lead"
+      language en
+        cue "create a directory"
+        cue "create a new directory"
+        cue "make a directory"
+        cue "create a folder"
+        cue "create a new folder"
+        cue "make a folder"
+        cue "make a new directory"
+        cue "make a new folder"
+      language ru
+        cue "создай каталог"
+        cue "создай папку"
+        cue "создай директорию"
+        cue "создать каталог"
+        cue "создать папку"
+      language hi
+        cue "एक निर्देशिका बनाओ"
+        cue "एक फ़ोल्डर बनाओ"
+      language zh
+        cue 创建一个目录
+        cue 创建一个文件夹
+    intent
+      command touch
+      argument one_path
+      language en
+        cue "create an empty file"
+        cue "create empty file"
+        cue "make an empty file"
+      language ru
+        cue "создай пустой файл"
+        cue "создать пустой файл"
+      language hi
+        cue "खाली फ़ाइल बनाएँ"
+        cue "खाली फ़ाइल बनाओ"
+      language zh
+        cue 创建空文件
+        cue 新建空文件
+    intent
+      command rmdir
+      argument one_path
+      language en
+        cue "remove the directory"
+        cue "delete the directory"
+        cue "remove directory"
+        cue "delete folder"
+      language ru
+        cue "удали папку"
+        cue "удали каталог"
+      language hi
+        cue "फ़ोल्डर हटाओ"
+        cue "निर्देशिका हटाएँ"
+      language zh
+        cue 删除目录
+        cue 删除文件夹
+    intent
+      command rm
+      argument one_path
+      language en
+        cue "delete the file"
+        cue "remove the file"
+        cue "delete file"
+        cue "remove file"
+      language ru
+        cue "удали файл"
+        cue "удалить файл"
+      language hi
+        cue हटाओ
+        cue "फ़ाइल हटाएँ"
+      language zh
+        cue 删除文件
+        cue 移除文件
+    intent
+      command cp
+      argument two_paths
+      language en
+        cue "copy the file"
+        cue "copy file"
+        cue copy
+      language ru
+        cue скопируй
+        cue "копировать файл"
+      language hi
+        cue "फ़ाइल कॉपी करें"
+        cue कॉपी
+      language zh
+        cue 复制文件
+        cue 复制
+    intent
+      command mv
+      argument two_paths
+      language en
+        cue "move the file"
+        cue "rename the file"
+        cue "move file"
+        cue rename
+      language ru
+        cue "перемести файл"
+        cue "переименуй файл"
+      language hi
+        cue "फ़ाइल स्थानांतरित करें"
+        cue "फ़ाइल का नाम बदलें"
+      language zh
+        cue 移动文件
+        cue 重命名文件
+    intent
+      command "ln -s"
+      argument two_paths
+      language en
+        cue "create a symbolic link"
+        cue "make a symbolic link"
+        cue "create a symlink"
+      language ru
+        cue "создай символическую ссылку"
+      language hi
+        cue "प्रतीकात्मक लिंक बनाएँ"
+      language zh
+        cue 创建符号链接
+    intent
+      command env
+      argument "none"
+      language en
+        cue "environment variables"
+        cue "show the environment"
+      language ru
+        cue "переменные окружения"
+      language hi
+        cue "पर्यावरण चर"
+      language zh
+        cue 环境变量
+    intent
+      command stat
+      argument one_path
+      language en
+        cue "show metadata for"
+        cue "file metadata for"
+        cue "file status for"
+      language ru
+        cue "метаданные файла"
+      language hi
+        cue "फ़ाइल मेटाडेटा"
+      language zh
+        cue 文件元数据
+    intent
+      command "git status"
+      argument "none"
+      language en
+        cue "show git status"
+        cue "repository status"
+      language ru
+        cue "статус git"
+      language hi
+        cue "गिट स्थिति"
+      language zh
+        cue "git 状态"
+    intent
+      command "git log"
+      argument "none"
+      language en
+        cue "show git log"
+        cue "git history"
+      language ru
+        cue "история git"
+      language hi
+        cue "गिट इतिहास"
+      language zh
+        cue "git 历史"
+    intent
+      command "git diff"
+      argument "none"
+      language en
+        cue "what changed in git"
+        cue "show git changes"
+      language ru
+        cue "изменения в git"
+      language hi
+        cue "गिट में बदलाव"
+      language zh
+        cue "git 中的更改"
+    intent
+      command "git commit"
+      argument "none"
+      language en
+        cue "commit my changes"
+        cue "commit the changes"
+      language ru
+        cue "закоммить изменения"
+      language hi
+        cue "मेरे बदलाव कमिट करें"
+      language zh
+        cue 提交我的更改
+    intent
+      command "formal-ai:workspace-test"
+      argument "none"
+      language en
+        cue "run the tests"
+        cue "run tests"
+        cue "test the project"
+      language ru
+        cue "запусти тесты"
+        cue "выполни тесты"
+      language hi
+        cue "परीक्षण चलाएँ"
+        cue "टेस्ट चलाओ"
+      language zh
+        cue 运行测试
+        cue 执行测试
+    intent
+      command "formal-ai:workspace-install"
+      argument "none"
+      language en
+        cue "install dependencies"
+        cue "install the dependencies"
+      language ru
+        cue "установи зависимости"
+      language hi
+        cue "निर्भरताएँ स्थापित करें"
+      language zh
+        cue 安装依赖
+    intent
+      command "formal-ai:workspace-build"
+      argument "none"
+      language en
+        cue "build the project"
+        cue "compile the project"
+      language ru
+        cue "собери проект"
+      language hi
+        cue "प्रोजेक्ट बनाएँ"
+      language zh
+        cue 构建项目
