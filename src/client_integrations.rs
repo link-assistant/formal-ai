@@ -17,8 +17,10 @@ use crate::seed::{
 };
 use crate::DEFAULT_MODEL;
 
+mod command;
 mod session_files;
 mod url;
+use command::resolve_integration_command;
 use session_files::{
     newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
     TempConfigDir,
@@ -306,7 +308,8 @@ fn run_ephemeral(
     let mut context = context.clone();
     let mut temp_dirs = Vec::new();
     let mut session_home = None;
-    let mut command = Command::new(&integration.command);
+    let resolved_command = resolve_integration_command(integration);
+    let mut command = Command::new(&resolved_command);
     for env in &invocation.env {
         command.env(
             render_template(&env.key, &context),
@@ -407,7 +410,7 @@ fn run_ephemeral(
     }
     Err(format!(
         "{} exited with status {}",
-        integration.command,
+        resolved_command.display(),
         status
             .code()
             .map_or_else(|| String::from("signal"), |code| code.to_string())

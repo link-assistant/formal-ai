@@ -239,6 +239,7 @@ formal-ai with codex "hi"
 formal-ai with t3code
 formal-ai with opencode run "hi"
 formal-ai with opencode-vscode
+formal-ai with opencode-desktop
 formal-ai with agent -p "hi"
 formal-ai with cursor -p "hi"
 formal-ai with gemini -p "hi"
@@ -329,6 +330,29 @@ and VS Code settings remain unchanged because the wrapper supplies an isolated
 the wrapper deliberately uses `--new-window`; launch it from a shell rather
 than attaching it to an existing window.
 
+OpenCode Desktop is a separate integration from the `opencode` terminal client:
+
+```bash
+formal-ai with opencode-desktop
+```
+
+The wrapper launches the installed Electron app without adding the CLI-only
+`run` or `-m` arguments. It supplies an isolated `OPENCODE_CONFIG` containing
+provider `formalai`, model `formalai/formal-ai`, and the local
+`/api/openai/v1` endpoint, so a one-shot launch does not modify the user's
+configuration. Installed packages are discovered at `/opt/OpenCode/ai.opencode.desktop`
+on Linux, `/Applications/OpenCode.app/Contents/MacOS/OpenCode` on macOS, and
+`%LOCALAPPDATA%\Programs\OpenCode\OpenCode.exe` on Windows. Set
+`FORMAL_AI_OPENCODE_DESKTOP_BIN` to an AppImage, unpacked executable, or custom
+install path when needed.
+
+OpenCode CLI and Desktop intentionally share
+`~/.config/opencode/opencode.json` for permanent setup. Run
+`formal-ai with --global opencode-desktop` to merge the provider and create
+`opencode.json.formal-ai.bak`; run `formal-ai with --undo opencode-desktop` to
+restore that backup. The desktop target is also included in `--global --all`
+and `--undo --all`.
+
 After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
 session artifact created by that invocation and a copy-pasteable resume command
 when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
@@ -352,6 +376,7 @@ with-formal-ai -g codex
 with-formal-ai -g t3code
 with-formal-ai -g opencode
 with-formal-ai -g opencode-vscode
+with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
 with-formal-ai -g cursor
 with-formal-ai -g gemini

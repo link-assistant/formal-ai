@@ -36,6 +36,7 @@ and confirm its transcript contains the advertised read/shell call and result.
 | T3 Code | Responses or Anthropic | isolated `CODEX_HOME`, browser by default | Codex config or `~/.profile` |
 | OpenCode | Chat Completions, `/api/openai/v1` | temporary `opencode.json` | `~/.config/opencode/opencode.json` |
 | OpenCode VS Code | Chat Completions, `/api/openai/v1` | fresh window with temporary `opencode.json` | `~/.config/opencode/opencode.json` |
+| OpenCode Desktop | Chat Completions, `/api/openai/v1` | temporary `opencode.json`, packaged GUI | `~/.config/opencode/opencode.json` |
 | Agent | Chat Completions, `/api/openai/v1` | inline provider JSON | `~/.config/link-assistant-agent/opencode.json` |
 | Cursor | MCP, `/mcp` | isolated `~/.cursor/mcp.json` | `~/.cursor/mcp.json` |
 | Gemini | Gemini or Vertex | isolated `GEMINI_CLI_HOME` | managed variables in `~/.profile` |
@@ -91,11 +92,23 @@ equivalent. Run **Open opencode** in that window and select
 persistent configuration and `formal-ai with --undo opencode-vscode` to restore
 the backup.
 
-OpenCode Desktop shares the persistent `opencode.json`, so
-`formal-ai with --global opencode` prepares the provider that the GUI can
-select. A separate isolated `formal-ai with opencode-desktop` launcher is not yet
-available; it is tracked by issue #762. Do not use that command until the
-`opencode-desktop` registry entry exists.
+OpenCode Desktop shares the persistent `opencode.json`; use its distinct target
+below to launch the packaged app without passing CLI-only arguments.
+
+## `opencode-desktop`
+
+```bash
+formal-ai with opencode-desktop
+formal-ai with --global opencode-desktop
+formal-ai with --undo opencode-desktop
+```
+
+One-shot mode supplies an isolated `OPENCODE_CONFIG` and leaves the normal
+OpenCode config untouched. The launcher checks
+`FORMAL_AI_OPENCODE_DESKTOP_BIN`, then `opencode-desktop` on `PATH`, then the
+native packaged location for Linux, macOS, or Windows. Permanent setup and undo
+share `~/.config/opencode/opencode.json` with the CLI, including its
+`.formal-ai.bak` backup, and the desktop target participates in `--all`.
 
 ## `agent`
 
