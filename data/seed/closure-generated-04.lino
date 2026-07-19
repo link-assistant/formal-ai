@@ -1,4 +1,9 @@
 meanings
+  response_mcp_instructions_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions ru"
   response_mcp_instructions_zh
     defined-by response_template
     lexeme en

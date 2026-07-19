@@ -88,6 +88,7 @@ mod issue_745;
 mod issue_749_shell_routing;
 mod issue_750;
 mod issue_758;
+mod issue_771;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

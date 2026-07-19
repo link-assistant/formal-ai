@@ -1189,6 +1189,11 @@ meanings
     lexeme en
       surface
         text "issue report tool missing"
+  issue_report_transcript_trimmed
+    defined-by field
+    lexeme en
+      surface
+        text "issue report transcript trimmed"
   issue_template_labels
     defined-by field
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import lexeme lost"
-  lexeme_import_missing_cached_label
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import missing cached label"

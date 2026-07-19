@@ -76,6 +76,16 @@ pub(super) fn plan_web_research_step(
         .map(|tool| plan_one(tool, json!({ "query": query }).to_string()))
 }
 
+/// Evidence at or below this many characters is already an answer, so it is
+/// reported verbatim. Above it the fetch result is a whole web page — site
+/// chrome, navigation and unrelated articles around the part that answers the
+/// question — and must be extracted from rather than dumped (issue #771).
+const VERBATIM_EVIDENCE_LIMIT: usize = 600;
+
+/// How many sentences an extract keeps. Enough for a claim plus its immediate
+/// qualification, short enough to stay an answer rather than a transcript.
+const EXTRACT_SENTENCES: usize = 3;
+
 fn final_answer(query: &str, progress: &Progress) -> String {
     let evidence = progress
         .fetched_text
@@ -93,7 +103,106 @@ fn final_answer(query: &str, progress: &Progress) -> String {
         .map_or_else(String::new, |url| {
             format!("\n\n{}: {url}", seed_text("web_research_source_label"))
         });
-    format!("{evidence}{source}")
+    format!("{}{source}", extract_answer(query, evidence))
+}
+
+/// Reduce fetched evidence to the sentences that actually bear on `query`.
+///
+/// A fetch tool returns the whole page; answering with it verbatim is what made
+/// issue #771's session unreadable. Sentences are scored by symbolic token
+/// overlap with the query — the same non-neural similarity the ranker uses — and
+/// the best few are returned in document order so the extract still reads as
+/// prose. Scoring is deterministic and carries no natural-language vocabulary,
+/// so it works in every supported language — see [`relevance`] for how the
+/// space-less scripts are handled.
+fn extract_answer(query: &str, evidence: &str) -> String {
+    if evidence.chars().count() <= VERBATIM_EVIDENCE_LIMIT {
+        return evidence.to_owned();
+    }
+    let sentences = crate::summarization::formalize(evidence);
+    let mut scored: Vec<(usize, f32, &str)> = sentences
+        .iter()
+        .enumerate()
+        .map(|(position, statement)| {
+            (
+                position,
+                relevance(query, &statement.text),
+                statement.text.as_str(),
+            )
+        })
+        .filter(|(_, score, _)| *score > 0.0)
+        .collect();
+    if scored.is_empty() {
+        // Nothing overlaps the query: fall back to the head of the document
+        // rather than the whole of it, so the answer stays bounded either way.
+        return truncate_chars(evidence, VERBATIM_EVIDENCE_LIMIT);
+    }
+    // Rank by relevance, keep the best few, then restore document order.
+    scored.sort_by(|left, right| {
+        right
+            .1
+            .partial_cmp(&left.1)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then(left.0.cmp(&right.0))
+    });
+    scored.truncate(EXTRACT_SENTENCES);
+    scored.sort_by_key(|(position, _, _)| *position);
+    scored
+        .iter()
+        .map(|(_, _, text)| *text)
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// How much `sentence` bears on `query`, in `0.0..=1.0`.
+///
+/// Bag-of-words cosine is the primary measure. It tokenizes on non-alphanumeric
+/// boundaries, which is exactly right for the space-separated scripts but scores
+/// every Chinese sentence 0.0: a run of Han characters with no spaces is a
+/// single token, so query and sentence never share one. The codebase's existing
+/// answer for that (see `coding::catalog::contains_cjk` and its callers) is to
+/// match on characters rather than words, so that is the fallback here.
+fn relevance(query: &str, sentence: &str) -> f32 {
+    let cosine = crate::probability::symbolic_cosine_similarity(query, sentence);
+    if cosine > 0.0 || !crate::coding::contains_cjk(query) {
+        return cosine;
+    }
+    character_overlap(query, sentence)
+}
+
+/// The fraction of the query's distinct ideographs that `sentence` also uses.
+///
+/// Punctuation and spacing are ignored, so the score reflects shared content
+/// characters only. Common function characters inflate it slightly, which costs
+/// nothing here because the score is only ever used to rank sentences of the
+/// same document against each other.
+fn character_overlap(query: &str, sentence: &str) -> f32 {
+    let sentence: std::collections::BTreeSet<char> =
+        sentence.chars().filter(|c| c.is_alphanumeric()).collect();
+    let query: std::collections::BTreeSet<char> =
+        query.chars().filter(|c| c.is_alphanumeric()).collect();
+    if query.is_empty() {
+        return 0.0;
+    }
+    let shared = query.iter().filter(|c| sentence.contains(c)).count();
+    #[expect(
+        clippy::cast_precision_loss,
+        reason = "character counts are far below f32's exact-integer range"
+    )]
+    {
+        shared as f32 / query.len() as f32
+    }
+}
+
+/// Truncate to at most `max` characters on a char boundary, appending an
+/// ellipsis when shortened.
+fn truncate_chars(value: &str, max: usize) -> String {
+    let value = value.trim();
+    if value.chars().count() <= max {
+        return value.to_owned();
+    }
+    let head: String = value.chars().take(max.saturating_sub(1)).collect();
+    format!("{}…", head.trim_end())
 }
 
 fn seed_text(key: &str) -> String {
