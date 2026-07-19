@@ -1,0 +1,1226 @@
+{
+  "detected": [
+    "out-of-box",
+    "agent"
+  ],
+  "activeEngine": "out-of-box",
+  "proxyLog": [
+    {
+      "engine": "agent",
+      "event": {
+        "type": "config",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.951Z",
+        "service": "default",
+        "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+        "config": {
+          "verbose": false,
+          "dryRun": false,
+          "generateTitle": false,
+          "outputResponseModel": true,
+          "summarizeSession": true,
+          "retryOnRateLimits": true,
+          "compactJson": true,
+          "configContent": "{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8796/api/openai/v1\",\"apiKey\":\"{env:FORMAL_AI_API_KEY}\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}",
+          "disableAutoupdate": false,
+          "disablePrune": false,
+          "enableExperimentalModels": false,
+          "disableAutocompact": false,
+          "experimental": false,
+          "experimentalWatcher": false,
+          "retryTimeout": 604800,
+          "maxRetryDelay": 1200,
+          "minRetryInterval": 30,
+          "streamChunkTimeoutMs": 120000,
+          "streamStepTimeoutMs": 600000,
+          "mcpDefaultToolCallTimeout": 120000,
+          "mcpMaxToolCallTimeout": 600000,
+          "verifyImagesAtReadTool": true,
+          "readOnly": false,
+          "permissionMode": "readonly"
+        },
+        "message": "Agent configuration resolved"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "status",
+        "mode": "stdin-stream",
+        "message": "Agent CLI in continuous listening mode. Accepts JSON and plain text input.",
+        "hint": "Press CTRL+C to exit. Use --help for options.",
+        "acceptedFormats": [
+          "JSON object with \"message\" field",
+          "Plain text"
+        ],
+        "options": {
+          "inputFormat": "text",
+          "interactive": true,
+          "autoMergeQueuedMessages": true,
+          "alwaysAcceptStdin": true,
+          "compactJson": true
+        }
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.962Z",
+        "service": "default",
+        "version": "0.25.0",
+        "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --permission-mode readonly --model formalai/formal-ai --compact-json",
+        "workingDirectory": "/tmp/gh-issue-solver-1784416187650",
+        "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+        "message": "Agent started (continuous mode)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.963Z",
+        "service": "default",
+        "directory": "/tmp/gh-issue-solver-1784416187650",
+        "message": "creating instance"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.967Z",
+        "service": "project",
+        "directory": "/tmp/gh-issue-solver-1784416187650",
+        "message": "fromDirectory"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.973Z",
+        "service": "project",
+        "status": "started",
+        "message": "git.rev-parse"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:05.980Z",
+        "service": "project",
+        "status": "completed",
+        "duration": 7,
+        "message": "git.rev-parse"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.041Z",
+        "service": "default",
+        "processArgv": [
+          "/home/box/.bun/bin/bun",
+          "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+          "--permission-mode",
+          "readonly",
+          "--model",
+          "formalai/formal-ai",
+          "--compact-json"
+        ],
+        "bunArgv": [
+          "/home/box/.bun/bin/bun",
+          "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+          "--permission-mode",
+          "readonly",
+          "--model",
+          "formalai/formal-ai",
+          "--compact-json"
+        ],
+        "cliModelArg": "formalai/formal-ai",
+        "yargsModel": "formalai/formal-ai",
+        "message": "model resolution: argv sources"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.044Z",
+        "service": "default",
+        "rawModel": "formalai/formal-ai",
+        "providerID": "formalai",
+        "modelID": "formal-ai",
+        "message": "using explicit provider/model"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.048Z",
+        "service": "provider",
+        "status": "started",
+        "message": "state"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.051Z",
+        "service": "config",
+        "path": "/home/box/.config/link-assistant-agent/config.json",
+        "message": "loading"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.054Z",
+        "service": "config",
+        "path": "/home/box/.config/link-assistant-agent/opencode.json",
+        "message": "loading"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.055Z",
+        "service": "config",
+        "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+        "message": "loading"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.074Z",
+        "service": "models.dev",
+        "path": "/home/box/.cache/link-assistant-agent/models.json",
+        "age": 944847,
+        "message": "cache is fresh, triggering background refresh"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.075Z",
+        "service": "models.dev",
+        "file": {},
+        "message": "refreshing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.256Z",
+        "service": "provider",
+        "message": "init"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.366Z",
+        "service": "claude-oauth",
+        "path": "/home/box/.claude/.credentials.json",
+        "message": "credentials file not found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.367Z",
+        "service": "provider",
+        "providerID": "formal-ai",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.367Z",
+        "service": "provider",
+        "providerID": "formalai",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.367Z",
+        "service": "provider",
+        "providerID": "@link-assistant",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.368Z",
+        "service": "provider",
+        "providerID": "opencode",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.368Z",
+        "service": "provider",
+        "providerID": "kilo",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.368Z",
+        "service": "provider",
+        "status": "completed",
+        "duration": 320,
+        "message": "state"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.376Z",
+        "service": "provider",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "message": "resolved short model name (single match)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.382Z",
+        "service": "provider",
+        "modelID": "minimax-m2.5-free",
+        "providerID": "kilo",
+        "message": "resolved short model name (single match)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.392Z",
+        "service": "default",
+        "models": [
+          "opencode/big-pickle",
+          "kilo/minimax-m2.5-free",
+          "same"
+        ],
+        "source": "default",
+        "message": "compaction models cascade configured"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.793Z",
+        "service": "server",
+        "method": "POST",
+        "path": "/session",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.793Z",
+        "service": "server",
+        "status": "started",
+        "method": "POST",
+        "path": "/session",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.805Z",
+        "service": "session",
+        "id": "ses_0884d50cdffejotbyHdHp158N3",
+        "version": "agent-cli-1.0.0",
+        "projectID": "2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+        "directory": "/tmp/gh-issue-solver-1784416187650",
+        "title": "New session - 2026-07-19T00:07:06.805Z",
+        "time": {
+          "created": 1784419626805,
+          "updated": 1784419626805
+        },
+        "message": "created"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.created",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.809Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.810Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.813Z",
+        "service": "server",
+        "status": "completed",
+        "duration": 20,
+        "method": "POST",
+        "path": "/session",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "*",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.836Z",
+        "service": "bus",
+        "message": "subscribing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "input",
+        "timestamp": "2026-07-19T00:07:06.882Z",
+        "raw": "Reply with exactly: agent desktop roundtrip",
+        "parsed": {
+          "message": "Reply with exactly: agent desktop roundtrip"
+        },
+        "format": "text",
+        "kind": "message"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "*",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.888Z",
+        "service": "bus",
+        "message": "subscribing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.891Z",
+        "service": "server",
+        "method": "POST",
+        "path": "/session/ses_0884d50cdffejotbyHdHp158N3/message",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.891Z",
+        "service": "server",
+        "status": "started",
+        "method": "POST",
+        "path": "/session/ses_0884d50cdffejotbyHdHp158N3/message",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.950Z",
+        "service": "server",
+        "status": "completed",
+        "duration": 59,
+        "method": "POST",
+        "path": "/session/ses_0884d50cdffejotbyHdHp158N3/message",
+        "message": "request"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:06.976Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.002Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.007Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.019Z",
+        "service": "session.prompt",
+        "step": 0,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "message": "loop"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.182Z",
+        "service": "session.prompt",
+        "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+        "message": "title generation disabled"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.182Z",
+        "service": "session.prompt",
+        "providerID": "formalai",
+        "modelID": "formal-ai",
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "step": 1,
+        "message": "resolving model"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.190Z",
+        "service": "provider",
+        "providerID": "formalai",
+        "modelID": "formal-ai",
+        "message": "getModel"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.191Z",
+        "service": "provider",
+        "status": "started",
+        "providerID": "formalai",
+        "message": "getSDK"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.192Z",
+        "service": "provider",
+        "providerID": "formalai",
+        "pkg": "@ai-sdk/openai-compatible",
+        "globalVerboseFetchInstalled": true,
+        "verboseAtCreation": false,
+        "message": "provider SDK fetch chain configured"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.200Z",
+        "service": "provider",
+        "providerID": "formalai",
+        "pkg": "@ai-sdk/openai-compatible",
+        "message": "using bundled provider (no installation needed)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.201Z",
+        "service": "provider",
+        "status": "completed",
+        "duration": 10,
+        "providerID": "formalai",
+        "message": "getSDK"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.203Z",
+        "service": "provider",
+        "providerID": "formalai",
+        "modelID": "formal-ai",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.203Z",
+        "service": "session.prompt",
+        "providerID": "formalai",
+        "modelID": "formal-ai",
+        "resolvedModelID": "formal-ai",
+        "message": "model resolved successfully"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.203Z",
+        "service": "provider",
+        "providerID": "opencode",
+        "modelID": "big-pickle",
+        "message": "getModel"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.203Z",
+        "service": "provider",
+        "status": "started",
+        "providerID": "opencode",
+        "message": "getSDK"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.215Z",
+        "service": "provider",
+        "providerID": "opencode",
+        "pkg": "@ai-sdk/openai-compatible",
+        "globalVerboseFetchInstalled": true,
+        "verboseAtCreation": false,
+        "message": "provider SDK fetch chain configured"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.215Z",
+        "service": "provider",
+        "providerID": "opencode",
+        "pkg": "@ai-sdk/openai-compatible",
+        "message": "using bundled provider (no installation needed)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.215Z",
+        "service": "provider",
+        "status": "completed",
+        "duration": 12,
+        "providerID": "opencode",
+        "message": "getSDK"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:07.216Z",
+        "service": "provider",
+        "providerID": "opencode",
+        "modelID": "big-pickle",
+        "message": "found"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:12.303Z",
+        "service": "token",
+        "message": "loaded gpt-tokenizer (o200k_base)"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:12.429Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:12.483Z",
+        "service": "ripgrep",
+        "cwd": "/tmp/gh-issue-solver-1784416187650",
+        "limit": 200,
+        "message": "tree"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:13.613Z",
+        "service": "session.processor",
+        "message": "process"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.status",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:13.741Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:14.106Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:14.107Z",
+        "service": "session.summary",
+        "providerID": "opencode",
+        "modelID": "big-pickle",
+        "hint": "Using compaction model to reduce rate-limit pressure on main model",
+        "mainModelID": "formal-ai",
+        "message": "loading model for summarization"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:14.158Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.diff",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:14.164Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.720Z",
+        "service": "snapshot",
+        "hash": "c48f4475125abee72cf57d6e0d04aae508d6d1cc\n",
+        "cwd": "/tmp/gh-issue-solver-1784416187650",
+        "git": "/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+        "message": "tracking"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.726Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "step_start",
+        "timestamp": 1784419637726,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "part": {
+          "id": "prt_f77b2d9d9001pa1ADowP5ps5OY",
+          "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+          "messageID": "msg_f77b2c4e6001x8PHn71qoBInYz",
+          "type": "step-start",
+          "snapshot": "c48f4475125abee72cf57d6e0d04aae508d6d1cc"
+        }
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.735Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.757Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.761Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:17.776Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "text",
+        "timestamp": 1784419637777,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "part": {
+          "id": "prt_f77b2d9ef001kNfMPl7VLzYdn0",
+          "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+          "messageID": "msg_f77b2c4e6001x8PHn71qoBInYz",
+          "type": "text",
+          "text": "I could not determine `Reply with exactly: agent desktop roundtrip` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.",
+          "time": {
+            "start": 1784419637772,
+            "end": 1784419637772
+          }
+        }
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "warn",
+        "timestamp": "2026-07-19T00:07:17.815Z",
+        "service": "session.processor",
+        "providerID": "formalai",
+        "requestedModelID": "formal-ai",
+        "recoveredTokens": {
+          "input": 14721,
+          "output": 544,
+          "reasoning": 0,
+          "cache": {
+            "write": 0,
+            "read": 0
+          }
+        },
+        "recoveredCost": 0,
+        "ssePromptTokens": 14721,
+        "sseCompletionTokens": 544,
+        "issue": "https://github.com/link-assistant/agent/issues/249",
+        "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:18.582Z",
+        "service": "snapshot",
+        "hash": "c48f4475125abee72cf57d6e0d04aae508d6d1cc\n",
+        "cwd": "/tmp/gh-issue-solver-1784416187650",
+        "git": "/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+        "message": "tracking"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.part.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:18.640Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "step_finish",
+        "timestamp": 1784419638640,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "part": {
+          "id": "prt_f77b2da37001AiMVi9QwPhwEoN",
+          "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+          "messageID": "msg_f77b2c4e6001x8PHn71qoBInYz",
+          "type": "step-finish",
+          "reason": "unknown",
+          "snapshot": "c48f4475125abee72cf57d6e0d04aae508d6d1cc",
+          "cost": 0,
+          "tokens": {
+            "input": 14721,
+            "output": 544,
+            "reasoning": 0,
+            "cache": {
+              "read": 0,
+              "write": 0
+            }
+          },
+          "model": {
+            "providerID": "formalai",
+            "requestedModelID": "formal-ai",
+            "respondedModelID": "formal-ai"
+          },
+          "context": {
+            "contextLimit": 60000,
+            "outputLimit": 8192,
+            "usableContext": 51808,
+            "safeLimit": 38856,
+            "safetyMargin": 0.75,
+            "currentTokens": 15265,
+            "headroom": 23591,
+            "overflow": false
+          }
+        }
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:18.641Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.293Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.315Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.315Z",
+        "service": "session.prompt",
+        "step": 1,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "message": "loop"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.331Z",
+        "service": "session.prompt",
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "message": "exiting loop"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.333Z",
+        "service": "session.compaction",
+        "message": "pruning"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.499Z",
+        "service": "session.prompt",
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3",
+        "message": "cancel"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.status",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.499Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session.idle",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.499Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "session_idle",
+        "timestamp": 1784419639499,
+        "sessionID": "ses_0884d50cdffejotbyHdHp158N3"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "*",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.499Z",
+        "service": "bus",
+        "message": "unsubscribing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "message.updated",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.570Z",
+        "service": "bus",
+        "message": "publishing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.570Z",
+        "service": "session.summary",
+        "providerID": "opencode",
+        "modelID": "big-pickle",
+        "hint": "Using compaction model to reduce rate-limit pressure on main model",
+        "mainModelID": "formal-ai",
+        "message": "loading model for summarization"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "*",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.596Z",
+        "service": "bus",
+        "message": "unsubscribing"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.596Z",
+        "service": "default",
+        "directory": "/tmp/gh-issue-solver-1784416187650",
+        "message": "disposing instance"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.596Z",
+        "service": "state",
+        "key": "/tmp/gh-issue-solver-1784416187650",
+        "message": "waiting for state disposal to complete"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.597Z",
+        "service": "state",
+        "key": "/tmp/gh-issue-solver-1784416187650",
+        "message": "state disposal completed"
+      }
+    },
+    {
+      "engine": "agent",
+      "event": {
+        "type": "log",
+        "level": "info",
+        "timestamp": "2026-07-19T00:07:19.600Z",
+        "service": "default",
+        "hasError": false,
+        "uptimeSeconds": 29,
+        "message": "Agent exiting"
+      }
+    },
+    {
+      "engine": "agent",
+      "status": "ok",
+      "answer": "I could not determine `Reply with exactly: agent desktop roundtrip` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+    },
+    {
+      "engine": "out-of-box",
+      "status": "ok",
+      "answer": "I could not determine `Reply with exactly: native desktop roundtrip` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
+    }
+  ]
+}

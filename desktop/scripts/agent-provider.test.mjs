@@ -9,6 +9,7 @@ const require = createRequire(import.meta.url);
 const { createToolRouter } = require("../lib/tool-router.cjs");
 const {
   buildCommanderArgs,
+  commanderControllerOptions,
   createAgentProvider,
   directHostSpawnViolations,
   isReadOnlyShellCommand,
@@ -71,6 +72,18 @@ test("agent NDJSON events map onto the existing chat answer contract", () => {
   assert.equal(answer.toolCalls[0].inputs.command, "ls ~");
   assert.match(answer.toolCalls[0].outputs.stdout, /Desktop/);
   assert.equal(answer.toolCalls[0].outputs.exitCode, 0);
+});
+
+test("Agent lifecycle logs stay out of chat while nested text parts render", () => {
+  const answer = agentEventsToChatAnswer([
+    { type: "config", message: "Agent configuration resolved" },
+    { type: "log", message: "loading provider" },
+    { type: "text", part: { type: "text", text: "visible answer" } },
+    { type: "session_idle", message: "done" },
+  ]);
+
+  assert.equal(answer.content, "visible answer");
+  assert.doesNotMatch(answer.content, /configuration|loading|done/);
 });
 
 test("the default desktop agent provider is the hermetic in-process provider", () => {
@@ -168,24 +181,29 @@ test("in-process provider drives the existing formal-ai agentic loop for tasks",
   assert.equal(Object.hasOwn(calls[0].options.env, "ANTHROPIC_API_KEY"), false);
 });
 
-test("commander provider defaults to the org-owned agent backend through agent-commander", async () => {
+test("commander provider streams the org-owned agent backend through the agent-commander JS API", async () => {
   const calls = [];
+  const streamed = [];
   const provider = createAgentProvider({
     type: "commander",
-    commanderCommand: "start-agent",
-    containerName: "formal-ai-agent-test",
     workingDirectory: "/workspace",
-    env: {
-      PATH: "/usr/bin",
-      ANTHROPIC_API_KEY: "host-anthropic-token",
-      OPENAI_API_KEY: "host-openai-token",
-    },
-    processRunner: async (command, args, options) => {
-      calls.push({ command, args, options });
+    onEvent: (event) => streamed.push(event),
+    agentFactory: (controllerOptions) => {
+      calls.push({ controllerOptions });
       return {
-        code: 0,
-        stdout: '{"type":"assistant","content":"ok"}\n',
-        stderr: "",
+        async start(startOptions) {
+          calls.push({ startOptions });
+          startOptions.onMessage({ type: "assistant", content: "ok" });
+        },
+        async stop() {
+          calls.push({ stop: true });
+          return {
+            exitCode: 0,
+            output: { plain: '{"type":"assistant","content":"ok"}\n', parsed: [] },
+            sessionId: "agent-session-1",
+            metadata: { sessionId: "agent-session-1" },
+          };
+        },
       };
     },
   });
@@ -196,29 +214,56 @@ test("commander provider defaults to the org-owned agent backend through agent-c
     command: "ls ~",
     agentProvider: {
       apiBase: "http://127.0.0.1:19191",
-      openAiBaseUrl: "http://127.0.0.1:19191/v1",
       model: "formal-ai",
     },
+    sessionKey: "conversation-1",
   });
 
   assert.equal(result.ok, true);
   assert.equal(result.provider, "commander");
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0].command, "start-agent");
-  assert.deepEqual(calls[0].args.slice(0, 4), ["--tool", "agent", "--working-directory", "/workspace"]);
-  assert.ok(calls[0].args.includes("--read-only"), "agent-commander maps agent to native read-only mode");
-  assert.ok(!calls[0].args.includes("--approve-each"));
-  assert.ok(calls[0].args.includes("--isolation"));
-  assert.ok(calls[0].args.includes("docker"));
-  assert.ok(calls[0].args.includes("--container-name"));
-  assert.ok(calls[0].args.includes("formal-ai-agent-test"));
-  assert.ok(calls[0].args.includes("OPENAI_BASE_URL=http://127.0.0.1:19191/v1"));
-  assert.equal(calls[0].options.env.OPENAI_BASE_URL, "http://127.0.0.1:19191/v1");
-  assert.equal(calls[0].options.env.OPENAI_API_KEY, "formal-ai-local");
-  assert.equal(Object.hasOwn(calls[0].options.env, "ANTHROPIC_API_KEY"), false);
+  assert.equal(calls[0].controllerOptions.tool, "agent");
+  assert.equal(calls[0].controllerOptions.workingDirectory, "/workspace");
+  assert.equal(calls[0].controllerOptions.isolation, "none");
+  assert.equal(calls[0].controllerOptions.model, "formalai/formal-ai");
+  assert.equal(calls[0].controllerOptions.readOnly, true);
+  assert.equal(calls[1].startOptions.attached, false);
+  assert.equal(calls[2].stop, true);
+  const agentConfig = JSON.parse(calls[0].controllerOptions.toolOptions.extraEnv.LINK_ASSISTANT_AGENT_CONFIG_CONTENT);
+  assert.equal(agentConfig.provider.formalai.options.baseURL, "http://127.0.0.1:19191/api/openai/v1");
+  assert.deepEqual(streamed, [{ type: "assistant", content: "ok" }]);
   assert.deepEqual(result.events, [{ type: "assistant", content: "ok" }]);
+  assert.equal(result.sessionId, "agent-session-1");
   assert.equal(result.answer.intent, "agent_cli_turn");
   assert.equal(result.answer.content, "ok");
+});
+
+test("commander controller options point Codex and Claude at the same local server", () => {
+  const codex = commanderControllerOptions({
+    commanderTool: "codex",
+    prompt: "hello",
+    agentProvider: { apiBase: "http://127.0.0.1:19191", model: "formal-ai" },
+  });
+  assert.equal(codex.isolation, "none");
+  assert.ok(codex.toolOptions.extraArgs.includes('model_providers.formalai.base_url="http://127.0.0.1:19191/api/openai/v1"'));
+  assert.equal(codex.toolOptions.extraEnv.FORMAL_AI_API_KEY, "formal-ai-local");
+
+  const writableCodex = commanderControllerOptions({
+    commanderTool: "codex",
+    prompt: "edit a file",
+    grants: { shell: true },
+    agentProvider: { apiBase: "http://127.0.0.1:19191", model: "formal-ai" },
+  });
+  assert.equal(writableCodex.approveEach, false);
+  assert.equal(writableCodex.toolOptions.sandboxMode, "workspace-write");
+  assert.equal(writableCodex.toolOptions.approvalMode, "never");
+
+  const claude = commanderControllerOptions({
+    commanderTool: "claude",
+    prompt: "hello",
+    agentProvider: { apiBase: "http://127.0.0.1:19191", model: "formal-ai" },
+  });
+  assert.equal(claude.toolOptions.extraEnv.ANTHROPIC_BASE_URL, "http://127.0.0.1:19191/api/anthropic");
+  assert.equal(claude.toolOptions.extraEnv.ANTHROPIC_API_KEY, "formal-ai-local");
 });
 
 test("commander provider maps non-read-only agent mode to approve-each", () => {
