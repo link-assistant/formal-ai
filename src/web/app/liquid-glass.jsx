@@ -116,6 +116,13 @@ export function GlassBacking({
         height,
         borderRadius: radius,
         pointerEvents: "none",
+        // liquid-glass-react sizes its refractive canvas to child + internal
+        // padding, so it renders a few pixels TALLER than the host control and
+        // adds a large `0 12px 40px` drop shadow. Without clipping, that orb +
+        // halo bleeds past the button and reads as a "wild" floating chip
+        // (Issue #557 review). `overflow: hidden` clamps the backing to the
+        // exact rounded footprint of the control it decorates.
+        overflow: "hidden",
         // Sits behind the host control's own content (the icon/label), which is
         // painted in normal flow above this negative layer. The host sets
         // `isolation: isolate` so this layer stays clamped to the control.
