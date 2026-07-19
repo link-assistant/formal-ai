@@ -1,0 +1,126 @@
+Create file tests/integration/issue_754_cursor.rs containing
+use std::os::unix::fs::PermissionsExt;
+use std::path::PathBuf;
+use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
+
+use formal_ai::seed::client_integrations;
+use formal_ai::handle_api_request;
+
+static SEQUENCE: AtomicU64 = AtomicU64::new(0);
+
+fn temp_dir() -> PathBuf {
+    let path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-754-{}-{}",
+        std::process::id(),
+        SEQUENCE.fetch_add(1, Ordering::SeqCst)
+    ));
+    std::fs::create_dir_all(&path).expect("create temp directory");
+    path
+}
+
+fn write_fake_cursor(bin_dir: &std::path::Path) {
+    let path = bin_dir.join("cursor-agent");
+    std::fs::write(
+        &path,
+        r#"#!/bin/sh
+printf '%s\n' "$@" > "$FORMAL_AI_CAPTURE.args"
+cp "$HOME/.cursor/mcp.json" "$FORMAL_AI_CAPTURE.mcp.json"
+"#,
+    )
+    .expect("write fake cursor-agent");
+    let mut permissions = std::fs::metadata(&path).expect("metadata").permissions();
+    permissions.set_mode(0o755);
+    std::fs::set_permissions(path, permissions).expect("make fake cursor executable");
+}
+
+#[test]
+fn cursor_is_seeded_as_cursor_agent_with_mcp_configuration() {
+    let cursor = client_integrations()
+        .into_iter()
+        .find(|integration| integration.id == "cursor")
+        .expect("cursor integration");
+    assert_eq!(cursor.command, "cursor-agent");
+    assert_eq!(cursor.invocation.non_interactive_args, ["-p"]);
+    assert_eq!(cursor.invocation.temp_home_env, "HOME");
+    assert_eq!(cursor.invocation.temp_home_config_path, ".cursor/mcp.json");
+    assert!(cursor
+        .invocation
+        .temp_home_json_settings
+        .iter()
+        .any(|(path, value)| path == "mcpServers.formal-ai.url" && value == "{base_url}/mcp"));
+}
+
+#[test]
+fn mcp_endpoint_supports_initialize_list_and_formal_ai_chat() {
+    let initialize = handle_api_request(
+        "POST",
+        "/mcp",
+        r#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"1"}}}"#,
+    );
+    assert_eq!(initialize.status_code, 200);
+    let initialized: serde_json::Value = serde_json::from_str(&initialize.body).expect("initialize JSON");
+    assert_eq!(initialized["result"]["serverInfo"]["name"], "formal-ai");
+
+    let listed = handle_api_request(
+        "POST",
+        "/mcp",
+        r#"{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}"#,
+    );
+    let listed: serde_json::Value = serde_json::from_str(&listed.body).expect("tools JSON");
+    assert_eq!(listed["result"]["tools"][0]["name"], "formal_ai_chat");
+
+    let called = handle_api_request(
+        "POST",
+        "/mcp",
+        r#"{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"formal_ai_chat","arguments":{"prompt":"hi"}}}"#,
+    );
+    assert_eq!(called.status_code, 200);
+    let called: serde_json::Value = serde_json::from_str(&called.body).expect("call JSON");
+    assert_eq!(called["result"]["content"][0]["type"], "text");
+    assert!(called["result"]["content"][0]["text"]
+        .as_str()
+        .is_some_and(|text| !text.is_empty()));
+}
+
+#[test]
+fn formal_ai_with_cursor_runs_headless_through_launch_scoped_mcp_config() {
+    let dir = temp_dir();
+    let home = dir.join("home");
+    let bin = dir.join("bin");
+    std::fs::create_dir_all(&home).expect("home");
+    std::fs::create_dir_all(&bin).expect("bin");
+    write_fake_cursor(&bin);
+    let capture = dir.join("capture");
+    let path = format!("{}:{}", bin.display(), std::env::var("PATH").unwrap_or_default());
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "--no-start-server",
+            "--base-url",
+            "http://127.0.0.1:18090",
+            "cursor",
+            "hi",
+        ])
+        .env("HOME", &home)
+        .env("PATH", path)
+        .env("FORMAL_AI_CAPTURE", &capture)
+        .output()
+        .expect("run cursor wrapper");
+    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+    assert_eq!(
+        std::fs::read_to_string(format!("{}.args", capture.display())).expect("captured args"),
+        "-p\nhi\n"
+    );
+    let config = std::fs::read_to_string(format!("{}.mcp.json", capture.display()))
+        .expect("captured MCP config");
+    let config: serde_json::Value = serde_json::from_str(&config).expect("MCP config JSON");
+    assert_eq!(
+        config["mcpServers"]["formal-ai"]["url"],
+        "http://127.0.0.1:18090/mcp"
+    );
+    assert_eq!(config["mcpServers"]["formal-ai"]["type"], "http");
+    assert!(!home.join(".cursor/mcp.json").exists());
+    let _ = std::fs::remove_dir_all(dir);
+}

@@ -1,0 +1,17 @@
+Q188075
+  aliases
+    en (boxes "storage box")
+    hi ("डब्बा" "डिब्बा")
+    ru ("Ящик")
+    zh ("箱子" "盒" "箱" "整理箱")
+  descriptions
+    en "container (usually cuboidal) with at least one roughly rectangular cross-section"
+    ru "Вид ёмкости или ящика из плотного материала"
+  id Q188075
+  labels
+    en box
+    hi m
+    ru "коробка"
+    zh "盒子"
+  type item
+success 1

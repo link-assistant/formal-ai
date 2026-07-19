@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_ed0e84c9dc621ca3"
+  goal "Create file docs/case-studies/issue-730/agent-authored-finding.md containing Attest release artifacts by path and keep checksum manifests portable."
+  target "docs/case-studies/issue-730/agent-authored-finding.md"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_4e8fcf5783c49ba8"
+  step 2
+    capability "Write"
+    action "write the requested content to docs/case-studies/issue-730/agent-authored-finding.md"
+    expected_evidence "workspace file docs/case-studies/issue-730/agent-authored-finding.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "Attest release artifacts by path and keep checksum manifests portable"
+    command "cat docs/case-studies/issue-730/agent-authored-finding.md"
+  verification_command "cat docs/case-studies/issue-730/agent-authored-finding.md"

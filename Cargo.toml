@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.286.0"
+version = "0.300.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -21,6 +21,14 @@ include = [
 ]
 build = "build.rs"
 
+# docs.rs sets DOCS_RS while building dependencies. meta-language currently
+# pulls lindera-jieba, whose DOCS_RS build path is broken upstream
+# (lindera/lindera#750). Keep the complete engine enabled for every normal build,
+# while letting docs.rs render this crate's API without executing that transitive
+# build script.
+[package.metadata.docs.rs]
+no-default-features = true
+
 [lib]
 name = "formal_ai"
 path = "src/lib.rs"
@@ -40,7 +48,7 @@ link-calculator = "0.19.0"
 # real tree-sitter grammars for every language we target and exposes a single
 # mutable links-network representation, so it is the sole CST/AST engine here
 # (https://github.com/link-foundation/meta-language).
-meta-language = "0.45.0"
+meta-language = { version = "0.45.0", optional = true }
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
@@ -50,10 +58,14 @@ thread-priority = "1"
 toml_edit = "0.25.11"
 
 [features]
-default = ["doublets-native"]
+default = ["doublets-native", "meta-language"]
 doublets-native = ["dep:doublets", "dep:mem"]
+meta-language = ["dep:meta-language"]
 
 [dev-dependencies]
+# The same codec the library encodes with, so tests can hold published
+# artifacts to the notation they claim to be written in.
+lino-objects-codec = "0.2.1"
 regex = "1"
 walkdir = "2"
 

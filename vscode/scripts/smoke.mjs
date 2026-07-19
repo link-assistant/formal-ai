@@ -186,6 +186,12 @@ requireIncludes("scripts/prepare-resources.mjs", read("scripts/prepare-resources
   "vendor",
   "tool-router.cjs",
   "memory-sync.cjs",
+  "esbuild",
+  "bundle: true",
+]);
+
+requireIncludes(".vscodeignore", read(".vscodeignore"), [
+  "node_modules/**",
 ]);
 
 console.log("formal-ai vscode smoke checks passed");

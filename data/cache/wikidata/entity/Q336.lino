@@ -1,0 +1,18 @@
+Q336
+  aliases
+    en (sciences "general science" "scientific knowledge" "empirical sciences")
+    hi ("सामान्य विज्ञान" "वैज्ञानिक ज्ञान" "आनुभाविक विज्ञान")
+    zh ("科学" "知識")
+  descriptions
+    en "systematic endeavor that builds and organizes knowledge, and the set of knowledge produced by this system"
+    hi "क्रमबद्ध पर्यासों से निर्मित एवं संगठित ज्ञान और इस निकाय से उत्पादित ज्ञान का समुच्चय"
+    ru "знания на основе исследований и наблюдений"
+    zh "建構和組織知識的系統性做法，以及該系統產生的知識集"
+  id Q336
+  labels
+    en science
+    hi "विज्ञान"
+    ru "наука"
+    zh "科學"
+  type item
+success 1

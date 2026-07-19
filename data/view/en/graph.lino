@@ -9,7 +9,7 @@ view
     provenance (wiktionary)
   sense
     part_of_speech noun
-    gloss "A set of points constituting a graphical representation of a real function; (formally) a set of tuples (x_1, x_2, \ldots, x_m, y)\in\R^{m+1}, where y=f(x_1, x_2, \ldots, x_m) for a given function f: \R^m\rightarrow\R."
+    gloss "A set of points constituting a graphical representation of a real function; (formally) a set of tuples (x_1, x_2, \\ldots, x_m, y)\\in\\R^{m+1}, where y=f(x_1, x_2, \\ldots, x_m) for a given function f: \\R^m\\rightarrow\\R."
     provenance (wiktionary)
   sense
     part_of_speech noun
@@ -21,7 +21,7 @@ view
     provenance (wiktionary)
   sense
     part_of_speech noun
-    gloss "(of a morphism f) A morphism \Gamma_f from the domain of f to the product of the domain and codomain of f, such that the first projection applied to \Gamma_f equals the identity of the domain, and the second projection applied to \Gamma_f is equal to f."
+    gloss "(of a morphism f) A morphism \\Gamma_f from the domain of f to the product of the domain and codomain of f, such that the first projection applied to \\Gamma_f equals the identity of the domain, and the second projection applied to \\Gamma_f is equal to f."
     provenance (wiktionary)
   sense
     part_of_speech noun

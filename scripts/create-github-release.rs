@@ -4,7 +4,7 @@
 //! Automatically includes stable crates.io and docs.rs artifact badges in
 //! release notes when the crate name can be detected from Cargo.toml.
 //!
-//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
+//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--self-hosting-ledger <path>] [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
 //!
 //! ```cargo
 //! [dependencies]
@@ -23,13 +23,17 @@ use std::env;
 use std::fs;
 #[cfg(not(test))]
 use std::io::Write;
-#[cfg(not(test))]
 use std::path::Path;
 #[cfg(not(test))]
 use std::process::{exit, Command, Stdio};
 
+#[path = "self-hosting-metric.rs"]
+pub mod self_hosting_metric;
+
 #[cfg(not(test))]
-const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]";
+const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--self-hosting-ledger <path>] [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]";
+
+const SELF_HOSTING_HEADING: &str = "## Self-hosting";
 
 #[cfg(not(test))]
 fn get_rust_root() -> String {
@@ -225,21 +229,42 @@ fn truncate_at_char_boundary(value: &str, max_bytes: usize) -> &str {
     &value[..end]
 }
 
-fn limit_release_body(body: String, full_changelog_url: &str) -> String {
-    if body.len() <= GITHUB_RELEASE_BODY_MAX_BYTES {
+fn limit_release_body_to(body: String, full_changelog_url: &str, max_bytes: usize) -> String {
+    if body.len() <= max_bytes {
         return body;
     }
 
     let notice = format!(
         "\n\n---\n\nRelease notes were shortened to fit GitHub Releases API validation. See the full changelog: {full_changelog_url}\n"
     );
-    if notice.len() >= GITHUB_RELEASE_BODY_MAX_BYTES {
-        return truncate_at_char_boundary(&notice, GITHUB_RELEASE_BODY_MAX_BYTES).to_string();
+    if notice.len() >= max_bytes {
+        return truncate_at_char_boundary(&notice, max_bytes).to_string();
     }
 
-    let max_body_bytes = GITHUB_RELEASE_BODY_MAX_BYTES - notice.len();
+    let max_body_bytes = max_bytes - notice.len();
     let shortened = truncate_at_char_boundary(&body, max_body_bytes).trim_end();
     format!("{shortened}{notice}")
+}
+
+fn limit_release_body(body: String, full_changelog_url: &str) -> String {
+    limit_release_body_to(body, full_changelog_url, GITHUB_RELEASE_BODY_MAX_BYTES)
+}
+
+fn limit_release_body_with_suffix(
+    body: String,
+    suffix: &str,
+    full_changelog_url: &str,
+) -> Result<String, String> {
+    let separator = "\n\n";
+    let reserved_bytes = separator
+        .len()
+        .checked_add(suffix.len())
+        .ok_or_else(|| "release body suffix size overflowed usize".to_owned())?;
+    let available_bytes = GITHUB_RELEASE_BODY_MAX_BYTES
+        .checked_sub(reserved_bytes)
+        .ok_or_else(|| "release body suffix exceeds the GitHub API size limit".to_owned())?;
+    let body = limit_release_body_to(body, full_changelog_url, available_bytes);
+    Ok(format!("{body}{separator}{suffix}"))
 }
 
 #[derive(Debug, Deserialize)]
@@ -398,6 +423,14 @@ fn build_release_payload(
     }
 }
 
+fn self_hosting_note(ledger: &Path, tag: &str) -> Result<String, String> {
+    let note = self_hosting_metric::release_note_for_tag(ledger, tag)?;
+    if !note.starts_with(SELF_HOSTING_HEADING) {
+        return Err("self-hosting release note has an unexpected heading".to_owned());
+    }
+    Ok(note)
+}
+
 #[cfg(not(test))]
 fn main() {
     let version = match get_arg("release-version") {
@@ -424,6 +457,7 @@ fn main() {
     let crates_io_url = get_arg("crates-io-url");
     let ghcr_url = get_arg("ghcr-url");
     let docker_hub_url = get_arg("docker-hub-url");
+    let self_hosting_ledger = get_arg("self-hosting-ledger");
     let normalized_version = normalize_release_version(&version);
 
     let rust_root = get_rust_root();
@@ -459,9 +493,27 @@ fn main() {
     }
 
     let tag = build_release_tag(&tag_prefix, &normalized_version);
+    let self_hosting_note = self_hosting_ledger.map(|ledger| {
+        self_hosting_note(Path::new(&ledger), &tag).unwrap_or_else(|error| {
+            eprintln!("Error adding self-hosting metric to release notes: {error}");
+            exit(1);
+        })
+    });
     let full_changelog_url = format!("https://github.com/{repository}/blob/{tag}/CHANGELOG.md");
-    let release_notes_bytes = release_notes.len();
-    release_notes = limit_release_body(release_notes, &full_changelog_url);
+    let release_notes_bytes = release_notes.len()
+        + self_hosting_note
+            .as_ref()
+            .map_or(0, |note| "\n\n".len() + note.len());
+    release_notes = if let Some(note) = self_hosting_note {
+        limit_release_body_with_suffix(release_notes, &note, &full_changelog_url).unwrap_or_else(
+            |error| {
+                eprintln!("Error adding self-hosting metric to release notes: {error}");
+                exit(1);
+            },
+        )
+    } else {
+        limit_release_body(release_notes, &full_changelog_url)
+    };
     if release_notes.len() != release_notes_bytes {
         println!(
             "Shortened GitHub release notes from {} to {} bytes",
@@ -578,6 +630,27 @@ mod tests {
     }
 
     #[test]
+    fn release_body_includes_the_recorded_self_hosting_metric() {
+        let script = Path::new(file!());
+        let ledger = script
+            .parent()
+            .and_then(Path::parent)
+            .expect("release script must live below the repository root")
+            .join("data/meta/self-hosting-ledger.lino");
+        let note =
+            self_hosting_note(&ledger, "v0.296.0").expect("baseline self-hosting row must render");
+        let body = limit_release_body_with_suffix(
+            "release notes".to_owned(),
+            &note,
+            "https://github.com/link-assistant/formal-ai/blob/v0.296.0/CHANGELOG.md",
+        )
+        .expect("release body must retain the self-hosting note");
+
+        assert!(body.starts_with("release notes\n\n## Self-hosting"));
+        assert!(body.contains("Formal AI authored **0.00%**"));
+    }
+
+    #[test]
     fn docker_hub_badge_links_to_exact_tag() {
         let badge = docker_hub_badge("https://hub.docker.com/r/example/project", "1.2.3");
 
@@ -658,6 +731,23 @@ mod tests {
         assert!(shortened.starts_with("Release heading"));
         assert!(shortened.contains("Release notes were shortened"));
         assert!(shortened.contains("https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md"));
+    }
+
+    #[test]
+    fn oversized_release_body_preserves_the_self_hosting_suffix() {
+        let body = "a".repeat(GITHUB_RELEASE_BODY_MAX_BYTES + 50_000);
+        let note = "## Self-hosting\n\nFormal AI authored **75.00%** of this release.";
+
+        let shortened = limit_release_body_with_suffix(
+            body,
+            note,
+            "https://github.com/owner/repo/blob/v1.2.3/CHANGELOG.md",
+        )
+        .expect("the protected metric suffix must fit");
+
+        assert!(shortened.len() <= GITHUB_RELEASE_BODY_MAX_BYTES);
+        assert!(shortened.contains("Release notes were shortened"));
+        assert!(shortened.ends_with(note));
     }
 
     #[test]

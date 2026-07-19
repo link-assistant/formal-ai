@@ -1,0 +1,17 @@
+Q12791
+  aliases
+    en (swords)
+    hi ("तलवारें")
+  descriptions
+    en "bladed weapon longer than a knife or dagger"
+    hi "छुरा या चाकू से लंबा धारदार हथियार"
+    ru "холодное оружие с прямым клинком"
+    zh "刀剑类冷兵器的总称"
+  id Q12791
+  labels
+    en sword
+    hi "तलवार"
+    ru "меч"
+    zh "刀劍"
+  type item
+success 1

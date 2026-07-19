@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q23392": {
+      "type": "item",
+      "id": "Q23392",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ice"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "лёд"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बर्फ़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "冰"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "water frozen into the solid state"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вода в твёрдом агрегатном состоянии"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "處於固體狀態的水"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "solid water"
+          },
+          {
+            "language": "en",
+            "value": "water ice"
+          },
+          {
+            "language": "en",
+            "value": "water"
+          },
+          {
+            "language": "en",
+            "value": "crystalline water"
+          },
+          {
+            "language": "en",
+            "value": "frozen water"
+          },
+          {
+            "language": "en",
+            "value": "frozen ice"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "водяной лёд"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बरफ"
+          },
+          {
+            "language": "hi",
+            "value": "बर्फ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "仌"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

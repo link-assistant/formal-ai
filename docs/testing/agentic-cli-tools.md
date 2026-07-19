@@ -8,6 +8,18 @@ from observable evidence.
 This runbook documents the workflow that surfaced #624, #626, and #627, and it
 feeds the CI e2e suite proposed in #625.
 
+**Scope — what CI actually runs today.** Everything below is a *local* runbook.
+The only agentic job in CI is `test-agent-cli-e2e`
+(`.github/workflows/release.yml`), which drives our own Agent CLI against
+`formal-ai serve` — with no recording proxy, no `with-formal-ai` wrapper, and
+no other vendor CLI (codex, opencode, gemini, qwen, claude, grok, and aider
+appear nowhere in the workflows). The multi-CLI × proxy matrix described in
+*CI Shape* below is the target shape, tracked by
+[#625](https://github.com/link-assistant/formal-ai/issues/625) and
+[#671](https://github.com/link-assistant/formal-ai/issues/671); the OpenAI
+Responses and Gemini `streamGenerateContent` paths mentioned later are covered
+only by these manual procedures so far.
+
 ## Setup
 
 Build the server and wrapper binaries:
@@ -21,7 +33,7 @@ Install the client CLIs the same way users receive them. For CI, replace
 test result:
 
 ```bash
-bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest
+bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest t3@latest
 ```
 
 Start Formal AI in agent mode on loopback:
@@ -88,6 +100,71 @@ with-formal-ai --base-url http://127.0.0.1:8090 opencode run "list the files in 
 
 Expected protocol path: OpenAI `chat/completions`.
 
+### OpenCode VS Code extension
+
+The official `sst-dev.opencode` extension is a separate surface from the
+OpenCode CLI/TUI and desktop app. Its extension command creates a VS Code
+terminal and runs `opencode --port <port>`, so it consumes OpenCode's standard
+provider config and the extension host's environment. Install the extension
+and CLI, then start a fresh, isolated window through the wrapper:
+
+```bash
+code --install-extension sst-dev.opencode
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-vscode
+```
+
+Run **Open opencode** in that window and ask, using different wording from the
+CLI row, to list the workspace files. The extension terminal must show model
+`formalai/formal-ai`; the logging proxy must record a Chat Completions request
+and at least one tool call/result round trip. Record `OPENCODE_CALLER=vscode`,
+the extension version, request path, tool name, and result in the #671 matrix.
+Use `opencode-code` as an equivalent wrapper alias. For persistent setup, use
+`with-formal-ai --global opencode-vscode`; it manages the same
+`~/.config/opencode/opencode.json` file as the CLI target and `--undo` restores
+the backup.
+
+The automated Linux harness installs the real Marketplace extension into an
+isolated VS Code profile, invokes its command through a development-only test
+driver, verifies the created terminal and caller environment, and exports the
+exact provider config inherited by the extension host. It then replays that
+config through OpenCode's non-interactive runner and asserts the proxy's
+tool-call/result evidence. The replay avoids depending on TUI keystroke timing
+while exercising the same OpenCode provider configuration:
+
+```bash
+experiments/opencode_vscode_e2e/run.sh
+```
+
+Expected protocol path: OpenAI `chat/completions`.
+
+### OpenCode Desktop
+
+Treat the packaged desktop application as a separate client, not as an alias
+for the OpenCode CLI. Launch it through the wrapper:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 opencode-desktop
+```
+
+The test must use an official packaged executable or an extracted AppImage.
+Set `FORMAL_AI_OPENCODE_DESKTOP_BIN` when the package is not installed in its
+normal platform location. In the renderer, verify the selected model reads
+`formal-ai`, submit a prompt that requires file Write and Shell calls, and
+expand the changed-file row in the session. Preserve all of the following:
+
+- the desktop version and package URL;
+- the injected `OPENCODE_CONFIG` JSON and environment names;
+- a rendered transcript showing the tool calls and `formal-ai` model badge;
+- an expanded diff from the same session;
+- the resulting workspace file and server/desktop log.
+
+The issue #762 reference run used OpenCode Desktop v1.18.3 on Linux. It produced
+two Write calls, one Shell call, and a two-file rendered diff. The preserved
+[tool-call screenshot](../../experiments/issue-762-desktop-e2e/tool-calls.png),
+[expanded diff](../../experiments/issue-762-desktop-e2e/final-diff.png), and
+[case-study index](../case-studies/issue-762/README.md) are the baseline entry
+for the multi-client matrix tracked by #671.
+
 ### Agent CLI
 
 The wrapper injects an OpenCode-shaped provider JSON through
@@ -137,6 +214,29 @@ FORMAL_AI_API_KEY="sk-local-demo" codex exec \
 
 Expected protocol path: OpenAI `responses`.
 
+### T3 Code
+
+T3 Code hosts Codex and Claude sessions in its local web interface. The wrapper
+isolates Codex configuration from the user's normal home and launches the real
+`t3` executable:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 t3code
+```
+
+The aliases `t3code` and `t3` are equivalent. In the opened UI, create a Codex
+thread and ask it to read `alpha.txt`; the final answer must contain
+`ALPHA_MARKER_11111`. Provider settings should show provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8090/api/openai/v1`, and a non-empty API
+key. For a Claude thread, launch `with-formal-ai --protocol anthropic ...` and
+verify the configured Anthropic base URL is
+`http://127.0.0.1:8090/api/anthropic`. Use `--non-interactive` when validating
+startup without opening a browser; it maps to T3 Code's `--no-browser`.
+
+Expected protocol paths: OpenAI `responses` for Codex sessions and Anthropic
+`messages` for Claude sessions. Record both the T3 Code session output and the
+proxy JSONL row for the multi-CLI matrix tracked by #671.
+
 ### Gemini CLI
 
 Gemini CLI uses the native Gemini routes. Isolate it from cached OAuth state in
@@ -185,6 +285,7 @@ Cover all protocol paths because bugs can hide in one surface while another
 passes:
 
 - OpenAI `chat/completions`: `opencode` and `agent`.
+- OpenAI `chat/completions`: `opencode-desktop` through the embedded sidecar.
 - OpenAI `responses`: `codex`.
 - Gemini `streamGenerateContent`: `gemini`.
 
@@ -241,12 +342,15 @@ summary, the final CLI output, and a minimal server-side `curl` repro that sends
 the same `messages` or `input` plus `tools` directly to the server. The `curl`
 repro lets maintainers separate a server routing bug from a CLI integration bug.
 
-## CI Shape
+## CI Shape (proposed — not yet implemented)
 
-The CI e2e suite should follow this sequence:
+The CI e2e suite should follow this sequence (tracked by #625 / #671; today CI
+runs only step 1's `formal-ai` build, step 4, and a single-CLI variant of
+step 6):
 
 1. Build `formal-ai` and `with-formal-ai`.
 2. Install pinned CLI versions.
+   Install the pinned OpenCode Desktop package under Xvfb for its matrix row.
 3. Create the fixture workspace and marker files.
 4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
 5. Start `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.

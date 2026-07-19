@@ -6,9 +6,10 @@ use serde::Serialize;
 use serde_json::{json, Value};
 
 use crate::anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver_and_memory,
+    anthropic_message_sse, create_anthropic_message_with_solver_and_memory, AnthropicContentBlock,
     AnthropicMessagesRequest,
 };
+use crate::context_capacity::ContextCapacity;
 use crate::engine::{
     is_known_trace_id, knowledge_graph, knowledge_graph_dot, render_thinking_steps,
 };
@@ -17,11 +18,12 @@ use crate::gemini::{
     gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
 };
 use crate::links_query::run_links_query;
+use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
 use crate::protocol::{
-    chat_exchange_to_record, create_chat_completion_with_solver_and_memory,
-    create_response_with_solver_and_memory, responses_exchange_to_record, ChatCompletion,
-    ChatCompletionRequest, ResponsesRequest,
+    chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
+    create_response_with_solver_and_memory, messages_exchange_to_record,
+    responses_exchange_to_record, ChatCompletion, ChatCompletionRequest, ResponsesRequest,
 };
 use crate::responses_stream::responses_sse_response;
 use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
@@ -29,6 +31,8 @@ use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
+
+pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ApiHttpResponse {
@@ -115,11 +119,15 @@ pub fn handle_api_request_with_headers(
 /// Record a live chat exchange into the shared memory log (issue #540), never
 /// failing the request over it: a write error is logged and swallowed so the
 /// answer still reaches the client.
-fn record_exchange_best_effort(store: &mut SyncStore, exchange: Option<(String, String)>) {
+fn record_exchange_best_effort(
+    store: &mut SyncStore,
+    exchange: Option<(String, String)>,
+    tools: &[crate::memory_sync::RecordedToolExecution],
+) {
     let Some((prompt, answer)) = exchange else {
         return;
     };
-    if let Err(error) = store.record_chat_exchange(&prompt, &answer) {
+    if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
         eprintln!("[memory] failed to record live chat exchange: {error}");
     }
 }
@@ -148,6 +156,9 @@ pub fn handle_api_request_with_auth(
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
 
+    if normalized_path == "/mcp" && !mcp_origin_allowed(headers) {
+        return error_response(403, "MCP origin is not allowed");
+    }
     if requires_bearer_auth(method, normalized_path) && !auth.allows(headers) {
         return error_response(401, "missing or invalid bearer token");
     }
@@ -218,6 +229,7 @@ pub fn handle_api_request_with_auth(
                     record_exchange_best_effort(
                         &mut store,
                         chat_exchange_to_record(&request, &completion),
+                        &chat_tool_executions(&request.messages),
                     );
                     if request.stream {
                         let include_usage = request
@@ -244,6 +256,7 @@ pub fn handle_api_request_with_auth(
                     record_exchange_best_effort(
                         &mut store,
                         responses_exchange_to_record(&request, &response),
+                        &chat_tool_executions(&request.to_chat_completion_request().messages),
                     );
                     if request.stream {
                         responses_sse_response(&response)
@@ -254,6 +267,8 @@ pub fn handle_api_request_with_auth(
                 Err(error) => error_response(400, &format!("invalid responses request: {error}")),
             }
         }
+        ("POST", "/mcp") => handle_mcp_request(body, &http_solver()),
+        ("GET", "/mcp") => error_response(405, "MCP SSE streams are not supported"),
         ("POST", "/telegram/webhook") => match handle_telegram_webhook(body) {
             Ok(Some(reply)) => json_response(200, &reply),
             Ok(None) => ApiHttpResponse {
@@ -270,7 +285,29 @@ pub fn handle_api_request_with_auth(
 
 fn requires_bearer_auth(method: &str, normalized_path: &str) -> bool {
     method != "OPTIONS"
-        && (normalized_path.starts_with("/v1/") || normalized_path.starts_with("/api/"))
+        && (normalized_path == "/mcp"
+            || normalized_path.starts_with("/v1/")
+            || normalized_path.starts_with("/api/"))
+}
+
+fn mcp_origin_allowed(headers: &[(&str, &str)]) -> bool {
+    let Some(origin) = headers
+        .iter()
+        .find_map(|(name, value)| name.eq_ignore_ascii_case("origin").then_some(*value))
+    else {
+        return true;
+    };
+    let Some(host) = headers
+        .iter()
+        .find_map(|(name, value)| name.eq_ignore_ascii_case("host").then_some(*value))
+    else {
+        return false;
+    };
+    let origin = origin.trim_end_matches('/');
+    origin
+        .strip_prefix("http://")
+        .or_else(|| origin.strip_prefix("https://"))
+        .is_some_and(|authority| authority.eq_ignore_ascii_case(host))
 }
 
 fn handle_dynamic_protocol_route(
@@ -319,6 +356,11 @@ fn handle_dynamic_protocol_route(
 
 fn handle_openai_models_request() -> ApiHttpResponse {
     let model_id = canonical_model_id();
+    let context = match ContextCapacity::current() {
+        Ok(context) => context,
+        Err(error) => return error_response(500, &error.to_string()),
+    };
+    let context_metadata = json!(context);
     json_response(
         200,
         &json!({
@@ -327,15 +369,29 @@ fn handle_openai_models_request() -> ApiHttpResponse {
                 "id": model_id,
                 "slug": model_id,
                 "object": "model",
-                "created": 0,
-                "owned_by": "link-assistant"
+                "owned_by": "link-assistant",
+                "context_window": context.context_window_tokens,
+                "context_window_tokens": context.context_window_tokens,
+                "context_used_tokens": context.context_used_tokens,
+                "context_used_fraction": context.context_used_fraction,
+                "disk_free_bytes": context.disk_free_bytes,
+                "memory_used_bytes": context.memory_used_bytes,
+                "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
+                "context": context_metadata
             }],
             "models": [{
                 "id": model_id,
                 "slug": model_id,
                 "name": model_id,
-                "context_window": 60_000,
-                "max_output_tokens": 8_192
+                "context_window": context.context_window_tokens,
+                "max_output_tokens": ADVERTISED_MAX_OUTPUT_TOKENS,
+                "context_window_tokens": context.context_window_tokens,
+                "context_used_tokens": context.context_used_tokens,
+                "context_used_fraction": context.context_used_fraction,
+                "disk_free_bytes": context.disk_free_bytes,
+                "memory_used_bytes": context.memory_used_bytes,
+                "avg_utf8_bytes_per_char": context.avg_utf8_bytes_per_char,
+                "context": context_metadata
             }],
             "rate_limit": {
                 "requests_per_minute": 60,
@@ -357,12 +413,25 @@ fn handle_gemini_generate_content_request(
     match serde_json::from_str::<GeminiGenerateContentRequest>(body) {
         Ok(request) => {
             let solver = http_solver();
-            let store = SyncStore::open();
+            let mut store = SyncStore::open();
+            let chat_request = request.to_chat_completion_request(&model);
             let response = create_gemini_generate_content_response_with_solver_and_memory(
                 &request,
                 &model,
                 &solver,
                 store.events(),
+            );
+            let answer = response["candidates"][0]["content"]["parts"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|part| part.get("text").and_then(Value::as_str))
+                .collect::<Vec<_>>()
+                .join("\n");
+            record_exchange_best_effort(
+                &mut store,
+                messages_exchange_to_record(&chat_request.messages, &answer),
+                &chat_tool_executions(&chat_request.messages),
             );
             if stream {
                 ApiHttpResponse {
@@ -677,9 +746,24 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
                 return response;
             }
             let solver = http_solver();
-            let store = SyncStore::open();
+            let mut store = SyncStore::open();
+            let chat_request = request.to_chat_completion_request();
             let message =
                 create_anthropic_message_with_solver_and_memory(&request, &solver, store.events());
+            let answer = message
+                .content
+                .iter()
+                .filter_map(|block| match block {
+                    AnthropicContentBlock::Text { text } => Some(text.as_str()),
+                    _ => None,
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            record_exchange_best_effort(
+                &mut store,
+                messages_exchange_to_record(&chat_request.messages, &answer),
+                &chat_tool_executions(&chat_request.messages),
+            );
             if request.stream {
                 ApiHttpResponse {
                     status_code: 200,
@@ -776,6 +860,10 @@ const fn links_notation_response(status_code: u16, body: String) -> ApiHttpRespo
 
 pub fn serve(address: &str) -> std::io::Result<()> {
     crate::dreaming_runtime::start_core_dreaming();
+    eprintln!(
+        "formal-ai shared memory: {}",
+        crate::shared_memory::shared_memory_path().display()
+    );
     let listener = TcpListener::bind(address)?;
     eprintln!("formal-ai server listening on http://{address}");
 
@@ -862,7 +950,9 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         204 => "204 No Content",
         400 => "400 Bad Request",
         401 => "401 Unauthorized",
+        403 => "403 Forbidden",
         404 => "404 Not Found",
+        405 => "405 Method Not Allowed",
         _ => "500 Internal Server Error",
     };
 

@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "Q11442": {
+      "type": "item",
+      "id": "Q11442",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bicycle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "велосипед"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सायकिल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自行車"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "pedal-driven two-wheel vehicle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "двухколёсное транспортное средство, приводимое в движение посредством педалей"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "载具"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bike"
+          },
+          {
+            "language": "en",
+            "value": "pushbike"
+          },
+          {
+            "language": "en",
+            "value": "pedal bike"
+          },
+          {
+            "language": "en",
+            "value": "pedal cycle"
+          },
+          {
+            "language": "en",
+            "value": "cycle"
+          },
+          {
+            "language": "en",
+            "value": "🚲"
+          },
+          {
+            "language": "en",
+            "value": "Bicycles"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "велик"
+          },
+          {
+            "language": "ru",
+            "value": "бицикл"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "自由車"
+          },
+          {
+            "language": "zh",
+            "value": "單車"
+          },
+          {
+            "language": "zh",
+            "value": "自行车"
+          },
+          {
+            "language": "zh",
+            "value": "单车"
+          },
+          {
+            "language": "zh",
+            "value": "自由车"
+          },
+          {
+            "language": "zh",
+            "value": "腳車"
+          },
+          {
+            "language": "zh",
+            "value": "腳踏車"
+          },
+          {
+            "language": "zh",
+            "value": "雙輪車"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

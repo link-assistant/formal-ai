@@ -1,0 +1,19 @@
+Q1420
+  aliases
+    en (auto autocar automobile motorcar "motor vehicle" automobiles "motor cars" cars "motor car")
+    hi ("मोटरवाहन" "कार" "मोटरकार" "ऑटोमोबाइल")
+    ru ("автомашина" "автотранспортное средство" "🚗" "машина")
+    zh ("轿车" "轎車")
+  descriptions
+    en "motorized road vehicle designed to carry one to eight people rather than primarily goods"
+    hi "मोटर चालित सड़क वाहन मुख्य रूप से माल के बजाय एक से आठ लोगों को ले जाने के लिए अभिकल्प किया गया है"
+    ru "безрельсовая транспортная машина на колёсном ходу с приводом от собственного двигателя, предназначенная для перевозки людей и грузов"
+    zh "由动力驱动，具有4个或4个以上车轮的非轨道承载的机动车"
+  id Q1420
+  labels
+    en car
+    hi "गाड़ी"
+    ru "автомобиль"
+    zh "汽车"
+  type item
+success 1

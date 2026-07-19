@@ -104,7 +104,7 @@ impl ChangeRequest {
     /// Review the request against the same repair-loop gate as the learning ledger.
     ///
     /// Succeeds only when the benchmark gate is green (*"when tests … accept"*) *and*
-    /// `approval` is granted (*"and the user accept[s]"*), returning the merged
+    /// `approval` is granted (*"and the user accept\[s\]"*), returning the merged
     /// [`AcceptedChange`]. Otherwise returns the [`ChangeRejected`] reason, so no user
     /// request is ever applied without both the tests and the human accepting.
     ///

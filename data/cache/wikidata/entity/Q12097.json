@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q12097": {
+      "type": "item",
+      "id": "Q12097",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "king"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "король"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "राजा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "王"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "title given to the name of a male monarch"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "титул монарха"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "國王"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "царь"
+          },
+          {
+            "language": "ru",
+            "value": "монарх"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "君主"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

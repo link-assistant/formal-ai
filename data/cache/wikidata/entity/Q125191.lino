@@ -1,0 +1,18 @@
+Q125191
+  aliases
+    en (photo photographs photos picture pictures)
+    hi ("फ़ोटो")
+    ru ("фотоснимок" "фото" "фотка" "фотограмма" "снимок")
+    zh ("照片")
+  descriptions
+    en "image created by light falling on a light-sensitive surface"
+    ru "изображение, полученное в результате фотографического процесса"
+    zh "攝影得出的影像"
+  id Q125191
+  labels
+    en photograph
+    hi "फ़ोटोग्राफ़"
+    ru "фотография"
+    zh "相片"
+  type item
+success 1

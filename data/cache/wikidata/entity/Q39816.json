@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q39816": {
+      "type": "item",
+      "id": "Q39816",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "valley"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "долина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घाटी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "谷地"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "low area between hills, often with a river running through it"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "отрицательная, линейно-вытянутая форма рельефа с однообразным падением"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पर्वतों या उत्थित भागों के बीच निचली ज़मीन वाला हिस्सा, लम्बाई में विस्तार वाला"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "山丘之间的低洼地带，常有河流穿流而过"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "dale"
+          },
+          {
+            "language": "en",
+            "value": "river valley"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "долина речная"
+          },
+          {
+            "language": "ru",
+            "value": "речная долина"
+          },
+          {
+            "language": "ru",
+            "value": "долина реки"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "\"U\" आकार की घाटी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "河谷"
+          },
+          {
+            "language": "zh",
+            "value": "溪谷"
+          },
+          {
+            "language": "zh",
+            "value": "山谷"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

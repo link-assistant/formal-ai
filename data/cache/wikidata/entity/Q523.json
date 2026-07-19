@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q523": {
+      "type": "item",
+      "id": "Q523",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "star"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "звезда"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तारा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "恒星"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "astronomical object consisting of a luminous spheroid of plasma held together by its own gravity"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "массивное небесное тело, состоящее из газа и плазмы, и способное к поддержанию теромоядерных реакций"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खगोलीय वस्तु"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由一個發光的等離子體球體組成的天文物體，由它自身的引力連接在一起"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "celestial star"
+          },
+          {
+            "language": "en",
+            "value": "stars"
+          },
+          {
+            "language": "en",
+            "value": "celestial stars"
+          },
+          {
+            "language": "en",
+            "value": "the stars"
+          },
+          {
+            "language": "en",
+            "value": "stellar"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "звёзды"
+          },
+          {
+            "language": "ru",
+            "value": "небесное светило"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आकाशीय पिंड"
+          },
+          {
+            "language": "hi",
+            "value": "आकाशीय तारा"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

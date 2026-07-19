@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q131512": {
+      "type": "item",
+      "id": "Q131512",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "farmer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фермер"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "農夫"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "person engaged in agriculture, raising living organisms for food or raw materials"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "человек, занимающийся сельским хозяйством"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खेती करने वाले लोग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "职业"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "agriculturist"
+          },
+          {
+            "language": "en",
+            "value": "grower"
+          },
+          {
+            "language": "en",
+            "value": "raiser"
+          },
+          {
+            "language": "en",
+            "value": "cultivator"
+          },
+          {
+            "language": "en",
+            "value": "agriculturer"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "фермерка"
+          },
+          {
+            "language": "ru",
+            "value": "фермерша"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "कृषक"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "農民"
+          },
+          {
+            "language": "zh",
+            "value": "农民"
+          },
+          {
+            "language": "zh",
+            "value": "農人"
+          },
+          {
+            "language": "zh",
+            "value": "農"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -183,7 +183,7 @@ impl InstallationConversion {
     }
 }
 
-fn is_install_conversion_request(normalized: &str) -> bool {
+pub(super) fn is_install_conversion_request(normalized: &str) -> bool {
     let asks_conversion = contains_any(
         normalized,
         &[

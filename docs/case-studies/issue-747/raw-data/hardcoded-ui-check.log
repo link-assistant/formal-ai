@@ -1,0 +1,1 @@
+check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (src/web/app/main.jsx, allowlist: 1 legacy labels).

@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q11009": {
+      "type": "item",
+      "id": "Q11009",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "nut"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "орех"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अखरोट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "坚果"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "in botany, type of dry indehiscent fruit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод некоторых растений, как правило со съедобным ядром и твёрдой скорлупой"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "果实类型"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "nuts"
+          },
+          {
+            "language": "en",
+            "value": "botanical nut"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "орехи"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "堅果"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

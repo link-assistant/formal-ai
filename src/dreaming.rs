@@ -15,16 +15,17 @@
 //! amendment can re-derive the specific task/test-run records it subsumes, those
 //! specifics become safe to forget under storage pressure while the generalized
 //! amendment is retained forever. This is the issue's core rule: "as soon as
-//! [a generalization] is working, [the] specific algorithm can be forgotten",
+//! \[a generalization\] is working, \[the\] specific algorithm can be forgotten",
 //! yet "our general meta algorithm must keep changes that allow it to solve all
 //! other tasks".
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use crate::associative_persistence::AssociativeMemory;
 use crate::memory::{MemoryEvent, MemoryStore};
 use support::{
     contains_any, estimate_event_bytes, lower_opt, normalized, percent_ceil,
-    required_reclaim_bytes, searchable_text, selected_bytes,
+    required_reclaim_bytes, selected_bytes,
 };
 
 pub mod cues;
@@ -894,24 +895,9 @@ fn duplicate_key(event: &MemoryEvent, durability: DreamingDurability) -> Option<
 }
 
 fn usage_counts(events: &[MemoryEvent]) -> Vec<usize> {
-    let searchable = events.iter().map(searchable_text).collect::<Vec<_>>();
+    let associative = AssociativeMemory::from_memory_events(events);
     events
         .iter()
-        .enumerate()
-        .map(|(target_index, target)| {
-            // Usage = read accesses counted at recall time (issue #494) plus
-            // citations from other events; either alone undercounts.
-            let accessed = usize::try_from(target.access_count).unwrap_or(usize::MAX);
-            if target.id.is_empty() {
-                return accessed;
-            }
-            let cited: usize = searchable
-                .iter()
-                .enumerate()
-                .filter(|(index, _)| *index != target_index)
-                .map(|(_, text)| text.matches(&target.id).count())
-                .sum();
-            accessed.saturating_add(cited)
-        })
+        .map(|event| usize::try_from(associative.retention_score(&event.id)).unwrap_or(usize::MAX))
         .collect()
 }

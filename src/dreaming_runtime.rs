@@ -56,22 +56,20 @@ pub fn core_is_idle(idle_for: Duration) -> bool {
 /// Start the one-per-process core worker.
 ///
 /// Dreaming is **default-on**: it only stays off when `FORMAL_AI_DREAMING` is
-/// explicitly set to `0`/`off`/`false`, or when no `FORMAL_AI_MEMORY_PATH` is
-/// configured — and the latter is announced loudly on stderr so the missing
-/// configuration is a visible, fixable condition rather than a silent no-op
-/// (issue #540 §6).
+/// explicitly set to `0`/`off`/`false`. The worker uses the same default shared
+/// memory path as every foreground surface.
 pub fn start_core_dreaming() {
     if dreaming_disabled() {
         return;
     }
-    let Some(path) = crate::memory_sync::configured_memory_path() else {
+    let path = crate::shared_memory::shared_memory_path();
+    if let Err(error) = crate::shared_memory::ensure_shared_memory_file(&path) {
         eprintln!(
-            "[dreaming] background dreaming is enabled but FORMAL_AI_MEMORY_PATH is not set; \
-             there is no persistent memory log to maintain, so the dreaming worker will not \
-             start. Set FORMAL_AI_MEMORY_PATH=<path/to/memory.lino> to activate it."
+            "[dreaming] could not initialize {}: {error}",
+            path.display()
         );
         return;
-    };
+    }
     START.call_once(|| {
         LAST_FOREGROUND_SECONDS.store(now_seconds(), Ordering::SeqCst);
         std::thread::Builder::new()

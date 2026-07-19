@@ -1,0 +1,1 @@
+Attest release artifacts by path and keep checksum manifests portable

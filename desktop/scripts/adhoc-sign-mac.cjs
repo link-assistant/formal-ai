@@ -22,6 +22,31 @@ function findAppPath(signOptions) {
   );
 }
 
+function isBundledBrowserRuntime(filePath, appPath) {
+  const browserRuntime = path.join(
+    path.resolve(appPath),
+    'Contents',
+    'Resources',
+    'browser-runtime',
+  );
+  const relative = path.relative(browserRuntime, path.resolve(filePath));
+  return (
+    relative === '' ||
+    (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative))
+  );
+}
+
+function signingIgnoreRules(signOptions) {
+  const upstreamIgnore = signOptions.ignore
+    ? Array.isArray(signOptions.ignore)
+      ? signOptions.ignore
+      : [signOptions.ignore]
+    : [];
+  const appPath = findAppPath(signOptions);
+
+  return [...upstreamIgnore, (filePath) => isBundledBrowserRuntime(filePath, appPath)];
+}
+
 function resolvePath(value) {
   return typeof value === 'string' && value.length > 0 ? path.resolve(value) : undefined;
 }
@@ -97,6 +122,11 @@ module.exports = async function adhocSignMac(signOptions) {
 
   await signAsync({
     ...signOptions,
+    // Playwright's Chrome for Testing bundle is separately signed upstream.
+    // Treat it as an opaque resource: signing its framework aliases and files
+    // as Electron children breaks the framework seal. The final app signing
+    // below still includes the whole runtime in the app's resource envelope.
+    ignore: signingIgnoreRules(signOptions),
     identity: '-',
     identityValidation: false,
     provisioningProfile: undefined,
@@ -128,3 +158,6 @@ module.exports = async function adhocSignMac(signOptions) {
     'verify the ad-hoc macOS app signature',
   );
 };
+
+module.exports.isBundledBrowserRuntime = isBundledBrowserRuntime;
+module.exports.signingIgnoreRules = signingIgnoreRules;

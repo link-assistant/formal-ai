@@ -1,0 +1,19 @@
+Q42948
+  aliases
+    en (walls)
+    hi ("दीवारों")
+    ru ("стены" "ограждение")
+    zh ("牆" "墙壁" "壁" "墙体" "牆壁" "壁堵")
+  descriptions
+    en "vertical structure, usually solid, that defines and sometimes protects an area"
+    hi "मकान का महत्वपूर्ण भाग"
+    ru "сооружение для ограждения или защиты просстранства"
+    zh "建筑物"
+  id Q42948
+  labels
+    en wall
+    hi "दीवार"
+    ru "стена"
+    zh "墙"
+  type item
+success 1

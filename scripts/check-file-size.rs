@@ -12,7 +12,7 @@
 use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
-use std::process::exit;
+use std::process::{exit, Command};
 use walkdir::WalkDir;
 
 const FILE_LIMITS: &[FileLimit] = &[
@@ -36,7 +36,7 @@ const WORKER_JS_LIMIT: FileLimit = FileLimit {
     label: "Worker JavaScript",
 };
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
-const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/"];
+const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/", "dev/log/"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct FileLimit {
@@ -82,7 +82,7 @@ fn file_limit(path: &Path) -> Option<&'static FileLimit> {
     FILE_LIMITS.iter().find(|limit| limit.extension == ext)
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct Finding {
     file: String,
     lines: usize,
@@ -238,6 +238,55 @@ fn warning_annotation(finding: &Finding) -> String {
     )
 }
 
+fn warnings_for_growing_paths<'a>(
+    warnings: &'a [Finding],
+    growing_paths: &[String],
+) -> Vec<&'a Finding> {
+    warnings
+        .iter()
+        .filter(|finding| growing_paths.contains(&finding.file))
+        .collect()
+}
+
+fn growing_paths_from_numstat(numstat: &str) -> Vec<String> {
+    numstat
+        .lines()
+        .filter_map(|line| {
+            let mut fields = line.splitn(3, '\t');
+            let added = fields.next()?.parse::<usize>().ok()?;
+            let removed = fields.next()?.parse::<usize>().ok()?;
+            let path = fields.next()?;
+            (added > removed).then(|| path.to_string())
+        })
+        .collect()
+}
+
+#[cfg(not(test))]
+fn growing_paths_since(base: &str) -> Option<Vec<String>> {
+    if base.is_empty() || base.chars().all(|character| character == '0') {
+        return None;
+    }
+
+    let output = Command::new("git")
+        .args([
+            "diff",
+            "--numstat",
+            "--diff-filter=ACMR",
+            base,
+            "HEAD",
+            "--",
+        ])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+
+    Some(growing_paths_from_numstat(&String::from_utf8_lossy(
+        &output.stdout,
+    )))
+}
+
 #[cfg(not(test))]
 fn print_warnings(warnings: &[Finding]) {
     if warnings.is_empty() {
@@ -301,8 +350,14 @@ fn main() {
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);
-
-    print_warnings(&result.warnings);
+    let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
+    if let Some(growing_paths) = growing_paths_since(&warning_base) {
+        let warnings = warnings_for_growing_paths(&result.warnings, &growing_paths);
+        let warnings: Vec<Finding> = warnings.into_iter().cloned().collect();
+        print_warnings(&warnings);
+    } else {
+        print_warnings(&result.warnings);
+    }
 
     if result.violations.is_empty() && result.embedded_data_violations.is_empty() {
         println!("All checked files are within their line limits\n");
@@ -412,6 +467,41 @@ mod tests {
     }
 
     #[test]
+    fn warning_annotations_are_limited_to_growing_files() {
+        let warnings = vec![
+            Finding {
+                file: "src/unchanged.rs".to_string(),
+                lines: 910,
+                max_lines: 1_000,
+                warn_lines: 900,
+                label: "Rust",
+            },
+            Finding {
+                file: "src/changed.rs".to_string(),
+                lines: 920,
+                max_lines: 1_000,
+                warn_lines: 900,
+                label: "Rust",
+            },
+        ];
+
+        assert_eq!(
+            warnings_for_growing_paths(&warnings, &["src/changed.rs".to_string()]),
+            vec![&warnings[1]]
+        );
+    }
+
+    #[test]
+    fn numstat_selects_only_files_with_net_line_growth() {
+        let numstat = "12\t0\tsrc/growing.rs\n3\t3\tsrc/unchanged.rs\n1\t8\tsrc/shrinking.rs\n-\t-\tassets/binary.png\n";
+
+        assert_eq!(
+            growing_paths_from_numstat(numstat),
+            vec!["src/growing.rs".to_string()]
+        );
+    }
+
+    #[test]
     fn check_directory_enforces_lino_limit() {
         let repo = temp_dir("lino-thresholds");
         let data_dir = repo.join("data");
@@ -506,6 +596,23 @@ mod tests {
         assert_eq!(result.violations, Vec::new());
         assert_eq!(result.warnings, Vec::new());
         assert_eq!(result.embedded_data_violations, Vec::new());
+    }
+
+    #[test]
+    fn check_directory_skips_preserved_development_evidence() {
+        let repo = temp_dir("development-evidence");
+        let evidence_dir = repo.join("dev/log/issues/798/templates");
+        fs::create_dir_all(&evidence_dir).unwrap();
+        let rust_limit = FILE_LIMITS[0];
+        write_rust_file_with_lines(
+            &evidence_dir.join("version-and-commit.rs"),
+            rust_limit.max_lines + 1,
+        );
+
+        let result = check_directory(&repo);
+
+        assert_eq!(result.violations, Vec::new());
+        assert_eq!(result.warnings, Vec::new());
     }
 
     #[test]

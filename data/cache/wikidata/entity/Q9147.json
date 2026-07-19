@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q9147": {
+      "type": "item",
+      "id": "Q9147",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "penguin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пингвиновые"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेंगुइन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "企鵝科"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "family of birds in the order Sphenisciformes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "семейство птиц"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "企鹅目的一科鸟类"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "the penguin family"
+          },
+          {
+            "language": "en",
+            "value": "penguins"
+          },
+          {
+            "language": "en",
+            "value": "Spheniscidae"
+          },
+          {
+            "language": "en",
+            "value": "spheniscid"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Spheniscidae"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

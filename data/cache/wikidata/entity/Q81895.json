@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q81895": {
+      "type": "item",
+      "id": "Q81895",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "spoon"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ложка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चमचा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "匙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "utensil consisting of a small shallow bowl, oval or round, at the end of a handle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столовый прибор, предназначенный для зачерпывания жидкой и рассыпчатой пищи"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由一个小浅碗组成的器具，椭圆形或圆形，位于手柄末端"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "勺"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

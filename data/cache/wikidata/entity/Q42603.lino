@@ -1,0 +1,17 @@
+Q42603
+  aliases
+    en (reverend priestess)
+    ru ("поп" "священнослужитель" "служитель культа" "священница" "служительница культа" "жрец" "духовник" "духовный отец" "отец")
+    zh ("司鐸" "司祭" "神父" "神甫")
+  descriptions
+    en "person who consecrates his life to some divinity and whose main functions are to direct religious rites and offer sacrifices to the divinity (for a minister use Q1423891)"
+    ru "человек, имеющий право проводить религиозные ритуалы; представитель церкви"
+    zh "被授權領導宗教神聖儀式的人"
+  id Q42603
+  labels
+    en priest
+    hi "पादरी"
+    ru "священник"
+    zh "祭司"
+  type item
+success 1

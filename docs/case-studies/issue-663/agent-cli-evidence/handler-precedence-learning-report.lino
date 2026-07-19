@@ -1,0 +1,108 @@
+handler_precedence_learning_report
+  issue "663"
+  decision "awaiting_human_review"
+  promotion_gate "routing_precedence_from_seed_and_parity_fixture_pass"
+  record_type "agent_cli_auto_learning"
+  substrate "links_network"
+  retention_formula "reads + writes + incoming_links + outgoing_links"
+  expression_count "8"
+  validation_warning_count "0"
+  multi_hop_seed "lesson:precedence-is-data"
+  multi_hop_recall "lesson:precedence-is-data|observation:incompatible-units-last"
+  learned_expression_01
+    id "lesson:precedence-is-data"
+    text "learning_amendment
+assistant
+Express specialized-handler precedence as ordered seed rows in data/seed/handler-precedence.lino, joined to the code-side function pointers by an exact-permutation assert, so first-match-wins order is data and a seed edit can only reorder, never drop or duplicate, a handler.
+observation:incompatible-units-last"
+    reads "1"
+    writes "7"
+    incoming_links "0"
+    outgoing_links "1"
+    retention_score "9"
+    qualifiers "conversation_id=issue-663|kind=learning_amendment|role=assistant"
+    validation "aligned"
+  learned_expression_02
+    id "observation:http-fetch-first"
+    text "message
+user
+A URL-bearing request must reach http_fetch before any general lookup, so the fetch capability sits first in the precedence order."
+    reads "7"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "8"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_03
+    id "observation:numeric-list-before-arithmetic"
+    text "message
+user
+Generated code plus a deterministic result should beat plain arithmetic, so numeric_list is ordered above arithmetic (issue 395)."
+    reads "6"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "7"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_04
+    id "observation:shell-transform-before-write-script"
+    text "message
+user
+A shell-command rewrite should beat generic script writing and terminal-command refusal, so shell_command_transform is ordered above write_script (issue 552)."
+    reads "5"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "6"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_05
+    id "observation:incompatible-units-last"
+    text "message
+user
+Incompatible-units detection is the final fallback, so incompatible_units sits last in the precedence order."
+    reads "3"
+    writes "1"
+    incoming_links "1"
+    outgoing_links "0"
+    retention_score "5"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_06
+    id "observation:install-conversion-before-write-script"
+    text "message
+user
+An install or deploy guide conversion should beat a generic write_script request, so installation_conversion is ordered above write_script (issue 423)."
+    reads "4"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "5"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_07
+    id "observation:document-plan-before-software-project"
+    text "message
+user
+A document request should beat the software_project build, so document_generation_plan is ordered above software_project (issue 425)."
+    reads "3"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "4"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"
+  learned_expression_08
+    id "observation:proof-before-opinion"
+    text "message
+user
+A proof request should reach the formalization pipeline explanation, so proof_request is ordered above opinion_question."
+    reads "3"
+    writes "1"
+    incoming_links "0"
+    outgoing_links "0"
+    retention_score "4"
+    qualifiers "conversation_id=issue-663|kind=message|role=user"
+    validation "aligned"

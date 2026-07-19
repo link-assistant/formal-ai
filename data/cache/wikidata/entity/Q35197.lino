@@ -1,0 +1,17 @@
+Q35197
+  aliases
+    en ("looking glass")
+    hi ("शीशा" "आईना")
+    ru ("зеркало, оптическое" "зеркала")
+  descriptions
+    en "surface, typically glass coated with a metal amalgam, which reflects a clear image"
+    ru "нечто, отражающее свет"
+    zh "反射光线的物体"
+  id Q35197
+  labels
+    en mirror
+    hi "दर्पण"
+    ru "зеркало"
+    zh "鏡"
+  type item
+success 1

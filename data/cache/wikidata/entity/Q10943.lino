@@ -1,0 +1,18 @@
+Q10943
+  aliases
+    en (cheeses)
+    hi ("पनीर")
+    zh ("乳酪" "芝士" "起司" "起士" "乾酪")
+  descriptions
+    en "yellow or white, creamy or solid food made from the pressed curds of milk"
+    hi "दुग्ध आधारित खाद्य उत्पाद"
+    ru "пищевой продукт, получаемый из молока"
+    zh "半凝固或凝固的乳制品"
+  id Q10943
+  labels
+    en cheese
+    hi "चीज़"
+    ru "сыр"
+    zh "奶酪"
+  type item
+success 1

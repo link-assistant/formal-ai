@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q8436": {
+      "type": "item",
+      "id": "Q8436",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "семья"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "परिवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "家庭"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "group of people affiliated by consanguinity, law, affinity, or co-residence"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "супруги, родственники, сожители, тесно связанные люди"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सगोत्रता, आत्मीयता या सह-निवास से संबद्ध लोगों का समूह"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一群有血緣、婚姻、親密、法定關係或共同居住的人"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "families"
+          },
+          {
+            "language": "en",
+            "value": "a family"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "परीवार"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "家族"
+          },
+          {
+            "language": "zh",
+            "value": "范米莉"
+          },
+          {
+            "language": "zh",
+            "value": "家庭革命"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

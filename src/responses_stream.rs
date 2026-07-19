@@ -82,6 +82,20 @@ fn push_response_output_item_events(
         ResponseOutputItem::FunctionCall(call) => {
             push_response_function_call_events(body, sequence_number, output_index, call);
         }
+        ResponseOutputItem::WebSearchCall(call) => {
+            for state in ["in_progress", "searching", "completed"] {
+                push_response_stream_event(
+                    body,
+                    &format!("response.web_search_call.{state}"),
+                    &json!({
+                        "type": format!("response.web_search_call.{state}"),
+                        "sequence_number": next_response_sequence(sequence_number),
+                        "item_id": &call.id,
+                        "output_index": output_index,
+                    }),
+                );
+            }
+        }
         ResponseOutputItem::Reasoning(reasoning) => {
             push_response_reasoning_events(body, sequence_number, output_index, reasoning);
         }
@@ -254,6 +268,7 @@ fn response_output_item_started(item: &ResponseOutputItem) -> Value {
             "content": [],
         }),
         ResponseOutputItem::FunctionCall(call) => json!(call),
+        ResponseOutputItem::WebSearchCall(call) => json!(call),
         ResponseOutputItem::Reasoning(reasoning) => json!({
             "id": &reasoning.id,
             "type": &reasoning.kind,

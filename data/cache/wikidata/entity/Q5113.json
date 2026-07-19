@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Q5113": {
+      "type": "item",
+      "id": "Q5113",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bird"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "птицы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पक्षी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鳥綱"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "class of vertebrates characterized by wings, a feather-covered body and a beak"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "класс позвоночных животных"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一類體溫恆定、前肢演化為翅膀的卵生脊椎動物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "avian species"
+          },
+          {
+            "language": "en",
+            "value": "birds"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "птица"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चिड़ियां"
+          },
+          {
+            "language": "hi",
+            "value": "पक्षियों"
+          },
+          {
+            "language": "hi",
+            "value": "पंछी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鸟类动物"
+          },
+          {
+            "language": "zh",
+            "value": "鸟纲动物"
+          },
+          {
+            "language": "zh",
+            "value": "鳥綱動物"
+          },
+          {
+            "language": "zh",
+            "value": "鳥類動物"
+          },
+          {
+            "language": "zh",
+            "value": "羽虫"
+          },
+          {
+            "language": "zh",
+            "value": "禽鳥"
+          },
+          {
+            "language": "zh",
+            "value": "活禽鳥"
+          },
+          {
+            "language": "zh",
+            "value": "活禽"
+          },
+          {
+            "language": "zh",
+            "value": "禽类"
+          },
+          {
+            "language": "zh",
+            "value": "雀仔"
+          },
+          {
+            "language": "zh",
+            "value": "鸟类"
+          },
+          {
+            "language": "zh",
+            "value": "鳥"
+          },
+          {
+            "language": "zh",
+            "value": "鸟纲"
+          },
+          {
+            "language": "zh",
+            "value": "鳥類"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

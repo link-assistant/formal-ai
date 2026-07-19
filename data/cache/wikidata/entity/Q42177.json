@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q42177": {
+      "type": "item",
+      "id": "Q42177",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bed"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кровать"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पलंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "床"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "piece of furniture used as a place to sleep or relax"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мебельное изделие используемое человеком для сна"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का फ़र्नीचर जिसे शयन एवं लेटने हेतु प्रयोग किया जाता है"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "beds"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पलङ्ग"
+          },
+          {
+            "language": "hi",
+            "value": "बिस्तर"
+          },
+          {
+            "language": "hi",
+            "value": "शय्या"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "床笫"
+          },
+          {
+            "language": "zh",
+            "value": "床具"
+          },
+          {
+            "language": "zh",
+            "value": "牀"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

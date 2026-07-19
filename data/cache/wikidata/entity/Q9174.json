@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q9174": {
+      "type": "item",
+      "id": "Q9174",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "religion"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "религия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "धर्म"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "宗教"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "social-cultural system"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "система взглядов, обусловленная верой в сверхъестественное"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सम्प्रदाय , पंथ , रिलीजिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "信仰體系"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "religious tradition"
+          },
+          {
+            "language": "en",
+            "value": "spirituality"
+          },
+          {
+            "language": "en",
+            "value": "spiritual tradition"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,13 @@
+   Compiling formal-ai v0.298.1 (/tmp/gh-issue-solver-1784426663853)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.93s
+     Running tests/issue_761_docs.rs (target/debug/deps/issue_761_docs-4f6475280942b91b)
+
+running 6 tests
+test agentic_cli_page_covers_every_registry_entry_and_mode ... ok
+test memory_server_output_and_language_contracts_are_documented ... ok
+test modes_and_tools_are_documented_from_capability_to_fallback ... ok
+test guide_is_discoverable_and_has_copy_paste_setup_for_each_os ... ok
+test each_requested_surface_has_setup_and_shared_memory_guidance ... ok
+test whole_configuration_guide_covers_issue_761 ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s

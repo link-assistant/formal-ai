@@ -33,7 +33,10 @@ Replace:
 
 - The hard-coded `PROGRAM_MODIFIERS` allowlist in
   `src/intent_formalization.rs`. It should become data-driven operation and
-  modifier recognition sourced from seed data.
+  modifier recognition sourced from seed data. **(Done — issue #358 removed the
+  allowlist; modifier recognition now reads `data/seed/operation-vocabulary.lino`
+  and `data/seed/program-plan-rules.lino`. The name survives in this document as
+  the historical target.)**
 - Literal-match-only failure for resolvable modifications. If route selection
   reaches `SelectedRule::Unknown` for a prompt with an active program artifact,
   the solver must try rule synthesis first.
@@ -212,8 +215,8 @@ rewriting.
 
 ## Interaction With #358 Modification Model
 
-Issue #358 removes `PROGRAM_MODIFIERS` and turns modifiers into data. This
-design gives #358 the target model:
+Issue #358 (now closed) removed `PROGRAM_MODIFIERS` and turned modifiers into
+data. This design gave #358 the target model:
 
 - Modifier recognition comes from seed operation data, not a Rust slice.
 - Modifiers compose as graph links: multiple `request:modifier -> ...` links

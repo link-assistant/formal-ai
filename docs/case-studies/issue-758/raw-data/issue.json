@@ -1,0 +1,11 @@
+{
+  "number": 758,
+  "title": "Route by CAPABILITY not tool name, support all standard agentic tools across all CLIs",
+  "url": "https://github.com/link-assistant/formal-ai/issues/758",
+  "observed": [
+    "grep and codesearch aliases can route to web_search",
+    "glob, list, todo, and subagent tools are advertised but never called",
+    "tool argument keys vary by client schema"
+  ],
+  "expected": "A data-driven capability registry, schema-projected arguments, specialized-tool precedence, shell fallback, the full shared capability set, and multilingual tests."
+}

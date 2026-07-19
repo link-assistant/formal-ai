@@ -1,0 +1,51 @@
+   Compiling formal-ai v0.297.4 (/tmp/gh-issue-solver-1784370359116)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.30s
+     Running tests/integration/mod.rs (target/debug/deps/integration-6d7da555056c3a64)
+
+running 7 tests
+
+thread 'issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability' (20904) panicked at tests/integration/issue_746_hosted_tools.rs:19:28:
+expected a real function_call, got {"created_at":0,"evidence_links":["policy:package_permission_required:tool:*"],"id":"resp_72c80fd9e5002920","model":"formal-ai","object":"response","output":[{"content":[{"text":"Tool calls are not allowed for `tool:*`: no installed associative package grants tool:*. Install or import an associative package that grants this capability before enabling the tool.","type":"output_text"}],"id":"msg_33d83af95a80a0ba","role":"assistant","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"type":"message"},{"id":"rs_72c80fd9e5002920","summary":[{"text":"Decline the request under the package permission required tool * policy.","type":"summary_text"}],"type":"reasoning"}],"status":"completed","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"usage":{"input_tokens":5,"output_tokens":27,"total_tokens":32}}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api' (20901) panicked at tests/integration/issue_746_hosted_tools.rs:19:28:
+expected a real function_call, got {"created_at":0,"evidence_links":["policy:package_permission_required:tool:*"],"id":"resp_5423456f9aa7f383","model":"formal-ai","object":"response","output":[{"content":[{"text":"Tool calls are not allowed for `tool:*`: no installed associative package grants tool:*. Install or import an associative package that grants this capability before enabling the tool.","type":"output_text"}],"id":"msg_33d83af95a80a0ba","role":"assistant","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"type":"message"},{"id":"rs_5423456f9aa7f383","summary":[{"text":"Decline the request under the package permission required tool * policy.","type":"summary_text"}],"type":"reasoning"}],"status":"completed","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"usage":{"input_tokens":4,"output_tokens":27,"total_tokens":31}}
+
+thread 'issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal' (20905) panicked at tests/integration/issue_746_hosted_tools.rs:19:28:
+expected a real function_call, got {"created_at":0,"evidence_links":["policy:package_permission_required:tool:*"],"id":"resp_e963b9321523124b","model":"formal-ai","object":"response","output":[{"content":[{"text":"Tool calls are not allowed for `tool:*`: no installed associative package grants tool:*. Install or import an associative package that grants this capability before enabling the tool.","type":"output_text"}],"id":"msg_33d83af95a80a0ba","role":"assistant","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"type":"message"},{"id":"rs_e963b9321523124b","summary":[{"text":"Decline the request under the package permission required tool * policy.","type":"summary_text"}],"type":"reasoning"}],"status":"completed","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"usage":{"input_tokens":5,"output_tokens":27,"total_tokens":32}}
+test issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability ... FAILED
+test issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api ... FAILED
+test issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal ... FAILED
+
+thread 'issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols' (20906) panicked at tests/integration/issue_746_hosted_tools.rs:19:28:
+expected a real function_call, got {"created_at":0,"evidence_links":["policy:package_permission_required:tool:*"],"id":"resp_ba08028399279d83","model":"formal-ai","object":"response","output":[{"content":[{"text":"Tool calls are not allowed for `tool:*`: no installed associative package grants tool:*. Install or import an associative package that grants this capability before enabling the tool.","type":"output_text"}],"id":"msg_33d83af95a80a0ba","role":"assistant","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"type":"message"},{"id":"rs_ba08028399279d83","summary":[{"text":"Decline the request under the package permission required tool * policy.","type":"summary_text"}],"type":"reasoning"}],"status":"completed","thinking_steps":[{"detail":"package_permission_required:tool:*","id":"thinking_step_9de8703eca468cc4","level":"high","order":0,"source_event":"policy","step":"policy_refusal","summary":"Decline the request under the package permission required tool * policy."}],"usage":{"input_tokens":5,"output_tokens":27,"total_tokens":32}}
+test issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols ... FAILED
+
+thread 'issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch' (20903) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a real functionCall, got {"candidates":[{"content":{"parts":[{"text":"HTTP fetch requested for `https://example.com`.\n\nThe browser web app attempts a direct `fetch()` first and shows the response body when the server allows CORS. If the request is blocked by CORS, the web app checks CORS-readable frame-policy metadata before deciding whether to show an embedded iframe or keep a direct external link.\n\nSource: [https://example.com](https://example.com)"}],"role":"model"},"finishReason":"STOP","index":0}],"modelVersion":"formal-ai","usageMetadata":{"candidatesTokenCount":54,"promptTokenCount":2,"totalTokenCount":56}}
+test issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch ... FAILED
+
+thread 'issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route' (20902) panicked at tests/integration/issue_746_hosted_tools.rs:28:28:
+expected a real functionCall, got {"candidates":[{"content":{"parts":[{"text":"Web search requested for `rust ownership`.\n\nIn the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = Σ 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an \"other sources\" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.\n\nProvider: duckduckgo (default)\nProviders considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews\nCombined ranking: reciprocal rank fusion (k = 60)"}],"role":"model"},"finishReason":"STOP","index":0}],"modelVersion":"formal-ai","usageMetadata":{"candidatesTokenCount":128,"promptTokenCount":5,"totalTokenCount":133}}
+test issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route ... FAILED
+
+thread 'issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use' (20900) panicked at tests/integration/issue_746_hosted_tools.rs:75:5:
+assertion `left == right` failed
+  left: String("end_turn")
+ right: "tool_use"
+test issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use ... FAILED
+
+failures:
+
+failures:
+    issue_746_hosted_tools::anthropic_server_web_search_type_routes_to_tool_use
+    issue_746_hosted_tools::every_specified_hosted_type_reaches_its_capability_through_the_public_api
+    issue_746_hosted_tools::gemini_function_declarations_and_hosted_google_search_both_route
+    issue_746_hosted_tools::gemini_url_context_routes_as_web_fetch
+    issue_746_hosted_tools::responses_preview_alias_maps_to_the_web_search_capability
+    issue_746_hosted_tools::responses_type_only_web_search_routes_instead_of_wildcard_refusal
+    issue_746_hosted_tools::whole_task_routes_web_search_across_all_advertisement_protocols
+
+test result: FAILED. 0 passed; 7 failed; 0 ignored; 0 measured; 119 filtered out; finished in 1.07s
+
+error: test failed, to rerun pass `--test integration`

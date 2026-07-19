@@ -1,0 +1,18 @@
+Q83093
+  aliases
+    en (toadstool shroom mushrooms)
+    hi ("कुकुरमुत्तों")
+    zh ("菇類" "蘑" "蘑菇" "菇" "食用菌" "蕈" "蕈类")
+  descriptions
+    en "spore-bearing fruiting body of a fungus"
+    hi "एक प्रकार का कवक।"
+    ru "плодовое тело грибов-макромицетов"
+    zh "真菌"
+  id Q83093
+  labels
+    en mushroom
+    hi "कुकुरमुत्ता"
+    ru "гриб"
+    zh "蕈類"
+  type item
+success 1

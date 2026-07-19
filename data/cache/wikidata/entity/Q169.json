@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q169": {
+      "type": "item",
+      "id": "Q169",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mango"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "манго"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "芒果"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit of the mango tree"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "фрукт вида Mangifera Indica"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक प्रकार का रसीला फल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水果"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mangoes"
+          },
+          {
+            "language": "en",
+            "value": "Mangifera indica"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Mangifera indica"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मेंगीफेरा इंडिका"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "杧果"
+          },
+          {
+            "language": "zh",
+            "value": "黄皮大金芒"
+          },
+          {
+            "language": "zh",
+            "value": "红玉文芒"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

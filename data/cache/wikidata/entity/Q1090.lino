@@ -1,0 +1,16 @@
+Q1090
+  aliases
+    en ("element 47")
+    ru ("аргентум")
+  descriptions
+    en "chemical element with symbol Ag and atomic number 47"
+    ru "химический элемент (переходный металл) с порядковым номером 47"
+    zh "原子序數為47的化學元素"
+  id Q1090
+  labels
+    en silver
+    hi "चाँदी"
+    ru "серебро"
+    zh "銀"
+  type item
+success 1

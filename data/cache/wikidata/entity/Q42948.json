@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Q42948": {
+      "type": "item",
+      "id": "Q42948",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wall"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "стена"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दीवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "墙"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "vertical structure, usually solid, that defines and sometimes protects an area"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сооружение для ограждения или защиты просстранства"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मकान का महत्वपूर्ण भाग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "建筑物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "walls"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "стены"
+          },
+          {
+            "language": "ru",
+            "value": "ограждение"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "दीवारों"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "牆"
+          },
+          {
+            "language": "zh",
+            "value": "墙壁"
+          },
+          {
+            "language": "zh",
+            "value": "壁"
+          },
+          {
+            "language": "zh",
+            "value": "墙体"
+          },
+          {
+            "language": "zh",
+            "value": "牆壁"
+          },
+          {
+            "language": "zh",
+            "value": "壁堵"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

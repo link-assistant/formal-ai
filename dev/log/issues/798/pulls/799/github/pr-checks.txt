@@ -1,0 +1,14 @@
+Auto Release	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376475	
+Build Package	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376436	
+Changelog Fragment Check	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376216	
+Code Coverage	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376124	
+Deploy Web App to GitHub Pages	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376515	
+E2E Tests (GitHub Pages)	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376917	
+E2E Tests (agent CLI ↔ formal-ai)	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376221	
+E2E Tests (local web app)	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376038	
+Instant Release	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376550	
+Lint and Format Check	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376147	
+Test (${{ matrix.os }})	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210376056	
+Detect Changes	pass	1m10s	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210271860	
+Version Modification Check	pass	1m12s	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210271840	
+Create Changelog PR	skipping	0	https://github.com/link-assistant/formal-ai/actions/runs/29693523418/job/88210272281	

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q4022": {
+      "type": "item",
+      "id": "Q4022",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "river"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "река"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नदी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "河流"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "larger natural watercourse"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "природный водный поток"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्राकृतिक जलस्रोत"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然的水道"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "rivers"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "речка"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "江"
+          },
+          {
+            "language": "zh",
+            "value": "河"
+          },
+          {
+            "language": "zh",
+            "value": "川"
+          },
+          {
+            "language": "zh",
+            "value": "江河"
+          },
+          {
+            "language": "zh",
+            "value": "河川"
+          },
+          {
+            "language": "zh",
+            "value": "河道"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

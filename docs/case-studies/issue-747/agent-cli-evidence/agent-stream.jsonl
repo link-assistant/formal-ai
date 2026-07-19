@@ -1,0 +1,186 @@
+{"type":"config","level":"info","timestamp":"2026-07-17T21:53:57.928Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8797/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:57.933Z","service":"default","version":"0.25.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt Create file self-coding-result.txt containing self-coding=passed","workingDirectory":"/tmp/tmp.HPwZMh0aQy","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:57.938Z","service":"default","directory":"/tmp/tmp.HPwZMh0aQy","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:57.940Z","service":"project","directory":"/tmp/tmp.HPwZMh0aQy","message":"fromDirectory"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.066Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.090Z","service":"project","status":"completed","duration":24,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.097Z","service":"storage","index":0,"message":"running migration"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.101Z","service":"storage","index":1,"message":"running migration"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.112Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Create file self-coding-result.txt containing self-coding=passed"],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Create file self-coding-result.txt containing self-coding=passed"],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.113Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.118Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.129Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.130Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.130Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.152Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","message":"no cache found, awaiting refresh"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.153Z","service":"models.dev","file":{},"message":"refreshing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.351Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","message":"cache unavailable, using bundled data"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.490Z","service":"provider","message":"init"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.512Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","providerID":"formal-ai","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","providerID":"formalai","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","providerID":"@link-assistant","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","providerID":"opencode","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","providerID":"kilo","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.513Z","service":"provider","status":"completed","duration":395,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.517Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.517Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.518Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.585Z","service":"server","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.585Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.591Z","service":"session","id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","version":"agent-cli-1.0.0","projectID":"810e7a2c5cbd3ee1d15b39ae2af04333cff50041","directory":"/tmp/tmp.HPwZMh0aQy","title":"New session - 2026-07-17T21:53:58.590Z","time":{"created":1784325238590,"updated":1784325238590},"message":"created"}
+{"type":"session.created","level":"info","timestamp":"2026-07-17T21:53:58.596Z","service":"bus","message":"publishing"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:53:58.596Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.597Z","service":"server","status":"completed","duration":12,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-07-17T21:53:58.602Z","service":"bus","message":"subscribing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.606Z","service":"server","method":"POST","path":"/session/ses_08ded90c1ffeuxmfgWOrWOGPUH/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.606Z","service":"server","status":"started","method":"POST","path":"/session/ses_08ded90c1ffeuxmfgWOrWOGPUH/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.627Z","service":"server","status":"completed","duration":21,"method":"POST","path":"/session/ses_08ded90c1ffeuxmfgWOrWOGPUH/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:53:58.636Z","service":"bus","message":"publishing"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:53:58.649Z","service":"bus","message":"publishing"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:53:58.651Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.657Z","service":"session.prompt","step":0,"sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"loop"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.672Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.673Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","step":1,"message":"resolving model"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.675Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.677Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.677Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.677Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.678Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.680Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:58.682Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:59.798Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:53:59.812Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:59.814Z","service":"ripgrep","cwd":"/tmp/tmp.HPwZMh0aQy","limit":200,"message":"tree"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:59.875Z","service":"session.processor","message":"process"}
+{"type":"session.status","level":"info","timestamp":"2026-07-17T21:53:59.894Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:53:59.919Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:53:59.919Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:53:59.932Z","service":"bus","message":"publishing"}
+{"type":"session.diff","level":"info","timestamp":"2026-07-17T21:53:59.935Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.047Z","service":"snapshot","message":"initialized"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.068Z","service":"snapshot","hash":"75f768ce4da8babb4edc96f78732dbf7a15c37fa\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.070Z","service":"bus","message":"publishing"}
+{"type":"init","timestamp":"2026-07-17T21:54:00.070Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.075Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.075Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127507001RWbISX42Y7WeHM"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.082Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.082Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127507001RWbISX42Y7WeHM"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.100Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.100Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127507001RWbISX42Y7WeHM"}
+{"type":"log","level":"warn","timestamp":"2026-07-17T21:54:00.110Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":5,"output":61,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":5,"sseCompletionTokens":61,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.171Z","service":"snapshot","hash":"75f768ce4da8babb4edc96f78732dbf7a15c37fa\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.185Z","service":"bus","message":"publishing"}
+{"type":"result","timestamp":"2026-07-17T21:54:00.185Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","status":"success","duration_ms":1584}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.185Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.214Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.228Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.228Z","service":"session.prompt","step":1,"sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"loop"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:54:00.295Z","service":"bus","message":"publishing"}
+{"type":"session.diff","level":"info","timestamp":"2026-07-17T21:54:00.295Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.314Z","service":"session.prompt","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.314Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","step":2,"message":"resolving model"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.314Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.315Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.315Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":66,"providerTokens":66,"estimatedInputTokens":13,"usingEstimate":false,"tokensBreakdown":{"input":5,"cacheRead":0,"output":61},"overflow":false,"headroom":51742,"message":"overflow check"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.317Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.318Z","service":"ripgrep","cwd":"/tmp/tmp.HPwZMh0aQy","limit":200,"message":"tree"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.319Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.319Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.430Z","service":"session.processor","message":"process"}
+{"type":"session.status","level":"info","timestamp":"2026-07-17T21:54:00.445Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.578Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.600Z","service":"bus","message":"publishing"}
+{"type":"init","timestamp":"2026-07-17T21:54:00.600Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.601Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.601Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127718001iMgZn7cxgxvUnd"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.609Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.610Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127718001iMgZn7cxgxvUnd"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.621Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.621Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f72127718001iMgZn7cxgxvUnd"}
+{"type":"log","level":"warn","timestamp":"2026-07-17T21:54:00.623Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":5,"output":2,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":5,"sseCompletionTokens":2,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.682Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.683Z","service":"bus","message":"publishing"}
+{"type":"result","timestamp":"2026-07-17T21:54:00.683Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","status":"success","duration_ms":2082}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.683Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.702Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.715Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.715Z","service":"session.prompt","step":2,"sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"loop"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:54:00.768Z","service":"bus","message":"publishing"}
+{"type":"session.diff","level":"info","timestamp":"2026-07-17T21:54:00.769Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.772Z","service":"session.prompt","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.772Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","step":3,"message":"resolving model"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.772Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.772Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.772Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":7,"providerTokens":7,"estimatedInputTokens":13,"usingEstimate":false,"tokensBreakdown":{"input":5,"cacheRead":0,"output":2},"overflow":false,"headroom":51801,"message":"overflow check"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.774Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.774Z","service":"ripgrep","cwd":"/tmp/tmp.HPwZMh0aQy","limit":200,"message":"tree"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.781Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.781Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.839Z","service":"session.processor","message":"process"}
+{"type":"session.status","level":"info","timestamp":"2026-07-17T21:54:00.845Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.934Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.938Z","service":"bus","message":"publishing"}
+{"type":"init","timestamp":"2026-07-17T21:54:00.939Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.940Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.940Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f7212786b001GZOz7A6SbzRsFj"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.941Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.941Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f7212786b001GZOz7A6SbzRsFj"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.949Z","service":"bus","message":"publishing"}
+{"type":"tool_use","timestamp":"2026-07-17T21:54:00.949Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","name":"unknown","input":{},"tool_use_id":"prt_f7212786b001GZOz7A6SbzRsFj"}
+{"type":"log","level":"warn","timestamp":"2026-07-17T21:54:00.950Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":5,"output":3,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":5,"sseCompletionTokens":3,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:00.979Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:00.980Z","service":"bus","message":"publishing"}
+{"type":"result","timestamp":"2026-07-17T21:54:00.980Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","status":"success","duration_ms":2379}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:00.981Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.013Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.017Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.018Z","service":"session.prompt","step":3,"sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"loop"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.156Z","service":"session.prompt","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.156Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","step":4,"message":"resolving model"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.156Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.159Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.160Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":8,"providerTokens":8,"estimatedInputTokens":18,"usingEstimate":false,"tokensBreakdown":{"input":5,"cacheRead":0,"output":3},"overflow":false,"headroom":51800,"message":"overflow check"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.161Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.162Z","service":"ripgrep","cwd":"/tmp/tmp.HPwZMh0aQy","limit":200,"message":"tree"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.179Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.179Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:54:01.190Z","service":"bus","message":"publishing"}
+{"type":"session.diff","level":"info","timestamp":"2026-07-17T21:54:01.190Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.216Z","service":"session.processor","message":"process"}
+{"type":"session.status","level":"info","timestamp":"2026-07-17T21:54:01.226Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.296Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:01.298Z","service":"bus","message":"publishing"}
+{"type":"init","timestamp":"2026-07-17T21:54:01.298Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:01.302Z","service":"bus","message":"publishing"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:01.305Z","service":"bus","message":"publishing"}
+{"type":"message","timestamp":"2026-07-17T21:54:01.305Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","role":"assistant","content":[{"type":"text","text":"Completed the general change request for self-coding-result.txt and verified it with `cat self-coding-result.txt`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_01e784e6cd4319c4\"\n  goal \"Create file self-coding-result.txt containing self-coding=passed\"\n  target \"self-coding-result.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_e391764cdb7162ce\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to self-coding-result.txt\"\n    expected_evidence \"workspace file self-coding-result.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"self-coding=passed\"\n    command \"cat self-coding-result.txt\"\n  verification_command \"cat self-coding-result.txt\""}]}
+{"type":"log","level":"warn","timestamp":"2026-07-17T21:54:01.305Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":5,"output":76,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":5,"sseCompletionTokens":76,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.326Z","service":"snapshot","hash":"f30b967a4c7ee7f4aa29fd91a991e023517331d1\n","cwd":"/tmp/tmp.HPwZMh0aQy","git":"/home/box/.local/share/link-assistant-agent/snapshot/810e7a2c5cbd3ee1d15b39ae2af04333cff50041","message":"tracking"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-17T21:54:01.326Z","service":"bus","message":"publishing"}
+{"type":"result","timestamp":"2026-07-17T21:54:01.327Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH","status":"success","duration_ms":2726}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.327Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.365Z","service":"bus","message":"publishing"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.377Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.377Z","service":"session.prompt","step":4,"sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"loop"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.497Z","service":"session.prompt","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"exiting loop"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.498Z","service":"session.compaction","message":"pruning"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-17T21:54:01.504Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.505Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+{"type":"session.updated","level":"info","timestamp":"2026-07-17T21:54:01.519Z","service":"bus","message":"publishing"}
+{"type":"session.diff","level":"info","timestamp":"2026-07-17T21:54:01.519Z","service":"bus","message":"publishing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.523Z","service":"session.prompt","sessionID":"ses_08ded90c1ffeuxmfgWOrWOGPUH","message":"cancel"}
+{"type":"session.status","level":"info","timestamp":"2026-07-17T21:54:01.524Z","service":"bus","message":"publishing"}
+{"type":"session.idle","level":"info","timestamp":"2026-07-17T21:54:01.525Z","service":"bus","message":"publishing"}
+{"type":"idle","timestamp":"2026-07-17T21:54:01.525Z","session_id":"ses_08ded90c1ffeuxmfgWOrWOGPUH"}
+{"type":"*","level":"info","timestamp":"2026-07-17T21:54:01.525Z","service":"bus","message":"unsubscribing"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.526Z","service":"default","directory":"/tmp/tmp.HPwZMh0aQy","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.527Z","service":"state","key":"/tmp/tmp.HPwZMh0aQy","message":"waiting for state disposal to complete"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.530Z","service":"state","key":"/tmp/tmp.HPwZMh0aQy","message":"state disposal completed"}
+{"type":"log","level":"info","timestamp":"2026-07-17T21:54:01.530Z","service":"default","hasError":false,"uptimeSeconds":6,"message":"Agent exiting"}

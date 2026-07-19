@@ -1,0 +1,19 @@
+Q32489
+  aliases
+    en (knives "knife blade")
+    hi ("चक्कू" "छुरी" "छुरा")
+    ru ("ножик")
+    zh ("刀劍")
+  descriptions
+    en "tool with a cutting edge or blade"
+    hi "बहु उपयोगी A."
+    ru "колющий, рубящий или режущий инструмент"
+    zh "工具、武器"
+  id Q32489
+  labels
+    en knife
+    hi "चाकू"
+    ru "нож"
+    zh "小刀"
+  type item
+success 1

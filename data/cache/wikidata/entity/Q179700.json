@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q179700": {
+      "type": "item",
+      "id": "Q179700",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "statue"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "статуя"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रतिमा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "塑像"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sculpture primarily conceived as a representational figure"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "скульптура, представляющая собой фигуру"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "主要關注作為代表人物的雕塑"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "статуи"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "銅像"
+          },
+          {
+            "language": "zh",
+            "value": "雕塑像"
+          },
+          {
+            "language": "zh",
+            "value": "雕像"
+          },
+          {
+            "language": "zh",
+            "value": "神像"
+          },
+          {
+            "language": "zh",
+            "value": "铸像"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

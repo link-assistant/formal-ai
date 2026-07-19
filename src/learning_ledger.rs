@@ -15,7 +15,7 @@
 //! * the benchmark gate passed and a lesson is adoptable
 //!   ([`RepairOutcome::AwaitingReview`]) — *"when tests … accept"*, and
 //! * a human explicitly approves ([`HumanApproval::is_granted`]) — *"and the
-//!   user accept[s]"*.
+//!   user accept\[s\]"*.
 //!
 //! Nothing is promoted automatically: [`LearningLedger::promote`] takes an explicit
 //! [`HumanApproval`] and refuses every case that is not green *and* approved. Once

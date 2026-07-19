@@ -129,11 +129,12 @@ function withApiError(status, error) {
 
 // Environment for the spawned `formal-ai serve` process (mirrors
 // `desktop/main.cjs` `scrubbedEnvironment`).
-function serverEnv(raw) {
+function serverEnv(raw, options = {}) {
   const cfg = readConfig(raw);
   return {
     FORMAL_AI_HOST: cfg.host,
     FORMAL_AI_PORT: String(cfg.port),
+    FORMAL_AI_MEMORY_PATH: String(options.memoryPath || "").trim(),
   };
 }
 

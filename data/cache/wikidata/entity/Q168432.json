@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q168432": {
+      "type": "item",
+      "id": "Q168432",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "anchor"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "якорь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लंगर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "锚"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "mooring device"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "швартовное устройство"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "系泊设备"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "⚓"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "якорь корабельный"
+          },
+          {
+            "language": "ru",
+            "value": "якоря"
+          },
+          {
+            "language": "ru",
+            "value": "корабельный якорь"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "錨"
+          },
+          {
+            "language": "zh",
+            "value": "小移船錨"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

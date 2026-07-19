@@ -10,12 +10,15 @@ use core::cell::UnsafeCell;
 use core::sync::atomic::{AtomicUsize, Ordering};
 
 #[path = "../../../language.rs"]
+#[allow(dead_code)]
 mod language;
 
 #[path = "../../../arithmetic.rs"]
+#[allow(dead_code)]
 mod arithmetic;
 
 #[path = "../../../web_engine_core.rs"]
+#[allow(dead_code)]
 mod web_engine_core;
 
 #[path = "../../../web_search_core.rs"]

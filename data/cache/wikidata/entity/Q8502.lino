@@ -1,0 +1,18 @@
+Q8502
+  aliases
+    en (mount mt. mtn.)
+    ru ("вершина")
+    zh ("山地" "山峰")
+  descriptions
+    en "large natural elevation of the Earth's surface"
+    hi "विशाल भू-आकृति जो एक सीमित क्षेत्र में आसपास की भूमि से काफी ऊपर उठती है"
+    ru "местное возвышение земной поверхности"
+    zh "特定的区域内，地形陡峭上升的地貌"
+  id Q8502
+  labels
+    en mountain
+    hi "पर्वत"
+    ru "гора"
+    zh "山"
+  type item
+success 1

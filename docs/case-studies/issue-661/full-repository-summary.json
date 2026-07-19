@@ -1,0 +1,13 @@
+{
+  "snapshot": "dcfd8810b61a9b33d4e356c193542b26e971159a",
+  "tracked_paths": 7482,
+  "statements": 181885,
+  "contradictions": 4069,
+  "findings": 18523,
+  "skipped_paths": 218,
+  "artifact_bytes": 131592919,
+  "artifact_lines": 3481890,
+  "elapsed_nanoseconds": 13590580522,
+  "max_rss_kib": 706232,
+  "exit_status": 0
+}

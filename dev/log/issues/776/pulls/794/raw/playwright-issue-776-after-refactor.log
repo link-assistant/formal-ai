@@ -1,0 +1,58 @@
+[2m[WebServer] [22m[0m[2m[35m$[0m [2m[1mbun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify[0m
+[2m[WebServer] [22m(node:35866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › tests/issue-776.spec.js:32:3 › Issue #776 source-first translation › reported prompt translates through the browser worker (8.4s)
+  ✘  2 [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh (1.4s)
+  ✘  3 [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh (retry #1) (801ms)
+
+
+  1) [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3456/app/
+    Call log:
+    [2m  - navigating to "http://localhost:3456/app/", waiting until "load"[22m
+
+
+      25 | test.describe('Issue #776 source-first translation', () => {
+      26 |   test.beforeEach(async ({ page }) => {
+    > 27 |     await page.goto('./');
+         |                ^
+      28 |     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+      29 |     await switchToManualMode(page);
+      30 |   });
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:27:16
+
+    Error Context: test-results/issue-776-Issue-776-source-d8185-nderable-in-en-ru-hi-and-zh-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3456/app/
+    Call log:
+    [2m  - navigating to "http://localhost:3456/app/", waiting until "load"[22m
+
+
+      25 | test.describe('Issue #776 source-first translation', () => {
+      26 |   test.beforeEach(async ({ page }) => {
+    > 27 |     await page.goto('./');
+         |                ^
+      28 |     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+      29 |     await switchToManualMode(page);
+      30 |   });
+        at /tmp/gh-issue-solver-1784437815860/tests/e2e/tests/issue-776.spec.js:27:16
+
+    Error Context: test-results/issue-776-Issue-776-source-d8185-nderable-in-en-ru-hi-and-zh-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-776-Issue-776-source-d8185-nderable-in-en-ru-hi-and-zh-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-776-Issue-776-source-d8185-nderable-in-en-ru-hi-and-zh-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/issue-776.spec.js:43:3 › Issue #776 source-first translation › one proposition is renderable in en, ru, hi, and zh
+  1 passed (22.5s)
