@@ -169,18 +169,65 @@ fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
         body.push_str("### ");
         body.push_str(&config("issue_report_conversation_heading"));
         body.push_str("\n\n");
-        for (role, text) in &turns {
-            body.push_str("- **");
-            body.push_str(role);
-            body.push_str(":** ");
-            body.push_str(text.trim());
-            body.push('\n');
-        }
+        transcribe(&mut body, &turns);
     }
     body.push('\n');
     body.push_str(&config("issue_report_body_footer"));
 
     ReportRequest { title, body }
+}
+
+/// GitHub rejects an issue body longer than 65536 characters, and a body that
+/// long is unreadable anyway. Budget the transcript well under the limit so the
+/// framing text, the shell escaping and a trimming notice all still fit.
+const TRANSCRIPT_BUDGET: usize = 48_000;
+
+/// The most of a single turn that is transcribed. A fetched web page arrives as
+/// one assistant turn; without a per-turn cap it would crowd out every other
+/// turn in the report (issue #771).
+const TURN_BUDGET: usize = 8_000;
+
+/// Append each turn as its own attributed block: a bold role label, then the
+/// turn's text as a blockquote.
+///
+/// The previous rendering inlined the text into a `- **role:** {text}` bullet.
+/// Any turn containing a newline — which every real assistant answer does —
+/// escaped the list item there, so the turn's own headings and lists rendered as
+/// top-level issue content and the role attribution was lost after the first
+/// line. Quoting every line, blank ones included, keeps a turn contained however
+/// it is formatted, and keeps the whole report inside the size budget.
+fn transcribe(body: &mut String, turns: &[(String, String)]) {
+    let mut budget = TRANSCRIPT_BUDGET;
+    for (role, text) in turns {
+        let block = quoted_turn(role, &truncate(text.trim(), TURN_BUDGET));
+        if block.chars().count() > budget {
+            body.push('_');
+            body.push_str(&config("issue_report_transcript_trimmed"));
+            body.push_str("_\n");
+            return;
+        }
+        budget -= block.chars().count();
+        body.push_str(&block);
+    }
+}
+
+/// One turn rendered as `**role:**` followed by its blockquoted text.
+fn quoted_turn(role: &str, text: &str) -> String {
+    let mut block = format!("**{role}:**\n\n");
+    for line in text.lines() {
+        let line = line.trim_end();
+        if line.is_empty() {
+            // A bare `>` keeps a paragraph break inside the quote instead of
+            // ending it, which is what a blank line would do.
+            block.push_str(">\n");
+        } else {
+            block.push_str("> ");
+            block.push_str(line);
+            block.push('\n');
+        }
+    }
+    block.push('\n');
+    block
 }
 
 /// The issue-#687 report-issue recipe step: turn a recognised report request into

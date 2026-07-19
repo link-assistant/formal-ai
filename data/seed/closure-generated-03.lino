@@ -1,4 +1,9 @@
 meanings
+  pattern_wikipedia_article_question_exact_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact zh"
   pattern_wikipedia_article_question_grammar_context_en
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "response mcp instructions hi"
-  response_mcp_instructions_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions ru"

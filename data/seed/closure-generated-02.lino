@@ -1,4 +1,9 @@
 meanings
+  lexeme_import_missing_cached_label
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import missing cached label"
   lexeme_import_missing_label
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wikipedia article question exact ru"
-  pattern_wikipedia_article_question_exact_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wikipedia article question exact zh"
