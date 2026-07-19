@@ -66,6 +66,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
       'VS Code - API local - agent permission off',
     );
+    await expect(page.locator('[data-testid="desktop-engine-selector"]')).toHaveCount(0);
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     // The panel reports the raw shell string from the extension host.
     await expect(page.locator('[data-testid="desktop-shell-panel"]')).toContainText('VS Code');
@@ -108,6 +109,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
       'VS Code - in-process - agent permission off',
     );
+    await expect(page.locator('[data-testid="desktop-engine-selector"]')).toHaveCount(0);
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     // The panel still shows the precise host: "VS Code Web".
     await expect(page.locator('[data-testid="desktop-shell-panel"]')).toContainText('VS Code Web');
