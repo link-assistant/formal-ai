@@ -61,6 +61,7 @@ mod issue_465;
 mod issue_467;
 mod issue_595;
 mod links_network;
+mod links_network_terminology_meta_algorithm;
 mod market_price_verification_meta_algorithm;
 mod memory_query;
 mod meta_algorithm;
