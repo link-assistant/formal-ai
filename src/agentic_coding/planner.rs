@@ -35,6 +35,7 @@ use super::self_ast;
 use super::self_heal;
 use super::shell_command;
 use super::source_graph;
+use super::statement_audit;
 use super::tool_result;
 use super::web_research;
 use crate::protocol::ChatMessage;
@@ -162,6 +163,16 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // the requested artifact scope distinguishes their recipes.
     if let Some(report) = learning_report::route(&task) {
         return Some(report.plan_step(messages, tool_names));
+    }
+    // Repository statement audits run through the same public CLI a human can
+    // replay. Route before generic file/code changes because the task names its
+    // output artifact but does not ask the planner to fabricate that content.
+    if statement_audit::is_statement_audit_task(&task) {
+        return Some(plan_shell_step(
+            messages,
+            tool_names,
+            statement_audit::STATEMENT_AUDIT_COMMAND,
+        ));
     }
     // Workspace mutations are grounded in client-owned file bytes. This route
     // follows the explicit learning recipes so their requested artifacts cannot

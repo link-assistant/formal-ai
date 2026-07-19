@@ -1,4 +1,9 @@
 meanings
+  response_mcp_instructions_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions hi"
   response_mcp_instructions_ru
     defined-by response_template
     lexeme en
@@ -89,6 +94,26 @@ meanings
     lexeme en
       surface
         text "response physical action question zh"
+  response_requirement_contradiction_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction en"
+  response_requirement_contradiction_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction hi"
+  response_requirement_contradiction_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction ru"
+  response_requirement_contradiction_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response requirement contradiction zh"
   response_shared_dialog_capture_parse_failed_en
     defined-by response_template
     lexeme en
@@ -129,6 +154,66 @@ meanings
     lexeme en
       surface
         text "response shared dialog capture unsupported zh"
+  response_statement_audit_capture_field_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit capture field en"
+  response_statement_audit_claim_predicate_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit claim predicate en"
+  response_statement_audit_claim_subject_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit claim subject en"
+  response_statement_audit_invalid_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit invalid json en"
+  response_statement_audit_invalid_temperature_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit invalid temperature en"
+  response_statement_audit_nonempty_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit nonempty en"
+  response_statement_audit_selector_exclusive_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit selector exclusive en"
+  response_statement_audit_selector_required_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit selector required en"
+  response_statement_audit_strength_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit strength range en"
+  response_statement_audit_temperature_range_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit temperature range en"
+  response_statement_audit_unknown_stance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown stance en"
+  response_statement_audit_unknown_tier_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response statement audit unknown tier en"
   response_test_status_en
     defined-by response_template
     lexeme en
@@ -564,6 +649,66 @@ meanings
     lexeme en
       surface
         text "statement"
+  statement_audit_capture_field
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit capture field"
+  statement_audit_claim_predicate
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim predicate"
+  statement_audit_claim_subject
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit claim subject"
+  statement_audit_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid json"
+  statement_audit_invalid_temperature
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit invalid temperature"
+  statement_audit_nonempty
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit nonempty"
+  statement_audit_selector_exclusive
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector exclusive"
+  statement_audit_selector_required
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit selector required"
+  statement_audit_strength_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit strength range"
+  statement_audit_temperature_range
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit temperature range"
+  statement_audit_unknown_stance
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown stance"
+  statement_audit_unknown_tier
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown tier"
   strip_empty_lines
     defined-by operation
     lexeme en

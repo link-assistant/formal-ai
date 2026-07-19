@@ -1386,6 +1386,16 @@ jobs:
           PORT: 8883
         run: experiments/agent_cli_e2e/run_issue_660_learning.sh
 
+      - name: "Run agent CLI E2E — repository statement audit (issue #661)"
+        # The real Agent CLI delegates the repository scan to the public release
+        # binary in its own workspace, then consumes the command result before
+        # finishing. The artifact must expose weights, provenance-backed
+        # findings, requirement conflicts, and learned associations.
+        timeout-minutes: 5
+        env:
+          PORT: 8884
+        run: experiments/agent_cli_e2e/run_issue_661_statement_audit.sh
+
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         env:
           PORT: 8774

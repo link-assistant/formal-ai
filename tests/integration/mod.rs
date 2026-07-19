@@ -19,6 +19,7 @@ mod issue_558_self_healing;
 mod issue_558_source_graph;
 mod issue_624_agent_mode;
 mod issue_656_improve;
+mod issue_661_statement_audit;
 mod issue_680_intent_routing;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
