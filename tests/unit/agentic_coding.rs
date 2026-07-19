@@ -425,7 +425,7 @@ fn issue_607_driver_executes_ls_inside_the_sandbox_workspace() {
     assert_eq!(step.tool, "run_command");
     let arguments: serde_json::Value = serde_json::from_str(&step.arguments).unwrap();
     assert_eq!(arguments["command"], "ls");
-    assert!(outcome.final_answer.contains("`ls`"));
+    assert_eq!(outcome.final_answer, "This folder is empty.");
 }
 
 #[test]

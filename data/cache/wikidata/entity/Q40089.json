@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q40089": {
+      "type": "item",
+      "id": "Q40089",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "brick"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кирпич"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ईंट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "磚"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "block or a single unit of a ceramic material used in masonry construction"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "прямоугольный брусок из обожжённой или реже необожжённой глины с различными добавками, который используется для строительных работ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "建筑材料"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bricks"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "砖"
+          },
+          {
+            "language": "zh",
+            "value": "板砖"
+          },
+          {
+            "language": "zh",
+            "value": "砖头"
+          },
+          {
+            "language": "zh",
+            "value": "磚塊"
+          },
+          {
+            "language": "zh",
+            "value": "甓"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

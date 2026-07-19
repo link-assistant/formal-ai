@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q3010": {
+      "type": "item",
+      "id": "Q3010",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "boy"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мальчик"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लड़का"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "男孩"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "young male human"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ребёнок мужского пола"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "年幼雄性人类"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "boys"
+          },
+          {
+            "language": "en",
+            "value": "lad"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "парень"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

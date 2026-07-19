@@ -11,6 +11,7 @@ use crate::web_search_core::{
 };
 
 use super::finalize_simple;
+use super::installation_conversion::is_install_conversion_request;
 use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
@@ -164,6 +165,18 @@ pub fn try_web_search(
         request.kind,
         log,
     ))
+}
+
+/// The web-search query the intent recogniser extracts from `prompt`, or [`None`]
+/// when the prompt is not a web-search request.
+///
+/// Exposes the *same* seed-backed recognition [`try_web_search`] uses, without
+/// producing the descriptive answer, so the agentic planner (issue #687) can reuse
+/// it to decide when to emit the client's web-search tool call instead of
+/// re-deriving the intent independently.
+pub fn detect_web_search_query(prompt: &str) -> Option<String> {
+    let normalized = prompt.to_lowercase();
+    extract_web_search_request(prompt, &normalized).map(|request| request.query)
 }
 
 pub fn answer_web_search_query(
@@ -399,6 +412,12 @@ fn try_project_lookup_internal(
     suppress_identity_route: bool,
     response_language: Option<&str>,
 ) -> Option<SymbolicAnswer> {
+    // A repository URL can be source material rather than the requested action.
+    // Keep installation-guide/script transformations on their more specific
+    // conversion path instead of treating the embedded clone URL as a lookup.
+    if is_install_conversion_request(&lookup_prompt.to_lowercase()) {
+        return None;
+    }
     if is_text_url_extraction_prompt(lookup_prompt) {
         return None;
     }
@@ -801,6 +820,17 @@ pub fn http_fetch_url_for(prompt: &str) -> Option<String> {
     extract_http_fetch_url(prompt, &prompt.to_lowercase())
 }
 
+/// URL that an advertised agent fetch tool can satisfy.
+///
+/// Agent CLIs expose one fetch capability for both explicit HTTP requests and
+/// requests to open or visit a URL. The prose solver keeps those intents
+/// distinct, while this probe maps either intent onto that available tool.
+#[must_use]
+pub fn agentic_fetch_url_for(prompt: &str) -> Option<String> {
+    let normalized = prompt.to_lowercase();
+    http_fetch_url_for(prompt).or_else(|| extract_url_navigate_url(prompt, &normalized))
+}
+
 fn extract_url_navigate_url(prompt: &str, normalized: &str) -> Option<String> {
     let (raw_candidate, url) = first_url_candidate(prompt)?;
     if !is_url_navigate_prompt(prompt, normalized, &raw_candidate) {
@@ -846,6 +876,9 @@ pub(super) fn normalize_url_candidate(candidate: &str) -> Option<String> {
         candidate.to_owned()
     } else {
         let host_candidate = candidate.split(['/', '?', '#']).next().unwrap_or_default();
+        if super::web_search_intent::probable_local_file_name(host_candidate) {
+            return None;
+        }
         if lower.starts_with("www.") || looks_like_hostname(host_candidate) {
             format!("https://{candidate}")
         } else {

@@ -1,0 +1,1 @@
+In tests/issue_756.rs replace both occurrences of export_links_notation with export_memory_links_notation. Change nothing else.

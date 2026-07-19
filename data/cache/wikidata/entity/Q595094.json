@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q595094": {
+      "type": "item",
+      "id": "Q595094",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sister"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сестра"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बहन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "姐妹"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "female sibling"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "девочка/женщина тех же родителей"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "महिला सहोदर"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "единоутробная сестра"
+          },
+          {
+            "language": "ru",
+            "value": "полнородная сестра"
+          },
+          {
+            "language": "ru",
+            "value": "родная сестра"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "姐妹花"
+          },
+          {
+            "language": "zh",
+            "value": "姊妹"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

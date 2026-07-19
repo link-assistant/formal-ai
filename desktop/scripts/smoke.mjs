@@ -67,8 +67,11 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "formalAiDesktop:invokeTool",
   "formalAiDesktop:setToolGrants",
   "formalAiDesktop:runAgentProvider",
+  "formalAiDesktop:setEngine",
+  "formalAiDesktop:agentEvent",
   "createToolRouter",
   "createAgentProvider",
+  "createEngineManager",
   "dockerIsAvailable",
   // R5c (D1): local-database sync.
   "formalAiDesktop:syncMemory",
@@ -94,6 +97,8 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "invokeTool",
   "setToolGrants",
   "runAgentProvider",
+  "setEngine",
+  "onAgentEvent",
   "syncMemory",
   "serviceStatus",
   "startService",
@@ -118,6 +123,19 @@ requireIncludes("lib/memory-sync.cjs", read("lib/memory-sync.cjs"), [
   "createMemorySync",
   "/v1/memory/since",
   "/v1/memory/import",
+]);
+requireIncludes("lib/engine-manager.cjs", read("lib/engine-manager.cjs"), [
+  "out-of-box",
+  "detectAvailableEngines",
+  "selectDefaultEngine",
+  "setActiveEngine",
+]);
+requireIncludes("lib/agent-provider.cjs", read("lib/agent-provider.cjs"), [
+  'import("agent-commander")',
+  "commanderControllerOptions",
+  'isolation: "none"',
+  "/api/openai/v1",
+  "/api/anthropic",
 ]);
 // Issue #438 (follow-up): the service-control module manages both prepared
 // containers (Telegram bot + OpenAI-compatible server) behind one runner.

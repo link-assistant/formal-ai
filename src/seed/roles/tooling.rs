@@ -91,6 +91,21 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: a natural-language request to create a repository issue.
+///
+/// Surface templates live in `data/seed/meanings-agent-actions.lino`; the
+/// agentic action router matches their open slot structurally, so adding a
+/// language or phrasing is a data edit shared by every runtime.
+pub const ROLE_AGENT_ACTION_REPORT_VERB: &str = "agent_action_report_verb";
+/// Semantic role: the issue/bug/repository object of a report action.
+pub const ROLE_AGENT_ACTION_REPORT_SUBJECT: &str = "agent_action_report_subject";
+/// Semantic role: an action asking to read an explicitly named local file.
+///
+/// Multilingual surfaces live in `data/seed/meanings-file-write.lino` alongside
+/// the other general file-operation roles. The file-read router combines this
+/// language signal with a local-path object, keeping broad verbs such as
+/// "display" and "load" object-typed instead of treating them as web actions.
+pub const ROLE_FILE_READ_ACTION_CUE: &str = "file_read_action_cue";
 /// Semantic role: a verb that commands the in-place modification of an existing
 /// file (issue #680).
 ///
@@ -233,6 +248,17 @@ pub const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION: &str = "github_repository_tra
 /// for self-description. Read by the Rust feature-capability handler and its JS
 /// worker mirror.
 pub const ROLE_FEATURE_ACTION_ARITHMETIC: &str = "feature_action_arithmetic";
+
+/// A follow-up asks for the complete retained tool result rather than its summary.
+pub const ROLE_TOOL_RESULT_DETAIL_REQUEST: &str = "tool_result_detail_request";
+/// A follow-up asks for a URL retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_URL_REQUEST: &str = "tool_result_url_request";
+/// A follow-up asks for a numbered line retained in a prior tool result.
+pub const ROLE_TOOL_RESULT_LINE_REQUEST: &str = "tool_result_line_request";
+/// A follow-up refers to the first retained item.
+pub const ROLE_TOOL_RESULT_FIRST_REFERENCE: &str = "tool_result_first_reference";
+/// A follow-up refers to the second retained item.
+pub const ROLE_TOOL_RESULT_SECOND_REFERENCE: &str = "tool_result_second_reference";
 /// Semantic role: an action frame asking the assistant to perform a planning task.
 ///
 /// Carried by the `feature_action_planning` meaning. When a capability question

@@ -237,7 +237,7 @@ impl RepairCase {
 /// It captures an input the system could not answer directly (a reverse-sort
 /// program modifier), together with the rule-synthesis candidate and *passed*
 /// verification the loop reasons about. Kept in sync with the real events
-/// [`crate::rule_synthesis`] emits.
+/// `crate::rule_synthesis` emits.
 #[must_use]
 pub fn canonical_failure_trace() -> UnknownTrace {
     let mut log = EventLog::new();

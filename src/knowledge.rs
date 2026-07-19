@@ -7,7 +7,7 @@
 //! deterministic output and source attribution is kept as a *cached* example so
 //! the answer is served offline, exactly the offline-first contract the
 //! Wikidata/Wiktionary caches provide. This cache of popular cases is embedded
-//! ([`ORACLE_SNAPSHOTS`]) so it compiles into both the native binary and the
+//! (`ORACLE_SNAPSHOTS`) so it compiles into both the native binary and the
 //! Rust→WASM worker without a runtime fetch; the cache holds only the *popular*
 //! cases so offline tests stay fast and the repository stays light, and it
 //! never mirrors a whole source. A gated live-refresh path (below) is what
@@ -22,7 +22,7 @@
 //!    so no single external corpus can bloat the merged views.
 //! 2. [`CodingOracle`] — an offline-first lookup that resolves a
 //!    `(task, language)` coding request to a reviewed snippet plus its source
-//!    attribution, generalising the static [`crate::coding`] catalogue beyond
+//!    attribution, generalising the static `crate::coding` catalogue beyond
 //!    its built-in languages (R6). The committed snapshots are the popular-case
 //!    cache; a gated live-refresh path (mirroring the existing
 //!    `FORMAL_AI_LIVE_API` discipline) repopulates them from the live sources.

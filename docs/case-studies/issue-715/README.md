@@ -1,0 +1,254 @@
+# Issue 715: contextual code changes must mutate the workspace
+
+## Result
+
+Formal AI now treats the latest client-side write as the active mutable
+artifact. A follow-up code request reads the current bytes through the Agent
+CLI, executes an ordered normal (Markov) string-rewrite program, and writes only
+the completed result. It no longer answers with stale prose or rewrites a
+server-side copy that the user cannot see.
+
+The public rewrite representation implements rule priority, leftmost matching,
+restart from rule zero, terminal substitutions, and empty-string creation and
+deletion. This is the computationally universal normal-algorithm model. The
+network-facing executor adds a 100,000-substitution bound and refuses to write a
+partial result on exhaustion; universality describes the representation, not an
+unbounded promise for one HTTP request.
+
+Natural-language compilation is structural rather than phrase-list based. One
+explicit quoted value updates the prior output literal; ordered quoted old/new
+pairs compile to ordered rules. Empty and Unicode slots are preserved across
+English, Russian, Hindi, and Chinese prose. A fenced slot can hold a complete
+file, so the mechanism is not tied to a programming language or extension.
+
+## Reproduction and durable evidence
+
+The original screenshot shows OpenCode returning a Rust snippet inline and then
+ignoring the requested output change. The authoritative issue payload and
+validated PNG are in [`raw-data`](raw-data/). Two independently discovered red
+states are preserved:
+
+- [`reproducer-red.log`](test-logs/reproducer-red.log): no workspace tool call
+  for the original issue flow.
+- [`markov-red.log`](test-logs/markov-red.log): creation reversed its operands,
+  deletion became an unrelated output edit, and a second ordered rule was lost.
+- [`transport-quotes-red.log`](test-logs/transport-quotes-red.log): the first
+  real replay exposed OpenCode's outer transport quotes being mistaken for
+  program output.
+
+Run the focused suites:
+
+```sh
+cargo test --test unit issue_715 -- --nocapture
+cargo test --test issue_715 -- --nocapture
+cargo test --test issue_715_rewrite_variations -- --nocapture
+cargo test --test integration issue_716_agentic_execution -- --nocapture
+```
+
+Run the actual external CLI replay:
+
+```sh
+cargo build --bin formal-ai
+experiments/agent_cli_e2e/run_issue_715_opencode.sh
+```
+
+The four OpenCode turns create, compile, and run `main.rs`; replace `Hello,
+world!` with `Hello 2`; create a leading line with an empty-pattern rule; and
+delete that line with an empty-replacement rule. The retained run completed 14
+OpenAI-compatible chat rounds. Its JSONL, server trace, and final compiling file
+are in [`opencode-run`](opencode-run/), and the summary is
+[`opencode-replay.log`](test-logs/opencode-replay.log).
+
+The built-in Formal AI Agent CLI also executed the auto-learning task in three
+turns: it wrote the derived report and read it back through `run_command`. See
+[`formal-ai-agent-learning-session.json`](formal-ai-agent-learning-session.json)
+and [`formal-ai-agent-learning.log`](test-logs/formal-ai-agent-learning.log).
+
+Run the same auto-learning task through the two external CLIs:
+
+```sh
+cargo build --release --bin formal-ai
+experiments/agent_cli_e2e/run_issue_715_learning.sh
+```
+
+The report the task derives names its own promotion gate
+`normal_algorithm_laws_multilingual_slots_and_agent_cli_e2e_pass`, so that gate
+was only a claim while the task ran solely in the in-process harness — the one
+harness that cannot show the capability routing survives the wire. It now runs
+under `@link-assistant/agent` and `opencode`, and the script diffs the two
+reports byte for byte: a harness is supported "in the similar way" only if it
+derives the *same* artifact. All three harnesses — in-repo, `agent`, and
+`opencode` — produce the identical 3961-byte report, so the differing tool
+vocabularies are genuinely a routing detail and not a semantic one. The run is in
+[`agent-cli-learning`](agent-cli-learning/), and the step is wired into the
+`E2E Tests (agent CLI ↔ formal-ai)` CI job so parity is enforced rather than
+observed once.
+
+Two things in the captured `agent` stream look like failures and are not. Its
+six `tool_use` events each render `"name": "unknown"` with an empty `input`,
+which is a bug in that CLI's stream-json output rather than a tool that did not
+run: `opencode` drove the same server over the same wire and named `write` and
+`bash`, and `formal-ai` sends `function.name` in every tool-call delta
+(`src/server.rs:584`). The report existing at all is the real evidence the write
+executed — the harness wrote it into its own workspace, which the server cannot
+reach.
+
+That reading is now established rather than inferred.
+`experiments/agent_cli_tool_name_probe/mock-openai-server.mjs` reproduces it in
+isolation: a mock server streams one `write` call with its name and arguments in
+`delta.tool_calls[].function`, the CLI writes the file correctly, and the event
+it prints still says `"name": "unknown", "input": {}`. The probe also corrects
+this case study's first reading of the evidence — the fault is not in
+`--compact-json`, which was the visible suspect because it is what the E2E
+passes; plain `--output-format stream-json` loses the name too. Reported upstream
+as [agent#281](https://github.com/link-assistant/agent/issues/281).
+
+The stream's `warn` events are likewise benign and self-attributed to
+[agent#249](https://github.com/link-assistant/agent/issues/249): the AI SDK
+dropped token usage and the CLI recovered it from the raw SSE. They ride stdout
+as log events, which is why `scripts/classify-agent-cli-stderr.sh` never sees
+them. The probe corroborates that one too, by accident: a mock that omits `usage`
+from its final chunk sends the CLI into a retry-with-backoff loop, so the probe
+sends it.
+
+## Requirements and evidence
+
+| Requirement | Implementation | Verification |
+| --- | --- | --- |
+| Mutate the real Agent CLI workspace | Capability routing emits client `read` and `write` calls; the server never directly edits the client's filesystem. | Four-turn OpenCode replay and four shared HTTP-protocol integrations |
+| Generate and execute programs | Initial creation delegates to the typed `ExecutionRecipe`, which writes source and invokes the catalog's check/run commands. | Ten-language issue-716 suite and OpenCode `write -> rustc -> ./main` transcript |
+| Preserve current state | The newest prior write identifies the artifact, but current bytes always come from the newest read result after the latest user turn. | Read-before-write assertions and changed OpenCode file |
+| Support normal-algorithm substitutions | Public ordered rules use first-applicable priority, the leftmost match, restart, and terminal rules. | Priority, restart, state-symbol unary increment, and trace tests |
+| Support creation and deletion | Empty pattern is creation; empty replacement is deletion. Empty slots survive literal extraction. | Direct algebra tests, 40 NL variants, and real turns 3-4 |
+| Prevent runaway or partial edits | Each execution has a step bound. A cyclic program returns `StepLimit` without a write call. | `a -> b`, `b -> a` regression |
+| Avoid language/extension gates | The active prior write may be any path; rewrite data is UTF-8 text rather than a source-language AST. | Ten catalog languages, `notes.custom-format`, and four natural languages |
+| Support multiple rules | Every ordered old/new pair becomes a rule; evaluation restarts at the highest-priority rule after every non-terminal substitution. | `Hello -> Hi`, `world -> team` integration and cyclic safety case |
+| Make execution auditable without unbounded responses | Outcomes retain every applied rule and byte offset; final Links Notation renders the total plus bounded head/tail trace excerpts. | Unit assertions, bounded-cycle regression, and retained OpenCode JSONL/server trace |
+| Learn without autonomous promotion | Persisted failures and linked amendments feed the production associative-learning adapter; the derived report remains `awaiting_human_review`. | Learning derivation test, built-in Agent CLI session, and a live `agent` + `opencode` E2E asserting the report never promotes itself |
+| Execute the same task on every harness | Auto-learning is planned through the shared `DocumentRecipe` router, so a harness contributes its tool vocabulary and nothing else. | `run_issue_715_learning.sh` drives `@link-assistant/agent` and `opencode` against one task and diffs the two derived reports byte for byte |
+| Accept broad NL variation without hardcoded multilingual cues | The compiler consumes ordered structural literal slots independently of surrounding prose. | Ten creation/deletion phrasings in each of English, Russian, Hindi, and Chinese |
+| Support link-cli's substitution query language | `src/links_substitution_query/` parses and renders the `(matching pattern) (substitution pattern)` shape, reusing `normal_markov` as the executor rather than adding a second engine. | Round-trip, CRUD-shape, and effect-classification tests in `tests/unit/issue_715_links_substitution_query.rs` |
+| Substitute over text sequences *and links in general* | One language, one parser core, two operand domains: `text.rs` reads quoted character sequences, `links.rs` reads `(index: source target)` doublets with `$i`/`$s`/`$t` variables. Both share the ordered, bounded Markov control model. | link-cli's own documented queries as fixtures in `tests/unit/issue_715_link_substitution_query.rs`, including read-all termination and a cycling swap hitting `StepLimit` |
+| Read literal slots the same way everywhere | `normal_markov::quoted_segments`/`quoted_segment_spans` is the single implementation; handlers import it instead of keeping private copies. | Apostrophe-prose and apostrophe-operand regressions in `tests/unit/specification/text_manipulation.rs` |
+
+## Root causes
+
+The original failure and the deeper review exposed seven distinct boundary bugs:
+
+1. Code generation could produce symbolic prose without converting the
+   established catalog program into an Agent CLI workspace write.
+2. A contextual follow-up omitted the path and old text, while planning ignored
+   the prior write that already established both artifact identity and content.
+3. Recipe progress could scan earlier turns, so an old tool result could make a
+   new operation appear finished.
+4. The first mutation VM compiled one non-empty replacement. It dropped
+   zero-length literal slots, could not express an ordered normal algorithm, and
+   limited active artifacts to catalog source extensions.
+5. A write could be planned from remembered bytes rather than the client's
+   current read result.
+6. OpenCode's positional `run` transport wraps user content in quotes. The typed
+   creation path initially interpreted those framing quotes as requested output;
+   only the real CLI replay exposed this integration defect.
+7. The literal-slot reader was triplicated. `normal_markov` held the general
+   version, while `solver_handlers/text_manipulation.rs` and
+   `solver_handlers/document_request.rs` each kept a private, narrower copy that
+   knew nothing about fenced blocks and treated every ASCII apostrophe as an
+   opening quote. Both copies parse user prompts directly, so `doesn't matter,
+   replace "cat" with "dog"` lost its operands and fell through to the `unknown`
+   intent. Duplication is what let the general fix stop at one of three call
+   sites; deleting the copies is the fix, not patching each one.
+
+## Design
+
+`RewriteProgram` is an ordered list of `RewriteRule` values. On each step the
+executor selects the first rule whose pattern occurs, replaces its leftmost
+occurrence, and restarts selection at rule zero. A terminal rule stops
+immediately. An empty pattern matches byte offset zero, and an empty replacement
+removes the matched sequence. Every step records its rule index and byte offset.
+
+That representation is reachable two ways, and both compile to the same
+`RewriteProgram` rather than to parallel engines. Natural language lowers to it
+through ordered literal slots. link-cli's substitution query language lowers to
+it through `src/links_substitution_query/`, which parses the documented
+`(matching pattern) (substitution pattern)` shape. The identification is not an
+analogy: link-cli's README hyperlinks "substitution operation" to the Markov
+algorithm, and LinksQL states outright that its single rule "is a Markov
+algorithm over an associative store". `normal_markov` already executes that
+model, so the query language is a surface syntax over the existing executor and
+CRUD falls out of the operand shapes — an empty matching side creates, an empty
+substitution side deletes, identical sides read.
+
+The substitution model is the operand-independent part, so the language is
+written once and its operands are read two ways: `text.rs` reads quoted
+character sequences, `links.rs` reads `(index: source target)` doublets over
+`link_store::DoubletLink` with link-cli's `$i`/`$s`/`$t` variables. They share
+one parser core and one control model; only the operand domain differs. A
+per-operand empty link — `(() (2 2)) ((1 1) ())` — is the general form that
+link-cli's whole-side `()` shorthand abbreviates, so one query can mix effects
+and every program renders back to a query that parses to it. `research.md` quotes
+the primary sources and records where this dialect departs from link-cli: terminal
+rules, which link-cli has no counterpart for; the identity substitution not being
+a state transition, which link-cli's own read-all query forces; creation not
+forcing an index; and the unwrapped two-side form.
+
+The planner treats tool history as identity metadata, not as trusted current
+content. It first requests the active path through the advertised read
+capability, decodes known OpenCode read envelopes, executes the immutable
+program over those returned bytes, and emits a complete write only after a safe
+halt. A `StepLimit` outcome produces an explanation and no mutation.
+
+Initial creation with a command capability stays in the typed execution path
+introduced by issue 716. That path writes source and runs its declared commands.
+Write-only harnesses retain catalog creation, while subsequent contextual edits
+use the same normal-rewrite path in every OpenAI-compatible protocol adapter.
+
+The issue-715 learning memory records the observed stale response, single-rule
+VM, lost empty slots, and extension gate. The existing associative-memory
+adapter ranks those observations together with linked amendments. Promotion is
+explicitly gated on algebraic laws, multilingual slots, and real Agent CLI E2E
+evidence, so running auto-learning cannot silently change production behavior.
+
+## Scope and honest boundary
+
+Normal algorithms can represent any computable string transformation, and this
+implementation exposes that model directly. A fixed 100,000-step production run
+is intentionally not an unbounded universal machine. Callers can also request a
+transformation whose bound is insufficient or whose program does not halt; that
+case is observable and non-mutating.
+
+The deterministic natural-language compiler does not claim to infer every
+underspecified semantic refactor. It reliably compiles explicit literal slots,
+including complete fenced file contents and any number of ordered pairs. A
+higher-level agent can ground an arbitrary semantic change by supplying the
+desired complete source through the normal tool contract. Requests without
+workspace tools continue through the prose solver.
+
+## Timeline
+
+| Time (UTC) | Event |
+| --- | --- |
+| 2026-07-13 | Issues 680 and 681 established explicit file-intent routing and write-before-read ordering. |
+| 2026-07-14 | Issue 712 reported regressions in those explicit routers. |
+| 2026-07-15 | Issue 715 reported the multi-turn code-artifact failure with an OpenCode screenshot. |
+| 2026-07-15 | The mandatory self-coding wrapper was attempted; its model allowlist rejected `formal-ai`, and the failure was preserved and reported on the issue. |
+| 2026-07-15 | The initial artifact planner and real two-turn OpenCode reproducer were added. |
+| 2026-07-16 | New review feedback required general normal-algorithm creation, deletion, multi-rule execution, auto-learning, and deeper Agent CLI evidence. |
+| 2026-07-16 | Three red algebra regressions replaced the private single-replacement VM with the public bounded normal-algorithm executor. |
+| 2026-07-16 | The first four-turn OpenCode attempt found transport-quote corruption; a dedicated red test and fix preceded the successful 14-round replay. |
+| 2026-07-16 | Review feedback named link-cli as the priority query dialect and LinksQL as secondary. `src/links_substitution_query.rs` adopted link-cli's two-sided shape over text sequences; both divergences are recorded in `research.md`. |
+| 2026-07-16 | Auditing the literal-slot readers found two private duplicates of the general one. Their apostrophe handling was a live prompt-parsing bug; the duplicates were deleted rather than repaired. |
+| 2026-07-16 | Review feedback rejected the text-only dialect: the ask was substitution "for text sequences and links in general". The link operand domain was added over `link_store::DoubletLink`, sharing the parser core and control model rather than forking a second engine. |
+
+## Data inventory
+
+- `raw-data/issue-715.json` and `issue-715-comments.json`: issue description and
+  discussion snapshots.
+- `raw-data/issue-715.png`: downloaded attachment; its PNG signature was
+  verified before visual inspection.
+- `raw-data/issue-{680,681,712,714,716}.json`: adjacent routing and agentic-mode
+  reports used for regression analysis.
+- `raw-data/pr-727.json`: prepared-PR metadata snapshot.
+- `test-logs/`: red reproductions, local checks, self-coding attempts, built-in
+  Agent CLI evidence, and the external replay summary.
+- `research.md`: current external contracts and primary research consulted
+  during design.

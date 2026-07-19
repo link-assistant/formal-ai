@@ -52,6 +52,37 @@ pub fn extract_unquoted_translation_surface(prompt: &str) -> Option<String> {
     extract_circumfix_surface(trimmed, &lower)
         .or_else(|| extract_hindi_unquoted_surface(trimmed, &lower))
         .or_else(|| extract_chinese_unquoted_surface(trimmed, &lower))
+        .or_else(|| extract_suffix_surface(trimmed, &lower))
+}
+
+/// Whether a structurally extracted source-first prompt also carries a
+/// language-neutral translation action and a recognized target.
+#[must_use]
+pub fn is_source_first_translation_request(
+    normalized: &str,
+    target_detected: bool,
+    surface_detected: bool,
+) -> bool {
+    target_detected
+        && surface_detected
+        && seed::lexicon()
+            .words_for_role_in_languages(seed::ROLE_TRANSLATION_ACTION, &["en", "ru", "hi", "zh"])
+            .iter()
+            .any(|stem| normalized.contains(stem.as_str()))
+}
+
+/// Source-first extraction: a suffix frame follows the text and precedes the
+/// target language (`<surface> - translate to <language>`). The separator is
+/// presentation punctuation, not part of the source proposition.
+fn extract_suffix_surface(original: &str, lower: &str) -> Option<String> {
+    markers().suffix_frames.iter().find_map(|frame| {
+        let offset = lower.rfind(frame)?;
+        let target = lower[offset + frame.len()..].trim();
+        if target.is_empty() {
+            return None;
+        }
+        clean_unquoted_surface(&original[..offset])
+    })
 }
 
 /// Head-initial extraction (English, Russian): each circumfix verb frame
@@ -143,7 +174,10 @@ fn first_marker(text: &str, markers: &[&str]) -> Option<usize> {
 }
 
 fn clean_unquoted_surface(candidate: &str) -> Option<String> {
-    let cleaned = candidate.trim();
+    let cleaned = candidate
+        .trim()
+        .trim_end_matches(['-', '–', '—', ':'])
+        .trim_end();
     if cleaned.is_empty()
         || cleaned.chars().any(|character| {
             matches!(
@@ -165,6 +199,8 @@ struct TranslationMarkers {
     /// Circumfix verb frames as `(before-slot prefix, after-slot marker)` — the
     /// head-initial English/Russian forms, declaration order.
     circumfix_frames: Vec<(&'static str, &'static str)>,
+    /// Literal after-slot frames for source-first commands.
+    suffix_frames: Vec<&'static str>,
     /// Hindi bare verb stems (Devanagari) whose presence gates the extractor.
     hindi_verb_stems: Vec<&'static str>,
     /// Hindi target-and-verb compounds (Devanagari): the right boundary.
@@ -186,6 +222,7 @@ fn markers() -> &'static TranslationMarkers {
     static CACHE: OnceLock<TranslationMarkers> = OnceLock::new();
     CACHE.get_or_init(|| TranslationMarkers {
         circumfix_frames: circumfix_frames(ROLE_TRANSLATION_UNQUOTED_FRAME),
+        suffix_frames: suffix_frames(ROLE_TRANSLATION_UNQUOTED_FRAME),
         hindi_verb_stems: bare_script_forms(ROLE_TRANSLATION_UNQUOTED_FRAME, contains_devanagari),
         hindi_target_markers: script_forms(ROLE_TRANSLATION_INTO_MARKER, contains_devanagari),
         hindi_object_markers: script_forms(ROLE_TRANSLATION_OBJECT_MARKER, contains_devanagari),
@@ -197,6 +234,15 @@ fn markers() -> &'static TranslationMarkers {
         ),
         chinese_target_markers: script_forms(ROLE_TRANSLATION_TARGET_DIRECTION, contains_cjk),
     })
+}
+
+fn suffix_frames(role: &str) -> Vec<&'static str> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Suffix)
+        .map(WordForm::after_slot)
+        .collect()
 }
 
 /// Every circumfix form of `role` as a `(before-slot, after-slot)` pair, in

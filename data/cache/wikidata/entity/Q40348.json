@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "Q40348": {
+      "type": "item",
+      "id": "Q40348",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "lawyer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "адвокат"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वकील"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "律師"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "legal professional"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "независимый советник по правовым вопросам и представитель клиента в суде"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क़ानूनी पेशेवर जो ग्राहकों की मदद करता है और न्यायालय में उनका प्रतिनिधित्व करता है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "幫助客戶並在法庭上代表他們的法律專業人士"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "attorney"
+          },
+          {
+            "language": "en",
+            "value": "solicitor"
+          },
+          {
+            "language": "en",
+            "value": "barrister"
+          },
+          {
+            "language": "en",
+            "value": "lawyers"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "адвокат в гражданском процессе"
+          },
+          {
+            "language": "ru",
+            "value": "практикующая юристка"
+          },
+          {
+            "language": "ru",
+            "value": "практикующий юрист"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "न्यायज्ञ"
+          },
+          {
+            "language": "hi",
+            "value": "वक़ील"
+          },
+          {
+            "language": "hi",
+            "value": "मुख़्तार"
+          },
+          {
+            "language": "hi",
+            "value": "मुख्तार"
+          },
+          {
+            "language": "hi",
+            "value": "विधिज्ञ"
+          },
+          {
+            "language": "hi",
+            "value": "विधिवक्ता"
+          },
+          {
+            "language": "hi",
+            "value": "बकील"
+          },
+          {
+            "language": "hi",
+            "value": "लॉयर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "辩护人"
+          },
+          {
+            "language": "zh",
+            "value": "律师"
+          },
+          {
+            "language": "zh",
+            "value": "执业律师"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

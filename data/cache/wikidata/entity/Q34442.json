@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q34442": {
+      "type": "item",
+      "id": "Q34442",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "road"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дорога"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सड़क"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "道路"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "wide way leading from one place to another, especially one with a specially prepared surface which vehicles can use"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "путь сообщения, полоса земли для передвижения"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "基础设施"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "track"
+          },
+          {
+            "language": "en",
+            "value": "route"
+          },
+          {
+            "language": "en",
+            "value": "roadway"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "автодорога"
+          },
+          {
+            "language": "ru",
+            "value": "дороги"
+          },
+          {
+            "language": "ru",
+            "value": "автомобильные дороги"
+          },
+          {
+            "language": "ru",
+            "value": "автомобильная дорога"
+          },
+          {
+            "language": "ru",
+            "value": "автомобильный маршрут"
+          },
+          {
+            "language": "ru",
+            "value": "путь"
+          },
+          {
+            "language": "ru",
+            "value": "Дорога"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "馬路"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

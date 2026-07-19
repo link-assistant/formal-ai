@@ -1,0 +1,17 @@
+Q28472
+  aliases
+    en (hairs)
+    ru ("волос" "волосяной покров")
+    zh ("髮" "毛" "真发" "毛发")
+  descriptions
+    en "protein filament that grows from follicles found in the dermis, or skin"
+    ru "защитный покров в виде растущих из кожи нитей"
+    zh "从真皮中发现的毛囊生长的丝状生物材料"
+  id Q28472
+  labels
+    en hair
+    hi "बाल"
+    ru "волосы"
+    zh "毛髮"
+  type item
+success 1

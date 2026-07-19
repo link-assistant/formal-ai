@@ -373,8 +373,7 @@ async function runWebSearchQuery(query, language, queryKind) {
     return {
       intent: "web_search",
       content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
-      confidence: 0.3,
-      evidence,
+      confidence: 0.3, query, evidence,
       diagnostics: { providers: [], httpExchanges: consumeWebSearchDiagnostics() },
     };
   }
@@ -447,8 +446,7 @@ async function runWebSearchQuery(query, language, queryKind) {
     return {
       intent: "web_search",
       content: texts.noResults(query, active.map((p) => p.label).join(", ")),
-      confidence: 0.35,
-      evidence,
+      confidence: 0.35, query, evidence,
       diagnostics,
     };
   }

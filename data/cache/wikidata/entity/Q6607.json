@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q6607": {
+      "type": "item",
+      "id": "Q6607",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "guitar"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "гитара"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गिटार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "吉他"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fretted string instrument"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "щипковый струнный музыкальный инструмент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक लोकप्रिय वाद्य यन्त्र जिसमें तार (जो कि आमतौर पर छह होते हैं) के बजाने से ध्वनि उत्पन्न होती है।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "撥弦樂器"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Шестиструнная гитара"
+          },
+          {
+            "language": "ru",
+            "value": "Семиструнная гитара"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,37 @@
+{
+  "entities": {
+    "Q7363": {
+      "type": "item",
+      "id": "Q7363",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "nose"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "нос"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नाक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "鼻"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organ that smells and facilitates breathing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть лица или морды, участвующая в дыхании, обонянии, добыче корма и общении"
+        }
+      }
+    }
+  },
+  "success": 1
+}

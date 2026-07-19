@@ -261,7 +261,11 @@ fn sanitize_segment(value: &str) -> String {
     if out.len() > 96 {
         // Avoid blowing past common filesystem name limits when a SPARQL
         // search returns a freakishly long title.
-        out.truncate(96);
+        let mut boundary = 96;
+        while !out.is_char_boundary(boundary) {
+            boundary -= 1;
+        }
+        out.truncate(boundary);
         out.push('~');
         out.push_str(&cache_key(value)[..8]);
     }
@@ -433,7 +437,7 @@ fn seed_index() -> &'static HashMap<String, String> {
 ///
 /// Each `response_<short_id>` block produces one pair. Records sharing a
 /// URL are returned separately in the order they appear — call
-/// [`seed_index`] (which concatenates them) if you want the assembled body.
+/// `seed_index` (which concatenates them) if you want the assembled body.
 ///
 /// The grammar is intentionally narrow and stays human-readable so a
 /// reviewer can inspect the raw API JSON without decoding tooling:
@@ -457,7 +461,7 @@ pub fn parse_seed_bundle(text: &str) -> Vec<(String, String)> {
 
 /// Parse a `.lino` seed bundle into `(url, body_chunk)` pairs.
 ///
-/// Used by [`seed_index`] so split-body records (multiple records with
+/// Used by `seed_index` so split-body records (multiple records with
 /// the same URL across `<bucket>-partN.lino` files) can be concatenated
 /// into a single body.
 #[must_use]

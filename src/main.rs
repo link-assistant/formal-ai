@@ -6,9 +6,13 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_import;
+mod cli_improve;
 mod cli_memory;
 mod cli_shared_dialog;
 
+use cli_import::{run_import, ImportAction};
+use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
@@ -110,6 +114,13 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Import lexical semantics in bulk from external sources (issue #660,
+    /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
+    /// validate-then-write pipeline.
+    Import {
+        #[command(subcommand)]
+        action: ImportAction,
+    },
     /// Plan or collect GitHub issue, PR, review, and Actions run evidence
     /// into a case-study directory.
     GithubLogs {
@@ -180,6 +191,46 @@ enum Command {
         #[arg(long, env = "FORMAL_AI_PORT", default_value_t = 8080)]
         port: u16,
     },
+    /// Benchmark-gated promotion of self-improvement proposals (issue #656, E37).
+    ///
+    /// Collects open promotion proposals, replays their benchmark ratchets, and
+    /// prints the promotion plan. `--promote` runs the protocol; without
+    /// `--apply` it is a dry run that touches no files. `--apply` materializes the
+    /// accepted seed edits into `--seed-root` and requires `--confirm`; it never
+    /// pushes — the branch/PR step is emitted as a plan for human review.
+    Improve {
+        /// Run the promotion protocol. Without it, prints usage guidance only.
+        #[arg(long, default_value_t = false)]
+        promote: bool,
+
+        /// `promotion_proposals` Links Notation document containing the actual
+        /// open proposals. Required with `--promote`; synthetic demonstration
+        /// proposals are never a production default.
+        #[arg(long, value_name = "PATH")]
+        proposals: Option<PathBuf>,
+
+        /// Workspace root the accepted seed edits are materialized into on
+        /// `--apply`. Defaults to the current directory.
+        #[arg(long, value_name = "PATH", default_value = ".")]
+        seed_root: PathBuf,
+
+        /// Optional memory file the promotion event chain is appended to on
+        /// `--apply`.
+        #[arg(long, value_name = "PATH")]
+        memory: Option<PathBuf>,
+
+        /// Materialize the accepted seed edits. Requires `--confirm`.
+        #[arg(long, default_value_t = false)]
+        apply: bool,
+
+        /// Optional full-memory backup written before applying to `--memory`.
+        #[arg(long)]
+        backup: Option<PathBuf>,
+
+        /// Required acknowledgement when `--apply` is used.
+        #[arg(long, default_value_t = false)]
+        confirm: bool,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -190,17 +241,17 @@ enum MemoryAction {
     /// legacy events-only `demo_memory` shape. `--path -` streams to stdout.
     Export {
         /// Destination file. Use `-` to write to stdout. Defaults to
-        /// `formal-ai-memory.lino` in the current directory.
+        /// the shared per-user memory file.
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
         /// Source file to read the log from. Defaults to `--path` when
         /// `--path` is a real file, and to `FORMAL_AI_MEMORY_PATH` /
-        /// `formal-ai-memory.lino` when `--path -` is used.
+        /// the shared per-user memory file when `--path -` is used.
         #[arg(long)]
         from: Option<PathBuf>,
 
@@ -220,7 +271,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -229,7 +280,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
     },
@@ -238,7 +289,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -254,7 +305,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -298,7 +349,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -317,7 +368,7 @@ enum MemoryAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         path: PathBuf,
 
@@ -352,7 +403,7 @@ enum BundleAction {
         #[arg(
             long,
             env = "FORMAL_AI_MEMORY_PATH",
-            default_value = "formal-ai-memory.lino"
+            default_value_os_t = formal_ai::shared_memory_path()
         )]
         into: PathBuf,
     },
@@ -474,6 +525,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Agent {
@@ -520,6 +572,23 @@ fn main() -> Result<(), Box<dyn Error>> {
             allowed_updates,
             host,
             port,
+        })?,
+        Command::Improve {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
+        } => run_improve(&ImproveArgs {
+            promote,
+            proposals,
+            seed_root,
+            memory,
+            apply,
+            backup,
+            confirm,
         })?,
     }
 

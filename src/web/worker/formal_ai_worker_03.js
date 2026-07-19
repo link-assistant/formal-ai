@@ -28,13 +28,8 @@ function extractQuotedPhrase(text) {
   return null;
 }
 
-// Issue #386 translation roles — mirror the ROLE_TRANSLATION_* constants in
-// src/seed/roles.rs. Each role's slot-marked surface words live in
-// data/seed/meanings-translation.lino (loaded into MEANINGS_LINO); the
-// detection and extraction helpers ask the lexicon for those forms by meaning,
-// slot, and script instead of hardcoding a per-language phrase list. This is
-// the JS mirror of src/translation/language_markers.rs and
-// src/translation/prompt.rs.
+// Issue #386 translation roles mirror src/seed/roles.rs. Their slot-marked
+// forms live in meanings-translation.lino; helpers query them by role/shape.
 const ROLE_TRANSLATION_SOURCE_MARKER = "translation_source_marker";
 const ROLE_TRANSLATION_TARGET_MARKER = "translation_target_marker";
 const ROLE_RESPONSE_LANGUAGE_MARKER = "response_language_marker";
@@ -89,10 +84,7 @@ function detectComprehensionFailure(normalized) {
 }
 
 let cachedTranslationMarkers = null;
-// Project the translation-extraction markers out of the meaning lexicon, once.
-// Each field is a semantic role narrowed to the slot and script its strategy
-// needs, in declaration order — the code names a role and a shape, never a
-// surface word. Mirrors markers() in src/translation/prompt.rs.
+// Cache the role/slot/script projection mirrored by translation/prompt.rs.
 function translationMarkers() {
   if (cachedTranslationMarkers) return cachedTranslationMarkers;
   const scriptForms = (role, script) =>
@@ -107,6 +99,7 @@ function translationMarkers() {
     circumfixFrames: roleWordForms(ROLE_TRANSLATION_UNQUOTED_FRAME)
       .filter((form) => form.slot === "circumfix")
       .map((form) => [form.before, form.after]),
+    suffixFrames: roleWordForms(ROLE_TRANSLATION_UNQUOTED_FRAME).filter((form) => form.slot === "suffix").map((form) => form.after),
     hindiVerbStems: bareScriptForms(
       ROLE_TRANSLATION_UNQUOTED_FRAME,
       containsDevanagari,
@@ -164,7 +157,11 @@ function extractUnquotedTranslationSurface(text) {
 
   const hindi = extractHindiUnquotedTranslationSurface(trimmed, lower);
   if (hindi) return hindi;
-  return extractChineseUnquotedTranslationSurface(trimmed, lower);
+  const chinese = extractChineseUnquotedTranslationSurface(trimmed, lower);
+  if (chinese) return chinese;
+  const suffix = markers.suffixFrames.map((frame) => [frame, lower.lastIndexOf(frame)])
+    .find(([frame, index]) => index !== -1 && lower.slice(index + frame.length).trim());
+  return suffix ? cleanUnquotedTranslationSurface(trimmed.slice(0, suffix[1])) : null;
 }
 
 // The surface that sits between a circumfix frame's prefix and its trailing
@@ -181,7 +178,7 @@ function extractBetweenPrefixAndMarker(original, lower, prefix, marker) {
 }
 
 function cleanUnquotedTranslationSurface(candidate) {
-  const cleaned = String(candidate || "").trim();
+  const cleaned = String(candidate || "").trim().replace(/[-–—:]\s*$/u, "").trim();
   if (!cleaned || /["'«»`“”‘’]/u.test(cleaned)) return null;
   return cleaned;
 }

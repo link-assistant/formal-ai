@@ -1,0 +1,6 @@
+== harness 1/2: @link-assistant/agent ==
+::notice title=Known Agent CLI 0.25.0 diagnostics::Classified 6 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+agent: report OK (10 ranked expressions, 4820 bytes)
+== harness 2/2: opencode ==
+opencode: report OK (10 ranked expressions, 4820 bytes)
+issue #659 Agent CLI E2E OK: two harnesses derived a byte-identical, review-gated report over 7 chat rounds

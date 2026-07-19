@@ -1,0 +1,18 @@
+Q523
+  aliases
+    en ("celestial star" stars "celestial stars" "the stars" stellar)
+    hi ("आकाशीय पिंड" "आकाशीय तारा")
+    ru ("звёзды" "небесное светило")
+  descriptions
+    en "astronomical object consisting of a luminous spheroid of plasma held together by its own gravity"
+    hi "खगोलीय वस्तु"
+    ru "массивное небесное тело, состоящее из газа и плазмы, и способное к поддержанию теромоядерных реакций"
+    zh "由一個發光的等離子體球體組成的天文物體，由它自身的引力連接在一起"
+  id Q523
+  labels
+    en star
+    hi "तारा"
+    ru "звезда"
+    zh "恒星"
+  type item
+success 1

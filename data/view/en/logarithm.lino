@@ -5,5 +5,5 @@ view
   sources (wiktionary)
   sense
     part_of_speech noun
-    gloss "For a number x, the power to which a given base number must be raised in order to obtain x. Written \log_b x. For example, \log_{10} 1000 = 3 because 10^3 = 1000 and \log_2 16 = 4 because 2^4 = 16."
+    gloss "For a number x, the power to which a given base number must be raised in order to obtain x. Written \\log_b x. For example, \\log_{10} 1000 = 3 because 10^3 = 1000 and \\log_2 16 = 4 because 2^4 = 16."
     provenance (wiktionary)

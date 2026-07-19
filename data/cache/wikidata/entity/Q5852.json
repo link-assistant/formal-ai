@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q5852": {
+      "type": "item",
+      "id": "Q5852",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "blanket"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "одеяло"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कम्बल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "毯子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "a large piece of woven fabric used as a bed covering or other covering"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "постельная принадлежность"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "毛毯"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q8074": {
+      "type": "item",
+      "id": "Q8074",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cloud"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "облако"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बादल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "云"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "visible mass of liquid droplets or frozen crystals suspended in the atmosphere"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "взвешенные в атмосфере продукты конденсации водяного пара"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "大气层中的液滴或冰晶集合体"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "clouds"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "облака"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "雲"
+          },
+          {
+            "language": "zh",
+            "value": "云朵"
+          },
+          {
+            "language": "zh",
+            "value": "云层"
+          },
+          {
+            "language": "zh",
+            "value": "雲朵"
+          },
+          {
+            "language": "zh",
+            "value": "雲層"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

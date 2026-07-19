@@ -1,0 +1,22 @@
+Within data/seed/client-integrations.lino, insert the following exact block immediately before the existing `  tool "gemini"` block. Do not change another file.
+  tool "cursor"
+    label "Cursor CLI"
+    command "cursor-agent"
+    provider_id "formalai"
+    default_protocol "mcp"
+    supported_protocols ("mcp")
+    endpoint_mcp "/mcp"
+    api_key_env "FORMAL_AI_API_KEY"
+    api_key_default "formal-ai"
+    ephemeral
+      non_interactive_arg "-p"
+      temp_home_env "HOME"
+      temp_home_config_path ".cursor/mcp.json"
+      temp_home_json_set "mcpServers.formal-ai.type=http"
+      temp_home_json_set "mcpServers.formal-ai.url={base_url}/mcp"
+    global
+      kind "json"
+      path ".cursor/mcp.json"
+      backup_suffix ".formal-ai.bak"
+      json_set "mcpServers.formal-ai.type=http"
+      json_set "mcpServers.formal-ai.url={base_url}/mcp"

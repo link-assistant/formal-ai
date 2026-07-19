@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q35473": {
+      "type": "item",
+      "id": "Q35473",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "window"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "окно"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खिड़की"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "窗"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "opening to admit light or air"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "элемент архитектуры"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "建筑部件"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "windows"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "окошко"
+          },
+          {
+            "language": "ru",
+            "value": "окошечко"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "खिड़कियों"
+          },
+          {
+            "language": "hi",
+            "value": "खिड़कियाँ"
+          },
+          {
+            "language": "hi",
+            "value": "झरोखा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "窗户"
+          },
+          {
+            "language": "zh",
+            "value": "廔"
+          },
+          {
+            "language": "zh",
+            "value": "窗戶"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

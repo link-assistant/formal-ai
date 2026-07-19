@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q161524": {
+      "type": "item",
+      "id": "Q161524",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mask"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "маска"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मुखौटा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "面具"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "any full or partial face covering, whether ceremonial, protective, decorative, or used as disguise"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "накладка на лицо, который надевается для сокрытия личности или для защиты"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "任何全部或部分面部遮盖物，无论是礼仪性的、保护性的、装饰性的还是用作伪装的"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "art mask"
+          },
+          {
+            "language": "en",
+            "value": "cultural mask"
+          },
+          {
+            "language": "en",
+            "value": "costume mask"
+          },
+          {
+            "language": "en",
+            "value": "🎭"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "面罩"
+          },
+          {
+            "language": "zh",
+            "value": "假面"
+          },
+          {
+            "language": "zh",
+            "value": "面谱"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

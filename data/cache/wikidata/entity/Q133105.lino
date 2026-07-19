@@ -1,0 +1,17 @@
+Q133105
+  aliases
+    en ("lower limb" "free lower limb")
+    hi ("पांव")
+    ru ("лапа" "лапка" "нижняя конечность" "конечность" "свободная часть ноги" "задняя конечность")
+    zh ("下盤" "下肢" "髀" "腿部" "小腿")
+  descriptions
+    en "weight bearing and locomotive anatomical structure of animals"
+    ru "часть тела - нога, не включая тазобедренный сустав"
+  id Q133105
+  labels
+    en leg
+    hi "टाँग"
+    ru "нога"
+    zh "腿"
+  type item
+success 1

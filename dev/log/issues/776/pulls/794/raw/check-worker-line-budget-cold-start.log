@@ -1,0 +1,63 @@
+[2026-07-19T07:56:31Z INFO  rust_script] Arguments: Args { script: Some("scripts/check-worker-line-budget.rs"), script_args: [], expr: false, loop_: false, count: false, base_path: None, pkg_path: None, gen_pkg_only: false, cargo_output: false, clear_cache: false, debug: false, dep: [], extern_: [], force: false, unstable_features: [], build_kind: Normal, toolchain_version: None, wrapper: None }
+[2026-07-19T07:56:31Z INFO  rust_script] input: File("check-worker-line-budget", "/tmp/gh-issue-solver-1784437815860/scripts/check-worker-line-budget.rs", "#!/usr/bin/env rust-script\n//! Enforce the UI-glue line budget for the split JavaScript worker.\n//!\n//! Issue #658 (E39 / R380) migrates the remaining solver logic out of\n//! `src/web/worker/*.js` and into the Rust→WASM worker, leaving JavaScript\n//! responsible only for UI/glue (message plumbing, seed fetching, IndexedDB).\n//! This script is the ratchet that keeps the mirror from silently regrowing:\n//! the combined worker line count may only shrink, never exceed the recorded\n//! ceiling, until it reaches the agreed target.\n//!\n//! When a migration slice lands and the total drops, lower `CEILING_TOTAL_LINES`\n//! to the new count in the same PR so the progress is locked in.\n//!\n//! Usage: rust-script scripts/check-worker-line-budget.rs\n//!\n//! ```cargo\n//! [dependencies]\n//! ```\n\nuse std::fs;\nuse std::path::{Path, PathBuf};\n#[cfg(not(test))]\nuse std::process::exit;\n\n/// The end-state UI-glue budget from the issue's acceptance criteria.\n#[cfg(not(test))]\nconst TARGET_TOTAL_LINES: usize = 3_000;\n\n/// Current ratchet ceiling: the combined line count of `src/web/worker/*.js`\n/// must never exceed this. Lower it whenever a migration slice reduces the\n/// total so the mirror cannot silently regrow back toward its old size.\n///\n/// The ratchet stops *this* migration from silently regrowing the mirror; it\n/// does not veto merging upstream `main`. When a merge brings in legitimate\n/// worker changes from other PRs, re-baseline this ceiling to the merged count\n/// (last re-baselined at 26_809 after main's attachment-routing fix added a\n/// net 14 lines after the previous semantic web-search re-baseline).\n#[cfg(not(test))]\nconst CEILING_TOTAL_LINES: usize = 26_809;\n\nconst WORKER_DIR: &str = \"src/web/worker\";\n\n#[derive(Debug, PartialEq, Eq)]\nstruct WorkerFile {\n    path: String,\n    lines: usize,\n}\n\n#[derive(Debug, PartialEq, Eq)]\nenum BudgetStatus {\n    /// Total is at or below the end-state target.\n    TargetMet,\n    /// Total is within the ratchet ceiling but above the target — migration\n    /// still in progress. Passes CI.\n    InProgress,\n    /// Total exceeds the ratchet ceiling — the mirror regrew. Fails CI.\n    Regrown,\n}\n\nfn classify_budget(total: usize, ceiling: usize, target: usize) -> BudgetStatus {\n    if total > ceiling {\n        BudgetStatus::Regrown\n    } else if total > target {\n        BudgetStatus::InProgress\n    } else {\n        BudgetStatus::TargetMet\n    }\n}\n\nfn worker_dir(cwd: &Path) -> PathBuf {\n    cwd.join(WORKER_DIR)\n}\n\nfn relative_path(path: &Path, cwd: &Path) -> String {\n    path.strip_prefix(cwd)\n        .unwrap_or(path)\n        .to_string_lossy()\n        .replace(std::path::MAIN_SEPARATOR, \"/\")\n}\n\n/// Collect the `*.js` files under `src/web/worker`, sorted by path, with their\n/// `str::lines().count()` line totals.\nfn collect_worker_files(cwd: &Path) -> Vec<WorkerFile> {\n    let dir = worker_dir(cwd);\n    let mut files = Vec::new();\n\n    let Ok(entries) = fs::read_dir(&dir) else {\n        return files;\n    };\n\n    for entry in entries.filter_map(std::result::Result::ok) {\n        let path = entry.path();\n        let is_js = path\n            .extension()\n            .and_then(|extension| extension.to_str())\n            .is_some_and(|extension| extension.eq_ignore_ascii_case(\"js\"));\n        if !path.is_file() || !is_js {\n            continue;\n        }\n\n        match fs::read_to_string(&path) {\n            Ok(content) => files.push(WorkerFile {\n                path: relative_path(&path, cwd),\n                lines: content.lines().count(),\n            }),\n            Err(error) => eprintln!(\"Warning: Could not read {}: {error}\", path.display()),\n        }\n    }\n\n    files.sort_by(|left, right| left.path.cmp(&right.path));\n    files\n}\n\nfn total_lines(files: &[WorkerFile]) -> usize {\n    files.iter().map(|file| file.lines).sum()\n}\n\n#[cfg(not(test))]\nfn print_breakdown(files: &[WorkerFile]) {\n    println!(\"Worker JavaScript line counts ({WORKER_DIR}/*.js):\");\n    for file in files {\n        println!(\"  {:>6}  {}\", file.lines, file.path);\n    }\n}\n\n#[cfg(not(test))]\nfn main() {\n    println!(\"\\nChecking the UI-glue line budget for the split JavaScript worker...\\n\");\n\n    let cwd = std::env::current_dir().expect(\"Failed to get current directory\");\n    let files = collect_worker_files(&cwd);\n\n    if files.is_empty() {\n        println!(\"No worker JavaScript files found under {WORKER_DIR}/ — nothing to check.\\n\");\n        exit(0);\n    }\n\n    print_breakdown(&files);\n    let total = total_lines(&files);\n    println!(\n        \"\\n  total: {total} lines (ceiling {CEILING_TOTAL_LINES}, target {TARGET_TOTAL_LINES})\\n\"\n    );\n\n    match classify_budget(total, CEILING_TOTAL_LINES, TARGET_TOTAL_LINES) {\n        BudgetStatus::Regrown => {\n            let over = total - CEILING_TOTAL_LINES;\n            println!(\n                \"::error::Worker JavaScript grew by {over} line(s) past the {CEILING_TOTAL_LINES}-line ceiling.\"\n            );\n            println!(\n                \"The mirror cannot silently regrow: move logic into the Rust→WASM worker\\n\\\n                 (src/web/wasm-worker) instead of adding it to {WORKER_DIR}/*.js.\\n\"\n            );\n            exit(1);\n        }\n        BudgetStatus::InProgress => {\n            let remaining = total - TARGET_TOTAL_LINES;\n            println!(\n                \"Within the ratchet ceiling. {remaining} line(s) above the {TARGET_TOTAL_LINES}-line UI-glue target.\"\n            );\n            println!(\n                \"Migrate more solver logic into the Rust→WASM worker, then lower\\n\\\n                 CEILING_TOTAL_LINES in this script to lock in the reduction.\\n\"\n            );\n            exit(0);\n        }\n        BudgetStatus::TargetMet => {\n            println!(\n                \"Worker JavaScript is at or below the {TARGET_TOTAL_LINES}-line UI-glue target.\\n\"\n            );\n            exit(0);\n        }\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    use std::time::{SystemTime, UNIX_EPOCH};\n\n    fn temp_dir(name: &str) -> PathBuf {\n        let nanos = SystemTime::now()\n            .duration_since(UNIX_EPOCH)\n            .unwrap()\n            .as_nanos();\n        let path = std::env::temp_dir().join(format!(\"check-worker-budget-{name}-{nanos}\"));\n        fs::create_dir_all(&path).unwrap();\n        path\n    }\n\n    fn write_worker_js(dir: &Path, name: &str, line_count: usize) {\n        let worker = dir.join(WORKER_DIR);\n        fs::create_dir_all(&worker).unwrap();\n        let mut content = String::new();\n        for line in 1..=line_count {\n            content.push_str(&format!(\"// line {line}\\n\"));\n        }\n        fs::write(worker.join(name), content).unwrap();\n    }\n\n    #[test]\n    fn classifies_regrowth_past_ceiling() {\n        assert_eq!(\n            classify_budget(101, 100, 10),\n            BudgetStatus::Regrown,\n            \"over the ceiling must fail\"\n        );\n        assert_eq!(\n            classify_budget(100, 100, 10),\n            BudgetStatus::InProgress,\n            \"exactly at the ceiling is allowed\"\n        );\n    }\n\n    #[test]\n    fn classifies_in_progress_and_target_met() {\n        assert_eq!(classify_budget(50, 100, 10), BudgetStatus::InProgress);\n        assert_eq!(classify_budget(10, 100, 10), BudgetStatus::TargetMet);\n        assert_eq!(classify_budget(9, 100, 10), BudgetStatus::TargetMet);\n    }\n\n    #[test]\n    fn collects_only_worker_js_and_sums_lines() {\n        let repo = temp_dir(\"collect\");\n        write_worker_js(&repo, \"formal_ai_worker_00.js\", 12);\n        write_worker_js(&repo, \"formal_ai_worker_01.js\", 8);\n        // A non-JS sibling must be ignored.\n        fs::write(repo.join(WORKER_DIR).join(\"README.md\"), \"notes\\n\").unwrap();\n\n        let files = collect_worker_files(&repo);\n        assert_eq!(files.len(), 2);\n        assert_eq!(files[0].path, \"src/web/worker/formal_ai_worker_00.js\");\n        assert_eq!(files[0].lines, 12);\n        assert_eq!(files[1].lines, 8);\n        assert_eq!(total_lines(&files), 20);\n    }\n\n    #[test]\n    fn missing_worker_dir_yields_no_files() {\n        let repo = temp_dir(\"missing\");\n        assert!(collect_worker_files(&repo).is_empty());\n    }\n}\n", "/tmp/gh-issue-solver-1784437815860/scripts")
+[2026-07-19T07:56:31Z INFO  rust_script] prelude_items: []
+[2026-07-19T07:56:31Z INFO  rust_script] id: "b546859cad2786983b63525b"
+[2026-07-19T07:56:31Z INFO  rust_script] pkg_path: "/home/box/.cache/rust-script/projects/b546859cad2786983b63525b"
+[2026-07-19T07:56:31Z INFO  rust_script] using_cache: true
+[2026-07-19T07:56:31Z INFO  rust_script::manifest] part_mani: {"dependencies": Table({})}
+[2026-07-19T07:56:31Z INFO  rust_script::manifest] source: None
+[2026-07-19T07:56:31Z INFO  rust_script::manifest] manifest: [[bin]]
+    name = "check-worker-line-budget_b546859cad2786983b63525b"
+    path = "/tmp/gh-issue-solver-1784437815860/scripts/check-worker-line-budget.rs"
+    
+    [dependencies]
+    
+    [package]
+    authors = ["Anonymous"]
+    edition = "2021"
+    name = "check-worker-line-budget_b546859cad2786983b63525b"
+    version = "0.1.0"
+    
+    [profile.release]
+    strip = true
+    
+[2026-07-19T07:56:31Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/b546859cad2786983b63525b", script_path: "/tmp/gh-issue-solver-1784437815860/scripts/check-worker-line-budget.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-worker-line-budget_b546859cad2786983b63525b\"\npath = \"/tmp/gh-issue-solver-1784437815860/scripts/check-worker-line-budget.rs\"\n\n[dependencies]\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-worker-line-budget_b546859cad2786983b63525b\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-worker-line-budget_b546859cad2786983b63525b", original_script_path: Some("scripts/check-worker-line-budget.rs") }
+[2026-07-19T07:56:31Z INFO  rust_script] creating pkg dir...
+[2026-07-19T07:56:31Z INFO  rust_script] generating Cargo package...
+[2026-07-19T07:56:31Z DEBUG rust_script] overwrite_file("/home/box/.cache/rust-script/projects/b546859cad2786983b63525b/Cargo.toml", _)
+[2026-07-19T07:56:31Z DEBUG rust_script] Equal content
+[2026-07-19T07:56:31Z INFO  rust_script] disarming pkg dir cleanup...
+[2026-07-19T07:56:31Z DEBUG rust_script] Keeping old binary
+
+Checking the UI-glue line budget for the split JavaScript worker...
+
+Worker JavaScript line counts (src/web/worker/*.js):
+    1256  src/web/worker/formal_ai_worker_00.js
+    1182  src/web/worker/formal_ai_worker_01.js
+    1195  src/web/worker/formal_ai_worker_02.js
+    1208  src/web/worker/formal_ai_worker_03.js
+    1173  src/web/worker/formal_ai_worker_04.js
+    1497  src/web/worker/formal_ai_worker_05.js
+    1194  src/web/worker/formal_ai_worker_06.js
+    1198  src/web/worker/formal_ai_worker_07.js
+    1262  src/web/worker/formal_ai_worker_08.js
+    1197  src/web/worker/formal_ai_worker_09.js
+    1151  src/web/worker/formal_ai_worker_10.js
+    1199  src/web/worker/formal_ai_worker_11.js
+    1198  src/web/worker/formal_ai_worker_12.js
+    1310  src/web/worker/formal_ai_worker_13.js
+    1200  src/web/worker/formal_ai_worker_14.js
+    1175  src/web/worker/formal_ai_worker_15.js
+    1245  src/web/worker/formal_ai_worker_16.js
+    1347  src/web/worker/formal_ai_worker_17.js
+    1185  src/web/worker/formal_ai_worker_18.js
+    1418  src/web/worker/formal_ai_worker_19.js
+    1340  src/web/worker/formal_ai_worker_20.js
+     679  src/web/worker/formal_ai_worker_21.js
+
+  total: 26809 lines (ceiling 26809, target 3000)
+
+Within the ratchet ceiling. 23809 line(s) above the 3000-line UI-glue target.
+Migrate more solver logic into the Rust→WASM worker, then lower
+CEILING_TOTAL_LINES in this script to lock in the reduction.
+

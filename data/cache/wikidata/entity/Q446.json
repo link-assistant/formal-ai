@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q446": {
+      "type": "item",
+      "id": "Q446",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "wheel"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "колесо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चक्र"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "輪"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "circular item that rotates about an axial bearing; one of the six simple machines"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "движитель, круглый, свободно вращающийся или закреплённый на оси диск, позволяющий поставленному на него телу катиться, а не скользить"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一种重要的机械装置"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "wheels"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

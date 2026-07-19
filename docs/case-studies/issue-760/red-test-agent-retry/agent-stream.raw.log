@@ -1,0 +1,161 @@
+{"type":"config","level":"info","timestamp":"2026-07-18T23:59:13.155Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":true,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:8786/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.157Z","service":"default","version":"0.25.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --prompt Edit this Rust workspace now. Add a new focused integration test module for the absent T3 Code with-target. The red tests must execute the formal-ai binary with fake t3 commands and assert: t3code plus its t3 alias invoke executable t3; OpenAI selection creates an isolated Codex provider configuration pointing at /api/openai/v1 with model formal-ai and a dummy key; Anthropic selection exports the local /api/anthropic URL with nonempty dummy authentication; interactive launch opens normally and non-interactive adds --no-browser. Register the test module, run only those tests, and stop after confirming they fail because production has no t3code target. Do not file or comment on any tracker.","workingDirectory":"/tmp/gh-issue-solver-1784418257764","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.158Z","service":"default","directory":"/tmp/gh-issue-solver-1784418257764","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.159Z","service":"project","directory":"/tmp/gh-issue-solver-1784418257764","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.245Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.246Z","service":"project","status":"completed","duration":1,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.265Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Edit this Rust workspace now. Add a new focused integration test module for the absent T3 Code with-target. The red tests must execute the formal-ai binary with fake t3 commands and assert: t3code plus its t3 alias invoke executable t3; OpenAI selection creates an isolated Codex provider configuration pointing at /api/openai/v1 with model formal-ai and a dummy key; Anthropic selection exports the local /api/anthropic URL with nonempty dummy authentication; interactive launch opens normally and non-interactive adds --no-browser. Register the test module, run only those tests, and stop after confirming they fail because production has no t3code target. Do not file or comment on any tracker."],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--prompt","Edit this Rust workspace now. Add a new focused integration test module for the absent T3 Code with-target. The red tests must execute the formal-ai binary with fake t3 commands and assert: t3code plus its t3 alias invoke executable t3; OpenAI selection creates an isolated Codex provider configuration pointing at /api/openai/v1 with model formal-ai and a dummy key; Anthropic selection exports the local /api/anthropic URL with nonempty dummy authentication; interactive launch opens normally and non-interactive adds --no-browser. Register the test module, run only those tests, and stop after confirming they fail because production has no t3code target. Do not file or comment on any tracker."],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.266Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.269Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.280Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.281Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.281Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.335Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":82517,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.336Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.424Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.454Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.455Z","service":"provider","status":"completed","duration":186,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.457Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.457Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.458Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.489Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.489Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.494Z","service":"session","id":"ses_0885489aaffeF4lVMuUjz4N45A","version":"agent-cli-1.0.0","projectID":"2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","directory":"/tmp/gh-issue-solver-1784418257764","title":"New session - 2026-07-18T23:59:13.493Z","time":{"created":1784419153493,"updated":1784419153493},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-07-18T23:59:13.494Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T23:59:13.495Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.495Z","service":"server","status":"completed","duration":6,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-07-18T23:59:13.500Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.501Z","service":"server","method":"POST","path":"/session/ses_0885489aaffeF4lVMuUjz4N45A/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.501Z","service":"server","status":"started","method":"POST","path":"/session/ses_0885489aaffeF4lVMuUjz4N45A/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.515Z","service":"server","status":"completed","duration":14,"method":"POST","path":"/session/ses_0885489aaffeF4lVMuUjz4N45A/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:13.532Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:13.536Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T23:59:13.538Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.541Z","service":"session.prompt","step":0,"sessionID":"ses_0885489aaffeF4lVMuUjz4N45A","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.552Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.552Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0885489aaffeF4lVMuUjz4N45A","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.553Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.557Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.559Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.560Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.561Z","service":"provider","status":"completed","duration":4,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.563Z","service":"provider","status":"completed","duration":0,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:13.564Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:14.328Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:14.342Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:14.347Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784418257764","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:14.698Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T23:59:14.717Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:14.793Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:14.793Z","service":"session.summary","providerID":"opencode","modelID":"big-pickle","hint":"Using compaction model to reduce rate-limit pressure on main model","mainModelID":"formal-ai","message":"loading model for summarization"}
+
+AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+{"type":"session.updated","level":"info","timestamp":"2026-07-18T23:59:14.808Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-18T23:59:14.809Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:15.716Z","service":"snapshot","hash":"97c7763ffd17e6030f83f0dd31d457419ddba461\n","cwd":"/tmp/gh-issue-solver-1784418257764","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.720Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-18T23:59:15.720Z","session_id":"ses_0885489aaffeF4lVMuUjz4N45A"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.724Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.728Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.729Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.735Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-18T23:59:15.735Z","session_id":"ses_0885489aaffeF4lVMuUjz4N45A","role":"assistant","content":[{"type":"text","text":"Rust (programming-language): Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector.\n\nSource: https://en.wikipedia.org/wiki/Rust_(programming_language) (wikipedia)."}]}
+{"type":"log","level":"warn","timestamp":"2026-07-18T23:59:15.740Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":15340,"output":291,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":15340,"sseCompletionTokens":291,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:15.841Z","service":"snapshot","hash":"e5ebc1509a1a093a8a34b2cb04290e8ad66eb47b\n","cwd":"/tmp/gh-issue-solver-1784418257764","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:15.849Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-18T23:59:15.850Z","session_id":"ses_0885489aaffeF4lVMuUjz4N45A","status":"success","duration_ms":2350}
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:15.850Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-18T23:59:16.020Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:16.021Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-18T23:59:16.027Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.027Z","service":"session.prompt","step":1,"sessionID":"ses_0885489aaffeF4lVMuUjz4N45A","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.049Z","service":"session.prompt","sessionID":"ses_0885489aaffeF4lVMuUjz4N45A","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.050Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.064Z","service":"session.prompt","sessionID":"ses_0885489aaffeF4lVMuUjz4N45A","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-18T23:59:16.064Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-07-18T23:59:16.065Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-07-18T23:59:16.065Z","session_id":"ses_0885489aaffeF4lVMuUjz4N45A"}
+{"type":"*","level":"info","timestamp":"2026-07-18T23:59:16.065Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.065Z","service":"default","directory":"/tmp/gh-issue-solver-1784418257764","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.066Z","service":"state","key":"/tmp/gh-issue-solver-1784418257764","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.068Z","service":"state","key":"/tmp/gh-issue-solver-1784418257764","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-07-18T23:59:16.068Z","service":"default","hasError":false,"uptimeSeconds":4,"message":"Agent exiting"}

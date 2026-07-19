@@ -1,0 +1,19 @@
+Q525
+  aliases
+    en ("the Sun")
+    hi ("सूर्य")
+    ru ("Гелиос")
+    zh ("日")
+  descriptions
+    en "star at the centre of the Solar System"
+    hi "सौर मंडल के केंद्र में तारा"
+    ru "звезда Солнечной системы"
+    zh "位于太阳系中心的恒星"
+  id Q525
+  labels
+    en Sun
+    hi "सूरज"
+    ru "Солнце"
+    zh "太阳"
+  type item
+success 1

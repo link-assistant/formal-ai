@@ -1,0 +1,30 @@
+   Compiling formal-ai v0.295.2 (/tmp/gh-issue-solver-1784181977861)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 11s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c0dcdeba608db3ef)
+
+running 3 tests
+test ci_cd::issue_730::main_pipeline_defaults_to_read_only_permissions ... FAILED
+test ci_cd::issue_730::every_desktop_job_has_a_bounded_runtime_and_least_privilege ... FAILED
+test ci_cd::issue_730::reviewed_dependency_warnings_are_narrowly_classified ... ok
+
+failures:
+
+---- ci_cd::issue_730::main_pipeline_defaults_to_read_only_permissions stdout ----
+
+thread 'ci_cd::issue_730::main_pipeline_defaults_to_read_only_permissions' (37938) panicked at tests/unit/ci-cd/issue_730.rs:44:5:
+ordinary CI jobs must not inherit repository write permissions
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- ci_cd::issue_730::every_desktop_job_has_a_bounded_runtime_and_least_privilege stdout ----
+
+thread 'ci_cd::issue_730::every_desktop_job_has_a_bounded_runtime_and_least_privilege' (37937) panicked at tests/unit/ci-cd/issue_730.rs:16:5:
+workflow default must be read-only
+
+
+failures:
+    ci_cd::issue_730::every_desktop_job_has_a_bounded_runtime_and_least_privilege
+    ci_cd::issue_730::main_pipeline_defaults_to_read_only_permissions
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 1649 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--test unit`

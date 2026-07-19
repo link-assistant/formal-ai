@@ -1,0 +1,166 @@
+exactly the following unified diff:
+
+diff --git a/src/engine.rs b/src/engine.rs
+--- a/src/engine.rs
++++ b/src/engine.rs
+@@ -273,7 +273,7 @@ fn format_doublet_reduction_record() -> String {
+
+ #[must_use]
+ pub fn estimate_tokens(text: &str) -> u32 {
+-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
++    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
+ }
+
+ /// A single node in the network-visualization graph.
+diff --git a/tests/source/engine.rs b/tests/source/engine.rs
+--- a/tests/source/engine.rs
++++ b/tests/source/engine.rs
+@@ -259,7 +259,7 @@ fn format_doublet_reduction_record() -> String {
+
+ #[must_use]
+ pub fn estimate_tokens(text: &str) -> u32 {
+-    u32::try_from(text.split_whitespace().count()).unwrap_or(u32::MAX)
++    u32::try_from(text.chars().count()).unwrap_or(u32::MAX)
+ }
+
+ /// A single node in the network-visualization graph.
+diff --git a/src/protocol.rs b/src/protocol.rs
+--- a/src/protocol.rs
++++ b/src/protocol.rs
+@@ -1,4 +1,5 @@
+ use std::collections::HashMap;
++use std::time::{SystemTime, UNIX_EPOCH};
+
+ use serde::{Deserialize, Serialize};
+ use serde_json::Value;
+@@ -30,6 +31,13 @@ fn resolved_request_model(model: Option<&str>) -> String {
+     crate::seed::resolve_model_id(model)
+ }
+
++fn response_timestamp() -> u64 {
++    SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .map_or(1, |duration| duration.as_secs().max(1))
++}
++
+ #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+ pub struct ChatCompletionRequest {
+@@ -182,6 +190,27 @@ impl Default for MessageContent {
+     }
+ }
+
++fn message_content_tokens(content: &MessageContent) -> u32 {
++    match content {
++        MessageContent::Text(text) => estimate_tokens(text),
++        MessageContent::Parts(parts) => parts.iter().fold(0, |total, part| {
++            total.saturating_add(part.text.as_deref().map_or(0, estimate_tokens))
++        }),
++    }
++}
++
++/// Count only role-visible message content. Tool call names and arguments are
++/// excluded from input usage because they are protocol metadata, while tool
++/// result content is included like every other message body.
++fn message_input_tokens(messages: &[ChatMessage]) -> u32 {
++    messages.iter().fold(0, |total, message| {
++        total.saturating_add(message_content_tokens(&message.content))
++    })
++}
++
+ /// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
+ /// default (empty text) instead of failing.
+@@ -370,6 +399,11 @@ impl ResponsesRequest {
+     }
+ }
+
++fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
++    message_input_tokens(&request.to_chat_completion_request().messages)
++}
++
+ /// Append the Responses `input` (a bare string, a single item, or an array of
+ /// items) to the chat `messages` being built, threading a `call_id → tool name`
+@@ -598,7 +632,7 @@ fn chat_completion_from_plan(
+     memory_events: &[MemoryEvent],
+ ) -> ChatCompletion {
+     let model = resolved_request_model(request.model.as_deref());
+-    let prompt_tokens = estimate_tokens(prompt);
++    let prompt_tokens = message_input_tokens(&request.messages);
+
+     let (message, finish_reason, completion_tokens) = match plan {
+@@ -643,7 +677,7 @@ fn chat_completion_from_plan(
+     ChatCompletion {
+         id: stable_id("chatcmpl", prompt),
+         object: String::from("chat.completion"),
+-        created: 0,
++        created: response_timestamp(),
+         model,
+         choices: vec![ChatChoice {
+@@ -664,7 +698,7 @@ fn chat_completion_from_symbolic(
+     symbolic_answer: SymbolicAnswer,
+ ) -> ChatCompletion {
+     let model = resolved_request_model(request.model.as_deref());
+-    let prompt_tokens = estimate_tokens(prompt);
++    let prompt_tokens = message_input_tokens(&request.messages);
+     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
+     let thinking_steps = symbolic_answer.thinking_steps;
+@@ -676,7 +710,7 @@ fn chat_completion_from_symbolic(
+     ChatCompletion {
+         id: stable_id("chatcmpl", prompt),
+         object: String::from("chat.completion"),
+-        created: 0,
++        created: response_timestamp(),
+         model,
+         choices: vec![ChatChoice {
+@@ -754,7 +788,7 @@ fn response_from_plan(
+     memory_events: &[MemoryEvent],
+ ) -> ResponseObject {
+     let model = resolved_request_model(request.model.as_deref());
+-    let input_tokens = estimate_tokens(prompt);
++    let input_tokens = responses_input_tokens(request);
+
+     let (output, output_tokens) = match plan {
+@@ -827,7 +861,7 @@ fn response_from_plan(
+     ResponseObject {
+         id: stable_id("resp", prompt),
+         object: String::from("response"),
+-        created_at: 0,
++        created_at: response_timestamp(),
+         status: String::from("completed"),
+         model,
+@@ -849,7 +883,7 @@ fn response_from_symbolic(
+     symbolic_answer: SymbolicAnswer,
+ ) -> ResponseObject {
+     let model = resolved_request_model(request.model.as_deref());
+-    let input_tokens = estimate_tokens(prompt);
++    let input_tokens = responses_input_tokens(request);
+     let output_tokens = estimate_tokens(&symbolic_answer.answer);
+     let answer = symbolic_answer.answer;
+@@ -868,7 +902,7 @@ fn response_from_symbolic(
+     ResponseObject {
+         id: stable_id("resp", prompt),
+         object: String::from("response"),
+-        created_at: 0,
++        created_at: response_timestamp(),
+         status: String::from("completed"),
+         model,
+diff --git a/src/server.rs b/src/server.rs
+--- a/src/server.rs
++++ b/src/server.rs
+@@ -308,7 +308,6 @@ fn handle_openai_models_request() -> ApiHttpResponse {
+                 "id": model_id,
+                 "slug": model_id,
+                 "object": "model",
+-                "created": 0,
+                 "owned_by": "link-assistant"
+             }],
+diff --git a/changelog.d/20260718_172100_unicode_scalar_token_usage.md b/changelog.d/20260718_172100_unicode_scalar_token_usage.md
+new file mode 100644
+--- /dev/null
++++ b/changelog.d/20260718_172100_unicode_scalar_token_usage.md
+@@ -0,0 +1,7 @@
++---
++bump: patch
++---
++
++### Fixed
++- Count each Unicode scalar as one token across OpenAI, Anthropic, and Gemini usage metadata, sum all visible input message content, and return real response timestamps without fake cache or cost fields.

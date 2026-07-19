@@ -1,0 +1,18 @@
+Q198
+  aliases
+    en ("military conflict" wars hostilities)
+    ru ("военный конфликт")
+    zh ("战争")
+  descriptions
+    en "organized and prolonged violent conflict between different nations, states, or different groups within a nation or state"
+    hi "तीव्र सशस्त्र संघर्ष"
+    ru "вооружённая борьба между государствами или народами, либо между классами внутри государства"
+    zh "國與國之間有組織的長期衝突"
+  id Q198
+  labels
+    en war
+    hi "संग्राम"
+    ru "война"
+    zh "戰爭"
+  type item
+success 1

@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q336": {
+      "type": "item",
+      "id": "Q336",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "science"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "наука"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विज्ञान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "科學"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "systematic endeavor that builds and organizes knowledge, and the set of knowledge produced by this system"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "знания на основе исследований и наблюдений"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क्रमबद्ध पर्यासों से निर्मित एवं संगठित ज्ञान और इस निकाय से उत्पादित ज्ञान का समुच्चय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "建構和組織知識的系統性做法，以及該系統產生的知識集"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sciences"
+          },
+          {
+            "language": "en",
+            "value": "general science"
+          },
+          {
+            "language": "en",
+            "value": "scientific knowledge"
+          },
+          {
+            "language": "en",
+            "value": "empirical sciences"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सामान्य विज्ञान"
+          },
+          {
+            "language": "hi",
+            "value": "वैज्ञानिक ज्ञान"
+          },
+          {
+            "language": "hi",
+            "value": "आनुभाविक विज्ञान"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "科学"
+          },
+          {
+            "language": "zh",
+            "value": "知識"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

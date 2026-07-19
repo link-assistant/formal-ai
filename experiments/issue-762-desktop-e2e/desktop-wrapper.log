@@ -1,0 +1,94 @@
+formal-ai shared memory: /tmp/gh-issue-solver-1784426988652/experiments/issue-762-desktop-e2e/home/.formal-ai/memory.lino
+formal-ai server listening on http://127.0.0.1:18080
+formal-ai: started a temporary server in agent mode (tool and shell execution enabled)
+[24008:0719/025113.086075:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+02:51:15.923 (crash) › crash reporter started {
+  path: '/tmp/gh-issue-solver-1784426988652/experiments/issue-762-desktop-e2e/home/.config/ai.opencode.desktop/Crashpad'
+}
+02:51:16.026         › app starting { version: '1.18.3', packaged: true, onboardingTest: false }
+02:51:16.082         › [server] Loaded shell environment with -il (85 vars)
+[24008:0719/025118.536559:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025118.536683:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[24008:0719/025118.536716:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/73960e15-1dbd-431e-9f10-cb5ca8f27b58
+02:51:18.675         › tauri migration: starting {
+  dir: '/tmp/gh-issue-solver-1784426988652/experiments/issue-762-desktop-e2e/home/.local/share/ai.opencode.desktop'
+}
+02:51:18.701         › tauri migration: no tauri data directory found, nothing to migrate
+[24008:0719/025118.723396:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025118.733141:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025118.744612:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+02:51:18.875         › auto updater configured {
+  channel: 'latest',
+  allowPrerelease: false,
+  allowDowngrade: true,
+  currentVersion: '1.18.3'
+}
+02:51:18.904         › updater state changed { from: 'idle', to: 'checking' }
+02:51:18.905         › APPIMAGE env is not defined, current application is not an AppImage
+02:51:18.921         › updater state changed { from: 'checking', to: 'up-to-date' }
+[24008:0719/025118.965513:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025118.965717:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+02:51:19.034 (network) › net log started {
+  path: '/tmp/gh-issue-solver-1784426988652/experiments/issue-762-desktop-e2e/home/.config/ai.opencode.desktop/logs/20260719T025115/network.netlog'
+}
+02:51:19.118           › sidecar connection started { url: 'http://127.0.0.1:40761' }
+02:51:19.119           › spawning sidecar { url: 'http://127.0.0.1:40761' }
+02:51:24.541           › loading task finished
+[24008:0719/025124.687578:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+02:51:26.415           › awaiting server ready
+02:51:26.416           › server ready { url: 'http://127.0.0.1:40761' }
+02:51:26.998 (onboarding) › first launch onboarding pending checked { pending: true }
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+02:51:27.016              › [desktop-onboarding] first launch onboarding evaluated [object Object]
+02:51:27.017 (onboarding) › first launch onboarding pending checked { pending: true }
+02:51:27.034 (onboarding) › first launch onboarding completed {
+  createDefaultProject: true,
+  defaultProject: '/tmp/gh-issue-solver-1784426988652/experiments/issue-762-desktop-e2e/home/Default Project'
+}
+02:51:27.037              › [desktop-onboarding] starting first launch draft [object Object]
+[24008:0719/025437.833963:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025437.834160:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025437.834245:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025437.834273:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+02:55:18.385              › ResizeObserver loop completed with undelivered notifications.
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5727:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2721:(snd_pcm_open_noupdate) Unknown PCM default
+[25226:0719/025519.452769:ERROR:media/audio/alsa/alsa_util.cc:204] PcmOpen: default,No such file or directory
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5204:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5727:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2721:(snd_pcm_open_noupdate) Unknown PCM default
+[25226:0719/025519.455606:ERROR:media/audio/alsa/alsa_util.cc:204] PcmOpen: plug:default,No such file or directory
+[24008:0719/025519.600793:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025519.601119:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025519.601249:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025519.601279:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+02:55:32.741              › ResizeObserver loop completed with undelivered notifications.
+02:55:33.317              › ResizeObserver loop completed with undelivered notifications.
+[24008:0719/025533.723161:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025533.723370:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025533.724477:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025533.724582:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+02:55:33.934              › ResizeObserver loop completed with undelivered notifications.
+02:56:06.413              › ResizeObserver loop completed with undelivered notifications.
+02:56:07.101              › ResizeObserver loop completed with undelivered notifications.
+[24008:0719/025607.179312:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025607.183694:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025607.184586:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025607.187670:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025632.784626:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025632.786757:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[24008:0719/025632.786982:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[24008:0719/025632.787089:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:

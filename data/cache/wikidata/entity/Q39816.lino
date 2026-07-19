@@ -1,0 +1,19 @@
+Q39816
+  aliases
+    en (dale "river valley")
+    hi ('"U" आकार की घाटी')
+    ru ("долина речная" "речная долина" "долина реки")
+    zh ("河谷" "溪谷" "山谷")
+  descriptions
+    en "low area between hills, often with a river running through it"
+    hi "पर्वतों या उत्थित भागों के बीच निचली ज़मीन वाला हिस्सा, लम्बाई में विस्तार वाला"
+    ru "отрицательная, линейно-вытянутая форма рельефа с однообразным падением"
+    zh "山丘之间的低洼地带，常有河流穿流而过"
+  id Q39816
+  labels
+    en valley
+    hi "घाटी"
+    ru "долина"
+    zh "谷地"
+  type item
+success 1

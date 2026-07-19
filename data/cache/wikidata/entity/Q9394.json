@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q9394": {
+      "type": "item",
+      "id": "Q9394",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "rabbit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кролик"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "खरगोश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "穴兔類"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "mammals of the family Leporidae"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "общее название нескольких родов млекопитающих из семейства зайцевых"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "兔科哺乳動物的通用名稱"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "bunny"
+          },
+          {
+            "language": "en",
+            "value": "bun"
+          },
+          {
+            "language": "en",
+            "value": "bunny rabbit"
+          },
+          {
+            "language": "en",
+            "value": "coney"
+          },
+          {
+            "language": "en",
+            "value": "bunnies"
+          },
+          {
+            "language": "en",
+            "value": "rabbits"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "兔子"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

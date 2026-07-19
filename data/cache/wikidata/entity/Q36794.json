@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q36794": {
+      "type": "item",
+      "id": "Q36794",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "door"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дверь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द्वार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "門"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "flat, movable structure used to open and close an entrance"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "устройство прохода сквозь стену; проём в стене для входа и выхода из помещения, или проём во внутреннее пространство чего-либо (самолёта, автомобиля, печи, шкафа и т. п.), а также створ или несколько створов, закрывающие этот проём"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "двери"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "द्वारकपाट"
+          },
+          {
+            "language": "hi",
+            "value": "दरवाज़े"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "扉"
+          },
+          {
+            "language": "zh",
+            "value": "門扉"
+          },
+          {
+            "language": "zh",
+            "value": "門扇"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

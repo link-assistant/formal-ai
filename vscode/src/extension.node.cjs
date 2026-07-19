@@ -46,7 +46,9 @@ function requireReused(name) {
   return require(path.join(REPO_ROOT, "desktop", "lib", name));
 }
 const { createToolRouter } = requireReused("tool-router.cjs");
+const { createWebTools } = requireReused("web-tools.cjs");
 const { createMemorySync } = requireReused("memory-sync.cjs");
+const { resolveSharedMemoryPath } = requireReused("shared-memory.cjs");
 
 function currentConfig() {
   return vscode.workspace.getConfiguration("formal-ai");
@@ -185,14 +187,27 @@ function activate(context) {
     && context.extension.packageJSON.version) || status.appVersion || "";
 
   // Reused desktop tool router: permission-gated local effects + Docker sandbox.
+  const browserManifest = path.join(context.extensionPath, "browser-runtime", "executable-path.txt");
+  const browserExecutablePath = fs.existsSync(browserManifest)
+    ? path.join(
+        context.extensionPath,
+        "browser-runtime",
+        fs.readFileSync(browserManifest, "utf8").trim(),
+      )
+    : "";
+  const webTools = createWebTools({ browserExecutablePath });
   const toolRouter = createToolRouter({
     fetchImpl: globalThis.fetch,
     readFile: (filePath) => fs.promises.readFile(filePath, "utf8"),
+    writeFile: (filePath, body) => fs.promises.writeFile(filePath, body, "utf8"),
+    readDirectory: (directory) => fs.promises.readdir(directory, { withFileTypes: true }),
     allowedReadRoot: readRoot(),
     resolvePath: (value) => path.resolve(readRoot(), value),
     dockerAvailable: dockerIsAvailable,
     runInSandbox,
     runOnHost,
+    webSearch: webTools.search,
+    webFetch: webTools.fetch,
   });
   toolRouter.setGrants({ all: status.allowToolsByDefault === true });
 
@@ -200,8 +215,8 @@ function activate(context) {
     getStatus: () => status,
     toolRouter,
     getMemorySync: () => memorySync,
-    // Tool routing / memory sync require a healthy local server: only then is the
-    // local app the execution surface (otherwise the browser sandbox applies).
+    // Side-effecting tools and memory sync require a healthy local server;
+    // read-only tools are served directly by the extension host.
     serverEnabled: () => Boolean(status.serverEnabled && status.apiReady),
     openExternal: (url) => vscode.env.openExternal(vscode.Uri.parse(url)),
   });
@@ -259,7 +274,7 @@ function activate(context) {
           host: status.host,
           port: status.port,
           repoRoot: REPO_ROOT,
-          env: serverEnv(config),
+          env: serverEnv(config, { memoryPath: resolveSharedMemoryPath(process.env) }),
           log,
         });
         serverProc = started.process;
@@ -289,6 +304,7 @@ function activate(context) {
       webviewOptions: { retainContextWhenHidden: true },
     }),
     output,
+    { dispose: () => { webTools.close().catch(() => {}); } },
   );
 
   context.subscriptions.push(

@@ -1,0 +1,15 @@
+Q551997
+  aliases
+    en ("metal wire" "metallic wire")
+    ru ("проволка")
+  descriptions
+    en "flexible strand or rod of metal composed of one or more strands"
+    zh "單根的金屬線"
+  id Q551997
+  labels
+    en wire
+    hi "तार"
+    ru "проволока"
+    zh "電線"
+  type item
+success 1

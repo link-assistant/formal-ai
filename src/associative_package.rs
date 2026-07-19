@@ -13,6 +13,7 @@ use lino_objects_codec::format::parse_indented;
 
 use crate::engine::{normalize_prompt, stable_id, GraphEdge, GraphNode, KNOWLEDGE_SCHEMA_VERSION};
 use crate::link_store::{DoubletLink, LinkRecord};
+use crate::links_format::push_lino_node;
 use crate::seed::parser::{parse_lino, LinoNode};
 use crate::skill_compiler::CompiledSkillPackage;
 
@@ -317,49 +318,49 @@ impl AssociativePackage {
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::new();
-        push_node(&mut out, 0, &self.id, None);
-        push_node(&mut out, 2, "type", Some("associative_package"));
-        push_node(
+        push_lino_node(&mut out, 0, &self.id, None);
+        push_lino_node(&mut out, 2, "type", Some("associative_package"));
+        push_lino_node(
             &mut out,
             2,
             "schema_version",
             Some(KNOWLEDGE_SCHEMA_VERSION),
         );
-        push_node(&mut out, 2, "name", Some(&self.name));
-        push_node(&mut out, 2, "version", Some(&self.version));
-        push_node(
+        push_lino_node(&mut out, 2, "name", Some(&self.name));
+        push_lino_node(&mut out, 2, "version", Some(&self.version));
+        push_lino_node(
             &mut out,
             2,
             "source",
             Some("R65 Deep.Foundation-inspired local package model"),
         );
         for dependency in &self.dependencies {
-            push_node(&mut out, 2, "dependency", Some(&dependency.package_id));
-            push_node(&mut out, 4, "version", Some(&dependency.version));
+            push_lino_node(&mut out, 2, "dependency", Some(&dependency.package_id));
+            push_lino_node(&mut out, 4, "version", Some(&dependency.version));
         }
         for handler in &self.handlers {
-            push_node(&mut out, 2, "handler", Some(&handler.id));
-            push_node(&mut out, 4, "kind", Some(&handler.kind));
-            push_node(&mut out, 4, "capability", Some(&handler.capability));
-            push_node(&mut out, 4, "response", Some(&handler.response));
+            push_lino_node(&mut out, 2, "handler", Some(&handler.id));
+            push_lino_node(&mut out, 4, "kind", Some(&handler.kind));
+            push_lino_node(&mut out, 4, "capability", Some(&handler.capability));
+            push_lino_node(&mut out, 4, "response", Some(&handler.response));
         }
         for trigger in &self.triggers {
-            push_node(&mut out, 2, "trigger", Some(&trigger.id));
-            push_node(&mut out, 4, "kind", Some(&trigger.kind));
-            push_node(&mut out, 4, "match_prompt", Some(&trigger.match_prompt));
-            push_node(
+            push_lino_node(&mut out, 2, "trigger", Some(&trigger.id));
+            push_lino_node(&mut out, 4, "kind", Some(&trigger.kind));
+            push_lino_node(&mut out, 4, "match_prompt", Some(&trigger.match_prompt));
+            push_lino_node(
                 &mut out,
                 4,
                 "normalized_match",
                 Some(&trigger.normalized_match),
             );
-            push_node(&mut out, 4, "handler", Some(&trigger.handler_id));
+            push_lino_node(&mut out, 4, "handler", Some(&trigger.handler_id));
         }
         for permission in &self.permissions {
-            push_node(&mut out, 2, "permission", Some(&permission.id));
-            push_node(&mut out, 4, "effect", Some(&permission.effect));
-            push_node(&mut out, 4, "capability", Some(&permission.capability));
-            push_node(&mut out, 4, "description", Some(&permission.description));
+            push_lino_node(&mut out, 2, "permission", Some(&permission.id));
+            push_lino_node(&mut out, 4, "effect", Some(&permission.effect));
+            push_lino_node(&mut out, 4, "capability", Some(&permission.capability));
+            push_lino_node(&mut out, 4, "description", Some(&permission.description));
         }
         out.trim_end().to_owned()
     }
@@ -670,6 +671,34 @@ pub fn default_associative_packages() -> Vec<AssociativePackage> {
         .with_permission(
             "tool:capability:run",
             "agentic-coding command runner (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:grep",
+            "agentic-coding code search (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:glob",
+            "agentic-coding file glob (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:list_dir",
+            "agentic-coding directory listing (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:todo",
+            "agentic-coding planning scratchpad (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:subagent",
+            "agentic-coding delegation (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:read_many",
+            "agentic-coding multi-file read (any CLI naming, client-executed)",
+        )
+        .with_permission(
+            "tool:capability:multi_edit",
+            "agentic-coding multi-file edit (any CLI naming, client-executed)",
         ),
     ]
 }
@@ -755,26 +784,6 @@ fn required_child<'a>(
     } else {
         Ok(value)
     }
-}
-
-fn push_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    out.push_str(&" ".repeat(indent));
-    out.push_str(name);
-    if let Some(value) = value {
-        out.push_str(" \"");
-        out.push_str(&escape_lino_value(value));
-        out.push('"');
-    }
-    out.push('\n');
-}
-
-fn escape_lino_value(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\r', "\\r")
-        .replace('\n', "\\n")
-        .replace('\t', "\\t")
 }
 
 fn link_record(

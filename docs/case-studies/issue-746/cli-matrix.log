@@ -1,0 +1,12 @@
+Issue #746 real CLI verification matrix (2026-07-18 UTC)
+
+Codex    PASS  Formal AI emitted native web_search_call lifecycle events; Codex rendered "web search: online for elon musk" without "unsupported call".
+Agent    PASS  The advertised WebSearch tool executed and returned live search results.
+OpenCode PASS  The advertised Exa Web Search tool executed and returned results. A later Tesla WebFetch returned HTTP 403, independently of search routing.
+Gemini   PART  Gemini invoked google_web_search. Its internal executor then selected gemini-3-flash-preview, which this Formal AI build does not alias, so the client reported no tool content.
+Qwen     PART  Qwen invoked tool_search("web search") once and never misrouted to grep_search. Qwen reported only "Loaded 5 tool(s)" and did not re-advertise the loaded tool definitions on its follow-up request.
+Claude   PART  Claude requested WebSearch permission; the noninteractive invocation did not grant it.
+Grok     N/A   CLI not installed in the test environment.
+Cursor   N/A   cursor-agent not installed in the test environment.
+
+All available CLIs were run through `formal-ai with` against the locally built `formal-ai serve --agent-mode` process. PART denotes a client/executor limitation after Formal AI emitted the intended routing call, not a simulated pass.

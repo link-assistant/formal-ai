@@ -1,0 +1,16 @@
+Q179700
+  aliases
+    ru ("статуи")
+    zh ("銅像" "雕塑像" "雕像" "神像" "铸像")
+  descriptions
+    en "sculpture primarily conceived as a representational figure"
+    ru "скульптура, представляющая собой фигуру"
+    zh "主要關注作為代表人物的雕塑"
+  id Q179700
+  labels
+    en statue
+    hi "प्रतिमा"
+    ru "статуя"
+    zh "塑像"
+  type item
+success 1

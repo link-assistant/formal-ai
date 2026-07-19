@@ -4,7 +4,7 @@
 //!
 //! Issue #558 ("Auto learning") asks for a meta-algorithm that can *"recompile
 //! itself"*, and specifically that *"the entire source code of our system"* be
-//! *"translate[d] … to links / meta language (that must be present in our data),
+//! *"translate\[d\] … to links / meta language (that must be present in our data),
 //! and back to the source code."* [`super::self_ast`] proved that round-trip for a
 //! single pinned module; [`crate::self_source_graph`] lifts it to the whole
 //! repository. This module makes the whole-repository view reachable *through the

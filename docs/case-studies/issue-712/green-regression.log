@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.289.0 (/tmp/gh-issue-solver-1784065142265)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.80s
+     Running tests/issue_712.rs (target/debug/deps/issue_712-a1d3a25d3ce1c15c)
+
+running 4 tests
+test failed_edit_phrasings_route_by_replacement_shape ... ok
+test failed_web_fetch_phrasings_route_by_url_intent ... ok
+test declarative_new_file_routes_to_write_not_read ... ok
+test failed_web_search_phrasings_route_by_research_intent ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s

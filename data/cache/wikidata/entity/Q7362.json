@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q7362": {
+      "type": "item",
+      "id": "Q7362",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ear"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ухо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "耳"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "organ that detects sound; organ of hearing and balance"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сложный парный орган, предназначенный для восприятия звука и, у некоторых организмов, отвечающий за положение тела в пространстве"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ध्वनि का पता लगाने वाला अंग; श्रवण और संतुलन का अंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "接收聲音及維持身體平衡的器官"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ears"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "уши"
+          },
+          {
+            "language": "ru",
+            "value": "ушная раковина"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "कर्ण"
+          },
+          {
+            "language": "hi",
+            "value": "श्रोत्र"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "耳朵"
+          },
+          {
+            "language": "zh",
+            "value": "歐爾"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

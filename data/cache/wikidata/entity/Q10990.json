@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q10990": {
+      "type": "item",
+      "id": "Q10990",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "meat"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мясо"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मांस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "肉类食物"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "culinary name for animal flesh eaten as food"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "продукт питания, плоть животных"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可食用的动物肉"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мясопродукты"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

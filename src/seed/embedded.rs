@@ -10,6 +10,10 @@
 
 /// Raw embedded contents (used by `merged_bundle` and by tests).
 pub const AGENT_INFO_LINO: &str = include_str!("../../data/seed/agent-info.lino");
+pub const AGENTIC_TOOL_CAPABILITIES_LINO: &str =
+    include_str!("../../data/seed/agentic-tool-capabilities.lino");
+pub const INTERFACE_CAPABILITIES_LINO: &str =
+    include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
@@ -83,6 +87,8 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
+pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
+    include_str!("../../data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str = include_str!("../../data/seed/meanings-playwright.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
@@ -91,6 +97,14 @@ pub const MEANINGS_CONVERSATION_LINO: &str =
 pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../data/seed/meanings-summary.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
+pub const MEANINGS_LEXICON_IMPORT_01_LINO: &str =
+    include_str!("../../data/seed/meanings-lexicon-import-01.lino");
+pub const MEANINGS_LEXICON_IMPORT_02_LINO: &str =
+    include_str!("../../data/seed/meanings-lexicon-import-02.lino");
+pub const MEANINGS_LEXICON_IMPORT_03_LINO: &str =
+    include_str!("../../data/seed/meanings-lexicon-import-03.lino");
+pub const MEANINGS_LEXICON_IMPORT_04_LINO: &str =
+    include_str!("../../data/seed/meanings-lexicon-import-04.lino");
 pub const GREETINGS_LINO: &str = include_str!("../../data/seed/greetings.lino");
 pub const IDENTITY_LINO: &str = include_str!("../../data/seed/identity.lino");
 pub const HELLO_WORLD_PROGRAMS_LINO: &str =
@@ -108,6 +122,14 @@ pub const PROJECTS_LINO: &str = include_str!("../../data/seed/projects.lino");
 pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     vec![
         ("data/seed/agent-info.lino", AGENT_INFO_LINO),
+        (
+            "data/seed/agentic-tool-capabilities.lino",
+            AGENTIC_TOOL_CAPABILITIES_LINO,
+        ),
+        (
+            "data/seed/interface-capabilities.lino",
+            INTERFACE_CAPABILITIES_LINO,
+        ),
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
@@ -235,6 +257,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         (
+            "data/seed/meanings-agent-actions.lino",
+            MEANINGS_AGENT_ACTIONS_LINO,
+        ),
+        (
             "data/seed/meanings-playwright.lino",
             MEANINGS_PLAYWRIGHT_LINO,
         ),
@@ -250,6 +276,22 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/meanings-coding-catalog.lino",
             MEANINGS_CODING_CATALOG_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-01.lino",
+            MEANINGS_LEXICON_IMPORT_01_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-02.lino",
+            MEANINGS_LEXICON_IMPORT_02_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-03.lino",
+            MEANINGS_LEXICON_IMPORT_03_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-04.lino",
+            MEANINGS_LEXICON_IMPORT_04_LINO,
         ),
         ("data/seed/greetings.lino", GREETINGS_LINO),
         ("data/seed/identity.lino", IDENTITY_LINO),
@@ -305,9 +347,14 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FEATURE_CAPABILITY_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
+    MEANINGS_AGENT_ACTIONS_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_CONVERSATION_LINO,
     MEANINGS_SUMMARY_LINO,
     MEANINGS_CODING_CATALOG_LINO,
+    MEANINGS_LEXICON_IMPORT_01_LINO,
+    MEANINGS_LEXICON_IMPORT_02_LINO,
+    MEANINGS_LEXICON_IMPORT_03_LINO,
+    MEANINGS_LEXICON_IMPORT_04_LINO,
 ];

@@ -1,0 +1,17 @@
+Q7886
+  aliases
+    en (lungs "borders of the lung")
+    ru ("лёгкое")
+    zh ("人體肺部")
+  descriptions
+    en "essential respiration organ in many air-breathing animals"
+    ru "орган дыхания у некоторых животных, газообмена между кровью и воздухом"
+    zh "器官"
+  id Q7886
+  labels
+    en lung
+    hi "फुप्फुस"
+    ru "лёгкие"
+    zh "肺"
+  type item
+success 1
