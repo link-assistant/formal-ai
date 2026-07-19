@@ -19,7 +19,8 @@
 //!   addressing all of it costs only a hash per file, so it is safe to build on
 //!   every request and in every test.
 //! * [`SourceLinks`] — the **full** projection that parses each file through the
-//!   sole CST/AST engine ([`meta_language`]) and verifies the byte-for-byte
+//!   sole CST/AST engine ([meta-language](https://github.com/link-foundation/meta-language))
+//!   and verifies the byte-for-byte
 //!   round-trip. [`SourceLinks::compile`] projects any file list;
 //!   [`SourceLinks::owned`] projects the *whole* repository. Parsing every file is
 //!   deliberately non-trivial (seconds per file in debug), so the whole-repository
