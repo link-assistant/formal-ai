@@ -1,0 +1,41 @@
+== issue #781 E2E OK: 1 search, 3 planned fetches, 9 execution events ==
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.980Z",
+  "service": "default",
+  "directory": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.981Z",
+  "service": "state",
+  "key": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.983Z",
+  "service": "state",
+  "key": "/tmp/tmp.nsRpcdl6Lb",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-19T08:13:18.984Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 7,
+  "message": "Agent exiting"
+}
+
