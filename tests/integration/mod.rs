@@ -29,6 +29,7 @@ mod issue_749_shell_routing;
 mod issue_751_token_usage;
 mod issue_754_cursor;
 mod issue_758_capability_routing;
+mod issue_776_translation;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;
