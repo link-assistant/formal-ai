@@ -265,6 +265,7 @@ command text:
 ```bash
 with-formal-ai codex "hi"
 with-formal-ai opencode run "hi"
+with-formal-ai opencode-desktop
 with-formal-ai agent -p "hi"
 with-formal-ai cursor -p "hi"
 with-formal-ai gemini -p "hi"
@@ -312,6 +313,7 @@ settings:
 ```bash
 with-formal-ai -g codex
 with-formal-ai -g opencode
+with-formal-ai -g opencode-desktop
 with-formal-ai -g agent
 with-formal-ai -g cursor
 with-formal-ai -g gemini
@@ -416,6 +418,44 @@ opencode run -m formalai/formal-ai "hi"
 See the upstream [OpenCode provider documentation](https://opencode.ai/docs/providers/)
 for custom provider fields and the [OpenCode configuration reference](https://opencode.ai/docs/config/)
 for the `provider` and `model` options.
+
+#### OpenCode Desktop
+
+`opencode-desktop` is a distinct wrapper target because the packaged Electron
+application must not receive OpenCode CLI's `run` subcommand or model flags:
+
+```bash
+formal-ai with opencode-desktop
+```
+
+For a one-shot launch the wrapper writes the same provider object shown above
+to an isolated JSON file, exports it through both `OPENCODE_CONFIG` and
+`OPENCODE_CONFIG_DIR`, and removes it when the app exits. The user's
+`~/.config/opencode/opencode.json` remains untouched. The desktop sidecar reads
+provider `formalai`, model `formalai/formal-ai`, and
+`http://127.0.0.1:8080/api/openai/v1` from that file.
+
+The resolver first honors `FORMAL_AI_OPENCODE_DESKTOP_BIN`, then an
+`opencode-desktop` executable on `PATH`, then the packaged path for the current
+platform:
+
+| Platform | Packaged executable |
+| --- | --- |
+| Linux | `/opt/OpenCode/ai.opencode.desktop` |
+| macOS | `/Applications/OpenCode.app/Contents/MacOS/OpenCode` |
+| Windows | `%LOCALAPPDATA%\Programs\OpenCode\OpenCode.exe` |
+
+Permanent setup deliberately shares OpenCode's native config with the CLI:
+
+```bash
+formal-ai with --global opencode-desktop
+formal-ai with --undo opencode-desktop
+```
+
+The first command merges the provider without removing unrelated settings and
+creates `~/.config/opencode/opencode.json.formal-ai.bak`; the second restores
+that backup exactly. Desktop also participates in `--global --all` and
+`--undo --all`.
 
 ### 4c. `agent` (link-assistant/agent) - OpenCode-compatible client
 
