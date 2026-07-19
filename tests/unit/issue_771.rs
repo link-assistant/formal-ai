@@ -25,9 +25,16 @@ use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 5] = ["websearch", "webfetch", "read", "write", "bash"];
 
-/// GitHub rejects an issue body longer than this, so the composed report must
-/// stay under it no matter how large the transcribed conversation is.
+/// GitHub rejects an issue body longer than this many *characters* — not bytes,
+/// which matters here because the reported session is in Russian and every
+/// Cyrillic character costs two bytes. The composed report must stay under it no
+/// matter how large the transcribed conversation is.
 const GITHUB_BODY_LIMIT: usize = 65_536;
+
+/// The length GitHub measures a body by.
+fn body_length(body: &str) -> usize {
+    body.chars().count()
+}
 
 fn plan(messages: &[ChatMessage]) -> AgenticPlan {
     plan_chat_step(messages, &TOOLS).expect("planner should recognise the task")
@@ -241,13 +248,41 @@ mod report_format {
     fn a_huge_transcript_stays_within_the_github_body_limit() {
         let body = body_for("why is this broken?", &scraped_page());
         assert!(
-            body.len() < GITHUB_BODY_LIMIT,
+            body_length(&body) < GITHUB_BODY_LIMIT,
             "body must fit GitHub's {GITHUB_BODY_LIMIT} character limit, got {}",
-            body.len()
+            body_length(&body)
         );
         assert!(
             body.contains("**assistant:**"),
             "the trimmed transcript must still attribute the turn:\n{body}"
+        );
+    }
+
+    #[test]
+    fn an_exhausted_transcript_budget_says_so_instead_of_truncating_silently() {
+        // Many large turns cannot all be transcribed. The report must stop at a
+        // stated boundary rather than trailing off mid-conversation.
+        let mut messages = Vec::new();
+        for _ in 0..12 {
+            messages.push(ChatMessage::user(scraped_page()));
+            messages.push(ChatMessage::assistant(scraped_page()));
+        }
+        messages.push(ChatMessage::user("report"));
+        let body = reported_body(&messages);
+
+        assert!(
+            body_length(&body) < GITHUB_BODY_LIMIT,
+            "body must stay bounded, got {}",
+            body_length(&body)
+        );
+        assert!(
+            body.contains("trimmed to keep this report within GitHub"),
+            "an exhausted budget must be stated, not silent:\n{body}"
+        );
+        assert!(
+            body.trim_end()
+                .ends_with("Filed automatically by Formal AI in agentic mode."),
+            "the footer must still close a trimmed report:\n{body}"
         );
     }
 
@@ -291,9 +326,9 @@ mod reported_session {
 
         let body = reported_body(&messages);
         assert!(
-            body.len() < GITHUB_BODY_LIMIT,
-            "reported body was {} bytes",
-            body.len()
+            body_length(&body) < GITHUB_BODY_LIMIT,
+            "reported body was {} characters",
+            body_length(&body)
         );
         assert!(
             !body.contains("Главное меню"),

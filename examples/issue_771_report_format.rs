@@ -34,9 +34,12 @@ fn main() {
 
     let answer = match plan(&messages) {
         AgenticPlan::Final(answer) => answer,
-        plan => panic!("expected a final answer, got {plan:?}"),
+        plan @ AgenticPlan::ToolCalls(_) => panic!("expected a final answer, got {plan:?}"),
     };
-    println!("=== research answer ({} bytes) ===\n{answer}\n", answer.len());
+    println!(
+        "=== research answer ({} bytes) ===\n{answer}\n",
+        answer.len()
+    );
 
     messages.push(ChatMessage::assistant(answer));
     messages.push(ChatMessage::user("report"));
@@ -91,7 +94,7 @@ fn plan(messages: &[ChatMessage]) -> AgenticPlan {
 fn tool_calls(messages: &[ChatMessage]) -> Vec<PlannedToolCall> {
     match plan(messages) {
         AgenticPlan::ToolCalls(calls) => calls,
-        plan => panic!("expected tool calls, got {plan:?}"),
+        plan @ AgenticPlan::Final(_) => panic!("expected tool calls, got {plan:?}"),
     }
 }
 
