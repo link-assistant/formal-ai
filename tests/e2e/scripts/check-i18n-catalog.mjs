@@ -464,6 +464,7 @@ const repoRoot = path.resolve(__dirname, '../../..');
 // each file and merges their per-locale keys, so this checker does the same.
 const catalogFiles = [
   'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-messages.lino',
   'src/web/i18n-catalog-permissions.lino',
 ];
 const catalogTexts = catalogFiles.map((relativePath) =>

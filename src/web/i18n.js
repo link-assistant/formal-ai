@@ -7,10 +7,15 @@
   var LOADING_RUNTIME_SOURCE = "lino-i18n-loading";
   var UNAVAILABLE_RUNTIME_SOURCE = "lino-i18n-unavailable";
   var CATALOG_URL = "i18n-catalog.lino";
-  // Permission/Services strings live in a second file so each catalog stays
-  // under the Links Notation line limit (see scripts/check-file-size.rs). Both
-  // files are fetched and their per-locale keys merged before parsing.
-  var CATALOG_URLS = [CATALOG_URL, "i18n-catalog-permissions.lino"];
+  // Permission/Services strings and chat-message/reasoning-trace strings live in
+  // separate files so each catalog stays under the Links Notation line limit
+  // (see scripts/check-file-size.rs). Every file is fetched and their per-locale
+  // keys merged before parsing.
+  var CATALOG_URLS = [
+    CATALOG_URL,
+    "i18n-catalog-messages.lino",
+    "i18n-catalog-permissions.lino",
+  ];
   var runtimeEngine = null;
   var CATALOG = {};
 
