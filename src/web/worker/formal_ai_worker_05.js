@@ -387,15 +387,16 @@ async function tryTranslation(prompt, normalized) {
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
       normalized.includes(stem),
     );
-  const sourceFirstCommand = isSourceFirstTranslationRequest(normalized, targetHint, unquotedSurface);
+  const sourceFirstCommand = Boolean(targetHint) && Boolean(unquotedSurface) &&
+    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
+      .some((stem) => normalized.includes(stem));
   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry
   // can still resolve a meaning token.
-  const surface =
-    extractQuotedPhrase(prompt) || unquotedSurface || "";
+  const surface = extractQuotedPhrase(prompt) || unquotedSurface || "";
   const surfaceMeaning = surface || prompt;
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";

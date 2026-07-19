@@ -9,6 +9,15 @@ Collected on 2026-07-19 UTC for [issue 776](https://github.com/link-assistant/fo
 - `raw/related-*`: related translation issues and merged implementations.
 - `raw/github-search-*`: repository-wide GitHub search results used to find related work.
 - `raw/ci-*` and `ci-logs/`: the initial Actions run metadata and complete log.
+- `ci-logs/version-modification-check-29676805792.log`: the superseded run's
+  manual-version-bump failure, which led to restoring the release-managed crate
+  version and relying on the patch changelog fragment.
+- `ci-logs/lint-and-format-29676916779.log`: the corrected-head run's complete
+  lint log; lines 1551–1555 identify 20 lines of worker-mirror regrowth past the
+  26,809-line ratchet. The fallback was compacted back to the exact ceiling.
+- `ci-logs/agent-cli-e2e-29676916779.log`: the same run's unrelated agent-CLI
+  failure (`report request did not execute gh` at line 1833), preserved for the
+  subsequent authoritative rerun.
 - `raw/reproduction-before.txt`: exact CLI reproduction of the reported fallback.
 - `raw/repro-*-before.log`: failing automated regression evidence.
 - `raw/repro-*-after.log`: focused verification after the fix.

@@ -10,6 +10,9 @@
 6. 2026-07-19 05:10:56–05:12:13 — Actions run 29674453764 completed. Detect Changes and Version Modification Check passed; substantive jobs were skipped because no relevant files had changed.
 7. 2026-07-19 — local CLI reproduction returned the exact `unknown` response recorded in the issue.
 8. 2026-07-19 — the first browser regression reached a separate main-thread defect: `система` was misread as a theme command and returned `Done. Theme is now auto.` before the worker ran.
+9. 2026-07-19 06:39:58 — run 29676805792 started for SHA `483497be`; its version check rejected a manual crate-version edit. The edit was reverted and the repository's changelog-fragment release trigger retained.
+10. 2026-07-19 06:44:00 — run 29676916779 started for corrected SHA `ab2fd90a`; version and changelog checks passed. Lint exposed a 20-line worker-budget overage, and the agent-CLI suite independently reported that issue 687's report request did not execute its fake `gh` command.
+11. 2026-07-19 — the seed-driven browser fallback was compacted without changing behavior. The worker ratchet passes at exactly 26,809 lines; the issue's two Rust integration and two Chromium regressions pass locally.
 
 ## Complete requirements
 
@@ -51,6 +54,10 @@ The multilingual round-trip regression exposed a latent cache defect: `sanitize_
 ### RC6 — substring-based theme recognition intercepted Russian prose
 
 The web app recognizes interface commands before dispatching a prompt to the worker. Its theme check used unrestricted substring matches: `тема` matched inside `система`, while `систем` then selected the `auto` value. The exact issue prompt therefore returned a theme confirmation in the browser even after the translation engine was corrected. Theme-object recognition now requires Unicode word boundaries (with a separate CJK form), retaining explicit commands such as `Switch to dark theme` without treating embedded morphemes as commands.
+
+### RC7 — CI worker-mirror ratchet
+
+The functional JavaScript fallback initially added 20 physical lines, but issue 658's CI ratchet prohibits any net growth under `src/web/worker/*.js` while solver logic migrates to WASM. This was a presentation/duplication-budget failure rather than a semantic failure. The same role-driven extraction was expressed within the existing 26,809-line ceiling and reverified with syntax, focused browser, and worker-budget checks.
 
 ## Solution and alternatives
 
