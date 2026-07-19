@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.301.0"
+version = "0.300.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
