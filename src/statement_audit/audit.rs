@@ -453,6 +453,7 @@ impl RepositoryAudit {
         for finding in &self.findings {
             push_lino_node(&mut output, 4, &finding.id, None);
             push_lino_node(&mut output, 6, "type", Some("audit_finding"));
+            push_lino_node(&mut output, 6, "disposition", Some("issue_candidate"));
             push_lino_node(&mut output, 6, "kind", Some(finding.kind.slug()));
             push_lino_node(
                 &mut output,

@@ -10,6 +10,9 @@ use formal_ai::statement_audit::{
     audit_corpus, parse_evidence_json, AuditConfig, EvidenceCapture, EvidenceSelector,
     RepositoryCorpus, RepositoryDocument, SourceKind,
 };
+use std::fs;
+use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn corpus(documents: &[(&str, &str)]) -> RepositoryCorpus {
     RepositoryCorpus::from_documents(
@@ -18,6 +21,34 @@ fn corpus(documents: &[(&str, &str)]) -> RepositoryCorpus {
             .map(|(path, content)| RepositoryDocument::new(*path, *content))
             .collect(),
     )
+}
+
+#[test]
+fn repository_audit_falls_back_to_the_tree_for_an_untracked_git_fixture() {
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock after epoch")
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!(
+        "formal-ai-issue-661-untracked-{}-{nonce}",
+        std::process::id()
+    ));
+    fs::create_dir_all(&root).expect("fixture directory");
+    fs::write(root.join("README.md"), "The implementation is inspectable.\n")
+        .expect("fixture prose");
+    let status = Command::new("git")
+        .arg("init")
+        .arg("--quiet")
+        .arg(&root)
+        .status()
+        .expect("git available");
+    assert!(status.success());
+
+    let snapshot = RepositoryCorpus::from_repository(&root).expect("repository snapshot");
+    fs::remove_dir_all(&root).expect("remove isolated fixture");
+
+    assert_eq!(snapshot.documents.len(), 1, "{snapshot:#?}");
+    assert_eq!(snapshot.documents[0].path, "README.md");
 }
 
 #[test]
@@ -231,6 +262,7 @@ fn findings_are_append_only_links_and_persist_in_associative_memory() {
     assert!(links.contains("relative_weight"), "{links}");
     assert!(links.contains("source_url"), "{links}");
     assert!(links.contains("audit_finding"), "{links}");
+    assert!(links.contains("issue_candidate"), "{links}");
     assert!(links.contains("associations"), "{links}");
     lino_objects_codec::format::parse_indented(&links)
         .expect("the audit artifact must be valid Links Notation");

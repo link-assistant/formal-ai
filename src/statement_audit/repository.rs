@@ -9,7 +9,12 @@ impl RepositoryCorpus {
     /// Read every UTF-8 Git-tracked file, falling back to a filtered tree walk.
     pub fn from_repository(root: impl AsRef<Path>) -> io::Result<Self> {
         let root = root.as_ref();
-        let paths = tracked_paths(root).unwrap_or_else(|| walked_paths(root));
+        // An empty result can mean an initialized repository whose first files
+        // have not been added yet. Those files are still the complete snapshot
+        // the caller explicitly asked us to audit, so use the tree fallback.
+        let paths = tracked_paths(root)
+            .filter(|paths| !paths.is_empty())
+            .unwrap_or_else(|| walked_paths(root));
         let mut corpus = Self::default();
         for path in paths {
             let normalized = path.to_string_lossy().replace('\\', "/");
