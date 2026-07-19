@@ -35,3 +35,17 @@ No upstream project defect was found: all failures are in Formal AI's own routin
 - OpenCode's custom-provider documentation defines `limit.context` as the maximum accepted input and `limit.output` as the maximum generated output, and states that these fields let the client calculate remaining context: <https://opencode.ai/docs/providers/>.
 
 The unrelated Agent CLI CI failure was therefore fixed by completing Formal AI's local test-model configuration. There was no evidence of an OpenCode implementation defect to report upstream.
+
+## Deterministic browser networking
+
+- MDN documents that `AbortController.abort()` can cancel fetch requests,
+  response-body consumption, and streams:
+  <https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort>.
+- Playwright's official network guide documents `page.route()` as the mechanism
+  for mocking or aborting browser HTTP requests:
+  <https://playwright.dev/docs/network#handle-requests>.
+
+These APIs fit the two distinct requirements: production provider calls need a
+bounded lifetime, while the desktop-fallback regression must prove behavior
+with browser networking deterministically unavailable. No additional runtime
+or test library is necessary.

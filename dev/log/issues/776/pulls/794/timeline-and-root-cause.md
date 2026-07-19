@@ -14,6 +14,23 @@
 10. 2026-07-19 06:44:00 — run 29676916779 started for corrected SHA `ab2fd90a`; version and changelog checks passed. Lint exposed a 20-line worker-budget overage, and the agent-CLI suite independently reported that issue 687's report request did not execute its fake `gh` command.
 11. 2026-07-19 — the seed-driven browser fallback was compacted without changing behavior. The worker ratchet passes at exactly 26,809 lines; the issue's two Rust integration and two Chromium regressions pass locally.
 12. 2026-07-19 — issue 687's Agent CLI failure reproduced locally. OpenCode compacted its session before the second turn because the custom test model supplied no context-window metadata, replacing the report request with synthetic continuation messages. Declaring the documented model limits made the unchanged four-turn E2E pass in nine chat rounds.
+13. 2026-07-19 07:19:09 — Actions run 29677905727 started at current SHA
+    `fe092bd3`. Issue 776's browser cases passed, but the local-web job ended
+    with two search failures and two search flakes after 8.8 minutes.
+14. 2026-07-19 — the complete run log and Playwright artifact were downloaded.
+    All four error contexts showed a submitted user message with no assistant
+    message before the assertion deadline; seed diagnostics were sometimes
+    still in the loading state.
+15. 2026-07-19 — a WASM-request gate reproduced that the composer was enabled
+    before worker initialization completed and that the main thread started a
+    second 67-file seed load on the same cold-start critical path.
+16. 2026-07-19 — after explicit worker readiness and deferred main-thread seed
+    hydration, stress testing exposed two independent web-search defects:
+    provider requests had no deadline, and no-results answers discarded their
+    query before the desktop fallback consumed the tool call.
+17. 2026-07-19 — bounded search fetches, query preservation, and a hermetic
+    no-network desktop regression produced 65/65 focused stress passes and a
+    complete local-web result of 385 passed, 1 skipped.
 
 ## Complete requirements
 
@@ -64,9 +81,40 @@ The functional JavaScript fallback initially added 20 physical lines, but issue 
 
 The unrelated issue 687 Agent CLI experiment configured a custom OpenCode model with a name but no token limits. With the current client and its large tool schema, OpenCode treated the model as having a 60,000-token context and compacted after the research turn. The next server request contained OpenCode's synthetic `What did we do so far?` summary and `Continue if you have next steps` prompt, so the historical report instruction was not the active turn and the fake `gh` command correctly remained unused. OpenCode's documented `limit.context` and `limit.output` fields now describe the test server's model, preventing premature compaction. This is a harness configuration defect, not an issue-776 translation defect or an upstream OpenCode defect.
 
+### RC8 — false-ready composer and duplicate cold-start seed work
+
+The app initialized its status as `wasm worker` and enabled the composer before
+the worker's `init()` had loaded WASM and 67 seed files. At the same time, an
+independent main-thread effect called `FormalAiSeed.loadAll()`, duplicating that
+seed work on the startup critical path. Under CI contention, prompts could be
+queued behind initialization long enough to exhaust the assertion deadline.
+The app now starts in `loading worker`, enables input only after the worker's
+ready message, and defers the non-worker seed hydration until then.
+
+### RC9 — external search operations had no deadline
+
+The expanded six-provider search path probed and queried providers with raw
+`fetch` calls. Tests mock the result providers relevant to each assertion, but
+unmocked providers remained dependent on runner DNS, CORS, and network latency.
+A stalled request occupied a concurrency slot indefinitely and could delay the
+assistant response. Search-only fetches now use `AbortController` with a
+two-second deadline; the default remains automatic and emits the existing
+provider diagnostics on failure.
+
+### RC10 — no-results search discarded the desktop fallback query
+
+`runWebSearchQuery` returned `query` on successful fused results but omitted it
+from both no-results and all-providers-disabled answers. The next worker layer
+therefore emitted a `web_search` tool call with `inputs.query === ""`.
+`enhanceWithDesktopReadOnlyTool` correctly refuses an empty native request, so
+the desktop bridge was never called when browser networking was unavailable.
+Both early returns now preserve the normalized query. The issue-747 regression
+explicitly blocks every external browser request and proves all four languages
+still invoke the desktop bridge with the expected query.
+
 ## Solution and alternatives
 
-The selected solution adds source-first forms to the seed role, derives suffix extraction from slot metadata in both engines, gates action-anywhere routing on a recognized target plus successful structural extraction, reuses that extractor in formalization, adds one multilingual proposition meaning, and prevents the browser command layer from matching the Russian theme term inside ordinary words.
+The selected issue solution adds source-first forms to the seed role, derives suffix extraction from slot metadata in both engines, gates action-anywhere routing on a recognized target plus successful structural extraction, reuses that extractor in formalization, adds one multilingual proposition meaning, and prevents the browser command layer from matching the Russian theme term inside ordinary words. The CI stabilization additionally makes worker readiness observable, removes duplicate seed work from the cold-start path, bounds provider networking, and preserves search queries through no-results answers.
 
 Rejected alternatives:
 

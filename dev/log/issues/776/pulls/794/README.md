@@ -9,6 +9,9 @@ Collected on 2026-07-19 UTC for [issue 776](https://github.com/link-assistant/fo
 - `raw/related-*`: related translation issues and merged implementations.
 - `raw/github-search-*`: repository-wide GitHub search results used to find related work.
 - `raw/ci-*` and `ci-logs/`: the initial Actions run metadata and complete log.
+- `ci-logs/ci-cd-29677905727.log` and `artifacts/run-29677905727/`: the complete
+  current-head failure log plus the downloaded Playwright report, error
+  contexts, screenshots, and traces for every failed/flaky local-web test.
 - `ci-logs/version-modification-check-29676805792.log`: the superseded run's
   manual-version-bump failure, which led to restoring the release-managed crate
   version and relying on the patch changelog fragment.
@@ -26,6 +29,18 @@ Collected on 2026-07-19 UTC for [issue 776](https://github.com/link-assistant/fo
 - `raw/playwright-issue-776.log`: browser reproduction of the main-thread theme-command collision.
 - `raw/playwright-issue-776-after-theme-fix.log`: passing browser verification after both routing layers were corrected.
 - `raw/playwright-issue-776-final-after-seed.log`: final browser verification after regenerating the web seed.
+- `raw/repro-worker-readiness-before.log`: deterministic pre-fix reproduction
+  showing that the composer accepted input while the worker WASM request was
+  deliberately held.
+- `raw/repro-worker-critical-path-after.log` and
+  `raw/playwright-issue-776-final.log`: passing cold-start and issue-776 browser
+  regressions after worker readiness became explicit.
+- `raw/playwright-issue-747-query-fix-repeat5.log`: five hermetic desktop-search
+  fallback passes with every external browser request blocked.
+- `raw/playwright-ci-failures-final-repeat5.log`: 65/65 stress passes across
+  the two specs containing every test that failed or flaked in run 29677905727.
+- `raw/playwright-full-local-final.log`: the complete local-web CI matrix after
+  the fix (385 passed, 1 skipped).
 - `raw/cargo-test-all-features-clean.log`: corrected full local suite (152 integration, 481 source, and 1,802 unit tests passed; 2 exhaustive tests ignored by default).
 - `raw/cargo-{fmt,clippy}-final.log` and `raw/check-*-final.log`: final formatting, lint, file-size, language-policy, and seed-sync checks.
 - `online-research.md`: external sources and component evaluation.
