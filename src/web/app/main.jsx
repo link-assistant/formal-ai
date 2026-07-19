@@ -4750,6 +4750,21 @@ function normalizeDesktopStatus(status) {
           model: String(status.agentProvider.model || "formal-ai"),
         }
       : null;
+  const engineSelectionAvailable = Array.isArray(status.engines) && status.engines.length > 0;
+  const engines = engineSelectionAvailable
+    ? status.engines
+        .filter((engine) => engine && engine.available !== false && engine.id)
+        .map((engine) => ({
+          id: String(engine.id),
+          label: String(engine.label || engine.id),
+          type: String(engine.type || (engine.id === "out-of-box" ? "native" : "passthrough")),
+          available: true,
+        }))
+    : [{ id: "out-of-box", label: "Out of the box", type: "native", available: true }];
+  const requestedEngine = String(status.activeEngine || "out-of-box");
+  const activeEngine = engines.some((engine) => engine.id === requestedEngine)
+    ? requestedEngine
+    : "out-of-box";
   return {
     shell: String(status.shell || "Electron"),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
@@ -4764,6 +4779,9 @@ function normalizeDesktopStatus(status) {
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
     agentProvider,
+    engines,
+    activeEngine,
+    engineSelectionAvailable,
     updater: normalizeDesktopUpdaterStatus(status.updater, appVersion),
   };
 }
@@ -4799,7 +4817,21 @@ function desktopStatusLabel(status, agentMode) {
       ? "API unavailable"
       : "in-process";
   const agent = agentMode ? "agent opted in" : "agent permission off";
-  return `${desktopSurfaceLabel(status)} - ${api} - ${agent}`;
+  const engine = status.engineSelectionAvailable
+    ? ` - ${String(status.activeEngine || "out-of-box")}`
+    : "";
+  return `${desktopSurfaceLabel(status)}${engine} - ${api} - ${agent}`;
+}
+
+function desktopAgentEventLabel(payload) {
+  const event = payload && payload.event && typeof payload.event === "object"
+    ? payload.event
+    : payload;
+  if (!event || typeof event !== "object") return String(event || "");
+  return String(
+    event.content || event.text || event.part && event.part.text || event.message || event.summary ||
+    event.type || "agent event",
+  );
 }
 
 function desktopMessages(history, text) {
@@ -6267,6 +6299,7 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  const [desktopAgentStream, setDesktopAgentStream] = useState([]);
   // Issue #438 (follow-up): one-click start/stop of the prepared Docker
   // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
   // the latest snapshot from the desktop bridge; `serviceBusy` names the service
@@ -6526,6 +6559,15 @@ function App() {
     }
     const unsubscribe = bridge.onUpdateStatus((status) => {
       setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
+    });
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, []);
+
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.onAgentEvent !== "function") return undefined;
+    const unsubscribe = bridge.onAgentEvent((payload) => {
+      setDesktopAgentStream((current) => [...current.slice(-19), payload]);
     });
     return typeof unsubscribe === "function" ? unsubscribe : undefined;
   }, []);
@@ -7533,7 +7575,27 @@ function App() {
     };
     const currentDesktopStatus = desktopStatusRef.current;
     let answerPromise;
-    if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
+    if (currentDesktopStatus && currentDesktopStatus.activeEngine !== "out-of-box") {
+      const bridge = desktopBridge();
+      const requestId = `agent-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      setDesktopAgentStream([]);
+      answerPromise = requestDesktopAgentProvider(bridge, {
+        requestId,
+        sessionKey: currentConversationRef.current || "new-conversation",
+        mode: modeRef.current,
+        prompt: text,
+        systemPrompt: desktopMessages(history, "")
+          .filter((entry) => entry.content.trim())
+          .map((entry) => `${entry.role}: ${entry.content}`).join("\n"),
+        grants: desktopToolRouterGrants(modeRef.current, desktopToolGrantsRef.current),
+      }).then((result) => chatAnswerFromAgentProviderResult(result) || {
+        intent: "agent_cli_error",
+        content: String(result && result.reason || "The selected desktop engine did not return an answer."),
+        evidence: [`desktop_engine:${currentDesktopStatus.activeEngine}`],
+        steps: [],
+        toolCalls: [],
+      });
+    } else if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
       answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
         if (!worker) {
           return localFallbackAnswer(text, history, prefs);
@@ -8710,6 +8772,19 @@ function App() {
   );
   const renderDesktopPermissionPanel = (testId) =>
     <DesktopPermissionPanel grants={desktopToolGrants} mode={mode} onDecision={setDesktopToolGrant} onGrantAll={grantAllAndRunPending} hasPendingTask={hasPendingAgentTask} testId={testId} t={t} />;
+  const handleDesktopEngineChange = async (event) => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.setEngine !== "function") return;
+    try {
+      setDesktopStatus(normalizeDesktopStatus(await bridge.setEngine(event.target.value)));
+      setDesktopAgentStream([]);
+    } catch (error) {
+      setDesktopStatus((current) => normalizeDesktopStatus({
+        ...(current || {}),
+        apiError: error && error.message ? error.message : String(error),
+      }));
+    }
+  };
 
   return <main className={["app", `ui-skin-${uiSkin}`, `chat-style-${chatStyle}`, `composer-style-${composerStyle}`, `toolbar-icon-pack-${toolbarIconPack}`, desktopStatus ? "desktop-shell" : ""].filter(Boolean).join(" ")}><chakra.header className="topbar">
       <ToolbarButton className="mobile-menu-toggle topbar-menu-toggle" testId="mobile-menu-toggle" ariaLabel={mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu")} title={mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen")} onClick={() => setMobileMenuOpen(value => !value)} extraProps={{
@@ -8770,7 +8845,7 @@ function App() {
       </chakra.div>
     </chakra.header>{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
     "--context-panel-width": `${contextPanelWidth}px`
-  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel"><div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
+  }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel">{desktopStatus.engineSelectionAvailable ? <div className="desktop-engine-row"><dt>{"Engine"}</dt><dd><select data-testid="desktop-engine-selector" aria-label="Desktop engine" value={desktopStatus.activeEngine} onChange={handleDesktopEngineChange}>{desktopStatus.engines.map(engine => <option key={engine.id} value={engine.id}>{engine.label}</option>)}</select></dd></div> : null}<div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)
               })} /> : null}<div className="desktop-update-actions"><button type="button" data-testid="desktop-update-check" disabled={!canCheckForUpdates} onClick={handleCheckForUpdates}>{updateBusy === "check" || updater && updater.state === "checking" ? t("updates.checking") : t("updates.check")}</button><button type="button" className="desktop-update-install" data-testid="desktop-update-install" disabled={!canInstallUpdate} onClick={handleInstallUpdate}>{updateBusy === "install" || updater && updater.state === "installing" ? t("updates.updating") : t("updates.update")}</button></div></div></dd></div> : null}<div className="desktop-vscode-row" data-testid="desktop-vscode-install-row"><dt>{t("vscodeInstall.title")}</dt><dd><div className="desktop-vscode-panel" data-testid="desktop-vscode-install-panel"><p className="desktop-vscode-summary">{t("vscodeInstall.summary")}</p><div className="desktop-vscode-actions"><button type="button" className="desktop-vscode-install" data-testid="desktop-vscode-install" disabled={vscodeInstallBusy} onClick={handleInstallVsCodeExtension}>{vscodeInstallBusy ? t("vscodeInstall.installing") : t("vscodeInstall.install")}</button></div>{vscodeInstallResult ? <p className={`desktop-vscode-status${vscodeInstallResult.ok ? " is-ok" : " is-error"}`} data-testid="desktop-vscode-install-status" role="status">{vscodeInstallStateLabel(vscodeInstallResult, t)}{vscodeInstallResult.ok || !vscodeInstallResult.reason ? "" : ` — ${vscodeInstallResult.reason}`}</p> : null}</div></dd></div></dl>} /> : null}{serviceStatus ? <SidebarSection title={t("services.title")} testId="sidebar-services" collapsed={sidebarServicesCollapsed} onToggle={() => setSidebarServicesCollapsed(value => !value)} className="desktop-services-section" children={<div className="desktop-services-panel" data-testid="desktop-services-panel">{serviceStatus.dockerAvailable === false ? <p className="desktop-services-note" data-testid="desktop-services-docker-missing">{t("services.dockerMissing")}</p> : null}{(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(service => {
         const running = Boolean(service.running);
@@ -8819,7 +8894,7 @@ function App() {
           })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
-        }) : null} />)}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
+        }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {
         event.preventDefault();
         send();
       }}><input ref={attachmentInputRef} type="file" multiple={true} style={{
