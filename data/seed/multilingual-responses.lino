@@ -1,4 +1,52 @@
 multilingual_responses
+  response response_mcp_instructions_en
+    intent mcp_instructions
+    language en
+    text "Call formal_ai_chat for every user request and return its answer to the user."
+  response response_mcp_instructions_ru
+    intent mcp_instructions
+    language ru
+    text "Вызывайте formal_ai_chat для каждого запроса пользователя и возвращайте его ответ пользователю."
+  response response_mcp_instructions_hi
+    intent mcp_instructions
+    language hi
+    text "प्रत्येक उपयोगकर्ता अनुरोध के लिए formal_ai_chat को कॉल करें और उसका उत्तर उपयोगकर्ता को लौटाएँ।"
+  response response_mcp_instructions_zh
+    intent mcp_instructions
+    language zh
+    text "对每个用户请求调用 formal_ai_chat，并将其答案返回给用户。"
+  response response_mcp_tool_description_en
+    intent mcp_tool_description
+    language en
+    text "Ask the local Formal AI reasoning server to answer the user's request."
+  response response_mcp_tool_description_ru
+    intent mcp_tool_description
+    language ru
+    text "Попросите локальный сервер рассуждений Formal AI ответить на запрос пользователя."
+  response response_mcp_tool_description_hi
+    intent mcp_tool_description
+    language hi
+    text "स्थानीय Formal AI तर्क सर्वर से उपयोगकर्ता के अनुरोध का उत्तर देने को कहें।"
+  response response_mcp_tool_description_zh
+    intent mcp_tool_description
+    language zh
+    text "让本地 Formal AI 推理服务器回答用户的请求。"
+  response response_mcp_prompt_description_en
+    intent mcp_prompt_description
+    language en
+    text "The complete user request to answer."
+  response response_mcp_prompt_description_ru
+    intent mcp_prompt_description
+    language ru
+    text "Полный запрос пользователя, на который нужно ответить."
+  response response_mcp_prompt_description_hi
+    intent mcp_prompt_description
+    language hi
+    text "उत्तर देने के लिए उपयोगकर्ता का पूरा अनुरोध।"
+  response response_mcp_prompt_description_zh
+    intent mcp_prompt_description
+    language zh
+    text "需要回答的完整用户请求。"
   response response_greeting_en
     intent greeting
     language en
