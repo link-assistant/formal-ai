@@ -300,6 +300,26 @@ chips (specular rim + `backdrop-filter`) sitting over the liquid-glass backing; 
 Material they become filled-tonal `MuiIconButton`s; in flat/contrast they keep the
 polished Chakra pill.
 
+#### MUI/emotion specificity fix (2026-07-19 close-inspection)
+
+A close-up follow-up (comment 39) found that in the **light** `mui-flat` and
+`material` skins the composer attach/send circles and the shared topbar toggle
+buttons lost their box/circle surface and read as bare floating icons, while the
+same controls looked correct in dark mode. Root cause: MUI injects its
+`.MuiIconButton-root` emotion styles into `<head>` *after* `styles.css`, so at
+equal specificity (`0,1,0`) the later MUI rule won and stripped our base button
+border/background. Dark mode was unaffected only because its compound
+`:root[data-theme="dark"] .send-button` rules already out-specify MUI (`0,3,0`).
+The fix adds skin-scoped rules (`.ui-skin-mui-flat …`, `.ui-skin-material …`,
+specificity `0,2,0`) that restore the composer control and toolbar surfaces —
+beating MUI's injected rule while still letting the dark compound rules and the
+active-toggle accent win. A shared `border-radius: 8px` also aligns MUI's default
+50% circle with the Chakra anchor buttons so the toolbar reads as one uniform row.
+This is guarded by the existing "composer/topbar controls become MuiIconButton yet
+keep their test ids" test plus the composer visual-regression matrix; the glass
+composer baselines were refreshed to the transparent-text snapshot style and the
+enabled (accent) send orb.
+
 The multi-framework behaviour is guarded by
 [`tests/e2e/tests/issue-557.spec.js`](../../../tests/e2e/tests/issue-557.spec.js)
 (every skin's marker class and transparent textarea, the MUI framework root
