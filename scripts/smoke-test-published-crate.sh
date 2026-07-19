@@ -14,4 +14,3 @@ cargo install formal-ai \
   --root "$install_root" \
   --bin formal-ai
 "$install_root/bin/formal-ai" --help >/dev/null
-
