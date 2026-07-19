@@ -60,6 +60,19 @@
   --fa-control-active-hover-border: #0f4a3c;
   --fa-control-active-hover-bg: #0f4a3c;
   --fa-focus-ring: #175f4f;
+  --fa-glass-alpha: 0.78;
+  --fa-glass-panel-alpha: 0.62;
+  --fa-glass-header-alpha: 0.76;
+  --fa-glass-control-alpha: 0.74;
+  --fa-glass-clear-alpha: 0.52;
+  /* Issue #557: the composer field surface + embedded controls theme through
+   * these tokens so the unified input reads correctly in light/dark and skins. */
+  --fa-composer-surface: #ffffff;
+  --fa-composer-border: #cdd7dc;
+  --fa-composer-shadow: 0 1px 2px rgb(15 23 30 / 0.06), 0 10px 30px rgb(15 23 30 / 0.09);
+  --fa-composer-control-bg: #eef2f4;
+  --fa-composer-control-border: transparent;
+  --fa-composer-control-text: #24333d;
 }
 
 /* Dark token values — explicit theme override (wins over the OS preference). */
@@ -88,6 +101,12 @@
   --fa-control-active-hover-border: #2a8f6a;
   --fa-control-active-hover-bg: #165a49;
   --fa-focus-ring: #6cc5a6;
+  --fa-composer-surface: #23272a;
+  --fa-composer-border: #3f4744;
+  --fa-composer-shadow: 0 1px 2px rgb(0 0 0 / 0.32), 0 12px 34px rgb(0 0 0 / 0.44);
+  --fa-composer-control-bg: #2e3432;
+  --fa-composer-control-border: transparent;
+  --fa-composer-control-text: #ece7df;
 }
 
 /* Dark token values — OS preference fallback (unless light is pinned). The two
@@ -120,45 +139,556 @@
     --fa-control-active-hover-border: #2a8f6a;
     --fa-control-active-hover-bg: #165a49;
     --fa-focus-ring: #6cc5a6;
+    --fa-composer-surface: #23272a;
+    --fa-composer-border: #3f4744;
+    --fa-composer-shadow: 0 1px 2px rgb(0 0 0 / 0.32), 0 12px 34px rgb(0 0 0 / 0.44);
+    --fa-composer-control-bg: #2e3432;
+    --fa-composer-control-border: transparent;
+    --fa-composer-control-text: #ece7df;
   }
 }
 
+/* ==================================================================
+ * Issue #557 — selectable colour themes (brand accent palettes)
+ * ==================================================================
+ * The colour-theme selector re-tints ONLY the accent tokens (links, the
+ * solid brand button, and the shared interactive hover/focus states) while
+ * surfaces/text keep the shared light/dark values, so every theme preserves
+ * contrast in both schemes. `emerald` is the default and needs no override —
+ * it IS the base palette defined at the top of this file.
+ *
+ * Values follow the same triplication the base tokens use: a light block,
+ * plus two dark layers (explicit `data-theme="dark"` and the OS-preference
+ * fallback) so pinned-dark and OS-dark users both get the dark accent. The
+ * brand hex mirrors COLOR_THEME_BRAND_HEX in main.jsx so the MUI-backed
+ * `material` skin recolours in lockstep with the CSS/Chakra skins.
+ *
+ * `data-color-theme` sits on `.app` (a descendant of :root), so these custom
+ * properties cascade down to every control and the composer for free. */
+
+/* Light accents */
+.app[data-color-theme="ocean"] {
+  --fa-accent-link: #135a9e;
+  --fa-accent-solid-bg: #1668b8;
+  --fa-accent-solid-border: #1668b8;
+  --fa-control-hover-border: #86b0d8;
+  --fa-control-hover-bg: #eef4fb;
+  --fa-control-active-hover-border: #0d477f;
+  --fa-control-active-hover-bg: #0d477f;
+  --fa-focus-ring: #135a9e;
+}
+.app[data-color-theme="indigo"] {
+  --fa-accent-link: #4338ca;
+  --fa-accent-solid-bg: #4f46e5;
+  --fa-accent-solid-border: #4f46e5;
+  --fa-control-hover-border: #a5b0f0;
+  --fa-control-hover-bg: #f0f1fe;
+  --fa-control-active-hover-border: #3730a3;
+  --fa-control-active-hover-bg: #3730a3;
+  --fa-focus-ring: #4338ca;
+}
+.app[data-color-theme="violet"] {
+  --fa-accent-link: #6d28d9;
+  --fa-accent-solid-bg: #7c3aed;
+  --fa-accent-solid-border: #7c3aed;
+  --fa-control-hover-border: #c4a5f0;
+  --fa-control-hover-bg: #f6f1fe;
+  --fa-control-active-hover-border: #5b21b6;
+  --fa-control-active-hover-bg: #5b21b6;
+  --fa-focus-ring: #6d28d9;
+}
+.app[data-color-theme="rose"] {
+  --fa-accent-link: #a5123a;
+  --fa-accent-solid-bg: #be123c;
+  --fa-accent-solid-border: #be123c;
+  --fa-control-hover-border: #e8a3b4;
+  --fa-control-hover-bg: #fdeff2;
+  --fa-control-active-hover-border: #881337;
+  --fa-control-active-hover-bg: #881337;
+  --fa-focus-ring: #a5123a;
+}
+.app[data-color-theme="amber"] {
+  --fa-accent-link: #92400e;
+  --fa-accent-solid-bg: #b45309;
+  --fa-accent-solid-border: #b45309;
+  --fa-control-hover-border: #e6c088;
+  --fa-control-hover-bg: #fdf6ec;
+  --fa-control-active-hover-border: #7c3a06;
+  --fa-control-active-hover-bg: #7c3a06;
+  --fa-focus-ring: #92400e;
+}
+.app[data-color-theme="graphite"] {
+  --fa-accent-link: #334155;
+  --fa-accent-solid-bg: #475569;
+  --fa-accent-solid-border: #475569;
+  --fa-control-hover-border: #aeb9c6;
+  --fa-control-hover-bg: #eff2f5;
+  --fa-control-active-hover-border: #1e293b;
+  --fa-control-active-hover-bg: #1e293b;
+  --fa-focus-ring: #334155;
+}
+
+/* Dark accents — explicit theme override (wins over the OS preference). */
+:root[data-theme="dark"] .app[data-color-theme="ocean"] {
+  --fa-accent-link: #8cc4f0;
+  --fa-accent-solid-bg: #1668b8;
+  --fa-accent-solid-border: #3d92e0;
+  --fa-control-hover-border: #6ca8dd;
+  --fa-control-hover-bg: #1c2a38;
+  --fa-control-active-hover-border: #3d92e0;
+  --fa-control-active-hover-bg: #12456f;
+  --fa-focus-ring: #6ca8dd;
+}
+:root[data-theme="dark"] .app[data-color-theme="indigo"] {
+  --fa-accent-link: #b3bcfa;
+  --fa-accent-solid-bg: #4f46e5;
+  --fa-accent-solid-border: #818cf8;
+  --fa-control-hover-border: #8b93ea;
+  --fa-control-hover-bg: #24263a;
+  --fa-control-active-hover-border: #818cf8;
+  --fa-control-active-hover-bg: #37307a;
+  --fa-focus-ring: #a5b0f0;
+}
+:root[data-theme="dark"] .app[data-color-theme="violet"] {
+  --fa-accent-link: #cbb4fa;
+  --fa-accent-solid-bg: #7c3aed;
+  --fa-accent-solid-border: #a78bfa;
+  --fa-control-hover-border: #a78bfa;
+  --fa-control-hover-bg: #2b2440;
+  --fa-control-active-hover-border: #a78bfa;
+  --fa-control-active-hover-bg: #4a2f8a;
+  --fa-focus-ring: #c4a5f0;
+}
+:root[data-theme="dark"] .app[data-color-theme="rose"] {
+  --fa-accent-link: #fca5b6;
+  --fa-accent-solid-bg: #be123c;
+  --fa-accent-solid-border: #fb7185;
+  --fa-control-hover-border: #e28796;
+  --fa-control-hover-bg: #3a222a;
+  --fa-control-active-hover-border: #fb7185;
+  --fa-control-active-hover-bg: #7a1e34;
+  --fa-focus-ring: #fca5b6;
+}
+:root[data-theme="dark"] .app[data-color-theme="amber"] {
+  --fa-accent-link: #f5c177;
+  --fa-accent-solid-bg: #b45309;
+  --fa-accent-solid-border: #f59e0b;
+  --fa-control-hover-border: #d9a860;
+  --fa-control-hover-bg: #362c1c;
+  --fa-control-active-hover-border: #f59e0b;
+  --fa-control-active-hover-bg: #6f4410;
+  --fa-focus-ring: #f5c177;
+}
+:root[data-theme="dark"] .app[data-color-theme="graphite"] {
+  --fa-accent-link: #cbd5e1;
+  --fa-accent-solid-bg: #475569;
+  --fa-accent-solid-border: #94a3b8;
+  --fa-control-hover-border: #8b97a8;
+  --fa-control-hover-bg: #262c33;
+  --fa-control-active-hover-border: #94a3b8;
+  --fa-control-active-hover-bg: #3a4453;
+  --fa-focus-ring: #cbd5e1;
+}
+
+/* Dark accents — OS preference fallback (unless light is pinned). Mirrors the
+ * explicit-dark values above, per the file's triplication pattern. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .app[data-color-theme="ocean"] {
+    --fa-accent-link: #8cc4f0;
+    --fa-accent-solid-bg: #1668b8;
+    --fa-accent-solid-border: #3d92e0;
+    --fa-control-hover-border: #6ca8dd;
+    --fa-control-hover-bg: #1c2a38;
+    --fa-control-active-hover-border: #3d92e0;
+    --fa-control-active-hover-bg: #12456f;
+    --fa-focus-ring: #6ca8dd;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="indigo"] {
+    --fa-accent-link: #b3bcfa;
+    --fa-accent-solid-bg: #4f46e5;
+    --fa-accent-solid-border: #818cf8;
+    --fa-control-hover-border: #8b93ea;
+    --fa-control-hover-bg: #24263a;
+    --fa-control-active-hover-border: #818cf8;
+    --fa-control-active-hover-bg: #37307a;
+    --fa-focus-ring: #a5b0f0;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="violet"] {
+    --fa-accent-link: #cbb4fa;
+    --fa-accent-solid-bg: #7c3aed;
+    --fa-accent-solid-border: #a78bfa;
+    --fa-control-hover-border: #a78bfa;
+    --fa-control-hover-bg: #2b2440;
+    --fa-control-active-hover-border: #a78bfa;
+    --fa-control-active-hover-bg: #4a2f8a;
+    --fa-focus-ring: #c4a5f0;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="rose"] {
+    --fa-accent-link: #fca5b6;
+    --fa-accent-solid-bg: #be123c;
+    --fa-accent-solid-border: #fb7185;
+    --fa-control-hover-border: #e28796;
+    --fa-control-hover-bg: #3a222a;
+    --fa-control-active-hover-border: #fb7185;
+    --fa-control-active-hover-bg: #7a1e34;
+    --fa-focus-ring: #fca5b6;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="amber"] {
+    --fa-accent-link: #f5c177;
+    --fa-accent-solid-bg: #b45309;
+    --fa-accent-solid-border: #f59e0b;
+    --fa-control-hover-border: #d9a860;
+    --fa-control-hover-bg: #362c1c;
+    --fa-control-active-hover-border: #f59e0b;
+    --fa-control-active-hover-bg: #6f4410;
+    --fa-focus-ring: #f5c177;
+  }
+  :root:not([data-theme="light"]) .app[data-color-theme="graphite"] {
+    --fa-accent-link: #cbd5e1;
+    --fa-accent-solid-bg: #475569;
+    --fa-accent-solid-border: #94a3b8;
+    --fa-control-hover-border: #8b97a8;
+    --fa-control-hover-bg: #262c33;
+    --fa-control-active-hover-border: #94a3b8;
+    --fa-control-active-hover-bg: #3a4453;
+    --fa-focus-ring: #cbd5e1;
+  }
+}
+
+/* ==================================================================
+ * Issue #557 — Glass skin ("Liquid Glass", Apple-inspired)
+ * ==================================================================
+ * Translucent, backdrop-blurred surfaces float over a living ambient
+ * gradient. The gradient is what turns the blur into frosted glass: with
+ * no colour behind them, translucent panels look identical to the flat
+ * skin — that was the "not impressive" feedback on the first pass. Every
+ * colour flows through the --fa-glass-* tokens so one set of rules themes
+ * in light and dark, and the glass-opacity slider stays live (it drives
+ * --fa-glass-alpha). */
+.ui-skin-glass.app {
+  background:
+    radial-gradient(140% 130% at 4% -16%, rgb(120 176 255 / 0.7), transparent 64%),
+    radial-gradient(128% 128% at 106% 0%, rgb(196 130 255 / 0.64), transparent 60%),
+    radial-gradient(138% 140% at 48% 122%, rgb(86 226 196 / 0.6), transparent 62%),
+    linear-gradient(158deg, #eaf1fb 0%, #e6ecf6 52%, #e9f4ef 100%);
+  background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
+  animation: glass-ambient-drift 22s ease-in-out infinite alternate;
+}
+
+/* Frosted surfaces: heavy blur + saturation lift the ambient wash showing
+ * through, so panels read as real glass rather than tinted rectangles. */
 .ui-skin-glass .topbar,
 .ui-skin-glass .context-panel,
-.ui-skin-glass .composer,
+.ui-skin-glass .composer-grid,
 .ui-skin-glass .sidebar-section-body,
 .ui-skin-glass .message-body,
 .ui-skin-glass .trace-list div,
 .ui-skin-glass .desktop-shell-panel div,
 .ui-skin-glass .tool,
 .ui-skin-glass .fetch-iframe-container {
-  background: rgba(251, 252, 253, 0.78);
-  -webkit-backdrop-filter: blur(16px) saturate(1.18);
-  backdrop-filter: blur(16px) saturate(1.18);
+  background: rgb(251 253 255 / var(--fa-glass-alpha, 0.78));
+  -webkit-backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(var(--fa-glass-saturation, 1.35));
+  backdrop-filter: blur(var(--fa-glass-blur, 18px)) saturate(var(--fa-glass-saturation, 1.35));
 }
 
+/* Hero surfaces get the full treatment — a bright inner highlight along the
+ * top edge, a faint inner outline, and a soft floating drop shadow for depth. */
+.ui-skin-glass .topbar,
+.ui-skin-glass .context-panel,
+.ui-skin-glass .composer-grid,
+.ui-skin-glass .sidebar-section-body,
+.ui-skin-glass .message-body {
+  border-color: rgb(255 255 255 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.65),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12),
+    0 12px 34px rgb(31 45 70 / 0.16);
+}
+
+/* The composer is the primary input surface: a soft, even white frost sits
+ * over the configurable tint so the field reads as one uniform frosted pane
+ * instead of letting the ambient gradient pool unevenly behind the text
+ * (Issue #557 review: "background in some places is not uniform"). The
+ * glass-opacity slider still drives --fa-glass-alpha underneath. */
+.ui-skin-glass .composer-grid {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.34), rgb(255 255 255 / 0.22)),
+    rgb(251 253 255 / var(--fa-glass-alpha, 0.78));
+  -webkit-backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(calc(var(--fa-glass-saturation, 1.35) + 0.15));
+  backdrop-filter: blur(calc(var(--fa-glass-blur, 18px) + 8px)) saturate(calc(var(--fa-glass-saturation, 1.35) + 0.15));
+}
+
+@keyframes glass-ambient-drift {
+  from { background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%; }
+  to { background-position: 7% 5%, 94% 8%, 44% 94%, 0% 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skin-glass.app { animation: none; }
+}
+
+/* Issue #557: Apple Liquid Glass backing for the composer controls. The real,
+ * fully-interactive <button> stays on top; the liquid-glass-react canvas is a
+ * non-interactive layer painted behind it (see app/liquid-glass.jsx). We make
+ * the button transparent and isolate its stacking context so the negative-z
+ * backing is clamped to the control and never bleeds over the pill. */
+.ui-skin-glass .composer-action-button,
+.ui-skin-glass .send-button {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  /* A faint glass fill + specular rim so each control always reads as a
+   * rounded glass chip; the liquid-glass-react canvas behind it adds the
+   * live refraction/lensing on top (see app/liquid-glass.jsx). */
+  background: rgb(255 255 255 / 0.22);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  border-color: rgb(255 255 255 / 0.55);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    inset 0 0 0 1px rgb(255 255 255 / 0.14),
+    0 4px 12px rgb(31 45 70 / 0.14);
+}
+
+.ui-skin-glass .composer-action-button {
+  color: var(--fa-text-strong);
+}
+
+/* The send control is the composer's primary action, so its glass chip is
+ * tinted with the accent (frosted, not flat) and carries a white glyph — it
+ * stays glassy but reads as the clear "send" affordance instead of a faint
+ * white circle (Issue #557 review: send button barely visible). */
+.ui-skin-glass .send-button {
+  color: var(--fa-accent-solid-text);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 60%, transparent);
+  border-color: color-mix(in srgb, var(--fa-accent-solid-bg) 55%, rgb(255 255 255 / 0.6));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.42),
+    0 4px 12px color-mix(in srgb, var(--fa-accent-solid-bg) 32%, transparent);
+}
+
+.ui-skin-glass .composer-action-button:hover {
+  background: rgb(255 255 255 / 0.34);
+  border-color: rgb(255 255 255 / 0.7);
+}
+
+.ui-skin-glass .send-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 76%, transparent);
+  border-color: color-mix(in srgb, var(--fa-accent-solid-bg) 68%, rgb(255 255 255 / 0.6));
+}
+
+/* Keep the conversation area translucent so the ambient gradient glows
+ * behind the frosted message bubbles. */
 .ui-skin-glass .chat-panel {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(238, 242, 241, 0.72)),
-    #eef2f1;
+    linear-gradient(
+      180deg,
+      rgb(255 255 255 / var(--fa-glass-clear-alpha, 0.42)),
+      rgb(236 242 248 / var(--fa-glass-panel-alpha, 0.5))
+    );
 }
 
 .ui-skin-glass .sidebar-section-header,
 .ui-skin-glass .drawer-brand,
 .ui-skin-glass .fetch-iframe-header {
-  background: rgba(238, 242, 241, 0.76);
-  -webkit-backdrop-filter: blur(14px) saturate(1.16);
-  backdrop-filter: blur(14px) saturate(1.16);
+  background: rgb(240 245 251 / var(--fa-glass-header-alpha, 0.76));
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+}
+
+/* ==================================================================
+ * Issue #557 — Material skin (Material Design 3 "Material You")
+ * ==================================================================
+ * Follows the M3 guidelines: tonal surface-container colours, a primary
+ * "surface tint" wash on the backdrop, layered elevation shadows, and the
+ * M3 shape scale (small 12px / medium 16px / large 20px radii). Filled
+ * tonal buttons carry the primary accent so the skin reads as Material,
+ * not just a re-bordered flat theme. */
+.ui-skin-material {
+  --fa-material-surface: #fbfdf9;
+  --fa-material-surface-muted: #eef4ef;
+  --fa-material-container: #ffffff;
+  --fa-material-container-high: #e7f0ea;
+  --fa-material-border: #c1d3cb;
+  --fa-material-accent: #006b5b;
+  --fa-material-accent-soft: #cfeee3;
+  --fa-material-accent-text: #00382f;
+  --fa-material-user: #d7e7ff;
+  --fa-material-user-border: #a9c9f5;
+  /* M3 elevation levels 1 and 2 (Google Material 3 dp shadow tokens). */
+  --fa-material-elevation-1: 0 1px 2px rgb(16 32 27 / 0.28), 0 1px 3px 1px rgb(16 32 27 / 0.12);
+  --fa-material-elevation-2: 0 1px 2px rgb(16 32 27 / 0.28), 0 2px 6px 2px rgb(16 32 27 / 0.14);
+  --fa-material-shadow: var(--fa-material-elevation-1);
+  --fa-material-radius: 16px;
+}
+
+/* Primary surface-tint wash — the signature M3 tinted backdrop. */
+.ui-skin-material.app {
+  background:
+    radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+    radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+    var(--fa-material-surface-muted);
+}
+
+.ui-skin-material .topbar,
+.ui-skin-material .context-panel,
+.ui-skin-material .composer,
+.ui-skin-material .message-body,
+.ui-skin-material .sidebar-section-body,
+.ui-skin-material .trace-list div,
+.ui-skin-material .desktop-shell-panel div,
+.ui-skin-material .tool,
+.ui-skin-material .fetch-iframe-container {
+  border-color: var(--fa-material-border);
+  background: var(--fa-material-container);
+  box-shadow: var(--fa-material-shadow);
+}
+
+/* Rounded, elevated cards are core to the M3 look. */
+.ui-skin-material .message-body,
+.ui-skin-material .tool,
+.ui-skin-material .fetch-iframe-container,
+.ui-skin-material .context-panel {
+  border-radius: var(--fa-material-radius);
+}
+
+.ui-skin-material .message-body {
+  box-shadow: var(--fa-material-elevation-1);
+}
+
+.ui-skin-material .chat-panel {
+  background: transparent;
+}
+
+.ui-skin-material .topbar,
+.ui-skin-material .drawer-brand,
+.ui-skin-material .sidebar-section-header,
+.ui-skin-material .fetch-iframe-header {
+  border-color: var(--fa-material-border);
+  background: var(--fa-material-surface);
+  box-shadow: var(--fa-material-elevation-2);
+}
+
+.ui-skin-material .composer-grid {
+  border: 1px solid var(--fa-material-border);
+  border-radius: var(--fa-material-radius);
+  padding: 6px;
+  background: var(--fa-material-container);
+  box-shadow: var(--fa-material-elevation-2);
+}
+
+.ui-skin-material textarea {
+  border-color: transparent;
+  background: transparent;
+}
+
+/* Filled tonal buttons — M3 secondary-container fill, pill shape. */
+.ui-skin-material .composer-action-button,
+.ui-skin-material .composer-menu-item,
+.ui-skin-material .prompt-list button,
+.ui-skin-material .conversation-new,
+.ui-skin-material .conversation-purge-deleted,
+.ui-skin-material .conversation-entry-button {
+  border-color: transparent;
+  background: var(--fa-material-accent-soft);
+  color: var(--fa-material-accent-text);
+}
+
+.ui-skin-material .send-button {
+  border-color: var(--fa-material-accent);
+  background: var(--fa-material-accent);
+  color: #ffffff;
+  box-shadow: var(--fa-material-elevation-1);
+}
+
+.ui-skin-material .message.user .message-body {
+  border-color: var(--fa-material-user-border);
+  background: var(--fa-material-user);
+}
+
+/* Issue #557 (PR #643, comment 39): the `mui-flat` skin renders the composer
+ * controls as real MUI IconButtons (framework switch to MUI) but should keep
+ * the flat Chakra look. MUI injects its emotion reset (`.MuiIconButton-root {
+ * background-color: transparent }`, specificity 0,1,0) into <head> AFTER
+ * styles.css, so it ties and beats the base `.send-button`/`.composer-action-
+ * button` fills (also 0,1,0) — in light mode the send arrow lost its accent
+ * fill and the attach circle its surface, reading as bare "wild" icons. The
+ * dark theme already had a compound `:root[data-theme="dark"] .send-button`
+ * (0,3,0) rule that out-specified MUI, which is why only light broke. These
+ * skin-scoped rules (0,2,0) restore the flat affordance in every theme. */
+.ui-skin-mui-flat .composer-action-button {
+  border: 1px solid var(--fa-composer-control-border);
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+}
+
+.ui-skin-mui-flat .composer-action-button:hover {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.ui-skin-mui-flat .send-button {
+  border: 1px solid var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
+  color: #ffffff;
+}
+
+.ui-skin-mui-flat .send-button:disabled {
+  border-color: var(--fa-composer-control-border);
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+  opacity: 0.55;
+}
+
+/* Issue #557 (PR #643, comment 39): the same MUI-emotion specificity trap that
+ * hit the composer strips the surface off the TOOLBAR action buttons in the
+ * mui-flat / material skins — light mode only, since the dark theme's compound
+ * `:root[data-theme="dark"] .mode-toggle` rule (0,3,0) already out-specifies
+ * MUI's `.MuiIconButton-root` (0,1,0). In light the base surface rule (0,1,0)
+ * ties and loses, leaving bare "wild" icons beside the still-boxed anchor
+ * controls (source / download / report stay Chakra links). These skin-scoped
+ * rules (0,2,0) restore the same boxed surface the dark theme already applies,
+ * so every toolbar control reads as a button in both themes. The dark compound
+ * rule keeps winning in dark; the active-toggle accent rule (0,2,0, later in
+ * source) keeps winning for the pressed mode option. */
+.ui-skin-mui-flat .mode-toggle,
+.ui-skin-mui-flat .diagnostics-toggle,
+.ui-skin-mui-flat .mode-option,
+.ui-skin-mui-flat .mobile-menu-toggle,
+.ui-skin-mui-flat .sidebar-toggle,
+.ui-skin-mui-flat .drawer-close,
+.ui-skin-mui-flat .drawer-action,
+.ui-skin-mui-flat .memory-button,
+.ui-skin-material .mode-toggle,
+.ui-skin-material .diagnostics-toggle,
+.ui-skin-material .mode-option,
+.ui-skin-material .mobile-menu-toggle,
+.ui-skin-material .sidebar-toggle,
+.ui-skin-material .drawer-close,
+.ui-skin-material .drawer-action,
+.ui-skin-material .memory-button {
+  border: 1px solid #b9c6ca;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e252b;
 }
 
 .ui-skin-contrast .topbar,
 .ui-skin-contrast .context-panel,
-.ui-skin-contrast .composer,
+.ui-skin-contrast .composer-grid,
+.ui-skin-contrast .composer-menu-item,
 .ui-skin-contrast .message-body,
 .ui-skin-contrast .trace-list div,
 .ui-skin-contrast .desktop-shell-panel div,
 .ui-skin-contrast .tool {
   border-color: #25313a;
+}
+
+/* Issue #557: the contrast skin keeps the composer as one heavy-bordered field
+ * (no internal separator lines) so the embedded controls still read as part of
+ * the input surface. */
+.ui-skin-contrast .composer-grid {
+  border-width: 2px;
 }
 
 .ui-skin-contrast .topbar,
@@ -234,33 +764,80 @@
   background: #f7fbf9;
 }
 
+:root[data-theme="dark"] .ui-skin-glass.app {
+  background:
+    radial-gradient(140% 130% at 4% -16%, rgb(58 104 190 / 0.68), transparent 64%),
+    radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
+    radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
+    linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+  background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
+}
+
 :root[data-theme="dark"] .ui-skin-glass .topbar,
 :root[data-theme="dark"] .ui-skin-glass .context-panel,
-:root[data-theme="dark"] .ui-skin-glass .composer,
+:root[data-theme="dark"] .ui-skin-glass .composer-grid,
 :root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
 :root[data-theme="dark"] .ui-skin-glass .message-body,
 :root[data-theme="dark"] .ui-skin-glass .trace-list div,
 :root[data-theme="dark"] .ui-skin-glass .desktop-shell-panel div,
 :root[data-theme="dark"] .ui-skin-glass .tool,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-container {
-  background: rgba(29, 32, 31, 0.78);
+  background: rgb(38 44 52 / var(--fa-glass-alpha, 0.78));
+}
+
+:root[data-theme="dark"] .ui-skin-glass .topbar,
+:root[data-theme="dark"] .ui-skin-glass .context-panel,
+:root[data-theme="dark"] .ui-skin-glass .composer-grid,
+:root[data-theme="dark"] .ui-skin-glass .sidebar-section-body,
+:root[data-theme="dark"] .ui-skin-glass .message-body {
+  border-color: rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05),
+    0 16px 42px rgb(0 0 0 / 0.5);
 }
 
 :root[data-theme="dark"] .ui-skin-glass .chat-panel {
   background:
-    linear-gradient(180deg, rgba(32, 35, 34, 0.62), rgba(24, 26, 27, 0.78)),
-    #181a1b;
+    linear-gradient(
+      180deg,
+      rgb(30 36 44 / var(--fa-glass-clear-alpha, 0.42)),
+      rgb(18 22 28 / var(--fa-glass-panel-alpha, 0.5))
+    );
 }
 
 :root[data-theme="dark"] .ui-skin-glass .sidebar-section-header,
 :root[data-theme="dark"] .ui-skin-glass .drawer-brand,
 :root[data-theme="dark"] .ui-skin-glass .fetch-iframe-header {
-  background: rgba(34, 38, 36, 0.76);
+  background: rgb(40 47 55 / var(--fa-glass-header-alpha, 0.76));
+}
+
+:root[data-theme="dark"] .ui-skin-material {
+  --fa-material-surface: #1a1f1d;
+  --fa-material-surface-muted: #121715;
+  --fa-material-container: #202725;
+  --fa-material-container-high: #283330;
+  --fa-material-border: #3a4642;
+  --fa-material-accent: #5bdcc0;
+  --fa-material-accent-soft: #0c443a;
+  --fa-material-accent-text: #a6f2df;
+  --fa-material-user: #1d2f42;
+  --fa-material-user-border: #365878;
+  --fa-material-elevation-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.3);
+  --fa-material-elevation-2: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.34);
+  --fa-material-shadow: var(--fa-material-elevation-1);
+}
+
+:root[data-theme="dark"] .ui-skin-material.app {
+  background:
+    radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+    radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+    var(--fa-material-surface-muted);
 }
 
 :root[data-theme="dark"] .ui-skin-contrast .topbar,
 :root[data-theme="dark"] .ui-skin-contrast .context-panel,
-:root[data-theme="dark"] .ui-skin-contrast .composer,
+:root[data-theme="dark"] .ui-skin-contrast .composer-grid,
 :root[data-theme="dark"] .ui-skin-contrast .message-body,
 :root[data-theme="dark"] .ui-skin-contrast .trace-list div,
 :root[data-theme="dark"] .ui-skin-contrast .desktop-shell-panel div,
@@ -296,33 +873,80 @@
 }
 
 @media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ui-skin-glass.app {
+    background:
+      radial-gradient(140% 130% at 4% -16%, rgb(58 104 190 / 0.68), transparent 64%),
+      radial-gradient(128% 128% at 106% 0%, rgb(120 68 180 / 0.62), transparent 60%),
+      radial-gradient(138% 140% at 48% 122%, rgb(26 128 110 / 0.58), transparent 62%),
+      linear-gradient(158deg, #10151c 0%, #141821 52%, #0f1a17 100%);
+    background-size: 118% 118%, 116% 116%, 120% 120%, 100% 100%;
+  }
+
   :root:not([data-theme="light"]) .ui-skin-glass .topbar,
   :root:not([data-theme="light"]) .ui-skin-glass .context-panel,
-  :root:not([data-theme="light"]) .ui-skin-glass .composer,
+  :root:not([data-theme="light"]) .ui-skin-glass .composer-grid,
   :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
   :root:not([data-theme="light"]) .ui-skin-glass .message-body,
   :root:not([data-theme="light"]) .ui-skin-glass .trace-list div,
   :root:not([data-theme="light"]) .ui-skin-glass .desktop-shell-panel div,
   :root:not([data-theme="light"]) .ui-skin-glass .tool,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-container {
-    background: rgba(29, 32, 31, 0.78);
+    background: rgb(38 44 52 / var(--fa-glass-alpha, 0.78));
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-glass .topbar,
+  :root:not([data-theme="light"]) .ui-skin-glass .context-panel,
+  :root:not([data-theme="light"]) .ui-skin-glass .composer-grid,
+  :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-body,
+  :root:not([data-theme="light"]) .ui-skin-glass .message-body {
+    border-color: rgb(255 255 255 / 0.14);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 0 0 1px rgb(255 255 255 / 0.05),
+      0 16px 42px rgb(0 0 0 / 0.5);
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .chat-panel {
     background:
-      linear-gradient(180deg, rgba(32, 35, 34, 0.62), rgba(24, 26, 27, 0.78)),
-      #181a1b;
+      linear-gradient(
+        180deg,
+        rgb(30 36 44 / var(--fa-glass-clear-alpha, 0.42)),
+        rgb(18 22 28 / var(--fa-glass-panel-alpha, 0.5))
+      );
   }
 
   :root:not([data-theme="light"]) .ui-skin-glass .sidebar-section-header,
   :root:not([data-theme="light"]) .ui-skin-glass .drawer-brand,
   :root:not([data-theme="light"]) .ui-skin-glass .fetch-iframe-header {
-    background: rgba(34, 38, 36, 0.76);
+    background: rgb(40 47 55 / var(--fa-glass-header-alpha, 0.76));
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-material {
+    --fa-material-surface: #1a1f1d;
+    --fa-material-surface-muted: #121715;
+    --fa-material-container: #202725;
+    --fa-material-container-high: #283330;
+    --fa-material-border: #3a4642;
+    --fa-material-accent: #5bdcc0;
+    --fa-material-accent-soft: #0c443a;
+    --fa-material-accent-text: #a6f2df;
+    --fa-material-user: #1d2f42;
+    --fa-material-user-border: #365878;
+    --fa-material-elevation-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.3);
+    --fa-material-elevation-2: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.34);
+    --fa-material-shadow: var(--fa-material-elevation-1);
+  }
+
+  :root:not([data-theme="light"]) .ui-skin-material.app {
+    background:
+      radial-gradient(150% 120% at 100% -8%, var(--fa-material-accent-soft), transparent 58%),
+      radial-gradient(150% 120% at 0% 110%, var(--fa-material-container-high), transparent 60%),
+      var(--fa-material-surface-muted);
   }
 
   :root:not([data-theme="light"]) .ui-skin-contrast .topbar,
   :root:not([data-theme="light"]) .ui-skin-contrast .context-panel,
-  :root:not([data-theme="light"]) .ui-skin-contrast .composer,
+  :root:not([data-theme="light"]) .ui-skin-contrast .composer-grid,
   :root:not([data-theme="light"]) .ui-skin-contrast .message-body,
   :root:not([data-theme="light"]) .ui-skin-contrast .trace-list div,
   :root:not([data-theme="light"]) .ui-skin-contrast .desktop-shell-panel div,
@@ -456,7 +1080,7 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: #175f4f;
+  background: var(--fa-accent-solid-bg);
   font-size: 14px;
 }
 
@@ -494,10 +1118,10 @@ button {
   flex: 0 1 auto;
   max-width: min(360px, 38vw);
   padding: 6px 8px;
-  border: 1px solid #b9d8cf;
+  border: 1px solid color-mix(in srgb, var(--fa-accent-solid-bg) 28%, var(--fa-surface-card));
   border-radius: 8px;
-  background: #edf6f3;
-  color: #175f4f;
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 10%, var(--fa-surface-card));
+  color: var(--fa-accent-link);
   font-size: 12px;
   font-weight: 800;
   overflow: hidden;
@@ -759,8 +1383,8 @@ button {
 .mode-option.is-active,
 .mobile-menu-toggle[aria-pressed="true"],
 .send-button {
-  border-color: #175f4f;
-  background: #175f4f;
+  border-color: var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
   color: #ffffff;
 }
 
@@ -984,14 +1608,14 @@ body.is-resizing-context {
   border: 1px dashed #b9c6ca;
   border-radius: 8px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   font-weight: 700;
   text-align: left;
 }
 
 .conversation-new:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-deleted-toggle {
@@ -1006,7 +1630,7 @@ body.is-resizing-context {
 .conversation-deleted-toggle input {
   width: 16px;
   height: 16px;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .conversation-purge-deleted {
@@ -1069,13 +1693,13 @@ body.is-resizing-context {
 }
 
 .conversation-copy:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-copy.is-copied {
-  border-color: #175f4f;
-  color: #175f4f;
+  border-color: var(--fa-accent-link);
+  color: var(--fa-accent-link);
 }
 
 .conversation-entry-button {
@@ -1109,8 +1733,8 @@ body.is-resizing-context {
 }
 
 .conversation-entry-button:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-accent-link);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 7%, var(--fa-surface-card));
 }
 
 .conversation-delete:hover {
@@ -1119,8 +1743,8 @@ body.is-resizing-context {
 }
 
 .conversation-entry.is-active .conversation-entry-button {
-  border-color: #175f4f;
-  background: #e3efe9;
+  border-color: var(--fa-accent-solid-border);
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 14%, var(--fa-surface-card));
   font-weight: 600;
 }
 
@@ -1271,7 +1895,7 @@ body.is-resizing-context {
 
 .setting-row input[type="range"] {
   width: 100%;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .setting-poles {
@@ -1302,7 +1926,7 @@ body.is-resizing-context {
 .setting-check input {
   width: 16px;
   height: 16px;
-  accent-color: #175f4f;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .setting-row-ocr {
@@ -1350,7 +1974,7 @@ body.is-resizing-context {
 }
 
 .desktop-shell-panel a {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   font-weight: 700;
 }
 
@@ -1487,7 +2111,7 @@ body.is-resizing-context {
 .desktop-update-progress {
   width: 100%;
   height: 9px;
-  accent-color: #1f7a5b;
+  accent-color: var(--fa-accent-solid-bg);
 }
 
 .desktop-update-actions {
@@ -1590,7 +2214,7 @@ body.is-resizing-context {
 }
 
 .message.assistant .avatar {
-  background: #175f4f;
+  background: var(--fa-accent-solid-bg);
 }
 
 .message.system .avatar {
@@ -1664,8 +2288,8 @@ body.is-resizing-context {
 
 .permission-button-grant-all {
   flex: 1;
-  border-color: #5da28a;
-  background: #175f4f;
+  border-color: var(--fa-accent-solid-border);
+  background: var(--fa-accent-solid-bg);
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
@@ -1675,8 +2299,8 @@ body.is-resizing-context {
 
 .permission-button-grant-all:hover:not(:disabled),
 .permission-button-grant-all:focus-visible {
-  background: #1e7960;
-  border-color: #175f4f;
+  background: var(--fa-control-active-hover-bg);
+  border-color: var(--fa-accent-solid-border);
   color: #ffffff;
 }
 
@@ -1719,7 +2343,7 @@ body.is-resizing-context {
 .command-approval-status-approved {
   border-color: #9bc9b7;
   background: #e7f5ef;
-  color: #175f4f;
+  color: var(--fa-accent-link);
 }
 
 .permission-state-declined,
@@ -1748,7 +2372,7 @@ body.is-resizing-context {
   border-radius: 6px;
   padding: 5px 8px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
@@ -1758,8 +2382,8 @@ body.is-resizing-context {
 
 .permission-button:hover:not(:disabled),
 .permission-button[aria-pressed="true"] {
-  background: #e5f3ee;
-  border-color: #5da28a;
+  background: color-mix(in srgb, var(--fa-accent-solid-bg) 9%, var(--fa-surface-card));
+  border-color: var(--fa-accent-link);
 }
 
 .permission-button-secondary {
@@ -2077,7 +2701,7 @@ body.is-resizing-context {
 }
 
 .markdown-body a.external-link {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
@@ -2179,7 +2803,7 @@ body.is-resizing-context {
   border-radius: 6px;
   padding: 3px 9px;
   background: #ffffff;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
@@ -2670,7 +3294,7 @@ body.is-resizing-context {
 }
 
 .message-actions a {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   text-decoration: none;
 }
 
@@ -2733,7 +3357,7 @@ body.is-resizing-context {
   background: none;
   border: 1px solid #b0bac4;
   border-radius: 4px;
-  color: #175f4f;
+  color: var(--fa-accent-link);
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
@@ -2773,26 +3397,20 @@ body.is-resizing-context {
    so it is removed with the fixed width it used to size. */
 
 .composer {
-  max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
+  max-height: min(320px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
   overflow: auto;
-  border-top: 1px solid #d6dde1;
-  padding: 12px clamp(14px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
-  background: #f7f8fa;
+  border-top: 1px solid transparent;
+  padding: 14px clamp(14px, 4vw, 48px) max(16px, env(safe-area-inset-bottom));
+  background: transparent;
 }
 
 .composer-style-glass-soft .composer,
 .composer-style-glass-clear .composer {
-  background: rgba(247, 248, 250, 0.86);
-  -webkit-backdrop-filter: blur(18px) saturate(1.25);
-  backdrop-filter: blur(18px) saturate(1.25);
-}
-
-.composer-style-glass-clear .composer {
-  background: rgba(247, 248, 250, 0.68);
+  background: transparent;
 }
 
 .composer-style-bubble .composer {
-  background: #ffffff;
+  background: transparent;
 }
 
 .composer-demo-hint {
@@ -2819,62 +3437,130 @@ body.is-resizing-context {
   vertical-align: -2px;
 }
 
+/* Issue #557: the composer is one unified field surface. The text area and the
+ * action/send controls read as a single control (buttons embedded into the text
+ * field) on desktop, tablet, and mobile, instead of three separate boxes. */
 .composer-grid {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
   gap: 8px;
-  align-items: center;
+  border: 1px solid var(--fa-composer-border);
+  border-radius: 26px;
+  /* Uniform padding on all four sides so the embedded attach (left) and send
+     (right) controls sit equidistant from the pill edges — no lopsided offset
+     (Issue #557 markup/offset polish). */
+  padding: 6px;
+  background: var(--fa-composer-surface);
+  box-shadow: var(--fa-composer-shadow);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-textarea {
+/* The embedded controls stay pinned to the bottom of the pill so the text area
+   grows upward (multi-line) without pushing the send/attach buttons around. */
+.composer-grid > .composer-action-button,
+.composer-grid > .send-button {
+  flex: none;
+}
+
+.composer-grid:focus-within {
+  border-color: var(--fa-focus-ring);
+  box-shadow:
+    var(--fa-composer-shadow),
+    0 0 0 3px color-mix(in srgb, var(--fa-focus-ring) 26%, transparent);
+}
+
+textarea,
+.composer-input {
   min-width: 0;
-  min-height: 48px;
+  width: 100%;
+  min-height: 40px;
   height: auto;
-  max-height: min(180px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
+  max-height: min(200px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 96px));
   resize: none;
-  overflow-y: hidden;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
-  padding: 13px;
-  background: #ffffff;
-  color: #1e252b;
-  line-height: 1.35;
+  overflow-y: auto;
+  border: none;
+  border-radius: 0;
+  padding: 8px;
+  background: transparent;
+  color: var(--fa-text-body);
+  line-height: 1.45;
+  font-size: 15px;
 }
 
-textarea:focus {
-  outline: 2px solid #2d6cdf;
-  outline-offset: 1px;
+/* Issue #557: the composer text area is the flexible middle of a single-row
+   pill — the attach button hugs the left edge and the send button the right, so
+   the whole composer reads as one compact control (buttons embedded into the
+   text field) instead of a tall three-box stack. The text area itself carries
+   no background or border; it inherits the pill surface behind it. The padding
+   stays uniform on all four sides (Issue #112 equal-padding contract) — the
+   horizontal separation from the embedded attach/send controls comes from the
+   pill's flex `gap`, not from lopsided text-area padding. */
+.composer-input {
+  flex: 1 1 auto;
+  min-height: 36px;
+  padding: 7px;
+  line-height: 1.4;
 }
 
-textarea:disabled {
-  color: #667684;
-  background: #edf1f3;
+textarea:focus,
+.composer-input:focus {
+  outline: none;
+}
+
+textarea:disabled,
+.composer-input:disabled {
+  color: var(--fa-text-muted);
+  background: transparent;
+  cursor: not-allowed;
 }
 
 .send-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-width: 88px;
-  min-height: 44px;
-  padding: 0 14px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  flex: none;
+}
+
+.send-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.send-icon {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .composer-action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #1e252b;
-  font-size: 22px;
-  font-weight: 800;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--fa-composer-control-border);
+  border-radius: 999px;
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-composer-control-text);
+  font-size: 20px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -2882,18 +3568,18 @@ textarea:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .composer-action-button:hover,
 .composer-menu-item:hover {
-  border-color: #175f4f;
-  background: #f1f6f4;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 .composer-menu {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto 8px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2905,11 +3591,11 @@ textarea:disabled {
   align-items: center;
   justify-content: center;
   min-height: 38px;
-  border: 1px solid #b9c6ca;
-  border-radius: 8px;
+  border: 1px solid var(--fa-composer-border);
+  border-radius: 12px;
   padding: 8px 10px;
-  background: #ffffff;
-  color: #1e252b;
+  background: var(--fa-composer-surface);
+  color: var(--fa-text-body);
   font-size: 13px;
   font-weight: 700;
   text-align: center;
@@ -2917,47 +3603,42 @@ textarea:disabled {
 }
 
 .composer-attachment-status {
-  width: min(860px, 100%);
+  width: min(820px, 100%);
   margin: 8px auto 0;
-  color: #40515f;
+  color: var(--fa-text-muted);
   font-size: 12px;
   font-weight: 700;
 }
 
-.composer-style-glass-soft textarea,
-.composer-style-glass-soft .composer-action-button,
-.composer-style-glass-soft .composer-menu-item,
-.composer-style-glass-clear textarea,
-.composer-style-glass-clear .composer-action-button,
-.composer-style-glass-clear .composer-menu-item {
-  background: rgba(255, 255, 255, 0.74);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  backdrop-filter: blur(12px) saturate(1.2);
+.composer-style-glass-soft .composer-grid,
+.composer-style-glass-clear .composer-grid {
+  background: color-mix(
+    in srgb,
+    var(--fa-composer-surface) calc(var(--fa-glass-alpha, 0.78) * 100%),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.3);
 }
 
-.composer-style-glass-clear textarea,
-.composer-style-glass-clear .composer-action-button,
-.composer-style-glass-clear .composer-menu-item {
-  background: rgba(255, 255, 255, 0.52);
+.composer-style-glass-clear .composer-grid {
+  background: color-mix(
+    in srgb,
+    var(--fa-composer-surface) calc(var(--fa-glass-clear-alpha, 0.52) * 100%),
+    transparent
+  );
 }
 
 .composer-style-bubble .composer-grid {
-  border: 1px solid #d6dde1;
   border-radius: 999px;
-  padding: 6px;
-  background: #f7f8fa;
-}
-
-.composer-style-bubble textarea {
-  min-height: 42px;
-  border-color: transparent;
-  border-radius: 999px;
-  resize: none;
+  padding: 8px 10px;
 }
 
 .send-button:disabled {
-  border-color: #b9c6ca;
-  background: #a9b6bb;
+  border-color: transparent;
+  background: var(--fa-composer-control-bg);
+  color: var(--fa-text-muted);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -3246,35 +3927,42 @@ textarea:disabled {
     padding: 8px 10px max(8px, env(safe-area-inset-bottom));
   }
 
+  /* Issue #557 / #108: on mobile the composer stays the same unified single-row
+   * pill with the attach + send controls embedded on either side of the text
+   * area. Only the touch targets grow to a comfortable 42px; the single-surface
+   * geometry is identical to desktop. */
   .composer-grid {
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    border-radius: 24px;
+    /* Symmetric padding keeps the embedded controls centred against both pill
+       edges on mobile too (Issue #557 markup/offset polish). */
+    padding: 6px;
     gap: 6px;
   }
 
-  textarea {
+  textarea,
+  .composer-input {
     min-height: 42px;
     height: auto;
     max-height: min(132px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5 - 64px));
-    padding: 11px;
+    /* Keep the four-side padding uniform on mobile too (Issue #112); the
+       horizontal gap to the embedded controls comes from the pill flex gap. */
+    padding: 9px;
     resize: none;
   }
 
   .send-button {
     width: 42px;
     min-width: 42px;
+    height: 42px;
     min-height: 42px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 999px;
   }
 
   .composer-action-button {
     width: 42px;
     height: 42px;
     font-size: 21px;
-  }
-
-  .send-label {
-    display: none;
   }
 
   .send-icon {
@@ -3404,8 +4092,8 @@ textarea:disabled {
 
 :root[data-theme="dark"] .context-panel,
 :root[data-theme="dark"] .composer {
-  border-color: #343a3d;
-  background: #1d201f;
+  border-color: transparent;
+  background: transparent;
 }
 
 :root[data-theme="dark"] .context-resizer {
@@ -3491,12 +4179,12 @@ textarea:disabled {
 :root[data-theme="dark"] .source-code-button:hover,
 :root[data-theme="dark"] .download-button:hover,
 :root[data-theme="dark"] .sidebar-section-collapse:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .conversation-new {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .conversation-new:hover,
@@ -3508,8 +4196,8 @@ textarea:disabled {
 :root[data-theme="dark"] .composer-action-button:hover,
 :root[data-theme="dark"] .composer-menu-item:hover,
 :root[data-theme="dark"] .fetch-iframe-control:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .conversation-empty,
@@ -3563,11 +4251,11 @@ textarea:disabled {
 
 :root[data-theme="dark"] .settings-reset-all:hover:not(:disabled),
 :root[data-theme="dark"] .settings-reset-one:hover {
-  border-color: #6cc5a6;
+  border-color: var(--fa-control-hover-border);
 }
 
 :root[data-theme="dark"] .conversation-entry.is-active .conversation-entry-button {
-  border-color: #6cc5a6;
+  border-color: var(--fa-control-hover-border);
   background: #1f3a31;
 }
 
@@ -3605,8 +4293,7 @@ textarea:disabled {
   color: #f1d28a;
 }
 
-:root[data-theme="dark"] .markdown-body :not(pre) > code,
-:root[data-theme="dark"] textarea:disabled {
+:root[data-theme="dark"] .markdown-body :not(pre) > code {
   background: #272b2a;
 }
 
@@ -3741,8 +4428,8 @@ textarea:disabled {
 }
 
 :root[data-theme="dark"] .thinking-preview-toggle:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 :root[data-theme="dark"] .formalization-view {
@@ -3768,11 +4455,11 @@ textarea:disabled {
 }
 
 :root[data-theme="dark"] .message-actions a {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .markdown-body a.external-link {
-  color: #91d7bc;
+  color: var(--fa-accent-link);
 }
 
 :root[data-theme="dark"] .fetch-iframe-container,
@@ -3798,7 +4485,6 @@ textarea:disabled {
   color: #c9c1b6;
 }
 
-:root[data-theme="dark"] textarea,
 :root[data-theme="dark"] .setting-row input[type="text"],
 :root[data-theme="dark"] .setting-row select {
   border-color: #4a524e;
@@ -3806,42 +4492,9 @@ textarea:disabled {
   color: #ece7df;
 }
 
-:root[data-theme="dark"] .composer-style-glass-soft .composer,
-:root[data-theme="dark"] .composer-style-glass-clear .composer {
-  background: rgba(29, 32, 31, 0.82);
-}
-
-:root[data-theme="dark"] .composer-style-glass-clear .composer {
-  background: rgba(29, 32, 31, 0.64);
-}
-
-:root[data-theme="dark"] .composer-style-bubble .composer {
-  background: #181a1b;
-}
-
-:root[data-theme="dark"] .composer-style-glass-soft textarea,
-:root[data-theme="dark"] .composer-style-glass-soft .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-soft .composer-menu-item,
-:root[data-theme="dark"] .composer-style-glass-clear textarea,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
-  background: rgba(32, 35, 34, 0.74);
-}
-
-:root[data-theme="dark"] .composer-style-glass-clear textarea,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-action-button,
-:root[data-theme="dark"] .composer-style-glass-clear .composer-menu-item {
-  background: rgba(32, 35, 34, 0.52);
-}
-
-:root[data-theme="dark"] .composer-style-bubble .composer-grid {
-  border-color: #343a3d;
-  background: #1d201f;
-}
-
-:root[data-theme="dark"] textarea:focus {
-  outline-color: #7aa5ff;
-}
+/* Issue #557: the composer field surface + its glass/bubble variants theme
+ * through the --fa-composer-* tokens, so the dark axis needs no per-variant
+ * background overrides here. */
 
 :root[data-theme="dark"] .send-button:disabled {
   border-color: #3f4643;
@@ -3963,7 +4616,7 @@ textarea:disabled {
   }
 
   :root:not([data-theme="light"]) .conversation-new {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .conversation-new:hover,
@@ -3979,8 +4632,8 @@ textarea:disabled {
   :root:not([data-theme="light"]) .source-code-button:hover,
   :root:not([data-theme="light"]) .download-button:hover,
   :root:not([data-theme="light"]) .sidebar-section-collapse:hover {
-    border-color: #6cc5a6;
-    background: #28332f;
+    border-color: var(--fa-control-hover-border);
+    background: var(--fa-control-hover-bg);
   }
 
   :root:not([data-theme="light"]) .conversation-empty,
@@ -4034,11 +4687,11 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .settings-reset-all:hover:not(:disabled),
   :root:not([data-theme="light"]) .settings-reset-one:hover {
-    border-color: #6cc5a6;
+    border-color: var(--fa-control-hover-border);
   }
 
   :root:not([data-theme="light"]) .conversation-entry.is-active .conversation-entry-button {
-    border-color: #6cc5a6;
+    border-color: var(--fa-control-hover-border);
     background: #1f3a31;
   }
 
@@ -4211,8 +4864,8 @@ textarea:disabled {
   }
 
   :root:not([data-theme="light"]) .thinking-preview-toggle:hover {
-    border-color: #6cc5a6;
-    background: #28332f;
+    border-color: var(--fa-control-hover-border);
+    background: var(--fa-control-hover-bg);
   }
 
   :root:not([data-theme="light"]) .formalization-view {
@@ -4238,11 +4891,11 @@ textarea:disabled {
   }
 
   :root:not([data-theme="light"]) .message-actions a {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .markdown-body a.external-link {
-    color: #91d7bc;
+    color: var(--fa-accent-link);
   }
 
   :root:not([data-theme="light"]) .fetch-iframe-container,
@@ -4268,12 +4921,6 @@ textarea:disabled {
     color: #c9c1b6;
   }
 
-  :root:not([data-theme="light"]) textarea {
-    border-color: #4a524e;
-    background: #202322;
-    color: #ece7df;
-  }
-
   :root:not([data-theme="light"]) .setting-row input[type="text"],
   :root:not([data-theme="light"]) .setting-row select {
     border-color: #4a524e;
@@ -4281,42 +4928,8 @@ textarea:disabled {
     color: #ece7df;
   }
 
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
-    background: rgba(29, 32, 31, 0.82);
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer {
-    background: rgba(29, 32, 31, 0.64);
-  }
-
-  :root:not([data-theme="light"]) .composer-style-bubble .composer {
-    background: #181a1b;
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-soft textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-soft .composer-menu-item,
-  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
-    background: rgba(32, 35, 34, 0.74);
-  }
-
-  :root:not([data-theme="light"]) .composer-style-glass-clear textarea,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-action-button,
-  :root:not([data-theme="light"]) .composer-style-glass-clear .composer-menu-item {
-    background: rgba(32, 35, 34, 0.52);
-  }
-
-  :root:not([data-theme="light"]) .composer-style-bubble .composer-grid {
-    border-color: #343a3d;
-    background: #1d201f;
-  }
-
-  :root:not([data-theme="light"]) textarea:focus {
-    outline-color: #7aa5ff;
-  }
+  /* Issue #557: composer field + variants theme through --fa-composer-* tokens;
+   * no per-variant background overrides needed on this dark axis. */
 
   :root:not([data-theme="light"]) .send-button:disabled {
     border-color: #3f4643;

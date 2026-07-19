@@ -60,6 +60,23 @@ async function setRangeValue(page, testId, value) {
   }, value);
 }
 
+// Issue #557 / #108: assert that a control's bounding box sits inside the
+// composer field surface, proving the buttons are embedded into the text field
+// rather than living in a separate bordered box. A small tolerance absorbs
+// sub-pixel rounding and the focus ring.
+function assertContained(childBox, parentBox, tolerance = 2) {
+  expect(childBox).toBeTruthy();
+  expect(parentBox).toBeTruthy();
+  expect(childBox.x).toBeGreaterThanOrEqual(parentBox.x - tolerance);
+  expect(childBox.y).toBeGreaterThanOrEqual(parentBox.y - tolerance);
+  expect(childBox.x + childBox.width).toBeLessThanOrEqual(
+    parentBox.x + parentBox.width + tolerance,
+  );
+  expect(childBox.y + childBox.height).toBeLessThanOrEqual(
+    parentBox.y + parentBox.height + tolerance,
+  );
+}
+
 test.describe('formal-ai demo UI', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -948,7 +965,9 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
     await expect(drawerBrand).toContainText(/v(dev|\d+\.\d+\.\d+)/);
   });
 
-  test('focused mobile composer stays in one row and keeps the top menu reachable', async ({ page }) => {
+  test('focused mobile composer embeds its controls inside the field and keeps the top menu reachable', async ({
+    page,
+  }) => {
     await disableGreetingVariations(page);
     await page.setViewportSize({ width: 390, height: 780 });
     await page.goto('./');
@@ -964,6 +983,7 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
 
     const topbarBox = await page.locator('.topbar').boundingBox();
     const menuBox = await page.locator('[data-testid="mobile-menu-toggle"]').boundingBox();
+    const gridBox = await page.locator('.composer-grid').boundingBox();
     const actionBox = await page.locator('[data-testid="composer-menu-toggle"]').boundingBox();
     const inputBox = await input.boundingBox();
     const sendBox = await page.locator('[data-testid="chat-composer-submit"]').boundingBox();
@@ -971,6 +991,7 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
 
     expect(topbarBox).toBeTruthy();
     expect(menuBox).toBeTruthy();
+    expect(gridBox).toBeTruthy();
     expect(actionBox).toBeTruthy();
     expect(inputBox).toBeTruthy();
     expect(sendBox).toBeTruthy();
@@ -978,8 +999,20 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
 
     expect(topbarBox && topbarBox.y).toBeGreaterThanOrEqual(0);
     expect(menuBox && menuBox.y).toBeGreaterThanOrEqual(0);
-    expect(sendBox && inputBox && Math.abs(sendBox.y - inputBox.y)).toBeLessThan(4);
-    expect(actionBox && inputBox && Math.abs(actionBox.y - inputBox.y)).toBeLessThan(4);
+
+    // Issue #557 / #108: the input, action, and send controls all live inside the
+    // single composer field surface (buttons embedded into the text field) rather
+    // than in separate bordered boxes. Assert every control is contained within
+    // the `.composer-grid` bounds instead of a shared baseline.
+    assertContained(inputBox, gridBox);
+    assertContained(actionBox, gridBox);
+    assertContained(sendBox, gridBox);
+
+    // The controls sit in the bottom toolbar, below the text, with the action on
+    // the left and the send on the right of that same row.
+    expect(actionBox && inputBox && actionBox.y).toBeGreaterThanOrEqual(inputBox.y - 1);
+    expect(sendBox && actionBox && Math.abs(sendBox.y - actionBox.y)).toBeLessThan(4);
+    expect(sendBox && actionBox && sendBox.x).toBeGreaterThan(actionBox.x);
     expect(inputBox && viewport && inputBox.width).toBeGreaterThan(viewport.width * 0.55);
   });
 
@@ -1020,6 +1053,112 @@ test.describe('Issue #108: mobile composer and configurable input UI', () => {
     await expect(menu).toContainText('Import memory');
     await expect(menu).toContainText('Report issue');
   });
+});
+
+test.describe('Issue #557: adaptive composer skins', () => {
+  test('desktop composer embeds its controls inside a single field surface', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.setViewportSize({ width: 1280, height: 860 });
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    await page.locator('.mode-toggle').click();
+    const input = page.locator('[data-testid="chat-composer-input"]');
+    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await input.focus();
+
+    const gridBox = await page.locator('.composer-grid').boundingBox();
+    const inputBox = await input.boundingBox();
+    const actionBox = await page.locator('[data-testid="composer-menu-toggle"]').boundingBox();
+    const sendBox = await page.locator('[data-testid="chat-composer-submit"]').boundingBox();
+
+    // Buttons embedded into the text field: input, action, and send controls are
+    // all contained within the one rounded composer surface.
+    assertContained(inputBox, gridBox);
+    assertContained(actionBox, gridBox);
+    assertContained(sendBox, gridBox);
+
+    // The embedded toolbar sits below the text with the send anchored to the right.
+    expect(actionBox && inputBox && actionBox.y).toBeGreaterThanOrEqual(inputBox.y - 1);
+    expect(sendBox && actionBox && sendBox.x).toBeGreaterThan(actionBox.x);
+
+    // The send control is rendered as a compact embedded button, not a wide bar.
+    expect(sendBox && sendBox.width).toBeLessThan(80);
+  });
+
+  test('settings expose Material skin and a glass transparency slider', async ({ page }) => {
+    await disableGreetingVariations(page);
+    await page.goto('./');
+    await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+
+    const skin = page.locator('[data-testid="setting-ui-skin"]');
+    await skin.selectOption('material');
+    await expect(page.locator('.app')).toHaveClass(/ui-skin-material/);
+
+    await expect(page.locator('[data-testid="setting-glass-opacity"]')).toHaveCount(0);
+
+    await skin.selectOption('glass');
+    const glassOpacity = page.locator('[data-testid="setting-glass-opacity"]');
+    await expect(glassOpacity).toBeVisible();
+    await setRangeValue(page, 'setting-glass-opacity', 0.45);
+
+    const glassAlpha = await page.locator('.app').evaluate((node) =>
+      getComputedStyle(node).getPropertyValue('--fa-glass-alpha').trim(),
+    );
+    expect(glassAlpha).toBe('0.45');
+
+    const stored = await page.evaluate(
+      () => window.localStorage.getItem('formal-ai.preferences.v1') || '',
+    );
+    expect(stored).toContain('uiSkin "glass"');
+    expect(stored).toContain('glassOpacity "0.45"');
+  });
+
+  // Issue #557: the adaptive skin picker (Flat / Glass / Material / Contrast)
+  // and the glass transparency slider are language-facing UI, so every supported
+  // locale must render the translated skin label, options, and slider caption.
+  // Covering all languages here prevents a single-language regression from
+  // shipping a skin control that is only translated for English.
+  const skinLocaleCases = [
+    { language: 'en', skinLabel: 'UI skin', glass: 'Glass', opacity: 'Glass opacity' },
+    { language: 'ru', skinLabel: 'Скин UI', glass: 'Стекло', opacity: 'Прозрачность стекла' },
+    { language: 'hi', skinLabel: 'UI स्किन', glass: 'ग्लास', opacity: 'ग्लास अपारदर्शिता' },
+    { language: 'zh', skinLabel: '界面皮肤', glass: '玻璃', opacity: '玻璃不透明度' },
+  ];
+
+  for (const { language, skinLabel, glass, opacity } of skinLocaleCases) {
+    test(`skin picker and glass slider are translated for ${language}`, async ({ page }) => {
+      // Seed the full preference snapshot (glass skin + UI language) before the
+      // first load. A single init script avoids the greeting-off helper, which
+      // re-writes preferences on every navigation and would otherwise clobber
+      // the selected uiLanguage on reload.
+      await page.addInitScript((lang) => {
+        try {
+          window.localStorage.setItem(
+            'formal-ai.preferences.v1',
+            `demo_preferences\n  demoMode "off"\n  greetingVariations "off"\n  uiSkin "glass"\n  uiLanguage "${lang}"`,
+          );
+        } catch (_error) {
+          // localStorage can be unavailable in hardened browser contexts.
+        }
+      }, language);
+      await page.goto('./');
+      await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('html')).toHaveAttribute('lang', language);
+
+      const panel = page.locator('.settings-panel');
+      // The Material option keeps its brand name across locales, while Flat,
+      // Glass, and Contrast are localized; assert the localized Glass label plus
+      // the always-present Material brand render in the picker.
+      const skin = page.locator('[data-testid="setting-ui-skin"]');
+      await expect(skin.locator('option', { hasText: glass })).toHaveCount(1);
+      await expect(skin.locator('option', { hasText: 'Material' })).toHaveCount(1);
+      await expect(panel).toContainText(skinLabel);
+      // With the glass skin active the transparency slider caption is visible.
+      await expect(page.locator('[data-testid="setting-glass-opacity"]')).toBeVisible();
+      await expect(panel).toContainText(opacity);
+    });
+  }
 });
 
 test.describe('Issue #136: desktop sidebar sizing', () => {

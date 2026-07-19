@@ -319,7 +319,9 @@ test.describe('Issue #511/#519: cold-start ls home journey', () => {
     await page.locator('[data-testid="mode-option-agent"]').click();
     await page.locator('[data-testid="desktop-permission-panel-sidebar-grant-shell"]').click();
     await sendPrompt(page, 'run `ls ~` in terminal');
-    await page.locator('[data-testid="command-approve"]').last().click();
+    const approveShell = page.locator('[data-testid="command-approve"]').last();
+    await expect(approveShell).toBeEnabled();
+    await approveShell.click();
     await expect.poll(() => page.evaluate(() => window.__agentProviderCalls.length)).toBe(1);
 
     const lastAssistant = page.locator('[data-testid="chat-message"].assistant').last();

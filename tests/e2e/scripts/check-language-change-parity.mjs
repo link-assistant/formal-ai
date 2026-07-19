@@ -18,6 +18,7 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
 const watchedFiles = [
   'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-messages.lino',
   'src/web/i18n-catalog-permissions.lino',
   'data/seed/prompt-patterns.lino',
   'data/seed/multilingual-responses.lino',
@@ -183,6 +184,7 @@ function collectToolSignatures(text) {
 function signaturesForFile(relativePath, text, supportedLanguages) {
   switch (relativePath) {
     case 'src/web/i18n-catalog.lino':
+    case 'src/web/i18n-catalog-messages.lino':
     case 'src/web/i18n-catalog-permissions.lino':
       return collectTopLevelLocaleBlocks(text, supportedLanguages);
     case 'data/seed/prompt-patterns.lino':

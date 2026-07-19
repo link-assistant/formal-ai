@@ -85,6 +85,7 @@ module.exports = defineConfig({
     '**/issue-550-chakra-migration.spec.js',
     '**/issue-554-site.spec.js',
     '**/issue-556.spec.js',
+    '**/issue-557.spec.js',
     '**/issue-676-thinking-narrative.spec.js',
     '**/issue-687.spec.js',
     '**/issue-747.spec.js',
