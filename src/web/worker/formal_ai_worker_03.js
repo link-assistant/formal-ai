@@ -107,6 +107,9 @@ function translationMarkers() {
     circumfixFrames: roleWordForms(ROLE_TRANSLATION_UNQUOTED_FRAME)
       .filter((form) => form.slot === "circumfix")
       .map((form) => [form.before, form.after]),
+    suffixFrames: roleWordForms(ROLE_TRANSLATION_UNQUOTED_FRAME)
+      .filter((form) => form.slot === "suffix")
+      .map((form) => form.after),
     hindiVerbStems: bareScriptForms(
       ROLE_TRANSLATION_UNQUOTED_FRAME,
       containsDevanagari,
@@ -164,7 +167,22 @@ function extractUnquotedTranslationSurface(text) {
 
   const hindi = extractHindiUnquotedTranslationSurface(trimmed, lower);
   if (hindi) return hindi;
-  return extractChineseUnquotedTranslationSurface(trimmed, lower);
+  const chinese = extractChineseUnquotedTranslationSurface(trimmed, lower);
+  if (chinese) return chinese;
+
+  for (const frame of markers.suffixFrames) {
+    const frameIndex = lower.lastIndexOf(frame);
+    if (frameIndex === -1 || !lower.slice(frameIndex + frame.length).trim()) continue;
+    const extracted = cleanUnquotedTranslationSurface(trimmed.slice(0, frameIndex));
+    if (extracted) return extracted;
+  }
+  return null;
+}
+
+function isSourceFirstTranslationRequest(normalized, target, surface) {
+  return Boolean(target) && Boolean(surface) &&
+    wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
+      .some((stem) => normalized.includes(stem));
 }
 
 // The surface that sits between a circumfix frame's prefix and its trailing
@@ -181,7 +199,7 @@ function extractBetweenPrefixAndMarker(original, lower, prefix, marker) {
 }
 
 function cleanUnquotedTranslationSurface(candidate) {
-  const cleaned = String(candidate || "").trim();
+  const cleaned = String(candidate || "").trim().replace(/[-–—:]\s*$/u, "").trim();
   if (!cleaned || /["'«»`“”‘’]/u.test(cleaned)) return null;
   return cleaned;
 }

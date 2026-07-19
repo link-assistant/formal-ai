@@ -371,6 +371,7 @@ function renderTranslationGap(surface, source, target) {
 
 async function tryTranslation(prompt, normalized) {
   const targetHint = detectTranslationTargetLanguage(normalized);
+  const unquotedSurface = extractUnquotedTranslationSurface(prompt);
   // Issue #386: recognise a translation command by *meaning*, not by hardcoded
   // verbs. The command stems live once in the embedded translate meaning; this
   // code knows the concept and the head-initial/head-final typology. Clause-
@@ -386,14 +387,15 @@ async function tryTranslation(prompt, normalized) {
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) =>
       normalized.includes(stem),
     );
-  const isTranslationRequest = headInitialCommand || headFinalCommand;
+  const sourceFirstCommand = isSourceFirstTranslationRequest(normalized, targetHint, unquotedSurface);
+  const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
   if (!isTranslationRequest) return null;
 
   // Issue #216: fall back to an unquoted surface (`translate apple to
   // russian`) when no quoted fragment is present so the offline registry
   // can still resolve a meaning token.
   const surface =
-    extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt) || "";
+    extractQuotedPhrase(prompt) || unquotedSurface || "";
   const surfaceMeaning = surface || prompt;
   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
   const target = targetHint || "en";

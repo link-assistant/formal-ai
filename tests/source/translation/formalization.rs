@@ -575,6 +575,10 @@ fn translation_predicate() -> &'static PredicatePattern {
 fn parse_translation_object(prompt: &str) -> Option<String> {
     use crate::seed::ROLE_TRANSLATION_ACTION;
 
+    if let Some(surface) = crate::translation::extract_unquoted_translation_surface(prompt) {
+        return Some(surface);
+    }
+
     let trimmed = prompt.trim();
     let lower = trimmed.to_lowercase();
     // Issue #386: the translation command *verbs* are read from the lexicon

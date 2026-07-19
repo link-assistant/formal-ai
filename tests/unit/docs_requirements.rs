@@ -902,6 +902,10 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     matches!(
         relative.as_str(),
         "ci-logs"
+            // Verbatim issue, pull-request, CI, and research captures gathered
+            // by the issue solver. Like case-study raw-data, these are external
+            // evidence rather than authored product documentation.
+            | "dev/log"
             | "logs"
             | "tests/e2e/playwright-report"
             | "tests/e2e/test-results"

@@ -240,6 +240,16 @@ function matchesAnyPattern(value, patterns) {
   return patterns.some((pattern) => pattern.test(value));
 }
 
+function containsThemeObject(normalized) {
+  return matchesAnyPattern(normalized, [
+    /(?:^|[^\p{L}\p{N}])theme(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])dark mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])light mode(?:$|[^\p{L}\p{N}])/u,
+    /(?:^|[^\p{L}\p{N}])тема(?:$|[^\p{L}\p{N}])/u,
+    /主题/u,
+  ]);
+}
+
 const COMMAND_ON_TERMS = [
   "turn on",
   "enable",
@@ -642,7 +652,10 @@ function recognizeInterfaceCommand(text, capabilities = []) {
     };
   }
 
-  if (includesAnyText(normalized, ["theme", "dark mode", "light mode", "тема", "режим", "主题"])) {
+  // Match the preference object as a complete word. In particular, `тема`
+  // must not match inside Russian words such as `система`; otherwise ordinary
+  // prose can be intercepted before it reaches the solver (issue #776).
+  if (containsThemeObject(normalized)) {
     if (includesAnyText(normalized, ["dark", "темн", "тёмн", "深色", "dark mode"])) {
       return { kind: "set_preference", key: "theme", value: "dark", intent: "configure_theme", label: "Theme" };
     }
