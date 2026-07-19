@@ -201,7 +201,7 @@ pub struct AuditedStatement {
 }
 
 /// Two or more incompatible values for an exclusive claim key.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Contradiction {
     pub id: String,
     pub subject: String,

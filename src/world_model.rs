@@ -280,6 +280,22 @@ impl Context {
         id
     }
 
+    /// Insert or replace a batch of statements, then recalculate the context once.
+    ///
+    /// This is equivalent to repeated [`Self::add_statement`] calls in final
+    /// state, but avoids a full fixpoint calculation after every intermediate
+    /// insertion. Repository-scale importers should use this boundary so their
+    /// cost grows with the finished statement graph rather than every prefix of it.
+    pub fn extend_statements(
+        &mut self,
+        statements: impl IntoIterator<Item = Statement>,
+    ) -> RecalculationReport {
+        for statement in statements {
+            self.statements.insert(statement.id.clone(), statement);
+        }
+        self.recalculate()
+    }
+
     /// Re-evaluate every statement to a fixpoint (JTMS-style cascade).
     ///
     /// Each pass recomputes every statement's [`TruthValue`] from its own

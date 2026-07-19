@@ -1285,3 +1285,51 @@ multilingual_responses
     intent lexeme_import_cannot_remove_stale
     language zh
     text "无法删除过期文件 {file}：{error}"
+  response response_statement_audit_invalid_json_en
+    intent statement_audit_invalid_json
+    language en
+    text "invalid evidence JSON: {error}"
+  response response_statement_audit_capture_field_en
+    intent statement_audit_capture_field
+    language en
+    text "capture {index} field {field} {detail}"
+  response response_statement_audit_nonempty_en
+    intent statement_audit_nonempty
+    language en
+    text "must not be empty"
+  response response_statement_audit_strength_range_en
+    intent statement_audit_strength_range
+    language en
+    text "must be between 0 and 1"
+  response response_statement_audit_selector_exclusive_en
+    intent statement_audit_selector_exclusive
+    language en
+    text "must use statement or claim fields, not both"
+  response response_statement_audit_claim_subject_en
+    intent statement_audit_claim_subject
+    language en
+    text "claim requires subject"
+  response response_statement_audit_claim_predicate_en
+    intent statement_audit_claim_predicate
+    language en
+    text "claim requires predicate"
+  response response_statement_audit_selector_required_en
+    intent statement_audit_selector_required
+    language en
+    text "requires statement or subject and predicate"
+  response response_statement_audit_unknown_tier_en
+    intent statement_audit_unknown_tier
+    language en
+    text "contains an unknown source tier"
+  response response_statement_audit_unknown_stance_en
+    intent statement_audit_unknown_stance
+    language en
+    text "contains an unknown stance"
+  response response_statement_audit_invalid_temperature_en
+    intent statement_audit_invalid_temperature
+    language en
+    text "invalid temperature: {error}"
+  response response_statement_audit_temperature_range_en
+    intent statement_audit_temperature_range
+    language en
+    text "temperature must be finite and greater than zero"

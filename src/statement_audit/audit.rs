@@ -1,8 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::Write as _;
 
 use crate::associative_persistence::AssociativeMemory;
 use crate::engine::stable_id;
+use crate::links_format::push_lino_node;
 use crate::probability::{
     rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
 };
@@ -108,7 +108,7 @@ fn assess_statement(
         text: extracted.text,
         location: extracted.location,
         claim: extracted.claim,
-        relative_weight: assessment.posterior.get() as f32,
+        relative_weight: probability_f32(assessment.posterior.get()),
         evidence,
         assessment,
     }
@@ -158,7 +158,7 @@ fn weigh_exclusive_claims(
             .map(|index| {
                 ProbabilityCandidate::new(
                     &statements[*index].id,
-                    statements[*index].assessment.posterior.get() as f32,
+                    probability_f32(statements[*index].assessment.posterior.get()),
                 )
             })
             .collect::<Vec<_>>();
@@ -194,6 +194,11 @@ fn weigh_exclusive_claims(
     contradictions
 }
 
+#[allow(clippy::cast_possible_truncation)]
+const fn probability_f32(value: f64) -> f32 {
+    value as f32
+}
+
 fn collect_findings(
     statements: &[AuditedStatement],
     contradictions: &[Contradiction],
@@ -224,7 +229,7 @@ fn learn(
     findings: &[AuditFinding],
 ) -> AssociativeMemory {
     let mut context = Context::new("repository_statement_audit");
-    for statement in statements {
+    let worlds = statements.iter().map(|statement| {
         let mut world = WorldStatement::new(&statement.text);
         world.id.clone_from(&statement.id);
         world.evidence = statement
@@ -239,8 +244,9 @@ fn learn(
                 )
             })
             .collect();
-        context.add_statement(world);
-    }
+        world
+    });
+    let _ = context.extend_statements(worlds);
     let mut memory = AssociativeMemory::from_context(&context);
     for statement in statements {
         for evidence in &statement.evidence {
@@ -290,43 +296,206 @@ impl RepositoryAudit {
     #[must_use]
     pub fn to_links_notation(&self) -> String {
         let mut output = String::new();
+        push_lino_node(&mut output, 0, "repository_statement_audit", None);
+        push_lino_node(&mut output, 2, "summary", None);
+        push_lino_node(
+            &mut output,
+            4,
+            "statement_count",
+            Some(&self.statements.len().to_string()),
+        );
+        push_lino_node(
+            &mut output,
+            4,
+            "contradiction_count",
+            Some(&self.contradictions.len().to_string()),
+        );
+        push_lino_node(
+            &mut output,
+            4,
+            "finding_count",
+            Some(&self.findings.len().to_string()),
+        );
+        push_lino_node(
+            &mut output,
+            4,
+            "skipped_path_count",
+            Some(&self.skipped_paths.len().to_string()),
+        );
+        push_lino_node(&mut output, 2, "statements", None);
         for statement in &self.statements {
-            let _ = writeln!(
-                output,
-                "statement_weight: ({} {:.6})",
-                statement.id, statement.relative_weight
+            push_lino_node(&mut output, 4, &statement.id, None);
+            push_lino_node(&mut output, 6, "type", Some("audited_statement"));
+            push_lino_node(&mut output, 6, "text", Some(&statement.text));
+            push_lino_node(
+                &mut output,
+                6,
+                "posterior",
+                Some(&statement.assessment.posterior.get().to_string()),
             );
-            let _ = writeln!(
-                output,
-                "source_location: ({} {}:{}:{})",
-                statement.id,
-                statement.location.path,
-                statement.location.line,
-                statement.location.kind.slug()
+            push_lino_node(
+                &mut output,
+                6,
+                "relative_weight",
+                Some(&statement.relative_weight.to_string()),
             );
+            push_lino_node(&mut output, 6, "source_location", None);
+            push_lino_node(&mut output, 8, "path", Some(&statement.location.path));
+            push_lino_node(
+                &mut output,
+                8,
+                "line",
+                Some(&statement.location.line.to_string()),
+            );
+            push_lino_node(&mut output, 8, "kind", Some(statement.location.kind.slug()));
+            if let Some(claim) = &statement.claim {
+                push_lino_node(&mut output, 6, "claim", None);
+                push_lino_node(&mut output, 8, "subject", Some(&claim.subject));
+                push_lino_node(&mut output, 8, "predicate", Some(&claim.predicate));
+                push_lino_node(&mut output, 8, "value", Some(&claim.value));
+                push_lino_node(
+                    &mut output,
+                    8,
+                    "exclusive",
+                    Some(&claim.exclusive.to_string()),
+                );
+            }
+            push_lino_node(&mut output, 6, "learning", None);
+            push_lino_node(
+                &mut output,
+                8,
+                "reads",
+                Some(&self.learning.reads(&statement.id).to_string()),
+            );
+            push_lino_node(
+                &mut output,
+                8,
+                "writes",
+                Some(&self.learning.writes(&statement.id).to_string()),
+            );
+            push_lino_node(
+                &mut output,
+                8,
+                "retention_score",
+                Some(&self.learning.retention_score(&statement.id).to_string()),
+            );
+            if !statement.evidence.is_empty() {
+                push_lino_node(&mut output, 6, "evidence", None);
+            }
             for evidence in &statement.evidence {
                 let id = evidence_id(&statement.id, &evidence.capture);
-                let _ = writeln!(output, "evidence_provenance: ({} {})", statement.id, id);
+                push_lino_node(&mut output, 8, &id, None);
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "source_label",
+                    Some(&evidence.capture.source_label),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "source_url",
+                    Some(&evidence.capture.source_url),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "source_tier",
+                    Some(evidence.capture.tier.slug()),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "stance",
+                    Some(evidence.capture.stance.slug()),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "asserted_strength",
+                    Some(&evidence.capture.strength.to_string()),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "effective_mass",
+                    Some(&evidence.effective_mass.to_string()),
+                );
+                push_lino_node(
+                    &mut output,
+                    10,
+                    "captured_at",
+                    Some(&evidence.capture.captured_at),
+                );
+                push_lino_node(&mut output, 10, "sha256", Some(&evidence.capture.sha256));
+            }
+        }
+        push_lino_node(&mut output, 2, "contradictions", None);
+        for contradiction in &self.contradictions {
+            push_lino_node(&mut output, 4, &contradiction.id, None);
+            push_lino_node(&mut output, 6, "type", Some("requirement_contradiction"));
+            push_lino_node(&mut output, 6, "subject", Some(&contradiction.subject));
+            push_lino_node(&mut output, 6, "predicate", Some(&contradiction.predicate));
+            push_lino_node(
+                &mut output,
+                6,
+                "statement_ids",
+                Some(&contradiction.statement_ids.join(" ")),
+            );
+            push_lino_node(
+                &mut output,
+                6,
+                "proposed_resolution",
+                Some(&contradiction.proposed_resolution),
+            );
+        }
+        push_lino_node(&mut output, 2, "findings", None);
+        for finding in &self.findings {
+            push_lino_node(&mut output, 4, &finding.id, None);
+            push_lino_node(&mut output, 6, "type", Some("audit_finding"));
+            push_lino_node(&mut output, 6, "kind", Some(finding.kind.slug()));
+            push_lino_node(
+                &mut output,
+                6,
+                "statement_ids",
+                Some(&finding.statement_ids.join(" ")),
+            );
+        }
+        push_lino_node(&mut output, 2, "associations", None);
+        for (from, to) in self.association_links() {
+            let id = stable_id("audit_association", &format!("{from}:{to}"));
+            push_lino_node(&mut output, 4, &id, None);
+            push_lino_node(&mut output, 6, "from", Some(&from));
+            push_lino_node(&mut output, 6, "to", Some(&to));
+        }
+        push_lino_node(&mut output, 2, "skipped_paths", None);
+        for path in &self.skipped_paths {
+            let id = stable_id("skipped_path", path);
+            push_lino_node(&mut output, 4, &id, Some(path));
+        }
+        output
+    }
+
+    fn association_links(&self) -> BTreeSet<(String, String)> {
+        let mut links = BTreeSet::new();
+        for statement in &self.statements {
+            for evidence in &statement.evidence {
+                links.insert((
+                    statement.id.clone(),
+                    evidence_id(&statement.id, &evidence.capture),
+                ));
             }
         }
         for contradiction in &self.contradictions {
-            let _ = writeln!(
-                output,
-                "requirement_contradiction: ({} {})",
-                contradiction.id,
-                contradiction.statement_ids.join(" ")
-            );
+            for statement_id in &contradiction.statement_ids {
+                links.insert((contradiction.id.clone(), statement_id.clone()));
+            }
         }
         for finding in &self.findings {
-            let _ = writeln!(
-                output,
-                "audit_finding: ({} {} {})",
-                finding.id,
-                finding.kind.slug(),
-                finding.statement_ids.join(" ")
-            );
+            for statement_id in &finding.statement_ids {
+                links.insert((finding.id.clone(), statement_id.clone()));
+            }
         }
-        output.push_str(&self.learning.links_notation());
-        output
+        links
     }
 }

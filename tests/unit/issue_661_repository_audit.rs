@@ -7,7 +7,8 @@
 
 use formal_ai::relative_meta_logic::{SourceTier, Stance};
 use formal_ai::statement_audit::{
-    audit_corpus, AuditConfig, EvidenceCapture, RepositoryCorpus, RepositoryDocument, SourceKind,
+    audit_corpus, parse_evidence_json, AuditConfig, EvidenceCapture, EvidenceSelector,
+    RepositoryCorpus, RepositoryDocument, SourceKind,
 };
 
 fn corpus(documents: &[(&str, &str)]) -> RepositoryCorpus {
@@ -227,8 +228,96 @@ fn findings_are_append_only_links_and_persist_in_associative_memory() {
     assert!(audit.learning.retention_score(&finding.id) > 1);
 
     let links = audit.to_links_notation();
-    assert!(links.contains("statement_weight:"), "{links}");
-    assert!(links.contains("evidence_provenance:"), "{links}");
-    assert!(links.contains("audit_finding:"), "{links}");
-    assert!(links.contains("associates:"), "{links}");
+    assert!(links.contains("relative_weight"), "{links}");
+    assert!(links.contains("source_url"), "{links}");
+    assert!(links.contains("audit_finding"), "{links}");
+    assert!(links.contains("associations"), "{links}");
+    lino_objects_codec::format::parse_indented(&links)
+        .expect("the audit artifact must be valid Links Notation");
+}
+
+#[test]
+fn evidence_json_accepts_statement_and_claim_selectors_with_replay_metadata() {
+    let captures = parse_evidence_json(
+        r#"{
+          "captures": [
+            {
+              "statement": "The protocol is a W3C Recommendation.",
+              "source_label": "W3C specification",
+              "source_url": "https://www.w3.org/TR/prov-o/",
+              "tier": "original_first_party",
+              "stance": "supports",
+              "strength": 1.0,
+              "captured_at": "2026-07-19T00:00:00Z",
+              "sha256": "sha256:primary"
+            },
+            {
+              "subject": "Cargo.toml",
+              "predicate": "version",
+              "value": "0.298.1",
+              "source_label": "release manifest",
+              "source_url": "repo:Cargo.toml",
+              "tier": "original_first_party",
+              "stance": "supports",
+              "strength": 0.95,
+              "captured_at": "repository_snapshot",
+              "sha256": "sha256:manifest"
+            }
+          ]
+        }"#,
+    )
+    .expect("valid replayable evidence");
+
+    assert_eq!(captures.len(), 2);
+    assert!(matches!(
+        &captures[0].selector,
+        EvidenceSelector::StatementText(text)
+            if text == "The protocol is a W3C Recommendation."
+    ));
+    assert!(matches!(
+        &captures[1].selector,
+        EvidenceSelector::Claim { subject, predicate, value }
+            if subject == "Cargo.toml"
+                && predicate == "version"
+                && value.as_deref() == Some("0.298.1")
+    ));
+    assert_eq!(captures[0].tier, SourceTier::OriginalFirstParty);
+    assert_eq!(captures[0].stance, Stance::Supports);
+    assert!((captures[1].strength - 0.95).abs() < f64::EPSILON);
+    assert_eq!(captures[1].sha256, "sha256:manifest");
+}
+
+#[test]
+fn evidence_json_rejects_ambiguous_selectors_and_unknown_provenance_values() {
+    let ambiguous = parse_evidence_json(
+        r#"{"captures":[{
+          "statement":"one",
+          "subject":"two",
+          "predicate":"kind",
+          "source_label":"source",
+          "source_url":"repo:source",
+          "tier":"original_first_party",
+          "stance":"supports",
+          "strength":1.0,
+          "captured_at":"snapshot",
+          "sha256":"sha256:value"
+        }]}"#,
+    )
+    .expect_err("a capture must select by text or claim, never both");
+    assert!(ambiguous.to_string().contains("selector"), "{ambiguous}");
+
+    let unknown_tier = parse_evidence_json(
+        r#"{"captures":[{
+          "statement":"one",
+          "source_label":"source",
+          "source_url":"repo:source",
+          "tier":"search_result",
+          "stance":"supports",
+          "strength":1.0,
+          "captured_at":"snapshot",
+          "sha256":"sha256:value"
+        }]}"#,
+    )
+    .expect_err("unoriginal search output must be classified explicitly");
+    assert!(unknown_tier.to_string().contains("tier"), "{unknown_tier}");
 }

@@ -5,11 +5,13 @@
 //! Filesystem discovery and network capture stay at the boundary.
 
 mod audit;
+mod evidence;
 mod extract;
 mod model;
 mod repository;
 
 pub use audit::audit_corpus;
+pub use evidence::{parse_evidence_json, EvidenceParseError};
 pub use extract::requirement_claim;
 pub use model::{
     AttachedEvidence, AuditConfig, AuditFinding, AuditedStatement, Claim, Contradiction,

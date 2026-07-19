@@ -9,6 +9,8 @@ use crate::solver_handlers::finalize_simple;
 use crate::statement_audit::{audit_corpus, AuditConfig, RepositoryCorpus, RepositoryDocument};
 
 const RESPONSE_INTENT: &str = "requirement_contradiction";
+const PRIOR_PLACEHOLDER: &str = "{prior}";
+const CURRENT_PLACEHOLDER: &str = "{current}";
 
 /// Detect a contradiction between the current prompt and retained requirements.
 ///
@@ -86,8 +88,8 @@ pub fn detect_and_report(
     let body = render_template(
         &template,
         &[
-            ("{prior}", prior.text.as_str()),
-            ("{current}", current.text.as_str()),
+            (PRIOR_PLACEHOLDER, prior.text.as_str()),
+            (CURRENT_PLACEHOLDER, current.text.as_str()),
             ("{subject}", contradiction.subject.as_str()),
             ("{prior_weight}", &format!("{:.6}", prior.relative_weight)),
             (
