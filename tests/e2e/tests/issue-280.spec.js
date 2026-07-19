@@ -31,6 +31,10 @@ test.describe('Issue #280: desktop shell bridge', () => {
           graphUrl: 'http://127.0.0.1:18080/v1/graph',
           traceUrl: 'http://127.0.0.1:18080/v1/graph?trace=answer_greeting_hi',
           memory: 'formal_ai_bundle',
+          activeEngine: 'out-of-box',
+          engines: [
+            { id: 'out-of-box', label: 'Out of the box', type: 'native', available: true },
+          ],
           agentModeDefault: false,
           toolCallPolicy: 'explicit-permission',
           apiReady: true,
@@ -43,7 +47,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
 
   test('desktop status, network, memory, and permission surfaces are visible', async ({ page }) => {
     await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
-      'Desktop - API local - agent permission off',
+      'Desktop - out-of-box - API local - agent permission off',
     );
     await expect(page.locator('[data-testid="sidebar-desktop"]')).toBeVisible();
     await expect(page.locator('[data-testid="desktop-api-base"]')).toHaveText(
@@ -89,7 +93,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
         language,
       );
       await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
-        'Desktop - API local - agent permission off',
+        'Desktop - out-of-box - API local - agent permission off',
       );
       // Issue #511/#514: the tool-count label now comes from the i18n catalog,
       // so assert against the active language's translation rather than English.
