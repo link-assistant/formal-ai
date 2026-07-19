@@ -232,6 +232,7 @@ config, and then runs the external CLI with the remaining arguments unchanged:
 
 ```bash
 formal-ai with codex "hi"
+formal-ai with t3code
 formal-ai with opencode run "hi"
 formal-ai with agent -p "hi"
 formal-ai with cursor -p "hi"
@@ -285,6 +286,25 @@ also generates a model catalog inside the temporary Codex home and passes it as
 `model_catalog_json`, so Codex recognizes the Formal AI model's context window
 and capabilities without a missing-metadata warning.
 
+T3 Code can be launched with either `formal-ai with t3code` or the shorter
+`formal-ai with t3`. The wrapper runs the installed `t3` executable with an
+isolated `CODEX_HOME`, a generated Responses provider, the local model catalog,
+and a dummy `FORMAL_AI_API_KEY` when no key is set. The browser opens normally;
+add the wrapper flag `--non-interactive` to pass T3 Code's `--no-browser` flag:
+
+```bash
+formal-ai with --base-url http://127.0.0.1:8080 t3code
+formal-ai with --non-interactive t3
+```
+
+In T3 Code's provider settings, choose **Codex**, provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8080/api/openai/v1`, and any non-empty
+API key such as `formal-ai`. For a Claude-backed session, run with
+`--protocol anthropic`; the wrapper supplies `ANTHROPIC_BASE_URL` as
+`http://127.0.0.1:8080/api/anthropic` and the same dummy token. Use
+`formal-ai with --global --protocol openai t3code` (or `anthropic`) to persist
+the corresponding provider configuration, and `--undo` to restore its backup.
+
 After an interactive or one-shot wrapped CLI exits, `formal-ai with` prints the
 session artifact created by that invocation and a copy-pasteable resume command
 when the client supports one. The data-driven paths cover Codex, Gemini, Qwen,
@@ -299,13 +319,13 @@ formal-ai: session files for debugging:
   codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)
   server log: /work/proxy.jsonl
 ```
-
 For permanent setup, use the standalone wrapper or the subcommand with `-g`.
 It backs up the original file next to the edited config, merges the Formal AI
 provider without removing unrelated settings, and can restore the backup:
 
 ```bash
 with-formal-ai -g codex
+with-formal-ai -g t3code
 with-formal-ai -g opencode
 with-formal-ai -g agent
 with-formal-ai -g cursor

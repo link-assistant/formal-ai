@@ -74,6 +74,7 @@ pub struct ClientIntegrationInvocation {
     pub temp_home_env: String,
     pub temp_home_config_path: String,
     pub temp_home_json_settings: Vec<(String, String)>,
+    pub temp_home_toml_settings: Vec<(String, String)>,
     pub model_catalog_path: String,
     pub model_arg: String,
     pub model_arg_position: Option<ModelArgPosition>,
@@ -85,6 +86,7 @@ pub struct ClientIntegrationInvocation {
 
 #[derive(Debug, Clone)]
 pub struct ClientIntegrationGlobalConfig {
+    pub protocol: String,
     pub format: ConfigFormat,
     pub path: String,
     pub backup_suffix: String,
@@ -97,6 +99,7 @@ pub struct ClientIntegrationGlobalConfig {
 #[derive(Debug, Clone)]
 pub struct ClientIntegration {
     pub id: String,
+    pub aliases: Vec<String>,
     pub label: String,
     pub command: String,
     pub provider_id: String,
@@ -107,7 +110,10 @@ pub struct ClientIntegration {
     pub api_key_default: String,
     pub model_selector: String,
     pub invocation: ClientIntegrationInvocation,
+    /// The default-protocol global configuration, retained for callers that
+    /// inspect the registry directly.
     pub global_config: ClientIntegrationGlobalConfig,
+    pub global_configs: Vec<ClientIntegrationGlobalConfig>,
 }
 
 impl ClientIntegration {
@@ -116,6 +122,19 @@ impl ClientIntegration {
         self.endpoints
             .iter()
             .find_map(|(candidate, path)| (candidate == protocol).then_some(path.as_str()))
+    }
+
+    #[must_use]
+    pub fn global_config_for(&self, protocol: &str) -> &ClientIntegrationGlobalConfig {
+        self.global_configs
+            .iter()
+            .find(|config| config.protocol == protocol)
+            .or_else(|| {
+                self.global_configs
+                    .iter()
+                    .find(|config| config.protocol.is_empty())
+            })
+            .unwrap_or(&self.global_config)
     }
 }
 
@@ -142,6 +161,7 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
     if id.is_empty() {
         return None;
     }
+    let aliases = split_pipe_list(tool.find_child_value("aliases"));
     let label = tool.find_child_value("label").to_string();
     let command = tool.find_child_value("command").to_string();
     let provider_id = tool.find_child_value("provider_id").to_string();
@@ -162,13 +182,23 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         .find(|node| node.name == "ephemeral")
         .map(parse_invocation)
         .unwrap_or_default();
-    let global_config = tool
+    let global_configs = tool
         .children
         .iter()
-        .find(|node| node.name == "global")
-        .and_then(parse_global_config)?;
+        .filter(|node| node.name == "global")
+        .filter_map(parse_global_config)
+        .collect::<Vec<_>>();
+    if global_configs.is_empty() {
+        return None;
+    }
+    let global_config = global_configs
+        .iter()
+        .find(|config| config.protocol == default_protocol)
+        .unwrap_or(&global_configs[0])
+        .clone();
     Some(ClientIntegration {
         id,
+        aliases,
         label,
         command,
         provider_id,
@@ -180,6 +210,7 @@ fn parse_tool(tool: &super::parser::LinoNode) -> Option<ClientIntegration> {
         model_selector,
         invocation,
         global_config,
+        global_configs,
     })
 }
 
@@ -218,6 +249,11 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
                     invocation.temp_home_json_settings.push((key, value));
                 }
             }
+            "temp_home_toml_set" => {
+                if let Some((key, value)) = split_once_equals(&child.id) {
+                    invocation.temp_home_toml_settings.push((key, value));
+                }
+            }
             "model_catalog_path" => invocation.model_catalog_path.clone_from(&child.id),
             "model_arg" => invocation.model_arg.clone_from(&child.id),
             "model_arg_position" => {
@@ -236,6 +272,7 @@ fn parse_invocation(node: &super::parser::LinoNode) -> ClientIntegrationInvocati
 fn parse_global_config(node: &super::parser::LinoNode) -> Option<ClientIntegrationGlobalConfig> {
     let format = ConfigFormat::from_seed(node.find_child_value("kind"))?;
     let mut config = ClientIntegrationGlobalConfig {
+        protocol: node.id.clone(),
         format,
         path: node.find_child_value("path").to_string(),
         backup_suffix: node.find_child_value("backup_suffix").to_string(),
