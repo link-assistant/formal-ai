@@ -7,19 +7,19 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 21688
-  named_node_count 4352
+  total_link_count 21845
+  named_node_count 4382
   distinct_node_kinds 78
   node_kinds
-    arguments 287
+    arguments 290
     array_expression 2
     array_type 42
     assignment_expression 5
     attribute 6
     attribute_item 6
     binary_expression 11
-    block 107
-    call_expression 287
+    block 108
+    call_expression 290
     closure_expression 16
     closure_parameters 16
     const_item 4
@@ -32,7 +32,7 @@ self_ast
     enum_variant 15
     enum_variant_list 2
     escape_sequence 9
-    expression_statement 125
+    expression_statement 127
     field_declaration 12
     field_declaration_list 3
     field_expression 115
@@ -43,8 +43,8 @@ self_ast
     function_item 36
     function_modifiers 2
     generic_type 14
-    identifier 1172
-    if_expression 68
+    identifier 1182
+    if_expression 69
     impl_item 2
     index_expression 2
     inner_doc_comment_marker 5
@@ -52,7 +52,7 @@ self_ast
     let_condition 33
     let_declaration 63
     lifetime 3
-    line_comment 223
+    line_comment 226
     macro_invocation 26
     match_arm 26
     match_block 2
@@ -65,10 +65,10 @@ self_ast
     parameters 36
     primitive_type 43
     range_expression 1
-    reference_expression 68
+    reference_expression 69
     reference_type 81
-    return_expression 47
-    scoped_identifier 182
+    return_expression 48
+    scoped_identifier 185
     scoped_use_list 3
     self 12
     self_parameter 6
@@ -78,7 +78,7 @@ self_ast
     string_literal 78
     struct_expression 14
     struct_item 3
-    super 48
+    super 49
     token_tree 48
     try_expression 2
     tuple_pattern 1
@@ -86,6 +86,6 @@ self_ast
     type_arguments 14
     type_identifier 104
     unary_expression 19
-    use_declaration 29
+    use_declaration 30
     use_list 3
     visibility_modifier 32
