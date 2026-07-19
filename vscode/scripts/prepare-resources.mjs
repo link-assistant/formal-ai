@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { build } from "esbuild";
 
 // Package-time resource preparation for the VS Code extension (`vsce package`).
 //
@@ -104,7 +105,25 @@ if (fs.existsSync(playwrightCli)) {
 
 fs.mkdirSync(outputVendor, { recursive: true });
 for (const moduleName of VENDOR_MODULES) {
-  fs.copyFileSync(path.join(sourceLib, moduleName), path.join(outputVendor, moduleName));
+  const source = path.join(sourceLib, moduleName);
+  const destination = path.join(outputVendor, moduleName);
+  if (moduleName === "web-tools.cjs") {
+    // This adapter is the only reused module with npm dependencies. Bundle its
+    // dependency graph so the VSIX does not need to ship thousands of files
+    // from node_modules (and so vsce's unbundled-extension warning is useful).
+    await build({
+      entryPoints: [source],
+      outfile: destination,
+      bundle: true,
+      platform: "node",
+      format: "cjs",
+      target: "node22",
+      nodePaths: [path.join(vscodeDir, "node_modules")],
+      logLevel: "warning",
+    });
+  } else {
+    fs.copyFileSync(source, destination);
+  }
 }
 
 console.log(`Prepared VS Code web resources: ${outputWeb}`);

@@ -36,7 +36,7 @@ const WORKER_JS_LIMIT: FileLimit = FileLimit {
     label: "Worker JavaScript",
 };
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
-const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/"];
+const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/", "dev/log/"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct FileLimit {
@@ -596,6 +596,23 @@ mod tests {
         assert_eq!(result.violations, Vec::new());
         assert_eq!(result.warnings, Vec::new());
         assert_eq!(result.embedded_data_violations, Vec::new());
+    }
+
+    #[test]
+    fn check_directory_skips_preserved_development_evidence() {
+        let repo = temp_dir("development-evidence");
+        let evidence_dir = repo.join("dev/log/issues/798/templates");
+        fs::create_dir_all(&evidence_dir).unwrap();
+        let rust_limit = FILE_LIMITS[0];
+        write_rust_file_with_lines(
+            &evidence_dir.join("version-and-commit.rs"),
+            rust_limit.max_lines + 1,
+        );
+
+        let result = check_directory(&repo);
+
+        assert_eq!(result.violations, Vec::new());
+        assert_eq!(result.warnings, Vec::new());
     }
 
     #[test]

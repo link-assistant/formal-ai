@@ -1,0 +1,9 @@
+🔍 [ENGINE DETECTION] {
+  hasEval: true,
+  hasEvalAll: true,
+  locatorType: 'function',
+  contextType: 'function',
+  hasContext: true
+}
+🔍 [ENGINE DETECTION] Detected: playwright
+HTML saved to: docs/case-studies/issue-781/raw-data/ubuy-tonton-browser.html

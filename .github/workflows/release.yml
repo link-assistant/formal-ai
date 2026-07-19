@@ -191,6 +191,9 @@ jobs:
       - name: Check formatting
         run: cargo fmt --all -- --check
 
+      - name: Verify Cargo.lock is synchronized
+        run: cargo metadata --locked --format-version 1 > /dev/null
+
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
@@ -308,6 +311,12 @@ jobs:
       # `npm ci` or prepare-resources step is required here.
       - name: Run VS Code extension node tests
         run: npm run vscode:test
+
+      # The signer test stubs @electron/osx-sign, so it runs on Linux without
+      # installing the desktop dependency tree while still exercising the real
+      # browser-runtime exclusion logic used by both macOS release targets.
+      - name: Run desktop packaging regression tests
+        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs
 
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
@@ -571,6 +580,14 @@ jobs:
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
 
+      - name: Smoke test the published crate
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.check.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        run: scripts/smoke-test-published-crate.sh "${{ steps.current_version.outputs.version }}"
+
       # Same "No space left on device" runner crash as issue #523, which was only
       # fixed for the Pages job. `Build release` above already filled `/` with a
       # multi-GB `target/`, and the Docker build below compiles the crate a second
@@ -800,6 +817,13 @@ jobs:
           steps.publish-crate.outputs.publish_result == 'success'
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
 
+      - name: Smoke test the published crate
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        run: scripts/smoke-test-published-crate.sh "${{ steps.version.outputs.new_version }}"
+
       # See the auto-release job: the Docker build below needs headroom that
       # `Build release` has already consumed.
       - name: Free up runner disk space
@@ -1018,6 +1042,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+          # Avoid racing lint/agent E2E for setup-bun's shared executable key.
+          no-cache: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -1114,6 +1140,8 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
+          # Avoid racing lint/local E2E for setup-bun's shared executable key.
+          no-cache: true
 
       - name: Install @link-assistant/agent CLI
         # The E2E script talks to formal-ai through the same CLI users install
@@ -1306,6 +1334,15 @@ jobs:
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
+
+      - name: "Run agent CLI E2E — compatibility research triangulates sources (issue #781)"
+        # A real marketplace compatibility question must not stop after the
+        # first result. The server trace proves one search fans out to at least
+        # three fetches and the real Agent CLI executes each one. Deterministic
+        # coverage checks the following synthesis round and its citations.
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_781.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate

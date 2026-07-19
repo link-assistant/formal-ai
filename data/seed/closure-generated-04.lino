@@ -114,6 +114,46 @@ meanings
     lexeme en
       surface
         text "response requirement contradiction zh"
+  response_shared_dialog_capture_parse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed en"
+  response_shared_dialog_capture_parse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed hi"
+  response_shared_dialog_capture_parse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed ru"
+  response_shared_dialog_capture_parse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture parse failed zh"
+  response_shared_dialog_capture_unsupported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported en"
+  response_shared_dialog_capture_unsupported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported hi"
+  response_shared_dialog_capture_unsupported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported ru"
+  response_shared_dialog_capture_unsupported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response shared dialog capture unsupported zh"
   response_statement_audit_capture_field_en
     defined-by response_template
     lexeme en
@@ -499,6 +539,16 @@ meanings
     lexeme en
       surface
         text "sentence case"
+  shared_dialog_capture_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture parse failed"
+  shared_dialog_capture_unsupported
+    defined-by intent
+    lexeme en
+      surface
+        text "shared dialog capture unsupported"
   shell-helpers
     defined-by category
     lexeme en

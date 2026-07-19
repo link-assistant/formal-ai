@@ -7,6 +7,129 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.299.0] - 2026-07-19
+
+### Added
+- `formal-ai import lexemes` — a deterministic bulk semantics importer that
+  generalises the one-off `scripts/ground-meanings.rs` into a reusable pipeline
+  (issue #660, R378). It reads a `concepts` document of `<slug> <Qid>` pairs,
+  pulls each concept's four project-language labels (en/ru/hi/zh) from the
+  committed Wikidata entity cache, and emits grounded meaning blocks whose
+  surfaces denote their meaning and carry `part_of_speech`/`grammatical_number`
+  facets. `--offline` (the default) reads only the committed cache, so a run
+  reproduces the committed batch byte-for-byte; live population is gated behind
+  `FORMAL_AI_LIVE_API` and honours the bounded-cache policy `min(1%, 512)`.
+- The importer validates on import: every generated block is parsed back through
+  the real seed loader and must parse, denote its meaning, and carry both facets;
+  a concept that fails is refused, persisted as a replayable `import_rejected`
+  event, and leaves the previous shard set unchanged. Each accepted surface
+  carries its exact Q-record JSON field, language scripts are checked with a
+  deterministic same-record alias fallback, obsolete importer-owned shards are
+  removed, and the CLI reports requested/accepted and expected/emitted coverage.
+- A bulk batch of common concrete nouns grounded from Wikidata, growing the seed
+  by 208 grounded meanings and 832 surfaces across en/ru/hi/zh, each backed by a
+  committed `data/cache/wikidata/entity/<Qid>.{json,lino}` record.
+- A generalized, human-review-gated learning report derives reusable importer
+  amendments from persisted observations. CI executes the task through two real
+  Agent CLI clients with Formal AI as their model provider and requires the
+  resulting reports to be byte-identical.
+
+Added `formal-ai with t3code` (alias `t3`) with isolated Codex configuration,
+OpenAI/Anthropic protocol selection, persistent setup/undo, and T3 Code setup docs.
+
+### Fixed
+
+- Normalize client tool-result envelopes into localized, format-aware answers while retaining raw outputs for follow-up questions and durable memory.
+
+### Fixed
+- Count each Unicode scalar as one token across OpenAI, Anthropic, and Gemini usage metadata, sum all visible input message content, and return real response timestamps without fake cache or cost fields.
+
+### Added
+- Advertise context capacity from free disk space and on-disk shared-memory usage across OpenAI, Codex, Gemini, Vertex, and Anthropic client metadata, with a configurable average UTF-8 byte width.
+
+### Fixed
+- Route Grok Build through the local OpenAI-compatible endpoint with a temporary API key, and persist its native user settings only when requested globally.
+
+### Added
+- Support `formal-ai with cursor` in interactive and headless modes by launching `cursor-agent` with isolated or global Cursor MCP configuration backed by the authenticated local `/mcp` endpoint.
+
+### Added
+- Print the concrete session artifact created by each `formal-ai with` run,
+  together with a resume command when supported and the configured proxy log;
+  preserve temporary client homes when they contain the reported artifact.
+
+### Added
+
+- Use one secure, persistent per-user `memory.lino` by default across the CLI,
+  server, dreaming worker, desktop, VS Code desktop host, Telegram, API, and
+  Agent CLI containers, with `FORMAL_AI_MEMORY_PATH` as the explicit override.
+
+### Fixed
+
+- Route shared agentic CLI tools through a seed-backed capability registry, prefer specialized local tools over shell fallbacks, and project arguments recursively onto each advertised JSON schema.
+
+### Added
+
+- Add a persistent desktop engine selector that defaults to an installed Agent
+  CLI, offers only detected Agent/Codex/Claude passthroughs, and keeps the native
+  out-of-box engine available.
+- Stream agent-commander JavaScript API events into the shared desktop chat UI
+  while routing every engine through the local Formal AI server and memory.
+
+### Fixed
+
+- Recognize seed-defined source-first translation commands such as `<source> - translate to <target>` in both the native solver and browser worker.
+- Route the reported formal-system proposition through one language-neutral meaning with English, Russian, Hindi, and Chinese renderings and round-trip coverage.
+- Prevent long Unicode translation terms from panicking when cache filenames are truncated.
+
+### Added
+
+- Add a discoverable end-to-end configuration guide for agent clients, modes,
+  tools, shared memory, APIs, session debugging, languages, and every user
+  surface, synchronized with the client integration seed registry.
+
+### Added
+- Add an isolated and persistent `formal-ai with opencode-vscode` target for the official `sst-dev.opencode` extension.
+
+### Added
+
+- Added a distinct `formal-ai with opencode-desktop` integration with isolated
+  one-shot configuration, platform-aware executable discovery, persistent
+  setup/undo, and `--all` support.
+
+### Fixed
+
+- Agentic web research now answers with the sentences of a fetched page that bear on the question, ranked by symbolic token overlap and cited with the source URL, instead of returning the whole scraped page verbatim (#771).
+- Sentence splitting now ends a sentence at the Devanagari danda `।` and double danda `॥`. Hindi prose does not use a full stop, so without this a Hindi page was a single statement and anything that ranks or trims sentences — the web-research extract above among them — degraded to returning the whole document (#771).
+- The web-research extract ranks Chinese pages by shared characters when word-boundary tokenization finds no overlap. Chinese writes without spaces, so bag-of-words cosine scored every sentence 0.0 and the extract fell back to the head of the page instead of the part that answered the question (#771).
+- Issue reports filed from an agentic session render each turn as a bold role label followed by a blockquote, so a multi-line turn can no longer escape its list item and leak its own headings and lists as top-level issue content. The transcript is also bounded per turn and overall, keeping the body inside GitHub's issue size limit (#771).
+
+### Fixed
+- `scripts/install-node-dependencies.sh` matched reviewed npm deprecation
+  warnings by exact `name@version`. Transitive versions float without any change
+  on our side, so when `archiver-utils` resolved `glob` from `7.2.3` to
+  `10.5.0` the warning stopped matching, was treated as an unexpected
+  diagnostic, and failed the `.vsix` packaging job plus every desktop build even
+  though `npm install` itself succeeded (issue #796). Reviewed deprecations are
+  now matched by package name, so a version float can no longer break CI, and
+  each one carries an accurate upstream tracking URL — `glob` reaches both
+  workspaces through `@link-assistant/web-capture -> archiver -> archiver-utils`,
+  not through vsce or electron-builder as previously implied. Unreviewed
+  diagnostics still fail the build.
+- `scripts/self-hosting-metric.rs` read commit trailers through git's
+  `%(trailers:key=...)` placeholder, which only parses the last paragraph of a
+  message. A release commit that separated `Formal-AI-Session` and
+  `Formal-AI-Evidence` with a blank line therefore reported only the evidence
+  trailer, and the resulting "must record both" error failed the whole Auto
+  Release job after the version had already been computed. Trailers are now read
+  from the full commit body, so their placement no longer decides whether a
+  compliant commit is recognised.
+
+### Added
+- `INSTALL_NODE_DEPENDENCIES_VERBOSE=1` traces how each npm stderr line is
+  classified, so an unexpected diagnostic can be diagnosed from CI logs without
+  a local reproduction. Off by default.
+
 ## [0.298.1] - 2026-07-18
 
 ### Fixed
