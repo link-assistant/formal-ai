@@ -17,31 +17,46 @@
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::links_format::format_lino_record;
+use crate::seed;
 use crate::solver::SolverConfig;
 use crate::solver_handlers::finalize_simple;
 
-/// Arithmetic operators the search can place between operands.
+/// One arithmetic operator the search can place between operands, identified by
+/// its language-neutral notation `symbol`.
+///
+/// The operator set is derived from the seed lexicon
+/// ([`seed::Lexicon::arithmetic_operators`]) rather than a hardcoded list, so
+/// division and modulo are supported the moment the seed lists them and no
+/// per-language operator table lives in Rust (issue #386). The arithmetic each
+/// symbol denotes is intrinsic to the notation, so `apply` matches on the symbol
+/// alone.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Op {
-    Add,
-    Sub,
-    Mul,
+struct Op {
+    symbol: char,
 }
 
 impl Op {
-    const fn symbol(self) -> char {
-        match self {
-            Self::Add => '+',
-            Self::Sub => '-',
-            Self::Mul => '*',
-        }
+    const fn new(symbol: char) -> Self {
+        Self { symbol }
     }
 
-    const fn apply(self, lhs: i64, rhs: i64) -> i64 {
-        match self {
-            Self::Add => lhs.saturating_add(rhs),
-            Self::Sub => lhs.saturating_sub(rhs),
-            Self::Mul => lhs.saturating_mul(rhs),
+    const fn symbol(self) -> char {
+        self.symbol
+    }
+
+    /// Apply the operator, or `None` when it is undefined for the operands (an
+    /// integer division or modulo by zero). A `None` result scores as maximally
+    /// unfit, so the search never proposes an undefined composition.
+    fn apply(self, lhs: i64, rhs: i64) -> Option<i64> {
+        match self.symbol {
+            '+' => Some(lhs.saturating_add(rhs)),
+            '-' => Some(lhs.saturating_sub(rhs)),
+            '*' => Some(lhs.saturating_mul(rhs)),
+            '/' => (rhs != 0).then(|| lhs / rhs),
+            '%' => (rhs != 0).then(|| lhs % rhs),
+            // An operator symbol the arithmetic evaluator does not model.
+            _ => None,
         }
     }
 }
@@ -64,12 +79,14 @@ struct Candidate {
 }
 
 impl Candidate {
-    fn evaluate(&self, numbers: &[i64]) -> i64 {
+    /// Evaluate left to right, or `None` when any step is undefined (division or
+    /// modulo by zero).
+    fn evaluate(&self, numbers: &[i64]) -> Option<i64> {
         let mut acc = numbers[self.order[0]];
         for (index, op) in self.ops.iter().enumerate() {
-            acc = op.apply(acc, numbers[self.order[index + 1]]);
+            acc = op.apply(acc, numbers[self.order[index + 1]])?;
         }
-        acc
+        Some(acc)
     }
 
     fn render(&self, numbers: &[i64]) -> String {
@@ -160,6 +177,7 @@ pub fn try_budget_search(
                 "search:solution",
                 format!("{} = {}", solution.expression, problem.target),
             );
+            record_skill_proposal(prompt, log, &problem, &solution);
             Some(build_answer(
                 prompt,
                 log,
@@ -298,9 +316,13 @@ fn finish_solution(
 }
 
 /// Fitness distance: 0 means every generated test passes (the composition uses
-/// each number once, only allowed operators, and evaluates to the target).
+/// each number once, only allowed operators, and evaluates to the target). A
+/// composition that is undefined (division or modulo by zero) scores as
+/// maximally unfit so the search never proposes it.
 fn score(candidate: &Candidate, problem: &SearchProblem) -> i64 {
-    (candidate.evaluate(&problem.numbers) - problem.target).abs()
+    candidate
+        .evaluate(&problem.numbers)
+        .map_or(i64::MAX, |value| (value - problem.target).abs())
 }
 
 fn remember_best(best: &mut Option<(Candidate, i64)>, candidate: &Candidate, diff: i64) {
@@ -428,6 +450,52 @@ fn build_answer(
     )
 }
 
+/// Emit a proposal-only auto-learning event when the search succeeds.
+///
+/// A satisfying composition is a demonstrated capability the next request could
+/// reuse, so — like the skill-accumulation ledger ([`crate::skill_ledger`]) and
+/// the meta self-improvement loop — the stage records it as a *proposed*
+/// candidate skill (R21/R340). It is trace-only and human-gated: the promotion
+/// gate (a regression test **and** a benchmark delta) is unmet at trace time, so
+/// `status=proposed` and `promotable=false`. Nothing is auto-promoted and neither
+/// routing nor the answer changes (C3/R13); the compact `search:skill:promotable`
+/// count is always `0`, the auditable proof of that.
+fn record_skill_proposal(
+    prompt: &str,
+    log: &mut EventLog,
+    problem: &SearchProblem,
+    solution: &SearchSolution,
+) {
+    let skill_id = stable_id(
+        "search_skill",
+        &format!(
+            "reachability:{}:{}",
+            problem.numbers.len(),
+            solution.expression
+        ),
+    );
+    let record = format_lino_record(
+        &skill_id,
+        &[
+            ("record_type", "candidate_skill".to_owned()),
+            ("skill_id", skill_id.clone()),
+            ("method", "budget_search".to_owned()),
+            (
+                "route",
+                format!("reachability:{}-operand", problem.numbers.len()),
+            ),
+            ("source_span", prompt.to_owned()),
+            ("status", "proposed".to_owned()),
+            ("has_tests", "false".to_owned()),
+            ("has_benchmark_delta", "false".to_owned()),
+            ("promotable", "false".to_owned()),
+        ],
+    );
+    log.append("search:skill", record);
+    // Always 0: no skill is ever auto-promoted without review.
+    log.append("search:skill:promotable", "0".to_owned());
+}
+
 fn join_numbers(numbers: &[i64]) -> String {
     numbers
         .iter()
@@ -444,37 +512,47 @@ fn join_ops(ops: &[Op]) -> String {
 }
 
 /// Recognize an arithmetic-reachability search problem across every supported
-/// language (en, ru, hi, zh). Returns `None` for any prompt that is not clearly
-/// of this shape so the stage stays inert for the overwhelming majority of
-/// impulses. Digits and the `+`/`-`/`*` symbols are language-neutral; only the
-/// "combine numbers", search-verb, and target framings are localized.
+/// language. Returns `None` for any prompt that is not clearly of this shape so
+/// the stage stays inert for the overwhelming majority of impulses.
+///
+/// Recognition is grounded entirely in the seed lexicon (issue #386): the
+/// "combine numbers" framing, the search verb, and the target marker are read by
+/// semantic role from `data/seed/meanings-search.lino`, and the operator
+/// vocabulary comes from `data/seed/meanings-calculator.lino` — no per-language
+/// phrase table lives here. Only the digits and the notation symbols they anchor
+/// are language-neutral and matched directly.
 fn parse_search_problem(prompt: &str) -> Option<SearchProblem> {
     // Unicode-aware lowercasing so Cyrillic framing keywords match regardless of
-    // case (Devanagari and Han are caseless; ASCII is unaffected).
+    // case (Devanagari and Han are caseless; ASCII is unaffected). The seed
+    // surfaces are authored lowercase, so a raw-substring match lines up.
     let lower = prompt.to_lowercase();
+    let lexicon = seed::lexicon();
 
     // Gate: require both a "combine numbers" framing and a search verb so plain
-    // calculations ("3 + 5") never reach this path.
-    if !contains_any(&lower, &NUMBERS_FRAMING) || !contains_any(&lower, &SEARCH_VERBS) {
+    // calculations ("3 + 5") never reach this path. Both are matched as raw
+    // substrings so inflected forms (числа/чисел, संख्याओं, найдите) still hit.
+    if !lexicon.mentions_role_raw(seed::ROLE_REACHABILITY_OPERAND_FRAMING, &lower)
+        || !lexicon.mentions_role_raw(seed::ROLE_REACHABILITY_SEARCH_CUE, &lower)
+    {
         return None;
     }
 
-    // Locate the target value as the integer nearest a target keyword. This
+    // Locate the target value as the integer nearest a target marker. This
     // handles both operand-then-target order (en/ru/zh: "equals 26") and
-    // target-then-keyword order (hi: "26 के बराबर").
+    // target-then-marker order (hi: "26 के बराबर").
     let integers = extract_integers_with_positions(&lower);
     if integers.len() < 3 {
         // Need at least two operands plus a distinct target.
         return None;
     }
-    let keyword_positions = target_keyword_positions(&lower);
-    if keyword_positions.is_empty() {
+    let marker_positions = target_marker_positions(&lower);
+    if marker_positions.is_empty() {
         return None;
     }
     let target_index = integers
         .iter()
         .enumerate()
-        .min_by_key(|(_, (_, position))| distance_to_nearest(*position, &keyword_positions))
+        .min_by_key(|(_, (_, position))| distance_to_nearest(*position, &marker_positions))
         .map(|(index, _)| index)?;
 
     let target = integers[target_index].0;
@@ -500,155 +578,85 @@ fn parse_search_problem(prompt: &str) -> Option<SearchProblem> {
 /// bounded regardless of the prompt.
 const MAX_OPERANDS: usize = 6;
 
-/// "Combine the numbers" framing across the supported languages. Matched as
-/// substrings so inflected forms (`числа`/`чисел`, `संख्याओं`) still hit.
-const NUMBERS_FRAMING: [&str; 4] = [
-    "number", // en
-    "числ",   // ru: числа / чисел / число / числами
-    "संख्या",   // hi: संख्या / संख्याओं
-    "数字",   // zh
-];
-
-/// Search verbs (find / combine / reach / make / express / arrange) across the
-/// supported languages.
-const SEARCH_VERBS: [&str; 24] = [
-    // en
-    "find",
-    "combine",
-    "reach",
-    "make",
-    "express",
-    "arrange",
-    // ru
-    "найд",
-    "комбин",
-    "состав",
-    "получ",
-    "выраз",
-    "достич",
-    // hi
-    "खोज",
-    "बनाए",
-    "संयोज",
-    "प्राप्त",
-    "व्यक्त",
-    "पहुँच",
-    // zh
-    "找",
-    "组合",
-    "得到",
-    "表达",
-    "达到",
-    "使",
-];
-
-/// Target keywords ("equals" and friends) across the supported languages. Their
-/// positions anchor which integer is the target value.
-const TARGET_KEYWORDS: [&str; 14] = [
-    // en
-    "equals",
-    "equal to",
-    "results in",
-    "gives",
-    "reach",
-    "make",
-    "get",
-    // ru
-    "равно",
-    "равн",
-    "получ",
-    // hi
-    "बराबर",
-    // zh
-    "等于",
-    "得到",
-    "达到",
-];
-
-fn contains_any(haystack: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| haystack.contains(needle))
-}
-
-/// Byte offsets at which any target keyword begins in `lower`.
-fn target_keyword_positions(lower: &str) -> Vec<usize> {
+/// Byte offsets at which any target-marker surface begins in `lower`.
+///
+/// The surfaces ("equals", "равно", "बराबर", "等于", …) come from the seed
+/// meaning carrying [`ROLE_REACHABILITY_TARGET_MARKER`](seed::ROLE_REACHABILITY_TARGET_MARKER),
+/// so anchoring the target value never names a keyword in Rust (issue #386).
+fn target_marker_positions(lower: &str) -> Vec<usize> {
     let mut positions = Vec::new();
-    for keyword in TARGET_KEYWORDS {
+    for marker in seed::lexicon().words_for_role(seed::ROLE_REACHABILITY_TARGET_MARKER) {
         let mut from = 0;
-        while let Some(offset) = lower[from..].find(keyword) {
+        while let Some(offset) = lower[from..].find(&marker) {
             let absolute = from + offset;
             positions.push(absolute);
-            from = absolute + keyword.len();
+            from = absolute + marker.len();
         }
     }
     positions
 }
 
-fn distance_to_nearest(position: usize, keyword_positions: &[usize]) -> usize {
-    keyword_positions
+fn distance_to_nearest(position: usize, marker_positions: &[usize]) -> usize {
+    marker_positions
         .iter()
-        .map(|&keyword| position.abs_diff(keyword))
+        .map(|&marker| position.abs_diff(marker))
         .min()
         .unwrap_or(usize::MAX)
 }
 
+/// Determine the allowed operator set from the prompt, grounded in the seed
+/// operator vocabulary.
+///
+/// Each operator declared in the seed (addition, subtraction, multiplication,
+/// division, modulo) is admitted when its notation symbol appears in an
+/// arithmetic context or any of its spelled surfaces (in any language) is
+/// mentioned. Declaration order is preserved so a seeded search over the set
+/// stays deterministic. When the prompt names no operator, the full seed toolbox
+/// is allowed.
 fn parse_ops(lower: &str) -> Vec<Op> {
-    let mut ops = Vec::new();
-    if lower.contains('+')
-        || contains_any(
-            lower,
-            &[
-                "plus",
-                "add",
-                "sum",
-                "плюс",
-                "сложе",
-                "сумм",
-                "जोड़",
-                "योग",
-                "加",
-            ],
-        )
-    {
-        ops.push(Op::Add);
-    }
-    if contains_any(
-        lower,
-        &[
-            "minus",
-            "subtract",
-            "difference",
-            "минус",
-            "вычит",
-            "разност",
-            "घटा",
-            "अंतर",
-            "减",
-        ],
-    ) {
-        ops.push(Op::Sub);
-    }
-    if lower.contains('*')
-        || lower.contains('×')
-        || contains_any(
-            lower,
-            &[
-                "times",
-                "multiply",
-                "product",
-                "умнож",
-                "произвед",
-                "गुणा",
-                "乘",
-            ],
-        )
-    {
-        ops.push(Op::Mul);
-    }
+    let operators = seed::lexicon().arithmetic_operators();
+    let mut ops: Vec<Op> = operators
+        .iter()
+        .filter(|operator| {
+            symbol_present(lower, operator.symbol)
+                || operator.spelled.iter().any(|word| lower.contains(word))
+        })
+        .map(|operator| Op::new(operator.symbol))
+        .collect();
     if ops.is_empty() {
-        // No operator named: allow the full toolbox.
-        ops = vec![Op::Add, Op::Sub, Op::Mul];
+        // No operator named: allow the full seed toolbox, in declaration order.
+        ops = operators
+            .iter()
+            .map(|operator| Op::new(operator.symbol))
+            .collect();
     }
     ops
+}
+
+/// Is `symbol` present in `lower` as an arithmetic operator?
+///
+/// A notation symbol counts only when it sits in an arithmetic context — adjacent
+/// to a digit or set off by whitespace (or a string boundary). This keeps a
+/// hyphen inside a word ("state-of-the-art") or a slash inside a path from being
+/// read as subtraction or division, while the space- or digit-flanked symbols in
+/// a reachability prompt ("+ and *", "3-5") are recognised. The rule is uniform
+/// across every operator symbol, so nothing about which glyph is ambiguous lives
+/// in code.
+fn symbol_present(lower: &str, symbol: char) -> bool {
+    let chars: Vec<char> = lower.chars().collect();
+    let arithmetic_context =
+        |neighbor: Option<char>| neighbor.is_none_or(|c| c.is_ascii_digit() || c.is_whitespace());
+    for (index, &current) in chars.iter().enumerate() {
+        if current != symbol {
+            continue;
+        }
+        let before = index.checked_sub(1).map(|prev| chars[prev]);
+        let after = chars.get(index + 1).copied();
+        if arithmetic_context(before) || arithmetic_context(after) {
+            return true;
+        }
+    }
+    false
 }
 
 /// Extract non-negative integers with their byte offsets, in order of
