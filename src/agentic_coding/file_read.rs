@@ -386,8 +386,18 @@ fn directory_for_list_read(prompt: &str) -> Option<String> {
 }
 
 fn tool_result_records(messages: &[ChatMessage]) -> Vec<ToolResultRecord> {
+    // Only results produced *within the current user turn* ground a read. A
+    // client loops tool calls without a new user message, so the current turn is
+    // everything after the last user message; a `cat 1.txt` result from an
+    // earlier turn must never be replayed as the answer to a later `read 1.txt`
+    // (issue #755 — read/list determinism). Without this bound the recipe short
+    // -circuits on a stale, unrelated result and skips the fresh read entirely.
+    let turn_start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .map_or(0, |index| index + 1);
     let mut records = Vec::new();
-    for (index, message) in messages.iter().enumerate() {
+    for (index, message) in messages.iter().enumerate().skip(turn_start) {
         if !message.role.eq_ignore_ascii_case("tool") {
             continue;
         }
