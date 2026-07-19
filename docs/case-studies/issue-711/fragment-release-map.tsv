@@ -434,5 +434,8 @@ changelog.d/20260719_000000_issue_776_source_first_translation.md	0.299.0
 changelog.d/20260719_022500_configuration_guide.md	0.299.0
 changelog.d/20260719_025100_issue_763_opencode_vscode.md	0.299.0
 changelog.d/20260719_030000_issue_762_opencode_desktop.md	0.299.0
+changelog.d/20260719_064000_issue_781_multisource_research.md	0.300.0
 changelog.d/20260719_120000_issue_771_report_format.md	0.299.0
+changelog.d/20260719_120000_issue_781_option_networks.md	0.300.0
 changelog.d/20260719_130000_issue_796_ci_false_positives.md	0.299.0
+changelog.d/20260719_160000_issue_798_ci_release_integrity.md	0.300.0
