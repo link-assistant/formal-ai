@@ -33,7 +33,7 @@ Install the client CLIs the same way users receive them. For CI, replace
 test result:
 
 ```bash
-bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest
+bun add --global @openai/codex@latest opencode-ai@latest @google/gemini-cli@latest @link-assistant/agent@latest t3@latest
 ```
 
 Start Formal AI in agent mode on loopback:
@@ -148,6 +148,29 @@ FORMAL_AI_API_KEY="sk-local-demo" codex exec \
 ```
 
 Expected protocol path: OpenAI `responses`.
+
+### T3 Code
+
+T3 Code hosts Codex and Claude sessions in its local web interface. The wrapper
+isolates Codex configuration from the user's normal home and launches the real
+`t3` executable:
+
+```bash
+with-formal-ai --base-url http://127.0.0.1:8090 t3code
+```
+
+The aliases `t3code` and `t3` are equivalent. In the opened UI, create a Codex
+thread and ask it to read `alpha.txt`; the final answer must contain
+`ALPHA_MARKER_11111`. Provider settings should show provider `formalai`, model
+`formal-ai`, base URL `http://127.0.0.1:8090/api/openai/v1`, and a non-empty API
+key. For a Claude thread, launch `with-formal-ai --protocol anthropic ...` and
+verify the configured Anthropic base URL is
+`http://127.0.0.1:8090/api/anthropic`. Use `--non-interactive` when validating
+startup without opening a browser; it maps to T3 Code's `--no-browser`.
+
+Expected protocol paths: OpenAI `responses` for Codex sessions and Anthropic
+`messages` for Claude sessions. Record both the T3 Code session output and the
+proxy JSONL row for the multi-CLI matrix tracked by #671.
 
 ### Gemini CLI
 

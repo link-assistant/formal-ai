@@ -51,7 +51,6 @@ pub struct WithFormalAiArgs {
         default_value_t = false
     )]
     pub global: bool,
-
     /// Restore the backup created by a previous global configuration.
     #[arg(long, default_value_t = false)]
     pub undo: bool,
@@ -111,8 +110,11 @@ pub struct WithFormalAiArgs {
 
 #[derive(Debug, Clone)]
 struct RenderContext {
+    protocol: String,
     base_url: String,
     endpoint_base_url: String,
+    openai_endpoint_base_url: String,
+    anthropic_endpoint_base_url: String,
     provider_id: String,
     model: String,
     model_selector: String,
@@ -162,14 +164,13 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         let selected = select_integrations(args, &integrations)?;
         for integration in selected {
             if args.undo {
-                undo_global_config(integration)?;
+                undo_global_config(integration, args)?;
             } else {
                 write_global_config(integration, args)?;
             }
         }
         return Ok(());
     }
-
     if args.all {
         return Err("--all is only valid with --global or --undo".into());
     }
@@ -218,11 +219,16 @@ fn find_integration<'a>(
 ) -> Result<&'a ClientIntegration, Box<dyn Error>> {
     integrations
         .iter()
-        .find(|integration| integration.id == tool)
+        .find(|integration| {
+            integration.id == tool || integration.aliases.iter().any(|alias| alias == tool)
+        })
         .ok_or_else(|| {
             let supported = integrations
                 .iter()
-                .map(|integration| integration.id.as_str())
+                .flat_map(|integration| {
+                    std::iter::once(integration.id.as_str())
+                        .chain(integration.aliases.iter().map(String::as_str))
+                })
                 .collect::<Vec<_>>()
                 .join(", ");
             format!("unsupported tool `{tool}`; supported tools: {supported}").into()
@@ -250,6 +256,12 @@ fn render_context(
         .ok_or_else(|| format!("{} has no endpoint for {protocol}", integration.id))?;
     let base_url = base_url_with_port(&args.base_url, args.port);
     let endpoint_base_url = join_url_path(&base_url, endpoint_path);
+    let openai_endpoint_base_url = integration
+        .endpoint_path_for("openai")
+        .map_or_else(String::new, |path| join_url_path(&base_url, path));
+    let anthropic_endpoint_base_url = integration
+        .endpoint_path_for("anthropic")
+        .map_or_else(String::new, |path| join_url_path(&base_url, path));
     let api_key = std::env::var(&integration.api_key_env)
         .ok()
         .filter(|value| !value.is_empty())
@@ -270,10 +282,12 @@ fn render_context(
         _ => "",
     }
     .to_string();
-
     let mut context = RenderContext {
+        protocol: protocol.to_string(),
         base_url,
         endpoint_base_url,
+        openai_endpoint_base_url,
+        anthropic_endpoint_base_url,
         provider_id: integration.provider_id.clone(),
         model: args.model.clone(),
         model_selector: String::new(),
@@ -332,30 +346,31 @@ fn run_ephemeral(
     }
     if !invocation.temp_home_env.is_empty() {
         let temp = TempConfigDir::new(&format!("{}-home", integration.id))?;
-        if !invocation.temp_home_config_path.is_empty() {
-            let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
-            let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
-            if let Some(parent) = config_path.parent() {
-                fs::create_dir_all(parent)?;
-            }
-            fs::write(
-                &config_path,
-                render_json_settings(&invocation.temp_home_json_settings, &context)?,
-            )?;
-        }
-        command.env(
-            render_template(&invocation.temp_home_env, &context),
-            &temp.path,
-        );
         if !invocation.model_catalog_path.is_empty() {
             let relative_catalog_path = render_template(&invocation.model_catalog_path, &context);
             let catalog_path = temp_scoped_path(&temp.path, &relative_catalog_path)?;
             context.model_catalog_path = catalog_path.display().to_string();
             write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
         }
+        if !invocation.temp_home_config_path.is_empty() {
+            let relative_config_path = render_template(&invocation.temp_home_config_path, &context);
+            let config_path = temp_scoped_path(&temp.path, &relative_config_path)?;
+            if let Some(parent) = config_path.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            let contents = if invocation.temp_home_toml_settings.is_empty() {
+                render_json_settings(&invocation.temp_home_json_settings, &context)?
+            } else {
+                render_toml_settings(&invocation.temp_home_toml_settings, "", &context)?
+            };
+            fs::write(&config_path, contents)?;
+        }
+        command.env(
+            render_template(&invocation.temp_home_env, &context),
+            &temp.path,
+        );
         temp_dirs.push(temp);
     }
-
     let final_args = build_invocation_args(
         integration,
         user_args,
@@ -451,7 +466,6 @@ fn build_invocation_args(
         args.extend(effective_user_args);
         return args;
     }
-
     let model_arg = render_template(&invocation.model_arg, context);
     let model_value = context.model_selector.clone();
     match invocation.model_arg_position {
@@ -488,21 +502,26 @@ fn write_global_config(
     args: &WithFormalAiArgs,
 ) -> Result<(), Box<dyn Error>> {
     let mut context = render_context(integration, args)?;
-    if !integration.global_config.model_catalog_path.is_empty() {
-        let catalog_path = global_config_path(&integration.global_config.model_catalog_path)?;
-        let catalog_backup = backup_path(&catalog_path, &integration.global_config.backup_suffix);
+    let global_config = integration.global_config_for(&context.protocol);
+    if !global_config.model_catalog_path.is_empty() {
+        let catalog_path = global_config_path(&global_config.model_catalog_path)?;
+        let catalog_backup = backup_path(&catalog_path, &global_config.backup_suffix);
         ensure_backup(&catalog_path, &catalog_backup)?;
         context.model_catalog_path = catalog_path.display().to_string();
         write_file(&catalog_path, &codex_model_catalog(&context.model)?)?;
     }
-    let path = global_config_path(&integration.global_config.path)?;
-    let backup_path = backup_path(&path, &integration.global_config.backup_suffix);
+    let path = global_config_path(&global_config.path)?;
+    let backup_path = backup_path(&path, &global_config.backup_suffix);
     ensure_backup(&path, &backup_path)?;
     let existing = fs::read_to_string(&path).unwrap_or_default();
-    let next = match integration.global_config.format {
-        ConfigFormat::Toml => merge_toml_config(integration, &existing, &context)?,
-        ConfigFormat::Json => merge_json_config(integration, &existing, &context)?,
-        ConfigFormat::ShellEnv => merge_shell_env_config(integration, &existing, &context),
+    let next = match global_config.format {
+        ConfigFormat::Toml => {
+            render_toml_settings(&global_config.toml_settings, &existing, &context)?
+        }
+        ConfigFormat::Json => merge_json_config(global_config, &existing, &context)?,
+        ConfigFormat::ShellEnv => {
+            merge_shell_env_config(&integration.id, global_config, &existing, &context)
+        }
     };
     if next == existing {
         println!(
@@ -517,19 +536,23 @@ fn write_global_config(
     Ok(())
 }
 
-fn undo_global_config(integration: &ClientIntegration) -> Result<(), Box<dyn Error>> {
-    let path = global_config_path(&integration.global_config.path)?;
-    let config_backup_path = backup_path(&path, &integration.global_config.backup_suffix);
+fn undo_global_config(
+    integration: &ClientIntegration,
+    args: &WithFormalAiArgs,
+) -> Result<(), Box<dyn Error>> {
+    let context = render_context(integration, args)?;
+    let global_config = integration.global_config_for(&context.protocol);
+    let path = global_config_path(&global_config.path)?;
+    let config_backup_path = backup_path(&path, &global_config.backup_suffix);
     let mut restored = if config_backup_path.exists() {
         restore_backup(&path, &config_backup_path)?;
         true
     } else {
         false
     };
-    if !integration.global_config.model_catalog_path.is_empty() {
-        let catalog_path = global_config_path(&integration.global_config.model_catalog_path)?;
-        let catalog_backup_path =
-            backup_path(&catalog_path, &integration.global_config.backup_suffix);
+    if !global_config.model_catalog_path.is_empty() {
+        let catalog_path = global_config_path(&global_config.model_catalog_path)?;
+        let catalog_backup_path = backup_path(&catalog_path, &global_config.backup_suffix);
         if catalog_backup_path.exists() {
             restore_backup(&catalog_path, &catalog_backup_path)?;
             restored = true;
@@ -584,8 +607,8 @@ fn ensure_backup(path: &Path, backup_path: &Path) -> Result<(), Box<dyn Error>> 
     Ok(())
 }
 
-fn merge_toml_config(
-    integration: &ClientIntegration,
+fn render_toml_settings(
+    settings: &[(String, String)],
     existing: &str,
     context: &RenderContext,
 ) -> Result<String, Box<dyn Error>> {
@@ -594,7 +617,7 @@ fn merge_toml_config(
     } else {
         existing.parse::<DocumentMut>()?
     };
-    for (path, value) in &integration.global_config.toml_settings {
+    for (path, value) in settings {
         set_toml_string(
             document.as_table_mut(),
             &render_template(path, context),
@@ -636,7 +659,7 @@ fn table_at_path_mut<'a>(mut table: &'a mut Table, parts: &[&str]) -> &'a mut Ta
 }
 
 fn merge_json_config(
-    integration: &ClientIntegration,
+    global_config: &crate::seed::ClientIntegrationGlobalConfig,
     existing: &str,
     context: &RenderContext,
 ) -> Result<String, Box<dyn Error>> {
@@ -645,7 +668,7 @@ fn merge_json_config(
     } else {
         serde_json::from_str(existing)?
     };
-    let overlay = json_settings_value(&integration.global_config.json_settings, context)?;
+    let overlay = json_settings_value(&global_config.json_settings, context)?;
     merge_json_value(&mut base, overlay);
     Ok(format!("{}\n", serde_json::to_string_pretty(&base)?))
 }
@@ -686,7 +709,6 @@ fn set_json_string(
     let Some((last, parents)) = parts.split_last() else {
         return Err("empty JSON setting path".into());
     };
-
     let mut current = root;
     for part in parents {
         let object = current
@@ -720,23 +742,24 @@ fn merge_json_value(base: &mut Value, overlay: Value) {
 }
 
 fn merge_shell_env_config(
-    integration: &ClientIntegration,
+    integration_id: &str,
+    global_config: &crate::seed::ClientIntegrationGlobalConfig,
     existing: &str,
     context: &RenderContext,
 ) -> String {
-    let mut next = remove_managed_block(existing, &integration.id);
+    let mut next = remove_managed_block(existing, integration_id);
     if !next.is_empty() && !next.ends_with('\n') {
         next.push('\n');
     }
-    let _ = writeln!(next, "# >>> formal-ai {}", integration.id);
-    for env in &integration.global_config.shell_env {
+    let _ = writeln!(next, "# >>> formal-ai {integration_id}");
+    for env in &global_config.shell_env {
         next.push_str("export ");
         next.push_str(&render_template(&env.key, context));
         next.push('=');
         next.push_str(&shell_double_quote(&render_template(&env.value, context)));
         next.push('\n');
     }
-    let _ = writeln!(next, "# <<< formal-ai {}", integration.id);
+    let _ = writeln!(next, "# <<< formal-ai {integration_id}");
     next
 }
 
@@ -773,6 +796,14 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{model}", &context.model)
         .replace("{model_selector}", &context.model_selector)
         .replace("{endpoint_base_url}", &context.endpoint_base_url)
+        .replace(
+            "{openai_endpoint_base_url}",
+            &context.openai_endpoint_base_url,
+        )
+        .replace(
+            "{anthropic_endpoint_base_url}",
+            &context.anthropic_endpoint_base_url,
+        )
         .replace("{base_url}", &context.base_url)
         .replace("{api_key_env}", &context.api_key_env)
         .replace("{api_key}", &context.api_key)
