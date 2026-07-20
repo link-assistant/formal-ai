@@ -1,0 +1,43 @@
+self_ast_census
+  target src/statement_verification.rs
+  language rust
+  fidelity signature
+  byte_len 19356
+  line_count 534
+  content_id source_module_cbdf78b80e23f00e
+  symbol_count 34
+  symbols
+    const SENTENCE_TERMINATORS 27 27
+    const MIN_STATEMENT_WORDS 31 31
+    const MIN_STATEMENT_CHARS 37 37
+    const TRUSTED_SOURCE_POLICY 44 49
+    const MARKET_PRICE_CLAIM_STATUS_CONTRADICTED 51 51
+    const MARKET_PRICE_CLAIM_STATUS_WITHIN_RANGE 52 52
+    struct StatementPlan 57 64
+    struct MarketPriceClaim 68 81
+    struct MarketPriceAssessment 85 106
+    function trace_payload 111 126
+    function summary_sentence 130 157
+    function source_quote_currency 159 169
+    function new 177 190
+    struct StatementVerificationPlan 195 198
+    function from_sample 204 210
+    function is_empty 214 216
+    function len 220 222
+    function extract_statements 228 241
+    function extract_market_price_claims 250 265
+    function assess_market_price_claims 269 274
+    function assess_market_price_claim 276 313
+    function market_price_fragments 315 336
+    function asset_positions 344 366
+    function parse_market_price_claim 368 385
+    function alias_occurs 387 396
+    function alias_occurs_at 398 414
+    function extract_year 416 436
+    function extract_currency_amount 438 461
+    function parse_number_after 463 465
+    function parse_number_before 467 478
+    function parse_number 480 497
+    function push_statement 499 513
+    function grounding_query 519 522
+    function stance_for_agreement 528 534

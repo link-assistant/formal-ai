@@ -1,0 +1,33 @@
+self_ast_census
+  target src/learning_ledger.rs
+  language rust
+  fidelity signature
+  byte_len 13407
+  line_count 341
+  content_id source_module_d311a679f02a8492
+  symbol_count 24
+  symbols
+    struct HumanApproval 39 42
+    function granted 47 52
+    function declined 56 61
+    function is_granted 65 67
+    function reviewer 71 73
+    enum PromotionRejected 81 95
+    function slug 100 108
+    struct LedgerEntry 117 138
+    function summary 143 154
+    struct LearningLedger 163 165
+    function new 170 174
+    function entries 178 180
+    function len 184 186
+    function is_empty 190 192
+    function promote 201 250
+    function lesson_for 259 264
+    function knows 268 270
+    function links_notation 275 294
+    function content_id 299 301
+    function canonical_ledger 311 320
+    function normalise 322 324
+    function field 326 328
+    function nested 330 332
+    function quote 334 341

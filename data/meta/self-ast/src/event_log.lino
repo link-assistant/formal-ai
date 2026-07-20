@@ -1,0 +1,34 @@
+self_ast_census
+  target src/event_log.rs
+  language rust
+  fidelity signature
+  byte_len 32001
+  line_count 713
+  content_id source_module_6b51bcfd94a60b49
+  symbol_count 25
+  symbols
+    struct Event 17 21
+    struct EventLog 25 27
+    function new 31 33
+    function append 39 49
+    function events 52 54
+    function first_of 58 60
+    function last_of 64 66
+    function evidence_links 71 76
+    function steps_block 81 93
+    function thinking_steps 108 110
+    function thinking_steps_for_answer 116 172
+    function append_to_link_store 179 193
+    enum StepRole 198 205
+    struct PlannedThinkingStep 208 214
+    function normal 217 230
+    function parent 232 242
+    function child 244 254
+    struct CalculationCluster 261 267
+    function absorb 270 282
+    function has_data 284 290
+    function drain_into 292 329
+    function collapse_thinking_whitespace 334 336
+    function curate_thinking_event 347 404
+    function build_evidence_links 411 706
+    function sanitize_payload 708 713

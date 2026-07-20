@@ -1,0 +1,126 @@
+self_ast_census
+  target src/agentic_coding/lexicon.rs
+  language rust
+  fidelity full_ast
+  byte_len 13379
+  line_count 408
+  content_id source_module_16601e4b778ef5d2
+  symbol_count 29
+  symbols
+    const LEXICON_LINO 13 13
+    enum TermKind 17 21
+    function slug 24 30
+    struct Term 35 39
+    function literal 42 48
+    struct PredicateUse 53 56
+    struct ExtractedTriple 59 63
+    struct PredicateLexeme 66 71
+    function as_ref 74 79
+    struct Lexeme 82 89
+    function as_term 92 106
+    enum LexemeKind 110 114
+    struct WorkConcept 116 120
+    struct Procedure 122 127
+    struct WorkContext 129 133
+    struct Work 135 144
+    function primary_context 147 149
+    function final_context 151 157
+    function extract 163 223
+    function match_at 227 246
+    struct Lexicon 249 251
+    function standard 255 257
+    function load 259 325
+    function best_work_for 327 347
+    function tokenize 350 355
+    struct Record 361 365
+    function field 368 373
+    function parse_records 376 398
+    function parse_pair 400 408
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 10759
+    named_node_count 2150
+    distinct_node_kinds 79
+    node_kinds
+      arguments 156
+      array_expression 1
+      array_type 1
+      assignment_expression 4
+      attribute 5
+      attribute_item 5
+      binary_expression 18
+      block 45
+      break_expression 1
+      call_expression 156
+      char_literal 3
+      closure_expression 18
+      closure_parameters 18
+      compound_assignment_expr 5
+      const_item 1
+      continue_expression 7
+      declaration_list 7
+      doc_comment 22
+      else_clause 3
+      enum_item 2
+      enum_variant 6
+      enum_variant_list 2
+      expression_statement 46
+      field_declaration 40
+      field_declaration_list 11
+      field_expression 175
+      field_identifier 255
+      field_initializer 40
+      field_initializer_list 13
+      for_expression 5
+      function_item 15
+      function_modifiers 1
+      generic_type 29
+      identifier 370
+      if_expression 15
+      impl_item 7
+      index_expression 6
+      inner_doc_comment_marker 10
+      integer_literal 8
+      let_condition 8
+      let_declaration 24
+      lifetime 4
+      lifetime_parameter 1
+      line_comment 33
+      macro_invocation 2
+      match_arm 15
+      match_block 4
+      match_expression 4
+      match_pattern 15
+      mutable_specifier 9
+      outer_doc_comment_marker 12
+      parameter 11
+      parameters 15
+      primitive_type 17
+      range_expression 2
+      reference_expression 15
+      reference_type 15
+      return_expression 1
+      scoped_identifier 27
+      self 26
+      self_parameter 9
+      shorthand_field_initializer 6
+      source_file 1
+      string_content 32
+      string_literal 32
+      struct_expression 13
+      struct_item 11
+      token_tree 7
+      try_expression 2
+      tuple_expression 5
+      tuple_pattern 11
+      tuple_struct_pattern 14
+      tuple_type 5
+      type_arguments 29
+      type_identifier 125
+      type_parameters 1
+      unary_expression 3
+      visibility_modifier 49
+      while_expression 3

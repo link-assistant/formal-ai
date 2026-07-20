@@ -1,0 +1,16 @@
+self_ast_census
+  target src/mcp.rs
+  language rust
+  fidelity signature
+  byte_len 3691
+  line_count 108
+  content_id source_module_654776bf80d8f389
+  symbol_count 7
+  symbols
+    const PROTOCOL_VERSION 6 6
+    function handle_mcp_request 8 63
+    function call_tool 65 83
+    function mcp_text 85 87
+    function json_rpc_result 89 91
+    function json_rpc_error 93 99
+    function json_response 101 108

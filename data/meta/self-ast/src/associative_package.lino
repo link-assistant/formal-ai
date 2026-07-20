@@ -1,0 +1,48 @@
+self_ast_census
+  target src/associative_package.rs
+  language rust
+  fidelity signature
+  byte_len 29422
+  line_count 837
+  content_id source_module_370bc2b923f41ea1
+  symbol_count 39
+  symbols
+    struct PackageDependency 22 25
+    struct PackageHandler 29 34
+    struct PackageTrigger 38 44
+    struct PackagePermission 48 53
+    struct AssociativePackage 57 65
+    struct PackageReplay 69 75
+    enum PackagePermissionDecision 79 89
+    struct PackageStore 93 95
+    enum PackageInstallError 99 110
+    enum PackageImportError 114 119
+    function fmt 122 141
+    function fmt 147 158
+    function new 165 172
+    function with_response 175 178
+    function new 183 191
+    function new 196 206
+    function from_compiled_skill 209 258
+    function with_dependency 261 267
+    function with_handler 270 273
+    function with_trigger 276 279
+    function with_permission 282 294
+    function replay 297 316
+    function links_notation 319 366
+    function from_links_notation 368 423
+    function grants_capability 426 430
+    function link_records 433 499
+    function new 504 508
+    function install 510 529
+    function replay 532 536
+    function permission_for_capability 539 553
+    function permission_for_tool 556 558
+    function packages 561 563
+    function default_associative_packages 567 704
+    function default_package_store 707 715
+    function default_package_graph_projection 718 775
+    function required_child 777 787
+    function link_record 789 819
+    function push_field 821 829
+    function push_doublet 831 837

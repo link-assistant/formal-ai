@@ -1,0 +1,35 @@
+self_ast_census
+  target src/translation/selection.rs
+  language rust
+  fidelity signature
+  byte_len 12837
+  line_count 417
+  content_id source_module_da42dcb84f10cfff
+  symbol_count 26
+  symbols
+    struct FormalizationSelectionConfig 14 18
+    function normalized 22 28
+    enum FormalizationSelectionReason 32 36
+    enum FormalizationDecision 39 55
+    struct FormalizationSelection 58 62
+    function selected_index 66 71
+    function selected_candidate 74 77
+    function is_clarification 80 82
+    function softmax_formalization_scores 86 116
+    function select_formalization_candidate 119 128
+    function select_formalization_candidate_with_probability_store 131 146
+    function select_formalization_candidate_with_policy 155 200
+    function formalization_probability_target 203 205
+    function select_from_probabilities 207 287
+    function finite_clamped 289 295
+    function highest_score_index 297 303
+    function ranked_indices 305 314
+    function probability_margin_epsilon 316 318
+    function should_clarify 320 322
+    function sample_index 324 334
+    function selection_salt 336 350
+    function seeded_unit_interval 352 356
+    function fnv1a64 358 365
+    function usize_to_f32 367 370
+    function clarifying_question 372 387
+    function predicate_clarifying_question 389 417

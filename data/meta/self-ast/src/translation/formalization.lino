@@ -1,0 +1,52 @@
+self_ast_census
+  target src/translation/formalization.rs
+  language rust
+  fidelity signature
+  byte_len 26791
+  line_count 795
+  content_id source_module_cd76c40c98cd6a1f
+  symbol_count 43
+  symbols
+    enum FormalizationAnchorKind 18 24
+    enum FormalizationRole 27 31
+    struct FormalizationAnchor 34 40
+    struct FormalizationSlot 43 47
+    struct FormalizationCandidate 50 56
+    function slot 60 62
+    function to_links_notation 65 113
+    function compact_summary 116 130
+    function slug 135 141
+    function lino_suffix 146 154
+    struct LabelEntry 167 171
+    struct PredicatePattern 182 188
+    struct PredicateSurface 198 201
+    struct ParsedRelation 204 210
+    function item_entries 213 225
+    static ITEMS 214 214
+    function predicate_patterns 230 257
+    static PATTERNS 231 231
+    function binary_relation_patterns 261 265
+    function surfaces_by_munch 271 275
+    function predicate_by_slug 277 281
+    function formalize_prompt 289 297
+    function formalize_prompt_candidates 306 369
+    function build_relation_candidate 371 394
+    function ambiguous_relation_alternatives 403 412
+    function sort_candidates 414 422
+    function build_candidate 424 451
+    function push_item_slot 453 468
+    function resolve_item_anchor 470 518
+    function resolve_seed_concept_anchor 520 551
+    function property_anchor 553 566
+    function translation_predicate 568 573
+    function parse_translation_object 575 644
+    function clean_translation_surface 646 656
+    function parse_binary_relation 658 684
+    function find_relation_phrase 686 704
+    function clean_argument 706 726
+    function normalize_lookup 728 734
+    function normalize_language 736 745
+    function is_reasonable_standalone_surface 747 750
+    function looks_unanchored_unknown 752 783
+    function looks_like_named_article 785 788
+    function wikipedia_title 790 795

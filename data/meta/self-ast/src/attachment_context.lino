@@ -1,0 +1,20 @@
+self_ast_census
+  target src/attachment_context.rs
+  language rust
+  fidelity signature
+  byte_len 4771
+  line_count 139
+  content_id source_module_b623663841aa0b5c
+  symbol_count 11
+  symbols
+    struct Attachment 24 33
+    function new 38 45
+    function with_size 49 52
+    function with_excerpt 56 62
+    function descriptor 65 75
+    function build_attachment_context 81 100
+    function compose_prompt_with_attachments 108 120
+    function human_readable_size 125 139
+    const KIB 126 126
+    const MIB 127 127
+    const GIB 128 128

@@ -1,0 +1,19 @@
+self_ast_census
+  target src/context_capacity.rs
+  language rust
+  fidelity signature
+  byte_len 3634
+  line_count 119
+  content_id source_module_bd0071a033bc1360
+  symbol_count 10
+  symbols
+    const DEFAULT_AVG_UTF8_BYTES_PER_CHAR 9 9
+    const AVG_UTF8_BYTES_PER_CHAR_ENV 10 10
+    struct ContextCapacity 13 20
+    function current 23 32
+    function from_bytes 35 59
+    function avg_utf8_bytes_per_char 63 69
+    function context_memory_path 72 74
+    function memory_used_bytes 76 92
+    function memory_directory_bytes 94 110
+    function is_memory_log 112 119

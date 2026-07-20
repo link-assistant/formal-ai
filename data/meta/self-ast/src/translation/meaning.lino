@@ -1,0 +1,16 @@
+self_ast_census
+  target src/translation/meaning.rs
+  language rust
+  fidelity signature
+  byte_len 3634
+  line_count 98
+  content_id source_module_861b6d4ab1fa9d3c
+  symbol_count 7
+  symbols
+    struct MeaningId 22 31
+    function from_item 37 43
+    function from_sense 47 53
+    function from_wiktionary_page 59 65
+    function slug 71 84
+    function is_wikidata_backed 89 91
+    function fmt 95 97

@@ -1,0 +1,22 @@
+self_ast_census
+  target src/statement_audit/evidence.rs
+  language rust
+  fidelity signature
+  byte_len 6038
+  line_count 185
+  content_id source_module_975ca8f2588bc784
+  symbol_count 13
+  symbols
+    struct EvidenceDocument 13 15
+    struct RawCapture 19 31
+    struct EvidenceParseError 35 37
+    function new 40 44
+    function fmt 48 50
+    function parse_evidence_json 60 73
+    function parse_capture 75 100
+    function parse_selector 102 137
+    function parse_tier 139 147
+    function parse_stance 149 160
+    function require_text 162 168
+    function field_error 170 177
+    function render_error 179 185

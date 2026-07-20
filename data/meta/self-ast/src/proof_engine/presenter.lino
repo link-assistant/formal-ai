@@ -1,0 +1,23 @@
+self_ast_census
+  target src/proof_engine/presenter.rs
+  language rust
+  fidelity signature
+  byte_len 18676
+  line_count 414
+  content_id source_module_5232f4600af613b0
+  symbol_count 14
+  symbols
+    function render_outcome 19 21
+    function render_outcome_with_config 33 65
+    function render_interpretation 71 160
+    function render_follow_up_questions 166 183
+    function format_follow_up_questions 185 198
+    function format_follow_up_list 200 206
+    function follow_up_label 208 215
+    function disproven_follow_up_questions 217 254
+    function inconclusive_follow_up_questions 256 279
+    function render_proven 281 309
+    function render_disproven 311 345
+    function render_partial_plan 347 385
+    function render_inconclusive 387 395
+    function render_steps 397 414

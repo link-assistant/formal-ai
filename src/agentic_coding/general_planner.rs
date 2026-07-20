@@ -10,6 +10,7 @@ use std::fmt::Write as _;
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
 use crate::seed::{self, Slot};
+use crate::self_ast_census::{self, CensusResolution};
 
 use super::planner::Capability;
 
@@ -236,6 +237,33 @@ fn is_non_referential_content(content: &str) -> bool {
         .any(|form| form.slot() == Slot::Bare && lower == form.text)
 }
 
+/// Resolve an edit target named in a request through the workspace self-AST
+/// census (issue #673).
+///
+/// Before the census existed, the planner could only edit a file the request spelt
+/// out in full, and its own self-inspection was pinned to a single hardcoded module
+/// (`src/agentic_coding/planner.rs`). Now any `path`, `path:symbol`, unambiguous
+/// module suffix, or uniquely-declared item name resolves to the real module path
+/// through [`crate::self_ast_census`], so the planner can address every module of
+/// the workspace by the same mechanism.
+///
+/// The token must *address* the workspace to be resolved: it has to carry a
+/// directory component (`agentic_coding/source_links.rs`) or a `path:symbol`
+/// pair (`self_ast_census.rs:resolve_census_target`). A bare file name such as
+/// `main.rs` is left exactly as the request spelt it, because the request may be
+/// about the *client's* working directory rather than this workspace, and an
+/// ordinary word that happens to match an item name is never mistaken for an edit
+/// target. The census itself fails closed on anything ambiguous.
+#[must_use]
+pub fn resolve_census_target(reference: &str) -> Option<CensusResolution> {
+    let addresses_workspace =
+        reference.contains('/') || (reference.contains(':') && !reference.contains("://"));
+    if !addresses_workspace {
+        return None;
+    }
+    self_ast_census::workspace().resolve(reference)
+}
+
 /// Recover the `(target, old, new)` of a file-edit request from its wording
 /// (issue #680).
 ///
@@ -276,8 +304,13 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
+        // A repository target may be named as a bare module or item — `source_links.rs`,
+        // `src/agentic_coding/source_links.rs:render_document`, or just
+        // `is_source_links_task` — in which case the workspace self-AST census
+        // (issue #673) resolves it to the module that actually declares it.
+        let resolved = resolve_census_target(cleaned);
         let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
-        if !looks_like_file || !safe_relative_path(cleaned) {
+        if resolved.is_none() && (!looks_like_file || !safe_relative_path(cleaned)) {
             return None;
         }
         let prev_is_cue = index
@@ -285,7 +318,8 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
             .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
         let next_is_cue =
             (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
-        (prev_is_cue || next_is_cue).then(|| (index, cleaned.to_owned()))
+        let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
+        (prev_is_cue || next_is_cue).then_some((index, target))
     })?;
     // Extend the clause boundary left over any run of target cues so a multi-word
     // file clause ("в файле notes.txt") is excluded from the replacement text in

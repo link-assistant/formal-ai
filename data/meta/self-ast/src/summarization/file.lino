@@ -1,0 +1,59 @@
+self_ast_census
+  target src/summarization/file.rs
+  language rust
+  fidelity signature
+  byte_len 23768
+  line_count 751
+  content_id source_module_f8c3e193c5ff28a1
+  symbol_count 50
+  symbols
+    struct MetaLanguageFormalization 23 29
+    function is_valid 35 37
+    struct EmbeddedGrammarFormalization 42 47
+    struct RepositoryFileFormalization 51 59
+    function summary 69 71
+    function links_notation 75 111
+    function formalize_repository_file 117 147
+    function summarize_repository_file 151 157
+    function render_repository_file_summary 159 191
+    function statements_for_file 193 204
+    function markdown_file_statements 206 214
+    function code_statements 216 233
+    function structured_statements 235 250
+    function formalize_markdown_embedded_grammars 252 280
+    function formalize_fenced_block 282 300
+    struct FencedBlock 303 307
+    struct FencedMarker 310 313
+    function opening_fence_marker 315 325
+    function is_closing_fence 327 336
+    function fence_language 338 354
+    function parse_with_meta_language 357 371
+    function detect_repository_file_format 373 412
+    function normalize_language_label 414 427
+    function meta_language_label_for_format 429 450
+    function is_code_format 452 466
+    function is_structured_format 468 473
+    function display_file_format 475 500
+    function extract_code_symbols 502 514
+    function symbol_from_line 516 531
+    function rust_symbol 533 553
+    function js_symbol 555 568
+    function class_like_symbol 570 586
+    function c_like_symbol 588 595
+    function prefixed_symbol 597 599
+    function first_identifier 601 608
+    function strip_leading_words 610 626
+    function extract_structural_keys 628 640
+    function quoted_key 642 649
+    function bare_key 651 659
+    function embedded_language_list 661 667
+    function push_unique 669 673
+    function line_count 675 681
+    function looks_like_heading_fragment 683 685
+    function has_terminal_punctuation 687 691
+    function is_identifier 693 697
+    function is_identifier_start 699 701
+    function statement_kind_label 703 715
+    function push_meta_language 717 740
+    function push_field 742 745
+    function write_indent 747 751

@@ -1,0 +1,100 @@
+self_ast_census
+  target src/agentic_coding/dreaming_audit.rs
+  language rust
+  fidelity full_ast
+  byte_len 9613
+  line_count 252
+  content_id source_module_8394e196895bd775
+  symbol_count 17
+  symbols
+    const DREAMING_AUDIT_PATH 15 15
+    const DREAMING_AUDIT_TASK 17 23
+    const EMBEDDED_RECIPE 23 23
+    const EMBEDDED_CUES 24 24
+    struct RecipeRecord 29 31
+    function field 34 39
+    function record_type 41 43
+    struct StageAnalysis 48 58
+    function is_grounded 63 65
+    function parse_recipe 69 90
+    function analyze_recipe 94 149
+    function is_dreaming_audit_task 157 159
+    function render_document 162 167
+    function render_document_from 173 220
+    function final_answer 223 239
+    function join_or_none 241 247
+    function field_at 249 252
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6753
+    named_node_count 1406
+    distinct_node_kinds 65
+    node_kinds
+      arguments 131
+      array_type 2
+      attribute 6
+      attribute_item 6
+      binary_expression 10
+      block 25
+      call_expression 131
+      char_literal 5
+      closure_expression 19
+      closure_parameters 19
+      const_item 4
+      continue_expression 3
+      crate 1
+      declaration_list 2
+      doc_comment 29
+      else_clause 3
+      escape_sequence 35
+      expression_statement 22
+      field_declaration 6
+      field_declaration_list 2
+      field_expression 121
+      field_identifier 129
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 2
+      function_item 11
+      function_modifiers 1
+      generic_function 1
+      generic_type 12
+      identifier 229
+      if_expression 6
+      impl_item 2
+      inner_doc_comment_marker 9
+      integer_literal 10
+      let_condition 1
+      let_declaration 29
+      line_comment 29
+      macro_invocation 8
+      mutable_specifier 11
+      outer_doc_comment_marker 20
+      parameter 12
+      parameters 11
+      primitive_type 19
+      reference_expression 21
+      reference_type 19
+      scoped_identifier 12
+      self 6
+      self_parameter 3
+      shorthand_field_initializer 3
+      source_file 1
+      string_content 63
+      string_literal 50
+      struct_expression 1
+      struct_item 2
+      token_tree 12
+      tuple_expression 2
+      tuple_pattern 6
+      tuple_struct_pattern 2
+      tuple_type 2
+      type_arguments 13
+      type_identifier 39
+      unary_expression 3
+      use_as_clause 1
+      use_declaration 2
+      visibility_modifier 6

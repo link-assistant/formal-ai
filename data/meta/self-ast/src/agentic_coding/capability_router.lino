@@ -1,0 +1,89 @@
+self_ast_census
+  target src/agentic_coding/capability_router.rs
+  language rust
+  fidelity full_ast
+  byte_len 8994
+  line_count 262
+  content_id source_module_ec1829b2308354b6
+  symbol_count 10
+  symbols
+    function tool_for 16 41
+    function tool_matches_capability 43 53
+    function classify_tool 57 114
+    function plan_shared_capability_step 116 145
+    function task_matches 147 157
+    function arguments_for 159 205
+    function wildcard_token 207 211
+    function file_tokens 213 226
+    function shell_fallback 228 258
+    function shell_quote 260 262
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7742
+    named_node_count 1599
+    distinct_node_kinds 61
+    node_kinds
+      arguments 152
+      array_expression 2
+      array_type 3
+      binary_expression 33
+      block 40
+      call_expression 152
+      char_literal 25
+      closure_expression 22
+      closure_parameters 22
+      crate 2
+      doc_comment 9
+      else_clause 7
+      escape_sequence 2
+      expression_statement 26
+      field_expression 113
+      field_identifier 113
+      for_expression 1
+      function_item 10
+      generic_function 1
+      generic_type 7
+      identifier 377
+      if_expression 15
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_condition 4
+      let_declaration 16
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 9
+      macro_invocation 13
+      match_arm 13
+      match_block 2
+      match_expression 2
+      match_pattern 13
+      mutable_specifier 2
+      outer_doc_comment_marker 8
+      parameter 19
+      parameters 10
+      parenthesized_expression 2
+      primitive_type 18
+      reference_expression 2
+      reference_type 17
+      return_expression 7
+      scoped_identifier 65
+      scoped_use_list 1
+      source_file 1
+      string_content 74
+      string_literal 72
+      super 9
+      token_tree 30
+      try_expression 2
+      tuple_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 4
+      type_arguments 8
+      type_identifier 19
+      type_parameters 1
+      unary_expression 5
+      use_declaration 5
+      use_list 1
+      visibility_modifier 3

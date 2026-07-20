@@ -1,0 +1,13 @@
+self_ast_census
+  target src/statement_audit/repository.rs
+  language rust
+  fidelity signature
+  byte_len 3310
+  line_count 97
+  content_id source_module_cd5fd48a3081543a
+  symbol_count 4
+  symbols
+    function from_repository 10 45
+    function tracked_paths 48 66
+    function walked_paths 68 73
+    function walk_directory 75 97

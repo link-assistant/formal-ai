@@ -1,0 +1,35 @@
+self_ast_census
+  target src/solver_handlers/number_riddle.rs
+  language rust
+  fidelity signature
+  byte_len 13404
+  line_count 430
+  content_id source_module_e6ec90945a288a5c
+  symbol_count 26
+  symbols
+    struct Bound 14 17
+    function lower_operator 20 26
+    function upper_operator 28 34
+    struct IntervalBounds 38 41
+    function try_number_riddle 43 91
+    function looks_like_number_riddle 93 135
+    function contains_any 137 139
+    function extract_interval_bounds 141 176
+    function find_bound 178 185
+    function find_number_after_phrase 187 198
+    function phrase_has_boundary 200 211
+    function is_negated_strict_bound 213 221
+    function parse_leading_integer 223 243
+    function formal_statement 245 253
+    enum IntegerSolutions 255 260
+    function integer_solutions 262 283
+    function render_interval_answer 285 296
+    function render_interval_answer_ru 298 329
+    function render_interval_answer_en 331 364
+    function real_domain_line_ru 366 380
+    function real_domain_line_en 382 396
+    function has_multiple_real_solutions 398 400
+    function has_single_real_solution 402 404
+    function real_example 406 408
+    function format_half 410 419
+    function format_candidates 421 430

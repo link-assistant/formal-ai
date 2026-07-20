@@ -1,0 +1,18 @@
+self_ast_census
+  target src/proof_engine/decision/linear/proofs.rs
+  language rust
+  fidelity signature
+  byte_len 8824
+  line_count 271
+  content_id source_module_aee7bc9d6f13d37c
+  symbol_count 9
+  symbols
+    function linear_identity_proof 11 40
+    function linear_identity_disproof 42 60
+    function linear_universal_counterexample_proof 62 92
+    function linear_entailment_proof 94 131
+    function linear_vacuous_entailment_proof 133 161
+    function linear_entailment_counterexample_proof 163 200
+    function linear_satisfiability_proof 202 233
+    function linear_unsat_proof 235 261
+    function delegated_linear_step 263 271

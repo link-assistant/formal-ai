@@ -1,0 +1,67 @@
+self_ast_census
+  target src/telegram.rs
+  language rust
+  fidelity signature
+  byte_len 27735
+  line_count 789
+  content_id source_module_e89425cdf4910b35
+  symbol_count 58
+  symbols
+    const TEXT_ONLY_MESSAGE 10 10
+    const DEFAULT_API_BASE 11 11
+    const TELEGRAM_MAX_MESSAGE_LEN 15 15
+    const FORMAL_AI_VERSION 19 19
+    const DEFAULT_POLL_TIMEOUT_SECONDS 20 20
+    const DEFAULT_POLL_LIMIT 21 21
+    const POLL_CONNECT_TIMEOUT_PADDING_SECONDS 22 22
+    const TELEGRAM_THINKING_EDIT_DEBOUNCE_MS 27 27
+    const TELEGRAM_THINKING_MAX_EDITS 31 31
+    const TELEGRAM_THINKING_INITIAL_PLACEHOLDER 35 35
+    struct TelegramWebhookReply 38 44
+    struct TelegramThinkingEdit 54 58
+    function to_edit_message_body 65 82
+    struct TelegramReplyParameters 86 88
+    enum TelegramWebhookError 91 93
+    function fmt 96 102
+    struct TelegramUpdate 108 119
+    function into_message 122 127
+    struct TelegramMessage 131 154
+    struct TelegramDocument 158 165
+    struct TelegramPhotoSize 170 173
+    function attachments 182 209
+    function as_attachment 216 232
+    struct TelegramChat 236 242
+    struct TelegramEntity 245 248
+    struct TelegramUser 251 254
+    function message_is_in_public_chat 256 261
+    function message_addresses_bot 263 283
+    function handle_telegram_webhook 285 299
+    function reply_for_message 301 303
+    struct TelegramReplyBundle 310 313
+    function compose_telegram_reply 315 371
+    function telegram_thinking_blockquote 384 401
+    function telegram_solver 403 407
+    function is_version_command 409 413
+    function version_reply_text 415 417
+    function telegram_html_from_markdown 420 446
+    function open_pre_code_tag 448 453
+    function language_class 455 465
+    function html_escape 467 472
+    struct TelegramPollingConfig 483 489
+    function new 493 501
+    function get_updates_url 504 520
+    function send_message_url 523 529
+    function edit_message_text_url 532 538
+    function http_timeout_seconds 541 544
+    enum TelegramPollingError 548 551
+    function fmt 554 566
+    struct GetUpdatesResponse 572 578
+    struct TelegramPollingReply 590 600
+    function to_send_message_body 605 607
+    function extract_sent_message_id 617 624
+    struct ParsedUpdatesBatch 628 631
+    function parse_get_updates_response 637 674
+    function reply_for_polling_message 676 698
+    function build_progressive_thinking_edits 711 754
+    function serialize_string_array 756 776
+    function url_encode 778 789

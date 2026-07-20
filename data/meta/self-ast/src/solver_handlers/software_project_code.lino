@@ -1,0 +1,25 @@
+self_ast_census
+  target src/solver_handlers/software_project_code.rs
+  language rust
+  fidelity signature
+  byte_len 5983
+  line_count 224
+  content_id source_module_96880918bf6d10f8
+  symbol_count 16
+  symbols
+    struct CodeArtifact 1 5
+    function implementation_code 7 40
+    const GAME_TRACKER_TYPESCRIPT 42 43
+    type UnitState 47 55
+    type DamageResult 57 61
+    const prevented 64 64
+    const damageTaken 65 65
+    const GENERIC_PROJECT_TYPESCRIPT 97 98
+    type ProjectCommand 104 105
+    const GENERIC_PROJECT_JAVASCRIPT 132 148
+    const GENERIC_PROJECT_PYTHON 151 186
+    const GENERIC_PROJECT_RUST 180 186
+    struct ProjectRecord 181 186
+    enum ProjectStatus 189 192
+    enum ProjectCommand 194 198
+    function apply_command 200 224

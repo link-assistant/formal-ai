@@ -1,0 +1,62 @@
+self_ast_census
+  target src/seed.rs
+  language rust
+  fidelity signature
+  byte_len 39172
+  line_count 919
+  content_id source_module_7d27fc8ed164b47a
+  symbol_count 53
+  symbols
+    module agentic_tool_capabilities 24 24
+    module brainstorm 25 25
+    module client_integrations 26 26
+    module coreference 27 27
+    module embedded 28 28
+    module facts 29 29
+    module grounding_overrides 30 30
+    module handler_precedence 31 31
+    module market_price_references 32 32
+    module meanings 33 33
+    module model_aliases 34 34
+    module operation_vocabulary 35 35
+    module parser 36 36
+    module personas 37 37
+    module projects 38 38
+    module roles 39 39
+    module shell_intents 40 40
+    module summary_topics 41 41
+    module terminal_commands 42 42
+    function merged_bundle 185 187
+    function bundle_from_files 195 212
+    function parse_bundle 233 308
+    struct ResponseRecord 312 317
+    function multilingual_responses 321 341
+    function response_for 346 353
+    function agent_info 357 370
+    function supported_languages 379 384
+    struct LanguageRule 388 394
+    function language_rules 397 416
+    struct PromptPattern 420 426
+    struct LocalizedConcept 434 441
+    struct ConceptRecord 464 476
+    function localized_for 482 487
+    function concepts 491 541
+    struct LocalizedContextLabel 545 548
+    struct ContextRecord 554 559
+    function label_for 565 573
+    function matches 578 593
+    function concept_contexts 597 627
+    struct IntentRoute 639 647
+    struct IntentRouting 650 654
+    function intent_routing 657 702
+    struct LearningSource 712 717
+    struct LearningSources 722 725
+    function match_directive 743 758
+    function learning_sources 767 797
+    function prompt_patterns 800 819
+    struct EnvironmentRecord 829 841
+    struct MigrationFlow 844 848
+    struct EnvironmentDirectory 851 855
+    function environment_directory 858 902
+    function child_value_alias 904 911
+    function environment_records 917 919

@@ -1,0 +1,70 @@
+self_ast_census
+  target src/agentic_coding/ledger.rs
+  language rust
+  fidelity full_ast
+  byte_len 5342
+  line_count 111
+  content_id source_module_8b5c7302a0e16cfc
+  symbol_count 9
+  symbols
+    const LEDGER_PATH 27 27
+    function cached_ledger 35 38
+    static LEDGER 36 36
+    const LEDGER_TASK 46 56
+    const LEDGER_KEYWORDS 56 56
+    function is_ledger_task 67 77
+    function render_document 86 88
+    function ledger 93 95
+    function final_answer 100 111
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1753
+    named_node_count 380
+    distinct_node_kinds 43
+    node_kinds
+      arguments 13
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      binary_expression 4
+      block 5
+      call_expression 13
+      closure_expression 1
+      closure_parameters 1
+      const_item 3
+      crate 1
+      doc_comment 50
+      escape_sequence 11
+      field_expression 10
+      field_identifier 10
+      function_item 5
+      generic_type 1
+      identifier 50
+      inner_doc_comment_marker 20
+      integer_literal 1
+      let_declaration 2
+      lifetime 1
+      line_comment 52
+      macro_invocation 2
+      outer_doc_comment_marker 30
+      parameter 2
+      parameters 5
+      parenthesized_expression 2
+      primitive_type 6
+      reference_type 6
+      scoped_identifier 4
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 20
+      string_literal 13
+      token_tree 7
+      type_arguments 1
+      type_identifier 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6

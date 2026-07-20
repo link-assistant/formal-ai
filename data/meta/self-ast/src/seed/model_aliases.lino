@@ -1,0 +1,20 @@
+self_ast_census
+  target src/seed/model_aliases.rs
+  language rust
+  fidelity signature
+  byte_len 2740
+  line_count 96
+  content_id source_module_eeba976ca308eb3d
+  symbol_count 11
+  symbols
+    struct ModelAliasRegistry 13 16
+    function accepts 20 25
+    function model_aliases 29 32
+    static REGISTRY 30 30
+    function canonical_model_id 35 37
+    function try_resolve_model_id 40 50
+    function resolve_model_id 53 55
+    function parse_model_aliases 57 77
+    function canonical_from_root 79 84
+    function aliases_from_root 86 92
+    function normalize_model_id 94 96

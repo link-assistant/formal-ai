@@ -1,0 +1,57 @@
+self_ast_census
+  target src/agentic_coding/learning_report/self_hosting_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 1928
+  line_count 46
+  content_id source_module_7b2e0b88d89f491b
+  symbol_count 7
+  symbols
+    const SELF_HOSTING_LEARNING_PATH 14 14
+    const SELF_HOSTING_LEARNING_TASK 15 15
+    static REPORT 17 25
+    function is_self_hosting_learning_task 28 30
+    function render_document 33 35
+    function render_document_from 39 41
+    function final_answer 44 46
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 865
+    named_node_count 162
+    distinct_node_kinds 32
+    node_kinds
+      arguments 5
+      attribute 4
+      attribute_item 4
+      block 4
+      call_expression 5
+      const_item 2
+      doc_comment 11
+      field_expression 4
+      field_identifier 11
+      field_initializer 7
+      field_initializer_list 1
+      function_item 4
+      identifier 26
+      inner_doc_comment_marker 10
+      line_comment 11
+      macro_invocation 1
+      outer_doc_comment_marker 1
+      parameter 3
+      parameters 4
+      primitive_type 6
+      reference_type 5
+      scoped_identifier 1
+      source_file 1
+      static_item 1
+      string_content 7
+      string_literal 7
+      struct_expression 1
+      super 1
+      token_tree 1
+      type_identifier 5
+      use_declaration 1
+      visibility_modifier 7

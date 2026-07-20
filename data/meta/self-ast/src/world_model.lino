@@ -1,0 +1,59 @@
+self_ast_census
+  target src/world_model.rs
+  language rust
+  fidelity signature
+  byte_len 28673
+  line_count 732
+  content_id source_module_d4b7f287ac56afc1
+  symbol_count 50
+  symbols
+    const MAX_RECALCULATION_PASSES_PER_STATEMENT 57 57
+    struct Dependency 67 72
+    function supports 77 82
+    function contradicts 86 91
+    struct Statement 102 115
+    function new 121 134
+    function with_evidence 138 141
+    function with_dependency 145 148
+    function with_prior 152 155
+    struct Action 164 171
+    function new 176 182
+    function adding 186 189
+    function removing 193 196
+    function id 200 209
+    struct Context 219 226
+    function new 231 237
+    function assert_link 240 242
+    function retract_link 245 247
+    function holds 251 253
+    function links 257 259
+    function statements 263 265
+    function statement 269 271
+    function add_statement 276 281
+    function extend_statements 289 297
+    function recalculate 308 364
+    function assess_with_dependencies 369 390
+    function sync_statement_links 394 412
+    function apply_action 418 426
+    function predict 436 449
+    function difference 459 483
+    function merge_from 491 499
+    function split_off 508 526
+    function links_notation 531 533
+    function state_links 536 542
+    function statement_changes_against 545 561
+    function is_statement_layer_link 566 572
+    struct RecalculationReport 576 583
+    struct StatementChange 587 596
+    struct LinkConflict 601 606
+    struct ContextDiff 610 617
+    function is_empty 623 625
+    function links_notation 629 646
+    struct Prediction 652 665
+    function is_noop 671 673
+    struct WorldModel 685 692
+    function new 697 703
+    function difference 709 711
+    function predict 716 718
+    function target_reached 723 725
+    function commit_current_to_general 729 731

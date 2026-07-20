@@ -1,0 +1,22 @@
+self_ast_census
+  target src/coding/cst.rs
+  language rust
+  fidelity signature
+  byte_len 7257
+  line_count 188
+  content_id source_module_1a42390eb3eaea38
+  symbol_count 13
+  symbols
+    const META_LANGUAGE_ENGINE 27 27
+    struct CstGrammar 30 35
+    enum CstEvidence 39 49
+    struct ProgramCst 52 57
+    function links_notation 61 85
+    function is_valid 88 99
+    function engine 103 107
+    function grammar_metadata 111 117
+    function grammar_from_node 119 126
+    function parse_program_cst 128 139
+    function validated_program_cst 141 144
+    function parse_with_meta_language 151 180
+    function grammar_nodes 182 188

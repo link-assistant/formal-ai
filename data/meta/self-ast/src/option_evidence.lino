@@ -1,0 +1,16 @@
+self_ast_census
+  target src/option_evidence.rs
+  language rust
+  fidelity signature
+  byte_len 8661
+  line_count 215
+  content_id source_module_1f2d1da71ed9537a
+  symbol_count 7
+  symbols
+    const FRACTION_DIGITS 35 35
+    function quantity_in 45 76
+    function number_at 81 124
+    function digit 126 128
+    function price_in 135 158
+    function candidate_from_page 172 196
+    function with_offer_from_page 204 215

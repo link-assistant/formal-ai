@@ -1,0 +1,15 @@
+self_ast_census
+  target src/solver_terminal.rs
+  language rust
+  fidelity signature
+  byte_len 5635
+  line_count 141
+  content_id source_module_db322f020d39e763
+  symbol_count 6
+  symbols
+    function extract_backtick_command 26 48
+    function word_tokens 51 57
+    function leading_shell_command 62 75
+    function detect_terminal_command 79 105
+    function terminal_body 114 119
+    function try_terminal_command 123 141

@@ -1,0 +1,23 @@
+self_ast_census
+  target src/rebuild_plan.rs
+  language rust
+  fidelity signature
+  byte_len 13917
+  line_count 296
+  content_id source_module_5c99df1ad1e5979a
+  symbol_count 14
+  symbols
+    struct ReattachArtifact 33 40
+    struct RebuildStep 44 55
+    struct RebuildPlan 64 79
+    function for_accepted_change 90 115
+    function is_human_gated 120 122
+    function summary 126 134
+    function links_notation 138 161
+    function content_id 165 167
+    function grounded_artifacts 178 217
+    function pipeline_steps 221 259
+    function canonical_rebuild_plan 268 279
+    function field 281 283
+    function sub 285 287
+    function quote 289 296

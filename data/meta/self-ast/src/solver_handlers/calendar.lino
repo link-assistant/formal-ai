@@ -1,0 +1,58 @@
+self_ast_census
+  target src/solver_handlers/calendar.rs
+  language rust
+  fidelity signature
+  byte_len 33945
+  line_count 981
+  content_id source_module_3215a320878aa552
+  symbol_count 49
+  symbols
+    enum Weekday 21 29
+    function index 32 42
+    function from_index 44 54
+    function shifted 56 61
+    function slug 63 73
+    function from_slug 78 89
+    function en 91 101
+    function ru 103 113
+    function ru_genitive 115 125
+    function ru_instrumental 127 137
+    function hi 139 149
+    function zh 151 161
+    enum WeekdayOperation 165 168
+    function delta 171 176
+    function event_kind 178 183
+    struct CalendarDate 195 200
+    function iso 203 205
+    function try_calendar_reasoning 208 248
+    function try_current_day_reasoning 250 270
+    function mentions_current_day_question 272 296
+    function mentions_weekday_context 298 303
+    function detect_operation 305 323
+    function detect_weekday 325 333
+    function contains_term 335 345
+    function is_cjk_character 347 349
+    function is_word_character 351 353
+    function current_utc_date 355 359
+    function date_from_unix_days 361 369
+    function days_to_date 371 388
+    function weekday_for_unix_days 390 400
+    function render_current_day_answer 402 414
+    function render_answer 416 488
+    function try_calendar_create_event 503 585
+    function default_title 588 595
+    function mentions_calendar_create_request 597 644
+    function extract_day_number 646 685
+    function relative_date_offset 687 700
+    function extract_event_title 702 710
+    function compute_target_date_with_rollover 712 732
+    function extract_clock_time 734 781
+    function extract_spoken_hour_time 783 814
+    function mentions_timezone_alias 816 823
+    function resolve_timezone 825 830
+    function extract_title 832 863
+    function extract_participant_title 865 871
+    function tidy_title 873 918
+    function strip_action_words 920 934
+    function capitalize_first 936 941
+    function render_create_confirmation 943 981

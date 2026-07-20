@@ -1,0 +1,24 @@
+self_ast_census
+  target src/client_integrations/session_files.rs
+  language rust
+  fidelity signature
+  byte_len 6538
+  line_count 218
+  content_id source_module_95e0d5b8ee2dac03
+  symbol_count 15
+  symbols
+    struct TempConfigDir 14 17
+    function new 20 31
+    function preserve 33 35
+    function drop 39 43
+    type SessionSnapshot 46 46
+    function user_home_dir 48 53
+    function session_file_snapshot 55 63
+    function collect_session_files 65 90
+    function visit 66 85
+    function newest_changed_session_file 92 109
+    function print_session_files 111 144
+    function query_session_id 146 164
+    function session_id 166 190
+    function find_session_id 192 207
+    function looks_like_uuid 209 218

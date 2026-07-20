@@ -1,0 +1,50 @@
+self_ast_census
+  target src/json_lino.rs
+  language rust
+  fidelity signature
+  byte_len 20900
+  line_count 614
+  content_id source_module_bc33916793565aab
+  symbol_count 41
+  symbols
+    const ARRAY_ENTRY 34 34
+    const ENTITIES_KEY 35 35
+    function strip_empty 47 65
+    function normal_form 67 69
+    function json_to_lino 76 81
+    function json_cache_file 89 106
+    function json_cache_projection 114 116
+    function single_entity 118 125
+    function write_document 127 137
+    function write_entity_fields 142 152
+    function write_language_strings 154 165
+    function write_language_aliases 167 191
+    function language_text 193 195
+    function write_object_entries 197 201
+    function write_named_value 203 220
+    function write_array_element 222 239
+    function write_line 241 249
+    function is_scalar 251 256
+    function scalar_token 258 266
+    function scalar_array_token 268 271
+    function string_token 276 283
+    function is_scalar_literal 285 287
+    function quoted_string 289 300
+    function is_bare_reference 302 307
+    struct RawNode 316 320
+    function lino_to_json 322 346
+    function parse_raw_tree 348 384
+    function parse_raw_line 386 399
+    function navigate_mut 401 407
+    function value_of 409 423
+    function object_of 425 431
+    function entity_value 435 446
+    function reexpand_language_strings 448 458
+    function reexpand_language_aliases 460 475
+    function language_entry 477 485
+    function is_entity_id 487 492
+    function parse_token 494 515
+    function parse_scalar_array 517 527
+    function split_scalar_tokens 529 578
+    function parse_single_quoted_string 580 610
+    function is_parenthesized 612 614

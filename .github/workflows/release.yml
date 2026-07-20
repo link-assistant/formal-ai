@@ -385,6 +385,9 @@ jobs:
       - name: Check LiNo data integrity
         run: cargo test --test unit data_files -- --nocapture
 
+      - name: Check self-AST census freshness
+        run: cargo test --test unit self_ast_census -- --nocapture
+
       - name: Run tests
         run: cargo test --all-features --verbose
 

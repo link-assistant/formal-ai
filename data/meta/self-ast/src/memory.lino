@@ -1,0 +1,46 @@
+self_ast_census
+  target src/memory.rs
+  language rust
+  fidelity signature
+  byte_len 20996
+  line_count 592
+  content_id source_module_0450cc7d94d2b9e1
+  symbol_count 37
+  symbols
+    module bundle 43 43
+    const ROOT_HEADER 50 50
+    const BUNDLE_HEADER 51 51
+    struct MemoryEvent 59 87
+    function user 91 97
+    function assistant 100 106
+    struct MemoryStore 112 114
+    function new 118 120
+    function from_events 125 130
+    function append 132 135
+    function import 139 146
+    function purge_deleted_conversations 150 169
+    function purge_conversation 172 180
+    function reset 183 187
+    function events 190 192
+    function record_access 197 206
+    function apply_substitution 220 248
+    function len 251 253
+    function is_empty 256 258
+    function export_links_notation 263 265
+    function replace_from_links_notation 268 270
+    function import_links_notation 274 277
+    function load_from_file 280 287
+    function save_to_file 293 295
+    function write_locked_atomic 308 333
+    function replace_counting 337 344
+    function initialize_write_count 346 350
+    function export_links_notation 354 361
+    function format_event_into 363 405
+    function parse_links_notation 413 488
+    function escape_value 490 497
+    function unescape_value 499 519
+    function parse_quoted 521 536
+    function split_first_token 538 544
+    function isoformat_now 550 558
+    function format_iso8601 561 570
+    function days_to_date 577 592

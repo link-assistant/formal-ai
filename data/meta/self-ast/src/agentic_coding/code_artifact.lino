@@ -1,0 +1,115 @@
+self_ast_census
+  target src/agentic_coding/code_artifact.rs
+  language rust
+  fidelity full_ast
+  byte_len 12305
+  line_count 321
+  content_id source_module_e7ae952e38a7e937
+  symbol_count 16
+  symbols
+    const MAX_REWRITE_STEPS 24 24
+    const RENDERED_TRACE_EDGE_STEPS 25 25
+    struct WorkspaceArtifact 28 31
+    struct WorkspaceRewrite 34 37
+    function links_notation 40 90
+    function plan_code_artifact_step 93 160
+    function generated_artifact 162 171
+    function requested_rewrite 173 211
+    function explicit_substitution_query 219 226
+    function latest_workspace_artifact 228 245
+    function latest_result 247 264
+    function source_from_read_result 268 291
+    function read_arguments 293 295
+    function argument_string 297 299
+    function last_string_literal 301 303
+    function link_field 314 321
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 9058
+    named_node_count 1837
+    distinct_node_kinds 81
+    node_kinds
+      arguments 157
+      array_expression 2
+      array_type 5
+      attribute 2
+      attribute_item 2
+      binary_expression 21
+      block 40
+      break_expression 1
+      call_expression 157
+      char_literal 4
+      closure_expression 15
+      closure_parameters 15
+      const_item 2
+      continue_expression 1
+      crate 4
+      declaration_list 1
+      doc_comment 21
+      else_clause 1
+      escape_sequence 13
+      expression_statement 52
+      field_declaration 4
+      field_declaration_list 2
+      field_expression 134
+      field_identifier 145
+      field_initializer 7
+      field_initializer_list 4
+      for_expression 3
+      function_item 12
+      generic_type 9
+      identifier 439
+      if_expression 18
+      impl_item 1
+      index_expression 6
+      inner_doc_comment_marker 4
+      integer_literal 23
+      let_condition 5
+      let_declaration 36
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 27
+      macro_invocation 12
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 13
+      outer_doc_comment_marker 17
+      parameter 20
+      parameters 12
+      parenthesized_expression 3
+      primitive_type 15
+      range_expression 5
+      reference_expression 44
+      reference_type 21
+      return_expression 16
+      scoped_identifier 28
+      scoped_use_list 5
+      self 5
+      self_parameter 1
+      shorthand_field_initializer 1
+      slice_pattern 1
+      source_file 1
+      string_content 39
+      string_literal 36
+      struct_expression 4
+      struct_item 2
+      super 2
+      token_tree 26
+      try_expression 15
+      tuple_expression 1
+      tuple_pattern 9
+      tuple_struct_pattern 7
+      type_arguments 9
+      type_identifier 39
+      type_parameters 1
+      unary_expression 4
+      use_as_clause 1
+      use_declaration 8
+      use_list 5
+      visibility_modifier 1
+      while_expression 1

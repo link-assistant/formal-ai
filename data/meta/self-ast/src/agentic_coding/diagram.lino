@@ -1,0 +1,78 @@
+self_ast_census
+  target src/agentic_coding/diagram.rs
+  language rust
+  fidelity full_ast
+  byte_len 10818
+  line_count 272
+  content_id source_module_aba808e67764ead3
+  symbol_count 11
+  symbols
+    struct RecipeStep 23 28
+    struct Recipe 32 43
+    const RECIPES 57 81
+    const DIAGRAM_TASK 145 149
+    const DIAGRAM_PATH 149 149
+    const DIAGRAM_KEYWORDS 152 152
+    function is_diagram_task 156 161
+    function render_overview 164 187
+    function render_recipe 190 222
+    function render_document 230 259
+    function final_answer 264 272
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4987
+    named_node_count 935
+    distinct_node_kinds 49
+    node_kinds
+      arguments 11
+      array_expression 6
+      array_type 3
+      assignment_expression 1
+      attribute 5
+      attribute_item 5
+      binary_expression 1
+      block 8
+      call_expression 11
+      closure_expression 1
+      closure_parameters 1
+      const_item 4
+      doc_comment 55
+      escape_sequence 48
+      expression_statement 6
+      field_declaration 7
+      field_declaration_list 2
+      field_expression 9
+      field_identifier 60
+      field_initializer 44
+      field_initializer_list 16
+      for_expression 3
+      function_item 5
+      identifier 150
+      inner_doc_comment_marker 17
+      integer_literal 4
+      let_declaration 23
+      lifetime 7
+      line_comment 57
+      macro_invocation 23
+      mutable_specifier 6
+      outer_doc_comment_marker 38
+      parameter 6
+      parameters 5
+      primitive_type 13
+      reference_expression 7
+      reference_type 16
+      scoped_identifier 3
+      source_file 1
+      string_content 98
+      string_literal 69
+      struct_expression 16
+      struct_item 2
+      token_tree 28
+      tuple_pattern 2
+      type_identifier 25
+      use_as_clause 1
+      use_declaration 1
+      visibility_modifier 5

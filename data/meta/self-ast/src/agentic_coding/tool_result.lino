@@ -1,0 +1,116 @@
+self_ast_census
+  target src/agentic_coding/tool_result.rs
+  language rust
+  fidelity full_ast
+  byte_len 13768
+  line_count 426
+  content_id source_module_15c1e5c429963f02
+  symbol_count 28
+  symbols
+    struct NormalizedResult 11 15
+    function normalized_payload 20 23
+    function looks_like_error 25 30
+    function render 32 56
+    function latest_turn_answer 58 77
+    function has_latest_turn_result 79 90
+    function is_write_run_recipe 92 111
+    function follow_up_answer 113 144
+    function requested_index 146 158
+    function normalize 160 208
+    function from_payload 210 239
+    function mcp_text_content 241 260
+    function strip_transport_envelope 262 294
+    function nonzero_status 296 304
+    function failed_status 306 316
+    function nonempty_text 318 328
+    function pretty_json 330 332
+    function result_tool 334 344
+    function result_label 346 363
+    function extract_urls 365 381
+    function is_listing 383 388
+    function is_search 390 395
+    function response_language 397 404
+    function fill 406 426
+    const TOOL_PLACEHOLDER 414 414
+    const FORMAT_PLACEHOLDER 415 415
+    const PAYLOAD_PLACEHOLDER 416 416
+    const ERROR_PLACEHOLDER 417 417
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 13118
+    named_node_count 2674
+    distinct_node_kinds 70
+    node_kinds
+      arguments 272
+      array_expression 7
+      array_type 8
+      assignment_expression 1
+      binary_expression 39
+      block 61
+      boolean_literal 2
+      call_expression 272
+      closure_expression 54
+      closure_parameters 54
+      const_item 4
+      crate 8
+      doc_comment 4
+      else_clause 6
+      escape_sequence 3
+      expression_statement 39
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 255
+      field_identifier 263
+      field_initializer 5
+      field_initializer_list 3
+      function_item 23
+      generic_function 8
+      generic_type 13
+      identifier 544
+      if_expression 21
+      index_expression 8
+      inner_doc_comment_marker 1
+      integer_literal 13
+      let_condition 7
+      let_declaration 55
+      lifetime 2
+      line_comment 4
+      macro_invocation 4
+      match_arm 8
+      match_block 2
+      match_expression 2
+      match_pattern 8
+      mutable_specifier 2
+      outer_doc_comment_marker 3
+      parameter 42
+      parameters 23
+      parenthesized_expression 5
+      primitive_type 46
+      range_expression 6
+      reference_expression 30
+      reference_type 46
+      return_expression 18
+      scoped_identifier 31
+      scoped_type_identifier 1
+      scoped_use_list 1
+      shorthand_field_initializer 4
+      source_file 1
+      string_content 92
+      string_literal 101
+      struct_expression 3
+      struct_item 1
+      super 5
+      token_tree 4
+      try_expression 9
+      tuple_pattern 5
+      tuple_struct_pattern 12
+      type_arguments 21
+      type_identifier 51
+      unary_expression 14
+      use_declaration 3
+      use_list 1
+      visibility_modifier 5
+      while_expression 1

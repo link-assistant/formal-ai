@@ -1,0 +1,34 @@
+self_ast_census
+  target src/solver_handlers/behavior_rules.rs
+  language rust
+  fidelity signature
+  byte_len 44142
+  line_count 946
+  content_id source_module_55fa841906c985a1
+  symbol_count 25
+  symbols
+    struct BehaviorRuleRecord 35 44
+    function try_behavior_rules_with_runtime 46 152
+    function behavior_rule_records 154 274
+    function topic_order 276 288
+    function localized_text 290 303
+    function topic_label 305 341
+    function list_intro 343 351
+    function behavior_rule_counts 353 357
+    function log_behavior_rule_count 359 372
+    function render_behavior_rule_list 374 413
+    function runtime_rules_heading 415 423
+    function rule_list_footer 425 481
+    function localized_response 483 488
+    function rule_label 490 553
+    function rule_matches 555 618
+    function rule_response 620 659
+    function rule_when_then 661 752
+    function runtime_rule_when_then 754 770
+    function collect_runtime_rules 772 783
+    function render_behavior_rule_detail 785 822
+    function render_runtime_rule_update 824 883
+    function detail_query 885 907
+    function clean_rule_query 909 919
+    function find_behavior_rule 921 931
+    function runtime_rule_for_prompt 933 946

@@ -1,0 +1,41 @@
+self_ast_census
+  target src/self_improvement.rs
+  language rust
+  fidelity signature
+  byte_len 17856
+  line_count 516
+  content_id source_module_2c4c8355b9d76c5f
+  symbol_count 32
+  symbols
+    const CODING_MODIFICATION_SUITE_LINO 15 16
+    struct UnknownTrace 24 31
+    function new 36 45
+    function from_event_log 50 57
+    function from_symbolic_answer 63 72
+    function links_notation 76 88
+    struct BenchmarkGateReport 94 105
+    function new 110 124
+    function issue_362_from_counts 131 147
+    function permits_adoption 151 153
+    function status_slug 155 161
+    function learn_rules_from_unknown_traces 166 184
+    struct LearnedRuleProposal 188 209
+    enum LearnedRuleAdoption 213 218
+    function slug 221 226
+    struct LearningRejection 231 236
+    struct LearningRun 240 251
+    function new 254 279
+    function adoptable_rules 283 288
+    function links_notation 292 325
+    function propose_rule_from_trace 328 401
+    function learned_program_rule_lino 403 412
+    function require_field 414 416
+    function field_value 418 432
+    function validate_slug 434 444
+    struct ParsedRecord 447 449
+    function field 452 456
+    function parse_first_record 459 474
+    function unquote 476 499
+    function push_quoted_field 501 503
+    function push_quoted_nested_field 505 507
+    function quote 509 516

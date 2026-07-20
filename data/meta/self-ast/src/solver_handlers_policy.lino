@@ -1,0 +1,11 @@
+self_ast_census
+  target src/solver_handlers_policy.rs
+  language rust
+  fidelity signature
+  byte_len 3831
+  line_count 90
+  content_id source_module_a264a68f6d76c720
+  symbol_count 2
+  symbols
+    function try_physical_action_question 27 48
+    function try_kupi_slona 63 90

@@ -1,0 +1,57 @@
+self_ast_census
+  target src/solver_helpers/mod.rs
+  language rust
+  fidelity signature
+  byte_len 25638
+  line_count 724
+  content_id source_module_a304521ac144d698
+  symbol_count 48
+  symbols
+    module code 13 13
+    struct DecomposedSubImpulse 23 27
+    function confidence_for 29 38
+    function is_unbounded_autonomy 40 51
+    function is_forget_request 53 57
+    function is_cache_flush_request 59 61
+    function is_agent_request 63 67
+    function is_agent_opt_in 69 73
+    function is_destructive_action 75 84
+    function is_unbounded_loop 86 91
+    function is_inappropriate_content 93 102
+    function requires_external_lookup 104 111
+    function record_decomposition 113 146
+    function record_sub_impulses 148 163
+    function independent_actionable_segments 165 175
+    function split_candidate_actionable_parts 177 192
+    function split_sentences 194 210
+    function push_trimmed_segment 212 217
+    function strip_leading_coordinator 219 232
+    function looks_like_independent_impulse 234 253
+    function record_candidates 255 269
+    struct ValidationChoice 272 274
+    function record_validation 276 291
+    function extract_range 293 302
+    function is_prime 304 316
+    function extract_quoted_phrase 318 328
+    function extract_backticked 330 335
+    function recall_name_from_history 340 352
+    function last_user_turn 356 362
+    function last_assistant_turn 367 373
+    function last_turn 379 388
+    function extract_introduced_name 390 393
+    const ASSISTANT_NAME_NEEDLES 399 399
+    function extract_assistant_name 424 426
+    function extract_name_after_needles 430 453
+    function recall_assistant_name_from_history 460 469
+    function humanize_url 482 506
+    function hex_nibble 508 515
+    function is_reserved_uri_delimiter 517 522
+    function extract_fenced_block 527 547
+    function is_write_script_request 565 581
+    function format_write_script_execution 583 609
+    function env_definition_fusion_by_default 612 618
+    function env_bool 621 623
+    function env_bool_with_extra_truthy 626 639
+    function env_bounded_f32 642 649
+    function env_truthy 652 661
+    function config_from_env 666 724

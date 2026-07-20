@@ -1,0 +1,59 @@
+self_ast_census
+  target src/agent.rs
+  language rust
+  fidelity signature
+  byte_len 22131
+  line_count 671
+  content_id source_module_d6dc0c5386fb1128
+  symbol_count 50
+  symbols
+    static WORKSPACE_SEQ 23 23
+    const DEFAULT_AGENT_TIME_BUDGET 25 25
+    const WINDOWS_PYTHON_TIME_BUDGET_FLOOR 26 26
+    struct AgentWorkspaceConfig 29 32
+    function default 35 40
+    struct AgentRun 44 49
+    enum AgentRunStatus 52 55
+    struct AgentAction 58 63
+    function event_kind 67 74
+    function evidence_payload 77 79
+    enum AgentActionKind 83 88
+    enum AgentActionStatus 91 94
+    function slug 98 103
+    struct AgentCommandResult 107 113
+    enum PlannedAgentAction 116 121
+    enum AgentError 124 129
+    function fmt 132 143
+    function from 149 151
+    struct AgentWorkspace 154 160
+    function for_prompt 163 184
+    function root 187 189
+    function last_command_result 198 200
+    function create_file 202 205
+    function modify_file 207 210
+    function delete_file 212 217
+    function run_command 219 252
+    function finish 255 266
+    function write_file 268 275
+    function record_fs_action 277 300
+    function workspace_path 302 313
+    function run_command_inner 315 357
+    function run_builtin_command 359 379
+    function read_command_files 381 390
+    function list_command_directory 392 409
+    function parse_agent_plan 413 422
+    function run_agent_plan 424 444
+    function collect_create_actions 446 477
+    function collect_modify_actions 479 513
+    function collect_delete_actions 515 543
+    function collect_command_actions 545 576
+    function backticked_after 578 583
+    function delete_path_len 585 593
+    function split_command 595 602
+    function resolve_allowed_program 604 619
+    function resolve_allowed_program_from_path 621 624
+    function resolve_program_from_path_names 626 639
+    function path_search_names 641 647
+    function is_blocked_execution_alias 649 655
+    function effective_command_time_budget 657 663
+    function looks_like_workspace_path 665 671

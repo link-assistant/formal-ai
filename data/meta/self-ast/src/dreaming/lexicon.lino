@@ -1,0 +1,17 @@
+self_ast_census
+  target src/dreaming/lexicon.rs
+  language rust
+  fidelity signature
+  byte_len 3866
+  line_count 102
+  content_id source_module_14f4c530d1709a72
+  symbol_count 8
+  symbols
+    const EMBEDDED_LEXICON 16 16
+    struct DreamingLexicon 20 29
+    function push 32 44
+    function parse_lexicon 49 66
+    function data_document_path 71 83
+    function load_data_document 87 91
+    function lexicon 94 102
+    static LEXICON 95 95

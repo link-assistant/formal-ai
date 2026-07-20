@@ -1,0 +1,66 @@
+self_ast_census
+  target src/proxy.rs
+  language rust
+  fidelity signature
+  byte_len 29741
+  line_count 945
+  content_id source_module_64a7c71a6f481e6d
+  symbol_count 57
+  symbols
+    struct ProxyConfig 16 21
+    struct ProxyExchangeLog 25 38
+    struct ProxyToolCallLog 42 45
+    struct Upstream 48 51
+    struct HttpHeader 54 57
+    struct HttpRequest 60 65
+    struct HttpResponseHead 68 72
+    struct ResponseSummary 75 79
+    struct StreamingChatAccumulator 82 86
+    struct StreamingToolCall 89 92
+    struct SseEvent 95 97
+    function run_proxy 104 138
+    function summarize_proxy_exchange 142 190
+    function parse 193 223
+    function target_path 225 233
+    function display_target 235 241
+    function handle_proxy_connection 244 318
+    function write_log 320 328
+    function read_request 330 349
+    function read_response_head 351 367
+    function read_http_line 369 377
+    function trim_http_line 379 384
+    function read_headers 386 401
+    function read_body 403 413
+    function read_chunked_body 415 430
+    function discard_chunk_trailers 432 439
+    function write_upstream_request 441 471
+    function write_response_head 473 482
+    function write_error_response 484 498
+    function forward_response_body 500 513
+    function forward_fixed_body 515 531
+    function forward_until_eof 533 548
+    function forward_chunked_body 550 571
+    function forward_chunk_trailers 573 584
+    function parse_chunk_size 586 595
+    function skip_request_header 597 605
+    function skip_response_header 607 611
+    function content_length 613 621
+    function is_chunked 623 631
+    function collect_request_tool_names 633 660
+    function append_tool_definition_names 662 671
+    function summarize_sse_response 673 707
+    function parse_sse_events 709 726
+    function apply_chunk 729 768
+    function finish 770 784
+    function summarize_response_value 787 791
+    function merge_response_summary 793 799
+    function apply_response_value 801 844
+    function set_model 846 850
+    function apply_chat_message 852 864
+    function apply_response_item 866 885
+    function apply_gemini_part 887 897
+    function apply_anthropic_content_block 899 912
+    function append_function_call 914 921
+    function append_content_value 923 933
+    function arguments_from_value 935 941
+    function arguments_from_str 943 945

@@ -1,0 +1,11 @@
+self_ast_census
+  target src/bin/with-formal-ai.rs
+  language rust
+  fidelity signature
+  byte_len 470
+  line_count 21
+  content_id source_module_d5c1c302b4fe286e
+  symbol_count 2
+  symbols
+    struct Args 12 15
+    function main 17 21

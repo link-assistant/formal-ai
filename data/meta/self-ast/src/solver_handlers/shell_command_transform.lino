@@ -1,0 +1,25 @@
+self_ast_census
+  target src/solver_handlers/shell_command_transform.rs
+  language rust
+  fidelity signature
+  byte_len 7958
+  line_count 269
+  content_id source_module_5037a22174d9596e
+  symbol_count 16
+  symbols
+    function try_shell_command_transform 9 15
+    function try_shell_command_transform_with_history 17 47
+    function build_screen_command 49 75
+    function finalize_shell_transform 77 92
+    function wants_infinite_loop 94 107
+    function wants_screen_execution 109 126
+    function extract_shell_command 128 149
+    function command_after_shell_prompt 151 161
+    function strip_code_fence 163 165
+    function looks_like_shell_command 167 209
+    function wrap_in_infinite_loop 211 216
+    function extract_screen_session 218 241
+    function extract_loop_command 243 253
+    function last_loop_command_from_history 255 261
+    function is_loop_command 263 265
+    function shell_single_quote 267 269

@@ -1,0 +1,37 @@
+self_ast_census
+  target src/coding/blueprint_programs.rs
+  language rust
+  fidelity signature
+  byte_len 24194
+  line_count 728
+  content_id source_module_9f566854313f0a89
+  symbol_count 28
+  symbols
+    const RUST_HTTP_JSON_STATS 6 12
+    function collect_numbers 19 30
+    function mean 33 35
+    function median 38 46
+    function main 48 73
+    const PYTHON_HTTP_JSON_STATS 76 144
+    const JAVASCRIPT_HTTP_JSON_STATS 132 144
+    const sorted 153 153
+    const middle 154 154
+    const url 162 162
+    const response 166 166
+    const document 173 173
+    const numbers 176 176
+    const PYTHON_PERSONAL_BUDGET_REPORT 195 222
+    const PYTHON_CRYPTO_PORTFOLIO_TRACKER 318 334
+    const PYTHON_SMART_TRAVEL_PLANNER 423 461
+    const RUST_SELF_SOURCE_METRICS 565 567
+    const SOURCE 567 567
+    const RESPONSE_REASONING 568 568
+    struct Metrics 571 578
+    function main 580 584
+    function analyze_rust_text 586 600
+    function sanitize_rust_text 602 653
+    function rust_tokens 655 669
+    function count_any 671 676
+    function render_report 678 701
+    function push_metrics 703 712
+    function json_string 714 727

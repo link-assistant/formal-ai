@@ -1,0 +1,48 @@
+self_ast_census
+  target src/solver_handlers/numeric_list/mod.rs
+  language rust
+  fidelity signature
+  byte_len 34803
+  line_count 855
+  content_id source_module_c3389f21ce79bc1d
+  symbol_count 39
+  symbols
+    module codegen 35 35
+    struct InheritedCoding 61 71
+    enum Transform 76 83
+    enum Reduce 87 92
+    enum Operation 97 100
+    function canonical 107 117
+    enum ListValue 122 125
+    struct ParsedListItem 130 133
+    function numeric_value 136 141
+    function is_text 143 145
+    struct NumericListSolution 151 171
+    function try_numeric_list 179 185
+    function try_numeric_list_with_history 191 257
+    function solve_numeric_list 267 269
+    function solve_numeric_list_with_context 276 353
+    function numeric_list_history_context 361 396
+    function detect_operation 402 428
+    function compute 433 466
+    function compare_items 468 473
+    function value_type_label 475 483
+    function format_scalar 487 499
+    function family 504 506
+    function formalization 508 517
+    function render 522 540
+    struct Localization 548 551
+    function for_language 554 565
+    function intro 567 574
+    function intro_en 576 605
+    function intro_ru 607 631
+    function intro_hi 633 657
+    function intro_zh 659 683
+    function ontology 687 689
+    function result_kind_for 693 706
+    function family_for 709 722
+    function direction_for 726 736
+    function parse_list_items 738 744
+    function parse_quoted_strings 749 787
+    function parse_numbers 794 845
+    function preceded_by_digit_or_word 850 855

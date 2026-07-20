@@ -1,0 +1,13 @@
+self_ast_census
+  target src/dreaming/cues.rs
+  language rust
+  fidelity signature
+  byte_len 1120
+  line_count 30
+  content_id source_module_c4abdc1af84b644e
+  symbol_count 4
+  symbols
+    const EMBEDDED_CUES 13 13
+    function parse_requirement_cues 17 22
+    function requirement_cues 25 30
+    static CUES 26 26

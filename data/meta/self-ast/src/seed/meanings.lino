@@ -1,0 +1,63 @@
+self_ast_census
+  target src/seed/meanings.rs
+  language rust
+  fidelity signature
+  byte_len 36253
+  line_count 810
+  content_id source_module_ec5218e39b0fcfa5
+  symbol_count 54
+  symbols
+    module parse 26 26
+    enum Slot 48 57
+    struct WordForm 76 81
+    function slot 88 98
+    function before_slot 103 108
+    function after_slot 113 118
+    function semantic_facet_targets 125 130
+    function part_of_speech 136 138
+    function grammatical_number 145 147
+    function denotations 153 155
+    struct Lexeme 160 163
+    struct SemanticFacet 172 175
+    struct Meaning 179 194
+    function has_role 198 200
+    function semantic_facet_targets 208 213
+    function words 216 220
+    function word_forms 224 226
+    function evidenced_in 233 235
+    function word_in 240 245
+    function describe_word 252 256
+    function languages 260 262
+    function mentions_in_languages_raw 275 281
+    function lexeme_lists 287 293
+    function lexeme_lists_action 299 305
+    type WordValueTable 313 313
+    struct ArithmeticOperator 324 330
+    struct Lexicon 334 336
+    function meaning 340 342
+    function semantic_facet_meanings 346 354
+    function meaning_by_wikidata 361 363
+    function meanings_with_role 368 370
+    function role_word_forms 379 385
+    function role_surface_translation 396 408
+    function role_lists_surface 416 421
+    function role_action_surface_translation 431 444
+    function words_for_role 449 459
+    function mentions_role 468 471
+    function mentions_role_spelled 485 492
+    function mentions_role_raw 507 510
+    function arithmetic_normalization_tables 532 570
+    function arithmetic_operators 581 600
+    function words_for_role_in_languages 612 627
+    function first_role_language 639 659
+    function first_role_match 665 670
+    function first_role_match_in_languages_raw 682 692
+    function mentions_role_in_languages_raw 701 709
+    function ontology_root 714 718
+    function reaches_root 727 747
+    function ontology_type_root 756 760
+    function ontology_categories 768 770
+    function surface_present 780 791
+    function lexicon 796 799
+    static CACHE 797 797
+    function parse_lexicon_text 808 810

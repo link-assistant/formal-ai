@@ -1,0 +1,56 @@
+self_ast_census
+  target src/solver_handlers/conversation_memory/mod.rs
+  language rust
+  fidelity signature
+  byte_len 34142
+  line_count 977
+  content_id source_module_c1a002bfa4ac48f8
+  symbol_count 47
+  symbols
+    module link_query 3 3
+    module memory_write 4 4
+    enum RecallScope 26 29
+    function as_str 32 37
+    struct RecallQuery 41 44
+    struct RecallMatch 47 51
+    struct MemoryRecallMatch 54 61
+    enum MemoryRecallDetail 64 67
+    struct MemoryQueryExecution 71 74
+    function try_conversation_memory 76 100
+    function answer_memory_recall 103 118
+    function execute_memory_query 121 160
+    function recalled_event_indices 163 181
+    function try_recall_name 183 202
+    function try_assistant_name 213 255
+    function render_assistant_name_ack 258 265
+    function render_assistant_name_recall 268 275
+    function try_recall_last_question 277 302
+    function previous_user_request_turn 304 317
+    function is_recall_meta_prompt 319 326
+    function render_previous_user_message 328 335
+    function try_recall_previous_message 345 373
+    function localized_role 376 387
+    function render_previous_message 389 397
+    function render_no_previous_message 399 406
+    function try_conversation_recall 408 437
+    function try_memory_recall 439 479
+    function recognize_recall_query 481 495
+    function recall_term_for_role 497 503
+    function term_from_form 505 515
+    function clean_recall_term 517 531
+    function recall_matches 533 555
+    function memory_recall_matches 557 607
+    function event_in_recall_scope 609 617
+    function memory_event_field_values 619 645
+    function push_memory_field 647 655
+    function memory_field_match 657 671
+    function memory_link_match 673 682
+    function memory_match 684 711
+    function log_fragment 714 719
+    function render_line 721 734
+    function memory_conversation_count 737 745
+    function render_recall_report 747 794
+    function render_memory_recall_report 796 865
+    function asks_for_conversation_summary 877 885
+    function summary_directive_leads 897 908
+    function try_summarize_conversation 910 977

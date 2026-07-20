@@ -1,0 +1,43 @@
+self_ast_census
+  target src/links_substitution_query/links.rs
+  language rust
+  fidelity signature
+  byte_len 21974
+  line_count 607
+  content_id source_module_b93fba6da2b6abdb
+  symbol_count 34
+  symbols
+    const LINK_SLOTS 14 28
+    enum Slot 25 28
+    struct LinkPattern 35 39
+    function slots 42 44
+    function variables 46 53
+    struct LinkRewriteRule 62 65
+    struct LinkRewriteStep 69 76
+    struct LinkRewriteOutcome 80 84
+    struct LinkRewriteProgram 94 97
+    function new 101 103
+    function matched_links 113 125
+    function execute 134 157
+    function next_transition 159 164
+    function link_substitution_effect 169 183
+    function parse_link_substitution_query 194 213
+    function render_link_substitution_query 222 242
+    function render_link 252 262
+    function render_link_side 264 288
+    function render_slot 290 303
+    function pair_links 306 349
+    function validate_link_rule 355 380
+    function rule_transition 382 415
+    enum Transition 417 421
+    function apply 424 441
+    function match_link 443 451
+    function bind 457 469
+    function substitute 471 486
+    function resolve 493 501
+    function allocate_index 504 511
+    function is_token_char 517 519
+    function parse_link_side 523 545
+    function parse_link_pattern 549 576
+    function parse_link_slot 578 598
+    function parse_token 600 606

@@ -1,0 +1,31 @@
+self_ast_census
+  target src/anthropic.rs
+  language rust
+  fidelity signature
+  byte_len 24076
+  line_count 615
+  content_id source_module_4521391b735b65a0
+  symbol_count 22
+  symbols
+    struct AnthropicMessagesRequest 46 72
+    struct AnthropicMessageInput 76 79
+    struct AnthropicMessage 83 97
+    enum AnthropicContentBlock 105 119
+    function text 123 125
+    function thinking 128 133
+    struct AnthropicUsage 138 141
+    function wants_thinking 148 154
+    function to_chat_completion_request 166 192
+    function append_anthropic_message 198 219
+    function append_anthropic_blocks 224 306
+    function anthropic_tool_to_openai 310 322
+    function anthropic_tool_choice_to_openai 326 336
+    function create_anthropic_message_with_solver 346 353
+    function create_anthropic_message_with_solver_and_memory 356 365
+    function anthropic_message_from_chat_completion 367 431
+    function anthropic_thinking_block 438 445
+    function tool_call_to_block 449 457
+    function anthropic_message_sse 465 498
+    function push_content_block_events 505 585
+    function push_sse_event 587 594
+    function anthropic_content_to_text 599 615

@@ -1,0 +1,70 @@
+self_ast_census
+  target src/substitution.rs
+  language rust
+  fidelity signature
+  byte_len 24720
+  line_count 796
+  content_id source_module_86356ff0f6fd311e
+  symbol_count 61
+  symbols
+    const DEFAULT_MAX_APPLICATIONS 20 20
+    enum CrudEvent 24 30
+    function as_str 34 42
+    function parse 44 53
+    function fmt 57 59
+    struct SubstitutionLink 64 67
+    function new 71 76
+    function pattern_text 79 81
+    struct LinkPattern 87 90
+    function parse 93 102
+    function literal_pair 105 110
+    function instantiate 112 117
+    function fmt 121 123
+    enum PatternNode 127 131
+    function parse 134 152
+    function instantiate 154 162
+    function fmt 166 172
+    struct SubstitutionAction 177 180
+    struct SubstitutionRule 184 190
+    function matches_event 194 196
+    struct SubstitutionRuleSet 201 204
+    function from_links_notation 207 238
+    function links_notation 241 262
+    struct SubstitutionGraph 267 269
+    function new 273 277
+    function with_link 280 283
+    function insert_link 285 287
+    function remove_link 289 291
+    function contains_link 294 296
+    function links 299 301
+    function links_notation 304 317
+    function apply_rules 320 326
+    function apply_rules_with_limit 329 347
+    function create_link 350 358
+    function read_link 361 370
+    function update_link 373 384
+    function delete_link 387 395
+    function apply_first_rule 397 408
+    function apply_rule 410 442
+    function find_bindings 444 446
+    function find_bindings_from 448 465
+    function canonical_links 467 473
+    struct SubstitutionTrace 478 486
+    function new 489 510
+    struct SubstitutionTraceReport 515 519
+    function new 523 529
+    function applied_count 532 534
+    function links_notation 537 573
+    function trace_link_records 576 578
+    function canonical 580 591
+    enum SubstitutionRuleError 596 603
+    function fmt 606 624
+    function parse_rule 629 674
+    function validate_variable 676 687
+    function pattern_matches_link 689 696
+    function node_matches 698 713
+    function bind_variable 715 721
+    function canonical_trace 723 742
+    function trace_link_record 744 781
+    function push_field 783 788
+    function push_doublet 790 796

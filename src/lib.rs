@@ -76,6 +76,7 @@ pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod selection;
+pub mod self_ast_census;
 pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
@@ -253,6 +254,10 @@ pub use seed::{
     EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
     ModelAliasRegistry, OperationLanguageForms, OperationTrigger, OperationVocabulary,
     ProjectRecord, ProjectStatement, ProjectsRegistry,
+};
+pub use self_ast_census::{
+    drift_report, scan_symbols, CensusDrift, CensusFidelity, CensusResolution, ModuleCensus,
+    SymbolSpan, WorkspaceCensus,
 };
 pub use self_explanation::{
     canonical_explanation, Citation, CitationKind, ExplanationSection, SystemExplanation,

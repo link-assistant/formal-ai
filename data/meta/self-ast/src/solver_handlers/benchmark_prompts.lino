@@ -1,0 +1,37 @@
+self_ast_census
+  target src/solver_handlers/benchmark_prompts.rs
+  language rust
+  fidelity signature
+  byte_len 15763
+  line_count 452
+  content_id source_module_538091eb11d8f09e
+  symbol_count 28
+  symbols
+    function summary_topic_seed_data 14 17
+    static CELL 15 15
+    function try_summarization_request 19 53
+    function brainstorm_seed_data 55 58
+    static CELL 56 56
+    function try_brainstorming_request 60 81
+    function try_conversation_topic_request 83 121
+    function conversation_topic 132 149
+    function clean_conversation_topic 151 163
+    const DEFAULT_BRAINSTORM_COUNT 166 166
+    function requested_brainstorm_count 176 182
+    function cardinal_value 189 194
+    function numbered 196 204
+    function fact_records 206 209
+    static CELL 207 207
+    function detect_relation 227 236
+    function detect_subject_alias 240 246
+    function try_fact_lookup 248 304
+    function coreference_seed_data 306 309
+    static CELL 307 307
+    function try_coreference_request 311 345
+    function matching_coreference_pronoun 347 361
+    function rewrite_coreference_prompt 363 375
+    function replace_token 377 407
+    function token_boundary 409 411
+    function persona_seed_data 413 416
+    static CELL 414 414
+    function try_roleplay_request 418 452

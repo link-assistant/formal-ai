@@ -1,0 +1,44 @@
+self_ast_census
+  target src/solver_handlers/text_manipulation.rs
+  language rust
+  fidelity signature
+  byte_len 26500
+  line_count 785
+  content_id source_module_4d076a37c10da367
+  symbol_count 35
+  symbols
+    function try_text_manipulation 22 28
+    function try_text_manipulation_with_history 30 77
+    struct TextRequest 80 83
+    function parse_with_history 86 136
+    function build 138 143
+    function matches_specific_remove_operation 146 152
+    function append_simple_operations 154 247
+    enum TextOperation 250 286
+    function slug 289 327
+    function apply 329 385
+    function last_assistant_text_artifact 388 394
+    function replace_text 396 411
+    function replace_word_sequence 413 416
+    struct ReplacementRange 419 422
+    function exact_match_ranges 424 438
+    function word_sequence_match_ranges 440 481
+    function ranges_overlap 483 485
+    function replace_ranges 487 512
+    function parse_replace_request 514 537
+    function parse_remove_request 539 555
+    function parse_affix_request 557 573
+    function looks_like_input_first_unary_edit 575 582
+    function looks_like_input_first_replacement 584 597
+    function input_context_before_first_quote 599 613
+    function contains_input_continuation 615 623
+    function contains_replacement_keyword 625 631
+    struct TextStep 634 639
+    struct SubstitutionTextChain 642 648
+    function build 651 686
+    function unique_rule_id 689 701
+    function build_rules_links_notation 703 747
+    function text_node 749 751
+    function hex_encode 753 759
+    function normalize_replacement_prompt 761 771
+    function text_after_colon 773 785

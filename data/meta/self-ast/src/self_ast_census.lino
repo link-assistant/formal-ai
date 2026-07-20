@@ -1,0 +1,51 @@
+self_ast_census
+  target src/self_ast_census.rs
+  language rust
+  fidelity signature
+  byte_len 28333
+  line_count 762
+  content_id source_module_6307f887ac1412bd
+  symbol_count 42
+  symbols
+    const CENSUS_DIR 38 38
+    const INDEX_PATH 41 41
+    const FULL_FIDELITY_PREFIX 48 48
+    enum CensusFidelity 52 57
+    function slug 62 67
+    function from_slug 71 77
+    function fidelity_for 82 88
+    function document_path_for 96 99
+    function module_path_for_document 103 107
+    struct SymbolSpan 114 124
+    struct ModuleCensus 136 153
+    function eq 159 164
+    function of 175 188
+    function ast 193 200
+    function document_path 204 206
+    function symbol 210 212
+    function links_notation 216 253
+    struct CensusResolution 258 267
+    function reference 272 277
+    struct WorkspaceCensus 282 285
+    function compile 294 301
+    function module_count 305 307
+    function full_fidelity_count 311 316
+    function symbol_count 320 322
+    function module 326 330
+    function module_by_reference 338 349
+    function modules_declaring 353 358
+    function resolve 373 392
+    function documents 397 406
+    function content_id 411 423
+    function index_notation 427 458
+    function resolution 462 469
+    function workspace 476 479
+    static WORKSPACE 477 477
+    enum CensusDrift 483 499
+    function document 504 510
+    function describe 514 520
+    function drift_report 530 564
+    function scan_symbols 574 595
+    function strip_noncode 599 663
+    function declared_item 666 734
+    function item_end_line 740 762

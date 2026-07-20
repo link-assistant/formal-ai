@@ -1,0 +1,25 @@
+self_ast_census
+  target src/selection.rs
+  language rust
+  fidelity signature
+  byte_len 7813
+  line_count 217
+  content_id source_module_5dcfb5bc8f0b5f45
+  symbol_count 16
+  symbols
+    enum SelectionMode 32 38
+    function emits_artifact 43 45
+    function slug 49 54
+    function from_slug 58 64
+    struct LeafSelection 69 79
+    function resolve 84 96
+    function is_resolved 100 102
+    function to_links_notation 108 122
+    struct MethodSelection 127 132
+    function for_unit 138 145
+    function leaf_count 149 151
+    function resolved_count 155 157
+    function unresolved_count 161 163
+    function to_links_notation 167 181
+    function collect_leaf_selections 185 197
+    function record_selection 205 217
