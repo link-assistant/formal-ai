@@ -1151,12 +1151,12 @@ jobs:
           bun add -g @link-assistant/agent
           echo "$HOME/.bun/bin" >> $GITHUB_PATH
 
-      - name: Install opencode CLI
-        # A second, independently-implemented harness. The issue-715 learning E2E
-        # drives both and diffs the artifacts, which only tests harness parity if
-        # both are really here — so this install is not optional, and the script
-        # fails rather than skipping when a CLI is missing.
-        run: bun add -g opencode-ai
+      - name: Install external agent CLIs
+        # OpenCode provides the second issue-715 learning harness. Issue #781
+        # additionally proves the same research loop through Claude Code's
+        # Anthropic transport and Codex's Responses transport, so all clients
+        # are mandatory and their E2E scripts fail rather than skip if missing.
+        run: bun add -g opencode-ai @anthropic-ai/claude-code @openai/codex
 
       - name: Build formal-ai (release)
         # The E2E script runs against target/release/formal-ai — that's the
@@ -1335,11 +1335,11 @@ jobs:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
 
-      - name: "Run agent CLI E2E — compatibility research triangulates sources (issue #781)"
-        # A real marketplace compatibility question must not stop after the
-        # first result. The server trace proves one search fans out to at least
-        # three fetches and the real Agent CLI executes each one. Deterministic
-        # coverage checks the following synthesis round and its citations.
+      - name: "Run four-client E2E — narrated compatibility research (issue #781)"
+        # The exact reported marketplace question drives Agent, OpenCode,
+        # Claude Code, and Codex through their native transports. Each trace
+        # must show a narrated search, three separately narrated fetch turns,
+        # and a cited synthesis. Per-dialog JSONL preserves every exchange.
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
