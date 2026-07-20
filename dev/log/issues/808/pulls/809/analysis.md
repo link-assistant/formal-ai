@@ -249,13 +249,13 @@ and `link-assistant/hive-mind/docs/CI-CD-BEST-PRACTICES.md`:
 | `detect-changes` gating job | present | `release.yml:62` |
 | rustfmt / clippy with `-Dwarnings` | present | `release.yml:51` |
 | changelog-fragment gate | present | `release.yml:93` |
-| Fresh-merge simulation (`simulate-fresh-merge.sh`) | **absent** | js template calls it in three jobs; best-practices §7 requires it |
-| Secrets scan (secretlint / trufflehog) | **absent** | js template only; best-practices §11 |
+| Fresh-merge simulation (`simulate-fresh-merge.sh`) | ~~absent~~ **adopted** | script copied verbatim from the js template; called in `lint` and `test` on pull requests |
+| Secrets scan (secretlint / trufflehog) | ~~absent~~ **adopted** | new `secrets-scan` job + `scripts/check-secrets.sh`; diff-scoped because `secretlint "**/*"` did not finish in 25 min here |
 | Dedicated fast `cargo-lock` job | inline in `lint` | rust template has a separate job others depend on |
 | Documentation/link validation | partial | `cargo doc -D warnings` only; no link checker |
-| `.github/actions/setup-buildx-resilient` composite | **absent** | raw `docker/setup-buildx-action@v4` |
-| `.github/dependabot.yml` | **absent** | — |
-| `!cancelled()` rather than `always() && !cancelled()` | not applied | best-practices §10 |
+| `.github/actions/setup-buildx-resilient` composite | ~~absent~~ **adopted** | copied verbatim from the rust template; all three `docker/setup-buildx-action@v4` call sites rewired |
+| ~~`.github/dependabot.yml`~~ | n/a | **Correction:** I listed this as a gap without a source. Verified: none of the three templates ships a `dependabot.yml`, so this is not a template gap and no action is taken. |
+| `!cancelled()` rather than `always() && !cancelled()` | ~~not applied~~ **fixed** | all 9 occurrences in `release.yml` rewritten |
 
 ## 8. Defects reported upstream (R4)
 
@@ -329,4 +329,15 @@ do not apply there.
    (see §6); publishing steps and `finalize` stay release-only.
 6. `desktop/scripts/adhoc-sign-mac.test.cjs` — regression test asserting the
    `mac.signIgnore` patterns match the browser runtime and not the app binary.
-7. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.
+7. `scripts/simulate-fresh-merge.sh` (adopted verbatim from the js template) —
+   called from `lint` and `test` on pull requests, so a PR whose merge preview
+   is stale against `main` fails before it can break `main` on merge.
+8. `scripts/check-secrets.sh` + `.secretlintrc.json` — new `secrets-scan` job.
+   Diff-scoped rather than the template's `secretlint "**/*"`, which did not
+   finish in 25 minutes here; measured 2.6 s on this pull request's diff.
+   Verified it actually fires: a planted `ghp_…` token is reported as
+   `[GITHUB_TOKEN] found GitHub Token` with exit 123.
+9. `.github/actions/setup-buildx-resilient/` (adopted verbatim from the rust
+   template) — replaces all three raw `docker/setup-buildx-action@v4` uses;
+   pre-pulls the BuildKit image with retries and a `mirror.gcr.io` fallback.
+10. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.

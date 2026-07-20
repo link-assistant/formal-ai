@@ -174,7 +174,7 @@ jobs:
         run: bash scripts/free-runner-disk.sh
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: ./.github/actions/setup-buildx-resilient
 
       # load: true (not push) so the image stays local and the check works
       # unchanged for pull requests from forks, which have no registry
@@ -196,6 +196,50 @@ jobs:
         run: |
           set -euo pipefail
           docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+
+  # === SECRETS SCAN ===
+  # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
+  # existed anywhere in this pipeline. secretlint is language-agnostic, so it
+  # applies to a Rust repository unchanged; .secretlintrc.json selects the
+  # recommended preset.
+  #
+  # Scoped to the files the change touches, not the whole tree: measured, a
+  # full-tree `secretlint "**/*"` (what the js template runs) had not finished
+  # after 25 minutes on this repository, because the glob walks `target/` and
+  # ~150 MB of committed case-study logs. A gate that may not finish is itself a
+  # new CI failure mode. Scanning the diff catches a credential being
+  # *introduced*, which is the case that matters, and takes ~3 seconds; run
+  # `bash scripts/check-secrets.sh --all` locally to audit everything.
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # check-secrets.sh diffs against the base branch / previous commit.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Check for secrets
+        env:
+          # pull_request -> base branch; push -> the pre-push SHA;
+          # workflow_dispatch has neither, so scan the tip commit.
+          BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
+        run: bash scripts/check-secrets.sh
 
   # === VERSION CHECK - prevents manual version modification in PRs ===
   # This ensures versions are only modified by the automated release pipeline
@@ -247,6 +291,17 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      # Issue #808 / R3: GitHub checks out refs/pull/N/merge, a merge preview
+      # computed at the last sync -- commits pushed to the base branch since
+      # then are NOT in it, so a pull request can be green against a base that
+      # no longer exists. Adopted from the js template, which is the only one of
+      # the three that ships this.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -442,6 +497,17 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Needed by simulate-fresh-merge.sh, which merges origin/<base>.
+          fetch-depth: 0
+
+      # The tests are the check that most needs to run against the real merge
+      # result rather than a stale preview.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -708,7 +774,7 @@ jobs:
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        uses: docker/setup-buildx-action@v4
+        uses: ./.github/actions/setup-buildx-resilient
 
       - name: Extract GHCR Docker metadata
         if: |
@@ -937,7 +1003,7 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        uses: docker/setup-buildx-action@v4
+        uses: ./.github/actions/setup-buildx-resilient
 
       - name: Extract GHCR Docker metadata
         if: |
