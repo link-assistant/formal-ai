@@ -236,12 +236,18 @@ tolerated.
 
 ## 7. Upstream reports
 
-Two defects reproduce in the templates themselves and are drafted for filing in
-`analysis/template-sweep.md`:
+Three defects reproduce in the templates themselves. All three were re-verified
+against upstream `main` via the API (not against the local archived copies)
+before being reported.
 
-- python template `release.yml` has no workflow-level `permissions:` block;
-- python template uses the redundant `always() && !cancelled()` at `:105`, `:186`
-  and `:517`.
+| Defect | Status |
+| --- | --- |
+| python template `release.yml` has no workflow-level `permissions:` block | already filed: link-foundation/python-ai-driven-development-pipeline-template#33 (open) |
+| python template uses the redundant `always() && !cancelled()` at `:105`, `:186`, `:517` | already filed: link-foundation/python-ai-driven-development-pipeline-template#35 (open) |
+| js template `scripts/simulate-fresh-merge.sh` leaves `$BASE_REF` unquoted at `:40` and `:50`, where a word-split takes the *skip* branch and reports success without merging | **filed this iteration:** link-foundation/js-ai-driven-development-pipeline-template#111 |
+
+The rust template's copy of `simulate-fresh-merge.sh` quotes every expansion and
+does not have the third defect; the python template does not ship the script.
 
 ## 8. Debug output
 
