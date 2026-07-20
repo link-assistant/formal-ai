@@ -10,16 +10,14 @@ use crate::anthropic::{
     AnthropicMessagesRequest,
 };
 use crate::context_capacity::ContextCapacity;
-use crate::engine::{
-    is_known_trace_id, knowledge_graph, knowledge_graph_dot, render_thinking_steps,
-};
+use crate::engine::{knowledge_graph, render_thinking_steps};
 use crate::gemini::{
     create_gemini_generate_content_response_with_solver_and_memory, gemini_model_list,
     gemini_model_metadata, gemini_response_sse, vertex_model_list, GeminiGenerateContentRequest,
 };
-use crate::links_query::run_links_query;
 use crate::mcp::handle_mcp_request;
 use crate::memory_sync::SyncStore;
+use crate::network_endpoint::{handle_links_query_request, handle_network_request};
 use crate::protocol::{
     chat_exchange_to_record, chat_tool_executions, create_chat_completion_with_solver_and_memory,
     create_response_with_solver_and_memory, messages_exchange_to_record,
@@ -566,39 +564,6 @@ fn http_solver() -> UniversalSolver {
     UniversalSolver::new(config)
 }
 
-/// Serve the links-network view of the knowledge store — the canonical
-/// `/v1/network` endpoint (and, flagged deprecated, its `/v1/graph` alias).
-fn handle_network_request(query: &str) -> ApiHttpResponse {
-    let mut trace: Option<&str> = None;
-    let mut format: Option<&str> = None;
-    for pair in query.split('&').filter(|part| !part.is_empty()) {
-        if let Some((key, value)) = pair.split_once('=') {
-            match key {
-                "trace" => trace = Some(value),
-                "format" => format = Some(value),
-                _ => {}
-            }
-        }
-    }
-
-    if let Some(trace_id) = trace {
-        if !is_known_trace_id(trace_id) {
-            return error_response(404, "unknown trace id");
-        }
-    }
-
-    if format == Some("dot") {
-        return ApiHttpResponse {
-            status_code: 200,
-            content_type: "text/plain",
-            body: knowledge_graph_dot(),
-            deprecated: false,
-        };
-    }
-
-    json_response(200, &knowledge_graph())
-}
-
 /// Serialise a completed [`ChatCompletion`] as an OpenAI-compatible
 /// `chat.completion.chunk` SSE stream.
 ///
@@ -783,37 +748,6 @@ fn handle_anthropic_messages_request(body: &str) -> ApiHttpResponse {
 /// is a Links-Notation envelope carrying the query string; the response is the
 /// matched nodes/edges as a Links-Notation envelope (R7 keeps this internal
 /// channel Links-native rather than introducing a non-OpenAI JSON REST surface).
-fn handle_links_query_request(body: &str) -> ApiHttpResponse {
-    let Some(query) = parse_links_query_body(body) else {
-        return error_response(400, "request must provide a `query` string");
-    };
-    match run_links_query(&query) {
-        Ok(result) => links_notation_response(200, result.to_links_notation()),
-        Err(error) => error_response(400, &format!("invalid LinksQL query: {error}")),
-    }
-}
-
-/// Extract the LinksQL query string from a request body. Accepts either a JSON
-/// object (`{"query": "..."}`, for tooling convenience) or a Links-Notation
-/// envelope (`links_query`\n`  query "..."`).
-fn parse_links_query_body(body: &str) -> Option<String> {
-    if let Ok(value) = serde_json::from_str::<serde_json::Value>(body) {
-        if let Some(query) = value.get("query").and_then(|item| item.as_str()) {
-            return Some(query.to_owned());
-        }
-    }
-    for line in body.lines() {
-        let trimmed = line.trim();
-        if let Some(rest) = trimmed.strip_prefix("query ") {
-            let unquoted = rest.trim().trim_matches('"');
-            if !unquoted.is_empty() {
-                return Some(unquoted.replace("\\\"", "\""));
-            }
-        }
-    }
-    None
-}
-
 /// Return the memory delta after a given event id (`GET /v1/memory/since?event=<id>`,
 /// ROADMAP D1 / R5c). The payload is `demo_memory` Links Notation (R7).
 fn handle_memory_since_request(query: &str) -> ApiHttpResponse {
@@ -849,7 +783,7 @@ fn query_param(query: &str, key: &str) -> Option<String> {
         })
 }
 
-const fn links_notation_response(status_code: u16, body: String) -> ApiHttpResponse {
+pub(crate) const fn links_notation_response(status_code: u16, body: String) -> ApiHttpResponse {
     ApiHttpResponse {
         status_code,
         content_type: "text/plain",
@@ -982,7 +916,7 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
     )
 }
 
-fn json_response<T: Serialize>(status_code: u16, value: &T) -> ApiHttpResponse {
+pub(crate) fn json_response<T: Serialize>(status_code: u16, value: &T) -> ApiHttpResponse {
     match serde_json::to_string_pretty(value) {
         Ok(body) => ApiHttpResponse {
             status_code,
@@ -994,7 +928,7 @@ fn json_response<T: Serialize>(status_code: u16, value: &T) -> ApiHttpResponse {
     }
 }
 
-fn error_response(status_code: u16, message: &str) -> ApiHttpResponse {
+pub(crate) fn error_response(status_code: u16, message: &str) -> ApiHttpResponse {
     ApiHttpResponse {
         status_code,
         content_type: "application/json",

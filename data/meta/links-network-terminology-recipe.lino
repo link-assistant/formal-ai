@@ -9,8 +9,8 @@ step_canonical_network_endpoint
   order "1"
   id "canonical_network_endpoint"
   title "Add GET /v1/network as the canonical links-network projection"
-  detail "handle_network_request in src/server.rs serves the canonical links-network view (same nodes/edges, `?trace=` filtering, `?format=dot` export, 404-on-unknown-trace) under both `/v1/network` and `/api/formal-ai/v1/network`. The endpoint name matches the vision: the associative space is a links network, so its own projection route says `network`, not `graph`."
-  seed_file "src/server.rs"
+  detail "handle_network_request in src/network_endpoint.rs serves the canonical links-network view (same nodes/edges, `?trace=` filtering, `?format=dot` export, 404-on-unknown-trace) under both `/v1/network` and `/api/formal-ai/v1/network`, kept in a dedicated links-network module so the request router stays lean. The endpoint name matches the vision: the associative space is a links network, so its own projection route says `network`, not `graph`."
+  seed_file "src/network_endpoint.rs"
 step_deprecated_graph_alias
   record_type "meta_step"
   order "2"
@@ -51,7 +51,7 @@ step_docs_terminology
   order "7"
   id "docs_terminology"
   title "Update ARCHITECTURE.md / README.md / REQUIREMENTS.md to links-network terminology"
-  detail "The docs describe `/v1/network` as canonical and `/v1/graph` as deprecated, and the stale `src/graph.rs` reference in REQUIREMENTS.md R81 is corrected to the real handler location (handle_network_request in src/server.rs). Internal graph-theory prose (the formalized graph, the doublets-rs graph, SubstitutionGraph) is intentionally preserved, because those are internal graph-theory concepts, not the product's public surface."
+  detail "The docs describe `/v1/network` as canonical and `/v1/graph` as deprecated, and the stale `src/graph.rs` reference in REQUIREMENTS.md R81 is corrected to the real handler location (handle_network_request in src/network_endpoint.rs). Internal graph-theory prose (the formalized graph, the doublets-rs graph, SubstitutionGraph) is intentionally preserved, because those are internal graph-theory concepts, not the product's public surface."
   seed_file "REQUIREMENTS.md"
 step_ci_wiring
   record_type "meta_step"
@@ -63,7 +63,7 @@ step_ci_wiring
 fn_handle_network_request
   record_type "meta_function"
   function "handle_network_request"
-  source_file "src/server.rs"
+  source_file "src/network_endpoint.rs"
   kind "canonical_endpoint"
 fn_into_deprecated_alias
   record_type "meta_function"

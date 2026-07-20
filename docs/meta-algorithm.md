@@ -617,7 +617,8 @@ Each step is one `meta_step` record in the recipe; instantiate them in order to
 keep any public surface a links network:
 
 1. **Add the canonical `network` route** — `handle_network_request` in
-   `src/server.rs` serves the links-network projection under `/v1/network`.
+   `src/network_endpoint.rs` serves the links-network projection under
+   `/v1/network`, kept in a dedicated links-network module.
 2. **Keep the old route as a deprecated alias** — `into_deprecated_alias` flags
    `/v1/graph` with a `deprecation` header and a successor `link` to the
    canonical route, byte-identical payload otherwise.
