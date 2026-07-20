@@ -65,6 +65,11 @@ ci-logs/
 # (see CONTRIBUTING.md rule 8 — "Real logs in the case study, not synthesized").
 !docs/case-studies/**/*.log
 
+# Development-log CI evidence, committed alongside the analysis that cites it
+# (see dev/log/issues/*/pulls/*/ci-logs/README.md).
+!dev/log/**/ci-logs/
+!dev/log/**/ci-logs/*.log
+
 # Playwright MCP scratch output (browser cache snapshots, etc.)
 .playwright-mcp/
 

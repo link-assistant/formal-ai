@@ -61,3 +61,29 @@ test('browser exclusion composes with electron-builder ignore rules', () => {
   );
   assert.equal(ignore[1](path.join(appPath, 'Contents', 'MacOS', 'formal-ai Desktop')), false);
 });
+
+// Issue #808: run 29724500254 failed signing
+// Contents/Resources/browser-runtime/.../Google Chrome for Testing Framework.framework
+// ("unsealed contents present in the root directory of an embedded framework")
+// even though the hook above already excluded it -- the hook produced no output
+// at all, so the exclusion never reached @electron/osx-sign. The exclusion is
+// therefore also declared in electron-builder configuration, where
+// MacTargetHelper.buildSignOptions() applies it regardless of the sign hook.
+test('electron-builder config excludes the bundled browser runtime from signing', () => {
+  const { signIgnore } = require('../package.json').build.mac;
+
+  assert.ok(Array.isArray(signIgnore) && signIgnore.length > 0, 'mac.signIgnore must be configured');
+
+  const matches = (filePath) => signIgnore.some((pattern) => new RegExp(pattern).test(filePath));
+  const app = '/Users/runner/work/formal-ai/formal-ai/desktop/release/mac/formal-ai Desktop.app';
+
+  assert.equal(
+    matches(
+      `${app}/Contents/Resources/browser-runtime/Frameworks/Google Chrome for Testing Framework.framework`,
+    ),
+    true,
+  );
+  assert.equal(matches(`${app}/Contents/Resources/browser-runtime/chrome`), true);
+  assert.equal(matches(`${app}/Contents/MacOS/formal-ai Desktop`), false);
+  assert.equal(matches(app), false);
+});

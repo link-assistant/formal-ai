@@ -84,6 +84,9 @@
       "category": "public.app-category.productivity",
       "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}",
       "hardenedRuntime": true,
+      "signIgnore": [
+        "/Contents/Resources/browser-runtime/"
+      ],
       "notarize": true,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"

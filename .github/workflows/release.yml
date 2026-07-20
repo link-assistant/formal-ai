@@ -112,6 +112,41 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-changelog-fragment.rs
 
+  # === SELF-HOSTING EVIDENCE CHECK ===
+  # Issue #808: run 29723467001 failed the whole Auto Release job with
+  # "no committed Formal-AI-Evidence in 10e65ae2 records session
+  # issue-804-claude-20260720". The invariant (CONTRIBUTING.md: every commit
+  # carrying Formal-AI-Session must also carry a Formal-AI-Evidence file that
+  # contains "formal-ai" and the exact session id) was only ever enforced at
+  # release time, on main, after merge -- where nothing can be fixed without a
+  # new PR. This job runs the *same* code path over the PR's own commits so a
+  # violating commit is rejected before it can break a release.
+  evidence-check:
+    name: Self-Hosting Evidence Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Validate Formal-AI trailers on this pull request
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          base="origin/${GITHUB_BASE_REF}"
+          merge_base="$(git merge-base "$base" HEAD)"
+          echo "Validating commits in ${merge_base}..HEAD"
+          rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
+
   # === VERSION CHECK - prevents manual version modification in PRs ===
   # This ensures versions are only modified by the automated release pipeline
   version-check:
