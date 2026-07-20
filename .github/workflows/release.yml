@@ -147,6 +147,22 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
+      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
+      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
+      # commit was already immutable, and while the only way to move the measured
+      # range forward (cutting a tag) was what it blocked. Enforcement belongs
+      # here, where the commits can still be amended. The check is differential:
+      # it compares the release share projected *with* this branch against the
+      # one projected for the base alone, so a regression already on main cannot
+      # block unrelated pull requests.
+      - name: Check the self-hosting ratchet against the merge base
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          base="origin/${GITHUB_BASE_REF}"
+          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
+
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
   # `manual-release`, i.e. after the crate had already been published to

@@ -204,6 +204,213 @@ fn a_malformed_historical_evidence_record_cannot_deadlock_a_release() {
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
+/// Issue #812: `Auto Release` (run 29751001867, log line 23918) died with
+/// "self-hosting ratchet would fall from 32.68% to 18.24% for v0.301.0". In the
+/// measured `v0.300.0..HEAD` range, 601 765 of 636 240 changed lines -- 94.58%
+/// -- were the captured CI logs under `dev/log/issues/<n>/pulls/<n>/` that this
+/// repository requires every iteration to commit. The published share therefore
+/// described log volume, not authored work, and moved in whichever direction the
+/// attached transcripts happened to land. Captured output must not count, on
+/// either side of the ratio.
+#[test]
+fn captured_artifacts_and_lockfiles_do_not_move_the_metric() {
+    for captured in [
+        "dev/log/issues/812/pulls/813/ci-logs/run-29751001867.log",
+        "dev/log/issues/812/pulls/813/session.jsonl",
+        "dev/log/issues/812/pulls/813/change.diff",
+        "dev/log/issues/812/pulls/813/build.STDERR",
+        "Cargo.lock",
+        "desktop/bun.lock",
+        "\"dev/log/issues/812/nasty\\346\\227\\245.log\"",
+    ] {
+        assert!(
+            metric_script::is_non_authored_path(captured),
+            "{captured} is captured output, not authored work"
+        );
+    }
+    for authored in [
+        "scripts/self-hosting-metric.rs",
+        "dev/log/issues/812/pulls/813/analysis.md",
+        ".github/workflows/release.yml",
+        "logger.rs",
+    ] {
+        assert!(
+            !metric_script::is_non_authored_path(authored),
+            "{authored} is authored work"
+        );
+    }
+
+    let repo = fixture_repo();
+    fs::create_dir_all(repo.join("dev/log")).expect("log directory must be created");
+    let bulk = "captured line\n".repeat(5_000);
+    fs::write(repo.join("dev/log/run.log"), &bulk).expect("captured log must be written");
+    fs::write(repo.join("human-code.txt"), "one authored line\n").expect("code must be written");
+    commit(&repo, "human change carrying a captured log");
+
+    let measurement =
+        metric_script::measure(&repo, "v1.0.0", "HEAD").expect("measurement must succeed");
+    assert_eq!(
+        measurement.changed_lines, 1,
+        "5000 lines of captured log must not enter the denominator"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+/// The exclusion above redefines what the ratio measures, so rows written before
+/// it are not comparable with rows written after it. The ratchet and the
+/// trailing window must therefore only ever look at rows of the same
+/// `metric_version`; averaging two definitions would silently compare two
+/// different quantities and re-create the #812 outage from the other direction.
+#[test]
+fn rows_from_an_older_measurement_epoch_are_never_compared() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    // A row in the shape written before issue #812: no `metric_version` field,
+    // and a share no epoch-2 row could plausibly reach.
+    let mut legacy = fs::read_to_string(&ledger).expect("fixture ledger must be readable");
+    legacy.push_str(
+        "  release\n    tag \"v0.9.0\"\n    since \"v0.8.0\"\n    until \"v0.9.0\"\n    \
+         self_authored_lines \"9900\"\n    changed_lines \"10000\"\n    self_authored_commits \
+         \"9\"\n    commits \"10\"\n    percentage_basis_points \"9900\"\n    trailing_window \
+         \"3\"\n    trailing_percentage_basis_points \"9900\"\n",
+    );
+    fs::write(&ledger, legacy).expect("legacy ledger must be written");
+    assert_eq!(
+        metric_script::read_release_rows(&ledger).expect("ledger must parse")[0].metric_version,
+        1,
+        "a row without the field predates issue #812 and is, by definition, epoch 1"
+    );
+
+    fs::write(repo.join("human-code.txt"), "human change\n").expect("code must be written");
+    commit(&repo, "human change");
+    let row = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
+        .expect("a 99% epoch-1 row must not ratchet against an epoch-2 measurement");
+    assert_eq!(row.metric_version, 2);
+    assert_eq!(
+        row.trailing_percentage_basis_points, 0,
+        "the trailing window must average epoch-2 rows only"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+/// Issue #812, second root cause: the ratchet ran on `main`, after every
+/// contributing commit was immutable, and the only way to move the measured
+/// range forward -- cutting a tag -- was exactly what it blocked. Third outage of
+/// that shape in a row (#796, #810, #812). Recording a release must report the
+/// fall and ship; enforcement belongs to the pull-request gate.
+#[test]
+fn a_falling_ratchet_reports_at_release_time_instead_of_blocking_it() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::write(
+        repo.join("docs/evidence/session.txt"),
+        "formal-ai session fixture-session\n",
+    )
+    .expect("session evidence must be written");
+    commit(
+        &repo,
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
+         docs/evidence/session.txt",
+    );
+    let first = metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
+        .expect("the first release row must be recorded");
+    assert_eq!(first.trailing_percentage_basis_points, 10_000);
+    git(&repo, &["tag", "v1.1.0"]);
+
+    fs::write(repo.join("human-code.txt"), "unattributed\n").expect("code must be written");
+    commit(&repo, "human change");
+
+    assert!(
+        metric_script::record_release(&repo, &ledger, "v1.2.0", "v1.1.0", "HEAD", 3)
+            .expect_err("the enforcing policy must still reject a fall")
+            .contains("ratchet"),
+    );
+    let reported = metric_script::record_release_with_policy(
+        &repo,
+        &ledger,
+        "v1.2.0",
+        "v1.1.0",
+        "HEAD",
+        3,
+        metric_script::RatchetPolicy::Report,
+    )
+    .expect("a release must not be blocked by a fall it cannot fix");
+    assert!(reported.trailing_percentage_basis_points < first.trailing_percentage_basis_points);
+    assert_eq!(
+        metric_script::read_release_rows(&ledger)
+            .expect("ledger must parse")
+            .last()
+            .map(|row| row.tag.clone()),
+        Some("v1.2.0".to_owned()),
+        "the regression must be recorded honestly, not hidden behind a failing job"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
+/// The pull-request gate is where a fall is still actionable. It must be
+/// *differential* -- this branch against its base -- so that a regression already
+/// merged into `main` cannot fail every unrelated pull request, which would just
+/// move the #812 deadlock to a new job.
+#[test]
+fn the_pull_request_gate_only_judges_the_branchs_own_delta() {
+    let repo = fixture_repo();
+    let ledger = repo.join("data/meta/self-hosting-ledger.lino");
+    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    fs::write(
+        repo.join("docs/evidence/session.txt"),
+        "formal-ai session fixture-session\n",
+    )
+    .expect("session evidence must be written");
+    commit(
+        &repo,
+        "formal ai change\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
+         docs/evidence/session.txt",
+    );
+    metric_script::record_release(&repo, &ledger, "v1.1.0", "v1.0.0", "HEAD", 3)
+        .expect("baseline release row must be recorded");
+    git(&repo, &["tag", "v1.1.0"]);
+
+    // A branch of attributed work: the projected share cannot fall.
+    fs::write(repo.join("formal-ai-code.txt"), "generated\n").expect("code must be written");
+    commit(
+        &repo,
+        "formal ai follow-up\n\nFormal-AI-Session: fixture-session\nFormal-AI-Evidence: \
+         docs/evidence/session.txt",
+    );
+    assert_eq!(
+        metric_script::ratchet_check(&repo, &ledger, "v1.1.0", "HEAD", 3)
+            .expect("the ratchet check must run"),
+        None,
+        "attributed work must never trip the gate"
+    );
+
+    // A branch of unattributed work lowers the projection and is rejected while
+    // its commits can still be amended.
+    fs::write(repo.join("human-code.txt"), "unattributed\n").expect("code must be written");
+    commit(&repo, "human change");
+    let regression = metric_script::ratchet_check(&repo, &ledger, "HEAD^", "HEAD", 3)
+        .expect("the ratchet check must run")
+        .expect("unattributed work must be reported against its own base");
+    assert!(
+        regression.contains("Formal-AI-Session"),
+        "the message must say how to fix it: {regression}"
+    );
+
+    // An empty branch is always neutral, whatever main's own trend is.
+    assert_eq!(
+        metric_script::ratchet_check(&repo, &ledger, "HEAD", "HEAD", 3)
+            .expect("the ratchet check must run"),
+        None,
+        "a no-op branch must never be blocked by a pre-existing regression"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
 #[test]
 fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -217,7 +424,19 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
         .expect("self-hosting ledger must be readable");
 
     assert!(workflow.contains("--self-hosting-ledger"));
+    assert!(
+        workflow.contains("--check-ratchet"),
+        "issue #812: the ratchet must be enforced at the pull-request gate"
+    );
     assert!(version_script.contains("self-hosting-metric.rs"));
+    assert!(
+        version_script.contains("RatchetPolicy::Report"),
+        "issue #812: a release must never be blocked by immutable history"
+    );
+    assert!(
+        ledger.contains("current_metric_version \"2\""),
+        "issue #812: the ledger must name the definition its newest rows use"
+    );
     assert!(release_script.contains("## Self-hosting"));
     assert!(ledger.contains("tag \"v0.296.0\""));
     assert!(ledger.contains("percentage_basis_points \"0\""));
