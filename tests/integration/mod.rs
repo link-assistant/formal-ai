@@ -21,6 +21,7 @@ mod issue_624_agent_mode;
 mod issue_656_improve;
 mod issue_661_statement_audit;
 mod issue_664_network_alias;
+mod issue_671_absolute_path_projection;
 mod issue_680_intent_routing;
 mod issue_712_intent_routing;
 mod issue_714_agentic_mode;
