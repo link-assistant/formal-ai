@@ -228,6 +228,39 @@ test.describe('Issue #672 (F4): reasoning-step hierarchy editing', () => {
     );
   });
 
+  // The menu is new user-facing prose, so it has to exist in every supported
+  // language — an English-only affordance is the regression class
+  // `check-i18n-catalog.mjs` guards the catalog against, asserted here on what
+  // is actually rendered. The expected strings are transcribed from
+  // `src/web/i18n-catalog.lino` rather than read from it, so a catalog edit
+  // that silently changes a label fails this test instead of following it.
+  const MENU_LABELS = {
+    en: { bump: 'Bump to high level', demote: 'Demote to sub-step' },
+    ru: { bump: 'Повысить до верхнего уровня', demote: 'Понизить до подшага' },
+    zh: { bump: '升为高层步骤', demote: '降为子步骤' },
+    hi: { bump: 'उच्च स्तर पर ले जाएँ', demote: 'उप-चरण में घटाएँ' },
+  };
+
+  for (const [language, labels] of Object.entries(MENU_LABELS)) {
+    test(`the menu is localized for ${language}`, async ({ page }) => {
+      await seed(page, PREFERENCES.replace('uiLanguage "en"', `uiLanguage "${language}"`));
+      const answer = await sendPrompt(page, PROMPT);
+      const menu = await openMenu(page, answer, AN_INTERNAL);
+      await expect(menu.locator('[data-testid="step-hierarchy-bump"]')).toHaveText(
+        labels.bump,
+      );
+      await expect(menu.locator('[data-testid="step-hierarchy-demote"]')).toHaveText(
+        labels.demote,
+      );
+      // And the edit still works in this locale, not just the labels.
+      await menu.locator('[data-testid="step-hierarchy-bump"]').click();
+      await expect(step(answer, AN_INTERNAL)).toHaveAttribute(
+        'data-level-override',
+        'high',
+      );
+    });
+  }
+
   // Human-review artefacts for the pull request, regenerated on every run.
   test('writes before/after review screenshots', async ({ page }) => {
     fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });

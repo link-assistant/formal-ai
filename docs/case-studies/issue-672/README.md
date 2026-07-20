@@ -27,7 +27,7 @@ Test counts, all green in one run
 (`raw-data/playwright-issue-672.log`, `raw-data/desktop-node-tests.log`):
 
 ```text
-  36 passed (1.5m)
+  44 passed (1.7m)
 # tests 121
 # pass 121
 # fail 0
@@ -104,7 +104,8 @@ degrades quietly.
 ## F3 — per-message animation override
 
 `src/web/app/main.jsx`, `tests/e2e/tests/issue-672-animation-override.spec.js`
-(7 tests: 6 behavioural, plus one that writes the review screenshots).
+(11 tests: 6 behavioural, one per supported language, and one that writes the
+review screenshots).
 
 The reveal budget was one global preference, so a user who likes the paced
 reveal but wants *this* answer now had to change it for every future message.
@@ -115,8 +116,8 @@ body is being withheld, and the button inside it settles that message only.
 or not the button does anything. Commenting out the one line that does the work
 (`setSkipped(true)` in `useMessageReveal`) and re-running the spec fails exactly
 the two behavioural tests and leaves the rest green
-(`raw-data/f3-mutation-probe.log`, recorded before the screenshot test was
-appended, hence six tests rather than seven):
+(`raw-data/f3-mutation-probe.log`, recorded before the per-language and
+screenshot tests were appended, hence six tests rather than eleven):
 
 ```text
   ✘  1 … › the override shows the withheld answer immediately
@@ -131,12 +132,15 @@ The mutation was reverted before the commit; the current build has
 ## F4 — reasoning-step hierarchy editing
 
 `src/web/app/main.jsx`, `src/web/styles.css`, `src/web/i18n-catalog.lino`,
-`tests/e2e/tests/issue-672-reasoning-hierarchy.spec.js` (8 tests: 7
-behavioural, plus one that writes the review screenshots).
+`tests/e2e/tests/issue-672-reasoning-hierarchy.spec.js` (12 tests: 7
+behavioural, one per supported language, and one that writes the review
+screenshots).
 
 Right-clicking a step in Diagnostics mode opens a menu with *Bump to high
 level* / *Demote to sub-step* / *Restore the original level*, in all four
-locales.
+locales — asserted per language on the rendered labels, not just on the catalog,
+and each of those tests performs the edit too so a locale cannot be labelled
+correctly and broken behaviourally.
 
 F4's sketch said "a renderer-only override map keyed by step id". #672's body
 asks for something stricter — "edits append events, never mutate" — and that is
@@ -214,7 +218,7 @@ did not expect test.describe() to be called here".
 
 ## Raw data
 
-- `raw-data/playwright-issue-672.log` — the 36-test run covering F1–F5.
+- `raw-data/playwright-issue-672.log` — the 44-test run covering F1–F5.
 - `raw-data/desktop-node-tests.log` — the 121 desktop library tests now wired
   into CI.
 - `raw-data/f3-mutation-probe.log` — the F3 spec against a deliberately broken

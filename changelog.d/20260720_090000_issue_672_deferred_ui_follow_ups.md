@@ -44,3 +44,6 @@ bump: minor
   re-runs the #541 R9 grant-all journey with the desktop provider behind a real
   `page.exposeFunction` boundary, so the replayed task and the granted tools are
   asserted on the payloads that actually left the browser context.
+- The F3 control and the F4 menu are asserted per supported language (en, ru,
+  zh, hi) on the labels the browser renders, and each of those tests performs
+  the edit, so a locale cannot be labelled correctly and broken behaviourally.

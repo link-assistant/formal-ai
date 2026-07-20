@@ -165,6 +165,50 @@ test.describe('Issue #672 (F3): per-message animation budget override', () => {
     await expect(answer.locator('[data-testid="message-skip-animation"]')).toHaveCount(0);
   });
 
+  // The control is new user-facing prose, so it exists in every supported
+  // language. Transcribed from `src/web/i18n-catalog.lino` rather than read
+  // from it, so a silent catalog edit fails here instead of being followed.
+  const SKIP_LABELS = {
+    en: 'Show answer now',
+    ru: 'Показать ответ сейчас',
+    zh: '立即显示答案',
+    hi: 'उत्तर अभी दिखाएँ',
+  };
+
+  for (const [language, label] of Object.entries(SKIP_LABELS)) {
+    test(`the control is localized for ${language}`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await page.addInitScript(
+        ({ prefKey, value }) => {
+          try {
+            window.localStorage.setItem(prefKey, value);
+          } catch (_error) {
+            // localStorage can be unavailable in hardened browser contexts.
+          }
+        },
+        {
+          prefKey: PREF_KEY,
+          value: preferences(LONG_BUDGET_MS).replace(
+            'uiLanguage "en"',
+            `uiLanguage "${language}"`,
+          ),
+        },
+      );
+      await page.goto('./');
+      await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+        timeout: 10_000,
+      });
+      const answer = await sendPrompt(page, 'Hello');
+      const skip = answer.locator('[data-testid="message-skip-animation"]');
+      await expect(skip).toHaveText(label);
+      // And the control still settles the message in this locale.
+      await skip.click();
+      await expect(
+        answer.locator('[data-testid="message-markdown-body"]'),
+      ).toBeVisible();
+    });
+  }
+
   // Human-review artefacts for the pull request, regenerated on every run. Not
   // asserted beyond the affordance being where the screenshot claims it is —
   // the behaviour is pinned by the tests above.
