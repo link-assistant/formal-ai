@@ -8,7 +8,18 @@ function isDebugEnabled() {
   return process.env.FORMAL_AI_MACOS_SIGN_DEBUG === '1';
 }
 
+function debugLog(message) {
+  if (isDebugEnabled()) {
+    process.stdout.write(`[adhoc-sign-mac] ${message}\n`);
+  }
+}
+
 function findAppPath(signOptions) {
+  debugLog(`signOptions keys: ${Object.keys(signOptions).sort().join(', ')}`);
+  debugLog(`cwd: ${process.cwd()}`);
+  for (const field of ['app', 'appPath', 'path']) {
+    debugLog(`candidate ${field}: ${JSON.stringify(signOptions[field] ?? null)}`);
+  }
   for (const field of ['app', 'appPath', 'path']) {
     if (typeof signOptions[field] === 'string' && signOptions[field].endsWith('.app')) {
       return signOptions[field];
@@ -30,10 +41,13 @@ function isBundledBrowserRuntime(filePath, appPath) {
     'browser-runtime',
   );
   const relative = path.relative(browserRuntime, path.resolve(filePath));
-  return (
+  const bundled =
     relative === '' ||
-    (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative))
+    (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+  debugLog(
+    `ignore ${bundled ? 'SKIP' : 'sign'} root=${browserRuntime} relative=${relative} path=${filePath}`,
   );
+  return bundled;
 }
 
 function signingIgnoreRules(signOptions) {
