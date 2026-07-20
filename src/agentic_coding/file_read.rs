@@ -77,12 +77,10 @@ fn plan_direct_file_read(
     records: &[ToolResultRecord],
 ) -> AgenticPlan {
     if let Some(content) = read_result_for_path(records, path)
+        .map(ToOwned::to_owned)
         .or_else(|| run_result_for_command(records, &read_command_for(path, mode)))
     {
-        return AgenticPlan::Final(file_read_final_answer(
-            mode,
-            &[(path.to_owned(), content.to_owned())],
-        ));
+        return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
     }
 
     if prefer_run {
@@ -128,7 +126,7 @@ fn plan_list_then_read(
         );
     };
 
-    let paths = selected_paths_from_listing(directory, listing, selection);
+    let paths = selected_paths_from_listing(directory, &listing, selection);
     if paths.is_empty() {
         return AgenticPlan::Final(format!("No files were listed in `{directory}`."));
     }
@@ -164,7 +162,7 @@ fn plan_list_then_read(
         if let Some(content) = run_result_for_command(records, &command) {
             return AgenticPlan::Final(file_read_final_answer(
                 mode,
-                &[(paths.join(", "), content.to_owned())],
+                &[(paths.join(", "), content)],
             ));
         }
         return plan_one(tool, json!({ "command": command }).to_string());
@@ -431,9 +429,27 @@ fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Opti
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Read)
-                && path_argument(&record.arguments).as_deref() == Some(path)
+                && path_argument(&record.arguments)
+                    .is_some_and(|recorded| same_path(&recorded, path))
         })
         .map(|record| record.content.as_str())
+}
+
+/// Whether a recorded path argument denotes the path the planner asked for.
+///
+/// The transcript holds the argument the *client's* schema accepted, not the one
+/// the planner planned with: [`crate::protocol_responses`] rewrites `path` to
+/// Gemini's `absolute_path` and absolutises it, so a recorded
+/// `/work/alpha.txt` has to answer a planned `alpha.txt`.
+fn same_path(recorded: &str, planned: &str) -> bool {
+    if recorded == planned {
+        return true;
+    }
+    let planned = planned.trim_start_matches("./");
+    recorded
+        .trim_start_matches("./")
+        .strip_suffix(planned)
+        .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('/'))
 }
 
 fn read_results_for_paths(
@@ -448,22 +464,32 @@ fn read_results_for_paths(
     Some(out)
 }
 
-fn run_result_for_command<'a>(records: &'a [ToolResultRecord], command: &str) -> Option<&'a str> {
+fn run_result_for_command(records: &[ToolResultRecord], command: &str) -> Option<String> {
     records
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Run)
-                && record
-                    .arguments
-                    .get("command")
-                    .and_then(serde_json::Value::as_str)
-                    == Some(command)
+                && command_argument(&record.arguments) == Some(command)
         })
-        .map(|record| record.content.as_str())
+        .map(|record| super::tool_result::strip_transport_envelope(&record.content))
+}
+
+/// The shell command a recorded run call carried.
+///
+/// Codex advertises `exec_command(cmd)`, so [`crate::protocol_responses`]
+/// projects the planner's `command` argument onto `cmd` before it reaches the
+/// client — and the transcript then plays that projected form back. Reading the
+/// record under `command` alone never matched, so the planner could not see its
+/// own completed `cat` and re-planned the identical call on every round
+/// (issue #671).
+fn command_argument(arguments: &serde_json::Value) -> Option<&str> {
+    ["command", "cmd"]
+        .iter()
+        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
 }
 
 fn path_argument(arguments: &serde_json::Value) -> Option<String> {
-    ["filePath", "path", "file_path"]
+    ["filePath", "path", "file_path", "absolute_path"]
         .iter()
         .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
         .map(ToOwned::to_owned)
