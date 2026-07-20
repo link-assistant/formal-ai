@@ -1262,3 +1262,21 @@ drift guard, and census-backed edit-target resolution in the general planner.
 | R481 | Scale honestly with a documented fidelity marker per module: full AST for `src/agentic_coding/`, signature-level census elsewhere. | `CensusFidelity::{FullAst, Signature}` is chosen by `fidelity_for` and written as a `fidelity` line in every document; `the_workspace_census_is_addressable_without_a_multi_megabyte_seed` pins the size discipline. |
 | R482 | Regenerate deterministically and incrementally, and fail a drift check when a committed census diverges from its source. | `WorkspaceCensus::documents` is a pure, path-sorted function of the sources; `drift_report` reports `Missing`/`Stale`/`Orphan`. Covered by `census_regenerates_deterministically_and_incrementally`, `drift_check_fails_on_a_fixture_with_a_stale_census`, and the disk guard `committed_census_documents_match_what_the_sources_render`. |
 | R483 | Resolve edit targets through the census index instead of hardcoded paths, for any module the method registry knows. | `resolve_census_target` in `src/agentic_coding/general_planner.rs` routes `compose_edit_request` through `WorkspaceCensus::resolve`; covered by `the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census` and `the_index_resolves_every_path_symbol_the_method_registry_knows`. |
+
+## Issue #674 Arbitrary Natural-Language Programs
+
+Issue [#674](https://github.com/link-assistant/formal-ai/issues/674) (E55) closes
+the `ARCHITECTURE.md` §16 question carried since the E20 batch: procedures stated
+as ordinary prose fell outside the trigger/response subset `src/skill_compiler.rs`
+recognizes, so `docs/USER-JOURNEYS.md` F2 could only be scaffolded. PR
+[#815](https://github.com/link-assistant/formal-ai/pull/815) adds
+`src/skill_procedure.rs`, a seeded step vocabulary, and the solver wiring that
+compiles, executes, restates, and honestly refuses such procedures.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R484 | Compile a freely phrased multi-step procedure that matches no existing compiler template into an ordered, typed, executable program. | `compile_procedure` in `src/skill_procedure.rs` splits the request into clauses, maps each onto a seeded step verb, and requires both a trigger lead and at least two recognized steps before treating a prompt as a program; covered by `arbitrary_four_step_procedure_compiles_executes_and_restates_its_steps`. |
+| R485 | Grow the step vocabulary as seed data rather than Rust match arms. | Every step kind, object, connective, and trigger lead lives in `data/seed/meanings-skill-procedure.lino` under the `skill_procedure_*` roles; the meaning slug *is* the canonical step kind the compiler emits and a host dispatches on, so a new capability is a data edit plus a host arm. |
+| R486 | Compile the same procedure in English, Russian, Hindi, and Chinese to the same skill links. | `CompiledProcedure::links_notation` and `link_records` project canonical slugs only, and the content-addressed id is derived from that slug-only program; covered by `same_procedure_in_every_supported_language_compiles_to_the_same_skill_links`. |
+| R487 | Fail honestly with a named gap on an uncompilable step, record a `skill_gap` event, and compile nothing partially. | `ProcedureCompileError::UncompilableStep` carries the clause, its span, and `no compiled capability for "…"`; `src/solver_handlers/procedure_rules.rs` appends the `skill_gap` event and replies with the gap in all four languages; covered by `uncompilable_step_reports_a_named_gap_and_compiles_nothing_partially` and `solver_answers_an_uncompilable_step_with_the_gap_and_a_skill_gap_event`. |
+| R488 | Keep compiled skills inspectable: *"why did you do that?"* cites the compiled steps and their source sentence spans. | Every `ProcedureStep` records `source_text` and `source_span`; `restate_steps` renders them, and `src/solver_handlers/meta_explanation.rs` recovers the procedure by recompiling `prior_turn:user` events, the same history mechanism `collect_runtime_rules` uses. Covered by `solver_compiles_a_freely_phrased_procedure_and_can_restate_it_later`. |

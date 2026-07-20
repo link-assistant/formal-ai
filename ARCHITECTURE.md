@@ -155,7 +155,7 @@ following Rust modules:
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
-| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge | Implemented for deterministic trigger/response skill packages |
+| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge, and `src/skill_procedure.rs` plus `src/solver_handlers/procedure_rules.rs` for freely phrased procedures | Implemented for deterministic trigger/response skill packages and for multi-step procedures stated in ordinary prose |
 
 The pipeline runs the same way for every prompt — greetings, identity,
 concept lookup, math, code generation, idioms, refusals, agent actions —
@@ -792,6 +792,21 @@ explicit `Permission` records for package/tool capabilities such as
 before falling back to behavior-rule re-derivation; a replay appends
 `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
 
+`src/skill_procedure.rs` covers the prose that falls outside that typed shape
+(E55, issue #674). It splits a request such as "when I paste a link, fetch its
+title, translate it to Russian, save both, and reply with the translation" into
+ordered clauses and maps each clause onto a step verb seeded in
+`data/seed/meanings-skill-procedure.lino`, so the vocabulary grows as data. Two
+guards keep ordinary prompts out: the request needs a seeded trigger lead and at
+least two recognized steps. The compiled program is projected from canonical
+slugs only, so the English, Russian, Hindi, and Chinese phrasings of one
+procedure content-address to the same id and the same `LinkRecord`s. Each step
+keeps the source sentence span it was read from, which is what
+`src/solver_handlers/meta_explanation.rs` quotes when asked *"why did you do
+that?"*. A clause with no vocabulary entry compiles nothing at all:
+`src/solver_handlers/procedure_rules.rs` answers with the named gap and appends a
+`skill_gap` event rather than dropping the step.
+
 `src/associative_package.rs` is the R65 package boundary. It models
 Deep.Foundation-inspired packages in the local doublet architecture with
 package metadata, dependency links, handler records, trigger records, and
@@ -1229,11 +1244,17 @@ sources and drives 30 deterministic local variations per source through a
 each source has a 3-check repository-local 10% floor and must pass the stronger
 30/30 local ratchet.
 
-A still-open lower-priority question carried over from the E20 batch: arbitrary
-natural-language programming (executing reviewed generated stubs in sandboxed
-runtimes) remains outside the current supported subset of
-`src/skill_compiler.rs`; the spec-driven, test-verified slice of it is built by
-E30 above.
+Arbitrary natural-language programming beyond the trigger/response subset of
+`src/skill_compiler.rs` is closed by E55 (issue #674): `src/skill_procedure.rs`
+compiles a freely phrased multi-step procedure by splitting it into ordered
+clauses and mapping each onto the step vocabulary seeded in
+`data/seed/meanings-skill-procedure.lino` — so growing the vocabulary is a data
+edit, not a new Rust match arm. The compiled program carries canonical slugs
+only, which is why the same procedure stated in English, Russian, Hindi, or
+Chinese content-addresses to one identical set of skill links. A clause with no
+vocabulary entry compiles nothing: the solver replies with the named gap and
+records a `skill_gap` event, and every compiled step keeps the source sentence
+span it was read from so *"why did you do that?"* can quote it.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.
