@@ -77,10 +77,17 @@ for f in "${files[@]}"; do
   debug "$f"
 done
 
+# Pinned, not floating (issue #812): `npx --yes -p secretlint` resolved to
+# whatever `latest` was at the moment the job ran, so the same commit could pass
+# today and fail tomorrow with no change of ours, and a compromised publish would
+# execute in CI unreviewed. Bump SECRETLINT_VERSION deliberately.
+SECRETLINT_VERSION="${SECRETLINT_VERSION:-13.0.2}"
+debug "secretlint ${SECRETLINT_VERSION}"
+
 printf '%s\0' "${files[@]}" |
   xargs -0 npx --yes \
-    -p secretlint \
-    -p @secretlint/secretlint-rule-preset-recommend \
+    -p "secretlint@${SECRETLINT_VERSION}" \
+    -p "@secretlint/secretlint-rule-preset-recommend@${SECRETLINT_VERSION}" \
     secretlint
 
 echo "No secrets found."

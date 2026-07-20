@@ -147,6 +147,22 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
+      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
+      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
+      # commit was already immutable, and while the only way to move the measured
+      # range forward (cutting a tag) was what it blocked. Enforcement belongs
+      # here, where the commits can still be amended. The check is differential:
+      # it compares the release share projected *with* this branch against the
+      # one projected for the base alone, so a regression already on main cannot
+      # block unrelated pull requests.
+      - name: Check the self-hosting ratchet against the merge base
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          base="origin/${GITHUB_BASE_REF}"
+          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
+
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
   # `manual-release`, i.e. after the crate had already been published to
@@ -272,7 +288,11 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Issue #812: this job used to take ~3.3 minutes; it now takes 6.8-7.8 as
+    # checks accumulated (the last three `main` runs measured 6.7, 6.8, 7.8),
+    # which is 78% of the old 10-minute cap. Raised before it produces the same
+    # "cancelled" false failure that `test` did in run 29767811026.
+    timeout-minutes: 15
     needs: [detect-changes]
     # Note: a status-check function is required because detect-changes is skipped
     # on workflow_dispatch; without one the skipped dependency would cascade and
@@ -329,14 +349,57 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
+      # Issue #812: nothing validated the workflow definitions themselves, so a
+      # mistyped `needs.<job>` reference, an undefined output or a malformed
+      # expression could only be discovered by pushing and watching it fail --
+      # and expression errors that evaluate to an empty string fail *open*,
+      # skipping the guarded step with a green check. actionlint type-checks
+      # `needs`/`steps`/`env` contexts and runs shellcheck over every `run:`
+      # block. Pinned by version; `.github/actionlint.yaml` declares the runner
+      # labels newer than this release knows about.
+      - name: Lint GitHub Actions workflows
+        env:
+          ACTIONLINT_VERSION: 1.7.7
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+            | tar xz -C /tmp actionlint
+          /tmp/actionlint -color
+
+      # actionlint only reaches shell embedded in `run:` blocks. The standalone
+      # scripts those blocks invoke -- install.sh, check-secrets.sh,
+      # simulate-fresh-merge.sh and the rest -- had no linter at all, which is
+      # where unquoted expansions and `cd` without a guard live (issue #812).
+      # `experiments/` is deliberately excluded: those are throwaway
+      # reproduction scripts, not shipped code.
+      - name: Lint shell scripts
+        run: |
+          set -euo pipefail
+          mapfile -t scripts < <(
+            git ls-files '*.sh' \
+              | grep -v -e '^experiments/' -e '^dev/log/' -e '^docs/case-studies/'
+          )
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "::error::No shell scripts matched; the lint selector is broken" >&2
+            exit 1
+          fi
+          printf 'Linting %s shell script(s)\n' "${#scripts[@]}"
+          shellcheck --severity=warning "${scripts[@]}"
+
       - name: Check formatting
         run: cargo fmt --all -- --check
 
       - name: Verify Cargo.lock is synchronized
         run: cargo metadata --locked --format-version 1 > /dev/null
 
+      # `-D warnings` is required, not optional: every lint in `[lints.clippy]`
+      # of Cargo.toml is set to `warn`, so without it clippy printed findings
+      # and still exited 0 -- a green check over unreviewed lint debt
+      # (issue #812). The tree is clippy-clean at the time this was added, so
+      # this promotes existing behaviour rather than introducing new failures.
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
       # Build the same public API docs deployed by Pages before release so a
@@ -472,7 +535,26 @@ jobs:
       # this dependency-free job rather than being silently skipped inside it.
       - name: Run desktop library tests
         run: |
-          node --test $(ls desktop/scripts/*.test.mjs | grep -v '/web-tools.test.mjs$')
+          set -euo pipefail
+          # Issue #812: this was `node --test $(ls ... | grep -v ...)`. If the
+          # glob ever stopped matching, the substitution collapsed to nothing and
+          # `node --test` fell back to its own directory discovery -- a green
+          # step that ran none of these tests. Build the list explicitly and
+          # refuse to pass on an empty one.
+          shopt -s nullglob
+          tests=()
+          for test_file in desktop/scripts/*.test.mjs; do
+            case "$test_file" in
+              */web-tools.test.mjs) continue ;;
+            esac
+            tests+=("$test_file")
+          done
+          if [ ${#tests[@]} -eq 0 ]; then
+            echo "::error::No desktop library tests matched desktop/scripts/*.test.mjs" >&2
+            exit 1
+          fi
+          printf 'Running %s test file(s)\n' "${#tests[@]}"
+          node --test "${tests[@]}"
 
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
@@ -487,7 +569,9 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
+    # sync with TEST_BUDGET_SECONDS there.
+    timeout-minutes: 25
     needs: [detect-changes]
     # Note: a status-check function is required because detect-changes is skipped
     # on workflow_dispatch; without one the skipped dependency would cascade and
@@ -552,8 +636,34 @@ jobs:
       - name: Check self-AST census freshness
         run: cargo test --test unit self_ast_census -- --nocapture
 
+      # Issue #812: run 29767811026 reported this job as *failed* although every
+      # test passed -- the suite finished at 18:43:50 and `timeout-minutes: 15`
+      # killed the job 1.1 s later, during teardown. Run 29749095334 on `main`
+      # had already done the same. GitHub surfaces a timeout as `cancelled`, so
+      # it reads as an infrastructure blip rather than "the budget is exhausted".
+      #
+      # The budget is not padding: checkout + the two data checks cost ~3m15s
+      # before a test runs, and the suite itself takes ~11m of which eight
+      # individual agentic/driver tests exceed 60 s each. 25 minutes reflects the
+      # measured cost with headroom; the timer below makes further creep visible
+      # in the run summary instead of surfacing as a mystery cancellation two
+      # months from now. Reducing those eight tests is real work, tracked
+      # separately -- inflating the cap silently is what this avoids.
       - name: Run tests
-        run: cargo test --all-features --verbose
+        env:
+          TEST_BUDGET_SECONDS: 1500
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          set -euo pipefail
+          started=$SECONDS
+          cargo test --all-features --verbose
+          elapsed=$((SECONDS - started))
+          threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
+          printf 'Test suite took %ss of the %ss job budget.\n' \
+            "$elapsed" "$TEST_BUDGET_SECONDS"
+          if [ "$elapsed" -ge "$threshold" ]; then
+            echo "::warning title=Test suite is approaching its timeout::The suite took ${elapsed}s, at or above ${TEST_WARN_RATIO_PERCENT}% of the ${TEST_BUDGET_SECONDS}s budget. Speed up the slowest tests before the job starts reporting timeouts as cancellations."
+          fi
 
       - name: Run doc tests
         run: cargo test --doc --verbose
@@ -563,7 +673,11 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #812: the same margin problem as `test`, one run away from the same
+    # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
+    # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
+    # 15-minute cap. It instruments the same suite that takes ~11m unarmed.
+    timeout-minutes: 25
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -674,14 +788,30 @@ jobs:
   # This job automatically bumps version based on fragments in changelog.d/
   auto-release:
     name: Auto Release
-    needs: [lint, test, build]
+    # Issue #812: this gated on `[lint, test, build]` only, so `Secrets Scan`
+    # and both E2E suites could be red on main and the crate, the Docker image
+    # and the GitHub Release would still publish -- a green release over a red
+    # pipeline. Every job that runs on a push to main now gates it.
+    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
     # Note: !cancelled() keeps this consistent with the other jobs whose skipped
-    # dependencies must not cascade.
+    # dependencies must not cascade. The added gates accept 'skipped' for the
+    # same reason: a job that legitimately skipped itself (no relevant changes)
+    # must not block the release.
+    #
+    # They must NOT be written as `!= 'failure'`. A job killed by its own
+    # `timeout-minutes` is reported as **cancelled**, not failed -- run
+    # 29767811026 is the proof: `Test (ubuntu-latest)` hit the 15-minute cap and
+    # `needs.test.result` was 'cancelled'. Under `!= 'failure'` a timed-out
+    # secrets scan or E2E suite would have counted as "not failing" and released
+    # anyway. Enumerating the two acceptable results closes that (issue #812).
     if: |
       !cancelled() &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
-      needs.build.result == 'success'
+      needs.build.result == 'success' &&
+      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -928,15 +1058,23 @@ jobs:
   # Manual release via workflow_dispatch - only after CI passes
   manual-release:
     name: Instant Release
-    needs: [lint, test, build]
+    # Issue #812: same gap as `auto-release` -- an instant release must not be
+    # able to publish past a failing secrets scan or E2E suite.
+    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
     # Note: !cancelled() is required to evaluate the condition when dependencies
     # are skipped.
     # The build job ensures lint and test passed before this job runs.
+    # The added gates enumerate the acceptable results rather than excluding
+    # 'failure': a job killed by `timeout-minutes` reports as 'cancelled', which
+    # `!= 'failure'` would wave through. See the note on `auto-release`.
     if: |
       !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
-      needs.build.result == 'success'
+      needs.build.result == 'success' &&
+      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -1260,8 +1398,12 @@ jobs:
       # captures on every run (proving the screenshots can be produced in CI).
       # Publish them as an artifact so reviewers can compare against the committed
       # baselines without running the suite locally.
+      # Issue #812: was `if: always()`. On a failed run the suite may never reach
+      # the capture spec, so "no screenshots" was indistinguishable from "the
+      # captures broke" -- and a failed run already has the report artifact
+      # uploaded by the step above. Running only on success makes the missing-file
+      # case below unambiguous.
       - name: Upload generated /download screenshots
-        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: download-page-screenshots
@@ -1269,6 +1411,11 @@ jobs:
             docs/screenshots/issue-347/
             src/web/download/assets/app-preview*.png
           retention-days: 14
+          # Issue #812: `if: always()` plus the default `if-no-files-found: warn`
+          # means "the spec produced no screenshots at all" reads as a green
+          # step with a warning nobody sees. The whole point of this upload is
+          # to prove the captures can be produced in CI, so absence is an error.
+          if-no-files-found: error
 
   # === E2E: Agent CLI ↔ formal-ai OpenAI-compatible server ===
   # Boot `formal-ai serve`, drive it with the real `@link-assistant/agent` CLI
@@ -1321,7 +1468,7 @@ jobs:
         # ~/.bun/bin — the script's default AGENT="agent" picks it up.
         run: |
           bun add -g @link-assistant/agent
-          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
 
       - name: Install external agent CLIs
         # OpenCode provides the second issue-715 learning harness. Issue #781
@@ -1736,6 +1883,11 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: src/web
+          # Issue #812: without this, upload-artifact's default glob silently
+          # drops every dotfile, so `.well-known/`, `.nojekyll` and friends
+          # vanish from the deployed site while the job stays green. The rust
+          # template sets it for the same reason.
+          include-hidden-files: true
 
       - name: Deploy Pages artifact
         id: deployment

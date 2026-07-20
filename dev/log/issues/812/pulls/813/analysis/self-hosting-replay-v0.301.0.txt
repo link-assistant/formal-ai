@@ -1,0 +1,125 @@
+commit        lines  attr  reason                                             subject
+d77c6c4a     206436  False no trailers                                        docs(issue-781): finalize complete evidence bundle
+a86cf2b3     140390  False no trailers                                        Add development log for issue #808 PR #809
+1eff1dc8     101297  False no trailers                                        Add development log for issue #781 PR #803
+70a09859      44553  False no trailers                                        Add development log for issue #810 PR #811
+1b1586bb      44386  True  attributed                                         fix(ci): unblock releases from historical evidence records; 
+af5f3d1a      24939  False no trailers                                        Add development log for issue #804 PR #805
+b44e07f6      17307  False no trailers                                        docs(issue-781): preserve investigation evidence
+98cdcfad      12947  False no trailers                                        feat(self-ast): census the whole workspace, not one pinned m
+c5b27a65      10870  False no trailers                                        fix(ci): remove two nondeterministic CI failures
+a6f0f040       6953  False no trailers                                        fix(desktop): pass macOS sign ignore rules as a function; re
+da20fe6b       2717  False no trailers                                        docs(issue-781): correct upstream early-exit evidence
+953120a4       2217  False no trailers                                        feat(issue-664): links-network vocabulary — rename source_gr
+3cde1381       1694  False no trailers                                        feat: add evidence-weighted repository statement audit
+1e63beff       1486  False no trailers                                        docs(dev-log): add adhoc-sign-mac diagnostics from desktop r
+cfc3167c       1236  False no trailers                                        refactor(i18n): split per-message strings into i18n-catalog-
+8fd9998c       1125  False no trailers                                        docs(issue-672): case study, changelog and review screenshot
+c1ecb450        788  False no trailers                                        feat: expose repository statement audit CLI
+ae8648ea        761  False no trailers                                        test: execute statement audits through Agent CLI
+776bf767        730  False no trailers                                        feat(issue-664): add associative-terminology hygiene lint
+287b9327        612  False no trailers                                        feat(issue-663): retire SPECIALIZED_HANDLERS into data-drive
+5917d57f        609  False no trailers                                        docs(issue-662): grounded budget-search meta-algorithm recip
+be90cbe9        601  False no trailers                                        feat(issue-662): budget-driven random and evolutionary searc
+238659d3        593  False no trailers                                        feat(issue-672): F2 surface the profile migration with a rep
+f4d2b0d7        540  False no trailers                                        feat(web): let power users re-level reasoning steps from the
+39fdef91        536  True  attributed                                         fix(ci): stop macOS ad-hoc signing on bundled browser runtim
+19f5d159        526  False no trailers                                        feat(issue-664): ground the links-network terminology cleanu
+69b9fe8b        478  False no trailers                                        fix(agentic): narrate and sequence research tools
+7b8b3065        440  False no trailers                                        test: cover read/write schema fidelity and read determinism 
+d4b0dcf7        392  False no trailers                                        test(agentic): exercise research across four clients
+dcfd8810        386  False no trailers                                        docs: publish statement audit evidence case study
+6af7d158        371  False no trailers                                        feat(issue-672): F2 widen desktop data migration to authenti
+3687970f        368  True  attributed                                         ci(issue-808): adopt fresh-merge simulation, secrets scan an
+a3c33356        361  False no trailers                                        feat(issue-661): detect and warn on contradictory standing r
+65aceb88        353  False no trailers                                        feat(issue-662): ground search recognition in seed lexicon (
+0c57a76d        348  False no trailers                                        fix(agentic): execute namespaced research tools
+582fe5ea        340  False no trailers                                        test(e2e): cover the R9 grant-all replay over a raw IPC boun
+5ed32839        334  False no trailers                                        feat(issue-662): recognize by role, generalize operators, pr
+74e6e8bd        317  False no trailers                                        test(issue-672): F1 snapshot dark-theme coverage for the ful
+d5fab082        286  False no trailers                                        feat(issue-663): add handler-precedence auto-learning report
+159b2e28        286  False no trailers                                        feat(server): record opt-in per-dialog exchanges
+283359e6        268  False no trailers                                        feat(web): add a per-message skip control for the answer rev
+c72475b9        266  False no trailers                                        feat(issue-662): recognize reachability search across en/ru/
+058df7b6        256  False no trailers                                        fix(issue-662): seed budget-search reply and atomize search 
+10e65ae2        252  False ERROR: no evidence records session issue-804-claud docs(issue-804): collect CI/CD evidence and add macOS sign d
+e8c43b6c        226  False no trailers                                        refactor(agentic): satisfy CI source boundaries
+73520dd5        195  False no trailers                                        test(issue-661): cover weighted formalization and requiremen
+a2b634f6        184  False no trailers                                        test(e2e): assert the F3 control and F4 menu in every suppor
+361c7a83        183  False no trailers                                        test(issue-781): reproduce silent batched research turns
+cf3b683a        168  False no trailers                                        refactor(issue-664): extract links-network endpoint into src
+1d596b6e        159  False no trailers                                        test(server): move dialog log tests out of source
+33cf7cd0        157  False no trailers                                        test(issue-662): cover budget-driven search solve, budget-0 
+af8bd56e        157  False no trailers                                        fix: close statement audit seed references
+680f2a8a        141  False no trailers                                        docs(issue-663): case study, Agent-CLI E2E recipe, CI wiring
+c6be833f        132  False no trailers                                        fix(agentic): prefer web research for open-world finds
+ff6814d8        131  False no trailers                                        docs(issue-673): case study, requirements R480-R483, and cap
+9a180a71        107  False no trailers                                        docs(issue-664): links-network terminology in docs + changel
+0647537c         95  True  attributed                                         ci(desktop): run desktop and .vsix packaging on pull request
+4f355c02         92  True  attributed                                         ci: gate the Docker image on pull requests and fix contradic
+56fa089c         89  False no trailers                                        fix(desktop): copy the browser runtime with verbatim symlink
+03a06428         82  False no trailers                                        fix: keep repository audits inside their root
+894f16c6         78  True  attributed                                         docs(issue-808): file the upstream defect reports and correc
+8a2949fb         59  False no trailers                                        test(issue-662): add search-only benchmark case and raise ra
+0f0ee790         55  False no trailers                                        feat(issue-672): F2 expose the profile migration over IPC
+4a87ef85         54  False no trailers                                        perf: render repository audits in one association pass
+f98d29db         51  False no trailers                                        ci(desktop): run the PR packaging dry run on Rust changes to
+6ee43c4e         50  True  attributed                                         fix(ci): sign macOS artifacts on pull requests and update wo
+34731cf6         49  False no trailers                                        fix(issue-663): decline generic write for non-referential pa
+a9edd757         47  False no trailers                                        test(issue-662): pin skill proposals; align promotion mocks 
+021e4563         47  False no trailers                                        fix(self-ast): keep drift findings free of user-facing prose
+e7ce27d6         40  False no trailers                                        fix: expose audit issue candidates in new repositories
+027d7ca4         38  False no trailers                                        test: refresh planner-derived evidence
+a2873768         35  False no trailers                                        test(issue-663): pin routing precedence is language-agnostic
+e340b445         30  False no trailers                                        test(issue-781): cover localized research narration
+ed943dac         30  True  attributed                                         docs(issue-808): record the pull-request code-signing root c
+f2cc2e2b         30  False no trailers                                        docs(dev-log): record evidence that the mac ad-hoc sign igno
+83d2af29         29  False no trailers                                        feat(issue-661): append statement_weight link per formalized
+45988b8a         26  False no trailers                                        test(responses): allow narrated tool output
+0fab5441         22  False no trailers                                        fix(issue-662): silence clippy nursery false positive on see
+0fe5f360         19  False no trailers                                        docs: record full repository audit scale
+76349e77         16  False no trailers                                        docs(self): refresh planner-derived artifacts
+049b392d         16  False no trailers                                        refactor(agentic): satisfy strict clippy lints
+9bd47ffa         14  False no trailers                                        fix(issue-663): satisfy clippy and add changelog fragment
+dede63bc         12  False no trailers                                        fix: scope read grounding to the current user turn (issue #7
+bf3b16da         12  False no trailers                                        test(agentic): follow sequential research fetches
+96c50644         12  False no trailers                                        ci: run the desktop library tests in the Lint job (issue #67
+b06ab293         11  False no trailers                                        docs(issue-663): note self-re-derivation of precedence in AR
+7dd57431         10  False no trailers                                        docs(issue-664): sweep VS Code UI strings to 'links network 
+efb29029         10  False no trailers                                        chore: revert manual version bump, add changelog fragment (i
+7aa4d22b          9  False no trailers                                        docs(issue-662): changelog fragment for budget-driven search
+506bdd20          8  False no trailers                                        docs(issue-664): list budget-search and links-network recipe
+6482138d          8  False no trailers                                        test(issue-558): give the self-healing recipe the same 90s w
+205f2267          6  False no trailers                                        fix(issue-664): repath hardcoded-language allowlist to renam
+8f5edf3a          6  False no trailers                                        chore(issue-804): add changelog fragment
+fac06bad          5  False no trailers                                        fix: keep audit task prose at the test boundary
+2ce82a81          4  False no trailers                                        chore: bump version to 0.301.0 for release
+ba98caab          3  False no trailers                                        fix(issue-664): use external meta-language link in self_sour
+d78ef730          3  False no trailers                                        Initial commit with task details
+1a28793b          3  False no trailers                                        Initial commit with task details
+1c0d9e74          3  False no trailers                                        Initial commit with task details
+2461e433          3  False no trailers                                        Initial commit with task details
+369a3c9d          3  False no trailers                                        Initial commit with task details
+d7181a97          2  False no trailers                                        fix(issue-664): make into_deprecated_alias a const fn
+e59658f4          2  False no trailers                                        docs: mark issue 661 bounded audit complete
+6716b328          2  False no trailers                                        test: identify English contradiction coverage
+88e16903          2  False no trailers                                        docs(agentic): update error detector source
+816c23f0          2  False no trailers                                        docs(issue-781): point logging test to public suite
+81838af9          2  True  attributed                                         docs(issue-808): record the branch session id in the evidenc
+c34ff96b          2  True  attributed                                         docs(issue-808): revert the redundant branch-session note
+a9e0a6ee          1  False no trailers                                        Initial commit with task details
+28a631c9          1  False no trailers                                        Initial commit with task details
+d9939372          1  False no trailers                                        chore: remove root .gitkeep task-setup placeholder
+994b94a0          1  False no trailers                                        chore: remove .gitkeep placeholder (task complete)
+92a37ab9          1  False no trailers                                        Initial commit with task details
+2359e714          1  False no trailers                                        Initial commit with task details
+af5d48eb          1  False no trailers                                        Revert "Initial commit with task details"
+9df7e987          1  False no trailers                                        Initial commit with task details
+43eddccf          1  False no trailers                                        docs: normalize recorded agent transcript
+c373086e          1  False no trailers                                        chore(issue-663): allowlist handler-precedence learning task
+0bff5438          1  False no trailers                                        Initial commit with task details
+
+range          : v0.300.0..origin/main
+commits        : 10/119 attributed
+changed lines  : 45639/636240
+percentage     : 7.17%

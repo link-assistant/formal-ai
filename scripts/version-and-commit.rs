@@ -519,7 +519,19 @@ fn record_self_hosting_release(tag_prefix: &str, new_version: &str) -> Result<Pa
     )?;
     let tag = format!("{tag_prefix}{new_version}");
     let ledger = repo.join("data/meta/self-hosting-ledger.lino");
-    let row = self_hosting_metric::record_release(&repo, &ledger, &tag, &since, "HEAD", 3)?;
+    // `Report`, not `Enforce`: by the time a release runs, every commit in the
+    // range is immutable history on `main`, so a hard failure here can only
+    // deadlock the release (issue #812). The ratchet is enforced at the
+    // pull-request gate instead — see `self_hosting_metric::RatchetPolicy`.
+    let row = self_hosting_metric::record_release_with_policy(
+        &repo,
+        &ledger,
+        &tag,
+        &since,
+        "HEAD",
+        3,
+        self_hosting_metric::RatchetPolicy::Report,
+    )?;
     println!(
         "Recorded self-hosting metric for {tag}: {} ({}/{} changed lines)",
         self_hosting_metric::format_percentage(row.percentage_basis_points),
