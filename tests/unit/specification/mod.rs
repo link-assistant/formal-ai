@@ -35,6 +35,7 @@ mod agentic_meta_algorithm;
 mod associative_packages;
 mod behavior_rules;
 mod benchmarks;
+mod budget_search_meta_algorithm;
 mod calculator_delegation;
 mod capabilities;
 mod chat_surface;

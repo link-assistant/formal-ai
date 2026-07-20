@@ -1,4 +1,29 @@
 meanings
+  pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zdravstvuyte kak vashi dela"
+  pattern_wellbeing_phrase_zuijin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase zuijin zenmeyang zh"
+  pattern_wikipedia_article_question_exact_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact en"
+  pattern_wikipedia_article_question_exact_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact hi"
+  pattern_wikipedia_article_question_exact_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wikipedia article question exact ru"
   pattern_wikipedia_article_question_exact_zh
     defined-by prompt_pattern
     lexeme en
@@ -184,6 +209,11 @@ meanings
     lexeme en
       surface
         text "qa network"
+  reach
+    defined-by word_surface
+    lexeme en
+      surface
+        text "reach"
   react-chat-ui
     defined-by name
     lexeme en
@@ -329,6 +359,26 @@ meanings
     lexeme en
       surface
         text "response assistant name zh"
+  response_budget_search_solution_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution en"
+  response_budget_search_solution_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution hi"
+  response_budget_search_solution_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution ru"
+  response_budget_search_solution_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution zh"
   response_capabilities_en
     defined-by response_template
     lexeme en
@@ -1344,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface changed ru"
-  response_lexeme_import_surface_changed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed zh"
-  response_lexeme_import_surface_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing en"
-  response_lexeme_import_surface_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing hi"
-  response_lexeme_import_surface_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing ru"
-  response_lexeme_import_surface_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing zh"
-  response_lexeme_import_wrong_genus_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus en"
-  response_lexeme_import_wrong_genus_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus hi"
-  response_lexeme_import_wrong_genus_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus ru"
-  response_lexeme_import_wrong_genus_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus zh"
-  response_mcp_instructions_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response mcp instructions en"

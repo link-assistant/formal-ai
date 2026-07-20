@@ -234,6 +234,15 @@ pub struct SolverConfig {
     /// a solve whose config already carries a forced language never fires the
     /// follow-up again.
     pub forced_response_language: Option<&'static str>,
+    /// Compute budget for the step-7 random/evolutionary search stage (issue
+    /// #662), counted in candidate evaluations. When reuse and rule reasoning
+    /// produce no candidate for a recognized search problem, the solver spends
+    /// up to this many evaluations combining known parts against the generated
+    /// tests before falling back to the honest unknown-reasoning reply. `0`
+    /// disables the search entirely; the default is intentionally small. The
+    /// stream is seeded from the impulse content hash, so the stage stays
+    /// deterministic for a given config per the `VISION.md` contract.
+    pub compute_budget: u32,
 }
 
 impl Default for SolverConfig {
@@ -258,6 +267,7 @@ impl Default for SolverConfig {
             blueprint_composition: BlueprintComposition::default(),
             probability_policy: ProbabilityDecisionPolicy::default(),
             forced_response_language: None,
+            compute_budget: 512,
         }
     }
 }
@@ -627,6 +637,16 @@ impl UniversalSolver {
             // request returns an agent_suggestion intent in both engines.
             if let Some(answer) =
                 crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+            {
+                return answer;
+            }
+            // Issue #662: no reusable part or rule matched. Combine reasoning,
+            // random search, and evolutionary search within the configured
+            // compute budget (GOALS.md Universal Solver Goals) before giving up.
+            // On budget exhaustion the `search:` evidence stays on the log and
+            // the honest unknown-reasoning reply below takes over.
+            if let Some(answer) =
+                crate::solver_search::try_budget_search(prompt, &mut log, self.config)
             {
                 return answer;
             }

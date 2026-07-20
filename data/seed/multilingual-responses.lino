@@ -1365,3 +1365,19 @@ multilingual_responses
     intent shared_dialog_capture_unsupported
     language zh
     text "web-capture 提供程序 {provider} 报告了 {reason}：{message}"
+  response response_budget_search_solution_en
+    intent budget_search_solution
+    language en
+    text "Found by budget-driven search: {expression} = {target}.\nNo reusable part or rule matched, so the solver combined the given numbers with the allowed operators and scored each candidate against the generated equality tests as the fitness function.\nSearch budget: {budget} candidate evaluations; a satisfying composition was found after {evaluations} evaluations.\nSearch path: {trace_id}"
+  response response_budget_search_solution_ru
+    intent budget_search_solution
+    language ru
+    text "Найдено бюджетным поиском: {expression} = {target}.\nНи одна переиспользуемая часть или правило не подошли, поэтому решатель скомбинировал заданные числа с допустимыми операциями и оценил каждого кандидата по сгенерированным тестам равенства как функции приспособленности.\nБюджет поиска: {budget} оценок кандидатов; удовлетворяющая композиция найдена после {evaluations} оценок.\nПуть поиска: {trace_id}"
+  response response_budget_search_solution_hi
+    intent budget_search_solution
+    language hi
+    text "बजट-चालित खोज द्वारा पाया गया: {expression} = {target}.\nकोई पुन: प्रयोज्य भाग या नियम मेल नहीं खाया, इसलिए हल करने वाले ने दी गई संख्याओं को अनुमत संक्रियाओं के साथ जोड़ा और प्रत्येक उम्मीदवार को उपयुक्तता फलन के रूप में उत्पन्न समता परीक्षणों के विरुद्ध अंकित किया।\nखोज बजट: {budget} उम्मीदवार मूल्यांकन; {evaluations} मूल्यांकनों के बाद एक संतोषजनक संयोजन मिला।\nखोज पथ: {trace_id}"
+  response response_budget_search_solution_zh
+    intent budget_search_solution
+    language zh
+    text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"
