@@ -21,9 +21,12 @@
 // back in with `no-preference` — and the last test asserts that the
 // reduced-motion path still wins on its own, without any click.
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
+const SCREENSHOT_DIR = path.resolve(__dirname, '../../../docs/screenshots/issue-672');
 
 // The maximum the settings slider allows. A long budget makes the
 // still-revealing window comfortably observable instead of a race.
@@ -160,6 +163,23 @@ test.describe('Issue #672 (F3): per-message animation budget override', () => {
     await expect(body).toBeVisible();
     await expect(body).not.toHaveClass(/is-revealing/);
     await expect(answer.locator('[data-testid="message-skip-animation"]')).toHaveCount(0);
+  });
+
+  // Human-review artefacts for the pull request, regenerated on every run. Not
+  // asserted beyond the affordance being where the screenshot claims it is —
+  // the behaviour is pinned by the tests above.
+  test('writes before/after review screenshots', async ({ page }) => {
+    fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+    await boot(page);
+    const answer = await sendPrompt(page, 'Hello');
+    const skip = answer.locator('[data-testid="message-skip-animation"]');
+    await expect(skip).toBeVisible();
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'f3-before-skip.png') });
+    await skip.click();
+    await expect(
+      answer.locator('[data-testid="message-markdown-body"]'),
+    ).toBeVisible();
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'f3-after-skip.png') });
   });
 
   test('a zero budget keeps the immediate path, with no affordance', async ({ page }) => {

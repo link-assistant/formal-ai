@@ -15,9 +15,12 @@
 // preview shows, and the underlying diagnostics trace stays exactly as the
 // solver reported it.
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
+const SCREENSHOT_DIR = path.resolve(__dirname, '../../../docs/screenshots/issue-672');
 
 const PREFERENCES = [
   'demo_preferences',
@@ -223,6 +226,29 @@ test.describe('Issue #672 (F4): reasoning-step hierarchy editing', () => {
       'data-level-override',
       /.*/,
     );
+  });
+
+  // Human-review artefacts for the pull request, regenerated on every run.
+  test('writes before/after review screenshots', async ({ page }) => {
+    fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+    await seed(page, PREFERENCES);
+    const answer = await sendPrompt(page, PROMPT);
+    await visibleSteps(answer);
+    // The visible change is in the thinking preview, so frame the preview and
+    // the trace it projects rather than the whole viewport.
+    const preview = answer.locator('[data-testid="thinking-expanded-list"]');
+    await preview.scrollIntoViewIfNeeded();
+    await answer.screenshot({ path: path.join(SCREENSHOT_DIR, 'f4-before-edit.png') });
+
+    const menu = await openMenu(page, answer, AN_INTERNAL);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, 'f4-menu-open.png') });
+    await menu.locator('[data-testid="step-hierarchy-bump"]').click();
+    await expect(step(answer, AN_INTERNAL)).toHaveAttribute(
+      'data-level-override',
+      'high',
+    );
+    await preview.scrollIntoViewIfNeeded();
+    await answer.screenshot({ path: path.join(SCREENSHOT_DIR, 'f4-after-edit.png') });
   });
 
   test('the affordance is confined to Diagnostics mode', async ({ page }) => {

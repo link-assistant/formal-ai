@@ -2560,13 +2560,14 @@ body.is-resizing-context {
   border-color: var(--fa-control-hover-border);
 }
 
-.diagnostics-detail[data-level-override] > summary::after {
-  content: "•";
-  flex: 0 0 auto;
-  margin-left: auto;
+/* The marker rides the step name rather than the summary row: the row wraps
+   (the detail text takes a line of its own), so a row-level ::after would land
+   under the step instead of beside it. */
+.diagnostics-detail[data-level-override]
+  > summary
+  .diagnostics-step-name::after {
+  content: " •";
   color: var(--fa-accent-link);
-  font-size: 14px;
-  line-height: 1;
 }
 
 /* Positioned at the pointer, hence `fixed` + inline coordinates. */
