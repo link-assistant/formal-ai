@@ -334,7 +334,30 @@ Applied: both gates now enumerate the two acceptable results,
 test asserts the positive form *and* asserts the `!= 'failure'` form is absent,
 so the weaker spelling cannot come back.
 
-### 10.3 What the run confirmed
+### 10.3 The same margin problem in two more jobs
+
+Requirement: "if an issue exists in multiple places, apply it in all of them."
+Measured every job in run 29767811026 against its declared cap, then checked the
+trend across the last eight `main` runs:
+
+| Job | Cap was | Worst measured | Used |
+| --- | --- | --- | --- |
+| `test` | 15 | 15.2 (cancelled) | over |
+| `coverage` | 15 | 14.1 (11.2, 11.4, 11.5, 11.9, 12.6, 12.7, 13.5, 14.1) | 94% |
+| `lint` | 10 | 7.8 (was ~3.3 before checks accumulated) | 78% |
+| `test-e2e-local` | 15 | 9.4 | 63% — fine, left alone |
+| `docker-build` | 60 | 14.0 | 23% — fine, left alone |
+
+`coverage` was one run from producing the identical false failure; `lint` is on
+the same trajectory. Both raised, each with its measurements recorded inline so
+the number is auditable rather than arbitrary. The two jobs with real headroom
+were deliberately left untouched.
+
+Also swept: no `needs.<job>.result != 'failure'` comparison remains anywhere in
+either workflow, so §10.2 is fixed at every occurrence rather than at the two
+that prompted it.
+
+### 10.4 What the run confirmed
 
 - `Self-Hosting Evidence Check` — **success**, on the real PR. The differential
   ratchet gate from §2/§3 works in CI, not only locally.

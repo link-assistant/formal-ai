@@ -397,12 +397,14 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
-        ("lint", 10),
+        // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
+        ("lint", 15),
         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         ("test", 25),
-        ("coverage", 15),
+        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
+        ("coverage", 25),
         ("build", 10),
         ("auto-release", 30),
         ("manual-release", 30),

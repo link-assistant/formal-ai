@@ -288,7 +288,11 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Issue #812: this job used to take ~3.3 minutes; it now takes 6.8-7.8 as
+    # checks accumulated (the last three `main` runs measured 6.7, 6.8, 7.8),
+    # which is 78% of the old 10-minute cap. Raised before it produces the same
+    # "cancelled" false failure that `test` did in run 29767811026.
+    timeout-minutes: 15
     needs: [detect-changes]
     # Note: a status-check function is required because detect-changes is skipped
     # on workflow_dispatch; without one the skipped dependency would cascade and
@@ -669,7 +673,11 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Issue #812: the same margin problem as `test`, one run away from the same
+    # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
+    # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
+    # 15-minute cap. It instruments the same suite that takes ~11m unarmed.
+    timeout-minutes: 25
     needs: [detect-changes]
     if: |
       !cancelled() && (
