@@ -176,7 +176,8 @@ pub fn summarize_proxy_exchange(
             .as_ref()
             .and_then(|value| value.get("model"))
             .and_then(Value::as_str)
-            .map(ToOwned::to_owned),
+            .map(ToOwned::to_owned)
+            .or_else(|| model_from_path(path)),
         request_tools: request_json
             .as_ref()
             .map_or_else(Vec::new, collect_request_tool_names),
@@ -187,6 +188,26 @@ pub fn summarize_proxy_exchange(
         request_body: log_bodies.then(|| String::from_utf8_lossy(request_body).into_owned()),
         response_body: log_bodies.then(|| response_text.into_owned()),
     }
+}
+
+/// Recover the model id from a Gemini/Vertex-shaped request path.
+///
+/// Those protocols put the model in the URL — `…/v1beta/models/formal-ai:
+/// streamGenerateContent` — and nowhere in the body, so a body-only reader logs
+/// `request_model: null` for every exchange a Gemini or Qwen CLI makes. The
+/// issue-#671 matrix asserts model provenance from this field, and without the
+/// fallback the `gemini` leg could not tell "the CLI reached our model" from
+/// "the CLI reached something else".
+fn model_from_path(path: &str) -> Option<String> {
+    let after = path.rsplit_once("/models/")?.1;
+    let model = after
+        .split(['?', '#'])
+        .next()?
+        .split(':')
+        .next()?
+        .trim_end_matches('/')
+        .trim();
+    (!model.is_empty()).then(|| model.to_owned())
 }
 
 impl Upstream {
