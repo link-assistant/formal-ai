@@ -342,22 +342,82 @@ summary, the final CLI output, and a minimal server-side `curl` repro that sends
 the same `messages` or `input` plus `tools` directly to the server. The `curl`
 repro lets maintainers separate a server routing bug from a CLI integration bug.
 
-## CI Shape (proposed — not yet implemented)
+## CI Shape (implemented)
 
-The CI e2e suite should follow this sequence (tracked by #625 / #671; today CI
-runs only step 1's `formal-ai` build, step 4, and a single-CLI variant of
-step 6):
+[`.github/workflows/agentic-cli-matrix.yml`](../../.github/workflows/agentic-cli-matrix.yml)
+runs this sequence as one job per client on every pull request that touches
+server, protocol, seed or matrix code (#625 / #671):
 
-1. Build `formal-ai` and `with-formal-ai`.
-2. Install pinned CLI versions.
-   Install the pinned OpenCode Desktop package under Xvfb for its matrix row.
+1. Build `formal-ai` once and share the binary with every leg.
+2. Install the client's pinned version from
+   [`experiments/agentic_cli_matrix/clients.lock`](../../experiments/agentic_cli_matrix/clients.lock).
+   The GUI rows (OpenCode Desktop's AppImage, the VS Code extension host,
+   Cursor) install under Xvfb.
 3. Create the fixture workspace and marker files.
-4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
-5. Start `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.
-6. Run the phrasing matrix for each CLI and protocol path.
+4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port <leg port>`.
+5. Start `formal-ai proxy --listen 127.0.0.1:<leg port + 1> --upstream http://127.0.0.1:<leg port> --log proxy.jsonl --body`.
+6. Run the case sequence for that CLI, headless and through a real PTY.
 7. Assert on both `proxy.jsonl` and stripped CLI output.
 8. Fail on regressions in provenance, offered tools, returned tool calls, schema,
-   or final marker content.
+   round count, or final marker content.
+
+Every recorded `proxy.jsonl` is uploaded as a build artifact — on green legs as
+well as red ones — so `claude`, `grok` and `aider`, the integrations PR #648
+shipped without ever running, each have a replayable session on record.
+
+### Matrix rows
+
+Every client `formal-ai clients` knows about has a row. The
+`agentic_cli_matrix_covers_every_seeded_client` test in
+[`tests/unit/issue_671_matrix_coverage.rs`](../../tests/unit/issue_671_matrix_coverage.rs)
+fails the build if a client is added to `data/seed/client-integrations.lino`
+without one, so coverage cannot be "inferred from the shared adapters" again.
+
+| Client | Pinned as | Leg shape |
+| --- | --- | --- |
+| `codex` | `@openai/codex` | headless + PTY |
+| `t3code` | `t3` | headless + PTY |
+| `opencode` | `opencode-ai` | headless + PTY |
+| `opencode-vscode` | VS Code extension host | PTY under Xvfb |
+| `opencode-desktop` | AppImage (see [issue-762 case study](../case-studies/issue-762/README.md)) | PTY under Xvfb |
+| `agent` | `@link-assistant/agent` | headless + PTY (reference leg) |
+| `cursor` | vendor install script | PTY under Xvfb |
+| `gemini` | `@google/gemini-cli` | headless + PTY |
+| `claude` | `@anthropic-ai/claude-code` | headless + PTY |
+| `qwen` | `@qwen-code/qwen-code` | headless + PTY |
+| `grok` | `@vibe-kit/grok-cli` | headless + PTY |
+| `aider` | `aider-chat` | headless + PTY |
+
+The leg shape is not hardcoded per client: `run_leg.sh` reads
+`supports_non_interactive` from `formal-ai clients --format json`, so a client
+with no headless invocation gets an interactive-only leg rather than a skip.
+
+### Cases and the defect each one guards
+
+| Case | Guards |
+| --- | --- |
+| `greeting` | #650 defect 1 — `/responses` dropped `instructions`. |
+| `read-file` | #671 — the real Codex CLI re-planned one `exec_command` 281 times; the leg bounds the model rounds. |
+| `summarize` | #650 defect 3 — summarization requests answered as fresh tasks. |
+| `interactive` | #650 defect 2 and #713 — an empty interactive message wedged the TUI, and two launch-blocking interactive-only bugs survived 160 `--non-interactive` runs. |
+| `globally` | #650 defect 4 — the `--globally` alias was rejected. |
+| `constraints` | The upstream limitations below, plus #746's hosted `web_search` advertisement. |
+
+### Upstream constraints, asserted rather than skipped
+
+Each of these is a live assertion in `run_leg.sh`. When an upstream release
+lifts the constraint the assertion fails, which is the signal to delete it and
+add real coverage — the opposite of a skip, which would stay silent forever.
+
+- **Gemini headless `-p` advertises no `functionDeclarations`.** Recorded in the
+  #620 discussion and never filed upstream as its own issue. The `gemini` leg
+  asserts the recorded `request_tools` stay empty in headless mode.
+- **Codex, Gemini and Qwen have no headless approval handshake** (#511, PR
+  #512). Those legs assert no approval prompt appears; one showing up means the
+  tool loop silently changed shape.
+- **The real Codex TUI advertises web search as a hosted `{"type":"web_search"}`
+  tool** (#746) — something a hand-written `curl` never does, which is why the
+  matrix drives real CLIs instead of the API surface.
 
 This is the bridge from manual investigation to the first-class e2e coverage
 tracked by #625.

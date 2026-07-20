@@ -1,0 +1,192 @@
+name: Agentic CLI Matrix
+
+# The "CI Shape" section of docs/testing/agentic-cli-tools.md, made executable
+# (issue #671). One leg per client in `formal-ai clients` — the same seed
+# registry `formal-ai with` drives — each running the guide's smoke sequence
+# against a local `formal-ai serve --agent-mode` with `formal-ai proxy`
+# recording every exchange. Our own server is the model provider, so no leg
+# needs vendor credentials.
+#
+# Legs run in parallel and never skip: a client the runner cannot exercise
+# headlessly still gets an interactive PTY leg, and a documented upstream
+# limitation is written as an assertion that fails when upstream lifts it,
+# not as a `continue-on-error`. The `agentic_cli_matrix_covers_every_seeded_client`
+# unit test keeps this matrix in step with the seed registry.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # Server and protocol code is exactly the surface these legs guard: the
+    # issue-#671 loop lived in the planner, and the issue-#650 defects lived in
+    # the Responses transport and the `with` wrapper.
+    paths:
+      - 'src/**'
+      - 'data/seed/**'
+      - 'tests/**'
+      - 'experiments/agentic_cli_matrix/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/agentic-cli-matrix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  # Build once; every leg downloads the same binary. A leg that rebuilt would
+  # spend more time compiling than driving a CLI.
+  build:
+    name: Build formal-ai
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-cli-matrix-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-cli-matrix-
+            ${{ runner.os }}-cargo-
+
+      - name: Build formal-ai (release)
+        run: cargo build --release --bin formal-ai
+
+      - name: Upload formal-ai binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: formal-ai-binary
+          path: target/release/formal-ai
+          retention-days: 1
+
+  matrix:
+    name: E2E (${{ matrix.client }})
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      # Every leg reports independently: a Gemini upstream change must not hide
+      # a Codex regression, which is how PR #648 shipped four defects at once.
+      fail-fast: false
+      matrix:
+        include:
+          # Keep in sync with experiments/agentic_cli_matrix/clients.lock; the
+          # `agentic_cli_matrix_covers_every_seeded_client` unit test enforces it.
+          - client: codex
+            base_port: 8900
+          - client: t3code
+            base_port: 8960
+          - client: opencode
+            base_port: 9020
+          - client: opencode-vscode
+            base_port: 9080
+            display: xvfb
+          - client: opencode-desktop
+            base_port: 9140
+            display: xvfb
+          - client: agent
+            base_port: 9200
+          - client: cursor
+            base_port: 9260
+            display: xvfb
+          - client: gemini
+            base_port: 9320
+          - client: claude
+            base_port: 9380
+          - client: qwen
+            base_port: 9440
+          - client: grok
+            base_port: 9500
+          - client: aider
+            base_port: 9560
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          # Avoid racing the other jobs for setup-bun's shared executable key.
+          no-cache: true
+
+      - name: Download formal-ai binary
+        uses: actions/download-artifact@v4
+        with:
+          name: formal-ai-binary
+          path: target/release
+
+      - name: Make formal-ai executable
+        run: chmod +x target/release/formal-ai
+
+      - name: Install Xvfb
+        if: matrix.display == 'xvfb'
+        # The GUI clients (VS Code extension host, OpenCode Desktop's Electron
+        # shell, Cursor) need a display server. docs/case-studies/issue-762
+        # records the same setup for the desktop AppImage.
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb
+
+      - name: Install ${{ matrix.client }} (pinned)
+        run: |
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          experiments/agentic_cli_matrix/install_client.sh ${{ matrix.client }}
+
+      - name: Run ${{ matrix.client }} leg
+        env:
+          CLIENT: ${{ matrix.client }}
+          BASE_PORT: ${{ matrix.base_port }}
+        run: |
+          if [ "${{ matrix.display }}" = "xvfb" ]; then
+            xvfb-run -a experiments/agentic_cli_matrix/run_leg.sh
+          else
+            experiments/agentic_cli_matrix/run_leg.sh
+          fi
+
+      - name: Upload recorded transcripts
+        # The proxy log is the evidence: it is what a reviewer reads to see the
+        # advertised tools, the planned calls and the round count. Uploaded on
+        # success too, because a green leg's transcript is the recorded session
+        # issue #671 asks for on claude, grok and aider.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transcripts-${{ matrix.client }}
+          path: experiments/agentic_cli_matrix/artifacts/${{ matrix.client }}
+          retention-days: 14
+          if-no-files-found: warn
+
+  summary:
+    name: Matrix summary
+    needs: [matrix]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Fail if any leg failed
+        # A single red leg fails the matrix. Issue #671 exists because
+        # "inferred from the shared adapters" was accepted as coverage once.
+        run: |
+          if [ "${{ needs.matrix.result }}" != "success" ]; then
+            echo "one or more client legs failed" >&2
+            exit 1
+          fi
+          echo "all client legs green"
