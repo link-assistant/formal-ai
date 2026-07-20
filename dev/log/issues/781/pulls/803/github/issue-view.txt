@@ -1,0 +1,74 @@
+author:	konard
+association:	member
+edited:	true
+status:	none
+--
+We stopped at:
+
+```
+https://www.amazon.in/Callsa-12-Volt-Amp-Broadband/dp/B0CP1D3YDV/ref=sr_1_1_sspa
+
+https://www.amazon.in/WIRESLAB-Connector-3-5x1-35mm-5-5x2-5mm-Interface/dp/B0GYF7L5C6/ref=sr_1_8
+```
+
+as fallback compatible, but may be we missed something.
+
+Google and ChatGPT didn't help much:
+
+https://chatgpt.com/share/6a5be9fe-34e8-83ee-aaa2-4279cac118fa
+https://share.google/aimode/073jaDD5wQmw3Zn0g
+
+(we also need to make sure we have prepared adapters to capture and convert shared dialogs from chatgpt and google to links notation format).
+
+We need to make sure we do the best possible search algorithm proven with actual data sources, not only just search, but also fetch via our web capture with actual verification of all contents.
+
+Recursive reasoning steps, meta language usage and so on.
+
+We need to make everything in the highest possible quality.
+
+We need to download all logs and data related about the issue to this repository, make sure we compile that data to `./docs/case-studies/issue-{id}` folder, and use it to do deep case study analysis (also make sure to search online for additional facts and data), in which we will reconstruct timeline/sequence of events, list of each and all requirements from the issue, find root causes of the each problem, and propose possible solutions and solution plans for each requirement (we should also check known existing components/libraries, that solve similar problem or can help in solutions).
+
+If there is not enough data to find actual root cause, add debug output and verbose mode if not present, that will allow us to find root cause on next iteration.
+
+If issue related to any other repository/project, where we can report issues on GitHub, please do so. Each issue must contain reproducible examples, workarounds and suggestions for fix the issue in code. Also double check to fully apply requirements to entire codebase, so if we have issue in multiple places, it should be fixed in all them.
+
+Please plan and execute everything in this single pull request, you have unlimited time and context, as context auto-compacts and you can continue indefinitely, until it is each and every requirement fully addressed, and everything is totally done.
+
+--
+author:	konard
+association:	member
+edited:	true
+status:	none
+--
+<img width="1131" height="565" alt="Image" src="https://github.com/user-attachments/assets/da4f3259-8c3d-4cb6-87b9-045ecc3753e6" />
+
+It actually does not work, it stucks for long, and does not respond. Instead of doing multi turn actions to produce single message answers, we instead must split it to smaller actions, and provide explanations on each step, once all steps completed, we provide summary message.
+
+See how current modern AIs do that as in log: https://gist.githubusercontent.com/konard/4fde72c1b78155ab4977c10e04d328d0/raw/bdab84a06254762c617f269ac71a9341c9b1ea5e/tmp-solution-draft-log-pr-1784470815451.txt.log.txt (also check other logs from https://github.com/link-assistant/formal-ai/pull/795 pull request).
+
+For that specific task we must have full e2e test, that confirms multi-turn actions in all our agentic CLI tools like opencode, agent, claude, codex, 
+
+And after more than minute of wait it ended up with:
+
+<img width="1131" height="565" alt="Image" src="https://github.com/user-attachments/assets/d460445d-6430-47e9-89e5-53caf1b4c8e7" />
+
+So it looks like it became worse, not better.
+
+Also error reporting does not provide additional data about full server logs during this conversation see https://github.com/link-assistant/formal-ai/issues/800
+
+I previously asked to do something similar to gh-upload-log tool we have at https://github.com/link-foundation/gh-upload-log
+
+So we provide more context about actual reasoning, executed requests and so on.
+
+In API/agentic mode we should be transparent with all our actions and execute them via the multi turn tool calls, before each tool call we need to explain why and what we do and so on.
+
+Reasoning steps should provide useful data, not be too algorithmic/robotic and so on. Actual reasoning steps should be recursive in our links (associative) representation.
+
+And in server logs per dialog, we should be able to see exactly each action.
+
+If we call internal tools that must be part of thinking process, where we also explain what happening, but we in API/agentic harness CLIs we should focus on using available tooling to provide familiar experience for the user.
+
+Also when that task is split into smaller ones user sees real feedback and understanding what happening, it is bad idea to do thinking for more than 10 seconds per message. Better do smaller actions and turns collecting data, thinking again, planing, replaning and so on.
+
+We should generalize our codebase as much as possible, reuse all the logic we have in the best possible and general way, so we produce single meta algorithm capable of producing algorithms and executing them to solve all questions, tasks and coding.
+--
