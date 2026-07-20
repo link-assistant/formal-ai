@@ -147,6 +147,56 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
+  # === DOCKER IMAGE CHECK ===
+  # Issue #808: the Dockerfile was only ever built inside `auto-release` /
+  # `manual-release`, i.e. after the crate had already been published to
+  # crates.io. A broken Dockerfile therefore produced a half-finished release
+  # (crate published, no image, no GitHub Release) and could not be caught
+  # before merge. scripts/verify-docker-runtime.sh, which the image installs as
+  # `verify-formal-ai-dind`, had no caller in CI at all. This job builds the
+  # image without pushing and runs that verifier inside it, so both the build
+  # and the runtime contract gate the pull request.
+  docker-build:
+    name: Docker Image Build & Runtime Check
+    runs-on: ubuntu-latest
+    # The image compiles the crate in a builder stage; 30 minutes is not enough
+    # on a cold layer cache.
+    timeout-minutes: 60
+    needs: [detect-changes]
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    steps:
+      - uses: actions/checkout@v6
+
+      # Same "No space left on device" class of failure the release job guards
+      # against (issue #523): a full release build inside the image on top of a
+      # multi-GB DinD base image does not fit on a stock runner.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # load: true (not push) so the image stays local and the check works
+      # unchanged for pull requests from forks, which have no registry
+      # credentials. The GHA layer cache keeps the common case off a cold build.
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: formal-ai:pr-check
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --privileged is required: verify-docker-runtime.sh asserts that the
+      # inner Docker daemon started by the DinD entrypoint is reachable, which
+      # is the whole point of the dind image variant.
+      - name: Verify image runtime contract
+        run: |
+          set -euo pipefail
+          docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+
   # === VERSION CHECK - prevents manual version modification in PRs ===
   # This ensures versions are only modified by the automated release pipeline
   version-check:
@@ -184,7 +234,7 @@ jobs:
     # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
     # See: https://github.com/actions/runner/issues/491
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -376,7 +426,7 @@ jobs:
     # skip this job despite the workflow_dispatch condition below.
     # See: https://github.com/actions/runner/issues/491
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -434,7 +484,7 @@ jobs:
     timeout-minutes: 15
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -507,7 +557,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [lint, test]
-    if: always() && !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success'
+    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -545,7 +595,7 @@ jobs:
     needs: [lint, test, build]
     # Note: always() ensures consistent behavior with other jobs that depend on jobs using always().
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
       needs.build.result == 'success'
@@ -799,7 +849,7 @@ jobs:
     # Note: always() is required to evaluate the condition when dependencies use always().
     # The build job ensures lint and test passed before this job runs.
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
       needs.build.result == 'success'
@@ -1068,7 +1118,7 @@ jobs:
     timeout-minutes: 15
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
@@ -1148,7 +1198,7 @@ jobs:
     timeout-minutes: 20
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -1470,7 +1520,7 @@ jobs:
       page_url: ${{ steps.deployment.outputs.page_url }}
       pages_sha: ${{ steps.pages_ref.outputs.sha }}
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       needs.build.result == 'success' && (
         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')

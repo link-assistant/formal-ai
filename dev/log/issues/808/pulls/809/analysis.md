@@ -188,8 +188,15 @@ detection point.
 Derived from a full reading of both workflows. Each item runs only on
 push-to-`main`, `release`, `workflow_run` or `workflow_dispatch`:
 
-1. Docker image build + `scripts/verify-docker-runtime.sh` (`release.yml`
-   `auto-release` / `manual-release` only).
+1. ~~Docker image build + `scripts/verify-docker-runtime.sh` (`release.yml`
+   `auto-release` / `manual-release` only).~~ **Fixed in this pull request**:
+   the new `docker-build` job builds the image with `push: false, load: true`
+   (works for fork pull requests, no registry credentials needed) behind a GHA
+   layer cache, then runs `docker run --privileged … verify-formal-ai-dind`.
+   `scripts/verify-docker-runtime.sh` previously had *no caller anywhere in CI*
+   — it was only baked into the image. Without this job a broken Dockerfile
+   produced a half-finished release: crate published to crates.io, no image and
+   no GitHub Release (runs 29312084458, 29485000765).
 2. crates.io publish path (`publish-crate.rs`, `wait-for-crate.rs`,
    `smoke-test-published-crate.sh`). Partially covered on PRs by `build`'s
    `cargo package --list` + crate-size check.
@@ -292,9 +299,14 @@ and `link-assistant/hive-mind/docs/CI-CD-BEST-PRACTICES.md`:
    default-off behind `FORMAL_AI_MACOS_SIGN_DEBUG`.
 3. `.github/workflows/release.yml` — new `evidence-check` job validating
    `Formal-AI-Session` / `Formal-AI-Evidence` trailers at pull-request time.
-4. `.github/workflows/desktop-release.yml` — path-filtered `pull_request`
+4. `.github/workflows/release.yml` — new `docker-build` job; replaced the
+   contradictory `always() && !cancelled()` guard with plain `!cancelled()` in
+   all nine places (CI-CD-BEST-PRACTICES.md §10: `always()` makes a job run even
+   when the run is cancelled, which is the opposite of the intent, and the
+   `&& !cancelled()` half is dead weight that reads as if it did something).
+5. `.github/workflows/desktop-release.yml` — path-filtered `pull_request`
    trigger running the full desktop + `.vsix` packaging matrix in dry-run mode
    (see §6); publishing steps and `finalize` stay release-only.
-5. `desktop/scripts/adhoc-sign-mac.test.cjs` — regression test asserting the
+6. `desktop/scripts/adhoc-sign-mac.test.cjs` — regression test asserting the
    `mac.signIgnore` patterns match the browser runtime and not the app binary.
-6. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.
+7. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.
