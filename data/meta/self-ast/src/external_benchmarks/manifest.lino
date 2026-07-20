@@ -1,0 +1,25 @@
+self_ast_census
+  target src/external_benchmarks/manifest.rs
+  language rust
+  fidelity signature
+  byte_len 12545
+  line_count 310
+  content_id source_module_a87476570702a520
+  symbol_count 16
+  symbols
+    enum SuiteSource 13 35
+    enum Availability 39 46
+    enum Grading 50 65
+    function as_str 69 79
+    function needs_python 82 84
+    struct SuiteManifest 89 102
+    function is_runnable 106 108
+    function download_url 111 127
+    function cache_file 130 137
+    function encode_component 142 155
+    const CACHE_DIR 159 159
+    const LEDGER_PATH 162 162
+    const PERMISSIVE_LICENSES 165 165
+    const SUITES 168 184
+    function suite 302 304
+    function suite_ids 308 310

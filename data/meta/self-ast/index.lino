@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 288
+  module_count 296
   full_ast_module_count 43
-  signature_module_count 245
-  symbol_count 5929
-  content_id self_ast_census_index_d4a58802f72a53a0
+  signature_module_count 253
+  symbol_count 6032
+  content_id self_ast_census_index_6754a629068992e8
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -63,6 +63,7 @@ self_ast_census_index
     src/calculation_time.rs signature 4 source_module_d1f1e0b165700b3f
     src/calculation_word_problem.rs signature 24 source_module_9a1e1bed263ecfe9
     src/change_request.rs signature 20 source_module_bcf2749e602b677a
+    src/cli_benchmark.rs signature 7 source_module_cb4a3d31e2de4628
     src/cli_import.rs signature 2 source_module_a03f4f2a6132bf13
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
     src/cli_memory.rs signature 5 source_module_d10c6067fc63e984
@@ -101,6 +102,13 @@ self_ast_census_index
     src/engine_assistant_name.rs signature 14 source_module_583e88ddfdd53ff1
     src/engine_responses.rs signature 73 source_module_19d5244d48b02550
     src/event_log.rs signature 25 source_module_6b51bcfd94a60b49
+    src/external_benchmarks/cases.rs signature 9 source_module_99ed382c00d7cff8
+    src/external_benchmarks/fetch.rs signature 10 source_module_5359ad78ad316b5c
+    src/external_benchmarks/grade.rs signature 17 source_module_af5770f1c7d2231c
+    src/external_benchmarks/ledger.rs signature 20 source_module_fa26bdd451651673
+    src/external_benchmarks/manifest.rs signature 16 source_module_a87476570702a520
+    src/external_benchmarks/mod.rs signature 17 source_module_7a4abf01cb05c69c
+    src/external_benchmarks/ratchet.rs signature 5 source_module_cc2d4bbd74682fad
     src/fuzzy.rs signature 2 source_module_5143524b0b1c425e
     src/gemini.rs signature 18 source_module_3a72b7d5cd915cac
     src/github_logs.rs signature 24 source_module_c6da49890238f2b8
@@ -112,14 +120,14 @@ self_ast_census_index
     src/language.rs signature 21 source_module_d8ae2ac3b4b16847
     src/learning_ledger.rs signature 24 source_module_d311a679f02a8492
     src/lexeme_import.rs signature 49 source_module_d380e6fbec7c2969
-    src/lib.rs signature 115 source_module_1d3888f208f2b946
+    src/lib.rs signature 116 source_module_0cda0b0675197378
     src/link_store.rs signature 53 source_module_4163b0ff62ebee82
     src/links_format.rs signature 7 source_module_17ae7d7e69b8c450
     src/links_query.rs signature 30 source_module_434647cf5697218d
     src/links_substitution_query/links.rs signature 34 source_module_b93fba6da2b6abdb
     src/links_substitution_query/mod.rs signature 18 source_module_c280ddedbe0be41b
     src/links_substitution_query/text.rs signature 10 source_module_54590acf88bfa6d5
-    src/main.rs signature 31 source_module_399173a92a76ed52
+    src/main.rs signature 32 source_module_c32062edb7ff0e53
     src/mcp.rs signature 7 source_module_654776bf80d8f389
     src/memory.rs signature 37 source_module_0450cc7d94d2b9e1
     src/memory/bundle.rs signature 12 source_module_aa109e11a210ec80

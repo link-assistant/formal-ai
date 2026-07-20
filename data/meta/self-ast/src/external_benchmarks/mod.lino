@@ -1,0 +1,26 @@
+self_ast_census
+  target src/external_benchmarks/mod.rs
+  language rust
+  fidelity signature
+  byte_len 6997
+  line_count 214
+  content_id source_module_7a4abf01cb05c69c
+  symbol_count 17
+  symbols
+    module cases 10 10
+    module fetch 11 11
+    module grade 12 12
+    module ledger 13 13
+    module manifest 14 14
+    module ratchet 15 15
+    const DEFAULT_SLICE 33 33
+    struct SuiteRun 37 47
+    function summary 52 60
+    function report 64 70
+    function to_result_entry 73 83
+    function run_suite 92 146
+    function unavailable_run 148 164
+    function benchmark_solver 168 175
+    function repository_root 179 181
+    function today_utc 185 192
+    function format_date 197 214

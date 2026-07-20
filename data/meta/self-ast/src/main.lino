@@ -2,39 +2,40 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 31682
-  line_count 915
-  content_id source_module_399173a92a76ed52
-  symbol_count 31
+  byte_len 32054
+  line_count 924
+  content_id source_module_c32062edb7ff0e53
+  symbol_count 32
   symbols
-    module cli_import 9 9
-    module cli_improve 10 10
-    module cli_memory 11 11
-    module cli_shared_dialog 12 12
-    module cli_statement_audit 13 13
-    const DEFAULT_AGENT_TASK 35 47
-    struct Args 44 47
-    enum Command 50 244
-    enum MemoryAction 247 393
-    enum BundleAction 396 420
-    enum GithubLogsAction 423 428
-    struct GithubLogsOptions 431 467
-    enum OutputFormat 470 474
-    enum DefinitionFusionMode 477 480
-    enum TelegramMode 483 486
-    function fmt 489 495
-    function fmt 499 504
-    function fmt 508 513
-    function main 516 609
-    function run_github_logs 611 632
-    function run_agent 634 658
-    function into_config 661 673
-    struct TelegramRunArgs 676 685
-    function solver_for_chat 687 700
-    function print_thinking_trace 709 727
-    function run_chat 729 781
-    function run_bundle 783 847
-    function run_environments 849 870
-    function read_input 872 880
-    function run_telegram 882 907
-    function parse_allowed_updates 909 915
+    module cli_benchmark 9 9
+    module cli_import 10 10
+    module cli_improve 11 11
+    module cli_memory 12 12
+    module cli_shared_dialog 13 13
+    module cli_statement_audit 14 14
+    const DEFAULT_AGENT_TASK 37 49
+    struct Args 46 49
+    enum Command 52 252
+    enum MemoryAction 255 401
+    enum BundleAction 404 428
+    enum GithubLogsAction 431 436
+    struct GithubLogsOptions 439 475
+    enum OutputFormat 478 482
+    enum DefinitionFusionMode 485 488
+    enum TelegramMode 491 494
+    function fmt 497 503
+    function fmt 507 512
+    function fmt 516 521
+    function main 524 618
+    function run_github_logs 620 641
+    function run_agent 643 667
+    function into_config 670 682
+    struct TelegramRunArgs 685 694
+    function solver_for_chat 696 709
+    function print_thinking_trace 718 736
+    function run_chat 738 790
+    function run_bundle 792 856
+    function run_environments 858 879
+    function read_input 881 889
+    function run_telegram 891 916
+    function parse_allowed_updates 918 924

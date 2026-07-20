@@ -1,0 +1,19 @@
+self_ast_census
+  target src/external_benchmarks/fetch.rs
+  language rust
+  fidelity signature
+  byte_len 7004
+  line_count 193
+  content_id source_module_5359ad78ad316b5c
+  symbol_count 10
+  symbols
+    const ROWS_PAGE_SIZE 15 15
+    function fetch_records 22 74
+    function cache_root 78 80
+    function non_empty_lines 82 87
+    function read_cached 89 92
+    function write_cached 94 98
+    function create_parent 100 110
+    function download 112 126
+    function download_gzip 128 148
+    function download_rows 150 193
