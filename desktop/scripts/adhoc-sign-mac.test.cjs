@@ -53,13 +53,31 @@ test('browser exclusion composes with electron-builder ignore rules', () => {
     ignore: upstreamIgnore,
   });
 
-  assert.equal(ignore[0], upstreamIgnore);
-  assert.equal(ignore.length, 2);
+  // Must be a single function, never an array: @electron/osx-sign's
+  // validateOptsIgnore() drops arrays (see adhoc-sign-mac.cjs).
+  assert.equal(typeof ignore, 'function');
+  assert.equal(ignore(path.join(appPath, 'Contents', 'MacOS', 'existing-helper')), true);
   assert.equal(
-    ignore[1](path.join(appPath, 'Contents', 'Resources', 'browser-runtime', 'chrome')),
+    ignore(path.join(appPath, 'Contents', 'Resources', 'browser-runtime', 'chrome')),
     true,
   );
-  assert.equal(ignore[1](path.join(appPath, 'Contents', 'MacOS', 'formal-ai Desktop')), false);
+  assert.equal(ignore(path.join(appPath, 'Contents', 'MacOS', 'formal-ai Desktop')), false);
+});
+
+// Issue #808: guard against the upstream quirk that caused the failure. If a
+// future @electron/osx-sign release starts honouring arrays this test still
+// passes; if it keeps dropping them, our single-function contract stays required.
+test('an array of ignore rules is discarded by @electron/osx-sign', () => {
+  const signPath = require.resolve('@electron/osx-sign/dist/cjs/sign.js');
+  const source = require('node:fs').readFileSync(signPath, 'utf8');
+  const arraysDropped = /function validateOptsIgnore\(ignore\) \{\s*if \(ignore && !\(ignore instanceof Array\)\) \{\s*return \[ignore\];\s*\}\s*\}/.test(
+    source,
+  );
+
+  if (arraysDropped) {
+    const appPath = path.join('/tmp', 'formal-ai Desktop.app');
+    assert.equal(typeof adhocSignMac.signingIgnoreRules({ app: appPath }), 'function');
+  }
 });
 
 // Issue #808: run 29724500254 failed signing

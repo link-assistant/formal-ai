@@ -369,3 +369,71 @@ do not apply there.
    template) — replaces all three raw `docker/setup-buildx-action@v4` uses;
    pre-pulls the BuildKit image with retries and a `mirror.gcr.io` fallback.
 10. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.
+
+## Iteration 3 — run 29731405909 (Secrets Scan) and 29731405782 (Build macos-x64/arm64)
+
+Both failures reproduced from downloaded logs
+(`ci-logs/cicd-29731405909.log`, `ci-logs/desktop-29731405782.log`).
+
+### Failure A — Secrets Scan, exit 123
+
+```
+dev/log/issues/808/pulls/809/sessions/<id>/claude-<id>.jsonl
+  573:304  error  [GITHUB_TOKEN] found GitHub Token(…)
+```
+
+Root cause: the session transcript committed as evidence in the previous
+iteration embedded the workflow's ephemeral `GITHUB_TOKEN` (a `ghp_…`/`ghs_…`
+value echoed into the log by a `gh` invocation). `scripts/check-secrets.sh` —
+added by this very pull request — correctly flagged it. The token is a
+short-lived Actions token that expired with the run, but it must not live in
+git history.
+
+Fix: redacted every GitHub token literal to `gh?_REDACTED_TOKEN` across **all**
+committed session logs, not just this issue's — `dev/log/issues/781/pulls/803/`
+carried the same leak (`ghs_…` in `solve.log` and the codex transcript). Verified
+with `BASE_REF=main bash scripts/check-secrets.sh` → `No secrets found.`
+
+### Failure B — macOS ad-hoc packaging, exit 1
+
+```
+codesign --sign - --force … "…/Contents/Resources/browser-runtime/Frameworks/
+  Google Chrome for Testing Framework.framework"
+  → unsealed contents present in the root directory of an embedded framework
+```
+
+This surfaced only now because iteration 2's `CSC_FOR_PULL_REQUEST=true` finally
+made electron-builder sign on pull requests at all.
+
+Root cause (upstream library bug, `@electron/osx-sign`,
+`dist/cjs/sign.js:52`):
+
+```js
+function validateOptsIgnore (ignore) {
+  if (ignore && !(ignore instanceof Array)) { return [ignore] }
+}   // <-- no `return ignore` for the Array case
+```
+
+`validateSignOpts()` then does `{...opts, ignore: validateOptsIgnore(opts.ignore)}`,
+so **passing an array of ignore rules sets `ignore` to `undefined`** and
+`shouldIgnoreFilePath()` returns `false` for everything. This explains both
+prior mitigations failing simultaneously:
+
+* our hook passed `ignore: [...upstream, fn]` — an array → dropped. Confirmed in
+  the log: the hook's `hook entered` banner printed, but not one of its
+  per-file `ignore SKIP/sign` lines, i.e. the predicate was never called.
+* `mac.signIgnore` in `desktop/package.json` is likewise forwarded by
+  electron-builder as an array → dropped by the same code path.
+
+Fix: `signingIgnoreRules()` now returns a **single composed predicate function**
+instead of an array; the library wraps it as `[fn]` itself and honours it.
+`mac.signIgnore` is kept as defence in depth for any future version that fixes
+the array case.
+
+Tests (`desktop/scripts/adhoc-sign-mac.test.cjs`, `node --test`, 4/4 pass):
+the composition test now asserts the returned value is a function and that
+upstream regex rules still match, plus a new test that pins the upstream quirk
+so the single-function contract is justified rather than arbitrary.
+
+Upstream: worth reporting to `electron/osx-sign` — one-line fix, add
+`return ignore` to `validateOptsIgnore`.

@@ -58,6 +58,19 @@ function isBundledBrowserRuntime(filePath, appPath) {
   return bundled;
 }
 
+// Issue #808: @electron/osx-sign's `validateOptsIgnore()` is
+//
+//   function validateOptsIgnore (ignore) {
+//     if (ignore && !(ignore instanceof Array)) { return [ignore] }
+//   }
+//
+// -- it has no `return ignore` for the array case, so passing an **array**
+// silently yields `undefined` and every ignore rule is discarded. That is why
+// run 29731405782 signed `Contents/Resources/browser-runtime/...` anyway and
+// died with "unsealed contents present in the root directory of an embedded
+// framework", and why electron-builder's own `mac.signIgnore` (which it forwards
+// as an array) never took effect either. We therefore hand the library a single
+// predicate function, which it wraps into `[fn]` itself.
 function signingIgnoreRules(signOptions) {
   const upstreamIgnore = signOptions.ignore
     ? Array.isArray(signOptions.ignore)
@@ -66,7 +79,15 @@ function signingIgnoreRules(signOptions) {
     : [];
   const appPath = findAppPath(signOptions);
 
-  return [...upstreamIgnore, (filePath) => isBundledBrowserRuntime(filePath, appPath)];
+  const matchers = [
+    ...upstreamIgnore,
+    (filePath) => isBundledBrowserRuntime(filePath, appPath),
+  ];
+
+  return (filePath) =>
+    matchers.some((matcher) =>
+      typeof matcher === 'function' ? matcher(filePath) : Boolean(filePath.match(matcher)),
+    );
 }
 
 function resolvePath(value) {
