@@ -298,6 +298,56 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     }
 }
 
+/// Issue #812: both release jobs gated on `[lint, test, build]` alone, so a red
+/// `Secrets Scan` or E2E suite on `main` did not stop the crate, the Docker
+/// image and the GitHub Release from publishing.
+#[test]
+fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
+    let workflow = release_workflow();
+
+    for job_name in ["auto-release", "manual-release"] {
+        let job = job_block(&workflow, job_name);
+        let effective: String = job
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
+            assert!(
+                effective.contains(&format!("needs.{gate}.result != 'failure'")),
+                "{job_name} must not publish while {gate} is failing (issue #812)"
+            );
+            assert!(
+                effective.contains(gate),
+                "{job_name} must declare {gate} in needs: (issue #812)"
+            );
+        }
+    }
+}
+
+/// Issue #812: nothing validated the pipeline definitions themselves, and
+/// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
+/// is set to `warn` -- so clippy printed findings and exited 0.
+#[test]
+fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
+    let workflow = release_workflow();
+    let lint = job_block(&workflow, "lint");
+
+    assert!(
+        lint.contains("cargo clippy --all-targets --all-features -- -D warnings"),
+        "clippy must fail the job on findings, not just print them (issue #812)"
+    );
+    assert!(
+        lint.contains("actionlint"),
+        "workflow definitions must be linted (issue #812)"
+    );
+    assert!(
+        lint.contains("shellcheck --severity=warning"),
+        "standalone shell scripts must be linted (issue #812)"
+    );
+}
+
 #[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();

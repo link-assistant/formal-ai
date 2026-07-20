@@ -345,14 +345,57 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
+      # Issue #812: nothing validated the workflow definitions themselves, so a
+      # mistyped `needs.<job>` reference, an undefined output or a malformed
+      # expression could only be discovered by pushing and watching it fail --
+      # and expression errors that evaluate to an empty string fail *open*,
+      # skipping the guarded step with a green check. actionlint type-checks
+      # `needs`/`steps`/`env` contexts and runs shellcheck over every `run:`
+      # block. Pinned by version; `.github/actionlint.yaml` declares the runner
+      # labels newer than this release knows about.
+      - name: Lint GitHub Actions workflows
+        env:
+          ACTIONLINT_VERSION: 1.7.7
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+            | tar xz -C /tmp actionlint
+          /tmp/actionlint -color
+
+      # actionlint only reaches shell embedded in `run:` blocks. The standalone
+      # scripts those blocks invoke -- install.sh, check-secrets.sh,
+      # simulate-fresh-merge.sh and the rest -- had no linter at all, which is
+      # where unquoted expansions and `cd` without a guard live (issue #812).
+      # `experiments/` is deliberately excluded: those are throwaway
+      # reproduction scripts, not shipped code.
+      - name: Lint shell scripts
+        run: |
+          set -euo pipefail
+          mapfile -t scripts < <(
+            git ls-files '*.sh' \
+              | grep -v -e '^experiments/' -e '^dev/log/' -e '^docs/case-studies/'
+          )
+          if [ ${#scripts[@]} -eq 0 ]; then
+            echo "::error::No shell scripts matched; the lint selector is broken" >&2
+            exit 1
+          fi
+          printf 'Linting %s shell script(s)\n' "${#scripts[@]}"
+          shellcheck --severity=warning "${scripts[@]}"
+
       - name: Check formatting
         run: cargo fmt --all -- --check
 
       - name: Verify Cargo.lock is synchronized
         run: cargo metadata --locked --format-version 1 > /dev/null
 
+      # `-D warnings` is required, not optional: every lint in `[lints.clippy]`
+      # of Cargo.toml is set to `warn`, so without it clippy printed findings
+      # and still exited 0 -- a green check over unreviewed lint debt
+      # (issue #812). The tree is clippy-clean at the time this was added, so
+      # this promotes existing behaviour rather than introducing new failures.
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
       # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
       # Build the same public API docs deployed by Pages before release so a
@@ -488,7 +531,26 @@ jobs:
       # this dependency-free job rather than being silently skipped inside it.
       - name: Run desktop library tests
         run: |
-          node --test $(ls desktop/scripts/*.test.mjs | grep -v '/web-tools.test.mjs$')
+          set -euo pipefail
+          # Issue #812: this was `node --test $(ls ... | grep -v ...)`. If the
+          # glob ever stopped matching, the substitution collapsed to nothing and
+          # `node --test` fell back to its own directory discovery -- a green
+          # step that ran none of these tests. Build the list explicitly and
+          # refuse to pass on an empty one.
+          shopt -s nullglob
+          tests=()
+          for test_file in desktop/scripts/*.test.mjs; do
+            case "$test_file" in
+              */web-tools.test.mjs) continue ;;
+            esac
+            tests+=("$test_file")
+          done
+          if [ ${#tests[@]} -eq 0 ]; then
+            echo "::error::No desktop library tests matched desktop/scripts/*.test.mjs" >&2
+            exit 1
+          fi
+          printf 'Running %s test file(s)\n' "${#tests[@]}"
+          node --test "${tests[@]}"
 
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
@@ -690,14 +752,23 @@ jobs:
   # This job automatically bumps version based on fragments in changelog.d/
   auto-release:
     name: Auto Release
-    needs: [lint, test, build]
+    # Issue #812: this gated on `[lint, test, build]` only, so `Secrets Scan`
+    # and both E2E suites could be red on main and the crate, the Docker image
+    # and the GitHub Release would still publish -- a green release over a red
+    # pipeline. Every job that runs on a push to main now gates it.
+    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
     # Note: !cancelled() keeps this consistent with the other jobs whose skipped
-    # dependencies must not cascade.
+    # dependencies must not cascade. The added gates are compared against
+    # 'failure' rather than 'success' for the same reason: a job that legitimately
+    # skipped itself (no relevant changes) must not block the release.
     if: |
       !cancelled() &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
-      needs.build.result == 'success'
+      needs.build.result == 'success' &&
+      needs.secrets-scan.result != 'failure' &&
+      needs.test-e2e-local.result != 'failure' &&
+      needs.test-agent-cli-e2e.result != 'failure'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -944,7 +1015,9 @@ jobs:
   # Manual release via workflow_dispatch - only after CI passes
   manual-release:
     name: Instant Release
-    needs: [lint, test, build]
+    # Issue #812: same gap as `auto-release` -- an instant release must not be
+    # able to publish past a failing secrets scan or E2E suite.
+    needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
     # Note: !cancelled() is required to evaluate the condition when dependencies
     # are skipped.
     # The build job ensures lint and test passed before this job runs.
@@ -952,7 +1025,10 @@ jobs:
       !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
-      needs.build.result == 'success'
+      needs.build.result == 'success' &&
+      needs.secrets-scan.result != 'failure' &&
+      needs.test-e2e-local.result != 'failure' &&
+      needs.test-agent-cli-e2e.result != 'failure'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -1276,8 +1352,12 @@ jobs:
       # captures on every run (proving the screenshots can be produced in CI).
       # Publish them as an artifact so reviewers can compare against the committed
       # baselines without running the suite locally.
+      # Issue #812: was `if: always()`. On a failed run the suite may never reach
+      # the capture spec, so "no screenshots" was indistinguishable from "the
+      # captures broke" -- and a failed run already has the report artifact
+      # uploaded by the step above. Running only on success makes the missing-file
+      # case below unambiguous.
       - name: Upload generated /download screenshots
-        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: download-page-screenshots
@@ -1285,6 +1365,11 @@ jobs:
             docs/screenshots/issue-347/
             src/web/download/assets/app-preview*.png
           retention-days: 14
+          # Issue #812: `if: always()` plus the default `if-no-files-found: warn`
+          # means "the spec produced no screenshots at all" reads as a green
+          # step with a warning nobody sees. The whole point of this upload is
+          # to prove the captures can be produced in CI, so absence is an error.
+          if-no-files-found: error
 
   # === E2E: Agent CLI ↔ formal-ai OpenAI-compatible server ===
   # Boot `formal-ai serve`, drive it with the real `@link-assistant/agent` CLI
@@ -1337,7 +1422,7 @@ jobs:
         # ~/.bun/bin — the script's default AGENT="agent" picks it up.
         run: |
           bun add -g @link-assistant/agent
-          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
 
       - name: Install external agent CLIs
         # OpenCode provides the second issue-715 learning harness. Issue #781
@@ -1752,6 +1837,11 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: src/web
+          # Issue #812: without this, upload-artifact's default glob silently
+          # drops every dotfile, so `.well-known/`, `.nojekyll` and friends
+          # vanish from the deployed site while the job stays green. The rust
+          # template sets it for the same reason.
+          include-hidden-files: true
 
       - name: Deploy Pages artifact
         id: deployment

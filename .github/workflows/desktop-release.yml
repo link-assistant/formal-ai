@@ -171,6 +171,23 @@ jobs:
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
           ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
+          # Quoted '0'/'1': GitHub's `&&`/`||` treat the number 0 as falsy, so an
+          # unquoted 0 here would silently select the other branch.
+          # 0 is needed by simulate-fresh-merge.sh, which merges origin/<base>.
+          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+
+      # Issue #812: `release.yml` simulates the fresh merge in `lint` and `test`,
+      # but this workflow -- the only one that packages the desktop app -- did
+      # not, so the packaging dry run validated the PR head against a merge
+      # preview that predates any commit pushed to the base branch since the last
+      # sync. A packaging break introduced by a concurrent main commit stayed
+      # invisible until after the merge, which is how desktop breakages have
+      # reached tags before.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -311,7 +328,11 @@ jobs:
             fi
           done
 
-          for dmg in "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"; do
+          # An array, not a bare quoted word: `for x in "a"` reads as an attempt
+          # to word-split and is flagged by shellcheck (SC2066). Behaviour is
+          # unchanged -- exactly one DMG per matrix arch.
+          dmgs=("release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg")
+          for dmg in "${dmgs[@]}"; do
             echo "Mounting DMG: $dmg"
             mount_dir="$(mktemp -d)"
             installed_app="$RUNNER_TEMP/formal-ai Desktop.app"
@@ -516,6 +537,15 @@ jobs:
           # On pull requests there is no resolved tag: build the PR head, which
           # is the whole point of the dry run.
           ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
+          # See the note in `build`: quoted so the number 0 is not read as falsy.
+          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+
+      # Same reason as `build`: package the merge result, not a stale preview.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -538,7 +568,11 @@ jobs:
           # filename (formal-ai-vscode-<version>.vsix) matches the release
           # version the /download and /vscode pages resolve.
           npm run package
-          vsix="$(ls formal-ai-vscode-*.vsix 2>/dev/null | head -n1)"
+          # A glob, not `ls | head`: `ls` output is not safe to parse and its
+          # exit status is swallowed here (shellcheck SC2012).
+          shopt -s nullglob
+          vsix_files=(formal-ai-vscode-*.vsix)
+          vsix="${vsix_files[0]:-}"
           [ -n "$vsix" ] || { echo "::error::vsce package produced no .vsix" >&2; exit 1; }
           echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
           echo "Packaged: $vsix"
@@ -585,10 +619,15 @@ jobs:
   finalize:
     name: Publish SHA256SUMS.txt + provenance
     needs: [resolve, build, vscode]
-    # always() so a partial matrix (one arch failing under fail-fast:false) still
-    # publishes checksums for the arches that did build.
+    # !cancelled(), not always(): a partial matrix (one arch failing under
+    # fail-fast:false) must still publish checksums for the arches that did
+    # build, but a *cancelled* run must not. The upload below uses
+    # `gh release upload --clobber`, so under always() a run cancelled part-way
+    # -- by the concurrency group superseding it, or by hand -- would overwrite a
+    # complete SHA256SUMS.txt from an earlier successful run with a manifest
+    # covering whichever one or two arches happened to finish (issue #812).
     # Never on pull requests: there is no release to publish checksums to.
-    if: ${{ always() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true' }}
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

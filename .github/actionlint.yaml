@@ -1,0 +1,11 @@
+# actionlint configuration.
+#
+# `macos-15-intel` and `windows-11-arm` are real GitHub-hosted runner labels
+# (both became generally available in 2025) but are newer than the label list
+# baked into actionlint's release binary, which reports them as unknown. They
+# are declared here so the workflow linter stays free of known-false findings --
+# a linter with permanent noise is a linter nobody reads (issue #812).
+self-hosted-runner:
+  labels:
+    - macos-15-intel
+    - windows-11-arm
