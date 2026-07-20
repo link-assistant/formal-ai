@@ -125,6 +125,12 @@ src/change_request.rs	Edit the grounded target module `{target_module}` until th
 src/change_request.rs	Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.
 src/change_request.rs	Record the derived requirement for review: {requirement}
 src/change_request.rs	The system must {}.
+src/cli_benchmark.rs	failed to read {}: {error}
+src/cli_benchmark.rs	failed to write {}: {error}
+src/cli_benchmark.rs	formal-ai benchmark run --suite {} --slice {slice}
+src/cli_benchmark.rs	ledger ratchet violated:\n{}
+src/cli_benchmark.rs	unavailable: {reason}
+src/cli_benchmark.rs	unknown suite `{selector}`; known suites: {}
 src/cli_improve.rs	Appended {appended} promotion event(s) to {}; total now {}.
 src/cli_improve.rs	Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s).
 src/cli_improve.rs	Materialized {} ({} byte(s)) at {}.
@@ -286,6 +292,52 @@ src/engine_responses.rs	What is formal-ai?
 src/engine_responses.rs	Who are you?
 src/engine_responses.rs	add a rule in Links Notation, then run the request again.
 src/engine_responses.rs	Что делаешь в свободное время?
+src/external_benchmarks/cases.rs	Repository {repository}. Resolve this issue and reply with the fix as a unified diff patch.\n\n{statement}
+src/external_benchmarks/cases.rs	no case parser for suite `{other}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing a `target`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the numeric field `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the string array `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is missing the string field `{field}`
+src/external_benchmarks/cases.rs	{}: record {index} is not valid JSON: {error}
+src/external_benchmarks/fetch.rs	curl failed for {url} with status {status}
+src/external_benchmarks/fetch.rs	datasets-server request failed for {dataset} ({}): {}
+src/external_benchmarks/fetch.rs	datasets-server response for {dataset} has no `rows`
+src/external_benchmarks/fetch.rs	datasets-server returned invalid JSON: {error}
+src/external_benchmarks/fetch.rs	failed to create cache directory {}: {error}
+src/external_benchmarks/fetch.rs	failed to create {}: {error}
+src/external_benchmarks/fetch.rs	failed to publish {}: {error}
+src/external_benchmarks/fetch.rs	failed to read cached payload {}: {error}
+src/external_benchmarks/fetch.rs	failed to start curl for {url}: {error}
+src/external_benchmarks/fetch.rs	failed to start gzip for {}: {error}
+src/external_benchmarks/fetch.rs	failed to write cache file {}: {error}
+src/external_benchmarks/fetch.rs	gzip failed for {} with status {status}
+src/external_benchmarks/fetch.rs	{} has no fetchable payload
+src/external_benchmarks/fetch.rs	{} task.json has no `examples` array
+src/external_benchmarks/fetch.rs	{} task.json is not valid JSON: {error}
+src/external_benchmarks/grade.rs	expected `{}`, answer `{}`
+src/external_benchmarks/grade.rs	failed to create {}: {error}
+src/external_benchmarks/grade.rs	failed to run python3: {error}
+src/external_benchmarks/grade.rs	failed to write {}: {error}
+src/external_benchmarks/grade.rs	python exited with {}: {}
+src/external_benchmarks/grade.rs	{code}\n\n{setup}\n\n{}\n
+src/external_benchmarks/grade.rs	{code}\n\n{test_code}\n\ncheck({entry_point})\n
+src/external_benchmarks/ledger.rs	line {}: expected `key \"value\"`, got `{line}`
+src/external_benchmarks/ledger.rs	line {}: field before any record id
+src/external_benchmarks/ledger.rs	line {}: unexpected indentation
+src/external_benchmarks/manifest.rs	EditEval ships an evaluation harness with no task payload (configs/dataset_paths.json points at per-corpus download directories), and its constituent corpora fail the permissive-only policy: ASSET is CC BY-NC 4.0 and JFLEG is CC BY-NC-SA 4.0. The instructed-text-editing requirement is executed through the Apache-2.0 CoEdIT suite instead.
+src/external_benchmarks/mod.rs	suite={} benchmark_unavailable: {reason}
+src/external_benchmarks/mod.rs	suite={} passed={} failed={} total={}
+src/external_benchmarks/mod.rs	{} provided only {} upstream cases, {slice} were requested
+src/external_benchmarks/ratchet.rs	result row for `{}` has no external_benchmark_suite record
+src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count fell from {} to {}
+src/external_benchmarks/ratchet.rs	{suite_id}: minimum_pass_count={} is below the best recorded pass count {best} at slice {}
+src/external_benchmarks/ratchet.rs	{suite_id}: the external_benchmark_suite record was removed
+src/external_benchmarks/ratchet.rs	{suite}: pass count at slice {slice} fell from {} ({}) to {} ({})
+src/external_benchmarks/ratchet.rs	{} {}: passed={} + failed={} does not equal total={}
+src/external_benchmarks/ratchet.rs	{} {}: passed={} is below the recorded minimum_pass_count={}
+src/external_benchmarks/ratchet.rs	{} {}: recorded pass count fell from {} to {}
+src/external_benchmarks/ratchet.rs	{} {}: the recorded result row at slice {} was removed
+src/external_benchmarks/ratchet.rs	{} {}: total={} does not equal slice={}
 src/gemini.rs	Formal AI symbolic solver exposed through the Gemini generateContent envelope.
 src/gemini.rs	Formal AI symbolic solver exposed through the Vertex AI generateContent envelope.
 src/gemini.rs	data: {response}\n\n

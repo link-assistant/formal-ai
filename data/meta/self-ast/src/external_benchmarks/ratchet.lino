@@ -1,0 +1,14 @@
+self_ast_census
+  target src/external_benchmarks/ratchet.rs
+  language rust
+  fidelity signature
+  byte_len 5519
+  line_count 150
+  content_id source_module_cc2d4bbd74682fad
+  symbol_count 5
+  symbols
+    function violations 14 61
+    function regressions 65 105
+    function index_results 107 117
+    function best_pass_count 119 125
+    function non_monotonic_history 128 150

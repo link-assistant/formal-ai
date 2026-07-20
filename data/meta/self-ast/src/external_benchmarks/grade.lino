@@ -1,0 +1,26 @@
+self_ast_census
+  target src/external_benchmarks/grade.rs
+  language rust
+  fidelity signature
+  byte_len 8816
+  line_count 275
+  content_id source_module_af5770f1c7d2231c
+  symbol_count 17
+  symbols
+    const PYTHON_TIMEOUT_SECONDS 16 16
+    struct CaseOutcome 20 25
+    function grade_case 29 64
+    function grade_value 66 91
+    function normalize_diff 95 102
+    function failure 104 110
+    function python_available 114 119
+    function run_python 121 154
+    function extract_python 159 164
+    function fenced_block 166 174
+    function final_number 179 197
+    function normalize_number 199 216
+    function final_answer 221 232
+    function last_boxed 234 252
+    function normalize 256 265
+    function truncate 267 275
+    const LIMIT 268 268

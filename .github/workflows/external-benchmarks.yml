@@ -1,0 +1,115 @@
+# Scheduled external benchmark harness (issue #698).
+#
+# Runs a bounded slice of every real upstream suite, records the honest
+# `passed/total` score in `data/benchmarks/external-results.lino`, verifies the
+# monotonic per-suite ratchet, and commits the refreshed ledger. A suite that
+# cannot run is recorded as `benchmark_unavailable` with its reason instead of
+# being replaced by a repository-local proxy.
+name: External Benchmarks
+
+on:
+  schedule:
+    # Weekly, Monday 04:17 UTC. Off the hour so the run does not queue behind
+    # the GitHub-wide top-of-hour cron burst.
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      slice:
+        description: 'Upstream cases per suite (first N in upstream order)'
+        required: false
+        type: string
+        default: '20'
+      suite:
+        description: 'Suite id, or `all` for every recorded suite'
+        required: false
+        type: string
+        default: 'all'
+      commit:
+        description: 'Commit the refreshed ledger back to the branch'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: external-benchmarks-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # === EXTERNAL BENCHMARKS - run upstream suites and publish honest scores ===
+  external-benchmarks:
+    name: Run upstream suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Setup Python
+        # HumanEval and MBPP are graded by executing their upstream tests.
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build the harness
+        run: cargo build --release --bin formal-ai
+
+      - name: Run the bounded upstream slice
+        env:
+          BENCHMARK_SLICE: ${{ inputs.slice || '20' }}
+          BENCHMARK_SUITE: ${{ inputs.suite || 'all' }}
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          ./target/release/formal-ai benchmark run \
+            --suite "${BENCHMARK_SUITE}" \
+            --slice "${BENCHMARK_SLICE}" \
+            --append \
+            2>&1 | tee ci-logs/external-benchmarks.log
+          grep -E '^suite=' ci-logs/external-benchmarks.log >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Verify the monotonic ratchet
+        run: |
+          set -euo pipefail
+          ./target/release/formal-ai benchmark ratchet
+
+      - name: Upload run log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: external-benchmarks-log
+          path: ci-logs/external-benchmarks.log
+          if-no-files-found: warn
+
+      - name: Commit the refreshed ledger
+        if: github.event_name == 'schedule' || inputs.commit
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/benchmarks/external-results.lino; then
+            echo 'ledger unchanged; nothing to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/benchmarks/external-results.lino
+          git commit -m 'chore(benchmarks): record scheduled upstream results (#698)'
+          git push origin "HEAD:${GITHUB_REF_NAME}"

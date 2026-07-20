@@ -26,6 +26,7 @@ pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
+pub mod external_benchmarks;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;

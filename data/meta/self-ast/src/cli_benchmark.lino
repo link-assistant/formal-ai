@@ -1,0 +1,16 @@
+self_ast_census
+  target src/cli_benchmark.rs
+  language rust
+  fidelity signature
+  byte_len 6369
+  line_count 199
+  content_id source_module_cb4a3d31e2de4628
+  symbol_count 7
+  symbols
+    enum BenchmarkAction 19 56
+    function run_benchmark 58 84
+    function resolve_root 86 90
+    function list_suites 92 108
+    function run_suites 110 141
+    function append_runs 143 183
+    function check_ratchet 185 199
