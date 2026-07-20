@@ -2391,6 +2391,28 @@ body.is-resizing-context {
   }
 }
 
+/* Issue #672 (F3): the per-message escape hatch from that paced reveal. It is
+   deliberately quiet — a small text control under the reasoning trace rather
+   than a prominent button — because it exists for the impatient minority and
+   should not compete with the answer it is about to show. It only renders
+   while the reveal is withholding the body, so it never lingers. */
+.skip-animation {
+  align-self: flex-start;
+  margin: 2px 0 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fa-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.skip-animation:hover {
+  border-color: var(--fa-control-hover-border);
+  color: var(--fa-text-body);
+}
+
 /* Issue #488: pulsing dot next to the "Thinking" title while the assistant
    is mid-response, so the live trace is visibly live. */
 .thinking-preview-live-dot {

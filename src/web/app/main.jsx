@@ -5825,9 +5825,19 @@ function usePrefersReducedMotion() {
 // shown at once). The first ~72% of the budget unveils the steps; the body is
 // held back until the full budget elapses, satisfying R6's "only when we
 // scrolled to the last thinking step can we show the message itself".
+//
+// Issue #672 (F3): the budget is a global preference, but the right value for
+// it is per-message — a user who is happy to watch the reasoning fill in for
+// most answers still wants THIS one now. `skip()` is that one-shot override:
+// it ends the staged reveal for this message immediately (clearing the pending
+// timers) without touching the preference, so the next message animates as
+// before. It is deliberately additive to the reduced-motion path rather than a
+// replacement for it — an OS-level reduced-motion preference must keep
+// suppressing the animation without the user having to click anything.
 function useMessageReveal(stepCount, budgetMs) {
   const reducedMotion = usePrefersReducedMotion();
-  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  const [skipped, setSkipped] = useState(false);
+  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion && !skipped;
   // The staged reveal plays exactly once — when the freshly produced message
   // first appears. Once it has played out (or if it never applied) we latch
   // "done" so that a later change in step count — e.g. the user toggling the
@@ -5868,7 +5878,16 @@ function useMessageReveal(stepCount, budgetMs) {
     );
     return () => timers.forEach((timer) => clearTimeout(timer));
   }, [active, stepCount, budgetMs]);
-  return { active, revealedSteps, bodyShown };
+  // Issue #672 (F3). Latching `doneRef` matters as much as flipping `skipped`:
+  // without it a later step-count change (the reasoning-detail setting, say)
+  // would take the "not done yet" path and restart the animation the user just
+  // asked to end. Flipping `active` to false tears down the pending timers
+  // through the effect's own cleanup, so nothing is left to fire.
+  const skip = useCallback(() => {
+    doneRef.current = true;
+    setSkipped(true);
+  }, []);
+  return { active, revealedSteps, bodyShown, skip };
 }
 
 function usePendingThinkingPhases(isActive, t) {
@@ -6152,13 +6171,17 @@ function Message({
     }
   }, [message.content]);
 
-  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
+  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null} data-skip-animation={reveal.active && !reveal.bodyShown ? "available" : null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
     // Issue #488: render thinking ABOVE the answer body. Reasoning logically
     // precedes the answer (and during streaming it is the only visible part of
     // the message), so it belongs at the top of the message body, not below it.
     // Issue #541 (R6): during the staged reveal only the steps unveiled so far
     // are shown, so the trace visibly fills in before the answer appears.
-    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}{
+    // Issue #672 (F3): a one-shot per-message override of the global animation
+    // budget. Only offered while the reveal is actually withholding the answer,
+    // so it never lingers as dead chrome on a settled message.
+    reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
       })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
