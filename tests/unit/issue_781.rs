@@ -150,6 +150,36 @@ fn chat_completion_explains_the_action_before_requesting_a_tool() {
 }
 
 #[test]
+fn chat_completion_localizes_tool_narration_in_hindi_and_chinese() {
+    for (prompt, expected_narration) in [
+        ("सेब के बारे में इंटरनेट पर खोजो", "अगला कदम जारी रखने से पहले"),
+        ("查找苹果网上信息", "我会对"),
+    ] {
+        let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+            "model": "formal-ai",
+            "messages": [{"role": "user", "content": prompt}],
+            "tools": [{
+                "type": "function",
+                "function": {
+                    "name": "websearch",
+                    "description": "Search the web",
+                    "parameters": {"type": "object"}
+                }
+            }]
+        }))
+        .unwrap();
+
+        let completion = create_chat_completion_with_solver(&request, &agent_solver());
+        let choice = &completion.choices[0];
+        let narration = choice.message.content.plain_text();
+
+        assert_eq!(choice.finish_reason, "tool_calls", "{prompt}");
+        assert_eq!(choice.message.tool_calls.len(), 1, "{prompt}");
+        assert!(narration.contains(expected_narration), "{narration}");
+    }
+}
+
+#[test]
 fn fetch_narration_names_the_url_instead_of_the_format_argument() {
     let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
