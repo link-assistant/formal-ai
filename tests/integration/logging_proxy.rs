@@ -288,7 +288,7 @@ fn spawn_formal_ai_proxy(
 /// server instrumented on a shared runner: `proxy_forwards_streaming_chat_and_logs_tool_call`
 /// received the streamed body, then failed because the matching log row had not been
 /// flushed within 5 s — while the same test passed in the uninstrumented `Test` job.
-const PROXY_WAIT_TIMEOUT: Duration = Duration::from_secs(60);
+const PROXY_WAIT_TIMEOUT: Duration = Duration::from_secs(45);
 
 fn wait_for_proxy_health(port: u16, child: &mut Child) {
     let deadline = Instant::now() + PROXY_WAIT_TIMEOUT;
