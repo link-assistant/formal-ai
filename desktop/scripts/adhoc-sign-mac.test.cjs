@@ -67,8 +67,17 @@ test('browser exclusion composes with electron-builder ignore rules', () => {
 // Issue #808: guard against the upstream quirk that caused the failure. If a
 // future @electron/osx-sign release starts honouring arrays this test still
 // passes; if it keeps dropping them, our single-function contract stays required.
-test('an array of ignore rules is discarded by @electron/osx-sign', () => {
-  const signPath = require.resolve('@electron/osx-sign/dist/cjs/sign.js');
+test('an array of ignore rules is discarded by @electron/osx-sign', (t) => {
+  // The lint job runs this suite without installing desktop dependencies, so
+  // the upstream source may be absent. The contract below is asserted anyway by
+  // the previous test; here we only cross-check the upstream quirk when we can.
+  let signPath;
+  try {
+    signPath = require.resolve('@electron/osx-sign/dist/cjs/sign.js');
+  } catch {
+    t.skip('@electron/osx-sign is not installed');
+    return;
+  }
   const source = require('node:fs').readFileSync(signPath, 'utf8');
   const arraysDropped = /function validateOptsIgnore\(ignore\) \{\s*if \(ignore && !\(ignore instanceof Array\)\) \{\s*return \[ignore\];\s*\}\s*\}/.test(
     source,

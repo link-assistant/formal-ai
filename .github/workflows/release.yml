@@ -460,7 +460,7 @@ jobs:
       # installing the desktop dependency tree while still exercising the real
       # browser-runtime exclusion logic used by both macOS release targets.
       - name: Run desktop packaging regression tests
-        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs
+        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs
 
       # Issue #672 (F2): the desktop library tests were written but never run by
       # any job, so `desktop/lib/data-migration.cjs` — the code that moves a
