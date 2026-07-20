@@ -1,0 +1,37 @@
+self_ast_census
+  target src/solver_handlers/numeric_list/codegen.rs
+  language rust
+  fidelity signature
+  byte_len 18684
+  line_count 526
+  content_id source_module_f91665286a0a56a1
+  symbol_count 28
+  symbols
+    const MAX_EXPANSION_DEPTH 37 37
+    const MAX_INHERITANCE_DEPTH 40 40
+    function idiom_catalog 43 48
+    static TREE 44 44
+    function language_chain 52 71
+    function default_name 75 91
+    enum ValueType 94 98
+    function from_items 101 112
+    function links_label 116 122
+    enum ProgramStatement 126 149
+    function links_line 152 191
+    struct NumericProgram 196 203
+    function render 212 222
+    function links_notation 226 236
+    function literal 238 240
+    struct Composer 245 249
+    function new 252 274
+    function resolved_name 278 292
+    function resolved_type 296 306
+    function scaffold 310 321
+    function idiom 326 337
+    function select_case 345 367
+    function expand 374 410
+    function is_slot_char 413 415
+    function mutates_list_in_place 420 434
+    function build 438 491
+    function item_literals 496 510
+    function quoted_string_literal 512 526

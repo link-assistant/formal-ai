@@ -1,0 +1,34 @@
+self_ast_census
+  target src/coding/blueprint.rs
+  language rust
+  fidelity signature
+  byte_len 28400
+  line_count 574
+  content_id source_module_781f64bb9be78111
+  symbol_count 25
+  symbols
+    struct Capability 47 54
+    struct RecipeProgram 58 68
+    enum BlueprintExecution 72 76
+    struct BlueprintRecipe 80 87
+    function program_for 90 94
+    struct Blueprint 99 103
+    function detect_capabilities 108 118
+    function select_blueprint 125 141
+    function contains_keyword 143 157
+    function comment_marker 164 169
+    const REGION_OPEN 173 173
+    const REGION_CLOSE 175 175
+    function region_directive 182 191
+    function compose_program 217 245
+    function strip_comment_lines 255 283
+    function collapse_blank_runs 288 312
+    function wants_comments 316 321
+    function blueprint_intro 325 344
+    function capability_label 348 385
+    function libraries_heading 389 396
+    function blueprint_execution_report 402 454
+    function recipe_summary 459 490
+    function recipe_addendum 492 501
+    function how_to_run_heading 505 512
+    function render 521 574

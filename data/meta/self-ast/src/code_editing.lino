@@ -1,0 +1,12 @@
+self_ast_census
+  target src/code_editing.rs
+  language rust
+  fidelity signature
+  byte_len 1467
+  line_count 49
+  content_id source_module_413d0ed57919a2dc
+  symbol_count 3
+  symbols
+    function apply_inline_hello_world_output_replacement 6 16
+    function apply_inline_hello_world_source_replacement 18 30
+    function inline_hello_world_replacement 32 49

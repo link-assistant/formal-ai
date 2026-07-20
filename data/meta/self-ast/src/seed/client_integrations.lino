@@ -1,0 +1,26 @@
+self_ast_census
+  target src/seed/client_integrations.rs
+  language rust
+  fidelity signature
+  byte_len 11516
+  line_count 333
+  content_id source_module_f7dd3ad65af9523b
+  symbol_count 17
+  symbols
+    enum ConfigFormat 5 9
+    function from_seed 12 19
+    enum ModelArgPosition 23 26
+    enum ModeArgPosition 29 32
+    function from_seed 35 41
+    function from_seed 45 51
+    struct TemplateEnv 55 58
+    struct ClientIntegrationInvocation 61 85
+    struct ClientIntegrationGlobalConfig 88 97
+    struct ClientIntegration 100 119
+    function endpoint_path_for 123 127
+    function global_config_for 130 140
+    function client_integrations 144 159
+    function parse_tool 161 234
+    function parse_invocation 236 289
+    function parse_global_config 291 324
+    function split_once_equals 326 333

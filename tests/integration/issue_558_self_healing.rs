@@ -65,9 +65,11 @@ fn agent_mode_routes_self_healing_request_to_a_repair_case_write() {
                     }
                 ]
             }),
-            // The first response parses a real module to build the repair case; give
-            // it a generous window. Subsequent responses are memoised and instant.
-            Duration::from_secs(30),
+            // The first response parses a real module to build the repair case, and
+            // resolving the edit target compiles the workspace self-AST census once
+            // (issue #673); give it the same generous window as its sibling recipes.
+            // Subsequent responses are memoised and instant.
+            Duration::from_secs(90),
         );
 
         assert_eq!(

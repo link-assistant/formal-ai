@@ -1,0 +1,28 @@
+self_ast_census
+  target src/summarization/resource.rs
+  language rust
+  fidelity signature
+  byte_len 12788
+  line_count 354
+  content_id source_module_843175b39873000f
+  symbol_count 19
+  symbols
+    enum RepositoryEntry 46 51
+    function file 56 61
+    function directory 65 70
+    function path 74 78
+    struct RepositoryDirectoryFormalization 83 99
+    enum RepositoryResourceFormalization 103 106
+    function path 111 116
+    function is_directory 120 122
+    function summary 130 135
+    function links_notation 139 144
+    function summary 151 181
+    function identity_sentence 183 200
+    function links_notation 204 254
+    function formalize_repository_resource 259 270
+    function formalize_repository_directory 274 316
+    function summarize_repository_resource 322 327
+    function child_summary_cap 332 339
+    function pluralize 341 347
+    function push_field 349 354

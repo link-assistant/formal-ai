@@ -1,0 +1,29 @@
+self_ast_census
+  target src/dreaming/learning.rs
+  language rust
+  fidelity signature
+  byte_len 23106
+  line_count 619
+  content_id source_module_9e323d698a659687
+  symbol_count 20
+  symbols
+    struct LearningResult 23 30
+    function learn_from_memory 32 115
+    function event_topic 124 148
+    function is_topic_stopword 150 155
+    function first_significant_word 157 169
+    function requirement_statement 171 179
+    function statement_if_requirement 181 187
+    function generalize_amendments 189 236
+    function amendment_reproduces_specific 243 249
+    function retained_record 251 257
+    function replay_candidate_tasks 259 298
+    function refine_amendments_from_failures 305 386
+    function missing_statements_for_topic 395 424
+    function mine_patterns 433 474
+    function skeleton_tokens 476 501
+    function aligned_template 503 534
+    function synthesize_trials 542 589
+    function advance_numbers 591 601
+    function is_task_event 603 615
+    function normalize 617 619

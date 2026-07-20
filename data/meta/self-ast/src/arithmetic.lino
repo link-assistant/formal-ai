@@ -1,0 +1,59 @@
+self_ast_census
+  target src/arithmetic.rs
+  language rust
+  fidelity signature
+  byte_len 28181
+  line_count 847
+  content_id source_module_0c0cbf53baa417f0
+  symbol_count 50
+  symbols
+    enum ArithmeticError 40 47
+    function fmt 50 59
+    const BASE 66 66
+    const EXACT_EXPONENT_LIMIT 67 67
+    struct BigUint 72 72
+    function zero 75 77
+    function one 79 81
+    function from_u64 83 89
+    function is_zero 91 93
+    function add 95 110
+    function mul 112 134
+    function pow_u32 136 149
+    function to_u32 151 163
+    function to_decimal_string 165 179
+    function to_f64 182 193
+    enum ArithValue 201 204
+    function from_f64 207 209
+    function negate 211 231
+    function to_f64 233 248
+    function arith_add 255 299
+    function arith_sub 301 303
+    function arith_mul 305 329
+    function arith_pow 331 360
+    function integer_exponent_i32 362 390
+    function pow_f64_integer 392 423
+    function arith_div 425 435
+    function arith_rem 437 447
+    function big_gte 450 460
+    function big_sub 463 480
+    enum ArithmeticToken 487 497
+    function tokenize_arithmetic 499 569
+    function parse_integer_literal 572 588
+    struct ArithmeticParser 594 597
+    function new 600 602
+    function peek 604 606
+    function advance 608 614
+    function parse 616 622
+    function parse_additive 624 641
+    function parse_multiplicative 643 661
+    function parse_unary 663 675
+    function parse_power 677 686
+    function parse_primary 688 700
+    function normalize_expression 707 724
+    function is_number_token 727 729
+    function match_percent_value 734 745
+    function rewrite_percent_of 753 780
+    function normalize_word_token 787 791
+    function evaluate_fallback_formatted 793 801
+    function format_arith_value 805 820
+    function format_f64 831 847

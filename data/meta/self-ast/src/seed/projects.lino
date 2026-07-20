@@ -1,0 +1,25 @@
+self_ast_census
+  target src/seed/projects.rs
+  language rust
+  fidelity signature
+  byte_len 8926
+  line_count 249
+  content_id source_module_c91510bc764d4ad9
+  symbol_count 16
+  symbols
+    struct ProjectStatement 31 35
+    function parse 38 53
+    struct LocalizedProject 58 62
+    struct ProjectRecord 66 78
+    function repo_slug 83 85
+    function localized_for 90 95
+    function statements_for 100 105
+    function display_name_for 109 114
+    function topic_for 118 127
+    function matches_alias 133 139
+    struct ProjectsRegistry 144 146
+    function by_slug 151 153
+    function by_alias 157 170
+    function by_org 174 176
+    function projects_registry 181 238
+    function normalize_alias 242 249

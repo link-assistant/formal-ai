@@ -1,0 +1,101 @@
+self_ast_census
+  target src/agentic_coding/learning_report.rs
+  language rust
+  fidelity full_ast
+  byte_len 9764
+  line_count 252
+  content_id source_module_3ffba31d28de33ed
+  symbol_count 14
+  symbols
+    static REPORTS 42 51
+    module handler_precedence_learning 53 53
+    module hardcoded_language_learning 54 54
+    module lexeme_import_learning 55 55
+    module self_hosting_learning 56 56
+    function route 60 62
+    struct LearningReport 67 85
+    function render_document 90 92
+    function render_document_from 99 101
+    function matches 105 107
+    function plan_step 110 123
+    function final_answer 127 142
+    function render 151 231
+    function field 245 252
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5463
+    named_node_count 1138
+    distinct_node_kinds 69
+    node_kinds
+      arguments 65
+      array_expression 1
+      array_type 3
+      attribute 5
+      attribute_item 5
+      block 15
+      call_expression 65
+      closure_expression 4
+      closure_parameters 4
+      continue_expression 1
+      crate 4
+      declaration_list 1
+      doc_comment 71
+      else_clause 2
+      escape_sequence 13
+      expression_statement 21
+      field_declaration 7
+      field_declaration_list 1
+      field_expression 58
+      field_identifier 67
+      field_initializer 2
+      field_initializer_list 1
+      field_pattern 2
+      for_expression 1
+      function_item 8
+      generic_function 2
+      generic_type 3
+      identifier 198
+      if_expression 3
+      impl_item 1
+      inner_doc_comment_marker 27
+      integer_literal 16
+      let_condition 1
+      let_declaration 17
+      lifetime 8
+      line_comment 71
+      macro_invocation 9
+      mod_item 4
+      mutable_specifier 17
+      outer_doc_comment_marker 44
+      parameter 12
+      parameters 8
+      primitive_type 18
+      reference_expression 35
+      reference_type 22
+      remaining_field_pattern 1
+      scoped_identifier 21
+      scoped_use_list 2
+      self 15
+      self_parameter 5
+      shorthand_field_identifier 2
+      shorthand_field_initializer 2
+      source_file 1
+      static_item 1
+      string_content 38
+      string_literal 33
+      struct_expression 1
+      struct_item 1
+      struct_pattern 1
+      super 3
+      token_tree 12
+      tuple_pattern 2
+      tuple_struct_pattern 2
+      type_arguments 5
+      type_identifier 18
+      use_as_clause 1
+      use_declaration 7
+      use_list 2
+      visibility_modifier 19

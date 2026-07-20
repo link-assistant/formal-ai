@@ -1,0 +1,24 @@
+self_ast_census
+  target src/seed/meanings/parse.rs
+  language rust
+  fidelity signature
+  byte_len 10036
+  line_count 272
+  content_id source_module_e87715b0923d5088
+  symbol_count 15
+  symbols
+    function parse_lexicon 14 42
+    function parse_meaning 44 91
+    function definition_targets 93 99
+    function canonical_definition_target 101 122
+    function parse_word_form 124 138
+    function ensure_semantic_facet_target 140 152
+    const FACET_KINDS 159 171
+    function parse_semantic_facets 173 186
+    function merge_facet_targets 190 208
+    function meaning_slug 210 216
+    function lexeme_language 218 225
+    function surface_text 227 239
+    function generated_meaning_description 241 250
+    function generated_word_description 252 263
+    function semantic_facet_target 265 272

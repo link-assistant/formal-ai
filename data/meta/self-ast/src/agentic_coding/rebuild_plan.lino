@@ -1,0 +1,68 @@
+self_ast_census
+  target src/agentic_coding/rebuild_plan.rs
+  language rust
+  fidelity full_ast
+  byte_len 6470
+  line_count 122
+  content_id source_module_1b3baad04d15abbb
+  symbol_count 9
+  symbols
+    const REBUILD_PATH 32 32
+    function cached_rebuild_plan 41 44
+    static PLAN 42 42
+    const REBUILD_TASK 54 65
+    const REBUILD_KEYWORDS 65 65
+    function is_rebuild_task 76 81
+    function render_document 91 93
+    function plan 98 100
+    function final_answer 105 122
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1762
+    named_node_count 390
+    distinct_node_kinds 41
+    node_kinds
+      arguments 9
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      block 5
+      call_expression 9
+      closure_expression 1
+      closure_parameters 1
+      const_item 3
+      crate 1
+      doc_comment 58
+      escape_sequence 15
+      field_expression 6
+      field_identifier 6
+      function_item 5
+      generic_type 1
+      identifier 57
+      inner_doc_comment_marker 25
+      integer_literal 1
+      let_declaration 2
+      lifetime 1
+      line_comment 58
+      macro_invocation 2
+      outer_doc_comment_marker 33
+      parameter 2
+      parameters 5
+      primitive_type 6
+      reference_type 6
+      scoped_identifier 4
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 21
+      string_literal 10
+      token_tree 8
+      type_arguments 1
+      type_identifier 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6

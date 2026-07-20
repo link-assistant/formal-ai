@@ -1,0 +1,10 @@
+self_ast_census
+  target src/solver_diagnostics.rs
+  language rust
+  fidelity signature
+  byte_len 247
+  line_count 10
+  content_id source_module_4264d3cd74207225
+  symbol_count 1
+  symbols
+    function append_diagnostic_trace 1 10

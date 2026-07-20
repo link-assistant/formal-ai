@@ -1,0 +1,14 @@
+self_ast_census
+  target src/protocol/content.rs
+  language rust
+  fidelity signature
+  byte_len 1432
+  line_count 43
+  content_id source_module_0e0e77bd15b551ea
+  symbol_count 5
+  symbols
+    function plain_text 5 14
+    function user_request_text 22 24
+    function strip_system_reminders 27 43
+    const OPEN 28 28
+    const CLOSE 29 29

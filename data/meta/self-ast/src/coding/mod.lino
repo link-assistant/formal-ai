@@ -1,0 +1,15 @@
+self_ast_census
+  target src/coding/mod.rs
+  language rust
+  fidelity signature
+  byte_len 1287
+  line_count 29
+  content_id source_module_49a3b915ebdccaa6
+  symbol_count 6
+  symbols
+    module blueprint 21 21
+    module blueprint_data 22 22
+    module blueprint_programs 23 23
+    module catalog 24 24
+    module cst 25 25
+    module guidance 26 26

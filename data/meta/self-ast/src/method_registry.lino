@@ -1,0 +1,22 @@
+self_ast_census
+  target src/method_registry.rs
+  language rust
+  fidelity signature
+  byte_len 9938
+  line_count 249
+  content_id source_module_0d9b169193384e14
+  symbol_count 13
+  symbols
+    enum MethodSurface 34 42
+    function slug 47 53
+    struct Method 58 65
+    function to_links_notation 69 77
+    struct MethodRegistry 85 89
+    function from_dispatch 99 126
+    function method_count 130 132
+    function method_for_route 145 151
+    function count_on 155 157
+    function ordered_method_names_for_relevants 169 197
+    function to_links_notation 201 227
+    function push_unique 230 234
+    function record_method_registry 244 249

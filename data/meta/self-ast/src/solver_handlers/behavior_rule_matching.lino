@@ -1,0 +1,17 @@
+self_ast_census
+  target src/solver_handlers/behavior_rule_matching.rs
+  language rust
+  fidelity signature
+  byte_len 3581
+  line_count 93
+  content_id source_module_2da74aa347e24dd0
+  symbol_count 8
+  symbols
+    function is_behavior_rules_list 7 11
+    function is_behavior_rules_count_query 13 24
+    function is_behavior_rules_brief_followup 26 31
+    function previous_assistant_is_behavior_rule_list 33 46
+    function role_present_in_language 48 53
+    function mentions_behavior_rule_set_phrase 55 60
+    function matches_behavior_rules_list_seed_pattern 62 78
+    function is_supported_language_behavior_rules_list_query 80 93

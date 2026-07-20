@@ -1,0 +1,60 @@
+self_ast_census
+  target src/calculation.rs
+  language rust
+  fidelity signature
+  byte_len 32008
+  line_count 914
+  content_id source_module_805047ac48b4f4de
+  symbol_count 51
+  symbols
+    enum CalculationEngine 15 19
+    function slug 23 29
+    struct CalculationEvaluation 34 39
+    struct CalculationCandidate 43 49
+    struct PromptInterpretation 53 56
+    function has_bare_dot 73 86
+    function evaluate_with_link_calculator 88 104
+    struct LinearValue 107 110
+    function constant 113 118
+    function variable 120 125
+    function add 127 132
+    function subtract 134 139
+    function negate 141 146
+    function multiply 148 165
+    function divide 167 178
+    function has_variable 180 182
+    struct LinearParser 185 189
+    function new 192 198
+    function parse 200 208
+    function parse_expression 210 222
+    function parse_term 224 236
+    function parse_factor 238 267
+    function parse_number 269 291
+    function parse_variable 293 320
+    function skip_whitespace 322 330
+    function consume 332 339
+    function peek 341 343
+    function advance 345 347
+    function nearly_zero 350 352
+    function is_unknown_placeholder 354 356
+    function format_equation_number 358 373
+    function evaluate_linear_equation 375 401
+    function contains_word_operator 403 420
+    function evaluate_calculation 425 441
+    function trim_prompt_punctuation 443 452
+    function strip_prefix_case_insensitive 454 459
+    function strip_suffix_case_insensitive 461 466
+    function leading_word_spans 468 487
+    function fuzzy_prefix_match 489 520
+    function strip_fuzzy_prefix_case_insensitive 522 539
+    function interpretation_statements 542 553
+    function calculation_wrapper_suffixes 568 587
+    function calculation_request_prefixes 589 610
+    function strip_calculation_wrappers_with_prefixes 612 662
+    function has_prefix_boundary 664 671
+    function embedded_calculation_request_slices 673 698
+    function calculator_domain_signals 724 747
+    function has_calculation_signal 749 784
+    function contains_spelled_arithmetic 786 800
+    function push_calculation_candidate 802 823
+    function calculation_expression_candidates 829 914

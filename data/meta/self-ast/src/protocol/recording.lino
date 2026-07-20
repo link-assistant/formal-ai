@@ -1,0 +1,18 @@
+self_ast_census
+  target src/protocol/recording.rs
+  language rust
+  fidelity signature
+  byte_len 5592
+  line_count 165
+  content_id source_module_3b5afa0422a8eff6
+  symbol_count 9
+  symbols
+    function chat_tool_executions 14 51
+    function chat_exchange_to_record 59 65
+    function messages_exchange_to_record 70 78
+    function responses_exchange_to_record 82 95
+    function chat_prompt_and_history 97 111
+    function chat_message_to_turn 113 129
+    function response_prompt 131 135
+    function latest_response_user_text 137 148
+    function value_to_prompt_text 150 165

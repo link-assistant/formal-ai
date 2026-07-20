@@ -1,0 +1,23 @@
+self_ast_census
+  target src/dreaming_runtime.rs
+  language rust
+  fidelity signature
+  byte_len 6113
+  line_count 152
+  content_id source_module_d225b958d1d259d1
+  symbol_count 14
+  symbols
+    const DEFAULT_IDLE_SECONDS 19 19
+    const DEFAULT_INTERVAL_SECONDS 20 20
+    static ACTIVE_FOREGROUND 22 22
+    static LAST_FOREGROUND_SECONDS 23 23
+    static START 24 24
+    struct ForegroundActivity 28 28
+    function begin 32 36
+    function drop 40 43
+    function core_is_idle 48 54
+    function start_core_dreaming 61 93
+    function lower_current_thread_priority 99 101
+    function run_core_dreaming_once 108 136
+    function dreaming_disabled 141 145
+    function now_seconds 147 152

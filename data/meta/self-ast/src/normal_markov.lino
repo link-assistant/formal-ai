@@ -1,0 +1,26 @@
+self_ast_census
+  target src/normal_markov.rs
+  language rust
+  fidelity signature
+  byte_len 9197
+  line_count 273
+  content_id source_module_067ff2a2160ba9ec
+  symbol_count 17
+  symbols
+    struct RewriteRule 17 24
+    function new 29 35
+    function terminal 39 42
+    struct RewriteProgram 47 52
+    function new 58 60
+    function execute 64 102
+    enum RewriteHalt 107 114
+    struct RewriteStep 118 123
+    struct RewriteOutcome 127 134
+    struct QuotedSegment 142 149
+    function quoted_segments 158 163
+    function quoted_segment_spans 172 192
+    function unwrap_transport_quotes 197 210
+    function next_delimiter 212 228
+    const PAIRS 213 213
+    function next_complete_pair 230 251
+    function closing_delimiter 253 273

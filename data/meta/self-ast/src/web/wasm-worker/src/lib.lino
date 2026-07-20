@@ -1,0 +1,59 @@
+self_ast_census
+  target src/web/wasm-worker/src/lib.rs
+  language rust
+  fidelity signature
+  byte_len 15487
+  line_count 500
+  content_id source_module_13707cfd80fdfffb
+  symbol_count 50
+  symbols
+    module language 14 14
+    module arithmetic 18 18
+    module web_engine_core 22 22
+    module web_search_core 25 25
+    const GREETING 37 37
+    const WRITE_PROGRAM 38 38
+    const IDENTITY 39 39
+    const UNKNOWN 40 40
+    const INPUT_CAPACITY 41 41
+    const OUTPUT_CAPACITY 42 42
+    static INPUT 49 49
+    static OUTPUT 50 50
+    const BUMP_HEAP_SIZE 59 59
+    struct BumpHeap 61 63
+    static BUMP_HEAP 67 69
+    static BUMP_OFFSET 70 70
+    struct BumpAllocator 72 72
+    function alloc 75 93
+    function dealloc 95 97
+    static ALLOCATOR 101 101
+    function reset_bump 103 105
+    function input_ptr 110 112
+    function output_ptr 115 117
+    function input_capacity 120 122
+    function output_capacity 125 127
+    function classify 130 144
+    function is_exact_greeting 146 149
+    function is_identity_question 151 159
+    function contains_word 161 179
+    function trim_ascii 181 193
+    function ascii_eq 195 209
+    function is_ascii_alphanumeric 211 213
+    function to_ascii_lower 215 221
+    function min 223 229
+    function web_search_rrf_k 240 242
+    function web_search_concurrency_per_category 245 247
+    function web_search_provider_limit 250 252
+    function web_search_registry_len 255 257
+    function web_search_plan 263 274
+    function web_search_request_evidence 281 304
+    function web_search_fuse 310 325
+    function engine_normalize_prompt 341 354
+    function engine_detect_language 359 376
+    function engine_evaluate_arithmetic 383 403
+    function engine_stable_id 408 424
+    function engine_select_unknown_opener 429 444
+    function engine_match_intent_route 448 460
+    function web_search_registry_dump 464 482
+    function write_output 484 495
+    function panic 498 500

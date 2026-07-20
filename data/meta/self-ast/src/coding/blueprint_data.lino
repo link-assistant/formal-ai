@@ -1,0 +1,11 @@
+self_ast_census
+  target src/coding/blueprint_data.rs
+  language rust
+  fidelity signature
+  byte_len 14226
+  line_count 470
+  content_id source_module_2fd8d953e9efd199
+  symbol_count 2
+  symbols
+    const CAPABILITIES 13 34
+    const RECIPES 365 393

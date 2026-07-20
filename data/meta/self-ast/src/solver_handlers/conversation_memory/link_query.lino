@@ -1,0 +1,15 @@
+self_ast_census
+  target src/solver_handlers/conversation_memory/link_query.rs
+  language rust
+  fidelity signature
+  byte_len 5138
+  line_count 126
+  content_id source_module_af1c2e5c8366303e
+  symbol_count 6
+  symbols
+    const MAX_REWRITE_STEPS 32 32
+    function try_link_substitution_query 34 69
+    function explicit_link_query 78 85
+    function projected_links 88 93
+    function render_matches 95 101
+    function write_boundary 112 126

@@ -1,0 +1,25 @@
+self_ast_census
+  target src/solver_handlers/definition_merge.rs
+  language rust
+  fidelity signature
+  byte_len 10576
+  line_count 324
+  content_id source_module_f8561ed55c332548
+  symbol_count 16
+  symbols
+    struct DefinitionFragment 11 16
+    function try_definition_merge 18 25
+    function try_definition_merge_by_default 27 33
+    function definition_merge_for_term 35 81
+    function extract_definition_merge_term 83 117
+    function trim_definition_merge_tail 119 144
+    function definition_fragments 146 165
+    function push_definition_fragment 167 191
+    function inferred_source_language 193 203
+    function source_languages 205 216
+    function source_urls 218 229
+    function merged_definition_facts 231 245
+    function split_definition_sentences 247 265
+    function normalize_fact 267 273
+    function render_definition_merge 275 308
+    function unique_source_fragments 310 324

@@ -1,0 +1,43 @@
+self_ast_census
+  target src/solver_handlers/compound_interest.rs
+  language rust
+  fidelity signature
+  byte_len 18197
+  line_count 558
+  content_id source_module_153641ee88888d08
+  symbol_count 34
+  symbols
+    const USD_EUR_FALLBACK_RATE 15 15
+    struct CompoundInterestRequest 18 25
+    struct CurrencyRate 28 33
+    function try_compound_interest 35 56
+    function answer_compound_interest 58 141
+    function answer_final_amount_conversion 143 177
+    function append_conversion_lines 179 231
+    function parse_compound_interest_request 233 261
+    function parse_final_amount_conversion_request 263 278
+    function prior_final_amount 280 286
+    function parse_final_amount_from_text 288 296
+    function parse_currency_amount 298 318
+    function parse_percent_before_symbol 320 324
+    function years_in_prompt 326 336
+    function parse_compounds_per_year 338 347
+    function compounds_per_year_for_slug 349 358
+    function target_currency 360 371
+    function asks_for_web_rate 373 378
+    function currency_rate 380 411
+    function rate_from_evaluation 413 433
+    function rate_source_step 435 441
+    function parse_number_left 443 454
+    function parse_number_right 456 467
+    function parse_first_number 469 483
+    function leading_number 485 487
+    function is_number_byte 489 491
+    function parse_number_slice 493 500
+    function currency_after 502 523
+    function compounding_label 525 534
+    function format_number 536 542
+    function format_money 544 546
+    function round_money 548 550
+    function format_rate 552 554
+    function trim_decimal 556 558

@@ -1,0 +1,46 @@
+self_ast_census
+  target src/meta_frame.rs
+  language rust
+  fidelity signature
+  byte_len 28128
+  line_count 743
+  content_id source_module_7510a94d5a02872f
+  symbol_count 37
+  symbols
+    function formalize_span 33 36
+    enum NeedStatus 45 56
+    function slug 61 69
+    struct Need 79 90
+    function to_links_notation 94 106
+    struct ProblemFrame 117 130
+    function from_formalization 143 179
+    function need_count 183 185
+    function to_links_notation 192 213
+    function need_id_for 217 219
+    enum AtomicityReason 226 238
+    function slug 243 250
+    struct WorkUnit 263 280
+    function from_formalization 286 294
+    function build 298 348
+    function leaf 350 368
+    function unit_count 372 374
+    function leaf_count 378 384
+    function collect_leaves 388 396
+    function to_links_notation 400 424
+    function emit_events 429 441
+    function decompose_once 450 456
+    function segment_needs 468 479
+    function split_sentences 484 500
+    function split_clauses 505 513
+    function push_trimmed 515 520
+    function record_problem_frame 528 542
+    function record_work_units 552 563
+    struct LedgerRow 568 583
+    function to_links_notation 587 608
+    struct NeedLedger 624 629
+    function resolve 634 663
+    function count_with 667 669
+    function every_need_accounted_for 674 680
+    function to_links_notation 684 705
+    function best_leaf_for 712 721
+    function record_need_ledger 725 743

@@ -1,0 +1,42 @@
+self_ast_census
+  target src/translation/cache.rs
+  language rust
+  fidelity signature
+  byte_len 22402
+  line_count 611
+  content_id source_module_9c21361f0148bd6b
+  symbol_count 33
+  symbols
+    const DEFAULT_CACHE_DIR 50 50
+    const SEED_CACHE_DIR 57 57
+    const MAX_SEED_LINES_PER_FILE 62 62
+    const MAX_SEED_RECORDS_PER_BUCKET 70 70
+    struct CachedHttpClient 75 82
+    function new 87 93
+    function with_online 99 102
+    function cache_dir 107 109
+    function is_online 115 117
+    function cache_paths 119 128
+    struct CacheLocation 137 140
+    function cache_location 148 159
+    function classify_wiktionary 161 176
+    function wiktionary_page_from_url 178 192
+    function classify_wikidata 194 248
+    function sanitize_segment 250 277
+    function percent_decode 279 302
+    function hex_nibble 304 311
+    function cache_key 319 326
+    function live_api_enabled 331 338
+    function get 341 381
+    function seed_files 395 397
+    function seed_response 402 404
+    function seed_index 412 434
+    static INDEX 413 413
+    function parse_seed_bundle 458 460
+    function parse_seed_chunks 468 508
+    function strip_kv 512 517
+    const SEED_BODY_CHUNK_CHARS 522 522
+    function escape_lino_string 531 542
+    function unescape_lino_string 549 561
+    function split_body_into_chunks 574 591
+    function write_seed_record 599 611

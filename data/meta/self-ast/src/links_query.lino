@@ -1,0 +1,39 @@
+self_ast_census
+  target src/links_query.rs
+  language rust
+  fidelity signature
+  byte_len 17407
+  line_count 528
+  content_id source_module_434647cf5697218d
+  symbol_count 30
+  symbols
+    struct LinksQuery 39 45
+    struct NodePattern 49 51
+    struct EdgePattern 55 58
+    struct Filter 62 67
+    enum Field 71 75
+    enum FilterOp 79 82
+    struct LinksQueryError 86 88
+    function fmt 91 93
+    function err 98 102
+    struct LinksQueryResult 106 110
+    function to_links_notation 116 140
+    function to_links_notation 149 170
+    function escape 173 175
+    function run_links_query 181 183
+    function run_links_query_against 189 195
+    function parse_links_query 201 256
+    function parse_pattern 258 280
+    function parse_node 282 293
+    function parse_edge 295 313
+    function parse_filters 315 325
+    function split_filters 327 356
+    function is_boundary 358 360
+    function parse_filter 362 387
+    function find_operator 394 418
+    function evaluate 420 472
+    function push_node 474 478
+    function node_matches 480 485
+    function node_filters_match 487 501
+    function edge_filters_match 503 516
+    function apply_node_filter 518 528

@@ -1,0 +1,43 @@
+self_ast_census
+  target src/shared_dialog.rs
+  language rust
+  fidelity signature
+  byte_len 19524
+  line_count 614
+  content_id source_module_60cbca77b2671e8d
+  symbol_count 34
+  symbols
+    enum SharedDialogFormat 13 19
+    struct SharedDialogMetadata 22 27
+    struct SharedDialog 30 34
+    struct SharedDialogTurn 37 41
+    enum SharedDialogError 44 48
+    function fmt 51 56
+    function convert_shared_dialog_to_demo_memory 61 69
+    function parse_shared_dialog 71 86
+    function shared_dialog_to_memory_events 89 122
+    function detect_format 124 143
+    function parse_web_capture_json 145 234
+    function capture_diagnostic 236 242
+    function parse_chatgpt_share_html 244 289
+    function chatgpt_turn_from_item 291 322
+    function message_is_hidden 324 330
+    function message_content_text 332 353
+    function extract_chatgpt_devalue_table 355 373
+    function extract_react_router_stream_chunks 375 405
+    const ENQUEUE_MARKER 376 376
+    function extract_json_string_literal 407 425
+    function resolve_devalue_root 427 434
+    function resolve_table_index 436 444
+    function resolve_table_value 446 465
+    function resolve_encoded_reference 467 478
+    function resolve_object_key 480 489
+    function find_object_with_array_key 491 505
+    function parse_markdown_transcript 507 536
+    function markdown_turn_prefix 538 551
+    function push_markdown_turn 553 571
+    function trimmed_content_lines 573 582
+    function string_field 584 586
+    function title_from_html 588 598
+    function chatgpt_share_id 600 607
+    function looks_like_google_ai_mode_interstitial 609 614

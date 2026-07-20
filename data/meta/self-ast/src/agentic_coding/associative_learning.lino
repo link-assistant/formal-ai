@@ -1,0 +1,57 @@
+self_ast_census
+  target src/agentic_coding/associative_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 1606
+  line_count 43
+  content_id source_module_926e3e97b31fa30a
+  symbol_count 7
+  symbols
+    const ASSOCIATIVE_LEARNING_PATH 10 10
+    const ASSOCIATIVE_LEARNING_TASK 11 12
+    static REPORT 14 22
+    function is_associative_learning_task 25 27
+    function render_document 30 32
+    function render_document_from 36 38
+    function final_answer 41 43
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 817
+    named_node_count 148
+    distinct_node_kinds 32
+    node_kinds
+      arguments 4
+      attribute 4
+      attribute_item 4
+      block 4
+      call_expression 4
+      const_item 2
+      doc_comment 7
+      field_expression 4
+      field_identifier 11
+      field_initializer 7
+      field_initializer_list 1
+      function_item 4
+      identifier 27
+      inner_doc_comment_marker 6
+      line_comment 7
+      macro_invocation 1
+      outer_doc_comment_marker 1
+      parameter 3
+      parameters 4
+      primitive_type 6
+      reference_type 5
+      scoped_identifier 2
+      source_file 1
+      static_item 1
+      string_content 6
+      string_literal 6
+      struct_expression 1
+      super 1
+      token_tree 1
+      type_identifier 5
+      use_declaration 1
+      visibility_modifier 7

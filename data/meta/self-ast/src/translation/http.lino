@@ -1,0 +1,20 @@
+self_ast_census
+  target src/translation/http.rs
+  language rust
+  fidelity signature
+  byte_len 4962
+  line_count 141
+  content_id source_module_93827379eecc3323
+  symbol_count 11
+  symbols
+    const DEFAULT_HTTP_TIMEOUT_SECONDS 18 18
+    const USER_AGENT 22 23
+    enum HttpError 27 32
+    function fmt 35 43
+    trait HttpClient 49 53
+    function get 52 52
+    struct CurlClient 57 60
+    function default 63 68
+    function with_timeout_seconds 74 79
+    function get 83 120
+    function split_body_and_status 125 141

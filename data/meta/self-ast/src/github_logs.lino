@@ -1,0 +1,33 @@
+self_ast_census
+  target src/github_logs.rs
+  language rust
+  fidelity signature
+  byte_len 13292
+  line_count 428
+  content_id source_module_c6da49890238f2b8
+  symbol_count 24
+  symbols
+    const REPO_VIEW_FIELDS 9 10
+    const ISSUE_VIEW_FIELDS 11 12
+    const ISSUE_LIST_FIELDS 13 13
+    const PR_VIEW_FIELDS 14 14
+    const PR_LIST_FIELDS 15 16
+    const RUN_LIST_FIELDS 17 18
+    const RUN_VIEW_FIELDS 19 20
+    struct GithubLogCollectorConfig 23 33
+    struct GithubLogCapture 36 40
+    function command_line 44 50
+    struct GithubLogCapturedFile 54 59
+    struct GithubLogCollectionSummary 62 67
+    struct GithubLogManifest 70 75
+    function github_log_capture_plan 77 290
+    function render_github_log_plan 292 305
+    function collect_github_logs 307 311
+    function collect_github_logs_with_runner 313 358
+    function push_capture 360 369
+    function run_command 371 385
+    function split_repo 387 399
+    function validate_repo_part 401 408
+    function is_repo_name_char 410 412
+    function shell_quote 414 422
+    function unix_now 424 428

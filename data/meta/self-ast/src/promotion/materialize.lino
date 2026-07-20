@@ -1,0 +1,15 @@
+self_ast_census
+  target src/promotion/materialize.rs
+  language rust
+  fidelity signature
+  byte_len 6989
+  line_count 187
+  content_id source_module_663c5d47bf1e780f
+  symbol_count 6
+  symbols
+    function apply_promotions 24 112
+    function prepare_local_branch 114 133
+    function git 135 149
+    function authored_write 151 164
+    function validate_seed_path 166 183
+    function invalid_data 185 187

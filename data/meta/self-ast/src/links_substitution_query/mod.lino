@@ -1,0 +1,27 @@
+self_ast_census
+  target src/links_substitution_query/mod.rs
+  language rust
+  fidelity signature
+  byte_len 6813
+  line_count 187
+  content_id source_module_c280ddedbe0be41b
+  symbol_count 18
+  symbols
+    module links 61 61
+    module text 62 62
+    struct SubstitutionQueryError 73 75
+    function fmt 78 80
+    function err 85 89
+    const TWO_SIDES 91 92
+    const MUST_QUOTE 93 93
+    function escape 95 108
+    struct Parser 110 113
+    function new 116 118
+    function rest 120 122
+    function peek 124 126
+    function bump 128 132
+    function eat 134 140
+    function skip_whitespace 142 147
+    function at_end 149 151
+    function parse_string 153 170
+    function parse_escape 172 186

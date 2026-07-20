@@ -1,0 +1,40 @@
+self_ast_census
+  target src/solver_handler_how.rs
+  language rust
+  fidelity signature
+  byte_len 38297
+  line_count 870
+  content_id source_module_d3a2b738ec58d0a6
+  symbol_count 31
+  symbols
+    struct HowItWorksQuery 13 15
+    struct ProceduralHowToTask 17 22
+    struct SpellingCorrection 25 28
+    function try_how_to_procedure 35 116
+    function looks_like_procedural_how_to 118 120
+    function try_procedural_how_to_followup 137 166
+    function is_procedural_elaboration_request 175 179
+    function try_how_it_works 186 266
+    function extract_how_it_works_query 268 280
+    function is_bare_how_it_works 288 300
+    function extract_how_it_works_subject 320 344
+    function subject_after_prefix 346 350
+    function subject_before_suffix 352 356
+    function subject_between 358 372
+    function strip_mechanism_tail 381 393
+    function clean_mechanism_fragment 395 407
+    function clean_mechanism_subject 420 444
+    function record_mechanism_query 446 460
+    function render_mechanism_discovery_answer 462 500
+    function extract_procedural_how_to_task 513 522
+    function extract_elided_procedural_how_to_task 524 548
+    function procedural_search_query 550 560
+    function split_known_procedural_action_object 562 587
+    function build_procedural_task 589 611
+    function split_procedural_action_object 613 621
+    function clean_procedural_fragment 623 644
+    function correct_common_procedural_typos 646 675
+    function wikihow_page_title 677 683
+    function render_procedural_how_to_body 685 832
+    function capitalize_word 834 840
+    function extract_topic_from_prior_reply 844 870

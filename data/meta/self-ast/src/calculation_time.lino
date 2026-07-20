@@ -1,0 +1,13 @@
+self_ast_census
+  target src/calculation_time.rs
+  language rust
+  fidelity signature
+  byte_len 2781
+  line_count 97
+  content_id source_module_d1f1e0b165700b3f
+  symbol_count 4
+  symbols
+    struct ClockTimeMention 7 11
+    function clock_time_mentions 13 72
+    function explicit_time_subtraction_between 74 81
+    function elapsed_time_expression 83 97

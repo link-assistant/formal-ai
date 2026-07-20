@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/narration.rs
+  language rust
+  fidelity full_ast
+  byte_len 2344
+  line_count 72
+  content_id source_module_8e69e54397098908
+  symbol_count 6
+  symbols
+    function tool_action_narration 12 32
+    const TOOL_SLOT 13 13
+    const TARGET_SLOT 14 14
+    function tool_action_target 34 72
+    const TARGET_FIELDS 35 47
+    function first_text 49 59
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2032
+    named_node_count 416
+    distinct_node_kinds 48
+    node_kinds
+      arguments 41
+      array_expression 1
+      array_type 2
+      binary_expression 1
+      block 4
+      call_expression 41
+      char_literal 1
+      closure_expression 5
+      closure_parameters 5
+      const_item 3
+      crate 3
+      doc_comment 6
+      expression_statement 3
+      field_expression 37
+      field_identifier 37
+      function_item 3
+      generic_function 3
+      generic_type 2
+      identifier 76
+      if_expression 1
+      inner_doc_comment_marker 1
+      integer_literal 2
+      let_declaration 7
+      line_comment 6
+      macro_invocation 2
+      match_arm 4
+      match_block 1
+      match_expression 1
+      match_pattern 4
+      mutable_specifier 1
+      outer_doc_comment_marker 5
+      parameter 4
+      parameters 3
+      primitive_type 6
+      reference_expression 4
+      reference_type 9
+      scoped_identifier 13
+      source_file 1
+      string_content 21
+      string_literal 21
+      super 1
+      token_tree 2
+      tuple_struct_pattern 3
+      type_arguments 5
+      type_identifier 9
+      unary_expression 2
+      use_declaration 2
+      visibility_modifier 1

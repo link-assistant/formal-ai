@@ -1,0 +1,23 @@
+self_ast_census
+  target src/cue_lexicon.rs
+  language rust
+  fidelity signature
+  byte_len 5741
+  line_count 158
+  content_id source_module_b87ef3c68e46efcd
+  symbol_count 14
+  symbols
+    enum CueMatch 24 32
+    function slug 37 43
+    function from_slug 47 54
+    function matches 58 64
+    struct CueSet 69 78
+    function matches 83 87
+    const CUE_LEXICON_LINO 90 90
+    function cue_sets 94 97
+    static CELL 95 95
+    function load_cue_sets 99 127
+    function cue_set 131 133
+    function matches 138 140
+    function cues 146 148
+    function contains_token 153 158

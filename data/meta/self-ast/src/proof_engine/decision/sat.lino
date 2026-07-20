@@ -1,0 +1,30 @@
+self_ast_census
+  target src/proof_engine/decision/sat.rs
+  language rust
+  fidelity signature
+  byte_len 10313
+  line_count 300
+  content_id source_module_b20026ef46af48a2
+  symbol_count 21
+  symbols
+    struct Literal 29 34
+    function positive 39 44
+    function negative 48 53
+    function negated 57 62
+    function value 66 71
+    struct CnfFormula 80 83
+    function new 88 93
+    function add_clause 96 98
+    function variable_count 103 105
+    function clauses 109 111
+    function solve 116 127
+    function is_satisfiable 132 134
+    enum SatOutcome 139 146
+    enum ClauseStatus 149 158
+    function clause_status 160 178
+    function search 185 208
+    function propagate 214 243
+    function find_pure_literal 248 282
+    function all_satisfied 284 290
+    function first_unassigned 292 294
+    function undo 296 300

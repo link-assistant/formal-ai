@@ -1,0 +1,33 @@
+self_ast_census
+  target src/skill_ledger.rs
+  language rust
+  fidelity signature
+  byte_len 15135
+  line_count 387
+  content_id source_module_5c74c790fd0a0ce8
+  symbol_count 24
+  symbols
+    enum SkillMode 37 43
+    function emits_ledger 48 50
+    function slug 54 59
+    function from_slug 63 69
+    enum SkillStatus 80 89
+    function slug 94 101
+    struct PromotionGate 112 117
+    function satisfied 122 124
+    function status 129 135
+    struct CandidateSkill 141 157
+    function promotable 162 164
+    function to_links_notation 167 188
+    struct CurriculumItem 193 204
+    function to_links_notation 208 220
+    struct SkillLedger 226 233
+    function from_evidence 243 278
+    function proposed_count 282 284
+    function stable_count 289 291
+    function curriculum_count 295 297
+    function promotable_count 302 307
+    function count_with 309 314
+    function to_links_notation 319 346
+    function curriculum_reason 350 362
+    function record_skill_ledger 372 387

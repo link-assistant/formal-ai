@@ -1,0 +1,69 @@
+self_ast_census
+  target src/agentic_coding/google_trends_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 5443
+  line_count 107
+  content_id source_module_fd8f391bbc37c7f2
+  symbol_count 9
+  symbols
+    const GOOGLE_TRENDS_LEARNING_PATH 18 18
+    const GOOGLE_TRENDS_LEARNING_TASK 21 28
+    const LEARNING_CAPABILITY 28 28
+    const GOOGLE_TRENDS_KEYWORDS 30 30
+    function is_google_trends_learning_task 50 63
+    function is_learn_from_source_directive 68 72
+    function render_document 76 78
+    function final_answer 82 99
+    function verification_command 103 107
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1875
+    named_node_count 397
+    distinct_node_kinds 42
+    node_kinds
+      arguments 15
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      binary_expression 7
+      block 6
+      boolean_literal 1
+      call_expression 15
+      closure_expression 2
+      closure_parameters 2
+      const_item 4
+      crate 2
+      doc_comment 40
+      escape_sequence 14
+      expression_statement 2
+      field_expression 13
+      field_identifier 13
+      function_item 5
+      identifier 67
+      if_expression 1
+      inner_doc_comment_marker 12
+      integer_literal 1
+      let_declaration 3
+      line_comment 40
+      macro_invocation 3
+      outer_doc_comment_marker 28
+      parameter 3
+      parameters 5
+      parenthesized_expression 2
+      primitive_type 9
+      reference_expression 1
+      reference_type 7
+      return_expression 1
+      scoped_identifier 4
+      source_file 1
+      string_content 25
+      string_literal 14
+      token_tree 9
+      type_identifier 3
+      use_declaration 1
+      visibility_modifier 6

@@ -1,0 +1,30 @@
+self_ast_census
+  target src/language.rs
+  language rust
+  fidelity signature
+  byte_len 8634
+  line_count 266
+  content_id source_module_d8ae2ac3b4b16847
+  symbol_count 21
+  symbols
+    enum Language 11 17
+    module forced_language 30 49
+    static FORCED_LANGUAGE 35 35
+    function replace 38 40
+    function set 42 44
+    function get 46 48
+    module forced_language 52 75
+    struct Slot 56 56
+    static FORCED_LANGUAGE 62 62
+    function replace 64 66
+    function set 68 70
+    function get 72 74
+    function set_forced_language 83 86
+    function from_slug 90 98
+    struct ForcedLanguageGuard 101 103
+    function drop 106 108
+    enum Script 112 118
+    function slug 122 130
+    function detect 142 212
+    function marker_language 214 236
+    function contains_question_marker 238 266

@@ -1,0 +1,60 @@
+self_ast_census
+  target src/solver_handlers/installation_conversion.rs
+  language rust
+  fidelity signature
+  byte_len 33491
+  line_count 996
+  content_id source_module_0f4a2a692ff2ee80
+  symbol_count 51
+  symbols
+    enum InstallFormat 16 20
+    function label 23 29
+    struct InstallStep 33 37
+    struct InstallationConversion 40 45
+    struct AlgorithmConstructionStage 48 52
+    struct CodingSurfaceProjection 55 58
+    const ALGORITHM_CONSTRUCTION_STAGES 60 65
+    const CODING_SURFACE_PROJECTIONS 98 102
+    function try_installation_conversion 125 141
+    function from_prompt 144 164
+    function canonical_key 166 179
+    function meaning_id 181 183
+    function is_install_conversion_request 186 254
+    function contains_any 256 258
+    function detect_source_format 260 319
+    function detect_target_formats 321 386
+    function push_target 388 392
+    struct FencedBlock 395 398
+    function fenced_blocks 400 429
+    function extract_source_text 431 448
+    function is_shell_fence 450 452
+    function is_powershell_fence 454 456
+    function extract_install_steps 458 483
+    function collect_inline_commands 485 504
+    function collect_bullet_commands 506 526
+    function collect_script_commands 528 537
+    function normalize_script_line 539 545
+    function should_skip_script_line 547 555
+    enum Provenance 562 567
+    function push_command 569 577
+    function looks_like_command 583 628
+    function is_executable_head 633 646
+    function has_shell_operator 649 654
+    function reads_as_prose 659 668
+    const FUNCTION_WORDS 660 663
+    function describe_command 675 680
+    struct ParsedCommand 685 689
+    function parse 692 740
+    function action 743 763
+    function synthesized_description 767 772
+    function classify_verb 779 793
+    function extract_project 795 811
+    function record_conversion 813 841
+    function record_algorithm_construction 843 863
+    function render_conversion 865 891
+    function render_lino 893 934
+    function render_meta_algorithm 936 952
+    function render_markdown_guide 954 963
+    function render_shell_script 965 972
+    function render_powershell_script 974 981
+    function lino_string 983 996

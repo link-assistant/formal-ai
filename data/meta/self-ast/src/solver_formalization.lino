@@ -1,0 +1,12 @@
+self_ast_census
+  target src/solver_formalization.rs
+  language rust
+  fidelity signature
+  byte_len 4805
+  line_count 122
+  content_id source_module_93c2bcdeaa1f3c66
+  symbol_count 3
+  symbols
+    function record_formalization 7 37
+    function record_formalization_selection 39 114
+    function selection_reason_slug 116 122

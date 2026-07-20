@@ -1,0 +1,20 @@
+self_ast_census
+  target src/proof_engine/library.rs
+  language rust
+  fidelity signature
+  byte_len 51583
+  line_count 679
+  content_id source_module_d27ce3227011977f
+  symbol_count 11
+  symbols
+    struct KnownTheoremEntry 19 32
+    struct LocalizedStep 35 41
+    function matches 44 46
+    function build_proof 48 80
+    const REGISTRY 85 92
+    const PYTHAGOREAN 94 161
+    const EUCLID_INFINITUDE_OF_PRIMES 163 266
+    const SQRT_TWO_IRRATIONAL 268 335
+    const FERMAT_LITTLE 337 424
+    const GODEL_FIRST_INCOMPLETENESS 426 557
+    const LAPLACIAN_DETERMINISM 559 679

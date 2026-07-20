@@ -1,0 +1,46 @@
+self_ast_census
+  target src/solver_search.rs
+  language rust
+  fidelity signature
+  byte_len 24922
+  line_count 679
+  content_id source_module_8f024b0e2add7311
+  symbol_count 37
+  symbols
+    struct Op 36 38
+    function new 41 43
+    function symbol 45 47
+    function apply 52 62
+    struct SearchProblem 68 72
+    struct Candidate 77 80
+    function evaluate 85 91
+    function render 93 102
+    struct Prng 107 109
+    function seeded 112 117
+    function next_u64 119 125
+    function below 127 136
+    function seed_from_prompt 141 148
+    function try_budget_search 155 192
+    struct SearchSolution 196 199
+    function run_search 201 285
+    const POPULATION 288 288
+    const GENERATION_LOG_STRIDE 291 291
+    function finish_solution 293 310
+    function score 316 320
+    function remember_best 322 326
+    function insert_population 328 343
+    function random_candidate 345 351
+    function random_permutation 353 361
+    function breed 365 392
+    function record_generated_tests 394 403
+    function build_answer 406 443
+    function record_skill_proposal 455 489
+    function join_numbers 491 497
+    function join_ops 499 504
+    function parse_search_problem 516 567
+    const MAX_OPERANDS 571 571
+    function target_marker_positions 578 589
+    function distance_to_nearest 591 597
+    function parse_ops 608 626
+    function symbol_present 637 652
+    function extract_integers_with_positions 656 679

@@ -1,0 +1,32 @@
+self_ast_census
+  target src/repair_strategy.rs
+  language rust
+  fidelity signature
+  byte_len 14164
+  line_count 355
+  content_id source_module_a081741513d3fe6c
+  symbol_count 23
+  symbols
+    enum RepairTarget 36 46
+    function slug 51 57
+    function describe 61 71
+    struct RepairStrategy 81 96
+    function classify 108 126
+    function is_human_gated 131 133
+    function summary 137 146
+    function links_notation 151 162
+    function content_id 166 168
+    function trace_haystack 173 182
+    function classify_target 186 232
+    const SOLVER_SIGNALS 187 187
+    const DATA_SIGNALS 194 194
+    const TEST_SIGNALS 202 202
+    function first_match 235 240
+    function proposed_change 243 255
+    function verification 258 270
+    function canonical_solver_method_failure 277 291
+    function canonical_data_record_failure 296 310
+    function canonical_test_failure 315 329
+    function canonical_strategies 336 342
+    function field 344 346
+    function quote 348 355

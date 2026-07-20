@@ -1,0 +1,13 @@
+self_ast_census
+  target src/seed/terminal_commands.rs
+  language rust
+  fidelity signature
+  byte_len 3771
+  line_count 86
+  content_id source_module_1e623ed57f4fac87
+  symbol_count 4
+  symbols
+    struct TerminalCommandVocabulary 22 36
+    function terminal_command_vocabulary 40 60
+    function collect_values 63 70
+    function collect_language_values 74 86

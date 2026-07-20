@@ -1,0 +1,24 @@
+self_ast_census
+  target src/program_plan.rs
+  language rust
+  fidelity signature
+  byte_len 10092
+  line_count 245
+  content_id source_module_a5c5548d2a9d7437
+  symbol_count 15
+  symbols
+    const TASK_NODE 41 41
+    const MODIFIER_NODE 43 43
+    const PROGRAM_PLAN_RULES_LINO 46 46
+    function rules 53 67
+    static RULES 54 54
+    function derive_inverse_rules 81 129
+    function modifier_slugs 138 150
+    static MODIFIER_SLUGS 139 139
+    struct ProgramPlan 155 166
+    function was_modified 171 173
+    function links_notation 178 197
+    function lower 203 205
+    function lower_with_rules 212 230
+    function resolve_task 235 237
+    function resolved_task_from_graph 239 245

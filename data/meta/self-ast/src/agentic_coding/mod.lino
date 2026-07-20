@@ -1,0 +1,68 @@
+self_ast_census
+  target src/agentic_coding/mod.rs
+  language rust
+  fidelity full_ast
+  byte_len 5017
+  line_count 120
+  content_id source_module_aca1c8b8f52e8ae8
+  symbol_count 38
+  symbols
+    module associative_learning 21 21
+    module capability_router 22 22
+    module change_request 23 23
+    module code_artifact 24 24
+    module code_rewrite_learning 25 25
+    module command_reroute 26 26
+    module conversation_recall 27 27
+    module corpus 28 28
+    module diagram 29 29
+    module dreaming_audit 30 30
+    module driver 31 31
+    module execution_learning 32 32
+    module explain 33 33
+    module file_read 34 34
+    module formalize 35 35
+    module general_planner 36 36
+    module google_trends_catalog 37 37
+    module google_trends_learning 38 38
+    module intent_router 39 39
+    module learning_report 40 40
+    module ledger 41 41
+    module lexicon 42 42
+    module meaning_detail 43 43
+    module narration 44 44
+    module planner 45 45
+    module progress 46 46
+    module question_catalog 47 47
+    module rebuild_plan 48 48
+    module repair_strategy 49 49
+    module report_issue 50 50
+    module routing_learning 51 51
+    module self_ast 52 52
+    module self_heal 53 53
+    module shell_command 54 54
+    module source_links 55 55
+    module statement_audit 56 56
+    module tool_result 57 57
+    module web_research 58 58
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2447
+    named_node_count 406
+    distinct_node_kinds 12
+    node_kinds
+      crate 3
+      doc_comment 19
+      identifier 164
+      inner_doc_comment_marker 19
+      line_comment 19
+      mod_item 38
+      scoped_identifier 5
+      scoped_use_list 27
+      source_file 1
+      use_declaration 28
+      use_list 27
+      visibility_modifier 56

@@ -1,0 +1,24 @@
+self_ast_census
+  target src/web_engine_core.rs
+  language rust
+  fidelity signature
+  byte_len 10337
+  line_count 292
+  content_id source_module_11c0cf4aa47d3412
+  symbol_count 15
+  symbols
+    function normalize_prompt 41 59
+    function tokenize_prompt 65 71
+    function evaluate_arithmetic_expression 81 83
+    function stable_id 91 99
+    const UNKNOWN_OPENERS_EN 101 107
+    const UNKNOWN_OPENERS_RU 108 114
+    const UNKNOWN_OPENERS_HI 115 121
+    const UNKNOWN_OPENERS_ZH 122 128
+    function unknown_openers_for 131 138
+    function select_unknown_opener 142 155
+    function matches_intent_route_parts 160 192
+    function matches_intent_route_payload 200 244
+    function contains_route_token 246 250
+    function normalize_route_raw_prompt 252 262
+    function is_unicode_letter_or_digit 264 292

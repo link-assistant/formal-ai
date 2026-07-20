@@ -1,0 +1,11 @@
+self_ast_census
+  target src/meta_core.rs
+  language rust
+  fidelity signature
+  byte_len 6559
+  line_count 127
+  content_id source_module_e646686ca2a955c3
+  symbol_count 2
+  symbols
+    function record_meta_core 63 97
+    function apply_env_modes 107 127
