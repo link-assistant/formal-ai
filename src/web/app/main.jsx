@@ -2986,10 +2986,59 @@ function thinkingStepKey(entry) {
   return String(entry?.step || "").replace(/^agent_\d+_/i, "");
 }
 
-function filterThinkingEntriesForDetail(entries, detailLevel) {
+// Issue #672 (F4): the reasoning hierarchy the solver emits is a proposal, not
+// a verdict — a power user watching the same kind of trace all day knows which
+// steps deserve to be phases and which are noise. Their edits are recorded as
+// an append-only event log and the effective hierarchy is a *projection* of
+// that log over the solver's own `level` field. Nothing rewrites the message:
+// the entries the worker produced stay byte-identical, which is what keeps a
+// re-render, a history reload, or a diagnostics export honest.
+const STEP_LEVELS = Object.freeze(["high", "detailed"]);
+
+function normalizeStepLevel(value) {
+  const level = String(value || "").trim();
+  return STEP_LEVELS.includes(level) ? level : "";
+}
+
+/**
+ * Append one hierarchy edit. A `level` of "" is the reset event — recorded
+ * rather than removing the earlier entry, so the log stays a history.
+ */
+function appendStepLevelEvent(events, step, level) {
+  const key = thinkingStepKey({ step });
+  if (!key) return Array.isArray(events) ? events : [];
+  return [
+    ...(Array.isArray(events) ? events : []),
+    { step: key, level: normalizeStepLevel(level) },
+  ];
+}
+
+/** Fold the log down to the level currently in force per step: last write wins. */
+function projectStepLevels(events) {
+  const levels = new Map();
+  for (const event of Array.isArray(events) ? events : []) {
+    const key = thinkingStepKey(event);
+    if (!key) continue;
+    const level = normalizeStepLevel(event.level);
+    if (level) levels.set(key, level);
+    else levels.delete(key);
+  }
+  return levels;
+}
+
+function filterThinkingEntriesForDetail(
+  entries,
+  detailLevel,
+  stepLevelOverrides,
+) {
   const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
   if (safeEntries.length <= 1) return safeEntries;
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const level = normalizeThinkingDetailLevel(detailLevel);
+  // "detailed" shows everything and "brief" shows only the conclusion, so in
+  // both the hierarchy is not consulted and an override cannot change what the
+  // user sees. Only the middle, hierarchy-driven granularity projects the log.
   if (level === "detailed") return safeEntries;
   if (level === "brief") return safeEntries.slice(-1);
 
@@ -3005,7 +3054,9 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
   );
   if (hasLevels) {
     const filtered = safeEntries.filter(
-      (entry, index) => index === lastIndex || entry?.level === "high",
+      (entry, index) =>
+        index === lastIndex ||
+        (overrides.get(thinkingStepKey(entry)) || entry?.level) === "high",
     );
     return filtered.length > 0 ? filtered : safeEntries.slice(-1);
   }
@@ -3025,10 +3076,14 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
     "memory",
     "agent_plan",
   ]);
-  const filtered = safeEntries.filter(
-    (entry, index) =>
-      index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
-  );
+  const filtered = safeEntries.filter((entry, index) => {
+    if (index === lastIndex) return true;
+    const key = thinkingStepKey(entry);
+    // A user edit outranks the legacy allowlist in both directions: it can
+    // promote a step the allowlist never knew about and demote one it names.
+    if (overrides.has(key)) return overrides.get(key) === "high";
+    return standardSteps.has(key);
+  });
   return filtered.length > 0 ? filtered : safeEntries.slice(-1);
 }
 
@@ -3051,9 +3106,14 @@ function buildThinkingPreviewSteps(
   source,
   t,
   detailLevel,
+  stepLevelOverrides,
 ) {
   if (Array.isArray(structuredSteps) && structuredSteps.length > 0) {
-    return filterThinkingEntriesForDetail(structuredSteps, detailLevel)
+    return filterThinkingEntriesForDetail(
+      structuredSteps,
+      detailLevel,
+      stepLevelOverrides,
+    )
       .map((entry) => naturalizeThinkingStep(entry, t))
       .filter(Boolean);
   }
@@ -3071,7 +3131,12 @@ function buildThinkingPreviewSteps(
   );
 }
 
-function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
+function buildMessageThinkingPreviewSteps(
+  message,
+  t,
+  detailLevel,
+  stepLevelOverrides,
+) {
   if (message?.role !== "assistant") return [];
   const diagnosticsSteps = Array.isArray(message.diagnosticsSteps)
     ? message.diagnosticsSteps
@@ -3083,6 +3148,7 @@ function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
       message.thinkingPreviewSource || message.intent || "local",
       t,
       detailLevel,
+      stepLevelOverrides,
     );
   }
   return filterThinkingSummariesForDetail(
@@ -6074,10 +6140,37 @@ function CommandApprovalPanel({ approval, status, onApprove, onDeny, t }) {
   return <section className="command-approval-panel" data-testid="command-approval" data-status={currentStatus}><div className="command-approval-copy"><strong>{tr("permissions.command.title")}</strong><code>{command}</code><span className={`command-approval-status command-approval-status-${currentStatus}`}>{statusLabel}</span></div><div className="command-approval-actions"><button type="button" className="permission-button" data-testid="command-approve" disabled={!pending} onClick={() => pending && onApprove && onApprove(approval)}>{tr("permissions.command.approve")}</button><button type="button" className="permission-button permission-button-secondary" data-testid="command-deny" disabled={!pending} onClick={() => pending && onDeny && onDeny(approval)}>{tr("permissions.command.deny")}</button></div></section>;
 }
 
+// Issue #672 (F4): the hierarchy editor for a single reasoning step. It is a
+// right-click menu because it is a power-user affordance on a Diagnostics-mode
+// surface: putting two buttons on every step would clutter the trace for the
+// far larger group of users who only read it.
+function StepHierarchyMenu({ menu, currentLevel, overridden, onSelect, t }) {
+  const close = menu?.onClose;
+  useEffect(() => {
+    if (!menu) return undefined;
+    const dismiss = () => close && close();
+    const onKey = (event) => {
+      if (event.key === "Escape") dismiss();
+    };
+    // `pointerdown` rather than `click`: the menu must not survive the press
+    // that starts an interaction somewhere else on the page.
+    window.addEventListener("pointerdown", dismiss);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menu, close]);
+  if (!menu) return null;
+  return <div className="step-hierarchy-menu" data-testid="step-hierarchy-menu" data-step={menu.step} role="menu" aria-label={t("message.stepLevel.title")} style={{ top: `${menu.y}px`, left: `${menu.x}px` }} onPointerDown={event => event.stopPropagation()}><button type="button" role="menuitem" data-testid="step-hierarchy-bump" disabled={currentLevel === "high"} onClick={() => onSelect(menu.step, "high")}>{t("message.stepLevel.bump")}</button><button type="button" role="menuitem" data-testid="step-hierarchy-demote" disabled={currentLevel === "detailed"} onClick={() => onSelect(menu.step, "detailed")}>{t("message.stepLevel.demote")}</button>{overridden ? <button type="button" role="menuitem" data-testid="step-hierarchy-reset" onClick={() => onSelect(menu.step, "")}>{t("message.stepLevel.reset")}</button> : null}</div>;
+}
+
 function Message({
   message,
   diagnosticsMode,
   reportIssueUrl,
+  stepLevelOverrides,
+  onEditStepLevel,
   thinkingDetailLevel,
   minMessageAnimationMs = 0,
   renderPermissionPanel,
@@ -6088,10 +6181,38 @@ function Message({
 }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const thinkingPreviewSteps = buildMessageThinkingPreviewSteps(
     message,
     t,
     thinkingDetailLevel,
+    overrides,
+  );
+  // Issue #672 (F4): `{ step, x, y }` while the right-click menu is open.
+  const [stepMenu, setStepMenu] = useState(null);
+  const closeStepMenu = useCallback(() => setStepMenu(null), []);
+  const handleStepContextMenu = useCallback(
+    (event, step) => {
+      if (typeof onEditStepLevel !== "function") return;
+      const key = thinkingStepKey({ step });
+      if (!key) return;
+      event.preventDefault();
+      setStepMenu({
+        step: key,
+        x: event.clientX,
+        y: event.clientY,
+        onClose: closeStepMenu,
+      });
+    },
+    [onEditStepLevel, closeStepMenu],
+  );
+  const handleStepLevelSelect = useCallback(
+    (step, level) => {
+      setStepMenu(null);
+      if (typeof onEditStepLevel === "function") onEditStepLevel(step, level);
+    },
+    [onEditStepLevel],
   );
   const diagnosticsSteps = diagnosticsMode
     ? (message.diagnosticsSteps ?? [])
@@ -6183,7 +6304,7 @@ function Message({
     // so it never lingers as dead chrome on a settled message.
     reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
-      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
+      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
 
 // Issue #27: a VS Code-style collapsible sidebar section. When `collapsed` is
@@ -6304,6 +6425,21 @@ function App() {
   const [minMessageAnimationMs, setMinMessageAnimationMs] = useState(
     normalizeAnimationBudgetMs(initialPreferences.current.minMessageAnimationMs),
   );
+  // Issue #672 (F4): hierarchy edits are stored as the append-only log itself,
+  // not as the resulting map. Keeping the events means an edit is a fact that
+  // happened ("the user demoted `calculator_eval` at this point"), and the map
+  // the UI reads is a projection recomputed from them — the same shape as the
+  // links/events model the rest of the system uses. It is deliberately
+  // renderer-local and session-scoped: this is a viewing preference about one
+  // person's trace, not something to write back into the message record.
+  const [stepLevelEvents, setStepLevelEvents] = useState([]);
+  const stepLevelOverrides = useMemo(
+    () => projectStepLevels(stepLevelEvents),
+    [stepLevelEvents],
+  );
+  const editStepLevel = useCallback((step, level) => {
+    setStepLevelEvents((events) => appendStepLevelEvent(events, step, level));
+  }, []);
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -9068,7 +9204,7 @@ function App() {
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
             const displayTool = localizeTool(tool, uiLanguage);
             return <li key={tool.id} className={`tool tool-mode-${tool.mode || "thinking"}`} data-testid="tool-entry" data-tool-id={tool.id} data-tool-mode={tool.mode || "thinking"}><div className="tool-head"><strong>{displayTool.name || tool.id}</strong><span className="tool-mode">{tool.mode === "agent" ? t("toolMode.agent") : t("toolMode.thinking")}</span></div>{displayTool.description ? <p className="tool-desc">{displayTool.description}</p> : null}</li>;
-          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
+          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
         }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {

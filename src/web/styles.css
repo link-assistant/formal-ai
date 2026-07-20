@@ -2554,6 +2554,53 @@ body.is-resizing-context {
   background: #ffffff;
 }
 
+/* Issue #672 (F4): a step whose level the user edited is marked, so the trace
+ * never silently disagrees with what the solver actually reported. */
+.diagnostics-detail[data-level-override] {
+  border-color: var(--fa-control-hover-border);
+}
+
+.diagnostics-detail[data-level-override] > summary::after {
+  content: "•";
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--fa-accent-link);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Positioned at the pointer, hence `fixed` + inline coordinates. */
+.step-hierarchy-menu {
+  position: fixed;
+  z-index: 40;
+  display: grid;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.step-hierarchy-menu button {
+  border: 0;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-hierarchy-menu button:hover:not(:disabled) {
+  background: var(--fa-control-hover-bg);
+}
+
+.step-hierarchy-menu button:disabled {
+  color: var(--fa-text-muted);
+  cursor: default;
+}
+
 .diagnostics-tool-section {
   display: grid;
   gap: 6px;

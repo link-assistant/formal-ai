@@ -77,6 +77,11 @@ const REQUIRED_KEYS = [
   'message.copyMarkdownTitle',
   // Issue #672 (F3): per-message override of the reveal animation budget.
   'message.skipAnimation',
+  'message.stepLevel.title',
+  'message.stepLevel.bump',
+  'message.stepLevel.demote',
+  'message.stepLevel.reset',
+  'message.stepLevel.hint',
   'message.thinking',
   'message.thinkingExpand',
   'message.thinkingCollapse',
