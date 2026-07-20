@@ -7,6 +7,222 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.301.0] - 2026-07-20
+
+### Added
+- Budget-driven random and evolutionary search in solution synthesis (issue #662, F4). When reuse and rule reasoning produce no candidate, step 7 now samples and evolves compositions of the known numbers against the step-6 generated tests until it reaches the target or exhausts the compute budget.
+- `compute_budget` knob on `SolverConfig`, wired through the `FORMAL_AI_COMPUTE_BUDGET` environment variable and the `--compute-budget` CLI flag, counting candidate evaluations.
+- Atomic `search:` trace events recording each generation — `search:problem:{target,numbers,ops}`, `search:budget`, `search:test:{each_number_once,only_operators,evaluates_to}`, `search:random:{sampled,best_diff}`, `search:evolutionary:{generation,best_diff}`, `search:candidate:{phase,evaluations,expression}`, `search:solution`, `search:exhausted:{evaluations,budget,best_diff}`; on budget exhaustion the honest unknown-reasoning reply keeps the search evidence attached. Each event carries a single slug/value pair, so no user-facing prose is hardcoded in the trace (R379).
+- A self-authored, search-only benchmark source (base + held-out variant) in the industry suite, raising `minimum_pass_count` from 10 to 12.
+- `search:skill` proposal-only auto-learning event: a solved composition is recorded as a `candidate_skill` in status `proposed`, never promotable without review (`search:skill:promotable` is always `0`), mirroring the skill-accumulation ledger (R21/R340, C3/R13).
+- Grounded meta-algorithm recipe `data/meta/budget-search-recipe.lino`, pinned by `tests/unit/specification/budget_search_meta_algorithm.rs` and documented in `docs/meta-algorithm.md`, so the nine-step stage always describes how the running code was produced.
+
+### Changed
+- Search recognition is now grounded entirely in the seed lexicon (issue #386): the operand framing, search cue, and target marker are read by semantic role from `data/seed/meanings-search.lino` instead of hardcoded per-language phrase tables, so the reach-a-target class spans en/ru/hi/zh (and any language whose surfaces are added to the seed) without touching Rust.
+- The operator toolbox is derived from the seed `arithmetic_operator_word` vocabulary via `seed::Lexicon::arithmetic_operators`, generalising the search from `+ - *` to include division and modulo (with a division/modulo-by-zero guard) the moment the seed lists them.
+- The budget-search reply is looked up from the seed knowledge base by the prompt's detected language (intent `budget_search_solution`, localized en/ru/hi/zh in `data/seed/multilingual-responses.lino`) instead of a hardcoded English string, so a Russian puzzle is answered in Russian (R379: data is the interface).
+
+### Added
+- Every formalized statement now carries an explicit, inspectable
+  probability weight (issue #661, R384). For a multi-interpretation prompt
+  (e.g. the copula-ambiguous "apple is a fruit", which splits into P31
+  instance-of vs P279 subclass-of), the formalization step appends a
+  `statement_weight` link per accepted interpretation, whose values are the
+  softmax posteriors already used for temperature selection and sum to 1
+  across candidates. The weights live in the trace (evidence links), never in
+  the plain reply, so diagnostics stay default-off.
+- Contradictory standing requirements are now detected and warned about
+  (issue #661, R384). When a newly formalized directive conflicts with a
+  retained one — same subject, opposite polarity, e.g. "always answer in
+  Russian" then "never answer in Russian" — the solver appends a
+  `requirement_contradiction` event and replies with a warning that names
+  both statements, their weights, and a proposed resolution (retract one via a
+  superseding requirement, split the meanings, or scope each to a different
+  context). The resolution reuses the append-only retraction protocol
+  (`policy:add_only_history`), and the warning is rendered in the prompt's
+  language (en/ru/hi/zh). Polarity markers are recognised across all four
+  languages, so widening coverage is a marker-table edit rather than new
+  control flow. The check runs before the contextual handlers so a
+  contradictory language directive is flagged instead of being silently
+  replayed.
+- A generalized `formal-ai statement-audit` command now snapshots repository
+  prose, code comments, and structured facts; gives every recognized statement
+  an evidence-adjusted probability and stable source location; verifies path
+  claims against the Git index; and exports contradictions, issue candidates,
+  provenance, and learned associations as deterministic Links Notation.
+  Original-source captures contribute Relative Meta-Logic mass while preserved
+  unoriginal reposts contribute zero mass. A committed case study and release
+  test replay the fixture both directly and through the real
+  `@link-assistant/agent` CLI.
+
+### Added
+
+- Canonical `GET /v1/network` endpoint (and `/api/formal-ai/v1/network`) for the
+  links-network projection of the event log, returning the same nodes/edges,
+  `?trace=` filtering, `?format=dot` export, and 404-on-unknown-trace behavior.
+- `scripts/check-associative-terminology.rs` hygiene lint that blocks *new*
+  graph-named public API routes and Rust modules/files, wired into the release
+  workflow's Lint job. It allowlists the deprecated `/v1/graph` alias, the
+  Wikidata `knowledge_graph` engine, and the codecov coverage badge / external
+  graph-API citations.
+
+### Changed
+
+- The associative surface is now consistently described as a *links network*,
+  not a "graph": renamed `src/self_source_graph.rs` → `src/self_source_links.rs`
+  and `src/agentic_coding/source_graph.rs` → `source_links.rs`, swept the web,
+  desktop, and VS Code UI strings to "links network view", and updated
+  `ARCHITECTURE.md`, `README.md`, and `REQUIREMENTS.md` terminology (fixing the
+  stale `src/graph.rs` reference in R81).
+
+### Deprecated
+
+- `GET /v1/graph` (and `/api/formal-ai/v1/graph`) is now a deprecated alias of
+  `/v1/network`. It still returns the identical payload, but the response is
+  flagged deprecated (a `deprecation: true` header plus a `link` header pointing
+  at the `/v1/network` successor) so existing desktop / VS Code / CLI clients
+  keep working while migrating.
+
+### Changed
+- Retired the `SPECIALIZED_HANDLERS` precedence remnant into data-driven routing: the dispatch ordering now lives in `data/seed/handler-precedence.lino` and is joined with the Rust function pointers at dispatch-build time, with a permutation assertion guarding against silent handler drops or duplicates.
+
+### Added
+- Handler-precedence auto-learning report: Formal AI re-derives the specialized-handler precedence itself through its own Agent CLI, ranking the persisted precedence rationale (`data/meta/issue-663-handler-precedence-learning.lino`) into a human-review-gated proposal whose committed evidence is byte-for-byte reproducible by the in-process renderer.
+
+### Fixed
+- General-change write routing no longer claims a request whose recovered payload is only a non-referential subject (a bare pronoun such as "it"/"this"): "save it to FILE" pointed back at content a keyword recipe must still compose, so the generic write probe now declines and lets that recipe author the real artifact instead of writing the literal word "it".
+
+### Fixed
+- Scoped read-file grounding to the current user turn so stale reads from earlier turns no longer influence write operations (issue #755)
+
+### Added
+
+- `data/meta/links-network-terminology-recipe.lino` — the grounded meta-algorithm
+  recipe for issue #664. It records every ordered step, handler function, module
+  rename, lint allowlist entry, CI wiring, and pinning test that produced the
+  links-network terminology cleanup, together with a `generalization` note that
+  turns "this public surface still says graph, make it a links network" into a
+  reusable procedure.
+- `tests/unit/specification/links_network_terminology_meta_algorithm.rs` — the
+  grounding test that loads the recipe and asserts the live source still matches
+  it (functions exist, renames landed and old names are gone, allowlist entries
+  are present in the lint, the lint is wired into CI, and the pinning tests
+  exist). CI now fails if the recipe and the code drift apart, so the cleanup is
+  a reproducible artifact of the meta-algorithm rather than a one-off hand edit.
+- A "links-network terminology meta-algorithm" section in `docs/meta-algorithm.md`
+  documenting the recipe and how to run its grounding test.
+
+### Added
+
+- A per-message control that reveals a withheld answer immediately (issue #672,
+  F3). The animation budget stays a global preference, but a single message can
+  be settled without changing it for every future answer. Reduced-motion users
+  are unaffected: they never see the control because there is nothing to skip.
+- Reasoning-step hierarchy editing in Diagnostics mode (issue #672, F4).
+  Right-clicking a step offers "Bump to high level" / "Demote to sub-step" /
+  "Restore the original level" in all four locales. Edits are appended to an
+  event log and the visible hierarchy is a projection of it, so the trace the
+  solver reported is never rewritten — each step keeps the solver's own label on
+  `data-solver-level` beside the user's `data-level-override`.
+- A desktop notice for profile migrations, with a replay button (issue #672,
+  F2). `dataMigrationStatus` and `replayDataMigration` carry the result of the
+  startup migration to the renderer, which names the profile the data came from
+  and what moved. Failures surface as errors rather than as claimed successes,
+  and a clean install is never interrupted.
+
+### Changed
+
+- The desktop profile migration now also copies `Cookies`, `Service Worker`,
+  `WebStorage`, and `WebSocketStorage` (`DATA_VERSION` 2, issue #672 F2), so a
+  user whose data moved to the pinned profile no longer arrives logged out. An
+  existing v1 profile is topped up with only the new subtrees. `Cache` and
+  `Code Cache` are deliberately excluded — they are derived, large, and unsafe
+  to carry between Chromium builds.
+
+- The per-message UI strings moved out of `src/web/i18n-catalog.lino` into
+  `src/web/i18n-catalog-messages.lino`, the same way the permission strings were
+  split earlier, so each catalog stays under the Links Notation line limit that
+  the F3/F4 keys pushed the single file past. The loader merges all three files
+  per locale and the catalog, parity, and coverage guards all watch the new file.
+
+### Fixed
+
+- `desktop/scripts/*.test.mjs` was written but never executed by any workflow.
+  The Lint job now runs it, so the profile-migration code has a gate.
+
+### Tests
+
+- `tests/e2e/tests/issue-672-theme-snapshots.spec.js` (issue #672, F1) snapshots
+  the computed colours of the five widgets issue #541's R1 fixed, across
+  light/dark/auto and both the web and desktop surfaces, and runs in CI. Three of
+  those widgets previously had no automated theme coverage at all.
+- `tests/e2e/tests/issue-541-permissions-cold-start.spec.js` (issue #672, F5)
+  re-runs the #541 R9 grant-all journey with the desktop provider behind a real
+  `page.exposeFunction` boundary, so the replayed task and the granted tools are
+  asserted on the payloads that actually left the browser context.
+- The F3 control and the F4 menu are asserted per supported language (en, ru,
+  zh, hi) on the labels the browser renders, and each of those tests performs
+  the edit, so a locale cannot be labelled correctly and broken behaviourally.
+
+### Added
+- Opt-in, default-off per-dialog JSONL request/response recording through `FORMAL_AI_DIALOG_LOG_DIR`, allowing exact agentic sessions to be reconstructed without enabling body logging globally (issues #781 and #800).
+- A reusable native-client research harness covering Agent, OpenCode, Claude Code, and Codex against the same deterministic MCP evidence source.
+
+### Fixed
+- Narrate each web-research action before executing it, fetch sources in separate turns, and synthesize only successfully fetched evidence with its exact URL.
+- Prefer executable open-world research tools over local grep or hosted-only tools, including MCP children advertised through Responses namespaces.
+- Preserve MCP namespace identity for client dispatch and normalize recognized Codex tool-result envelopes only for planning while retaining their exact raw transport content.
+
+### Fixed
+- Stopped a malformed `Formal-AI-Evidence` record on an already-merged commit from permanently blocking every release; the pull-request gate stays strict while release recording now reports the commit and leaves it unattributed (issue #810)
+- Made the macOS ad-hoc signing hook report its entry banner and ignore-predicate counters synchronously, so an aborted `electron-builder` run can no longer discard the diagnostics that identify why the bundled browser runtime was signed (issue #810)
+
+### Fixed
+- Added default-off debug output to the macOS ad-hoc signing script so failing desktop release runs can be diagnosed from CI logs (issue #804).
+
+### Added
+- A workspace-wide self-AST census (issue #673): `data/meta/self-ast/` now holds one census document per `src/` module plus an index, replacing the single pinned module as the algorithm's view of its own source. Modules under `src/agentic_coding/` are censused at full AST fidelity through the meta-language links network; the rest carry a signature-level census (items, symbols, spans). Every document records its fidelity marker.
+- `formal_ai::self_ast_census` with `WorkspaceCensus::compile`/`resolve`, per-module `ModuleCensus`, and a pure `drift_report` so a stale, missing, or orphaned census document is detected without touching the filesystem.
+- `cargo run --example regenerate_self_ast_census` regenerates the census incrementally — only the documents whose modules changed are rewritten — and `cargo run --example dump_self_ast_census [reference]` prints the index or a resolved module.
+
+### Changed
+- The general planner resolves edit targets through the census index (`resolve_census_target`), so a request naming a bare module file (`method_registry.rs`) is planned against its real workspace path instead of a hardcoded one.
+
+### Fixed
+- Replaced the contradictory `always() && !cancelled()` job guards in the CI/CD pipeline with `!cancelled()`, so cancelling a run actually stops the dependent jobs (issue #808).
+- Excluded the bundled Chrome for Testing runtime from macOS code signing via `electron-builder`'s `mac.signIgnore`, so ad-hoc desktop builds no longer fail with "unsealed contents present in the root directory of an embedded framework" (issue #808).
+- Routed the macOS ad-hoc signing diagnostics to stderr and added an unconditional hook-entry line, so the sign trace actually reaches CI logs; the per-file trace stays default-off behind `FORMAL_AI_MACOS_SIGN_DEBUG` (issue #808).
+
+- Set `CSC_FOR_PULL_REQUEST` for ad-hoc macOS packaging, so `electron-builder` no longer skips code signing on pull-request runs and the packaged app keeps its `CodeResources` envelope (issue #808).
+
+### Added
+- Desktop and VS Code extension packaging now run on pull requests that touch `desktop/`, `vscode/` or the release workflow, exercising the full six-target build matrix, macOS signing and the artifact smoke tests in dry-run mode with every publishing step skipped (issue #808).
+- Pull-request job building the Docker image and running `scripts/verify-docker-runtime.sh` inside it, so a broken `Dockerfile` can no longer surface only after the crate has been published (issue #808).
+- Pull-request job validating `Formal-AI-Session` / `Formal-AI-Evidence` commit trailers with the same measurement the release uses, so a malformed trailer is rejected before it can fail Auto Release on `main` (issue #808).
+- Pull-request fresh-merge simulation (`scripts/simulate-fresh-merge.sh`, adopted from the pipeline templates), so a pull request cannot pass against a stale merge preview and then break `main` (issue #808).
+- Secrets scan on pull requests (`scripts/check-secrets.sh`, secretlint recommended preset) covering the files a change touches (issue #808).
+- Resilient Buildx setup composite action retrying the BuildKit image pull with a registry-mirror fallback, replacing the raw `docker/setup-buildx-action` uses (issue #808).
+
+### Fixed
+- Stopped the self-hosting ratchet from deadlocking every release: the metric no longer counts captured CI transcripts (`*.log`, `*.jsonl`, `*.diff`, `*.patch`, `*.stderr`, `*.stdout`) or dependency lockfiles, which made up 94.20% of the measured range and turned "commit your evidence" into a guaranteed regression, and enforcement moved from `record_release` on `main` — where every contributing commit is already immutable — to a differential pull-request gate where the commits can still be amended (issue #812).
+- `cargo clippy` now runs with `-D warnings`. Every lint in `[lints.clippy]` is set to `warn`, so the job printed findings and still exited 0 (issue #812).
+- `auto-release` and `manual-release` now gate on `Secrets Scan` and both E2E suites, not just `[lint, test, build]`; a red secrets scan on `main` could previously publish the crate, the Docker image and the GitHub Release anyway (issue #812).
+- The desktop `finalize` job runs under `!cancelled()` instead of `always()`, so a cancelled run can no longer clobber a complete `SHA256SUMS.txt` with a partial one via `gh release upload --clobber` (issue #812).
+- The desktop packaging and VS Code jobs now simulate the fresh merge on pull requests, the same way `lint` and `test` already did, so packaging is validated against the merge result rather than a stale merge preview (issue #812).
+- `scripts/check-file-size.rs` excluded `.github/workflows/**` by accident: its `.git` exclusion was matched as a substring. Directory exclusions are now matched per path component, GitHub Actions workflows are measured (warn at 1500 lines, fail at 2000), and quoted third-party workflows under `docs/case-studies/**` stay exempt (issue #812).
+- `node --test $(ls … | grep -v …)` in the desktop library test step fell back to Node's own test discovery if the glob ever stopped matching — a green step running none of the intended tests. The file list is now built explicitly and an empty list fails (issue #812).
+- Pinned `secretlint` to an explicit version in `scripts/check-secrets.sh`; `npx --yes -p secretlint` resolved to whatever `latest` was when the job ran (issue #812).
+- Quoted `$BASE_REF` at every expansion in `scripts/simulate-fresh-merge.sh`, which upstream leaves bare on two of three lines (issue #812).
+
+### Added
+- `actionlint` (with `shellcheck`) now lints every workflow definition, and `shellcheck` lints the shipped `*.sh` scripts. Nothing validated either before, so a mistyped `needs.<job>` reference or a malformed expression — which fails *open*, silently skipping the guarded step under a green check — could only be found by pushing (issue #812).
+- `METRIC_VERSION` on self-hosting ledger rows, so a change to how the share is measured starts a new comparison epoch instead of silently invalidating recorded history; rows from different epochs are never compared (issue #812).
+
+### Fixed (second pass, found by running the fixed pipeline)
+- The new release gates compared `needs.<job>.result != 'failure'`, which a job killed by its own `timeout-minutes` would pass: GitHub reports a timeout as **cancelled**, not failed. The gates now enumerate the acceptable results (`success` or `skipped`), so a timed-out secrets scan or E2E suite cannot release (issue #812).
+- Raised the `test` job budget from 15 to 25 minutes. Run 29767811026 reported the job as failed with all 1953 tests passing — the suite finished 1.1 s before the cap killed the job during teardown, and run 29749095334 on `main` had already done the same. The step now emits a `::warning` once the suite passes 70% of the budget, so the margin cannot be eaten again silently (issue #812).
+- Raised the `coverage` (15 → 25) and `lint` (10 → 15) budgets for the same reason: measured against the last eight `main` runs, `coverage` peaked at 14.1 minutes (94% of its cap) and `lint` had grown from ~3.3 to 7.8 minutes as checks accumulated. `test-e2e-local` (63%) and `docker-build` (23%) have real headroom and were left alone (issue #812).
+
 ## [0.300.0] - 2026-07-19
 
 ### Added
