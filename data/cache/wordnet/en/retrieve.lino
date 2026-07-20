@@ -1,0 +1,29 @@
+language en
+lemma retrieve
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "get or find back; recover the use of"
+    examples ("She regained control of herself" "She found her voice and replied quickly")
+    id oewn-02252785-v
+    partOfSpeech v
+    synonyms (recover find regain)
+  entry
+    definition "go for and bring back"
+    examples ("retrieve the car from the parking garage")
+    id oewn-01436624-v
+    partOfSpeech v
+  entry
+    definition "run after, pick up, and bring to the master"
+    examples ("train the dog to retrieve")
+    id oewn-01436442-v
+    partOfSpeech v
+  entry
+    definition "recall knowledge from memory; have a recollection"
+    examples ("I can't remember saying any such thing" "I can't think what her last name was" "can you remember her phone number?" "Do you remember that he once loved you?" "call up memories")
+    id oewn-00609334-v
+    partOfSpeech v
+    synonyms (remember recall "call back" "call up" recollect think)
+source "oewn:2024"

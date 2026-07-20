@@ -1,0 +1,109 @@
+{
+  "lemma": "content",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00591490-a",
+      "partOfSpeech": "a",
+      "definition": "satisfied or showing satisfaction with things as they are",
+      "examples": [
+        "a contented smile"
+      ],
+      "synonyms": [
+        "contented"
+      ]
+    },
+    {
+      "id": "oewn-07971643-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) everything that is included in a collection and that is held or included in something",
+      "examples": [
+        "he emptied the contents of his pockets",
+        "the two groups were similar in content"
+      ],
+      "synonyms": [
+        "contents"
+      ]
+    },
+    {
+      "id": "oewn-14436286-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being contented with your situation in life",
+      "examples": [
+        "he relaxed in sleepy contentedness",
+        "they could read to their heart's content"
+      ],
+      "synonyms": [
+        "contentedness"
+      ]
+    },
+    {
+      "id": "oewn-06611268-n",
+      "partOfSpeech": "n",
+      "definition": "content communicating a message; what something is about",
+      "synonyms": [
+        "message",
+        "subject matter",
+        "substance"
+      ]
+    },
+    {
+      "id": "oewn-13838733-n",
+      "partOfSpeech": "n",
+      "definition": "the proportion of a substance that is contained in a mixture or alloy etc."
+    },
+    {
+      "id": "oewn-13801586-n",
+      "partOfSpeech": "n",
+      "definition": "the amount that can be contained",
+      "examples": [
+        "the gas tank has a capacity of 12 gallons"
+      ],
+      "synonyms": [
+        "capacity"
+      ]
+    },
+    {
+      "id": "oewn-05817200-n",
+      "partOfSpeech": "n",
+      "definition": "the sum or range of what has been perceived, discovered, or learned",
+      "synonyms": [
+        "cognitive content",
+        "mental object"
+      ]
+    },
+    {
+      "id": "oewn-04354303-n",
+      "partOfSpeech": "n",
+      "definition": "something (a person or object or scene) selected by an artist or photographer for graphic representation",
+      "examples": [
+        "a moving picture of a train is more dramatic than a still picture of the same subject"
+      ],
+      "synonyms": [
+        "subject",
+        "depicted object"
+      ]
+    },
+    {
+      "id": "oewn-01196771-v",
+      "partOfSpeech": "v",
+      "definition": "satisfy in a limited way",
+      "examples": [
+        "He contented himself with one glass of beer per day"
+      ]
+    },
+    {
+      "id": "oewn-01820811-v",
+      "partOfSpeech": "v",
+      "definition": "make content",
+      "examples": [
+        "I am contented"
+      ]
+    }
+  ]
+}

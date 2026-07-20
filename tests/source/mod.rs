@@ -41,6 +41,7 @@ pub mod seed;
 pub mod self_improvement;
 pub mod server;
 pub mod skill_compiler;
+pub mod skill_procedure;
 pub mod solver;
 pub(crate) mod solver_diagnostics;
 pub(crate) mod solver_dispatch;

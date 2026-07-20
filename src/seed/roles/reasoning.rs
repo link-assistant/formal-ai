@@ -253,6 +253,38 @@ pub const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE: &str = "behavior_rule_edit_directiv
 /// `skill_when_then`; read by the Rust skill compiler and the JS worker so neither
 /// names a keyword pair in code.
 pub const ROLE_SKILL_WHEN_THEN_PAIR: &str = "skill_when_then_pair";
+/// Semantic role: the opening of a freely-phrased multi-step procedure (issue #674).
+///
+/// The lead a user says before describing a procedure they want compiled into a
+/// skill ("when i ", "whenever i ", "когда я ", "जब मैं ", "当我"). Matched as a raw
+/// substring after the prompt is lower-cased; its presence is one of the two guards
+/// (the other being at least one recognised step) the procedure compiler requires
+/// before it treats a prompt as a program at all. Carried by `skill_procedure_trigger`;
+/// read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_TRIGGER_LEAD: &str = "skill_procedure_trigger_lead";
+/// Semantic role: the word that ends one procedure clause and starts the next.
+///
+/// A conjunction or sequencing adverb ("and", "then", "и", "затем", "और", "然后").
+/// The compiler splits a procedure sentence on punctuation and on these surfaces, so
+/// widening the set of accepted connectives is a pure data edit. Carried by
+/// `skill_procedure_separator`; read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR: &str = "skill_procedure_clause_separator";
+/// Semantic role: the verb naming what one compiled procedure step *does*.
+///
+/// Every meaning carrying this role is one entry of the step vocabulary, and the
+/// meaning's own slug (`skill_procedure_fetch`, `skill_procedure_translate`, …) *is*
+/// the canonical step kind the compiler emits and the executing host dispatches on.
+/// A new step kind is therefore a new meaning in
+/// `data/seed/meanings-skill-procedure.lino` plus a host capability — never a new
+/// match arm in the compiler. Read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_STEP_VERB: &str = "skill_procedure_step_verb";
+/// Semantic role: the noun naming what one compiled procedure step operates *on*.
+///
+/// The object of a step ("title", "translation", "both", "заголовок", "перевод",
+/// "оба", …). The matched meaning's slug becomes the step's canonical argument, which
+/// is why the same procedure phrased in English and in Russian canonicalises — and so
+/// content-addresses — identically. Read by the Rust arbitrary-procedure compiler.
+pub const ROLE_SKILL_PROCEDURE_STEP_OBJECT: &str = "skill_procedure_step_object";
 /// Semantic role: a marker that a structured-skill step is non-deterministic.
 ///
 /// A word flagging a step as non-deterministic or otherwise unreviewable ("random",

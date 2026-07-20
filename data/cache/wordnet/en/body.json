@@ -1,0 +1,124 @@
+{
+  "lemma": "body",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05223633-n",
+      "partOfSpeech": "n",
+      "definition": "the entire physical structure of an organism (an animal, plant, or human being)",
+      "examples": [
+        "he felt as if his whole body were on fire"
+      ],
+      "synonyms": [
+        "organic structure"
+      ]
+    },
+    {
+      "id": "oewn-07981699-n",
+      "partOfSpeech": "n",
+      "definition": "a group of persons associated by some common tie or occupation and regarded as an entity",
+      "examples": [
+        "the whole body filed out of the auditorium",
+        "the student body",
+        "administrative body"
+      ]
+    },
+    {
+      "id": "oewn-05225115-n",
+      "partOfSpeech": "n",
+      "definition": "a natural object consisting of a dead animal or person",
+      "examples": [
+        "they found the body in the lake"
+      ],
+      "synonyms": [
+        "dead body"
+      ]
+    },
+    {
+      "id": "oewn-09247818-n",
+      "partOfSpeech": "n",
+      "definition": "an individual 3-dimensional object that has mass and that is distinguishable from other objects",
+      "examples": [
+        "heavenly body"
+      ]
+    },
+    {
+      "id": "oewn-05557463-n",
+      "partOfSpeech": "n",
+      "definition": "the body excluding the head and neck and limbs",
+      "examples": [
+        "they moved their arms and legs and bodies"
+      ],
+      "synonyms": [
+        "torso",
+        "trunk"
+      ]
+    },
+    {
+      "id": "oewn-08453298-n",
+      "partOfSpeech": "n",
+      "definition": "a collection of particulars considered as a system",
+      "examples": [
+        "a body of law",
+        "a body of doctrine",
+        "a body of precedents"
+      ]
+    },
+    {
+      "id": "oewn-04941723-n",
+      "partOfSpeech": "n",
+      "definition": "the property of holding together and retaining its shape",
+      "examples": [
+        "wool has more body than rayon",
+        "when the dough has enough consistency it is ready to bake"
+      ],
+      "synonyms": [
+        "consistency",
+        "consistence",
+        "substance"
+      ]
+    },
+    {
+      "id": "oewn-06406344-n",
+      "partOfSpeech": "n",
+      "definition": "the central message of a communication",
+      "examples": [
+        "the body of the message was short"
+      ]
+    },
+    {
+      "id": "oewn-05031782-n",
+      "partOfSpeech": "n",
+      "definition": "the main mass of a thing"
+    },
+    {
+      "id": "oewn-04268616-n",
+      "partOfSpeech": "n",
+      "definition": "a resonating chamber in a musical instrument (as the body of a violin)",
+      "synonyms": [
+        "soundbox"
+      ]
+    },
+    {
+      "id": "oewn-02865226-n",
+      "partOfSpeech": "n",
+      "definition": "the external structure of a vehicle",
+      "examples": [
+        "the body of the car was badly rusted"
+      ]
+    },
+    {
+      "id": "oewn-02704786-v",
+      "partOfSpeech": "v",
+      "definition": "invest with or as with a body; give body to",
+      "synonyms": [
+        "personify"
+      ]
+    }
+  ]
+}

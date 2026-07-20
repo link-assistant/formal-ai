@@ -318,16 +318,21 @@ vision text that motivates it; build status stays in
 
 - **Persona & pain:** Wei wants to write a skill in plain language and have the
   agent execute or compile it.
-- **Future journey:** Wei stores a `.lino` skill describing a procedure; the
-  runtime either walks it step by step or compiles it on demand into one of the
-  supported rule shapes (pure-data rule, compiled Rust/JS handler, or
-  dynamically compiled code stored as data).
+- **Journey today:** Wei states the procedure in plain language — *"when I paste
+  a link, fetch its title, translate it to Russian, save both, and reply with
+  the translation"* — and `src/skill_procedure.rs` compiles it into an ordered,
+  typed program whose steps come from the seeded vocabulary in
+  `data/seed/meanings-skill-procedure.lino`. The compiled skill executes step by
+  step through a host, re-states its steps with the source spans they were read
+  from, and compiles identically from the Russian, Hindi, and Chinese phrasings.
+  A step outside the vocabulary compiles nothing and is reported as a named gap.
 - **Why it matters:** *Computation Model* describes five rule shapes ranked from
   most reviewable to most flexible, with natural-language skills at the flexible
   end.
-- **Status:** Potential future / partially scaffolded (skill-compiler seed and
-  design exist); compiling arbitrary freely-phrased procedures is tracked by
-  [#674](https://github.com/link-assistant/formal-ai/issues/674). See
+- **Status:** Implemented for freely-phrased procedures by
+  [#674](https://github.com/link-assistant/formal-ai/issues/674)
+  (`cargo test arbitrary_skill_compilation`); walking a stored `.lino` skill and
+  compiling it into a Rust/JS handler remains potential future. See
   *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
 
 ### F3 — Olúwa syncs memory to the cloud and across devices

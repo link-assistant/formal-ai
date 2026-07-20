@@ -1,0 +1,45 @@
+view
+  id M-e17f177364ce
+  lemma content
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "satisfied or showing satisfaction with things as they are"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) everything that is included in a collection and that is held or included in something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of being contented with your situation in life"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "content communicating a message; what something is about"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the proportion of a substance that is contained in a mixture or alloy etc."
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the amount that can be contained"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the sum or range of what has been perceived, discovered, or learned"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something (a person or object or scene) selected by an artist or photographer for graphic representation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "satisfy in a limited way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make content"
+    provenance (wordnet)

@@ -571,6 +571,14 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
             "source_refresh" => format!("source_refresh:{}", event.payload),
             "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+            "skill_compile:procedure" => format!("skill_compile:procedure:{}", event.payload),
+            "skill_compile:procedure_step" => format!(
+                "skill_compile:procedure_step:{}",
+                event.payload.replace(' ', ":")
+            ),
+            // Issue #674: the named gap is the evidence, so it travels in the link
+            // rather than being reduced to an opaque event id.
+            "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
             "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
             "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
             "conflict:source_disagreement" => {

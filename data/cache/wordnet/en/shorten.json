@@ -1,0 +1,66 @@
+{
+  "lemma": "shorten",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00317569-v",
+      "partOfSpeech": "v",
+      "definition": "make shorter than originally intended; reduce or retrench in length or duration",
+      "examples": [
+        "He shortened his trip due to illness"
+      ]
+    },
+    {
+      "id": "oewn-00244786-v",
+      "partOfSpeech": "v",
+      "definition": "reduce in scope while retaining essential elements",
+      "examples": [
+        "The manuscript must be shortened"
+      ],
+      "synonyms": [
+        "abridge",
+        "foreshorten",
+        "abbreviate",
+        "cut",
+        "contract",
+        "reduce"
+      ]
+    },
+    {
+      "id": "oewn-00561970-v",
+      "partOfSpeech": "v",
+      "definition": "make short or shorter",
+      "examples": [
+        "shorten the skirt",
+        "shorten the rope by a few inches"
+      ]
+    },
+    {
+      "id": "oewn-00317295-v",
+      "partOfSpeech": "v",
+      "definition": "become short or shorter",
+      "examples": [
+        "In winter, the days shorten"
+      ]
+    },
+    {
+      "id": "oewn-00201398-v",
+      "partOfSpeech": "v",
+      "definition": "edit by omitting or modifying parts considered indelicate",
+      "examples": [
+        "bowdlerize a novel"
+      ],
+      "synonyms": [
+        "bowdlerize",
+        "bowdlerise",
+        "expurgate",
+        "castrate"
+      ]
+    }
+  ]
+}

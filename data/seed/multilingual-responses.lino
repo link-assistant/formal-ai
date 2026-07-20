@@ -1397,3 +1397,51 @@ multilingual_responses
     intent agentic_action_before_tool
     language zh
     text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+  response response_compiled_procedure_en
+    intent compiled_procedure
+    language en
+    text "Procedure compiled into a skill.\n\n```links\n{program}```\n\nCompiled steps:\n\n{steps}\nSend the trigger value and I will run these steps in order. Ask \"why did you do that?\" and I will cite these steps with their source spans."
+  response response_compiled_procedure_ru
+    intent compiled_procedure
+    language ru
+    text "Процедура скомпилирована в навык.\n\n```links\n{program}```\n\nСкомпилированные шаги:\n\n{steps}\nОтправьте значение триггера, и я выполню эти шаги по порядку. Спросите «почему ты так сделал?», и я процитирую эти шаги вместе с исходными фрагментами."
+  response response_compiled_procedure_hi
+    intent compiled_procedure
+    language hi
+    text "प्रक्रिया एक skill में compile की गई.\n\n```links\n{program}```\n\nCompile किए गए steps:\n\n{steps}\nTrigger मान भेजें और मैं इन steps को क्रम से चलाऊँगा. «तुमने ऐसा क्यों किया?» पूछें और मैं ये steps उनके source अंशों सहित उद्धृत करूँगा."
+  response response_compiled_procedure_zh
+    intent compiled_procedure
+    language zh
+    text "已将该流程编译为技能。\n\n```links\n{program}```\n\n已编译的步骤：\n\n{steps}\n发送触发值，我会按顺序执行这些步骤。问「你为什么这样做？」，我会引用这些步骤及其源文片段。"
+  response response_skill_gap_en
+    intent skill_gap
+    language en
+    text "I cannot compile the step \"{step}\" — {gap}.\n\nNothing was compiled — I do not run a procedure partially. Drop that step or restate it with actions I already support."
+  response response_skill_gap_ru
+    intent skill_gap
+    language ru
+    text "Я не могу скомпилировать шаг «{step}»: {gap}.\n\nНичего не скомпилировано — я не выполняю процедуру частично. Уберите этот шаг или опишите его через уже поддерживаемые действия."
+  response response_skill_gap_hi
+    intent skill_gap
+    language hi
+    text "मैं step «{step}» compile नहीं कर सकता: {gap}.\n\nकुछ भी compile नहीं हुआ — मैं procedure को आंशिक रूप से नहीं चलाता. इस step को हटाएँ या पहले से समर्थित actions में बताएँ."
+  response response_skill_gap_zh
+    intent skill_gap
+    language zh
+    text "我无法编译步骤「{step}」：{gap}。\n\n没有编译任何内容——我不会部分执行流程。请去掉该步骤，或用已支持的动作重述它。"
+  response response_skill_gap_name_en
+    intent skill_gap_name
+    language en
+    text "no compiled capability for \"{step}\""
+  response response_skill_gap_name_ru
+    intent skill_gap_name
+    language ru
+    text "нет скомпилированной способности для «{step}»"
+  response response_skill_gap_name_hi
+    intent skill_gap_name
+    language hi
+    text "«{step}» के लिए कोई compile की गई capability नहीं है"
+  response response_skill_gap_name_zh
+    intent skill_gap_name
+    language zh
+    text "没有针对「{step}」的已编译能力"
