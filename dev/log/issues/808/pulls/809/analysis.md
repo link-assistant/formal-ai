@@ -1,6 +1,6 @@
 # Issue #808 — CI/CD false positives, false negatives, warnings and errors
 
-Session: `issue-808-claude-20260720` (branch session: `issue-808-bf5af32dbcdd`)
+Session: `issue-808-claude-20260720`
 Repository: formal-ai (`link-assistant/formal-ai`)
 Pull request: [#809](https://github.com/link-assistant/formal-ai/pull/809)
 Evidence collected in: `dev/log/issues/808/pulls/809/`
