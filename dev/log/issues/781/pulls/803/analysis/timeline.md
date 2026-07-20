@@ -25,6 +25,7 @@ from the 67,000-line raw log by `experiments/issue-781-log-timeline.rb`.
 | 2026-07-20 01:37 | A final Codex run exposed wrapper text (`Wall time`, `Output`, JSON content blocks) entering the URL/evidence path. Planner normalization now unwraps the client envelope while durable raw logging remains exact. | `../tests/reproduction-codex-mcp-envelope-before-fix.log`, `*-after-fix.log` |
 | 2026-07-20 01:49 | The reusable deterministic harness passed all four native clients: Agent 5 model turns, OpenCode 6, Claude 5, Codex 5; each made one search and three fetches before final synthesis. | `../tests/four-client-harness-final-2.log`, `../real-cli/four-client-final-2/` |
 | 2026-07-20 01:56 | The namespace reproduction and workaround were reported upstream to OpenAI Codex issue #14242. | `../research/upstream/codex-14242-comment-url.txt` |
+| 2026-07-20 03:24 | Agent's independent `reason: unknown` early-exit record was corrected to issue #194, its 2,651-line authenticated Gist was retained, and a current reproduction, workaround, and client-loop fix proposal were posted upstream. OpenCode #20465 was retained as corroborating evidence for the same blank-output failure class, not assigned as Formal AI's cause. | `../research/upstream/agent-issue-194-*`, `../research/upstream/opencode-issue-20465-*` |
 
 ## Failure sequence reconstructed
 

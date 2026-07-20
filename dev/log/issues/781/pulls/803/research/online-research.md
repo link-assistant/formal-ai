@@ -87,9 +87,19 @@ authoritative compatibility evidence.
 
 ## Known related defects
 
-- Agent CLI issue #249 documents the `unknown` finish-reason/early-exit class.
-  Local parallel and one-fetch controls reproduce the same boundary; captured
-  issue data is in `upstream/agent-issue-249-*`.
+- Agent CLI issue #194 documents a step ending with `reason: unknown` after a
+  tool action, followed by process completion instead of another model turn.
+  Local parallel and one-fetch controls reproduce the same boundary; the issue
+  and its 2,651-line authenticated Gist capture are retained in
+  `upstream/agent-issue-194-*`:
+  https://github.com/link-assistant/agent/issues/194
+- OpenCode issue #20465 documents the same visible failure class—tool-enabled
+  work followed by blank assistant output—from an AI SDK finish-reason mapping
+  regression. Its reported fix was to continue the loop for the SDK's `other`
+  result and normalize all current request shapes. That is corroborating client
+  evidence, not the cause assigned to Formal AI's OpenCode run, which passes on
+  the retained current client:
+  https://github.com/anomalyco/opencode/issues/20465
 - OpenAI Codex issue #14242 discusses tool-only MCP discovery and namespace
   routing. Our Codex 0.144.6 custom-provider reproduction, workaround, and
   suggested code behavior were posted here:

@@ -56,7 +56,7 @@ the current PR.
 
 ### Agent CLI early termination
 
-1. Track upstream issue #249 and rerun the retained one-fetch and multi-fetch
+1. Track upstream issue #194 and rerun the retained one-fetch and multi-fetch
    controls when a new Agent release is available.
 2. Keep the retry bounded and visible; never accept a partial run as passing.
 3. Remove the retry only after repeated full-session tests demonstrate the
