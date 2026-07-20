@@ -21,6 +21,7 @@ mod natural_language_tools;
 mod number_riddle;
 mod numeric_list;
 mod playwright_script;
+mod procedure_rules;
 mod program_blueprint;
 mod program_synthesis;
 mod research_table;

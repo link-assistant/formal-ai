@@ -29,6 +29,7 @@ use super::behavior_rule_matching::{
     is_behavior_rules_brief_followup, is_behavior_rules_count_query, is_behavior_rules_list,
 };
 use super::finalize_simple;
+use super::procedure_rules::try_compiled_procedure;
 use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
 #[derive(Debug, Clone)]
@@ -67,6 +68,12 @@ pub fn try_behavior_rules_with_runtime(
             &body,
             1.0,
         ));
+    }
+
+    // Issue #674: freely phrased multi-step procedures compile after the typed
+    // trigger/response shape declines, so neither compiler shadows the other.
+    if let Some(answer) = try_compiled_procedure(prompt, log, &language) {
+        return Some(answer);
     }
 
     if is_behavior_rules_count_query(normalized, log) {

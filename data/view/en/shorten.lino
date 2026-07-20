@@ -1,0 +1,25 @@
+view
+  id M-5d9ce090a9a2
+  lemma shorten
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make shorter than originally intended; reduce or retrench in length or duration"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reduce in scope while retaining essential elements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make short or shorter"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become short or shorter"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "edit by omitting or modifying parts considered indelicate"
+    provenance (wordnet)

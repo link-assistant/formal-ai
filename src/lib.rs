@@ -86,6 +86,7 @@ pub mod shared_dialog;
 pub mod shared_memory;
 pub mod skill_compiler;
 pub mod skill_ledger;
+pub mod skill_procedure;
 pub mod solution_evidence;
 pub mod solver;
 pub(crate) mod solver_diagnostics;
@@ -288,6 +289,10 @@ pub use skill_compiler::{
     compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,
     CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
     CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
+};
+pub use skill_procedure::{
+    compile_procedure, CompiledProcedure, ProcedureCompileError, ProcedureHost, ProcedureRun,
+    ProcedureRunError, ProcedureStep, ProcedureTrigger, StepOutcome,
 };
 pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,

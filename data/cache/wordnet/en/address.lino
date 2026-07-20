@@ -1,0 +1,95 @@
+language en
+lemma address
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(computer science) the code that identifies where a piece of information is stored"
+    id oewn-06367922-n
+    partOfSpeech n
+    synonyms ("computer address" reference)
+  entry
+    definition "the place where a person or organization can be found or communicated with"
+    id oewn-08508037-n
+    partOfSpeech n
+  entry
+    definition "the act of delivering a formal spoken communication to an audience"
+    examples ("he listened to an address on minor Roman poets")
+    id oewn-07253354-n
+    partOfSpeech n
+    synonyms (speech)
+  entry
+    definition "the manner of speaking to another individual"
+    examples ("he failed in his manner of address to the captain")
+    id oewn-07081631-n
+    partOfSpeech n
+  entry
+    definition "a sign in front of a house or business carrying the conventional form by which its location is described"
+    id oewn-06807073-n
+    partOfSpeech n
+  entry
+    definition "written directions for finding some location; written on letters or packages that are to be delivered to that location"
+    id oewn-06800007-n
+    partOfSpeech n
+    synonyms (destination "name and address")
+  entry
+    definition "the stance assumed by a golfer in preparation for hitting a golf ball"
+    id oewn-05089855-n
+    partOfSpeech n
+  entry
+    definition "the ability to do or say what is appropriate for the occasion"
+    id oewn-04849463-n
+    partOfSpeech n
+    synonyms (savoir-faire)
+  entry
+    definition "speak to"
+    examples ("He addressed the crowd outside the window")
+    id oewn-00899077-v
+    partOfSpeech v
+    synonyms ("turn to")
+  entry
+    definition "give a speech to"
+    examples ("The chairman addressed the board of trustees")
+    id oewn-00991233-v
+    partOfSpeech v
+    synonyms (speak)
+  entry
+    definition "put an address on (an envelope)"
+    id oewn-00992844-v
+    partOfSpeech v
+    synonyms (direct)
+  entry
+    definition "direct a question at someone"
+    id oewn-01153447-v
+    partOfSpeech v
+  entry
+    definition "address or apply oneself to something, direct one's efforts towards something, such as a question"
+    id oewn-01163215-v
+    partOfSpeech v
+  entry
+    definition "greet, as with a prescribed form, title, or name"
+    examples ("He always addresses me with ‘Sir’" "Call me Mister" "She calls him by first name")
+    id oewn-02607453-v
+    partOfSpeech v
+    synonyms (call)
+  entry
+    definition "access or locate by address"
+    id oewn-02253826-v
+    partOfSpeech v
+  entry
+    definition "act on verbally or in some form of artistic expression"
+    examples ("This book deals with incest" "The course covered all of Western Civilization" "The new book treats the history of China")
+    id oewn-01035399-v
+    partOfSpeech v
+    synonyms (cover treat handle plow deal)
+  entry
+    definition "speak to someone"
+    id oewn-00992687-v
+    partOfSpeech v
+    synonyms (accost "come up to")
+  entry
+    definition "adjust and aim (a golf ball) at in preparation of hitting"
+    id oewn-00465600-v
+    partOfSpeech v
+source "oewn:2024"

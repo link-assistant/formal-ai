@@ -389,6 +389,14 @@ roles
     kind predicate
   shell_capability_cue
     kind predicate
+  skill_procedure_clause_separator
+    kind predicate
+  skill_procedure_step_object
+    kind predicate
+  skill_procedure_step_verb
+    kind predicate
+  skill_procedure_trigger_lead
+    kind predicate
   skill_teaching_response_verb
     kind predicate
   skill_teaching_trigger_lead

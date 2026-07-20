@@ -1,0 +1,17 @@
+view
+  id M-e9a99f7611a7
+  lemma headline
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the heading or caption of a newspaper article"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "publicize widely or highly, as if with a headline"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide (a newspaper page or a story) with a headline"
+    provenance (wordnet)

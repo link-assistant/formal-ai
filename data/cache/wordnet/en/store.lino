@@ -1,0 +1,42 @@
+language en
+lemma store
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a mercantile establishment for the retail sale of goods or services"
+    examples ("he bought it at a shop on Cape Cod")
+    id oewn-04209460-n
+    partOfSpeech n
+    synonyms (shop)
+  entry
+    definition "a supply of something available for future use"
+    examples ("he brought back a large store of Cuban cigars")
+    id oewn-13388243-n
+    partOfSpeech n
+    synonyms (stock fund)
+  entry
+    definition "an electronic memory device"
+    examples ("a memory and the CPU form the central part of a computer to which peripherals are attached")
+    id oewn-03749767-n
+    partOfSpeech n
+    synonyms (memory "computer memory" storage "computer storage" "memory board")
+  entry
+    definition "a depository for goods"
+    examples ("storehouses were built close to the docks")
+    id oewn-04336328-n
+    partOfSpeech n
+    synonyms (storehouse depot entrepot storage)
+  entry
+    definition "keep or lay aside for future use"
+    examples ("store grain for the winter" "The bear stores fat for the period of hibernation when he doesn't eat")
+    id oewn-02285938-v
+    partOfSpeech v
+    synonyms ("hive away" "lay in" "put in" "salt away" "stack away" "stash away")
+  entry
+    definition "find a place for and put away for storage"
+    examples ("where should we stow the vegetables?" "I couldn't store all the books in the attic so I sold some")
+    id oewn-02287351-v
+    partOfSpeech v
+source "oewn:2024"

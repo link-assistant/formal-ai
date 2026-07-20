@@ -69,6 +69,7 @@
     "seed/meanings-research-table.lino",
     "seed/meanings-semantic-meta.lino",
     "seed/meanings-skill-compiler.lino",
+    "seed/meanings-skill-procedure.lino",
     "seed/meanings-software-project.lino",
     "seed/meanings-summary.lino",
     "seed/meanings-tool-access.lino",

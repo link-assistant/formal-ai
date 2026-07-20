@@ -1,0 +1,42 @@
+self_ast_census
+  target src/skill_procedure.rs
+  language rust
+  fidelity signature
+  byte_len 24773
+  line_count 658
+  content_id source_module_493340163ede593e
+  symbol_count 33
+  symbols
+    const MINIMUM_STEPS 45 45
+    struct ProcedureStep 49 64
+    function arguments 69 75
+    struct ProcedureTrigger 80 87
+    struct CompiledProcedure 91 102
+    enum ProcedureCompileError 106 121
+    function fmt 124 129
+    function compile_procedure 142 231
+    struct StepOutcome 235 242
+    struct ProcedureRun 246 251
+    function answer 256 258
+    struct ProcedureRunError 263 270
+    function fmt 273 279
+    trait ProcedureHost 290 298
+    function perform 297 297
+    function execute 306 332
+    function restate_steps 340 355
+    function links_notation 362 386
+    function link_records 392 417
+    function canonical_program 421 436
+    struct Found 440 444
+    function first_match 452 478
+    function objects_in 484 505
+    function surfaces 508 515
+    function lower_with_offsets 523 537
+    const CLAUSE_PUNCTUATION 543 545
+    function split_clauses 548 578
+    function is_standalone 585 592
+    function is_ideographic 595 597
+    function push_trimmed 600 608
+    function link_record 610 640
+    function push_field 642 650
+    function push_doublet 652 658

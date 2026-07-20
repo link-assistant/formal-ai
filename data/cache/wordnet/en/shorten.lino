@@ -1,0 +1,34 @@
+language en
+lemma shorten
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make shorter than originally intended; reduce or retrench in length or duration"
+    examples ("He shortened his trip due to illness")
+    id oewn-00317569-v
+    partOfSpeech v
+  entry
+    definition "reduce in scope while retaining essential elements"
+    examples ("The manuscript must be shortened")
+    id oewn-00244786-v
+    partOfSpeech v
+    synonyms (abridge foreshorten abbreviate cut contract reduce)
+  entry
+    definition "make short or shorter"
+    examples ("shorten the skirt" "shorten the rope by a few inches")
+    id oewn-00561970-v
+    partOfSpeech v
+  entry
+    definition "become short or shorter"
+    examples ("In winter, the days shorten")
+    id oewn-00317295-v
+    partOfSpeech v
+  entry
+    definition "edit by omitting or modifying parts considered indelicate"
+    examples ("bowdlerize a novel")
+    id oewn-00201398-v
+    partOfSpeech v
+    synonyms (bowdlerize bowdlerise expurgate castrate)
+source "oewn:2024"
