@@ -1,0 +1,112 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 05s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-568673620da0f85d)
+
+running 2 tests
+test dialog_log::tests::expanded_histories_share_the_first_user_prompt_id ... ok
+test dialog_log::tests::full_exchanges_from_one_dialog_append_to_one_file ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-16b1eb0f77b96204)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/with-formal-ai.rs (target/debug/deps/with_formal_ai-bec87fd43b89bea4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ed0922169c81daf)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 163 filtered out; finished in 0.00s
+
+     Running tests/issue_660_cli.rs (target/debug/deps/issue_660_cli-419cba56ac084513)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_712.rs (target/debug/deps/issue_712-375761675c7a8223)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+
+     Running tests/issue_715.rs (target/debug/deps/issue_715-7074eb06f1a95fdb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests/issue_715_notation.rs (target/debug/deps/issue_715_notation-dda38acf205fc639)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests/issue_715_rewrite_variations.rs (target/debug/deps/issue_715_rewrite_variations-7e7d01b497e90227)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+     Running tests/issue_752.rs (target/debug/deps/issue_752-5030f1d139e66aee)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_756.rs (target/debug/deps/issue_756-f7d94eece4961bd1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_757_session_files.rs (target/debug/deps/issue_757_session_files-47ea6d415188346e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/issue_760.rs (target/debug/deps/issue_760-3f29122789d52b1a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests/issue_761_docs.rs (target/debug/deps/issue_761_docs-f0404527c67d546a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests/issue_762.rs (target/debug/deps/issue_762-6cb4ba51098b6bc1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/issue_763.rs (target/debug/deps/issue_763-1bde99c3e0a6ccef)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests/source/mod.rs (target/debug/deps/source-d09d0cf5a162df48)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 481 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1913 filtered out; finished in 0.00s
+

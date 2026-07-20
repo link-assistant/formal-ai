@@ -1,0 +1,26 @@
+TAP version 13
+# Reconstructed 441 fragments across 303 non-empty releases from HEAD.
+# Subtest: fragment map is derivable without release commit hashes
+ok 1 - fragment map is derivable without release commit hashes
+  ---
+  duration_ms: 2.427608
+  ...
+# Subtest: pending release fragments are rendered before their commit exists
+ok 2 - pending release fragments are rendered before their commit exists
+  ---
+  duration_ms: 1.000717
+  ...
+# Subtest: release regeneration records a consumed fragment in the release commit
+ok 3 - release regeneration records a consumed fragment in the release commit
+  ---
+  duration_ms: 24608.536433
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24838.520326

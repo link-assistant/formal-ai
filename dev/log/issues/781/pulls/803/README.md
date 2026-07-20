@@ -49,9 +49,17 @@ without rerunning third-party clients or depending on mutable GitHub pages.
   failed intermediate Codex namespace/approval/normalization run.
 - `real-cli/four-client-final-2/`: final four-client proof. Each client directory
   contains `client.log`, `formal-ai.log`, and `dialogs/*.jsonl`.
+- `real-cli/four-client-post-merge/`: release-binary proof from the exact merged
+  source. Agent's combined trace retains one early exit plus its successful
+  fresh-session retry; the other three clients complete cleanly.
 - `tests/`: focused red/green test logs and the final harness summary.
+- `tests/validation-summary.md`: final local gate matrix with raw-log pointers.
 - `research/upstream/`: related Agent CLI and Codex issues plus the exact public
   Codex report submitted during this investigation.
+- `security-scan-summary.md`: publication scan results; exact dialog records do
+  not copy authorization headers.
+- `evidence-validation.md` and `file-inventory.tsv`: integrity checks, sizes,
+  and SHA-256 digests for the completed archive.
 - top-level `reproduction-*-before-fix.log` / `*-after-fix.log`: minimum
   reproductions for narration, action sequencing, intent routing, namespace
   visibility, namespace dispatch, and transport-envelope normalization.

@@ -1,0 +1,77 @@
+== issue #781 agent E2E OK: 2 search, 6 fetches, 9 model turns ==
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T03:46:55.534Z",
+  "service": "state",
+  "key": "/tmp/tmp.gtfW4tqBJS",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T03:46:55.534Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
+== issue #781 opencode E2E OK: 1 search, 3 fetches, 6 model turns ==
+[0m
+Я использую issue781_websearch для «мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_websearch {"query":"мне зарядку для ноутбука acer aspire 3 a325 45 на amazon in"}
+Я использую issue781_webfetch для «https://acer.example.test/a325-45/specifications», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://acer.example.test/a325-45/specifications"}
+Я использую issue781_webfetch для «https://parts.example.test/acer-a325-45/connector», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://parts.example.test/acer-a325-45/connector"}
+Я использую issue781_webfetch для «https://shop.example.test/compatible-a325-45-adapter», чтобы проверить следующий шаг перед продолжением.
+[0m⚙ [0missue781_webfetch {"url":"https://shop.example.test/compatible-a325-45-adapter"}
+Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.
+
+Source: https://acer.example.test/a325-45/specifications
+
+Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.
+
+Source: https://parts.example.test/acer-a325-45/connector
+
+Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.
+
+Source: https://shop.example.test/compatible-a325-45-adapter
+== issue #781 claude E2E OK: 1 search, 3 fetches, 5 model turns ==
+Acer Aspire 3 A325-45 specifications: the supplied adapter is rated 24 W.
+
+Source: https://acer.example.test/a325-45/specifications
+
+Acer Aspire 3 A325-45 power input: 12 V DC, 2 A, center-positive 3.5 x 1.35 mm barrel connector.
+
+Source: https://parts.example.test/acer-a325-45/connector
+
+Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.
+
+Source: https://shop.example.test/compatible-a325-45-adapter
+formal-ai: session files for debugging:
+  claude: /tmp/formal-ai-claude-home-config-115608-1784519230955429762/projects/-tmp-gh-issue-solver-1784506151226/ae0d03a1-2fd9-4618-b042-c73cf7957105.jsonl   (resume: claude --resume ae0d03a1-2fd9-4618-b042-c73cf7957105)
+== issue #781 codex E2E OK: 1 search, 3 fetches, 5 model turns ==
+2026-07-20T03:47:23.522726Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportStarted"
+2026-07-20T03:47:23.522810Z DEBUG opentelemetry-http:  name="ReqwestBlockingClient.Send"
+2026-07-20T03:47:23.524707Z DEBUG reqwest::connect: starting new connection: https://ab.chatgpt.com/
+2026-07-20T03:47:23.540156Z DEBUG hyper_util::client::legacy::connect::http: connecting to 172.64.155.209:443
+2026-07-20T03:47:23.563697Z DEBUG hyper_util::client::legacy::connect::http: connected to 172.64.155.209:443
+2026-07-20T03:47:23.701971Z DEBUG hyper_util::client::legacy::pool: pooling idle connection for ("https", ab.chatgpt.com)
+2026-07-20T03:47:23.702276Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportSucceeded"
+2026-07-20T03:47:23.702370Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-20T03:47:23.702424Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadAdjustingRemainingIntervalAfterFlush" remaining_interval=55
+2026-07-20T03:47:23.702442Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadLoopAlive" Next export will happen after interval, unless flush or shutdown is triggered. interval_in_millisecs=55486
+2026-07-20T03:47:23.702474Z DEBUG opentelemetry_sdk:  name="MeterProvider.Shutdown" User initiated shutdown of MeterProvider.
+2026-07-20T03:47:23.702571Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExportingDueToShutdown"
+2026-07-20T03:47:23.702588Z DEBUG opentelemetry_sdk:  name="MeterProviderInvokingObservableCallbacks" count=0
+2026-07-20T03:47:23.704134Z DEBUG opentelemetry_sdk:  name="NoMetricsCollected"
+2026-07-20T03:47:23.704174Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-20T03:47:23.708795Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExporterShutdown" shutdown_result="Ok(())"
+2026-07-20T03:47:23.708878Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExiting" reason="ShutdownRequested"
+2026-07-20T03:47:23.708885Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadStopped"
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-config-115692-1784519238336958964/.codex/sessions/2026/07/20/rollout-2026-07-20T03-47-19-019f7da2-a8e2-7e03-b49f-0752b7cc527c.jsonl   (resume: codex resume 019f7da2-a8e2-7e03-b49f-0752b7cc527c)

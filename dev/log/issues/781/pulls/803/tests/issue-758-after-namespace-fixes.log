@@ -1,0 +1,12 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.77s
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ed0922169c81daf)
+
+running 4 tests
+test issue_758_capability_routing::specialized_tools_precede_shell_and_shell_is_the_navigation_fallback ... ok
+test issue_758_capability_routing::local_search_aliases_never_turn_into_web_search_calls ... ok
+test issue_758_capability_routing::shared_capabilities_honor_strict_advertised_schemas ... ok
+test issue_758_capability_routing::todo_and_multi_edit_arguments_are_recursively_schema_valid ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 159 filtered out; finished in 3.19s
+

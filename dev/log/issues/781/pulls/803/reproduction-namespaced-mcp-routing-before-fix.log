@@ -1,0 +1,21 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 31.39s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 1 test
+
+thread 'issue_781::reported_prompt_uses_namespaced_mcp_research_tools' (33997) panicked at tests/unit/issue_781.rs:68:13:
+assertion `left == right` failed: a client-executed namespaced tool must precede the hosted fallback: [PlannedToolCall { tool: "web_search", arguments: "{\"query\":\"мне совместимую зарядку для acer aspire 3 a325 45\"}" }]
+  left: "web_search"
+ right: "mcp__issue781__websearch"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_781::reported_prompt_uses_namespaced_mcp_research_tools ... FAILED
+
+failures:
+
+failures:
+    issue_781::reported_prompt_uses_namespaced_mcp_research_tools
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1911 filtered out; finished in 0.73s
+
+error: test failed, to rerun pass `--test unit`

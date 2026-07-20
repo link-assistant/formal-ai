@@ -1,0 +1,80 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+warning: pub(crate) function inside private module
+  --> src/agentic_coding/narration.rs:12:1
+   |
+12 | pub(crate) fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String {
+   | ----------^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider using: `pub`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#redundant_pub_crate
+   = note: `-W clippy::redundant-pub-crate` implied by `-W clippy::nursery`
+   = help: to override `-W clippy::nursery` add `#[allow(clippy::redundant_pub_crate)]`
+
+warning: this looks like a formatting argument but it is not part of a formatting macro
+  --> src/agentic_coding/narration.rs:27:19
+   |
+27 |         .replace("{tool}", &tool)
+   |                   ^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#literal_string_with_formatting_args
+   = note: `-W clippy::literal-string-with-formatting-args` implied by `-W clippy::nursery`
+   = help: to override `-W clippy::nursery` add `#[allow(clippy::literal_string_with_formatting_args)]`
+
+warning: this looks like a formatting argument but it is not part of a formatting macro
+  --> src/agentic_coding/narration.rs:28:19
+   |
+28 |         .replace("{target}", &target)
+   |                   ^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#literal_string_with_formatting_args
+
+warning: called `filter(..).next()` on an `Iterator`. This is more succinctly expressed by calling `.find(..)` instead
+   --> src/agentic_coding/web_research.rs:112:5
+    |
+112 | /     research_urls(output)
+113 | |         .into_iter()
+114 | |         .filter(|url| !already.contains(url.as_str()))
+115 | |         .next()
+    | |_______________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#filter_next
+    = note: `-W clippy::filter-next` implied by `-W clippy::all`
+    = help: to override `-W clippy::all` add `#[allow(clippy::filter_next)]`
+help: try
+    |
+112 ~     research_urls(output)
+113 +         .into_iter().find(|url| !already.contains(url.as_str()))
+    |
+
+warning: you are deriving `PartialEq` and can implement `Eq`
+  --> src/dialog_log.rs:35:24
+   |
+35 | #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+   |                        ^^^^^^^^^ help: consider deriving `Eq` as well: `PartialEq, Eq`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#derive_partial_eq_without_eq
+   = note: `-W clippy::derive-partial-eq-without-eq` implied by `-W clippy::nursery`
+   = help: to override `-W clippy::nursery` add `#[allow(clippy::derive_partial_eq_without_eq)]`
+
+warning: `formal-ai` (lib) generated 5 warnings (3 duplicates) (run `cargo clippy --fix --lib -p formal-ai -- ` to apply 2 suggestions)
+warning: `formal-ai` (lib test) generated 5 warnings (2 duplicates) (run `cargo clippy --fix --lib -p formal-ai --tests -- ` to apply 1 suggestion)
+warning: item in documentation is missing backticks
+   --> tests/unit/issue_781.rs:119:18
+    |
+119 | /// The reported OpenCode session showed only a bare tool label and then stayed
+    |                  ^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#doc_markdown
+    = note: `-W clippy::doc-markdown` implied by `-W clippy::pedantic`
+    = help: to override `-W clippy::pedantic` add `#[allow(clippy::doc_markdown)]`
+help: try
+    |
+119 - /// The reported OpenCode session showed only a bare tool label and then stayed
+119 + /// The reported `OpenCode` session showed only a bare tool label and then stayed
+    |
+
+warning: `formal-ai` (test "unit") generated 1 warning (run `cargo clippy --fix --test "unit" -p formal-ai -- ` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 17s

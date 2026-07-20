@@ -1,0 +1,3 @@
+Claude requested permissions to use WebSearch, but you haven't granted it yet.
+formal-ai: session files for debugging:
+  claude: /tmp/formal-ai-claude-home-config-32198-1784509641480555675/projects/-tmp-gh-issue-solver-1784506151226/a0b6d73e-e20e-4daf-a360-253bbc8005d0.jsonl   (resume: claude --resume a0b6d73e-e20e-4daf-a360-253bbc8005d0)

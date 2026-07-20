@@ -1,0 +1,2570 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.190Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "configContent": "{\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"formalai/formal-ai\",\n  \"provider\": {\n    \"formalai\": {\n      \"models\": {\n        \"formal-ai\": {\n          \"name\": \"formal-ai\"\n        }\n      },\n      \"name\": \"formal-ai server\",\n      \"npm\": \"@ai-sdk/openai-compatible\",\n      \"options\": {\n        \"apiKey\": \"{env:FORMAL_AI_API_KEY}\",\n        \"baseURL\": \"http://127.0.0.1:8785/api/openai/v1\"\n      }\n    }\n  }\n}\n",
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.198Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --no-summarize-session --compaction-model same --model formalai/formal-ai -p Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
+  "workingDirectory": "/tmp/gh-issue-solver-1784506151226",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.199Z",
+  "service": "default",
+  "directory": "/tmp/gh-issue-solver-1784506151226",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.200Z",
+  "service": "project",
+  "directory": "/tmp/gh-issue-solver-1784506151226",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.207Z",
+  "service": "project",
+  "status": "started",
+  "message": "git.rev-parse"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.284Z",
+  "service": "project",
+  "status": "completed",
+  "duration": 77,
+  "message": "git.rev-parse"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.295Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.299Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.310Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formalai/formal-ai",
+    "-p",
+    "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formalai/formal-ai",
+    "-p",
+    "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?"
+  ],
+  "cliModelArg": "formalai/formal-ai",
+  "yargsModel": "formalai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.310Z",
+  "service": "default",
+  "rawModel": "formalai/formal-ai",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.323Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.351Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.375Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.389Z",
+  "service": "config",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.576Z",
+  "service": "models.dev",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.576Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.794Z",
+  "service": "models.dev",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.956Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.975Z",
+  "service": "claude-oauth",
+  "path": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.975Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.976Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.976Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.976Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.976Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.976Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 653,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.981Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.981Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:35.982Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.019Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.019Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.024Z",
+  "service": "session",
+  "id": "ses_082f51268ffermsvLNmOiPbRBz",
+  "version": "agent-cli-1.0.0",
+  "projectID": "2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "directory": "/tmp/gh-issue-solver-1784506151226",
+  "title": "New session - 2026-07-20T01:01:36.024Z",
+  "time": {
+    "created": 1784509296024,
+    "updated": 1784509296024
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.026Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.027Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 8,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.028Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.029Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_082f51268ffermsvLNmOiPbRBz/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.029Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_082f51268ffermsvLNmOiPbRBz/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.068Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 39,
+  "method": "POST",
+  "path": "/session/ses_082f51268ffermsvLNmOiPbRBz/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.105Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.112Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.114Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.119Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.139Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.140Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.141Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.142Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formalai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.143Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.143Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.144Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 2,
+  "providerID": "formalai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.145Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.146Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:36.147Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:37.679Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:37.695Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:37.698Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.144Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.173Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.225Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.225Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.225Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:38.227Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:39.399Z",
+  "service": "snapshot",
+  "message": "initialized"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.499Z",
+  "service": "snapshot",
+  "hash": "74e4635928940e1b0743d4a98688c1255f3726c0\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.515Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784509313516,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b31dc0014173zXEfZ5d36Y",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "step-start",
+    "snapshot": "74e4635928940e1b0743d4a98688c1255f3726c0"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.523Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.538Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509313538,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b31f40017fOXoO8KpKFhfj",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "tool",
+    "callID": "call_5db50262b16e444d",
+    "tool": "websearch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.543Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509313544,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b31f40017fOXoO8KpKFhfj",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "tool",
+    "callID": "call_5db50262b16e444d",
+    "tool": "websearch",
+    "state": {
+      "status": "running",
+      "input": {
+        "query": "мне совместимую зарядку для acer aspire 3 a325 45"
+      },
+      "time": {
+        "start": 1784509313538
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.584Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784509313584,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b31ee001nvhdNy6iXc3eU0",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "text",
+    "text": "Я использую websearch для «мне совместимую зарядку для acer aspire 3 a325 45», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784509313576,
+      "end": 1784509313576
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.603Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509313603,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b31f40017fOXoO8KpKFhfj",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "tool",
+    "callID": "call_5db50262b16e444d",
+    "tool": "websearch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "query": "мне совместимую зарядку для acer aspire 3 a325 45"
+      },
+      "output": "Title: 🔋 Блок питания Acer 45W (19V 2.37А 3.0*1.1мм) [A13-045N2A]⚡ Купить зарядку для ноутбука Acer | Room Parts\nURL: https://room-parts.com.ua/blok-pitaniya-zaryadka-dlya-noutbuka-acer-45w-19v-237a-3011mm-original/\nPublished: N/A\nAuthor: N/A\nHighlights:\n🔋 Блок питания Acer 45W (19V 2.37А 3.0*1.1мм) [A13-045N2A]⚡ Купить зарядку для ноутбука Acer | Room Parts\n...\n## Новый блок питания (зарядное устройство, зарядка, адаптер питания, сетевой адаптер, ac/dc adapter, power charger, power adapter) для ноутбуков Acer с параметрами 45W 19V 2.37А и коннектором 3.0*1.1мм, подходит для следующих моделей:\n...\n- Acer Aspire 3: A314-22, A314-22G, A315-22, A315-22G, A315-23, A315-23G, A315-55, A315-55G, A315-55KG, A315-57, A315-57G, A315-58, A315-58G, A315-59, A315-59G, A317-53, A317-53G, A317-54, A317-54G\n...\n⚠️ Обратите внимание: при выборе блока питания не ориентируйтесь только на модель, указанную на корпусе. Обозначение модели указывает на тип установленной платы и производителя, но не позволяет определить тип и размеры штекера. 👉 Главный параметр при подборе блока питания — это выходные характеристики (Output): 19V / 2.37А / 45W и разъём 3.0×1.1 мм. Значения Input на совместимость не влияют и могут отличаться у разных адаптеров.\n...\n📌 Совместимые партномера блока питания Acer: A045R072P, PA-1450-26, ADP-45FE F, ADP-45FE FD, A13-045N2A\n...\n| Совместимость | Acer |\n| --- | --- |\n| Выходная мощность, Вт | 45W |\n| Ток, A | 2,37А |\n| Выходное напряжение | 19V |\n| Состояние | Новый |\n| Тип разъема | 3,0*1,1мм |\n| Цвет | Черный |\n| Гарантия | 3 мес. |\n...\n# Блок питания (зарядка) для ноутбука Acer 45W (19V 2.37А 3.0*1.1мм) [A13-045N2A] PRC\n...\nБлок питания (зарядка) для ноутбука Acer 45W (19V 2.37А 3.0*1.1мм) [A13-045N2A] PRC\n\n---\n\nTitle: Купить Блок питания (зарядка) для ноутбука Acer 45W (19V 2,37А 3,0*1,1мм) KP.04501.025 Оригинал недорого в Украине — Магазин TeaHome\nURL: https://altcore.com.ua/ru/blok-pytanyia-zariadka-dlia-noutbuka-acer-45w-19v-237a-3011mm-kp.04501.025-oryhynal/\nPublished: N/A\nAuthor: N/A\nHighlights:\nКупить Блок питания (зарядка) для ноутбука Acer 45W (19V 2,37А 3,0*1,1мм) KP.04501.025 Оригинал недорого в Украине — Магазин TeaHome\n...\n# Блок питания (зарядка) для ноутбука Acer 45W (19V 2,37А 3,0*1,1мм) KP.04501.025 Оригинал\n...\n## Новый оригинальный блок питания (зарядное устройство, зарядка, адаптер питания, сетевой адаптер, ac/dc adapter, power charger, power adapter) для ноутбуков Acer Aspire, TravelMate, Aspire Switch, Acer Swift, Acer Spin, Acer Enduro Urban, Acer Extensa, Acer Chromebook с параметрами 45W 19V 2.37A и коннектором 3.0х1.1мм Г-образный штекер. Запчасть от официального представительства Acer.\n...\nНовый оригинальный блок питания подходит для моделей ноутбуков Acer:\n...\n- Acer Aspire A114-21, A115-21, A115-22, A314-22, A314-22G, A315-22, A315-22G, A315-23, A315-23G, A315-55, A315-55KG, A315-55G, A315-57, A315-57G, A315-58, A315-58G, A315-59, A315-59G, A317-53, A317-53G, A317-54, A317-54G, A514-53, A514-53G, A514-52, A514-52G, A514-52K, A514-52KG, A514-54, A514-54G, A514-55, A514-55G, A514-56, A514-56M, A515-44, A515-44G, A515-45, A515-45G, A515-47, A515-48, A515-48M, A515-46, A515-46G, A515-54, A515-54G, A515-55, A515-55G, A515-55T, A515-56, A515-56G, A515-57, A515-57G, A515-57T, A515-58, A515-58G, A515-58M, A515-58P, A517-52, A517-52G, A517-53, A517-53G, A517-58, A517-58M, P3-131, P3-171, R5-431, R5-431T, R5-471, R5-471T, R5-571, R5-571T, R5-571TG, R7-371, R7-371T, R7-372, R7-372T, R7-571, R7-571G, R7-572, R7-572G, S3-392, S3-392G, S5-371, S5-371T, S5-391, S7-191, S7-391, S7-392, S7-393, V3-331, V3-371, V3-372, V3-372T,\n...\n### Совместимые маркировки блока питания Acer: ADP-45BW Z, KP.04501.025, KP.0450H.007, KP.04501.018\n...\n| Acer |\n| --- |\n| 45W |\n| 3,0*1,1мм |\n| 2,37А |\n| 19V |\n| Новый |\n| Черный |\n| Оригинал |\n| 3 мес. |\n\n---\n\nTitle: Купить Charger for Acer Aspire 3 A325-42, цена 5 490 руб — (287341109328), США\nURL: https://shopozz.ru/items/287341109328-charger-for-acer-aspire-3-a325-42\nPublished: N/A\nAuthor: N/A\nHighlights:\nКупить Charger for Acer Aspire 3 A325-42, цена 5 490 руб — (287341109328), США\n...\n# Charger for Acer Aspire 3 A325-42\n...\nСовместимость Марка:\n...\nAcer Aspire 3 A325-42, BSY065T1903423 D\n...\nReplacement Charger 65W 19V 3.42A with 3.5x1.35mm\n...\nСовместимые модели:\n...\nAcer Aspire 3 A325-42, BSY065T1903423 D\n...\nСовместимость линейки продуктов:\n...\nAcer Aspire 3 A325-42\n...\n## Charger for Acer Aspire 3 A325-42 — купить с доставкой в Россию и СНГ\n...\nCharger for Acer Aspire 3 A325-42 можно купить в нашем интернет-магазине с доставкой из Las Vegas, US в Россию и страны СНГ по цене 5490 руб. Все товары из категории «Адаптеры и зарядные устройства» доставляются в соответствии с обозначенными правилами в разделе«Доставка».\n...\nПриобретая товар «Charger for Acer Aspire 3 A325-42» через SHOPOZZ, вы можете быть уверенны в том, что получите качественный продукт, предназначенный для продажи в Las Vegas, US.\n\n---\n\nTitle: Acer Aspire 3 325-42 replacement charger compatibility Help\nURL: https://community.acer.com/en/discussion/735893/acer-aspire-3-325-42-replacement-charger-compatibility-help\nPublished: 2026-03-18T18:26:02.000Z\nAuthor: N/A\nHighlights:\nAcer Aspire 3 325-42 replacement charger compatibility Help - Acer Community\n\nAcer Aspire 3 325-42 replacement charger compatibility Help - Acer Community\n...\n![](https://us.v-cdn.net/6036148/uploads/I4NA53NE10Y7/choco.png)\n\n---\n\nTitle: Блок питания для ноутбука Acer Aspire 3 купить по выгодной цене\nURL: https://hi5.kz/p75872209-blok-pitaniya-dlya.html\nPublished: N/A\nAuthor: N/A\nHighlights:\nБлок питания для ноутбука Acer Aspire 3\n...\n# Блок питания для ноутбука Acer Aspire 3\n...\nБлок питания для ноутбука Acer Aspire 3В наличии\n...\nЗарядное устройство для Acer Aspire 3\n...\nСовместимые модели\n...\nAcer Aspire 3 A315 Acer Aspire 5 A514 Acer Aspire 5 A515 Acer Spin 1 SP111 Acer Spin 3 SP314 Acer Spin 5 SP513 Acer Spin 5 SP514 Acer Spin 5 PRO SP513 Acer Switch 3 SW312 Acer Switch 3 SW512 Acer Switch 11 Acer Switch 12 Acer Aspire Switch Alpha 12 Acer Aspire V3-331 Acer Aspire V3-371 Acer Aspire V3-372 Acer Chromebook r11 Acer Chromebook 11 CB3-111 Acer Chromebook 11 CB3-132 Acer Chromebook 11 CB5-132T Acer Chromebook 13 CB5-311 Acer Chromebook CB3-431 Acer Chromebook CB3-532 Acer Chromebook C730 Acer Chromebook C731 Acer Chromebook C735 Acer Chromebook C738 Acer Chromebook C810 Acer TravelMate B1 Acer TravelMate Spin B1 Acer TravelMate P2 Acer TravelMate P6 Acer TravelMate X3 Acer TravelMate X5 Acer Gateway NE132 Acer Gateway GW312\n...\n| Основные |\n| --- |\n| Производитель | Acer |\n| Назначение | Для ноутбука |\n| Выходное напряжение (output) | 19 В |\n| Сила выходного тока | 2 - 2.9 А |\n| Выходная мощность | 45 Вт |\n| Тип разъема | 3.0x1.1 мм |\n| Совместимость с брендом | Acer |\n| Состояние | Новое |\n\n---\n\nTitle: Адаптер питания переменного тока 19 V 2.37A 45 Вт Зарядное устройство для ноутбука для acer Aspire 3 A311-31 A314-31 A314-32 A315-21 A315-31 A315-32 A315-33 A315-41\nURL: https://lazon.ru/p/32951782408\nPublished: N/A\nAuthor: N/A\nHighlights:\nАдаптер питания переменного тока 19 V 2.37A 45 Вт Зарядное устройство для ноутбука для acer Aspire 3 A311-31 A314-31 A314-32 A315-21 A315-31 A315-32 A315-33 A315-41\n...\n# Адаптер питания переменного тока 19 V 2.37A 45 Вт Зарядное устройство для ноутбука для acer Aspire 3 A311-31 A314-31 A314-32 A315-21 A315-31 A315-32 A315-33 A315-41\n...\nСовместимый бренд: Для acer\n...\nВходное напряжение: AC 100 ~ 240 В\n...\nМощность: 45 Вт\n...\nВыходное напряжение: 19 в\n...\nВыход ток: 2.37A\n...\nВыходное напряжение19 В Совместимый брендДля Acer Номер моделиA314-32 УпаковкаНет БрендFirstmax Выходной ток2.37A Тип штекераfor all\n\n---\n\nTitle: Зарядка 3,0x1,0mm 19V 45W 2,37A для ноутбуков Acer Aspire A315-23, A315-34, A517-52, A314-22, A515-56, Acer Extensa 15 EX215-22, EX215-31, ASUS UX32VD, ASUS Laptop F415JA, X201E, Acer Iconia Tab W700 / ADP-45AW/AA / без сетевого кабеля — купить по доступной цене в интернет-магазине Book-note.Ru\nURL: https://book-note.ru/products/zaryadka-30x10mm-19v-45w-237a-dlya-noutbukov-acer-aspire-a315-23-a315-34-a517-52-a314-22-a515-56-acer-extensa-15-ex215-22-ex215-31-asus-ux32vd-asus-laptop-f415ja-x201e-acer-iconia-tab-w700-adp-45aw-aa-bez-setevogo-kabelya-bn-063959\nPublished: N/A\nAuthor: N/A\nHighlights:\nЗарядка 3,0x1,0mm 19V 45W 2,37A для ноутбуков Acer Aspire A315-23, A315-34, A517-52, A314-22, A515-56, Acer Extensa 15 EX215-22, EX215-31, ASUS UX32VD, ASUS Laptop F415JA, X201E, Acer Iconia Tab W700 / ADP-45AW/AA / без сетевого кабеля — купить по доступной цене в интернет-магазине Book-note.Ru\n...\n# Зарядка 3,0x1,0mm 19V 45W 2,37A для ноутбуков Acer Aspire A315-23, A315-34, A517-52, A314-22, A515-56, Acer Extensa 15 EX215-22, EX215-31, ASUS UX32VD, ASUS Laptop F415JA, X201E, Acer Iconia Tab W700 / ADP-45AW/AA / без сетевого кабеля /Код bn-063959\n...\nЗарядка 3,0x1,0mm 19V 45W 2,37A для ноутбуков Acer Aspire A315-23, A315-34, A517-52, A314-22, A515-56, Acer Extensa 15 EX215-22, EX215-31, ASUS UX32VD, ASUS Laptop F415JA, X201E, Acer Iconia Tab W700 / ADP-45AW/AA / без сетевого кабеля\n...\nОбратите внимание, данный блок питания ADP-45AW/AA не подходит для ноутбуков Asus UX21A, UX31A Zenbook. Внимание! В комплекте нет сетевого кабеля (кабеля в розетку). Коннектор 3,0x1,0mm. Разъем может быть прямой или угловой в зависимости от партии. Зарядное устройство (блок питания, адаптер) подходит для различных моделей. Вы можете уточнить совместимость с Вашим устройством, задав нам вопрос в соответствующем разделе. Подходит для Acer Aspire 3 A315 23, Acer Extensa 15 EX215 22, Acer Aspire 3 A315 34, Acer Aspire 5 A517 52, Acer Aspire 3 A314 22, ASUS UX32VD, Acer Aspire 5 A515 56, ASUS Laptop F415JA, Asus X201E, Acer Extensa 15 EX215 31, Acer Iconia Tab W700, Acer Aspire 3 A315 22, Asus S200E, Acer SWIFT 3 SF314 59, Acer SWIFT 3 SF314 41, Acer SWIFT 3 SF314 54, Acer Spin 1 SP111 34N, Acer Aspire 3 A314 35, Acer SWIFT 1 SF114 32, Acer Aspire 5 A515 44, Asus X202E, Acer Aspire 3 A315 55G, Acer Spin 1 SP111 32N, ASUS UX31E, Acer Aspire 5 A515 54G, Acer SWIFT 3 SF314 57, Acer Aspire 3 A315 23G, Acer Aspire 5 A515 55, Acer SWIFT 5 SF514 55TA, Acer Aspire 5 A515 43, Acer Aspire 3 A315 55KG, Acer Aspire 5 A515 44G, Acer Spin 1 SP111 33, Acer SWIFT 3 SF314 58, Acer Aspire 5 A515 55G, Acer Aspire R7 371T, Acer Extensa 15 EX215 22G, Acer SWIFT 3 SF314 52, Acer Aspire S7 391, Acer Aspire 5 A515 54, Acer SWIFT 5 SF514 54T, Acer Extensa 15 EX215 21, Acer SWIFT 3 SF314 54G, Acer SWIFT 3 SF314 57G, Acer Spin 3 SP314 51, Acer Aspire S5 371, Acer SWIFT 3 SF313 52, Acer SWIFT 3 SF314 41G, ASUS UX21E ZENBOOK, Acer Aspire S5 391, Acer SWIFT 3 SF314 58G, Acer Aspire 3 A315 22G, ASUS Transformer Book T300 Chi, Acer SWIFT 3 SF314 55, Acer SWIFT 3 SF314 55G, Acer SWIFT 3 SF314 52G, Acer SWIFT 5 SF514 52T, Acer Aspire S7 191, Acer TravelMate P2 P214 52, Acer Aspire S7 392, ASUS Transformer Book T300LA, Acer SWIFT 5 SF514 53T, Acer TravelMate B117 M, Acer SWIFT 5 SF514 54GT, Asus F201E, ASUS Transformer Book T300FA, Acer Extensa 15 EX215 21G, Acer SWIFT 3 SF313 52G, Acer Aspire S7 393, Acer Aspire 1 A115 31, Acer Aspire 5 A515 43G, Asus F202E, Acer SWIFT 5 SF514 55GT, Acer SWIFT 3 SF314-56, Acer SWIFT 3 SF314-56G, Acer Aspire S5 371T, Acer Iconia Tab W700P, Acer Aspire R5 471T, Acer Switch Alpha 12 SA5 271, Acer Aspire R5 471, Acer Switch Alpha 12 SA5 271P, Asus S2A, Asus S2B. Совместимые партномера (модели) ADP-45AW/AA, 40JW19V1AJ, 40JW24K03EW, 40JW25G0340.(A) Сила тока Ампер 2,37A(V) Напряжение Вольт 19V(W) Мощность Ватт 45WДополнительно (без сетевого кабеля)Коннектор 3,0x1,0mmПроизводство (Copy)\n\n---\n\nTitle: Автомобильная зарядка для Acer 19V 2.37A 45W 3.0x1.1мм NFC 259893678 купить за 75,38 р. в интернет-магазине WildBerries.by\nURL: https://www.wildberries.by/catalog/259893678/detail.aspx\nPublished: N/A\nAuthor: N/A\nHighlights:\nАвтомобильная зарядка для Acer 19V 2.37A 45W 3.0x1.1мм NFC 259893678 купить за 75,38 р. в интернет-магазине WildBerries.by\n...\n# Автомобильная зарядка для Acer 19V 2.37A 45W 3.0x1.1мм\n...\n| Артикул | 259893678 |\n| --- | --- |\n| Цвет | черный |\n| Модель | Acer 19V 2.37A 45W 3.0x1.1мм |\n| Гарантийный срок | 1 месяц |\n| Напряжение | 19 В |\n| Длина кабеля (м) | 1.4 м |\n| Мощность устройства | 45 Вт |\n| Совместимость | Acer Aspire 3; Acer Aspire 5; Acer Aspire V3; Acer Aspire R5; Acer Aspire S5 |\n| Сила тока (А) | 2.37 А |\n| Страна производства | Китай |\n| Комплектация | Блок питания - 1 шт; Упаковка - 1 шт |\n| Партномер | ADP-45HE; ADP-45FE F; KP.04501.012; KP.04501.017; KP.0450H.013 |\n| Комплектация | Блок питания - 1 шт; Упаковка - 1 шт |\n...\nАвтомобильный блок питания от бортовой сети автомобиля 12-24 Вольта, предназначен для заряда ноутбуков Acer с напряжением 19 Вольт и максимальным током 2.37 Ампера, мощностью 65 Ватт, с разъемом 3.0x1.1мм. Блок питания оснащен надежными схемами защиты от перегрузок, перегрева, перенапряжения и короткого замыкания. Совместимые партномера: ADP-45HE, ADP-45FE F, KP.04501.012, KP.04501.017, KP.0450H.013. Подходит к ноутбукам: Acer Aspire 3 A315-22 ,Acer Aspire 3 A315-34, Acer Aspire 3 A317-33 ,Acer Aspire 5 A514-52K, Acer Aspire V3-372, Acer Aspire R5-571T, Acer Aspire S5-371, Acer Aspire S5-371T, Acer Spin 1 SP111-32N, Acer Spin 1 SP111-33, Acer Spin 1 SP111-34N, Acer Spin 3 SP314-51, Acer Spin 3 SP314-52, Acer Spin 5 SP513-52N, Acer Swift 1 SF113-31, Acer Swift 1 SF114-31, Acer Swift 3 SF314-52, Acer Swift 3 SF314-51, Acer Swift 3 SF314-52, Acer Swift 3 SF315-51, Acer Swift 3 SF315-52, Acer Swift 5 SF512-52P, Acer Swift 5 SF514-51, Acer Swift 5 SF514-52T, Acer Switch SW312-31, Acer Switch SW312-31P, Acer Switch SW512-52, Acer TravelMate TMB118-M, Acer TravelMate TMB118-RN, Acer TravelMate TMB118-R, Acer TravelMate TMP238-M, Acer TravelMate TMX349-G2-M, Acer TravelMate TMX349-M, Acer Extensa EX215-31.",
+      "title": "Web search: мне совместимую зарядку для acer aspire 3 a325 45",
+      "metadata": {},
+      "time": {
+        "start": 1784509313538,
+        "end": 1784509313592
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:01:53.609Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 14761,
+    "output": 198,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 14761,
+  "sseCompletionTokens": 198,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.778Z",
+  "service": "snapshot",
+  "hash": "74e4635928940e1b0743d4a98688c1255f3726c0\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784509313784,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b32490013uiVv1sLEgKoGD",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0af41a001UlaTR9jeCiyang",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "74e4635928940e1b0743d4a98688c1255f3726c0",
+    "cost": 0,
+    "tokens": {
+      "input": 14761,
+      "output": 198,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14959,
+      "headroom": 23897,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.784Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.926Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.948Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:53.948Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.000Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.002Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.002Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.005Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.005Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.005Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.072Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.072Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 14959,
+  "providerTokens": 14959,
+  "estimatedInputTokens": 5331,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 14761,
+    "cacheRead": 0,
+    "output": 198
+  },
+  "overflow": false,
+  "headroom": 36849,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.092Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.727Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:54.755Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.487Z",
+  "service": "snapshot",
+  "hash": "9a3d737a70174b22695c46851335c483e61c3b68\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.492Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784509315492,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39a0001szTeQasbzElsh5",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "step-start",
+    "snapshot": "9a3d737a70174b22695c46851335c483e61c3b68"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.495Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.497Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509315497,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39a8001mgL4P7VWaSwynM",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "tool",
+    "callID": "call_af246e83152bedf5",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.497Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509315498,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39a8001mgL4P7VWaSwynM",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "tool",
+    "callID": "call_af246e83152bedf5",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://room-parts.com.ua/blok-pitaniya-zaryadka-dlya-noutbuka-acer-45w-19v-237a-3011mm-original/"
+      },
+      "time": {
+        "start": 1784509315497
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.512Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784509315512,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39a40013fV5KWnZfVsopH",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "text",
+    "text": "Я использую webfetch для «text», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784509315512,
+      "end": 1784509315512
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.537Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509315537,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39a8001mgL4P7VWaSwynM",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "tool",
+    "callID": "call_af246e83152bedf5",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://room-parts.com.ua/blok-pitaniya-zaryadka-dlya-noutbuka-acer-45w-19v-237a-3011mm-original/"
+      },
+      "output": "",
+      "title": "https://room-parts.com.ua/blok-pitaniya-zaryadka-dlya-noutbuka-acer-45w-19v-237a-3011mm-original/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1784509315497,
+        "end": 1784509315536
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:01:55.538Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 28697,
+    "output": 213,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 28697,
+  "sseCompletionTokens": 213,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.633Z",
+  "service": "snapshot",
+  "hash": "9a3d737a70174b22695c46851335c483e61c3b68\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.633Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784509315634,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b39d2001UDtRO9jsQ7vHlI",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3419001uUh9AwKCoq3Do0",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "9a3d737a70174b22695c46851335c483e61c3b68",
+    "cost": 0,
+    "tokens": {
+      "input": 28697,
+      "output": 213,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 28910,
+      "headroom": 9946,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.634Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.760Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.772Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.772Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.843Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.843Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.843Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.851Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.852Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 28910,
+  "providerTokens": 28910,
+  "estimatedInputTokens": 5348,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28697,
+    "cacheRead": 0,
+    "output": 213
+  },
+  "overflow": false,
+  "headroom": 22898,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.852Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:55.853Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.072Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.073Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.076Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.306Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.928Z",
+  "service": "snapshot",
+  "hash": "15e50e533f209eaaa39597a0b9fa5ca3592e6b74\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.929Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784509316929,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b3f40001LdI0Pr97ngXM1W",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "step-start",
+    "snapshot": "15e50e533f209eaaa39597a0b9fa5ca3592e6b74"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.931Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.936Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509316936,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b3f43001fCrBIWzUHfluu2",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "tool",
+    "callID": "call_b20b1b887576bbdf",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.937Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509316937,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b3f43001fCrBIWzUHfluu2",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "tool",
+    "callID": "call_b20b1b887576bbdf",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://altcore.com.ua/ru/blok-pytanyia-zariadka-dlia-noutbuka-acer-45w-19v-237a-3011mm-kp.04501.025-oryhynal/"
+      },
+      "time": {
+        "start": 1784509316936
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:56.969Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784509316969,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b3f41001dgY5SlADh3jI8e",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "text",
+    "text": "Я использую webfetch для «text», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784509316960,
+      "end": 1784509316960
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.148Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509317148,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b3f43001fCrBIWzUHfluu2",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "tool",
+    "callID": "call_b20b1b887576bbdf",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://altcore.com.ua/ru/blok-pytanyia-zariadka-dlia-noutbuka-acer-45w-19v-237a-3011mm-kp.04501.025-oryhynal/"
+      },
+      "output": "",
+      "title": "https://altcore.com.ua/ru/blok-pytanyia-zariadka-dlia-noutbuka-acer-45w-19v-237a-3011mm-kp.04501.025-oryhynal/ (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1784509316936,
+        "end": 1784509317147
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:01:57.149Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 28779,
+    "output": 226,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 28779,
+  "sseCompletionTokens": 226,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.238Z",
+  "service": "snapshot",
+  "hash": "15e50e533f209eaaa39597a0b9fa5ca3592e6b74\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.241Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784509317242,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b401d001CrkUnahFx7hwth",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b3b0c001eRy3Gmg56F4neS",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "15e50e533f209eaaa39597a0b9fa5ca3592e6b74",
+    "cost": 0,
+    "tokens": {
+      "input": 28779,
+      "output": 226,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29005,
+      "headroom": 9851,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.242Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.706Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.714Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.714Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.748Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.748Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "step": 4,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.748Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.755Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.755Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 29005,
+  "providerTokens": 29005,
+  "estimatedInputTokens": 5365,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28779,
+    "cacheRead": 0,
+    "output": 226
+  },
+  "overflow": false,
+  "headroom": 22803,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.756Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.756Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.773Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.773Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.879Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:57.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.515Z",
+  "service": "snapshot",
+  "hash": "62a8500cc74bac5afbc8df04472ddbc473d92470\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.519Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784509318519,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b4573001vsfkyNXYqKUkKp",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "step-start",
+    "snapshot": "62a8500cc74bac5afbc8df04472ddbc473d92470"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.549Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.550Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509318550,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b45950014j1S8u40qpm22q",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "tool",
+    "callID": "call_65e148824c2ffd36",
+    "tool": "webfetch",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.559Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509318559,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b45950014j1S8u40qpm22q",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "tool",
+    "callID": "call_65e148824c2ffd36",
+    "tool": "webfetch",
+    "state": {
+      "status": "running",
+      "input": {
+        "format": "text",
+        "url": "https://shopozz.ru/items/287341109328-charger-for-acer-aspire-3-a325-42"
+      },
+      "time": {
+        "start": 1784509318550
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:01:58.660Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784509318661,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b457e001nyUIbekgpq60Np",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "text",
+    "text": "Я использую webfetch для «text», чтобы проверить следующий шаг перед продолжением.",
+    "time": {
+      "start": 1784509318660,
+      "end": 1784509318660
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.606Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784509320606,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b45950014j1S8u40qpm22q",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "tool",
+    "callID": "call_65e148824c2ffd36",
+    "tool": "webfetch",
+    "state": {
+      "status": "completed",
+      "input": {
+        "format": "text",
+        "url": "https://shopozz.ru/items/287341109328-charger-for-acer-aspire-3-a325-42"
+      },
+      "output": "Купить Charger for Acer Aspire 3 A325-42 (65W 19V/3.42A 3.5x1.35mm Plug AC Adapter), цена 6 190 руб — (287341109328), США\n    \n\n    \n                \n    \n    \n        \n    \n\n    \n    \n\n    \n    \n\n\n    \n    \n    \n    \n    \n\n                                                                                                                                                \r\n\n    \n\n            \n                \n                \n                \n                \n            \n    \n\n            \n\n\n        \n     \n    \n            \n    \n    \n      \n        \n                \n        \n\n        \n            \n                \n                    Москва  \n                         \n        Ваш город Москва?\n        \n        Нет, другой\n    \n\n                    +7 (495) 215-16-67\n\n                    \n                    \n\n                    \n                        Контакты\n                        Доставка\n                        Для бизнеса\n                    \n                \n                \n                    \n                        Услуга поиска товара\n                    \n                    Заказ по ссылке\n                                            Создать аккаунт\n                                    \n            \n        \n\n        \n            \n                \n                \n                \n                    \n                \n                \n                \n                    \n                        \n                                                                            \n                            \n                                \n                                    \n                                \n                                Каталог\n                            \n                                            \n\n                    \n                                                    \n\n\n    \n    \n    \n\n    \n\n\n    \n\n    \n\n\n\n                        \n                                                        \n                            Избранное\n                        \n\n                                                    \n                                \n                                Войти\n                            \n                                                \n                        \n                            \n                                                                    0                                                            \n                            \n                            Корзина\n                        \n                    \n                \n            \n        \n\n                                \n                \n                \n                                            \n                            Магазины \n                                                            \n                                    \n                                                                                    ASOS\n                                                                                    Zappos\n                                                                                    IHerb\n                                                                                    Yoox\n                                                                                    Endclothing\n                                                                                    Macys\n                                                                                    H&M\n                                                                                    MiniatureMarket\n                                                                                    NewBalance\n                                                                                    Funko\n                                                                                    Bike24\n                                                                                    6PM\n                                                                                    Stockx\n                                                                                    Ssense\n                                                                                    Zara\n                                                                                    Puma\n                                                                                    Gymshark\n                                                                                    Nike.com\n                                                                                    Uniqlo\n                                                                                    StadiumGoods\n                                                                                    Farfetch\n                                                                                    Truereligion\n                                                                                    Goat\n                                                                                    Target.Com\n                                                                                    Все магазины\n                                                                            \n                                \n                                                    \n                                                                    \n                            Бренды \n                                                            \n                                    \n                                                                                    Nike\n                                                                                    Adidas\n                                                                                    Asics\n                                                                                    Bershka\n                                                                                    Reebok\n                                                                                    Calvin Klein\n                                                                                    Ikea\n                                                                                    Karl Lagerfeld\n                                                                                    Now\n                                                                                    New Balance\n                                                                                    Puma\n                                                                                    Timberland\n                                                                                    Tommy Hilfiger\n                                                                                    Все бренды\n                                                                            \n                                \n                                                    \n                                                                    \n                            Мужчинам \n                                                    \n                                                                    \n                            Женщинам \n                                                    \n                                                                    \n                            Детям \n                                                    \n                                                                    \n                            Аксессуары \n                                                            \n                                    \n                                                                                    Женщинам\n                                                                                    Мужчинам\n                                                                                    Детям\n                                                                            \n                                \n                                                    \n                                                                    \n                            Витамины \n                                                            \n                                    \n                                                                                    Витамины\n                                                                                    Минералы\n                                                                            \n                                \n                                                    \n                                                                    \n                            Для кухни \n                                                            \n                                    \n                                                                                    Посуда\n                                                                                    Формы для выпечки\n                                                                                    Другое\n                                                                                    Изделия из стекла\n                                                                                    Инструменты и гаджеты для кухни\n                                                                                    Кондитерские инструменты\n                                                                                    Малая бытовая техника для кухни\n                                                                                    Обеденная посуда на кухню, столовую\n                                                                                    Панели инструментов и аксессуаров\n                                                                                    Столовое и кухонное белье\n                                                                                    Столовые приборы\n                                                                                    Хранение и организация кухни\n                                                                            \n                                \n                                                    \n                                            \n                    \n                        ●●●\n                        \n                            \n                                                                                                                                                                                                                                                                                                                                                                                                        \n                                        Для сада\n                                    \n                                                                                                        \n                                        Для праздника\n                                    \n                                                                                                        \n                                        Коллекционирование\n                                    \n                                                                                                        \n                                        Украшения\n                                    \n                                                                                                        \n                                        Книги на английском\n                                    \n                                                                                                        \n                                        Музыкальные инструменты\n                                    \n                                                                                                        \n                                        Авто и запчасти\n                                    \n                                                                                                        \n                                        Компьютеры\n                                    \n                                                                                                        \n                                        Видеоигры и консоли\n                                    \n                                                            \n                        \n                    \n                \n                        \n            \n\n    \n    \n\n    \n\n\t\n\t\n\t\t \n\t\t\t×\n\t\t\tСейчас вы находитесь в городе Москва\n\t\t\tВыберите город, в который Вы хотите осуществить доставку\n\t\t\t\n\t\t\t\n\t\t\t\t\t\t\t\n\t\t\n\t\n\n\n    \n\t\n\t\t \n            ×\n\n            \n                Вход\n\n                \n                \n\n                \n\n                Email или телефон Создать аккаунт\n                \n                \n                Пароль\n                \n\n                \n\n                \n                    \n                    Забыли пароль?\n                    \n                \n            \n\n            \n            \n                Забыли пароль?\n                Не беда, мы вам его быстро напомним. Достаточно лишь указать адрес электронный почты или телефон, с\n                    которого вы всегда заходили, и на него будет отправлена ссылка, пройдя по которой для Вас будет\n                    сгенерирован\n                    новый пароль.\n\n                \n\n                    \n\n                    \n                \n                    Email или телефон:\n                    \n\n                    \n                        \n                        Назад\n                        \n                    \n                \n            \n        \n    \n\n\n\n    \n     \n         \n            ×\n            \n                \n                    Каталог товаров из США\n                    \n                        Товары из США\n                                                    \n                                Одежда, обувь и аксессуары\n                            \n                                                    \n                                Красота и здоровье\n                            \n                                                    \n                                Игрушки и увлечения\n                            \n                                                    \n                                Авто и запчасти\n                            \n                                                    \n                                Коллекционирование\n                            \n                                                    \n                                Спортивные товары\n                            \n                                                    \n                                Книги и журналы на английском языке\n                            \n                                                    \n                                Дом и сад\n                            \n                                                    \n                                Украшения и часы\n                            \n                                                    \n                                Бытовая электроника\n                            \n                                                    \n                                Компьютеры\n                            \n                                                    \n                                Музыкальные инструменты\n                            \n                                                    \n                                Товары для творчества\n                            \n                                                    \n                                Музыка\n                            \n                                                    \n                                Мобильные телефоны\n                            \n                                                    \n                                Спортивные сувениры\n                            \n                                                    \n                                Зоотовары\n                            \n                                                    \n                                Фотоаппараты и видеокамеры\n                            \n                                                    \n                                Куклы и Мишки\n                            \n                                                    \n                                Детские товары\n                            \n                                                    \n                                Видеоигры и консоли\n                            \n                                                    \n                                Авто- и мотозапчасти\n                            \n                                                    \n                                Модели транспорта\n                            \n                                                    \n                                Антиквариат\n                            \n                                                    \n                                Офисная мебель\n                            \n                          \n                    \n                \n\n                         \n        \n    \n\n\n    \n     \n         \n            ×\n            \n                \n                    +7 (495) 215-16-67                    Звоните ежедневно с 9:00 до 21:00 мск\n                \n                    \n                \n                \n                    Telegram\n                    Max\n                    \n                \n                                    \n                        Войти\n                        Создать аккаунт\n                    \n                                Каталог\n                Услуги\n                Доставка\n                Оплата\n                Новости\n                Помощь\n                Отзывы\n                Отследить посылку\n                Услуга поиска товара\n                Заказ по ссылке\n                Контакты\n                Для бизнеса\n            \n            \n        \n    \n\n    \n\n\n\n\n    \n\n    \n            \n    \n        \n                                                  \n                Главная\n                \n            \n          \n            \n                            \n                                    \n                        Компьютеры\n                        \n                    \n                                    \n                        Аксессуары для компьютеров\n                        \n                    \n                                                                                                        \n                                \n                                    Адаптеры и зарядные устройства\n                                \n                                \n                            \n                                                                                \n                \n                                                                            \n    \n    \n    \n        \n            \n                \n            \n            Поделиться\n        \n\n        \n            \n                \n                     \n                        \n                        \n                    \n                \n                Скопировать ссылку\n            \n\n            \n                \n                    \n                        \n                    \n\n                \n                Вконтакте\n            \n            \n                \n                    \n                        \n                    \n\n\n                \n                Telegram\n            \n            \n                \n                    \n                        \n                    \n                \n                Одноклассники\n            \n        \n    \n\n\n\n    \n    \n                    \n                \n                \n                    \n                        \n                        \n                        \n                        \n                    \n                \n            \n                \n        \n            \n                \n                    \n                        \n                            \n                                \n                            \n                        \n                    \n                \n\n                \n\n                \n                \n                \n                \n\n                \n                \n                \n                    \n                                             \n            \n            \n                                \n                    Anthy\n                \n            \n            \n                Мы поставляем товары только от проверенных поставщиков\n                \n                    \n                    Оригинальный товар\n                \n                \n            \n        \n    \n    Charger for Acer Aspire 3 A325-42  (65W 19V/3.42A 3.5x1.35mm Plug AC Adapter)\n\n\n    \n                        \n            6190\n            ₽\n        \n\n            \n\n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n    \n\n    \n    \n    \n    \n    \n\n    \n      \n                        Товар из США\n                Артикул: 287341109328\n                \n                           В наличии: мало\n                    \n                \n            \n\n\n        \n                         \n                \n\n                        \n                        \n                            \n                                 6 190                                  ₽\n                            \n\n                            \n\n\n                        \n\n\n\n                        \n                            \n                            \n                        \n                \n\n\n                            \n                                    \n\n                        \n                        \n                        \n                        \n                        \n                                        \n                    \n                    Доставка в\n                                                    город Москва\n                                                : 17 сентября\n                    \n\n                    \n                    \n                \n\n            \n        \n    \n\n    \n    \n    \n        \n            Описание\n            \n            \n            Гарантии и возврат\n\n        \n    \n\n    \n    \n        \n\n            \n            \n                \n                    \n                        Основные характеристики\n\n                        \n                                                        \n                                \n                                    Продавец\n                                \n                                \n                                    \n                                                                                                                        ascomputerspro\n                                        (150)\n                                        \n                                            \n                                            \n                                        \n                                    \n                                \n                            \n                            \n                                \n                                    Местонахождение\n                                \n                                \n                                    Las Vegas, US                                \n                            \n                            \n                                \n                                    Доставка до склада в США                                \n                                \n                                    \n                                                                                    701 ₽ ($8.13)\n                                                                            \n                                \n                            \n                                                           \n                                                                                                                        \n                                                Бренд:\n                                                \n                                                                                                            Anthy\n                                                                                                                                                            \n                                            \n                                                                                                                                                                \n                                                Совместимость Марка:\n                                                \n                                                                                                            Acer Aspire 3 A325-42, BSY065T1903423 D                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Тип:\n                                                \n                                                                                                            Replacement Charger 65W 19V 3.42A with 3.5x1.35mm                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Напряжение:\n                                                \n                                                                                                            19V                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Выходной ток:\n                                                \n                                                                                                            3.42A                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Совместимые модели:\n                                                \n                                                                                                            Acer Aspire 3 A325-42, BSY065T1903423 D                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Страна происхождения:\n                                                \n                                                                                                            United States                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Совместимость линейки продуктов:\n                                                \n                                                                                                            Acer Aspire 3 A325-42                                                                                                    \n                                            \n                                                                                                                                                                \n                                                Предупреждение о предупреждении Калифорнии 65:\n                                                \n                                                                                                            This product may contains a chemical(s) known to the State of California to cause cancer and birth defects or other reproductive harm.                                                                                                    \n                                            \n                                                                                                                \n                                \n                                \n                                    Смотреть полностью\n                                \n                                                        \n                            \n                                Важно: Контент сайта носит исключительно ознакомительный характер и не направлен на пропаганду нацизма, экстремизма или ЛГБТ*. Подробнее в публичной оферте.\n                            \n                            \n                        \n                    \n                \n\n\n                \n                \n                \n\n                \n                \n\n                \n\n                \n\n                    \n                Оплата происходит в 2 этапа:\n                \n                    \n                        \n                            1.\n                            Оплата товаров\n                        \n                        \n                            \n                                Вы оплачиваете:\n                            \n                            \n                            базовую стоимость товаров\n                            \n                            \n                            стоимость доставки до нашего склада (если есть)\n                            \n                            \n                            налог магазина (если есть) \n                            \n                        \n                    Подробнее ознакомиться с услугами и тарифами\n\n                    \n                    \n                    \n                            2.\n                            Оплата доставки в ваш город\n                        \n                        После того, как все заказанные товары прибудут на наш склад, необходимо оформить и оплатить доставку в ваш город.\n                        Стоимость доставки зависит от общего веса и  способа доставки.\n                        Подробнее о способах доставки\n                    \n                \n                \n                Оплата с любой российской карты\n                \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                    \n                \n                \n            \n                \n\n\n                \n                \n\n                    \n                                    \n\n                \n    Отзывы на сервис Shopozz\n    \n                                            \n                            \n                4.9\n                \n                    \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                            \n                    1371 отзыв\n                \n                                                        \n                            \n                4.7\n                \n                    \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                            \n                    371 отзыв\n                \n                                                        \n                            \n                4.5\n                \n                    \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                            \n                    306 отзывов\n                \n                                                        \n                            \n                4.9\n                \n                    \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                                    \n                                \n                            \n                                            \n                    13728 отзывов\n                \n                        \n\n        \n    \n\n    \n            \n\n    \n                    \n                Похожие товары            \n                        \n                \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Anker Zolo USB C Charger Block, 2-Pack 4-Port...\n            \n                \n\n                                                            5 190₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                60W L-Tip Power Adapter Charger Mac Book Pro ...\n            \n                \n\n                                                            4 490₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Genuine 45W L-Tip Magsafe 1 Adapter Charger F...\n            \n                \n\n                                                            4 790₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Genuine 85w L-tip Power Adapter Charger Apple...\n            \n                \n\n                                                            4 490₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Genuine Dell 130W USB C Charger TYPE-C  Power...\n            \n                \n\n                                                            4 590₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Genuine 140W/96W/87W/61W/70w USB-C Power Adap...\n            \n                \n\n                                                            4 990₽                                        \n                \n                \n                                                            \n        \n    \n    \n    \n    \n                \n            \n                \n                \n                \n                \n                                            \n                \n            \n\t\t\t\t                Lenovo/Legion 230W 20V New Slim Version AC Ad...\n            \n                \n\n                                                            5 190₽                                        \n                \n                \n                                                            \n        \n    \n        \n    \n\n\n\n            \n                Другие бренды категории\n                    \n                                                    Acer\n                                                                                Apple\n                                                                                ASUS\n                                                                                Clevo\n                                                                                MSI\n                                                                                NEC\n                                                                                Packard Bell\n                                                                                Panasonic\n                                                                                Sony\n                                                                                Toshiba\n                                                                        \n            \n        \n        \n    \n    \n        \n            Нужна помощь?\n        \n                \n                            \n                    \n                        \n                        \n                            Доставка                        \n                        \n                    \n                \n                            \n                    \n                        \n                        \n                            Гарантии                        \n                        \n                    \n                \n                            \n                    \n                        \n                        \n                            Оплата                        \n                        \n                    \n                \n                            \n                    \n                        \n                        \n                            Примерный вес товаров                        \n                        \n                    \n                \n                            \n                    \n                        \n                        \n                            Как сделать возврат?                        \n                        \n                    \n                \n                            \n                    \n                        \n                        \n                            Как сделать заказ?                        \n                        \n                    \n                \n                    \n    \n    \n    \n    \n    \n        \n            Charger for Acer Aspire 3 A325-42  (65W 19V/3.42A 3.5x1.35mm Plug AC Adapter) — купить с доставкой в Россию и СНГ\n            Charger for Acer Aspire 3 A325-42  (65W 19V/3.42A 3.5x1.35mm Plug AC Adapter) можно купить в нашем интернет-магазине с доставкой из Las Vegas, US в Россию и страны СНГ по цене 6190 руб.\n                Все товары из\n                категории «Адаптеры и зарядные устройства» доставляются в соответствии с обозначенными правилами в разделе «Доставка».\n            \n            \n                Если у вас возникли вопросы по товару, оплате, гарантии или доставке до вашего населённого пункта - Закажите обратный звонок!.\n            \n            \n                Приобретая товар «Charger for Acer Aspire 3 A325-42  (65W 19V/3.42A 3.5x1.35mm Plug AC Adapter)» через SHOPOZZ, вы можете быть уверенны в том, что получите качественный продукт, предназначенный для продажи в Las Vegas, US.\n            \n        \n    \n\n    \n     \n          \n  \n    Смотрите нас на\n    \n      \n  \n  \n\n  \n      \n          \n                            \n                    \n                    \n                    \n                    \n            \n    \n\n        \n\n    \n    \n    \n\n    \n\n\n\n    \n        Секретные промокоды и доступы к зарубежным распродажам в нашей полезной рассылке\n    \n    \n        \n            \n            \n                \n            \n            \n                Подписаться на рассылку\n            \n        \n        \n            Нажимая на кнопку «Подписаться» вы соглашаетесь на обработку персональных данных\n        \n    \n    \n        Спасибо! \n        На вашу почту отправлено письмо с подтверждением. \n        Пожалуйста, перейдите по ссылке в письме, чтобы завершить подписку.\n    \n\n\n\n\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t\t\tО нас\n\t\t\t\t\tПресса о нас\n\t\t\t\t\tУслуги\n\t\t\t\t\tКак сделать заказ?\n\t\t\t\t\tКаталог брендов\n\t\t\t\t\tПопулярные категории\n\t\t\t\t\tПопулярные товары\n\t\t\t\t\tИнтернет-магазины США\n\t\t\t\t\tИнтернет-магазины Германии\n\t\t\t\t\tОплата\n\t\t\t\t\tДоставка\n\t\t\t\t\tГарантии\n\t\t\t\t\tДоговор оферты\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\tОтследить посылку\n\t\t\t\t\tПримерный вес товаров\n\t\t\t\t\tНовости\n\t\t\t\t\tВакансии\n\t\t\t\t\tОтзывы покупателей\n\t\t\t\t\tПартнерская программа\n\t\t\t\t\tКонтакты\n\t\t\t\t\tСтатьи\n\n\t\t\t\t\tУсловия возврата товаров\n\t\t\t\t\tПолитика конфиденциальности\n\t\t\t\t\tЗаказ по ссылке\n\t\t\t\t\tТаблица размеров\n\t\t\t\t\tБикли - товары из США и Европы\n\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t+7 (495) 215-16-67\n\t\t\t\t\t\tс 9:00-21:00 - ежедневно (МСК)\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\tЗаказать звонок\n\t\t\t\t\t\t\t\r\n    \r\n\t\r\n\t\t \r\n            ×\r\n            Обратный звонок\r\n\r\n\t\t\t\r\n\t\t\t\t\r\n\r\n\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\t\r\n\r\n\t\t\t\tПредставьтесь\r\n\t\t\t\t\r\n\r\n\t\t\t\tНомер вашего телефона\r\n\t\t\t\t\r\n\r\n\t\t\t\t\r\n\t\t\t\t\tВаш вопрос\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\r\n                \r\n\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\tя даю согласие Shopozz на обработку персональных данных\r\n\t\t\t\t\tв соответствии с Федеральным законом от 27.07.2006 года №152-ФЗ «О персональных данных», на условиях и для целей, определенных Политикой конфиденциальности.\r\n\t\t\t\t\r\n\t\r\n\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\t\r\n\t\t\t\t\r\n\t\t\t\r\n\t\t\r\n\t\r\n\r\n\r\n\r\n    \r\n\t\r\n\t\t \r\n            ×\r\n\t\t\t\r\n\t\t\t\r\n\t\t\t\r\n   \t\t\r\n\t\r\n\r\n\r\n\n\t\t\t\t\t\tДоставка товаров с аукциона eBay и интернет-магазинов США в \n\t\t\t\t\t\tРоссию (Москва, Санкт-Петербург, Новосибирск, Екатеринбург, \n\t\t\t\t\t\tКазань, Нижний Новгород, Челябинск, Красноярск, Самара, Уфа, \n\t\t\t\t\t\tРостов-на-Дону, Омск, Краснодар, Воронеж, Волгоград, Пермь и \n\t\t\t\t\t\tдругие города).\n\t\t\t\t\t\n\n\t\t\t\t\t\n\t\t\t\t\t© Shopozz - сервис покупок за рубежом\n\n\t\t\t\t\t\n                        \n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\n                        \n                            \n\t\t\t\t        \t\n                            \n                        \n                    \n\t\t\t\t\n\t\t\t\n\n\t\t\t\n\t\t\t\t\t\t\t\tПомощь\n\t\t\t\n\t\t\n\t\n\n\n\t\n\t\tРазмеры обуви и одежды\n\t\n\t\n\t\tТарифы на доставку\n\t\n\n\n\n\n\n\n\n\n\t\nНаверх\n    \n        Мы используем cookies, чтобы сделать сайт удобнее: сохраняем ваши настройки и подстраиваемся под ваши интересы.\n        ОК",
+      "title": "https://shopozz.ru/items/287341109328-charger-for-acer-aspire-3-a325-42 (text/html; charset=UTF-8)",
+      "metadata": {},
+      "time": {
+        "start": 1784509318550,
+        "end": 1784509320597
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:02:00.618Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 28861,
+    "output": 187,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 28861,
+  "sseCompletionTokens": 187,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.781Z",
+  "service": "snapshot",
+  "hash": "62a8500cc74bac5afbc8df04472ddbc473d92470\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.791Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784509320791,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b4daa001gQ7xtJkIlAhU2c",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b427b001ByCb86EaUo3Bsh",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "62a8500cc74bac5afbc8df04472ddbc473d92470",
+    "cost": 0,
+    "tokens": {
+      "input": 28861,
+      "output": 187,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 29048,
+      "headroom": 9808,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.794Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.928Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.934Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:00.934Z",
+  "service": "session.prompt",
+  "step": 4,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.045Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.045Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "step": 5,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.046Z",
+  "service": "session.prompt",
+  "providerID": "formalai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.122Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.122Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 29048,
+  "providerTokens": 29048,
+  "estimatedInputTokens": 9173,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 28861,
+    "cacheRead": 0,
+    "output": 187
+  },
+  "overflow": false,
+  "headroom": 22760,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.123Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.123Z",
+  "service": "ripgrep",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "limit": 200,
+  "message": "tree"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.233Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.234Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.275Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.276Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.413Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:01.418Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:02.732Z",
+  "service": "snapshot",
+  "hash": "af84a1ba7703d618602fb069165f462fced612db\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:02.742Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784509322742,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b55ee001LwfFDKNu4w4jJO",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b4fa2001WMzpBTCxDqwmKl",
+    "type": "step-start",
+    "snapshot": "af84a1ba7703d618602fb069165f462fced612db"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:02.744Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:02.745Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784509322745,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b55f6001b88QfeusKj30Zs",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b4fa2001WMzpBTCxDqwmKl",
+    "type": "text",
+    "text": "Acer Aspire 3 A325-42, BSY065T1903423 D Acer Aspire 3 A325-42, BSY065T1903423 D Acer Aspire 3 A325-42\n\nSource: https://shopozz.ru/items/287341109328-charger-for-acer-aspire-3-a325-42",
+    "time": {
+      "start": 1784509322744,
+      "end": 1784509322744
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-20T01:02:02.745Z",
+  "service": "session.processor",
+  "providerID": "formalai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 74119,
+    "output": 182,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 74119,
+  "sseCompletionTokens": 182,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:03.065Z",
+  "service": "snapshot",
+  "hash": "af84a1ba7703d618602fb069165f462fced612db\n",
+  "cwd": "/tmp/gh-issue-solver-1784506151226",
+  "git": "/tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b",
+  "message": "tracking"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:03.066Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784509323072,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "part": {
+    "id": "prt_f7d0b55fa0010SAKyuJCl8bmnG",
+    "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+    "messageID": "msg_f7d0b4fa2001WMzpBTCxDqwmKl",
+    "type": "step-finish",
+    "reason": "unknown",
+    "snapshot": "af84a1ba7703d618602fb069165f462fced612db",
+    "cost": 0,
+    "tokens": {
+      "input": 74119,
+      "output": 182,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formalai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 74301,
+      "headroom": -35445,
+      "overflow": true
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:03.077Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.033Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.108Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.109Z",
+  "service": "session.prompt",
+  "step": 5,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.296Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.297Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.438Z",
+  "service": "session.prompt",
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.438Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.439Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784509324439,
+  "sessionID": "ses_082f51268ffermsvLNmOiPbRBz"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.442Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.443Z",
+  "service": "default",
+  "directory": "/tmp/gh-issue-solver-1784506151226",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.448Z",
+  "service": "state",
+  "key": "/tmp/gh-issue-solver-1784506151226",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.450Z",
+  "service": "state",
+  "key": "/tmp/gh-issue-solver-1784506151226",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-20T01:02:04.457Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 34,
+  "message": "Agent exiting"
+}
+
+formal-ai: session files for debugging:
+  agent: /tmp/formal-ai-agent-home-config-28680-1784509290689217999/.local/share/link-assistant-agent/storage/session/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b/ses_082f51268ffermsvLNmOiPbRBz.json   (resume: agent --resume ses_082f51268ffermsvLNmOiPbRBz)

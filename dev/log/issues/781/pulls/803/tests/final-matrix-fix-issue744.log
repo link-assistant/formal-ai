@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.22s
+     Running tests/integration/mod.rs (target/debug/deps/integration-1ed0922169c81daf)
+
+running 1 test
+test issue_744_qwen_tool_schema::codex_responses_shell_uses_advertised_cmd_key ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 165 filtered out; finished in 0.86s
+

@@ -35,12 +35,12 @@ non-deterministic limit rather than inventing evidence.
 | R26 | Avoid more than ten seconds of silent “thinking” per message. | Met by design, qualified: actions are externally visible separate turns; no wall-clock SLA is asserted because client/network latency is outside the server. Per-turn timestamps remain in dialog logs for latency diagnosis. |
 | R27 | Preserve exact server logs per dialog, including every request, response, and action. | Met: `src/dialog_log.rs`; atomic JSONL append at the common HTTP boundary with timestamp, dialog/request IDs, method/path/status, normalized tool summaries, and exact request/response bodies. Authentication headers are deliberately not copied into the record. |
 | R28 | Keep exact dialog logging disabled by default for privacy. | Met: no file is written unless `FORMAL_AI_DIALOG_LOG_DIR` is configured; docs warn that bodies may be sensitive. |
-| R29 | Full E2E with Agent CLI. | Met: final harness records 1 search / 3 fetch / 5 turns; up to three clean-session retries cover known Agent early-exit variability without weakening assertions. |
+| R29 | Full E2E with Agent CLI. | Met: the clean retained run records 1 search / 3 fetch / 5 turns. The post-merge release run also passed after one bounded fresh-session retry; its aggregate 2 / 6 / 9 trace deliberately preserves the early-exit attempt instead of weakening assertions. |
 | R30 | Full E2E with OpenCode. | Met: final harness records 1 / 3 / 6 with visible Russian narration. |
 | R31 | Full E2E with Claude Code. | Met: final harness records 1 / 3 / 5 through a local tool-only MCP server. |
 | R32 | Full E2E with Codex CLI. | Met: final harness records 1 / 3 / 5 and validates Responses namespace dispatch. |
-| R33 | Preserve full client, server, and per-dialog logs for every final E2E. | Met: `../real-cli/four-client-final-2/{agent,opencode,claude,codex}/`. |
-| R34 | Put the reusable four-client regression in CI. | Met: `.github/workflows/release.yml` installs all clients and runs `experiments/agent_cli_e2e/run_issue_781.sh`. |
+| R33 | Preserve full client, server, and per-dialog logs for every final E2E. | Met: clean proof in `../real-cli/four-client-final-2/{agent,opencode,claude,codex}/` and exact merged-source proof in `../real-cli/four-client-post-merge/`. |
+| R34 | Put the reusable four-client regression in CI. | Met: `.github/workflows/release.yml` installs all clients and runs `experiments/agent_cli_e2e/run_issue_781.sh`; GitHub Actions run 29715487352 passed on code SHA `049b392d`. |
 | R35 | Reproduce each logic bug before fixing it and retain red/green proof. | Met: commits start with `361c7a83`; all later routing/namespace/envelope red and green logs are preserved. |
 | R36 | Preserve raw transport output even when the planner needs normalized content. | Met: `raw_tool_result_is_retained_exactly_for_durable_recording` plus separate `normalized_payload`. |
 | R37 | Prefer client-executable MCP research tools over hosted fallbacks. | Met: Responses namespace integration test; hosted tool behavior remains covered. |

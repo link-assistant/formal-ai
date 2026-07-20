@@ -1,0 +1,12 @@
+Diff in /tmp/gh-issue-solver-1784506151226/tests/unit/issue_781.rs:152:
+ #[test]
+ fn chat_completion_localizes_tool_narration_in_hindi_and_chinese() {
+     for (prompt, expected_narration) in [
+-        (
+-            "सेब के बारे में इंटरनेट पर खोजो",
+-            "अगला कदम जारी रखने से पहले",
+-        ),
++        ("सेब के बारे में इंटरनेट पर खोजो", "अगला कदम जारी रखने से पहले"),
+         ("查找苹果网上信息", "我会对"),
+     ] {
+         let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
