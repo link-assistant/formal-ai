@@ -1,0 +1,5 @@
+drawer-menu-section-heading: color=rgb(64, 81, 95)
+sidebar-toggle: color=rgb(30, 37, 43) backgroundColor=rgb(237, 247, 243)
+tool-mode-agent: color=rgb(182, 110, 26) backgroundColor=rgba(255, 170, 90, 0.18)
+tool-mode-thinking: color=rgb(74, 90, 204) backgroundColor=rgba(120, 140, 255, 0.18)
+topbar-mode-status: color=rgb(64, 81, 95)

@@ -461,6 +461,18 @@ jobs:
       - name: Run desktop packaging regression tests
         run: node --test desktop/scripts/adhoc-sign-mac.test.cjs
 
+      # Issue #672 (F2): the desktop library tests were written but never run by
+      # any job, so `desktop/lib/data-migration.cjs` — the code that moves a
+      # user's whole profile between app names — had no gate at all. They are
+      # plain node:test files over in-memory fakes, so they need no Electron and
+      # no desktop dependency tree. `web-tools.test.mjs` is the one exception:
+      # it imports @link-assistant/web-search through desktop/lib/web-tools.cjs,
+      # which is only present after `npm ci` in desktop/, so it stays out of
+      # this dependency-free job rather than being silently skipped inside it.
+      - name: Run desktop library tests
+        run: |
+          node --test $(ls desktop/scripts/*.test.mjs | grep -v '/web-tools.test.mjs$')
+
   # === TEST ===
   # Test runs independently of the changelog check and gates on the change
   # detector so it never burns runner time on non-code changes (issue #442).
