@@ -129,6 +129,34 @@ warning whenever a custom `mac.sign` hook is configured, because it cannot see
 the entitlements the hook will apply. It is a **false positive** and is a
 candidate for an upstream report against `electron-userland/electron-builder`.
 
+### Second root cause, found by the added debug output (pull-request runs)
+
+The instrumentation added in the first commit did its job. With packaging now
+running on pull requests, both macOS jobs of run `29728829534` failed a *later*
+check:
+
+```
+##[error]Mounted app is missing its signed CodeResources envelope.
+```
+
+and the hook's unconditional entry banner never appeared. The packaging log
+explains why:
+
+```
+• Current build is a part of pull request, code signing will be skipped.
+```
+
+`app-builder-lib/out/codeSign/macCodeSign.js:28` calls builder-util's
+`isPullRequest()` from `isSignAllowed()` and returns `false` before
+`MacPackager.sign()` reaches `findSigningIdentity()`, so the custom
+`mac.sign` hook is never invoked at all. `isPullRequest()` is true whenever
+`GITHUB_BASE_REF` is set, i.e. on every `pull_request` event.
+
+Fix: `CSC_FOR_PULL_REQUEST: "true"` on the ad-hoc packaging step only. The
+security concern documented for that flag is about *secret* certificates being
+usable by fork builds; this step runs only when no signing secrets are
+configured and signs ad-hoc with identity `-`, so there is no secret to expose.
+
 ## 5. Failure B — release blocked by a self-hosting evidence violation
 
 ### Symptom
