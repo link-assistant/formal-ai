@@ -55,6 +55,14 @@ on:
       - '.github/workflows/desktop-release.yml'
       - 'scripts/desktop-release-resolve.sh'
       - 'scripts/install-node-dependencies.sh'
+      # The build job runs `cargo build --release --bin formal-ai` and bundles
+      # the result, so a Rust-only change can break desktop packaging while
+      # touching none of the paths above. Without these entries that breakage is
+      # a false negative on the pull request and only surfaces post-merge --
+      # precisely the failure mode issue #808 was filed for.
+      - 'src/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
 
 permissions:
   contents: read

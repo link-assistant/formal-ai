@@ -309,3 +309,46 @@ removes the live-content dependency rather than masking a product defect. A
 diagnostic branch now also names compaction explicitly when the `gh` log is
 missing and the server log contains a summarisation request, so the two failure
 modes are never again confused.
+
+## 7. Template sweep (requirement 7)
+
+Cloned `link-foundation/{rust,js,python}-ai-driven-development-pipeline-template`
+and diffed their workflows against `.github/workflows/{release,desktop-release}.yml`,
+then re-checked both against
+`link-assistant/hive-mind/docs/CI-CD-BEST-PRACTICES.md`.
+
+Already matching the templates, verified line by line: concurrency groups with
+`cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}`, `GIT_CONFIG_*`
+default-branch hint suppression, least-privilege `permissions: contents: read`
+with per-job escalation, `timeout-minutes` on every job, `detect-changes`
+fast-fail ordering, secrets scan, version-check, and attest-before-upload.
+
+Acted on:
+
+* **False negative — desktop dry run missed Rust changes.** `desktop-release.yml`'s
+  pull-request `paths` filter listed only `desktop/**`, `vscode/**` and two
+  scripts, yet the build job runs `cargo build --release --bin formal-ai` and
+  bundles that binary. A Rust-only change could break desktop packaging with a
+  green PR. `src/**`, `Cargo.toml` and `Cargo.lock` are now in the filter.
+
+Checked and rejected:
+
+* The `for f in release/latest*.yml; do [ -f "$f" ] && files+=("$f"); done` loops
+  (`desktop-release.yml` collect/upload steps) were flagged as a `set -e` abort
+  when the last file is absent. They are not: bash exempts a failing command
+  that is part of an `&&` list. Verified directly —
+  `bash -c 'set -euo pipefail; for f in a b; do [ -f "$f" ] && echo yes; done; echo ALIVE'`
+  prints `ALIVE`.
+* `finalize`'s `if: always() && … should_build == 'true'` was flagged as letting
+  a failed `resolve` pass silently. It does not: a failed job fails the run
+  regardless of what the downstream job does.
+
+Still open (recorded, not done — each is a refactor rather than a fix):
+
+* The js template's `check-file-line-limits` job covers `.md` and `release.yml`;
+  our `scripts/check-file-size.rs` covers only `.rs`, `.lino` and worker `.js`.
+  `release.yml` is 1791 lines, over the documented 1500-line ceiling, with
+  nothing failing.
+* `simulate-fresh-merge.sh` runs in `lint` and `test` but not in
+  `desktop-release.yml`, so the packaging dry run builds the PR head rather than
+  the merge result.
