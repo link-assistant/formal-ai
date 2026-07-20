@@ -111,8 +111,7 @@ fn plan_fetches(tool_names: &[&str], progress: &Progress) -> Option<AgenticPlan>
         .collect();
     research_urls(output)
         .into_iter()
-        .filter(|url| !already.contains(url.as_str()))
-        .next()
+        .find(|url| !already.contains(url.as_str()))
         .map(|url| plan_one(tool, fetch_arguments(&url)))
 }
 

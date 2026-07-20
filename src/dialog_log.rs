@@ -32,7 +32,7 @@ pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
 }
 
 /// One complete server exchange, stored as one JSONL record.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DialogExchangeLog {
     pub timestamp_unix_ms: u128,
     pub dialog_id: String,

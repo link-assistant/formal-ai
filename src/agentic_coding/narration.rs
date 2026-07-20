@@ -9,7 +9,10 @@ use super::planner::PlannedToolCall;
 /// Natural language stays in the seed catalog. The planner only selects the
 /// concrete tool and target, keeping this useful for every advertised CLI tool
 /// rather than a fixed list of product-specific names.
-pub(crate) fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String {
+pub fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String {
+    const TOOL_SLOT: &str = concat!("{", "tool", "}");
+    const TARGET_SLOT: &str = concat!("{", "target", "}");
+
     let language = crate::language::detect(prompt).slug();
     let template = crate::seed::response_for("agentic_action_before_tool", language)
         .or_else(|| crate::seed::response_for("agentic_action_before_tool", "en"))
@@ -24,8 +27,8 @@ pub(crate) fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> 
         .map(|call| tool_action_target(&call.arguments))
         .unwrap_or_default();
     template
-        .replace("{tool}", &tool)
-        .replace("{target}", &target)
+        .replace(TOOL_SLOT, &tool)
+        .replace(TARGET_SLOT, &target)
 }
 
 fn tool_action_target(arguments: &str) -> String {

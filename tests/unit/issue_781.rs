@@ -116,7 +116,7 @@ fn agent_solver() -> UniversalSolver {
     })
 }
 
-/// The reported OpenCode session showed only a bare tool label and then stayed
+/// The reported `OpenCode` session showed only a bare tool label and then stayed
 /// blank while the tool ran. A tool-calling assistant turn must carry a concise
 /// user-visible explanation as well as the machine-readable call.
 #[test]
