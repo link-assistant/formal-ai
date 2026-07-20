@@ -169,12 +169,13 @@ fn gemini_explains_the_action_before_the_function_call() {
         }))
         .unwrap();
 
-    let response = formal_ai::gemini::create_gemini_generate_content_response_with_solver_and_memory(
-        &request,
-        "formal-ai",
-        &agent_solver(),
-        &[],
-    );
+    let response =
+        formal_ai::gemini::create_gemini_generate_content_response_with_solver_and_memory(
+            &request,
+            "formal-ai",
+            &agent_solver(),
+            &[],
+        );
     let parts = response["candidates"][0]["content"]["parts"]
         .as_array()
         .expect("Gemini response parts");
@@ -215,7 +216,11 @@ fn independent_sources_are_fetched_in_separate_agent_turns() {
     answer_tool_calls(&mut messages, &first, &["The charger supplies 45 W."]);
 
     let second = tool_calls(&messages);
-    assert_eq!(second.len(), 1, "the first result must be observed before replanning");
+    assert_eq!(
+        second.len(),
+        1,
+        "the first result must be observed before replanning"
+    );
     assert_eq!(
         arguments(&second[0])["url"],
         "https://example.test/connector"
@@ -229,6 +234,39 @@ fn independent_sources_are_fetched_in_separate_agent_turns() {
     let third = tool_calls(&messages);
     assert_eq!(third.len(), 1);
     assert_eq!(arguments(&third[0])["url"], "https://example.test/listing");
+}
+
+#[test]
+fn a_failed_source_is_not_retried_or_used_as_evidence() {
+    let mut messages = vec![ChatMessage::user(
+        "Find the voltage and connector required by this laptop?",
+    )];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &["Blocked https://example.test/blocked Working https://example.test/working"],
+    );
+
+    let blocked = tool_calls(&messages);
+    assert_eq!(
+        arguments(&blocked[0])["url"],
+        "https://example.test/blocked"
+    );
+    answer_tool_calls(&mut messages, &blocked, &["Error: HTTP 403 Forbidden"]);
+
+    let working = tool_calls(&messages);
+    assert_eq!(working.len(), 1);
+    assert_eq!(
+        arguments(&working[0])["url"],
+        "https://example.test/working",
+        "the failed source must be observed once, then research must re-plan"
+    );
+    answer_tool_calls(&mut messages, &working, &["The adapter supplies 19.5 V."]);
+
+    let answer = final_answer(&messages);
+    assert!(answer.contains("19.5 V"), "{answer}");
+    assert!(!answer.contains("HTTP 403"), "{answer}");
 }
 
 #[test]
@@ -249,34 +287,30 @@ fn compatibility_research_fetches_and_cites_independent_sources() {
         )],
     );
 
-    let fetches = tool_calls(&messages);
-    assert_eq!(
-        fetches.len(),
-        3,
-        "research must capture multiple independent sources before recommending a compatible item"
-    );
-    assert!(fetches.iter().all(|call| call.tool == "webfetch"));
-    assert_eq!(
-        fetches
-            .iter()
-            .map(|call| arguments(call)["url"].as_str().unwrap().to_owned())
-            .collect::<Vec<_>>(),
-        [
+    for (expected_url, result) in [
+        (
             "https://store.acer.com/a325-45",
-            "https://example.test/a325-45-adapter",
-            "https://www.amazon.in/example/dp/TEST781",
-        ]
-    );
-
-    answer_tool_calls(
-        &mut messages,
-        &fetches,
-        &[
             "The laptop is supplied with a 24 W adapter.",
+        ),
+        (
+            "https://example.test/a325-45-adapter",
             "The model uses 12 V, 2 A and a 3.5 x 1.35 mm center-positive plug.",
+        ),
+        (
+            "https://www.amazon.in/example/dp/TEST781",
             "The candidate listing states 12 V, 2 A and a 3.5 x 1.35 mm plug.",
-        ],
-    );
+        ),
+    ] {
+        let fetch = tool_calls(&messages);
+        assert_eq!(
+            fetch.len(),
+            1,
+            "research must expose each independent source as its own step"
+        );
+        assert_eq!(fetch[0].tool, "webfetch");
+        assert_eq!(arguments(&fetch[0])["url"], expected_url);
+        answer_tool_calls(&mut messages, &fetch, &[result]);
+    }
 
     let answer = final_answer(&messages);
     for expected in [
@@ -379,16 +413,15 @@ fn research_does_not_repeat_a_search_that_refines_nothing() {
         &search,
         &["Result https://example.test/one https://example.test/two https://example.test/three"],
     );
-    let fetches = tool_calls(&messages);
-    answer_tool_calls(
-        &mut messages,
-        &fetches,
-        &[
-            "Unrelated English prose.",
-            "More unrelated English prose.",
-            "Still unrelated English prose.",
-        ],
-    );
+    for result in [
+        "Unrelated English prose.",
+        "More unrelated English prose.",
+        "Still unrelated English prose.",
+    ] {
+        let fetch = tool_calls(&messages);
+        assert_eq!(fetch.len(), 1);
+        answer_tool_calls(&mut messages, &fetch, &[result]);
+    }
 
     // A final answer, not a fourth search: an unrefinable question is answered
     // from what was actually found.

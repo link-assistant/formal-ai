@@ -109,6 +109,11 @@ meanings
     lexeme en
       surface
         text "agent suggestion active"
+  agentic_action_before_tool
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action before tool"
   ai-orchestration
     defined-by category
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import fetch invalid json"
-  lexeme_import_grounding_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import grounding lost"

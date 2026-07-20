@@ -235,7 +235,7 @@ fn issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode() {
         assert_eq!(call.function.name, tool);
         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
         assert_eq!(arguments["command"], "ls");
-        assert!(choice.message.content.plain_text().is_empty());
+        assert!(!choice.message.content.plain_text().is_empty());
     }
 }
 
@@ -362,7 +362,7 @@ fn issue_624_server_emits_tool_calls_for_natural_language_directory_listing() {
         assert_eq!(call.function.name, "bash", "{prompt}");
         let arguments: serde_json::Value = serde_json::from_str(&call.function.arguments).unwrap();
         assert_eq!(arguments["command"], "ls", "{prompt}");
-        assert!(choice.message.content.plain_text().is_empty(), "{prompt}");
+        assert!(!choice.message.content.plain_text().is_empty(), "{prompt}");
     }
 }
 
@@ -598,8 +598,8 @@ fn server_emits_tool_calls_for_a_formalization_task_in_agent_mode() {
     let call = &choice.message.tool_calls[0];
     assert_eq!(call.function.name, "web_search");
     assert!(call.function.arguments.contains(SEARCH_QUERY));
-    // The assistant turn requesting tool calls carries no textual content.
-    assert!(choice.message.content.plain_text().is_empty());
+    // The assistant explains the action before the client starts the tool.
+    assert!(!choice.message.content.plain_text().is_empty());
 }
 
 #[test]

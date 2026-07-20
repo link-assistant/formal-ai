@@ -27,6 +27,16 @@ fn agent_solver() -> UniversalSolver {
     })
 }
 
+fn anthropic_tool_use(content: &[AnthropicContentBlock]) -> (&str, &serde_json::Value) {
+    content
+        .iter()
+        .find_map(|block| match block {
+            AnthropicContentBlock::ToolUse { name, input, .. } => Some((name.as_str(), input)),
+            _ => None,
+        })
+        .expect("assistant response should contain a tool_use block")
+}
+
 // --- Anthropic Messages surface (`/v1/messages`, what `claude` speaks) -------
 
 #[test]
@@ -52,22 +62,16 @@ fn anthropic_messages_emits_tool_use_block_in_agent_mode() {
     let message = create_anthropic_message_with_solver(&request, &agent_solver());
 
     assert_eq!(message.stop_reason, "tool_use");
-    assert_eq!(message.content.len(), 1);
-    match &message.content[0] {
-        AnthropicContentBlock::ToolUse { name, input, .. } => {
-            assert_eq!(name, "web_search");
-            assert!(
-                input.to_string().contains(SEARCH_QUERY),
-                "tool_use input should carry the canonical search query"
-            );
-        }
-        AnthropicContentBlock::Text { text } => {
-            panic!("expected a tool_use block, got text: {text}")
-        }
-        AnthropicContentBlock::Thinking { .. } => {
-            panic!("thinking not requested, so no thinking block should be emitted")
-        }
-    }
+    assert!(matches!(
+        message.content.first(),
+        Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
+    ));
+    let (name, input) = anthropic_tool_use(&message.content);
+    assert_eq!(name, "web_search");
+    assert!(
+        input.to_string().contains(SEARCH_QUERY),
+        "tool_use input should carry the canonical search query"
+    );
 }
 
 #[test]
@@ -103,21 +107,12 @@ fn anthropic_tool_result_block_advances_the_loop() {
     let message = create_anthropic_message_with_solver(&request, &agent_solver());
 
     assert_eq!(message.stop_reason, "tool_use");
-    match &message.content[0] {
-        AnthropicContentBlock::ToolUse { name, input, .. } => {
-            assert_eq!(name, "web_fetch", "search done ⇒ planner advances to fetch");
-            assert!(
-                input.to_string().contains(CANONICAL_SOURCE_URL),
-                "fetch input should target the canonical source url"
-            );
-        }
-        AnthropicContentBlock::Text { text } => {
-            panic!("expected a web_fetch tool_use block, got text: {text}")
-        }
-        AnthropicContentBlock::Thinking { .. } => {
-            panic!("thinking not requested, so no thinking block should be emitted")
-        }
-    }
+    let (name, input) = anthropic_tool_use(&message.content);
+    assert_eq!(name, "web_fetch", "search done ⇒ planner advances to fetch");
+    assert!(
+        input.to_string().contains(CANONICAL_SOURCE_URL),
+        "fetch input should target the canonical source url"
+    );
 }
 
 #[test]
@@ -281,7 +276,7 @@ fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
 fn responses_emits_function_call_in_agent_mode() {
     // A formalization task with a permitted tool advertised makes the Responses
     // surface answer with a `function_call` output item (the flat Responses tool
-    // shape), not an assistant message.
+    // shape), preceded by a user-visible explanation message.
     let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
         "model": "formal-ai",
         "input": "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
@@ -303,10 +298,13 @@ fn responses_emits_function_call_in_agent_mode() {
         calls[0].arguments.contains(SEARCH_QUERY),
         "function_call arguments should carry the canonical search query"
     );
-    assert!(
-        response.output_messages().is_empty(),
-        "a tool-calling turn carries no assistant message"
-    );
+    assert!(response
+        .output_messages()
+        .first()
+        .is_some_and(|message| message
+            .content
+            .iter()
+            .any(|part| !part.text.trim().is_empty())));
 }
 
 #[test]

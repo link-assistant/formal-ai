@@ -1,4 +1,9 @@
 meanings
+  pattern_wellbeing_phrase_tum_kaise_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase tum kaise ho hi"
   pattern_wellbeing_phrase_zdravstvuyte_kak_vashi_dela
     defined-by prompt_pattern
     lexeme en
@@ -319,6 +324,26 @@ meanings
     lexeme en
       surface
         text "response agent suggestion zh"
+  response_agentic_action_before_tool_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool en"
+  response_agentic_action_before_tool_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool hi"
+  response_agentic_action_before_tool_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool ru"
+  response_agentic_action_before_tool_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action before tool zh"
   response_assistant_free_time_en
     defined-by response_template
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import reparse failed hi"
-  response_lexeme_import_reparse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed ru"
-  response_lexeme_import_reparse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed zh"
-  response_lexeme_import_surface_changed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed en"
-  response_lexeme_import_surface_changed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed hi"
-  response_lexeme_import_surface_changed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface changed ru"

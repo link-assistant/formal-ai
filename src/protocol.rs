@@ -199,6 +199,24 @@ impl ChatMessage {
         }
     }
 
+    /// An `assistant` message that explains an action before requesting it.
+    ///
+    /// Tool-capable protocol surfaces preserve both fields, so agentic clients
+    /// can show the user what is about to happen while they execute the
+    /// machine-readable call (issue #781).
+    #[must_use]
+    pub fn assistant_tool_calls_with_content(
+        content: impl Into<String>,
+        tool_calls: Vec<ToolCall>,
+    ) -> Self {
+        Self {
+            role: String::from("assistant"),
+            content: MessageContent::Text(content.into()),
+            tool_calls,
+            ..Self::default()
+        }
+    }
+
     /// A `tool` message carrying the `result` for the call `tool_call_id` made
     /// against the tool `name`.
     #[must_use]
@@ -631,6 +649,7 @@ fn chat_completion_from_plan(
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
+            let narration = tool_action_narration(prompt, &calls);
             let tool_calls: Vec<_> = calls
                 .into_iter()
                 .enumerate()
@@ -645,15 +664,17 @@ fn chat_completion_from_plan(
                     ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
                 .collect();
-            let completion_tokens = tool_calls
-                .iter()
-                .map(|call| {
-                    estimate_tokens(&call.function.name)
-                        .saturating_add(estimate_tokens(&call.function.arguments))
-                })
-                .sum();
+            let completion_tokens = estimate_tokens(&narration).saturating_add(
+                tool_calls
+                    .iter()
+                    .map(|call| {
+                        estimate_tokens(&call.function.name)
+                            .saturating_add(estimate_tokens(&call.function.arguments))
+                    })
+                    .sum(),
+            );
             (
-                ChatMessage::assistant_tool_calls(tool_calls),
+                ChatMessage::assistant_tool_calls_with_content(narration, tool_calls),
                 String::from("tool_calls"),
                 completion_tokens,
             )
@@ -685,6 +706,56 @@ fn chat_completion_from_plan(
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
     }
+}
+
+/// Render a concise, localized explanation for an imminent agentic action.
+///
+/// Natural language stays in the seed catalog. The planner only selects the
+/// concrete tool and target, keeping this useful for every advertised CLI tool
+/// rather than a fixed list of product-specific names.
+fn tool_action_narration(
+    prompt: &str,
+    calls: &[crate::agentic_coding::planner::PlannedToolCall],
+) -> String {
+    let language = crate::language::detect(prompt).slug();
+    let template = crate::seed::response_for("agentic_action_before_tool", language)
+        .or_else(|| crate::seed::response_for("agentic_action_before_tool", "en"))
+        .unwrap_or_default();
+    let tool = calls
+        .iter()
+        .map(|call| call.tool.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
+    let target = calls
+        .first()
+        .map(|call| tool_action_target(&call.arguments))
+        .unwrap_or_default();
+    template
+        .replace("{tool}", &tool)
+        .replace("{target}", &target)
+}
+
+fn tool_action_target(arguments: &str) -> String {
+    fn first_text(value: &Value) -> Option<&str> {
+        match value {
+            Value::String(text) if !text.trim().is_empty() => Some(text),
+            Value::Array(values) => values.iter().find_map(first_text),
+            Value::Object(values) => values.values().find_map(first_text),
+            _ => None,
+        }
+    }
+
+    let parsed = serde_json::from_str::<Value>(arguments).ok();
+    let target = parsed
+        .as_ref()
+        .and_then(first_text)
+        .unwrap_or(arguments)
+        .trim();
+    let mut shortened = target.chars().take(160).collect::<String>();
+    if target.chars().count() > 160 {
+        shortened.push('…');
+    }
+    shortened
 }
 
 fn chat_completion_from_symbolic(
@@ -787,8 +858,19 @@ fn response_from_plan(
 
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
-            let mut items = Vec::with_capacity(calls.len());
-            let mut output_tokens = 0u32;
+            let narration = tool_action_narration(prompt, &calls);
+            let mut items = Vec::with_capacity(calls.len().saturating_add(1));
+            let mut output_tokens = estimate_tokens(&narration);
+            items.push(ResponseOutputItem::Message(ResponseOutputMessage {
+                id: stable_id("msg", &narration),
+                kind: String::from("message"),
+                role: String::from("assistant"),
+                content: vec![ResponseOutputContent {
+                    kind: String::from("output_text"),
+                    text: narration,
+                }],
+                thinking_steps: Vec::new(),
+            }));
             for (index, call) in calls.into_iter().enumerate() {
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
