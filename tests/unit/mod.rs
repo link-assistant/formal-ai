@@ -6,6 +6,7 @@ mod budget_search;
 mod bulk_lexeme_import;
 mod courtesy_response;
 mod data_files;
+mod dialog_log;
 mod docker_runtime;
 mod docs_requirements;
 mod docs_requirements_issue_451;
