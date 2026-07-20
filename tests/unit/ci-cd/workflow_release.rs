@@ -314,9 +314,21 @@ fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
             .join("\n");
 
         for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
+            // The acceptable results must be enumerated, not excluded. A job
+            // killed by its own `timeout-minutes` reports as 'cancelled', which
+            // a `!= 'failure'` guard would wave through -- run 29767811026 is
+            // the observed instance of exactly that result value.
             assert!(
-                effective.contains(&format!("needs.{gate}.result != 'failure'")),
-                "{job_name} must not publish while {gate} is failing (issue #812)"
+                effective.contains(&format!(
+                    "(needs.{gate}.result == 'success' || needs.{gate}.result == 'skipped')"
+                )),
+                "{job_name} must gate on {gate} being success-or-skipped, so a \
+                 timed-out (cancelled) job cannot release (issue #812)"
+            );
+            assert!(
+                !effective.contains(&format!("needs.{gate}.result != 'failure'")),
+                "{job_name} must not use `!= 'failure'` for {gate}: a timeout \
+                 reports as 'cancelled' and would pass that check (issue #812)"
             );
             assert!(
                 effective.contains(gate),
@@ -324,6 +336,31 @@ fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
             );
         }
     }
+}
+
+/// Issue #812: run 29767811026 reported `Test (ubuntu-latest)` as failed with
+/// every test passing -- the suite finished 1.1 s before `timeout-minutes: 15`
+/// killed the job. The budget must exceed the measured cost, and the step must
+/// say so out loud before the margin is eaten again.
+#[test]
+fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+
+    assert!(
+        test_job.contains("timeout-minutes: 25"),
+        "the test job budget must cover the ~14min measured cost (issue #812)"
+    );
+    assert!(
+        test_job.contains("TEST_BUDGET_SECONDS: 1500"),
+        "the warning threshold must be derived from the declared budget, and \
+         1500s is `timeout-minutes: 25` (issue #812)"
+    );
+    assert!(
+        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        "creeping back toward the cap must be visible in the run summary rather \
+         than resurfacing as a mystery cancellation (issue #812)"
+    );
 }
 
 /// Issue #812: nothing validated the pipeline definitions themselves, and
@@ -361,7 +398,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("secrets-scan", 10),
         ("version-check", 5),
         ("lint", 10),
-        ("test", 15),
+        // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
+        // after the suite passed. See
+        // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
+        ("test", 25),
         ("coverage", 15),
         ("build", 10),
         ("auto-release", 30),

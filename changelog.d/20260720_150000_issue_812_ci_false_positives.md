@@ -16,3 +16,7 @@ bump: patch
 ### Added
 - `actionlint` (with `shellcheck`) now lints every workflow definition, and `shellcheck` lints the shipped `*.sh` scripts. Nothing validated either before, so a mistyped `needs.<job>` reference or a malformed expression — which fails *open*, silently skipping the guarded step under a green check — could only be found by pushing (issue #812).
 - `METRIC_VERSION` on self-hosting ledger rows, so a change to how the share is measured starts a new comparison epoch instead of silently invalidating recorded history; rows from different epochs are never compared (issue #812).
+
+### Fixed (second pass, found by running the fixed pipeline)
+- The new release gates compared `needs.<job>.result != 'failure'`, which a job killed by its own `timeout-minutes` would pass: GitHub reports a timeout as **cancelled**, not failed. The gates now enumerate the acceptable results (`success` or `skipped`), so a timed-out secrets scan or E2E suite cannot release (issue #812).
+- Raised the `test` job budget from 15 to 25 minutes. Run 29767811026 reported the job as failed with all 1953 tests passing — the suite finished 1.1 s before the cap killed the job during teardown, and run 29749095334 on `main` had already done the same. The step now emits a `::warning` once the suite passes 70% of the budget, so the margin cannot be eaten again silently (issue #812).

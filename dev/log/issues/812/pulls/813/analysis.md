@@ -278,3 +278,72 @@ Kept off by default, per the issue instructions:
 | new | fixed | Healing builds of an old tag now emit `::notice title=Healing build of an existing tag`, so a red run on a pre-fix tag is self-explaining. | `ci_cd::desktop_release_resolve` 10/10. |
 
 Full-suite gate for the commit: `cargo test --test unit` → 1953 passed, 0 failed.
+
+## 10. Second pass: two defects found by running the fixed pipeline
+
+Run 29767811026 (commit `89d2bc01`) is the first full run of the repaired
+pipeline. It surfaced two more, one of them introduced by this very PR.
+
+### 10.1 `Test (ubuntu-latest)` reported failure with every test passing
+
+Step and log timings from the job API and `ci-logs/test-job-88438515312.log`:
+
+| Moment | Timestamp |
+| --- | --- |
+| job start | 18:28:41 |
+| `Check LiNo data integrity` | 18:29:26 → 18:31:26 (2m00s) |
+| `Check self-AST census freshness` | 18:31:26 → 18:32:40 (1m14s) |
+| unit suite finishes: **1953 passed, 0 failed** in 518.76s | 18:43:50.27 |
+| doctest target finishes, 0 failed | 18:43:51.39 |
+| `##[error]The operation was canceled.` | 18:43:51.42 |
+
+The work completed. `timeout-minutes: 15` expired **1.1 seconds later**, during
+teardown. GitHub renders that as `cancelled`, which reads as an infrastructure
+blip rather than "the budget is exhausted" — so the same thing on `main` in run
+29749095334 (15m16s, cancelled) was never diagnosed.
+
+The budget is not padding being wasted. Eight individual tests exceed 60 s each
+(libtest's own `has been running for over 60 seconds` notices):
+`issue_498_google_trends_learning::{driver_drives…, planner_walks…}`,
+`issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli`,
+`issue_538_agentic::{committed_self_ast_is_generated_and_written_by_the_driver, planner_walks_the_self_ast_recipe}`,
+`issue_558_source_links::agent_mode_routes_source_links_request_to_a_projection_write`,
+`issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render`,
+`specification::text_manipulation_benchmarks::issue_408_text_code_edit_profile_passes_local_ratchet`.
+
+Recent `main` durations show the creep, not a one-off: 11m02s, 12m27s, 11m49s,
+12m57s, **15m16s (cancelled)**, 14m13s.
+
+Applied: budget raised to 25 minutes to match measured cost, **plus** a
+`::warning` once the suite passes 70% of it, so the margin cannot be eaten again
+without saying so. Making those eight tests cheaper is genuine work with its own
+regression risk and is deliberately not bundled into a CI-correctness change;
+what is fixed here is the false report.
+
+### 10.2 The new release gates would have accepted a timed-out job
+
+Introduced by this PR's own first commit and caught by its own first run. The
+gates read `needs.<job>.result != 'failure'`, chosen so a legitimately *skipped*
+job would not block a release. But §10.1 is the proof that a job killed by
+`timeout-minutes` resolves to `'cancelled'` — which is also `!= 'failure'`. A
+secrets scan or E2E suite that timed out would have counted as "not failing" and
+released.
+
+Applied: both gates now enumerate the two acceptable results,
+`(needs.X.result == 'success' || needs.X.result == 'skipped')`. The regression
+test asserts the positive form *and* asserts the `!= 'failure'` form is absent,
+so the weaker spelling cannot come back.
+
+### 10.3 What the run confirmed
+
+- `Self-Hosting Evidence Check` — **success**, on the real PR. The differential
+  ratchet gate from §2/§3 works in CI, not only locally.
+- `Lint and Format Check` — **success**, with every new step green:
+  `Lint GitHub Actions workflows`, `Lint shell scripts`, `Run Clippy` (now
+  `-D warnings`), `Check file size limit` (now measuring workflows), and the
+  rewritten `Run desktop library tests`.
+- `Desktop Release` run 29767811373 — **success** across all six platform legs
+  including both macOS architectures, plus the VS Code `.vsix`. This is the
+  independent confirmation of the §5 finding: current desktop code signs and
+  packages fine; run 29752745259 failed because it was a healing build of the
+  older `v0.300.0` tag.

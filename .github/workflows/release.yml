@@ -565,7 +565,9 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
+    # sync with TEST_BUDGET_SECONDS there.
+    timeout-minutes: 25
     needs: [detect-changes]
     # Note: a status-check function is required because detect-changes is skipped
     # on workflow_dispatch; without one the skipped dependency would cascade and
@@ -630,8 +632,34 @@ jobs:
       - name: Check self-AST census freshness
         run: cargo test --test unit self_ast_census -- --nocapture
 
+      # Issue #812: run 29767811026 reported this job as *failed* although every
+      # test passed -- the suite finished at 18:43:50 and `timeout-minutes: 15`
+      # killed the job 1.1 s later, during teardown. Run 29749095334 on `main`
+      # had already done the same. GitHub surfaces a timeout as `cancelled`, so
+      # it reads as an infrastructure blip rather than "the budget is exhausted".
+      #
+      # The budget is not padding: checkout + the two data checks cost ~3m15s
+      # before a test runs, and the suite itself takes ~11m of which eight
+      # individual agentic/driver tests exceed 60 s each. 25 minutes reflects the
+      # measured cost with headroom; the timer below makes further creep visible
+      # in the run summary instead of surfacing as a mystery cancellation two
+      # months from now. Reducing those eight tests is real work, tracked
+      # separately -- inflating the cap silently is what this avoids.
       - name: Run tests
-        run: cargo test --all-features --verbose
+        env:
+          TEST_BUDGET_SECONDS: 1500
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          set -euo pipefail
+          started=$SECONDS
+          cargo test --all-features --verbose
+          elapsed=$((SECONDS - started))
+          threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
+          printf 'Test suite took %ss of the %ss job budget.\n' \
+            "$elapsed" "$TEST_BUDGET_SECONDS"
+          if [ "$elapsed" -ge "$threshold" ]; then
+            echo "::warning title=Test suite is approaching its timeout::The suite took ${elapsed}s, at or above ${TEST_WARN_RATIO_PERCENT}% of the ${TEST_BUDGET_SECONDS}s budget. Speed up the slowest tests before the job starts reporting timeouts as cancellations."
+          fi
 
       - name: Run doc tests
         run: cargo test --doc --verbose
@@ -758,17 +786,24 @@ jobs:
     # pipeline. Every job that runs on a push to main now gates it.
     needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]
     # Note: !cancelled() keeps this consistent with the other jobs whose skipped
-    # dependencies must not cascade. The added gates are compared against
-    # 'failure' rather than 'success' for the same reason: a job that legitimately
-    # skipped itself (no relevant changes) must not block the release.
+    # dependencies must not cascade. The added gates accept 'skipped' for the
+    # same reason: a job that legitimately skipped itself (no relevant changes)
+    # must not block the release.
+    #
+    # They must NOT be written as `!= 'failure'`. A job killed by its own
+    # `timeout-minutes` is reported as **cancelled**, not failed -- run
+    # 29767811026 is the proof: `Test (ubuntu-latest)` hit the 15-minute cap and
+    # `needs.test.result` was 'cancelled'. Under `!= 'failure'` a timed-out
+    # secrets scan or E2E suite would have counted as "not failing" and released
+    # anyway. Enumerating the two acceptable results closes that (issue #812).
     if: |
       !cancelled() &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
       needs.build.result == 'success' &&
-      needs.secrets-scan.result != 'failure' &&
-      needs.test-e2e-local.result != 'failure' &&
-      needs.test-agent-cli-e2e.result != 'failure'
+      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -1021,14 +1056,17 @@ jobs:
     # Note: !cancelled() is required to evaluate the condition when dependencies
     # are skipped.
     # The build job ensures lint and test passed before this job runs.
+    # The added gates enumerate the acceptable results rather than excluding
+    # 'failure': a job killed by `timeout-minutes` reports as 'cancelled', which
+    # `!= 'failure'` would wave through. See the note on `auto-release`.
     if: |
       !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
       needs.build.result == 'success' &&
-      needs.secrets-scan.result != 'failure' &&
-      needs.test-e2e-local.result != 'failure' &&
-      needs.test-agent-cli-e2e.result != 'failure'
+      (needs.secrets-scan.result == 'success' || needs.secrets-scan.result == 'skipped') &&
+      (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
+      (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
