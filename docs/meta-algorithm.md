@@ -11,9 +11,9 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
-Seven recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other six encode a topic handler or a
-self-directed loop on top of it:
+Nine recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other eight encode a topic handler, a
+self-directed loop, or a codebase-hygiene procedure on top of it:
 
 | Recipe | Issue | What it reproduces |
 | --- | --- | --- |
@@ -24,6 +24,8 @@ self-directed loop on top of it:
 | [`document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino) | #535 | Verifying an attached document's claims |
 | [`market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino) | #493 | Fact-checking numeric market-price claims |
 | [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
+| [`budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) | #662 | Budget-driven search recognition and gated skill proposals |
+| [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
