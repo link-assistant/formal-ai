@@ -1,0 +1,27 @@
+meanings
+  tell_me_about_request_opener
+    defined-by inquiry
+    defined-by concept
+    role term_information_request_opener
+    lexeme hi
+      surface
+        text "… के बारे में बताओ"
+    lexeme zh
+      surface
+        text "介绍一下 …"
+  trends_context_request_opener
+    defined-by inquiry
+    defined-by concept
+    role term_information_request_opener
+    lexeme en
+      surface
+        text "give google trends context for …"
+    lexeme ru
+      surface
+        text "дай контекст google trends для …"
+    lexeme hi
+      surface
+        text "… के लिए google trends संदर्भ दो"
+    lexeme zh
+      surface
+        text "给出 … 的 google trends 背景"

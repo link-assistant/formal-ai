@@ -35,6 +35,7 @@ pub mod intent_formalization;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
+pub mod learning_cycle;
 pub mod learning_ledger;
 pub mod lexeme_import;
 pub mod link_store;
@@ -184,6 +185,11 @@ pub use knowledge::{
     KNOWLEDGE_CACHE_FLOOR,
 };
 pub use language::{detect as detect_language, Language};
+pub use learning_cycle::{
+    google_trends_learning_cycle, parse_frontier_record, recorded_google_trends_frontier,
+    run_learning_cycle, BlockedClass, CandidateSurface, FrontierItem, HeldOutTest,
+    LearningCycleRun,
+};
 pub use learning_ledger::{
     canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
 };

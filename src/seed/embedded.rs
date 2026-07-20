@@ -62,6 +62,12 @@ pub const MEANINGS_WEB_SEARCH_QUERY_LINO: &str =
     include_str!("../../data/seed/meanings-web-search-query.lino");
 pub const MEANINGS_WEB_RESEARCH_LINO: &str =
     include_str!("../../data/seed/meanings-web-research.lino");
+/// Request openers adopted by the issue-#701 learning cycle: surfaces derived
+/// from the recorded learning frontier, validated against held-out prompts, and
+/// promoted through the issue-#656 gate. Kept in its own file so learned data is
+/// visibly separable from hand-authored meanings.
+pub const LEARNED_REQUEST_OPENERS_LINO: &str =
+    include_str!("../../data/seed/learned-request-openers.lino");
 pub const MEANINGS_WEB_FOLLOWUP_LINO: &str =
     include_str!("../../data/seed/meanings-web-followup.lino");
 pub const MEANINGS_TRANSLATION_LINO: &str =
@@ -209,6 +215,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_WEB_RESEARCH_LINO,
         ),
         (
+            "data/seed/learned-request-openers.lino",
+            LEARNED_REQUEST_OPENERS_LINO,
+        ),
+        (
             "data/seed/meanings-web-followup.lino",
             MEANINGS_WEB_FOLLOWUP_LINO,
         ),
@@ -333,6 +343,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_WEB_SEARCH_LINO,
     MEANINGS_WEB_SEARCH_QUERY_LINO,
     MEANINGS_WEB_RESEARCH_LINO,
+    LEARNED_REQUEST_OPENERS_LINO,
     MEANINGS_WEB_FOLLOWUP_LINO,
     MEANINGS_TRANSLATION_LINO,
     MEANINGS_ONTOLOGY_LINO,

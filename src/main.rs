@@ -8,12 +8,14 @@ use lino_arguments::Parser;
 
 mod cli_import;
 mod cli_improve;
+mod cli_learn;
 mod cli_memory;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
+use cli_learn::{run_learn_cycle, LearnCycleArgs, LearnFrontier};
 use cli_memory::{load_memory_or_empty, run_memory};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
@@ -240,6 +242,41 @@ enum Command {
         /// Required acknowledgement when `--apply` is used.
         #[arg(long, default_value_t = false)]
         confirm: bool,
+    },
+    /// Run the auto-learning adoption cycle over a recorded learning frontier
+    /// (issue #701, E59).
+    Learn {
+        #[command(subcommand)]
+        action: LearnAction,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum LearnAction {
+    /// Derive candidate knowledge from a recorded frontier, validate it against
+    /// held-out prompts of the same class, and emit promotion proposals in the
+    /// issue-#656 shape. Proposal-only and offline: no seed file is written and
+    /// no network call is made, so the run is deterministic and reproducible.
+    Cycle {
+        /// The recorded frontier to replay.
+        #[arg(long, value_enum, default_value_t = LearnFrontier::GoogleTrends)]
+        frontier: LearnFrontier,
+
+        /// Read frontier items from this `learning_frontier` document instead of
+        /// the committed record.
+        #[arg(long, value_name = "PATH")]
+        from: Option<PathBuf>,
+
+        /// Explicit acknowledgement that the cycle only proposes. The cycle is
+        /// proposal-only either way; the flag documents the intent at the call
+        /// site and keeps the acceptance-criteria invocation literal.
+        #[arg(long, default_value_t = false)]
+        dry_run: bool,
+
+        /// Print the `promotion_proposals` document instead of the full cycle
+        /// record, ready to pipe into `formal-ai improve --promote`.
+        #[arg(long, default_value_t = false)]
+        proposals: bool,
     },
 }
 
@@ -603,6 +640,19 @@ fn main() -> Result<(), Box<dyn Error>> {
             backup,
             confirm,
         })?,
+        Command::Learn { action } => match action {
+            LearnAction::Cycle {
+                frontier,
+                from,
+                dry_run,
+                proposals,
+            } => run_learn_cycle(&LearnCycleArgs {
+                frontier,
+                from,
+                dry_run,
+                proposals,
+            })?,
+        },
     }
 
     Ok(())
