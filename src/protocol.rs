@@ -16,8 +16,8 @@ use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
     agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
-    matches_tool_choice_none, tool_call_refusal_answer, tool_choice_function_name,
-    tool_definition_name, tool_permission_refusal_answer,
+    matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
+    tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
@@ -124,14 +124,14 @@ impl ChatCompletionRequest {
             .as_ref()
             .is_some_and(matches_tool_choice_none)
         {
-            names.extend(self.tools.iter().filter_map(tool_definition_name));
+            names.extend(self.tools.iter().flat_map(tool_definition_names));
         }
         if !self
             .function_call
             .as_ref()
             .is_some_and(matches_tool_choice_none)
         {
-            names.extend(self.functions.iter().filter_map(tool_definition_name));
+            names.extend(self.functions.iter().flat_map(tool_definition_names));
         }
         names.sort();
         names.dedup();
@@ -925,11 +925,13 @@ fn response_from_plan(
                         },
                     ));
                 } else {
+                    let (name, namespace) = response_tool_call_identity(&request.tools, &tool);
                     items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
                         id: stable_id("fc", &seed),
                         kind: function_call_kind(),
                         call_id: stable_id("call", &seed),
-                        name: tool,
+                        name,
+                        namespace,
                         arguments,
                         status: String::from("completed"),
                     }));

@@ -14,6 +14,16 @@ struct NormalizedResult {
     format: &'static str,
 }
 
+/// Remove client transport wrappers while preserving the tool's actual text.
+/// Agentic planners consume this form; durable protocol recording still keeps
+/// the original result byte-for-byte.
+pub(super) fn normalized_payload(raw: &str) -> String {
+    let result = normalize(raw);
+    result
+        .error
+        .map_or(result.payload, |error| format!("Error: {error}"))
+}
+
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
     let result = normalize(raw);
     let language = response_language(prompt);
@@ -195,6 +205,13 @@ fn normalize(raw: &str) -> NormalizedResult {
 fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
     let trimmed = payload.trim().to_owned();
     if let Ok(json) = serde_json::from_str::<Value>(&trimmed) {
+        if let Some(text) = mcp_text_content(&json) {
+            return NormalizedResult {
+                payload: text,
+                error,
+                format: "text",
+            };
+        }
         return NormalizedResult {
             payload: pretty_json(&json),
             error,
@@ -216,14 +233,45 @@ fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
     }
 }
 
+fn mcp_text_content(value: &Value) -> Option<String> {
+    let content = value
+        .as_object()
+        .and_then(|object| object.get("content"))
+        .unwrap_or(value)
+        .as_array()?;
+    if content.is_empty() {
+        return None;
+    }
+    let text = content
+        .iter()
+        .map(|item| {
+            let object = item.as_object()?;
+            (object.get("type").and_then(Value::as_str) == Some("text"))
+                .then(|| object.get("text").and_then(Value::as_str))
+                .flatten()
+        })
+        .collect::<Option<Vec<_>>>()?;
+    Some(text.join("\n"))
+}
+
 fn strip_transport_envelope(text: &str) -> String {
     let inner = text
         .split_once("<untrusted_context>")
         .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
         .map_or(text, |(inside, _)| inside);
-    inner
-        .lines()
+    let lines = inner.lines().collect::<Vec<_>>();
+    let output = lines.iter().position(|line| {
+        let trimmed = line.trim();
+        trimmed == "Output:" || trimmed.starts_with("Output: ")
+    });
+    lines
+        .iter()
+        .enumerate()
         .filter_map(|line| {
+            let (index, line) = line;
+            if output.is_some_and(|output| index < output) {
+                return None;
+            }
             let trimmed = line.trim();
             if trimmed.starts_with("Process Group PGID:") {
                 None
@@ -231,7 +279,7 @@ fn strip_transport_envelope(text: &str) -> String {
                 let output = output.trim();
                 (!matches!(output, "(empty)" | "(no output)")).then_some(output)
             } else {
-                Some(line)
+                Some(*line)
             }
         })
         .collect::<Vec<_>>()

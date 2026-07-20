@@ -44,7 +44,7 @@ impl Progress {
                 continue;
             };
             if capability == Capability::Fetch {
-                let text = message.content.plain_text();
+                let text = super::tool_result::normalized_payload(&message.content.plain_text());
                 fetch_result = Some(text.clone());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref() {
@@ -60,7 +60,7 @@ impl Progress {
                 }
             }
             if capability == Capability::Search {
-                let text = message.content.plain_text();
+                let text = super::tool_result::normalized_payload(&message.content.plain_text());
                 search_result = Some(text.clone());
                 if !looks_like_error(&text) && !text.trim().is_empty() {
                     search_output = Some(text);

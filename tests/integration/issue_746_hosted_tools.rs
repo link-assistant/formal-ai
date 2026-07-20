@@ -71,6 +71,61 @@ fn responses_preview_alias_maps_to_the_web_search_capability() {
 }
 
 #[test]
+fn responses_prefers_client_executed_tools_inside_an_mcp_namespace() {
+    let response = post(
+        "/v1/responses",
+        &json!({
+            "model": "formal-ai",
+            "input": "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
+            "tools": [
+                {
+                    "type": "namespace",
+                    "name": "mcp__issue781",
+                    "description": "Deterministic research tools",
+                    "tools": [
+                        {
+                            "type": "function",
+                            "name": "websearch",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {"query": {"type": "string"}},
+                                "required": ["query"]
+                            }
+                        },
+                        {
+                            "type": "function",
+                            "name": "webfetch",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {"url": {"type": "string"}},
+                                "required": ["url"]
+                            }
+                        }
+                    ]
+                },
+                {"type": "web_search"}
+            ]
+        }),
+    );
+
+    let call = responses_call(&response);
+    assert_eq!(call["name"], "websearch", "{response}");
+    assert_eq!(call["namespace"], "mcp__issue781", "{response}");
+    assert!(
+        call["arguments"]
+            .as_str()
+            .is_some_and(|arguments| arguments.contains("query")),
+        "the nested MCP schema must be applied: {call}"
+    );
+    assert!(
+        response["output"]
+            .as_array()
+            .is_some_and(|items| items.first().is_some_and(|item| item["type"] == "message")),
+        "the explanation must precede the MCP call: {response}"
+    );
+}
+
+#[test]
 fn responses_stream_uses_native_web_search_lifecycle_events() {
     enable_http_agent_mode_for_current_process();
     let body = json!({

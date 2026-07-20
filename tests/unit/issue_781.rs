@@ -51,6 +51,29 @@ fn reported_prompt_uses_web_search_with_the_agent_cli_tool_set() {
     }
 }
 
+#[test]
+fn reported_prompt_uses_namespaced_mcp_research_tools() {
+    let tools = [
+        "mcp__issue781__websearch",
+        "mcp__issue781__webfetch",
+        "web_search",
+    ];
+    let messages = vec![ChatMessage::user(
+        "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
+    )];
+
+    match plan_chat_step(&messages, &tools).expect("reported task should route") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls.len(), 1);
+            assert_eq!(
+                calls[0].tool, "mcp__issue781__websearch",
+                "a client-executed namespaced tool must precede the hosted fallback: {calls:?}"
+            );
+        }
+        AgenticPlan::Final(answer) => panic!("expected MCP web search, got {answer:?}"),
+    }
+}
+
 fn final_answer(messages: &[ChatMessage]) -> String {
     match plan_chat_step(messages, &TOOLS).expect("research task should be recognized") {
         AgenticPlan::Final(answer) => answer,
@@ -321,6 +344,30 @@ fn independent_sources_are_fetched_in_separate_agent_turns() {
     let third = tool_calls(&messages);
     assert_eq!(third.len(), 1);
     assert_eq!(arguments(&third[0])["url"], "https://example.test/listing");
+}
+
+#[test]
+fn codex_mcp_transport_envelope_yields_clean_research_urls() {
+    let mut messages = vec![ChatMessage::user(
+        "Find the voltage and connector required by this laptop?",
+    )];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &[concat!(
+            "Wall time: 0.0324 seconds\n",
+            "Output:\n",
+            r#"[{"type":"text","text":"Acer specifications https://acer.example.test/a325-45/specifications\nConnector reference https://parts.example.test/acer-a325-45/connector\nCandidate listing https://shop.example.test/compatible-a325-45-adapter"}]"#
+        )],
+    );
+
+    let first = tool_calls(&messages);
+    assert_eq!(
+        arguments(&first[0])["url"],
+        "https://acer.example.test/a325-45/specifications",
+        "client transport metadata and JSON escaping are not part of a URL"
+    );
 }
 
 #[test]
