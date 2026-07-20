@@ -32,7 +32,10 @@ fn issue_698_case_study_and_external_benchmark_contract_are_traceable() {
 
     let plans = read("docs/case-studies/issue-698/solution-plans.md");
     for expected in ["R698-01", "R698-06", "Rejected.", "Verified by."] {
-        assert!(plans.contains(expected), "solution plans missing {expected}");
+        assert!(
+            plans.contains(expected),
+            "solution plans missing {expected}"
+        );
     }
 
     // The survey of existing harnesses the issue asks for.

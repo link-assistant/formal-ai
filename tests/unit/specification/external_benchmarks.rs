@@ -94,8 +94,12 @@ fn upstream_slices_are_downloaded_at_test_time_and_never_vendored() {
             .and_then(|name| name.to_str())
             .unwrap_or_default()
             .to_string();
+        let extension = path
+            .extension()
+            .and_then(|extension| extension.to_str())
+            .unwrap_or_default();
         assert!(
-            name.ends_with(".lino") || name.ends_with(".md"),
+            matches!(extension, "lino" | "md"),
             "no upstream dataset payload may be vendored, found {name}"
         );
     }
@@ -292,7 +296,7 @@ fn recorded_upstream_pass_count_may_never_regress() {
     );
 
     // The floor only ever rises.
-    let mut raised = previous.clone();
+    let mut raised = previous;
     raised.raise_floor("gsm8k", 1, 20);
     assert_eq!(
         raised.suites()["gsm8k"].minimum_pass_count,
@@ -500,7 +504,7 @@ fn issue_698_external_benchmark_harness_is_wired_end_to_end() {
     assert_eq!(DEFAULT_SLICE, 20, "the acceptance criterion runs 20 cases");
 }
 
-/// The acceptance criterion, verbatim: run at least 20 real upstream HumanEval
+/// The acceptance criterion, verbatim: run at least 20 real upstream `HumanEval`
 /// cases end to end and print `passed=<n> failed=<m> total=20`.
 ///
 /// Ignored by default because it downloads the upstream payload and executes
