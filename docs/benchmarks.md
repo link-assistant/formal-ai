@@ -20,6 +20,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
+| External (upstream) harness | #698 | [`external-results.lino`](../data/benchmarks/external-results.lino) | `external_benchmarks::recorded_upstream_pass_count_may_never_regress` | per suite, see below |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -142,6 +143,73 @@ upstream payloads vendored). The full list, in fixture order:
 | MultiPL-E | multilingual programming | <https://github.com/nuprl/MultiPL-E> |
 | APPS | programming | <https://github.com/hendrycks/apps> |
 | DS-1000 | data science code | <https://github.com/xlang-ai/DS-1000> |
+
+## External (upstream) results
+
+Every suite above scores the solver against a small, reviewable slice that this
+repository curates. Issue **#698** adds the opposite kind of measurement: a
+harness that fetches the *unmodified upstream* case set at run time and reports
+`passed / total` over the first N cases **in upstream order**, with no curated
+subset and no invented floor. A low number is published as a low number.
+
+The harness lives in [`src/external_benchmarks/`](../src/external_benchmarks/),
+its provenance and results ledger is
+[`data/benchmarks/external-results.lino`](../data/benchmarks/external-results.lino),
+and the scheduled job that refreshes it is
+[`.github/workflows/external-benchmarks.yml`](../.github/workflows/external-benchmarks.yml)
+(weekly, plus `workflow_dispatch` with a configurable slice).
+
+### Honest current numbers
+
+Recorded `2026-07-20`, solver version `0.300.0`, slice `20` upstream cases per
+suite, offline deterministic solver (`temperature = 0.0`):
+
+| Suite | License | Grading | Passed | Total |
+| --- | --- | --- | ---: | ---: |
+| HumanEval | MIT | upstream unit test executed | 0 | 20 |
+| MBPP | Apache-2.0 | upstream `test_list` asserts executed | 0 | 20 |
+| GSM8K | MIT | final number vs. `####` gold | 2 | 20 |
+| MATH (`prm800k` 500-problem split) | MIT | final `\boxed{...}` vs. gold | 0 | 20 |
+| BIG-bench `object_counting` | Apache-2.0 | final number vs. target | 0 | 20 |
+| CoEdIT | Apache-2.0 | edited text vs. gold target | 0 | 20 |
+| SWE-bench Lite (dev) | MIT | produced patch vs. gold patch | 0 | 20 |
+| EditEval | — | `benchmark_unavailable` | — | — |
+
+`2 / 20` on GSM8K and `0 / 20` elsewhere is the real measurement of the current
+offline solver against unmodified upstream cases. It is recorded exactly as
+measured; the ratchet makes it the floor these numbers may never fall below.
+
+EditEval is recorded as `benchmark_unavailable` rather than being replaced by a
+local proxy: the upstream repository ships an evaluation harness with no task
+payload, and its constituent corpora fail the permissive-only policy (ASSET is
+CC BY-NC 4.0, JFLEG is CC BY-NC-SA 4.0). The instructed-text-editing task family
+is executed through the Apache-2.0 CoEdIT suite instead.
+
+### Ratchet
+
+`external_benchmark_suite.minimum_pass_count` only ever rises: a run that scores
+higher raises the floor, a run that scores lower is a failure, and a pull request
+that rewrites a recorded pass count downwards or deletes a recorded row is
+reported as a regression by `external_benchmarks::ratchet::regressions`.
+
+### Running it
+
+```sh
+# List every upstream suite with license, provenance, and grading mode.
+cargo run --bin formal-ai -- benchmark list
+
+# Run 20 real upstream HumanEval cases end to end (network + python3 required).
+cargo run --bin formal-ai -- benchmark run --suite humaneval --slice 20
+
+# Refresh every suite and append honest results to the ledger.
+cargo run --bin formal-ai -- benchmark run --suite all --slice 20 --append
+
+# Verify the monotonic ratchet without running any suite.
+cargo run --bin formal-ai -- benchmark ratchet
+
+# The same end-to-end run as an ignored test (network + python3 required).
+cargo test --test unit external_benchmarks -- --ignored --nocapture
+```
 
 ## How to run
 
