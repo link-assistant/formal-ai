@@ -81,6 +81,8 @@ mod issue_681;
 mod issue_686_agent_cli;
 mod issue_686_associative_persistence;
 mod issue_687;
+mod issue_701_dreaming_amendment_class;
+mod issue_701_learning_adoption;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;
 mod issue_715_code_rewrite_learning;
