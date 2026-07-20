@@ -12,12 +12,12 @@ use crate::http_server::{
 /// The server never writes source back itself — the projection is a read-only,
 /// auditable artifact, keeping the "recompile itself" guardrail human-gated.
 #[test]
-fn agent_mode_routes_source_graph_request_to_a_projection_write() {
+fn agent_mode_routes_source_links_request_to_a_projection_write() {
     let port = reserve_loopback_port();
     let _server = spawn_formal_ai_server_agent_mode(port);
 
     for prompt in [
-        formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_TASK,
+        formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK,
         "Recompile yourself: translate the whole source of the system to links and back, record the source graph.",
         "Project the entire source graph: translate all source to links and back, then write the projection document.",
     ] {
@@ -76,17 +76,17 @@ fn agent_mode_routes_source_graph_request_to_a_projection_write() {
             serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
         assert_eq!(
             arguments["path"],
-            formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_PATH,
+            formal_ai::agentic_coding::source_links::SOURCE_LINKS_PATH,
             "{prompt}"
         );
         // The written document is the generated whole-repository projection.
         let content = arguments["content"].as_str().unwrap();
         assert_eq!(
             content,
-            formal_ai::agentic_coding::source_graph::render_document(),
+            formal_ai::agentic_coding::source_links::render_document(),
             "{prompt}"
         );
-        assert!(content.contains("self_source_graph"), "{prompt}");
+        assert!(content.contains("self_source_links"), "{prompt}");
         assert!(content.contains("slice_fully_faithful true"), "{prompt}");
         assert!(content.contains("entire_source"), "{prompt}");
     }

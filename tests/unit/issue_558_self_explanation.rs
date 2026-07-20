@@ -160,13 +160,13 @@ fn recognises_the_explain_task_without_colliding_with_the_sibling_recipes() {
         formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
     ));
     assert!(!is_explain_task(
-        formal_ai::agentic_coding::source_graph::SOURCE_GRAPH_TASK
+        formal_ai::agentic_coding::source_links::SOURCE_LINKS_TASK
     ));
     assert!(!is_explain_task(formal_ai::agentic_coding::LEDGER_TASK));
     // The explain task itself must not trip the sibling routers.
     assert!(!formal_ai::agentic_coding::is_self_heal_task(EXPLAIN_TASK));
     assert!(!formal_ai::agentic_coding::is_self_ast_task(EXPLAIN_TASK));
-    assert!(!formal_ai::agentic_coding::is_source_graph_task(
+    assert!(!formal_ai::agentic_coding::is_source_links_task(
         EXPLAIN_TASK
     ));
     assert!(!formal_ai::agentic_coding::is_ledger_task(EXPLAIN_TASK));

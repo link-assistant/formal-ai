@@ -50,6 +50,7 @@ pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
 pub mod method_registry;
+pub(crate) mod network_endpoint;
 pub mod normal_markov;
 pub mod option_evidence;
 pub mod option_network;
@@ -77,7 +78,7 @@ pub mod selection;
 pub mod self_explanation;
 pub mod self_healing;
 pub mod self_improvement;
-pub mod self_source_graph;
+pub mod self_source_links;
 pub mod server;
 pub mod shared_dialog;
 pub mod shared_memory;
@@ -262,9 +263,9 @@ pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
     LearningRejection, LearningRun, UnknownTrace,
 };
-pub use self_source_graph::{
+pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
-    owned_source_files, owned_total_bytes, SourceGraph, SourceModuleDigest, SourceModuleProjection,
+    owned_source_files, owned_total_bytes, SourceLinks, SourceModuleDigest, SourceModuleProjection,
 };
 pub use server::{
     enable_http_agent_mode_for_current_process, handle_api_request, handle_api_request_with_auth,

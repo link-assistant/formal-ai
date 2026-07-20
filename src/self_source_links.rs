@@ -18,11 +18,11 @@
 //!   "entire source present in our data as links" view: enumerating and content-
 //!   addressing all of it costs only a hash per file, so it is safe to build on
 //!   every request and in every test.
-//! * [`SourceGraph`] — the **full** projection that parses each file through the
-//!   sole CST/AST engine ([meta-language](https://github.com/link-foundation/meta-language)) and
-//!   verifies the byte-for-byte
-//!   round-trip. [`SourceGraph::compile`] projects any file list;
-//!   [`SourceGraph::owned`] projects the *whole* repository. Parsing every file is
+//! * [`SourceLinks`] — the **full** projection that parses each file through the
+//!   sole CST/AST engine ([meta-language](https://github.com/link-foundation/meta-language))
+//!   and verifies the byte-for-byte
+//!   round-trip. [`SourceLinks::compile`] projects any file list;
+//!   [`SourceLinks::owned`] projects the *whole* repository. Parsing every file is
 //!   deliberately non-trivial (seconds per file in debug), so the whole-repository
 //!   projection is exercised by the example binary and an exhaustive (ignored by
 //!   default) test rather than on every `cargo test`.
@@ -137,12 +137,12 @@ impl SourceModuleProjection {
 /// The whole-repository source ↔ links projection: every projected module plus the
 /// aggregate coverage of the lossless round-trip.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SourceGraph {
+pub struct SourceLinks {
     /// One projection per source file, in the embedded (path-sorted) order.
     pub modules: Vec<SourceModuleProjection>,
 }
 
-impl SourceGraph {
+impl SourceLinks {
     /// Project every `(path, source)` pair in `files` to links and back.
     ///
     /// The general primitive: it works over any file list, so callers can project a
@@ -160,16 +160,16 @@ impl SourceGraph {
     /// per process.
     ///
     /// Parsing every file through the CST/AST engine is deliberately expensive, and
-    /// a server or test may ask for the graph repeatedly, so the result is memoised;
-    /// it is a deterministic function of the embedded source, so memoising changes
-    /// nothing but latency.
+    /// a server or test may ask for the projection repeatedly, so the result is
+    /// memoised; it is a deterministic function of the embedded source, so memoising
+    /// changes nothing but latency.
     #[must_use]
     pub fn owned() -> &'static Self {
-        static GRAPH: OnceLock<SourceGraph> = OnceLock::new();
-        GRAPH.get_or_init(|| Self::compile(OWNED_SOURCE_FILES))
+        static LINKS: OnceLock<SourceLinks> = OnceLock::new();
+        LINKS.get_or_init(|| Self::compile(OWNED_SOURCE_FILES))
     }
 
-    /// How many modules the graph projected.
+    /// How many modules the links projection projected.
     #[must_use]
     pub const fn module_count(&self) -> usize {
         self.modules.len()
@@ -190,7 +190,7 @@ impl SourceGraph {
 
     /// The lossless-round-trip coverage in permille (parts per thousand), computed
     /// with integer math so the artifact stays float-free and deterministic. A fully
-    /// faithful graph is `1000`.
+    /// faithful projection is `1000`.
     #[must_use]
     pub fn coverage_permille(&self) -> u32 {
         if self.modules.is_empty() {
@@ -247,7 +247,7 @@ impl SourceGraph {
     /// whitespace.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        let mut out = String::from("source_graph\n");
+        let mut out = String::from("source_links\n");
         let _ = writeln!(out, "  engine meta_language");
         let _ = writeln!(out, "  language rust");
         let _ = writeln!(out, "  module_count {}", self.module_count());
@@ -315,7 +315,7 @@ pub fn owned_manifest_content_id() -> String {
 ///
 /// This is the "entire source present in our data as links" artifact — it accounts
 /// for every owned file at hash cost, so it is safe to embed in an agentic recipe's
-/// response. The *lossless* proof is [`SourceGraph`]; this is the *coverage* proof.
+/// response. The *lossless* proof is [`SourceLinks`]; this is the *coverage* proof.
 #[must_use]
 pub fn owned_manifest_notation() -> String {
     let manifest = owned_manifest();

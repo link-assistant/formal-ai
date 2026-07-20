@@ -22,7 +22,7 @@
 //! - `source_cache`: external source access caching with provenance and TTL.
 //! - `agent_isolation`: chat vs agent autonomy and isolated execution.
 //! - `translation_via_links`: links notation as the language of meaning.
-//! - `network_visualization`: optional link-graph view alongside chat.
+//! - `network_visualization`: optional links network view alongside chat.
 //! - `desktop_surface`: packaged desktop shell around the shared HTTP/web
 //!   boundary.
 //! - `vscode_surface`: dual-host VS Code extension (Node + Web Worker) embedding
@@ -64,6 +64,7 @@ mod issue_467;
 mod issue_595;
 mod issue_682;
 mod links_network;
+mod links_network_terminology_meta_algorithm;
 mod market_price_verification_meta_algorithm;
 mod memory_query;
 mod meta_algorithm;

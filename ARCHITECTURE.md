@@ -801,9 +801,9 @@ trigger/handler links, and queried by the tool-call gate for capabilities such
 as `tool:calculator`. Compiled skills can be wrapped as packages and imported
 back without hand-editing Rust code; structured expected tests become package
 triggers/handlers and structured permissions become package permission grants.
-The `/api/formal-ai/v1/graph` projection includes the package, handler, trigger,
-and permission links so the permission path is inspectable alongside ordinary
-rules.
+The `/api/formal-ai/v1/network` projection (the deprecated `/api/formal-ai/v1/graph`
+alias still resolves) includes the package, handler, trigger, and permission
+links so the permission path is inspectable alongside ordinary rules.
 
 The compilation chain (NL → code → binary) is the long-term path. The
 runtime never *requires* compilation: a natural-language skill can be
@@ -1008,11 +1008,13 @@ The same `FormalAiEngine` answers prompts in every surface:
   `/api/openai/v1`, Anthropic under `/api/anthropic/v1`, Gemini under
   `/api/gemini/v1beta`, Vertex under `/api/vertex/v1`, and native formal-ai
   routes under `/api/formal-ai/v1`. The legacy `/v1/chat/completions`,
-  `/v1/responses`, `/v1/messages`, and `/v1/graph` aliases remain for existing
-  desktop and CLI configs.
+  `/v1/responses`, `/v1/messages`, and `/v1/network` aliases remain for existing
+  desktop and CLI configs; the older `/v1/graph` alias still resolves but is
+  flagged deprecated in favor of `/v1/network`.
 - **Desktop shell** — `desktop/main.cjs` starts the same local
   `formal-ai serve` API on loopback, serves the existing `src/web` chat, and
-  exposes a preload bridge for API, graph, full-memory, and permission status.
+  exposes a preload bridge for API, links-network, full-memory, and permission
+  status.
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
   `formal-ai telegram` (long polling).
 - **Prepared Telegram Docker image** — releases publish the root `Dockerfile`
@@ -1081,8 +1083,8 @@ the blocker for the npm-published engine in issue
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts
-through the local chat-completions route, links graph inspection to the native
-graph route, and uses the browser memory import/export path for
+through the local chat-completions route, links network inspection to the native
+links-network route, and uses the browser memory import/export path for
 `formal_ai_bundle` round-trips.
 
 ---

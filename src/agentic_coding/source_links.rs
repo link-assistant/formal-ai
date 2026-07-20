@@ -6,7 +6,7 @@
 //! itself"*, and specifically that *"the entire source code of our system"* be
 //! *"translate\[d\] … to links / meta language (that must be present in our data),
 //! and back to the source code."* [`super::self_ast`] proved that round-trip for a
-//! single pinned module; [`crate::self_source_graph`] lifts it to the whole
+//! single pinned module; [`crate::self_source_links`] lifts it to the whole
 //! repository. This module makes the whole-repository view reachable *through the
 //! agentic interface*: an external agent CLI (`Codex`, `OpenCode`, `Gemini`,
 //! `Agent CLI`) — or the in-repo driver — asks Formal AI to project its own source,
@@ -25,8 +25,8 @@
 //!   byte-for-byte — the lossless "and back" proof.
 //!
 //! The *exhaustive* lossless proof over all owned files is the library invariant
-//! ([`crate::self_source_graph::SourceGraph::owned`]), locked by an ignored-by-default
-//! test and printed by the `project_source_graph` example — kept off the hot path
+//! ([`crate::self_source_links::SourceLinks::owned`]), locked by an ignored-by-default
+//! test and printed by the `project_source_links` example — kept off the hot path
 //! because parsing every file is deliberately expensive. Nothing here writes source
 //! back: the projection is a read-only, auditable artifact, so the "recompile
 //! itself" guardrail (observable, testable, reversible, human-approved) holds.
@@ -36,47 +36,52 @@
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
-use crate::self_source_graph::{
-    owned_file_count, owned_manifest_content_id, owned_source_files, owned_total_bytes, SourceGraph,
+use crate::self_source_links::{
+    owned_file_count, owned_manifest_content_id, owned_source_files, owned_total_bytes, SourceLinks,
 };
 
 /// The workspace path the planner writes the generated projection document to.
-pub const SOURCE_GRAPH_PATH: &str = "self-source-graph.lino";
+pub const SOURCE_LINKS_PATH: &str = "self-source-links.lino";
 
 /// How many real modules the recipe verifies losslessly inline. The whole-repository
 /// proof lives in the library invariant / example; this slice keeps the live recipe
 /// responsive while still proving the round-trip on real, varied source.
 const SLICE_SIZE: usize = 6;
 
-/// A *differently worded* request for the source-graph recipe.
+/// A *differently worded* request for the source-links recipe.
 ///
 /// The router recognises the intent from the words, not a hardcoded string.
 /// Deliberately avoids the self-AST keywords ("cst/ast", "abstract-syntax",
 /// "reason about itself") and the self-healing keywords so the self-inspection
 /// recipes never collide.
-pub const SOURCE_GRAPH_TASK: &str =
+pub const SOURCE_LINKS_TASK: &str =
     "Translate the entire source code of our system to the links / meta language and \
      back to source, and record the whole-repository source-to-links projection in \
      Links Notation so we can recompile ourselves.";
 
-/// Keywords that mark a user turn as the whole-repository source-graph recipe.
+/// Keywords that mark a user turn as the whole-repository source-links recipe.
 ///
 /// Deliberately narrow: `"source to links"` is *not* here because the self-healing
 /// recipe's own phrasing ("map it onto the source … with a source-to-links
 /// round-trip") legitimately uses it, and the two self-inspection recipes must never
 /// collide on a keyword. Whole-source-to-links intent is instead caught by the
-/// scoped fallback in [`is_source_graph_task`].
-const SOURCE_GRAPH_KEYWORDS: [&str; 3] = ["source graph", "source-graph", "recompile"];
+/// scoped fallback in [`is_source_links_task`].
+///
+/// The legacy `"source graph"` phrasing stays recognised as a synonym: user
+/// vocabulary is data (issue #651/#161), so a person who still says "graph" keeps
+/// routing to the canonical links-network recipe rather than being turned away.
+const SOURCE_LINKS_KEYWORDS: [&str; 4] =
+    ["source links", "source graph", "source-links", "recompile"];
 
 /// Whether `prompt` asks to translate the whole source to links and back (issue
 /// #558's "recompile itself" / whole-repository projection).
 #[must_use]
-pub fn is_source_graph_task(prompt: &str) -> bool {
+pub fn is_source_links_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
     // A dedicated keyword routes here directly. Otherwise require an explicit
     // whole-source scope paired with the links-translation intent, so ordinary
     // single-file "parse this" or self-AST requests do not match.
-    if SOURCE_GRAPH_KEYWORDS
+    if SOURCE_LINKS_KEYWORDS
         .iter()
         .any(|keyword| lower.contains(keyword))
     {
@@ -111,22 +116,22 @@ fn representative_slice() -> Vec<(&'static str, &'static str)> {
 /// the recipe touches the projection several times per run (write step, verify step,
 /// final answer), so memoising keeps the loop responsive without changing its
 /// deterministic result.
-fn cached_slice() -> &'static SourceGraph {
-    static SLICE: OnceLock<SourceGraph> = OnceLock::new();
-    SLICE.get_or_init(|| SourceGraph::compile(&representative_slice()))
+fn cached_slice() -> &'static SourceLinks {
+    static SLICE: OnceLock<SourceLinks> = OnceLock::new();
+    SLICE.get_or_init(|| SourceLinks::compile(&representative_slice()))
 }
 
 /// Render the whole-repository source ↔ links projection document (Links Notation).
 /// Deterministic and ends with exactly one trailing newline.
 ///
-/// The output is what the Agent CLI writes to [`SOURCE_GRAPH_PATH`]. It is asserted
+/// The output is what the Agent CLI writes to [`SOURCE_LINKS_PATH`]. It is asserted
 /// live (never committed byte-for-byte) in the issue-#558 tests, because the
 /// per-file content ids and counts change with every source edit — committing it
 /// would force a regenerate on every unrelated PR.
 #[must_use]
 pub fn render_document() -> String {
     let slice = cached_slice();
-    let mut out = String::from("self_source_graph\n");
+    let mut out = String::from("self_source_links\n");
     let _ = writeln!(out, "  engine meta_language");
     let _ = writeln!(out, "  language rust");
     let _ = writeln!(out, "  task translate_entire_source_to_links_and_back");
@@ -164,7 +169,7 @@ pub fn render_document() -> String {
 /// The projected representative slice backing the recipe. Exposed so tests can
 /// assert the round-trip proof is lossless without rebuilding it.
 #[must_use]
-pub fn slice() -> SourceGraph {
+pub fn slice() -> SourceLinks {
     cached_slice().clone()
 }
 
@@ -178,9 +183,9 @@ pub fn final_answer(document: &str) -> String {
          content-addressed all {files} owned source files under one manifest id, and verified a \
          representative slice of {slice} modules round-trips byte-for-byte through the meta-language \
          links network (the sole CST/AST engine here). The exhaustive whole-repository round-trip is \
-         the library invariant (SourceGraph::owned) — a real step toward recompiling ourselves. \
+         the library invariant (SourceLinks::owned) — a real step toward recompiling ourselves. \
          Nothing was written back; the projection is a read-only, auditable artifact.\n\n\
-         Generated document ({SOURCE_GRAPH_PATH}):\n\n{document}",
+         Generated document ({SOURCE_LINKS_PATH}):\n\n{document}",
         files = owned_file_count(),
         slice = slice.module_count(),
         document = document.trim_end(),

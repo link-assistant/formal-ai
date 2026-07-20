@@ -54,6 +54,7 @@ pub fn responses_sse_response(response: &ResponseObject) -> ApiHttpResponse {
         status_code: 200,
         content_type: "text/event-stream",
         body,
+        deprecated: false,
     }
 }
 
