@@ -138,3 +138,47 @@ fn general_change_plan_fixture_pins_the_shape() {
         assert!(fixture.contains(field), "missing {field}");
     }
 }
+
+/// A **read** request must never compose a write plan (found by the issue-#671
+/// matrix on the `opencode` leg).
+///
+/// `formal-ai with opencode "read the file alpha.txt and print its contents"`
+/// planned `write(alpha.txt)` and overwrote the fixture with a stray quote
+/// character before "verifying" it with `cat alpha.txt`. The marker-led branch
+/// of the write recogniser accepted `file alpha.txt` (a positional target cue)
+/// plus the trailing content lead `contents`, with no write action cue anywhere
+/// in the request — so a request whose only verbs were `read` and `print`
+/// destroyed the file it was asked to read. Codex escaped only because its
+/// toolset advertises no plain write tool, which is exactly the "inferred from
+/// the shared adapters" reasoning issue #671 exists to reject.
+#[test]
+fn agentic_general_planner_never_claims_a_read_request() {
+    for request in [
+        "read the file alpha.txt and print its contents",
+        "\"read the file alpha.txt and print its contents\"",
+        "show me the contents of the file beta.md",
+        "print the contents of subdir/nested.log",
+    ] {
+        assert!(
+            compose_general_change_plan(request).is_none(),
+            "a read request must not compose a write plan: {request}",
+        );
+    }
+}
+
+/// Content recovered from a request has to be *content*. The `opencode` leg's
+/// overwrite payload was a single `"` — the tail left over after the trailing
+/// content-lead marker in a quoted prompt. A payload with nothing to say is a
+/// mis-parse, not a write.
+#[test]
+fn agentic_general_planner_rejects_punctuation_only_payload() {
+    for request in [
+        "write file notes/empty.txt containing \"",
+        "create file notes/dots.txt with text ...",
+    ] {
+        assert!(
+            compose_general_change_plan(request).is_none(),
+            "a payload with no word characters must not compose a write: {request}",
+        );
+    }
+}
