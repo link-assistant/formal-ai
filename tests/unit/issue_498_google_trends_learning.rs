@@ -3,7 +3,9 @@ use formal_ai::agentic_coding::{
     run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS, GOOGLE_TRENDS_LEARNING_PATH,
     GOOGLE_TRENDS_LEARNING_TASK,
 };
-use formal_ai::{trending_learning_report, ChatMessage, ToolCall};
+use formal_ai::{
+    recorded_google_trends_frontier, trending_learning_report, ChatMessage, ToolCall,
+};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
@@ -38,10 +40,15 @@ fn committed_google_trends_learning_report_is_generated_by_the_recipe() {
     assert!(committed.contains("google_trends_learning"));
     assert!(committed.contains("auto_learning_loop \"issue_558_self_improvement\""));
     assert!(committed.contains("human_gated \"true\""));
-    // The honest coverage split: the engine already routes 20 prompts, and 60 land on
-    // the frontier handed to the gated learner — which adopts nothing.
-    assert!(committed.contains("handled_by_engine \"20\""));
-    assert!(committed.contains("learning_frontier \"60\""));
+    // The honest coverage split. It used to be 20 routed / 60 on the frontier;
+    // issue #701's learning cycle derived the missing request-opener surfaces
+    // from that very frontier and promoted them through the human gate, so the
+    // frontier is now empty. The pre-adoption verdicts are preserved in
+    // `data/meta/learning-frontier-google-trends.lino`, and the per-prompt
+    // capability deltas in `data/meta/learning-adoption-ledger.lino`.
+    assert!(committed.contains("handled_by_engine \"80\""));
+    assert!(committed.contains("learning_frontier \"0\""));
+    // Still nothing is auto-adopted *here*: adoption went through issue #656.
     assert!(committed.contains("learning_run_adopted \"0\""));
     // A frontier entry is only an *unrouted* prompt; no routed intent leaks in.
     assert!(!committed.contains("engine_intent \"web_search\""));
@@ -58,8 +65,10 @@ fn the_learning_report_is_a_faithful_proposal_only_run() {
         report.total_prompts,
         "every prompt is either routed or on the frontier",
     );
-    assert_eq!(report.frontier_count(), 60);
-    assert_eq!(report.handled_by_engine, 20);
+    // Issue #701 closed the gap: the frontier is empty and every catalog prompt
+    // routes. This is a ratchet — a regression that unroutes a prompt fails here.
+    assert_eq!(report.frontier_count(), 0);
+    assert_eq!(report.handled_by_engine, 80);
 
     // Every frontier prompt is genuinely unrouted, and each becomes a learning trace.
     assert!(report
@@ -68,25 +77,29 @@ fn the_learning_report_is_a_faithful_proposal_only_run() {
         .all(|entry| entry.engine_intent == "unknown"));
     assert_eq!(report.run.trace_count, report.frontier_count());
 
-    // Open-domain trending questions produce no adoptable rule: the loop stays
-    // proposal-only and nothing is auto-adopted (issue #558's honest behaviour).
+    // The loop is still proposal-only and still adopts nothing on its own: the
+    // surfaces that closed the gap were promoted through the human-gated
+    // issue-#656 protocol, not auto-adopted here (issue #558's honest behaviour).
     assert!(report.is_proposal_only());
     assert_eq!(report.adopted_count(), 0);
-    assert_eq!(
-        report.uniform_rejection_reason(),
-        Some("no rule_synthesis_candidate event"),
-    );
+    // With no frontier there is nothing to reject, so there is no uniform reason.
+    assert_eq!(report.uniform_rejection_reason(), None);
+    assert!(report.summary().contains("frontier is empty"));
 }
 
 #[test]
-fn the_learning_frontier_spans_every_supported_language() {
+fn the_recorded_learning_frontier_spans_every_supported_language() {
     // Issue #498 requires the learning frontier to span *every* supported language,
     // not just one: English (en), Russian (ru), Hindi (hi), and Chinese (zh). A
     // regression that dropped a locale would silently narrow the engine's own map of
-    // which trending prompts it cannot yet answer. Each expected fragment is the
+    // which trending prompts it could not yet answer. Each expected fragment is the
     // native-language request template the frontier prompt is built from, so this also
     // pins that the non-English prompts stay in their own script.
-    let report = trending_learning_report();
+    //
+    // The live frontier is empty since issue #701 closed the gap, so the check runs
+    // against the frozen pre-adoption record — the durable frontier artifact that
+    // keeps the failure visible instead of dropping it (R425).
+    let recorded = recorded_google_trends_frontier();
     let expected: [(&str, &str); 4] = [
         ("en", "Give Google Trends context for"),
         ("ru", "Дай контекст Google Trends для"),
@@ -95,23 +108,19 @@ fn the_learning_frontier_spans_every_supported_language() {
     ];
     for (language, request_fragment) in expected {
         assert!(
-            report
-                .frontier
+            recorded
                 .iter()
-                .any(|entry| entry.language == language && entry.prompt.contains(request_fragment)),
-            "the learning frontier must include {language} prompts like {request_fragment:?}",
+                .any(|item| item.language == language && item.prompt.contains(request_fragment)),
+            "the recorded frontier must include {language} prompts like {request_fragment:?}",
         );
     }
 
-    // Coverage is derived from supported_languages(), so every language contributes at
-    // least one frontier prompt — none is silently dropped.
+    // Coverage is derived from supported_languages(), so every language contributed at
+    // least one frontier prompt — none was silently dropped.
     for language in ["en", "ru", "hi", "zh"] {
         assert!(
-            report
-                .frontier
-                .iter()
-                .any(|entry| entry.language == language),
-            "language {language} must appear on the frontier",
+            recorded.iter().any(|item| item.language == language),
+            "language {language} must appear on the recorded frontier",
         );
     }
 }
