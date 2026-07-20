@@ -7,14 +7,14 @@
 //! deliberately expensive (seconds per file in debug), so it lives here and in an
 //! ignored-by-default test rather than on the hot path.
 //!
-//! Usage: `cargo run --example project_source_graph`. The one-line summary and any
+//! Usage: `cargo run --example project_source_links`. The one-line summary and any
 //! unfaithful modules print to stderr; the full projection (Links Notation) prints
 //! to stdout, so it can be redirected to a file for review.
 
-use formal_ai::SourceGraph;
+use formal_ai::SourceLinks;
 
 fn main() {
-    let graph = SourceGraph::owned();
+    let graph = SourceLinks::owned();
 
     eprintln!("{}", graph.summary());
     if graph.is_fully_faithful() {

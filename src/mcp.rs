@@ -103,5 +103,6 @@ fn json_response(value: &Value) -> ApiHttpResponse {
         status_code: 200,
         content_type: "application/json",
         body: value.to_string(),
+        deprecated: false,
     }
 }

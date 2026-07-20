@@ -98,7 +98,7 @@ src/agentic_coding/self_ast.rs	Stored the CST/AST of our Rust meta algorithm ({T
 src/agentic_coding/self_heal.rs	Ran the self-healing loop on an input the system could not answer directly: reasoned about the failure trace, mapped it onto {module} with a verified source-to-links round-trip, learned a benchmark-gated lesson, and recorded an auditable repair case ({outcome}). Nothing was applied — adoption stays a human-approved review step.\n\nGenerated document ({SELF_HEAL_PATH}):\n\n{document}
 src/agentic_coding/self_heal.rs	When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.
 src/agentic_coding/shell_command.rs	{} --fixed-strings -- '{arg}' .
-src/agentic_coding/source_graph.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
+src/agentic_coding/source_links.rs	Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.
 src/associative_package.rs	Package handler: {}
 src/associative_package.rs	Package permission: {}
 src/associative_package.rs	Package trigger: {}
@@ -373,6 +373,7 @@ src/meta_self_improvement.rs	Propose citing undescribed pipeline stage(s): {add}
 src/meta_self_improvement.rs	Propose citing {add}; propose dropping stale citation(s): {drop}.
 src/meta_self_improvement.rs	Propose dropping stale recipe citation(s): {drop}.
 src/meta_self_improvement.rs	The recipe already describes every pipeline stage; no update proposed.
+src/network_endpoint.rs	invalid LinksQL query: {error}
 src/probability.rs	{} fetched_at={} sha256={} cached={}
 src/program_plan.rs	program_plan\n
 src/program_plan.rs	{MODIFIER_NODE} -> {cancel_op}
@@ -643,12 +644,11 @@ src/self_improvement.rs	missing `{name}` in candidate
 src/self_improvement.rs	rule verification did not pass: {status}
 src/self_improvement.rs	substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"{rule_id}\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> {modifier}\"\n    replace \"request:task -> {base_task}\"\n      with \"request:task -> {resolved_task}\"
 src/self_improvement.rs	{prompt}\n{fingerprint}
-src/self_source_graph.rs	Projected {faithful}/{total} owned source modules losslessly through the meta-language links network ({permille}‰ round-trip coverage, {nodes} named AST nodes).
+src/self_source_links.rs	Projected {faithful}/{total} owned source modules losslessly through the meta-language links network ({permille}‰ round-trip coverage, {nodes} named AST nodes).
 src/server.rs	data: [DONE]\n\n
 src/server.rs	data: {merged}\n\n
 src/server.rs	failed to persist memory: {error}
 src/server.rs	failed to serialize response: {error}
-src/server.rs	invalid LinksQL query: {error}
 src/server.rs	invalid chat request: {error}
 src/server.rs	invalid generateContent request: {error}
 src/server.rs	invalid messages request: {error}

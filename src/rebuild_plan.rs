@@ -26,7 +26,7 @@ use std::fmt::Write as _;
 
 use crate::change_request::AcceptedChange;
 use crate::engine::stable_id;
-use crate::self_source_graph::owned_manifest;
+use crate::self_source_links::owned_manifest;
 
 /// A UI artifact the rebuild reattaches, grounded by content-addressing its real bytes.
 #[derive(Debug, Clone, PartialEq, Eq)]

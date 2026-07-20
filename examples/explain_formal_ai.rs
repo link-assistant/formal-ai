@@ -7,7 +7,7 @@
 //! behaviour). Every source citation is verified against the owned manifest at
 //! construction, so the explanation cannot cite anything the repository does not ship.
 //!
-//! Like the whole-repository source-graph projection, the document depends on the
+//! Like the whole-repository source-links projection, the document depends on the
 //! whole source tree (source citation content ids and the manifest id change with
 //! every edit), so it is a *workspace-only* artifact — asserted live in the tests,
 //! never committed byte-for-byte. Usage: `cargo run --example explain_formal_ai`. The

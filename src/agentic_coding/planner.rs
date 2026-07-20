@@ -34,7 +34,7 @@ use super::report_issue;
 use super::self_ast;
 use super::self_heal;
 use super::shell_command;
-use super::source_graph;
+use super::source_links;
 use super::statement_audit;
 use super::tool_result;
 use super::web_research;
@@ -191,12 +191,12 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if self_ast::is_self_ast_task(&task) {
         return Some(plan_self_ast_step(messages, tool_names));
     }
-    // The whole-repository source-graph recipe: checked alongside the other
+    // The whole-repository source-links recipe: checked alongside the other
     // self-inspection recipes and before formalization, because its request
     // legitimately names "links" (its output format), which the broad
     // formalization keyword match below would otherwise capture.
-    if source_graph::is_source_graph_task(&task) {
-        return Some(plan_source_graph_step(messages, tool_names));
+    if source_links::is_source_links_task(&task) {
+        return Some(plan_source_links_step(messages, tool_names));
     }
     // The learning-ledger recipe: the promotion step that follows an approved repair
     // case. Checked after self-healing (which owns the "auto learning" keywords) and
@@ -233,7 +233,7 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     // Checked alongside the other self-referential recipes and before formalization,
     // since its request legitimately names "Links Notation" as the output format its plan
     // is rendered in. Its keywords key on "reattach" and are disjoint from the
-    // source-graph recipe's "recompile", so ordering only guards a request that somehow
+    // source-links recipe's "recompile", so ordering only guards a request that somehow
     // names both.
     if rebuild_plan::is_rebuild_task(&task) {
         return Some(plan_rebuild_step(messages, tool_names));
@@ -393,7 +393,7 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
 
 /// A self-referential *generate → verify → final* recipe expressed as data.
 ///
-/// Every self-inspection recipe (diagram, self-AST, self-heal, source-graph,
+/// Every self-inspection recipe (diagram, self-AST, self-heal, source-links,
 /// ledger, explain, change-request, repair-strategy, rebuild, question-catalog,
 /// Google-Trends catalog, Google-Trends learning) has the *same* three-step shape:
 /// write a generated document to `path`, verify it by running `verify_command`,
@@ -607,21 +607,21 @@ fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> Agentic
     )
 }
 
-/// The issue-#558 source-graph recipe: write the generated whole-repository
+/// The issue-#558 source-links recipe: write the generated whole-repository
 /// source ↔ links projection document → verify → final. Like the diagram, self-AST,
 /// and self-healing recipes it needs no web step — the document is a pure function
 /// of the system's own embedded source projected through the meta-language links
-/// network ([`source_graph::render_document`]), so the loop *translates itself*.
+/// network ([`source_links::render_document`]), so the loop *translates itself*.
 /// Steps whose tool the CLI did not advertise are skipped.
-fn plan_source_graph_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = source_graph::render_document();
-    let final_answer = source_graph::final_answer(&document);
+fn plan_source_links_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    let document = source_links::render_document();
+    let final_answer = source_links::final_answer(&document);
     plan_document_recipe(
         messages,
         tool_names,
         DocumentRecipe {
-            path: source_graph::SOURCE_GRAPH_PATH,
-            verify_command: format!("cat {}", source_graph::SOURCE_GRAPH_PATH),
+            path: source_links::SOURCE_LINKS_PATH,
+            verify_command: format!("cat {}", source_links::SOURCE_LINKS_PATH),
             final_answer,
             document,
         },
@@ -711,7 +711,7 @@ fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> A
 }
 
 /// The issue-#558 rebuild-and-reattach recipe: write the generated
-/// rebuild-and-reattach plan → verify → final. Like the change-request and source-graph
+/// rebuild-and-reattach plan → verify → final. Like the change-request and source-links
 /// recipes it needs no web step — the plan is a deterministic function of the accepted
 /// change and the grounded UI artifacts ([`rebuild_plan::render_document`]), so the loop
 /// turns an accepted change into the ordered, reversible plan to recompile Formal AI and

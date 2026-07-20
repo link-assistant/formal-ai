@@ -224,6 +224,9 @@ jobs:
           FILE_SIZE_WARNING_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: rust-script scripts/check-file-size.rs
 
+      - name: Check associative terminology
+        run: rust-script scripts/check-associative-terminology.rs
+
       # Issue #659 (R379): fail the build when src/ gains user-facing prose
       # string literals instead of sourcing them from data/seed/*.lino. The
       # committed allowlist (scripts/hardcoded-language-allowlist.txt) inventories

@@ -11,9 +11,9 @@ a "how to X" request and its elaboration follow-up ("can you give me specific
 instructions?"). Its recipe lives at
 [`data/meta/procedural-howto-recipe.lino`](../data/meta/procedural-howto-recipe.lino).
 
-Seven recipes are grounded today. The **recursive core** (issue #559) is the
-general algorithm every prompt walks; the other six encode a topic handler or a
-self-directed loop on top of it:
+Nine recipes are grounded today. The **recursive core** (issue #559) is the
+general algorithm every prompt walks; the other eight encode a topic handler, a
+self-directed loop, or a codebase-hygiene procedure on top of it:
 
 | Recipe | Issue | What it reproduces |
 | --- | --- | --- |
@@ -24,6 +24,8 @@ self-directed loop on top of it:
 | [`document-verification-recipe.lino`](../data/meta/document-verification-recipe.lino) | #535 | Verifying an attached document's claims |
 | [`market-price-verification-recipe.lino`](../data/meta/market-price-verification-recipe.lino) | #493 | Fact-checking numeric market-price claims |
 | [`dreaming-recipe.lino`](../data/meta/dreaming-recipe.lino) | #540 | Idle memory maintenance and self-generalization |
+| [`budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) | #662 | Budget-driven search recognition and gated skill proposals |
+| [`links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino) | #664 | Keeping every public surface a links network, not a graph |
 
 The other `data/meta/*.lino` files are catalogues, lexicons, and ledgers
 (cue sets, route/method aliases, repair cases, the self-AST census, …) that the
@@ -584,6 +586,79 @@ cargo test --test unit specification::dreaming_meta_algorithm -- --nocapture
 Because this recipe is checked against the source too, the dreaming planner and
 its recipe cannot silently diverge: replay, application, storage, consent, and
 runtime stages are all pinned to the live code.
+
+## The links-network terminology meta-algorithm (issue #664)
+
+The same grounded-recipe discipline records a seventh meta-algorithm, this one
+turned on the system's **own vocabulary**: the deterministic **associative
+terminology cleanup** that keeps the product's public surface a *links network*
+rather than a "graph". The vision is emphatic that "the associative network is
+the AI" ([`VISION.md`](../VISION.md)), so the system's own naming must match — a
+public route called `/v1/graph` or a module called `source_graph` contradicts
+the thing the project *is*. Issue #664 (E45, under the #651 requirement audit)
+found the architecture already complies but the naming did not. Its recipe lives
+at [`data/meta/links-network-terminology-recipe.lino`](../data/meta/links-network-terminology-recipe.lino)
+and is grounded by
+[`tests/unit/specification/links_network_terminology_meta_algorithm.rs`](../tests/unit/specification/links_network_terminology_meta_algorithm.rs).
+
+The key move is that the cleanup is **structural, not word-blocking**: only
+versioned public API route prefixes (`/v1/`, `/api/formal-ai/v1/`) and Rust
+`mod` declarations / `src/**/*.rs` file names are terminology-governed. Internal
+graph-theory identifiers (`substitution_graph`, `GraphNode`, `graphql`,
+`ideographic`) and prose are never touched, because a graph is the correct word
+for an internal graph-theory concept — it is only the *product's public links
+network* that must not be mislabelled. Backward compatibility is preserved
+without endorsing the old vocabulary: `/v1/graph` keeps serving a byte-identical
+payload but advertises its deprecation over the wire. A repository-hygiene lint
+then makes the cleanup permanent by failing the build on any *new* graph-named
+public route or module, so the terminology can never silently regress.
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+keep any public surface a links network:
+
+1. **Add the canonical `network` route** — `handle_network_request` in
+   `src/network_endpoint.rs` serves the links-network projection under
+   `/v1/network`, kept in a dedicated links-network module.
+2. **Keep the old route as a deprecated alias** — `into_deprecated_alias` flags
+   `/v1/graph` with a `deprecation` header and a successor `link` to the
+   canonical route, byte-identical payload otherwise.
+3. **Rename `self_source_graph` → `self_source_links`** in `src/`, updating the
+   `pub mod`/re-exports in `src/lib.rs`.
+4. **Rename `source_graph` → `source_links`** in `src/agentic_coding/`, updating
+   `src/agentic_coding/mod.rs`.
+5. **Sweep UI strings to "links network view"** across web, desktop, and VS Code,
+   preserving the seeded user-facing `graph` concept (issue #161) as a synonym.
+6. **Add the hygiene lint** — `scripts/check-associative-terminology.rs` blocks
+   *new* graph-named public routes and modules, allowlisting the deprecated
+   alias, the Wikidata `knowledge_graph` engine, and external citation hosts.
+7. **Update the docs** — `ARCHITECTURE.md`/`README.md`/`REQUIREMENTS.md` speak
+   links-network terminology; internal graph-theory prose is preserved.
+8. **Wire the lint into CI** — the Lint job in `.github/workflows/release.yml`
+   runs the scan and the ci-cd unit suite registers its embedded fixture tests.
+
+### What the recipe records
+
+| Recipe record | Grounded against |
+| --- | --- |
+| `meta_step` | ordering 1..8 is contiguous; each `seed_file` exists |
+| `meta_function` | `fn <name>` in the named source file (endpoint, alias, lint, projection) |
+| `meta_rename` | the `to_file` exists, the `from_file` is gone, and the new `mod` is declared |
+| `meta_allowlist` | the exempt token (`/v1/graph`, `knowledge_graph`, `codecov.io`) is present in the lint |
+| `meta_ci` | the workflow runs the lint and the ci-cd suite registers its tests |
+| `meta_test` | the alias integration, lint, and links-network spec files exist and describe what they pin |
+
+### Running it
+
+```sh
+# Verify the links-network terminology recipe still matches the live source:
+cargo test --test unit specification::links_network_terminology_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the associative
+terminology cleanup and its lint can never silently diverge — keeping the
+product a links network is itself a reproducible artifact of the meta-algorithm.
 
 ## The promotion meta-algorithm (issue #656)
 
