@@ -1,7 +1,8 @@
 # Desktop tool-permission and Services UI translations (issue #511/#514).
 # Split out of i18n-catalog.lino to stay under the Links Notation line limit.
-# The loader (src/web/i18n.js) fetches this file and i18n-catalog.lino and
-# merges their per-locale keys; tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+# The loader (src/web/i18n.js) fetches this file together with i18n-catalog.lino
+# and i18n-catalog-messages.lino and merges their per-locale keys;
+# tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
 
 en
   permissions

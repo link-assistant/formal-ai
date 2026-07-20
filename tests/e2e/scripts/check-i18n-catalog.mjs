@@ -459,6 +459,7 @@ const repoRoot = path.resolve(__dirname, '../../..');
 const catalogFiles = [
   'src/web/i18n-catalog.lino',
   'src/web/i18n-catalog-permissions.lino',
+  'src/web/i18n-catalog-messages.lino',
 ];
 const catalogTexts = catalogFiles.map((relativePath) =>
   fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'),

@@ -29,6 +29,12 @@ bump: minor
   `Code Cache` are deliberately excluded — they are derived, large, and unsafe
   to carry between Chromium builds.
 
+- The per-message UI strings moved out of `src/web/i18n-catalog.lino` into
+  `src/web/i18n-catalog-messages.lino`, the same way the permission strings were
+  split earlier, so each catalog stays under the Links Notation line limit that
+  the F3/F4 keys pushed the single file past. The loader merges all three files
+  per locale and the catalog, parity, and coverage guards all watch the new file.
+
 ### Fixed
 
 - `desktop/scripts/*.test.mjs` was written but never executed by any workflow.
