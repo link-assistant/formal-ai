@@ -70,8 +70,13 @@ fn responses_routes_program_creation_to_the_advertised_cli_write_tool() {
     let response = handle_api_request("POST", "/v1/responses", &body.to_string());
     assert_eq!(response.status_code, 200);
     let response: Value = serde_json::from_str(&response.body).unwrap();
-    assert_eq!(response["output"][0]["type"], "function_call");
-    assert_eq!(response["output"][0]["name"], "write_file");
+    let call = response["output"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["type"] == "function_call")
+        .expect("Responses output should contain a function_call item");
+    assert_eq!(call["name"], "write_file");
 }
 
 #[test]

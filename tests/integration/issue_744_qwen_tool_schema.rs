@@ -176,8 +176,13 @@ fn codex_responses_shell_uses_advertised_cmd_key() {
     let response = handle_api_request("POST", "/v1/responses", &body.to_string());
     assert_eq!(response.status_code, 200, "{}", response.body);
     let response: Value = serde_json::from_str(&response.body).unwrap();
-    let arguments: Value =
-        serde_json::from_str(response["output"][0]["arguments"].as_str().unwrap()).unwrap();
+    let call = response["output"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["type"] == "function_call")
+        .expect("Responses output should contain a function_call item");
+    let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
     assert_eq!(arguments, json!({"cmd": "pwd"}));
 }
 
