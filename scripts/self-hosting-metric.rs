@@ -50,7 +50,40 @@ pub fn format_percentage(basis_points: u64) -> String {
     format!("{}.{:02}%", basis_points / 100, basis_points % 100)
 }
 
+/// How a malformed evidence record is treated.
+///
+/// Issue #810: the `Formal-AI-Evidence` gate (`evidence-check` in
+/// `.github/workflows/release.yml`) was introduced in 39fdef91, *after* commit
+/// 10e65ae2 had already merged with an evidence document that never spells out
+/// its own `Formal-AI-Session` id. Because `record_release` measures
+/// `<last tag>..HEAD`, that historical commit stayed inside the release range
+/// forever, `Auto Release` aborted on it every single run (29737218421), and no
+/// new tag could ever be cut to move the range past it — a permanent deadlock
+/// that history cannot be edited out of.
+///
+/// So the two callers get different policies:
+///
+/// - `Strict` — the pull-request gate. New commits must be well formed, and a
+///   malformed record is a hard error *before* it can reach the default branch.
+/// - `Lenient` — release recording. A malformed record is reported on stderr and
+///   the commit simply does not count as self-authored. The metric can only
+///   under-report, never over-report, so the ratchet stays honest.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum EvidencePolicy {
+    Strict,
+    Lenient,
+}
+
 pub fn measure(repo: &Path, since: &str, until: &str) -> Result<Measurement, String> {
+    measure_with_policy(repo, since, until, EvidencePolicy::Strict)
+}
+
+pub fn measure_with_policy(
+    repo: &Path,
+    since: &str,
+    until: &str,
+    policy: EvidencePolicy,
+) -> Result<Measurement, String> {
     let range = format!("{since}..{until}");
     let output = git(repo, &["rev-list", "--reverse", "--no-merges", &range])?;
     let commits = output
@@ -66,7 +99,17 @@ pub fn measure(repo: &Path, since: &str, until: &str) -> Result<Measurement, Str
         changed_lines = changed_lines
             .checked_add(lines)
             .ok_or_else(|| "changed-line total overflowed u64".to_owned())?;
-        if commit_has_formal_ai_evidence(repo, commit)? {
+        let attributed = match commit_has_formal_ai_evidence(repo, commit) {
+            Ok(attributed) => attributed,
+            Err(error) => match policy {
+                EvidencePolicy::Strict => return Err(error),
+                EvidencePolicy::Lenient => {
+                    eprintln!("warning: not attributing {commit}: {error}");
+                    false
+                }
+            },
+        };
+        if attributed {
             self_authored_lines = self_authored_lines
                 .checked_add(lines)
                 .ok_or_else(|| "self-authored line total overflowed u64".to_owned())?;
@@ -210,7 +253,10 @@ pub fn record_release(
         return Err("trailing window must be greater than zero".to_owned());
     }
     let rows = read_release_rows(ledger)?;
-    let measurement = measure(repo, since, until)?;
+    // Lenient on purpose: see `EvidencePolicy`. The pull-request gate is what
+    // keeps new commits honest; a release must never be blocked by a commit
+    // that is already immutable history.
+    let measurement = measure_with_policy(repo, since, until, EvidencePolicy::Lenient)?;
     let until_commitish = format!("{until}^{{commit}}");
     let canonical_until = git(repo, &["rev-parse", &until_commitish])?
         .trim()

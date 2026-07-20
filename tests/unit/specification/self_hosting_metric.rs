@@ -151,6 +151,59 @@ fn trailers_are_recognized_even_when_separated_by_blank_lines() {
     fs::remove_dir_all(repo).expect("fixture directory must be removed");
 }
 
+/// Issue #810: `Auto Release` (run 29737218421) died with "no committed
+/// Formal-AI-Evidence in 10e65ae2 records session issue-804-claude-20260720".
+/// The pull-request evidence gate only landed in 39fdef91, *after* that commit
+/// merged, so the malformed record sat permanently inside every
+/// `<last tag>..HEAD` release range: the release could not run, so no tag could
+/// be cut, so the range could never move past it. Recording a release must
+/// therefore degrade to "not self-authored" instead of aborting, while the
+/// pull-request gate stays strict.
+#[test]
+fn a_malformed_historical_evidence_record_cannot_deadlock_a_release() {
+    let repo = fixture_repo();
+    fs::create_dir_all(repo.join("docs/evidence")).expect("evidence directory must be created");
+    // Mentions formal-ai, but never names the session it claims to document --
+    // exactly the shape of commit 10e65ae2.
+    fs::write(
+        repo.join("docs/evidence/analysis.md"),
+        "formal-ai analysis without the session id\n",
+    )
+    .expect("evidence must be written");
+    fs::write(repo.join("code.txt"), "base\nchanged\n").expect("code must be written");
+    commit(
+        &repo,
+        "formal ai change\n\nFormal-AI-Session: orphan-session\nFormal-AI-Evidence: \
+         docs/evidence/analysis.md",
+    );
+
+    let strict = metric_script::measure(&repo, "v1.0.0", "HEAD");
+    assert!(
+        strict.is_err(),
+        "the pull-request gate must still reject a malformed evidence record"
+    );
+
+    let row = metric_script::record_release(
+        &repo,
+        &repo.join("data/meta/self-hosting-ledger.lino"),
+        "v1.1.0",
+        "v1.0.0",
+        "HEAD",
+        3,
+    )
+    .expect("a release must not be blocked by an immutable malformed commit");
+    assert_eq!(
+        row.self_authored_commits, 0,
+        "an unverifiable commit must not be counted as self-authored"
+    );
+    assert_eq!(
+        row.commits, 1,
+        "the commit must still count toward total changed work"
+    );
+
+    fs::remove_dir_all(repo).expect("fixture directory must be removed");
+}
+
 #[test]
 fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));

@@ -2,6 +2,7 @@
 
 const { signAsync } = require('@electron/osx-sign');
 const { spawnSync } = require('node:child_process');
+const fs = require('node:fs');
 const path = require('node:path');
 
 function isDebugEnabled() {
@@ -12,8 +13,21 @@ function isDebugEnabled() {
 // electron-osx-sign's `debug` output both use stderr; interleaving there keeps
 // the sign trace readable in GitHub Actions logs, and stderr is the stream that
 // survives when electron-builder aborts the CLI on a signing error.
+//
+// Issue #810: run 29738571290 logged electron-builder's own "executing custom
+// sign" line, so this module *was* resolved and invoked, yet not one
+// `[adhoc-sign-mac]` line reached the CI log -- which is why we still cannot
+// say whether `signingIgnoreRules()` ever saw the browser-runtime paths. The
+// most likely culprit is `process.stderr.write()`: on a pipe (which is what
+// GitHub Actions gives a child process) it is asynchronous and buffered, so
+// anything still queued is lost when electron-builder aborts the process on a
+// signing error. `fs.writeSync(2, ...)` cannot be lost that way.
 function log(message) {
-  process.stderr.write(`[adhoc-sign-mac] ${message}\n`);
+  try {
+    fs.writeSync(2, `[adhoc-sign-mac] ${message}\n`);
+  } catch {
+    process.stderr.write(`[adhoc-sign-mac] ${message}\n`);
+  }
 }
 
 function debugLog(message) {
@@ -84,10 +98,25 @@ function signingIgnoreRules(signOptions) {
     (filePath) => isBundledBrowserRuntime(filePath, appPath),
   ];
 
-  return (filePath) =>
-    matchers.some((matcher) =>
+  // Issue #810: the per-file trace stays behind FORMAL_AI_MACOS_SIGN_DEBUG, but
+  // these two counters are always reported (see the summary in the exported
+  // hook). Run 29738571290 died on a browser-runtime path while the ignore rule
+  // was supposedly installed, and we had no way to tell whether the predicate
+  // was consulted at all -- "considered=0" and "skipped=0" mean very different
+  // things, and one line of output distinguishes them.
+  const stats = { considered: 0, skipped: 0 };
+  const predicate = (filePath) => {
+    stats.considered += 1;
+    const ignored = matchers.some((matcher) =>
       typeof matcher === 'function' ? matcher(filePath) : Boolean(filePath.match(matcher)),
     );
+    if (ignored) {
+      stats.skipped += 1;
+    }
+    return ignored;
+  };
+  predicate.stats = stats;
+  return predicate;
 }
 
 function resolvePath(value) {
@@ -169,29 +198,38 @@ module.exports = async function adhocSignMac(signOptions) {
   log(`hook entered (debug=${isDebugEnabled() ? 'on' : 'off'})`);
 
   const upstreamOptionsForFile = signOptions.optionsForFile;
+  const ignore = signingIgnoreRules(signOptions);
 
-  await signAsync({
-    ...signOptions,
-    // Playwright's Chrome for Testing bundle is separately signed upstream.
-    // Treat it as an opaque resource: signing its framework aliases and files
-    // as Electron children breaks the framework seal. The final app signing
-    // below still includes the whole runtime in the app's resource envelope.
-    ignore: signingIgnoreRules(signOptions),
-    identity: '-',
-    identityValidation: false,
-    provisioningProfile: undefined,
-    timestamp: 'none',
-    optionsForFile(filePath) {
-      const fileOptions = upstreamOptionsForFile
-        ? upstreamOptionsForFile(filePath)
-        : {};
+  try {
+    await signAsync({
+      ...signOptions,
+      // Playwright's Chrome for Testing bundle is separately signed upstream.
+      // Treat it as an opaque resource: signing its framework aliases and files
+      // as Electron children breaks the framework seal. The final app signing
+      // below still includes the whole runtime in the app's resource envelope.
+      ignore,
+      identity: '-',
+      identityValidation: false,
+      provisioningProfile: undefined,
+      timestamp: 'none',
+      optionsForFile(filePath) {
+        const fileOptions = upstreamOptionsForFile
+          ? upstreamOptionsForFile(filePath)
+          : {};
 
-      return {
-        ...fileOptions,
-        timestamp: 'none',
-      };
-    },
-  });
+        return {
+          ...fileOptions,
+          timestamp: 'none',
+        };
+      },
+    });
+  } finally {
+    // Reported on success *and* on failure: when electron-builder aborts, this
+    // is the line that says whether the ignore predicate was ever consulted.
+    log(
+      `ignore predicate: considered=${ignore.stats.considered} skipped=${ignore.stats.skipped}`,
+    );
+  }
 
   const appPath = findAppPath(signOptions);
   const appFileOptions = upstreamOptionsForFile ? upstreamOptionsForFile(appPath) || {} : {};
