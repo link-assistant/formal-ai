@@ -1,0 +1,40 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 27.04s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 32 tests
+test issue_781::fetch_narration_names_the_url_instead_of_the_format_argument ... ok
+test issue_781::chat_completion_explains_the_action_before_requesting_a_tool ... ok
+test issue_781::gemini_explains_the_action_before_the_function_call ... ok
+test issue_781::anthropic_messages_explains_the_action_before_tool_use ... ok
+test issue_781::reported_prompt_uses_web_search_with_the_agent_cli_tool_set ... ok
+test issue_781::compatibility_research_fetches_and_cites_independent_sources ... ok
+test issue_781::responses_explains_the_action_before_the_function_call ... ok
+test issue_781_option_evidence::a_candidate_without_a_readable_price_is_kept_rather_than_dropped ... ok
+test issue_781_option_evidence::a_digit_inside_a_part_number_is_not_read_as_a_measurement ... ok
+test issue_781_option_evidence::a_localised_unit_symbol_yields_no_reading_instead_of_a_wrong_one ... ok
+test issue_781_option_evidence::a_specification_is_read_the_same_whatever_language_surrounds_the_number ... ok
+test issue_781_option_evidence::a_unit_does_not_match_the_beginning_of_a_longer_word ... ok
+test issue_781_option_evidence::an_attribute_the_page_does_not_state_is_left_open ... ok
+test issue_781_option_evidence::every_purchase_option_is_assembled_from_pages_and_listed_cheapest_first ... ok
+test issue_781_option_evidence::grouped_digits_and_decimals_both_survive_parsing ... ok
+test issue_781_option_network::an_unpriced_option_is_still_reported_but_ranks_after_priced_ones ... ok
+test issue_781_option_network::authentic_part_is_found_before_any_substitute ... ok
+test issue_781_option_network::cheaper_options_are_listed_first_and_bundles_are_not_padded ... ok
+test issue_781_option_network::exact_constraints_reject_a_near_miss_and_headroom_constraints_accept_one ... ok
+test issue_781_option_network::mixed_currencies_leave_a_plan_total_unknown_rather_than_summed ... ok
+test issue_781_option_network::plan_search_is_bounded_by_the_declared_item_limit ... ok
+test issue_781_option_network::restating_a_constraint_or_a_candidate_replaces_it_instead_of_duplicating ... ok
+test issue_781_option_network::the_network_projects_onto_links_notation_with_its_sources_intact ... ok
+test issue_781_option_network::the_open_question_is_what_drives_the_next_research_turn ... ok
+test issue_781_option_network::the_same_engine_sources_a_subject_that_shares_no_vocabulary_with_the_issue ... ok
+test issue_781_option_network::the_target_and_current_contexts_are_ordinary_world_model_contexts ... ok
+test issue_781_option_network::two_separate_items_form_one_plan_when_neither_suffices_alone ... ok
+test issue_781::research_does_not_repeat_a_search_that_refines_nothing ... ok
+test issue_781::independent_sources_are_fetched_in_separate_agent_turns ... ok
+test issue_781::a_failed_source_is_not_retried_or_used_as_evidence ... ok
+test issue_781::a_source_already_read_is_not_read_again ... ok
+test issue_781::research_deepens_toward_the_part_of_the_question_the_evidence_left_open ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 1879 filtered out; finished in 12.94s
+

@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.04s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 1 test
+
+thread 'issue_781::fetch_narration_names_the_url_instead_of_the_format_argument' (30078) panicked at tests/unit/issue_781.rs:179:5:
+I'll use webfetch on text so I can verify the next step before continuing.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_781::fetch_narration_names_the_url_instead_of_the_format_argument ... FAILED
+
+failures:
+
+failures:
+    issue_781::fetch_narration_names_the_url_instead_of_the_format_argument
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1910 filtered out; finished in 0.53s
+
+error: test failed, to rerun pass `--test unit`

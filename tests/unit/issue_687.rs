@@ -116,6 +116,18 @@ mod factual_question {
         assert_eq!(arguments(&fetch)["url"], "https://www.usa.gov/election-day");
         answer_tool_call(&mut messages, &fetch, "Election Day is November 3, 2026.");
 
+        let comparison = tool_calls(&messages).remove(0);
+        assert_eq!(comparison.tool, "webfetch");
+        assert_eq!(
+            arguments(&comparison)["url"],
+            "https://example.com/elections"
+        );
+        answer_tool_call(
+            &mut messages,
+            &comparison,
+            "An unofficial comparison page repeats November 3, 2026.",
+        );
+
         let answer = final_answer(&messages);
         assert!(answer.contains("November 3, 2026"), "{answer}");
         assert!(

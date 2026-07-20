@@ -7,19 +7,37 @@ use super::planner::{plan_one, AgenticPlan, Capability};
 use crate::protocol::ChatMessage;
 use crate::seed;
 
-/// The first advertised tool name that provides `capability`, in canonical
-/// alias order rather than the client's alphabetical tool order.
+/// The advertised tool name that provides `capability`. Client-executed MCP
+/// tools take precedence over protocol-native hosted tools: a hosted search is
+/// executed by the upstream model provider, while an MCP tool produces a result
+/// that the CLI can return in the next turn. Canonical aliases remain ordered by
+/// the registry, followed by the compatibility classifier for namespaced tools
+/// used by other harnesses.
 pub(super) fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {
+    if let Some(name) = tool_names.iter().copied().find(|name| {
+        name.to_ascii_lowercase().starts_with("mcp__") && classify_tool(name) == Some(capability)
+    }) {
+        return Some(name);
+    }
     let registry = seed::agentic_tool_capabilities();
     let entry = registry
         .iter()
         .find(|entry| entry.id == capability.registry_id())?;
-    entry.aliases.iter().find_map(|alias| {
-        tool_names
-            .iter()
-            .copied()
-            .find(|name| alias.eq_ignore_ascii_case(name))
-    })
+    entry
+        .aliases
+        .iter()
+        .find_map(|alias| {
+            tool_names
+                .iter()
+                .copied()
+                .find(|name| alias.eq_ignore_ascii_case(name))
+        })
+        .or_else(|| {
+            tool_names
+                .iter()
+                .copied()
+                .find(|name| classify_tool(name) == Some(capability))
+        })
 }
 
 fn tool_matches_capability(name: &str, capability: Capability) -> bool {

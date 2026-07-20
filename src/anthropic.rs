@@ -373,6 +373,9 @@ fn anthropic_message_from_chat_completion(
     let requests_tools = choice.is_some_and(|choice| choice.finish_reason == "tool_calls");
 
     let (mut content, stop_reason, seed) = if requests_tools {
+        let narration = choice
+            .map(|choice| choice.message.content.plain_text())
+            .unwrap_or_default();
         let calls = choice
             .map(|choice| choice.message.tool_calls.clone())
             .unwrap_or_default();
@@ -381,7 +384,11 @@ fn anthropic_message_from_chat_completion(
             .map(|call| format!("{}({})", call.function.name, call.function.arguments))
             .collect::<Vec<_>>()
             .join("|");
-        let blocks = calls.into_iter().map(tool_call_to_block).collect();
+        let mut blocks = Vec::with_capacity(calls.len().saturating_add(1));
+        if !narration.trim().is_empty() {
+            blocks.push(AnthropicContentBlock::text(narration));
+        }
+        blocks.extend(calls.into_iter().map(tool_call_to_block));
         (blocks, String::from("tool_use"), seed)
     } else {
         let text = choice

@@ -9,6 +9,8 @@ use std::thread;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::protocol_policy::tool_definition_names;
+
 /// Runtime configuration for `formal-ai proxy`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProxyConfig {
@@ -658,14 +660,7 @@ fn collect_request_tool_names(value: &Value) -> Vec<String> {
 }
 
 fn append_tool_definition_names(value: &Value, names: &mut Vec<String>) {
-    if let Some(name) = value
-        .get("function")
-        .and_then(|function| function.get("name"))
-        .or_else(|| value.get("name"))
-        .and_then(Value::as_str)
-    {
-        names.push(name.to_owned());
-    }
+    names.extend(tool_definition_names(value));
     if let Some(declarations) = value.get("functionDeclarations").and_then(Value::as_array) {
         for declaration in declarations {
             if let Some(name) = declaration.get("name").and_then(Value::as_str) {

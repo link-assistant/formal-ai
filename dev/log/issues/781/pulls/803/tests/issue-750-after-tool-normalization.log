@@ -1,0 +1,19 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.85s
+     Running tests/unit/mod.rs (target/debug/deps/unit-83490c651f7fe834)
+
+running 11 tests
+test issue_750::raw_tool_result_is_retained_exactly_for_durable_recording ... ok
+test issue_750::openai_chat_surface_returns_the_friendly_result_not_the_transport_envelope ... ok
+test issue_750::shell_result_unwraps_client_envelope_before_rendering ... ok
+test issue_750::structured_inner_payload_uses_a_json_fence ... ok
+test issue_750::follow_up_can_recover_a_numbered_line_or_the_complete_payload ... ok
+test issue_750::follow_up_can_recover_original_urls_from_an_earlier_tool_turn ... ok
+test issue_750::tool_validation_errors_are_rendered_as_failures_not_stdout ... ok
+test issue_750::successful_empty_list_results_are_explained_in_the_request_language ... ok
+test issue_750::empty_search_and_generic_results_have_distinct_localized_explanations ... ok
+test issue_750::status_codes_distinguish_success_from_failure ... ok
+test issue_750::every_tool_gets_the_same_generic_friendly_renderer ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 1902 filtered out; finished in 4.76s
+

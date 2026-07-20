@@ -1,0 +1,62 @@
+   Compiling formal-ai v0.300.0 (/tmp/gh-issue-solver-1784506151226)
+error: pub(crate) function inside private module
+  --> src/agentic_coding/narration.rs:12:1
+   |
+12 | pub(crate) fn tool_action_narration(prompt: &str, calls: &[PlannedToolCall]) -> String {
+   | ----------^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | help: consider using: `pub`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#redundant_pub_crate
+   = note: `-D clippy::redundant-pub-crate` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::redundant_pub_crate)]`
+
+error: this looks like a formatting argument but it is not part of a formatting macro
+  --> src/agentic_coding/narration.rs:27:19
+   |
+27 |         .replace("{tool}", &tool)
+   |                   ^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#literal_string_with_formatting_args
+   = note: `-D clippy::literal-string-with-formatting-args` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::literal_string_with_formatting_args)]`
+
+error: this looks like a formatting argument but it is not part of a formatting macro
+  --> src/agentic_coding/narration.rs:28:19
+   |
+28 |         .replace("{target}", &target)
+   |                   ^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#literal_string_with_formatting_args
+
+error: called `filter(..).next()` on an `Iterator`. This is more succinctly expressed by calling `.find(..)` instead
+   --> src/agentic_coding/web_research.rs:112:5
+    |
+112 | /     research_urls(output)
+113 | |         .into_iter()
+114 | |         .filter(|url| !already.contains(url.as_str()))
+115 | |         .next()
+    | |_______________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#filter_next
+    = note: `-D clippy::filter-next` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::filter_next)]`
+help: try
+    |
+112 ~     research_urls(output)
+113 +         .into_iter().find(|url| !already.contains(url.as_str()))
+    |
+
+error: you are deriving `PartialEq` and can implement `Eq`
+  --> src/dialog_log.rs:35:24
+   |
+35 | #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+   |                        ^^^^^^^^^ help: consider deriving `Eq` as well: `PartialEq, Eq`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.96.0/index.html#derive_partial_eq_without_eq
+   = note: `-D clippy::derive-partial-eq-without-eq` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::derive_partial_eq_without_eq)]`
+
+error: could not compile `formal-ai` (lib) due to 5 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `formal-ai` (lib test) due to 5 previous errors

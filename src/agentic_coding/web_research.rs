@@ -7,9 +7,7 @@
 
 use serde_json::json;
 
-use super::planner::{
-    fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, PlannedToolCall, Progress,
-};
+use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capability, Progress};
 use crate::engine::FormalAiEngine;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
@@ -85,6 +83,11 @@ pub(super) fn plan_web_research_step(
             plan_fetches(tool_names, &progress)
                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
         ),
+        Some(Capability::Fetch) => Some(
+            plan_fetches(tool_names, &progress)
+                .or_else(|| plan_deeper_round(tool_names, &progress, query))
+                .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
+        ),
         Some(_) => Some(
             plan_deeper_round(tool_names, &progress, query)
                 .unwrap_or_else(|| AgenticPlan::Final(final_answer(query, &progress))),
@@ -102,19 +105,14 @@ fn plan_fetches(tool_names: &[&str], progress: &Progress) -> Option<AgenticPlan>
     let tool = tool_for(tool_names, Capability::Fetch)?;
     let output = progress.search_output.as_deref()?;
     let already: std::collections::BTreeSet<&str> = progress
-        .fetched_pages
+        .attempted_fetches
         .iter()
-        .map(|(url, _)| url.as_str())
+        .map(String::as_str)
         .collect();
-    let calls = research_urls(output)
+    research_urls(output)
         .into_iter()
-        .filter(|url| !already.contains(url.as_str()))
-        .map(|url| PlannedToolCall {
-            tool: tool.to_owned(),
-            arguments: fetch_arguments(&url),
-        })
-        .collect::<Vec<_>>();
-    (!calls.is_empty()).then_some(AgenticPlan::ToolCalls(calls))
+        .find(|url| !already.contains(url.as_str()))
+        .map(|url| plan_one(tool, fetch_arguments(&url)))
 }
 
 /// Search again for the part of the question the evidence has not covered.

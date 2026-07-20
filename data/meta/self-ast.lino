@@ -7,8 +7,8 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 18952
-  named_node_count 3798
+  total_link_count 19006
+  named_node_count 3804
   distinct_node_kinds 71
   node_kinds
     arguments 244
@@ -48,7 +48,7 @@ self_ast
     let_condition 31
     let_declaration 50
     lifetime 3
-    line_comment 219
+    line_comment 225
     macro_invocation 26
     match_arm 26
     match_block 2

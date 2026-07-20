@@ -1,0 +1,16 @@
+range	first_job	last_job	gha_errors	nonzero_exits	failing_test_summaries	warnings
+1-1500	Version Modification Check	Detect Changes	0	0	0	0
+1501-3000	Detect Changes	Detect Changes	0	0	0	0
+3001-4500	Detect Changes	Changelog Fragment Check	0	0	0	0
+4501-6000	Changelog Fragment Check	Test (ubuntu-latest)	0	0	0	0
+6001-7500	Test (ubuntu-latest)	Test (ubuntu-latest)	0	0	0	0
+7501-9000	Test (ubuntu-latest)	E2E Tests (agent CLI ↔ formal-ai)	0	0	0	0
+9001-10500	E2E Tests (agent CLI ↔ formal-ai)	E2E Tests (agent CLI ↔ formal-ai)	0	0	0	0
+10501-12000	E2E Tests (agent CLI ↔ formal-ai)	E2E Tests (local web app)	0	0	0	0
+12001-13500	E2E Tests (local web app)	Lint and Format Check	0	0	0	0
+13501-15000	Lint and Format Check	Code Coverage	0	0	0	2
+15001-16500	Code Coverage	Code Coverage	0	0	0	0
+16501-18000	Code Coverage	Code Coverage	0	0	0	0
+18001-19500	Code Coverage	Build Package	0	0	0	0
+19501-21000	Build Package	Build Package	0	0	0	0
+21001-22382	Build Package	Build Package	0	0	0	0

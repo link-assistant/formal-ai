@@ -1,4 +1,29 @@
 meanings
+  response_lexeme_import_reparse_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed ru"
+  response_lexeme_import_reparse_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed zh"
+  response_lexeme_import_surface_changed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed en"
+  response_lexeme_import_surface_changed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed hi"
+  response_lexeme_import_surface_changed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface changed ru"
   response_lexeme_import_surface_changed_zh
     defined-by response_template
     lexeme en

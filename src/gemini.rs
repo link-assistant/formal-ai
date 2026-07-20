@@ -291,21 +291,22 @@ fn gemini_response_from_chat_completion(completion: &ChatCompletion) -> Value {
                 vec![json!({ "text": text })]
             }
         } else {
-            choice
-                .message
-                .tool_calls
-                .iter()
-                .map(|call| {
-                    json!({
-                        "functionCall": {
-                            "id": call.id,
-                            "name": call.function.name,
-                            "args": serde_json::from_str::<Value>(&call.function.arguments)
-                                .unwrap_or_else(|_| json!({}))
-                        }
-                    })
+            let mut parts = Vec::with_capacity(choice.message.tool_calls.len().saturating_add(1));
+            let narration = choice.message.content.plain_text();
+            if !narration.trim().is_empty() {
+                parts.push(json!({ "text": narration }));
+            }
+            parts.extend(choice.message.tool_calls.iter().map(|call| {
+                json!({
+                    "functionCall": {
+                        "id": call.id,
+                        "name": call.function.name,
+                        "args": serde_json::from_str::<Value>(&call.function.arguments)
+                            .unwrap_or_else(|_| json!({}))
+                    }
                 })
-                .collect()
+            }));
+            parts
         }
     });
     json!({

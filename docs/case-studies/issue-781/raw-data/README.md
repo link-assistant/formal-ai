@@ -29,4 +29,11 @@ CLI fetch executions. The deterministic Rust whole-task regression covers the
 subsequent synthesis and exact URL citations because of the documented Agent
 CLI transport limitation.
 
+The reopened issue's complete PR #803 evidence is intentionally stored under
+`dev/log/issues/781/pulls/803/`. Its `real-cli/four-client-final-2/` directory
+contains native Agent, OpenCode, Claude, and Codex client logs, Formal AI server
+logs, and exact per-dialog JSONL. The four-client release harness uses a local
+three-source MCP fixture so protocol behavior is deterministic; the native
+network experiments in adjacent directories preserve external variability.
+
 HTML files are source evidence, not trusted product specifications. A successful HTTP response or a descriptive URL is not treated as verification when the rendered product data is absent.

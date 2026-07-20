@@ -2,7 +2,7 @@ use std::path::Path;
 
 use serde_json::{Map, Value};
 
-use crate::protocol_policy::tool_definition_name;
+use crate::protocol_policy::find_tool_definition;
 
 /// Project the planner's capability-shaped arguments onto the exact JSON Schema
 /// advertised by the selected client tool.
@@ -17,11 +17,8 @@ pub fn response_arguments_for_tool(
     arguments: String,
     user_prompt: &str,
 ) -> String {
-    let Some(schema) = tools.iter().find_map(|tool| {
-        (tool_definition_name(tool).as_deref() == Some(tool_name))
-            .then(|| tool_parameters_schema(tool))
-            .flatten()
-    }) else {
+    let Some(schema) = find_tool_definition(tools, tool_name).and_then(tool_parameters_schema)
+    else {
         return arguments;
     };
     let Some(properties) = schema.get("properties").and_then(Value::as_object) else {

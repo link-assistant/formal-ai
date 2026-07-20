@@ -99,6 +99,8 @@ pub struct ResponseFunctionToolCall {
     pub kind: String,
     pub call_id: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     pub arguments: String,
     pub status: String,
 }

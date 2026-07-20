@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::agentic_coding::command_reroute::plan_symbolic_command_reroute;
+use crate::agentic_coding::narration::tool_action_narration;
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::dreaming_application::{
     amended_answer, apply_retained_amendments, solve_with_standing_requirements,
@@ -16,8 +17,8 @@ use crate::memory::MemoryEvent;
 use crate::protocol_memory::answer_from_memory_if_requested;
 use crate::protocol_policy::{
     agentic_tool_permission_denial, is_hosted_tool_definition, is_tool_choice_request,
-    matches_tool_choice_none, tool_call_refusal_answer, tool_choice_function_name,
-    tool_definition_name, tool_permission_refusal_answer,
+    matches_tool_choice_none, response_tool_call_identity, tool_call_refusal_answer,
+    tool_choice_function_name, tool_definition_names, tool_permission_refusal_answer,
 };
 use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
@@ -124,14 +125,14 @@ impl ChatCompletionRequest {
             .as_ref()
             .is_some_and(matches_tool_choice_none)
         {
-            names.extend(self.tools.iter().filter_map(tool_definition_name));
+            names.extend(self.tools.iter().flat_map(tool_definition_names));
         }
         if !self
             .function_call
             .as_ref()
             .is_some_and(matches_tool_choice_none)
         {
-            names.extend(self.functions.iter().filter_map(tool_definition_name));
+            names.extend(self.functions.iter().flat_map(tool_definition_names));
         }
         names.sort();
         names.dedup();
@@ -194,6 +195,24 @@ impl ChatMessage {
     pub fn assistant_tool_calls(tool_calls: Vec<ToolCall>) -> Self {
         Self {
             role: String::from("assistant"),
+            tool_calls,
+            ..Self::default()
+        }
+    }
+
+    /// An `assistant` message that explains an action before requesting it.
+    ///
+    /// Tool-capable protocol surfaces preserve both fields, so agentic clients
+    /// can show the user what is about to happen while they execute the
+    /// machine-readable call (issue #781).
+    #[must_use]
+    pub fn assistant_tool_calls_with_content(
+        content: impl Into<String>,
+        tool_calls: Vec<ToolCall>,
+    ) -> Self {
+        Self {
+            role: String::from("assistant"),
+            content: MessageContent::Text(content.into()),
             tool_calls,
             ..Self::default()
         }
@@ -631,6 +650,7 @@ fn chat_completion_from_plan(
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
+            let narration = tool_action_narration(prompt, &calls);
             let tool_calls: Vec<_> = calls
                 .into_iter()
                 .enumerate()
@@ -645,15 +665,17 @@ fn chat_completion_from_plan(
                     ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
                 .collect();
-            let completion_tokens = tool_calls
-                .iter()
-                .map(|call| {
-                    estimate_tokens(&call.function.name)
-                        .saturating_add(estimate_tokens(&call.function.arguments))
-                })
-                .sum();
+            let completion_tokens = estimate_tokens(&narration).saturating_add(
+                tool_calls
+                    .iter()
+                    .map(|call| {
+                        estimate_tokens(&call.function.name)
+                            .saturating_add(estimate_tokens(&call.function.arguments))
+                    })
+                    .sum(),
+            );
             (
-                ChatMessage::assistant_tool_calls(tool_calls),
+                ChatMessage::assistant_tool_calls_with_content(narration, tool_calls),
                 String::from("tool_calls"),
                 completion_tokens,
             )
@@ -787,8 +809,19 @@ fn response_from_plan(
 
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
-            let mut items = Vec::with_capacity(calls.len());
-            let mut output_tokens = 0u32;
+            let narration = tool_action_narration(prompt, &calls);
+            let mut items = Vec::with_capacity(calls.len().saturating_add(1));
+            let mut output_tokens = estimate_tokens(&narration);
+            items.push(ResponseOutputItem::Message(ResponseOutputMessage {
+                id: stable_id("msg", &narration),
+                kind: String::from("message"),
+                role: String::from("assistant"),
+                content: vec![ResponseOutputContent {
+                    kind: String::from("output_text"),
+                    text: narration,
+                }],
+                thinking_steps: Vec::new(),
+            }));
             for (index, call) in calls.into_iter().enumerate() {
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
@@ -826,11 +859,13 @@ fn response_from_plan(
                         },
                     ));
                 } else {
+                    let (name, namespace) = response_tool_call_identity(&request.tools, &tool);
                     items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
                         id: stable_id("fc", &seed),
                         kind: function_call_kind(),
                         call_id: stable_id("call", &seed),
-                        name: tool,
+                        name,
+                        namespace,
                         arguments,
                         status: String::from("completed"),
                     }));

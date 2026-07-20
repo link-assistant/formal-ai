@@ -1,0 +1,1758 @@
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 15 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 15 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 16 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 16 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 16 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 16 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  * Build release
+  * Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 16 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Build release
+  ✓ Check package
+  * Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+Refreshing run status every 10 seconds. Press Ctrl+C to quit.
+
+* issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 17 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+* Build Package (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Build release
+  ✓ Check package
+  ✓ Check crate package size
+  * Post Cache cargo registry
+  * Post Run actions/checkout@v6
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+
+✓ issue-781-cc22afbacef0 CI/CD Pipeline link-assistant/formal-ai#803 · 29715487352
+Triggered via pull_request about 17 minutes ago
+
+JOBS
+✓ Version Modification Check in 1m2s (ID 88267856414)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for manual version changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Detect Changes in 1m15s (ID 88267856416)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Detect changes
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- Create Changelog PR in 0s (ID 88267856605)
+✓ Changelog Fragment Check in 1m11s (ID 88267991736)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Check for changelog fragments
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Test (ubuntu-latest) in 11m55s (ID 88267991739)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Restore cargo registry cache
+  ✓ Clean stale package test artifacts
+  ✓ Check LiNo data integrity
+  ✓ Run tests
+  ✓ Run doc tests
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (agent CLI ↔ formal-ai) in 5m58s (ID 88267991758)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Setup Bun
+  ✓ Install @link-assistant/agent CLI
+  ✓ Install external agent CLIs
+  ✓ Build formal-ai (release)
+  ✓ Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
+  ✓ Run agent CLI E2E — potato meaning (different wording, same recipe)
+  ✓ Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
+  ✓ Run agent CLI E2E — self-inspection CST/AST census (no web step)
+  ✓ Run agent CLI E2E — learn-from-source directive (issue #499, no web step)
+  ✓ Run agent CLI E2E — general unpinned change plan (issue #654)
+  ✓ Run agent CLI E2E — file-creation routes to write not read (issue #681)
+  ✓ Run agent CLI E2E — existing issue reference does not file a duplicate (issue #730)
+  ✓ Run agent CLI E2E — capability-first local code search (issue #758)
+  ✓ Run agent CLI E2E — generated programs use harness commands (issue #716)
+  ✓ Run agent CLI E2E — auto-learn client execution architecture (issue #716)
+  ✓ Run agent CLI E2E — declarative new-file phrasing (issue #712)
+  ✓ Run agent CLI E2E — report action executes gh (issue #714)
+  ✓ Run agent CLI E2E — research, report, recall, and learn (issue #687)
+  ✓ Run agent CLI E2E — filed report stays readable and bounded (issue #771)
+  ✓ Run four-client E2E — narrated compatibility research (issue #781)
+  ✓ Run agent CLI E2E — auto-learning across two harnesses (issue #715)
+  ✓ Run agent CLI E2E — self-hosting auto-learning (issue #657)
+  ✓ Run agent CLI E2E — hardcoded-language auto-learning (issue #659)
+  ✓ Run agent CLI E2E — bulk-lexeme auto-learning (issue #660)
+  ✓ Run agent CLI E2E — handler-precedence auto-learning (issue #663)
+  ✓ Run agent CLI E2E — repository statement audit (issue #661)
+  ✓ Replay Hive Mind self-coding inner loop (issue #655)
+  - Upload E2E logs on failure
+  ✓ Post Setup Bun
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ E2E Tests (local web app) in 8m52s (ID 88267991761)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Bun
+  ✓ Setup Node.js
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Install Playwright and dependencies
+  ✓ Install Playwright browsers
+  ✓ Sync data/seed into src/web/seed (deployment mirror)
+  ✓ Run local e2e tests
+  - Upload Playwright report on failure
+  ✓ Upload generated /download screenshots
+  ✓ Post Setup Node.js
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Lint and Format Check in 3m11s (ID 88267991763)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Setup Bun
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Check formatting
+  ✓ Verify Cargo.lock is synchronized
+  ✓ Run Clippy
+  ✓ Validate Rust API documentation
+  ✓ Validate docs.rs dependency profile
+  ✓ Check semantic grounding
+  ✓ Check file size limit
+  ✓ Check associative terminology
+  ✓ Check hardcoded natural language
+  ✓ Check worker JS line budget
+  ✓ Build Rust→WASM worker
+  ✓ Check wasm-worker size budget
+  ✓ Test release changelog collection
+  ✓ Test fragment release map regeneration
+  ✓ Check reconstructed changelog
+  ✓ Install web bundle dependencies
+  ✓ Build web vendor bundle
+  ✓ Check web bundles are current
+  ✓ Setup Node
+  ✓ Install web test dependencies
+  ✓ Check i18n catalog coverage
+  ✓ Check language change parity
+  ✓ Check language test coverage
+  ✓ Check multilingual intent coverage
+  ✓ Check web app for hook TDZ ordering bugs
+  ✓ Check web app for hardcoded user-facing strings
+  ✓ Check terminal vocabulary worker seed wiring
+  ✓ Run VS Code extension node tests
+  ✓ Run desktop packaging regression tests
+  ✓ Post Setup Node
+  ✓ Post Cache cargo registry
+  ✓ Post Setup Bun
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Code Coverage in 11m50s (ID 88267991766)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Cache cargo registry
+  ✓ Install cargo-llvm-cov
+  ✓ Clean stale coverage artifacts
+  ✓ Generate code coverage
+  ✓ Retain LCOV report
+  ✓ Detect Codecov configuration
+  - Upload coverage to Codecov when configured
+  ✓ Report optional Codecov integration status
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+✓ Build Package in 3m47s (ID 88269193274)
+  ✓ Set up job
+  ✓ Run actions/checkout@v6
+  ✓ Setup Rust
+  ✓ Install rust-script
+  ✓ Cache cargo registry
+  ✓ Build release
+  ✓ Check package
+  ✓ Check crate package size
+  ✓ Post Cache cargo registry
+  ✓ Post Run actions/checkout@v6
+  ✓ Complete job
+- E2E Tests (GitHub Pages) in 0s (ID 88269591007)
+- Auto Release (ID 88269591105)
+- Instant Release (ID 88269591135)
+- Deploy Web App to GitHub Pages (ID 88269591163)
+
+ANNOTATIONS
+- Classified 8 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 5 system-message and 3 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#20
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+- Classified 7 system-message and 4 compatibility warning(s); tracked upstream at https://github.com/link-assistant/agent/issues/279
+E2E Tests (agent CLI ↔ formal-ai): .github#21
+
+! Rust file has 977 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/server.rs#0
+
+! Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+Lint and Format Check: src/protocol.rs#0
+
+- The LCOV report is retained as the rust-lcov workflow artifact; configure CODECOV_TOKEN to enable fail-closed remote upload.
+Code Coverage: .github#19
+

@@ -362,6 +362,14 @@ artifacts written inside an isolated temporary client home are preserved so the
 reported path remains available for debugging. If `FORMAL_AI_PROXY_LOG` names an
 existing proxy log, that path is included in the same final block.
 
+Set `FORMAL_AI_DIALOG_LOG_DIR` on the server to write full request/response
+JSONL records into one file per dialog. This recorder is off by default because
+the bodies can contain private prompts and tool output. Send
+`X-Formal-AI-Dialog-ID` for exact grouping, or let the server derive the group
+from the first user prompt. See
+[`docs/configuration/output-sessions.md`](docs/configuration/output-sessions.md)
+for capture and optional `gh-upload-log` upload instructions.
+
 ```text
 formal-ai: session files for debugging:
   codex: /tmp/formal-ai-codex-home-.../.codex/sessions/2026/07/18/rollout-...jsonl   (resume: codex resume ...)

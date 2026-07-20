@@ -41,6 +41,7 @@ pub mod learning_report;
 pub mod ledger;
 pub(crate) mod lexicon;
 pub mod meaning_detail;
+pub(crate) mod narration;
 pub mod planner;
 mod progress;
 pub mod question_catalog;

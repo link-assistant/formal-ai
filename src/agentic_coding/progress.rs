@@ -14,6 +14,7 @@ pub struct Progress {
     completed: Vec<Capability>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
+    pub(super) attempted_fetches: Vec<String>,
     pub(super) search_output: Option<String>,
     pub(super) run_output: Option<String>,
     pub(super) fetch_result: Option<String>,
@@ -25,6 +26,7 @@ impl Progress {
         let mut completed = Vec::new();
         let mut fetched_text = None;
         let mut fetched_pages = Vec::new();
+        let mut attempted_fetches = Vec::new();
         let mut search_output = None;
         let mut run_output = None;
         let mut fetch_result = None;
@@ -42,19 +44,25 @@ impl Progress {
                 continue;
             };
             if capability == Capability::Fetch {
-                let text = message.content.plain_text();
-                fetch_result = Some(text.clone());
-                if !looks_like_error(&text) && !text.trim().is_empty() {
-                    if let Some(url) = result_tool_call(messages, index).and_then(fetch_call_url) {
+                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                fetch_result = Some(payload.clone().unwrap_or_default());
+                let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
+                if let Some(url) = fetch_url.as_ref() {
+                    if !attempted_fetches.contains(url) {
+                        attempted_fetches.push(url.clone());
+                    }
+                }
+                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
+                    if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
                     }
                     fetched_text = Some(text);
                 }
             }
             if capability == Capability::Search {
-                let text = message.content.plain_text();
-                search_result = Some(text.clone());
-                if !looks_like_error(&text) && !text.trim().is_empty() {
+                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                search_result = Some(payload.clone().unwrap_or_default());
+                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     search_output = Some(text);
                 }
             }
@@ -67,6 +75,7 @@ impl Progress {
             completed,
             fetched_text,
             fetched_pages,
+            attempted_fetches,
             search_output,
             run_output,
             fetch_result,
@@ -134,12 +143,4 @@ fn fetch_call_url(call: &crate::protocol::ToolCall) -> Option<String> {
         .and_then(serde_json::Value::as_str)
         .filter(|url| !url.trim().is_empty())
         .map(str::to_owned)
-}
-
-/// Whether a tool result looks like an error the planner should not trust.
-fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
 }

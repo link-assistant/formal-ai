@@ -6,3 +6,4 @@ docs/case-studies/issue-730/**/*.jsonl whitespace=-blank-at-eof
 docs/case-studies/issue-730/**/*.log whitespace=-blank-at-eol,-blank-at-eof
 docs/case-studies/issue-742/raw-data/*.html whitespace=-blank-at-eol,-blank-at-eof
 experiments/issue_746*.patch whitespace=-blank-at-eol
+dev/log/issues/781/pulls/803/** whitespace=-blank-at-eol,-blank-at-eof

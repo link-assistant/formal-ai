@@ -4,12 +4,28 @@ Issue [#781](https://github.com/link-assistant/formal-ai/issues/781) asks Formal
 
 ## Outcome
 
-The implementation fixes two reusable boundaries:
+The implementation now covers four reusable boundaries:
 
-1. Agentic web research now captures up to three distinct search results in one bounded round, keeps every successful fetch associated with the URL that produced it, and emits a separately cited extract for each source. The previous planner selected and fetched only one URL.
-2. `formal-ai shared-dialog convert` now accepts the normalized JSON contract emitted by `web-capture shared-dialog`. This connects the browser-backed provider adapter to Formal AI's existing `demo_memory` Links Notation export without copying provider scraping logic into Rust.
+1. Agentic web research keeps every successful fetch associated with its URL,
+   reasons over up to three independent sources, and can deepen toward one
+   evidence gap. The original planner selected and retained only one source.
+2. Research is externally observable: every search or fetch is its own turn with
+   a localized, useful explanation before the tool call, followed by a final
+   cited synthesis. Chat Completions, Responses, Anthropic Messages, and Gemini
+   preserve the same ordering in their native envelopes.
+3. Client-executable research tools are discovered inside Responses namespaces
+   and returned as the exact `(namespace, name)` pair required by Codex. Known
+   client wrappers are normalized for planning while raw transport remains
+   available for exact audit logs.
+4. `formal-ai shared-dialog convert` accepts the normalized JSON contract emitted
+   by `web-capture shared-dialog`, connecting browser-backed ChatGPT/Google
+   adapters to the existing `demo_memory` Links Notation export.
 
-The supplied ChatGPT page was captured and converted successfully: both direct HTML parsing and normalized adapter JSON produce the same 35-event, 48,281-byte Links Notation file. The supplied Google page still exposes no transcript to a real Chromium capture; its upstream `google_ai_mode / no_transcript_in_captured_dom` diagnostic is preserved. All three Amazon pages attempted—including the strongest new candidate found by project-native search—return Amazon's automated-access page. The study therefore distinguishes indexed specifications from live listing evidence and does not invent polarity or current availability.
+The supplied ChatGPT page was captured and converted successfully: direct HTML
+and normalized adapter JSON produce the same 35-event, 48,281-byte Links file.
+Google still exposes no transcript to real Chromium capture, and all three Amazon
+pages returned automated-access content. The study therefore distinguishes
+indexed leads from live evidence and does not invent polarity or availability.
 
 ## Reproduction and proof
 
@@ -21,7 +37,16 @@ left: 1
 right: 3
 ```
 
-The regression in `tests/unit/issue_781.rs` replays search results for an official specification, independent connector evidence, and a candidate listing. It requires three `webfetch` calls and an answer that retains all three facts and URLs. The real Agent CLI E2E drives the Russian compatibility question over the release server and proves that the client executes all three live fetches.
+The regressions in `tests/unit/issue_781.rs` replay an official specification,
+independent connector evidence, and a candidate listing. They require a narrated
+search, three separately narrated fetch turns, and an answer retaining all facts
+and URLs. `experiments/agent_cli_e2e/run_issue_781.sh` drives the exact Russian
+prompt through Agent, OpenCode, Claude, and Codex. The final preserved run records
+one search, three fetches, and a synthesis in every client.
+
+Set `FORMAL_AI_DIALOG_LOG_DIR` to record exact request/response exchanges in one
+JSONL file per dialog. This is deliberately off by default because prompts and
+tool results can contain private data.
 
 Adapter parity was checked with:
 
@@ -33,4 +58,7 @@ formal-ai shared-dialog convert --input raw-data/chatgpt-web-capture.json \
 cmp raw-data/chatgpt-direct.demo-memory.lino raw-data/chatgpt-adapter.demo-memory.lino
 ```
 
-See [requirements.md](requirements.md), [investigation.md](investigation.md), [recommendation.md](recommendation.md), and [raw-data/README.md](raw-data/README.md).
+See [requirements.md](requirements.md), [investigation.md](investigation.md),
+[recommendation.md](recommendation.md), and [raw-data/README.md](raw-data/README.md).
+The complete PR #803 evidence bundle, including all four client/server/dialog
+logs and upstream reports, is under `dev/log/issues/781/pulls/803/`.

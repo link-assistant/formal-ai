@@ -1,0 +1,16 @@
+
+Checking configured file line limits for Rust, Links Notation, and worker JavaScript files...
+
+::warning file=src/server.rs::Rust file has 996 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/server.rs has 996 lines (approaching Rust limit of 1000, warning threshold: 900)
+::warning file=src/protocol.rs::Rust file has 967 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+WARNING: src/protocol.rs has 967 lines (approaching Rust limit of 1000, warning threshold: 900)
+
+The following files are approaching their configured line limits:
+  src/server.rs
+  src/protocol.rs
+
+Consider extracting code to prevent concurrent PR merge limit violations.
+
+All checked files are within their line limits
+

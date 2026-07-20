@@ -1,0 +1,5 @@
+formal-ai shared memory: /home/box/.formal-ai/memory.lino
+formal-ai server listening on http://127.0.0.1:8791
+[trace] GET /health (0 byte body)
+
+[dialog-log] appended exchange to /tmp/gh-issue-solver-1784506151226/dev/log/issues/781/pulls/803/real-cli/codex-mcp/dialogs/dialog_6c759a895ca47bfc.jsonl
