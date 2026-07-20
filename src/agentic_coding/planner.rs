@@ -287,16 +287,6 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     {
         return Some(plan);
     }
-    if !tool_result::has_latest_turn_result(messages) {
-        if let Some(query) = shell_command::code_search_query_for_task(&task) {
-            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
-                return Some(plan_one(
-                    tool,
-                    json!({ "query": query, "pattern": query }).to_string(),
-                ));
-            }
-        }
-    }
     if let Some(command) = shell_command::shell_command_for_task(&task) {
         return Some(plan_shell_step(messages, tool_names, &command));
     }
@@ -325,6 +315,22 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     }
     if let Some(plan) = intent_router::plan_web_search_step(&task, messages, tool_names) {
         return Some(plan);
+    }
+    // A generic localized "find" cue can describe either an open-web lookup or
+    // a workspace grep. The research routers above get first refusal whenever
+    // the client exposes their tools; explicit local/repository searches were
+    // already claimed by the capability router. This fallback therefore keeps
+    // grep available to grep-only clients without letting an alphabetically
+    // earlier local tool steal a web-research request.
+    if !tool_result::has_latest_turn_result(messages) {
+        if let Some(query) = shell_command::code_search_query_for_task(&task) {
+            if let Some(tool) = tool_for(tool_names, Capability::Grep) {
+                return Some(plan_one(
+                    tool,
+                    json!({ "query": query, "pattern": query }).to_string(),
+                ));
+            }
+        }
     }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, &task) {
         return Some(AgenticPlan::Final(answer));

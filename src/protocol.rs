@@ -736,11 +736,28 @@ fn tool_action_narration(
 }
 
 fn tool_action_target(arguments: &str) -> String {
+    const TARGET_FIELDS: &[&str] = &[
+        "url",
+        "query",
+        "path",
+        "file_path",
+        "filePath",
+        "command",
+        "prompt",
+        "pattern",
+        "target",
+        "title",
+        "name",
+    ];
+
     fn first_text(value: &Value) -> Option<&str> {
         match value {
             Value::String(text) if !text.trim().is_empty() => Some(text),
             Value::Array(values) => values.iter().find_map(first_text),
-            Value::Object(values) => values.values().find_map(first_text),
+            Value::Object(values) => TARGET_FIELDS
+                .iter()
+                .find_map(|field| values.get(*field).and_then(first_text))
+                .or_else(|| values.values().find_map(first_text)),
             _ => None,
         }
     }

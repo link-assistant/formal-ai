@@ -13,10 +13,41 @@ use formal_ai::{
 
 const TOOLS: [&str; 2] = ["websearch", "webfetch"];
 
+const AGENT_CLI_TOOLS: [&str; 14] = [
+    "bash",
+    "batch",
+    "codesearch",
+    "edit",
+    "glob",
+    "grep",
+    "list",
+    "read",
+    "task",
+    "todoread",
+    "todowrite",
+    "webfetch",
+    "websearch",
+    "write",
+];
+
 fn tool_calls(messages: &[ChatMessage]) -> Vec<PlannedToolCall> {
     match plan_chat_step(messages, &TOOLS).expect("research task should be recognized") {
         AgenticPlan::ToolCalls(calls) => calls,
         AgenticPlan::Final(answer) => panic!("expected tool calls, got final answer: {answer}"),
+    }
+}
+
+#[test]
+fn reported_prompt_uses_web_search_with_the_agent_cli_tool_set() {
+    let messages = vec![ChatMessage::user(
+        "Найди мне совместимую зарядку для Acer Aspire 3 A325-45?",
+    )];
+    match plan_chat_step(&messages, &AGENT_CLI_TOOLS).expect("reported task should route") {
+        AgenticPlan::ToolCalls(calls) => {
+            assert_eq!(calls.len(), 1);
+            assert_eq!(calls[0].tool, "websearch", "{calls:?}");
+        }
+        AgenticPlan::Final(answer) => panic!("expected web search, got {answer:?}"),
     }
 }
 
@@ -92,6 +123,62 @@ fn chat_completion_explains_the_action_before_requesting_a_tool() {
     assert!(
         !choice.message.content.plain_text().trim().is_empty(),
         "the user needs to see what will happen and why before the tool runs"
+    );
+}
+
+#[test]
+fn fetch_narration_names_the_url_instead_of_the_format_argument() {
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "messages": [
+            {"role": "user", "content": "Find current evidence for this laptop charger?"},
+            {
+                "role": "assistant",
+                "tool_calls": [{
+                    "id": "search_1",
+                    "type": "function",
+                    "function": {"name": "websearch", "arguments": "{\"query\":\"charger\"}"}
+                }]
+            },
+            {
+                "role": "tool",
+                "tool_call_id": "search_1",
+                "name": "websearch",
+                "content": "Result https://example.test/charger"
+            }
+        ],
+        "tools": [
+            {
+                "type": "function",
+                "function": {
+                    "name": "websearch",
+                    "description": "Search the web",
+                    "parameters": {"type": "object"}
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "webfetch",
+                    "description": "Fetch a URL",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "format": {"type": "string"},
+                            "url": {"type": "string"}
+                        }
+                    }
+                }
+            }
+        ]
+    }))
+    .unwrap();
+
+    let completion = create_chat_completion_with_solver(&request, &agent_solver());
+    let narration = completion.choices[0].message.content.plain_text();
+    assert!(
+        narration.contains("https://example.test/charger"),
+        "{narration}"
     );
 }
 
