@@ -2986,10 +2986,59 @@ function thinkingStepKey(entry) {
   return String(entry?.step || "").replace(/^agent_\d+_/i, "");
 }
 
-function filterThinkingEntriesForDetail(entries, detailLevel) {
+// Issue #672 (F4): the reasoning hierarchy the solver emits is a proposal, not
+// a verdict — a power user watching the same kind of trace all day knows which
+// steps deserve to be phases and which are noise. Their edits are recorded as
+// an append-only event log and the effective hierarchy is a *projection* of
+// that log over the solver's own `level` field. Nothing rewrites the message:
+// the entries the worker produced stay byte-identical, which is what keeps a
+// re-render, a history reload, or a diagnostics export honest.
+const STEP_LEVELS = Object.freeze(["high", "detailed"]);
+
+function normalizeStepLevel(value) {
+  const level = String(value || "").trim();
+  return STEP_LEVELS.includes(level) ? level : "";
+}
+
+/**
+ * Append one hierarchy edit. A `level` of "" is the reset event — recorded
+ * rather than removing the earlier entry, so the log stays a history.
+ */
+function appendStepLevelEvent(events, step, level) {
+  const key = thinkingStepKey({ step });
+  if (!key) return Array.isArray(events) ? events : [];
+  return [
+    ...(Array.isArray(events) ? events : []),
+    { step: key, level: normalizeStepLevel(level) },
+  ];
+}
+
+/** Fold the log down to the level currently in force per step: last write wins. */
+function projectStepLevels(events) {
+  const levels = new Map();
+  for (const event of Array.isArray(events) ? events : []) {
+    const key = thinkingStepKey(event);
+    if (!key) continue;
+    const level = normalizeStepLevel(event.level);
+    if (level) levels.set(key, level);
+    else levels.delete(key);
+  }
+  return levels;
+}
+
+function filterThinkingEntriesForDetail(
+  entries,
+  detailLevel,
+  stepLevelOverrides,
+) {
   const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
   if (safeEntries.length <= 1) return safeEntries;
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const level = normalizeThinkingDetailLevel(detailLevel);
+  // "detailed" shows everything and "brief" shows only the conclusion, so in
+  // both the hierarchy is not consulted and an override cannot change what the
+  // user sees. Only the middle, hierarchy-driven granularity projects the log.
   if (level === "detailed") return safeEntries;
   if (level === "brief") return safeEntries.slice(-1);
 
@@ -3005,7 +3054,9 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
   );
   if (hasLevels) {
     const filtered = safeEntries.filter(
-      (entry, index) => index === lastIndex || entry?.level === "high",
+      (entry, index) =>
+        index === lastIndex ||
+        (overrides.get(thinkingStepKey(entry)) || entry?.level) === "high",
     );
     return filtered.length > 0 ? filtered : safeEntries.slice(-1);
   }
@@ -3025,10 +3076,14 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
     "memory",
     "agent_plan",
   ]);
-  const filtered = safeEntries.filter(
-    (entry, index) =>
-      index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
-  );
+  const filtered = safeEntries.filter((entry, index) => {
+    if (index === lastIndex) return true;
+    const key = thinkingStepKey(entry);
+    // A user edit outranks the legacy allowlist in both directions: it can
+    // promote a step the allowlist never knew about and demote one it names.
+    if (overrides.has(key)) return overrides.get(key) === "high";
+    return standardSteps.has(key);
+  });
   return filtered.length > 0 ? filtered : safeEntries.slice(-1);
 }
 
@@ -3051,9 +3106,14 @@ function buildThinkingPreviewSteps(
   source,
   t,
   detailLevel,
+  stepLevelOverrides,
 ) {
   if (Array.isArray(structuredSteps) && structuredSteps.length > 0) {
-    return filterThinkingEntriesForDetail(structuredSteps, detailLevel)
+    return filterThinkingEntriesForDetail(
+      structuredSteps,
+      detailLevel,
+      stepLevelOverrides,
+    )
       .map((entry) => naturalizeThinkingStep(entry, t))
       .filter(Boolean);
   }
@@ -3071,7 +3131,12 @@ function buildThinkingPreviewSteps(
   );
 }
 
-function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
+function buildMessageThinkingPreviewSteps(
+  message,
+  t,
+  detailLevel,
+  stepLevelOverrides,
+) {
   if (message?.role !== "assistant") return [];
   const diagnosticsSteps = Array.isArray(message.diagnosticsSteps)
     ? message.diagnosticsSteps
@@ -3083,6 +3148,7 @@ function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
       message.thinkingPreviewSource || message.intent || "local",
       t,
       detailLevel,
+      stepLevelOverrides,
     );
   }
   return filterThinkingSummariesForDetail(
@@ -4746,6 +4812,91 @@ function vscodeInstallStateLabel(result, t) {
   return key ? tr(key) : tr("vscodeInstall.error");
 }
 
+// Issue #672 (F2): the shape the desktop bridge reports for the profile
+// migration. Normalising here means the notice never has to guard against a
+// missing field, and an older desktop build that answers with a partial object
+// degrades to "we know nothing" rather than rendering `undefined` at the user.
+function normalizeDataMigration(result, options = {}) {
+  if (!result || typeof result !== "object") return null;
+  const copied = Array.isArray(result.copied)
+    ? result.copied.filter((item) => typeof item === "string" && item)
+    : [];
+  return {
+    known: Boolean(result.known),
+    migrated: Boolean(result.migrated),
+    reason: typeof result.reason === "string" ? result.reason : "unknown",
+    copied,
+    migratedFrom:
+      typeof result.migratedFrom === "string" && result.migratedFrom
+        ? result.migratedFrom.split(/[\\/]/).filter(Boolean).pop()
+        : null,
+    error: typeof result.error === "string" && result.error ? result.error : null,
+    replayed: Boolean(options.replayed),
+  };
+}
+
+// The notice is worth the user's attention only when something actually
+// happened (data moved, or a transfer failed) — or right after they asked for a
+// replay, where "nothing left to copy" IS the answer they wanted.
+function shouldShowDataMigrationNotice(migration) {
+  if (!migration || !migration.known) return false;
+  if (migration.replayed) return true;
+  if (migration.reason === "failed") return true;
+  return migration.migrated && migration.copied.length > 0;
+}
+
+function DataMigrationNotice({ migration, busy, onReplay, onDismiss, t }) {
+  if (!shouldShowDataMigrationNotice(migration)) return null;
+  const failed = migration.reason === "failed";
+  let body;
+  if (failed) {
+    body = t("dataMigration.failed", { error: migration.error || "" });
+  } else if (migration.copied.length === 0) {
+    body = t("dataMigration.nothing");
+  } else if (migration.migratedFrom) {
+    body = t("dataMigration.body", { source: migration.migratedFrom });
+  } else {
+    body = t("dataMigration.bodyUnknown");
+  }
+  return (
+    <div
+      className={`data-migration-notice${failed ? " is-failed" : ""}`}
+      data-testid="data-migration-notice"
+      data-reason={migration.reason}
+      role="status"
+    >
+      <div className="data-migration-copy">
+        <strong>{t("dataMigration.title")}</strong>
+        <span data-testid="data-migration-body">{body}</span>
+        {migration.copied.length > 0 ? (
+          <span className="data-migration-items" data-testid="data-migration-items">
+            {t("dataMigration.copied", { items: migration.copied.join(", ") })}
+          </span>
+        ) : null}
+      </div>
+      <div className="data-migration-actions">
+        <button
+          type="button"
+          className="data-migration-replay"
+          data-testid="data-migration-replay"
+          disabled={busy}
+          onClick={onReplay}
+        >
+          {busy ? t("dataMigration.replaying") : t("dataMigration.replay")}
+        </button>
+        <button
+          type="button"
+          className="data-migration-dismiss"
+          data-testid="data-migration-dismiss"
+          onClick={onDismiss}
+        >
+          {t("dataMigration.dismiss")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function normalizeDesktopStatus(status) {
   if (!status || typeof status !== "object") {
     return null;
@@ -5740,9 +5891,19 @@ function usePrefersReducedMotion() {
 // shown at once). The first ~72% of the budget unveils the steps; the body is
 // held back until the full budget elapses, satisfying R6's "only when we
 // scrolled to the last thinking step can we show the message itself".
+//
+// Issue #672 (F3): the budget is a global preference, but the right value for
+// it is per-message — a user who is happy to watch the reasoning fill in for
+// most answers still wants THIS one now. `skip()` is that one-shot override:
+// it ends the staged reveal for this message immediately (clearing the pending
+// timers) without touching the preference, so the next message animates as
+// before. It is deliberately additive to the reduced-motion path rather than a
+// replacement for it — an OS-level reduced-motion preference must keep
+// suppressing the animation without the user having to click anything.
 function useMessageReveal(stepCount, budgetMs) {
   const reducedMotion = usePrefersReducedMotion();
-  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  const [skipped, setSkipped] = useState(false);
+  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion && !skipped;
   // The staged reveal plays exactly once — when the freshly produced message
   // first appears. Once it has played out (or if it never applied) we latch
   // "done" so that a later change in step count — e.g. the user toggling the
@@ -5783,7 +5944,16 @@ function useMessageReveal(stepCount, budgetMs) {
     );
     return () => timers.forEach((timer) => clearTimeout(timer));
   }, [active, stepCount, budgetMs]);
-  return { active, revealedSteps, bodyShown };
+  // Issue #672 (F3). Latching `doneRef` matters as much as flipping `skipped`:
+  // without it a later step-count change (the reasoning-detail setting, say)
+  // would take the "not done yet" path and restart the animation the user just
+  // asked to end. Flipping `active` to false tears down the pending timers
+  // through the effect's own cleanup, so nothing is left to fire.
+  const skip = useCallback(() => {
+    doneRef.current = true;
+    setSkipped(true);
+  }, []);
+  return { active, revealedSteps, bodyShown, skip };
 }
 
 function usePendingThinkingPhases(isActive, t) {
@@ -5970,10 +6140,37 @@ function CommandApprovalPanel({ approval, status, onApprove, onDeny, t }) {
   return <section className="command-approval-panel" data-testid="command-approval" data-status={currentStatus}><div className="command-approval-copy"><strong>{tr("permissions.command.title")}</strong><code>{command}</code><span className={`command-approval-status command-approval-status-${currentStatus}`}>{statusLabel}</span></div><div className="command-approval-actions"><button type="button" className="permission-button" data-testid="command-approve" disabled={!pending} onClick={() => pending && onApprove && onApprove(approval)}>{tr("permissions.command.approve")}</button><button type="button" className="permission-button permission-button-secondary" data-testid="command-deny" disabled={!pending} onClick={() => pending && onDeny && onDeny(approval)}>{tr("permissions.command.deny")}</button></div></section>;
 }
 
+// Issue #672 (F4): the hierarchy editor for a single reasoning step. It is a
+// right-click menu because it is a power-user affordance on a Diagnostics-mode
+// surface: putting two buttons on every step would clutter the trace for the
+// far larger group of users who only read it.
+function StepHierarchyMenu({ menu, currentLevel, overridden, onSelect, t }) {
+  const close = menu?.onClose;
+  useEffect(() => {
+    if (!menu) return undefined;
+    const dismiss = () => close && close();
+    const onKey = (event) => {
+      if (event.key === "Escape") dismiss();
+    };
+    // `pointerdown` rather than `click`: the menu must not survive the press
+    // that starts an interaction somewhere else on the page.
+    window.addEventListener("pointerdown", dismiss);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menu, close]);
+  if (!menu) return null;
+  return <div className="step-hierarchy-menu" data-testid="step-hierarchy-menu" data-step={menu.step} role="menu" aria-label={t("message.stepLevel.title")} style={{ top: `${menu.y}px`, left: `${menu.x}px` }} onPointerDown={event => event.stopPropagation()}><button type="button" role="menuitem" data-testid="step-hierarchy-bump" disabled={currentLevel === "high"} onClick={() => onSelect(menu.step, "high")}>{t("message.stepLevel.bump")}</button><button type="button" role="menuitem" data-testid="step-hierarchy-demote" disabled={currentLevel === "detailed"} onClick={() => onSelect(menu.step, "detailed")}>{t("message.stepLevel.demote")}</button>{overridden ? <button type="button" role="menuitem" data-testid="step-hierarchy-reset" onClick={() => onSelect(menu.step, "")}>{t("message.stepLevel.reset")}</button> : null}</div>;
+}
+
 function Message({
   message,
   diagnosticsMode,
   reportIssueUrl,
+  stepLevelOverrides,
+  onEditStepLevel,
   thinkingDetailLevel,
   minMessageAnimationMs = 0,
   renderPermissionPanel,
@@ -5984,10 +6181,38 @@ function Message({
 }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const overrides =
+    stepLevelOverrides instanceof Map ? stepLevelOverrides : new Map();
   const thinkingPreviewSteps = buildMessageThinkingPreviewSteps(
     message,
     t,
     thinkingDetailLevel,
+    overrides,
+  );
+  // Issue #672 (F4): `{ step, x, y }` while the right-click menu is open.
+  const [stepMenu, setStepMenu] = useState(null);
+  const closeStepMenu = useCallback(() => setStepMenu(null), []);
+  const handleStepContextMenu = useCallback(
+    (event, step) => {
+      if (typeof onEditStepLevel !== "function") return;
+      const key = thinkingStepKey({ step });
+      if (!key) return;
+      event.preventDefault();
+      setStepMenu({
+        step: key,
+        x: event.clientX,
+        y: event.clientY,
+        onClose: closeStepMenu,
+      });
+    },
+    [onEditStepLevel, closeStepMenu],
+  );
+  const handleStepLevelSelect = useCallback(
+    (step, level) => {
+      setStepMenu(null);
+      if (typeof onEditStepLevel === "function") onEditStepLevel(step, level);
+    },
+    [onEditStepLevel],
   );
   const diagnosticsSteps = diagnosticsMode
     ? (message.diagnosticsSteps ?? [])
@@ -6067,15 +6292,19 @@ function Message({
     }
   }, [message.content]);
 
-  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
+  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null} data-skip-animation={reveal.active && !reveal.bodyShown ? "available" : null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
     // Issue #488: render thinking ABOVE the answer body. Reasoning logically
     // precedes the answer (and during streaming it is the only visible part of
     // the message), so it belongs at the top of the message body, not below it.
     // Issue #541 (R6): during the staged reveal only the steps unveiled so far
     // are shown, so the trace visibly fills in before the answer appears.
-    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    revealedThinkingSteps.length ? <ThinkingPreview steps={revealedThinkingSteps} t={t} narrative={thinkingNarrative(message.intent, t)} /> : null}{
+    // Issue #672 (F3): a one-shot per-message override of the global animation
+    // budget. Only offered while the reveal is actually withholding the answer,
+    // so it never lingers as dead chrome on a settled message.
+    reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
-      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step}><summary><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
+      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions"><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
 
 // Issue #27: a VS Code-style collapsible sidebar section. When `collapsed` is
@@ -6196,6 +6425,21 @@ function App() {
   const [minMessageAnimationMs, setMinMessageAnimationMs] = useState(
     normalizeAnimationBudgetMs(initialPreferences.current.minMessageAnimationMs),
   );
+  // Issue #672 (F4): hierarchy edits are stored as the append-only log itself,
+  // not as the resulting map. Keeping the events means an edit is a fact that
+  // happened ("the user demoted `calculator_eval` at this point"), and the map
+  // the UI reads is a projection recomputed from them — the same shape as the
+  // links/events model the rest of the system uses. It is deliberately
+  // renderer-local and session-scoped: this is a viewing preference about one
+  // person's trace, not something to write back into the message record.
+  const [stepLevelEvents, setStepLevelEvents] = useState([]);
+  const stepLevelOverrides = useMemo(
+    () => projectStepLevels(stepLevelEvents),
+    [stepLevelEvents],
+  );
+  const editStepLevel = useCallback((step, level) => {
+    setStepLevelEvents((events) => appendStepLevelEvent(events, step, level));
+  }, []);
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -6313,6 +6557,14 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  // Issue #672 (F2): the outcome of the desktop profile migration, so the user
+  // can see that their data was carried forward — and ask for another pass if
+  // something looks missing. `dataMigrationBusy` disables the replay button
+  // while a pass is in flight; `dataMigrationDismissed` hides the notice for the
+  // rest of the session once the user has acknowledged it.
+  const [dataMigration, setDataMigration] = useState(null);
+  const [dataMigrationBusy, setDataMigrationBusy] = useState(false);
+  const [dataMigrationDismissed, setDataMigrationDismissed] = useState(false);
   const [desktopAgentStream, setDesktopAgentStream] = useState([]);
   // Issue #438 (follow-up): one-click start/stop of the prepared Docker
   // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
@@ -6564,6 +6816,52 @@ function App() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  // Issue #672 (F2): read the startup migration result once. Web builds have no
+  // bridge and older desktop builds have no channel, so both are treated the
+  // same way — no notice at all.
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.dataMigrationStatus !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    Promise.resolve()
+      .then(() => bridge.dataMigrationStatus())
+      .then((result) => {
+        if (!cancelled) setDataMigration(normalizeDataMigration(result));
+      })
+      .catch(() => {
+        // A migration we cannot report on is not worth interrupting boot for.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleReplayDataMigration = useCallback(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.replayDataMigration !== "function") return;
+    setDataMigrationBusy(true);
+    Promise.resolve()
+      .then(() => bridge.replayDataMigration())
+      .then((result) => {
+        setDataMigration(normalizeDataMigration(result, { replayed: true }));
+      })
+      .catch((error) => {
+        setDataMigration(
+          normalizeDataMigration(
+            {
+              known: true,
+              reason: "failed",
+              error: error && error.message ? error.message : String(error),
+            },
+            { replayed: true },
+          ),
+        );
+      })
+      .finally(() => setDataMigrationBusy(false));
   }, []);
 
   useEffect(() => {
@@ -8858,7 +9156,7 @@ function App() {
         "aria-pressed": demoMode
       }} />
       </chakra.div>
-    </chakra.header>{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
+    </chakra.header>{dataMigrationDismissed ? null : <DataMigrationNotice migration={dataMigration} busy={dataMigrationBusy} onReplay={handleReplayDataMigration} onDismiss={() => setDataMigrationDismissed(true)} t={t} />}{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
     "--context-panel-width": `${contextPanelWidth}px`
   }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel">{desktopStatus.engineSelectionAvailable ? <div className="desktop-engine-row"><dt>{"Engine"}</dt><dd><select data-testid="desktop-engine-selector" aria-label="Desktop engine" value={desktopStatus.activeEngine} onChange={handleDesktopEngineChange}>{desktopStatus.engines.map(engine => <option key={engine.id} value={engine.id}>{engine.label}</option>)}</select></dd></div> : null}<div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)
@@ -8906,7 +9204,7 @@ function App() {
         }} title={entry.label}>{entry.text}</button>)}</div>} />{seed.tools && seed.tools.length > 0 ? <SidebarSection title={t("sidebar.tools")} testId="sidebar-tools" collapsed={sidebarToolsCollapsed} onToggle={() => setSidebarToolsCollapsed(value => !value)} children={<div className="tool-registry" data-testid="tool-registry"><ul className="tool-list">{seed.tools.map(tool => {
             const displayTool = localizeTool(tool, uiLanguage);
             return <li key={tool.id} className={`tool tool-mode-${tool.mode || "thinking"}`} data-testid="tool-entry" data-tool-id={tool.id} data-tool-mode={tool.mode || "thinking"}><div className="tool-head"><strong>{displayTool.name || tool.id}</strong><span className="tool-mode">{tool.mode === "agent" ? t("toolMode.agent") : t("toolMode.thinking")}</span></div>{displayTool.description ? <p className="tool-desc">{displayTool.description}</p> : null}</li>;
-          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
+          })}</ul></div>} /> : null}{diagnosticsMode ? <SidebarSection title={t("sidebar.trace")} testId="sidebar-trace" collapsed={sidebarTraceCollapsed} onToggle={() => setSidebarTraceCollapsed(value => !value)} children={<dl className="trace-list"><div><dt>{t("trace.model")}</dt><dd>{"formal-ai"}</dd></div><div><dt>{t("trace.mode")}</dt><dd>{demoStatus}</dd></div><div><dt>{t("trace.intent")}</dt><dd>{lastAssistant?.intent ?? "none"}</dd></div><div><dt>{t("trace.data")}</dt><dd>{"data/source-index.lino"}</dd></div><div><dt>{t("trace.seedFiles")}</dt><dd>{Object.keys(seed.raw || {}).join(", ") || "(loading)"}</dd></div><div><dt>{t("trace.toolsLoaded")}</dt><dd>{String((seed.tools || []).length)}</dd></div><div><dt>{t("trace.conceptsLoaded")}</dt><dd>{String((seed.concepts || []).length)}</dd></div></dl>} /> : null}</aside><div className="context-resizer" data-testid="context-resizer" role="separator" aria-orientation="vertical" aria-label={t("titles.resizeSidebar")} aria-valuemin={CONTEXT_PANEL_MIN_WIDTH} aria-valuemax={contextPanelMaxWidth()} aria-valuenow={contextPanelWidth} tabIndex={0} title={t("titles.resizeSidebar")} onPointerDown={handleContextResizePointerDown} onKeyDown={handleContextResizeKeyDown} /><section className="chat-panel"><section className="messages" aria-live="polite" data-testid="message-list">{messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel} stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs} renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand} t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({
           ...reportContext,
           focusMessage: message
         }) : null} />)}{pending && desktopAgentStream.length > 0 ? <div className="desktop-agent-stream" data-testid="desktop-agent-stream" role="status"><strong>{`${desktopStatus && desktopStatus.activeEngine || "agent"}:`}</strong><span>{desktopAgentEventLabel(desktopAgentStream[desktopAgentStream.length - 1])}</span></div> : null}{pending ? <PendingAssistantBubble t={t} /> : null}<div ref={transcriptEndRef} /></section><form className="composer" onSubmit={event => {

@@ -85,6 +85,11 @@ module.exports = defineConfig({
     '**/issue-550-chakra-migration.spec.js',
     '**/issue-554-site.spec.js',
     '**/issue-556.spec.js',
+    '**/issue-672-theme-snapshots.spec.js',
+    '**/issue-672-animation-override.spec.js',
+    '**/issue-672-reasoning-hierarchy.spec.js',
+    '**/issue-672-migration-replay.spec.js',
+    '**/issue-541-permissions-cold-start.spec.js',
     '**/issue-676-thinking-narrative.spec.js',
     '**/issue-687.spec.js',
     '**/issue-747.spec.js',
@@ -102,6 +107,13 @@ module.exports = defineConfig({
   // Fail individual web-first assertions fast (default is 5s) so flakes surface
   // quickly rather than each burning the full per-test budget.
   expect: { timeout: 10_000 },
+  // Issue #672 (F1): snapshot baselines live in a single reviewable directory
+  // next to the specs. The default template appends `{-projectName}` and a
+  // platform suffix, which would fork one baseline per OS — pointless for the
+  // computed-colour tables this suite snapshots (CSS colours do not vary by
+  // platform) and a trap for contributors on macOS whose run would silently
+  // write a second baseline instead of failing against the committed one.
+  snapshotPathTemplate: '{testDir}/__snapshots__/{testFileName}/{arg}{ext}',
   retries: 1,
   reporter: [['html', { open: 'never' }], ['list']],
   use: {
