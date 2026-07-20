@@ -279,8 +279,19 @@ fn spawn_formal_ai_proxy(
     proxy
 }
 
+/// How long the proxy helpers wait for a slow-but-correct proxy.
+///
+/// Both waits poll every 50 ms and return the instant the condition holds, so a generous
+/// ceiling costs nothing on a healthy run and only decides how much scheduling delay is
+/// tolerated before the test calls the proxy broken. The old 5 s ceiling was too tight
+/// for the `Code Coverage` job, where `cargo llvm-cov` runs the proxy *and* the upstream
+/// server instrumented on a shared runner: `proxy_forwards_streaming_chat_and_logs_tool_call`
+/// received the streamed body, then failed because the matching log row had not been
+/// flushed within 5 s — while the same test passed in the uninstrumented `Test` job.
+const PROXY_WAIT_TIMEOUT: Duration = Duration::from_secs(60);
+
 fn wait_for_proxy_health(port: u16, child: &mut Child) {
-    let deadline = Instant::now() + Duration::from_secs(5);
+    let deadline = Instant::now() + PROXY_WAIT_TIMEOUT;
     let mut last_error = String::from("proxy was not probed");
     while Instant::now() < deadline {
         if let Some(status) = child.try_wait().expect("check proxy process") {
@@ -313,7 +324,7 @@ fn proxy_log_path() -> std::path::PathBuf {
 }
 
 fn wait_for_proxy_log_entry(path: &std::path::Path, request_path: &str) -> serde_json::Value {
-    let deadline = Instant::now() + Duration::from_secs(5);
+    let deadline = Instant::now() + PROXY_WAIT_TIMEOUT;
     while Instant::now() < deadline {
         if let Ok(log) = fs::read_to_string(path) {
             for line in log.lines() {

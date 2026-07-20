@@ -1,4 +1,29 @@
 meanings
+  response_lexeme_import_refused_batch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch hi"
+  response_lexeme_import_refused_batch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch ru"
+  response_lexeme_import_refused_batch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch zh"
+  response_lexeme_import_reparse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed en"
+  response_lexeme_import_reparse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed hi"
   response_lexeme_import_reparse_failed_ru
     defined-by response_template
     lexeme en
@@ -229,6 +254,46 @@ meanings
     lexeme en
       surface
         text "response shared dialog capture unsupported zh"
+  response_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap en"
+  response_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap hi"
+  response_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name en"
+  response_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name hi"
+  response_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name ru"
+  response_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name zh"
+  response_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap ru"
+  response_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap zh"
   response_statement_audit_capture_field_en
     defined-by response_template
     lexeme en
@@ -649,6 +714,16 @@ meanings
     lexeme en
       surface
         text "signal processing"
+  skill_gap
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap"
+  skill_gap_name
+    defined-by intent
+    lexeme en
+      surface
+        text "skill gap name"
   slang-dictionary
     defined-by source_kind
     lexeme en
@@ -880,7 +955,7 @@ meanings
       surface
         text "time dilation"
   title
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "title"

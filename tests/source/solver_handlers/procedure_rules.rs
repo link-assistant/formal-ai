@@ -15,6 +15,7 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::seed;
 use crate::skill_procedure::{compile_procedure, CompiledProcedure, ProcedureCompileError};
 
 use super::finalize_simple;
@@ -60,56 +61,31 @@ pub fn try_compiled_procedure(
     }
 }
 
+/// Look a response template up by intent, falling back to English (R379).
+fn template(intent: &str, language: &str) -> String {
+    seed::response_for(intent, language)
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_default()
+}
+
 /// The compiled program, its steps, and how to run it.
+///
+/// The prose lives in `data/seed/multilingual-responses.lino` under the
+/// `compiled_procedure` intent; this function only fills `{program}` and `{steps}`.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn render_compiled_procedure(procedure: &CompiledProcedure, language: &str) -> String {
-    let (title, steps_title, hint) = match language {
-        "ru" => (
-            "Процедура скомпилирована в навык.",
-            "Скомпилированные шаги:",
-            "Отправьте значение триггера, и я выполню эти шаги по порядку. Спросите «почему ты так сделал?», и я процитирую эти шаги вместе с исходными фрагментами.",
-        ),
-        "hi" => (
-            "प्रक्रिया एक skill में compile की गई.",
-            "Compile किए गए steps:",
-            "Trigger मान भेजें और मैं इन steps को क्रम से चलाऊँगा. «तुमने ऐसा क्यों किया?» पूछें और मैं ये steps उनके source अंशों सहित उद्धृत करूँगा.",
-        ),
-        "zh" => (
-            "已将该流程编译为技能。",
-            "已编译的步骤：",
-            "发送触发值，我会按顺序执行这些步骤。问「你为什么这样做？」，我会引用这些步骤及其源文片段。",
-        ),
-        _ => (
-            "Procedure compiled into a skill.",
-            "Compiled steps:",
-            "Send the trigger value and I will run these steps in order. Ask \"why did you do that?\" and I will cite these steps with their source spans.",
-        ),
-    };
-    format!(
-        "{title}\n\n```links\n{}```\n\n{steps_title}\n\n{}\n{hint}",
-        procedure.links_notation(),
-        procedure.restate_steps()
-    )
+    template("compiled_procedure", language)
+        .replace("{program}", &procedure.links_notation())
+        .replace("{steps}", &procedure.restate_steps())
 }
 
 /// The honest named gap: which clause has no compiled capability, and what follows.
+///
+/// The prose lives under the `skill_gap` intent; this function fills `{step}` and
+/// `{gap}` only.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn render_procedure_gap(step: &str, gap: &str, language: &str) -> String {
-    let (title, consequence) = match language {
-        "ru" => (
-            format!("Я не могу скомпилировать шаг «{step}»: {gap}."),
-            "Ничего не скомпилировано — я не выполняю процедуру частично. Уберите этот шаг или опишите его через уже поддерживаемые действия.",
-        ),
-        "hi" => (
-            format!("मैं step «{step}» compile नहीं कर सकता: {gap}."),
-            "कुछ भी compile नहीं हुआ — मैं procedure को आंशिक रूप से नहीं चलाता. इस step को हटाएँ या पहले से समर्थित actions में बताएँ.",
-        ),
-        "zh" => (
-            format!("我无法编译步骤「{step}」：{gap}。"),
-            "没有编译任何内容——我不会部分执行流程。请去掉该步骤，或用已支持的动作重述它。",
-        ),
-        _ => (
-            format!("I cannot compile the step \"{step}\": {gap}."),
-            "Nothing was compiled — I do not run a procedure partially. Drop that step or restate it with actions I already support.",
-        ),
-    };
-    format!("{title}\n\n{consequence}")
+    template("skill_gap", language)
+        .replace("{step}", step)
+        .replace("{gap}", gap)
 }

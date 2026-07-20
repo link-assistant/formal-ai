@@ -424,6 +424,11 @@ meanings
     lexeme en
       surface
         text "comments"
+  compiled_procedure
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure"
   concept_lookup
     defined-by intent
     lexeme en
@@ -680,7 +685,7 @@ meanings
       surface
         text "df"
   did
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "did"
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import fetch failed"
-  lexeme_import_fetch_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch invalid json"

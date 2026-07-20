@@ -51,6 +51,17 @@ appends a `skill_gap` event and replies with that gap in the user's language. No
 partial program is emitted, because a half-compiled procedure would run steps the
 user did not agree to stop at.
 
+**No sentence is typed into the engine.** Both replies — the compiled-skill
+answer and the gap report — and the gap name itself are templates in
+`data/seed/multilingual-responses.lino` (`compiled_procedure`, `skill_gap`,
+`skill_gap_name`, each in en/ru/hi/zh), looked up with `seed::response_for`. The
+handler fills `{program}`, `{steps}`, `{step}`, and `{gap}` and nothing else, so
+the R379 guard (`scripts/check-hardcoded-language.rs`) stays green and a fifth
+language is a data edit. One wording constraint surfaced while migrating: the
+canonical Links Notation parser rejects a `:` that follows an escaped quote in
+the same quoted value, so the English gap line reads `… the step "{step}" —
+{gap}.` (probe: `experiments/issue-674-lino-escape-probe.rs`).
+
 ## Why the compiler cannot hijack ordinary prompts
 
 Two guards must both hold before a prompt is treated as a program: it must open

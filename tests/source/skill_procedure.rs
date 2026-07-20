@@ -131,6 +131,20 @@ impl fmt::Display for ProcedureCompileError {
 
 impl Error for ProcedureCompileError {}
 
+/// Name the missing capability in seeded wording (R379).
+///
+/// The gap name is part of the compiler's identity — it travels in
+/// [`ProcedureCompileError::UncompilableStep`] and in the `skill_gap` event — so it is
+/// looked up in English (`data/seed/multilingual-responses.lino`, intent
+/// `skill_gap_name`) regardless of the language the procedure was stated in; the reply
+/// the user reads is localized separately in `solver_handlers::procedure_rules`.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn gap_name(step: &str) -> String {
+    seed::response_for("skill_gap_name", "en")
+        .unwrap_or_default()
+        .replace("{step}", step)
+}
+
 /// Compile a freely-phrased procedure into an executable program.
 ///
 /// # Errors
@@ -172,7 +186,7 @@ pub fn compile_procedure(description: &str) -> Result<CompiledProcedure, Procedu
             let span = (offsets[start], offsets[end]);
             let step = description[span.0..span.1].to_owned();
             return Err(ProcedureCompileError::UncompilableStep {
-                gap: format!("no compiled capability for \"{step}\""),
+                gap: gap_name(&step),
                 step,
                 span,
             });

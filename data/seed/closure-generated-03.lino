@@ -1,4 +1,9 @@
 meanings
+  pattern_wellbeing_phrase_sab_kaisa_chal_raha_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase sab kaisa chal raha hai hi"
   pattern_wellbeing_phrase_tum_kaise_ho_hi
     defined-by prompt_pattern
     lexeme en
@@ -464,6 +469,26 @@ meanings
     lexeme en
       surface
         text "response clarification zh"
+  response_compiled_procedure_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure en"
+  response_compiled_procedure_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure hi"
+  response_compiled_procedure_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure ru"
+  response_compiled_procedure_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import refused batch en"
-  response_lexeme_import_refused_batch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch hi"
-  response_lexeme_import_refused_batch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch ru"
-  response_lexeme_import_refused_batch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch zh"
-  response_lexeme_import_reparse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed en"
-  response_lexeme_import_reparse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed hi"

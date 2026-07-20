@@ -2,10 +2,10 @@ self_ast_census
   target src/skill_procedure.rs
   language rust
   fidelity signature
-  byte_len 24773
-  line_count 658
-  content_id source_module_493340163ede593e
-  symbol_count 33
+  byte_len 25408
+  line_count 672
+  content_id source_module_6efb992a768d7a2c
+  symbol_count 34
   symbols
     const MINIMUM_STEPS 45 45
     struct ProcedureStep 49 64
@@ -14,29 +14,30 @@ self_ast_census
     struct CompiledProcedure 91 102
     enum ProcedureCompileError 106 121
     function fmt 124 129
-    function compile_procedure 142 231
-    struct StepOutcome 235 242
-    struct ProcedureRun 246 251
-    function answer 256 258
-    struct ProcedureRunError 263 270
-    function fmt 273 279
-    trait ProcedureHost 290 298
-    function perform 297 297
-    function execute 306 332
-    function restate_steps 340 355
-    function links_notation 362 386
-    function link_records 392 417
-    function canonical_program 421 436
-    struct Found 440 444
-    function first_match 452 478
-    function objects_in 484 505
-    function surfaces 508 515
-    function lower_with_offsets 523 537
-    const CLAUSE_PUNCTUATION 543 545
-    function split_clauses 548 578
-    function is_standalone 585 592
-    function is_ideographic 595 597
-    function push_trimmed 600 608
-    function link_record 610 640
-    function push_field 642 650
-    function push_doublet 652 658
+    function gap_name 142 146
+    function compile_procedure 156 245
+    struct StepOutcome 249 256
+    struct ProcedureRun 260 265
+    function answer 270 272
+    struct ProcedureRunError 277 284
+    function fmt 287 293
+    trait ProcedureHost 304 312
+    function perform 311 311
+    function execute 320 346
+    function restate_steps 354 369
+    function links_notation 376 400
+    function link_records 406 431
+    function canonical_program 435 450
+    struct Found 454 458
+    function first_match 466 492
+    function objects_in 498 519
+    function surfaces 522 529
+    function lower_with_offsets 537 551
+    const CLAUSE_PUNCTUATION 557 559
+    function split_clauses 562 592
+    function is_standalone 599 606
+    function is_ideographic 609 611
+    function push_trimmed 614 622
+    function link_record 624 654
+    function push_field 656 664
+    function push_doublet 666 672

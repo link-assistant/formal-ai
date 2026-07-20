@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 290
   full_ast_module_count 43
   signature_module_count 247
-  symbol_count 5975
-  content_id self_ast_census_index_05d55d7b4717f278
+  symbol_count 5977
+  content_id self_ast_census_index_f99fc50f74b6ab6e
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -207,7 +207,7 @@ self_ast_census_index
     src/skill_compiler.rs signature 26 source_module_9d5cf71a7e6517b6
     src/skill_compiler/structured.rs signature 27 source_module_299be5957fb64720
     src/skill_ledger.rs signature 24 source_module_5c74c790fd0a0ce8
-    src/skill_procedure.rs signature 33 source_module_493340163ede593e
+    src/skill_procedure.rs signature 34 source_module_6efb992a768d7a2c
     src/solution_evidence.rs signature 9 source_module_5531e73e2678ee78
     src/solver.rs signature 27 source_module_5f13e4fa5b5a4546
     src/solver_diagnostics.rs signature 1 source_module_4264d3cd74207225
@@ -242,7 +242,7 @@ self_ast_census_index
     src/solver_handlers/numeric_list/codegen.rs signature 28 source_module_f91665286a0a56a1
     src/solver_handlers/numeric_list/mod.rs signature 39 source_module_c3389f21ce79bc1d
     src/solver_handlers/playwright_script.rs signature 7 source_module_2dcc622303980932
-    src/solver_handlers/procedure_rules.rs signature 3 source_module_1c165270278a5884
+    src/solver_handlers/procedure_rules.rs signature 4 source_module_9ca09e1f89cfaa18
     src/solver_handlers/program_blueprint.rs signature 1 source_module_69aab15b5c0e2948
     src/solver_handlers/program_synthesis.rs signature 33 source_module_681d648dadbec66c
     src/solver_handlers/research_table.rs signature 25 source_module_6091ab70dc0b5777
