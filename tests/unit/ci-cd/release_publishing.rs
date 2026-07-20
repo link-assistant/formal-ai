@@ -422,7 +422,9 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
     );
     assert_eq!(
         workflow.matches("docker/build-push-action@v7").count(),
-        4,
+        // Four publishing builds, plus the issue #808 pull-request `docker-build`
+        // job, which builds the same image with `push: false`.
+        5,
         "auto and manual release jobs should publish GHCR images and optionally Docker Hub mirrors"
     );
     assert!(

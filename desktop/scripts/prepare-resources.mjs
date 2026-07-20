@@ -43,7 +43,13 @@ syncDesktopVersion();
 function copyDirectory(from, to) {
   fs.rmSync(to, { recursive: true, force: true });
   fs.mkdirSync(path.dirname(to), { recursive: true });
-  fs.cpSync(from, to, { recursive: true });
+  // Issue #808: without `verbatimSymlinks` Node resolves every symlink target
+  // to an absolute path (see the `verbatimSymlinks` default in `fs.cpSync`), so
+  // the Chrome for Testing framework aliases inside browser-runtime end up
+  // pointing at ~/.cache/ms-playwright/... After packaging, `codesign --verify
+  // --deep` rejects the bundle with "invalid destination for symbolic link in
+  // bundle". Copying the links verbatim keeps them relative and inside the app.
+  fs.cpSync(from, to, { recursive: true, verbatimSymlinks: true });
 }
 
 copyDirectory(sourceWeb, outputWeb);

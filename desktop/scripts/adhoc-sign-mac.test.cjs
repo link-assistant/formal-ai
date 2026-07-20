@@ -53,11 +53,64 @@ test('browser exclusion composes with electron-builder ignore rules', () => {
     ignore: upstreamIgnore,
   });
 
-  assert.equal(ignore[0], upstreamIgnore);
-  assert.equal(ignore.length, 2);
+  // Must be a single function, never an array: @electron/osx-sign's
+  // validateOptsIgnore() drops arrays (see adhoc-sign-mac.cjs).
+  assert.equal(typeof ignore, 'function');
+  assert.equal(ignore(path.join(appPath, 'Contents', 'MacOS', 'existing-helper')), true);
   assert.equal(
-    ignore[1](path.join(appPath, 'Contents', 'Resources', 'browser-runtime', 'chrome')),
+    ignore(path.join(appPath, 'Contents', 'Resources', 'browser-runtime', 'chrome')),
     true,
   );
-  assert.equal(ignore[1](path.join(appPath, 'Contents', 'MacOS', 'formal-ai Desktop')), false);
+  assert.equal(ignore(path.join(appPath, 'Contents', 'MacOS', 'formal-ai Desktop')), false);
+});
+
+// Issue #808: guard against the upstream quirk that caused the failure. If a
+// future @electron/osx-sign release starts honouring arrays this test still
+// passes; if it keeps dropping them, our single-function contract stays required.
+test('an array of ignore rules is discarded by @electron/osx-sign', (t) => {
+  // The lint job runs this suite without installing desktop dependencies, so
+  // the upstream source may be absent. The contract below is asserted anyway by
+  // the previous test; here we only cross-check the upstream quirk when we can.
+  let signPath;
+  try {
+    signPath = require.resolve('@electron/osx-sign/dist/cjs/sign.js');
+  } catch {
+    t.skip('@electron/osx-sign is not installed');
+    return;
+  }
+  const source = require('node:fs').readFileSync(signPath, 'utf8');
+  const arraysDropped = /function validateOptsIgnore\(ignore\) \{\s*if \(ignore && !\(ignore instanceof Array\)\) \{\s*return \[ignore\];\s*\}\s*\}/.test(
+    source,
+  );
+
+  if (arraysDropped) {
+    const appPath = path.join('/tmp', 'formal-ai Desktop.app');
+    assert.equal(typeof adhocSignMac.signingIgnoreRules({ app: appPath }), 'function');
+  }
+});
+
+// Issue #808: run 29724500254 failed signing
+// Contents/Resources/browser-runtime/.../Google Chrome for Testing Framework.framework
+// ("unsealed contents present in the root directory of an embedded framework")
+// even though the hook above already excluded it -- the hook produced no output
+// at all, so the exclusion never reached @electron/osx-sign. The exclusion is
+// therefore also declared in electron-builder configuration, where
+// MacTargetHelper.buildSignOptions() applies it regardless of the sign hook.
+test('electron-builder config excludes the bundled browser runtime from signing', () => {
+  const { signIgnore } = require('../package.json').build.mac;
+
+  assert.ok(Array.isArray(signIgnore) && signIgnore.length > 0, 'mac.signIgnore must be configured');
+
+  const matches = (filePath) => signIgnore.some((pattern) => new RegExp(pattern).test(filePath));
+  const app = '/Users/runner/work/formal-ai/formal-ai/desktop/release/mac/formal-ai Desktop.app';
+
+  assert.equal(
+    matches(
+      `${app}/Contents/Resources/browser-runtime/Frameworks/Google Chrome for Testing Framework.framework`,
+    ),
+    true,
+  );
+  assert.equal(matches(`${app}/Contents/Resources/browser-runtime/chrome`), true);
+  assert.equal(matches(`${app}/Contents/MacOS/formal-ai Desktop`), false);
+  assert.equal(matches(app), false);
 });
