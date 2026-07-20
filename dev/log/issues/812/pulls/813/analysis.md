@@ -252,3 +252,23 @@ Kept off by default, per the issue instructions:
   proved finding §5.3).
 - `experiments/self_hosting_ratchet_replay/replay.py` — per-commit attribution,
   reason and subject for any range, without `rust-script`.
+
+## 9. Disposition of every sweep finding (commit `e3f3965c`)
+
+| # | Disposition | Where | Verification |
+| --- | --- | --- | --- |
+| F1 | fixed | `scripts/check-file-size.rs` — exclusions matched per path component (`.git` was a substring match hiding `.github/**`); workflow YAML measured at warn 1500 / fail 2000; `docs/case-studies/**` exempt so quoted third-party pipelines stay verbatim. | `rust-script scripts/check-file-size.rs` exits 0 and warns on `release.yml` (1824 lines); 2 new tests in `ci_cd::check_file_size` (14/14). |
+| F2 | fixed | `desktop-release.yml` `build` + `vscode` gained `fetch-depth: 0` on PRs and a `scripts/simulate-fresh-merge.sh` step. Correction to the row above: the script *is* invoked from `release.yml:317,540`; only `desktop-release.yml` lacked it (the earlier grep skipped hidden directories). | actionlint over the workflow exits 0. |
+| F3 | fixed | Both release jobs now `needs: [lint, test, build, secrets-scan, test-e2e-local, test-agent-cli-e2e]` with `!cancelled()` + explicit `!= 'failure'` comparisons. `docker-build` is deliberately *not* a gate: it publishes independently and its failure must not block the crate. | `releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite`. |
+| F4 | fixed | `finalize` runs under `!cancelled()`. | actionlint; test suite. |
+| F5 | fixed | `include-hidden-files: true` on `upload-pages-artifact`. | actionlint. |
+| F6/F7 | fixed | Screenshot upload uses `if-no-files-found: error` instead of `if: always()` with the default `warn`. | actionlint. |
+| F10 | won't fix, documented | `install.sh` is the only `#!/usr/bin/env sh` script; `pipefail` is not POSIX and aborts dash, the `/bin/sh` a `curl … \| sh` install lands in. Rationale recorded in the file header. | `shellcheck --severity=warning` exits 0. |
+| F12 | fixed | `SECRETLINT_VERSION` pinned (overridable by env) for both the runner and the rule preset. | `shellcheck`; script runs clean. |
+| F13 | open | `FILE_SIZE_WARNING_BASE` fallback is a diagnostic-quality gap only — an empty base degrades to "warn about nothing new", never to a false pass. Tracked for a follow-up rather than bundled here. | — |
+| new | fixed | `cargo clippy … -- -D warnings`; the job previously exited 0 on findings. | `lint_job_gates_on_workflow_shell_and_clippy_findings`; `cargo clippy --all-targets --all-features -- -D warnings` exits 0. |
+| new | fixed | Nothing linted the pipeline definitions or the shipped shell scripts. `actionlint` 1.7.7 (shellcheck-embedded) + `shellcheck --severity=warning` now run in `lint`, with `.github/actionlint.yaml` declaring the `macos-15-intel` / `windows-11-arm` labels that postdate actionlint's baked-in list. | actionlint exits 0 over all workflows; shellcheck exits 0 over 17 scripts. Type-checking was confirmed live by injecting a bogus `needs.secrets-scanX` into a copy and observing the error. |
+| new | fixed | `node --test $(ls … \| grep -v …)` silently fell back to Node's own discovery when the glob missed. Explicit `nullglob` array + empty-list `::error`. | `shellcheck` (SC2046/SC2010 cleared). |
+| new | fixed | Healing builds of an old tag now emit `::notice title=Healing build of an existing tag`, so a red run on a pre-fix tag is self-explaining. | `ci_cd::desktop_release_resolve` 10/10. |
+
+Full-suite gate for the commit: `cargo test --test unit` → 1953 passed, 0 failed.
