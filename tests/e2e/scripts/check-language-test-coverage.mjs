@@ -47,6 +47,7 @@ const languageFacingFiles = new Set([
   'src/web/formal_ai_worker.js',
   'src/web/i18n-catalog.lino',
   'src/web/i18n-catalog-permissions.lino',
+  'src/web/i18n-catalog-messages.lino',
   'src/web/i18n.js',
 ]);
 

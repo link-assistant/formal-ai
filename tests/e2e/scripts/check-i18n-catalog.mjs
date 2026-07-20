@@ -75,6 +75,13 @@ const REQUIRED_KEYS = [
   'message.copyMarkdown',
   'message.copyMarkdownDone',
   'message.copyMarkdownTitle',
+  // Issue #672 (F3): per-message override of the reveal animation budget.
+  'message.skipAnimation',
+  'message.stepLevel.title',
+  'message.stepLevel.bump',
+  'message.stepLevel.demote',
+  'message.stepLevel.reset',
+  'message.stepLevel.hint',
   'message.thinking',
   'message.thinkingExpand',
   'message.thinkingCollapse',
@@ -403,6 +410,16 @@ const REQUIRED_KEYS = [
   'services.state.error',
   'services.state.unknown',
   // Issue #548: desktop auto-update notification and user-triggered install UI.
+  // Issue #672 (F2): the desktop profile-migration notice and its replay action.
+  'dataMigration.title',
+  'dataMigration.body',
+  'dataMigration.bodyUnknown',
+  'dataMigration.copied',
+  'dataMigration.nothing',
+  'dataMigration.replay',
+  'dataMigration.replaying',
+  'dataMigration.dismiss',
+  'dataMigration.failed',
   'updates.title',
   'updates.currentVersion',
   'updates.check',
@@ -442,6 +459,7 @@ const repoRoot = path.resolve(__dirname, '../../..');
 const catalogFiles = [
   'src/web/i18n-catalog.lino',
   'src/web/i18n-catalog-permissions.lino',
+  'src/web/i18n-catalog-messages.lino',
 ];
 const catalogTexts = catalogFiles.map((relativePath) =>
   fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'),

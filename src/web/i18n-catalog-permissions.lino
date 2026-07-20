@@ -1,7 +1,8 @@
 # Desktop tool-permission and Services UI translations (issue #511/#514).
 # Split out of i18n-catalog.lino to stay under the Links Notation line limit.
-# The loader (src/web/i18n.js) fetches this file and i18n-catalog.lino and
-# merges their per-locale keys; tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+# The loader (src/web/i18n.js) fetches this file together with i18n-catalog.lino
+# and i18n-catalog-messages.lino and merges their per-locale keys;
+# tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
 
 en
   permissions
@@ -93,6 +94,16 @@ en
       dockerUnavailable "Docker unavailable"
       error "error"
       unknown "unknown"
+  dataMigration
+    title "Profile data moved"
+    body "Your data was carried over from an earlier app profile ({source})."
+    bodyUnknown "Your profile was checked for data left behind by an earlier version."
+    copied "Transferred: {items}"
+    nothing "Nothing was left to transfer — this profile is already complete."
+    replay "Check again"
+    replaying "Checking..."
+    dismiss "Dismiss"
+    failed "The transfer could not be completed: {error}"
   updates
     title "Updates"
     currentVersion "Version"
@@ -214,6 +225,16 @@ ru
       dockerUnavailable "Docker недоступен"
       error "ошибка"
       unknown "неизвестно"
+  dataMigration
+    title "Данные профиля перенесены"
+    body "Ваши данные перенесены из профиля прежней версии ({source})."
+    bodyUnknown "Профиль проверен на данные, оставшиеся от прежней версии."
+    copied "Перенесено: {items}"
+    nothing "Переносить нечего — профиль уже полный."
+    replay "Проверить ещё раз"
+    replaying "Проверка..."
+    dismiss "Скрыть"
+    failed "Не удалось завершить перенос: {error}"
   updates
     title "Обновления"
     currentVersion "Версия"
@@ -335,6 +356,16 @@ zh
       dockerUnavailable "Docker 不可用"
       error "错误"
       unknown "未知"
+  dataMigration
+    title "配置文件数据已迁移"
+    body "您的数据已从早期版本的配置文件（{source}）迁移过来。"
+    bodyUnknown "已检查配置文件中早期版本遗留的数据。"
+    copied "已迁移：{items}"
+    nothing "没有需要迁移的内容——此配置文件已完整。"
+    replay "再次检查"
+    replaying "检查中..."
+    dismiss "关闭"
+    failed "迁移未能完成：{error}"
   updates
     title "更新"
     currentVersion "版本"
@@ -456,6 +487,16 @@ hi
       dockerUnavailable "Docker उपलब्ध नहीं"
       error "त्रुटि"
       unknown "अज्ञात"
+  dataMigration
+    title "प्रोफ़ाइल डेटा स्थानांतरित हुआ"
+    body "आपका डेटा पहले के ऐप प्रोफ़ाइल ({source}) से लाया गया है।"
+    bodyUnknown "पुराने संस्करण से छूटे डेटा के लिए प्रोफ़ाइल की जाँच की गई।"
+    copied "स्थानांतरित: {items}"
+    nothing "स्थानांतरित करने को कुछ नहीं बचा — यह प्रोफ़ाइल पहले से पूर्ण है।"
+    replay "फिर से जाँचें"
+    replaying "जाँच हो रही है..."
+    dismiss "बंद करें"
+    failed "स्थानांतरण पूरा नहीं हो सका: {error}"
   updates
     title "अपडेट"
     currentVersion "संस्करण"

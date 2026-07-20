@@ -505,6 +505,70 @@ button {
   white-space: nowrap;
 }
 
+/* Issue #672 (F2): the desktop profile-migration notice. Every colour here is a
+ * theme token rather than a literal — that is the direct lesson of issue #541
+ * (R1), where hardcoded light hexes with no dark counterpart left widgets
+ * rendering in the wrong palette. */
+.data-migration-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+}
+
+.data-migration-notice.is-failed {
+  color: var(--fa-error-text);
+}
+
+.data-migration-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.data-migration-copy strong {
+  color: var(--fa-text-strong);
+}
+
+.data-migration-items {
+  color: var(--fa-text-muted);
+  font-size: 12px;
+}
+
+.data-migration-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.data-migration-actions button {
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  padding: 5px 12px;
+  background: var(--fa-surface-card);
+  color: var(--fa-text-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.data-migration-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.data-migration-actions button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
 .mode-toggle,
 .diagnostics-toggle,
 .mode-option,
@@ -2327,6 +2391,28 @@ body.is-resizing-context {
   }
 }
 
+/* Issue #672 (F3): the per-message escape hatch from that paced reveal. It is
+   deliberately quiet — a small text control under the reasoning trace rather
+   than a prominent button — because it exists for the impatient minority and
+   should not compete with the answer it is about to show. It only renders
+   while the reveal is withholding the body, so it never lingers. */
+.skip-animation {
+  align-self: flex-start;
+  margin: 2px 0 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fa-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.skip-animation:hover {
+  border-color: var(--fa-control-hover-border);
+  color: var(--fa-text-body);
+}
+
 /* Issue #488: pulsing dot next to the "Thinking" title while the assistant
    is mid-response, so the live trace is visibly live. */
 .thinking-preview-live-dot {
@@ -2466,6 +2552,54 @@ body.is-resizing-context {
   border-top: 1px solid #dce4e7;
   padding: 10px;
   background: #ffffff;
+}
+
+/* Issue #672 (F4): a step whose level the user edited is marked, so the trace
+ * never silently disagrees with what the solver actually reported. */
+.diagnostics-detail[data-level-override] {
+  border-color: var(--fa-control-hover-border);
+}
+
+/* The marker rides the step name rather than the summary row: the row wraps
+   (the detail text takes a line of its own), so a row-level ::after would land
+   under the step instead of beside it. */
+.diagnostics-detail[data-level-override]
+  > summary
+  .diagnostics-step-name::after {
+  content: " •";
+  color: var(--fa-accent-link);
+}
+
+/* Positioned at the pointer, hence `fixed` + inline coordinates. */
+.step-hierarchy-menu {
+  position: fixed;
+  z-index: 40;
+  display: grid;
+  min-width: 180px;
+  overflow: hidden;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  background: var(--fa-surface-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.step-hierarchy-menu button {
+  border: 0;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--fa-text-body);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.step-hierarchy-menu button:hover:not(:disabled) {
+  background: var(--fa-control-hover-bg);
+}
+
+.step-hierarchy-menu button:disabled {
+  color: var(--fa-text-muted);
+  cursor: default;
 }
 
 .diagnostics-tool-section {

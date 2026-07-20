@@ -116,6 +116,9 @@ async function notifyBiggerStorage() {
 // whenReady, before the window/session touches storage.
 const dataMigration = createDataMigration({ app, fs, path, log: debugLog });
 dataMigration.pinAppName();
+// Issue #672 (F2): the outcome of the startup migration, kept so the renderer
+// can show the notice and replay it on request. Null until whenReady runs.
+let lastDataMigration = null;
 const dreamingScheduler = createDreamingScheduler({
   repoRoot: REPO_ROOT,
   env: process.env,
@@ -767,6 +770,42 @@ ipcMain.handle("formalAiDesktop:installVsCodeExtension", async () => {
 ipcMain.handle("formalAiDesktop:checkForUpdates", () => updateController.checkForUpdates());
 ipcMain.handle("formalAiDesktop:installUpdate", () => updateController.installUpdate());
 ipcMain.handle("formalAiDesktop:getStatus", () => desktopStatus);
+// Issue #672 (F2): expose the profile migration to the renderer. `status`
+// answers "did anything move, and from where"; `replay` runs another
+// non-destructive pass for a user who believes something is still missing.
+// Both return the same shape so the renderer has one code path.
+function describeDataMigration(result) {
+  if (!result) {
+    return { known: false, migrated: false, reason: "not-run", copied: [] };
+  }
+  return {
+    known: true,
+    migrated: Boolean(result.migrated),
+    reason: result.reason || "unknown",
+    copied: Array.isArray(result.copied) ? result.copied : [],
+    migratedFrom:
+      typeof result.migratedFrom === "string" ? result.migratedFrom : null,
+    version: result.version ?? null,
+    dataVersion: result.dataVersion ?? null,
+    error: result.error || null,
+  };
+}
+ipcMain.handle("formalAiDesktop:dataMigrationStatus", () =>
+  describeDataMigration(lastDataMigration),
+);
+ipcMain.handle("formalAiDesktop:replayDataMigration", () => {
+  try {
+    lastDataMigration = dataMigration.migrate({ force: true });
+  } catch (error) {
+    lastDataMigration = {
+      migrated: false,
+      reason: "failed",
+      error: error && error.message ? error.message : String(error),
+      copied: [],
+    };
+  }
+  return describeDataMigration(lastDataMigration);
+});
 ipcMain.handle("formalAiDesktop:setEngine", (_event, engine) => {
   const selection = engineManager.setActiveEngine(engine);
   desktopStatus = {
@@ -790,12 +829,22 @@ app.whenReady().then(() => {
   // their conversations. Never fatal — a migration failure must not block
   // startup, and the copy is non-destructive so it is safe to retry next launch.
   try {
-    dataMigration.migrate();
+    // Issue #672 (F2): the result is retained so the renderer can surface a
+    // notice ("your data was moved from <profile>") and offer a replay when the
+    // user believes something did not come across. Before this it was dropped
+    // on the floor and the whole migration was invisible to the user.
+    lastDataMigration = dataMigration.migrate();
   } catch (error) {
     debugLog(
       "data migration failed:",
       error && error.message ? error.message : String(error),
     );
+    lastDataMigration = {
+      migrated: false,
+      reason: "failed",
+      error: error && error.message ? error.message : String(error),
+      copied: [],
+    };
   }
   dreamingScheduler.start();
   return createMainWindow().then((window) => {
