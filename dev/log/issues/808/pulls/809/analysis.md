@@ -196,17 +196,37 @@ push-to-`main`, `release`, `workflow_run` or `workflow_dispatch`:
 3. `deploy-pages` — Pages artifact assembly, `stamp-pages-artifact.sh`,
    `cargo doc` for `/docs/api`.
 4. `test-e2e-pages` — the whole GitHub-Pages Playwright suite is post-deploy.
-5. `desktop-release.yml` `build` — **the very job that is red today**. Desktop
-   packaging and macOS signing are only exercised after a release exists.
-6. `desktop-release.yml` `vscode` (`.vsix` packaging) and `finalize`
-   (SHA256SUMS + provenance).
+5. ~~`desktop-release.yml` `build` — **the very job that is red today**. Desktop
+   packaging and macOS signing are only exercised after a release exists.~~
+   **Fixed in this pull request** (see §10).
+6. ~~`desktop-release.yml` `vscode` (`.vsix` packaging)~~ **fixed**; `finalize`
+   (SHA256SUMS + provenance) intentionally stays release-only — it uploads to a
+   GitHub release that does not exist for a pull request. Its inputs (the
+   per-target `SHA256SUMS-*.partial` fragments) *are* produced and uploaded as
+   artifacts on pull requests, so a fragment-format regression still surfaces.
 7. `scripts/desktop-release-resolve.sh` release-resolution logic.
 8. Version-bump machinery (`version-and-commit.rs`, `get-bump-type.rs`,
    `collect-changelog.rs`, `create-github-release.rs`).
 
-Item 5 is the highest-value gap: had `desktop-release.yml`'s macOS build run on
+Item 5 was the highest-value gap: had `desktop-release.yml`'s macOS build run on
 pull requests, Failure A would have been caught in the PR that introduced the
-bundled browser runtime instead of in a release.
+bundled browser runtime instead of in a release. It is now closed — the workflow
+gained a path-filtered `pull_request` trigger that runs the full six-target
+matrix in dry-run mode:
+
+* `resolve` is skipped (no release to heal, no tag to check out); `build` and
+  `vscode` admit the skipped dependency with `!cancelled() && (github.event_name
+  == 'pull_request' || …)` and check out the PR head instead of the tag.
+* Everything through packaging, ad-hoc/notarised signing, the macOS DMG smoke
+  test and the Linux/Windows artifact smoke test runs unchanged.
+* Only the publishing steps are skipped: `Attest build provenance`, `Upload
+  assets to release`, `Upload .vsix to release`, and the whole `finalize` job.
+* `cancel-in-progress` becomes `true` for pull requests only, so a superseding
+  push does not queue a second six-runner matrix; release runs still never
+  cancel mid-upload.
+
+This is what makes Failure A a *pull-request* failure from now on, which is the
+explicit ask in issue comment 5020083365.
 
 ## 7. Gaps versus the templates and CI-CD-BEST-PRACTICES.md
 
@@ -272,4 +292,9 @@ and `link-assistant/hive-mind/docs/CI-CD-BEST-PRACTICES.md`:
    default-off behind `FORMAL_AI_MACOS_SIGN_DEBUG`.
 3. `.github/workflows/release.yml` — new `evidence-check` job validating
    `Formal-AI-Session` / `Formal-AI-Evidence` trailers at pull-request time.
-4. `dev/log/issues/808/pulls/809/` — raw CI logs and this analysis.
+4. `.github/workflows/desktop-release.yml` — path-filtered `pull_request`
+   trigger running the full desktop + `.vsix` packaging matrix in dry-run mode
+   (see §6); publishing steps and `finalize` stay release-only.
+5. `desktop/scripts/adhoc-sign-mac.test.cjs` — regression test asserting the
+   `mac.signIgnore` patterns match the browser runtime and not the app binary.
+6. `dev/log/issues/808/pulls/809/` — CI log excerpts and this analysis.
