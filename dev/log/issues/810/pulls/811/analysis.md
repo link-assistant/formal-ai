@@ -352,3 +352,33 @@ Still open (recorded, not done — each is a refactor rather than a fix):
 * `simulate-fresh-merge.sh` runs in `lint` and `test` but not in
   `desktop-release.yml`, so the packaging dry run builds the PR head rather than
   the merge result.
+
+## 8. Defect B: the `ignore` predicate is confirmed to be consulted
+
+The PR description recorded this as unknown: "it is still unknown whether the
+`ignore` predicate was consulted and said 'sign it' or was never called -- the
+two need different fixes." The instrumentation added in this PR answers it.
+
+Evidence: `ci-logs/desktop-29746221627.log` (Desktop Release run 29746221627,
+job "Build macos-x64", step "Package desktop app (macOS ad-hoc)").
+
+* The hook banner now emits, so the hook itself runs:
+  `[adhoc-sign-mac] hook entered (debug=on)` followed by
+  `[adhoc-sign-mac] signOptions keys: app, binaries, identity, identityValidation, ignore, keychain, optionsForFile, platform, preAutoEntitlements, provisioningProfile, strictVerify, type, version`.
+* The predicate is called, once per candidate path, e.g.
+  `[adhoc-sign-mac] ignore sign root=.../Contents/Resources/browser-runtime relative=../../Frameworks/Electron Framework.framework/... path=...`.
+* `@electron/osx-sign` acts on the answer: every path inside
+  `Contents/Resources/browser-runtime/Frameworks/Google Chrome for Testing Framework.framework/...`
+  is logged by osx-sign as `Skipped...`, including the Helper `.app` bundles,
+  `libwidevinecdm.dylib`, `Assets.car` and the `Versions/Current` aliases.
+
+So the remaining macOS seal failure is not "the predicate was never called" and
+not "the predicate said sign it" for the browser runtime -- that path is
+correctly excluded. `candidate appPath: null` / `candidate path: null` in the
+same log show electron-builder passes the bundle only as `signOptions.app`,
+which is why the earlier root-derivation attempts read as undefined.
+
+Caveat on scope: pull request desktop builds are ad-hoc/unsigned dry runs, so
+the "unsealed contents present in the root directory of an embedded framework"
+codesign error is not reproduced here. This evidence narrows the cause; it does
+not close Defect B, which stays instrumented and open by design.
