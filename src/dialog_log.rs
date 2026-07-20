@@ -19,9 +19,17 @@ use serde_json::Value;
 
 use crate::engine::stable_id;
 use crate::proxy::{summarize_proxy_exchange, ProxyExchangeLog};
+use crate::server::ApiHttpResponse;
 
 static REQUEST_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static LOG_WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+/// Dump an inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
+pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
+    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+        eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
+    }
+}
 
 /// One complete server exchange, stored as one JSONL record.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -37,15 +45,17 @@ pub struct DialogExchangeLog {
 ///
 /// Logging is best-effort: a filesystem problem is reported to stderr and never
 /// prevents the protocol response from reaching the client.
-pub(crate) fn record_dialog_exchange_if_enabled(
+pub(crate) fn record_api_exchange_if_enabled(
     method: &str,
     path: &str,
     headers: &[(&str, &str)],
     request_body: &str,
-    status: u16,
-    response_content_type: &str,
-    response_body: &str,
+    response: &ApiHttpResponse,
+    authorized: bool,
 ) {
+    if !authorized {
+        return;
+    }
     let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
@@ -58,9 +68,9 @@ pub(crate) fn record_dialog_exchange_if_enabled(
         path,
         headers,
         request_body,
-        status,
-        response_content_type,
-        response_body,
+        response.status_code,
+        response.content_type,
+        &response.body,
     ) {
         Ok(path) => eprintln!("[dialog-log] appended exchange to {}", path.display()),
         Err(error) => eprintln!("[dialog-log] failed to record exchange: {error}"),

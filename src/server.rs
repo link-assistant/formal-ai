@@ -113,18 +113,6 @@ fn record_exchange_best_effort(
     }
 }
 
-/// Dump every inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
-///
-/// Off by default so production output stays quiet; flip the env var on when
-/// debugging what an external agent CLI actually sends over the OpenAI-compatible
-/// surface (which tools it advertises, whether the task reaches the planner).
-fn trace_request(method: &str, path: &str, body: &str) {
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() != Ok("1") {
-        return;
-    }
-    eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
-}
-
 #[must_use]
 pub fn handle_api_request_with_auth(
     method: &str,
@@ -133,19 +121,12 @@ pub fn handle_api_request_with_auth(
     body: &str,
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
-    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
     let normalized_path = path.split('?').next().unwrap_or(path);
-    if !requires_bearer_auth(method, normalized_path) || auth.allows(headers) {
-        crate::dialog_log::record_dialog_exchange_if_enabled(
-            method,
-            path,
-            headers,
-            body,
-            response.status_code,
-            response.content_type,
-            &response.body,
-        );
-    }
+    let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
+    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    crate::dialog_log::record_api_exchange_if_enabled(
+        method, path, headers, body, &response, authorized,
+    );
     response
 }
 
@@ -167,7 +148,7 @@ fn dispatch_api_request_with_auth(
         return error_response(401, "missing or invalid bearer token");
     }
 
-    trace_request(method, normalized_path, body);
+    crate::dialog_log::trace_request_if_enabled(method, normalized_path, body);
 
     if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, body) {
         return response;

@@ -44,15 +44,15 @@ impl Progress {
                 continue;
             };
             if capability == Capability::Fetch {
-                let text = super::tool_result::normalized_payload(&message.content.plain_text());
-                fetch_result = Some(text.clone());
+                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                fetch_result = Some(payload.clone().unwrap_or_default());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref() {
                     if !attempted_fetches.contains(url) {
                         attempted_fetches.push(url.clone());
                     }
                 }
-                if !looks_like_error(&text) && !text.trim().is_empty() {
+                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
                     }
@@ -60,9 +60,9 @@ impl Progress {
                 }
             }
             if capability == Capability::Search {
-                let text = super::tool_result::normalized_payload(&message.content.plain_text());
-                search_result = Some(text.clone());
-                if !looks_like_error(&text) && !text.trim().is_empty() {
+                let payload = super::tool_result::normalized_payload(&message.content.plain_text());
+                search_result = Some(payload.clone().unwrap_or_default());
+                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
                     search_output = Some(text);
                 }
             }
@@ -143,12 +143,4 @@ fn fetch_call_url(call: &crate::protocol::ToolCall) -> Option<String> {
         .and_then(serde_json::Value::as_str)
         .filter(|url| !url.trim().is_empty())
         .map(str::to_owned)
-}
-
-/// Whether a tool result looks like an error the planner should not trust.
-fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
 }

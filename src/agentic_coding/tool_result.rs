@@ -17,11 +17,16 @@ struct NormalizedResult {
 /// Remove client transport wrappers while preserving the tool's actual text.
 /// Agentic planners consume this form; durable protocol recording still keeps
 /// the original result byte-for-byte.
-pub(super) fn normalized_payload(raw: &str) -> String {
+pub(super) fn normalized_payload(raw: &str) -> Option<String> {
     let result = normalize(raw);
-    result
-        .error
-        .map_or(result.payload, |error| format!("Error: {error}"))
+    (result.error.is_none() && !looks_like_error(&result.payload)).then_some(result.payload)
+}
+
+fn looks_like_error(text: &str) -> bool {
+    let lower = text.to_lowercase();
+    ["error", "failed", "not found", "404"]
+        .iter()
+        .any(|needle| lower.contains(needle))
 }
 
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
