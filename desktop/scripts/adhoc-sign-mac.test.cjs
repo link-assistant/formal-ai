@@ -114,3 +114,21 @@ test('electron-builder config excludes the bundled browser runtime from signing'
   assert.equal(matches(`${app}/Contents/MacOS/formal-ai Desktop`), false);
   assert.equal(matches(app), false);
 });
+
+// Issue #810: run 29738571290 signed a browser-runtime path and died with
+// "unsealed contents present in the root directory of an embedded framework",
+// yet the log carried no `[adhoc-sign-mac]` output at all -- so we could not
+// tell whether the ignore predicate had been consulted and returned false, or
+// had never been called. The predicate now counts what it sees, and the hook
+// reports those counters on success and on failure alike.
+test('the ignore predicate counts what it considered and what it skipped', () => {
+  const appPath = path.join('/tmp', 'formal-ai Desktop.app');
+  const ignore = adhocSignMac.signingIgnoreRules({ app: appPath });
+
+  assert.deepEqual(ignore.stats, { considered: 0, skipped: 0 });
+
+  ignore(path.join(appPath, 'Contents', 'Frameworks', 'Electron Framework.framework'));
+  ignore(path.join(appPath, 'Contents', 'Resources', 'browser-runtime', 'chrome'));
+
+  assert.deepEqual(ignore.stats, { considered: 2, skipped: 1 });
+});
