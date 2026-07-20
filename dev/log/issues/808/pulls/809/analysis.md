@@ -9,12 +9,16 @@ Evidence collected in: `dev/log/issues/808/pulls/809/`
 
 | File | Content |
 | --- | --- |
-| `ci-logs/run-29723467001-failed.log` | CI/CD Pipeline, `main` @ `76bdb6b5`, failed |
-| `ci-logs/run-29724500254-failed.log` | Desktop Release, `main` @ `76bdb6b5`, failed |
-| `ci-logs/run-29724500254-full.log` | Same run, complete log (used to prove an *absence* of output) |
-| `ci-logs/run-29720321919-failed.log` | Desktop Release, `main` @ `8b5acee0`, failed (same signature) |
-| `ci-logs/run-29719602956-failed.log` | CI/CD Pipeline, `main` @ `8b5acee0`, failed |
-| `ci-logs/run-*.json` | Run/job metadata |
+| `ci-logs/README.md` | Index of the excerpts, the filter used, and how to re-download the full logs |
+| `ci-logs/run-29723467001-auto-release.log` | CI/CD Pipeline, `main` @ `76bdb6b5`, failed |
+| `ci-logs/run-29719602956-excerpt.log` | CI/CD Pipeline, `main` @ `8b5acee0`, failed (same signature) |
+| `ci-logs/run-29724500254-macos-codesign-excerpt.log` | Desktop Release, `main` @ `76bdb6b5`, failed |
+| `ci-logs/run-29720321919-macos-codesign-excerpt.log` | Desktop Release, `main` @ `8b5acee0`, failed (same signature) |
+
+The complete logs are 2.5–3.5 MB each and are not committed; `ci-logs/README.md`
+gives the exact `gh run view --log` command to reproduce them. Statements below
+that rest on an *absence* of output ("not a single `[adhoc-sign-mac]` line")
+were checked against the complete logs before they were reduced to excerpts.
 
 ## 2. Timeline
 
@@ -78,7 +82,7 @@ upstream by Google and must be treated as an opaque resource.
 (`isBundledBrowserRuntime`, added in `46aa1dd7`) and its unit tests pass
 locally. It nevertheless did not take effect in CI.
 
-Decisive observation from `ci-logs/run-29724500254-full.log`:
+Decisive observation from the complete log of run 29724500254 (excerpt in `ci-logs/run-29724500254-macos-codesign-excerpt.log`):
 
 * the step's env block shows `FORMAL_AI_MACOS_SIGN_DEBUG: 1` (workflow line 232);
 * electron-builder logs `• executing custom sign  file=release/mac/formal-ai Desktop.app`;
@@ -253,28 +257,44 @@ and `link-assistant/hive-mind/docs/CI-CD-BEST-PRACTICES.md`:
 | `.github/dependabot.yml` | **absent** | — |
 | `!cancelled()` rather than `always() && !cancelled()` | not applied | best-practices §10 |
 
-## 8. Defects to report upstream against the templates (R4)
+## 8. Defects reported upstream (R4)
 
-* **T1 — no Docker/artifact PR gate** (rust template): Docker images are built
-  and pushed only inside `auto-release`/`manual-release`, in the *same job* that
-  runs `cargo publish`. A broken `Dockerfile` is discovered after the crate is
-  already published. Workaround/fix: a `docker-pr-check` job with
-  `push: false, load: true` on pull requests.
-* **T2 — `simulate-fresh-merge` missing from the rust and python templates**
-  although `CI-CD-BEST-PRACTICES.md` §7 declares it mandatory and the js
-  template ships it. The script is language-agnostic bash and can be copied
-  verbatim.
-* **T3 — no secrets scan in the rust and python templates**
-  (best-practices §11); only the js template runs `secretlint`.
-* **T4 — `CI-CD-BEST-PRACTICES.md` §10 contradicts all three templates.** The
-  document says to use `!cancelled()` so cancellation propagates; every template
-  uses `always() && !cancelled()`, and downstream repositories (including this
-  one) have copied that verbatim together with a comment asserting `always()` is
-  required. Either the templates or the document must change.
-* **T5 — electron-builder false-positive warning** (upstream
-  `electron-userland/electron-builder`): with a custom `mac.sign` hook,
-  electron-builder warns that `com.apple.security.cs.disable-library-validation`
-  is required even when the configured entitlements file already grants it.
+All five were verified against the upstream sources before filing, and all are
+filed:
+
+| # | Defect | Filed |
+| --- | --- | --- |
+| T1 | Docker image only built inside the release jobs, i.e. after the package is published, so a broken `Dockerfile` cannot fail a pull request | [rust#100](https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/100), [python#35](https://github.com/link-foundation/python-ai-driven-development-pipeline-template/issues/35), [js#106](https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/106) |
+| T2 | `simulate-fresh-merge.sh` missing (best-practices §7 declares it mandatory) | rust#100, python#35 |
+| T3 | No secrets scan (best-practices §11) | rust#100, python#35 |
+| T4 | Self-contradictory `always() && !cancelled()` job guards | rust#100, python#35 |
+| T5 | electron-builder false-positive `disable-library-validation` warning | [electron-builder#10027](https://github.com/electron-userland/electron-builder/issues/10027) |
+
+Corrections to my earlier reading, made while verifying:
+
+* **T4 does not apply to the js template.** Measured, not assumed:
+
+  ```console
+  $ for r in rust js python; do gh api repos/link-foundation/$r-ai-driven-development-pipeline-template/contents/.github/workflows/release.yml \
+      -q .content | base64 -d | grep -c 'always() && !cancelled()'; done
+  7
+  0
+  6
+  ```
+
+  So `CI-CD-BEST-PRACTICES.md` §10 does not contradict *all three* templates —
+  the js template already complies and is the reference implementation. The
+  document is right; rust and python are the outliers.
+* **T5's trigger is not the custom `mac.sign` hook.** In
+  `app-builder-lib@26.15.3`, `out/mac/MacTargetHelper.js:36-41` emits the
+  warning on `qualifier === "-" && hardenedRuntime` alone; `config.entitlements`
+  is never read on that path. The warning therefore fires for *every* ad-hoc
+  hardened-runtime build, hook or not, even when the entitlement is granted —
+  which is a stronger and more easily fixed claim than the one I first wrote.
+
+T1 applies to the js template as well (its `docker-publish` job is gated on
+`needs: [release, instant-release]`), so it got its own, narrower report; T2–T4
+do not apply there.
 
 ## 9. Reusable components considered
 
