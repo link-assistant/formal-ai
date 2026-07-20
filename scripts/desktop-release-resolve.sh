@@ -215,8 +215,17 @@ release_version="$(release_version_from_tag "$tag" || true)"
 if [ -z "$release_version" ]; then
   log "Could not parse semver from ${tag}; leaving build enabled rather than risking a silent skip."
 else
-  existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null || true)"
+  # Keep the query's exit status: a failed `gh` and a release with genuinely no
+  # assets both yield an empty list, but only one of them is a problem worth
+  # naming in the log. Either way the fail-safe direction is the same (build),
+  # so the status only drives diagnostics, never the decision.
+  if existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null)"; then
+    :
+  else
+    log "warning: could not list assets for ${tag} (gh exited non-zero); treating them as absent and building."
+    existing_names=""
+  fi
   existing_count="$(printf '%s\n' "$existing_names" | sed '/^$/d' | wc -l | tr -d ' ')"
   missing=()
   while IFS= read -r expected; do

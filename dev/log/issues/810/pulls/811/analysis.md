@@ -244,3 +244,68 @@ workflow structure — Defect A is repo-specific policy tooling and Defect B is
 repo-specific desktop packaging — so the template sweep is genuinely separate
 work rather than a prerequisite for the fixes above. It should not be marked
 complete until someone diffs the workflows.
+
+---
+
+## 6. Second iteration — two nondeterministic failures on the PR branch
+
+Run [29742025207](https://github.com/link-assistant/formal-ai/actions/runs/29742025207)
+(head `70a09859`) failed two jobs that pass on `main`. Neither is caused by the
+branch's diff (which touches only `scripts/self-hosting-metric.rs` and its test):
+both are **flakes**, i.e. false negatives, which requirement 3 of the issue
+covers explicitly. Evidence: `ci-logs/coverage.log`, `ci-logs/e2e.log`,
+`ci-logs/formal-ai-serve-8776.log`, `ci-logs/agent-out-8776.log`. The six most
+recent `main` runs fail only in `Auto Release` (Defect A), never in these jobs.
+
+### Defect C — `desktop_release_resolve` unit test, ETXTBSY on the mock `gh`
+
+```
+ci_cd::desktop_release_resolve::workflow_run_skips_when_release_has_all_required_assets
+  left: "true"   right: "false"
+```
+
+`1937 passed; 1 failed`, and the same test passes locally and in every earlier
+run. The test writes a mock `gh` into a scratch `PATH` directory and immediately
+executes it. The unit suite is multi-threaded: any `Command` spawn in another
+test thread forks this process, and a fork landing between the mock's `write`
+and its `close` inherits the still-open write descriptor. `execve` on an inode
+that any process holds open for writing fails with `ETXTBSY`. The resolve script
+swallows a failed `gh` (`|| true`), so the asset query degrades silently to "no
+assets exist" and `should_build` flips to `true` — exactly the observed values.
+
+Fixes:
+
+* The mock is written to `gh.staging` and `rename`d into place, so the name that
+  gets executed is never the file being written (`tests/unit/ci-cd/desktop_release_resolve.rs`).
+* `scripts/desktop-release-resolve.sh` no longer conflates "`gh` failed" with
+  "the release has no assets": it keeps the query's exit status and logs a
+  warning. The decision is unchanged (both still build — the fail-safe
+  direction); only the diagnosis improves.
+* The assertion now prints the script's stdout, which carries the
+  `existing desktop assets: N` / `missing required desktop assets` lines.
+
+### Defect D — agent CLI E2E, auto-compaction swallowed the report prompt
+
+```
+!! report request did not execute gh
+```
+
+`formal-ai-serve-8776.log` shows the whole sequence. The research turn fetched
+three live pages (fec.gov, usatoday, wikipedia) and grew the transcript to a
+246 KB request. opencode then issued a *summarisation* request ("You are a
+helpful AI assistant tasked with summarizing conversations"), and the next turn
+arrived at the server with last user message `"Continue if you have next steps"`
+— not `"Report this problem"`. The server logged
+`agentic_outcome: fallthrough (task unrecognised)`, no `gh` ran, and the
+assertion failed for a reason unrelated to the behaviour under test.
+
+Root cause: the harness advertised a 200000-token context limit, and transcript
+size depends on whatever the live pages happen to serve that day — so whether
+compaction triggers is a property of the public web, not of this repository.
+
+Fix (`experiments/agent_cli_e2e/run_issue_687.sh`): raise the advertised limit to
+4000000. It is a harness knob only — the server never enforces it — so this
+removes the live-content dependency rather than masking a product defect. A
+diagnostic branch now also names compaction explicitly when the `gh` log is
+missing and the server log contains a summarisation request, so the two failure
+modes are never again confused.

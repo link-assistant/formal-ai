@@ -18,6 +18,16 @@ GH_LOG="$WORKDIR/gh-invocations.log"
 mkdir -p "$FAKE_BIN"
 cd "$WORKDIR"
 
+# The context limit below is a HARNESS knob (the server never enforces it) and is
+# deliberately far larger than any real transcript. Run 29742025207 flaked here:
+# the research turn fetches LIVE web pages, so its transcript size depends on what
+# fec.gov / usatoday / wikipedia serve that day. Once the transcript crossed the
+# previous 200000-token limit's safety threshold, opencode summarised the session
+# mid-run and replaced the pending "Report this problem" prompt with its own
+# "Continue if you have next steps" continuation; the server logged
+# `fallthrough (task unrecognised)`, no `gh` ever ran, and the test failed for a
+# reason unrelated to the behaviour under test. Removing the compaction trigger
+# removes that live-content dependency.
 cat > opencode.json <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -32,7 +42,7 @@ cat > opencode.json <<EOF
       "models": {
         "formal-ai": {
           "name": "Formal AI Symbolic Production",
-          "limit": { "context": 200000, "output": 65536 }
+          "limit": { "context": 4000000, "output": 65536 }
         }
       }
     }
@@ -89,7 +99,17 @@ run_turn report "Report this problem" --continue --no-fork
 run_turn recall "What were we talking about?" --continue --no-fork
 run_turn follow_up "Learn about it." --continue --no-fork
 
-[ -f "$GH_LOG" ] || fail "report request did not execute gh"
+if [ ! -f "$GH_LOG" ]; then
+  # Distinguish the two ways this can happen: the request never reached the
+  # server's report handler because opencode compacted the session (harness
+  # problem), versus the handler saw the prompt and declined to act (product
+  # problem). Guessing between them is why this took two runs to diagnose.
+  if grep -q 'summarizing conversations' "$LOG"; then
+    echo "!! diagnosis: the session was auto-summarised mid-run; the report prompt" >&2
+    echo "!! was replaced by opencode's own continuation before reaching the server." >&2
+  fi
+  fail "report request did not execute gh"
+fi
 grep -q 'issue create --repo link-assistant/formal-ai' "$GH_LOG" \
   || fail "gh invocation did not target the Formal AI repository"
 grep -qi 'election' "$AGENT_LOG" \

@@ -91,15 +91,27 @@ case "$sub" in
 esac
 exit 0
 "#;
+    // Write to a staging name and rename into place. These tests run in
+    // parallel with the rest of the unit suite, and every `Command` spawn in
+    // another test thread forks this process: a fork that lands between our
+    // `write` and its `close` inherits the still-open write descriptor, and
+    // `execve` on an inode that any process holds open for writing fails with
+    // ETXTBSY ("Text file busy"). The resolve script swallows a failed `gh`
+    // (`|| true`), so such a spawn silently degrades to "no assets exist" and
+    // flips `should_build` -- exactly the nondeterministic failure seen in run
+    // 29742025207. `rename` publishes the name only after the descriptor is
+    // closed, so the executable `gh` path is never the file being written.
     let gh = dir.join("gh");
-    fs::write(&gh, mock).expect("write mock gh");
+    let staging = dir.join("gh.staging");
+    fs::write(&staging, mock).expect("write mock gh");
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        let mut perms = fs::metadata(&gh).unwrap().permissions();
+        let mut perms = fs::metadata(&staging).unwrap().permissions();
         perms.set_mode(0o755);
-        fs::set_permissions(&gh, perms).expect("chmod mock gh");
+        fs::set_permissions(&staging, perms).expect("chmod mock gh");
     }
+    fs::rename(&staging, &gh).expect("publish mock gh");
 }
 
 fn unique_tmp(label: &str) -> PathBuf {
@@ -313,7 +325,8 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
     assert_eq!(result.tag, "v0.201.0");
     assert_eq!(
         result.should_build, "false",
-        "a release that already has all required desktop assets must not rebuild on workflow_run"
+        "a release that already has all required desktop assets must not rebuild on workflow_run\nstdout:\n{}\nstderr:\n{}",
+        result.stdout, result.stderr
     );
 }
 
