@@ -2,10 +2,10 @@ self_ast_census
   target src/self_ast_census.rs
   language rust
   fidelity signature
-  byte_len 28333
-  line_count 762
-  content_id source_module_6307f887ac1412bd
-  symbol_count 42
+  byte_len 28589
+  line_count 772
+  content_id source_module_0aecde9e6d3b2594
+  symbol_count 43
   symbols
     const CENSUS_DIR 38 38
     const INDEX_PATH 41 41
@@ -43,9 +43,10 @@ self_ast_census
     static WORKSPACE 477 477
     enum CensusDrift 483 499
     function document 504 510
-    function describe 514 520
-    function drift_report 530 564
-    function scan_symbols 574 595
-    function strip_noncode 599 663
-    function declared_item 666 734
-    function item_end_line 740 762
+    function kind 514 520
+    function describe 528 530
+    function drift_report 540 574
+    function scan_symbols 584 605
+    function strip_noncode 609 673
+    function declared_item 676 744
+    function item_end_line 750 772

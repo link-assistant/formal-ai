@@ -509,14 +509,24 @@ impl CensusDrift {
         }
     }
 
-    /// A one-line, actionable description for a failing drift check.
+    /// The kind of divergence, as a stable slug.
+    #[must_use]
+    pub const fn kind(&self) -> &'static str {
+        match self {
+            Self::Missing { .. } => "missing",
+            Self::Stale { .. } => "stale",
+            Self::Orphan { .. } => "orphan",
+        }
+    }
+
+    /// A one-line finding for a failing drift check, as `kind document`.
+    ///
+    /// Deliberately not prose: this is developer-facing diagnostic data in the
+    /// same shape as the census documents themselves, so it carries no
+    /// user-facing natural language (R379).
     #[must_use]
     pub fn describe(&self) -> String {
-        match self {
-            Self::Missing { document } => format!("missing census document {document}"),
-            Self::Stale { document } => format!("stale census document {document}"),
-            Self::Orphan { document } => format!("orphaned census document {document}"),
-        }
+        format!("{} {}", self.kind(), self.document())
     }
 }
 
