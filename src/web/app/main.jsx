@@ -4746,6 +4746,91 @@ function vscodeInstallStateLabel(result, t) {
   return key ? tr(key) : tr("vscodeInstall.error");
 }
 
+// Issue #672 (F2): the shape the desktop bridge reports for the profile
+// migration. Normalising here means the notice never has to guard against a
+// missing field, and an older desktop build that answers with a partial object
+// degrades to "we know nothing" rather than rendering `undefined` at the user.
+function normalizeDataMigration(result, options = {}) {
+  if (!result || typeof result !== "object") return null;
+  const copied = Array.isArray(result.copied)
+    ? result.copied.filter((item) => typeof item === "string" && item)
+    : [];
+  return {
+    known: Boolean(result.known),
+    migrated: Boolean(result.migrated),
+    reason: typeof result.reason === "string" ? result.reason : "unknown",
+    copied,
+    migratedFrom:
+      typeof result.migratedFrom === "string" && result.migratedFrom
+        ? result.migratedFrom.split(/[\\/]/).filter(Boolean).pop()
+        : null,
+    error: typeof result.error === "string" && result.error ? result.error : null,
+    replayed: Boolean(options.replayed),
+  };
+}
+
+// The notice is worth the user's attention only when something actually
+// happened (data moved, or a transfer failed) — or right after they asked for a
+// replay, where "nothing left to copy" IS the answer they wanted.
+function shouldShowDataMigrationNotice(migration) {
+  if (!migration || !migration.known) return false;
+  if (migration.replayed) return true;
+  if (migration.reason === "failed") return true;
+  return migration.migrated && migration.copied.length > 0;
+}
+
+function DataMigrationNotice({ migration, busy, onReplay, onDismiss, t }) {
+  if (!shouldShowDataMigrationNotice(migration)) return null;
+  const failed = migration.reason === "failed";
+  let body;
+  if (failed) {
+    body = t("dataMigration.failed", { error: migration.error || "" });
+  } else if (migration.copied.length === 0) {
+    body = t("dataMigration.nothing");
+  } else if (migration.migratedFrom) {
+    body = t("dataMigration.body", { source: migration.migratedFrom });
+  } else {
+    body = t("dataMigration.bodyUnknown");
+  }
+  return (
+    <div
+      className={`data-migration-notice${failed ? " is-failed" : ""}`}
+      data-testid="data-migration-notice"
+      data-reason={migration.reason}
+      role="status"
+    >
+      <div className="data-migration-copy">
+        <strong>{t("dataMigration.title")}</strong>
+        <span data-testid="data-migration-body">{body}</span>
+        {migration.copied.length > 0 ? (
+          <span className="data-migration-items" data-testid="data-migration-items">
+            {t("dataMigration.copied", { items: migration.copied.join(", ") })}
+          </span>
+        ) : null}
+      </div>
+      <div className="data-migration-actions">
+        <button
+          type="button"
+          className="data-migration-replay"
+          data-testid="data-migration-replay"
+          disabled={busy}
+          onClick={onReplay}
+        >
+          {busy ? t("dataMigration.replaying") : t("dataMigration.replay")}
+        </button>
+        <button
+          type="button"
+          className="data-migration-dismiss"
+          data-testid="data-migration-dismiss"
+          onClick={onDismiss}
+        >
+          {t("dataMigration.dismiss")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function normalizeDesktopStatus(status) {
   if (!status || typeof status !== "object") {
     return null;
@@ -6313,6 +6398,14 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  // Issue #672 (F2): the outcome of the desktop profile migration, so the user
+  // can see that their data was carried forward — and ask for another pass if
+  // something looks missing. `dataMigrationBusy` disables the replay button
+  // while a pass is in flight; `dataMigrationDismissed` hides the notice for the
+  // rest of the session once the user has acknowledged it.
+  const [dataMigration, setDataMigration] = useState(null);
+  const [dataMigrationBusy, setDataMigrationBusy] = useState(false);
+  const [dataMigrationDismissed, setDataMigrationDismissed] = useState(false);
   const [desktopAgentStream, setDesktopAgentStream] = useState([]);
   // Issue #438 (follow-up): one-click start/stop of the prepared Docker
   // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
@@ -6564,6 +6657,52 @@ function App() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  // Issue #672 (F2): read the startup migration result once. Web builds have no
+  // bridge and older desktop builds have no channel, so both are treated the
+  // same way — no notice at all.
+  useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.dataMigrationStatus !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    Promise.resolve()
+      .then(() => bridge.dataMigrationStatus())
+      .then((result) => {
+        if (!cancelled) setDataMigration(normalizeDataMigration(result));
+      })
+      .catch(() => {
+        // A migration we cannot report on is not worth interrupting boot for.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleReplayDataMigration = useCallback(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.replayDataMigration !== "function") return;
+    setDataMigrationBusy(true);
+    Promise.resolve()
+      .then(() => bridge.replayDataMigration())
+      .then((result) => {
+        setDataMigration(normalizeDataMigration(result, { replayed: true }));
+      })
+      .catch((error) => {
+        setDataMigration(
+          normalizeDataMigration(
+            {
+              known: true,
+              reason: "failed",
+              error: error && error.message ? error.message : String(error),
+            },
+            { replayed: true },
+          ),
+        );
+      })
+      .finally(() => setDataMigrationBusy(false));
   }, []);
 
   useEffect(() => {
@@ -8858,7 +8997,7 @@ function App() {
         "aria-pressed": demoMode
       }} />
       </chakra.div>
-    </chakra.header>{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
+    </chakra.header>{dataMigrationDismissed ? null : <DataMigrationNotice migration={dataMigration} busy={dataMigrationBusy} onReplay={handleReplayDataMigration} onDismiss={() => setDataMigrationDismissed(true)} t={t} />}{mobileMenuOpen ? <div className="mobile-menu-backdrop" data-testid="mobile-menu-backdrop" onClick={() => setMobileMenuOpen(false)} /> : null}<section className={`workspace${sidebarCollapsed ? " sidebar-collapsed" : ""}`} style={{
     "--context-panel-width": `${contextPanelWidth}px`
   }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"} onClickCapture={handleSidebarSectionClickCapture}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><SidebarSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <SidebarSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel">{desktopStatus.engineSelectionAvailable ? <div className="desktop-engine-row"><dt>{"Engine"}</dt><dd><select data-testid="desktop-engine-selector" aria-label="Desktop engine" value={desktopStatus.activeEngine} onChange={handleDesktopEngineChange}>{desktopStatus.engines.map(engine => <option key={engine.id} value={engine.id}>{engine.label}</option>)}</select></dd></div> : null}<div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)

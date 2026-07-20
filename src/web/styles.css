@@ -505,6 +505,70 @@ button {
   white-space: nowrap;
 }
 
+/* Issue #672 (F2): the desktop profile-migration notice. Every colour here is a
+ * theme token rather than a literal — that is the direct lesson of issue #541
+ * (R1), where hardcoded light hexes with no dark counterpart left widgets
+ * rendering in the wrong palette. */
+.data-migration-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+}
+
+.data-migration-notice.is-failed {
+  color: var(--fa-error-text);
+}
+
+.data-migration-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.data-migration-copy strong {
+  color: var(--fa-text-strong);
+}
+
+.data-migration-items {
+  color: var(--fa-text-muted);
+  font-size: 12px;
+}
+
+.data-migration-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.data-migration-actions button {
+  border: 1px solid var(--fa-border-control);
+  border-radius: 8px;
+  padding: 5px 12px;
+  background: var(--fa-surface-card);
+  color: var(--fa-text-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.data-migration-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.data-migration-actions button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
 .mode-toggle,
 .diagnostics-toggle,
 .mode-option,

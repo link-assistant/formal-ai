@@ -403,6 +403,16 @@ const REQUIRED_KEYS = [
   'services.state.error',
   'services.state.unknown',
   // Issue #548: desktop auto-update notification and user-triggered install UI.
+  // Issue #672 (F2): the desktop profile-migration notice and its replay action.
+  'dataMigration.title',
+  'dataMigration.body',
+  'dataMigration.bodyUnknown',
+  'dataMigration.copied',
+  'dataMigration.nothing',
+  'dataMigration.replay',
+  'dataMigration.replaying',
+  'dataMigration.dismiss',
+  'dataMigration.failed',
   'updates.title',
   'updates.currentVersion',
   'updates.check',
