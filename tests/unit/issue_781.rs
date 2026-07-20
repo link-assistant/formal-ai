@@ -4,7 +4,12 @@
 //! listing. This replays that general search → multi-fetch → cited answer path.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
-use formal_ai::protocol::{ChatMessage, ToolCall};
+use formal_ai::protocol::{ChatCompletionRequest, ChatMessage, ToolCall};
+use formal_ai::{
+    create_anthropic_message_with_solver, create_chat_completion_with_solver,
+    create_response_with_solver, AnthropicContentBlock, AnthropicMessagesRequest,
+    ResponseOutputItem, ResponsesRequest, SolverConfig, UniversalSolver,
+};
 
 const TOOLS: [&str; 2] = ["websearch", "webfetch"];
 
@@ -48,6 +53,182 @@ fn answer_tool_calls(messages: &mut Vec<ChatMessage>, calls: &[PlannedToolCall],
             *result,
         ));
     }
+}
+
+fn agent_solver() -> UniversalSolver {
+    UniversalSolver::new(SolverConfig {
+        agent_mode: true,
+        ..SolverConfig::default()
+    })
+}
+
+/// The reported OpenCode session showed only a bare tool label and then stayed
+/// blank while the tool ran. A tool-calling assistant turn must carry a concise
+/// user-visible explanation as well as the machine-readable call.
+#[test]
+fn chat_completion_explains_the_action_before_requesting_a_tool() {
+    let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "messages": [{
+            "role": "user",
+            "content": "Найди совместимую зарядку для Acer Aspire A325-45?"
+        }],
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "websearch",
+                "description": "Search the web",
+                "parameters": {"type": "object"}
+            }
+        }]
+    }))
+    .unwrap();
+
+    let completion = create_chat_completion_with_solver(&request, &agent_solver());
+    let choice = &completion.choices[0];
+
+    assert_eq!(choice.finish_reason, "tool_calls");
+    assert_eq!(choice.message.tool_calls.len(), 1);
+    assert!(
+        !choice.message.content.plain_text().trim().is_empty(),
+        "the user needs to see what will happen and why before the tool runs"
+    );
+}
+
+#[test]
+fn anthropic_messages_explains_the_action_before_tool_use() {
+    let request: AnthropicMessagesRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "max_tokens": 1024,
+        "messages": [{
+            "role": "user",
+            "content": "Find current evidence for this laptop charger?"
+        }],
+        "tools": [{
+            "name": "websearch",
+            "description": "Search the web",
+            "input_schema": {"type": "object"}
+        }]
+    }))
+    .unwrap();
+
+    let message = create_anthropic_message_with_solver(&request, &agent_solver());
+
+    assert_eq!(message.stop_reason, "tool_use");
+    assert!(matches!(
+        message.content.first(),
+        Some(AnthropicContentBlock::Text { text }) if !text.trim().is_empty()
+    ));
+    assert!(message
+        .content
+        .iter()
+        .any(|block| matches!(block, AnthropicContentBlock::ToolUse { .. })));
+}
+
+#[test]
+fn responses_explains_the_action_before_the_function_call() {
+    let request: ResponsesRequest = serde_json::from_value(serde_json::json!({
+        "model": "formal-ai",
+        "input": "Find current evidence for this laptop charger?",
+        "tools": [{
+            "type": "function",
+            "name": "websearch",
+            "parameters": {"type": "object"}
+        }]
+    }))
+    .unwrap();
+
+    let response = create_response_with_solver(&request, &agent_solver());
+
+    assert!(matches!(
+        response.output.first(),
+        Some(ResponseOutputItem::Message(message))
+            if message.content.iter().any(|part| !part.text.trim().is_empty())
+    ));
+    assert!(response
+        .output
+        .iter()
+        .any(|item| matches!(item, ResponseOutputItem::FunctionCall(_))));
+}
+
+#[test]
+fn gemini_explains_the_action_before_the_function_call() {
+    let request: formal_ai::gemini::GeminiGenerateContentRequest =
+        serde_json::from_value(serde_json::json!({
+            "contents": [{
+                "role": "user",
+                "parts": [{"text": "Find current evidence for this laptop charger?"}]
+            }],
+            "tools": [{
+                "functionDeclarations": [{
+                    "name": "websearch",
+                    "description": "Search the web",
+                    "parameters": {"type": "object"}
+                }]
+            }]
+        }))
+        .unwrap();
+
+    let response = formal_ai::gemini::create_gemini_generate_content_response_with_solver_and_memory(
+        &request,
+        "formal-ai",
+        &agent_solver(),
+        &[],
+    );
+    let parts = response["candidates"][0]["content"]["parts"]
+        .as_array()
+        .expect("Gemini response parts");
+
+    assert!(
+        parts
+            .first()
+            .and_then(|part| part.get("text"))
+            .and_then(serde_json::Value::as_str)
+            .is_some_and(|text| !text.trim().is_empty()),
+        "Gemini must emit text before functionCall"
+    );
+    assert!(parts.iter().any(|part| part.get("functionCall").is_some()));
+}
+
+/// Source reads are dependent research steps, not an atomic batch. Emitting one
+/// fetch at a time lets every result (including a timeout or 403) be observed,
+/// explained, and used to re-plan before the next request.
+#[test]
+fn independent_sources_are_fetched_in_separate_agent_turns() {
+    let mut messages = vec![ChatMessage::user(
+        "Find the voltage and connector required by this laptop?",
+    )];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &[concat!(
+            "Specifications https://example.test/specs ",
+            "Connector https://example.test/connector ",
+            "Candidate https://example.test/listing"
+        )],
+    );
+
+    let first = tool_calls(&messages);
+    assert_eq!(first.len(), 1, "each agent turn must expose one action");
+    assert_eq!(arguments(&first[0])["url"], "https://example.test/specs");
+    answer_tool_calls(&mut messages, &first, &["The charger supplies 45 W."]);
+
+    let second = tool_calls(&messages);
+    assert_eq!(second.len(), 1, "the first result must be observed before replanning");
+    assert_eq!(
+        arguments(&second[0])["url"],
+        "https://example.test/connector"
+    );
+    answer_tool_calls(
+        &mut messages,
+        &second,
+        &["The connector is a center-positive barrel plug."],
+    );
+
+    let third = tool_calls(&messages);
+    assert_eq!(third.len(), 1);
+    assert_eq!(arguments(&third[0])["url"], "https://example.test/listing");
 }
 
 #[test]
