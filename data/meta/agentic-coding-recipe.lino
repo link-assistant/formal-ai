@@ -134,7 +134,7 @@ fn_is_formalization_task
 fn_looks_like_error
   record_type "meta_function"
   function "looks_like_error"
-  source_file "src/agentic_coding/progress.rs"
+  source_file "src/agentic_coding/tool_result.rs"
   kind "error_detector"
 fn_final_answer
   record_type "meta_function"
