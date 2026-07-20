@@ -255,6 +255,15 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
           MACOS_ADHOC_SIGN: "1"
+          # Issue #808: electron-builder's isSignAllowed() bails out with
+          # "Current build is a part of pull request, code signing will be
+          # skipped" whenever GITHUB_BASE_REF is set (builder-util
+          # `isPullRequest()`), so the pull-request dry run produced an unsigned
+          # .app with no CodeResources and the smoke test failed. The security
+          # warning attached to this flag is about *secret* certificates leaking
+          # to fork builds; this step only runs when no signing secrets exist and
+          # signs ad-hoc with identity `-`, so there is nothing to leak.
+          CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs

@@ -43,7 +43,8 @@ fn rust_script_install_steps_use_retry_wrapper() {
         workflow
             .matches("run: bash scripts/install-rust-script.sh")
             .count(),
-        8,
+        // +1 for the evidence-check job added for issue #808.
+        9,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
@@ -266,9 +267,13 @@ fn test_job_skips_non_code_changes() {
         "test job should still always run on push and manual dispatch"
     );
     assert!(
-        test.contains("always() && !cancelled()"),
-        "test job needs always() so the skipped detect-changes dependency does \
-         not cascade on workflow_dispatch"
+        // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs
+        // the job when the *run* is cancelled, which is not what this gate wants.
+        // `!cancelled()` is enough to stop a skipped `detect-changes` from
+        // cascading -- any status-check function disables the auto-skip.
+        test.contains("!cancelled()") && !test.contains("always()"),
+        "test job needs !cancelled() so the skipped detect-changes dependency \
+         does not cascade on workflow_dispatch"
     );
 }
 
@@ -299,6 +304,11 @@ fn release_workflow_jobs_have_explicit_timeouts() {
     let expected_timeouts = [
         ("detect-changes", 5),
         ("changelog", 10),
+        // Issue #808: pull-request gates for the trailer invariant, the Docker
+        // image and committed credentials.
+        ("evidence-check", 10),
+        ("docker-build", 60),
+        ("secrets-scan", 10),
         ("version-check", 5),
         ("lint", 10),
         ("test", 15),

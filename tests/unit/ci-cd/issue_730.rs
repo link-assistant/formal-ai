@@ -64,7 +64,9 @@ fn reviewed_dependency_warnings_are_narrowly_classified() {
         desktop
             .matches("scripts/install-node-dependencies.sh")
             .count(),
-        2
+        // Two install steps, plus the pull_request path filter that makes a
+        // change to the script re-run the packaging dry run (issue #808).
+        3
     );
     assert!(desktop.contains("NODE_OPTIONS: --disable-warning=DEP0005"));
     assert!(

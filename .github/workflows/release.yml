@@ -274,8 +274,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [detect-changes]
-    # Note: always() is required because detect-changes is skipped on workflow_dispatch,
-    # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
+    # Note: a status-check function is required because detect-changes is skipped
+    # on workflow_dispatch; without one the skipped dependency would cascade and
+    # skip this job even though its condition covers workflow_dispatch.
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
@@ -488,8 +489,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     needs: [detect-changes]
-    # Note: always() is required because detect-changes is skipped on
-    # workflow_dispatch; without it the skipped dependency would cascade and
+    # Note: a status-check function is required because detect-changes is skipped
+    # on workflow_dispatch; without one the skipped dependency would cascade and
     # skip this job despite the workflow_dispatch condition below.
     # See: https://github.com/actions/runner/issues/491
     if: |
@@ -671,7 +672,8 @@ jobs:
   auto-release:
     name: Auto Release
     needs: [lint, test, build]
-    # Note: always() ensures consistent behavior with other jobs that depend on jobs using always().
+    # Note: !cancelled() keeps this consistent with the other jobs whose skipped
+    # dependencies must not cascade.
     if: |
       !cancelled() &&
       github.event_name == 'push' &&
@@ -924,7 +926,8 @@ jobs:
   manual-release:
     name: Instant Release
     needs: [lint, test, build]
-    # Note: always() is required to evaluate the condition when dependencies use always().
+    # Note: !cancelled() is required to evaluate the condition when dependencies
+    # are skipped.
     # The build job ensures lint and test passed before this job runs.
     if: |
       !cancelled() &&
