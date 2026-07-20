@@ -112,6 +112,135 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-changelog-fragment.rs
 
+  # === SELF-HOSTING EVIDENCE CHECK ===
+  # Issue #808: run 29723467001 failed the whole Auto Release job with
+  # "no committed Formal-AI-Evidence in 10e65ae2 records session
+  # issue-804-claude-20260720". The invariant (CONTRIBUTING.md: every commit
+  # carrying Formal-AI-Session must also carry a Formal-AI-Evidence file that
+  # contains "formal-ai" and the exact session id) was only ever enforced at
+  # release time, on main, after merge -- where nothing can be fixed without a
+  # new PR. This job runs the *same* code path over the PR's own commits so a
+  # violating commit is rejected before it can break a release.
+  evidence-check:
+    name: Self-Hosting Evidence Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Validate Formal-AI trailers on this pull request
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          base="origin/${GITHUB_BASE_REF}"
+          merge_base="$(git merge-base "$base" HEAD)"
+          echo "Validating commits in ${merge_base}..HEAD"
+          rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
+
+  # === DOCKER IMAGE CHECK ===
+  # Issue #808: the Dockerfile was only ever built inside `auto-release` /
+  # `manual-release`, i.e. after the crate had already been published to
+  # crates.io. A broken Dockerfile therefore produced a half-finished release
+  # (crate published, no image, no GitHub Release) and could not be caught
+  # before merge. scripts/verify-docker-runtime.sh, which the image installs as
+  # `verify-formal-ai-dind`, had no caller in CI at all. This job builds the
+  # image without pushing and runs that verifier inside it, so both the build
+  # and the runtime contract gate the pull request.
+  docker-build:
+    name: Docker Image Build & Runtime Check
+    runs-on: ubuntu-latest
+    # The image compiles the crate in a builder stage; 30 minutes is not enough
+    # on a cold layer cache.
+    timeout-minutes: 60
+    needs: [detect-changes]
+    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+    steps:
+      - uses: actions/checkout@v6
+
+      # Same "No space left on device" class of failure the release job guards
+      # against (issue #523): a full release build inside the image on top of a
+      # multi-GB DinD base image does not fit on a stock runner.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+
+      - name: Set up Docker Buildx
+        uses: ./.github/actions/setup-buildx-resilient
+
+      # load: true (not push) so the image stays local and the check works
+      # unchanged for pull requests from forks, which have no registry
+      # credentials. The GHA layer cache keeps the common case off a cold build.
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: formal-ai:pr-check
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --privileged is required: verify-docker-runtime.sh asserts that the
+      # inner Docker daemon started by the DinD entrypoint is reachable, which
+      # is the whole point of the dind image variant.
+      - name: Verify image runtime contract
+        run: |
+          set -euo pipefail
+          docker run --rm --privileged formal-ai:pr-check verify-formal-ai-dind
+
+  # === SECRETS SCAN ===
+  # Issue #808 / R5 (CI-CD-BEST-PRACTICES.md section 11): no secrets scan
+  # existed anywhere in this pipeline. secretlint is language-agnostic, so it
+  # applies to a Rust repository unchanged; .secretlintrc.json selects the
+  # recommended preset.
+  #
+  # Scoped to the files the change touches, not the whole tree: measured, a
+  # full-tree `secretlint "**/*"` (what the js template runs) had not finished
+  # after 25 minutes on this repository, because the glob walks `target/` and
+  # ~150 MB of committed case-study logs. A gate that may not finish is itself a
+  # new CI failure mode. Scanning the diff catches a credential being
+  # *introduced*, which is the case that matters, and takes ~3 seconds; run
+  # `bash scripts/check-secrets.sh --all` locally to audit everything.
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [detect-changes]
+    if: |
+      !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # check-secrets.sh diffs against the base branch / previous commit.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Check for secrets
+        env:
+          # pull_request -> base branch; push -> the pre-push SHA;
+          # workflow_dispatch has neither, so scan the tip commit.
+          BASE_REF: ${{ github.base_ref || github.event.before || 'HEAD~1' }}
+        run: bash scripts/check-secrets.sh
+
   # === VERSION CHECK - prevents manual version modification in PRs ===
   # This ensures versions are only modified by the automated release pipeline
   version-check:
@@ -145,11 +274,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [detect-changes]
-    # Note: always() is required because detect-changes is skipped on workflow_dispatch,
-    # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
+    # Note: a status-check function is required because detect-changes is skipped
+    # on workflow_dispatch; without one the skipped dependency would cascade and
+    # skip this job even though its condition covers workflow_dispatch.
     # See: https://github.com/actions/runner/issues/491
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -162,6 +292,17 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      # Issue #808 / R3: GitHub checks out refs/pull/N/merge, a merge preview
+      # computed at the last sync -- commits pushed to the base branch since
+      # then are NOT in it, so a pull request can be green against a base that
+      # no longer exists. Adopted from the js template, which is the only one of
+      # the three that ships this.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -319,7 +460,7 @@ jobs:
       # installing the desktop dependency tree while still exercising the real
       # browser-runtime exclusion logic used by both macOS release targets.
       - name: Run desktop packaging regression tests
-        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs
+        run: node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs
 
       # Issue #672 (F2): the desktop library tests were written but never run by
       # any job, so `desktop/lib/data-migration.cjs` — the code that moves a
@@ -348,12 +489,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     needs: [detect-changes]
-    # Note: always() is required because detect-changes is skipped on
-    # workflow_dispatch; without it the skipped dependency would cascade and
+    # Note: a status-check function is required because detect-changes is skipped
+    # on workflow_dispatch; without one the skipped dependency would cascade and
     # skip this job despite the workflow_dispatch condition below.
     # See: https://github.com/actions/runner/issues/491
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -369,6 +510,17 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Needed by simulate-fresh-merge.sh, which merges origin/<base>.
+          fetch-depth: 0
+
+      # The tests are the check that most needs to run against the real merge
+      # result rather than a stale preview.
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: bash scripts/simulate-fresh-merge.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -414,7 +566,7 @@ jobs:
     timeout-minutes: 15
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -487,7 +639,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [lint, test]
-    if: always() && !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success'
+    if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -523,9 +675,10 @@ jobs:
   auto-release:
     name: Auto Release
     needs: [lint, test, build]
-    # Note: always() ensures consistent behavior with other jobs that depend on jobs using always().
+    # Note: !cancelled() keeps this consistent with the other jobs whose skipped
+    # dependencies must not cascade.
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
       needs.build.result == 'success'
@@ -638,7 +791,7 @@ jobs:
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        uses: docker/setup-buildx-action@v4
+        uses: ./.github/actions/setup-buildx-resilient
 
       - name: Extract GHCR Docker metadata
         if: |
@@ -776,10 +929,11 @@ jobs:
   manual-release:
     name: Instant Release
     needs: [lint, test, build]
-    # Note: always() is required to evaluate the condition when dependencies use always().
+    # Note: !cancelled() is required to evaluate the condition when dependencies
+    # are skipped.
     # The build job ensures lint and test passed before this job runs.
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.release_mode == 'instant' &&
       needs.build.result == 'success'
@@ -867,7 +1021,7 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        uses: docker/setup-buildx-action@v4
+        uses: ./.github/actions/setup-buildx-resilient
 
       - name: Extract GHCR Docker metadata
         if: |
@@ -1048,7 +1202,7 @@ jobs:
     timeout-minutes: 15
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
@@ -1128,7 +1282,7 @@ jobs:
     timeout-minutes: 20
     needs: [detect-changes]
     if: |
-      always() && !cancelled() && (
+      !cancelled() && (
         github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
@@ -1450,7 +1604,7 @@ jobs:
       page_url: ${{ steps.deployment.outputs.page_url }}
       pages_sha: ${{ steps.pages_ref.outputs.sha }}
     if: |
-      always() && !cancelled() &&
+      !cancelled() &&
       needs.build.result == 'success' && (
         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')

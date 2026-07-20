@@ -8,9 +8,17 @@ function isDebugEnabled() {
   return process.env.FORMAL_AI_MACOS_SIGN_DEBUG === '1';
 }
 
+// Diagnostics go to stderr, never stdout. electron-builder's own logger and
+// electron-osx-sign's `debug` output both use stderr; interleaving there keeps
+// the sign trace readable in GitHub Actions logs, and stderr is the stream that
+// survives when electron-builder aborts the CLI on a signing error.
+function log(message) {
+  process.stderr.write(`[adhoc-sign-mac] ${message}\n`);
+}
+
 function debugLog(message) {
   if (isDebugEnabled()) {
-    process.stdout.write(`[adhoc-sign-mac] ${message}\n`);
+    log(message);
   }
 }
 
@@ -50,6 +58,19 @@ function isBundledBrowserRuntime(filePath, appPath) {
   return bundled;
 }
 
+// Issue #808: @electron/osx-sign's `validateOptsIgnore()` is
+//
+//   function validateOptsIgnore (ignore) {
+//     if (ignore && !(ignore instanceof Array)) { return [ignore] }
+//   }
+//
+// -- it has no `return ignore` for the array case, so passing an **array**
+// silently yields `undefined` and every ignore rule is discarded. That is why
+// run 29731405782 signed `Contents/Resources/browser-runtime/...` anyway and
+// died with "unsealed contents present in the root directory of an embedded
+// framework", and why electron-builder's own `mac.signIgnore` (which it forwards
+// as an array) never took effect either. We therefore hand the library a single
+// predicate function, which it wraps into `[fn]` itself.
 function signingIgnoreRules(signOptions) {
   const upstreamIgnore = signOptions.ignore
     ? Array.isArray(signOptions.ignore)
@@ -58,7 +79,15 @@ function signingIgnoreRules(signOptions) {
     : [];
   const appPath = findAppPath(signOptions);
 
-  return [...upstreamIgnore, (filePath) => isBundledBrowserRuntime(filePath, appPath)];
+  const matchers = [
+    ...upstreamIgnore,
+    (filePath) => isBundledBrowserRuntime(filePath, appPath),
+  ];
+
+  return (filePath) =>
+    matchers.some((matcher) =>
+      typeof matcher === 'function' ? matcher(filePath) : Boolean(filePath.match(matcher)),
+    );
 }
 
 function resolvePath(value) {
@@ -131,6 +160,13 @@ module.exports = async function adhocSignMac(signOptions) {
   if (process.env.MACOS_ADHOC_SIGN !== '1') {
     throw new Error('Ad-hoc macOS signing must be enabled explicitly.');
   }
+
+  // One unconditional line. Run 29724500254 failed inside electron-osx-sign
+  // while FORMAL_AI_MACOS_SIGN_DEBUG=1 was set, yet the log contained no
+  // `[adhoc-sign-mac]` output at all, so we could not tell whether this hook
+  // ever ran. This banner settles that question on every future run; the
+  // per-file trace stays behind the env var and off by default.
+  log(`hook entered (debug=${isDebugEnabled() ? 'on' : 'off'})`);
 
   const upstreamOptionsForFile = signOptions.optionsForFile;
 

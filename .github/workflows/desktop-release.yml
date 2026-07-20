@@ -40,6 +40,21 @@ on:
   workflow_run:
     workflows: ["CI/CD Pipeline"]
     types: [completed]
+  # Issue #808: packaging and macOS signing used to run only after a release
+  # existed, so a desktop regression was always discovered post-merge -- which is
+  # exactly how the "unsealed contents present in the root directory of an
+  # embedded framework" codesign failure reached main. On pull requests the same
+  # build matrix runs in dry-run mode: everything up to and including the smoke
+  # tests, with every publishing step (attest, release upload, SHA256SUMS)
+  # skipped. Path-filtered so unrelated pull requests do not pay for six runners.
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'desktop/**'
+      - 'vscode/**'
+      - '.github/workflows/desktop-release.yml'
+      - 'scripts/desktop-release-resolve.sh'
+      - 'scripts/install-node-dependencies.sh'
 
 permissions:
   contents: read
@@ -50,8 +65,11 @@ concurrency:
   # actually deduped: concurrent runs for the same tag raced each other on
   # `gh release upload --clobber` and on finalize's SHA256SUMS.txt. Key on the
   # commit for that path, which is what resolve maps to a tag.
-  group: desktop-release-${{ github.event.release.tag_name || github.event.inputs.tag || github.event.workflow_run.head_sha || github.run_id }}
-  cancel-in-progress: false
+  group: desktop-release-${{ github.event.pull_request.number || github.event.release.tag_name || github.event.inputs.tag || github.event.workflow_run.head_sha || github.run_id }}
+  # Release runs must never be cancelled mid-upload; pull-request dry runs are
+  # pure verification, so superseding pushes should cancel the stale six-runner
+  # matrix instead of queueing behind it.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   GIT_CONFIG_COUNT: '1'
@@ -78,11 +96,15 @@ jobs:
     # decision to build is delegated to scripts/desktop-release-resolve.sh, whose
     # idempotency guard skips when the resolved release already carries desktop
     # assets, so running on a non-success conclusion is safe and self-healing.
+    # Pull requests resolve nothing: there is no release to heal and no tag to
+    # check out. The job is skipped and `build` admits the skipped dependency
+    # explicitly, so the packaging matrix still runs against the PR head.
     if: >-
-      github.event_name != 'workflow_run' ||
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'workflow_run' ||
       (github.event.workflow_run.head_branch == 'main' &&
        github.event.workflow_run.conclusion != 'cancelled' &&
-       github.event.workflow_run.conclusion != 'skipped')
+       github.event.workflow_run.conclusion != 'skipped'))
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
       should_build: ${{ steps.pick.outputs.should_build }}
@@ -113,7 +135,9 @@ jobs:
   build:
     name: Build ${{ matrix.label }}
     needs: resolve
-    if: needs.resolve.outputs.should_build == 'true'
+    # `resolve` is skipped on pull requests, and a skipped dependency would
+    # normally skip this job too -- hence the explicit `!cancelled()`.
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     strategy:
       fail-fast: false
       matrix:
@@ -136,7 +160,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ needs.resolve.outputs.tag }}
+          # On pull requests there is no resolved tag: build the PR head, which
+          # is the whole point of the dry run.
+          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -229,6 +255,15 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
           MACOS_ADHOC_SIGN: "1"
+          # Issue #808: electron-builder's isSignAllowed() bails out with
+          # "Current build is a part of pull request, code signing will be
+          # skipped" whenever GITHUB_BASE_REF is set (builder-util
+          # `isPullRequest()`), so the pull-request dry run produced an unsigned
+          # .app with no CodeResources and the smoke test failed. The security
+          # warning attached to this flag is about *secret* certificates leaking
+          # to fork builds; this step only runs when no signing secrets exist and
+          # signs ad-hoc with identity `-`, so there is nothing to leak.
+          CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
@@ -412,6 +447,10 @@ jobs:
       # downloadable for the length of the attest step, and permanently so if
       # attest failed, with `gh attestation verify` unable to vouch for them.
       - name: Attest build provenance
+        # Dry run: a pull request has nothing to attest and no release to
+        # publish to. Everything above -- packaging, signing, smoke tests -- has
+        # already run, which is what catches desktop regressions before merge.
+        if: github.event_name != 'pull_request'
         uses: actions/attest@v4
         with:
           # The released v4 checksum parser splits with the runner's native EOL,
@@ -423,6 +462,7 @@ jobs:
             desktop/release/latest*.yml
 
       - name: Upload assets to release
+        if: github.event_name != 'pull_request'
         working-directory: desktop
         env:
           GH_TOKEN: ${{ github.token }}
@@ -451,7 +491,8 @@ jobs:
   vscode:
     name: Package VS Code extension (.vsix)
     needs: resolve
-    if: needs.resolve.outputs.should_build == 'true'
+    # Same skipped-dependency handling as `build`; see the comment there.
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -464,7 +505,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ needs.resolve.outputs.tag }}
+          # On pull requests there is no resolved tag: build the PR head, which
+          # is the whole point of the dry run.
+          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -510,11 +553,13 @@ jobs:
 
       # Attest before publishing; see the same step in the desktop build job.
       - name: Attest build provenance
+        if: github.event_name != 'pull_request'
         uses: actions/attest@v4
         with:
           subject-path: vscode/formal-ai-vscode-*.vsix
 
       - name: Upload .vsix to release
+        if: github.event_name != 'pull_request'
         working-directory: vscode
         env:
           GH_TOKEN: ${{ github.token }}
@@ -534,7 +579,8 @@ jobs:
     needs: [resolve, build, vscode]
     # always() so a partial matrix (one arch failing under fail-fast:false) still
     # publishes checksums for the arches that did build.
-    if: ${{ always() && needs.resolve.outputs.should_build == 'true' }}
+    # Never on pull requests: there is no release to publish checksums to.
+    if: ${{ always() && github.event_name != 'pull_request' && needs.resolve.outputs.should_build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

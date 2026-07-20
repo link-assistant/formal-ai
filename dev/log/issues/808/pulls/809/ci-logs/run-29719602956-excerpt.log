@@ -1,0 +1,6 @@
+Auto Release	UNKNOWN STEP	2026-07-20T05:55:09.7520194Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Auto Release	UNKNOWN STEP	2026-07-20T05:55:18.6597780Z ##[group]Run : work around spurious network errors in curl 8.0
+Auto Release	UNKNOWN STEP	2026-07-20T05:55:18.6598261Z ^[[36;1m: work around spurious network errors in curl 8.0^[[0m
+Auto Release	UNKNOWN STEP	2026-07-20T05:56:42.1963742Z Error recording self-hosting release metric: self-hosting ratchet would fall from 32.68% to 19.19% for v0.301.0
+Auto Release	UNKNOWN STEP	2026-07-20T05:56:42.1984771Z ##[error]Process completed with exit code 1.
+Auto Release	UNKNOWN STEP	2026-07-20T05:56:42.3599933Z ^[[36;1m  echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"^[[0m
