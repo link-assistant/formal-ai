@@ -33,3 +33,20 @@ The displayed path is authoritative for an isolated one-shot run; do not copy a
 hardcoded home from this table. For server-side debugging enable
 `FORMAL_AI_TRACE_REQUESTS=1`, redirect server stderr/stdout to a log, and match
 its request timeline to the client transcript or `FORMAL_AI_PROXY_LOG`.
+
+For a complete request/response record grouped by dialog, set
+`FORMAL_AI_DIALOG_LOG_DIR` to a directory before starting the server. This is
+off by default because it records full prompt, source, tool-result, and response
+bodies. Each dialog is appended to its own JSONL file. Clients may send
+`X-Formal-AI-Dialog-ID` to select an exact grouping key; without it, the server
+derives a stable key from the first user prompt in the conversation.
+
+```bash
+FORMAL_AI_DIALOG_LOG_DIR=./dialog-logs formal-ai serve
+gh-upload-log ./dialog-logs/dialog_*.jsonl --private \
+  --description "Formal AI dialog reproduction"
+```
+
+Review and redact sensitive values before uploading. `gh-upload-log` is an
+optional external uploader; recording never installs it or sends logs off the
+machine automatically.

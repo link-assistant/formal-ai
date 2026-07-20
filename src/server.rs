@@ -133,6 +133,29 @@ pub fn handle_api_request_with_auth(
     body: &str,
     auth: &ApiAuthConfig,
 ) -> ApiHttpResponse {
+    let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
+    let normalized_path = path.split('?').next().unwrap_or(path);
+    if !requires_bearer_auth(method, normalized_path) || auth.allows(headers) {
+        crate::dialog_log::record_dialog_exchange_if_enabled(
+            method,
+            path,
+            headers,
+            body,
+            response.status_code,
+            response.content_type,
+            &response.body,
+        );
+    }
+    response
+}
+
+fn dispatch_api_request_with_auth(
+    method: &str,
+    path: &str,
+    headers: &[(&str, &str)],
+    body: &str,
+    auth: &ApiAuthConfig,
+) -> ApiHttpResponse {
     let _foreground_activity = crate::dreaming_runtime::ForegroundActivity::begin();
     let normalized_path = path.split('?').next().unwrap_or(path);
     let query = path.split_once('?').map_or("", |(_, q)| q);
