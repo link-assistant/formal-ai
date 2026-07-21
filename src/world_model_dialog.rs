@@ -653,8 +653,7 @@ fn record_provenance(context: &mut Context, text: &str, link: &SubstitutionLink,
 /// Record the dialogue world model as a trace artifact, honouring the mode.
 ///
 /// Returns the rendered Links Notation when the mode opts in, `None` otherwise —
-/// the same trace-only-until-opted-in shape as
-/// [`crate::selection::record_selection`].
+/// the same trace-only-until-opted-in shape as `selection::record_selection`.
 pub fn record_world_model(
     log: &mut crate::event_log::EventLog,
     model: &DialogueWorldModel,
