@@ -5,7 +5,7 @@
 - Issue: <https://github.com/link-assistant/formal-ai/issues/702>
 - Pull request: <https://github.com/link-assistant/formal-ai/pull/818>
 - Evidence bundle: this file plus
-  [`docs/case-studies/issue-702/`](../../../../../docs/case-studies/issue-702/)
+  [`docs/case-studies/issue-702/`](../../../../../../docs/case-studies/issue-702/)
   (raw issue/PR JSON, requirements matrix, per-requirement solution plans)
 
 Every claim below is either backed by a file committed in this pull request or
@@ -19,8 +19,8 @@ issue #649. PR #675 had already landed the *substrate* — `src/world_model.rs`:
 contexts as links networks, statements with relative-meta-logic truth values,
 dependency recalculation, STRIPS-style actions. Nothing fed that substrate from
 a conversation. The eight requirements are tabulated in
-[`docs/case-studies/issue-702/requirements.md`](../../../../../docs/case-studies/issue-702/requirements.md)
-and mapped to `R702-1 … R702-10` in [`REQUIREMENTS.md`](../../../../../REQUIREMENTS.md).
+[`docs/case-studies/issue-702/requirements.md`](../../../../../../docs/case-studies/issue-702/requirements.md)
+and mapped to `R702-1 … R702-10` in [`REQUIREMENTS.md`](../../../../../../REQUIREMENTS.md).
 
 ## 2. Root cause of the gap
 
@@ -69,7 +69,7 @@ python3 scripts/close-total.py                   # unresolved_distinct: 0
 The commits in the range `f32db790..HEAD` were authored in this session and
 carry `Formal-AI-Session: issue-702-claude-20260721` together with
 `Formal-AI-Evidence` pointing at this file, per
-[`CONTRIBUTING.md`](../../../../../CONTRIBUTING.md) § *Recording self-authorship*.
+[`CONTRIBUTING.md`](../../../../../../CONTRIBUTING.md) § *Recording self-authorship*.
 The branch's first commit (`f32db790`, "Initial commit with task details") was
 written by the task harness, not by this session, and is deliberately left
 unattributed.
