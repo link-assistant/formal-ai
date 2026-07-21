@@ -45,5 +45,8 @@ fn main() {
             intents.join(" ")
         );
     }
-    println!("total={total} unknown={unknown} answered={}", total - unknown);
+    println!(
+        "total={total} unknown={unknown} answered={}",
+        total - unknown
+    );
 }

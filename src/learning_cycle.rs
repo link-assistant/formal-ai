@@ -318,10 +318,7 @@ pub fn run_learning_cycle(frontier: &str, items: &[FrontierItem]) -> LearningCyc
 /// Run the cycle over the recorded Google Trends frontier.
 #[must_use]
 pub fn google_trends_learning_cycle() -> LearningCycleRun {
-    run_learning_cycle(
-        GOOGLE_TRENDS_FRONTIER,
-        &recorded_google_trends_frontier(),
-    )
+    run_learning_cycle(GOOGLE_TRENDS_FRONTIER, &recorded_google_trends_frontier())
 }
 
 /// Derive one candidate surface for a frontier class.

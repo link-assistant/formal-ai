@@ -169,7 +169,11 @@ impl AdoptionLedger {
         count(&mut out, "topics", self.adopted_topics().len());
         count(&mut out, "languages", self.adopted_languages().len());
         count(&mut out, "corpus_prompts", self.corpus_prompts);
-        count(&mut out, "corpus_unknown_before", self.corpus_unknown_before);
+        count(
+            &mut out,
+            "corpus_unknown_before",
+            self.corpus_unknown_before,
+        );
         count(&mut out, "corpus_unknown_after", self.corpus_unknown_after);
         count(
             &mut out,
@@ -197,7 +201,11 @@ impl AdoptionLedger {
             nested(&mut out, "before_routed_to", "human_triage");
             nested(&mut out, "after_intent", &pair.after_intent);
             nested(&mut out, "after_query", &pair.after_query);
-            nested(&mut out, "topic_recovered", &pair.topic_recovered().to_string());
+            nested(
+                &mut out,
+                "topic_recovered",
+                &pair.topic_recovered().to_string(),
+            );
             nested(&mut out, "capability_delta", &pair.capability_delta());
         }
         out.trim_end().to_owned()

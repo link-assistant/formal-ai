@@ -95,8 +95,11 @@ fn chat_answer(prompt: &str, events: &[MemoryEvent]) -> String {
         function_call: None,
         stream_options: None,
     };
-    let completion =
-        create_chat_completion_with_solver_and_memory(&request, &UniversalSolver::default(), events);
+    let completion = create_chat_completion_with_solver_and_memory(
+        &request,
+        &UniversalSolver::default(),
+        events,
+    );
     completion.choices[0].message.content.plain_text()
 }
 

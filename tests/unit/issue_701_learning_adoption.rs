@@ -69,7 +69,10 @@ fn the_trends_corpus_unknown_rate_is_ratcheted_to_zero() {
     // until the trends prompts answer (target 80/80). The ratchet may fall,
     // never rise — a regression that reintroduces an unknown fails here.
     let ledger = google_trends_adoption_ledger();
-    assert_eq!(ledger.corpus_prompts, 80, "10 topics x 4 languages x 2 variations");
+    assert_eq!(
+        ledger.corpus_prompts, 80,
+        "10 topics x 4 languages x 2 variations"
+    );
     assert!(
         ledger.unknown_rate_after_basis_points() < ledger.unknown_rate_before_basis_points(),
         "the unknown rate must fall: {} -> {}",
@@ -89,7 +92,10 @@ fn the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape() {
     // least one valid promotion proposal, with tests, that #656 consumes.
     let run = google_trends_learning_cycle();
     assert_eq!(run.frontier, GOOGLE_TRENDS_FRONTIER);
-    assert!(!run.proposals.is_empty(), "the cycle must propose something");
+    assert!(
+        !run.proposals.is_empty(),
+        "the cycle must propose something"
+    );
     assert!(
         run.held_out_count() > 0,
         "every proposal must carry generated held-out tests",
@@ -104,7 +110,9 @@ fn the_learning_cycle_emits_promotion_proposals_in_the_issue_656_shape() {
     let parsed = parse_promotion_proposals(&rendered).expect("proposals must round-trip");
     assert_eq!(parsed.len(), run.proposals.len());
     for proposal in &parsed {
-        assert!(proposal.source.starts_with("learning_frontier:google-trends:"));
+        assert!(proposal
+            .source
+            .starts_with("learning_frontier:google-trends:"));
         assert_eq!(proposal.edit.seed_file, LEARNED_REQUEST_OPENERS_SEED_FILE);
         assert!(!proposal.edit.lino.is_empty());
     }
@@ -163,7 +171,10 @@ fn every_failure_to_adopt_is_preserved_as_a_durable_record() {
         "every candidate that failed its held-out tests must be recorded as blocked",
     );
     for blocked in &run.blocked {
-        assert!(!blocked.reason.is_empty(), "a blocked class needs a named gap");
+        assert!(
+            !blocked.reason.is_empty(),
+            "a blocked class needs a named gap"
+        );
         assert!(record.contains(&blocked.reason));
     }
 

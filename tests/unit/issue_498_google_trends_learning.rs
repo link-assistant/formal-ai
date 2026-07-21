@@ -3,9 +3,7 @@ use formal_ai::agentic_coding::{
     run_agentic_task, AgenticPlan, PlannedToolCall, DRIVER_TOOLS, GOOGLE_TRENDS_LEARNING_PATH,
     GOOGLE_TRENDS_LEARNING_TASK,
 };
-use formal_ai::{
-    recorded_google_trends_frontier, trending_learning_report, ChatMessage, ToolCall,
-};
+use formal_ai::{recorded_google_trends_frontier, trending_learning_report, ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;
 
 fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {

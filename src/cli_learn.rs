@@ -3,8 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 
 use formal_ai::learning_cycle::{
-    run_learning_cycle, LearningCycleRun, GOOGLE_TRENDS_FRONTIER,
-    GOOGLE_TRENDS_FRONTIER_RECORD,
+    run_learning_cycle, LearningCycleRun, GOOGLE_TRENDS_FRONTIER, GOOGLE_TRENDS_FRONTIER_RECORD,
 };
 use formal_ai::promotion::render_promotion_proposals;
 use formal_ai::{parse_frontier_record, FrontierItem};
@@ -58,10 +57,7 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
     match &args.from {
         Some(path) => {
             let document = fs::read_to_string(path)?;
-            Ok((
-                String::from("custom"),
-                parse_frontier_record(&document),
-            ))
+            Ok((String::from("custom"), parse_frontier_record(&document)))
         }
         None => match args.frontier {
             LearnFrontier::GoogleTrends => Ok((

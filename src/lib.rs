@@ -186,9 +186,7 @@ pub use knowledge::{
     KNOWLEDGE_CACHE_FLOOR,
 };
 pub use language::{detect as detect_language, Language};
-pub use learning_adoption_ledger::{
-    google_trends_adoption_ledger, AdoptionLedger, AdoptionPair,
-};
+pub use learning_adoption_ledger::{google_trends_adoption_ledger, AdoptionLedger, AdoptionPair};
 pub use learning_cycle::{
     google_trends_learning_cycle, parse_frontier_record, recorded_google_trends_frontier,
     run_learning_cycle, BlockedClass, CandidateSurface, FrontierItem, HeldOutTest,
