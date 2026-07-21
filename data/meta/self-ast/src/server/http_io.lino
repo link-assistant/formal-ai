@@ -1,0 +1,17 @@
+self_ast_census
+  target src/server/http_io.rs
+  language rust
+  fidelity signature
+  byte_len 5511
+  line_count 171
+  content_id source_module_d7cf5ec789de271c
+  symbol_count 8
+  symbols
+    struct ParsedHttpRequest 13 18
+    function serve 20 41
+    function handle_connection 43 55
+    function read_request 57 104
+    function write_response 106 142
+    function find_header_end 144 146
+    function request_headers 148 157
+    function content_length 159 171

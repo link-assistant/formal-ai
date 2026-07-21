@@ -2,69 +2,47 @@ self_ast_census
   target src/proxy.rs
   language rust
   fidelity signature
-  byte_len 34423
-  line_count 1064
-  content_id source_module_1769703ec0140248
-  symbol_count 61
+  byte_len 20829
+  line_count 669
+  content_id source_module_04ab3b9e4a1c739e
+  symbol_count 39
   symbols
-    struct ProxyConfig 16 21
-    struct ProxyExchangeLog 25 38
-    struct ProxyToolCallLog 42 45
-    struct Upstream 48 51
-    struct HttpHeader 54 57
-    struct HttpRequest 60 65
-    struct HttpResponseHead 68 72
-    struct ResponseSummary 75 79
-    struct StreamingChatAccumulator 82 86
-    struct StreamingAnthropicAccumulator 98 102
-    struct StreamingToolCall 105 108
-    struct SseEvent 111 113
-    function run_proxy 120 154
-    function summarize_proxy_exchange 158 207
-    function model_from_path 217 227
-    function parse 230 260
-    function target_path 262 270
-    function display_target 272 278
-    function handle_proxy_connection 281 355
-    function write_log 357 365
-    function read_request 367 386
-    function read_response_head 388 404
-    function read_http_line 406 414
-    function trim_http_line 416 421
-    function read_headers 423 438
-    function read_body 440 450
-    function read_chunked_body 452 467
-    function discard_chunk_trailers 469 476
-    function write_upstream_request 478 508
-    function write_response_head 510 519
-    function write_error_response 521 535
-    function forward_response_body 537 550
-    function forward_fixed_body 552 568
-    function forward_until_eof 570 585
-    function forward_chunked_body 587 608
-    function forward_chunk_trailers 610 621
-    function parse_chunk_size 623 632
-    function skip_request_header 634 642
-    function skip_response_header 644 648
-    function content_length 650 658
-    function is_chunked 660 668
-    function collect_request_tool_names 670 697
-    function append_tool_definition_names 699 708
-    function summarize_sse_response 710 746
-    function parse_sse_events 748 765
-    function apply_chunk 768 807
-    function finish 809 823
-    function apply_event 830 887
-    function finish 889 903
-    function summarize_response_value 906 910
-    function merge_response_summary 912 918
-    function apply_response_value 920 963
-    function set_model 965 969
-    function apply_chat_message 971 983
-    function apply_response_item 985 1004
-    function apply_gemini_part 1006 1016
-    function apply_anthropic_content_block 1018 1031
-    function append_function_call 1033 1040
-    function append_content_value 1042 1052
-    function arguments_from_value 1054 1060
-    function arguments_from_str 1062 1064
+    module summary 13 13
+    struct ProxyConfig 18 23
+    struct ProxyExchangeLog 27 40
+    struct ProxyToolCallLog 44 47
+    struct Upstream 50 53
+    struct HttpHeader 56 59
+    struct HttpRequest 62 67
+    struct HttpResponseHead 70 74
+    function run_proxy 81 115
+    function summarize_proxy_exchange 119 168
+    function model_from_path 178 188
+    function parse 191 221
+    function target_path 223 231
+    function display_target 233 239
+    function handle_proxy_connection 242 316
+    function write_log 318 326
+    function read_request 328 347
+    function read_response_head 349 365
+    function read_http_line 367 375
+    function trim_http_line 377 382
+    function read_headers 384 399
+    function read_body 401 411
+    function read_chunked_body 413 428
+    function discard_chunk_trailers 430 437
+    function write_upstream_request 439 469
+    function write_response_head 471 480
+    function write_error_response 482 496
+    function forward_response_body 498 511
+    function forward_fixed_body 513 529
+    function forward_until_eof 531 546
+    function forward_chunked_body 548 569
+    function forward_chunk_trailers 571 582
+    function parse_chunk_size 584 593
+    function skip_request_header 595 603
+    function skip_response_header 605 609
+    function content_length 611 619
+    function is_chunked 621 629
+    function collect_request_tool_names 631 658
+    function append_tool_definition_names 660 669

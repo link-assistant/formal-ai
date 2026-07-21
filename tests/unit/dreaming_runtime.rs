@@ -103,9 +103,13 @@ fn dreaming_env_opt_out_recognizes_only_explicit_off_values() {
 fn serve_startup_wires_the_dreaming_worker_and_requests_guard_the_idle_clock() {
     // The runtime wiring is a startup side effect that a unit test cannot
     // observe through a bound socket, so assert the wiring at the source
-    // level, the same way the issue-540 traceability tests do.
+    // level, the same way the issue-540 traceability tests do. `serve()` speaks
+    // sockets and lives in the transport submodule; the request path that opens
+    // the idle gate stays in the protocol module beside it.
     let server = std::fs::read_to_string("src/server.rs").expect("read src/server.rs");
-    let serve_body = server
+    let listener =
+        std::fs::read_to_string("src/server/http_io.rs").expect("read src/server/http_io.rs");
+    let serve_body = listener
         .split("pub fn serve(")
         .nth(1)
         .expect("serve() exists");

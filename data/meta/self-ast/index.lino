@@ -2,11 +2,11 @@ self_ast_census_index
   language rust
   engine meta_language
   full_fidelity_prefix src/agentic_coding/
-  module_count 289
+  module_count 291
   full_ast_module_count 43
-  signature_module_count 246
-  symbol_count 5959
-  content_id self_ast_census_index_b903b210e8ab36dc
+  signature_module_count 248
+  symbol_count 5961
+  content_id self_ast_census_index_5cad8712fdfc1801
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -160,7 +160,8 @@ self_ast_census_index
     src/protocol_memory.rs signature 3 source_module_6e7dd15faed15e86
     src/protocol_policy.rs signature 17 source_module_9e27af549b26ee0c
     src/protocol_responses.rs signature 9 source_module_9809c79efeb154e6
-    src/proxy.rs signature 61 source_module_1769703ec0140248
+    src/proxy.rs signature 39 source_module_04ab3b9e4a1c739e
+    src/proxy/summary.rs signature 23 source_module_6dddae79e5dd994e
     src/question_generation.rs signature 61 source_module_7b06e63230c1c8b9
     src/rebuild_plan.rs signature 14 source_module_5c99df1ad1e5979a
     src/recipe_interpreter.rs signature 23 source_module_94db3b3b0da83e24
@@ -202,7 +203,8 @@ self_ast_census_index
     src/self_healing.rs signature 17 source_module_444e90593e01e8e0
     src/self_improvement.rs signature 32 source_module_2c4c8355b9d76c5f
     src/self_source_links.rs signature 26 source_module_2331204f81670611
-    src/server.rs signature 49 source_module_93f3c5fd4679a1c3
+    src/server.rs signature 42 source_module_bda5aaf6f419d34f
+    src/server/http_io.rs signature 8 source_module_d7cf5ec789de271c
     src/shared_dialog.rs signature 34 source_module_60cbca77b2671e8d
     src/shared_memory.rs signature 6 source_module_953c77c78b3ed0f1
     src/skill_compiler.rs signature 26 source_module_9d5cf71a7e6517b6

@@ -175,3 +175,37 @@ both harnesses — `both harnesses derived a byte-identical review-gated report
 over 7 chat rounds` — and the refreshed transcripts under
 `docs/case-studies/issue-715/agent-cli-learning/` record the write landing in
 the CLI's own workspace.
+
+## 9. The file-size gate on `4f343d9c`
+
+With clippy green, `Lint and Format Check` reached a step it had never run
+before on this branch and failed there
+(`ci-logs/lint-and-format-88530419664.log:2637`):
+
+```
+Found files exceeding the line limit:
+  src/server.rs: 1018 lines (exceeds Rust limit of 1000)
+  src/proxy.rs: 1064 lines (exceeds Rust limit of 1000)
+```
+
+Both files entered this branch under the limit (977 and 945 on `main`) and were
+pushed over it by the fixes above. Each was split along the seam it already
+had, so no behaviour moved:
+
+| new module | what moved | before → after |
+| --- | --- | --- |
+| `src/proxy/summary.rs` | response summarisation for `proxy.jsonl` — four vendor shapes, whole-body and SSE — leaving `proxy.rs` the transport | 1064 → 669 (+409) |
+| `src/server/http_io.rs` | the blocking HTTP/1.1 listener: read a head, read `content-length` bytes, write one `connection: close` response | 1018 → 859 (+171) |
+
+`src/proxy/summary.rs` is a private module, so its items are `pub` rather than
+`pub(crate)` — clippy's `redundant_pub_crate` rejects the latter there. The
+self-AST census was regenerated for the new module layout
+(`cargo run --example regenerate_self_ast_census`, 5 documents rewritten), which
+`tests/unit/issue_673_self_ast_census.rs` requires.
+
+Every other job on `4f343d9c` was already green: the Agentic CLI Matrix run
+`29796997177` passed all 14 legs including `E2E (codex)`, `E2E (gemini)` and
+`Matrix summary`, and CI/CD run `29796997192` passed
+`E2E Tests (agent CLI ↔ formal-ai)`, `Self-Hosting Evidence Check`,
+`Docker Image Build & Runtime Check`, `Test (ubuntu-latest)` and
+`Code Coverage`. `Lint and Format Check` was the only red job.
