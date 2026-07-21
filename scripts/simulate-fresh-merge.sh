@@ -12,8 +12,13 @@
 #
 # Exit code 0 = merge succeeded or not needed; non-zero = merge conflict detected.
 #
-# Adopted verbatim from link-foundation/js-ai-driven-development-pipeline-template
-# (issue #808 / R3). GitHub checks out `refs/pull/N/merge`, a merge preview
+# Adopted from link-foundation/js-ai-driven-development-pipeline-template
+# (issue #808 / R3), with `$BASE_REF` quoted at every expansion -- upstream
+# leaves it bare on lines 44 and 54 while quoting it on 37, so a branch name
+# containing a glob character or whitespace resolved differently depending on
+# which line read it (issue #812; reported upstream).
+#
+# GitHub checks out `refs/pull/N/merge`, a merge preview
 # computed when the PR was last synced -- it does NOT include commits pushed to
 # the base branch afterwards. A PR can therefore be green against a base that no
 # longer exists and break `main` on merge.
@@ -41,7 +46,7 @@ echo "Latest base branch ($BASE_REF): $BASE_SHA"
 echo ""
 
 # Check if base branch has new commits not in the merge preview
-BEHIND_COUNT=$(git rev-list --count HEAD..origin/$BASE_REF)
+BEHIND_COUNT=$(git rev-list --count "HEAD..origin/$BASE_REF")
 
 if [ "$BEHIND_COUNT" -eq 0 ]; then
   echo "Merge preview is up-to-date with $BASE_REF. No simulation needed."
@@ -51,7 +56,7 @@ else
   echo ""
 
   # Attempt to merge the latest base branch
-  if git merge origin/$BASE_REF --no-edit; then
+  if git merge "origin/$BASE_REF" --no-edit; then
     echo ""
     echo "Fresh merge simulation successful!"
     echo "Checks will now run against the up-to-date merged state."

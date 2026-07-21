@@ -298,6 +298,93 @@ fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
     }
 }
 
+/// Issue #812: both release jobs gated on `[lint, test, build]` alone, so a red
+/// `Secrets Scan` or E2E suite on `main` did not stop the crate, the Docker
+/// image and the GitHub Release from publishing.
+#[test]
+fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
+    let workflow = release_workflow();
+
+    for job_name in ["auto-release", "manual-release"] {
+        let job = job_block(&workflow, job_name);
+        let effective: String = job
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
+            // The acceptable results must be enumerated, not excluded. A job
+            // killed by its own `timeout-minutes` reports as 'cancelled', which
+            // a `!= 'failure'` guard would wave through -- run 29767811026 is
+            // the observed instance of exactly that result value.
+            assert!(
+                effective.contains(&format!(
+                    "(needs.{gate}.result == 'success' || needs.{gate}.result == 'skipped')"
+                )),
+                "{job_name} must gate on {gate} being success-or-skipped, so a \
+                 timed-out (cancelled) job cannot release (issue #812)"
+            );
+            assert!(
+                !effective.contains(&format!("needs.{gate}.result != 'failure'")),
+                "{job_name} must not use `!= 'failure'` for {gate}: a timeout \
+                 reports as 'cancelled' and would pass that check (issue #812)"
+            );
+            assert!(
+                effective.contains(gate),
+                "{job_name} must declare {gate} in needs: (issue #812)"
+            );
+        }
+    }
+}
+
+/// Issue #812: run 29767811026 reported `Test (ubuntu-latest)` as failed with
+/// every test passing -- the suite finished 1.1 s before `timeout-minutes: 15`
+/// killed the job. The budget must exceed the measured cost, and the step must
+/// say so out loud before the margin is eaten again.
+#[test]
+fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+
+    assert!(
+        test_job.contains("timeout-minutes: 25"),
+        "the test job budget must cover the ~14min measured cost (issue #812)"
+    );
+    assert!(
+        test_job.contains("TEST_BUDGET_SECONDS: 1500"),
+        "the warning threshold must be derived from the declared budget, and \
+         1500s is `timeout-minutes: 25` (issue #812)"
+    );
+    assert!(
+        test_job.contains("::warning title=Test suite is approaching its timeout"),
+        "creeping back toward the cap must be visible in the run summary rather \
+         than resurfacing as a mystery cancellation (issue #812)"
+    );
+}
+
+/// Issue #812: nothing validated the pipeline definitions themselves, and
+/// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
+/// is set to `warn` -- so clippy printed findings and exited 0.
+#[test]
+fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
+    let workflow = release_workflow();
+    let lint = job_block(&workflow, "lint");
+
+    assert!(
+        lint.contains("cargo clippy --all-targets --all-features -- -D warnings"),
+        "clippy must fail the job on findings, not just print them (issue #812)"
+    );
+    assert!(
+        lint.contains("actionlint"),
+        "workflow definitions must be linted (issue #812)"
+    );
+    assert!(
+        lint.contains("shellcheck --severity=warning"),
+        "standalone shell scripts must be linted (issue #812)"
+    );
+}
+
 #[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
@@ -310,9 +397,14 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("docker-build", 60),
         ("secrets-scan", 10),
         ("version-check", 5),
-        ("lint", 10),
-        ("test", 15),
-        ("coverage", 15),
+        // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
+        ("lint", 15),
+        // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
+        // after the suite passed. See
+        // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
+        ("test", 25),
+        // Issue #812: raised from 15; measured worst case on main was 14.1 min.
+        ("coverage", 25),
         ("build", 10),
         ("auto-release", 30),
         ("manual-release", 30),

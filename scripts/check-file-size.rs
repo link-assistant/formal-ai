@@ -35,6 +35,24 @@ const WORKER_JS_LIMIT: FileLimit = FileLimit {
     warn_lines: 1_400,
     label: "Worker JavaScript",
 };
+/// Issue #812: the size gate covered no CI definition at all, so
+/// `.github/workflows/release.yml` reached 1824 lines -- past the 1500-line
+/// ceiling the js pipeline template applies to its own workflows -- with CI
+/// green throughout. A workflow nobody can read in one sitting is where
+/// mis-ordered `needs:` and stale `if:` conditions hide, which is precisely the
+/// class of defect this issue is about.
+///
+/// The cap is deliberately set above today's worst file rather than below it: a
+/// hard failure would block every unrelated pull request until `release.yml` is
+/// split (a large, separate change), which is the same non-actionable-gate
+/// mistake §4 of the issue analysis is about. The warning band starts at the
+/// template's ceiling, so the debt is visible on every run and cannot grow.
+const WORKFLOW_YAML_LIMIT: FileLimit = FileLimit {
+    extension: "yml",
+    max_lines: 2_000,
+    warn_lines: 1_500,
+    label: "GitHub Actions workflow",
+};
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
 const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/", "dev/log/"];
 
@@ -51,12 +69,16 @@ fn normalized_path(path: &Path) -> String {
         .replace(std::path::MAIN_SEPARATOR, "/")
 }
 
+/// Issue #812: `EXCLUDE_PATTERNS` are directory *names*, so they are matched per
+/// path component. A substring test hid every workflow from the gate --
+/// `.github/workflows/release.yml` contains `.git` -- and would likewise skip
+/// any path with `target` or `node_modules` inside a longer segment.
 fn should_exclude(path: &Path) -> bool {
     let path_str = normalized_path(path);
 
-    EXCLUDE_PATTERNS
-        .iter()
-        .any(|pattern| path_str.contains(pattern))
+    path_str
+        .split('/')
+        .any(|component| EXCLUDE_PATTERNS.contains(&component))
         || EXCLUDE_PATH_FRAGMENTS
             .iter()
             .any(|fragment| path_str.contains(fragment))
@@ -72,9 +94,28 @@ fn is_worker_js_path(path: &Path) -> bool {
         || (path_str.contains("/src/web/worker/") && has_js_extension)
 }
 
+/// Only workflows this repository owns are measured. `docs/case-studies/**`
+/// holds verbatim copies of other projects' pipelines as evidence; reformatting
+/// them to fit our ceiling would destroy the thing they document.
+fn is_workflow_yaml_path(path: &Path) -> bool {
+    let path_str = normalized_path(path);
+    let has_yaml_extension = path
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .is_some_and(|extension| {
+            extension.eq_ignore_ascii_case("yml") || extension.eq_ignore_ascii_case("yaml")
+        });
+
+    has_yaml_extension && (path_str.starts_with(".github/") || path_str.contains("/.github/"))
+}
+
 fn file_limit(path: &Path) -> Option<&'static FileLimit> {
     if is_worker_js_path(path) {
         return Some(&WORKER_JS_LIMIT);
+    }
+
+    if is_workflow_yaml_path(path) {
+        return Some(&WORKFLOW_YAML_LIMIT);
     }
 
     let ext = path.extension().and_then(|ext| ext.to_str())?;
@@ -345,7 +386,7 @@ fn print_embedded_data_violations(violations: &[EmbeddedDataFinding]) {
 #[cfg(not(test))]
 fn main() {
     println!(
-        "\nChecking configured file line limits for Rust, Links Notation, and worker JavaScript files...\n"
+        "\nChecking configured file line limits for Rust, Links Notation, worker JavaScript, and GitHub Actions workflow files...\n"
     );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
@@ -581,6 +622,51 @@ mod tests {
                 message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
             }]
         );
+    }
+
+    /// Issue #812: `.github/workflows/**` matched the `.git` exclusion as a
+    /// substring, so every workflow was invisible to this gate and
+    /// `release.yml` grew to 1824 lines with CI green.
+    #[test]
+    fn check_directory_measures_github_workflows() {
+        let repo = temp_dir("github-workflows");
+        let workflows = repo.join(".github/workflows");
+        fs::create_dir_all(&workflows).unwrap();
+        write_file_with_lines(
+            &workflows.join("release.yml"),
+            WORKFLOW_YAML_LIMIT.max_lines + 1,
+        );
+
+        let result = check_directory(&repo);
+
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: ".github/workflows/release.yml".to_string(),
+                lines: WORKFLOW_YAML_LIMIT.max_lines + 1,
+                max_lines: WORKFLOW_YAML_LIMIT.max_lines,
+                warn_lines: WORKFLOW_YAML_LIMIT.warn_lines,
+                label: WORKFLOW_YAML_LIMIT.label,
+            }]
+        );
+    }
+
+    /// Case studies quote other projects' pipelines verbatim as evidence;
+    /// trimming them to our ceiling would destroy what they document.
+    #[test]
+    fn check_directory_does_not_measure_quoted_case_study_workflows() {
+        let repo = temp_dir("case-study-workflows");
+        let case_study = repo.join("docs/case-studies/issue-561/template-comparison/js");
+        fs::create_dir_all(&case_study).unwrap();
+        write_file_with_lines(
+            &case_study.join("release.yml"),
+            WORKFLOW_YAML_LIMIT.max_lines + 1,
+        );
+
+        let result = check_directory(&repo);
+
+        assert_eq!(result.violations, Vec::new());
+        assert_eq!(result.warnings, Vec::new());
     }
 
     #[test]
