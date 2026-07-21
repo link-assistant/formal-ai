@@ -342,22 +342,165 @@ summary, the final CLI output, and a minimal server-side `curl` repro that sends
 the same `messages` or `input` plus `tools` directly to the server. The `curl`
 repro lets maintainers separate a server routing bug from a CLI integration bug.
 
-## CI Shape (proposed — not yet implemented)
+## CI Shape (implemented)
 
-The CI e2e suite should follow this sequence (tracked by #625 / #671; today CI
-runs only step 1's `formal-ai` build, step 4, and a single-CLI variant of
-step 6):
+[`.github/workflows/agentic-cli-matrix.yml`](../../.github/workflows/agentic-cli-matrix.yml)
+runs this sequence as one job per client on every pull request that touches
+server, protocol, seed or matrix code (#625 / #671):
 
-1. Build `formal-ai` and `with-formal-ai`.
-2. Install pinned CLI versions.
-   Install the pinned OpenCode Desktop package under Xvfb for its matrix row.
+1. Build `formal-ai` once and share the binary with every leg.
+2. Install the client's pinned version from
+   [`experiments/agentic_cli_matrix/clients.lock`](../../experiments/agentic_cli_matrix/clients.lock).
+   The GUI rows (OpenCode Desktop's AppImage, the VS Code extension host,
+   Cursor) install under Xvfb.
 3. Create the fixture workspace and marker files.
-4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port 8080`.
-5. Start `formal-ai proxy --listen 127.0.0.1:8090 --upstream http://127.0.0.1:8080 --log proxy.jsonl`.
-6. Run the phrasing matrix for each CLI and protocol path.
+4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port <leg port>`.
+5. Start `formal-ai proxy --listen 127.0.0.1:<leg port + 1> --upstream http://127.0.0.1:<leg port> --log proxy.jsonl --body`.
+6. Run the case sequence for that CLI, headless and through a real PTY.
 7. Assert on both `proxy.jsonl` and stripped CLI output.
 8. Fail on regressions in provenance, offered tools, returned tool calls, schema,
-   or final marker content.
+   round count, or final marker content.
+
+Every recorded `proxy.jsonl` is uploaded as a build artifact — on green legs as
+well as red ones — so `claude`, `grok` and `aider`, the integrations PR #648
+shipped without ever running, each have a replayable session on record.
+
+### Matrix rows
+
+Every client `formal-ai clients` knows about has a row. The
+`agentic_cli_matrix_covers_every_seeded_client` test in
+[`tests/unit/issue_671_matrix_coverage.rs`](../../tests/unit/issue_671_matrix_coverage.rs)
+fails the build if a client is added to `data/seed/client-integrations.lino`
+without one, so coverage cannot be "inferred from the shared adapters" again.
+
+| Client | Pinned as | Leg shape |
+| --- | --- | --- |
+| `codex` | `@openai/codex` | `cli` — headless + PTY |
+| `t3code` | `t3` (`npm-native`, needs Node ≥ 22) | `server` — launch + configuration proof |
+| `opencode` | `opencode-ai` | `cli` — headless + PTY |
+| `opencode-vscode` | VS Code tarball + `sst-dev.opencode` extension | `gui` — launch under Xvfb |
+| `opencode-desktop` | AppImage (see [issue-762 case study](../case-studies/issue-762/README.md)) | `gui` — launch under Xvfb |
+| `agent` | `@link-assistant/agent` | `cli` — headless + PTY (reference leg) |
+| `cursor` | vendor install script | `mcp` — JSON-RPC tool-server leg |
+| `gemini` | `@google/gemini-cli` | `cli` — headless + PTY |
+| `claude` | `@anthropic-ai/claude-code` | `cli` — headless + PTY |
+| `qwen` | `@qwen-code/qwen-code` | `cli` — headless + PTY |
+| `grok` | `@vibe-kit/grok-cli` | `cli` — headless + PTY |
+| `aider` | `aider-chat` | `cli` — headless + PTY |
+
+The leg shape is not hardcoded per client: `run_leg.sh` reads
+`supports_non_interactive` and `default_protocol` from
+`formal-ai clients --format json`, so a client with no headless invocation gets
+an interactive-only leg rather than a skip, and a client whose integration is
+MCP cannot be handed prompt-shaped assertions that can never hold. There are
+four shapes, and every client gets exactly one:
+
+- **`cli`** — prompt in, answer out. The full case list below runs against it.
+- **`server`** (`t3code`) — the client is a web app that serves a UI rather than
+  printing an answer, so the leg starts it and proves the configuration reached
+  it.
+- **`gui`** (`opencode-vscode`, `opencode-desktop`) — same, for a windowed
+  client under Xvfb.
+- **`mcp`** (`cursor`) — we are not the model at all: the wrapper writes
+  `.cursor/mcp.json` and Cursor's *own* model calls us as a tool. The leg drives
+  the `/mcp` JSON-RPC surface directly — `initialize`, `tools/list`,
+  `tools/call` and an unknown-tool refusal — and asserts that the CLI still
+  demands its own vendor credentials, so the day Cursor runs a turn without them
+  the leg fails and has to grow the full case list.
+
+A launch leg cannot assert on a model exchange: a GUI sends nothing until a
+human types. What it asserts instead is that the wrapper's configuration reached
+the *running application* — `matrix_assert_launch_configured` walks the launched
+process tree and requires the base URL either in a process's environment or in
+the config file that environment names. The first version of this assertion
+("something reached the proxy") was satisfied by the harness's own `/health`
+probe, i.e. it could never fail, which is worse than no assertion at all.
+
+### Cases and the defect each one guards
+
+| Case | Guards |
+| --- | --- |
+| `greeting` | #650 defect 1 — `/responses` dropped `instructions`. |
+| `read-file` | #671 — the real Codex CLI re-planned one `exec_command` 281 times; the leg bounds the model rounds. |
+| `summarize` | #650 defect 3 — summarization requests answered as fresh tasks. |
+| `interactive` | #650 defect 2 and #713 — an empty interactive message wedged the TUI, and two launch-blocking interactive-only bugs survived 160 `--non-interactive` runs. |
+| `globally` | #650 defect 4 — the `--globally` alias was rejected. |
+| `constraints` | The upstream limitations below, plus #746's hosted `web_search` advertisement. |
+| `launch` | #713 — a client that starts and is *not* pointed at our server is a launch blocker no headless run can see. |
+| `mcp` | The tool-server surface (`src/mcp.rs`): the handshake identifies us, `formal_ai_chat` is advertised, a call reaches the real solver, and an unknown tool name is refused with `-32601` rather than silently answered. |
+
+### Upstream constraints, asserted rather than skipped
+
+Each of these is a live assertion in `run_leg.sh`. When an upstream release
+lifts the constraint the assertion fails, which is the signal to delete it and
+add real coverage — the opposite of a skip, which would stay silent forever.
+
+- **Gemini headless `-p` advertises no `functionDeclarations`** — *lifted
+  upstream, and the matrix is how we found out.* Recorded in the #620 discussion
+  and never filed upstream as its own issue. Under the pinned
+  `@google/gemini-cli@0.51.0` the headless run advertises `read_file`, `glob`,
+  `grep_search` and others, and the `gemini` leg's `read-file` case now proves a
+  real headless tool call round-trips. The assertion was inverted rather than
+  deleted: a release that takes the tools away again would silently downgrade
+  every headless gemini case to prose-only coverage, so the leg now fails if
+  `read_file` stops being advertised. This is exactly the loud failure the
+  assert-don't-skip rule exists to produce.
+- **Codex, Gemini and Qwen have no headless approval handshake** (#511, PR
+  #512). Those legs assert no approval prompt appears; one showing up means the
+  tool loop silently changed shape.
+- **The real Codex TUI advertises web search as a hosted `{"type":"web_search"}`
+  tool** (#746) — something a hand-written `curl` never does, which is why the
+  matrix drives real CLIs instead of the API surface.
+
+### Running it locally, and replaying it offline
+
+```bash
+experiments/agentic_cli_matrix/run_matrix.sh              # every locked client
+MATRIX_RECORD=1 experiments/agentic_cli_matrix/run_matrix.sh claude grok aider
+experiments/agentic_cli_matrix/replay.sh                  # offline, jq only
+```
+
+`run_matrix.sh` is the CI matrix serialised onto one machine; each leg's base
+port is `8900 + <position in clients.lock> * 60`, the same formula the workflow
+uses, and a unit test asserts the two agree. `replay.sh` re-asserts the
+transcript-level invariants of every transcript under `recorded/` with no CLI,
+no server, no network and no credentials, which is what makes the never-run
+integrations actually replayable rather than merely archived. See
+[`experiments/agentic_cli_matrix/README.md`](../../experiments/agentic_cli_matrix/README.md)
+for `MATRIX_ARGS_<CLIENT>`, `MATRIX_ISOLATED_NPM` and the Python pin `aider`
+needs.
+
+### What driving the real CLIs found
+
+Every one of these passed a hand-written request against the same server, and
+each is now covered by a unit or integration test as well as by the leg that
+found it:
+
+- **A read request destroyed the file it was asked to read.** `opencode`, `qwen`
+  and `agent` sent `read the file alpha.txt and print its contents`; the general
+  planner's marker-led branch accepted a positional target cue plus a trailing
+  content lead with no write verb and planned `write(alpha.txt, "\"")`. The
+  branch now requires a write action cue when the content marker precedes the
+  file clause, and rejects a payload with no alphanumeric character at all.
+- **Relative tool paths.** The planner names a file the way the request spelt
+  it; `agent` answered `Error: File not found: /alpha.txt` and `qwen` answered
+  `File path must be absolute, but was relative: alpha.txt`. Both advertise the
+  requirement, so it is read from the request — property name `absolute_path`,
+  or the word "absolute" in the property or tool description — instead of being
+  hardcoded per client. A client that accepts relative paths keeps the request's
+  own spelling, because absolutising is only correct while the server shares the
+  client's working directory.
+- **Gemini's hardcoded utility model.** The Gemini CLI issues next-speaker and
+  web-search-fallback calls against a hardcoded `gemini-*` flash model; the
+  server answered `400 unsupported model`. It now answers those as itself rather
+  than echoing back a provenance it does not have.
+- **Model provenance for path-carried model ids.** Gemini names the model in the
+  URL (`/v1beta/models/formal-ai:streamGenerateContent`), not in the body, so
+  every recorded exchange looked provenance-less. `formal-ai proxy` now recovers
+  it from the path.
+- **Claude Code's reachability probe.** Each session opens with a `HEAD` on the
+  base URL, which returned 404 while the `POST` worked — a transcript that read
+  exactly like a misconfigured base URL.
 
 This is the bridge from manual investigation to the first-class e2e coverage
 tracked by #625.

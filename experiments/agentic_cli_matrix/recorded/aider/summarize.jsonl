@@ -1,0 +1,2 @@
+{"method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/api/openai/v1/chat/completions","request_model":"formal-ai","request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":"Conversation summary: Change the greeting to be more casual. I switched to a new code base. Please don't consider the above files or try to edit them any longer"}

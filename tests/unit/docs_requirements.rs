@@ -919,6 +919,13 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             // vscode/src/lib/vendor. Scanning the originals is enough.
             | "vscode/dist-web"
             | "vscode/src/lib/vendor"
+            // Verbatim third-party CLI output captured by the issue-#671 agentic
+            // matrix: `artifacts/` is the git-ignored scratch of a local run and
+            // `recorded/` holds the committed transcripts a replay asserts
+            // against. Both quote whatever the vendor CLI printed, so editing
+            // them to satisfy a prose lint would falsify the evidence.
+            | "experiments/agentic_cli_matrix/artifacts"
+            | "experiments/agentic_cli_matrix/recorded"
     )
 }
 

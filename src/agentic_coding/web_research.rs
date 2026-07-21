@@ -485,9 +485,5 @@ fn trim_question_punctuation(text: &str) -> String {
 }
 
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
+    crate::protocol::latest_user_request(messages)
 }

@@ -259,7 +259,11 @@ fn mcp_text_content(value: &Value) -> Option<String> {
     Some(text.join("\n"))
 }
 
-fn strip_transport_envelope(text: &str) -> String {
+/// Drop the wrapper a client puts around a shell result — Codex's
+/// `exec_command` prefixes `Chunk ID` / `Wall time` / `Process exited with code`
+/// lines before the real `Output:` — so a recipe that answers with the command's
+/// output quotes the file, not the transport (issue #671).
+pub(super) fn strip_transport_envelope(text: &str) -> String {
     let inner = text
         .split_once("<untrusted_context>")
         .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))

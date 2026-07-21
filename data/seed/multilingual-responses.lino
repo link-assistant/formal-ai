@@ -1397,3 +1397,35 @@ multilingual_responses
     intent agentic_action_before_tool
     language zh
     text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+  response response_supplied_file_contents_en
+    intent supplied_file_contents
+    language en
+    text "Contents of `{path}`:\n\n{body}"
+  response response_supplied_file_contents_ru
+    intent supplied_file_contents
+    language ru
+    text "Содержимое `{path}`:\n\n{body}"
+  response response_supplied_file_contents_hi
+    intent supplied_file_contents
+    language hi
+    text "`{path}` की सामग्री:\n\n{body}"
+  response response_supplied_file_contents_zh
+    intent supplied_file_contents
+    language zh
+    text "`{path}` 的内容：\n\n{body}"
+  response response_supplied_file_first_line_en
+    intent supplied_file_first_line
+    language en
+    text "First line of `{path}`: {line}"
+  response response_supplied_file_first_line_ru
+    intent supplied_file_first_line
+    language ru
+    text "Первая строка `{path}`: {line}"
+  response response_supplied_file_first_line_hi
+    intent supplied_file_first_line
+    language hi
+    text "`{path}` की पहली पंक्ति: {line}"
+  response response_supplied_file_first_line_zh
+    intent supplied_file_first_line
+    language zh
+    text "`{path}` 的第一行：{line}"

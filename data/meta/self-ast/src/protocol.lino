@@ -2,56 +2,56 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 35548
-  line_count 967
-  content_id source_module_04ace5675f4b1196
+  byte_len 36871
+  line_count 991
+  content_id source_module_f26af21c519bde8d
   symbol_count 48
   symbols
     module content 26 26
-    module output 27 27
-    module recording 28 28
-    function resolved_request_model 36 38
-    function response_timestamp 40 44
-    struct ChatCompletionRequest 47 70
-    struct StreamOptions 74 77
-    function requests_tool_execution 81 105
-    function requested_tool_names 107 140
-    struct ChatMessage 144 168
-    function new 173 179
-    function user 183 185
-    function assistant 189 191
-    function assistant_tool_calls 195 201
-    function assistant_tool_calls_with_content 209 219
-    function tool_result 224 236
-    enum MessageContent 241 244
-    function default 247 249
-    function message_content_tokens 252 259
-    function message_input_tokens 264 268
-    function deserialize_null_content 280 285
-    struct MessageContentPart 288 293
-    struct ToolCall 297 302
-    function tool_call_kind 304 306
-    function function 312 325
-    struct FunctionCall 330 333
-    struct ChatCompletion 336 343
-    struct ChatChoice 346 350
-    struct TokenUsage 353 357
-    struct ResponsesRequest 360 377
-    function to_chat_completion_request 389 409
-    function responses_input_tokens 412 414
-    function append_response_input 420 439
-    function append_response_item 443 509
-    function create_chat_completion 512 514
-    function create_chat_completion_with_solver 517 522
-    function create_chat_completion_with_solver_and_memory 525 559
-    function command_reroute_plan 561 572
-    enum AgenticOutcome 578 587
-    function agentic_outcome 593 636
-    function chat_completion_from_plan 642 710
-    function chat_completion_from_symbolic 712 743
-    function create_response 746 750
-    function create_response_with_solver 753 758
-    function create_response_with_solver_and_memory 761 795
-    function response_from_plan 801 908
-    function response_from_symbolic 910 949
-    function response_reasoning_item 951 967
+    module output 28 28
+    module recording 29 29
+    function resolved_request_model 37 39
+    function response_timestamp 41 45
+    struct ChatCompletionRequest 48 71
+    struct StreamOptions 75 78
+    function requests_tool_execution 82 106
+    function requested_tool_names 108 141
+    struct ChatMessage 145 169
+    function new 174 180
+    function user 184 186
+    function assistant 190 192
+    function assistant_tool_calls 196 202
+    function assistant_tool_calls_with_content 210 220
+    function tool_result 225 237
+    enum MessageContent 242 245
+    function default 248 250
+    function message_content_tokens 253 260
+    function message_input_tokens 265 269
+    function deserialize_null_content 281 286
+    struct MessageContentPart 289 294
+    struct ToolCall 298 303
+    function tool_call_kind 305 307
+    function function 313 326
+    struct FunctionCall 331 334
+    struct ChatCompletion 337 344
+    struct ChatChoice 347 351
+    struct TokenUsage 354 358
+    struct ResponsesRequest 361 378
+    function to_chat_completion_request 390 410
+    function responses_input_tokens 413 415
+    function append_response_input 421 440
+    function append_response_item 444 510
+    function create_chat_completion 513 515
+    function create_chat_completion_with_solver 518 523
+    function create_chat_completion_with_solver_and_memory 526 560
+    function command_reroute_plan 562 573
+    enum AgenticOutcome 579 588
+    function agentic_outcome 594 650
+    function chat_completion_from_plan 656 726
+    function chat_completion_from_symbolic 728 759
+    function create_response 762 766
+    function create_response_with_solver 769 774
+    function create_response_with_solver_and_memory 777 811
+    function response_from_plan 817 932
+    function response_from_symbolic 934 973
+    function response_reasoning_item 975 991

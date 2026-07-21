@@ -1,0 +1,261 @@
+name: Agentic CLI Matrix
+
+# The "CI Shape" section of docs/testing/agentic-cli-tools.md, made executable
+# (issue #671). One leg per client in `formal-ai clients` — the same seed
+# registry `formal-ai with` drives — each running the guide's smoke sequence
+# against a local `formal-ai serve --agent-mode` with `formal-ai proxy`
+# recording every exchange. Our own server is the model provider, so no leg
+# needs vendor credentials.
+#
+# Legs run in parallel and never skip: a client the runner cannot exercise
+# headlessly still gets an interactive PTY leg, and a documented upstream
+# limitation is written as an assertion that fails when upstream lifts it,
+# not as a `continue-on-error`. The `agentic_cli_matrix_covers_every_seeded_client`
+# unit test keeps this matrix in step with the seed registry.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # Server and protocol code is exactly the surface these legs guard: the
+    # issue-#671 loop lived in the planner, and the issue-#650 defects lived in
+    # the Responses transport and the `with` wrapper.
+    paths:
+      - 'src/**'
+      - 'data/seed/**'
+      - 'tests/**'
+      - 'experiments/agentic_cli_matrix/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/agentic-cli-matrix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  CARGO_NET_RETRY: '10'
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  # Build once; every leg downloads the same binary. A leg that rebuilt would
+  # spend more time compiling than driving a CLI.
+  build:
+    name: Build formal-ai
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-cli-matrix-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-cli-matrix-
+            ${{ runner.os }}-cargo-
+
+      - name: Build formal-ai (release)
+        run: cargo build --release --bin formal-ai
+
+      - name: Upload formal-ai binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: formal-ai-binary
+          path: target/release/formal-ai
+          retention-days: 1
+
+  matrix:
+    name: E2E (${{ matrix.client }})
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      # Every leg reports independently: a Gemini upstream change must not hide
+      # a Codex regression, which is how PR #648 shipped four defects at once.
+      fail-fast: false
+      matrix:
+        include:
+          # Keep in sync with experiments/agentic_cli_matrix/clients.lock; the
+          # `agentic_cli_matrix_covers_every_seeded_client` unit test enforces it.
+          - client: codex
+            base_port: 8900
+          - client: t3code
+            base_port: 8960
+          - client: opencode
+            base_port: 9020
+          - client: opencode-vscode
+            base_port: 9080
+            display: xvfb
+          - client: opencode-desktop
+            base_port: 9140
+            display: xvfb
+          - client: agent
+            base_port: 9200
+          # No display: cursor's integration is MCP — we are its *tool server*,
+          # not its model provider — so its leg drives our `/mcp` endpoint over
+          # JSON-RPC and asserts the CLI's own credential requirement. Nothing
+          # in it opens a window.
+          - client: cursor
+            base_port: 9260
+          - client: gemini
+            base_port: 9320
+          - client: claude
+            base_port: 9380
+          - client: qwen
+            base_port: 9440
+          - client: grok
+            base_port: 9500
+          - client: aider
+            base_port: 9560
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+          # Avoid racing the other jobs for setup-bun's shared executable key.
+          no-cache: true
+
+      - name: Download formal-ai binary
+        uses: actions/download-artifact@v4
+        with:
+          name: formal-ai-binary
+          path: target/release
+
+      - name: Make formal-ai executable
+        run: chmod +x target/release/formal-ai
+
+      - name: Install Xvfb
+        if: matrix.display == 'xvfb'
+        # The GUI clients (VS Code extension host, OpenCode Desktop's Electron
+        # shell, Cursor) need a display server. docs/case-studies/issue-762
+        # records the same setup for the desktop AppImage.
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb
+
+      - name: Pin Node for clients with native addons
+        if: matrix.client == 't3code'
+        # t3 declares `engines.node ^22.16 || ^23.11 || >=24.10` and builds
+        # node-pty from source during install. `bun add -g` skips lifecycle
+        # scripts, and bun's bundled Node 20 cannot build node-pty at all — the
+        # half-installed CLI then migrates its database and *only then* exits 1
+        # with `NodePtyModuleLoadError`, which reads like a defect in our server.
+        # The `npm-native` installer kind in clients.lock needs a real Node here.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Pin Python for pipx-installed clients
+        if: matrix.client == 'aider'
+        # aider-chat declares `Requires-Python >=3.10,<3.13`. Without a pinned
+        # interpreter pip resolves *backwards* to a 2024 release rather than
+        # failing, which would install a two-year-old CLI under a pinned name.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Allow the user namespaces codex's own sandbox needs
+        if: matrix.client == 'codex'
+        # Codex runs every command it executes inside bubblewrap, and it ships
+        # its *own* `bwrap` (`codex-resources/bwrap` in the vendored package).
+        # Ubuntu 24.04 runners set `kernel.apparmor_restrict_unprivileged_userns=1`,
+        # which denies the unprivileged user namespace that binary needs, so the
+        # leg failed with `bwrap: loopback: Failed RTM_NEWADDR: Operation not
+        # permitted` and no file was ever read. Installing the distro
+        # `bubblewrap` package does not help: AppArmor attaches its
+        # userns-permitting profile by path, and codex never runs
+        # `/usr/bin/bwrap`. Relaxing the sysctl on this ephemeral runner keeps
+        # the leg on the sandboxed path a real user gets; the alternative,
+        # `--dangerously-bypass-approvals-and-sandbox`, would assert a path
+        # nobody runs. The read-back makes a kernel that ignores the knob fail
+        # here, where the cause is named, rather than inside the leg.
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          value="$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)"
+          [ "$value" = 0 ] || {
+            echo "unprivileged user namespaces are still restricted ($value)" >&2
+            exit 1
+          }
+
+      - name: Install ${{ matrix.client }} (pinned)
+        run: |
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          experiments/agentic_cli_matrix/install_client.sh ${{ matrix.client }}
+
+      - name: Run ${{ matrix.client }} leg
+        env:
+          CLIENT: ${{ matrix.client }}
+          BASE_PORT: ${{ matrix.base_port }}
+          # Re-record on every run so the uploaded artifact is a transcript that
+          # `replay.sh` accepts verbatim — refreshing a committed session is then
+          # a download and a copy, not a hand edit.
+          MATRIX_RECORD: '1'
+        run: |
+          if [ "${{ matrix.display }}" = "xvfb" ]; then
+            xvfb-run -a experiments/agentic_cli_matrix/run_leg.sh
+          else
+            experiments/agentic_cli_matrix/run_leg.sh
+          fi
+
+      - name: Upload recorded transcripts
+        # The proxy log is the evidence: it is what a reviewer reads to see the
+        # advertised tools, the planned calls and the round count. Uploaded on
+        # success too, because a green leg's transcript is the recorded session
+        # issue #671 asks for on claude, grok and aider.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transcripts-${{ matrix.client }}
+          path: |
+            experiments/agentic_cli_matrix/artifacts/${{ matrix.client }}
+            experiments/agentic_cli_matrix/recorded/${{ matrix.client }}
+          retention-days: 14
+          if-no-files-found: warn
+
+  # The committed transcripts have to keep meaning something between full matrix
+  # runs. This job needs no CLI, no display and no network — only `jq` — so it is
+  # the one leg that can never be skipped for environmental reasons.
+  replay:
+    name: Replay recorded sessions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Replay every committed transcript
+        run: experiments/agentic_cli_matrix/replay.sh
+
+  summary:
+    name: Matrix summary
+    needs: [matrix, replay]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Fail if any leg failed
+        # A single red leg fails the matrix. Issue #671 exists because
+        # "inferred from the shared adapters" was accepted as coverage once.
+        run: |
+          if [ "${{ needs.matrix.result }}" != "success" ]; then
+            echo "one or more client legs failed" >&2
+            exit 1
+          fi
+          if [ "${{ needs.replay.result }}" != "success" ]; then
+            echo "a committed transcript no longer replays" >&2
+            exit 1
+          fi
+          echo "all client legs green"

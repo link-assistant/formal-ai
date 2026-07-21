@@ -6,12 +6,14 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_clients;
 mod cli_import;
 mod cli_improve;
 mod cli_memory;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_clients::{run_clients, ClientsFormat};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
@@ -122,6 +124,15 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Print the seed-baked registry of external agentic CLI clients that
+    /// `formal-ai with` can drive, including each client's protocols, endpoints,
+    /// headless invocation, and persistent-config location. `--format json`
+    /// makes the registry machine-readable so the multi-CLI end-to-end matrix
+    /// (issue #671) derives its legs from the same data the wrapper uses.
+    Clients {
+        #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
+        format: ClientsFormat,
+    },
     /// Import lexical semantics in bulk from external sources (issue #660,
     /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
     /// validate-then-write pipeline.
@@ -537,6 +548,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Clients { format } => run_clients(format),
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,

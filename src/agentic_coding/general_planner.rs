@@ -181,14 +181,31 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     let clause_start = cue.start;
     let cue_is_destination = dest_cues.contains(&clean_cue_token(cue.text));
 
+    // Marker-led content. The payload sits after the marker, bounded by the file
+    // clause when the marker comes first ("write the following: hello to x.txt")
+    // and running to the end when the clause comes first ("store file x.txt
+    // containing hello").
+    //
+    // A marker that *precedes* the clause additionally needs a write verb, which
+    // is the same rule the destination-led and assignment-shaped branches below
+    // already apply — without it a read request whose object happens to be a
+    // content-lead surface claims a write. The issue-#671 matrix caught
+    // `show me the contents of the file beta.md` planning
+    // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
     if let Some((_, marker_end)) = first_content_lead_end(&lowered) {
-        let marker_span = if marker_end <= clause_start {
+        let marker_leads = marker_end <= clause_start;
+        let marker_span = if marker_leads {
             request.get(marker_end..clause_start)
         } else {
             request.get(marker_end..)
         };
-        if let Some(content) = marker_span.and_then(clean_content) {
-            return Some((target, content));
+        if !marker_leads || first_action_cue_end(&toks).is_some() {
+            if let Some(content) = marker_span
+                .and_then(clean_content)
+                .filter(|content| is_literal_content(content))
+            {
+                return Some((target, content));
+            }
         }
     }
 
@@ -217,10 +234,19 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // it as a literal write both fabricates the wrong file (the string "it") and
     // steals the request from the keyword recipe that would author the real
     // artifact, so fall through instead (issue #663).
-    if is_non_referential_content(&content) {
+    if is_non_referential_content(&content) || !is_literal_content(&content) {
         return None;
     }
     Some((target, content))
+}
+
+/// Whether a recovered payload says anything at all. A span of nothing but
+/// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
+/// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
+/// its trailing content-lead marker — and writing it would replace real file
+/// bytes with a stray delimiter.
+fn is_literal_content(content: &str) -> bool {
+    content.chars().any(char::is_alphanumeric)
 }
 
 /// Whether a recovered write payload is nothing but a non-referential subject —

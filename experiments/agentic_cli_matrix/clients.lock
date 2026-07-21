@@ -1,0 +1,37 @@
+# Pinned third-party agentic CLI clients for the issue-#671 end-to-end matrix.
+#
+# Every client in `formal-ai clients` must appear exactly once here — the
+# `agentic_cli_matrix_covers_every_seeded_client` guard in
+# `tests/unit/issue_671_matrix_coverage.rs` fails the build otherwise, so a
+# client added to `data/seed/client-integrations.lino` cannot silently escape
+# end-to-end coverage.
+#
+# Versions are pinned rather than floating so a matrix leg fails because our
+# server changed, not because an upstream CLI shipped overnight. Bumping a pin
+# is a deliberate commit, and the upstream-constraint assertions in
+# `run_leg.sh` are what tell us when a bump lifts a documented limitation.
+#
+# Columns: <client-id> <installer> <spec>
+#   npm      — `bun add -g <spec>`
+#   npm-native — `npm install -g <spec>` on Node >= 22, for a package that
+#              builds a native addon during install (bun skips those scripts,
+#              and its bundled Node 20 cannot build node-pty at all)
+#   pipx     — `pipx install <spec>`
+#   tarball  — vendor archive pinned by version, unpacked into a prefix
+#              (VS Code: no root, and `apt-get install code` needs Microsoft's
+#              repository, which a stock runner does not have)
+#   appimage — packaged desktop release, run under Xvfb
+#   script   — vendor install script (URL)
+
+codex            npm       @openai/codex@0.144.6
+t3code           npm-native t3@0.0.28
+opencode         npm       opencode-ai@1.18.4
+opencode-vscode  tarball   1.129.1
+opencode-desktop appimage  1.18.3
+agent            npm       @link-assistant/agent@0.25.0
+cursor           script    https://cursor.com/install
+gemini           npm       @google/gemini-cli@0.51.0
+claude           npm       @anthropic-ai/claude-code@2.1.215
+qwen             npm       @qwen-code/qwen-code@0.20.0
+grok             npm       @vibe-kit/grok-cli@0.0.34
+aider            pipx      aider-chat==0.86.2

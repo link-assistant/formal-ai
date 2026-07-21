@@ -1,0 +1,2196 @@
+﻿2026-07-21T04:20:51.8913450Z Current runner version: '2.335.1'
+2026-07-21T04:20:51.8953171Z ##[group]Runner Image Provisioner
+2026-07-21T04:20:51.8953803Z Hosted Compute Agent
+2026-07-21T04:20:51.8954239Z Version: 20260707.563
+2026-07-21T04:20:51.8954665Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+2026-07-21T04:20:51.8955198Z Build Date: 2026-07-07T19:33:50Z
+2026-07-21T04:20:51.8955753Z Worker ID: {5bdfae69-5c0a-4854-a2a4-29c0470b0d26}
+2026-07-21T04:20:51.8956338Z Azure Region: centralus
+2026-07-21T04:20:51.8956786Z ##[endgroup]
+2026-07-21T04:20:51.8957772Z ##[group]Operating System
+2026-07-21T04:20:51.8958191Z Ubuntu
+2026-07-21T04:20:51.8958584Z 24.04.4
+2026-07-21T04:20:51.8958970Z LTS
+2026-07-21T04:20:51.8959591Z ##[endgroup]
+2026-07-21T04:20:51.8960091Z ##[group]Runner Image
+2026-07-21T04:20:51.8960558Z Image: ubuntu-24.04
+2026-07-21T04:20:51.8960997Z Version: 20260714.240.1
+2026-07-21T04:20:51.8962006Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260714.240/images/ubuntu/Ubuntu2404-Readme.md
+2026-07-21T04:20:51.8963083Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260714.240
+2026-07-21T04:20:51.8963715Z ##[endgroup]
+2026-07-21T04:20:51.8964499Z ##[group]GITHUB_TOKEN Permissions
+2026-07-21T04:20:51.8966194Z Contents: read
+2026-07-21T04:20:51.8966642Z Metadata: read
+2026-07-21T04:20:51.8967041Z ##[endgroup]
+2026-07-21T04:20:51.8968599Z Secret source: Actions
+2026-07-21T04:20:51.8969474Z Prepare workflow directory
+2026-07-21T04:20:51.9356346Z Prepare all required actions
+2026-07-21T04:20:51.9386147Z Getting action download info
+2026-07-21T04:20:52.1662041Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-07-21T04:20:52.5850716Z Download action repository 'docker/build-push-action@v7' (SHA:53b7df96c91f9c12dcc8a07bcb9ccacbed38856a)
+2026-07-21T04:20:53.1325213Z Complete job name: Docker Image Build & Runtime Check
+2026-07-21T04:20:53.1813336Z ##[group]Run actions/checkout@v6
+2026-07-21T04:20:53.1813998Z with:
+2026-07-21T04:20:53.1814394Z   repository: link-assistant/formal-ai
+2026-07-21T04:20:53.1817094Z   token: ***
+2026-07-21T04:20:53.1817475Z   ssh-strict: true
+2026-07-21T04:20:53.1817841Z   ssh-user: git
+2026-07-21T04:20:53.1818243Z   persist-credentials: true
+2026-07-21T04:20:53.1818621Z   clean: true
+2026-07-21T04:20:53.1818971Z   sparse-checkout-cone-mode: true
+2026-07-21T04:20:53.1819582Z   fetch-depth: 1
+2026-07-21T04:20:53.1819933Z   fetch-tags: false
+2026-07-21T04:20:53.1820296Z   show-progress: true
+2026-07-21T04:20:53.1820649Z   lfs: false
+2026-07-21T04:20:53.1820972Z   submodules: false
+2026-07-21T04:20:53.1821370Z   set-safe-directory: true
+2026-07-21T04:20:53.1821767Z   allow-unsafe-pr-checkout: false
+2026-07-21T04:20:53.1822312Z env:
+2026-07-21T04:20:53.1822646Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:20:53.1823025Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:20:53.1823603Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:20:53.1823975Z   CARGO_NET_RETRY: 10
+2026-07-21T04:20:53.1824349Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:20:53.1824755Z   CARGO_TERM_COLOR: always
+2026-07-21T04:20:53.1825196Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:20:53.1825708Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:20:53.1826143Z   CARGO_TOKEN: ***
+2026-07-21T04:20:53.1826531Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:20:53.1826972Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:20:53.1827325Z ##[endgroup]
+2026-07-21T04:20:53.2553801Z Syncing repository: link-assistant/formal-ai
+2026-07-21T04:20:53.2555273Z ##[group]Getting Git version info
+2026-07-21T04:20:53.2555912Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-07-21T04:20:53.2556914Z [command]/usr/bin/git version
+2026-07-21T04:20:53.3305384Z git version 2.54.0
+2026-07-21T04:20:53.3320048Z ##[endgroup]
+2026-07-21T04:20:53.3330763Z Temporarily overriding HOME='/home/runner/work/_temp/cf295017-c9a2-4693-8a70-587b2b2a9d5c' before making global git config changes
+2026-07-21T04:20:53.3331770Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T04:20:53.3335267Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-07-21T04:20:53.3361329Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-07-21T04:20:53.3364199Z ##[group]Determining repository object format
+2026-07-21T04:20:53.3365756Z ##[endgroup]
+2026-07-21T04:20:53.3366319Z ##[group]Initializing the repository
+2026-07-21T04:20:53.3368713Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-07-21T04:20:53.4128933Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-07-21T04:20:53.4139253Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-07-21T04:20:53.4164030Z ##[endgroup]
+2026-07-21T04:20:53.4164890Z ##[group]Disabling automatic garbage collection
+2026-07-21T04:20:53.4167512Z [command]/usr/bin/git config --local gc.auto 0
+2026-07-21T04:20:53.4188529Z ##[endgroup]
+2026-07-21T04:20:53.4189648Z ##[group]Setting up auth
+2026-07-21T04:20:53.4190375Z Removing SSH command configuration
+2026-07-21T04:20:53.4194797Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T04:20:53.4218504Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T04:20:53.4475124Z Removing HTTP extra header
+2026-07-21T04:20:53.4480435Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T04:20:53.4503087Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T04:20:53.4634077Z Removing includeIf entries pointing to credentials config files
+2026-07-21T04:20:53.4639321Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T04:20:53.4662471Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T04:20:53.4812173Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-07-21T04:20:53.4847847Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:20:53.4867870Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:20:53.4889213Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:20:53.5306269Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:20:53.5325216Z ##[endgroup]
+2026-07-21T04:20:53.5326043Z ##[group]Fetching the repository
+2026-07-21T04:20:53.5332518Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8959276422950471e6f2d3ba9924a7037fdc3595:refs/remotes/pull/814/merge
+2026-07-21T04:21:03.6025429Z From https://github.com/link-assistant/formal-ai
+2026-07-21T04:21:03.6026244Z  * [new ref]         8959276422950471e6f2d3ba9924a7037fdc3595 -> pull/814/merge
+2026-07-21T04:21:03.6040961Z ##[endgroup]
+2026-07-21T04:21:03.6041848Z ##[group]Determining the checkout info
+2026-07-21T04:21:03.6042225Z ##[endgroup]
+2026-07-21T04:21:03.6045914Z [command]/usr/bin/git sparse-checkout disable
+2026-07-21T04:21:03.6589128Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-07-21T04:21:03.6611006Z ##[group]Checking out the ref
+2026-07-21T04:21:03.6613719Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/814/merge
+2026-07-21T04:21:04.6718774Z Updating files:  56% (4886/8583)
+2026-07-21T04:21:04.6742278Z Updating files:  57% (4893/8583)
+2026-07-21T04:21:04.6784035Z Updating files:  58% (4979/8583)
+2026-07-21T04:21:04.6842813Z Updating files:  59% (5064/8583)
+2026-07-21T04:21:04.6882192Z Updating files:  60% (5150/8583)
+2026-07-21T04:21:04.7277324Z Updating files:  61% (5236/8583)
+2026-07-21T04:21:04.7400604Z Updating files:  62% (5322/8583)
+2026-07-21T04:21:04.7573165Z Updating files:  63% (5408/8583)
+2026-07-21T04:21:04.7612285Z Updating files:  64% (5494/8583)
+2026-07-21T04:21:04.7879853Z Updating files:  65% (5579/8583)
+2026-07-21T04:21:04.8078264Z Updating files:  66% (5665/8583)
+2026-07-21T04:21:04.8188784Z Updating files:  67% (5751/8583)
+2026-07-21T04:21:04.8313385Z Updating files:  68% (5837/8583)
+2026-07-21T04:21:04.8450376Z Updating files:  69% (5923/8583)
+2026-07-21T04:21:04.9331688Z Updating files:  70% (6009/8583)
+2026-07-21T04:21:04.9397927Z Updating files:  71% (6094/8583)
+2026-07-21T04:21:04.9623532Z Updating files:  72% (6180/8583)
+2026-07-21T04:21:04.9743111Z Updating files:  73% (6266/8583)
+2026-07-21T04:21:04.9827305Z Updating files:  74% (6352/8583)
+2026-07-21T04:21:04.9902161Z Updating files:  75% (6438/8583)
+2026-07-21T04:21:04.9978545Z Updating files:  76% (6524/8583)
+2026-07-21T04:21:05.0041165Z Updating files:  77% (6609/8583)
+2026-07-21T04:21:05.0084160Z Updating files:  78% (6695/8583)
+2026-07-21T04:21:05.0123589Z Updating files:  79% (6781/8583)
+2026-07-21T04:21:05.0174547Z Updating files:  80% (6867/8583)
+2026-07-21T04:21:05.0237940Z Updating files:  81% (6953/8583)
+2026-07-21T04:21:05.0345946Z Updating files:  82% (7039/8583)
+2026-07-21T04:21:05.0687430Z Updating files:  83% (7124/8583)
+2026-07-21T04:21:05.0709432Z Updating files:  84% (7210/8583)
+2026-07-21T04:21:05.0731027Z Updating files:  85% (7296/8583)
+2026-07-21T04:21:05.0770371Z Updating files:  86% (7382/8583)
+2026-07-21T04:21:05.0794891Z Updating files:  87% (7468/8583)
+2026-07-21T04:21:05.0836763Z Updating files:  88% (7554/8583)
+2026-07-21T04:21:05.0888265Z Updating files:  89% (7639/8583)
+2026-07-21T04:21:05.0939246Z Updating files:  90% (7725/8583)
+2026-07-21T04:21:05.1039978Z Updating files:  91% (7811/8583)
+2026-07-21T04:21:05.1178617Z Updating files:  92% (7897/8583)
+2026-07-21T04:21:05.1211247Z Updating files:  93% (7983/8583)
+2026-07-21T04:21:05.1240992Z Updating files:  94% (8069/8583)
+2026-07-21T04:21:05.1282048Z Updating files:  95% (8154/8583)
+2026-07-21T04:21:05.1318825Z Updating files:  96% (8240/8583)
+2026-07-21T04:21:05.1352854Z Updating files:  97% (8326/8583)
+2026-07-21T04:21:05.1390312Z Updating files:  98% (8412/8583)
+2026-07-21T04:21:05.1429199Z Updating files:  99% (8498/8583)
+2026-07-21T04:21:05.1429506Z Updating files: 100% (8583/8583)
+2026-07-21T04:21:05.1429761Z Updating files: 100% (8583/8583), done.
+2026-07-21T04:21:05.1486036Z Note: switching to 'refs/remotes/pull/814/merge'.
+2026-07-21T04:21:05.1486307Z 
+2026-07-21T04:21:05.1486500Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-07-21T04:21:05.1486913Z changes and commit them, and you can discard any commits you make in this
+2026-07-21T04:21:05.1487265Z state without impacting any branches by switching back to a branch.
+2026-07-21T04:21:05.1487461Z 
+2026-07-21T04:21:05.1487605Z If you want to create a new branch to retain commits you create, you may
+2026-07-21T04:21:05.1487955Z do so (now or later) by using -c with the switch command. Example:
+2026-07-21T04:21:05.1488135Z 
+2026-07-21T04:21:05.1488225Z   git switch -c <new-branch-name>
+2026-07-21T04:21:05.1488352Z 
+2026-07-21T04:21:05.1488430Z Or undo this operation with:
+2026-07-21T04:21:05.1488562Z 
+2026-07-21T04:21:05.1488624Z   git switch -
+2026-07-21T04:21:05.1488718Z 
+2026-07-21T04:21:05.1488889Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-07-21T04:21:05.1489272Z 
+2026-07-21T04:21:05.1489714Z HEAD is now at 8959276 Merge 4e86fb91fe7792be60292c380ddc8943d3cf7591 into 20ed7700656e32f7d6285b98c999ba7ad0c5342f
+2026-07-21T04:21:05.1525259Z ##[endgroup]
+2026-07-21T04:21:05.1557481Z [command]/usr/bin/git log -1 --format=%H
+2026-07-21T04:21:05.1577839Z 8959276422950471e6f2d3ba9924a7037fdc3595
+2026-07-21T04:21:05.1727682Z ##[group]Run bash scripts/free-runner-disk.sh
+2026-07-21T04:21:05.1728024Z [36;1mbash scripts/free-runner-disk.sh[0m
+2026-07-21T04:21:05.1808599Z shell: /usr/bin/bash -e {0}
+2026-07-21T04:21:05.1808820Z env:
+2026-07-21T04:21:05.1808975Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:21:05.1809384Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:21:05.1809594Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:21:05.1809779Z   CARGO_NET_RETRY: 10
+2026-07-21T04:21:05.1809958Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:21:05.1810146Z   CARGO_TERM_COLOR: always
+2026-07-21T04:21:05.1810318Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:21:05.1810859Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:21:05.1811154Z   CARGO_TOKEN: ***
+2026-07-21T04:21:05.1811378Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:21:05.1811599Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:21:05.1811794Z ##[endgroup]
+2026-07-21T04:21:05.1905670Z Disk usage before cleanup:
+2026-07-21T04:21:05.1912487Z Filesystem      Size  Used Avail Use% Mounted on
+2026-07-21T04:21:05.1912798Z /dev/root        72G   58G   14G  81% /
+2026-07-21T04:21:05.1913932Z   remove /usr/share/dotnet
+2026-07-21T04:21:30.0107285Z   remove /usr/local/lib/android
+2026-07-21T04:23:20.6283622Z   skip   /opt/ghc (not present)
+2026-07-21T04:23:20.6286334Z   remove /opt/hostedtoolcache/CodeQL
+2026-07-21T04:23:29.9247032Z   prune  dangling and unused docker images
+2026-07-21T04:24:00.6408272Z Disk usage after cleanup:
+2026-07-21T04:24:00.6416267Z Filesystem      Size  Used Avail Use% Mounted on
+2026-07-21T04:24:00.6416521Z /dev/root        72G   39G   33G  54% /
+2026-07-21T04:24:00.6417647Z Reclaimed 19482 MiB; 33753 MiB now available on /
+2026-07-21T04:24:00.6549613Z Prepare all required actions
+2026-07-21T04:24:00.6549966Z Getting action download info
+2026-07-21T04:24:00.8318786Z Download action repository 'docker/setup-buildx-action@v4' (SHA:bb05f3f5519dd87d3ba754cc423b652a5edd6d2c)
+2026-07-21T04:24:01.3164476Z ##[group]Run ./.github/actions/setup-buildx-resilient
+2026-07-21T04:24:01.3164754Z with:
+2026-07-21T04:24:01.3164973Z   buildkit-image: moby/buildkit:buildx-stable-1
+2026-07-21T04:24:01.3165249Z   registry-mirror: mirror.gcr.io
+2026-07-21T04:24:01.3165477Z   verbose: false
+2026-07-21T04:24:01.3165648Z env:
+2026-07-21T04:24:01.3165812Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:24:01.3166009Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:24:01.3166241Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:24:01.3166441Z   CARGO_NET_RETRY: 10
+2026-07-21T04:24:01.3166636Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:24:01.3166848Z   CARGO_TERM_COLOR: always
+2026-07-21T04:24:01.3167051Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:24:01.3167471Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:24:01.3167736Z   CARGO_TOKEN: ***
+2026-07-21T04:24:01.3167944Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:24:01.3168198Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:24:01.3168371Z ##[endgroup]
+2026-07-21T04:24:01.3256336Z ##[group]Run set -u
+2026-07-21T04:24:01.3256599Z [36;1mset -u[0m
+2026-07-21T04:24:01.3256920Z [36;1m# Verbose/debug tracing: opt-in via input, or automatic when the run is[0m
+2026-07-21T04:24:01.3257328Z [36;1m# started with "Enable debug logging" (RUNNER_DEBUG=1). Kept off by[0m
+2026-07-21T04:24:01.3257668Z [36;1m# default so normal logs stay readable.[0m
+2026-07-21T04:24:01.3257963Z [36;1mif [ "${VERBOSE}" = "true" ] || [ "${RUNNER_DEBUG:-}" = "1" ]; then[0m
+2026-07-21T04:24:01.3258260Z [36;1m  echo "==> Verbose tracing enabled"[0m
+2026-07-21T04:24:01.3258485Z [36;1m  set -x[0m
+2026-07-21T04:24:01.3258649Z [36;1mfi[0m
+2026-07-21T04:24:01.3258805Z [36;1m[0m
+2026-07-21T04:24:01.3259215Z [36;1m# Pull a reference with bounded retries and exponential backoff.[0m
+2026-07-21T04:24:01.3259789Z [36;1m# Returns 0 on the first successful pull, non-zero if all attempts fail.[0m
+2026-07-21T04:24:01.3260103Z [36;1mpull_with_retries() {[0m
+2026-07-21T04:24:01.3260303Z [36;1m  ref="$1"[0m
+2026-07-21T04:24:01.3260571Z [36;1m  # Attempts/backoff are overridable via env so the unit test can run[0m
+2026-07-21T04:24:01.3260960Z [36;1m  # fast; the CI defaults stay at 5 attempts / 5s exponential backoff.[0m
+2026-07-21T04:24:01.3261289Z [36;1m  attempts="${PREPULL_ATTEMPTS:-5}"[0m
+2026-07-21T04:24:01.3261531Z [36;1m  delay="${PREPULL_DELAY:-5}"[0m
+2026-07-21T04:24:01.3261777Z [36;1m  for attempt in $(seq 1 "$attempts"); do[0m
+2026-07-21T04:24:01.3262078Z [36;1m    echo "==> Pulling ${ref} (attempt ${attempt}/${attempts})..."[0m
+2026-07-21T04:24:01.3262369Z [36;1m    if docker pull "${ref}"; then[0m
+2026-07-21T04:24:01.3262585Z [36;1m      return 0[0m
+2026-07-21T04:24:01.3262760Z [36;1m    fi[0m
+2026-07-21T04:24:01.3262958Z [36;1m    if [ "$attempt" -lt "$attempts" ]; then[0m
+2026-07-21T04:24:01.3263267Z [36;1m      echo "==> Pull failed, waiting ${delay}s before next attempt..."[0m
+2026-07-21T04:24:01.3263556Z [36;1m      sleep "$delay"[0m
+2026-07-21T04:24:01.3263770Z [36;1m      delay=$((delay * 2))[0m
+2026-07-21T04:24:01.3263968Z [36;1m    fi[0m
+2026-07-21T04:24:01.3264126Z [36;1m  done[0m
+2026-07-21T04:24:01.3264289Z [36;1m  return 1[0m
+2026-07-21T04:24:01.3264457Z [36;1m}[0m
+2026-07-21T04:24:01.3264611Z [36;1m[0m
+2026-07-21T04:24:01.3264867Z [36;1m# 1) Canonical Docker Hub. The common transient-blip case recovers here.[0m
+2026-07-21T04:24:01.3265217Z [36;1mif pull_with_retries "${BUILDKIT_IMAGE}"; then[0m
+2026-07-21T04:24:01.3265629Z [36;1m  echo "==> BuildKit image cached locally from canonical registry; boot will not need a registry pull"[0m
+2026-07-21T04:24:01.3266003Z [36;1m  exit 0[0m
+2026-07-21T04:24:01.3266157Z [36;1mfi[0m
+2026-07-21T04:24:01.3266308Z [36;1m[0m
+2026-07-21T04:24:01.3266647Z [36;1m# 2) Registry-mirror fallback. When Docker Hub's registry endpoint is[0m
+2026-07-21T04:24:01.3267053Z [36;1m#    fully unreachable (issue #69: registry-1.docker.io timed out for[0m
+2026-07-21T04:24:01.3267426Z [36;1m#    longer than a normal blip), the canonical pull above cannot recover[0m
+2026-07-21T04:24:01.3267785Z [36;1m#    no matter how many times it retries. mirror.gcr.io is a[0m
+2026-07-21T04:24:01.3268155Z [36;1m#    pull-through cache of Docker Hub on independent infrastructure, so[0m
+2026-07-21T04:24:01.3268540Z [36;1m#    it usually still serves the image. We pull from there and re-tag to[0m
+2026-07-21T04:24:01.3268924Z [36;1m#    the canonical reference so the docker-container driver boot finds it[0m
+2026-07-21T04:24:01.3269391Z [36;1m#    locally and never touches the failing registry.[0m
+2026-07-21T04:24:01.3269665Z [36;1mif [ -n "${REGISTRY_MIRROR}" ]; then[0m
+2026-07-21T04:24:01.3269973Z [36;1m  mirror_ref="${REGISTRY_MIRROR}/${BUILDKIT_IMAGE}"[0m
+2026-07-21T04:24:01.3270378Z [36;1m  echo "==> Canonical pull failed; trying registry mirror ${mirror_ref}"[0m
+2026-07-21T04:24:01.3270707Z [36;1m  if pull_with_retries "${mirror_ref}"; then[0m
+2026-07-21T04:24:01.3270997Z [36;1m    docker tag "${mirror_ref}" "${BUILDKIT_IMAGE}"[0m
+2026-07-21T04:24:01.3271403Z [36;1m    echo "==> BuildKit image cached locally via mirror and tagged as ${BUILDKIT_IMAGE}; boot will reuse it"[0m
+2026-07-21T04:24:01.3271775Z [36;1m    exit 0[0m
+2026-07-21T04:24:01.3271945Z [36;1m  fi[0m
+2026-07-21T04:24:01.3272169Z [36;1m  echo "==> Mirror pull from ${REGISTRY_MIRROR} also failed"[0m
+2026-07-21T04:24:01.3272431Z [36;1mfi[0m
+2026-07-21T04:24:01.3272587Z [36;1m[0m
+2026-07-21T04:24:01.3272838Z [36;1m# Non-fatal: fall through to setup-buildx, which will attempt its own[0m
+2026-07-21T04:24:01.3273228Z [36;1m# pull during boot. This preserves the previous behaviour in the worst[0m
+2026-07-21T04:24:01.3273588Z [36;1m# case while making the common transient-failure case recover.[0m
+2026-07-21T04:24:01.3274118Z [36;1mecho "==> WARNING: could not pre-pull ${BUILDKIT_IMAGE} from canonical registry or mirror; letting setup-buildx try its own boot pull"[0m
+2026-07-21T04:24:01.3310732Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-07-21T04:24:01.3311030Z env:
+2026-07-21T04:24:01.3311191Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:24:01.3311402Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:24:01.3311616Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:24:01.3311809Z   CARGO_NET_RETRY: 10
+2026-07-21T04:24:01.3311993Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:24:01.3312208Z   CARGO_TERM_COLOR: always
+2026-07-21T04:24:01.3312397Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:24:01.3312737Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:24:01.3312978Z   CARGO_TOKEN: ***
+2026-07-21T04:24:01.3313185Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:24:01.3313429Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:24:01.3313629Z   BUILDKIT_IMAGE: moby/buildkit:buildx-stable-1
+2026-07-21T04:24:01.3313891Z   REGISTRY_MIRROR: mirror.gcr.io
+2026-07-21T04:24:01.3314102Z   VERBOSE: false
+2026-07-21T04:24:01.3314262Z ##[endgroup]
+2026-07-21T04:24:01.3764144Z ==> Pulling moby/buildkit:buildx-stable-1 (attempt 1/5)...
+2026-07-21T04:24:02.2085053Z buildx-stable-1: Pulling from moby/buildkit
+2026-07-21T04:24:02.5524775Z e6f31ffc071e: Pulling fs layer
+2026-07-21T04:24:02.5525166Z a6f58f7d704e: Pulling fs layer
+2026-07-21T04:24:02.5525466Z 79330c0ded89: Pulling fs layer
+2026-07-21T04:24:02.5525754Z 6b52bf3605bc: Pulling fs layer
+2026-07-21T04:24:02.5526032Z 81822f8c16b5: Pulling fs layer
+2026-07-21T04:24:02.5526301Z f9aa1c60275d: Pulling fs layer
+2026-07-21T04:24:02.5526578Z 8ab997ff1227: Pulling fs layer
+2026-07-21T04:24:02.5526856Z 81822f8c16b5: Waiting
+2026-07-21T04:24:02.5527105Z f9aa1c60275d: Waiting
+2026-07-21T04:24:02.5527347Z 8ab997ff1227: Waiting
+2026-07-21T04:24:02.5527588Z 6b52bf3605bc: Waiting
+2026-07-21T04:24:02.6876765Z 79330c0ded89: Download complete
+2026-07-21T04:24:02.8092330Z e6f31ffc071e: Verifying Checksum
+2026-07-21T04:24:02.8093106Z e6f31ffc071e: Download complete
+2026-07-21T04:24:02.8267547Z 6b52bf3605bc: Verifying Checksum
+2026-07-21T04:24:02.8391646Z a6f58f7d704e: Download complete
+2026-07-21T04:24:02.8963861Z e6f31ffc071e: Pull complete
+2026-07-21T04:24:02.9575697Z f9aa1c60275d: Download complete
+2026-07-21T04:24:02.9689636Z 8ab997ff1227: Verifying Checksum
+2026-07-21T04:24:02.9690042Z 8ab997ff1227: Download complete
+2026-07-21T04:24:03.9734100Z a6f58f7d704e: Pull complete
+2026-07-21T04:24:03.9870920Z 81822f8c16b5: Verifying Checksum
+2026-07-21T04:24:03.9871241Z 81822f8c16b5: Download complete
+2026-07-21T04:24:04.4628736Z 79330c0ded89: Pull complete
+2026-07-21T04:24:04.4743365Z 6b52bf3605bc: Pull complete
+2026-07-21T04:24:06.2235889Z 81822f8c16b5: Pull complete
+2026-07-21T04:24:06.2547365Z f9aa1c60275d: Pull complete
+2026-07-21T04:24:06.2640006Z 8ab997ff1227: Pull complete
+2026-07-21T04:24:06.2682477Z Digest: sha256:2f5adac4ecd194d9f8c10b7b5d7bceb5186853db1b26e5abd3a657af0b7e26ec
+2026-07-21T04:24:06.2698181Z Status: Downloaded newer image for moby/buildkit:buildx-stable-1
+2026-07-21T04:24:06.2706720Z docker.io/moby/buildkit:buildx-stable-1
+2026-07-21T04:24:06.2716351Z ==> BuildKit image cached locally from canonical registry; boot will not need a registry pull
+2026-07-21T04:24:06.2770584Z ##[group]Run docker/setup-buildx-action@v4
+2026-07-21T04:24:06.2770842Z with:
+2026-07-21T04:24:06.2771056Z   driver-opts: image=moby/buildkit:buildx-stable-1
+2026-07-21T04:24:06.2771337Z   driver: docker-container
+2026-07-21T04:24:06.2771542Z   use: true
+2026-07-21T04:24:06.2771717Z   keep-state: false
+2026-07-21T04:24:06.2771904Z   cache-binary: true
+2026-07-21T04:24:06.2772087Z   cleanup: true
+2026-07-21T04:24:06.2772268Z env:
+2026-07-21T04:24:06.2772434Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:24:06.2772626Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:24:06.2772858Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:24:06.2773057Z   CARGO_NET_RETRY: 10
+2026-07-21T04:24:06.2773252Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:24:06.2773492Z   CARGO_TERM_COLOR: always
+2026-07-21T04:24:06.2773850Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:24:06.2774267Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:24:06.2774540Z   CARGO_TOKEN: ***
+2026-07-21T04:24:06.2774752Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:24:06.2775000Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:24:06.2775176Z ##[endgroup]
+2026-07-21T04:24:06.4224617Z ##[group]Docker info
+2026-07-21T04:24:06.4248114Z [command]/usr/bin/docker version
+2026-07-21T04:24:06.4431102Z Client: Docker Engine - Community
+2026-07-21T04:24:06.4431583Z  Version:           28.0.4
+2026-07-21T04:24:06.4432062Z  API version:       1.48
+2026-07-21T04:24:06.4432436Z  Go version:        go1.23.7
+2026-07-21T04:24:06.4432817Z  Git commit:        b8034c0
+2026-07-21T04:24:06.4433212Z  Built:             Tue Mar 25 15:07:16 2025
+2026-07-21T04:24:06.4433617Z  OS/Arch:           linux/amd64
+2026-07-21T04:24:06.4433987Z  Context:           default
+2026-07-21T04:24:06.4434254Z 
+2026-07-21T04:24:06.4434522Z Server: Docker Engine - Community
+2026-07-21T04:24:06.4434935Z  Engine:
+2026-07-21T04:24:06.4435329Z   Version:          28.0.4
+2026-07-21T04:24:06.4435732Z   API version:      1.48 (minimum version 1.24)
+2026-07-21T04:24:06.4436190Z   Go version:       go1.23.7
+2026-07-21T04:24:06.4436583Z   Git commit:       6430e49
+2026-07-21T04:24:06.4436950Z   Built:            Tue Mar 25 15:07:16 2025
+2026-07-21T04:24:06.4437369Z   OS/Arch:          linux/amd64
+2026-07-21T04:24:06.4437723Z   Experimental:     false
+2026-07-21T04:24:06.4438007Z  containerd:
+2026-07-21T04:24:06.4438344Z   Version:          v2.2.6
+2026-07-21T04:24:06.4438707Z   GitCommit:        11ce9d5f3c68c941867e82890e93e815c1304f1b
+2026-07-21T04:24:06.4439203Z  runc:
+2026-07-21T04:24:06.4439522Z   Version:          1.3.6
+2026-07-21T04:24:06.4439807Z   GitCommit:        v1.3.6-0-g491b69ba
+2026-07-21T04:24:06.4440126Z  docker-init:
+2026-07-21T04:24:06.4440379Z   Version:          0.19.0
+2026-07-21T04:24:06.4440653Z   GitCommit:        de40ad0
+2026-07-21T04:24:06.4466824Z [command]/usr/bin/docker info
+2026-07-21T04:24:07.3336749Z Client: Docker Engine - Community
+2026-07-21T04:24:07.3337299Z  Version:    28.0.4
+2026-07-21T04:24:07.3337998Z  Context:    default
+2026-07-21T04:24:07.3338221Z  Debug Mode: false
+2026-07-21T04:24:07.3338394Z  Plugins:
+2026-07-21T04:24:07.3338557Z   buildx: Docker Buildx (Docker Inc.)
+2026-07-21T04:24:07.3338818Z     Version:  v0.35.0
+2026-07-21T04:24:07.3339234Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+2026-07-21T04:24:07.3339590Z   compose: Docker Compose (Docker Inc.)
+2026-07-21T04:24:07.3339852Z     Version:  v2.38.2
+2026-07-21T04:24:07.3340087Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+2026-07-21T04:24:07.3340288Z 
+2026-07-21T04:24:07.3340364Z Server:
+2026-07-21T04:24:07.3340529Z  Containers: 0
+2026-07-21T04:24:07.3340710Z   Running: 0
+2026-07-21T04:24:07.3340898Z   Paused: 0
+2026-07-21T04:24:07.3341043Z   Stopped: 0
+2026-07-21T04:24:07.3341216Z  Images: 1
+2026-07-21T04:24:07.3341413Z  Server Version: 28.0.4
+2026-07-21T04:24:07.3341595Z  Storage Driver: overlay2
+2026-07-21T04:24:07.3341766Z   Backing Filesystem: extfs
+2026-07-21T04:24:07.3341943Z   Supports d_type: true
+2026-07-21T04:24:07.3342104Z   Using metacopy: false
+2026-07-21T04:24:07.3342268Z   Native Overlay Diff: false
+2026-07-21T04:24:07.3342439Z   userxattr: false
+2026-07-21T04:24:07.3342592Z  Logging Driver: json-file
+2026-07-21T04:24:07.3342760Z  Cgroup Driver: systemd
+2026-07-21T04:24:07.3342916Z  Cgroup Version: 2
+2026-07-21T04:24:07.3343060Z  Plugins:
+2026-07-21T04:24:07.3343203Z   Volume: local
+2026-07-21T04:24:07.3343377Z   Network: bridge host ipvlan macvlan null overlay
+2026-07-21T04:24:07.3343661Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+2026-07-21T04:24:07.3343915Z  Swarm: inactive
+2026-07-21T04:24:07.3344081Z  Runtimes: runc io.containerd.runc.v2
+2026-07-21T04:24:07.3344333Z  Default Runtime: runc
+2026-07-21T04:24:07.3344527Z  Init Binary: docker-init
+2026-07-21T04:24:07.3344842Z  containerd version: 11ce9d5f3c68c941867e82890e93e815c1304f1b
+2026-07-21T04:24:07.3345562Z  runc version: v1.3.6-0-g491b69ba
+2026-07-21T04:24:07.3345800Z  init version: de40ad0
+2026-07-21T04:24:07.3345994Z  Security Options:
+2026-07-21T04:24:07.3346185Z   apparmor
+2026-07-21T04:24:07.3346364Z   seccomp
+2026-07-21T04:24:07.3346557Z    Profile: builtin
+2026-07-21T04:24:07.3346761Z   cgroupns
+2026-07-21T04:24:07.3346958Z  Kernel Version: 6.17.0-1020-azure
+2026-07-21T04:24:07.3347197Z  Operating System: Ubuntu 24.04.4 LTS
+2026-07-21T04:24:07.3347433Z  OSType: linux
+2026-07-21T04:24:07.3347624Z  Architecture: x86_64
+2026-07-21T04:24:07.3347825Z  CPUs: 4
+2026-07-21T04:24:07.3347993Z  Total Memory: 15.61GiB
+2026-07-21T04:24:07.3348206Z  Name: runnervm3jd5f
+2026-07-21T04:24:07.3348402Z  ID: 68db87d9-67e2-46d2-9032-068bf1883f31
+2026-07-21T04:24:07.3348629Z  Docker Root Dir: /var/lib/docker
+2026-07-21T04:24:07.3348827Z  Debug Mode: false
+2026-07-21T04:24:07.3349004Z  Username: githubactions
+2026-07-21T04:24:07.3349399Z  Experimental: false
+2026-07-21T04:24:07.3349605Z  Insecure Registries:
+2026-07-21T04:24:07.3355281Z   ::1/128
+2026-07-21T04:24:07.3355478Z   127.0.0.0/8
+2026-07-21T04:24:07.3355667Z  Live Restore Enabled: false
+2026-07-21T04:24:07.3355814Z 
+2026-07-21T04:24:07.3356278Z ##[endgroup]
+2026-07-21T04:24:07.3766300Z ##[group]Buildx version
+2026-07-21T04:24:07.3782742Z [command]/usr/bin/docker buildx version
+2026-07-21T04:24:07.4137341Z github.com/docker/buildx v0.35.0 a319e5b15052cf6557ceb666eb8ff6e32380b782
+2026-07-21T04:24:07.4152402Z ##[endgroup]
+2026-07-21T04:24:07.4264877Z ##[group]Inspecting default docker context
+2026-07-21T04:24:07.4368690Z [
+2026-07-21T04:24:07.4368861Z   {
+2026-07-21T04:24:07.4369014Z     "Name": "default",
+2026-07-21T04:24:07.4369464Z     "Metadata": {},
+2026-07-21T04:24:07.4369696Z     "Endpoints": {
+2026-07-21T04:24:07.4369876Z       "docker": {
+2026-07-21T04:24:07.4370136Z         "Host": "unix:///var/run/docker.sock",
+2026-07-21T04:24:07.4370365Z         "SkipTLSVerify": false
+2026-07-21T04:24:07.4370920Z       }
+2026-07-21T04:24:07.4371160Z     },
+2026-07-21T04:24:07.4371419Z     "TLSMaterial": {},
+2026-07-21T04:24:07.4371813Z     "Storage": {
+2026-07-21T04:24:07.4372139Z       "MetadataPath": "<IN MEMORY>",
+2026-07-21T04:24:07.4372446Z       "TLSPath": "<IN MEMORY>"
+2026-07-21T04:24:07.4372750Z     }
+2026-07-21T04:24:07.4372983Z   }
+2026-07-21T04:24:07.4373228Z ]
+2026-07-21T04:24:07.4373860Z ##[endgroup]
+2026-07-21T04:24:07.4374293Z ##[group]Creating a new builder instance
+2026-07-21T04:24:07.5162852Z [command]/usr/bin/docker buildx create --name builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e --driver docker-container --driver-opt image=moby/buildkit:buildx-stable-1 --buildkitd-flags --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host --use
+2026-07-21T04:24:07.5526738Z builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e
+2026-07-21T04:24:07.5540476Z ##[endgroup]
+2026-07-21T04:24:07.5541004Z ##[group]Booting builder
+2026-07-21T04:24:07.5565941Z [command]/usr/bin/docker buildx inspect --bootstrap --builder builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e
+2026-07-21T04:24:07.5923016Z #1 [internal] booting buildkit
+2026-07-21T04:24:07.7429439Z #1 pulling image moby/buildkit:buildx-stable-1
+2026-07-21T04:24:08.0536909Z #1 pulling image moby/buildkit:buildx-stable-1 0.5s done
+2026-07-21T04:24:08.2039577Z #1 creating container buildx_buildkit_builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0
+2026-07-21T04:24:08.8225892Z #1 creating container buildx_buildkit_builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0 0.8s done
+2026-07-21T04:24:08.8237352Z #1 DONE 1.2s
+2026-07-21T04:24:08.8480268Z Name:          builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e
+2026-07-21T04:24:08.8480894Z Driver:        docker-container
+2026-07-21T04:24:08.8481282Z Last Activity: 2026-07-21 04:24:07 +0000 UTC
+2026-07-21T04:24:08.8481549Z 
+2026-07-21T04:24:08.8481659Z Nodes:
+2026-07-21T04:24:08.8481979Z Name:                  builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0
+2026-07-21T04:24:08.8482461Z Endpoint:              unix:///var/run/docker.sock
+2026-07-21T04:24:08.8483146Z Driver Options:        image="moby/buildkit:buildx-stable-1"
+2026-07-21T04:24:08.8483557Z Status:                running
+2026-07-21T04:24:08.8484137Z BuildKit daemon flags: --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
+2026-07-21T04:24:08.8484784Z BuildKit version:      v0.31.2
+2026-07-21T04:24:08.8485226Z Platforms:             linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/386
+2026-07-21T04:24:08.8485681Z Labels:
+2026-07-21T04:24:08.8485989Z  org.mobyproject.buildkit.worker.executor:         oci
+2026-07-21T04:24:08.8486435Z  org.mobyproject.buildkit.worker.hostname:         372e9c54024a
+2026-07-21T04:24:08.8486956Z  org.mobyproject.buildkit.worker.network:          host
+2026-07-21T04:24:08.8487405Z  org.mobyproject.buildkit.worker.oci.process-mode: sandbox
+2026-07-21T04:24:08.8487927Z  org.mobyproject.buildkit.worker.selinux.enabled:  false
+2026-07-21T04:24:08.8488395Z  org.mobyproject.buildkit.worker.snapshotter:      overlayfs
+2026-07-21T04:24:08.8488800Z GC Policy rule#0:
+2026-07-21T04:24:08.8489247Z  All:            false
+2026-07-21T04:24:08.8489630Z  Filters:        type==source.local type==exec.cachemount type==source.git.checkout
+2026-07-21T04:24:08.8490078Z  Keep Duration:  48h0m0s
+2026-07-21T04:24:08.8490369Z  Max Used Space: 488.3MiB
+2026-07-21T04:24:08.8490637Z GC Policy rule#1:
+2026-07-21T04:24:08.8490957Z  All:            false
+2026-07-21T04:24:08.8491223Z  Keep Duration:  1440h0m0s
+2026-07-21T04:24:08.8491486Z  Reserved Space: 7.451GiB
+2026-07-21T04:24:08.8491802Z  Max Used Space: 54.02GiB
+2026-07-21T04:24:08.8492078Z  Min Free Space: 13.97GiB
+2026-07-21T04:24:08.8492339Z GC Policy rule#2:
+2026-07-21T04:24:08.8492613Z  All:            false
+2026-07-21T04:24:08.8492864Z  Reserved Space: 7.451GiB
+2026-07-21T04:24:08.8493163Z  Max Used Space: 54.02GiB
+2026-07-21T04:24:08.8493417Z  Min Free Space: 13.97GiB
+2026-07-21T04:24:08.8493696Z GC Policy rule#3:
+2026-07-21T04:24:08.8494190Z  All:            true
+2026-07-21T04:24:08.8494463Z  Reserved Space: 7.451GiB
+2026-07-21T04:24:08.8494755Z  Max Used Space: 54.02GiB
+2026-07-21T04:24:08.8495080Z  Min Free Space: 13.97GiB
+2026-07-21T04:24:08.8517611Z ##[endgroup]
+2026-07-21T04:24:08.9141750Z ##[group]Inspect builder
+2026-07-21T04:24:08.9143941Z {
+2026-07-21T04:24:08.9144282Z   "nodes": [
+2026-07-21T04:24:08.9144499Z     {
+2026-07-21T04:24:08.9144996Z       "name": "builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0",
+2026-07-21T04:24:08.9145680Z       "endpoint": "unix:///var/run/docker.sock",
+2026-07-21T04:24:08.9146153Z       "driver-opts": [
+2026-07-21T04:24:08.9146660Z         "image=moby/buildkit:buildx-stable-1"
+2026-07-21T04:24:08.9147084Z       ],
+2026-07-21T04:24:08.9147378Z       "status": "running",
+2026-07-21T04:24:08.9148232Z       "buildkitd-flags": "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host",
+2026-07-21T04:24:08.9149014Z       "buildkit": "v0.31.2",
+2026-07-21T04:24:08.9149801Z       "platforms": "linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4,linux/386",
+2026-07-21T04:24:08.9150356Z       "features": {
+2026-07-21T04:24:08.9150631Z         "Automatically load images to the Docker Engine image store": true,
+2026-07-21T04:24:08.9151021Z         "Cache export": true,
+2026-07-21T04:24:08.9151275Z         "Direct push": true,
+2026-07-21T04:24:08.9151565Z         "Docker exporter": true,
+2026-07-21T04:24:08.9151857Z         "Multi-platform build": true,
+2026-07-21T04:24:08.9152093Z         "OCI exporter": true
+2026-07-21T04:24:08.9152374Z       },
+2026-07-21T04:24:08.9152587Z       "labels": {
+2026-07-21T04:24:08.9152844Z         "org.mobyproject.buildkit.worker.executor": "oci",
+2026-07-21T04:24:08.9153198Z         "org.mobyproject.buildkit.worker.hostname": "372e9c54024a",
+2026-07-21T04:24:08.9153608Z         "org.mobyproject.buildkit.worker.network": "host",
+2026-07-21T04:24:08.9154073Z         "org.mobyproject.buildkit.worker.oci.process-mode": "sandbox",
+2026-07-21T04:24:08.9154568Z         "org.mobyproject.buildkit.worker.selinux.enabled": "false",
+2026-07-21T04:24:08.9155221Z         "org.mobyproject.buildkit.worker.snapshotter": "overlayfs"
+2026-07-21T04:24:08.9155650Z       },
+2026-07-21T04:24:08.9155887Z       "gcPolicy": [
+2026-07-21T04:24:08.9156224Z         {
+2026-07-21T04:24:08.9156485Z           "all": false,
+2026-07-21T04:24:08.9156761Z           "filter": [
+2026-07-21T04:24:08.9157167Z             "type==source.local type==exec.cachemount type==source.git.checkout"
+2026-07-21T04:24:08.9157548Z           ],
+2026-07-21T04:24:08.9157772Z           "keepDuration": "48h0m0s",
+2026-07-21T04:24:08.9158188Z           "maxUsedSpace": "488.3MiB"
+2026-07-21T04:24:08.9158503Z         },
+2026-07-21T04:24:08.9158806Z         {
+2026-07-21T04:24:08.9159174Z           "all": false,
+2026-07-21T04:24:08.9159462Z           "keepDuration": "1440h0m0s",
+2026-07-21T04:24:08.9159876Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:08.9160217Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:08.9160561Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:08.9160940Z         },
+2026-07-21T04:24:08.9161159Z         {
+2026-07-21T04:24:08.9161477Z           "all": false,
+2026-07-21T04:24:08.9161769Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:08.9162169Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:08.9162574Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:08.9162867Z         },
+2026-07-21T04:24:08.9163146Z         {
+2026-07-21T04:24:08.9163393Z           "all": true,
+2026-07-21T04:24:08.9163671Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:08.9164014Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:08.9164313Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:08.9164633Z         }
+2026-07-21T04:24:08.9164911Z       ]
+2026-07-21T04:24:08.9165150Z     }
+2026-07-21T04:24:08.9165446Z   ],
+2026-07-21T04:24:08.9165746Z   "name": "builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e",
+2026-07-21T04:24:08.9166158Z   "driver": "docker-container",
+2026-07-21T04:24:08.9166656Z   "lastActivity": "2026-07-21T04:24:07.000Z"
+2026-07-21T04:24:08.9166978Z }
+2026-07-21T04:24:08.9167522Z ##[endgroup]
+2026-07-21T04:24:08.9168008Z ##[group]BuildKit version
+2026-07-21T04:24:08.9168392Z builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0: v0.31.2
+2026-07-21T04:24:08.9168975Z ##[endgroup]
+2026-07-21T04:24:08.9286535Z ##[group]Run docker/build-push-action@v7
+2026-07-21T04:24:08.9286808Z with:
+2026-07-21T04:24:08.9287043Z   context: .
+2026-07-21T04:24:08.9287286Z   push: false
+2026-07-21T04:24:08.9287494Z   load: true
+2026-07-21T04:24:08.9287699Z   tags: formal-ai:pr-check
+2026-07-21T04:24:08.9287921Z   cache-from: type=gha
+2026-07-21T04:24:08.9288177Z   cache-to: type=gha,mode=max
+2026-07-21T04:24:08.9288429Z   no-cache: false
+2026-07-21T04:24:08.9288636Z   pull: false
+2026-07-21T04:24:08.9290644Z   github-token: ***
+2026-07-21T04:24:08.9290861Z env:
+2026-07-21T04:24:08.9291092Z   GIT_CONFIG_COUNT: 1
+2026-07-21T04:24:08.9291339Z   GIT_CONFIG_KEY_0: init.defaultBranch
+2026-07-21T04:24:08.9291599Z   GIT_CONFIG_VALUE_0: main
+2026-07-21T04:24:08.9291840Z   CARGO_NET_RETRY: 10
+2026-07-21T04:24:08.9292106Z   CARGO_HTTP_MULTIPLEXING: false
+2026-07-21T04:24:08.9292358Z   CARGO_TERM_COLOR: always
+2026-07-21T04:24:08.9292601Z   RUSTFLAGS: -Dwarnings
+2026-07-21T04:24:08.9293001Z   CARGO_REGISTRY_TOKEN: ***
+2026-07-21T04:24:08.9293330Z   CARGO_TOKEN: ***
+2026-07-21T04:24:08.9293649Z   GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+2026-07-21T04:24:08.9293943Z   DOCKERHUB_IMAGE: 
+2026-07-21T04:24:08.9294149Z ##[endgroup]
+2026-07-21T04:24:09.0988175Z ##[group]GitHub Actions runtime token ACs
+2026-07-21T04:24:09.0994593Z refs/pull/814/merge: read/write
+2026-07-21T04:24:09.0994990Z refs/heads/main: read
+2026-07-21T04:24:09.0995520Z ##[endgroup]
+2026-07-21T04:24:09.0996074Z ##[group]Docker info
+2026-07-21T04:24:09.1038064Z [command]/usr/bin/docker version
+2026-07-21T04:24:09.1199898Z Client: Docker Engine - Community
+2026-07-21T04:24:09.1202119Z  Version:           28.0.4
+2026-07-21T04:24:09.1202743Z  API version:       1.48
+2026-07-21T04:24:09.1203398Z  Go version:        go1.23.7
+2026-07-21T04:24:09.1203827Z  Git commit:        b8034c0
+2026-07-21T04:24:09.1204222Z  Built:             Tue Mar 25 15:07:16 2025
+2026-07-21T04:24:09.1204560Z  OS/Arch:           linux/amd64
+2026-07-21T04:24:09.1204880Z  Context:           default
+2026-07-21T04:24:09.1205124Z 
+2026-07-21T04:24:09.1205354Z Server: Docker Engine - Community
+2026-07-21T04:24:09.1205595Z  Engine:
+2026-07-21T04:24:09.1205863Z   Version:          28.0.4
+2026-07-21T04:24:09.1206182Z   API version:      1.48 (minimum version 1.24)
+2026-07-21T04:24:09.1206496Z   Go version:       go1.23.7
+2026-07-21T04:24:09.1206758Z   Git commit:       6430e49
+2026-07-21T04:24:09.1207046Z   Built:            Tue Mar 25 15:07:16 2025
+2026-07-21T04:24:09.1207646Z   OS/Arch:          linux/amd64
+2026-07-21T04:24:09.1208068Z   Experimental:     false
+2026-07-21T04:24:09.1208336Z  containerd:
+2026-07-21T04:24:09.1208634Z   Version:          v2.2.6
+2026-07-21T04:24:09.1209004Z   GitCommit:        11ce9d5f3c68c941867e82890e93e815c1304f1b
+2026-07-21T04:24:09.1209528Z  runc:
+2026-07-21T04:24:09.1209791Z   Version:          1.3.6
+2026-07-21T04:24:09.1210097Z   GitCommit:        v1.3.6-0-g491b69ba
+2026-07-21T04:24:09.1210438Z  docker-init:
+2026-07-21T04:24:09.1210715Z   Version:          0.19.0
+2026-07-21T04:24:09.1210943Z   GitCommit:        de40ad0
+2026-07-21T04:24:09.1237420Z [command]/usr/bin/docker info
+2026-07-21T04:24:09.1627527Z Client: Docker Engine - Community
+2026-07-21T04:24:09.1627856Z  Version:    28.0.4
+2026-07-21T04:24:09.1628063Z  Context:    default
+2026-07-21T04:24:09.1628324Z  Debug Mode: false
+2026-07-21T04:24:09.1628563Z  Plugins:
+2026-07-21T04:24:09.1628783Z   buildx: Docker Buildx (Docker Inc.)
+2026-07-21T04:24:09.1629209Z     Version:  v0.35.0
+2026-07-21T04:24:09.1629572Z     Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+2026-07-21T04:24:09.1630006Z   compose: Docker Compose (Docker Inc.)
+2026-07-21T04:24:09.1630359Z     Version:  v2.38.2
+2026-07-21T04:24:09.1630668Z     Path:     /usr/libexec/docker/cli-plugins/docker-compose
+2026-07-21T04:24:09.1630989Z 
+2026-07-21T04:24:09.1631105Z Server:
+2026-07-21T04:24:09.1631340Z  Containers: 1
+2026-07-21T04:24:09.1631603Z   Running: 1
+2026-07-21T04:24:09.1631865Z   Paused: 0
+2026-07-21T04:24:09.1632090Z   Stopped: 0
+2026-07-21T04:24:09.1632588Z  Images: 1
+2026-07-21T04:24:09.1632838Z  Server Version: 28.0.4
+2026-07-21T04:24:09.1633134Z  Storage Driver: overlay2
+2026-07-21T04:24:09.1633511Z   Backing Filesystem: extfs
+2026-07-21T04:24:09.1633798Z   Supports d_type: true
+2026-07-21T04:24:09.1634096Z   Using metacopy: false
+2026-07-21T04:24:09.1634390Z   Native Overlay Diff: false
+2026-07-21T04:24:09.1634667Z   userxattr: false
+2026-07-21T04:24:09.1634995Z  Logging Driver: json-file
+2026-07-21T04:24:09.1635279Z  Cgroup Driver: systemd
+2026-07-21T04:24:09.1635556Z  Cgroup Version: 2
+2026-07-21T04:24:09.1635844Z  Plugins:
+2026-07-21T04:24:09.1636066Z   Volume: local
+2026-07-21T04:24:09.1636432Z   Network: bridge host ipvlan macvlan null overlay
+2026-07-21T04:24:09.1636916Z   Log: awslogs fluentd gcplogs gelf journald json-file local splunk syslog
+2026-07-21T04:24:09.1637387Z  Swarm: inactive
+2026-07-21T04:24:09.1637705Z  Runtimes: io.containerd.runc.v2 runc
+2026-07-21T04:24:09.1638052Z  Default Runtime: runc
+2026-07-21T04:24:09.1638360Z  Init Binary: docker-init
+2026-07-21T04:24:09.1638733Z  containerd version: 11ce9d5f3c68c941867e82890e93e815c1304f1b
+2026-07-21T04:24:09.1639690Z  runc version: v1.3.6-0-g491b69ba
+2026-07-21T04:24:09.1640051Z  init version: de40ad0
+2026-07-21T04:24:09.1640327Z  Security Options:
+2026-07-21T04:24:09.1640620Z   apparmor
+2026-07-21T04:24:09.1640927Z   seccomp
+2026-07-21T04:24:09.1641193Z    Profile: builtin
+2026-07-21T04:24:09.1641475Z   cgroupns
+2026-07-21T04:24:09.1641745Z  Kernel Version: 6.17.0-1020-azure
+2026-07-21T04:24:09.1642082Z  Operating System: Ubuntu 24.04.4 LTS
+2026-07-21T04:24:09.1642422Z  OSType: linux
+2026-07-21T04:24:09.1642702Z  Architecture: x86_64
+2026-07-21T04:24:09.1643053Z  CPUs: 4
+2026-07-21T04:24:09.1643555Z  Total Memory: 15.61GiB
+2026-07-21T04:24:09.1643808Z  Name: runnervm3jd5f
+2026-07-21T04:24:09.1644130Z  ID: 68db87d9-67e2-46d2-9032-068bf1883f31
+2026-07-21T04:24:09.1644456Z  Docker Root Dir: /var/lib/docker
+2026-07-21T04:24:09.1644771Z  Debug Mode: false
+2026-07-21T04:24:09.1645061Z  Username: githubactions
+2026-07-21T04:24:09.1645335Z  Experimental: false
+2026-07-21T04:24:09.1645583Z  Insecure Registries:
+2026-07-21T04:24:09.1645864Z   ::1/128
+2026-07-21T04:24:09.1646056Z   127.0.0.0/8
+2026-07-21T04:24:09.1646359Z  Live Restore Enabled: false
+2026-07-21T04:24:09.1646531Z 
+2026-07-21T04:24:09.1647143Z ##[endgroup]
+2026-07-21T04:24:09.1647647Z ##[group]Proxy configuration
+2026-07-21T04:24:09.1647930Z No proxy configuration found
+2026-07-21T04:24:09.1648411Z ##[endgroup]
+2026-07-21T04:24:09.2078393Z ##[group]Buildx version
+2026-07-21T04:24:09.2093977Z [command]/usr/bin/docker buildx version
+2026-07-21T04:24:09.2450728Z github.com/docker/buildx v0.35.0 a319e5b15052cf6557ceb666eb8ff6e32380b782
+2026-07-21T04:24:09.2463719Z ##[endgroup]
+2026-07-21T04:24:09.2464409Z ##[group]Builder info
+2026-07-21T04:24:09.3074024Z {
+2026-07-21T04:24:09.3074309Z   "nodes": [
+2026-07-21T04:24:09.3075326Z     {
+2026-07-21T04:24:09.3075843Z       "name": "builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0",
+2026-07-21T04:24:09.3076550Z       "endpoint": "unix:///var/run/docker.sock",
+2026-07-21T04:24:09.3076961Z       "driver-opts": [
+2026-07-21T04:24:09.3077282Z         "image=moby/buildkit:buildx-stable-1"
+2026-07-21T04:24:09.3077610Z       ],
+2026-07-21T04:24:09.3077864Z       "status": "running",
+2026-07-21T04:24:09.3078484Z       "buildkitd-flags": "--allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host",
+2026-07-21T04:24:09.3079303Z       "buildkit": "v0.31.2",
+2026-07-21T04:24:09.3079631Z       "platforms": "linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4,linux/386",
+2026-07-21T04:24:09.3080009Z       "features": {
+2026-07-21T04:24:09.3080298Z         "Automatically load images to the Docker Engine image store": true,
+2026-07-21T04:24:09.3080670Z         "Cache export": true,
+2026-07-21T04:24:09.3080924Z         "Direct push": true,
+2026-07-21T04:24:09.3081233Z         "Docker exporter": true,
+2026-07-21T04:24:09.3081543Z         "Multi-platform build": true,
+2026-07-21T04:24:09.3081990Z         "OCI exporter": true
+2026-07-21T04:24:09.3082210Z       },
+2026-07-21T04:24:09.3082438Z       "labels": {
+2026-07-21T04:24:09.3082771Z         "org.mobyproject.buildkit.worker.executor": "oci",
+2026-07-21T04:24:09.3083131Z         "org.mobyproject.buildkit.worker.hostname": "372e9c54024a",
+2026-07-21T04:24:09.3083472Z         "org.mobyproject.buildkit.worker.network": "host",
+2026-07-21T04:24:09.3083856Z         "org.mobyproject.buildkit.worker.oci.process-mode": "sandbox",
+2026-07-21T04:24:09.3084312Z         "org.mobyproject.buildkit.worker.selinux.enabled": "false",
+2026-07-21T04:24:09.3084752Z         "org.mobyproject.buildkit.worker.snapshotter": "overlayfs"
+2026-07-21T04:24:09.3085153Z       },
+2026-07-21T04:24:09.3085383Z       "gcPolicy": [
+2026-07-21T04:24:09.3085607Z         {
+2026-07-21T04:24:09.3085859Z           "all": false,
+2026-07-21T04:24:09.3086073Z           "filter": [
+2026-07-21T04:24:09.3086362Z             "type==source.local type==exec.cachemount type==source.git.checkout"
+2026-07-21T04:24:09.3086774Z           ],
+2026-07-21T04:24:09.3086984Z           "keepDuration": "48h0m0s",
+2026-07-21T04:24:09.3087257Z           "maxUsedSpace": "488.3MiB"
+2026-07-21T04:24:09.3087480Z         },
+2026-07-21T04:24:09.3087653Z         {
+2026-07-21T04:24:09.3087859Z           "all": false,
+2026-07-21T04:24:09.3088151Z           "keepDuration": "1440h0m0s",
+2026-07-21T04:24:09.3088495Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:09.3088817Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:09.3089373Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:09.3089647Z         },
+2026-07-21T04:24:09.3089884Z         {
+2026-07-21T04:24:09.3090108Z           "all": false,
+2026-07-21T04:24:09.3090636Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:09.3090958Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:09.3091284Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:09.3091540Z         },
+2026-07-21T04:24:09.3091775Z         {
+2026-07-21T04:24:09.3092010Z           "all": true,
+2026-07-21T04:24:09.3092248Z           "reservedSpace": "7.451GiB",
+2026-07-21T04:24:09.3092592Z           "maxUsedSpace": "54.02GiB",
+2026-07-21T04:24:09.3092928Z           "minFreeSpace": "13.97GiB"
+2026-07-21T04:24:09.3093233Z         }
+2026-07-21T04:24:09.3093526Z       ]
+2026-07-21T04:24:09.3093742Z     }
+2026-07-21T04:24:09.3094007Z   ],
+2026-07-21T04:24:09.3094415Z   "name": "builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e",
+2026-07-21T04:24:09.3094856Z   "driver": "docker-container",
+2026-07-21T04:24:09.3095187Z   "lastActivity": "2026-07-21T04:24:07.000Z"
+2026-07-21T04:24:09.3095470Z }
+2026-07-21T04:24:09.3095985Z ##[endgroup]
+2026-07-21T04:24:09.4130667Z [command]/usr/bin/docker buildx build --cache-from type=gha --cache-to type=gha,mode=max --iidfile /home/runner/work/_temp/docker-actions-toolkit-JYYrR0/build-iidfile-f072f38a6d.txt --tag formal-ai:pr-check --load --metadata-file /home/runner/work/_temp/docker-actions-toolkit-JYYrR0/build-metadata-314b35e513.json .
+2026-07-21T04:24:09.7030087Z #0 building with "builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e" instance using docker-container driver
+2026-07-21T04:24:09.7033779Z 
+2026-07-21T04:24:09.7034101Z #1 [internal] load build definition from Dockerfile
+2026-07-21T04:24:09.7034559Z #1 transferring dockerfile: 1.36kB done
+2026-07-21T04:24:09.7035008Z #1 DONE 0.1s
+2026-07-21T04:24:09.7035190Z 
+2026-07-21T04:24:09.7035448Z #2 [internal] load metadata for docker.io/library/rust:1.96-slim
+2026-07-21T04:24:10.0256947Z #2 ...
+2026-07-21T04:24:10.0257119Z 
+2026-07-21T04:24:10.0257269Z #3 [auth] library/rust:pull token for registry-1.docker.io
+2026-07-21T04:24:10.0257578Z #3 DONE 0.0s
+2026-07-21T04:24:10.0257724Z 
+2026-07-21T04:24:10.0257904Z #4 [auth] konard/box-dind:pull token for registry-1.docker.io
+2026-07-21T04:24:10.0258237Z #4 DONE 0.0s
+2026-07-21T04:24:10.1761617Z 
+2026-07-21T04:24:10.1762479Z #5 [internal] load metadata for docker.io/konard/box-dind:2.1.1
+2026-07-21T04:24:10.4115616Z #5 ...
+2026-07-21T04:24:10.4116138Z 
+2026-07-21T04:24:10.4116391Z #2 [internal] load metadata for docker.io/library/rust:1.96-slim
+2026-07-21T04:24:10.4116836Z #2 DONE 0.7s
+2026-07-21T04:24:10.5314600Z 
+2026-07-21T04:24:10.5315605Z #5 [internal] load metadata for docker.io/konard/box-dind:2.1.1
+2026-07-21T04:24:10.5316350Z #5 DONE 0.8s
+2026-07-21T04:24:10.7224507Z 
+2026-07-21T04:24:10.7225872Z #6 [internal] load .dockerignore
+2026-07-21T04:24:10.7226780Z #6 transferring context: 77B done
+2026-07-21T04:24:10.7227069Z #6 DONE 0.0s
+2026-07-21T04:24:10.7227188Z 
+2026-07-21T04:24:10.7227350Z #7 [internal] load build context
+2026-07-21T04:24:10.7227778Z #7 DONE 0.0s
+2026-07-21T04:24:10.7227912Z 
+2026-07-21T04:24:10.7228561Z #8 [builder 1/4] FROM docker.io/library/rust:1.96-slim@sha256:31ee7fc65186be7e0e0ccb3f2ca305f14e4739e7642a1ae65753aa5d7b874523
+2026-07-21T04:24:10.7229978Z #8 resolve docker.io/library/rust:1.96-slim@sha256:31ee7fc65186be7e0e0ccb3f2ca305f14e4739e7642a1ae65753aa5d7b874523 0.2s done
+2026-07-21T04:24:10.8458376Z #8 DONE 0.2s
+2026-07-21T04:24:10.8458660Z 
+2026-07-21T04:24:10.8459235Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:24:10.8460334Z #9 resolve docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f 0.1s done
+2026-07-21T04:24:10.8460946Z #9 DONE 0.2s
+2026-07-21T04:24:10.8461153Z 
+2026-07-21T04:24:10.8466590Z #10 importing cache manifest from gha:7534541214969352911
+2026-07-21T04:24:10.8467257Z #10 DONE 0.3s
+2026-07-21T04:24:10.9973819Z 
+2026-07-21T04:24:10.9974546Z #7 [internal] load build context
+2026-07-21T04:24:13.6093520Z #7 transferring context: 496.59MB 2.5s done
+2026-07-21T04:24:13.6093943Z #7 DONE 2.8s
+2026-07-21T04:24:13.7720856Z 
+2026-07-21T04:24:13.7721778Z #11 [builder 2/4] WORKDIR /app
+2026-07-21T04:24:13.8702463Z #11 CACHED
+2026-07-21T04:24:14.0215312Z 
+2026-07-21T04:24:14.0215555Z #11 [builder 2/4] WORKDIR /app
+2026-07-21T04:24:14.1002227Z #11 sha256:dbffa33044dc46f0fb6babecef75d25800ece9e7cd06a5f91cd39553e6afda2f 93B / 93B 0.2s
+2026-07-21T04:24:14.2675844Z #11 sha256:dbffa33044dc46f0fb6babecef75d25800ece9e7cd06a5f91cd39553e6afda2f 93B / 93B 0.2s done
+2026-07-21T04:24:14.2676600Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 0B / 290.68MB 0.2s
+2026-07-21T04:24:14.4172222Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 0B / 29.79MB 0.2s
+2026-07-21T04:24:14.8677007Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 3.15MB / 29.79MB 0.6s
+2026-07-21T04:24:15.0171182Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 8.39MB / 29.79MB 0.8s
+2026-07-21T04:24:15.1672532Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 16.78MB / 290.68MB 1.1s
+2026-07-21T04:24:15.1673313Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 13.63MB / 29.79MB 0.9s
+2026-07-21T04:24:15.3175655Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 17.83MB / 29.79MB 1.1s
+2026-07-21T04:24:15.4674556Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 23.07MB / 29.79MB 1.2s
+2026-07-21T04:24:15.6167388Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 27.26MB / 29.79MB 1.4s
+2026-07-21T04:24:15.7666980Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 31.46MB / 290.68MB 1.7s
+2026-07-21T04:24:15.7669852Z #11 sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 29.79MB / 29.79MB 1.5s done
+2026-07-21T04:24:15.7670634Z #11 extracting sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a
+2026-07-21T04:24:16.2173988Z #11 extracting sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1748491f76cae53ba86d13a 0.4s done
+2026-07-21T04:24:16.3665285Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 48.23MB / 290.68MB 2.3s
+2026-07-21T04:24:16.9674225Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 62.91MB / 290.68MB 2.9s
+2026-07-21T04:24:17.5667863Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 79.69MB / 290.68MB 3.5s
+2026-07-21T04:24:18.1676350Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 96.47MB / 290.68MB 4.1s
+2026-07-21T04:24:18.7671701Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 112.20MB / 290.68MB 4.7s
+2026-07-21T04:24:19.3672593Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 130.02MB / 290.68MB 5.3s
+2026-07-21T04:24:19.8167965Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 144.70MB / 290.68MB 5.7s
+2026-07-21T04:24:20.5676841Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 163.58MB / 290.68MB 6.5s
+2026-07-21T04:24:21.1676088Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 180.36MB / 290.68MB 7.1s
+2026-07-21T04:24:21.6176842Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 195.04MB / 290.68MB 7.5s
+2026-07-21T04:24:22.2174516Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 210.76MB / 290.68MB 8.1s
+2026-07-21T04:24:22.8171143Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 227.54MB / 290.68MB 8.7s
+2026-07-21T04:24:23.4172972Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 242.22MB / 290.68MB 9.3s
+2026-07-21T04:24:24.0170330Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 259.00MB / 290.68MB 9.9s
+2026-07-21T04:24:24.6167709Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 277.87MB / 290.68MB 10.5s
+2026-07-21T04:24:26.7927860Z #11 sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 290.68MB / 290.68MB 12.5s done
+2026-07-21T04:24:26.7929703Z #11 extracting sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa
+2026-07-21T04:24:29.8357047Z #11 extracting sha256:5169cf74e23b4eb5efada4feddccfe1372ad72000179e789555e16a4739b3cfa 3.2s done
+2026-07-21T04:24:29.8357767Z #11 DONE 16.2s
+2026-07-21T04:24:30.0013237Z 
+2026-07-21T04:24:30.0014057Z #11 [builder 2/4] WORKDIR /app
+2026-07-21T04:24:30.0014875Z #11 extracting sha256:dbffa33044dc46f0fb6babecef75d25800ece9e7cd06a5f91cd39553e6afda2f 0.0s done
+2026-07-21T04:24:30.0015351Z #11 DONE 16.2s
+2026-07-21T04:24:30.0015516Z 
+2026-07-21T04:24:30.0015813Z #12 [builder 3/4] COPY . .
+2026-07-21T04:24:38.0468738Z #12 DONE 8.2s
+2026-07-21T04:24:38.1954202Z 
+2026-07-21T04:24:38.1956329Z #13 [builder 4/4] RUN cargo build --release --locked
+2026-07-21T04:24:38.1956948Z #13 0.149     Updating crates.io index
+2026-07-21T04:24:39.3970987Z #13 1.351  Downloading crates ...
+2026-07-21T04:24:39.5583165Z #13 1.512   Downloaded adler2 v2.0.1
+2026-07-21T04:24:39.6586083Z #13 1.521   Downloaded bytecheck_derive v0.6.12
+2026-07-21T04:24:39.6586569Z #13 1.523   Downloaded aho-corasick v1.1.4
+2026-07-21T04:24:39.6587015Z #13 1.527   Downloaded anstyle-parse v1.0.0
+2026-07-21T04:24:39.6587436Z #13 1.528   Downloaded allocator-api2 v0.2.21
+2026-07-21T04:24:39.6587741Z #13 1.530   Downloaded ahash v0.7.8
+2026-07-21T04:24:39.6588053Z #13 1.532   Downloaded allocator-api2 v0.4.0
+2026-07-21T04:24:39.6588645Z #13 1.534   Downloaded byteorder v1.5.0
+2026-07-21T04:24:39.6589352Z #13 1.536   Downloaded bitflags v1.3.2
+2026-07-21T04:24:39.6590137Z #13 1.538   Downloaded anstream v1.0.0
+2026-07-21T04:24:39.6590412Z #13 1.541   Downloaded clap_lex v1.1.0
+2026-07-21T04:24:39.6590679Z #13 1.542   Downloaded autocfg v1.5.0
+2026-07-21T04:24:39.6591112Z #13 1.543   Downloaded crossbeam-epoch v0.9.18
+2026-07-21T04:24:39.6591680Z #13 1.548   Downloaded include_dir v0.7.4
+2026-07-21T04:24:39.6592263Z #13 1.550   Downloaded bytecheck v0.8.2
+2026-07-21T04:24:39.6592815Z #13 1.551   Downloaded dtor-proc-macro v0.0.5
+2026-07-21T04:24:39.6593127Z #13 1.552   Downloaded cfg-if v1.0.4
+2026-07-21T04:24:39.6593884Z #13 1.553   Downloaded bytecheck_derive v0.8.2
+2026-07-21T04:24:39.6595344Z #13 1.555   Downloaded ident_case v1.0.1
+2026-07-21T04:24:39.6595647Z #13 1.556   Downloaded darling_macro v0.20.11
+2026-07-21T04:24:39.6595938Z #13 1.556   Downloaded ctor v0.4.3
+2026-07-21T04:24:39.6596180Z #13 1.557   Downloaded atomic-waker v1.1.2
+2026-07-21T04:24:39.6596489Z #13 1.561   Downloaded munge_macro v0.4.7
+2026-07-21T04:24:39.6596780Z #13 1.562   Downloaded hyper-util v0.1.20
+2026-07-21T04:24:39.6597044Z #13 1.567   Downloaded http-body v1.0.1
+2026-07-21T04:24:39.6597316Z #13 1.568   Downloaded futures-core v0.3.32
+2026-07-21T04:24:39.6597567Z #13 1.569   Downloaded potential_utf v0.1.5
+2026-07-21T04:24:39.6597844Z #13 1.571   Downloaded beef v0.5.2
+2026-07-21T04:24:39.6598099Z #13 1.572   Downloaded lino-env v0.1.0
+2026-07-21T04:24:39.6598380Z #13 1.574   Downloaded ptr_meta v0.3.1
+2026-07-21T04:24:39.6598652Z #13 1.575   Downloaded funty v2.0.0
+2026-07-21T04:24:39.6598907Z #13 1.577   Downloaded form_urlencoded v1.2.2
+2026-07-21T04:24:39.6599639Z #13 1.578   Downloaded futures-task v0.3.32
+2026-07-21T04:24:39.6600017Z #13 1.579   Downloaded crypto-common v0.1.7
+2026-07-21T04:24:39.6600383Z #13 1.580   Downloaded equivalent v1.0.2
+2026-07-21T04:24:39.6600760Z #13 1.581   Downloaded borsh-derive v1.6.1
+2026-07-21T04:24:39.6601300Z #13 1.584   Downloaded openssl-probe v0.2.1
+2026-07-21T04:24:39.6601716Z #13 1.585   Downloaded displaydoc v0.2.6
+2026-07-21T04:24:39.6602475Z #13 1.587   Downloaded quote v1.0.45
+2026-07-21T04:24:39.6602829Z #13 1.589   Downloaded http-body-util v0.1.3
+2026-07-21T04:24:39.6603256Z #13 1.590   Downloaded either v1.16.0
+2026-07-21T04:24:39.6603524Z #13 1.591   Downloaded cpufeatures v0.2.17
+2026-07-21T04:24:39.6603786Z #13 1.593   Downloaded heck v0.5.0
+2026-07-21T04:24:39.6604043Z #13 1.594   Downloaded dtor v0.0.6
+2026-07-21T04:24:39.6604478Z #13 1.595   Downloaded bytecheck v0.6.12
+2026-07-21T04:24:39.6604802Z #13 1.596   Downloaded encoding_rs_io v0.1.7
+2026-07-21T04:24:39.6605067Z #13 1.597   Downloaded generic-array v0.14.7
+2026-07-21T04:24:39.6605332Z #13 1.599   Downloaded anstyle v1.0.14
+2026-07-21T04:24:39.6605597Z #13 1.600   Downloaded links-notation v0.13.0
+2026-07-21T04:24:39.6605860Z #13 1.602   Downloaded httparse v1.10.1
+2026-07-21T04:24:39.6606141Z #13 1.605   Downloaded rend v0.4.2
+2026-07-21T04:24:39.6606380Z #13 1.606   Downloaded glob v0.3.3
+2026-07-21T04:24:39.6606642Z #13 1.608   Downloaded rend v0.5.3
+2026-07-21T04:24:39.6607506Z #13 1.610   Downloaded rand_core v0.10.1
+2026-07-21T04:24:39.6609456Z #13 1.611   Downloaded rustc-hash v2.1.2
+2026-07-21T04:24:39.6610976Z #13 1.613   Downloaded platform-num v0.8.0
+2026-07-21T04:24:39.7632163Z #13 1.614   Downloaded rand_chacha v0.3.1
+2026-07-21T04:24:39.7632779Z #13 1.615   Downloaded percent-encoding v2.3.2
+2026-07-21T04:24:39.7633166Z #13 1.617   Downloaded futures-channel v0.3.32
+2026-07-21T04:24:39.7633486Z #13 1.619   Downloaded getrandom v0.3.4
+2026-07-21T04:24:39.7633835Z #13 1.622   Downloaded rkyv_derive v0.8.16
+2026-07-21T04:24:39.7634169Z #13 1.623   Downloaded leak_slice v0.2.0
+2026-07-21T04:24:39.7634516Z #13 1.624   Downloaded getrandom v0.4.2
+2026-07-21T04:24:39.7634853Z #13 1.627   Downloaded ptr_meta v0.1.4
+2026-07-21T04:24:39.7635319Z #13 1.628   Downloaded proc-macro-crate v3.5.0
+2026-07-21T04:24:39.7635719Z #13 1.630   Downloaded hyper v1.10.1
+2026-07-21T04:24:39.7635986Z #13 1.636   Downloaded scopeguard v1.2.0
+2026-07-21T04:24:39.7636368Z #13 1.637   Downloaded strum v0.27.2
+2026-07-21T04:24:39.7636778Z #13 1.638   Downloaded streaming-iterator v0.1.9
+2026-07-21T04:24:39.7642424Z #13 1.639   Downloaded slab v0.4.12
+2026-07-21T04:24:39.7643743Z #13 1.641   Downloaded ppv-lite86 v0.2.21
+2026-07-21T04:24:39.7644621Z #13 1.642   Downloaded rancor v0.1.1
+2026-07-21T04:24:39.7645323Z #13 1.645   Downloaded subtle v2.6.1
+2026-07-21T04:24:39.7645729Z #13 1.646   Downloaded rustls-webpki v0.103.13
+2026-07-21T04:24:39.7646021Z #13 1.650   Downloaded tap v1.0.1
+2026-07-21T04:24:39.7646344Z #13 1.651   Downloaded tinyvec_macros v0.1.1
+2026-07-21T04:24:39.7647148Z #13 1.652   Downloaded thiserror-impl v2.0.18
+2026-07-21T04:24:39.7648049Z #13 1.653   Downloaded thread-priority v1.2.0
+2026-07-21T04:24:39.7648417Z #13 1.654   Downloaded reqwest v0.13.4
+2026-07-21T04:24:39.7648826Z #13 1.660   Downloaded tinystr v0.8.3
+2026-07-21T04:24:39.7649318Z #13 1.662   Downloaded toml_edit v0.25.11+spec-1.1.0
+2026-07-21T04:24:39.7651217Z #13 1.665   Downloaded tower-service v0.3.3
+2026-07-21T04:24:39.7654235Z #13 1.666   Downloaded toml_writer v1.1.1+spec-1.1.0
+2026-07-21T04:24:39.7654561Z #13 1.667   Downloaded toml_parser v1.1.2+spec-1.1.0
+2026-07-21T04:24:39.7654882Z #13 1.669   Downloaded is_terminal_polyfill v1.70.2
+2026-07-21T04:24:39.7655237Z #13 1.670   Downloaded tokio-macros v2.7.0
+2026-07-21T04:24:39.7655521Z #13 1.674   Downloaded tree-sitter-css v0.25.0
+2026-07-21T04:24:39.7655837Z #13 1.677   Downloaded tree-sitter-language v0.1.7
+2026-07-21T04:24:39.7656135Z #13 1.679   Downloaded tree-sitter-ini v1.4.0
+2026-07-21T04:24:39.7656517Z #13 1.680   Downloaded tree-sitter-go v0.25.0
+2026-07-21T04:24:39.7657251Z #13 1.683   Downloaded try-lock v0.2.5
+2026-07-21T04:24:39.7657550Z #13 1.684   Downloaded proc-macro2 v1.0.106
+2026-07-21T04:24:39.7657815Z #13 1.687   Downloaded untrusted v0.9.0
+2026-07-21T04:24:39.7658095Z #13 1.690   Downloaded tree-sitter-java v0.23.5
+2026-07-21T04:24:39.7658389Z #13 1.694   Downloaded tree-sitter-xml v0.7.0
+2026-07-21T04:24:39.7658900Z #13 1.697   Downloaded utf8parse v0.2.2
+2026-07-21T04:24:39.7659322Z #13 1.699   Downloaded zerofrom-derive v0.1.7
+2026-07-21T04:24:39.7659576Z #13 1.701   Downloaded zeroize v1.8.2
+2026-07-21T04:24:39.7659852Z #13 1.703   Downloaded yoke v0.8.3
+2026-07-21T04:24:39.7660138Z #13 1.705   Downloaded wasm-bindgen-shared v0.2.121
+2026-07-21T04:24:39.7660458Z #13 1.706   Downloaded zerovec-derive v0.11.3
+2026-07-21T04:24:39.7660921Z #13 1.708   Downloaded wasm-bindgen-macro v0.2.121
+2026-07-21T04:24:39.7661342Z #13 1.710   Downloaded wasm-bindgen-macro-support v0.2.121
+2026-07-21T04:24:39.7661787Z #13 1.712   Downloaded rkyv v0.7.46
+2026-07-21T04:24:39.7662135Z #13 1.717   Downloaded zmij v1.0.21
+2026-07-21T04:24:39.8696400Z #13 1.719   Downloaded wyz v0.5.1
+2026-07-21T04:24:39.8696822Z #13 1.721   Downloaded tree-sitter-r v1.2.0
+2026-07-21T04:24:39.8697164Z #13 1.726   Downloaded zerovec v0.11.6
+2026-07-21T04:24:39.8697506Z #13 1.730   Downloaded tree-sitter-python v0.25.0
+2026-07-21T04:24:39.8697847Z #13 1.734   Downloaded winnow v1.0.3
+2026-07-21T04:24:39.8698137Z #13 1.741   Downloaded tree-sitter-pascal v0.10.2
+2026-07-21T04:24:39.8698452Z #13 1.745   Downloaded quinn-proto v0.11.14
+2026-07-21T04:24:39.8698782Z #13 1.750   Downloaded platform-trees v0.3.4
+2026-07-21T04:24:39.8699945Z #13 1.755   Downloaded meta-language v0.45.0
+2026-07-21T04:24:39.8700609Z #13 1.761   Downloaded lingua-hindi-language-model v1.3.0
+2026-07-21T04:24:39.8701070Z #13 1.764   Downloaded whatlang v0.18.0
+2026-07-21T04:24:39.8701465Z #13 1.767   Downloaded zerocopy v0.8.48
+2026-07-21T04:24:39.8701911Z #13 1.778   Downloaded lingua-bengali-language-model v1.3.0
+2026-07-21T04:24:39.8702313Z #13 1.782   Downloaded encoding_rs v0.8.35
+2026-07-21T04:24:39.8702606Z #13 1.796   Downloaded icu_properties_data v2.2.0
+2026-07-21T04:24:39.8703071Z #13 1.802   Downloaded wasm-bindgen v0.2.121
+2026-07-21T04:24:39.8703458Z #13 1.804   Downloaded idna v1.1.0
+2026-07-21T04:24:39.8703875Z #13 1.807   Downloaded zerotrie v0.2.4
+2026-07-21T04:24:39.8704178Z #13 1.811   Downloaded nom v8.0.0
+2026-07-21T04:24:39.8704584Z #13 1.815   Downloaded tree-sitter-vb-dotnet v0.1.0
+2026-07-21T04:24:39.8705045Z #13 1.824   Downloaded utf8_iter v1.0.4
+2026-07-21T04:24:39.9845892Z #13 1.825   Downloaded tree-sitter-ruby v0.23.1
+2026-07-21T04:24:39.9846467Z #13 1.837   Downloaded tree-sitter-typescript v0.23.2
+2026-07-21T04:24:39.9846930Z #13 1.852   Downloaded tree-sitter-cpp v0.23.4
+2026-07-21T04:24:39.9847392Z #13 1.867   Downloaded fst v0.4.7
+2026-07-21T04:24:39.9847803Z #13 1.884   Downloaded tree-sitter-php v0.24.2
+2026-07-21T04:24:39.9848203Z #13 1.895   Downloaded ring v0.17.14
+2026-07-21T04:24:39.9848834Z #13 1.919   Downloaded lingua-chinese-language-model v1.3.0
+2026-07-21T04:24:39.9849506Z #13 1.921   Downloaded wasm-bindgen-futures v0.4.71
+2026-07-21T04:24:39.9849951Z #13 1.922   Downloaded version_check v0.9.5
+2026-07-21T04:24:39.9850357Z #13 1.923   Downloaded tree-sitter-sequel v0.3.11
+2026-07-21T04:24:39.9850717Z #13 1.939   Downloaded url v2.5.8
+2026-07-21T04:24:40.0861925Z #13 1.941   Downloaded unicode-normalization v0.1.25
+2026-07-21T04:24:40.0862597Z #13 1.944   Downloaded web-sys v0.3.98
+2026-07-21T04:24:40.0863215Z #13 1.998   Downloaded tree-sitter-swift v0.7.3
+2026-07-21T04:24:40.0863510Z #13 2.015   Downloaded libc v0.2.186
+2026-07-21T04:24:40.0863988Z #13 2.035   Downloaded typenum v1.20.1
+2026-07-21T04:24:40.0864259Z #13 2.038   Downloaded tree-sitter-yaml v0.7.2
+2026-07-21T04:24:40.0864544Z #13 2.040   Downloaded pest v2.8.6
+2026-07-21T04:24:40.1887516Z #13 2.044   Downloaded js-sys v0.3.98
+2026-07-21T04:24:40.1888343Z #13 2.046   Downloaded tree-sitter-c-sharp v0.23.5
+2026-07-21T04:24:40.1888882Z #13 2.067   Downloaded tokio v1.52.3
+2026-07-21T04:24:40.1889341Z #13 2.091   Downloaded uuid v1.23.1
+2026-07-21T04:24:40.1889663Z #13 2.093   Downloaded unsafe-libyaml v0.2.11
+2026-07-21T04:24:40.1890050Z #13 2.095   Downloaded unicode-bidi v0.3.18
+2026-07-21T04:24:40.1890381Z #13 2.097   Downloaded tracing v0.1.44
+2026-07-21T04:24:40.1890681Z #13 2.106   Downloaded serde v1.0.228
+2026-07-21T04:24:40.1890947Z #13 2.108   Downloaded rand v0.10.1
+2026-07-21T04:24:40.1891194Z #13 2.111   Downloaded rand v0.9.4
+2026-07-21T04:24:40.1891474Z #13 2.114   Downloaded tree-sitter-kotlin-ng v1.1.0
+2026-07-21T04:24:40.1891759Z #13 2.132   Downloaded num-bigint v0.4.6
+2026-07-21T04:24:40.1892016Z #13 2.135   Downloaded mio v1.2.1
+2026-07-21T04:24:40.1892537Z #13 2.139   Downloaded itertools v0.14.0
+2026-07-21T04:24:40.1892795Z #13 2.143   Downloaded indexmap v2.14.0
+2026-07-21T04:24:40.2900235Z #13 2.146   Downloaded icu_collections v2.2.0
+2026-07-21T04:24:40.2900630Z #13 2.149   Downloaded xattr v1.6.1
+2026-07-21T04:24:40.2901094Z #13 2.150   Downloaded writeable v0.6.3
+2026-07-21T04:24:40.2901398Z #13 2.152   Downloaded want v0.3.1
+2026-07-21T04:24:40.2901711Z #13 2.153   Downloaded ucd-trie v0.1.7
+2026-07-21T04:24:40.2901997Z #13 2.154   Downloaded rand v0.8.6
+2026-07-21T04:24:40.2902260Z #13 2.156   Downloaded quinn v0.11.9
+2026-07-21T04:24:40.2902589Z #13 2.158   Downloaded lindera-dictionary v3.0.7
+2026-07-21T04:24:40.2902896Z #13 2.160   Downloaded zerofrom v0.1.8
+2026-07-21T04:24:40.2903238Z #13 2.161   Downloaded yoke-derive v0.8.2
+2026-07-21T04:24:40.2903575Z #13 2.162   Downloaded unicode-segmentation v1.13.3
+2026-07-21T04:24:40.2903912Z #13 2.164   Downloaded unicode-ident v1.0.22
+2026-07-21T04:24:40.2904191Z #13 2.166   Downloaded tree-sitter-rust v0.24.2
+2026-07-21T04:24:40.2904490Z #13 2.173   Downloaded csv v1.4.0
+2026-07-21T04:24:40.2904811Z #13 2.185   Downloaded tree-sitter-scala v0.25.1
+2026-07-21T04:24:40.2905105Z #13 2.213   Downloaded tree-sitter-proto v0.4.0
+2026-07-21T04:24:40.2905503Z #13 2.214   Downloaded tree-sitter-graphql v0.1.0
+2026-07-21T04:24:40.2905785Z #13 2.216   Downloaded ryu v1.0.23
+2026-07-21T04:24:40.2906043Z #13 2.218   Downloaded memchr v2.8.0
+2026-07-21T04:24:40.2906358Z #13 2.221   Downloaded icu_normalizer_data v2.2.0
+2026-07-21T04:24:40.2906628Z #13 2.222   Downloaded icu_locale_core v2.2.0
+2026-07-21T04:24:40.2907033Z #13 2.226   Downloaded tree-sitter-javascript v0.25.0
+2026-07-21T04:24:40.2907333Z #13 2.230   Downloaded tree-sitter-c v0.24.2
+2026-07-21T04:24:40.2907634Z #13 2.234   Downloaded rustls-platform-verifier v0.7.0
+2026-07-21T04:24:40.2907976Z #13 2.237   Downloaded kanaria v0.2.0
+2026-07-21T04:24:40.2908224Z #13 2.242   Downloaded unicode-blocks v0.1.9
+2026-07-21T04:24:40.2908596Z #13 2.243   Downloaded tree-sitter-lua v0.2.0
+2026-07-21T04:24:40.2908869Z #13 2.244   Downloaded tempfile v3.27.0
+2026-07-21T04:24:40.3901419Z #13 2.246   Downloaded seahash v4.1.0
+2026-07-21T04:24:40.3901917Z #13 2.247   Downloaded ts-parser-perl v1.1.2
+2026-07-21T04:24:40.3902516Z #13 2.269   Downloaded platform-mem v0.3.0
+2026-07-21T04:24:40.3902953Z #13 2.272   Downloaded pest_meta v2.8.6
+2026-07-21T04:24:40.3903365Z #13 2.273   Downloaded litemap v0.8.2
+2026-07-21T04:24:40.3903745Z #13 2.275   Downloaded tree-sitter-toml-ng v0.7.0
+2026-07-21T04:24:40.3904155Z #13 2.276   Downloaded tree-sitter v0.25.10
+2026-07-21T04:24:40.3904586Z #13 2.281   Downloaded rustls-pki-types v1.14.1
+2026-07-21T04:24:40.3905006Z #13 2.282   Downloaded regex-automata v0.4.14
+2026-07-21T04:24:40.3905407Z #13 2.291   Downloaded icu_provider v2.2.0
+2026-07-21T04:24:40.3905758Z #13 2.292   Downloaded num-traits v0.2.19
+2026-07-21T04:24:40.3906147Z #13 2.294   Downloaded quinn-udp v0.5.14
+2026-07-21T04:24:40.3906528Z #13 2.296   Downloaded tree-sitter-json v0.24.8
+2026-07-21T04:24:40.3906941Z #13 2.297   Downloaded tree-sitter-html v0.23.2
+2026-07-21T04:24:40.3907350Z #13 2.298   Downloaded tracing-core v0.1.36
+2026-07-21T04:24:40.3907721Z #13 2.300   Downloaded tower-http v0.6.11
+2026-07-21T04:24:40.3908144Z #13 2.305   Downloaded tower v0.5.3
+2026-07-21T04:24:40.3908492Z #13 2.310   Downloaded synstructure v0.13.2
+2026-07-21T04:24:40.3908845Z #13 2.311   Downloaded syn v2.0.117
+2026-07-21T04:24:40.3909989Z #13 2.317   Downloaded strum_macros v0.28.0
+2026-07-21T04:24:40.3910357Z #13 2.320   Downloaded strum_macros v0.27.2
+2026-07-21T04:24:40.3910743Z #13 2.323   Downloaded rustls v0.23.40
+2026-07-21T04:24:40.3911091Z #13 2.331   Downloaded rustix v1.1.4
+2026-07-21T04:24:40.3911433Z #13 2.344   Downloaded pest_derive v2.8.6
+2026-07-21T04:24:40.4924719Z #13 2.346   Downloaded once_cell v1.21.4
+2026-07-21T04:24:40.4925075Z #13 2.349   Downloaded memmap2 v0.9.10
+2026-07-21T04:24:40.4925689Z #13 2.350   Downloaded log v0.4.29
+2026-07-21T04:24:40.4926356Z #13 2.352   Downloaded console_error_panic_hook v0.1.7
+2026-07-21T04:24:40.4926849Z #13 2.355   Downloaded rustls-native-certs v0.8.4
+2026-07-21T04:24:40.4927351Z #13 2.356   Downloaded lingua-portuguese-language-model v1.3.0
+2026-07-21T04:24:40.4927830Z #13 2.370   Downloaded platform-data v2.0.0
+2026-07-21T04:24:40.4928339Z #13 2.373   Downloaded pest_generator v2.8.6
+2026-07-21T04:24:40.4928697Z #13 2.374   Downloaded iana-time-zone v0.1.65
+2026-07-21T04:24:40.4929192Z #13 2.376   Downloaded lindera v3.0.7
+2026-07-21T04:24:40.4929524Z #13 2.378   Downloaded ipnet v2.12.0
+2026-07-21T04:24:40.4929841Z #13 2.379   Downloaded syn v1.0.109
+2026-07-21T04:24:40.4930165Z #13 2.385   Downloaded regex-syntax v0.8.10
+2026-07-21T04:24:40.4930424Z #13 2.389   Downloaded idna_adapter v1.2.2
+2026-07-21T04:24:40.4930689Z #13 2.390   Downloaded tower-layer v0.3.3
+2026-07-21T04:24:40.4930987Z #13 2.391   Downloaded sync_wrapper v1.0.2
+2026-07-21T04:24:40.4931290Z #13 2.391   Downloaded lino-objects-codec v0.2.1
+2026-07-21T04:24:40.4931631Z #13 2.393   Downloaded toml_datetime v1.1.1+spec-1.1.0
+2026-07-21T04:24:40.4931950Z #13 2.394   Downloaded lingua-spanish-language-model v1.3.0
+2026-07-21T04:24:40.4932285Z #13 2.409   Downloaded lingua-english-language-model v1.3.0
+2026-07-21T04:24:40.4932605Z #13 2.426   Downloaded tokio-rustls v0.26.4
+2026-07-21T04:24:40.4932862Z #13 2.427   Downloaded tinyvec v1.11.0
+2026-07-21T04:24:40.4933107Z #13 2.429   Downloaded tar v0.4.46
+2026-07-21T04:24:40.4933397Z #13 2.430   Downloaded lingua-french-language-model v1.3.0
+2026-07-21T04:24:40.4933708Z #13 2.447   Downloaded serde_json v1.0.149
+2026-07-21T04:24:40.6059967Z #13 2.451   Downloaded rkyv v0.8.16
+2026-07-21T04:24:40.6060439Z #13 2.457   Downloaded chrono v0.4.44
+2026-07-21T04:24:40.6060823Z #13 2.461   Downloaded aws-lc-rs v1.17.0
+2026-07-21T04:24:40.6061203Z #13 2.467   Downloaded rust_decimal v1.42.0
+2026-07-21T04:24:40.6061537Z #13 2.470   Downloaded parking_lot_core v0.9.12
+2026-07-21T04:24:40.6061820Z #13 2.472   Downloaded lock_api v0.4.14
+2026-07-21T04:24:40.6062126Z #13 2.473   Downloaded lindera-jieba v3.0.7
+2026-07-21T04:24:40.6062408Z #13 2.474   Downloaded lazy_static v1.5.0
+2026-07-21T04:24:40.6062688Z #13 2.475   Downloaded thiserror-impl v1.0.69
+2026-07-21T04:24:40.6063163Z #13 2.476   Downloaded thiserror v2.0.18
+2026-07-21T04:24:40.6063402Z #13 2.479   Downloaded thiserror v1.0.69
+2026-07-21T04:24:40.6063686Z #13 2.482   Downloaded serde_yaml_ng v0.10.0
+2026-07-21T04:24:40.6063963Z #13 2.484   Downloaded regex v1.12.3
+2026-07-21T04:24:40.6064346Z #13 2.487   Downloaded rayon v1.12.0
+2026-07-21T04:24:40.6064611Z #13 2.492   Downloaded num-rational v0.4.2
+2026-07-21T04:24:40.6064895Z #13 2.493   Downloaded miniz_oxide v0.8.9
+2026-07-21T04:24:40.6065187Z #13 2.495   Downloaded lino-arguments v0.3.0
+2026-07-21T04:24:40.6065465Z #13 2.496   Downloaded jobserver v0.1.34
+2026-07-21T04:24:40.6065723Z #13 2.497   Downloaded icu_normalizer v2.2.0
+2026-07-21T04:24:40.6065991Z #13 2.499   Downloaded hashbrown v0.15.5
+2026-07-21T04:24:40.6066254Z #13 2.502   Downloaded futures-util v0.3.32
+2026-07-21T04:24:40.6066522Z #13 2.509   Downloaded clap_builder v4.6.0
+2026-07-21T04:24:40.6066789Z #13 2.513   Downloaded bitvec v1.0.1
+2026-07-21T04:24:40.6067022Z #13 2.521   Downloaded strum v0.28.0
+2026-07-21T04:24:40.6067301Z #13 2.522   Downloaded linux-raw-sys v0.12.1
+2026-07-21T04:24:40.6067562Z #13 2.560   Downloaded socket2 v0.6.4
+2026-07-21T04:24:40.7969771Z #13 2.562   Downloaded serde_derive v1.0.228
+2026-07-21T04:24:40.7970253Z #13 2.564   Downloaded serde_core v1.0.228
+2026-07-21T04:24:40.7970650Z #13 2.565   Downloaded hashbrown v0.17.1
+2026-07-21T04:24:40.7971072Z #13 2.568   Downloaded hashbrown v0.14.5
+2026-07-21T04:24:40.7971545Z #13 2.571   Downloaded lingua-russian-language-model v1.3.0
+2026-07-21T04:24:40.7972002Z #13 2.591   Downloaded smallvec v1.15.1
+2026-07-21T04:24:40.7972362Z #13 2.593   Downloaded simdutf8 v0.1.5
+2026-07-21T04:24:40.7972704Z #13 2.594   Downloaded hashbrown v0.12.3
+2026-07-21T04:24:40.7973124Z #13 2.597   Downloaded ptr_meta_derive v0.3.1
+2026-07-21T04:24:40.7973728Z #13 2.597   Downloaded ptr_meta_derive v0.1.4
+2026-07-21T04:24:40.7974110Z #13 2.598   Downloaded num_cpus v1.17.0
+2026-07-21T04:24:40.7974490Z #13 2.600   Downloaded json5_nodes v2.0.2
+2026-07-21T04:24:40.7974867Z #13 2.600   Downloaded lingua v1.8.0
+2026-07-21T04:24:40.8029843Z #13 2.757   Downloaded include_dir_macros v0.7.4
+2026-07-21T04:24:40.9039235Z #13 2.758   Downloaded http v1.4.2
+2026-07-21T04:24:40.9039797Z #13 2.760   Downloaded simd-adler32 v0.3.9
+2026-07-21T04:24:40.9040174Z #13 2.761   Downloaded sha2 v0.10.9
+2026-07-21T04:24:40.9040480Z #13 2.763   Downloaded radium v0.7.0
+2026-07-21T04:24:40.9040851Z #13 2.764   Downloaded pin-project-lite v0.2.17
+2026-07-21T04:24:40.9041225Z #13 2.766   Downloaded strsim v0.11.1
+2026-07-21T04:24:40.9041564Z #13 2.767   Downloaded stable_deref_trait v1.2.1
+2026-07-21T04:24:40.9041991Z #13 2.768   Downloaded lingua-urdu-language-model v1.3.0
+2026-07-21T04:24:40.9042270Z #13 2.790   Downloaded shlex v1.3.0
+2026-07-21T04:24:40.9042581Z #13 2.791   Downloaded serde-wasm-bindgen v0.6.5
+2026-07-21T04:24:40.9042869Z #13 2.792   Downloaded rustversion v1.0.22
+2026-07-21T04:24:40.9043121Z #13 2.794   Downloaded cc v1.2.62
+2026-07-21T04:24:40.9043420Z #13 2.796   Downloaded rayon-core v1.13.0
+2026-07-21T04:24:40.9043675Z #13 2.798   Downloaded itoa v1.0.18
+2026-07-21T04:24:40.9043927Z #13 2.799   Downloaded borsh v1.6.1
+2026-07-21T04:24:40.9044183Z #13 2.802   Downloaded base64 v0.22.1
+2026-07-21T04:24:40.9044415Z #13 2.804   Downloaded md5 v0.8.0
+2026-07-21T04:24:40.9044678Z #13 2.805   Downloaded flate2 v1.1.9
+2026-07-21T04:24:40.9044936Z #13 2.808   Downloaded darling_core v0.20.11
+2026-07-21T04:24:40.9045194Z #13 2.811   Downloaded bumpalo v3.20.2
+2026-07-21T04:24:40.9045509Z #13 2.812   Downloaded rkyv_derive v0.7.46
+2026-07-21T04:24:40.9045751Z #13 2.813   Downloaded clap v4.6.1
+2026-07-21T04:24:40.9046010Z #13 2.818   Downloaded bytes v1.11.1
+2026-07-21T04:24:40.9046256Z #13 2.820   Downloaded daachorse v2.1.1
+2026-07-21T04:24:40.9046509Z #13 2.822   Downloaded crc32fast v1.5.0
+2026-07-21T04:24:40.9046786Z #13 2.823   Downloaded clap_derive v4.6.1
+2026-07-21T04:24:40.9047037Z #13 2.825   Downloaded maplit v1.0.2
+2026-07-21T04:24:40.9047290Z #13 2.826   Downloaded munge v0.4.7
+2026-07-21T04:24:40.9047697Z #13 2.827   Downloaded lru-slab v0.1.2
+2026-07-21T04:24:40.9047935Z #13 2.827   Downloaded anyhow v1.0.102
+2026-07-21T04:24:40.9048248Z #13 2.829   Downloaded find-msvc-tools v0.1.9
+2026-07-21T04:24:40.9048524Z #13 2.830   Downloaded hashlink v0.10.0
+2026-07-21T04:24:40.9048891Z #13 2.832   Downloaded derive_builder_core v0.20.2
+2026-07-21T04:24:40.9049783Z #13 2.833   Downloaded derive_builder v0.20.2
+2026-07-21T04:24:40.9050301Z #13 2.835   Downloaded darling v0.20.11
+2026-07-21T04:24:40.9050685Z #13 2.838   Downloaded rand_core v0.9.5
+2026-07-21T04:24:40.9050935Z #13 2.839   Downloaded rand_core v0.6.4
+2026-07-21T04:24:40.9051185Z #13 2.840   Downloaded rand_chacha v0.9.0
+2026-07-21T04:24:40.9051460Z #13 2.841   Downloaded icu_properties v2.2.0
+2026-07-21T04:24:40.9051722Z #13 2.842   Downloaded getrandom v0.2.17
+2026-07-21T04:24:40.9051997Z #13 2.844   Downloaded filetime v0.2.29
+2026-07-21T04:24:40.9052239Z #13 2.845   Downloaded digest v0.10.7
+2026-07-21T04:24:40.9052475Z #13 2.846   Downloaded dashmap v6.2.1
+2026-07-21T04:24:40.9052745Z #13 2.848   Downloaded foldhash v0.1.5
+2026-07-21T04:24:40.9052988Z #13 2.849   Downloaded fastrand v2.4.1
+2026-07-21T04:24:40.9053295Z #13 2.849   Downloaded doublets v0.4.0
+2026-07-21T04:24:40.9053540Z #13 2.852   Downloaded csv-core v0.1.13
+2026-07-21T04:24:40.9053792Z #13 2.853   Downloaded crossbeam-utils v0.8.21
+2026-07-21T04:24:40.9054092Z #13 2.855   Downloaded crossbeam-deque v0.8.6
+2026-07-21T04:24:40.9054356Z #13 2.856   Downloaded counter v0.7.1
+2026-07-21T04:24:40.9054609Z #13 2.857   Downloaded fs_extra v1.3.0
+2026-07-21T04:24:40.9054861Z #13 2.858   Downloaded bitflags v2.11.1
+2026-07-21T04:24:41.1039472Z #13 2.860   Downloaded num-integer v0.1.46
+2026-07-21T04:24:41.1040266Z #13 2.861   Downloaded cmake v0.1.58
+2026-07-21T04:24:41.1040542Z #13 2.862   Downloaded arrayvec v0.7.6
+2026-07-21T04:24:41.1040901Z #13 2.864   Downloaded hyper-rustls v0.27.9
+2026-07-21T04:24:41.1041189Z #13 2.864   Downloaded dotenvy v0.15.7
+2026-07-21T04:24:41.1041460Z #13 2.866   Downloaded block-buffer v0.10.4
+2026-07-21T04:24:41.1041775Z #13 2.867   Downloaded cfg_aliases v0.2.1
+2026-07-21T04:24:41.1042089Z #13 2.867   Downloaded anstyle-query v1.1.5
+2026-07-21T04:24:41.1042418Z #13 2.868   Downloaded fs2 v0.4.3
+2026-07-21T04:24:41.1042681Z #13 2.869   Downloaded fnv v1.0.7
+2026-07-21T04:24:41.1042922Z #13 2.870   Downloaded dunce v1.0.5
+2026-07-21T04:24:41.1043216Z #13 2.870   Downloaded colorchoice v1.0.5
+2026-07-21T04:24:41.1043501Z #13 2.871   Downloaded errno v0.3.14
+2026-07-21T04:24:41.1043786Z #13 2.872   Downloaded derive_builder_macro v0.20.2
+2026-07-21T04:24:41.1044158Z #13 2.872   Downloaded ctor-proc-macro v0.0.6
+2026-07-21T04:24:41.1044482Z #13 2.874   Downloaded lingua-arabic-language-model v1.3.0
+2026-07-21T04:24:41.1044845Z #13 2.916   Downloaded aws-lc-sys v0.41.0
+2026-07-21T04:24:41.1045179Z #13 3.058   Downloaded link-calculator v0.19.0
+2026-07-21T04:24:41.3138786Z #13 3.268    Compiling libc v0.2.186
+2026-07-21T04:24:41.4911184Z #13 3.270    Compiling unicode-ident v1.0.22
+2026-07-21T04:24:41.4911881Z #13 3.270    Compiling proc-macro2 v1.0.106
+2026-07-21T04:24:41.4912440Z #13 3.270    Compiling quote v1.0.45
+2026-07-21T04:24:41.4912907Z #13 3.352    Compiling find-msvc-tools v0.1.9
+2026-07-21T04:24:41.6157593Z #13 3.443    Compiling shlex v1.3.0
+2026-07-21T04:24:41.6158518Z #13 3.492    Compiling tree-sitter-language v0.1.7
+2026-07-21T04:24:41.6159199Z #13 3.569    Compiling serde_core v1.0.228
+2026-07-21T04:24:41.7473387Z #13 3.666    Compiling cfg-if v1.0.4
+2026-07-21T04:24:41.8952306Z #13 3.701    Compiling stable_deref_trait v1.2.1
+2026-07-21T04:24:41.8958259Z #13 3.731    Compiling serde v1.0.228
+2026-07-21T04:24:41.8959496Z #13 3.747    Compiling icu_normalizer_data v2.2.0
+2026-07-21T04:24:41.8960556Z #13 3.849    Compiling icu_properties_data v2.2.0
+2026-07-21T04:24:42.0805045Z #13 3.943    Compiling memchr v2.8.0
+2026-07-21T04:24:42.2097987Z #13 4.034    Compiling syn v2.0.117
+2026-07-21T04:24:42.2099738Z #13 4.078    Compiling itoa v1.0.18
+2026-07-21T04:24:42.3616728Z #13 4.164    Compiling jobserver v0.1.34
+2026-07-21T04:24:42.6791361Z #13 4.453    Compiling cc v1.2.62
+2026-07-21T04:24:42.6791862Z #13 4.482    Compiling fs_extra v1.3.0
+2026-07-21T04:24:42.8763839Z #13 4.650    Compiling dunce v1.0.5
+2026-07-21T04:24:42.8764662Z #13 4.704    Compiling pin-project-lite v0.2.17
+2026-07-21T04:24:42.8765150Z #13 4.736    Compiling zmij v1.0.21
+2026-07-21T04:24:43.0282404Z #13 4.830    Compiling bytes v1.11.1
+2026-07-21T04:24:43.3475124Z #13 5.150    Compiling cmake v0.1.58
+2026-07-21T04:24:43.5933583Z #13 5.416    Compiling autocfg v1.5.0
+2026-07-21T04:24:43.7117876Z #13 5.547    Compiling aws-lc-sys v0.41.0
+2026-07-21T04:24:43.8551432Z #13 5.665    Compiling once_cell v1.21.4
+2026-07-21T04:24:43.8551923Z #13 5.809    Compiling futures-core v0.3.32
+2026-07-21T04:24:44.0713334Z #13 5.874    Compiling num-traits v0.2.19
+2026-07-21T04:24:44.7867494Z #13 6.590    Compiling synstructure v0.13.2
+2026-07-21T04:24:44.8760706Z #13 6.828    Compiling litemap v0.8.2
+2026-07-21T04:24:44.9762178Z #13 6.916    Compiling aws-lc-rs v1.17.0
+2026-07-21T04:24:45.0923647Z #13 6.930    Compiling writeable v0.6.3
+2026-07-21T04:24:45.0924547Z #13 7.003    Compiling heck v0.5.0
+2026-07-21T04:24:45.0925192Z #13 7.046    Compiling smallvec v1.15.1
+2026-07-21T04:24:45.2132298Z #13 7.095    Compiling zeroize v1.8.2
+2026-07-21T04:24:45.4013634Z #13 7.167    Compiling socket2 v0.6.4
+2026-07-21T04:24:45.4014227Z #13 7.205    Compiling mio v1.2.1
+2026-07-21T04:24:45.4571423Z #13 7.411    Compiling zerofrom-derive v0.1.7
+2026-07-21T04:24:45.6528878Z #13 7.424    Compiling yoke-derive v0.8.2
+2026-07-21T04:24:45.6530057Z #13 7.456    Compiling zerovec-derive v0.11.3
+2026-07-21T04:24:46.0086645Z #13 7.962    Compiling displaydoc v0.2.6
+2026-07-21T04:24:46.1645067Z #13 7.991    Compiling zerofrom v0.1.8
+2026-07-21T04:24:46.1646832Z #13 8.018    Compiling serde_derive v1.0.228
+2026-07-21T04:24:46.1647411Z #13 8.043    Compiling yoke v0.8.3
+2026-07-21T04:24:46.1647880Z #13 8.118    Compiling zerovec v0.11.6
+2026-07-21T04:24:46.3782574Z #13 8.332    Compiling ptr_meta_derive v0.3.1
+2026-07-21T04:24:46.5181272Z #13 8.471    Compiling tinystr v0.8.3
+2026-07-21T04:24:46.6796689Z #13 8.556    Compiling icu_locale_core v2.2.0
+2026-07-21T04:24:46.8970163Z #13 8.633    Compiling potential_utf v0.1.5
+2026-07-21T04:24:46.8970969Z #13 8.700    Compiling zerotrie v0.2.4
+2026-07-21T04:24:47.0611875Z #13 8.864    Compiling tokio-macros v2.7.0
+2026-07-21T04:24:47.3026867Z #13 9.256    Compiling wasm-bindgen-shared v0.2.121
+2026-07-21T04:24:47.5246420Z #13 9.290    Compiling utf8_iter v1.0.4
+2026-07-21T04:24:47.5247525Z #13 9.344    Compiling strsim v0.11.1
+2026-07-21T04:24:47.5247928Z #13 9.351    Compiling thiserror v2.0.18
+2026-07-21T04:24:47.5248355Z #13 9.478    Compiling ident_case v1.0.1
+2026-07-21T04:24:47.7458048Z #13 9.516    Compiling fnv v1.0.7
+2026-07-21T04:24:47.7458974Z #13 9.519    Compiling icu_collections v2.2.0
+2026-07-21T04:24:47.7459794Z #13 9.549    Compiling darling_core v0.20.11
+2026-07-21T04:24:47.9873842Z #13 9.790    Compiling tokio v1.52.3
+2026-07-21T04:24:48.2647195Z #13 10.22    Compiling icu_provider v2.2.0
+2026-07-21T04:24:48.4513092Z #13 10.40    Compiling bytecheck_derive v0.8.2
+2026-07-21T04:24:49.0769239Z #13 10.88    Compiling rustls-pki-types v1.14.1
+2026-07-21T04:24:49.3649235Z #13 11.16    Compiling http v1.4.2
+2026-07-21T04:24:49.3651934Z #13 11.17    Compiling include_dir_macros v0.7.4
+2026-07-21T04:24:49.7182641Z #13 11.67    Compiling http-body v1.0.1
+2026-07-21T04:24:49.8510307Z #13 11.80    Compiling include_dir v0.7.4
+2026-07-21T04:24:50.0691715Z #13 11.87    Compiling darling_macro v0.20.11
+2026-07-21T04:24:50.3592589Z #13 12.31    Compiling thiserror-impl v2.0.18
+2026-07-21T04:24:50.9308783Z #13 12.88    Compiling untrusted v0.9.0
+2026-07-21T04:24:51.0712574Z #13 12.93    Compiling slab v0.4.12
+2026-07-21T04:24:51.0715053Z #13 12.95    Compiling rustversion v1.0.22
+2026-07-21T04:24:51.2184690Z #13 13.02    Compiling futures-task v0.3.32
+2026-07-21T04:24:51.2187849Z #13 13.03    Compiling percent-encoding v2.3.2
+2026-07-21T04:24:51.2188594Z #13 13.11    Compiling hashbrown v0.17.1
+2026-07-21T04:24:51.2189460Z #13 13.11    Compiling rustls v0.23.40
+2026-07-21T04:24:51.2190008Z #13 13.13    Compiling httparse v1.10.1
+2026-07-21T04:24:51.3489421Z #13 13.17    Compiling futures-util v0.3.32
+2026-07-21T04:24:51.3490247Z #13 13.30    Compiling darling v0.20.11
+2026-07-21T04:24:51.5315012Z #13 13.33    Compiling icu_properties v2.2.0
+2026-07-21T04:24:51.5426232Z #13 13.50    Compiling icu_normalizer v2.2.0
+2026-07-21T04:24:51.9021258Z #13 13.86    Compiling munge_macro v0.4.7
+2026-07-21T04:24:52.1838005Z #13 14.14    Compiling tower-service v0.3.3
+2026-07-21T04:24:52.2858563Z #13 14.17    Compiling serde_json v1.0.149
+2026-07-21T04:24:52.3958165Z #13 14.24    Compiling subtle v2.6.1
+2026-07-21T04:24:52.3959224Z #13 14.28    Compiling try-lock v0.2.5
+2026-07-21T04:24:52.3959790Z #13 14.32    Compiling equivalent v1.0.2
+2026-07-21T04:24:52.3980962Z #13 14.32    Compiling anyhow v1.0.102
+2026-07-21T04:24:52.3981873Z #13 14.35    Compiling bitflags v2.11.1
+2026-07-21T04:24:52.5237995Z #13 14.42    Compiling indexmap v2.14.0
+2026-07-21T04:24:52.5240489Z #13 14.44    Compiling want v0.3.1
+2026-07-21T04:24:52.7274000Z #13 14.48    Compiling idna_adapter v1.2.2
+2026-07-21T04:24:52.7276525Z #13 14.53    Compiling derive_builder_core v0.20.2
+2026-07-21T04:24:53.0453004Z #13 15.00    Compiling tracing-core v0.1.36
+2026-07-21T04:24:53.1940193Z #13 15.09    Compiling ptr_meta v0.3.1
+2026-07-21T04:24:53.3201462Z #13 15.15    Compiling futures-channel v0.3.32
+2026-07-21T04:24:53.3201984Z #13 15.22    Compiling atomic-waker v1.1.2
+2026-07-21T04:24:53.4510923Z #13 15.27    Compiling rustix v1.1.4
+2026-07-21T04:24:53.4511986Z #13 15.28    Compiling tracing v0.1.44
+2026-07-21T04:24:53.4512555Z #13 15.36    Compiling hyper v1.10.1
+2026-07-21T04:24:53.5520512Z #13 15.40    Compiling derive_builder_macro v0.20.2
+2026-07-21T04:24:53.7051183Z #13 15.51    Compiling rancor v0.1.1
+2026-07-21T04:24:53.7210778Z #13 15.67    Compiling idna v1.1.0
+2026-07-21T04:24:54.1389784Z #13 16.09    Compiling form_urlencoded v1.2.2
+2026-07-21T04:24:54.2939674Z #13 16.17    Compiling strum_macros v0.28.0
+2026-07-21T04:24:54.3963859Z #13 16.25    Compiling rkyv_derive v0.8.16
+2026-07-21T04:24:54.3964913Z #13 16.31    Compiling sync_wrapper v1.0.2
+2026-07-21T04:24:54.5465563Z #13 16.35    Compiling aho-corasick v1.1.4
+2026-07-21T04:24:55.4099630Z #13 17.36    Compiling bumpalo v3.20.2
+2026-07-21T04:24:55.5587869Z #13 17.42    Compiling crossbeam-utils v0.8.21
+2026-07-21T04:24:55.5588491Z #13 17.51    Compiling regex-syntax v0.8.10
+2026-07-21T04:24:55.6625290Z #13 17.52    Compiling simdutf8 v0.1.5
+2026-07-21T04:24:55.8150252Z #13 17.62    Compiling base64 v0.22.1
+2026-07-21T04:24:56.0241334Z #13 17.83    Compiling linux-raw-sys v0.12.1
+2026-07-21T04:24:56.2192537Z #13 18.06    Compiling tower-layer v0.3.3
+2026-07-21T04:24:56.3881902Z #13 18.17    Compiling crc32fast v1.5.0
+2026-07-21T04:24:56.3882916Z #13 18.27    Compiling openssl-probe v0.2.1
+2026-07-21T04:24:56.3883589Z #13 18.34    Compiling ipnet v2.12.0
+2026-07-21T04:24:56.9887648Z #13 18.79    Compiling regex-automata v0.4.14
+2026-07-21T04:24:58.7529519Z #13 20.71    Compiling hyper-util v0.1.20
+2026-07-21T04:24:59.7950498Z #13 21.60    Compiling rustls-native-certs v0.8.4
+2026-07-21T04:24:59.8015460Z #13 21.75    Compiling tower v0.5.3
+2026-07-21T04:25:00.2760407Z #13 22.09    Compiling bytecheck v0.8.2
+2026-07-21T04:25:00.4280930Z #13 22.23    Compiling wasm-bindgen-macro-support v0.2.121
+2026-07-21T04:25:01.0326012Z #13 22.99    Compiling url v2.5.8
+2026-07-21T04:25:01.4414248Z #13 23.39    Compiling wasm-bindgen v0.2.121
+2026-07-21T04:25:02.9663218Z #13 24.77    Compiling adler2 v2.0.1
+2026-07-21T04:25:03.1171691Z #13 24.92    Compiling simd-adler32 v0.3.9
+2026-07-21T04:25:03.7155498Z #13 25.45    Compiling log v0.4.29
+2026-07-21T04:25:03.7156134Z #13 25.52    Compiling miniz_oxide v0.8.9
+2026-07-21T04:25:04.6621715Z #13 26.46    Compiling wasm-bindgen-macro v0.2.121
+2026-07-21T04:25:04.7942547Z #13 26.75    Compiling tower-http v0.6.11
+2026-07-21T04:25:04.9926702Z #13 26.95    Compiling xattr v1.6.1
+2026-07-21T04:25:05.2984872Z #13 27.10    Compiling rend v0.5.3
+2026-07-21T04:25:05.5957195Z #13 27.40    Compiling regex v1.12.3
+2026-07-21T04:25:06.3323962Z #13 28.09    Compiling munge v0.4.7
+2026-07-21T04:25:06.3326089Z #13 28.13    Compiling encoding_rs v0.8.35
+2026-07-21T04:25:06.6689434Z #13 28.37    Compiling filetime v0.2.29
+2026-07-21T04:25:06.6692260Z #13 28.47    Compiling http-body-util v0.1.3
+2026-07-21T04:25:06.7334682Z #13 28.69    Compiling csv-core v0.1.13
+2026-07-21T04:25:06.8907897Z #13 28.84    Compiling ryu v1.0.23
+2026-07-21T04:25:07.2043558Z #13 29.01    Compiling rand_core v0.10.1
+2026-07-21T04:25:07.3556478Z #13 29.16    Compiling rand v0.10.1
+2026-07-21T04:25:07.6622623Z #13 29.37    Compiling csv v1.4.0
+2026-07-21T04:25:07.6623445Z #13 29.44    Compiling rkyv v0.8.16
+2026-07-21T04:25:07.6623987Z #13 29.47    Compiling encoding_rs_io v0.1.7
+2026-07-21T04:25:08.2018854Z #13 30.00    Compiling tar v0.4.46
+2026-07-21T04:25:08.6803329Z #13 30.48    Compiling flate2 v1.1.9
+2026-07-21T04:25:09.0615021Z #13 30.77    Compiling strum v0.28.0
+2026-07-21T04:25:09.0615613Z #13 30.82    Compiling derive_builder v0.20.2
+2026-07-21T04:25:09.0615892Z #13 30.87    Compiling memmap2 v0.9.10
+2026-07-21T04:25:09.0616162Z #13 31.01    Compiling num_cpus v1.17.0
+2026-07-21T04:25:09.5737082Z #13 31.42    Compiling glob v0.3.3
+2026-07-21T04:25:09.5737470Z #13 31.44    Compiling ucd-trie v0.1.7
+2026-07-21T04:25:09.5737711Z #13 31.53    Compiling md5 v0.8.0
+2026-07-21T04:25:09.7810357Z #13 31.55    Compiling daachorse v2.1.1
+2026-07-21T04:25:09.7812160Z #13 31.58    Compiling utf8parse v0.2.2
+2026-07-21T04:25:09.7820062Z #13 31.60    Compiling byteorder v1.5.0
+2026-07-21T04:25:09.9017675Z #13 31.73    Compiling anstyle-parse v1.0.0
+2026-07-21T04:25:09.9018073Z #13 31.85    Compiling pest v2.8.6
+2026-07-21T04:25:11.8136157Z #13 33.62    Compiling crossbeam-epoch v0.9.18
+2026-07-21T04:25:12.1020606Z #13 34.05    Compiling allocator-api2 v0.2.21
+2026-07-21T04:25:12.5242879Z #13 34.33    Compiling anstyle v1.0.14
+2026-07-21T04:25:12.8579251Z #13 34.57    Compiling getrandom v0.4.2
+2026-07-21T04:25:12.8579878Z #13 34.66    Compiling fastrand v2.4.1
+2026-07-21T04:25:12.8701805Z #13 34.82    Compiling is_terminal_polyfill v1.70.2
+2026-07-21T04:25:13.0052612Z #13 34.87    Compiling colorchoice v1.0.5
+2026-07-21T04:25:13.0053030Z #13 34.91    Compiling rayon-core v1.13.0
+2026-07-21T04:25:13.1321562Z #13 34.96    Compiling parking_lot_core v0.9.12
+2026-07-21T04:25:13.1321953Z #13 35.04    Compiling anstyle-query v1.1.5
+2026-07-21T04:25:13.1322234Z #13 35.09    Compiling foldhash v0.1.5
+2026-07-21T04:25:13.5300286Z #13 35.48    Compiling hashbrown v0.15.5
+2026-07-21T04:25:13.9591617Z #13 35.91    Compiling anstream v1.0.0
+2026-07-21T04:25:14.5238126Z #13 36.48    Compiling crossbeam-deque v0.8.6
+2026-07-21T04:25:14.8186662Z #13 36.58    Compiling js-sys v0.3.98
+2026-07-21T04:25:14.8188868Z #13 36.62    Compiling pest_meta v2.8.6
+2026-07-21T04:25:16.1810218Z #13 37.95    Compiling scopeguard v1.2.0
+2026-07-21T04:25:16.1811030Z #13 37.98    Compiling tinyvec_macros v0.1.1
+2026-07-21T04:25:16.5964068Z #13 38.55    Compiling thiserror v1.0.69
+2026-07-21T04:25:16.8657105Z #13 38.66    Compiling either v1.16.0
+2026-07-21T04:25:16.8657653Z #13 38.67    Compiling fst v0.4.7
+2026-07-21T04:25:16.9440826Z #13 38.90    Compiling clap_lex v1.1.0
+2026-07-21T04:25:17.2220433Z #13 39.18    Compiling clap_builder v4.6.0
+2026-07-21T04:25:17.6366621Z #13 39.44    Compiling lindera-dictionary v3.0.7
+2026-07-21T04:25:21.3173141Z #13 43.12    Compiling tinyvec v1.11.0
+2026-07-21T04:25:21.6500931Z #13 43.45    Compiling lock_api v0.4.14
+2026-07-21T04:25:21.6520288Z #13 43.61    Compiling pest_generator v2.8.6
+2026-07-21T04:25:23.1162689Z #13 45.07    Compiling tree-sitter v0.25.10
+2026-07-21T04:25:23.2501914Z #13 45.09    Compiling num-integer v0.1.46
+2026-07-21T04:25:23.2502825Z #13 45.16    Compiling platform-num v0.8.0
+2026-07-21T04:25:23.2503102Z #13 45.20    Compiling clap_derive v4.6.1
+2026-07-21T04:25:23.4424888Z #13 45.29    Compiling thiserror-impl v1.0.69
+2026-07-21T04:25:23.6016379Z #13 45.40    Compiling tree-sitter-pascal v0.10.2
+2026-07-21T04:25:23.6018273Z #13 45.48    Compiling tree-sitter-ruby v0.23.1
+2026-07-21T04:25:23.6018733Z #13 45.56    Compiling tree-sitter-go v0.25.0
+2026-07-21T04:25:23.7753491Z #13 45.63    Compiling tree-sitter-c v0.24.2
+2026-07-21T04:25:23.9395610Z #13 45.73    Compiling tree-sitter-cpp v0.23.4
+2026-07-21T04:25:23.9397323Z #13 45.81    Compiling tree-sitter-vb-dotnet v0.1.0
+2026-07-21T04:25:24.0898257Z #13 45.89    Compiling tree-sitter-java v0.23.5
+2026-07-21T04:25:24.0901021Z #13 45.97    Compiling tree-sitter-kotlin-ng v1.1.0
+2026-07-21T04:25:24.0901496Z #13 45.99    Compiling tree-sitter-scala v0.25.1
+2026-07-21T04:25:24.0901897Z #13 46.04    Compiling tree-sitter-rust v0.24.2
+2026-07-21T04:25:24.2224342Z #13 46.05    Compiling tree-sitter-r v1.2.0
+2026-07-21T04:25:24.2226448Z #13 46.11    Compiling tree-sitter-json v0.24.8
+2026-07-21T04:25:24.2227058Z #13 46.11    Compiling tree-sitter-lua v0.2.0
+2026-07-21T04:25:24.2227897Z #13 46.18    Compiling tree-sitter-toml-ng v0.7.0
+2026-07-21T04:25:24.3312021Z #13 46.18    Compiling tree-sitter-xml v0.7.0
+2026-07-21T04:25:24.3312674Z #13 46.26    Compiling tree-sitter-php v0.24.2
+2026-07-21T04:25:24.3312982Z #13 46.26    Compiling tree-sitter-css v0.25.0
+2026-07-21T04:25:24.3313309Z #13 46.28    Compiling tree-sitter-javascript v0.25.0
+2026-07-21T04:25:24.4451357Z #13 46.33    Compiling tree-sitter-swift v0.7.3
+2026-07-21T04:25:24.4452078Z #13 46.35    Compiling tree-sitter-proto v0.4.0
+2026-07-21T04:25:24.4452636Z #13 46.35    Compiling tree-sitter-html v0.23.2
+2026-07-21T04:25:24.4453403Z #13 46.40    Compiling tree-sitter-ini v1.4.0
+2026-07-21T04:25:24.5548149Z #13 46.41    Compiling tree-sitter-typescript v0.23.2
+2026-07-21T04:25:24.5548917Z #13 46.42    Compiling tree-sitter-c-sharp v0.23.5
+2026-07-21T04:25:24.5549819Z #13 46.46    Compiling tree-sitter-yaml v0.7.2
+2026-07-21T04:25:24.5550466Z #13 46.47    Compiling tree-sitter-graphql v0.1.0
+2026-07-21T04:25:24.6775979Z #13 46.51    Compiling tree-sitter-sequel v0.3.11
+2026-07-21T04:25:24.6776702Z #13 46.54    Compiling tree-sitter-python v0.25.0
+2026-07-21T04:25:24.6777206Z #13 46.54    Compiling ts-parser-perl v1.1.2
+2026-07-21T04:25:24.6777595Z #13 46.59    Compiling nom v8.0.0
+2026-07-21T04:25:24.6777953Z #13 46.61    Compiling hashbrown v0.14.5
+2026-07-21T04:25:24.8541155Z #13 46.63    Compiling bitflags v1.3.2
+2026-07-21T04:25:24.8541717Z #13 46.66    Compiling rust_decimal v1.42.0
+2026-07-21T04:25:25.1881087Z #13 47.02    Compiling dtor-proc-macro v0.0.5
+2026-07-21T04:25:25.1881810Z #13 47.06    Compiling unsafe-libyaml v0.2.11
+2026-07-21T04:25:25.3732295Z #13 47.14    Compiling dtor v0.0.6
+2026-07-21T04:25:25.3734482Z #13 47.17    Compiling dashmap v6.2.1
+2026-07-21T04:25:25.7563702Z #13 47.56    Compiling serde_yaml_ng v0.10.0
+2026-07-21T04:25:27.0780510Z #13 48.87    Compiling links-notation v0.13.0
+2026-07-21T04:25:27.0780918Z #13 48.88    Compiling kanaria v0.2.0
+2026-07-21T04:25:33.5846704Z #13 55.54    Compiling clap v4.6.1
+2026-07-21T04:25:34.8335872Z #13 56.79    Compiling rustls-webpki v0.103.13
+2026-07-21T04:25:37.5404245Z #13 59.49    Compiling tokio-rustls v0.26.4
+2026-07-21T04:25:37.8267757Z #13 59.65    Compiling hyper-rustls v0.27.9
+2026-07-21T04:25:38.0761579Z #13 59.78    Compiling rustls-platform-verifier v0.7.0
+2026-07-21T04:25:38.0762241Z #13 59.88    Compiling reqwest v0.13.4
+2026-07-21T04:25:41.0356905Z #13 62.99    Compiling lindera-jieba v3.0.7
+2026-07-21T04:25:42.3190457Z #13 64.12    Compiling num-bigint v0.4.6
+2026-07-21T04:25:43.2480080Z #13 65.05    Compiling tempfile v3.27.0
+2026-07-21T04:25:43.6463155Z #13 65.45    Compiling rayon v1.12.0
+2026-07-21T04:25:45.4402197Z #13 67.28    Compiling pest_derive v2.8.6
+2026-07-21T04:25:45.5919628Z #13 67.39    Compiling unicode-normalization v0.1.25
+2026-07-21T04:25:45.9456315Z #13 67.75    Compiling itertools v0.14.0
+2026-07-21T04:25:46.2742454Z #13 68.08    Compiling hashlink v0.10.0
+2026-07-21T04:25:46.4601946Z #13 68.31    Compiling lingua-russian-language-model v1.3.0
+2026-07-21T04:25:46.4602413Z #13 68.36    Compiling lingua-urdu-language-model v1.3.0
+2026-07-21T04:25:46.6085295Z #13 68.41    Compiling lingua-french-language-model v1.3.0
+2026-07-21T04:25:46.6085993Z #13 68.46    Compiling lingua-english-language-model v1.3.0
+2026-07-21T04:25:46.6086466Z #13 68.51    Compiling lingua-spanish-language-model v1.3.0
+2026-07-21T04:25:46.6086941Z #13 68.56    Compiling lingua-chinese-language-model v1.3.0
+2026-07-21T04:25:46.7187462Z #13 68.60    Compiling lingua-portuguese-language-model v1.3.0
+2026-07-21T04:25:46.7188126Z #13 68.64    Compiling lingua-bengali-language-model v1.3.0
+2026-07-21T04:25:46.9173038Z #13 68.67    Compiling lingua-arabic-language-model v1.3.0
+2026-07-21T04:25:46.9173482Z #13 68.73    Compiling lingua-hindi-language-model v1.3.0
+2026-07-21T04:25:46.9174044Z #13 68.77    Compiling counter v0.7.1
+2026-07-21T04:25:47.0258305Z #13 68.87    Compiling strum_macros v0.27.2
+2026-07-21T04:25:47.1576647Z #13 68.98    Compiling beef v0.5.2
+2026-07-21T04:25:47.1577367Z #13 69.06    Compiling strum v0.27.2
+2026-07-21T04:25:47.1578097Z #13 69.11    Compiling iana-time-zone v0.1.65
+2026-07-21T04:25:47.5912161Z #13 69.39    Compiling streaming-iterator v0.1.9
+2026-07-21T04:25:47.7671213Z #13 69.61    Compiling ctor-proc-macro v0.0.6
+2026-07-21T04:25:47.9187548Z #13 69.72    Compiling allocator-api2 v0.4.0
+2026-07-21T04:25:48.1956964Z #13 70.01    Compiling arrayvec v0.7.6
+2026-07-21T04:25:48.1957719Z #13 70.10    Compiling unicode-blocks v0.1.9
+2026-07-21T04:25:48.1958533Z #13 70.15    Compiling winnow v1.0.3
+2026-07-21T04:25:48.4359567Z #13 70.20    Compiling unicode-segmentation v1.13.3
+2026-07-21T04:25:48.4360039Z #13 70.21    Compiling maplit v1.0.2
+2026-07-21T04:25:48.4360285Z #13 70.24    Compiling lingua v1.8.0
+2026-07-21T04:25:49.3050836Z #13 71.11    Compiling toml_parser v1.1.2+spec-1.1.0
+2026-07-21T04:25:49.9500611Z #13 71.75    Compiling platform-mem v0.3.0
+2026-07-21T04:25:50.1384100Z #13 71.91    Compiling ctor v0.4.3
+2026-07-21T04:25:50.1385990Z #13 71.94    Compiling chrono v0.4.44
+2026-07-21T04:25:50.8306507Z #13 72.63    Compiling platform-data v2.0.0
+2026-07-21T04:25:50.9965119Z #13 72.80    Compiling json5_nodes v2.0.2
+2026-07-21T04:25:52.2711377Z #13 74.07    Compiling lindera v3.0.7
+2026-07-21T04:25:52.8441313Z #13 74.65    Compiling num-rational v0.4.2
+2026-07-21T04:25:53.8146789Z #13 75.66    Compiling platform-trees v0.3.4
+2026-07-21T04:25:53.8147233Z #13 75.67    Compiling web-sys v0.3.98
+2026-07-21T04:25:53.8147607Z #13 75.73    Compiling wasm-bindgen-futures v0.4.71
+2026-07-21T04:25:53.9660805Z #13 75.77    Compiling serde-wasm-bindgen v0.6.5
+2026-07-21T04:25:54.3260466Z #13 76.13    Compiling whatlang v0.18.0
+2026-07-21T04:25:55.3519875Z #13 77.19    Compiling console_error_panic_hook v0.1.7
+2026-07-21T04:25:55.3520693Z #13 77.26    Compiling tap v1.0.1
+2026-07-21T04:25:55.5523170Z #13 77.31    Compiling lino-env v0.1.0
+2026-07-21T04:25:55.5525348Z #13 77.35    Compiling leak_slice v0.2.0
+2026-07-21T04:25:55.5526201Z #13 77.38    Compiling toml_writer v1.1.1+spec-1.1.0
+2026-07-21T04:25:55.7033795Z #13 77.51    Compiling dotenvy v0.15.7
+2026-07-21T04:25:55.8749831Z #13 77.68    Compiling toml_datetime v1.1.1+spec-1.1.0
+2026-07-21T04:25:56.0518114Z #13 77.89    Compiling lazy_static v1.5.0
+2026-07-21T04:25:56.0520030Z #13 77.92    Compiling formal-ai v0.301.0 (/app)
+2026-07-21T04:25:56.0520606Z #13 77.94    Compiling unicode-bidi v0.3.18
+2026-07-21T04:25:56.0521392Z #13 78.01    Compiling link-calculator v0.19.0
+2026-07-21T04:25:56.2472335Z #13 78.10    Compiling toml_edit v0.25.11+spec-1.1.0
+2026-07-21T04:25:56.2474914Z #13 78.20    Compiling lino-objects-codec v0.2.1
+2026-07-21T04:25:56.8047600Z #13 78.61    Compiling meta-language v0.45.0
+2026-07-21T04:25:57.1459313Z #13 78.95    Compiling lino-arguments v0.3.0
+2026-07-21T04:25:57.9441623Z #13 79.77    Compiling doublets v0.4.0
+2026-07-21T04:25:58.0960435Z #13 79.90    Compiling thread-priority v1.2.0
+2026-07-21T04:25:58.3635306Z #13 80.17    Compiling fs2 v0.4.3
+2026-07-21T04:27:57.3302934Z #13 199.3     Finished `release` profile [optimized] target(s) in 3m 19s
+2026-07-21T04:27:58.6598133Z #13 DONE 200.6s
+2026-07-21T04:27:58.7988561Z 
+2026-07-21T04:27:58.7989582Z #14 [stage-1 2/7] RUN apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* &&     node --version
+2026-07-21T04:27:58.7990046Z #14 CACHED
+2026-07-21T04:27:58.7990129Z 
+2026-07-21T04:27:58.7990210Z #15 [stage-1 3/7] WORKDIR /home/box
+2026-07-21T04:27:58.7990389Z #15 CACHED
+2026-07-21T04:27:58.7990470Z 
+2026-07-21T04:27:58.7990832Z #16 [stage-1 4/7] RUN bun install -g start-command @link-assistant/agent agent-commander &&     "$" --version &&     agent --version &&     start-agent --help >/dev/null
+2026-07-21T04:27:59.0370459Z #16 ERROR: blob sha256:0b1db5768b6f137baf371c2682e67118571e9b70a25589056a3833cee0544809: not found
+2026-07-21T04:27:59.0370803Z 
+2026-07-21T04:27:59.0370878Z #15 [stage-1 3/7] WORKDIR /home/box
+2026-07-21T04:27:59.1682705Z #15 ERROR: blob sha256:498a352d93f363fbb8d0bc728852b940a38e6041f021d25e76f45bd55c35a9d7: not found
+2026-07-21T04:27:59.1683096Z 
+2026-07-21T04:27:59.1683536Z #14 [stage-1 2/7] RUN apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* &&     node --version
+2026-07-21T04:27:59.1684333Z #14 ERROR: blob sha256:179e7098f01bc6f9752a606a4b9ded07ec90b0001f8b71634f5901e23704d320: not found
+2026-07-21T04:27:59.3193168Z 
+2026-07-21T04:27:59.3193725Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:27:59.6681785Z #9 DONE 0.7s
+2026-07-21T04:27:59.8197599Z 
+2026-07-21T04:27:59.8198221Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:27:59.8219421Z #9 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0B / 32B 0.2s
+2026-07-21T04:27:59.9250535Z #9 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.2s done
+2026-07-21T04:27:59.9251024Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 0B / 444.14MB 0.2s
+2026-07-21T04:27:59.9251559Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 0B / 131.68MB 0.2s
+2026-07-21T04:27:59.9252118Z #9 sha256:766d08d9764414cdad8d08e813c0c37b05e17204dfd6d5797ac8917cfd7e7239 1.89kB / 1.89kB 0.2s done
+2026-07-21T04:27:59.9252721Z #9 sha256:ca221f30801d9ab536efed45894083d51cef1f587da20e84ca2211f760d86fbc 1.67kB / 1.67kB 0.1s done
+2026-07-21T04:27:59.9253281Z #9 sha256:413295f81cb30e4c5663671f68266d22929d1db986b95f6c7868c58cc8df87ea 1.68kB / 1.68kB 0.1s done
+2026-07-21T04:28:00.0685415Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 8.39MB / 131.68MB 0.3s
+2026-07-21T04:28:00.0686176Z #9 sha256:abe01490f14174ea5ef5ddcb89ea010c5c4898fe8f6dc7ab70c70990b5106b0c 974B / 974B 0.2s
+2026-07-21T04:28:00.2506650Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 47.19MB / 444.14MB 0.5s
+2026-07-21T04:28:00.2507788Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 60.82MB / 131.68MB 0.5s
+2026-07-21T04:28:00.2509763Z #9 sha256:abe01490f14174ea5ef5ddcb89ea010c5c4898fe8f6dc7ab70c70990b5106b0c 974B / 974B 0.2s done
+2026-07-21T04:28:00.2510480Z #9 sha256:5a7dba182ef2102d41a32e6be93ab0c00e4cbd04771303942969e2ea81d255b7 517B / 517B 0.2s done
+2026-07-21T04:28:00.2511169Z #9 sha256:8f865e8d7b1ab162f8e24dd7c0579d8850c3b3311b8fc6661e91ec9ffc3fcde3 323B / 323B 0.1s done
+2026-07-21T04:28:00.2511899Z #9 sha256:18a7228508cac26323521f8a1ffb1c8bb782dccc27cf74654e886550f546f7e0 322B / 322B 0.0s done
+2026-07-21T04:28:00.4247063Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 100.66MB / 444.14MB 0.8s
+2026-07-21T04:28:00.4247963Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 101.71MB / 131.68MB 0.6s
+2026-07-21T04:28:00.4248425Z #9 sha256:14021c24813e8881673cd58382a434d25b955b02e9dcd8c12c68590db7065208 374B / 374B 0.1s done
+2026-07-21T04:28:00.4248928Z #9 sha256:2ee25b3e2107e20866977ce0e8466f526d7544c567228144bc45b1bcb150b42a 402B / 402B 0.1s done
+2026-07-21T04:28:00.4249599Z #9 sha256:f24ab5e846e002c78b52f365ecdb440dc0b9731dfa8602ba70e1a73d7509af78 333B / 333B 0.1s done
+2026-07-21T04:28:00.5748958Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 125.83MB / 444.14MB 0.9s
+2026-07-21T04:28:00.5749706Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 131.68MB / 131.68MB 0.8s
+2026-07-21T04:28:00.5750179Z #9 sha256:51a78b6b326a8577c376c40110dca3f4b4bc4ae560dfcb00652847c2b8f46669 338B / 338B 0.2s
+2026-07-21T04:28:00.7248549Z #9 sha256:ce96025ac64febf407fe82d6b166aaf3524ef8542ccec073676ae47051876a29 341B / 341B 0.1s done
+2026-07-21T04:28:00.8753044Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 165.68MB / 444.14MB 1.2s
+2026-07-21T04:28:00.8753758Z #9 sha256:640d6f1c44f1c0e0691e28fcb577923859fb399cbfbcb699e41b3c0f74be850d 312B / 312B 0.2s
+2026-07-21T04:28:00.9945912Z #9 sha256:51a78b6b326a8577c376c40110dca3f4b4bc4ae560dfcb00652847c2b8f46669 338B / 338B 0.6s done
+2026-07-21T04:28:01.1524518Z #9 sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 131.68MB / 131.68MB 1.3s done
+2026-07-21T04:28:01.1525438Z #9 sha256:640d6f1c44f1c0e0691e28fcb577923859fb399cbfbcb699e41b3c0f74be850d 312B / 312B 0.4s done
+2026-07-21T04:28:01.1526301Z #9 sha256:f8a1b57210a613430649429ecbb6acb8408eb23d43a283a7ef9ec8939800ef43 336B / 336B 0.1s done
+2026-07-21T04:28:01.1527091Z #9 sha256:50d339f808de0ebbf808a41825eef6244d203e569e62c843187069494df6d418 354B / 354B 0.1s done
+2026-07-21T04:28:01.1528190Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 0B / 452.97MB 0.2s
+2026-07-21T04:28:01.3026203Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 211.81MB / 444.14MB 1.5s
+2026-07-21T04:28:01.3026882Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 30.41MB / 452.97MB 0.3s
+2026-07-21T04:28:01.3027435Z #9 sha256:49c9d451c68594336fc7f5536c182be64e37cad6d997fb80c690c7ca18dfd08d 0B / 5.13MB 0.2s
+2026-07-21T04:28:01.3027978Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 41.94MB / 801.51MB 0.2s
+2026-07-21T04:28:01.4525087Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 235.93MB / 444.14MB 1.7s
+2026-07-21T04:28:01.4527673Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 68.16MB / 452.97MB 0.5s
+2026-07-21T04:28:01.4529880Z #9 sha256:49c9d451c68594336fc7f5536c182be64e37cad6d997fb80c690c7ca18dfd08d 5.13MB / 5.13MB 0.3s done
+2026-07-21T04:28:01.4533210Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 95.42MB / 801.51MB 0.3s
+2026-07-21T04:28:01.6032335Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 264.24MB / 444.14MB 1.8s
+2026-07-21T04:28:01.6033140Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 101.71MB / 452.97MB 0.6s
+2026-07-21T04:28:01.6033806Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 150.99MB / 801.51MB 0.5s
+2026-07-21T04:28:01.6034483Z #9 sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b 3.15MB / 86.63MB 0.2s
+2026-07-21T04:28:01.7530459Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 298.84MB / 444.14MB 2.0s
+2026-07-21T04:28:01.7531403Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 135.27MB / 452.97MB 0.8s
+2026-07-21T04:28:01.7532099Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 193.99MB / 801.51MB 0.6s
+2026-07-21T04:28:01.7532980Z #9 sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b 44.04MB / 86.63MB 0.3s
+2026-07-21T04:28:01.9026943Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 346.03MB / 444.14MB 2.1s
+2026-07-21T04:28:01.9027703Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 169.87MB / 452.97MB 0.9s
+2026-07-21T04:28:01.9028295Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 241.17MB / 801.51MB 0.8s
+2026-07-21T04:28:01.9028749Z #9 sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b 86.63MB / 86.63MB 0.5s
+2026-07-21T04:28:02.0524071Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 401.60MB / 444.14MB 2.3s
+2026-07-21T04:28:02.0524800Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 200.28MB / 452.97MB 1.1s
+2026-07-21T04:28:02.0525422Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 299.89MB / 801.51MB 0.9s
+2026-07-21T04:28:02.2023853Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 444.14MB / 444.14MB 2.4s
+2026-07-21T04:28:02.2024755Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 227.54MB / 452.97MB 1.2s
+2026-07-21T04:28:02.2025235Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 354.42MB / 801.51MB 1.1s
+2026-07-21T04:28:02.3525212Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 261.10MB / 452.97MB 1.4s
+2026-07-21T04:28:02.3526138Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 416.28MB / 801.51MB 1.2s
+2026-07-21T04:28:02.5039895Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 294.65MB / 452.97MB 1.5s
+2026-07-21T04:28:02.5042467Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 459.28MB / 801.51MB 1.4s
+2026-07-21T04:28:02.6522231Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 328.20MB / 452.97MB 1.7s
+2026-07-21T04:28:02.6523201Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 501.22MB / 801.51MB 1.5s
+2026-07-21T04:28:02.8029681Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 363.86MB / 452.97MB 1.8s
+2026-07-21T04:28:02.9612574Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 395.31MB / 452.97MB 2.0s
+2026-07-21T04:28:02.9614559Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 574.62MB / 801.51MB 1.8s
+2026-07-21T04:28:03.1117662Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 433.06MB / 452.97MB 2.1s
+2026-07-21T04:28:03.2527569Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 662.70MB / 801.51MB 2.1s
+2026-07-21T04:28:03.2528181Z #9 sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b 86.63MB / 86.63MB 1.2s done
+2026-07-21T04:28:03.3832290Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 713.03MB / 801.51MB 2.3s
+2026-07-21T04:28:03.3833139Z #9 sha256:142ce934cc7d07979f22b6bac2a029f499542b98016ecdedc19f2eda1c0e3e1f 142B / 142B 0.2s
+2026-07-21T04:28:03.5335762Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 766.51MB / 801.51MB 2.4s
+2026-07-21T04:28:04.1336387Z #9 sha256:142ce934cc7d07979f22b6bac2a029f499542b98016ecdedc19f2eda1c0e3e1f 142B / 142B 0.6s done
+2026-07-21T04:28:04.6021317Z #9 sha256:dc8fb6fca3148b9f448a5354f853f7e2366935ee630ff9ff9c45f84d02be2fa2 184B / 184B 0.2s
+2026-07-21T04:28:06.8528518Z #9 sha256:dc8fb6fca3148b9f448a5354f853f7e2366935ee630ff9ff9c45f84d02be2fa2 184B / 184B 2.0s done
+2026-07-21T04:28:06.9952007Z #9 sha256:41933a7fb1a28434bc5884bcf1976217c22c3a6a3d75ab7681677f9da7cfe2b1 22.02MB / 45.85MB 0.2s
+2026-07-21T04:28:07.1452782Z #9 sha256:41933a7fb1a28434bc5884bcf1976217c22c3a6a3d75ab7681677f9da7cfe2b1 45.85MB / 45.85MB 0.3s
+2026-07-21T04:28:07.2949500Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 444.14MB / 444.14MB 7.5s
+2026-07-21T04:28:08.3449902Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 452.97MB / 452.97MB 7.2s
+2026-07-21T04:28:08.6449863Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 801.51MB / 801.51MB 7.5s
+2026-07-21T04:28:08.7950804Z #9 sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 444.14MB / 444.14MB 8.7s done
+2026-07-21T04:28:09.0948437Z #9 sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04 4.19MB / 83.03MB 0.2s
+2026-07-21T04:28:09.3946665Z #9 sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04 46.14MB / 83.03MB 0.5s
+2026-07-21T04:28:09.5450712Z #9 sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04 80.74MB / 83.03MB 0.6s
+2026-07-21T04:28:10.6423144Z #9 sha256:41933a7fb1a28434bc5884bcf1976217c22c3a6a3d75ab7681677f9da7cfe2b1 45.85MB / 45.85MB 3.3s done
+2026-07-21T04:28:10.7928713Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 16.78MB / 418.74MB 0.2s
+2026-07-21T04:28:10.9424954Z #9 sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 452.97MB / 452.97MB 9.7s done
+2026-07-21T04:28:10.9425804Z #9 sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 801.51MB / 801.51MB 9.8s done
+2026-07-21T04:28:10.9426990Z #9 sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04 83.03MB / 83.03MB 2.0s done
+2026-07-21T04:28:10.9427759Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 54.53MB / 418.74MB 0.3s
+2026-07-21T04:28:11.0928094Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 105.91MB / 418.74MB 0.5s
+2026-07-21T04:28:11.0929829Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 13.63MB / 290.02MB 0.2s
+2026-07-21T04:28:11.0930499Z #9 sha256:1a1f13dadccc384e379417bb1c25e83dbfc203c51bfc34e56821f592d3875fd8 8.15MB / 8.15MB 0.2s
+2026-07-21T04:28:11.0931545Z #9 sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 0B / 67.22MB 0.2s
+2026-07-21T04:28:11.2454768Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 145.75MB / 418.74MB 0.6s
+2026-07-21T04:28:11.2455423Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 48.23MB / 290.02MB 0.3s
+2026-07-21T04:28:11.2456026Z #9 sha256:1a1f13dadccc384e379417bb1c25e83dbfc203c51bfc34e56821f592d3875fd8 8.15MB / 8.15MB 0.2s done
+2026-07-21T04:28:11.3941884Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 190.84MB / 418.74MB 0.8s
+2026-07-21T04:28:11.3942636Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 91.23MB / 290.02MB 0.5s
+2026-07-21T04:28:11.3944287Z #9 sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 18.87MB / 67.22MB 0.5s
+2026-07-21T04:28:11.3945094Z #9 sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 23.07MB / 106.23MB 0.2s
+2026-07-21T04:28:11.5434374Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 228.59MB / 418.74MB 0.9s
+2026-07-21T04:28:11.5435638Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 124.78MB / 290.02MB 0.6s
+2026-07-21T04:28:11.5436370Z #9 sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 41.94MB / 67.22MB 0.6s
+2026-07-21T04:28:11.5445639Z #9 sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 65.01MB / 106.23MB 0.3s
+2026-07-21T04:28:11.6933422Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 274.73MB / 418.74MB 1.1s
+2026-07-21T04:28:11.6934226Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 157.29MB / 290.02MB 0.8s
+2026-07-21T04:28:11.6934999Z #9 sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 67.22MB / 67.22MB 0.8s
+2026-07-21T04:28:11.6935629Z #9 sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 98.57MB / 106.23MB 0.5s
+2026-07-21T04:28:11.8429824Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 318.77MB / 418.74MB 1.2s
+2026-07-21T04:28:11.8430965Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 201.33MB / 290.02MB 0.9s
+2026-07-21T04:28:11.8432031Z #9 sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 106.23MB / 106.23MB 0.6s
+2026-07-21T04:28:11.9931875Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 364.90MB / 418.74MB 1.4s
+2026-07-21T04:28:11.9932524Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 230.69MB / 290.02MB 1.1s
+2026-07-21T04:28:12.1425878Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 409.99MB / 418.74MB 1.5s
+2026-07-21T04:28:12.1426819Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 266.34MB / 290.02MB 1.2s
+2026-07-21T04:28:12.2932669Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 290.02MB / 290.02MB 1.4s
+2026-07-21T04:28:12.5926007Z #9 sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 67.22MB / 67.22MB 1.2s done
+2026-07-21T04:28:12.8474951Z #9 sha256:498a352d93f363fbb8d0bc728852b940a38e6041f021d25e76f45bd55c35a9d7 725B / 725B 0.2s
+2026-07-21T04:28:13.3596689Z #9 sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 106.23MB / 106.23MB 2.0s done
+2026-07-21T04:28:13.7926623Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 0B / 498.38MB 0.2s
+2026-07-21T04:28:14.0927943Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 56.62MB / 498.38MB 0.5s
+2026-07-21T04:28:14.1974940Z #9 sha256:498a352d93f363fbb8d0bc728852b940a38e6041f021d25e76f45bd55c35a9d7 725B / 725B 1.1s done
+2026-07-21T04:28:14.1975724Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 97.52MB / 498.38MB 0.6s
+2026-07-21T04:28:14.4554220Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 137.36MB / 498.38MB 0.8s
+2026-07-21T04:28:14.4554903Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 2.10MB / 728.16MB 0.2s
+2026-07-21T04:28:14.5561201Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 175.11MB / 498.38MB 0.9s
+2026-07-21T04:28:14.6926969Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 210.76MB / 498.38MB 1.1s
+2026-07-21T04:28:14.8424369Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 246.42MB / 498.38MB 1.2s
+2026-07-21T04:28:14.8425411Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 48.23MB / 728.16MB 0.5s
+2026-07-21T04:28:14.9970774Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 285.21MB / 498.38MB 1.4s
+2026-07-21T04:28:15.1426407Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 326.11MB / 498.38MB 1.5s
+2026-07-21T04:28:15.1426997Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 119.54MB / 728.16MB 0.8s
+2026-07-21T04:28:15.2930906Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 364.90MB / 498.38MB 1.7s
+2026-07-21T04:28:15.4446952Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 402.65MB / 498.38MB 1.8s
+2026-07-21T04:28:15.4448187Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 187.70MB / 728.16MB 1.1s
+2026-07-21T04:28:15.5930147Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 438.30MB / 498.38MB 2.0s
+2026-07-21T04:28:15.5931193Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 227.54MB / 728.16MB 1.2s
+2026-07-21T04:28:15.7574447Z #9 sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 418.74MB / 418.74MB 5.0s done
+2026-07-21T04:28:15.7575437Z #9 sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 290.02MB / 290.02MB 4.8s done
+2026-07-21T04:28:15.7576134Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 296.75MB / 728.16MB 1.5s
+2026-07-21T04:28:15.9062122Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 498.38MB / 498.38MB 2.3s
+2026-07-21T04:28:15.9062948Z #9 sha256:179e7098f01bc6f9752a606a4b9ded07ec90b0001f8b71634f5901e23704d320 727B / 727B 0.1s done
+2026-07-21T04:28:15.9064228Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 1.05MB / 141.89MB 0.2s
+2026-07-21T04:28:16.0563929Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 361.76MB / 728.16MB 1.8s
+2026-07-21T04:28:16.0564544Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 16.78MB / 141.89MB 0.3s
+2026-07-21T04:28:16.0565609Z #9 sha256:60ce6adb0dec160857085a2a5899abcaa0531de963cd05efca4c89e9c9409083 2.33kB / 2.33kB 0.2s
+2026-07-21T04:28:16.2062248Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 58.72MB / 141.89MB 0.5s
+2026-07-21T04:28:16.3569667Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 425.72MB / 728.16MB 2.1s
+2026-07-21T04:28:16.3571465Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 85.98MB / 141.89MB 0.6s
+2026-07-21T04:28:16.5061231Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 119.54MB / 141.89MB 0.8s
+2026-07-21T04:28:16.6559873Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 491.78MB / 728.16MB 2.4s
+2026-07-21T04:28:16.6560374Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 141.89MB / 141.89MB 0.9s
+2026-07-21T04:28:16.9563373Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 550.50MB / 728.16MB 2.7s
+2026-07-21T04:28:17.1059673Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 592.45MB / 728.16MB 2.9s
+2026-07-21T04:28:17.4067156Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 662.70MB / 728.16MB 3.2s
+2026-07-21T04:28:17.4070427Z #9 sha256:60ce6adb0dec160857085a2a5899abcaa0531de963cd05efca4c89e9c9409083 2.33kB / 2.33kB 1.2s done
+2026-07-21T04:28:17.7068734Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 728.16MB / 728.16MB 3.5s
+2026-07-21T04:28:17.8569779Z #9 sha256:3de510953069a0ee48b7b9273bd2114fc2c48ad851e82f8a55274a3c80870f76 1.67kB / 1.67kB 0.2s
+2026-07-21T04:28:18.6067944Z #9 sha256:3de510953069a0ee48b7b9273bd2114fc2c48ad851e82f8a55274a3c80870f76 1.67kB / 1.67kB 0.8s done
+2026-07-21T04:28:18.8961732Z #9 sha256:9497e6300b1819fbf87ca756241c226cbf7b643f7e443cf8b5120d938ea95a36 1.42kB / 1.42kB 0.2s
+2026-07-21T04:28:20.0959702Z #9 sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 141.89MB / 141.89MB 3.9s done
+2026-07-21T04:28:20.4063378Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 6.29MB / 1.22GB 0.2s
+2026-07-21T04:28:20.6960226Z #9 sha256:9497e6300b1819fbf87ca756241c226cbf7b643f7e443cf8b5120d938ea95a36 1.42kB / 1.42kB 1.6s done
+2026-07-21T04:28:20.6960771Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 77.59MB / 1.22GB 0.5s
+2026-07-21T04:28:21.0062842Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 498.38MB / 498.38MB 7.4s
+2026-07-21T04:28:21.0064088Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 175.11MB / 1.22GB 0.8s
+2026-07-21T04:28:21.0065017Z #9 sha256:f6928867c5d77ee44d8381fc432bdf2fa12297dcccc86e9b6e94203c7a8a5531 1.67kB / 1.67kB 0.2s
+2026-07-21T04:28:21.3063524Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 263.19MB / 1.22GB 1.1s
+2026-07-21T04:28:21.4538878Z #9 sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 498.38MB / 498.38MB 7.6s done
+2026-07-21T04:28:21.6044555Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 351.27MB / 1.22GB 1.4s
+2026-07-21T04:28:21.6045517Z #9 sha256:8f0504a9439f174d19cc1a5a514fbcd9e1b62389605e47616d365ac28df245a7 1.49kB / 1.49kB 0.2s
+2026-07-21T04:28:21.9041012Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 440.40MB / 1.22GB 1.7s
+2026-07-21T04:28:22.0048543Z #9 sha256:f6928867c5d77ee44d8381fc432bdf2fa12297dcccc86e9b6e94203c7a8a5531 1.67kB / 1.67kB 1.2s done
+2026-07-21T04:28:22.1564536Z #9 sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 728.16MB / 728.16MB 7.8s done
+2026-07-21T04:28:22.1566139Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 508.56MB / 1.22GB 2.0s
+2026-07-21T04:28:22.1567257Z #9 sha256:8f0504a9439f174d19cc1a5a514fbcd9e1b62389605e47616d365ac28df245a7 1.49kB / 1.49kB 0.6s done
+2026-07-21T04:28:22.1568858Z #9 sha256:599efa661416a54ae1ce75ece957aedca99f2f96f512d8b8d90ee6d8361d6c55 112B / 112B 0.1s done
+2026-07-21T04:28:22.1571781Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 39.85MB / 418.35MB 0.2s
+2026-07-21T04:28:22.3070822Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 90.18MB / 418.35MB 0.3s
+2026-07-21T04:28:22.3071826Z #9 sha256:6b5b4238e2e886e515f444b4f531994570d37300af69392b0902f72cf977a336 24.12MB / 28.85MB 0.2s
+2026-07-21T04:28:22.3072677Z #9 sha256:b40150c1c2717d324cdb17278c8efdfa4dfcd2ffe083e976f0bcedf31115f081 0B / 29.73MB 0.2s
+2026-07-21T04:28:22.4554205Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 580.91MB / 1.22GB 2.3s
+2026-07-21T04:28:22.4555035Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 152.04MB / 418.35MB 0.5s
+2026-07-21T04:28:22.4555709Z #9 sha256:6b5b4238e2e886e515f444b4f531994570d37300af69392b0902f72cf977a336 28.85MB / 28.85MB 0.3s done
+2026-07-21T04:28:22.4556328Z #9 sha256:b40150c1c2717d324cdb17278c8efdfa4dfcd2ffe083e976f0bcedf31115f081 29.73MB / 29.73MB 0.3s
+2026-07-21T04:28:22.6063800Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 191.89MB / 418.35MB 0.6s
+2026-07-21T04:28:22.6065475Z #9 sha256:b40150c1c2717d324cdb17278c8efdfa4dfcd2ffe083e976f0bcedf31115f081 29.73MB / 29.73MB 0.4s done
+2026-07-21T04:28:22.6066446Z #9 extracting sha256:b40150c1c2717d324cdb17278c8efdfa4dfcd2ffe083e976f0bcedf31115f081
+2026-07-21T04:28:22.7555590Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 658.51MB / 1.22GB 2.6s
+2026-07-21T04:28:22.7556555Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 226.49MB / 418.35MB 0.8s
+2026-07-21T04:28:22.9055777Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 288.36MB / 418.35MB 0.9s
+2026-07-21T04:28:23.0559237Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 741.34MB / 1.22GB 2.9s
+2026-07-21T04:28:23.0560353Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 356.52MB / 418.35MB 1.1s
+2026-07-21T04:28:23.1687191Z #9 extracting sha256:b40150c1c2717d324cdb17278c8efdfa4dfcd2ffe083e976f0bcedf31115f081 0.7s done
+2026-07-21T04:28:23.3556104Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 846.20MB / 1.22GB 3.2s
+2026-07-21T04:28:23.3558171Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 418.35MB / 418.35MB 1.4s
+2026-07-21T04:28:23.3559257Z #9 extracting sha256:599efa661416a54ae1ce75ece957aedca99f2f96f512d8b8d90ee6d8361d6c55 0.0s done
+2026-07-21T04:28:23.3560144Z #9 extracting sha256:6b5b4238e2e886e515f444b4f531994570d37300af69392b0902f72cf977a336
+2026-07-21T04:28:23.6552385Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 926.94MB / 1.22GB 3.5s
+2026-07-21T04:28:23.9554241Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 1.01GB / 1.22GB 3.8s
+2026-07-21T04:28:24.2242252Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 1.10GB / 1.22GB 4.1s
+2026-07-21T04:28:24.2242807Z #9 extracting sha256:6b5b4238e2e886e515f444b4f531994570d37300af69392b0902f72cf977a336 1.0s done
+2026-07-21T04:28:24.5561414Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 1.19GB / 1.22GB 4.4s
+2026-07-21T04:28:27.3143314Z #9 sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 418.35MB / 418.35MB 4.8s done
+2026-07-21T04:28:29.5649822Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 1.22GB / 1.22GB 9.5s
+2026-07-21T04:28:29.5650368Z #9 extracting sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6
+2026-07-21T04:28:31.3785460Z #9 sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 1.22GB / 1.22GB 11.1s done
+2026-07-21T04:28:35.2269557Z #9 extracting sha256:7c0b210b4455409a87f5a90dfe40a67023bfab9266c983feaec259e6f34d5bc6 5.8s done
+2026-07-21T04:28:35.2270155Z #9 DONE 36.2s
+2026-07-21T04:28:35.3930128Z 
+2026-07-21T04:28:35.3931913Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:35.3933662Z #9 extracting sha256:8f0504a9439f174d19cc1a5a514fbcd9e1b62389605e47616d365ac28df245a7 done
+2026-07-21T04:28:35.3934746Z #9 extracting sha256:f6928867c5d77ee44d8381fc432bdf2fa12297dcccc86e9b6e94203c7a8a5531 done
+2026-07-21T04:28:35.3936879Z #9 extracting sha256:9497e6300b1819fbf87ca756241c226cbf7b643f7e443cf8b5120d938ea95a36 done
+2026-07-21T04:28:35.3937794Z #9 extracting sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd
+2026-07-21T04:28:47.2756160Z #9 extracting sha256:9d5fd2ed002b488a1b8f48a7c958a20f4880129687b5f68820abe00421cfe4fd 12.0s done
+2026-07-21T04:28:47.2756679Z #9 DONE 48.3s
+2026-07-21T04:28:47.4262682Z 
+2026-07-21T04:28:47.4263253Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:47.4263762Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+2026-07-21T04:28:47.5933554Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.3s done
+2026-07-21T04:28:47.5933981Z #9 DONE 48.6s
+2026-07-21T04:28:47.7438070Z 
+2026-07-21T04:28:47.7438863Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:47.7439496Z #9 extracting sha256:3de510953069a0ee48b7b9273bd2114fc2c48ad851e82f8a55274a3c80870f76
+2026-07-21T04:28:48.6971176Z #9 extracting sha256:3de510953069a0ee48b7b9273bd2114fc2c48ad851e82f8a55274a3c80870f76 1.1s done
+2026-07-21T04:28:48.8476790Z #9 extracting sha256:60ce6adb0dec160857085a2a5899abcaa0531de963cd05efca4c89e9c9409083
+2026-07-21T04:28:49.3929328Z #9 extracting sha256:60ce6adb0dec160857085a2a5899abcaa0531de963cd05efca4c89e9c9409083 0.7s done
+2026-07-21T04:28:49.3929768Z #9 DONE 50.4s
+2026-07-21T04:28:49.5435136Z 
+2026-07-21T04:28:49.5436003Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:49.5436543Z #9 extracting sha256:179e7098f01bc6f9752a606a4b9ded07ec90b0001f8b71634f5901e23704d320
+2026-07-21T04:28:49.6906938Z #9 extracting sha256:179e7098f01bc6f9752a606a4b9ded07ec90b0001f8b71634f5901e23704d320 0.3s done
+2026-07-21T04:28:49.6907511Z #9 DONE 50.7s
+2026-07-21T04:28:49.8412556Z 
+2026-07-21T04:28:49.8420332Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:49.8420898Z #9 extracting sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43
+2026-07-21T04:28:51.7143870Z #9 extracting sha256:5175479e1877c1e2e9bf4af52a5748aeaf5185a4539a4218dae32de570f8fe43 2.0s done
+2026-07-21T04:28:51.7144251Z #9 DONE 52.7s
+2026-07-21T04:28:51.8649270Z 
+2026-07-21T04:28:51.8650285Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:28:51.8650904Z #9 extracting sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe
+2026-07-21T04:28:59.9233026Z #9 extracting sha256:e955753ea9d1128f7ca45df84e539abbf55b60b641d90cd4a33db8cc22248efe 8.2s done
+2026-07-21T04:28:59.9233499Z #9 DONE 60.9s
+2026-07-21T04:29:00.0634420Z 
+2026-07-21T04:29:00.0635159Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:00.0635960Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.1s done
+2026-07-21T04:29:00.0636364Z #9 DONE 61.1s
+2026-07-21T04:29:00.2139311Z 
+2026-07-21T04:29:00.2140191Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:00.2140718Z #9 extracting sha256:498a352d93f363fbb8d0bc728852b940a38e6041f021d25e76f45bd55c35a9d7
+2026-07-21T04:29:00.3636545Z #9 extracting sha256:498a352d93f363fbb8d0bc728852b940a38e6041f021d25e76f45bd55c35a9d7 0.3s done
+2026-07-21T04:29:00.3637220Z #9 DONE 61.4s
+2026-07-21T04:29:00.5144114Z 
+2026-07-21T04:29:00.5144884Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:01.3094659Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.9s done
+2026-07-21T04:29:01.3095348Z #9 DONE 62.3s
+2026-07-21T04:29:01.4601753Z 
+2026-07-21T04:29:01.4606081Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:01.4607818Z #9 extracting sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798
+2026-07-21T04:29:08.4348655Z #9 extracting sha256:f0032fe40f8b9d9f46e6ea0bb1154ab910bdd762aeca0531ec30c48c23dad798 7.1s done
+2026-07-21T04:29:08.4349332Z #9 DONE 69.4s
+2026-07-21T04:29:08.5855722Z 
+2026-07-21T04:29:08.5856286Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:08.5856801Z #9 extracting sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e
+2026-07-21T04:29:10.8973067Z #9 extracting sha256:68d6dbb68c50376fd829866dd14b1cadabf6328a745416f4edd1b85b09ed699e 2.5s done
+2026-07-21T04:29:10.8973549Z #9 DONE 71.9s
+2026-07-21T04:29:11.0474488Z 
+2026-07-21T04:29:11.0479746Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:11.0480634Z #9 extracting sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28
+2026-07-21T04:29:12.9644328Z #9 extracting sha256:09cd49476585c6971587b57de40103c2cab7ce24d76a648e3edf25cb4cd6ce28 2.1s done
+2026-07-21T04:29:12.9645180Z #9 DONE 74.0s
+2026-07-21T04:29:13.1149547Z 
+2026-07-21T04:29:13.1150617Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:13.1151176Z #9 extracting sha256:1a1f13dadccc384e379417bb1c25e83dbfc203c51bfc34e56821f592d3875fd8
+2026-07-21T04:29:13.2431770Z #9 extracting sha256:1a1f13dadccc384e379417bb1c25e83dbfc203c51bfc34e56821f592d3875fd8 0.3s done
+2026-07-21T04:29:13.2432155Z #9 DONE 74.2s
+2026-07-21T04:29:13.3934740Z 
+2026-07-21T04:29:13.3935363Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:13.3935889Z #9 extracting sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43
+2026-07-21T04:29:20.7265895Z #9 extracting sha256:bab375057cc613ebe2bdc86456e02320c098dc4e21f456f80467fc0f49a22a43 7.5s done
+2026-07-21T04:29:20.7266355Z #9 DONE 81.7s
+2026-07-21T04:29:20.8768893Z 
+2026-07-21T04:29:20.8770983Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:20.8771608Z #9 extracting sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159
+2026-07-21T04:29:23.0055140Z #9 extracting sha256:e1545cca50cc52482406126cd5f7292a12cc36d98e0e72aba07043710eee4159 2.3s done
+2026-07-21T04:29:23.1559857Z #9 extracting sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04
+2026-07-21T04:29:24.2998356Z #9 extracting sha256:9ac56ea47d82691c3347ce13b8f480fdd108a5bf7605bad77789849efece6c04 1.3s done
+2026-07-21T04:29:24.2998927Z #9 DONE 85.3s
+2026-07-21T04:29:24.4507896Z 
+2026-07-21T04:29:24.4508569Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:24.4509460Z #9 extracting sha256:41933a7fb1a28434bc5884bcf1976217c22c3a6a3d75ab7681677f9da7cfe2b1
+2026-07-21T04:29:26.7010686Z #9 extracting sha256:41933a7fb1a28434bc5884bcf1976217c22c3a6a3d75ab7681677f9da7cfe2b1 2.4s done
+2026-07-21T04:29:26.7011373Z #9 DONE 87.7s
+2026-07-21T04:29:26.8512484Z 
+2026-07-21T04:29:26.8513203Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:26.8513698Z #9 extracting sha256:dc8fb6fca3148b9f448a5354f853f7e2366935ee630ff9ff9c45f84d02be2fa2
+2026-07-21T04:29:26.9676385Z #9 extracting sha256:dc8fb6fca3148b9f448a5354f853f7e2366935ee630ff9ff9c45f84d02be2fa2 0.3s done
+2026-07-21T04:29:26.9676742Z #9 DONE 88.0s
+2026-07-21T04:29:27.1163358Z 
+2026-07-21T04:29:27.1164124Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:27.1164945Z #9 extracting sha256:142ce934cc7d07979f22b6bac2a029f499542b98016ecdedc19f2eda1c0e3e1f 0.1s done
+2026-07-21T04:29:27.1166014Z #9 DONE 88.1s
+2026-07-21T04:29:27.2668383Z 
+2026-07-21T04:29:27.2669168Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:27.2669748Z #9 extracting sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2
+2026-07-21T04:29:37.0684563Z #9 extracting sha256:ac07acc389dce60adaf8694a40e9ffbc878abfaaf331a0012825eaceee526aa2 10.0s done
+2026-07-21T04:29:37.0685035Z #9 DONE 98.1s
+2026-07-21T04:29:37.2186993Z 
+2026-07-21T04:29:37.2187374Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:37.2187859Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+2026-07-21T04:29:37.2441277Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.2s done
+2026-07-21T04:29:37.2442380Z #9 DONE 98.2s
+2026-07-21T04:29:37.3946977Z 
+2026-07-21T04:29:37.3947576Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:37.3948120Z #9 extracting sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b
+2026-07-21T04:29:40.4668619Z #9 extracting sha256:86b2ca70f6b5c1b227f5c15455ca6e0955a84ae037aeb0d8d94dd39ef91e576b 3.2s done
+2026-07-21T04:29:40.4669249Z #9 DONE 101.5s
+2026-07-21T04:29:40.6171321Z 
+2026-07-21T04:29:40.6171988Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:40.6172497Z #9 extracting sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48
+2026-07-21T04:29:58.0449466Z #9 extracting sha256:f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48 17.6s done
+2026-07-21T04:29:58.0449902Z #9 DONE 119.0s
+2026-07-21T04:29:58.1953822Z 
+2026-07-21T04:29:58.1960035Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:58.1960570Z #9 extracting sha256:49c9d451c68594336fc7f5536c182be64e37cad6d997fb80c690c7ca18dfd08d
+2026-07-21T04:29:59.0091385Z #9 extracting sha256:49c9d451c68594336fc7f5536c182be64e37cad6d997fb80c690c7ca18dfd08d 1.0s done
+2026-07-21T04:29:59.0091928Z #9 DONE 120.0s
+2026-07-21T04:29:59.1594296Z 
+2026-07-21T04:29:59.1594808Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:29:59.1595307Z #9 extracting sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986
+2026-07-21T04:30:13.1479998Z #9 extracting sha256:24bd7b26e0e00efb4c4eb62fe94443be3d5211b21cfb7fdacfdc2254055dd986 14.1s done
+2026-07-21T04:30:13.1480766Z #9 DONE 134.1s
+2026-07-21T04:30:13.2991628Z 
+2026-07-21T04:30:13.2993660Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:13.2994281Z #9 extracting sha256:50d339f808de0ebbf808a41825eef6244d203e569e62c843187069494df6d418
+2026-07-21T04:30:13.7240990Z #9 extracting sha256:50d339f808de0ebbf808a41825eef6244d203e569e62c843187069494df6d418 0.6s done
+2026-07-21T04:30:13.7241400Z #9 DONE 134.7s
+2026-07-21T04:30:13.8743714Z 
+2026-07-21T04:30:13.8744325Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:13.8744872Z #9 extracting sha256:f8a1b57210a613430649429ecbb6acb8408eb23d43a283a7ef9ec8939800ef43
+2026-07-21T04:30:14.3652853Z #9 extracting sha256:f8a1b57210a613430649429ecbb6acb8408eb23d43a283a7ef9ec8939800ef43 0.6s done
+2026-07-21T04:30:14.3653636Z #9 DONE 135.4s
+2026-07-21T04:30:14.5159797Z 
+2026-07-21T04:30:14.5160588Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:14.5161176Z #9 extracting sha256:640d6f1c44f1c0e0691e28fcb577923859fb399cbfbcb699e41b3c0f74be850d
+2026-07-21T04:30:15.0261366Z #9 extracting sha256:640d6f1c44f1c0e0691e28fcb577923859fb399cbfbcb699e41b3c0f74be850d 0.7s done
+2026-07-21T04:30:15.0262086Z #9 DONE 136.0s
+2026-07-21T04:30:15.1765740Z 
+2026-07-21T04:30:15.1766668Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:15.1767367Z #9 extracting sha256:51a78b6b326a8577c376c40110dca3f4b4bc4ae560dfcb00652847c2b8f46669
+2026-07-21T04:30:15.5112142Z #9 extracting sha256:51a78b6b326a8577c376c40110dca3f4b4bc4ae560dfcb00652847c2b8f46669 0.5s done
+2026-07-21T04:30:15.5112862Z #9 DONE 136.5s
+2026-07-21T04:30:15.6198222Z 
+2026-07-21T04:30:15.6200813Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:15.6201636Z #9 extracting sha256:ce96025ac64febf407fe82d6b166aaf3524ef8542ccec073676ae47051876a29 0.0s done
+2026-07-21T04:30:15.6202434Z #9 extracting sha256:f24ab5e846e002c78b52f365ecdb440dc0b9731dfa8602ba70e1a73d7509af78 0.0s done
+2026-07-21T04:30:15.6203170Z #9 extracting sha256:2ee25b3e2107e20866977ce0e8466f526d7544c567228144bc45b1bcb150b42a 0.0s done
+2026-07-21T04:30:15.6203842Z #9 DONE 136.6s
+2026-07-21T04:30:15.7517781Z 
+2026-07-21T04:30:15.7519947Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:15.7520481Z #9 extracting sha256:14021c24813e8881673cd58382a434d25b955b02e9dcd8c12c68590db7065208 0.0s done
+2026-07-21T04:30:15.7520900Z #9 extracting sha256:8f865e8d7b1ab162f8e24dd7c0579d8850c3b3311b8fc6661e91ec9ffc3fcde3 0.1s done
+2026-07-21T04:30:15.7521206Z #9 DONE 136.7s
+2026-07-21T04:30:15.8808502Z 
+2026-07-21T04:30:15.8814537Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:15.8815495Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.0s done
+2026-07-21T04:30:15.8816087Z #9 extracting sha256:18a7228508cac26323521f8a1ffb1c8bb782dccc27cf74654e886550f546f7e0 0.0s done
+2026-07-21T04:30:15.8816577Z #9 extracting sha256:5a7dba182ef2102d41a32e6be93ab0c00e4cbd04771303942969e2ea81d255b7 0.0s done
+2026-07-21T04:30:15.8817085Z #9 extracting sha256:abe01490f14174ea5ef5ddcb89ea010c5c4898fe8f6dc7ab70c70990b5106b0c 0.0s done
+2026-07-21T04:30:16.0229171Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.0s done
+2026-07-21T04:30:16.0229695Z #9 extracting sha256:ca221f30801d9ab536efed45894083d51cef1f587da20e84ca2211f760d86fbc 0.1s done
+2026-07-21T04:30:16.0230120Z #9 DONE 137.0s
+2026-07-21T04:30:16.1272811Z 
+2026-07-21T04:30:16.1274224Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:16.1277706Z #9 extracting sha256:413295f81cb30e4c5663671f68266d22929d1db986b95f6c7868c58cc8df87ea 0.1s done
+2026-07-21T04:30:16.1278295Z #9 DONE 137.1s
+2026-07-21T04:30:16.2920186Z 
+2026-07-21T04:30:16.2921249Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:16.2921886Z #9 extracting sha256:766d08d9764414cdad8d08e813c0c37b05e17204dfd6d5797ac8917cfd7e7239 0.0s done
+2026-07-21T04:30:16.2922307Z #9 extracting sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68
+2026-07-21T04:30:17.9520999Z #9 extracting sha256:77c0c6c68290c7badd1227134873e86dc3eafc6ebb380010020cec2a23488a68 1.8s done
+2026-07-21T04:30:17.9521381Z #9 DONE 138.9s
+2026-07-21T04:30:18.1828583Z 
+2026-07-21T04:30:18.1829430Z #9 [stage-1 1/7] FROM docker.io/konard/box-dind:2.1.1@sha256:3c80be9741702a0810b2fdccd0fa92abb97555b00e18ba28ba3db2c72d38cf2f
+2026-07-21T04:30:18.3951855Z #9 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.4s done
+2026-07-21T04:30:18.3952526Z #9 DONE 139.4s
+2026-07-21T04:30:18.5564178Z 
+2026-07-21T04:30:18.5564786Z #14 [stage-1 2/7] RUN apt-get update &&     apt-get install -y --no-install-recommends nodejs &&     rm -rf /var/lib/apt/lists/* &&     node --version
+2026-07-21T04:30:20.1862437Z #14 1.780 Get:1 https://packages.microsoft.com/repos/edge stable InRelease [3590 B]
+2026-07-21T04:30:20.3065962Z #14 1.823 Get:2 https://download.docker.com/linux/ubuntu noble InRelease [48.5 kB]
+2026-07-21T04:30:20.3066458Z #14 1.823 Get:3 https://cli.github.com/packages stable InRelease [3917 B]
+2026-07-21T04:30:20.3066808Z #14 1.823 Get:4 https://dl.google.com/linux/chrome-stable/deb stable InRelease [1825 B]
+2026-07-21T04:30:20.3067257Z #14 1.900 Get:5 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-07-21T04:30:20.4725470Z #14 2.067 Get:6 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+2026-07-21T04:30:20.6017756Z #14 2.126 Get:7 https://packages.microsoft.com/repos/edge stable/main amd64 Packages [42.7 kB]
+2026-07-21T04:30:20.6018922Z #14 2.164 Get:8 https://download.docker.com/linux/ubuntu noble/stable amd64 Packages [73.8 kB]
+2026-07-21T04:30:20.6019924Z #14 2.196 Get:9 https://cli.github.com/packages stable/main amd64 Packages [355 B]
+2026-07-21T04:30:20.7042779Z #14 2.243 Get:10 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1414 B]
+2026-07-21T04:30:20.7043271Z #14 2.298 Get:11 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1499 kB]
+2026-07-21T04:30:20.9930805Z #14 2.587 Get:12 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1456 kB]
+2026-07-21T04:30:21.1198594Z #14 2.713 Get:13 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1058 kB]
+2026-07-21T04:30:21.2461700Z #14 2.752 Get:14 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [43.8 kB]
+2026-07-21T04:30:21.2462295Z #14 2.840 Get:15 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-07-21T04:30:21.4903158Z #14 3.084 Get:16 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-07-21T04:30:21.6906950Z #14 3.285 Get:17 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+2026-07-21T04:30:23.0923407Z #14 4.686 Get:18 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+2026-07-21T04:30:23.2399756Z #14 4.706 Get:19 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+2026-07-21T04:30:23.2400334Z #14 4.709 Get:20 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+2026-07-21T04:30:23.2401080Z #14 4.716 Get:21 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2115 kB]
+2026-07-21T04:30:23.2401749Z #14 4.727 Get:22 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1393 kB]
+2026-07-21T04:30:23.2402315Z #14 4.737 Get:23 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [49.5 kB]
+2026-07-21T04:30:23.2402739Z #14 4.737 Get:24 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1580 kB]
+2026-07-21T04:30:23.2403167Z #14 4.834 Get:25 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+2026-07-21T04:30:23.3906448Z #14 4.834 Get:26 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+2026-07-21T04:30:23.3907059Z #14 4.834 Get:27 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [48.9 kB]
+2026-07-21T04:30:23.7937218Z #14 5.388 Fetched 31.7 MB in 4s (8502 kB/s)
+2026-07-21T04:30:24.3146269Z #14 5.388 Reading package lists...
+2026-07-21T04:30:25.1204948Z #14 6.215 Reading package lists...
+2026-07-21T04:30:25.2244276Z #14 6.726 Building dependency tree...
+2026-07-21T04:30:25.3499014Z #14 6.818 Reading state information...
+2026-07-21T04:30:25.3499860Z #14 6.944 The following additional packages will be installed:
+2026-07-21T04:30:25.4812961Z #14 6.944   libcares2 libnode109 node-acorn node-busboy node-cjs-module-lexer
+2026-07-21T04:30:25.4813499Z #14 6.944   node-undici node-xtend
+2026-07-21T04:30:25.4813807Z #14 6.945 Suggested packages:
+2026-07-21T04:30:25.4814043Z #14 6.945   npm
+2026-07-21T04:30:25.4814238Z #14 6.945 Recommended packages:
+2026-07-21T04:30:25.4814463Z #14 6.945   nodejs-doc
+2026-07-21T04:30:25.4814780Z #14 7.075 The following NEW packages will be installed:
+2026-07-21T04:30:25.6327396Z #14 7.076   libcares2 libnode109 node-acorn node-busboy node-cjs-module-lexer
+2026-07-21T04:30:25.6327768Z #14 7.076   node-undici node-xtend nodejs
+2026-07-21T04:30:25.8036565Z #14 7.398 0 upgraded, 8 newly installed, 0 to remove and 130 not upgraded.
+2026-07-21T04:30:25.8037010Z #14 7.398 Need to get 12.5 MB of archives.
+2026-07-21T04:30:25.8037375Z #14 7.398 After this operation, 54.9 MB of additional disk space will be used.
+2026-07-21T04:30:25.8038007Z #14 7.398 Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 libcares2 amd64 1.27.0-1.0ubuntu1 [73.7 kB]
+2026-07-21T04:30:25.9604698Z #14 7.554 Get:2 http://archive.ubuntu.com/ubuntu noble/universe amd64 node-xtend all 4.0.2-3 [3902 B]
+2026-07-21T04:30:26.0703386Z #14 7.556 Get:3 http://archive.ubuntu.com/ubuntu noble/universe amd64 nodejs amd64 18.19.1+dfsg-6ubuntu5 [306 kB]
+2026-07-21T04:30:26.0703952Z #14 7.664 Get:4 http://archive.ubuntu.com/ubuntu noble/universe amd64 node-acorn all 8.8.1+ds+~cs25.17.7-2 [115 kB]
+2026-07-21T04:30:26.3062367Z #14 7.698 Get:5 http://archive.ubuntu.com/ubuntu noble/universe amd64 node-cjs-module-lexer all 1.2.3+dfsg-1 [32.1 kB]
+2026-07-21T04:30:26.3062948Z #14 7.703 Get:6 http://archive.ubuntu.com/ubuntu noble/universe amd64 node-busboy all 1.6.0+~cs2.6.0-2 [17.3 kB]
+2026-07-21T04:30:26.3063443Z #14 7.705 Get:7 http://archive.ubuntu.com/ubuntu noble/universe amd64 node-undici all 5.26.3+dfsg1+~cs23.10.12-2 [325 kB]
+2026-07-21T04:30:26.3063936Z #14 7.750 Get:8 http://archive.ubuntu.com/ubuntu noble/universe amd64 libnode109 amd64 18.19.1+dfsg-6ubuntu5 [11.6 MB]
+2026-07-21T04:30:27.1188431Z #14 8.713 debconf: delaying package configuration, since apt-utils is not installed
+2026-07-21T04:30:27.2934064Z #14 8.737 Fetched 12.5 MB in 1s (12.5 MB/s)
+2026-07-21T04:30:27.5314511Z #14 9.125 Selecting previously unselected package libcares2:amd64.
+2026-07-21T04:30:27.6940169Z #14 9.125 (Reading database ... 
+2026-07-21T04:30:27.6940462Z (Reading database ... 5%
+2026-07-21T04:30:27.6940674Z (Reading database ... 10%
+2026-07-21T04:30:27.6940847Z (Reading database ... 15%
+2026-07-21T04:30:27.6941010Z (Reading database ... 20%
+2026-07-21T04:30:27.6941170Z (Reading database ... 25%
+2026-07-21T04:30:27.6941328Z (Reading database ... 30%
+2026-07-21T04:30:27.6941486Z (Reading database ... 35%
+2026-07-21T04:30:27.6941643Z (Reading database ... 40%
+2026-07-21T04:30:27.6941800Z (Reading database ... 45%
+2026-07-21T04:30:27.6941959Z (Reading database ... 50%
+2026-07-21T04:30:27.8663254Z (Reading database ... 55%
+2026-07-21T04:30:28.0083536Z (Reading database ... 60%
+2026-07-21T04:30:28.2126419Z (Reading database ... 65%
+2026-07-21T04:30:28.2126645Z (Reading database ... 70%
+2026-07-21T04:30:28.2126850Z (Reading database ... 75%
+2026-07-21T04:30:28.2289781Z (Reading database ... 80%
+2026-07-21T04:30:28.3683172Z (Reading database ... 85%
+2026-07-21T04:30:28.3683514Z (Reading database ... 90%
+2026-07-21T04:30:28.3684152Z (Reading database ... 95%
+2026-07-21T04:30:28.3684767Z (Reading database ... 100%
+2026-07-21T04:30:28.3685099Z (Reading database ... 60447 files and directories currently installed.)
+2026-07-21T04:30:28.5672036Z #14 9.964 Preparing to unpack .../0-libcares2_1.27.0-1.0ubuntu1_amd64.deb ...
+2026-07-21T04:30:28.5672542Z #14 9.967 Unpacking libcares2:amd64 (1.27.0-1.0ubuntu1) ...
+2026-07-21T04:30:28.5672881Z #14 9.983 Selecting previously unselected package node-xtend.
+2026-07-21T04:30:28.5673166Z #14 9.986 Preparing to unpack .../1-node-xtend_4.0.2-3_all.deb ...
+2026-07-21T04:30:28.5673413Z #14 9.987 Unpacking node-xtend (4.0.2-3) ...
+2026-07-21T04:30:28.5673648Z #14 10.01 Selecting previously unselected package nodejs.
+2026-07-21T04:30:28.5673938Z #14 10.01 Preparing to unpack .../2-nodejs_18.19.1+dfsg-6ubuntu5_amd64.deb ...
+2026-07-21T04:30:28.5674257Z #14 10.01 Unpacking nodejs (18.19.1+dfsg-6ubuntu5) ...
+2026-07-21T04:30:28.6047248Z #14 10.20 Selecting previously unselected package node-acorn.
+2026-07-21T04:30:28.7591021Z #14 10.20 Preparing to unpack .../3-node-acorn_8.8.1+ds+~cs25.17.7-2_all.deb ...
+2026-07-21T04:30:28.7591369Z #14 10.20 Unpacking node-acorn (8.8.1+ds+~cs25.17.7-2) ...
+2026-07-21T04:30:28.7918912Z #14 10.39 Selecting previously unselected package node-cjs-module-lexer.
+2026-07-21T04:30:28.9766547Z #14 10.39 Preparing to unpack .../4-node-cjs-module-lexer_1.2.3+dfsg-1_all.deb ...
+2026-07-21T04:30:28.9767169Z #14 10.47 Unpacking node-cjs-module-lexer (1.2.3+dfsg-1) ...
+2026-07-21T04:30:28.9767632Z #14 10.57 Selecting previously unselected package node-busboy.
+2026-07-21T04:30:29.1481996Z #14 10.57 Preparing to unpack .../5-node-busboy_1.6.0+~cs2.6.0-2_all.deb ...
+2026-07-21T04:30:29.1482351Z #14 10.58 Unpacking node-busboy (1.6.0+~cs2.6.0-2) ...
+2026-07-21T04:30:29.1482617Z #14 10.59 Selecting previously unselected package node-undici.
+2026-07-21T04:30:29.1483221Z #14 10.59 Preparing to unpack .../6-node-undici_5.26.3+dfsg1+~cs23.10.12-2_all.deb ...
+2026-07-21T04:30:29.1483538Z #14 10.59 Unpacking node-undici (5.26.3+dfsg1+~cs23.10.12-2) ...
+2026-07-21T04:30:29.1876058Z #14 10.78 Selecting previously unselected package libnode109:amd64.
+2026-07-21T04:30:29.3587871Z #14 10.79 Preparing to unpack .../7-libnode109_18.19.1+dfsg-6ubuntu5_amd64.deb ...
+2026-07-21T04:30:29.3588241Z #14 10.80 Unpacking libnode109:amd64 (18.19.1+dfsg-6ubuntu5) ...
+2026-07-21T04:30:29.5385071Z #14 11.13 Setting up node-cjs-module-lexer (1.2.3+dfsg-1) ...
+2026-07-21T04:30:29.6401959Z #14 11.16 Setting up libcares2:amd64 (1.27.0-1.0ubuntu1) ...
+2026-07-21T04:30:29.6402727Z #14 11.17 Setting up node-xtend (4.0.2-3) ...
+2026-07-21T04:30:29.6403268Z #14 11.20 Setting up node-busboy (1.6.0+~cs2.6.0-2) ...
+2026-07-21T04:30:29.6403718Z #14 11.23 Setting up node-undici (5.26.3+dfsg1+~cs23.10.12-2) ...
+2026-07-21T04:30:29.8152574Z #14 11.24 Setting up node-acorn (8.8.1+ds+~cs25.17.7-2) ...
+2026-07-21T04:30:29.8152891Z #14 11.24 Setting up libnode109:amd64 (18.19.1+dfsg-6ubuntu5) ...
+2026-07-21T04:30:29.8153155Z #14 11.24 Setting up nodejs (18.19.1+dfsg-6ubuntu5) ...
+2026-07-21T04:30:29.8153505Z #14 11.26 update-alternatives: using /usr/bin/nodejs to provide /usr/bin/js (js) in auto mode
+2026-07-21T04:30:29.8154067Z #14 11.26 update-alternatives: warning: skip creation of /usr/share/man/man1/js.1.gz because associated file /usr/share/man/man1/nodejs.1.gz (of link group js) doesn't exist
+2026-07-21T04:30:29.8154569Z #14 11.26 Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+2026-07-21T04:30:33.8965249Z #14 15.49 v18.19.1
+2026-07-21T04:30:36.1282124Z #14 DONE 17.8s
+2026-07-21T04:30:36.2442691Z 
+2026-07-21T04:30:36.2442998Z #15 [stage-1 3/7] WORKDIR /home/box
+2026-07-21T04:30:36.4358695Z #15 DONE 0.1s
+2026-07-21T04:30:36.4358837Z 
+2026-07-21T04:30:36.4359494Z #16 [stage-1 4/7] RUN bun install -g start-command @link-assistant/agent agent-commander &&     "$" --version &&     agent --version &&     start-agent --help >/dev/null
+2026-07-21T04:30:36.5164970Z #16 0.230 bun add v1.3.13 (bf2e2cec)
+2026-07-21T04:30:36.6693263Z #16 0.233 Resolving dependencies
+2026-07-21T04:30:38.3327246Z #16 2.047 Resolved, downloaded and extracted [1881]
+2026-07-21T04:30:38.3327901Z #16 2.047 warn: incorrect peer dependency "solid-js@1.9.14"
+2026-07-21T04:30:40.6529851Z #16 4.367 Saved lockfile
+2026-07-21T04:30:40.6530209Z #16 4.367 
+2026-07-21T04:30:40.6530404Z #16 4.367 installed start-command@0.30.3 with binaries:
+2026-07-21T04:30:40.6530648Z #16 4.367  - $
+2026-07-21T04:30:40.6530845Z #16 4.367 installed @link-assistant/agent@0.25.0 with binaries:
+2026-07-21T04:30:40.6531073Z #16 4.367  - agent
+2026-07-21T04:30:40.6531261Z #16 4.367 installed agent-commander@0.8.0 with binaries:
+2026-07-21T04:30:40.6531474Z #16 4.367  - start-agent
+2026-07-21T04:30:40.6531630Z #16 4.367  - stop-agent
+2026-07-21T04:30:40.6531783Z #16 4.367 
+2026-07-21T04:30:40.6531972Z #16 4.367 498 packages installed [4.15s]
+2026-07-21T04:30:40.6532155Z #16 4.367 
+2026-07-21T04:30:40.6532383Z #16 4.367 Blocked 2 postinstalls. Run `bun pm -g untrusted` for details.
+2026-07-21T04:30:40.8675013Z #16 4.410 start-command version: 0.30.3
+2026-07-21T04:30:40.8675292Z #16 4.410 
+2026-07-21T04:30:40.8675438Z #16 4.410 OS: linux
+2026-07-21T04:30:40.8675593Z #16 4.410 OS Version: 6.17.0-1020-azure
+2026-07-21T04:30:40.8675780Z #16 4.410 Bun Version: 1.3.13
+2026-07-21T04:30:40.8675955Z #16 4.410 Architecture: x64
+2026-07-21T04:30:40.8676112Z #16 4.410 
+2026-07-21T04:30:40.8676252Z #16 4.410 Isolation tools:
+2026-07-21T04:30:40.8676451Z #16 4.419   screen: Screen version 4.09.01 (GNU) 20-Aug-23
+2026-07-21T04:30:40.8676677Z #16 4.421   tmux: not installed
+2026-07-21T04:30:40.8676874Z #16 4.432   docker: Docker version 29.4.1, build 055a478
+2026-07-21T04:30:41.2426685Z #16 4.957 0.25.0
+2026-07-21T04:30:44.5417541Z #16 DONE 8.5s
+2026-07-21T04:30:44.6931921Z 
+2026-07-21T04:30:44.6932775Z #17 [stage-1 5/7] COPY --from=builder /app/target/release/formal-ai /usr/local/bin/formal-ai
+2026-07-21T04:30:46.1094109Z #17 DONE 1.6s
+2026-07-21T04:30:46.3195402Z 
+2026-07-21T04:30:46.3196113Z #18 [stage-1 6/7] COPY scripts/verify-docker-runtime.sh /usr/local/bin/verify-formal-ai-dind
+2026-07-21T04:30:46.3196495Z #18 DONE 0.1s
+2026-07-21T04:30:46.3196580Z 
+2026-07-21T04:30:46.3196823Z #19 [stage-1 7/7] RUN chmod 0755 /usr/local/bin/formal-ai /usr/local/bin/verify-formal-ai-dind &&     formal-ai --version
+2026-07-21T04:30:47.0434208Z #19 0.874 formal-ai 0.301.0
+2026-07-21T04:30:47.1724425Z #19 DONE 0.9s
+2026-07-21T04:30:47.1725405Z 
+2026-07-21T04:30:47.1727539Z #20 exporting to docker image format
+2026-07-21T04:30:47.1727878Z #20 exporting layers
+2026-07-21T04:31:02.5851672Z #20 exporting layers 15.4s done
+2026-07-21T04:31:02.7453727Z #20 exporting manifest sha256:b928422f4451dc663c6a8de4e98c52c89e1520f7cf6930c7c40d4c4658ca74a0 done
+2026-07-21T04:31:02.7454644Z #20 exporting config sha256:df2953df8ced7815d6ad3272303a62b2ffb3a6503694a3204e6618d1e924a9a6 done
+2026-07-21T04:31:02.7455454Z #20 sending tarball
+2026-07-21T04:31:36.2701090Z #20 ...
+2026-07-21T04:31:36.2701294Z 
+2026-07-21T04:31:36.2701389Z #21 importing to docker
+2026-07-21T04:31:36.4226283Z #21 ERROR: write /blobs/sha256/f2e6b620b9272b310fb5eb502feb2ec049312cb5518c207910b672c458f88d48: no space left on device
+2026-07-21T04:31:36.4226693Z 
+2026-07-21T04:31:36.4226778Z #20 exporting to docker image format
+2026-07-21T04:31:36.4227010Z #20 sending tarball 33.7s done
+2026-07-21T04:31:36.4227312Z #20 ERROR: rpc error: code = Unknown desc = io: read/write on closed pipe
+2026-07-21T04:31:36.4375049Z ------
+2026-07-21T04:31:36.4375848Z  > exporting to docker image format:
+2026-07-21T04:31:36.4376325Z ------
+2026-07-21T04:31:36.4376508Z ------
+2026-07-21T04:31:36.4376704Z  > importing to docker:
+2026-07-21T04:31:36.4377104Z ------
+2026-07-21T04:31:36.4384822Z ERROR: failed to build: failed to solve: rpc error: code = Unknown desc = io: read/write on closed pipe
+2026-07-21T04:31:36.4755712Z ##[group]Reference
+2026-07-21T04:31:36.5490670Z builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e/builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e0/cj5szyqjxwam350p4z40u838v
+2026-07-21T04:31:36.5493960Z ##[endgroup]
+2026-07-21T04:31:36.5494746Z ##[group]Check build summary support
+2026-07-21T04:31:36.5500121Z Build summary supported!
+2026-07-21T04:31:36.5500579Z ##[endgroup]
+2026-07-21T04:31:36.5528885Z ##[error]buildx failed with: ERROR: failed to build: failed to solve: rpc error: code = Unknown desc = io: read/write on closed pipe
+2026-07-21T04:31:36.5840510Z Post job cleanup.
+2026-07-21T04:31:36.8897725Z ##[group]Generating build summary
+2026-07-21T04:31:36.9493604Z exporting build record to /home/runner/work/_temp/docker-actions-toolkit-fWqxQx/export
+2026-07-21T04:31:37.0507186Z [command]/usr/bin/docker buildx history export --builder builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e --output /home/runner/work/_temp/docker-actions-toolkit-fWqxQx/export/link-assistant~formal-ai~CJ5SZY.dockerbuild cj5szyqjxwam350p4z40u838v --finalize
+2026-07-21T04:31:37.6672987Z Build record written to /home/runner/work/_temp/docker-actions-toolkit-fWqxQx/export/link-assistant~formal-ai~CJ5SZY.dockerbuild (128.67 KB)
+2026-07-21T04:31:37.6675105Z Uploading link-assistant~formal-ai~CJ5SZY.dockerbuild as an artifact
+2026-07-21T04:31:37.6680457Z Artifact name is valid!
+2026-07-21T04:31:37.6681424Z Root directory input is valid!
+2026-07-21T04:31:37.8482275Z Uploading artifact: link-assistant~formal-ai~CJ5SZY.dockerbuild
+2026-07-21T04:31:37.8512824Z Beginning upload of artifact content to blob storage
+2026-07-21T04:31:38.0867645Z Uploaded bytes 131758
+2026-07-21T04:31:38.1241657Z Finished uploading artifact content to blob storage!
+2026-07-21T04:31:38.1242249Z SHA256 digest of uploaded artifact is e4bfb6e8df9e6a0e87f53388e084b018bf8213da3e0810988481c51c0d88bfb1
+2026-07-21T04:31:38.1242737Z Finalizing artifact upload
+2026-07-21T04:31:38.3709255Z Artifact link-assistant~formal-ai~CJ5SZY.dockerbuild successfully finalized. Artifact ID 8483890782
+2026-07-21T04:31:38.3710290Z Artifact download URL: https://github.com/link-assistant/formal-ai/actions/runs/29800923586/artifacts/8483890782
+2026-07-21T04:31:38.3739392Z Writing summary
+2026-07-21T04:31:38.3748545Z ##[endgroup]
+2026-07-21T04:31:38.3749187Z ##[group]Removing temp folder /home/runner/work/_temp/docker-actions-toolkit-JYYrR0
+2026-07-21T04:31:38.3750177Z ##[endgroup]
+2026-07-21T04:31:38.3750535Z ##[group]Post cache
+2026-07-21T04:31:38.3751086Z State not set
+2026-07-21T04:31:38.3751436Z ##[endgroup]
+2026-07-21T04:31:38.3902005Z Post job cleanup.
+2026-07-21T04:31:38.3938470Z Post job cleanup.
+2026-07-21T04:31:38.5311879Z ##[group]Removing builder
+2026-07-21T04:31:38.6271551Z [command]/usr/bin/docker buildx rm builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e
+2026-07-21T04:31:48.6709158Z builder-9484f6aa-d7ae-41ed-8f52-d9a847a64a7e removed
+2026-07-21T04:31:48.6730307Z ##[endgroup]
+2026-07-21T04:31:48.6731786Z ##[group]Cleaning up certificates
+2026-07-21T04:31:48.6732810Z ##[endgroup]
+2026-07-21T04:31:48.6733166Z ##[group]Post cache
+2026-07-21T04:31:48.6734606Z State not set
+2026-07-21T04:31:48.6735228Z ##[endgroup]
+2026-07-21T04:31:48.6868109Z Post job cleanup.
+2026-07-21T04:31:48.9352504Z [command]/usr/bin/git version
+2026-07-21T04:31:48.9387521Z git version 2.54.0
+2026-07-21T04:31:48.9420554Z Temporarily overriding HOME='/home/runner/work/_temp/ffcf5ebc-018b-494d-a08d-485786d95a50' before making global git config changes
+2026-07-21T04:31:48.9421414Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T04:31:48.9426335Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-07-21T04:31:48.9456039Z Removing SSH command configuration
+2026-07-21T04:31:48.9456516Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T04:31:48.9484945Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T04:31:49.0288928Z Removing HTTP extra header
+2026-07-21T04:31:49.0292821Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T04:31:49.0315528Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T04:31:49.0464567Z Removing includeIf entries pointing to credentials config files
+2026-07-21T04:31:49.0469521Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T04:31:49.0485959Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-07-21T04:31:49.0486455Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-07-21T04:31:49.0486811Z includeif.gitdir:/github/workspace/.git.path
+2026-07-21T04:31:49.0487066Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-07-21T04:31:49.0493209Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-07-21T04:31:49.0540730Z /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0549390Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0573783Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-07-21T04:31:49.0589725Z /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0597146Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0620051Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-07-21T04:31:49.0635654Z /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0641704Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0663883Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-07-21T04:31:49.0680660Z /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0687379Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config
+2026-07-21T04:31:49.0711769Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T04:31:49.0848958Z Removing credentials config '/home/runner/work/_temp/git-credentials-05968e3e-39a0-40f6-a6a7-6ef6b3297bd9.config'
+2026-07-21T04:31:49.0955711Z Cleaning up orphan processes

@@ -77,12 +77,10 @@ fn plan_direct_file_read(
     records: &[ToolResultRecord],
 ) -> AgenticPlan {
     if let Some(content) = read_result_for_path(records, path)
+        .map(ToOwned::to_owned)
         .or_else(|| run_result_for_command(records, &read_command_for(path, mode)))
     {
-        return AgenticPlan::Final(file_read_final_answer(
-            mode,
-            &[(path.to_owned(), content.to_owned())],
-        ));
+        return AgenticPlan::Final(file_read_final_answer(mode, &[(path.to_owned(), content)]));
     }
 
     if prefer_run {
@@ -128,7 +126,7 @@ fn plan_list_then_read(
         );
     };
 
-    let paths = selected_paths_from_listing(directory, listing, selection);
+    let paths = selected_paths_from_listing(directory, &listing, selection);
     if paths.is_empty() {
         return AgenticPlan::Final(format!("No files were listed in `{directory}`."));
     }
@@ -164,7 +162,7 @@ fn plan_list_then_read(
         if let Some(content) = run_result_for_command(records, &command) {
             return AgenticPlan::Final(file_read_final_answer(
                 mode,
-                &[(paths.join(", "), content.to_owned())],
+                &[(paths.join(", "), content)],
             ));
         }
         return plan_one(tool, json!({ "command": command }).to_string());
@@ -431,9 +429,27 @@ fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Opti
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Read)
-                && path_argument(&record.arguments).as_deref() == Some(path)
+                && path_argument(&record.arguments)
+                    .is_some_and(|recorded| same_path(&recorded, path))
         })
         .map(|record| record.content.as_str())
+}
+
+/// Whether a recorded path argument denotes the path the planner asked for.
+///
+/// The transcript holds the argument the *client's* schema accepted, not the one
+/// the planner planned with: [`crate::protocol_responses`] rewrites `path` to
+/// Gemini's `absolute_path` and absolutises it, so a recorded
+/// `/work/alpha.txt` has to answer a planned `alpha.txt`.
+fn same_path(recorded: &str, planned: &str) -> bool {
+    if recorded == planned {
+        return true;
+    }
+    let planned = planned.trim_start_matches("./");
+    recorded
+        .trim_start_matches("./")
+        .strip_suffix(planned)
+        .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('/'))
 }
 
 fn read_results_for_paths(
@@ -448,22 +464,32 @@ fn read_results_for_paths(
     Some(out)
 }
 
-fn run_result_for_command<'a>(records: &'a [ToolResultRecord], command: &str) -> Option<&'a str> {
+fn run_result_for_command(records: &[ToolResultRecord], command: &str) -> Option<String> {
     records
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Run)
-                && record
-                    .arguments
-                    .get("command")
-                    .and_then(serde_json::Value::as_str)
-                    == Some(command)
+                && command_argument(&record.arguments) == Some(command)
         })
-        .map(|record| record.content.as_str())
+        .map(|record| super::tool_result::strip_transport_envelope(&record.content))
+}
+
+/// The shell command a recorded run call carried.
+///
+/// Codex advertises `exec_command(cmd)`, so [`crate::protocol_responses`]
+/// projects the planner's `command` argument onto `cmd` before it reaches the
+/// client — and the transcript then plays that projected form back. Reading the
+/// record under `command` alone never matched, so the planner could not see its
+/// own completed `cat` and re-planned the identical call on every round
+/// (issue #671).
+fn command_argument(arguments: &serde_json::Value) -> Option<&str> {
+    ["command", "cmd"]
+        .iter()
+        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
 }
 
 fn path_argument(arguments: &serde_json::Value) -> Option<String> {
-    ["filePath", "path", "file_path"]
+    ["filePath", "path", "file_path", "absolute_path"]
         .iter()
         .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
         .map(ToOwned::to_owned)
@@ -612,6 +638,135 @@ fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
             .unwrap_or_default()
             .to_owned(),
     )
+}
+
+/// Answer a file-read request from file contents the client already supplied
+/// in the conversation, without any tool at all (issue #671).
+///
+/// Not every agentic CLI speaks function calling. `aider` never advertises a
+/// tool: it asks the user to add files to the chat and then hands their bytes
+/// to the model in-band, as a path line followed by a fenced block holding the
+/// file's contents.
+///
+/// Before this route, `read the file alpha.txt and print its contents` from
+/// such a client never reached the agentic planner at all — the tool gate in
+/// [`crate::protocol`] fell straight through to the general solver, which
+/// answered "I could not determine …" about a file whose contents were sitting
+/// three messages up. The bytes are already here; refusing to read them is the
+/// defect.
+pub fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
+    let task = crate::protocol::latest_user_request(messages)?;
+    let FileReadTask::Direct { path, mode, .. } = file_read_task_for(&task)? else {
+        return None;
+    };
+    let content = supplied_file_content(messages, &path)?;
+    Some(supplied_file_final_answer(&mode, &path, &content, &task))
+}
+
+/// Render supplied bytes back **without a fenced block**.
+///
+/// The ordinary reader answers with ```` ```text ```` fences, and that is
+/// exactly what a prompt-format client's edit parser is looking for: aider read
+/// the fenced answer to `read the file alpha.txt` as a *file listing*, printed
+/// "Applied edit to alpha.txt", and swallowed the contents out of its own
+/// transcript — so the user saw a heading and nothing under it. Quoting the
+/// lines with numbers says the same thing in a shape no edit parser claims.
+///
+/// The two headings are grounded meanings (R379): they live in
+/// `data/seed/multilingual-responses.lino` under the `supplied_file_contents`
+/// and `supplied_file_first_line` intents, localized to the request's own
+/// language with an English fallback. The `{...}` tokens named here are those
+/// templates' placeholders, not Rust format arguments.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn supplied_file_final_answer(
+    mode: &FileReadMode,
+    path: &str,
+    content: &str,
+    request: &str,
+) -> String {
+    match mode {
+        FileReadMode::Full => {
+            let body = content
+                .lines()
+                .enumerate()
+                .map(|(index, line)| format!("{:>4} | {line}", index + 1))
+                .collect::<Vec<_>>()
+                .join("\n");
+            supplied_file_template("supplied_file_contents", request, &[("{body}", body)], path)
+        }
+        FileReadMode::FirstLine => supplied_file_template(
+            "supplied_file_first_line",
+            request,
+            &[(
+                "{line}",
+                content.lines().next().unwrap_or_default().to_owned(),
+            )],
+            path,
+        ),
+        FileReadMode::ExtractValue(_) | FileReadMode::Summary => {
+            file_read_final_answer(mode, &[(path.to_owned(), content.to_owned())])
+        }
+    }
+}
+
+/// Fill a seeded answer template for `intent` with this run's values.
+///
+/// The `{...}` tokens are seed placeholders, not Rust format arguments, so they
+/// are substituted rather than interpolated — which is what the `allow` below
+/// says to clippy's nursery lint.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn supplied_file_template(
+    intent: &str,
+    request: &str,
+    substitutions: &[(&str, String)],
+    path: &str,
+) -> String {
+    let language = crate::language::detect(request);
+    let mut rendered = seed::response_for(intent, language.slug())
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_default();
+    rendered = rendered.replace("{path}", path);
+    for (placeholder, value) in substitutions {
+        rendered = rendered.replace(placeholder, value);
+    }
+    rendered
+}
+
+/// The most recently supplied contents of `path`, from a fenced block labelled
+/// with that path on the line above it.
+///
+/// Deliberately conservative: the label line must *be* the path (modulo the
+/// same directory-suffix rule tool results use), so ordinary prose that merely
+/// mentions a filename before an unrelated code block cannot be mistaken for
+/// the file. Later messages win, because a client re-sends the whole file after
+/// every edit and the last copy is the current one.
+fn supplied_file_content(messages: &[ChatMessage], path: &str) -> Option<String> {
+    let mut found = None;
+    for message in messages {
+        let text = message.content.plain_text();
+        let lines: Vec<&str> = text.lines().collect();
+        for (index, line) in lines.iter().enumerate() {
+            let label = line.trim();
+            if label.is_empty() || !same_path(label, path) {
+                continue;
+            }
+            let Some(fence) = lines.get(index + 1).map(|line| line.trim_end()) else {
+                continue;
+            };
+            if !fence.trim_start().starts_with("```") {
+                continue;
+            }
+            let body: Vec<&str> = lines[index + 2..]
+                .iter()
+                .take_while(|line| !line.trim_end().trim_start().starts_with("```"))
+                .copied()
+                .collect();
+            if !body.is_empty() {
+                found = Some(body.join("\n"));
+            }
+        }
+    }
+    found
 }
 
 fn tool_for<'a>(tool_names: &[&'a str], capability: Capability) -> Option<&'a str> {

@@ -11,14 +11,21 @@ use crate::protocol_policy::find_tool_definition;
 /// `query`/`pattern`, and several path/edit variants). Planner code deliberately
 /// carries those semantic aliases; this boundary removes undeclared aliases and
 /// fills every required schema field before a call crosses the protocol.
+///
+/// `workspace` is the directory the client said it is running in, when it said
+/// so; a path the client requires to be absolute is resolved against it rather
+/// than against the server's own directory.
 pub fn response_arguments_for_tool(
     tools: &[Value],
     tool_name: &str,
     arguments: String,
     user_prompt: &str,
+    workspace: Option<&str>,
 ) -> String {
-    let Some(schema) = find_tool_definition(tools, tool_name).and_then(tool_parameters_schema)
-    else {
+    let Some(definition) = find_tool_definition(tools, tool_name) else {
+        return arguments;
+    };
+    let Some(schema) = tool_parameters_schema(definition) else {
         return arguments;
     };
     let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
@@ -54,10 +61,14 @@ pub fn response_arguments_for_tool(
                     .then(|| schema_default(property_schema, name, user_prompt))
             });
         if let Some(value) = value {
-            projected.insert(
-                name.clone(),
-                constrain_to_schema(value, property_schema, name, user_prompt),
-            );
+            let mut value = constrain_to_schema(value, property_schema, name, user_prompt);
+            if let Some(path) = value
+                .as_str()
+                .filter(|_| demands_absolute_path(definition, name, property_schema))
+            {
+                value = Value::String(absolute_path(path, workspace));
+            }
+            projected.insert(name.clone(), value);
         }
     }
     let projected = Value::Object(projected).to_string();
@@ -103,21 +114,72 @@ fn semantic_alias(name: &str, source: &Map<String, Value>, user_prompt: &str) ->
         "prompt" | "instruction" => return Some(Value::String(user_prompt.to_owned())),
         _ => return None,
     };
-    let mut value = aliases
-        .iter()
-        .find_map(|alias| source.get(*alias).cloned())?;
-    if name == "absolute_path" {
-        if let Some(path) = value.as_str() {
-            value = Value::String(absolute_path(path));
-        }
-    }
-    Some(value)
+    aliases.iter().find_map(|alias| source.get(*alias).cloned())
 }
 
-fn absolute_path(path: &str) -> String {
+/// Whether the client's own schema says this argument has to be an absolute
+/// path (issue #671).
+///
+/// The planner names files the way the request did, which is usually relative.
+/// Several real clients reject that outright — the agentic matrix caught
+/// `agent` answering `Error: File not found: /alpha.txt` and `qwen` answering
+/// `File path must be absolute, but was relative: alpha.txt`. The requirement is
+/// advertised, so it is read rather than hardcoded per client: `gemini` names
+/// the property `absolute_path`, `qwen` and `opencode` say so in the property
+/// description, and `agent` says so in the tool description ("The filePath
+/// parameter must be an absolute path, not a relative path"). A client that
+/// accepts relative paths advertises nothing and keeps the request's own
+/// spelling, because the absolute form is only correct while the server shares
+/// the client's working directory.
+fn demands_absolute_path(definition: &Value, name: &str, property_schema: &Value) -> bool {
+    const PATH_PROPERTIES: &[&str] = &[
+        "path",
+        "filePath",
+        "file_path",
+        "absolute_path",
+        "dir_path",
+        "directory",
+        "notebook_path",
+    ];
+    if !PATH_PROPERTIES.contains(&name) {
+        return false;
+    }
+    if name == "absolute_path" {
+        return true;
+    }
+    let says_absolute = |value: Option<&Value>| {
+        value
+            .and_then(Value::as_str)
+            .is_some_and(|text| text.to_lowercase().contains("absolute"))
+    };
+    says_absolute(property_schema.get("description")) || says_absolute(tool_description(definition))
+}
+
+/// The client-authored prose for a tool, under either the flat or the
+/// `function`-wrapped shape.
+fn tool_description(definition: &Value) -> Option<&Value> {
+    definition.get("description").or_else(|| {
+        definition
+            .get("function")
+            .and_then(|function| function.get("description"))
+    })
+}
+
+/// Resolve a relative path against the client's directory, falling back to the
+/// server's own.
+///
+/// The fallback is the shared-directory case the agentic matrix runs, where both
+/// processes start in the same workspace. When the client declares a different
+/// directory — the issue-#715 E2E runs the CLI in a temporary workspace while
+/// the server stays in the repository — resolving against the server's directory
+/// writes the file somewhere the client never looks.
+fn absolute_path(path: &str, workspace: Option<&str>) -> String {
     let path = Path::new(path);
     if path.is_absolute() {
         return path.to_string_lossy().into_owned();
+    }
+    if let Some(workspace) = workspace.map(Path::new).filter(|root| root.is_absolute()) {
+        return workspace.join(path).to_string_lossy().into_owned();
     }
     std::path::absolute(path)
         .unwrap_or_else(|_| path.to_path_buf())

@@ -848,11 +848,7 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 
 /// The text of the most recent `user` turn.
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
+    crate::protocol::latest_user_request(messages)
 }
 
 /// Keywords that mark a user turn as the canonical issue-#468 formalization task.

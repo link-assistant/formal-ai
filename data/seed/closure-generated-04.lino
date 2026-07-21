@@ -289,6 +289,46 @@ meanings
     lexeme en
       surface
         text "response statement audit unknown tier en"
+  response_supplied_file_contents_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents en"
+  response_supplied_file_contents_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents hi"
+  response_supplied_file_contents_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents ru"
+  response_supplied_file_contents_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file contents zh"
+  response_supplied_file_first_line_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file first line en"
+  response_supplied_file_first_line_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file first line hi"
+  response_supplied_file_first_line_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file first line ru"
+  response_supplied_file_first_line_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response supplied file first line zh"
   response_test_status_en
     defined-by response_template
     lexeme en
@@ -829,6 +869,16 @@ meanings
     lexeme en
       surface
         text "summarize conversation"
+  supplied_file_contents
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file contents"
+  supplied_file_first_line
+    defined-by intent
+    lexeme en
+      surface
+        text "supplied file first line"
   supported_languages
     defined-by field
     lexeme en

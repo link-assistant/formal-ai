@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 39026
-  line_count 893
-  content_id source_module_527f36da81686c20
+  byte_len 38906
+  line_count 889
+  content_id source_module_8717735647554188
   symbol_count 37
   symbols
     const SEARCH_QUERY 44 44
@@ -40,31 +40,31 @@ self_ast_census
     function write_arguments 820 828
     function fetch_arguments 837 843
     function classify_tool 845 847
-    function latest_user_text 850 856
-    const FORMALIZATION_KEYWORDS 859 859
-    function is_formalization_task 870 875
-    function final_answer 879 893
+    function latest_user_text 850 852
+    const FORMALIZATION_KEYWORDS 855 855
+    function is_formalization_task 866 871
+    function final_answer 875 889
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19006
-    named_node_count 3804
+    total_link_count 18877
+    named_node_count 3773
     distinct_node_kinds 71
     node_kinds
-      arguments 244
+      arguments 239
       array_expression 1
       array_type 40
       attribute 6
       attribute_item 6
       binary_expression 3
       block 91
-      call_expression 244
-      closure_expression 9
-      closure_parameters 9
+      call_expression 239
+      closure_expression 7
+      closure_parameters 7
       const_item 4
-      crate 1
+      crate 2
       declaration_list 1
       doc_comment 137
       else_clause 1
@@ -75,14 +75,14 @@ self_ast_census
       expression_statement 109
       field_declaration 6
       field_declaration_list 2
-      field_expression 66
-      field_identifier 98
+      field_expression 58
+      field_identifier 90
       field_initializer 26
       field_initializer_list 13
       function_item 29
       function_modifiers 2
       generic_type 5
-      identifier 1067
+      identifier 1065
       if_expression 61
       impl_item 1
       inner_doc_comment_marker 5
@@ -104,14 +104,14 @@ self_ast_census
       reference_expression 62
       reference_type 76
       return_expression 47
-      scoped_identifier 183
+      scoped_identifier 185
       scoped_use_list 3
       self 4
       self_parameter 2
       shorthand_field_initializer 26
       source_file 1
-      string_content 76
-      string_literal 72
+      string_content 75
+      string_literal 71
       struct_expression 13
       struct_item 2
       super 42
