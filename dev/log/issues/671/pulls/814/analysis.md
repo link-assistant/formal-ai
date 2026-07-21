@@ -128,3 +128,50 @@ The bootstrap commit `3c730d4b` ("Initial commit with task details", two lines,
 authored by the solver harness rather than by Formal AI) is deliberately left
 unattributed — `CONTRIBUTING.md` is explicit that an honest lower number beats a
 trailer on work Formal AI did not author.
+
+## 8. CI findings on the next head (`d51c6aa8`)
+
+Runs `29793014327` (`CI/CD Pipeline`) and `29793014368` (`Agentic CLI Matrix`)
+reported four distinct failures. Every log below is archived in `ci-logs/`.
+
+| Job | Log | Cause | Fix |
+| --- | --- | --- | --- |
+| Lint and Format Check | `ci-logs/lint-and-format-88518829964.log` | five `clippy` findings in library code introduced by this branch (`redundant_pub_crate`, `ptr_arg`, `too_long_first_doc_paragraph`, `assigning_clones`, `doc_markdown`) — and a sixth, `needless_pass_by_value`, that only surfaces in the test target once the library compiles | `894125bd` |
+| E2E (codex) | `ci-logs/matrix-codex-88519013924.log:328` | `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted` — codex executes every command inside its **vendored** `bwrap`, and Ubuntu 24.04 runners deny it the unprivileged user namespace via `kernel.apparmor_restrict_unprivileged_userns=1` | `d2f1c9c1` |
+| E2E (gemini) | `ci-logs/matrix-gemini-88519013928.log:343` | gemini-cli 0.51.0's `isHeadlessMode()` forces headless whenever `CI`/`GITHUB_ACTIONS` is set, so the `interactive` case never got a TUI to drive | `d2f1c9c1` |
+| E2E Tests (agent CLI ↔ formal-ai) | `ci-logs/agent-cli-e2e-88518829962.log:2147` | `agent: code-rewrite-learning-report.lino was never written` — the issue-#671 absolutisation resolved the planned relative path against the *server's* directory, so the write landed in the repository while the CLI ran in its own temporary workspace | `305835fe` |
+
+`Matrix summary` carries no cause of its own: it is the aggregation job, red because
+the codex and gemini legs were.
+
+### The path fix, in full
+
+Absolutising is right (clients reject relative paths outright), but the base
+directory was wrong. Reproduced locally: the server emitted
+`{"filePath": "/tmp/gh-issue-solver-.../code-rewrite-learning-report.lino"}`
+while the agent CLI's workspace was `/tmp/tmp.ATy70pqOD9`. Both the matrix and
+the in-process harness share a directory with the server, which is why every
+existing test passed.
+
+The client is the one that knows where it runs, and each says so in its own
+prose — all four patterns below are copied from recorded request bodies:
+
+| client | declaration |
+| --- | --- |
+| `agent`, `opencode` | `<env>\n  Working directory: …` |
+| `codex` | `<environment_context>\n<cwd>…</cwd>` |
+| `gemini` | `- **Workspace Directories:**` followed by one indented path per line |
+
+`protocol::client_working_directory` reads them, `response_arguments_for_tool`
+resolves against the result, and the server's own directory stays as the
+fallback the matrix runs under. A declaration naming a directory that is not on
+this machine (a transcript replayed elsewhere) is ignored rather than planned
+against. Four cases in
+`tests/integration/issue_671_absolute_path_projection.rs` cover the three
+declaration shapes and that fallback; each fails against the previous head.
+
+`experiments/agent_cli_e2e/run_issue_715_learning.sh` then passes locally on
+both harnesses — `both harnesses derived a byte-identical review-gated report
+over 7 chat rounds` — and the refreshed transcripts under
+`docs/case-studies/issue-715/agent-cli-learning/` record the write landing in
+the CLI's own workspace.
