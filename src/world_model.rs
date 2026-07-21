@@ -394,7 +394,7 @@ impl Context {
     fn sync_statement_links(&mut self) {
         // Drop stale statement-layer links, then re-emit from the current state.
         for link in self.links.links() {
-            if is_statement_layer_link(&link) {
+            if is_derived_statement_link(&link) {
                 self.links.remove_link(&link.from, &link.to);
             }
         }
@@ -563,7 +563,22 @@ impl Context {
 
 /// Whether a link belongs to the statement bookkeeping layer rather than the
 /// world state, so diffs and merges can operate on state atoms alone.
+///
+/// The layer has two halves: links [`Context::recalculate`] derives itself (see
+/// [`is_derived_statement_link`]) and links a caller attaches to a statement —
+/// the `provenance:` trail back to the dialogue turn that asserted it and the
+/// `asserts:` pointer to the state atom it produced (issue #702). Both halves
+/// are bookkeeping, so neither ever shows up in a state difference; only the
+/// derived half is regenerated on every recalculation.
 fn is_statement_layer_link(link: &SubstitutionLink) -> bool {
+    is_derived_statement_link(link)
+        || link.to.starts_with("provenance:")
+        || link.to.starts_with("asserts:")
+}
+
+/// Whether a link is one [`Context::sync_statement_links`] regenerates from the
+/// statements themselves, and must therefore sweep before re-emitting.
+fn is_derived_statement_link(link: &SubstitutionLink) -> bool {
     link.to == "world:statement"
         || link.to.starts_with("truth:")
         || link.to.starts_with("supports:")

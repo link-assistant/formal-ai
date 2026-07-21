@@ -80,6 +80,7 @@ mod issue_680_intent_routing;
 mod issue_681;
 mod issue_686_agent_cli;
 mod issue_686_associative_persistence;
+mod issue_702_world_model_dialog;
 mod issue_687;
 mod issue_712_routing_learning;
 mod issue_714_agentic_mode;

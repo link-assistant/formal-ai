@@ -115,6 +115,8 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 pub mod world_model;
+pub mod world_model_atoms;
+pub mod world_model_dialog;
 
 pub use agent::{
     parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
@@ -342,4 +344,8 @@ pub use web_search_core::{
 pub use world_model::{
     Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,
     Statement as WorldStatement, StatementChange, WorldModel,
+};
+pub use world_model_atoms::{classify as classify_utterance, state_atom, UtteranceKind};
+pub use world_model_dialog::{
+    ActionForecast, DialogueWorldModel, SyncEvent, SyncEventKind, WorldModelMode,
 };
