@@ -738,6 +738,10 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             cue_lexicon::matches("proof_request", normalized),
         ),
         (
+            "handler:world_state",
+            cue_lexicon::matches(crate::world_model_atoms::QUERY_CUES, normalized),
+        ),
+        (
             "handler:write_script",
             cue_lexicon::matches("write_script", normalized),
         ),

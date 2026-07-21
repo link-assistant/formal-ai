@@ -197,6 +197,13 @@ pub struct SolverConfig {
     /// item. Proposal-only — no skill is auto-promoted without review — and
     /// trace-only either way (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
+    /// Whether the dialogue's symbolic world model is maintained and traced
+    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
+    /// current/target contexts are built and the state-query handler declines;
+    /// `Track` rebuilds the model from the conversation, records it as a trace
+    /// artifact, and answers "what is left to reach my goal?" from the
+    /// current->target difference. Trace-only in either mode (R13).
+    pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -257,6 +264,7 @@ impl Default for SolverConfig {
             recursion_mode: crate::meta_construction::RecursionMode::default(),
             selection_mode: crate::selection::SelectionMode::default(),
             skill_mode: crate::skill_ledger::SkillMode::default(),
+            world_model_mode: crate::world_model_dialog::WorldModelMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,

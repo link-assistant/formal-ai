@@ -26,12 +26,7 @@ const DIALOGUE_BY_LANGUAGE: &[(&str, &str, &str, &str)] = &[
         "я хочу чтобы дверь была открыта",
         "что осталось сделать?",
     ),
-    (
-        "hi",
-        "दरवाज़ा बंद है",
-        "मुझे चाहिए दरवाज़ा खुला",
-        "क्या बाकी है?",
-    ),
+    ("hi", "दरवाज़ा बंद है", "मुझे चाहिए दरवाज़ा खुला", "क्या बाकी है?"),
     ("zh", "门是关着的", "我想要门是开着的", "还剩什么?"),
 ];
 
@@ -40,7 +35,10 @@ const DIALOGUE_BY_LANGUAGE: &[(&str, &str, &str, &str)] = &[
 #[test]
 fn declarative_turns_seed_the_current_state_context_with_provenance() {
     let mut model = DialogueWorldModel::new();
-    assert_eq!(model.observe_user("the door is closed"), UtteranceKind::CurrentState);
+    assert_eq!(
+        model.observe_user("the door is closed"),
+        UtteranceKind::CurrentState
+    );
 
     assert!(
         model.model.current.holds("door", "closed"),
@@ -231,7 +229,10 @@ fn a_correction_replaces_the_proposal_and_supersedes_the_old_target() {
         !model.model.target.holds("report", "published"),
         "the superseded goal for the same subject is retracted"
     );
-    assert!(model.pending_proposal().is_none(), "the proposal is resolved");
+    assert!(
+        model.pending_proposal().is_none(),
+        "the proposal is resolved"
+    );
 }
 
 #[test]
@@ -242,7 +243,10 @@ fn the_synchronization_log_is_append_only_and_hash_chained() {
     model.observe_user("yes");
     model.observe_user("what is left?");
 
-    assert!(model.chain_is_intact(), "the freshly built chain re-derives");
+    assert!(
+        model.chain_is_intact(),
+        "the freshly built chain re-derives"
+    );
     let events = model.events().to_vec();
     for (index, event) in events.iter().enumerate() {
         assert_eq!(event.sequence, index, "sequences are dense and ordered");
@@ -418,7 +422,11 @@ fn a_helpful_action_shrinks_the_gap_and_a_destructive_one_is_flagged() {
         "publishing violates nothing the user asked for"
     );
     assert_eq!(
-        forecast.satisfied.iter().map(|l| l.pattern_text()).collect::<Vec<_>>(),
+        forecast
+            .satisfied
+            .iter()
+            .map(|l| l.pattern_text())
+            .collect::<Vec<_>>(),
         vec![String::from("report -> published")],
         "the satisfied need is named"
     );
@@ -448,7 +456,9 @@ fn a_helpful_action_shrinks_the_gap_and_a_destructive_one_is_flagged() {
         "a destructive action does not bring the goal closer"
     );
     assert!(
-        destructive.links_notation().contains("verdict \"violates_target\""),
+        destructive
+            .links_notation()
+            .contains("verdict \"violates_target\""),
         "the verdict is inspectable:\n{}",
         destructive.links_notation()
     );
@@ -491,7 +501,10 @@ fn the_world_model_mode_is_off_until_it_is_opted_in() {
     );
     assert!(!WorldModelMode::Off.emits_artifact());
     assert!(WorldModelMode::Track.emits_artifact());
-    assert_eq!(WorldModelMode::from_slug("track"), Some(WorldModelMode::Track));
+    assert_eq!(
+        WorldModelMode::from_slug("track"),
+        Some(WorldModelMode::Track)
+    );
     assert_eq!(WorldModelMode::from_slug("nonsense"), None);
 
     let mut log = formal_ai::event_log::EventLog::new();
@@ -556,5 +569,8 @@ fn a_scripted_dialogue_tracks_state_answers_the_goal_question_and_forecasts() {
         .map(|link| link.pattern_text())
         .collect();
     assert_eq!(remaining, vec![String::from("light -> on")]);
-    assert!(model.chain_is_intact(), "the whole dialogue stays append-only");
+    assert!(
+        model.chain_is_intact(),
+        "the whole dialogue stays append-only"
+    );
 }

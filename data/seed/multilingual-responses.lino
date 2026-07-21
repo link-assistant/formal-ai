@@ -1397,3 +1397,35 @@ multilingual_responses
     intent agentic_action_before_tool
     language zh
     text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+  response response_world_state_remaining_en
+    intent world_state_remaining
+    language en
+    text "{count} statement(s) still separate the current state from your target: {remaining}.\nThe answer is the current->target difference, computed as a links network, not retrieved from memory.\nDifference: {diff_id}"
+  response response_world_state_remaining_ru
+    intent world_state_remaining
+    language ru
+    text "Текущее состояние отделяют от вашей цели ещё {count} утверждений: {remaining}.\nОтвет — это разность текущее->целевое, вычисленная как сеть связей, а не извлечённая из памяти.\nРазность: {diff_id}"
+  response response_world_state_remaining_hi
+    intent world_state_remaining
+    language hi
+    text "वर्तमान स्थिति को आपके लक्ष्य से अभी {count} कथन अलग करते हैं: {remaining}।\nउत्तर वर्तमान->लक्ष्य अंतर है, जो संबंध-नेटवर्क के रूप में गणना किया गया है, स्मृति से लिया गया नहीं।\nअंतर: {diff_id}"
+  response response_world_state_remaining_zh
+    intent world_state_remaining
+    language zh
+    text "当前状态与你的目标之间还有 {count} 条陈述：{remaining}。\n答案是当前->目标的差异，作为链接网络计算得出，而不是从记忆中取出。\n差异：{diff_id}"
+  response response_world_state_reached_en
+    intent world_state_reached
+    language en
+    text "Nothing is left: every target statement already holds in the current state.\nDifference: {diff_id}"
+  response response_world_state_reached_ru
+    intent world_state_reached
+    language ru
+    text "Ничего не осталось: каждое целевое утверждение уже выполняется в текущем состоянии.\nРазность: {diff_id}"
+  response response_world_state_reached_hi
+    intent world_state_reached
+    language hi
+    text "कुछ भी शेष नहीं है: प्रत्येक लक्ष्य कथन वर्तमान स्थिति में पहले से सत्य है।\nअंतर: {diff_id}"
+  response response_world_state_reached_zh
+    intent world_state_reached
+    language zh
+    text "没有剩余：每一条目标陈述在当前状态中都已成立。\n差异：{diff_id}"

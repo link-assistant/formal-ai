@@ -112,3 +112,4 @@ mod transparent_state;
 mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;
+mod world_state_benchmarks;

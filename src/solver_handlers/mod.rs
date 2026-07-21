@@ -35,6 +35,7 @@ mod text_manipulation;
 mod user_intent;
 mod web_requests;
 mod web_search_intent;
+mod world_state;
 
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
@@ -78,6 +79,7 @@ pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,
     try_project_lookup_with_response_language, try_url_navigate, try_web_search,
 };
+pub use world_state::try_world_state;
 pub use {
     web_requests::agentic_fetch_url_for, web_requests::answer_web_search_query,
     web_search_intent::web_search_query_for, web_search_intent::WebSearchQueryKind,

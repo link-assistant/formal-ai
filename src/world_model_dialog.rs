@@ -455,7 +455,11 @@ impl DialogueWorldModel {
         let prediction = self.model.predict(action);
         let before = self.model.current.difference(&self.model.target);
         let after = prediction.result.difference(&self.model.target);
-        let target_links = self.model.target.difference(&Context::new("empty")).to_remove;
+        let target_links = self
+            .model
+            .target
+            .difference(&Context::new("empty"))
+            .to_remove;
 
         let satisfied: Vec<SubstitutionLink> = before
             .to_add
@@ -504,11 +508,7 @@ impl DialogueWorldModel {
             .collect();
         self.model.current.merge_from(&other.model.current);
         self.model.target.merge_from(&other.model.target);
-        let detail = format!(
-            "{} conflicts:{}",
-            other.model.current.id,
-            conflicts.len()
-        );
+        let detail = format!("{} conflicts:{}", other.model.current.id, conflicts.len());
         self.append(SyncEventKind::ContextMerged, "system", detail);
         conflicts
     }
@@ -596,10 +596,10 @@ impl DialogueWorldModel {
     /// supplied the right atom, which supersedes any target link on the same
     /// subject.
     fn correct_pending(&mut self, text: &str) {
-        let rejected = self
-            .pending
-            .take()
-            .map_or_else(|| String::from("nothing_pending"), |link| link.pattern_text());
+        let rejected = self.pending.take().map_or_else(
+            || String::from("nothing_pending"),
+            |link| link.pattern_text(),
+        );
         let detail = match state_atom(text) {
             Some(link) => {
                 for existing in self.model.target.links() {

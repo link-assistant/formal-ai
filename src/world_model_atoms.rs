@@ -230,8 +230,7 @@ fn strip_cues(text: &str, set: &str) -> String {
             body = body.replace(cue.as_str(), " ");
         }
     }
-    body
-        .split_whitespace()
+    body.split_whitespace()
         .filter(|token| !cues.iter().any(|cue| cue == token))
         .collect::<Vec<_>>()
         .join(" ")
