@@ -62,6 +62,15 @@ rule reached the log and the prose, never the routing.
 | `rust-script scripts/check-changelog-fragment.rs` | passed (1 fragment) |
 | `rust-script scripts/check-associative-terminology.rs` | passed |
 | `cargo fmt --all -- --check` | clean after `cargo fmt --all` |
+| `rust-script scripts/check-worker-line-budget.rs` | 26 819 of 26 819 lines (re-baselined for the mandated mirror) |
+| `node experiments/issue_701_worker_mirror_check.mjs` | `checked=90 mismatched=0` |
+
+The last row is the evidence for the worker-mirror compaction: the JS
+`extractTermInformationRequest` was collapsed from three candidate loops into a
+single candidate list to hold the line ratchet, so the script evaluates the whole
+worker bundle in a VM context and compares the compacted function against the
+loop version it replaced over all 80 trends prompts plus 10 degenerate inputs
+(bare affixes, empty text, affix-only prompts). No input separates them.
 
 ## 4. Narrowings, stated honestly
 
