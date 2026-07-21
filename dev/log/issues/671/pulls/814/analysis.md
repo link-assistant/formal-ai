@@ -113,3 +113,18 @@ ever running — now each have a recorded, replayable session under
   deleted.
 - No headless approval handshake in codex/gemini/qwen (#511).
 - Cursor still requires its own vendor credentials (`mcp` leg).
+
+## 7. CI findings on this pull request
+
+Run `29792607769` (`CI/CD Pipeline`, head `6b550267`) reported two failures.
+Both logs are in `ci-logs/` beside this document.
+
+| Job | Log | Cause | Fix |
+| --- | --- | --- | --- |
+| Lint and Format Check | `ci-logs/lint-and-format-88517577507.log:1403` | `actionlint` shellcheck `SC2086` — `echo … >> $GITHUB_PATH` unquoted in `.github/workflows/agentic-cli-matrix.yml:174-175` | quoted `"$GITHUB_PATH"` |
+| Self-Hosting Evidence Check | `ci-logs/self-hosting-evidence-88517378931.log:1353` | the branch carried no `Formal-AI-Session` / `Formal-AI-Evidence` trailers, so merging it projected the release share down from 17.14% to 15.34% | trailers added to the six Formal-AI-authored commits, pointing at this document |
+
+The bootstrap commit `3c730d4b` ("Initial commit with task details", two lines,
+authored by the solver harness rather than by Formal AI) is deliberately left
+unattributed — `CONTRIBUTING.md` is explicit that an honest lower number beats a
+trailer on work Formal AI did not author.
