@@ -429,7 +429,7 @@ fn handle_gemini_generate_content_request(
         // Answer as ourselves, not as the model the CLI asked for: a transcript
         // that echoed `gemini-3-flash-preview` back would claim a provenance
         // this server does not have.
-        model = canonical_model_id().to_owned();
+        canonical_model_id().clone_into(&mut model);
     } else if let Some(response) = unsupported_model_response(Some(&model)) {
         return response;
     }
@@ -565,8 +565,8 @@ fn parse_bearer_token(value: &str) -> Option<&str> {
 /// name a flash model no setting overrides. Rejecting those with a 400 broke the
 /// CLI mid-conversation while the main channel looked healthy; the issue-#671
 /// matrix caught it on the `gemini` leg's "search online" prompt, where
-/// `gemini-3-flash-preview:generateContent` came back
-/// `unsupported model … use \`formal-ai\``.
+/// `gemini-3-flash-preview:generateContent` came back with an
+/// `unsupported model` error naming `formal-ai` as the only allowed id.
 ///
 /// We are the only backend behind that base URL, so the honest answer is to
 /// serve the request with the canonical model rather than to fail it. The prefix

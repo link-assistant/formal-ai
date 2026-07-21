@@ -202,7 +202,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
         if !marker_leads || first_action_cue_end(&toks).is_some() {
             if let Some(content) = marker_span
                 .and_then(clean_content)
-                .filter(is_literal_content)
+                .filter(|content| is_literal_content(content))
             {
                 return Some((target, content));
             }
@@ -245,7 +245,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
 /// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
 /// its trailing content-lead marker — and writing it would replace real file
 /// bytes with a stray delimiter.
-fn is_literal_content(content: &String) -> bool {
+fn is_literal_content(content: &str) -> bool {
     content.chars().any(char::is_alphanumeric)
 }
 

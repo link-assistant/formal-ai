@@ -19,7 +19,7 @@ use serde_json::{json, Value};
 
 const PROMPT: &str = "read the file alpha.txt and print its contents";
 
-fn read_call_arguments(tool: Value) -> Value {
+fn read_call_arguments(tool: &Value) -> Value {
     enable_http_agent_mode_for_current_process();
     let name = tool
         .pointer("/function/name")
@@ -53,7 +53,7 @@ fn assert_absolute(arguments: &Value, key: &str) {
 #[test]
 fn qwen_read_file_absolutises_a_relative_request_path() {
     // qwen 0.2.x: the requirement is in the property description.
-    let arguments = read_call_arguments(json!({
+    let arguments = read_call_arguments(&json!({
         "type": "function",
         "function": {
             "name": "read_file",
@@ -79,7 +79,7 @@ fn agent_read_absolutises_when_only_the_tool_description_says_so() {
     // The `agent` CLI's `read` leaves its `filePath` description silent; the
     // sentence "The filePath parameter must be an absolute path, not a relative
     // path" lives in the tool description instead.
-    let arguments = read_call_arguments(json!({
+    let arguments = read_call_arguments(&json!({
         "type": "function",
         "function": {
             "name": "read",
@@ -99,7 +99,7 @@ fn agent_read_absolutises_when_only_the_tool_description_says_so() {
 
 #[test]
 fn opencode_read_absolutises_a_relative_request_path() {
-    let arguments = read_call_arguments(json!({
+    let arguments = read_call_arguments(&json!({
         "type": "function",
         "function": {
             "name": "read",
@@ -125,7 +125,7 @@ fn a_client_that_accepts_relative_paths_keeps_the_requested_spelling() {
     // Absolutising is only correct while the server shares the client's working
     // directory, so it happens exactly when the client asked for it. Codex's
     // shell-shaped read advertises no such requirement.
-    let arguments = read_call_arguments(json!({
+    let arguments = read_call_arguments(&json!({
         "type": "function",
         "function": {
             "name": "read_file",

@@ -1,9 +1,11 @@
 use super::{ChatMessage, MessageContent};
 
-/// The most recent user turn, with both kinds of client-injected block removed:
-/// `<system-reminder>` markup and an unmarked verbatim echo of the system
-/// prompt. Every reader of "what did the user ask" goes through here so a new
-/// client's decoration cannot be handled in one code path and missed in another.
+/// The most recent user turn, with client-injected blocks removed.
+///
+/// Two kinds are stripped: `<system-reminder>` markup and an unmarked verbatim
+/// echo of the system prompt. Every reader of "what did the user ask" goes
+/// through here so a new client's decoration cannot be handled in one code path
+/// and missed in another.
 #[must_use]
 pub fn latest_user_request(messages: &[ChatMessage]) -> Option<String> {
     let system = system_prompt_text(messages);

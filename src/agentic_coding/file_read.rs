@@ -654,7 +654,7 @@ fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
 /// answered "I could not determine …" about a file whose contents were sitting
 /// three messages up. The bytes are already here; refusing to read them is the
 /// defect.
-pub(crate) fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
+pub fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
     let task = crate::protocol::latest_user_request(messages)?;
     let FileReadTask::Direct { path, mode, .. } = file_read_task_for(&task)? else {
         return None;
