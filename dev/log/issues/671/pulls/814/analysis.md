@@ -209,3 +209,36 @@ Every other job on `4f343d9c` was already green: the Agentic CLI Matrix run
 `E2E Tests (agent CLI ↔ formal-ai)`, `Self-Hosting Evidence Check`,
 `Docker Image Build & Runtime Check`, `Test (ubuntu-latest)` and
 `Code Coverage`. `Lint and Format Check` was the only red job.
+
+## 10. The hardcoded-language gate on `5ee22e04`
+
+With the file-size gate satisfied, `Lint and Format Check` reached the *next*
+step it had never run on this branch and failed there
+(`ci-logs/lint-and-format-88536249710.log:2688`):
+
+```
+New hardcoded user-facing strings found in src/ (not in the allowlist):
+  src/agentic_coding/file_read.rs: "Contents of `{path}`:\n\n{body}"
+  src/agentic_coding/file_read.rs: "First line of `{path}`: {}"
+```
+
+Both literals are this branch's own: they are the fence-free renderer added for
+the tool-free `aider` leg. R379 ("data is the interface",
+`docs/design/no-hardcoded-natural-language.md`) blocks new prose in `src/`, and
+the allowlist is a burn-down inventory that may only shrink — so the two
+sentences were migrated instead of allowlisted. They now live in
+`data/seed/multilingual-responses.lino` as the `supplied_file_contents` and
+`supplied_file_first_line` intents in all four supported languages, read back
+through `seed::response_for` with the request's own language and an English
+fallback, and their new value tokens were grounded with
+`python3 scripts/close-total.py` (`unresolved_distinct: 0`).
+
+`the_headings_are_seeded_in_every_supported_language` in
+`tests/integration/issue_671_supplied_file_bytes.rs` pins the migration: each
+intent must exist for `en`/`ru`/`hi`/`zh`, keep both placeholders, carry no
+fence (a fenced answer is an edit instruction to a whole-format client), and be
+the heading the served answer actually renders.
+
+Everything else on `5ee22e04` was green — the Agentic CLI Matrix run
+`29798969655` passed all 14 jobs, and CI/CD run `29798969664` passed every job
+but this one.

@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 291
   full_ast_module_count 43
   signature_module_count 248
-  symbol_count 5961
-  content_id self_ast_census_index_5cad8712fdfc1801
+  symbol_count 5962
+  content_id self_ast_census_index_4c2e7cdd53385199
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -22,7 +22,7 @@ self_ast_census_index
     src/agentic_coding/driver.rs full_ast 14 source_module_24c3e8c46a44d30e
     src/agentic_coding/execution_learning.rs full_ast 7 source_module_628af88f6119fb0e
     src/agentic_coding/explain.rs full_ast 9 source_module_e380b76f9d24205d
-    src/agentic_coding/file_read.rs full_ast 42 source_module_7d61d3a06675bf07
+    src/agentic_coding/file_read.rs full_ast 43 source_module_b2846a8dfce7f79e
     src/agentic_coding/formalize.rs full_ast 23 source_module_0841b6b93be1278d
     src/agentic_coding/general_planner.rs full_ast 25 source_module_3b8a48d9fd6bad73
     src/agentic_coding/google_trends_catalog.rs full_ast 11 source_module_0269b7242306e817

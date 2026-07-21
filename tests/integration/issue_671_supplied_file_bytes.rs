@@ -123,6 +123,42 @@ fn prose_that_merely_mentions_a_filename_is_not_a_file_listing() {
     );
 }
 
+/// R379: the answer's prose is seed data, not a literal in the engine. The
+/// heading the reader renders must be the one
+/// `data/seed/multilingual-responses.lino` carries, in every supported
+/// language — `scripts/check-hardcoded-language.rs` blocked the first version
+/// of this reader for typing the English sentence into `file_read.rs`.
+#[test]
+fn the_headings_are_seeded_in_every_supported_language() {
+    for language in ["en", "ru", "hi", "zh"] {
+        for (intent, placeholder) in [
+            ("supplied_file_contents", "{body}"),
+            ("supplied_file_first_line", "{line}"),
+        ] {
+            let template = formal_ai::response_for(intent, language)
+                .unwrap_or_else(|| panic!("{intent} must be seeded for {language}"));
+            assert!(
+                template.contains("{path}") && template.contains(placeholder),
+                "{intent}/{language} must keep both placeholders: {template}"
+            );
+            assert!(
+                !template.contains("```"),
+                "a fenced block here is an edit instruction to a whole-format client: {template}"
+            );
+        }
+    }
+
+    let answer = answer("read the file alpha.txt and print its contents");
+    let heading = formal_ai::response_for("supplied_file_contents", "en")
+        .expect("english heading")
+        .replace("{path}", "alpha.txt");
+    let heading = heading.split("{body}").next().unwrap_or_default();
+    assert!(
+        answer.starts_with(heading),
+        "the answer must render the seeded heading: {answer}"
+    );
+}
+
 fn memory_env_lock() -> MutexGuard<'static, ()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     // A failed assertion poisons the lock; the next test still needs it, and a

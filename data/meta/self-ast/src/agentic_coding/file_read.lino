@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 25118
-  line_count 744
-  content_id source_module_7d61d3a06675bf07
-  symbol_count 42
+  byte_len 26576
+  line_count 784
+  content_id source_module_b2846a8dfce7f79e
+  symbol_count 43
   symbols
     enum FileReadTask 11 22
     enum FileReadMode 25 30
@@ -45,101 +45,102 @@ self_ast_census
     function file_read_final_answer 583 612
     function extract_jsonish_value 614 641
     function supplied_file_answer 657 664
-    function supplied_file_final_answer 674 693
-    function supplied_file_content 703 730
-    function tool_for 732 737
-    function plan_one 739 744
+    function supplied_file_final_answer 681 710
+    function supplied_file_template 718 733
+    function supplied_file_content 743 770
+    function tool_for 772 777
+    function plan_one 779 784
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19429
-    named_node_count 3962
+    total_link_count 20245
+    named_node_count 4131
     distinct_node_kinds 87
     node_kinds
-      arguments 335
-      array_expression 6
-      array_type 15
-      assignment_expression 1
-      attribute 3
-      attribute_item 3
+      arguments 349
+      array_expression 8
+      array_type 16
+      assignment_expression 3
+      attribute 5
+      attribute_item 5
       binary_expression 57
-      block 112
+      block 114
       boolean_literal 5
-      call_expression 335
+      call_expression 349
       char_literal 35
-      closure_expression 34
-      closure_parameters 34
+      closure_expression 35
+      closure_parameters 35
       continue_expression 4
-      crate 3
-      doc_comment 48
+      crate 4
+      doc_comment 59
       else_clause 6
       enum_item 3
       enum_variant 9
       enum_variant_list 3
-      escape_sequence 17
-      expression_statement 94
+      escape_sequence 15
+      expression_statement 97
       field_declaration 9
       field_declaration_list 3
-      field_expression 256
-      field_identifier 281
+      field_expression 265
+      field_identifier 290
       field_initializer 16
       field_initializer_list 7
       field_pattern 8
-      for_expression 7
-      function_item 38
+      for_expression 8
+      function_item 39
       function_modifiers 1
       generic_function 5
       generic_type 29
-      identifier 876
+      identifier 914
       if_expression 43
       index_expression 26
       inner_doc_comment_marker 1
       integer_literal 30
       let_condition 17
-      let_declaration 55
+      let_declaration 57
       lifetime 6
       lifetime_parameter 2
-      line_comment 60
-      macro_invocation 26
+      line_comment 71
+      macro_invocation 24
       match_arm 16
       match_block 6
       match_expression 6
       match_pattern 16
-      mutable_specifier 6
+      mutable_specifier 7
       or_pattern 3
       ordered_field_declaration_list 1
-      outer_doc_comment_marker 47
-      parameter 69
-      parameters 38
+      outer_doc_comment_marker 58
+      parameter 74
+      parameters 39
       parenthesized_expression 7
-      primitive_type 56
+      primitive_type 61
       range_expression 6
-      reference_expression 38
-      reference_type 66
+      reference_expression 41
+      reference_type 72
       remaining_field_pattern 1
       return_expression 32
-      scoped_identifier 73
+      scoped_identifier 77
       scoped_type_identifier 12
       scoped_use_list 2
       shorthand_field_identifier 8
       shorthand_field_initializer 4
       source_file 1
-      string_content 94
-      string_literal 88
+      string_content 97
+      string_literal 92
       struct_expression 7
       struct_item 1
       struct_pattern 3
       super 8
-      token_tree 50
+      token_tree 47
       try_expression 10
-      tuple_expression 6
-      tuple_pattern 9
+      tuple_expression 8
+      tuple_pattern 10
       tuple_struct_pattern 24
-      tuple_type 2
+      tuple_type 3
       type_arguments 34
-      type_identifier 113
+      type_identifier 115
       type_parameters 2
       unary_expression 20
       use_declaration 5

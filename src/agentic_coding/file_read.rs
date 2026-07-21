@@ -660,7 +660,7 @@ pub fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
         return None;
     };
     let content = supplied_file_content(messages, &path)?;
-    Some(supplied_file_final_answer(&mode, &path, &content))
+    Some(supplied_file_final_answer(&mode, &path, &content, &task))
 }
 
 /// Render supplied bytes back **without a fenced block**.
@@ -671,7 +671,19 @@ pub fn supplied_file_answer(messages: &[ChatMessage]) -> Option<String> {
 /// "Applied edit to alpha.txt", and swallowed the contents out of its own
 /// transcript — so the user saw a heading and nothing under it. Quoting the
 /// lines with numbers says the same thing in a shape no edit parser claims.
-fn supplied_file_final_answer(mode: &FileReadMode, path: &str, content: &str) -> String {
+///
+/// The two headings are grounded meanings (R379): they live in
+/// `data/seed/multilingual-responses.lino` under the `supplied_file_contents`
+/// and `supplied_file_first_line` intents, localized to the request's own
+/// language with an English fallback. The `{...}` tokens named here are those
+/// templates' placeholders, not Rust format arguments.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn supplied_file_final_answer(
+    mode: &FileReadMode,
+    path: &str,
+    content: &str,
+    request: &str,
+) -> String {
     match mode {
         FileReadMode::Full => {
             let body = content
@@ -680,16 +692,44 @@ fn supplied_file_final_answer(mode: &FileReadMode, path: &str, content: &str) ->
                 .map(|(index, line)| format!("{:>4} | {line}", index + 1))
                 .collect::<Vec<_>>()
                 .join("\n");
-            format!("Contents of `{path}`:\n\n{body}")
+            supplied_file_template("supplied_file_contents", request, &[("{body}", body)], path)
         }
-        FileReadMode::FirstLine => format!(
-            "First line of `{path}`: {}",
-            content.lines().next().unwrap_or_default()
+        FileReadMode::FirstLine => supplied_file_template(
+            "supplied_file_first_line",
+            request,
+            &[(
+                "{line}",
+                content.lines().next().unwrap_or_default().to_owned(),
+            )],
+            path,
         ),
         FileReadMode::ExtractValue(_) | FileReadMode::Summary => {
             file_read_final_answer(mode, &[(path.to_owned(), content.to_owned())])
         }
     }
+}
+
+/// Fill a seeded answer template for `intent` with this run's values.
+///
+/// The `{...}` tokens are seed placeholders, not Rust format arguments, so they
+/// are substituted rather than interpolated — which is what the `allow` below
+/// says to clippy's nursery lint.
+#[allow(clippy::literal_string_with_formatting_args)]
+fn supplied_file_template(
+    intent: &str,
+    request: &str,
+    substitutions: &[(&str, String)],
+    path: &str,
+) -> String {
+    let language = crate::language::detect(request);
+    let mut rendered = seed::response_for(intent, language.slug())
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_default();
+    rendered = rendered.replace("{path}", path);
+    for (placeholder, value) in substitutions {
+        rendered = rendered.replace(placeholder, value);
+    }
+    rendered
 }
 
 /// The most recently supplied contents of `path`, from a fenced block labelled

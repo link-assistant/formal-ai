@@ -11,6 +11,7 @@ bump: minor
 - The Gemini protocol path accepts the utility model ids the vendor CLI hardcodes instead of rejecting them with a 400, and `formal-ai proxy` recovers the model id from the request path when the body carries none, so a Gemini-shaped exchange is no longer logged with a null `request_model`.
 
 ### Changed
+- The tool-free reader's two answer headings are grounded meanings rather than English typed into the engine (R379): `data/seed/multilingual-responses.lino` carries `supplied_file_contents` and `supplied_file_first_line` for all four supported languages, and `src/agentic_coding/file_read.rs` reads them back through `seed::response_for` in the request's own language.
 - The Gemini headless-`-p`-advertises-no-`functionDeclarations` constraint (#620) was lifted upstream in `@google/gemini-cli@0.51.0`, and the matrix is what found out: the `constraints` assertion failed loudly, exactly as issue #671 asked. It is inverted rather than deleted — the leg now fails if `read_file` stops being advertised — and the `read-file` case proves a real headless tool call round-trips.
 
 ### Added
