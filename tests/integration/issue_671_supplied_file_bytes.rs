@@ -130,16 +130,27 @@ fn prose_that_merely_mentions_a_filename_is_not_a_file_listing() {
 /// of this reader for typing the English sentence into `file_read.rs`.
 #[test]
 fn the_headings_are_seeded_in_every_supported_language() {
-    for language in ["en", "ru", "hi", "zh"] {
-        for (intent, placeholder) in [
-            ("supplied_file_contents", "{body}"),
-            ("supplied_file_first_line", "{line}"),
+    // Each language is pinned by its own wording, so a missing or machine-copied
+    // record fails here rather than silently answering English to everyone.
+    for (language, contents_wording, first_line_wording) in [
+        ("en", "Contents of", "First line of"),
+        ("ru", "Содержимое", "Первая строка"),
+        ("hi", "की सामग्री", "की पहली पंक्ति"),
+        ("zh", "的内容", "的第一行"),
+    ] {
+        for (intent, placeholder, wording) in [
+            ("supplied_file_contents", "{body}", contents_wording),
+            ("supplied_file_first_line", "{line}", first_line_wording),
         ] {
             let template = formal_ai::response_for(intent, language)
                 .unwrap_or_else(|| panic!("{intent} must be seeded for {language}"));
             assert!(
                 template.contains("{path}") && template.contains(placeholder),
                 "{intent}/{language} must keep both placeholders: {template}"
+            );
+            assert!(
+                template.contains(wording),
+                "{intent}/{language} must be written in that language: {template}"
             );
             assert!(
                 !template.contains("```"),
