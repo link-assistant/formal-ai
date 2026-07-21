@@ -1,0 +1,10 @@
+self_ast_census
+  target src/solver_handlers/world_state.rs
+  language rust
+  fidelity signature
+  byte_len 4096
+  line_count 99
+  content_id source_module_56933263bdbcf05b
+  symbol_count 1
+  symbols
+    function try_world_state 36 99

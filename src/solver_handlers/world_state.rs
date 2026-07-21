@@ -30,6 +30,9 @@ use crate::solver_handlers::finalize_simple;
 use crate::world_model_atoms::{classify, UtteranceKind};
 use crate::world_model_dialog::{record_world_model, DialogueWorldModel};
 
+// The seed templates carry `{count}` / `{remaining}` / `{diff_id}` placeholders
+// substituted at runtime; they are data, not format strings.
+#[allow(clippy::literal_string_with_formatting_args)]
 pub fn try_world_state(
     prompt: &str,
     normalized: &str,

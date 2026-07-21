@@ -1,0 +1,29 @@
+self_ast_census
+  target src/world_model_atoms.rs
+  language rust
+  fidelity signature
+  byte_len 11636
+  line_count 290
+  content_id source_module_ac97972ce4f35578
+  symbol_count 20
+  symbols
+    const TARGET_CUES 37 37
+    const QUERY_CUES 39 39
+    const CONFIRM_CUES 41 41
+    const CORRECT_CUES 43 43
+    const BECAUSE_CUES 46 46
+    const SEPARATOR_CUES 48 48
+    const FILLER_CUES 50 50
+    const CONSULTED_CUE_SETS 53 61
+    enum UtteranceKind 65 78
+    function slug 83 92
+    function classify 102 124
+    function state_atom 132 155
+    function premise_split 163 178
+    function leading_cue 186 191
+    function strip_markers 194 205
+    function strip_leading_cue 208 222
+    function strip_cues 227 239
+    function split_on_separator 244 263
+    function canonical 267 272
+    function cjk_halves 278 290

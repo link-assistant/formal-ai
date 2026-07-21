@@ -10,6 +10,7 @@ use formal_ai::solver::{ConversationRole, ConversationTurn};
 use formal_ai::world_model::Action;
 use formal_ai::world_model_atoms::{classify, state_atom, UtteranceKind, CONSULTED_CUE_SETS};
 use formal_ai::world_model_dialog::{DialogueWorldModel, SyncEventKind, WorldModelMode};
+use formal_ai::SubstitutionLink;
 
 /// The four supported languages saying the same three things: a current-state
 /// fact, a wish, and the "what is left?" question.
@@ -114,8 +115,10 @@ fn all_four_languages_route_the_same_three_utterances_the_same_way() {
         let mut model = DialogueWorldModel::new();
         model.observe_user(fact);
         model.observe_user(wish);
-        let fact_atom = state_atom(fact).expect("[{language}] the fact yields an atom");
-        let wish_atom = state_atom(wish).expect("[{language}] the wish yields an atom");
+        let fact_atom =
+            state_atom(fact).unwrap_or_else(|| panic!("[{language}] the fact yields an atom"));
+        let wish_atom =
+            state_atom(wish).unwrap_or_else(|| panic!("[{language}] the wish yields an atom"));
         assert_eq!(
             fact_atom.from, wish_atom.from,
             "[{language}] both utterances must be about the same subject: {fact_atom:?} vs {wish_atom:?}"
@@ -190,7 +193,7 @@ fn the_agent_proposes_the_user_confirms_and_both_converge() {
     model.observe_user("the report is empty");
     model.propose_target("report", "published");
     assert_eq!(
-        model.pending_proposal().map(|link| link.pattern_text()),
+        model.pending_proposal().map(SubstitutionLink::pattern_text),
         Some(String::from("report -> published")),
         "a proposal waits for the user instead of overwriting the goal"
     );
@@ -425,7 +428,7 @@ fn a_helpful_action_shrinks_the_gap_and_a_destructive_one_is_flagged() {
         forecast
             .satisfied
             .iter()
-            .map(|l| l.pattern_text())
+            .map(SubstitutionLink::pattern_text)
             .collect::<Vec<_>>(),
         vec![String::from("report -> published")],
         "the satisfied need is named"
@@ -446,7 +449,7 @@ fn a_helpful_action_shrinks_the_gap_and_a_destructive_one_is_flagged() {
         destructive
             .violated
             .iter()
-            .map(|l| l.pattern_text())
+            .map(SubstitutionLink::pattern_text)
             .collect::<Vec<_>>(),
         vec![String::from("backup -> kept")],
         "the violated need is named"
@@ -566,7 +569,7 @@ fn a_scripted_dialogue_tracks_state_answers_the_goal_question_and_forecasts() {
     let remaining: Vec<String> = model
         .remaining()
         .iter()
-        .map(|link| link.pattern_text())
+        .map(SubstitutionLink::pattern_text)
         .collect();
     assert_eq!(remaining, vec![String::from("light -> on")]);
     assert!(

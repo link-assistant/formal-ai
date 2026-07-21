@@ -499,6 +499,46 @@ meanings
     lexeme en
       surface
         text "response wellbeing zh"
+  response_world_state_reached_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached en"
+  response_world_state_reached_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached hi"
+  response_world_state_reached_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached ru"
+  response_world_state_reached_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state reached zh"
+  response_world_state_remaining_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining en"
+  response_world_state_remaining_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining hi"
+  response_world_state_remaining_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining ru"
+  response_world_state_remaining_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response world state remaining zh"
   reverse_lines
     defined-by operation
     lexeme en
@@ -1274,6 +1314,16 @@ meanings
     lexeme en
       surface
         text "words"
+  world_state_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "world state reached"
+  world_state_remaining
+    defined-by intent
+    lexeme en
+      surface
+        text "world state remaining"
   would
     defined-by concept
     lexeme en

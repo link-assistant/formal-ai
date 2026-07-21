@@ -154,9 +154,11 @@ pub fn state_atom(text: &str) -> Option<SubstitutionLink> {
     }
 }
 
-/// Split a causal utterance into `(consequent, premise)` around a declared
-/// connective, so the consequent statement can be recorded as *depending on* the
-/// premise. Returns `None` when the utterance states no cause.
+/// Split a causal utterance into `(consequent, premise)`.
+///
+/// The split happens around a declared connective, so the consequent statement
+/// can be recorded as *depending on* the premise. Returns `None` when the
+/// utterance states no cause.
 #[must_use]
 pub fn premise_split(text: &str) -> Option<(String, String)> {
     let normalized = normalize_prompt(text);

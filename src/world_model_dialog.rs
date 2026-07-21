@@ -225,7 +225,7 @@ impl ActionForecast {
     /// Whether the action destroys something the target needs. A destructive
     /// action is flagged here *before* it is executed.
     #[must_use]
-    pub fn violates_target(&self) -> bool {
+    pub const fn violates_target(&self) -> bool {
         !self.violated.is_empty()
     }
 

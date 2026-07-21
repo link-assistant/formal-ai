@@ -47,9 +47,10 @@ const DIALOGUES: &[(&str, &str, &str, &str, &str)] = &[
 ];
 
 fn tracking_solver() -> UniversalSolver {
-    let mut config = SolverConfig::default();
-    config.world_model_mode = WorldModelMode::Track;
-    UniversalSolver::new(config)
+    UniversalSolver::new(SolverConfig {
+        world_model_mode: WorldModelMode::Track,
+        ..SolverConfig::default()
+    })
 }
 
 fn history(fact: &str, wish: &str) -> Vec<ConversationTurn> {

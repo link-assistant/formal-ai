@@ -39,6 +39,8 @@ struct Record {
 }
 
 #[derive(Debug)]
+// `source_ref` is the fixture's own field name (the pinned upstream revision).
+#[allow(clippy::struct_field_names)]
 struct Source {
     id: String,
     license: String,
