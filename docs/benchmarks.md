@@ -20,6 +20,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
+| bAbI-style world-state tracking | #702 | [`world-state-tracking-suite.lino`](../data/benchmarks/world-state-tracking-suite.lino) | `issue_702_world_state_suite_tracks_each_case` | 16 |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -85,6 +86,21 @@ files or full splits.
 | Source | License | Domain | Upstream |
 | --- | --- | --- | --- |
 | Nemotron Pretraining Legal v1 | CC-BY-4.0 | legal training-data ingestion | <https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1> |
+
+### bAbI-style world-state tracking — issue #702
+
+Sixteen self-authored dialogues in all four supported languages (en/ru/hi/zh),
+each stating facts and a wish and then asking what is left; the solver must
+answer from the current→target difference of its symbolic world model. Half the
+cases are held-out paraphrases with different entities and query wordings. **No
+upstream text is imported** — only the *shape* of the upstream task is
+reproduced (the local-profile convention of issue #408), so the recorded licenses
+are attribution for the task design, not for vendored data.
+
+| Source | License | Domain | Upstream |
+| --- | --- | --- | --- |
+| bAbI tasks 1 / 2 / 6 | CC-BY-3.0 (shape only, no text imported) | state tracking | <https://github.com/facebookarchive/bAbI-tasks> |
+| Everyday goal-directed assistant dialogues | CC-BY-4.0 | assistant dialog | <https://github.com/link-assistant/formal-ai> |
 
 ### Text/code edit profile — issue #408
 

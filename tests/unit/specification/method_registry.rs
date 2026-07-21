@@ -37,8 +37,8 @@ fn registry_covers_all_dispatch_surfaces() {
     );
     assert_eq!(
         registry.count_on(MethodSurface::Contextual),
-        6,
-        "there are exactly six contextual override handlers"
+        7,
+        "there are exactly seven contextual override handlers"
     );
     assert_eq!(
         registry.method_count(),

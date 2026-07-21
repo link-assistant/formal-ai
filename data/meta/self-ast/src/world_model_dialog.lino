@@ -1,0 +1,49 @@
+self_ast_census
+  target src/world_model_dialog.rs
+  language rust
+  fidelity signature
+  byte_len 26904
+  line_count 677
+  content_id source_module_0661c7e40a2ed86f
+  symbol_count 40
+  symbols
+    enum WorldModelMode 60 66
+    function emits_artifact 71 73
+    function slug 77 82
+    function from_slug 86 92
+    enum SyncEventKind 97 118
+    function slug 123 136
+    struct SyncEvent 146 159
+    const SYNC_CHAIN_ROOT 162 162
+    function derived_id 167 179
+    function links_notation 183 192
+    struct ActionForecast 202 217
+    function shrinks_gap 222 224
+    function violates_target 229 231
+    function links_notation 235 266
+    struct DialogueWorldModel 276 282
+    function default 285 287
+    function new 293 300
+    function from_turns 304 310
+    function observe 318 340
+    function observe_user 343 345
+    function propose_target 350 355
+    function pending_proposal 359 361
+    function events 365 367
+    function chain_is_intact 372 381
+    function difference 386 388
+    function remaining 392 394
+    function target_reached 398 400
+    function depends_on 404 411
+    function revise_statement 419 456
+    function forecast 460 504
+    function merge_from 508 522
+    function split_current 525 531
+    function links_notation 536 559
+    function assert_current 566 577
+    function assert_target 580 588
+    function confirm_pending 591 602
+    function correct_pending 607 627
+    function append 630 649
+    function record_provenance 655 660
+    function record_world_model 666 677
