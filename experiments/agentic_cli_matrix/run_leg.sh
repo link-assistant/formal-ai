@@ -170,6 +170,15 @@ case_interactive() {
   # interactive twin of the `--file` the headless case passes.
   local preamble=()
   [ "$CLIENT" = aider ] && preamble=('3:/add alpha.txt' '2:\r')
+  # Gemini CLI decides "interactive" before it ever looks at the terminal:
+  # `isHeadlessMode()` in 0.51.0 returns true whenever `CI` or `GITHUB_ACTIONS`
+  # is `"true"` — unless `GEMINI_CLI_INTEGRATION_TEST` is set, the flag its own
+  # interactive integration tests use. On a real PTY under Actions the TUI
+  # therefore never started and the CLI exited 42 with "No input provided via
+  # stdin", while the identical command renders the TUI on a developer machine.
+  # The flag restores the tty-based decision; it is not a skip, so the case
+  # still has to launch, reach the server and render the answer.
+  [ "$CLIENT" = gemini ] && export GEMINI_CLI_INTEGRATION_TEST=true
   matrix_run_interactive interactive "$CLIENT" \
     '10:\r' '4:\r' '4:\r' '4:\r' "${preamble[@]}" \
     '4:read the file alpha.txt and print its contents' '3:\r' \

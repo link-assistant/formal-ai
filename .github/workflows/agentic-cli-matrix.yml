@@ -169,6 +169,29 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Allow the user namespaces codex's own sandbox needs
+        if: matrix.client == 'codex'
+        # Codex runs every command it executes inside bubblewrap, and it ships
+        # its *own* `bwrap` (`codex-resources/bwrap` in the vendored package).
+        # Ubuntu 24.04 runners set `kernel.apparmor_restrict_unprivileged_userns=1`,
+        # which denies the unprivileged user namespace that binary needs, so the
+        # leg failed with `bwrap: loopback: Failed RTM_NEWADDR: Operation not
+        # permitted` and no file was ever read. Installing the distro
+        # `bubblewrap` package does not help: AppArmor attaches its
+        # userns-permitting profile by path, and codex never runs
+        # `/usr/bin/bwrap`. Relaxing the sysctl on this ephemeral runner keeps
+        # the leg on the sandboxed path a real user gets; the alternative,
+        # `--dangerously-bypass-approvals-and-sandbox`, would assert a path
+        # nobody runs. The read-back makes a kernel that ignores the knob fail
+        # here, where the cause is named, rather than inside the leg.
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          value="$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)"
+          [ "$value" = 0 ] || {
+            echo "unprivileged user namespaces are still restricted ($value)" >&2
+            exit 1
+          }
+
       - name: Install ${{ matrix.client }} (pinned)
         run: |
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
