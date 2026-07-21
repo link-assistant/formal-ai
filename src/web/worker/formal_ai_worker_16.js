@@ -1094,6 +1094,8 @@ function webSearchMarkers() {
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
     termInformationPrefixes: prefixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+    termInformationSuffixes: suffixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+    termInformationCircumfixes: circumfixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
     researchModifiers: bareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
     researchEvidenceDomains: bareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),

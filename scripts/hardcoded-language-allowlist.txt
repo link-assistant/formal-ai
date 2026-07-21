@@ -136,6 +136,9 @@ src/cli_improve.rs	Wrote full-memory backup with {} event(s) to {}.
 src/cli_improve.rs	could not parse {}: {error}
 src/cli_improve.rs	formal-ai improve — benchmark-gated promotion of self-improvement proposals (issue #656).\n\nPass --promote to replay open proposals against their benchmark ratchets and print the\npromotion plan (dry run; touches no files). Add --apply --confirm to materialize the\naccepted `.lino` seed edits onto a local review branch in --seed-root. Promotion never\npushes: commit/draft-PR steps require human review, and rejected proposals are kept as\nfailure records.
 src/cli_improve.rs	promotion gate replay failed: {error}
+src/cli_learn.rs	Learning cycle over '{}': {} frontier item(s), {} validated candidate(s) of {}, {} held-out test(s), {} proposal(s), {} blocked class(es).
+src/cli_learn.rs	Note: the cycle is proposal-only whether or not --dry-run is passed; adoption stays behind the human-gated issue-#656 promotion protocol.
+src/cli_learn.rs	Proposal-only run; no seed file was written. Pipe `--proposals` into `formal-ai improve --promote --proposals <file>` to replay the canonical gates.
 src/cli_memory.rs	Applied dreaming plan to {}; removed {} event(s), estimated {} byte(s) reclaimable, learned {} meta-algorithm amendment(s) and {} recurring pattern(s), preserved {} failed simulation(s) and {} dreaming trial(s).
 src/cli_memory.rs	Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target.
 src/cli_memory.rs	Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.
@@ -304,6 +307,7 @@ src/google_trends_catalog.rs	  record_type \"google_trend_topic\"\n
 src/google_trends_catalog.rs	  record_type \"google_trends_snapshot\"\n
 src/google_trends_catalog.rs	google_trend_topic\n
 src/google_trends_learning.rs	  frontier_prompt\n
+src/google_trends_learning.rs	The trending-prompt frontier is empty: every catalog prompt now routes through the engine. Issue #701's learning cycle closed the gap by deriving the request-opener surfaces in `data/seed/learned-request-openers.lino` from the frozen frontier record (`data/meta/learning-frontier-google-trends.lino`) and promoting them through the human-gated issue-#656 protocol; the per-prompt capability deltas are recorded in `data/meta/learning-adoption-ledger.lino`. Nothing is auto-adopted here.
 src/google_trends_learning.rs	Trending searches are open-domain questions, not program-plan modifiers, so the rule-synthesis learner declines to fabricate seed rules for them. The learning frontier — every trending prompt the engine cannot yet route — is recorded here and handed to the human-gated self-improvement loop for triage; nothing is auto-adopted.
 src/intent_formalization.rs	intent_formalization {}
 src/intent_formalization.rs	referent=active_program_artifact task={} language={}
@@ -315,6 +319,12 @@ src/json_lino.rs	invalid quoted string `{raw}`: {error}
 src/json_lino.rs	invalid scalar array `{raw}`
 src/json_lino.rs	language `{}` value is not a string
 src/knowledge.rs	Hello, World!
+src/learning_adoption_ledger.rs	  adoption_pair\n
+src/learning_adoption_ledger.rs	Every item the issue-#701 learning cycle adopted, recorded as a capability delta: the intent the engine returned before adoption (read from the frozen frontier record) against the intent and recovered topic it returns now through the production solver path. A pair counts as adopted only when the prompt leaves the unknown path and the answer recovers the topic the prompt was generated from; anything else is kept here as an unadopted record rather than dropped.
+src/learning_cycle.rs	    defined-by concept\n
+src/learning_cycle.rs	    defined-by inquiry\n
+src/learning_cycle.rs	  blocked_class\n
+src/learning_cycle.rs	Adopt {} learned request-opener surface(s) for the '{variation}' frontier class ({}), derived from {MINIMUM_SUPPORT} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s).
 src/learning_ledger.rs	Approved lesson `{}` (rule `{}`) for failure `{}` → `{}`, mapped onto {}, gated by {} passing case(s), approved by {}.
 src/link_store.rs	expected event record, got {content}
 src/link_store.rs	expected field value, got {content}

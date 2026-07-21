@@ -279,13 +279,23 @@ function extractTermInformationRequest(prompt, normalized) {
     return "";
   }
   const text = String(normalized || "");
-  for (const prefix of webSearchMarkers().termInformationPrefixes) {
-    if (text.startsWith(prefix)) {
-      const candidate = text.slice(prefix.length);
-      if (termInformationQueryIsLocalContext(candidate)) return "";
-      const query = validSearchQuery(candidate);
-      if (query) return query;
-    }
+  const markers = webSearchMarkers();
+  // Word order belongs to the language, not to the intent: prefix openers
+  // ("tell me about …"), verb-final closers ("… के बारे में बताओ") and wrapping
+  // frames ("给出 … 背景") all name the same request (issue #701).
+  const candidates = [
+    ...markers.termInformationPrefixes.map((p) => (text.startsWith(p) ? text.slice(p.length) : "")),
+    ...markers.termInformationSuffixes.map((s) =>
+      s && text.endsWith(s) ? text.slice(0, text.length - s.length) : ""),
+    ...markers.termInformationCircumfixes.map(({ before, after }) =>
+      after && text.startsWith(before) && text.endsWith(after)
+        ? text.slice(before.length, text.length - after.length)
+        : ""),
+  ];
+  for (const candidate of candidates.filter(Boolean)) {
+    if (termInformationQueryIsLocalContext(candidate)) return "";
+    const query = validSearchQuery(candidate);
+    if (query) return query;
   }
   return "";
 }

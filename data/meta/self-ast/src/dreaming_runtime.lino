@@ -2,10 +2,10 @@ self_ast_census
   target src/dreaming_runtime.rs
   language rust
   fidelity signature
-  byte_len 6113
-  line_count 152
-  content_id source_module_d225b958d1d259d1
-  symbol_count 14
+  byte_len 7163
+  line_count 173
+  content_id source_module_f00364e2e96fed0b
+  symbol_count 16
   symbols
     const DEFAULT_IDLE_SECONDS 19 19
     const DEFAULT_INTERVAL_SECONDS 20 20
@@ -18,6 +18,8 @@ self_ast_census
     function core_is_idle 48 54
     function start_core_dreaming 61 93
     function lower_current_thread_priority 99 101
-    function run_core_dreaming_once 108 136
-    function dreaming_disabled 141 145
-    function now_seconds 147 152
+    function run_core_dreaming_once 108 137
+    function write_learning_cycle_record 147 151
+    function learning_cycle_record_path 155 157
+    function dreaming_disabled 162 166
+    function now_seconds 168 173

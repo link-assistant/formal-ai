@@ -132,7 +132,28 @@ pub fn run_core_dreaming_once(memory_path: &Path) -> io::Result<DreamingOutcome>
         let recipe_path = memory_path.with_extension("recipe.lino");
         crate::memory::write_locked_atomic(&recipe_path, &recipe)?;
     }
+    write_learning_cycle_record(memory_path)?;
     Ok(outcome)
+}
+
+/// The proposal-only learning-cycle record every idle run leaves next to the
+/// memory log (issue #701 §5).
+///
+/// Running the loop periodically is what makes it a loop rather than a one-off
+/// script, but "periodically" must not mean "unattended adoption": the run
+/// replays the recorded frontier, derives candidates, validates them against
+/// held-out prompts, and writes the record a human reviews. It never writes a
+/// seed file, so promotion stays behind the issue-#656 gate.
+pub fn write_learning_cycle_record(memory_path: &Path) -> io::Result<()> {
+    let run = crate::learning_cycle::google_trends_learning_cycle();
+    let path = learning_cycle_record_path(memory_path);
+    crate::memory::write_locked_atomic(&path, &format!("{}\n", run.links_notation()))
+}
+
+/// Where [`write_learning_cycle_record`] writes, given the memory log path.
+#[must_use]
+pub fn learning_cycle_record_path(memory_path: &Path) -> std::path::PathBuf {
+    memory_path.with_extension("learning-cycle.lino")
 }
 
 /// Whether the `FORMAL_AI_DREAMING` opt-out is in force. Dreaming is

@@ -80,6 +80,7 @@
     "seed/meanings-web-search-query.lino",
     "seed/meanings-web-search.lino",
     "seed/meanings-wikidata.lino",
+    "seed/learned-request-openers.lino",
     "seed/greetings.lino",
     "seed/identity.lino",
     "seed/hello-world-programs.lino",
