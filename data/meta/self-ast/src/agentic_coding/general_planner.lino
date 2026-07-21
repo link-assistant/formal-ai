@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 24149
-  line_count 549
-  content_id source_module_360f70b41c5adc45
-  symbol_count 24
+  byte_len 25566
+  line_count 575
+  content_id source_module_326476968f4db4d8
+  symbol_count 25
   symbols
     const PLAN_PATH 18 18
     struct GeneralPlanStep 22 27
@@ -13,43 +13,44 @@ self_ast_census
     function links_notation 43 59
     function compose_general_change_plan 76 114
     function has_file_write_intent 128 130
-    function parse_write_request 156 224
-    function is_non_referential_content 232 238
-    function resolve_census_target 258 265
-    function compose_edit_request 292 369
-    struct Token 372 376
-    function tokens 379 396
-    function bare_surfaces 399 406
-    function clean_path_token 413 416
-    function clean_cue_token 419 422
-    function first_content_lead_end 427 464
-    function first_action_cue_end 467 472
-    function clean_content 480 496
-    function safe_relative_path 498 505
-    function capability_slug 507 523
-    function language 525 534
-    function escape 536 541
-    function field 543 545
-    function field_nested 547 549
+    function parse_write_request 156 241
+    function is_literal_content 248 250
+    function is_non_referential_content 258 264
+    function resolve_census_target 284 291
+    function compose_edit_request 318 395
+    struct Token 398 402
+    function tokens 405 422
+    function bare_surfaces 425 432
+    function clean_path_token 439 442
+    function clean_cue_token 445 448
+    function first_content_lead_end 453 490
+    function first_action_cue_end 493 498
+    function clean_content 506 522
+    function safe_relative_path 524 531
+    function capability_slug 533 549
+    function language 551 560
+    function escape 562 567
+    function field 569 571
+    function field_nested 573 575
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14061
-    named_node_count 2876
+    total_link_count 14458
+    named_node_count 2953
     distinct_node_kinds 83
     node_kinds
-      arguments 203
+      arguments 209
       array_expression 2
       array_type 1
       assignment_expression 3
       attribute 7
       attribute_item 7
-      binary_expression 66
-      block 54
+      binary_expression 68
+      block 56
       break_expression 1
-      call_expression 203
+      call_expression 209
       char_literal 42
       closure_expression 35
       closure_parameters 35
@@ -57,47 +58,47 @@ self_ast_census
       const_item 1
       crate 4
       declaration_list 1
-      doc_comment 124
+      doc_comment 129
       else_clause 8
       escape_sequence 10
-      expression_statement 38
+      expression_statement 39
       field_declaration 13
       field_declaration_list 3
-      field_expression 179
-      field_identifier 195
+      field_expression 183
+      field_identifier 199
       field_initializer 3
       field_initializer_list 2
       for_expression 2
-      function_item 20
+      function_item 21
       function_modifiers 1
       generic_type 15
-      identifier 622
-      if_expression 19
+      identifier 635
+      if_expression 20
       impl_item 1
       index_expression 14
       inner_doc_comment_marker 6
       integer_literal 22
       let_condition 5
-      let_declaration 67
+      let_declaration 68
       lifetime 6
       lifetime_parameter 1
-      line_comment 157
+      line_comment 173
       macro_invocation 10
       match_arm 13
       match_block 1
       match_expression 1
       match_pattern 13
       mutable_specifier 15
-      outer_doc_comment_marker 118
-      parameter 27
-      parameters 20
+      outer_doc_comment_marker 123
+      parameter 28
+      parameters 21
       parenthesized_expression 10
-      primitive_type 38
+      primitive_type 39
       range_expression 13
-      reference_expression 36
-      reference_type 27
+      reference_expression 38
+      reference_type 28
       return_expression 7
-      scoped_identifier 41
+      scoped_identifier 42
       scoped_use_list 2
       self 8
       self_parameter 1
@@ -115,9 +116,9 @@ self_ast_census
       tuple_struct_pattern 5
       tuple_type 4
       type_arguments 15
-      type_identifier 47
+      type_identifier 48
       type_parameters 1
-      unary_expression 16
+      unary_expression 18
       use_as_clause 1
       use_declaration 6
       use_list 2

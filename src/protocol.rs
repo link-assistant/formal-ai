@@ -24,6 +24,7 @@ use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
+pub use content::{latest_user_request, system_prompt_text};
 mod output;
 mod recording;
 pub use output::*;
@@ -593,6 +594,19 @@ enum AgenticOutcome {
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
     let trace = std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1");
     if !request.requests_tool_execution() {
+        // A client that speaks no function calling can still ground a file
+        // read: `aider` puts the file's bytes in the conversation itself
+        // (issue #671). Answering from what is already here needs no tool, so
+        // it belongs on this side of the gate — but still only in agent mode,
+        // which is what promises the client a workspace-aware answer.
+        if agent_mode {
+            if let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages) {
+                if trace {
+                    eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
+                }
+                return AgenticOutcome::Planned(AgenticPlan::Final(answer));
+            }
+        }
         if trace {
             eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
         }

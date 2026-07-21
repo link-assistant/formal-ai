@@ -106,9 +106,12 @@ jobs:
             display: xvfb
           - client: agent
             base_port: 9200
+          # No display: cursor's integration is MCP — we are its *tool server*,
+          # not its model provider — so its leg drives our `/mcp` endpoint over
+          # JSON-RPC and asserts the CLI's own credential requirement. Nothing
+          # in it opens a window.
           - client: cursor
             base_port: 9260
-            display: xvfb
           - client: gemini
             base_port: 9320
           - client: claude
@@ -145,6 +148,27 @@ jobs:
         # records the same setup for the desktop AppImage.
         run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb
 
+      - name: Pin Node for clients with native addons
+        if: matrix.client == 't3code'
+        # t3 declares `engines.node ^22.16 || ^23.11 || >=24.10` and builds
+        # node-pty from source during install. `bun add -g` skips lifecycle
+        # scripts, and bun's bundled Node 20 cannot build node-pty at all — the
+        # half-installed CLI then migrates its database and *only then* exits 1
+        # with `NodePtyModuleLoadError`, which reads like a defect in our server.
+        # The `npm-native` installer kind in clients.lock needs a real Node here.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Pin Python for pipx-installed clients
+        if: matrix.client == 'aider'
+        # aider-chat declares `Requires-Python >=3.10,<3.13`. Without a pinned
+        # interpreter pip resolves *backwards* to a 2024 release rather than
+        # failing, which would install a two-year-old CLI under a pinned name.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install ${{ matrix.client }} (pinned)
         run: |
           echo "$HOME/.bun/bin" >> $GITHUB_PATH
@@ -155,6 +179,10 @@ jobs:
         env:
           CLIENT: ${{ matrix.client }}
           BASE_PORT: ${{ matrix.base_port }}
+          # Re-record on every run so the uploaded artifact is a transcript that
+          # `replay.sh` accepts verbatim — refreshing a committed session is then
+          # a download and a copy, not a hand edit.
+          MATRIX_RECORD: '1'
         run: |
           if [ "${{ matrix.display }}" = "xvfb" ]; then
             xvfb-run -a experiments/agentic_cli_matrix/run_leg.sh
@@ -171,13 +199,27 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: transcripts-${{ matrix.client }}
-          path: experiments/agentic_cli_matrix/artifacts/${{ matrix.client }}
+          path: |
+            experiments/agentic_cli_matrix/artifacts/${{ matrix.client }}
+            experiments/agentic_cli_matrix/recorded/${{ matrix.client }}
           retention-days: 14
           if-no-files-found: warn
 
+  # The committed transcripts have to keep meaning something between full matrix
+  # runs. This job needs no CLI, no display and no network — only `jq` — so it is
+  # the one leg that can never be skipped for environmental reasons.
+  replay:
+    name: Replay recorded sessions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Replay every committed transcript
+        run: experiments/agentic_cli_matrix/replay.sh
+
   summary:
     name: Matrix summary
-    needs: [matrix]
+    needs: [matrix, replay]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -187,6 +229,10 @@ jobs:
         run: |
           if [ "${{ needs.matrix.result }}" != "success" ]; then
             echo "one or more client legs failed" >&2
+            exit 1
+          fi
+          if [ "${{ needs.replay.result }}" != "success" ]; then
+            echo "a committed transcript no longer replays" >&2
             exit 1
           fi
           echo "all client legs green"

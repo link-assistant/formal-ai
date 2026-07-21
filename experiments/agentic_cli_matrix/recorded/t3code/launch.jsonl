@@ -1,0 +1,2 @@
+{"method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":""}
+{"method":"HEAD","path":"/api/anthropic","request_model":null,"request_tools":[],"status":200,"response_model":null,"response_tool_calls":[],"response_content_preview":""}

@@ -28,8 +28,8 @@ fn seeded_ids() -> Vec<String> {
         .collect()
 }
 
-/// Client ids pinned in the lockfile, ignoring comments and blank lines.
-fn locked_ids() -> BTreeSet<String> {
+/// Client ids pinned in the lockfile, in file order.
+fn locked_order() -> Vec<String> {
     read("experiments/agentic_cli_matrix/clients.lock")
         .lines()
         .filter(|line| !line.trim_start().starts_with('#'))
@@ -40,6 +40,10 @@ fn locked_ids() -> BTreeSet<String> {
             (fields.next().is_some() && fields.next().is_some()).then(|| id.to_owned())
         })
         .collect()
+}
+
+fn locked_ids() -> BTreeSet<String> {
+    locked_order().into_iter().collect()
 }
 
 #[test]
@@ -129,11 +133,109 @@ fn every_ci_leg_gets_its_own_port_range() {
     }
 }
 
+/// CI runs the legs in parallel; `run_matrix.sh` runs them one after another on
+/// a single machine and derives each port from the client's lockfile position.
+/// The two must agree, or a local reproduction of a red leg quietly drives a
+/// different port than CI did.
+#[test]
+fn ci_leg_ports_match_the_local_runner_formula() {
+    let workflow = read(".github/workflows/agentic-cli-matrix.yml");
+    for (index, id) in locked_order().iter().enumerate() {
+        let expected = 8900 + index * 60;
+        let leg = workflow
+            .split("- client: ")
+            .find(|chunk| chunk.starts_with(&format!("{id}\n")))
+            .unwrap_or_else(|| panic!("no CI leg for {id}"));
+        assert!(
+            leg.contains(&format!("base_port: {expected}\n")),
+            "leg {id} must use base_port {expected} (position {index} in clients.lock)"
+        );
+    }
+}
+
+/// Recorded transcripts committed under `recorded/`.
+fn recorded_transcripts() -> Vec<(String, PathBuf)> {
+    let dir = root().join("experiments/agentic_cli_matrix/recorded");
+    let Ok(entries) = std::fs::read_dir(&dir) else {
+        return Vec::new();
+    };
+    let mut found = Vec::new();
+    for client_dir in entries.flatten() {
+        let client = client_dir.file_name().to_string_lossy().into_owned();
+        let Ok(files) = std::fs::read_dir(client_dir.path()) else {
+            continue;
+        };
+        for file in files.flatten() {
+            if file.path().extension().is_some_and(|ext| ext == "jsonl") {
+                found.push((client.clone(), file.path()));
+            }
+        }
+    }
+    found
+}
+
+/// Issue #671's acceptance criteria name these three by hand: PR #648 shipped
+/// `claude` "intentionally not run" and `grok`/`aider` "inferred from the shared
+/// adapters". A committed transcript is the evidence that each was really run.
+#[test]
+fn the_never_run_integrations_have_recorded_sessions() {
+    let recorded = recorded_transcripts();
+    for id in ["claude", "grok", "aider"] {
+        assert!(
+            recorded.iter().any(|(client, _)| client == id),
+            "no recorded session under experiments/agentic_cli_matrix/recorded/{id}/ \
+             — PR #648 shipped this integration without ever running it"
+        );
+    }
+}
+
+#[test]
+fn every_recorded_transcript_is_replayable() {
+    let locked = locked_ids();
+    let recorded = recorded_transcripts();
+    assert!(!recorded.is_empty(), "no recorded transcripts committed");
+
+    for (client, path) in recorded {
+        assert!(
+            locked.contains(&client),
+            "recorded/{client} is not a pinned client"
+        );
+        let text = std::fs::read_to_string(&path).expect("read transcript");
+        let rows: Vec<&str> = text
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .collect();
+        assert!(!rows.is_empty(), "{} is empty", path.display());
+        for row in rows {
+            let value: serde_json::Value = serde_json::from_str(row)
+                .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+            // Bodies carry the run's temp paths and session ids, so a transcript
+            // that kept them would differ from the next re-record for reasons
+            // that mean nothing — see `matrix_record_case` in lib.sh.
+            for field in ["request_body", "response_body"] {
+                assert!(
+                    value.get(field).is_none(),
+                    "{} still carries {field}",
+                    path.display()
+                );
+            }
+            let status = value.get("status").and_then(serde_json::Value::as_u64);
+            assert!(
+                status.is_none_or(|code| code < 400),
+                "{} records a failing exchange: {status:?}",
+                path.display()
+            );
+        }
+    }
+}
+
 #[test]
 fn matrix_scripts_are_executable() {
     for script in [
         "experiments/agentic_cli_matrix/install_client.sh",
         "experiments/agentic_cli_matrix/run_leg.sh",
+        "experiments/agentic_cli_matrix/run_matrix.sh",
+        "experiments/agentic_cli_matrix/replay.sh",
     ] {
         let path: &Path = &root().join(script);
         assert!(path.exists(), "{script} is missing");

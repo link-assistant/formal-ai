@@ -74,6 +74,7 @@ pub use execution_learning::{
     is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
 };
 pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
+pub(crate) use file_read::supplied_file_answer;
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,

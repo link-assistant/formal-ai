@@ -85,6 +85,22 @@ struct StreamingChatAccumulator {
     tool_calls: BTreeMap<u64, StreamingToolCall>,
 }
 
+/// The Anthropic streaming shape, which spreads one tool call across three
+/// events: `content_block_start` names it, `content_block_delta` carries its
+/// arguments as `partial_json`, and `content_block_stop` ends it.
+///
+/// Without this the `claude` leg of the issue-#671 matrix logged
+/// `"response_tool_calls": []` for an exchange that plainly planned `Read` —
+/// the transcript is the evidence a recorded session is made of, so a blank
+/// field there reads as "the client answered from prose" and failed the leg
+/// over a defect in the recorder rather than in the server.
+#[derive(Debug, Default)]
+struct StreamingAnthropicAccumulator {
+    model: Option<String>,
+    content: String,
+    tool_calls: BTreeMap<u64, StreamingToolCall>,
+}
+
 #[derive(Debug, Default)]
 struct StreamingToolCall {
     name: String,
@@ -709,6 +725,7 @@ fn summarize_sse_response(body: &str) -> ResponseSummary {
     }
 
     let mut chat = StreamingChatAccumulator::default();
+    let mut anthropic = StreamingAnthropicAccumulator::default();
     let mut summary = ResponseSummary::default();
     for event in events {
         let data = event.data.trim();
@@ -718,11 +735,12 @@ fn summarize_sse_response(body: &str) -> ResponseSummary {
         let Ok(value) = serde_json::from_str::<Value>(data) else {
             continue;
         };
-        if chat.apply_chunk(&value) {
+        if chat.apply_chunk(&value) || anthropic.apply_event(&value) {
             continue;
         }
         merge_response_summary(&mut summary, summarize_response_value(&value));
     }
+    merge_response_summary(&mut summary, anthropic.finish());
     merge_response_summary(&mut summary, chat.finish());
     summary
 }
@@ -784,6 +802,86 @@ impl StreamingChatAccumulator {
                     }
                 }
             }
+        }
+        true
+    }
+
+    fn finish(self) -> ResponseSummary {
+        ResponseSummary {
+            model: self.model,
+            tool_calls: self
+                .tool_calls
+                .into_values()
+                .filter(|call| !call.name.is_empty())
+                .map(|call| ProxyToolCallLog {
+                    name: call.name,
+                    arguments: arguments_from_str(&call.arguments),
+                })
+                .collect(),
+            content: self.content,
+        }
+    }
+}
+
+impl StreamingAnthropicAccumulator {
+    /// Whether this event belongs to an Anthropic message stream. Events it does
+    /// not recognise fall through to the generic summariser, so an OpenAI or
+    /// Gemini stream is unaffected.
+    fn apply_event(&mut self, value: &Value) -> bool {
+        let Some(kind) = value.get("type").and_then(Value::as_str) else {
+            return false;
+        };
+        let index = value.get("index").and_then(Value::as_u64).unwrap_or(0);
+        match kind {
+            "message_start" => {
+                if self.model.is_none() {
+                    self.model = value
+                        .get("message")
+                        .and_then(|message| message.get("model"))
+                        .and_then(Value::as_str)
+                        .map(ToOwned::to_owned);
+                }
+            }
+            "content_block_start" => {
+                let block = value.get("content_block");
+                if block
+                    .and_then(|block| block.get("type"))
+                    .and_then(Value::as_str)
+                    == Some("tool_use")
+                {
+                    if let Some(name) = block
+                        .and_then(|block| block.get("name"))
+                        .and_then(Value::as_str)
+                    {
+                        self.tool_calls
+                            .entry(index)
+                            .or_default()
+                            .name
+                            .push_str(name);
+                    }
+                }
+            }
+            "content_block_delta" => {
+                let delta = value.get("delta");
+                if let Some(text) = delta
+                    .and_then(|delta| delta.get("text"))
+                    .and_then(Value::as_str)
+                {
+                    self.content.push_str(text);
+                }
+                if let Some(partial) = delta
+                    .and_then(|delta| delta.get("partial_json"))
+                    .and_then(Value::as_str)
+                {
+                    self.tool_calls
+                        .entry(index)
+                        .or_default()
+                        .arguments
+                        .push_str(partial);
+                }
+            }
+            "content_block_stop" | "message_delta" | "message_stop" | "ping" => {}
+            _ => return false,
         }
         true
     }

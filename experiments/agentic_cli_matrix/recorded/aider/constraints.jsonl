@@ -1,0 +1,2 @@
+{"method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/api/openai/v1/chat/completions","request_model":"formal-ai","request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":"Web search requested for `elon musk`.\n\nIn the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Int"}

@@ -2,10 +2,10 @@ self_ast_census
   target src/server.rs
   language rust
   fidelity signature
-  byte_len 35735
-  line_count 977
-  content_id source_module_395078f4cb90b184
-  symbol_count 48
+  byte_len 37930
+  line_count 1018
+  content_id source_module_af48b1434b21f249
+  symbol_count 49
   symbols
     static HTTP_AGENT_MODE_FORCED 31 31
     const ADVERTISED_MAX_OUTPUT_TOKENS 33 33
@@ -20,38 +20,39 @@ self_ast_census
     function handle_api_request_with_headers 108 115
     function record_exchange_best_effort 120 131
     function handle_api_request_with_auth 134 148
-    function dispatch_api_request_with_auth 150 286
-    function requires_bearer_auth 288 293
-    function mcp_origin_allowed 295 313
-    function handle_dynamic_protocol_route 315 357
-    function handle_openai_models_request 359 404
-    function handle_gemini_generate_content_request 406 451
-    function normalize_protocol_model_id 453 459
-    function gemini_model_metadata_path 461 464
-    function gemini_model_action_path 466 470
-    function vertex_models_path 472 478
-    struct VertexModelRoute 481 483
-    function vertex_model_action_path 485 494
-    function first_non_empty_env 496 506
-    function bearer_token_from_headers 508 516
-    function api_key_from_headers 518 526
-    function parse_bearer_token 528 536
-    function unsupported_model_response 538 551
-    function enable_http_agent_mode_for_current_process 558 560
-    function http_solver 562 569
-    function chat_completion_sse_response 586 695
-    function sse_chunk 699 705
-    function handle_anthropic_messages_request 711 749
-    function handle_memory_since_request 757 761
-    function handle_memory_import_request 765 778
-    function query_param 780 788
-    function links_notation_response 790 797
-    function serve 799 820
-    function handle_connection 822 834
-    function read_request 836 883
-    function write_response 885 921
-    function json_response 923 933
-    function error_response 935 948
-    function find_header_end 950 952
-    function request_headers 954 963
-    function content_length 965 977
+    function dispatch_api_request_with_auth 150 302
+    function requires_bearer_auth 304 309
+    function mcp_origin_allowed 311 329
+    function handle_dynamic_protocol_route 331 373
+    function handle_openai_models_request 375 420
+    function handle_gemini_generate_content_request 422 472
+    function normalize_protocol_model_id 474 480
+    function gemini_model_metadata_path 482 485
+    function gemini_model_action_path 487 491
+    function vertex_models_path 493 499
+    struct VertexModelRoute 502 504
+    function vertex_model_action_path 506 515
+    function first_non_empty_env 517 527
+    function bearer_token_from_headers 529 537
+    function api_key_from_headers 539 547
+    function parse_bearer_token 549 557
+    function is_vendor_hardcoded_gemini_model 575 577
+    function unsupported_model_response 579 592
+    function enable_http_agent_mode_for_current_process 599 601
+    function http_solver 603 610
+    function chat_completion_sse_response 627 736
+    function sse_chunk 740 746
+    function handle_anthropic_messages_request 752 790
+    function handle_memory_since_request 798 802
+    function handle_memory_import_request 806 819
+    function query_param 821 829
+    function links_notation_response 831 838
+    function serve 840 861
+    function handle_connection 863 875
+    function read_request 877 924
+    function write_response 926 962
+    function json_response 964 974
+    function error_response 976 989
+    function find_header_end 991 993
+    function request_headers 995 1004
+    function content_length 1006 1018

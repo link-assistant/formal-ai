@@ -1,0 +1,15 @@
+self_ast_census
+  target src/cli_clients.rs
+  language rust
+  fidelity signature
+  byte_len 5735
+  line_count 155
+  content_id source_module_adb17dcca2e21145
+  symbol_count 6
+  symbols
+    enum ClientsFormat 20 25
+    function render_clients 29 38
+    function config_format_name 40 46
+    function client_json 48 99
+    function client_text 101 151
+    function run_clients 153 155

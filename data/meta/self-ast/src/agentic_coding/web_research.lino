@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 20112
-  line_count 493
-  content_id source_module_85bad4c71c32d543
+  byte_len 19992
+  line_count 489
+  content_id source_module_601eb36a8926ca83
   symbol_count 28
   symbols
     function web_research_query_for 15 37
@@ -34,17 +34,17 @@ self_ast_census
     function topic_from_history 437 459
     function is_conversation_meta_request 461 478
     function trim_question_punctuation 480 485
-    function latest_user_text 487 493
+    function latest_user_text 487 489
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 12624
-    named_node_count 2686
+    total_link_count 12495
+    named_node_count 2655
     distinct_node_kinds 69
     node_kinds
-      arguments 261
+      arguments 256
       array_expression 3
       array_type 8
       attribute 1
@@ -52,23 +52,23 @@ self_ast_census
       binary_expression 26
       block 54
       boolean_literal 1
-      call_expression 261
+      call_expression 256
       char_literal 23
-      closure_expression 43
-      closure_parameters 43
+      closure_expression 41
+      closure_parameters 41
       const_item 5
-      crate 17
+      crate 18
       doc_comment 85
       else_clause 4
       escape_sequence 6
       expression_statement 41
-      field_expression 219
-      field_identifier 215
+      field_expression 211
+      field_identifier 207
       float_literal 3
       function_item 23
       generic_function 4
       generic_type 20
-      identifier 532
+      identifier 530
       if_expression 19
       index_expression 2
       inner_doc_comment_marker 6
@@ -92,13 +92,13 @@ self_ast_census
       reference_expression 27
       reference_type 41
       return_expression 14
-      scoped_identifier 73
+      scoped_identifier 75
       scoped_type_identifier 3
       scoped_use_list 2
       self 1
       source_file 1
-      string_content 30
-      string_literal 30
+      string_content 29
+      string_literal 29
       super 5
       token_tree 19
       try_expression 5

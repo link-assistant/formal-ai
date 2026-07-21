@@ -7,22 +7,22 @@ self_ast
   projection abstract_syntax
   text_preserved true
   clean true
-  total_link_count 19006
-  named_node_count 3804
+  total_link_count 18877
+  named_node_count 3773
   distinct_node_kinds 71
   node_kinds
-    arguments 244
+    arguments 239
     array_expression 1
     array_type 40
     attribute 6
     attribute_item 6
     binary_expression 3
     block 91
-    call_expression 244
-    closure_expression 9
-    closure_parameters 9
+    call_expression 239
+    closure_expression 7
+    closure_parameters 7
     const_item 4
-    crate 1
+    crate 2
     declaration_list 1
     doc_comment 137
     else_clause 1
@@ -33,14 +33,14 @@ self_ast
     expression_statement 109
     field_declaration 6
     field_declaration_list 2
-    field_expression 66
-    field_identifier 98
+    field_expression 58
+    field_identifier 90
     field_initializer 26
     field_initializer_list 13
     function_item 29
     function_modifiers 2
     generic_type 5
-    identifier 1067
+    identifier 1065
     if_expression 61
     impl_item 1
     inner_doc_comment_marker 5
@@ -62,14 +62,14 @@ self_ast
     reference_expression 62
     reference_type 76
     return_expression 47
-    scoped_identifier 183
+    scoped_identifier 185
     scoped_use_list 3
     self 4
     self_parameter 2
     shorthand_field_initializer 26
     source_file 1
-    string_content 76
-    string_literal 72
+    string_content 75
+    string_literal 71
     struct_expression 13
     struct_item 2
     super 42

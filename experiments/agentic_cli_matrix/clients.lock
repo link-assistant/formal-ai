@@ -13,15 +13,20 @@
 #
 # Columns: <client-id> <installer> <spec>
 #   npm      — `bun add -g <spec>`
+#   npm-native — `npm install -g <spec>` on Node >= 22, for a package that
+#              builds a native addon during install (bun skips those scripts,
+#              and its bundled Node 20 cannot build node-pty at all)
 #   pipx     — `pipx install <spec>`
-#   apt      — system package providing the launcher binary
+#   tarball  — vendor archive pinned by version, unpacked into a prefix
+#              (VS Code: no root, and `apt-get install code` needs Microsoft's
+#              repository, which a stock runner does not have)
 #   appimage — packaged desktop release, run under Xvfb
 #   script   — vendor install script (URL)
 
 codex            npm       @openai/codex@0.144.6
-t3code           npm       t3@0.0.28
+t3code           npm-native t3@0.0.28
 opencode         npm       opencode-ai@1.18.4
-opencode-vscode  apt       code
+opencode-vscode  tarball   1.129.1
 opencode-desktop appimage  1.18.3
 agent            npm       @link-assistant/agent@0.25.0
 cursor           script    https://cursor.com/install
