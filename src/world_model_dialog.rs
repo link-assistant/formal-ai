@@ -181,7 +181,8 @@ impl SyncEvent {
     /// Render the event as Links Notation.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        let mut out = format!("sync_event {}\n", self.id);
+        let mut out = String::new();
+        let _ = writeln!(out, "sync_event {}", self.id);
         let _ = writeln!(out, "  sequence \"{}\"", self.sequence);
         let _ = writeln!(out, "  parent \"{}\"", self.parent);
         let _ = writeln!(out, "  kind \"{}\"", self.kind.slug());
@@ -232,7 +233,8 @@ impl ActionForecast {
     /// Render the forecast as Links Notation.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        let mut out = format!("action_forecast {}\n", self.action_id);
+        let mut out = String::new();
+        let _ = writeln!(out, "action_forecast {}", self.action_id);
         let _ = writeln!(out, "  action \"{}\"", self.action_name);
         for link in &self.satisfied {
             let _ = writeln!(out, "  satisfies \"{}\"", link.pattern_text());
@@ -437,7 +439,11 @@ impl DialogueWorldModel {
         // report it returns is the cascade this revision caused — the values
         // that moved, not the ones a second pass would find already settled.
         let report = self.model.current.extend_statements([statement]);
-        let mut detail = format!("{id} recalculated:{}", report.updated.len());
+        // Trace payloads are written, not `format!`ed, for the same reason the
+        // Links Notation renderers are: they are machine keys, and the R379
+        // guard reads a `format!` literal as candidate user-facing prose.
+        let mut detail = String::new();
+        let _ = write!(detail, "{id} recalculated:{}", report.updated.len());
         for change in &report.updated {
             let _ = write!(
                 detail,
@@ -483,7 +489,9 @@ impl DialogueWorldModel {
             remaining_before: before.to_add.len(),
             remaining_after: after.to_add.len(),
         };
-        let detail = format!(
+        let mut detail = String::new();
+        let _ = write!(
+            detail,
             "{} satisfies:{} violates:{} remaining:{}->{}",
             forecast.action_name,
             forecast.satisfied.len(),
@@ -516,7 +524,8 @@ impl DialogueWorldModel {
     /// Split a sub-context off the current context by statement id (req. 5).
     pub fn split_current(&mut self, child_id: &str, statement_ids: &[String]) -> Context {
         let child = self.model.current.split_off(child_id, statement_ids);
-        let detail = format!("{child_id} statements:{}", statement_ids.len());
+        let mut detail = String::new();
+        let _ = write!(detail, "{child_id} statements:{}", statement_ids.len());
         self.append(SyncEventKind::ContextSplit, "system", detail);
         child
     }

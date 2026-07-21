@@ -2,9 +2,9 @@ self_ast_census
   target src/world_model_dialog.rs
   language rust
   fidelity signature
-  byte_len 26481
-  line_count 669
-  content_id source_module_f829f3a223cd1757
+  byte_len 26904
+  line_count 677
+  content_id source_module_0661c7e40a2ed86f
   symbol_count 40
   symbols
     enum WorldModelMode 60 66
@@ -16,34 +16,34 @@ self_ast_census
     struct SyncEvent 146 159
     const SYNC_CHAIN_ROOT 162 162
     function derived_id 167 179
-    function links_notation 183 191
-    struct ActionForecast 201 216
-    function shrinks_gap 221 223
-    function violates_target 228 230
-    function links_notation 234 264
-    struct DialogueWorldModel 274 280
-    function default 283 285
-    function new 291 298
-    function from_turns 302 308
-    function observe 316 338
-    function observe_user 341 343
-    function propose_target 348 353
-    function pending_proposal 357 359
-    function events 363 365
-    function chain_is_intact 370 379
-    function difference 384 386
-    function remaining 390 392
-    function target_reached 396 398
-    function depends_on 402 409
-    function revise_statement 417 450
-    function forecast 454 496
-    function merge_from 500 514
-    function split_current 517 522
-    function links_notation 527 550
-    function assert_current 557 568
-    function assert_target 571 579
-    function confirm_pending 582 593
-    function correct_pending 598 618
-    function append 621 640
-    function record_provenance 646 651
-    function record_world_model 658 669
+    function links_notation 183 192
+    struct ActionForecast 202 217
+    function shrinks_gap 222 224
+    function violates_target 229 231
+    function links_notation 235 266
+    struct DialogueWorldModel 276 282
+    function default 285 287
+    function new 293 300
+    function from_turns 304 310
+    function observe 318 340
+    function observe_user 343 345
+    function propose_target 350 355
+    function pending_proposal 359 361
+    function events 365 367
+    function chain_is_intact 372 381
+    function difference 386 388
+    function remaining 392 394
+    function target_reached 398 400
+    function depends_on 404 411
+    function revise_statement 419 456
+    function forecast 460 504
+    function merge_from 508 522
+    function split_current 525 531
+    function links_notation 536 559
+    function assert_current 566 577
+    function assert_target 580 588
+    function confirm_pending 591 602
+    function correct_pending 607 627
+    function append 630 649
+    function record_provenance 655 660
+    function record_world_model 666 677
