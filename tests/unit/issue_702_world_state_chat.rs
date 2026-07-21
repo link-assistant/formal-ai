@@ -12,7 +12,9 @@ use formal_ai::solver::{ConversationTurn, SolverConfig, UniversalSolver};
 use formal_ai::world_model_dialog::WorldModelMode;
 
 /// One scripted dialogue per supported language: the fact, the wish, and the
-/// state question.
+/// state question. The English row is the reference dialogue; the Russian,
+/// Hindi and Chinese rows ask the same three things in their own wording, so
+/// every supported language exercises the handler rather than only English.
 const DIALOGUES: &[(&str, &str, &str, &str, &str)] = &[
     (
         "en",
