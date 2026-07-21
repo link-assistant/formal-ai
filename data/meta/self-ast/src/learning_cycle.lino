@@ -1,0 +1,38 @@
+self_ast_census
+  target src/learning_cycle.rs
+  language rust
+  fidelity signature
+  byte_len 21678
+  line_count 533
+  content_id source_module_19872a1ed17f2452
+  symbol_count 29
+  symbols
+    const GOOGLE_TRENDS_FRONTIER 54 54
+    const GOOGLE_TRENDS_FRONTIER_RECORD 57 58
+    const LEARNED_REQUEST_OPENERS_SEED_FILE 61 61
+    const TERM_INFORMATION_ROLE 66 66
+    const MINIMUM_SUPPORT 70 70
+    struct FrontierItem 75 88
+    struct HeldOutTest 93 101
+    struct CandidateSurface 106 119
+    function validated 124 126
+    function passed_count 130 132
+    function failed_count 136 138
+    struct BlockedClass 144 153
+    struct LearningCycleRun 157 168
+    function validated_candidates 173 178
+    function held_out_count 182 187
+    function links_notation 192 232
+    function parse_frontier_record 237 256
+    function recorded_google_trends_frontier 260 262
+    function run_learning_cycle 266 316
+    function google_trends_learning_cycle 320 325
+    function derive_candidate 332 384
+    function frame_of 389 400
+    function classify_slot 404 411
+    function recovers_query 418 430
+    function build_proposals 442 479
+    function held_out_gate 483 498
+    function meaning_block 502 514
+    function language_order 518 523
+    function slot_slug 526 533

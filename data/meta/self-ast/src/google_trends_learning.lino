@@ -2,10 +2,10 @@ self_ast_census
   target src/google_trends_learning.rs
   language rust
   fidelity signature
-  byte_len 10185
-  line_count 230
-  content_id source_module_226800007a830eee
-  symbol_count 12
+  byte_len 11065
+  line_count 242
+  content_id source_module_95493703e2a85d0d
+  symbol_count 13
   symbols
     struct TrendingFrontierEntry 34 47
     struct TrendingLearningReport 57 66
@@ -13,9 +13,10 @@ self_ast_census
     function adopted_count 78 80
     function is_proposal_only 85 87
     function uniform_rejection_reason 93 100
-    function links_notation 105 152
-    function trending_learning_report 164 212
-    function field 214 216
-    function nested 218 220
-    function quote 222 226
-    function collapse_whitespace 228 230
+    function summary 106 120
+    function links_notation 125 164
+    function trending_learning_report 176 224
+    function field 226 228
+    function nested 230 232
+    function quote 234 238
+    function collapse_whitespace 240 242
