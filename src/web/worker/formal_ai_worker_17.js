@@ -283,22 +283,16 @@ function extractTermInformationRequest(prompt, normalized) {
   // Word order belongs to the language, not to the intent: prefix openers
   // ("tell me about …"), verb-final closers ("… के बारे में बताओ") and wrapping
   // frames ("给出 … 背景") all name the same request (issue #701).
-  const candidates = [];
-  for (const prefix of markers.termInformationPrefixes) {
-    if (text.startsWith(prefix)) candidates.push(text.slice(prefix.length));
-  }
-  for (const suffix of markers.termInformationSuffixes) {
-    if (suffix && text.endsWith(suffix)) {
-      candidates.push(text.slice(0, text.length - suffix.length));
-    }
-  }
-  for (const { before, after } of markers.termInformationCircumfixes) {
-    if (text.startsWith(before) && after && text.endsWith(after)) {
-      const inner = text.slice(before.length, text.length - after.length);
-      if (inner) candidates.push(inner);
-    }
-  }
-  for (const candidate of candidates) {
+  const candidates = [
+    ...markers.termInformationPrefixes.map((p) => (text.startsWith(p) ? text.slice(p.length) : "")),
+    ...markers.termInformationSuffixes.map((s) =>
+      s && text.endsWith(s) ? text.slice(0, text.length - s.length) : ""),
+    ...markers.termInformationCircumfixes.map(({ before, after }) =>
+      after && text.startsWith(before) && text.endsWith(after)
+        ? text.slice(before.length, text.length - after.length)
+        : ""),
+  ];
+  for (const candidate of candidates.filter(Boolean)) {
     if (termInformationQueryIsLocalContext(candidate)) return "";
     const query = validSearchQuery(candidate);
     if (query) return query;
