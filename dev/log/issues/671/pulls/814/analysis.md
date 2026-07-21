@@ -242,3 +242,28 @@ the heading the served answer actually renders.
 Everything else on `5ee22e04` was green — the Agentic CLI Matrix run
 `29798969655` passed all 14 jobs, and CI/CD run `29798969664` passed every job
 but this one.
+
+## 11. Green, and one runner-side flake
+
+On `4e86fb91` the Agentic CLI Matrix run `29800923688` is green in all 14 jobs
+and CI/CD run `29800923586` is green in every job except
+`Docker Image Build & Runtime Check`, whose failure is the runner's disk, not
+this branch (`ci-logs/docker-image-88541902866.log:2111`):
+
+```
+#21 ERROR: write /blobs/sha256/f2e6b6…: no space left on device
+ERROR: failed to build: failed to solve: rpc error: code = Unknown desc = io: read/write on closed pipe
+```
+
+The same job passed on the two previous heads of this branch with the same
+`Dockerfile`, so it was re-run rather than debugged — and the re-run
+(`88544585614`) built and passed the runtime contract, taking run `29800923586`
+to `success` with every job green.
+
+The last local gate this branch had never exercised is also covered now:
+`npm run --prefix tests/e2e check:language-test-coverage` requires a
+language-facing seed change to be covered by tests naming every supported
+language, so `the_headings_are_seeded_in_every_supported_language` asserts each
+record through its own wording (`Содержимое`, `की सामग्री`, `的内容`) rather
+than looping over language codes — which also fails if a translation is a copy
+of the English record.
