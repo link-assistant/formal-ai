@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_adoption_ledger.rs
   language rust
   fidelity signature
-  byte_len 10905
+  byte_len 10903
   line_count 289
-  content_id source_module_7d7acf048cfab25e
+  content_id source_module_df465e611504387a
   symbol_count 21
   symbols
     const UNKNOWN_INTENT 33 33

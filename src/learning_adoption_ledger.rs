@@ -14,7 +14,7 @@
 //!
 //! The pair is only counted as adopted when the answer both leaves the unknown
 //! path *and* recovers the topic the prompt was generated from
-//! ([`web_search_query_for`]); routing to some unrelated capability would be a
+//! (`web_search_query_for`); routing to some unrelated capability would be a
 //! regression, not an adoption, and is recorded as one.
 //!
 //! Because "before" is a committed record and "after" is a pure function of the
