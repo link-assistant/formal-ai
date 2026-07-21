@@ -20,15 +20,23 @@ use serde_json::{json, Value};
 const PROMPT: &str = "read the file alpha.txt and print its contents";
 
 fn read_call_arguments(tool: &Value) -> Value {
+    read_call_arguments_with_context(tool, Vec::new())
+}
+
+/// The same request with client-authored context messages in front of the user
+/// turn — the shape every real client uses to declare where it is running.
+fn read_call_arguments_with_context(tool: &Value, context: Vec<Value>) -> Value {
     enable_http_agent_mode_for_current_process();
     let name = tool
         .pointer("/function/name")
         .and_then(Value::as_str)
         .expect("tool name")
         .to_owned();
+    let mut messages = context;
+    messages.push(json!({"role": "user", "content": PROMPT}));
     let body = json!({
         "model": "formal-ai",
-        "messages": [{"role": "user", "content": PROMPT}],
+        "messages": messages,
         "tools": [tool]
     });
     let response = handle_api_request("POST", "/v1/chat/completions", &body.to_string());
@@ -141,4 +149,115 @@ fn a_client_that_accepts_relative_paths_keeps_the_requested_spelling() {
     }));
 
     assert_eq!(arguments["path"], "alpha.txt", "{arguments}");
+}
+
+/// A tool that requires an absolute path, in the `agent` CLI's spelling.
+fn absolute_path_tool() -> Value {
+    json!({
+        "type": "function",
+        "function": {
+            "name": "read",
+            "description": "Reads a file from the local filesystem.\n\nUsage:\n- The filePath parameter must be an absolute path, not a relative path\n",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filePath": {"type": "string", "description": "The path to the file to read"}
+                },
+                "required": ["filePath"]
+            }
+        }
+    })
+}
+
+/// A real directory that is not the server's own, so a path resolved against
+/// the wrong base is visible as a wrong path rather than a passing test.
+fn client_workspace(name: &str) -> std::path::PathBuf {
+    let workspace = std::env::temp_dir().join(format!("formal-ai-issue-671-{name}"));
+    std::fs::create_dir_all(&workspace).expect("create the client workspace");
+    workspace.canonicalize().expect("canonical workspace")
+}
+
+#[test]
+fn a_declared_working_directory_wins_over_the_servers_own() {
+    // The issue-#715 E2E starts `formal-ai serve` in the repository and the CLI
+    // in a fresh temporary workspace. Resolving against the server's directory
+    // wrote the report where the CLI never looked, and the harness reported
+    // `code-rewrite-learning-report.lino was never written`.
+    let workspace = client_workspace("env-block");
+    let arguments = read_call_arguments_with_context(
+        &absolute_path_tool(),
+        vec![json!({
+            "role": "system",
+            "content": format!("<env>\n  Working directory: {}\n  Platform: linux\n</env>", workspace.display()),
+        })],
+    );
+
+    assert_eq!(
+        arguments["filePath"],
+        workspace.join("alpha.txt").to_string_lossy().as_ref(),
+        "{arguments}"
+    );
+}
+
+#[test]
+fn codex_environment_context_declares_the_directory() {
+    let workspace = client_workspace("cwd-tag");
+    let arguments = read_call_arguments_with_context(
+        &absolute_path_tool(),
+        vec![json!({
+            "role": "user",
+            "content": format!(
+                "<environment_context>\n  <cwd>{}</cwd>\n  <approval_policy>on-request</approval_policy>\n</environment_context>",
+                workspace.display()
+            ),
+        })],
+    );
+
+    assert_eq!(
+        arguments["filePath"],
+        workspace.join("alpha.txt").to_string_lossy().as_ref(),
+        "{arguments}"
+    );
+}
+
+#[test]
+fn gemini_workspace_directory_list_declares_the_directory() {
+    let workspace = client_workspace("workspace-list");
+    let arguments = read_call_arguments_with_context(
+        &absolute_path_tool(),
+        vec![json!({
+            "role": "system",
+            "content": format!(
+                "  Here is the folder structure:\n\n- **Workspace Directories:**\n  - {}\n\nUse the tools above.",
+                workspace.display()
+            ),
+        })],
+    );
+
+    assert_eq!(
+        arguments["filePath"],
+        workspace.join("alpha.txt").to_string_lossy().as_ref(),
+        "{arguments}"
+    );
+}
+
+#[test]
+fn a_declaration_that_no_longer_exists_falls_back_to_the_server() {
+    // A recorded transcript replayed on another machine names a directory that
+    // is not there. Planning a call against it would be strictly worse than the
+    // shared-directory assumption the matrix runs under.
+    let arguments = read_call_arguments_with_context(
+        &absolute_path_tool(),
+        vec![json!({
+            "role": "system",
+            "content": "<env>\n  Working directory: /nonexistent/formal-ai/issue-671\n</env>",
+        })],
+    );
+
+    let expected = std::env::current_dir().unwrap().join("alpha.txt");
+    assert_eq!(
+        arguments["filePath"],
+        expected.to_string_lossy().as_ref(),
+        "{arguments}"
+    );
 }

@@ -2,17 +2,17 @@ self_ast_census
   target src/protocol_responses.rs
   language rust
   fidelity signature
-  byte_len 10311
-  line_count 265
-  content_id source_module_37a658f4f85966f6
+  byte_len 11232
+  line_count 281
+  content_id source_module_9809c79efeb154e6
   symbol_count 9
   symbols
-    function response_arguments_for_tool 14 76
-    function tool_parameters_schema 78 93
-    function semantic_alias 95 113
-    function demands_absolute_path 129 151
-    const PATH_PROPERTIES 130 138
-    function tool_description 155 161
-    function absolute_path 163 172
-    function schema_default 174 194
-    function constrain_to_schema 196 265
+    function response_arguments_for_tool 18 81
+    function tool_parameters_schema 83 98
+    function semantic_alias 100 118
+    function demands_absolute_path 134 156
+    const PATH_PROPERTIES 135 143
+    function tool_description 160 166
+    function absolute_path 176 188
+    function schema_default 190 210
+    function constrain_to_schema 212 281

@@ -24,7 +24,7 @@ use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
-pub use content::{latest_user_request, system_prompt_text};
+pub use content::{client_working_directory, latest_user_request, system_prompt_text};
 mod output;
 mod recording;
 pub use output::*;
@@ -661,6 +661,7 @@ fn chat_completion_from_plan(
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
+    let workspace = client_working_directory(&request.messages);
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -675,6 +676,7 @@ fn chat_completion_from_plan(
                         &call.tool,
                         call.arguments,
                         prompt,
+                        workspace.as_deref(),
                     );
                     ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
@@ -820,6 +822,9 @@ fn response_from_plan(
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
+    // The Responses surface carries the same client prose in its own shape, so
+    // the declaration is read from the chat projection rather than parsed twice.
+    let workspace = client_working_directory(&request.to_chat_completion_request().messages);
 
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -840,8 +845,13 @@ fn response_from_plan(
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
-                let arguments =
-                    response_arguments_for_tool(&request.tools, &tool, planned_arguments, prompt);
+                let arguments = response_arguments_for_tool(
+                    &request.tools,
+                    &tool,
+                    planned_arguments,
+                    prompt,
+                    workspace.as_deref(),
+                );
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );

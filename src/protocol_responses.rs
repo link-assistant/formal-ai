@@ -11,11 +11,16 @@ use crate::protocol_policy::find_tool_definition;
 /// `query`/`pattern`, and several path/edit variants). Planner code deliberately
 /// carries those semantic aliases; this boundary removes undeclared aliases and
 /// fills every required schema field before a call crosses the protocol.
+///
+/// `workspace` is the directory the client said it is running in, when it said
+/// so; a path the client requires to be absolute is resolved against it rather
+/// than against the server's own directory.
 pub fn response_arguments_for_tool(
     tools: &[Value],
     tool_name: &str,
     arguments: String,
     user_prompt: &str,
+    workspace: Option<&str>,
 ) -> String {
     let Some(definition) = find_tool_definition(tools, tool_name) else {
         return arguments;
@@ -61,7 +66,7 @@ pub fn response_arguments_for_tool(
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
             {
-                value = Value::String(absolute_path(path));
+                value = Value::String(absolute_path(path, workspace));
             }
             projected.insert(name.clone(), value);
         }
@@ -160,10 +165,21 @@ fn tool_description(definition: &Value) -> Option<&Value> {
     })
 }
 
-fn absolute_path(path: &str) -> String {
+/// Resolve a relative path against the client's directory, falling back to the
+/// server's own.
+///
+/// The fallback is the shared-directory case the agentic matrix runs, where both
+/// processes start in the same workspace. When the client declares a different
+/// directory — the issue-#715 E2E runs the CLI in a temporary workspace while
+/// the server stays in the repository — resolving against the server's directory
+/// writes the file somewhere the client never looks.
+fn absolute_path(path: &str, workspace: Option<&str>) -> String {
     let path = Path::new(path);
     if path.is_absolute() {
         return path.to_string_lossy().into_owned();
+    }
+    if let Some(workspace) = workspace.map(Path::new).filter(|root| root.is_absolute()) {
+        return workspace.join(path).to_string_lossy().into_owned();
     }
     std::path::absolute(path)
         .unwrap_or_else(|_| path.to_path_buf())

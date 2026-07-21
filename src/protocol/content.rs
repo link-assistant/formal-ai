@@ -20,6 +20,68 @@ pub fn latest_user_request(messages: &[ChatMessage]) -> Option<String> {
         })
 }
 
+/// The working directory the client says it is running in, when it says so.
+///
+/// Absolutising a planned path (issue #671) is only correct against the
+/// *client's* directory, and the client is the one that knows it: the server may
+/// well be running somewhere else — the issue-#715 Agent CLI E2E starts
+/// `formal-ai serve` in the repository and the CLI in a fresh temporary
+/// workspace, and a report absolutised against the server's own directory landed
+/// in the repository root while the harness looked for it in the workspace.
+///
+/// Every pattern below is copied from a recorded request body:
+/// `agent` and `opencode` send `<env>\n  Working directory: …`, `codex` sends
+/// `<environment_context>\n<cwd>…</cwd>`, and `gemini` lists
+/// `- **Workspace Directories:**` followed by one indented path per line. A
+/// client that declares nothing gets `None`, and the caller falls back to the
+/// server's own directory, which is the shared-directory case the matrix runs.
+#[must_use]
+pub fn client_working_directory(messages: &[ChatMessage]) -> Option<String> {
+    let text = messages
+        .iter()
+        .map(|message| message.content.plain_text())
+        .collect::<Vec<_>>()
+        .join("\n");
+    declared_directory(&text)
+}
+
+fn declared_directory(text: &str) -> Option<String> {
+    const WORKSPACE_LIST: &str = "**Workspace Directories:**";
+    let tagged = text
+        .split("<cwd>")
+        .skip(1)
+        .filter_map(|rest| rest.split("</cwd>").next());
+    let labelled = text
+        .lines()
+        .filter_map(|line| line.split_once("Working directory:").map(|(_, path)| path));
+    // Gemini's list is read from the marker onwards, and only while the lines
+    // are still bullets: an unanchored bullet scan would happily follow any
+    // other existing directory the prompt happens to mention.
+    let listed = text
+        .split_once(WORKSPACE_LIST)
+        .into_iter()
+        .flat_map(|(_, rest)| {
+            rest.lines()
+                .skip(1)
+                .take_while(|line| line.trim_start().starts_with("- "))
+                .filter_map(|line| line.trim_start().strip_prefix("- "))
+        });
+    tagged
+        .chain(labelled)
+        .chain(listed)
+        .map(str::trim)
+        .find(|path| is_usable_directory(path))
+        .map(ToOwned::to_owned)
+}
+
+/// A declaration is only followed when it still describes this machine: the
+/// alternative is planning a call against a directory that does not exist, which
+/// is strictly worse than the request's own spelling.
+fn is_usable_directory(path: &str) -> bool {
+    let candidate = std::path::Path::new(path);
+    candidate.is_absolute() && candidate.is_dir()
+}
+
 /// Everything the client said as `system`, joined in order.
 #[must_use]
 pub fn system_prompt_text(messages: &[ChatMessage]) -> String {

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 25125
+  byte_len 25118
   line_count 744
-  content_id source_module_41a4a6f369672689
+  content_id source_module_7d61d3a06675bf07
   symbol_count 42
   symbols
     enum FileReadTask 11 22
@@ -54,8 +54,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19435
-    named_node_count 3963
+    total_link_count 19429
+    named_node_count 3962
     distinct_node_kinds 87
     node_kinds
       arguments 335
@@ -72,7 +72,7 @@ self_ast_census
       closure_expression 34
       closure_parameters 34
       continue_expression 4
-      crate 4
+      crate 3
       doc_comment 48
       else_clause 6
       enum_item 3
