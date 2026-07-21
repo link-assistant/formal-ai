@@ -23,7 +23,8 @@ fn main() {
         "latex: как доказать рекуррентное соотношение",
     ] {
         let plain = solver.solve(prompt);
-        let amended = solve_with_amendment_records(&solver, prompt, &[], &[amendment.clone()]);
+        let amended =
+            solve_with_amendment_records(&solver, prompt, &[], std::slice::from_ref(&amendment));
         let line = amendment_line(&amendment);
         let body = amended.answer.replace(&line, "");
         println!("--- {prompt}");

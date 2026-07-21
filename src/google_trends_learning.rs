@@ -103,7 +103,7 @@ impl TrendingLearningReport {
     /// rather than asserted: an empty frontier and a non-empty one are two
     /// different findings and must not read the same.
     #[must_use]
-    pub fn summary(&self) -> &'static str {
+    pub const fn summary(&self) -> &'static str {
         if self.frontier.is_empty() {
             "The trending-prompt frontier is empty: every catalog prompt now routes through the \
              engine. Issue #701's learning cycle closed the gap by deriving the request-opener \

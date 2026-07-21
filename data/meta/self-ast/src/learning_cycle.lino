@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_cycle.rs
   language rust
   fidelity signature
-  byte_len 21678
-  line_count 533
-  content_id source_module_19872a1ed17f2452
+  byte_len 21655
+  line_count 530
+  content_id source_module_a3003053e3ce0dc6
   symbol_count 29
   symbols
     const GOOGLE_TRENDS_FRONTIER 54 54
@@ -26,13 +26,13 @@ self_ast_census
     function parse_frontier_record 237 256
     function recorded_google_trends_frontier 260 262
     function run_learning_cycle 266 316
-    function google_trends_learning_cycle 320 325
-    function derive_candidate 332 384
-    function frame_of 389 400
-    function classify_slot 404 411
-    function recovers_query 418 430
-    function build_proposals 442 479
-    function held_out_gate 483 498
-    function meaning_block 502 514
-    function language_order 518 523
-    function slot_slug 526 533
+    function google_trends_learning_cycle 320 322
+    function derive_candidate 329 381
+    function frame_of 386 397
+    function classify_slot 401 408
+    function recovers_query 415 427
+    function build_proposals 439 476
+    function held_out_gate 480 495
+    function meaning_block 499 511
+    function language_order 515 520
+    function slot_slug 523 530

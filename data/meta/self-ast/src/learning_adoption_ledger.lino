@@ -2,9 +2,9 @@ self_ast_census
   target src/learning_adoption_ledger.rs
   language rust
   fidelity signature
-  byte_len 10785
-  line_count 281
-  content_id source_module_6f0fd0aa2ca0449f
+  byte_len 10905
+  line_count 289
+  content_id source_module_7d7acf048cfab25e
   symbol_count 21
   symbols
     const UNKNOWN_INTENT 33 33
@@ -19,12 +19,12 @@ self_ast_census
     function adopted_languages 128 133
     function unknown_rate_before_basis_points 137 139
     function unknown_rate_after_basis_points 144 146
-    function links_notation 151 204
-    function google_trends_adoption_ledger 209 220
-    function adoption_pair 223 235
-    function corpus_unknown_counts 239 252
-    function rate_basis_points 255 260
-    function field 262 264
-    function count 266 268
-    function nested 270 272
-    function quote 274 281
+    function links_notation 151 212
+    function google_trends_adoption_ledger 217 228
+    function adoption_pair 231 243
+    function corpus_unknown_counts 247 260
+    function rate_basis_points 263 268
+    function field 270 272
+    function count 274 276
+    function nested 278 280
+    function quote 282 289

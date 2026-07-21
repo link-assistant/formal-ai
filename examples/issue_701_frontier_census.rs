@@ -11,11 +11,19 @@ use std::collections::BTreeMap;
 use formal_ai::engine::FormalAiEngine;
 use formal_ai::google_trends_catalog::google_trends_catalog;
 
+/// One (language, variation) prompt class: how many prompts it holds, how many
+/// of them the engine still routes to `unknown`, and the intents it returns.
+#[derive(Default)]
+struct PromptClass {
+    prompts: usize,
+    unknown: usize,
+    intents: BTreeMap<String, usize>,
+}
+
 fn main() {
     let catalog = google_trends_catalog();
     let engine = FormalAiEngine;
-    let mut classes: BTreeMap<(String, String), (usize, usize, BTreeMap<String, usize>)> =
-        BTreeMap::new();
+    let mut classes: BTreeMap<(String, String), PromptClass> = BTreeMap::new();
     let mut total = 0usize;
     let mut unknown = 0usize;
 
@@ -26,17 +34,19 @@ fn main() {
             let entry = classes
                 .entry((prompt.language.clone(), prompt.variation_key.clone()))
                 .or_default();
-            entry.0 += 1;
+            entry.prompts += 1;
             if answer.intent == "unknown" {
-                entry.1 += 1;
+                entry.unknown += 1;
                 unknown += 1;
             }
-            *entry.2.entry(answer.intent.clone()).or_default() += 1;
+            *entry.intents.entry(answer.intent.clone()).or_default() += 1;
         }
     }
 
-    for ((language, variation), (count, unknown_count, intents)) in &classes {
-        let intents: Vec<String> = intents
+    for ((language, variation), class) in &classes {
+        let (count, unknown_count) = (class.prompts, class.unknown);
+        let intents: Vec<String> = class
+            .intents
             .iter()
             .map(|(intent, count)| format!("{intent}={count}"))
             .collect();

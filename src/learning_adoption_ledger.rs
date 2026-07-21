@@ -134,14 +134,14 @@ impl AdoptionLedger {
 
     /// The corpus unknown rate before adoption, in basis points.
     #[must_use]
-    pub fn unknown_rate_before_basis_points(&self) -> usize {
+    pub const fn unknown_rate_before_basis_points(&self) -> usize {
         rate_basis_points(self.corpus_unknown_before, self.corpus_prompts)
     }
 
     /// The corpus unknown rate after adoption, in basis points. The ratchet a
     /// regression test pins: it may fall, never rise.
     #[must_use]
-    pub fn unknown_rate_after_basis_points(&self) -> usize {
+    pub const fn unknown_rate_after_basis_points(&self) -> usize {
         rate_basis_points(self.corpus_unknown_after, self.corpus_prompts)
     }
 
@@ -237,7 +237,7 @@ fn adoption_pair(item: &FrontierItem) -> AdoptionPair {
         variation: item.variation.clone(),
         prompt: item.prompt.clone(),
         before_intent: item.engine_intent.clone(),
-        after_intent: answer.intent.clone(),
+        after_intent: answer.intent,
         after_query: web_search_query_for(&item.prompt).unwrap_or_default(),
     }
 }
@@ -260,7 +260,7 @@ fn corpus_unknown_counts() -> (usize, usize) {
 }
 
 /// A rate in basis points, guarding against an empty corpus.
-fn rate_basis_points(part: usize, whole: usize) -> usize {
+const fn rate_basis_points(part: usize, whole: usize) -> usize {
     if whole == 0 {
         return 0;
     }

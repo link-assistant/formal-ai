@@ -2,9 +2,9 @@ self_ast_census
   target src/google_trends_learning.rs
   language rust
   fidelity signature
-  byte_len 11065
+  byte_len 11071
   line_count 242
-  content_id source_module_95493703e2a85d0d
+  content_id source_module_7fc37a57f4bfa9ac
   symbol_count 13
   symbols
     struct TrendingFrontierEntry 34 47
