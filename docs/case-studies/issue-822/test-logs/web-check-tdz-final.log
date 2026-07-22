@@ -1,0 +1,5 @@
+
+> formal-ai-e2e@1.0.0 check:web-tdz
+> node scripts/check-web-tdz.mjs
+
+check-web-tdz: OK — scanned 252 component(s) in src/web/app.js, no hook dependency references a useCallback/useMemo const declared later.

@@ -1,0 +1,36 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.72s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 1 test
+
+thread 'issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars' (36998) panicked at tests/unit/issue_822.rs:240:5:
+messages
+  message
+    content "scheme:value\r\nnext\tcell"
+    role user
+  message
+    content "b64:Ym90aCAnc2luZ2xlJyBhbmQgImRvdWJsZSI="
+    role assistant
+parts
+  part
+    arguments
+      path "a:b"
+    type tool-call
+  part
+    content complete
+    type tool-result
+unsafe:key
+  space key preserved
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars ... FAILED
+
+failures:
+
+failures:
+    issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1966 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

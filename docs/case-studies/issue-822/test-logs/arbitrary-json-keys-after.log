@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.72s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 1 test
+test issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1966 filtered out; finished in 0.04s
