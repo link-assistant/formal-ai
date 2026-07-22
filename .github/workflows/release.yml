@@ -1648,8 +1648,8 @@ jobs:
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         # The reported session answered a question from a whole scraped page and
         # then filed it, producing a 51KB issue whose transcript escaped its own
-        # markdown. Asserts over the real transport that every turn stays inside
-        # an attributed block and the body fits GitHub's issue size limit.
+        # markdown. Asserts over the real transport that the context stays in a
+        # LiNo fence and the body fits GitHub's issue size limit.
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh

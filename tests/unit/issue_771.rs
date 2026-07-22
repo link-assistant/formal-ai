@@ -322,7 +322,7 @@ mod report_format {
     }
 
     #[test]
-    fn oversized_context_links_the_full_file_and_keeps_a_bounded_preview() {
+    fn oversized_context_links_the_full_file_and_keeps_a_bounded_latest_preview() {
         let mut messages = Vec::new();
         for _ in 0..12 {
             messages.push(ChatMessage::user(scraped_page()));
@@ -332,7 +332,9 @@ mod report_format {
         let command = report_command(&messages);
         assert!(command.contains("wc -c"), "{command}");
         assert!(command.contains("gh gist create"), "{command}");
-        assert!(command.contains("head -c 12000"), "{command}");
+        assert!(command.contains("tail -c 12000"), "{command}");
+        assert!(command.contains("sed '1d'"), "{command}");
+        assert!(!command.contains("head -c 12000"), "{command}");
         assert!(
             command.contains("complete Links Notation context"),
             "{command}"

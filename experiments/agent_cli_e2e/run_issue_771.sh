@@ -7,8 +7,8 @@
 # execution, and the server's reading of the resulting history. Two properties
 # are asserted on the argv a PATH-local fake gh records:
 #
-#   1. the transcribed turns stay inside attributed blockquote blocks, so no
-#      line of a multi-line turn escapes and renders as top-level markdown;
+#   1. the transcribed turns stay inside a LiNo code block, so no line of a
+#      multi-line turn escapes and renders as top-level markdown;
 #   2. the body stays far under GitHub's 65536-character issue limit even though
 #      the fetched page is much larger than that.
 #
@@ -27,6 +27,7 @@ WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
 GH_LOG="$WORKDIR/gh-invocations.log"
 BODY_FILE="$WORKDIR/issue-body.md"
+GIST_FILE="$WORKDIR/formal-ai-context.lino"
 GITHUB_BODY_LIMIT=65536
 
 mkdir -p "$FAKE_BIN"
@@ -58,9 +59,17 @@ EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 printf '%s\n' "\$*" >> "$GH_LOG"
+if [ "\${1:-} \${2:-}" = "gist create" ]; then
+  cp "\${@: -1}" "$GIST_FILE"
+  printf '%s\n' 'https://gist.github.com/formal-ai/complete-context'
+  exit 0
+fi
 while [ \$# -gt 0 ]; do
   if [ "\$1" = "--body" ]; then
     printf '%s' "\$2" > "$BODY_FILE"
+    break
+  elif [ "\$1" = "--body-file" ]; then
+    cp "\$2" "$BODY_FILE"
     break
   fi
   shift
@@ -97,7 +106,9 @@ run_turn() {
   local prompt="$2"
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
-  PATH="$FAKE_BIN:$PATH" timeout 180 "$AGENT" \
+  FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
+    LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
+    PATH="$FAKE_BIN:$PATH" timeout 180 "$AGENT" \
     --prompt "$prompt" \
     --disable-stdin \
     --model formal-ai/formal-ai \
@@ -105,29 +116,25 @@ run_turn() {
     "$@" >> "$AGENT_LOG" 2>&1 || fail "$label failed"
 }
 
-# The reported session: a question the local engine cannot answer, then a bare
-# report request.
+# The reported session: a question the local engine cannot answer, then the
+# report request and its two required confirmations.
 run_turn research "В каких странах есть частные космические компании?"
 
 # The fetched page is far larger than the client's context budget, so the client
 # prunes and summarizes the session before serving the next prompt -- and the
 # turn that triggers that pruning is consumed by it rather than reaching us.
-# That is client behaviour we do not control, and a real user simply asks again,
-# so ask again. What the test pins is that a report request *does* land and that
-# the body it produces is well-formed; not how many prompts the client spends
-# reorganising its own history first.
-attempt=1
-while [ ! -f "$GH_LOG" ] && [ "$attempt" -le 3 ]; do
-  run_turn "report (attempt $attempt)" "report" --continue --no-fork
-  attempt=$((attempt + 1))
-done
+# That is client behaviour we do not control. The confirmations continue the
+# same session after any pruning while also exercising the issue #822 contract.
+run_turn report "report" --continue --no-fork
+run_turn report_destination "GitHub issue" --continue --no-fork
+run_turn report_context "Both logs" --continue --no-fork
 
-[ -f "$GH_LOG" ] || fail "report request did not execute gh after $((attempt - 1)) attempts"
+[ -f "$GH_LOG" ] || fail "confirmed report request did not execute gh"
 grep -q 'issue create --repo link-assistant/formal-ai' "$GH_LOG" \
   || fail "gh invocation did not target the Formal AI repository"
 
-# Requirement 2: the transcript stays inside attributed blocks and within the
-# body limit.
+# Requirement 2: the transcript stays inside a LiNo block and within the body
+# limit.
 [ -s "$BODY_FILE" ] || fail "the gh invocation carried no --body argument"
 body="$(cat "$BODY_FILE")"
 
@@ -135,28 +142,35 @@ size="$(wc -m < "$BODY_FILE" | tr -d ' ')"
 [ "$size" -lt "$GITHUB_BODY_LIMIT" ] \
   || fail "issue body was $size characters, over GitHub's $GITHUB_BODY_LIMIT limit"
 
-grep -q '^\*\*user:\*\*$' <<<"$body" \
-  || fail "issue body did not attribute the user turn to its role"
-grep -q '^\*\*assistant:\*\*$' <<<"$body" \
-  || fail "issue body did not attribute the assistant turn to its role"
-
-# Every transcript line between the conversation heading and the footer must be
-# blank, a role label, a quote line, or an italic notice -- never bare prose that
-# would render as top-level markdown.
+# Every preview line must be between one opening and closing fence -- never bare
+# prose that would render as top-level markdown.
 escaped="$(REPORT_BODY="$body" python3 - <<'PY'
 import os
 
-body = os.environ["REPORT_BODY"]
-start = body.find("\n", body.find("### ")) + 1
-end = body.rfind("\n\n")
-for line in body[start:end].splitlines():
-    if line.strip() and not line.startswith(("**", ">", "_")):
-        print(line)
+lines = os.environ["REPORT_BODY"].splitlines()
+openings = [index for index, line in enumerate(lines) if line == "```lino"]
+closings = [index for index, line in enumerate(lines) if line == "```"]
+if len(openings) != 1 or len(closings) != 1 or openings[0] >= closings[0]:
+    print("invalid LiNo fence structure")
+elif any(line.strip() for line in lines[closings[0] + 1:]):
+    print("content follows the closing LiNo fence")
 PY
 )" || fail "could not scan the transcript"
 [ -z "$escaped" ] \
-  || fail "these transcript lines escaped their block and render as top-level markdown:
+  || fail "the transcript escaped its LiNo block:
 $escaped"
+
+if [ -s "$GIST_FILE" ]; then
+  grep -q 'conversation' "$GIST_FILE" \
+    || fail "the linked context did not contain the conversation"
+  grep -q 'server_logs' "$GIST_FILE" \
+    || fail "the linked context did not contain server logs"
+else
+  grep -q 'conversation' <<<"$body" \
+    || fail "the inline context did not contain the conversation"
+  grep -q 'server_logs' <<<"$body" \
+    || fail "the inline context did not contain server logs"
+fi
 
 # Requirement 1: the answer under review is an extract, not the whole page. The
 # extract's exact content depends on what the live web returned, so the size
@@ -169,5 +183,5 @@ posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
 searches="$(grep -c 'agentic_outcome: planned ToolCalls.*tool: "websearch"' "$LOG" || true)"
 [ "$searches" -ge 1 ] || fail "the question never reached websearch"
 
-echo "== issue #771 E2E OK: report body is $size characters, every turn attributed and contained ($posts rounds) =="
+echo "== issue #771 E2E OK: report body is $size characters and its LiNo context is contained ($posts rounds) =="
 tail -40 "$AGENT_LOG"
