@@ -1,16 +1,16 @@
-//! Opt-in, per-dialog HTTP exchange logs for agentic CLI diagnosis (issue #781).
+//! Verbose, per-dialog HTTP exchange logs for agentic CLI diagnosis (#781/#822).
 //!
 //! The server already had a stderr request dump, but a request alone cannot
 //! explain whether an empty CLI turn originated in the planner, a protocol
 //! adapter, or the client. This module records the complete authenticated
-//! request and response together as JSONL. It is disabled unless
-//! `FORMAL_AI_DIALOG_LOG_DIR` is set because bodies can contain private prompts,
-//! source text, and tool results.
+//! request and response together as JSONL. Issue #822 makes complete capture
+//! the default; `--silent` disables it and `FORMAL_AI_DIALOG_LOG_DIR` overrides
+//! its location.
 
 use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -22,11 +22,41 @@ use crate::proxy::{summarize_proxy_exchange, ProxyExchangeLog};
 use crate::server::ApiHttpResponse;
 
 static REQUEST_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+static VERBOSE_ENABLED: AtomicBool = AtomicBool::new(true);
 static LOG_WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
-/// Dump an inbound request to stderr when `FORMAL_AI_TRACE_REQUESTS=1`.
+/// Configure process-wide diagnostic capture (`true` by default).
+pub fn configure_verbose(enabled: bool) {
+    VERBOSE_ENABLED.store(enabled, Ordering::Relaxed);
+}
+
+/// Whether complete diagnostic capture is enabled for this process.
+#[must_use]
+pub fn verbose_enabled() -> bool {
+    VERBOSE_ENABLED.load(Ordering::Relaxed)
+        && std::env::var("FORMAL_AI_SILENT").as_deref() != Ok("1")
+}
+
+/// Resolve the explicit or default per-dialog log directory.
+#[must_use]
+pub fn configured_directory() -> Option<PathBuf> {
+    if let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
+    {
+        return Some(directory);
+    }
+    if !verbose_enabled() {
+        return None;
+    }
+    let memory_path = crate::shared_memory::shared_memory_path();
+    let parent = memory_path.parent().unwrap_or_else(|| Path::new("."));
+    Some(parent.join("dialog-logs"))
+}
+
+/// Dump inbound request details in verbose mode or when explicitly requested.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+    if verbose_enabled() || std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
         eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
     }
 }
@@ -41,7 +71,7 @@ pub struct DialogExchangeLog {
     pub exchange: ProxyExchangeLog,
 }
 
-/// Record an exchange when `FORMAL_AI_DIALOG_LOG_DIR` is configured.
+/// Record an exchange when verbose capture is enabled.
 ///
 /// Logging is best-effort: a filesystem problem is reported to stderr and never
 /// prevents the protocol response from reaching the client.
@@ -56,10 +86,14 @@ pub(crate) fn record_api_exchange_if_enabled(
     if !authorized {
         return;
     }
-    let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
-        .filter(|value| !value.is_empty())
-        .map(PathBuf::from)
-    else {
+    if path
+        .split('?')
+        .next()
+        .is_some_and(|path| path.contains("/conversations/"))
+    {
+        return;
+    }
+    let Some(directory) = configured_directory() else {
         return;
     };
     match write_dialog_exchange(
@@ -136,10 +170,14 @@ fn dialog_id(headers: &[(&str, &str)], request_body: &str, path: &str) -> String
             .then(|| value.trim())
             .filter(|value| !value.is_empty())
     });
-    let basis = explicit
-        .map(str::to_owned)
-        .or_else(|| first_user_prompt(request_body))
-        .unwrap_or_else(|| path.to_owned());
+    if let Some(explicit) = explicit.filter(|value| {
+        value
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '_' | '-'))
+    }) {
+        return explicit.to_owned();
+    }
+    let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
     stable_id("dialog", &basis)
 }
 

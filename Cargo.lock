@@ -755,6 +755,7 @@ dependencies = [
 name = "formal-ai"
 version = "0.301.0"
 dependencies = [
+ "base64",
  "clap",
  "doublets",
  "fs2",
