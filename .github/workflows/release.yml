@@ -1654,6 +1654,15 @@ jobs:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
 
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        # The first two turns must only ask for destination and included logs;
+        # the third executes a PATH-local fake gh and validates the full Lino
+        # context obtained from the matching server conversation.
+        timeout-minutes: 5
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
+
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
         # The exact reported marketplace question drives Agent, OpenCode,
         # Claude Code, and Codex through their native transports. Each trace
