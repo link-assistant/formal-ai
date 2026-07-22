@@ -114,6 +114,31 @@ meanings
     lexeme en
       surface
         text "agentic action before tool"
+  agentic_report_contents_options
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report contents options"
+  agentic_report_contents_question
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report contents question"
+  agentic_report_exported
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report exported"
+  agentic_report_target_options
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report target options"
+  agentic_report_target_question
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report target question"
   ai-orchestration
     defined-by category
     lexeme en
@@ -489,6 +514,16 @@ meanings
     lexeme en
       surface
         text "context delimiter"
+  context_dialog_log_unavailable
+    defined-by field
+    lexeme en
+      surface
+        text "context dialog log unavailable"
+  context_learning_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context learning failed"
   context_machine_learning
     defined-by context
     lexeme en
@@ -499,6 +534,11 @@ meanings
     lexeme en
       surface
         text "context neural network"
+  context_opencode_export_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context opencode export failed"
   context_programming
     defined-by context
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import cannot remove stale"
-  lexeme_import_cannot_stage
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot stage"
-  lexeme_import_cannot_write_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot write json"
-  lexeme_import_cannot_write_lino
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot write lino"
-  lexeme_import_denotation_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import denotation lost"
-  lexeme_import_duplicate_qid
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import duplicate qid"
-  lexeme_import_duplicate_slug
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import duplicate slug"
-  lexeme_import_fetch_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch failed"
-  lexeme_import_fetch_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch invalid json"
