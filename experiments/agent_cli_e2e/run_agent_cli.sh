@@ -107,9 +107,13 @@ fi
 echo "== server up on $PORT =="
 
 # `--disable-stdin` prevents the CLI from opening its interactive prompt (this
-# script drives a single prompt through). 180s is generous for a 4-step loop
-# where each POST is deterministic and finishes in <100ms — the extra time
-# absorbs npm-install setup on a cold CI runner.
+# script drives a single prompt through). `--no-summarize-session` keeps the
+# round-trip on the formal-ai provider under test: the Agent CLI otherwise asks
+# an unrelated public model to summarize the completed session, so that
+# provider's availability can turn a successfully written artifact into exit
+# code 1. 180s is generous for a 4-step loop where each POST is deterministic
+# and finishes in <100ms — the extra time absorbs npm-install setup on a cold CI
+# runner.
 #
 # The external `@link-assistant/agent` CLI is *non-deterministic*: it
 # occasionally exits 0 after only the first tool round (a websearch) without
@@ -127,6 +131,7 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
   timeout 180 "$AGENT" run \
     --prompt "$TASK" \
     --disable-stdin \
+    --no-summarize-session \
     --model "formal-ai/formal-ai" \
     > "$AGENT_LOG" 2>&1
   RC=$?
