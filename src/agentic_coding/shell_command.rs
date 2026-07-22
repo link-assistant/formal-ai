@@ -92,16 +92,16 @@ fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Opt
         .flat_map(|scope| scope.cues.iter().map(move |cue| (scope, cue)))
         .filter(|(_, cue)| lower.contains(cue.as_str()))
         .max_by_key(|(_, cue)| cue.chars().count())?;
+    let mut subject = lower;
+    subject = subject.replace(action, " ");
+    subject = subject.replace(scope.1, " ");
     let kind = vocab
         .local_path_search_kinds
         .iter()
         .flat_map(|kind| kind.cues.iter().map(move |cue| (kind, cue)))
-        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .filter(|(_, cue)| subject.contains(cue.as_str()))
         .max_by_key(|(_, cue)| cue.chars().count());
 
-    let mut subject = lower;
-    subject = subject.replace(action, " ");
-    subject = subject.replace(scope.1, " ");
     if let Some((_, cue)) = kind {
         subject = subject.replace(cue, " ");
     }

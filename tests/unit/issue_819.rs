@@ -1,5 +1,7 @@
 //! Regression coverage for issue #819 local path discovery.
 
+use std::{collections::BTreeSet, fs, path::Path};
+
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::seed::shell_intent_vocabulary;
 use formal_ai::ChatMessage;
@@ -138,4 +140,82 @@ fn open_web_find_requests_still_use_web_search() {
         let (tool, _) = first_tool_call(prompt);
         assert_eq!(tool, "websearch", "{prompt}");
     }
+}
+
+fn lino_records(text: &str) -> Vec<Vec<&str>> {
+    let mut records = Vec::new();
+    let mut current = Vec::new();
+    for line in text.lines().filter(|line| !line.trim().is_empty()) {
+        if !line.starts_with(char::is_whitespace) && !current.is_empty() {
+            records.push(current);
+            current = Vec::new();
+        }
+        current.push(line);
+    }
+    if !current.is_empty() {
+        records.push(current);
+    }
+    records
+}
+
+fn lino_field<'a>(record: &[&'a str], wanted: &str) -> &'a str {
+    record
+        .iter()
+        .filter_map(|line| line.trim().split_once(' '))
+        .find_map(|(name, raw)| (name == wanted).then(|| raw.trim().trim_matches('"')))
+        .unwrap_or_else(|| panic!("missing {wanted:?} in {record:?}"))
+}
+
+#[test]
+fn local_path_discovery_benchmark_routes_every_case_to_find() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let manifest = fs::read_to_string(root.join("data/benchmarks/local-path-discovery-suite.lino"))
+        .expect("local-path benchmark manifest");
+    let suite = lino_records(&manifest);
+    let minimum_pass_count: usize = lino_field(&suite[0], "minimum_pass_count")
+        .parse()
+        .expect("numeric minimum_pass_count");
+    let mut languages = BTreeSet::new();
+    let mut passed = 0usize;
+
+    for language in ["en", "ru", "hi", "zh"] {
+        let fixture = fs::read_to_string(root.join(format!(
+            "data/benchmarks/local-path-discovery/{language}.lino"
+        )))
+        .unwrap_or_else(|error| panic!("missing {language} benchmark partition: {error}"));
+        for record in lino_records(&fixture) {
+            assert_eq!(lino_field(&record, "record_type"), "local_path_search_case");
+            assert_eq!(
+                lino_field(&record, "source"),
+                "self_authored_multilingual_variation"
+            );
+            assert_eq!(lino_field(&record, "language"), language);
+            assert_eq!(lino_field(&record, "expected_tool"), "bash");
+            assert_eq!(lino_field(&record, "prohibited_tool"), "websearch");
+
+            let id = lino_field(&record, "id");
+            let prompt = lino_field(&record, "prompt");
+            let expected_root = lino_field(&record, "expected_root");
+            let expected_predicate = lino_field(&record, "expected_predicate");
+            let (tool, arguments) = first_tool_call(prompt);
+            let command = arguments["command"].as_str().expect("find command");
+
+            assert_eq!(tool, "bash", "{id}: {prompt}");
+            assert!(command.starts_with("find "), "{id}: {command}");
+            match expected_root {
+                "CURRENT_DIRECTORY" => {
+                    assert!(command.starts_with("find \".\""), "{id}: {command}")
+                }
+                marker => assert!(command.contains(marker), "{id}: {command}"),
+            }
+            assert!(command.contains(expected_predicate), "{id}: {command}");
+            assert!(command.ends_with("-print -quit"), "{id}: {command}");
+            languages.insert(language);
+            passed += 1;
+        }
+    }
+
+    assert_eq!(languages, BTreeSet::from(["en", "hi", "ru", "zh"]));
+    assert_eq!(passed, minimum_pass_count);
+    assert_eq!(passed, 56);
 }
