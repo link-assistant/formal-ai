@@ -73,9 +73,14 @@ fn failed_parent_shrinks_to_leaves_extends_the_missing_method_and_climbs_back_up
 #[test]
 fn a_reported_full_context_trace_enters_rule_synthesis_but_stays_review_gated() {
     let context = json!({
-        "messages": [{"role": "user", "content": "List the files but sort the results in reverse order"}],
+        "messages": [
+            {"role": "user", "content": "List the files but sort the results in reverse order"},
+            {"role": "user", "content": "Report"},
+            {"role": "user", "content": "Formal AI"}
+        ],
         "server_logs": [{
             "learning_trace": {
+                "prompt": "List the files but sort the results in reverse order",
                 "events": [
                     {"kind": "selected_rule", "payload": "initial unknown reason no_seed_route next try_rule_synthesis"},
                     {"kind": "rule_synthesis_candidate", "payload": "rule_synthesis_candidate\n  id reverse_sort_list_files\n  source constructed_from_operation_vocabulary\n  base_task list_files\n  modifier reverse_sort\n  resolved_task list_files_reverse_sort"},

@@ -2,9 +2,9 @@ self_ast_census
   target src/self_improvement.rs
   language rust
   fidelity signature
-  byte_len 24412
-  line_count 689
-  content_id source_module_7aba1443a1e121b4
+  byte_len 24828
+  line_count 699
+  content_id source_module_e00d4bd51e35bcee
   symbol_count 37
   symbols
     const CODING_MODIFICATION_SUITE_LINO 16 17
@@ -20,27 +20,27 @@ self_ast_census
     function status_slug 156 162
     function learn_rules_from_unknown_traces 167 185
     struct ReportedLearning 193 202
-    function learn_from_reported_conversation 211 254
-    function learning_trace_from_symbolic_answer 262 277
-    function event_payload 279 337
-    function find_learning_events 339 357
-    struct LearnedRuleProposal 361 382
-    enum LearnedRuleAdoption 386 391
-    function slug 394 399
-    struct LearningRejection 404 409
-    struct LearningRun 413 424
-    function new 427 452
-    function adoptable_rules 456 461
-    function links_notation 465 498
-    function propose_rule_from_trace 501 574
-    function learned_program_rule_lino 576 585
-    function require_field 587 589
-    function field_value 591 605
-    function validate_slug 607 617
-    struct ParsedRecord 620 622
-    function field 625 629
-    function parse_first_record 632 647
-    function unquote 649 672
-    function push_quoted_field 674 676
-    function push_quoted_nested_field 678 680
-    function quote 682 689
+    function learn_from_reported_conversation 212 260
+    function learning_trace_from_symbolic_answer 268 283
+    function event_payload 285 343
+    function find_learning_trace 345 367
+    struct LearnedRuleProposal 371 392
+    enum LearnedRuleAdoption 396 401
+    function slug 404 409
+    struct LearningRejection 414 419
+    struct LearningRun 423 434
+    function new 437 462
+    function adoptable_rules 466 471
+    function links_notation 475 508
+    function propose_rule_from_trace 511 584
+    function learned_program_rule_lino 586 595
+    function require_field 597 599
+    function field_value 601 615
+    function validate_slug 617 627
+    struct ParsedRecord 630 632
+    function field 635 639
+    function parse_first_record 642 657
+    function unquote 659 682
+    function push_quoted_field 684 686
+    function push_quoted_nested_field 688 690
+    function quote 692 699

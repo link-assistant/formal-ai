@@ -206,18 +206,24 @@ pub struct ReportedLearning {
 /// The server logger may carry many unrelated fields. Only a structured
 /// `learning_trace.events` sequence is accepted, and only known event kinds are
 /// copied into the learner. This avoids treating arbitrary user/tool text as an
-/// executable lesson. The most recent user message supplies trace provenance.
+/// executable lesson. The prompt embedded beside those events supplies trace
+/// provenance; legacy traces fall back to the most recent user message.
 #[must_use]
 pub fn learn_from_reported_conversation(context: &serde_json::Value) -> Option<ReportedLearning> {
-    let prompt = context
-        .get("messages")?
-        .as_array()?
-        .iter()
-        .rev()
-        .find(|message| message.get("role").and_then(serde_json::Value::as_str) == Some("user"))?
-        .get("content")?
-        .as_str()?;
-    let events = find_learning_events(context)?;
+    let (trace_prompt, events) = find_learning_trace(context)?;
+    let prompt = trace_prompt.or_else(|| {
+        context
+            .get("messages")?
+            .as_array()?
+            .iter()
+            .rev()
+            .find(|message| {
+                message.get("role").and_then(serde_json::Value::as_str) == Some("user")
+            })?
+            .get("content")?
+            .as_str()
+            .map(str::to_owned)
+    })?;
     let mut log = EventLog::new();
     for event in &events {
         let kind = event.get("kind")?.as_str()?;
@@ -238,7 +244,7 @@ pub fn learn_from_reported_conversation(context: &serde_json::Value) -> Option<R
             _ => {}
         }
     }
-    let trace = UnknownTrace::from_event_log(prompt, "unknown", &log)?;
+    let trace = UnknownTrace::from_event_log(&prompt, "unknown", &log)?;
     // Ingestion never claims that CI ran. A real benchmark result is supplied
     // later when a maintainer constructs and approves the repair case.
     let learning = learn_rules_from_unknown_traces(
@@ -336,22 +342,26 @@ fn event_payload(links: &str, kind: &str) -> Option<String> {
     Some(payload)
 }
 
-fn find_learning_events(value: &serde_json::Value) -> Option<Vec<serde_json::Value>> {
+fn find_learning_trace(
+    value: &serde_json::Value,
+) -> Option<(Option<String>, Vec<serde_json::Value>)> {
     match value {
         serde_json::Value::Object(object) => {
-            if let Some(events) = object
-                .get("learning_trace")
-                .and_then(|trace| trace.get("events"))
-                .and_then(serde_json::Value::as_array)
-            {
-                return Some(events.clone());
+            if let Some(trace) = object.get("learning_trace") {
+                if let Some(events) = trace.get("events").and_then(serde_json::Value::as_array) {
+                    let prompt = trace
+                        .get("prompt")
+                        .and_then(serde_json::Value::as_str)
+                        .map(str::to_owned);
+                    return Some((prompt, events.clone()));
+                }
             }
-            object.values().find_map(find_learning_events)
+            object.values().find_map(find_learning_trace)
         }
-        serde_json::Value::Array(values) => values.iter().find_map(find_learning_events),
+        serde_json::Value::Array(values) => values.iter().find_map(find_learning_trace),
         serde_json::Value::String(text) => serde_json::from_str(text)
             .ok()
-            .and_then(|nested| find_learning_events(&nested)),
+            .and_then(|nested| find_learning_trace(&nested)),
         _ => None,
     }
 }
