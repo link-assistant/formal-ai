@@ -28,6 +28,8 @@ use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
+mod conversation_reports;
+
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
 pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
@@ -323,7 +325,9 @@ fn handle_dynamic_protocol_route(
             .strip_prefix("/api/formal-ai/v1/conversations/")
             .or_else(|| normalized_path.strip_prefix("/v1/conversations/"));
         if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
-            return Some(handle_conversation_context_request(dialog_id, query));
+            return Some(conversation_reports::handle_context_request(
+                dialog_id, query,
+            ));
         }
     }
     if method == "POST" {
@@ -332,7 +336,7 @@ fn handle_dynamic_protocol_route(
             .or_else(|| normalized_path.strip_prefix("/v1/conversations/"))
             .and_then(|suffix| suffix.strip_suffix("/learn"));
         if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
-            return Some(handle_conversation_learning_request(dialog_id));
+            return Some(conversation_reports::handle_learning_request(dialog_id));
         }
     }
     if method == "GET" && normalized_path == "/api/gemini/v1beta/models" {
@@ -372,66 +376,6 @@ fn handle_dynamic_protocol_route(
         }
     }
     None
-}
-
-fn handle_conversation_context_request(dialog_id: &str, query: &str) -> ApiHttpResponse {
-    let mut context = match crate::conversation_context::load_conversation_context(dialog_id) {
-        Ok(context) => context,
-        Err(error) if error.kind() == std::io::ErrorKind::InvalidInput => {
-            return error_response(400, &error.to_string());
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-            return error_response(404, &error.to_string());
-        }
-        Err(error) => return error_response(500, &error.to_string()),
-    };
-    match query_param(query, "include").as_deref() {
-        Some("harness") => {
-            if let Some(object) = context.as_object_mut() {
-                object.remove("server_logs");
-            }
-        }
-        Some("server") => {
-            if let Some(object) = context.as_object_mut() {
-                object.remove("messages");
-            }
-        }
-        Some("both") | None => {}
-        Some(_) => return error_response(400, "include must be harness, server, or both"),
-    }
-    if query_param(query, "format").as_deref() == Some("json") {
-        return json_response(200, &context);
-    }
-    links_notation_response(
-        200,
-        crate::conversation_context::conversation_context_to_lino(dialog_id, &context),
-    )
-}
-
-fn handle_conversation_learning_request(dialog_id: &str) -> ApiHttpResponse {
-    let context = match crate::conversation_context::load_conversation_context(dialog_id) {
-        Ok(context) => context,
-        Err(error) if error.kind() == std::io::ErrorKind::InvalidInput => {
-            return error_response(400, &error.to_string());
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-            return error_response(404, &error.to_string());
-        }
-        Err(error) => return error_response(500, &error.to_string()),
-    };
-    let document = crate::conversation_context::conversation_context_to_lino(dialog_id, &context);
-    let mut store = SyncStore::open();
-    match store.record_chat_exchange(&format!("agentic report {dialog_id}"), &document) {
-        Ok(events_recorded) => json_response(
-            200,
-            &json!({
-                "dialog_id": dialog_id,
-                "learned": true,
-                "events_recorded": events_recorded,
-            }),
-        ),
-        Err(error) => error_response(500, &format!("failed to record report: {error}")),
-    }
 }
 
 fn handle_openai_models_request() -> ApiHttpResponse {
