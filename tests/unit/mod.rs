@@ -99,6 +99,7 @@ mod issue_771;
 mod issue_781;
 mod issue_781_option_evidence;
 mod issue_781_option_network;
+mod issue_822;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;
