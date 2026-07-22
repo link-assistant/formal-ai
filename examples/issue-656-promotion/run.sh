@@ -42,7 +42,12 @@ git -C "$promotion_work" diff --no-index -- /dev/null "$TARGET" \
 
 # Replay the identical literal task through the external Agent CLI against the
 # Formal AI OpenAI-compatible server and preserve its raw evidence.
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 "$BIN" serve \
+# Private, empty memory per run so this server's memory-fed planning stays
+# independent of what other E2E scripts recorded into the shared
+# ~/.formal-ai/memory.lino (issue #828); FORMAL_AI_DREAMING=0 stops the
+# background compaction thread from mutating it mid-run.
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  FORMAL_AI_MEMORY_PATH="$external_work/memory.lino" FORMAL_AI_DREAMING=0 "$BIN" serve \
   --host 127.0.0.1 --port "$PORT" >"$OUT/formal-ai.log" 2>&1 &
 server_pid=$!
 curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \

@@ -41,7 +41,12 @@ printf '%s\n' 'OPENCODE_VSCODE_MARKER_763' >"$WORK/issue-763-marker.txt"
 "$CODE" --user-data-dir "$STATE/user" --extensions-dir "$STATE/extensions" \
   --install-extension sst-dev.opencode --force >"$OUT/extension-install.log"
 
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 "$BIN" serve \
+# Private, empty memory per run so this server's memory-fed planning stays
+# independent of what other E2E scripts recorded into the shared
+# ~/.formal-ai/memory.lino (issue #828); FORMAL_AI_DREAMING=0 stops the
+# background compaction thread from mutating it mid-run.
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  FORMAL_AI_MEMORY_PATH="$WORK/memory.lino" FORMAL_AI_DREAMING=0 "$BIN" serve \
   --host 127.0.0.1 --port "$SERVER_PORT" >"$SERVER_LOG" 2>&1 &
 server_pid=$!
 curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \

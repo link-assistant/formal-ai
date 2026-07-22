@@ -100,7 +100,19 @@ Audit of `experiments/agent_cli_e2e/*.sh` — does each script that starts its o
 
 **No script isolated the server's memory file (before this PR).** The ones that set `HOME=` do so only for the *client* (opencode) subshell (XDG dirs), not for the `serve` process — so every server in the job read/wrote the one shared `~/.formal-ai/memory.lino`. #687 is simply the first script whose assertion is tight enough to expose the contamination, but the learning/audit scripts (`run_issue_66*/71*_learning.sh`, `run_issue_661_statement_audit.sh`) are the biggest *contaminators*: they deliberately record many exchanges into that shared file. The systemic fix is to give **every** `serve`-starting E2E script a private, per-run memory file.
 
-**Fix applied to all 16 `serve`-starting scripts (R5).** Every script under `experiments/agent_cli_e2e/` that boots `formal-ai serve` now exports `FORMAL_AI_MEMORY_PATH=<per-run temp>/memory.lino` and `FORMAL_AI_DREAMING=0`: `run_issue_687.sh`, `run_agent_cli.sh`, `run_issue_771.sh`, `run_issue_822.sh`, `run_issue_715_opencode.sh` (the round-count group), plus `run_issue_663_learning.sh`, `run_issue_712_learning.sh`, `run_issue_661_statement_audit.sh`, `run_issue_657_metric.sh`, `run_issue_659_learning.sh`, `run_issue_660_learning.sh`, `run_issue_715_learning.sh`, `run_issue_758.sh`, `run_issue_781.sh`, `run_issue_819.sh`, and the `serve_and_curl.sh` diagnostic. Each uses its own already-present `mktemp -d` workdir (or a new one), so cleanup is unchanged. Within-run learning still works because each server keeps writing to and reading from its own private file across the script's turns; only *cross-script* contamination is removed.
+**Fix applied to all 16 `serve`-starting scripts in `agent_cli_e2e/` (R5).** Every script under `experiments/agent_cli_e2e/` that boots `formal-ai serve` now exports `FORMAL_AI_MEMORY_PATH=<per-run temp>/memory.lino` and `FORMAL_AI_DREAMING=0`: `run_issue_687.sh`, `run_agent_cli.sh`, `run_issue_771.sh`, `run_issue_822.sh`, `run_issue_715_opencode.sh` (the round-count group), plus `run_issue_663_learning.sh`, `run_issue_712_learning.sh`, `run_issue_661_statement_audit.sh`, `run_issue_657_metric.sh`, `run_issue_659_learning.sh`, `run_issue_660_learning.sh`, `run_issue_715_learning.sh`, `run_issue_758.sh`, `run_issue_781.sh`, `run_issue_819.sh`, and the `serve_and_curl.sh` diagnostic. Each uses its own already-present `mktemp -d` workdir (or a new one), so cleanup is unchanged. Within-run learning still works because each server keeps writing to and reading from its own private file across the script's turns; only *cross-script* contamination is removed.
+
+**Repo-wide sweep beyond `agent_cli_e2e/` (R5, second pass).** A follow-up `grep -rl '" serve' experiments/ examples/` found five more scripts outside `agent_cli_e2e/` that boot `serve` against the *same* shared `~/.formal-ai/memory.lino` and had not been isolated. These are now fixed identically:
+
+| Script | In CI? | Memory dir used |
+| --- | --- | --- |
+| `examples/self-coding/run.sh` | **yes** (issue #655 self-coding inner loop, E2E job) | `$work` |
+| `examples/issue-656-promotion/run.sh` | no | `$external_work` |
+| `experiments/opencode_vscode_e2e/run.sh` | no | `$WORK` |
+| `experiments/issue-823-recursive-self-coding/run.sh` | no | `$work` |
+| `experiments/codex_model_metadata_e2e/run.sh` | no | `$RUN_DIR` |
+
+`examples/self-coding/run.sh` is the important one: it runs inside the same E2E job (step "Replay Hive Mind self-coding inner loop (issue #655)") on every push to `main`, so it was both a *contaminator* of and *contaminated by* the shared file. After this sweep, **every** `serve`-starting script in the repository (verified: `grep -rl '" serve' experiments/ examples/` → all contain `FORMAL_AI_MEMORY_PATH`) runs against a private, per-run memory seed. `experiments/issue_714_agentic_mode/run_report_e2e.sh` and `experiments/issue_750_tool_results/run.sh` already isolated theirs, so they were left unchanged.
 
 ## 6. Proposed solution (this PR)
 
