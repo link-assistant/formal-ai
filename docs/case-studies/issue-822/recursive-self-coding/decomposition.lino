@@ -1,0 +1,34 @@
+recursive_self_coding_decomposition
+  issue "822"
+  review "PR 823 broad-ambition follow-up"
+  smallest_leaf_count "5"
+  formal_ai_authored_leaf_count "1"
+  formal_ai_authored_percent "20"
+  leaf
+    id "L1"
+    goal "execute failure-driven recursion and climb back to the parent"
+    author "manual tool extension"
+    test "failed_parent_shrinks_to_leaves_extends_the_missing_method_and_climbs_back_up"
+  leaf
+    id "L2"
+    goal "preserve verified solver events as structured report metadata"
+    author "manual tool extension"
+    test "a_real_symbolic_candidate_round_trips_through_report_ingestion"
+  leaf
+    id "L3"
+    goal "stage uploaded traces in the human-gated rule learner"
+    author "manual tool extension"
+    test "conversation_learning_endpoint_stages_structured_server_trace_for_review"
+  leaf
+    id "L4"
+    goal "recall an approved lesson in the live solver before re-derivation"
+    author "manual tool extension"
+    test "the_live_solver_recalls_an_approved_lesson_instead_of_rederiving_it"
+  leaf
+    id "L5"
+    goal "materialize and verify the approved learning-ledger artifact"
+    author "formal-ai via external Agent CLI"
+    session "ses_075888666ffeU9fXsH9GrDSJ4k"
+    evidence "docs/case-studies/issue-822/recursive-self-coding/agent-stream.jsonl"
+    test "cmp generated ledger against data/meta/learning-ledger.lino"
+  whole_task_test "issue_823_recursive_learning"

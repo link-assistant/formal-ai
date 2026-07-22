@@ -81,6 +81,11 @@ This project should build a practical, inspectable symbolic assistant before it 
 
 ## Agent Orchestration Goals
 
+These are target capabilities. The current implementation can serve Agent CLIs
+and execute a bounded caller-supplied recursive task tree, but it does not yet
+dispatch arbitrary decompositions to every external CLI or run parallel
+portfolios autonomously.
+
 - Serve as an OpenAI-compatible backend that any agentic CLI (codex, opencode, gemini, qwen, claude, agent) can drive, with tools selected by formalized intent rather than phrasing.
 - Act as an orchestrator that drives those same agent CLIs as permissioned, isolated tools: dispatch decomposed sub-tasks, capture full sessions as append-only evidence, and verify results with generated tests.
 - Dispatch the same sub-task to multiple agents in parallel when configured, compare the verified results in a recorded ledger, and select the winner deterministically.
@@ -88,6 +93,10 @@ This project should build a practical, inspectable symbolic assistant before it 
 - Keep every UI action, setting, and capability reachable through natural language in every environment, including agentic mode where no Formal AI UI exists.
 
 ## Self-Evolution Goals
+
+These are ratcheted targets, not assertions of present autonomy. Report upload
+currently stages verified traces for review, and approved exact lessons can be
+recalled live; promotion remains explicitly benchmark- and human-gated.
 
 - Grow capabilities through a closed learning loop: frontier detection (unknown intents, failed benchmarks, trending questions) → candidate knowledge/rules with generated tests → benchmark-gated promotion as reviewed seed edits — never silent self-modification.
 - Prove every adopted item with a before/after capability pair, including held-out paraphrases, so learning is generalization rather than memorization.

@@ -51,6 +51,20 @@ Three independent gaps combined into the incomplete reports:
 | R7: deterministic OpenCode adapter | The shipped stdlib-only extractor opens SQLite with `mode=ro`, orders messages/parts by `(time_created, id)`, and preserves full JSON metadata. It emits JSON for the CLI to pass through the shared Rust LiNo serializer, eliminating formatter drift. A fixture test verifies determinism, byte-identical serialization, and that the database remains unchanged. |
 | Whole flow | `run_issue_822.sh` drives the real Agent CLI through destination and contents confirmation, executes a PATH-local fake `gh`, and verifies the resulting issue carries inline or linked complete transcript and server logs. |
 
+The review follow-up makes R3 operational rather than archival. Symbolic
+responses containing a verified unknown-rule candidate now expose structured
+`learning_trace` metadata. `POST .../{session}/learn` recovers those events from
+the full report, runs `learn_rules_from_unknown_traces`, and returns staged
+proposal counts while explicitly leaving promotion awaiting human review. A
+subsequent exact repeated failure queries the approved `LearningLedger` before
+attempting fresh rule synthesis.
+
+The same follow-up adds a bounded failure-driven recursive executor: try the
+whole node, descend after failure, extend and retry one unsupported elementary
+leaf, then climb back up and rerun the parent test. The executable evidence tree
+and four focused regressions are under
+[`recursive-self-coding/`](recursive-self-coding/README.md).
+
 ## Interfaces
 
 ```text
@@ -117,6 +131,12 @@ The follow-up CI repair was subsequently authored through the local Formal AI
 server and Agent CLI. Its session, failing regressions, applied fixes, and
 scope boundaries are recorded in
 [`self-hosting-fix/README.md`](self-hosting-fix/README.md).
+
+After the broad-ambition review, a second real local-server run used the
+external Agent CLI to author and verify leaf L5 of a five-leaf recursive
+decomposition. The captured session and 20% measurement are in
+[`recursive-self-coding/`](recursive-self-coding/README.md); only its generated
+artifact/evidence commit carries the paired self-authorship trailers.
 
 ## Captured inputs
 
