@@ -1,0 +1,100 @@
+== research: When are the next elections in the USA? ==
+   -> research used 4 chat round(s), 4 total
+== report: Report this problem ==
+   -> report used 1 chat round(s), 5 total
+== report_destination: GitHub issue ==
+   -> report_destination used 1 chat round(s), 6 total
+== report_context: Both logs ==
+   -> report_context used 2 chat round(s), 8 total
+== recall: What were we talking about? ==
+   -> recall used 1 chat round(s), 9 total
+== follow_up: Learn about it. ==
+   -> follow_up used 2 chat round(s), 11 total
+== issue #687 E2E OK: report executed, recall retained context, follow-up researched it (11 rounds) ==
+== per-turn chat-round breakdown ==
+  research: 4 round(s) (cumulative 4)
+  report: 1 round(s) (cumulative 5)
+  report_destination: 1 round(s) (cumulative 6)
+  report_context: 2 round(s) (cumulative 8)
+  recall: 1 round(s) (cumulative 9)
+  follow_up: 2 round(s) (cumulative 11)
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.445Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.448Z",
+  "service": "session.prompt",
+  "sessionID": "ses_07454aa11ffe0RC6BVDinRS4lP",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.448Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.448Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784754707448,
+  "sessionID": "ses_07454aa11ffe0RC6BVDinRS4lP"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.448Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.448Z",
+  "service": "default",
+  "directory": "/tmp/tmp.iNUXewucSc",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.449Z",
+  "service": "state",
+  "key": "/tmp/tmp.iNUXewucSc",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.470Z",
+  "service": "state",
+  "key": "/tmp/tmp.iNUXewucSc",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T21:11:47.470Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 3,
+  "message": "Agent exiting"
+}
+

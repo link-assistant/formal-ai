@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_bfa7f22d1dec3fed"
+  goal "Create file memory-isolation-invariant.md documenting that every agent CLI end-to-end server must set FORMAL_AI_MEMORY_PATH to a private path and FORMAL_AI_DREAMING=0 so deterministic tool planning never reads the shared home memory"
+  target "memory-isolation-invariant.md"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_83e580098bf995d0"
+  step 2
+    capability "Write"
+    action "write the requested content to memory-isolation-invariant.md"
+    expected_evidence "workspace file memory-isolation-invariant.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "a private path and FORMAL_AI_DREAMING=0 so deterministic tool planning never reads the shared home memory"
+    command "cat memory-isolation-invariant.md"
+  verification_command "cat memory-isolation-invariant.md"
