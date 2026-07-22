@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 43
   signature_module_count 248
   symbol_count 5986
-  content_id self_ast_census_index_9c9bde7743bf2b35
+  content_id self_ast_census_index_edff4f2b06ddf5e9
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -43,7 +43,7 @@ self_ast_census_index
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
     src/agentic_coding/rebuild_plan.rs full_ast 9 source_module_1b3baad04d15abbb
     src/agentic_coding/repair_strategy.rs full_ast 9 source_module_7dd17a52ae12d7d3
-    src/agentic_coding/report_issue.rs full_ast 32 source_module_92a64f881ca1552d
+    src/agentic_coding/report_issue.rs full_ast 32 source_module_7ba6809d5dbf18de
     src/agentic_coding/routing_learning.rs full_ast 7 source_module_976ea373edb73248
     src/agentic_coding/self_ast.rs full_ast 19 source_module_9104c8097027e9ae
     src/agentic_coding/self_heal.rs full_ast 10 source_module_dea3882ec18d6743
