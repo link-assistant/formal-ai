@@ -399,9 +399,10 @@ fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
     ))
     .unwrap();
 
-    assert!(
-        harness.contains("--no-summarize-session"),
-        "Agent CLI E2E must not depend on an unrelated external summary provider"
+    assert_eq!(
+        harness.matches("\n    --no-summarize-session \\\n").count(),
+        1,
+        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
     );
 }
 
