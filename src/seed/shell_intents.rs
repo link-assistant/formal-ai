@@ -127,8 +127,9 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
             }
             "local_path_search" => {
-                vocab.local_path_search_command_template =
-                    group.find_child_value("command_template").to_owned();
+                group
+                    .find_child_value("command_template")
+                    .clone_into(&mut vocab.local_path_search_command_template);
                 vocab.local_path_search_actions = group
                     .children
                     .iter()

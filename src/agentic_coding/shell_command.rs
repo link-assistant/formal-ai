@@ -11,6 +11,9 @@
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
+const ROOT_TEMPLATE_SLOT: &str = concat!("{", "root", "}");
+const PREDICATE_TEMPLATE_SLOT: &str = concat!("{", "predicate", "}");
+const PATTERNS_TEMPLATE_SLOT: &str = concat!("{", "patterns", "}");
 
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
@@ -144,9 +147,9 @@ fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Opt
     }
     Some(
         template
-            .replace("{root}", &scope.0.root)
-            .replace("{predicate}", &predicate)
-            .replace("{patterns}", &patterns),
+            .replace(ROOT_TEMPLATE_SLOT, &scope.0.root)
+            .replace(PREDICATE_TEMPLATE_SLOT, &predicate)
+            .replace(PATTERNS_TEMPLATE_SLOT, &patterns),
     )
 }
 

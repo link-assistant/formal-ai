@@ -36,7 +36,7 @@ fn reported_desktop_request_uses_find_instead_of_the_web() {
 fn local_path_discovery_generalizes_across_language_action_kind_and_scope() {
     for (language, prompt, expected_root, expected_kind) in [
         (
-            "en",
+            "English",
             "Locate quarterly-report.pdf on this computer",
             "FORMAL_AI_HOME_DIR",
             "-type f",
