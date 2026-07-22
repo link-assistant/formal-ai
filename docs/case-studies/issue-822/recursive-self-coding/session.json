@@ -1,0 +1,33 @@
+{
+  "driver": "formal-ai in-repo agentic CLI",
+  "final_answer": "Recorded the approved learning ledger: 1 lesson(s) that passed their benchmark gate and were approved by a human are now durable learning records, so a repeated failure is answered from the ledger instead of re-derived. Promotion stayed human-gated — only green, approved, faithfully round-tripping cases were recorded.\n\nGenerated document (learning-ledger.lino):\n\nlearning_ledger\n  engine \"meta_language\"\n  human_gated \"true\"\n  lesson_count \"1\"\n  lesson\n    lesson_id \"promoted_lesson_bb17a3d0304074a9\"\n    case_id \"repair_case_9de88924139c1553\"\n    failure_prompt \"List the files but sort the results in reverse order\"\n    module_path \"src/agentic_coding/planner.rs\"\n    rule_id \"reverse_sort_list_files\"\n    modifier \"reverse_sort\"\n    resolved_task \"list_files_reverse_sort\"\n    benchmark_suite \"issue_362_multilingual_coding_modification\"\n    benchmark_passed \"4\"\n    reviewer \"maintainer\"",
+  "hit_turn_cap": false,
+  "server": "formal-ai OpenAI-compatible chat completions",
+  "steps": [
+    {
+      "arguments": {
+        "content": "learning_ledger\n  engine \"meta_language\"\n  human_gated \"true\"\n  lesson_count \"1\"\n  lesson\n    lesson_id \"promoted_lesson_bb17a3d0304074a9\"\n    case_id \"repair_case_9de88924139c1553\"\n    failure_prompt \"List the files but sort the results in reverse order\"\n    module_path \"src/agentic_coding/planner.rs\"\n    rule_id \"reverse_sort_list_files\"\n    modifier \"reverse_sort\"\n    resolved_task \"list_files_reverse_sort\"\n    benchmark_suite \"issue_362_multilingual_coding_modification\"\n    benchmark_passed \"4\"\n    reviewer \"maintainer\"\n",
+        "filePath": "learning-ledger.lino",
+        "file_path": "learning-ledger.lino",
+        "path": "learning-ledger.lino"
+      },
+      "result": "wrote 530 byte(s) to learning-ledger.lino",
+      "tool": "write_file"
+    },
+    {
+      "arguments": {
+        "command": "cat learning-ledger.lino"
+      },
+      "result": "learning_ledger\n  engine \"meta_language\"\n  human_gated \"true\"\n  lesson_count \"1\"\n  lesson\n    lesson_id \"promoted_lesson_bb17a3d0304074a9\"\n    case_id \"repair_case_9de88924139c1553\"\n    failure_prompt \"List the files but sort the results in reverse order\"\n    module_path \"src/agentic_coding/planner.rs\"\n    rule_id \"reverse_sort_list_files\"\n    modifier \"reverse_sort\"\n    resolved_task \"list_files_reverse_sort\"\n    benchmark_suite \"issue_362_multilingual_coding_modification\"\n    benchmark_passed \"4\"\n    reviewer \"maintainer\"\n",
+      "tool": "run_command"
+    }
+  ],
+  "task": "Promote the approved lesson into your learning ledger and record the approved learning record",
+  "tools_advertised": [
+    "web_search",
+    "web_fetch",
+    "write_file",
+    "run_command"
+  ],
+  "turns": 3
+}
