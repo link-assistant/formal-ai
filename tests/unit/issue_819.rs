@@ -1,6 +1,7 @@
 //! Regression coverage for issue #819 local path discovery.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
+use formal_ai::seed::shell_intent_vocabulary;
 use formal_ai::ChatMessage;
 
 fn first_tool_call(prompt: &str) -> (String, serde_json::Value) {
@@ -65,6 +66,43 @@ fn local_path_discovery_generalizes_across_language_action_kind_and_scope() {
         assert!(command.starts_with("find "), "{language}: {command}");
         assert!(command.contains(expected_root), "{language}: {command}");
         assert!(command.contains(expected_kind), "{language}: {command}");
+    }
+}
+
+#[test]
+fn every_seeded_local_path_phrase_routes_to_find() {
+    let vocabulary = shell_intent_vocabulary();
+
+    for action in &vocabulary.local_path_search_actions {
+        let prompt = format!("{action} hive-control-center folder on my desktop");
+        let (tool, arguments) = first_tool_call(&prompt);
+        assert_eq!(tool, "bash", "action {action:?}");
+        assert!(
+            arguments["command"]
+                .as_str()
+                .is_some_and(|command| command.starts_with("find ")),
+            "action {action:?}: {arguments}"
+        );
+    }
+
+    for scope in &vocabulary.local_path_search_scopes {
+        for cue in &scope.cues {
+            let prompt = format!("Find hive-control-center folder {cue}");
+            let (_, arguments) = first_tool_call(&prompt);
+            let command = arguments["command"].as_str().expect("shell command");
+            assert!(command.starts_with("find "), "scope {cue:?}: {command}");
+            assert!(command.contains(&scope.root), "scope {cue:?}: {command}");
+        }
+    }
+
+    for kind in &vocabulary.local_path_search_kinds {
+        for cue in &kind.cues {
+            let prompt = format!("Find hive-control-center {cue} on my desktop");
+            let (_, arguments) = first_tool_call(&prompt);
+            let command = arguments["command"].as_str().expect("shell command");
+            assert!(command.starts_with("find "), "kind {cue:?}: {command}");
+            assert!(command.contains(&kind.predicate), "kind {cue:?}: {command}");
+        }
     }
 }
 
