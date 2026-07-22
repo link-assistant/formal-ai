@@ -385,6 +385,45 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     );
 }
 
+/// The real Agent CLI ships a network-backed `websearch` tool. A temporary
+/// outage of that provider used to abort both meaning-detail scenarios before
+/// Formal AI could observe the search result, making this repository's gate
+/// depend on an unrelated hosted service. Keep the complete research recipe,
+/// but execute its search and fetch through the repository-owned MCP fixture.
+#[test]
+fn meaning_detail_e2e_uses_the_local_research_fixture() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+    let fixture = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/mock-meaning-mcp.mjs"
+    ))
+    .expect("meaning research MCP fixture");
+
+    for step_name in [
+        "Run agent CLI E2E — tomato meaning (search → fetch → write → verify)",
+        "Run agent CLI E2E — potato meaning (different wording, same recipe)",
+    ] {
+        let step = workflow_step_block(agent_e2e, step_name);
+        assert!(
+            step.contains("RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs"),
+            "{step_name} must not depend on Agent's hosted websearch provider"
+        );
+    }
+    assert!(harness.contains("config.tools = { websearch: false, webfetch: false }"));
+    assert!(harness.contains("command: [\"node\", process.argv[2]]"));
+    for lexeme in ["L170542.json", "L3784.json"] {
+        assert!(
+            fixture.contains(&format!("sourcePath(\"{lexeme}\")")),
+            "fixture must serve the committed {lexeme} evidence"
+        );
+    }
+}
+
 #[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();

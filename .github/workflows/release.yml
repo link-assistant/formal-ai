@@ -1493,10 +1493,13 @@ jobs:
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
+        # Search/fetch stay real client-executed MCP turns, backed by the cached
+        # Wikidata documents rather than Agent's availability-sensitive Exa tool.
         env:
           PORT: 8768
           EXPECT_FILE: meanings-tomato-detail.lino
           EXPECT_TEXT: томаты
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
@@ -1507,6 +1510,7 @@ jobs:
           TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
           EXPECT_FILE: meanings-potato-detail.lino
           EXPECT_TEXT: potatoes
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
