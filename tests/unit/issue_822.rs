@@ -339,7 +339,7 @@ fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_
     let exported: Value = serde_json::from_str(&json_response.body).expect("JSON opt-in");
     assert_eq!(exported["metadata"]["dialog_id"], dialog_id);
     assert_eq!(exported["messages"][2]["content"], "secret-tool-output");
-    assert!(exported["server_logs"].as_array().unwrap().len() >= 1);
+    assert!(!exported["server_logs"].as_array().unwrap().is_empty());
 
     fs::remove_dir_all(directory).expect("remove test directory");
 }

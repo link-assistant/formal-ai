@@ -181,7 +181,7 @@ fn arguments_for(capability: Capability, task: &str) -> String {
             "subagent_type": "general",
         })
         .to_string(),
-        Capability::AskUser => return String::new(),
+        Capability::AskUser => String::new(),
         Capability::ReadMany => {
             let paths = file_tokens(task);
             json!({"paths": paths, "file_paths": paths}).to_string()

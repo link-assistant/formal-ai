@@ -18,7 +18,7 @@ fn temporary_directory(label: &str) -> PathBuf {
 }
 
 fn create_opencode_fixture(path: &std::path::Path) {
-    let script = r#"
+    let script = r"
 import json, sqlite3, sys
 db = sqlite3.connect(sys.argv[1])
 db.execute('CREATE TABLE session (id TEXT PRIMARY KEY, directory TEXT, model TEXT, version TEXT, time_created INTEGER, time_updated INTEGER)')
@@ -30,7 +30,7 @@ db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', 'ses_fixture'
 db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
 db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'find a:b'})))
 db.commit()
-"#;
+";
     let output = Command::new("python3")
         .args(["-c", script])
         .arg(path)

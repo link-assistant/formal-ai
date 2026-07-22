@@ -1,5 +1,7 @@
 //! Confirm and execute agentic report requests with complete context (#822).
 
+use std::fmt::Write as _;
+
 use serde_json::json;
 
 use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
@@ -135,7 +137,7 @@ fn ask_or_render(
 
     let mut text = question;
     for (index, (label, description)) in options.iter().enumerate() {
-        text.push_str(&format!("\n{}. {label} — {description}", index + 1));
+        let _ = write!(text, "\n{}. {label} — {description}", index + 1);
     }
     AgenticPlan::Final(text)
 }

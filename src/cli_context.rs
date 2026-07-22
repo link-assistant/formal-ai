@@ -9,7 +9,7 @@ use clap::{Args, Subcommand, ValueEnum};
 use serde_json::Value;
 
 #[derive(Debug, Args)]
-pub(crate) struct ContextArgs {
+pub struct ContextArgs {
     #[command(subcommand)]
     action: ContextAction,
 }
@@ -33,7 +33,7 @@ enum ContextAction {
         /// Context source. `auto` prefers Formal AI's canonical server capture.
         #[arg(long, value_enum, default_value_t = ContextSource::Auto)]
         source: ContextSource,
-        /// OpenCode SQLite database path (for `opencode` or harness fallback).
+        /// `OpenCode` `SQLite` database path (for `opencode` or harness fallback).
         #[arg(long)]
         db: Option<PathBuf>,
         /// Explicit Formal AI dialog-log directory.
@@ -63,7 +63,7 @@ enum ContextFormat {
     Json,
 }
 
-pub(crate) fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
+pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
     match args.action {
         ContextAction::JsonToLino { path, output } => {
             let source = read_input(&path)?;
@@ -125,11 +125,12 @@ fn export_context(
 }
 
 fn load_server_context(session: &str, log_dir: Option<&Path>) -> std::io::Result<Value> {
-    if let Some(directory) = log_dir {
-        formal_ai::conversation_context::load_conversation_context_from(directory, session)
-    } else {
-        formal_ai::conversation_context::load_conversation_context(session)
-    }
+    log_dir.map_or_else(
+        || formal_ai::conversation_context::load_conversation_context(session),
+        |directory| {
+            formal_ai::conversation_context::load_conversation_context_from(directory, session)
+        },
+    )
 }
 
 fn render_server_context(
