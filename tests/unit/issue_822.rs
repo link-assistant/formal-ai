@@ -141,7 +141,9 @@ fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() 
     assert!(command.contains("include=both"), "{command}");
     assert!(command.contains("formal-ai-context.lino"), "{command}");
     assert!(command.contains("--body-file"), "{command}");
-    assert!(command.contains("head -c 12000"), "{command}");
+    assert!(command.contains("tail -c 12000"), "{command}");
+    assert!(command.contains("sed '1d'"), "{command}");
+    assert!(!command.contains("head -c 12000"), "{command}");
     assert!(!command.contains("exit status 1"), "{command}");
 }
 

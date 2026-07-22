@@ -345,7 +345,7 @@ fn github_command(
          else \
            context_url=$(gh gist create --filename formal-ai-context.lino \"$context_file\"); \
            printf '\\n### Agentic context\\n\\nThe complete Links Notation context is available at %s.\\n\\n```lino\\n' \"$context_url\" >> \"$body_file\"; \
-           head -c 12000 \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
+           tail -c 12000 \"$context_file\" | sed '1d' >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
          fi; \
          gh issue create --repo {} --title {} --body-file \"$body_file\"",
         shell_quote(&intro),

@@ -21,9 +21,9 @@ export a harness log, fetch a matching server log, submit context to Formal AI,
 or file a GitHub issue.
 
 GitHub bodies embed the complete Links Notation payload when it fits. Larger
-payloads retain a bounded preview and link a secret gist containing the full
-`.lino` document, keeping the issue under GitHub's body limit without losing
-context.
+payloads retain a bounded preview of the latest complete context lines and link
+a secret gist containing the full `.lino` document, keeping the issue under
+GitHub's body limit without losing context.
 
 ## Root cause
 
