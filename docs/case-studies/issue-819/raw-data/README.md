@@ -35,6 +35,11 @@ Desktop.
 exact dialog JSONL, and the generated Links Notation plan. That session created
 `../../agent-authored-requirement.lino` and verified it by reading it back.
 
+The five `benchmark-*-agent-stream.log` files preserve the self-hosted sessions
+that wrote and read back the benchmark manifest and its four language
+partitions. Their session IDs are paired with these evidence paths in the
+trailers of the benchmark commit.
+
 Full request logging is enabled only inside this controlled harness. Production
 dialog logging remains opt-in because real prompts and tool results may contain
 private information.

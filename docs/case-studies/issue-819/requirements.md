@@ -17,3 +17,4 @@
 | R13 | Reproduce the bug before implementing the fix. | The first atomic test commit failed with the exact prompt routing to `websearch`; the raw red output is retained under `raw-data/tests/`. |
 | R14 | Exercise the repository's self-hosting workflow. | A release Formal AI server drove Agent CLI through plan, Write, read-back Run, and Final steps; all raw evidence is under `raw-data/self-authoring/`. |
 | R15 | Keep the change releasable and auditable. | A patch changelog fragment, CI E2E step, issue/PR JSON, raw native dialogs, focused logs, and this case study ship with the fix. |
+| R16 | Generalize beyond hand-picked examples. | A Formal-AI-authored 56-case benchmark crosses en/ru/hi/zh, Desktop/home/current scopes, and file/directory kinds; its executable regression also pins the scope-kind ambiguity it uncovered. |

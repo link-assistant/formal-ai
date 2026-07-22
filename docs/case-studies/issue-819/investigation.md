@@ -61,6 +61,11 @@ is optional, but when present supplies `-type d` or `-type f`. This
 mandatory-scope rule is the main boundary that keeps “search the web” and “find
 information online” on the web path.
 
+Action and scope spans are removed from the remaining subject before kind
+classification. The 56-case benchmark exposed why this ordering matters:
+without it, the scope noun in “current directory” could override an explicit
+file cue such as “document” and incorrectly produce `-type d`.
+
 After removing action, scope, kind, and ordinary argument noise, the composer
 keeps at most eight alphanumeric query words. It emits the complete sequence
 first, then variants omitting one word when at least three words remain. That
@@ -94,12 +99,13 @@ instead.
 | Unit, exact prompt | Local Bash `find`, Desktop root, directory predicate, and query terms. |
 | Unit, executed fixture | The fuzzy command actually finds `Archive/hive-control-center`. |
 | Unit, vocabulary sweep | Every seeded action/scope/kind phrase reaches the intended root or predicate. |
+| 56-case benchmark | Four languages cross Desktop/home/current scopes and file/directory kinds without scope-kind collisions. |
 | Unit, negative web prompts | Open-world searches still use `websearch`. |
 | Native integration | Chat Completions, Anthropic Messages, and Responses emit their correct tool envelopes. |
 | Real CLI E2E | Agent, OpenCode, Claude, and Codex execute one `find`, return its output, and finish with the path. |
 | Synthetic TUI regression | PTY frames are rendered, globally deduplicated, and unrolled in order. |
 | Real OpenCode TUI | The exact prompt, command, tool result, and final path appear in rendered frames and server dialog records. |
-| Self-hosting | Formal AI drives Agent CLI through a concrete Write/read-back task and retains its plan and raw dialog. |
+| Self-hosting | Formal AI drives Agent CLI through a concrete Write/read-back task and authors the benchmark in five isolated, evidenced sessions. |
 
 The test root is intentionally random, so preserved E2E paths begin with
 `/tmp/tmp...`; the command's production fallback remains `$HOME/Desktop`, which

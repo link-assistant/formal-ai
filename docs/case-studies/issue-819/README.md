@@ -35,6 +35,13 @@ file and directory predicates; and English, Russian, Hindi, and Chinese action,
 scope, and kind phrases. An exhaustive unit regression walks every declared
 phrase. Open-web prompts without a local scope continue to use `websearch`.
 
+A 56-case benchmark crosses those four languages with all three scopes and both
+object kinds. Its first red run found a second, more general ambiguity:
+“current directory” supplied the scope but `directory` was also being reused as
+the requested object kind. Scope and action phrases are now removed before kind
+classification, so “find the product brief document in the current directory”
+correctly emits `-type f`.
+
 ## Reproduction and proof
 
 The pre-fix regression routed the exact prompt to `websearch` and failed all
@@ -65,6 +72,11 @@ Formal AI also drove Agent CLI in self-hosted mode to create
 the file back before completing. The raw plan, native client stream, server
 dialog, and server trace are retained under
 [`raw-data/self-authoring/`](raw-data/self-authoring/).
+
+Five further isolated self-hosted Agent CLI sessions authored and verified the
+[benchmark manifest](../../../data/benchmarks/local-path-discovery-suite.lino)
+and its English, Russian, Hindi, and Chinese partitions. Their native streams
+are preserved beside the original self-authoring evidence.
 
 See [requirements.md](requirements.md), [investigation.md](investigation.md),
 and [raw-data/README.md](raw-data/README.md) for the full trace.
