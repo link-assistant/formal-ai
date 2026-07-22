@@ -8,6 +8,8 @@ use std::process::Command;
 use clap::{Args, Subcommand, ValueEnum};
 use serde_json::Value;
 
+const ERROR_PLACEHOLDER: &str = "{error}";
+
 #[derive(Debug, Args)]
 pub struct ContextArgs {
     #[command(subcommand)]
@@ -162,7 +164,7 @@ fn opencode_context(
     if !result.status.success() {
         let diagnostic = String::from_utf8_lossy(&result.stderr);
         let message =
-            config("context_opencode_export_failed").replace("{error}", diagnostic.trim());
+            config("context_opencode_export_failed").replace(ERROR_PLACEHOLDER, diagnostic.trim());
         return Err(message.into());
     }
     Ok(String::from_utf8(result.stdout)?)

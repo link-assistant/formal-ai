@@ -10,6 +10,7 @@ use crate::dialog_log::DialogExchangeLog;
 
 /// Environment variable containing the complete per-dialog JSONL logs.
 pub const DIALOG_LOG_DIRECTORY_ENV: &str = "FORMAL_AI_DIALOG_LOG_DIR";
+const VARIABLE_PLACEHOLDER: &str = "{variable}";
 
 /// Resolve the server-log directory configured for this process.
 #[must_use]
@@ -23,7 +24,7 @@ pub fn load_conversation_context(dialog_id: &str) -> io::Result<Value> {
         io::Error::new(
             io::ErrorKind::NotFound,
             config("context_dialog_log_unavailable")
-                .replace("{variable}", DIALOG_LOG_DIRECTORY_ENV),
+                .replace(VARIABLE_PLACEHOLDER, DIALOG_LOG_DIRECTORY_ENV),
         )
     })?;
     load_conversation_context_from(&directory, dialog_id)

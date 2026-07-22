@@ -201,17 +201,21 @@ fn formal_ai_confirmation_submits_the_matching_context_for_learning() {
 
 #[test]
 fn report_confirmation_is_available_in_every_supported_language() {
-    for prompt in [
-        "Report this problem",
-        "Сообщи об этой проблеме",
-        "इस समस्या की रिपोर्ट करें",
-        "报告这个问题",
+    let english = ("Report this problem", "en");
+    for (prompt, language) in [
+        english,
+        ("Сообщи об этой проблеме", "ru"),
+        ("इस समस्या की रिपोर्ट करें", "hi"),
+        ("报告这个问题", "zh"),
     ] {
         let call = one_call(&[ChatMessage::user(prompt)], &["question", "bash"]);
-        assert_eq!(call.tool, "question", "prompt={prompt:?}");
+        assert_eq!(
+            call.tool, "question",
+            "language={language}, prompt={prompt:?}"
+        );
         assert!(
             call.arguments.contains("report_target"),
-            "prompt={prompt:?}"
+            "language={language}, prompt={prompt:?}"
         );
     }
 }

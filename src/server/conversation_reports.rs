@@ -5,6 +5,8 @@ use serde_json::json;
 use super::{error_response, json_response, links_notation_response, query_param, ApiHttpResponse};
 use crate::memory_sync::SyncStore;
 
+const ERROR_PLACEHOLDER: &str = "{error}";
+
 pub(super) fn handle_context_request(dialog_id: &str, query: &str) -> ApiHttpResponse {
     let mut context = match crate::conversation_context::load_conversation_context(dialog_id) {
         Ok(context) => context,
@@ -63,7 +65,7 @@ pub(super) fn handle_learning_request(dialog_id: &str) -> ApiHttpResponse {
         ),
         Err(error) => error_response(
             500,
-            &config("context_learning_failed").replace("{error}", &error.to_string()),
+            &config("context_learning_failed").replace(ERROR_PLACEHOLDER, &error.to_string()),
         ),
     }
 }
