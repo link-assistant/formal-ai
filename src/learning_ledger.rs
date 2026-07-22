@@ -25,7 +25,7 @@
 //! from the ledger the next time. Every field is a deterministic function of the
 //! repair case and the approval, so the ledger and its content id are reproducible.
 
-use std::fmt::Write as _;
+use std::{fmt::Write as _, sync::OnceLock};
 
 use crate::engine::stable_id;
 use crate::self_healing::{RepairCase, RepairOutcome};
@@ -326,7 +326,11 @@ pub fn canonical_ledger() -> LearningLedger {
 /// consulted; proposed or merely uploaded lessons never reach this path.
 #[must_use]
 pub fn approved_lesson_for(prompt: &str) -> Option<LedgerEntry> {
-    canonical_ledger().lesson_for(prompt).cloned()
+    static APPROVED_LEDGER: OnceLock<LearningLedger> = OnceLock::new();
+    APPROVED_LEDGER
+        .get_or_init(canonical_ledger)
+        .lesson_for(prompt)
+        .cloned()
 }
 
 fn normalise(prompt: &str) -> String {
