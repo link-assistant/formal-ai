@@ -11,6 +11,7 @@ use formal_ai::dialog_log::write_dialog_exchange;
 use formal_ai::json_lino::json_to_lino;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::server::handle_api_request;
+use links_notation::parse_lino as parse_canonical_lino;
 use serde_json::{json, Value};
 
 fn isolated_directory(test_name: &str) -> PathBuf {
@@ -108,6 +109,97 @@ fn github_report_asks_which_logs_to_include_before_filing() {
 }
 
 #[test]
+fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() {
+    let mut messages = vec![
+        ChatMessage::user("Run the failing reproduction"),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "old_run".to_owned(),
+            "bash".to_owned(),
+            r#"{"command":"false"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("old_run", "bash", "exit status 1"),
+        ChatMessage::user("Report issue"),
+    ];
+    messages.push(ChatMessage::tool_result(
+        "choose_target",
+        "request_user_input",
+        r#"{"report_target":"github_issue"}"#,
+    ));
+    messages.push(ChatMessage::tool_result(
+        "choose_contents",
+        "request_user_input",
+        r#"{"report_contents":"both_logs"}"#,
+    ));
+
+    let call = one_call(&messages, &["request_user_input", "bash"]);
+    assert_eq!(call.tool, "bash");
+    let command = arguments(&call)["command"].as_str().unwrap().to_owned();
+    assert!(
+        command.contains("/api/formal-ai/v1/conversations/"),
+        "{command}"
+    );
+    assert!(command.contains("include=both"), "{command}");
+    assert!(command.contains("formal-ai-context.lino"), "{command}");
+    assert!(command.contains("--body-file"), "{command}");
+    assert!(command.contains("head -c 12000"), "{command}");
+    assert!(!command.contains("exit status 1"), "{command}");
+}
+
+#[test]
+fn harness_export_waits_for_confirmation_and_ignores_prior_run_results() {
+    let messages = vec![
+        ChatMessage::user("Try a command"),
+        ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "old_run".to_owned(),
+            "bash".to_owned(),
+            r#"{"command":"pwd"}"#.to_owned(),
+        )]),
+        ChatMessage::tool_result("old_run", "bash", "/workspace"),
+        ChatMessage::user("Report"),
+        ChatMessage::user("Harness log"),
+    ];
+    let call = one_call(&messages, &["request_user_input", "bash"]);
+    let command = arguments(&call)["command"].as_str().unwrap().to_owned();
+    assert!(command.starts_with("formal-ai context export"), "{command}");
+    assert!(command.contains("--source harness"), "{command}");
+}
+
+#[test]
+fn server_log_confirmation_exports_only_the_matching_server_log() {
+    let messages = vec![
+        ChatMessage::user("A server response was incomplete"),
+        ChatMessage::user("Report"),
+        ChatMessage::user("Server log"),
+    ];
+    let call = one_call(&messages, &["request_user_input", "bash"]);
+    let command = arguments(&call)["command"].as_str().unwrap().to_owned();
+    assert!(
+        command.contains("/api/formal-ai/v1/conversations/"),
+        "{command}"
+    );
+    assert!(command.contains("include=server"), "{command}");
+    assert!(!command.contains("gh issue create"), "{command}");
+}
+
+#[test]
+fn formal_ai_confirmation_submits_the_matching_context_for_learning() {
+    let messages = vec![
+        ChatMessage::user("The answer omitted a required field"),
+        ChatMessage::user("Report"),
+        ChatMessage::user("Report to Formal AI"),
+    ];
+    let call = one_call(&messages, &["request_user_input", "bash"]);
+    let command = arguments(&call)["command"].as_str().unwrap().to_owned();
+    assert!(
+        command.contains("/api/formal-ai/v1/conversations/"),
+        "{command}"
+    );
+    assert!(command.contains("/learn"), "{command}");
+    assert!(command.contains("-X POST"), "{command}");
+    assert!(!command.contains("gh issue create"), "{command}");
+}
+
+#[test]
 fn report_confirmation_is_available_in_every_supported_language() {
     for prompt in [
         "Report this problem",
@@ -141,11 +233,12 @@ fn generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars() {
     assert_eq!(lino.matches("  message\n").count(), 2, "{lino}");
     assert_eq!(lino.matches("  part\n").count(), 2, "{lino}");
     assert!(!lino.contains("entry"), "{lino}");
-    assert!(lino.contains("\"scheme:value next cell\""), "{lino}");
+    assert!(lino.contains("\"scheme:value\\r\\nnext\\tcell\""), "{lino}");
     assert!(lino.contains("\"a:b\""), "{lino}");
-    assert!(lino.contains("base64:"), "{lino}");
+    assert!(lino.contains("b64:"), "{lino}");
     assert!(!lino.contains("messages 0"), "{lino}");
     assert!(!lino.contains("parts 0"), "{lino}");
+    parse_canonical_lino(&lino).expect("generic export must satisfy the canonical grammar");
 }
 
 static DIALOG_LOG_ENV_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
@@ -207,6 +300,7 @@ fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_
     )
     .expect("dialog log");
     let dialog_id = path.file_stem().unwrap().to_str().unwrap();
+    assert_eq!(dialog_id, "issue-822-full-context");
 
     let lino = handle_api_request(
         "GET",
@@ -230,6 +324,7 @@ fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_
             lino.body
         );
     }
+    parse_canonical_lino(&lino.body).expect("conversation export must be canonical LiNo");
 
     let json_response = handle_api_request(
         "GET",

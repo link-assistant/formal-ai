@@ -25,17 +25,6 @@ use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 5] = ["websearch", "webfetch", "read", "write", "bash"];
 
-/// GitHub rejects an issue body longer than this many *characters* — not bytes,
-/// which matters here because the reported session is in Russian and every
-/// Cyrillic character costs two bytes. The composed report must stay under it no
-/// matter how large the transcribed conversation is.
-const GITHUB_BODY_LIMIT: usize = 65_536;
-
-/// The length GitHub measures a body by.
-fn body_length(body: &str) -> usize {
-    body.chars().count()
-}
-
 fn plan(messages: &[ChatMessage]) -> AgenticPlan {
     plan_chat_step(messages, &TOOLS).expect("planner should recognise the task")
 }
@@ -94,21 +83,17 @@ fn scraped_page() -> String {
     page
 }
 
-/// The `gh issue create --body` argument the planner would run, unquoted.
-fn reported_body(messages: &[ChatMessage]) -> String {
-    let calls = tool_calls(messages);
+/// The confirmed `gh issue create` command the planner would run.
+fn report_command(messages: &[ChatMessage]) -> String {
+    let mut messages = messages.to_vec();
+    messages.push(ChatMessage::user("GitHub issue"));
+    messages.push(ChatMessage::user("Both logs"));
+    let calls = tool_calls(&messages);
     let command = arguments(&calls[0])["command"]
         .as_str()
         .expect("command string")
         .to_owned();
-    let body_flag = command
-        .find("--body '")
-        .expect("report command should carry a --body argument");
-    let quoted = &command[body_flag + "--body '".len()..];
-    let quoted = quoted
-        .strip_suffix('\'')
-        .expect("body argument should be single-quoted");
-    quoted.replace("'\\''", "'")
+    command
 }
 
 // Requirement 1: the research answer is a query-relevant extract, not a page dump.
@@ -293,114 +278,77 @@ mod multilingual_extraction {
     }
 }
 
-// Requirement 2: every transcribed turn stays inside its own attributed block.
+// Requirement 2 after #822: the issue command uploads the canonical complete
+// Links Notation context instead of rebuilding a lossy Markdown transcript.
 mod report_format {
     use super::*;
 
-    fn body_for(user: &str, assistant: &str) -> String {
+    fn command_for(user: &str, assistant: &str) -> String {
         let messages = vec![
             ChatMessage::user(user),
             ChatMessage::assistant(assistant),
             ChatMessage::user("report"),
         ];
-        reported_body(&messages)
+        report_command(&messages)
     }
 
     #[test]
-    fn a_multiline_turn_does_not_escape_its_block() {
-        // The reported body inlined this after `- **assistant:** `, so every line
-        // but the first rendered as top-level markdown.
-        let body = body_for(
+    fn a_multiline_turn_is_not_interpolated_into_the_shell_command() {
+        let command = command_for(
             "В каких странах есть частные космические компании?",
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
-        // Everything between the conversation heading and the closing footer is
-        // transcript, and none of it may render as top-level markdown.
-        let transcript = body
-            .split_once("### ")
-            .and_then(|(_, rest)| rest.split_once('\n'))
-            .map(|(_, rest)| rest)
-            .expect("body should carry a conversation heading")
-            .rsplit_once("\n\n")
-            .map(|(transcript, _footer)| transcript)
-            .expect("body should end with the footer");
-        for line in transcript.lines() {
-            let is_contained = line.trim().is_empty()
-                || line.starts_with("**")
-                || line.starts_with('>')
-                || line.starts_with('_');
-            assert!(
-                is_contained,
-                "every transcript line must stay inside an attributed block, \
-                 but this one escaped it: {line:?}\n---\n{body}"
-            );
-        }
+        assert!(!command.contains("# Обзор"), "{command}");
+        assert!(command.contains("curl -fsS"), "{command}");
+        assert!(command.contains("--body-file"), "{command}");
     }
 
     #[test]
-    fn each_turn_is_attributed_to_its_role() {
-        let body = body_for("first question\nsecond line", "an answer\nover two lines");
-        assert!(body.contains("**user:**"), "{body}");
-        assert!(body.contains("**assistant:**"), "{body}");
-        // Continuation lines belong to the turn that introduced them.
-        assert!(body.contains("> second line"), "{body}");
-        assert!(body.contains("> over two lines"), "{body}");
-    }
-
-    #[test]
-    fn a_huge_transcript_stays_within_the_github_body_limit() {
-        let body = body_for("why is this broken?", &scraped_page());
+    fn complete_context_is_requested_in_links_notation() {
+        let command = command_for("first question", "an answer");
+        assert!(command.contains("include=both"), "{command}");
         assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "body must fit GitHub's {GITHUB_BODY_LIMIT} character limit, got {}",
-            body_length(&body)
+            command.contains("formal-ai-report.XXXXXX.lino"),
+            "{command}"
         );
-        assert!(
-            body.contains("**assistant:**"),
-            "the trimmed transcript must still attribute the turn:\n{body}"
-        );
+        assert!(command.contains("```lino"), "{command}");
     }
 
     #[test]
-    fn an_exhausted_transcript_budget_says_so_instead_of_truncating_silently() {
-        // Many large turns cannot all be transcribed. The report must stop at a
-        // stated boundary rather than trailing off mid-conversation.
+    fn a_huge_transcript_does_not_grow_the_command() {
+        let short = command_for("why?", "brief");
+        let huge = command_for("why?", &scraped_page());
+        assert_eq!(short, huge, "conversation bytes belong in the context file");
+    }
+
+    #[test]
+    fn oversized_context_links_the_full_file_and_keeps_a_bounded_preview() {
         let mut messages = Vec::new();
         for _ in 0..12 {
             messages.push(ChatMessage::user(scraped_page()));
             messages.push(ChatMessage::assistant(scraped_page()));
         }
         messages.push(ChatMessage::user("report"));
-        let body = reported_body(&messages);
-
+        let command = report_command(&messages);
+        assert!(command.contains("wc -c"), "{command}");
+        assert!(command.contains("gh gist create"), "{command}");
+        assert!(command.contains("head -c 12000"), "{command}");
         assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "body must stay bounded, got {}",
-            body_length(&body)
-        );
-        assert!(
-            body.contains("trimmed to keep this report within GitHub"),
-            "an exhausted budget must be stated, not silent:\n{body}"
-        );
-        assert!(
-            body.trim_end()
-                .ends_with("Filed automatically by Formal AI in agentic mode."),
-            "the footer must still close a trimmed report:\n{body}"
+            command.contains("complete Links Notation context"),
+            "{command}"
         );
     }
 
     #[test]
-    fn the_intro_heading_and_footer_still_frame_the_transcript() {
-        let body = body_for("a question", "an answer");
+    fn the_intro_and_complete_context_heading_frame_the_upload() {
+        let command = command_for("a question", "an answer");
         assert!(
-            body.starts_with("Reported from an agentic session"),
-            "{body}"
+            command.contains("Reported from an agentic session"),
+            "{command}"
         );
-        assert!(body.contains("### Conversation"), "{body}");
         assert!(
-            body.trim_end()
-                .ends_with("Filed automatically by Formal AI in agentic mode."),
-            "{body}"
+            command.contains("### Complete agentic context"),
+            "{command}"
         );
     }
 }
@@ -427,21 +375,10 @@ mod reported_session {
         messages.push(ChatMessage::assistant(answer));
         messages.push(ChatMessage::user("report"));
 
-        let body = reported_body(&messages);
-        assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "reported body was {} characters",
-            body_length(&body)
-        );
-        assert!(
-            !body.contains("Главное меню"),
-            "the scraped navigation chrome must never reach the issue:\n{body}"
-        );
-        assert!(body.contains("**user:**"), "{body}");
-        assert!(body.contains("**assistant:**"), "{body}");
-        assert!(
-            body.contains("Частные космические компании работают в США"),
-            "the issue must show the answer under review:\n{body}"
-        );
+        let command = report_command(&messages);
+        assert!(!command.contains("Главное меню"), "{command}");
+        assert!(command.contains("include=both"), "{command}");
+        assert!(command.contains("gh issue create"), "{command}");
+        assert!(command.contains("--body-file"), "{command}");
     }
 }

@@ -1,4 +1,84 @@
 multilingual_responses
+  response response_agentic_report_target_question_en
+    intent agentic_report_target_question
+    language en
+    text "What would you like to report?"
+  response response_agentic_report_target_question_ru
+    intent agentic_report_target_question
+    language ru
+    text "Что вы хотите отправить?"
+  response response_agentic_report_target_question_hi
+    intent agentic_report_target_question
+    language hi
+    text "आप क्या रिपोर्ट करना चाहेंगे?"
+  response response_agentic_report_target_question_zh
+    intent agentic_report_target_question
+    language zh
+    text "您想报告什么?"
+  response response_agentic_report_target_options_en
+    intent agentic_report_target_options
+    language en
+    text "Harness log|Export the complete agentic harness log.||Server log|Export the matching Formal AI server log.||GitHub issue|File an issue with complete context.||Report to Formal AI|Store the report so this instance can learn."
+  response response_agentic_report_target_options_ru
+    intent agentic_report_target_options
+    language ru
+    text "Журнал агента|Экспортировать полный журнал агентного клиента.||Журнал сервера|Экспортировать соответствующий журнал сервера Formal AI.||Задача GitHub|Создать задачу с полным контекстом.||Сообщить Formal AI|Сохранить отчёт для обучения этого экземпляра."
+  response response_agentic_report_target_options_hi
+    intent agentic_report_target_options
+    language hi
+    text "एजेंट लॉग|पूरा एजेंटिक क्लाइंट लॉग निर्यात करें।||सर्वर लॉग|मिलता हुआ Formal AI सर्वर लॉग निर्यात करें।||GitHub समस्या|पूरे संदर्भ के साथ समस्या दर्ज करें।||Formal AI को रिपोर्ट|इस इंस्टेंस के सीखने के लिए रिपोर्ट सहेजें।"
+  response response_agentic_report_target_options_zh
+    intent agentic_report_target_options
+    language zh
+    text "代理日志|导出完整的代理客户端日志。||服务器日志|导出匹配的 Formal AI 服务器日志。||GitHub 问题|使用完整上下文创建问题。||报告给 Formal AI|保存报告供此实例学习。"
+  response response_agentic_report_contents_question_en
+    intent agentic_report_contents_question
+    language en
+    text "Which context should the GitHub issue include?"
+  response response_agentic_report_contents_question_ru
+    intent agentic_report_contents_question
+    language ru
+    text "Какой контекст включить в задачу GitHub?"
+  response response_agentic_report_contents_question_hi
+    intent agentic_report_contents_question
+    language hi
+    text "GitHub समस्या में कौन सा संदर्भ शामिल हो?"
+  response response_agentic_report_contents_question_zh
+    intent agentic_report_contents_question
+    language zh
+    text "GitHub 问题应包含哪些上下文?"
+  response response_agentic_report_contents_options_en
+    intent agentic_report_contents_options
+    language en
+    text "Both logs|Include harness and server logs; attach a trimmed preview and link the full context if too large.||Harness log|Include the complete harness conversation only.||Server log|Include the complete matching server log only."
+  response response_agentic_report_contents_options_ru
+    intent agentic_report_contents_options
+    language ru
+    text "Оба журнала|Включить журналы агента и сервера; приложить сокращённый фрагмент и ссылку на полный контекст, если он слишком большой.||Журнал агента|Включить только полный диалог агента.||Журнал сервера|Включить только полный соответствующий журнал сервера."
+  response response_agentic_report_contents_options_hi
+    intent agentic_report_contents_options
+    language hi
+    text "दोनों लॉग|एजेंट और सर्वर लॉग शामिल करें; बहुत बड़ा होने पर छोटा पूर्वावलोकन और पूरे संदर्भ का लिंक दें।||एजेंट लॉग|केवल पूरी एजेंट बातचीत शामिल करें।||सर्वर लॉग|केवल पूरा मिलता हुआ सर्वर लॉग शामिल करें।"
+  response response_agentic_report_contents_options_zh
+    intent agentic_report_contents_options
+    language zh
+    text "两个日志|包含代理和服务器日志;若内容过大则附上精简预览和完整上下文链接。||代理日志|仅包含完整代理对话。||服务器日志|仅包含完整的匹配服务器日志。"
+  response response_agentic_report_exported_en
+    intent agentic_report_exported
+    language en
+    text "Report context exported."
+  response response_agentic_report_exported_ru
+    intent agentic_report_exported
+    language ru
+    text "Контекст отчёта экспортирован."
+  response response_agentic_report_exported_hi
+    intent agentic_report_exported
+    language hi
+    text "रिपोर्ट का संदर्भ निर्यात किया गया।"
+  response response_agentic_report_exported_zh
+    intent agentic_report_exported
+    language zh
+    text "报告上下文已导出。"
   response response_mcp_instructions_en
     intent mcp_instructions
     language en

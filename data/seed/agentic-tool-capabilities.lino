@@ -65,4 +65,4 @@ agentic_tool_capabilities
   capability "view_image"
     aliases "view_image"
   capability "ask_user"
-    aliases "request_user_input"
+    aliases ("request_user_input" "question" "ask_user" "AskUserQuestion")

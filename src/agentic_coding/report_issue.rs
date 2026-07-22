@@ -1,69 +1,218 @@
-//! Turn a natural-language "report this on GitHub" request into a real
-//! `gh issue create` shell tool call (issue #687).
-//!
-//! In agentic mode Formal AI has no web UI, so the top-bar "Report issue" button
-//! is unreachable: the *only* way a user can file a report is by asking for it in
-//! natural language and having the planner drive the client's shell tool. This
-//! module recognises that intent from the conversation and composes the concrete
-//! `gh issue create` command (repository, title, body) the agentic loop runs.
-//!
-//! Split out of [`super::planner`] like [`super::shell_command`]: the detection
-//! and the command/answer composition live here; the capability-aware step
-//! sequencing (`run → final`) stays in the planner. Keeping the report vocabulary
-//! in one module also keeps the planner file under the repository line budget.
+//! Confirm and execute agentic report requests with complete context (#822).
 
 use serde_json::json;
 
 use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
-use crate::engine::normalize_prompt;
+use crate::engine::{normalize_prompt, stable_id};
 use crate::protocol::ChatMessage;
-use crate::seed;
+use crate::{language, seed};
 
-/// The Formal AI repository issues are filed against. Mirrors the `Tv` constant
-/// the web UI's "Report issue" button targets in `src/web/app.js`.
-fn formal_ai_repo() -> String {
-    config("repository")
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ReportTarget {
+    HarnessLog,
+    ServerLog,
+    GithubIssue,
+    FormalAi,
 }
 
-/// A recognised request to file a GitHub issue against the Formal AI repository.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub(super) struct ReportRequest {
-    /// The issue title, derived from the conversation.
-    pub(super) title: String,
-    /// The issue body, a deterministic transcript of the conversation.
-    pub(super) body: String,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ReportContents {
+    Both,
+    Harness,
+    Server,
 }
 
-impl ReportRequest {
-    /// The `gh issue create` command the agentic loop's shell tool runs. Title and
-    /// body are single-quote escaped so arbitrary conversation text survives the
-    /// shell intact.
-    pub(super) fn gh_command(&self) -> String {
-        format!(
-            "gh issue create --repo {} --title {} --body {}",
-            formal_ai_repo(),
-            shell_quote(&self.title),
-            shell_quote(&self.body),
-        )
-    }
-}
-
-/// Recognise a request to report/file an issue and compose it from the
-/// conversation, or [`None`] when the latest turn is not a report request.
-///
-/// The intent fires on the universal shape of an issue-filing request: a bare
-/// "report", or a report/file/open/submit verb paired with an issue noun
-/// (issue/bug/problem/…) or a repository reference (GitHub/repo). The title and
-/// body are then derived from the conversation so the filed issue is grounded in
-/// what the user was actually doing.
-pub(super) fn report_issue_request_for(
-    task: &str,
+/// Continue a report confirmation/execution flow, or return `None` when the
+/// conversation has no active report request.
+pub(super) fn plan_report_flow(
     messages: &[ChatMessage],
-) -> Option<ReportRequest> {
-    if !is_report_intent(task) {
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let report_index = messages.iter().rposition(|message| {
+        message.role.eq_ignore_ascii_case("user")
+            && is_report_intent(&message.content.user_request_text())
+    })?;
+    // A completed report remains in long-running agentic histories. Do not let
+    // it hijack later unrelated requests after the assistant acknowledged it.
+    if messages[report_index + 1..].iter().any(|message| {
+        message.role.eq_ignore_ascii_case("assistant")
+            && !message.content.plain_text().trim().is_empty()
+            && !is_report_question(&message.content.plain_text())
+    }) {
         return None;
     }
-    Some(compose_report(messages))
+    let report_prompt = messages[report_index].content.user_request_text();
+    let language = language::detect(&report_prompt).slug();
+    let choices = answer_texts(messages, report_index + 1);
+    let target = choices
+        .iter()
+        .find_map(|(index, text)| parse_target(text).map(|target| (target, *index)));
+
+    let Some((target, target_index)) = target else {
+        return Some(ask_or_render(
+            tool_names,
+            language,
+            "report_target",
+            "agentic_report_target_question",
+            "agentic_report_target_options",
+        ));
+    };
+
+    let contents = choices
+        .iter()
+        .filter(|(index, _)| *index >= target_index)
+        .find_map(|(_, text)| parse_contents(text));
+    if target == ReportTarget::GithubIssue && contents.is_none() {
+        return Some(ask_or_render(
+            tool_names,
+            language,
+            "report_contents",
+            "agentic_report_contents_question",
+            "agentic_report_contents_options",
+        ));
+    }
+
+    // Earlier harness commands are part of the context being reported, not the
+    // execution of this confirmation flow. Only inspect turns after "Report".
+    let progress = Progress::scan(&messages[report_index + 1..]);
+    if progress.done(Capability::Run) {
+        return Some(AgenticPlan::Final(report_finished(
+            target,
+            progress.run_output.as_deref().unwrap_or_default(),
+            language,
+        )));
+    }
+
+    let dialog_id = dialog_id(messages);
+    let command = command_for(
+        target,
+        contents.unwrap_or(ReportContents::Both),
+        messages,
+        report_index,
+        &dialog_id,
+    );
+    if let Some(tool) = tool_for(tool_names, Capability::Run) {
+        return Some(plan_one(tool, json!({"command": command}).to_string()));
+    }
+    Some(AgenticPlan::Final(render(
+        "issue_report_tool_missing",
+        &[("repository", &formal_ai_repo())],
+    )))
+}
+
+fn ask_or_render(
+    tool_names: &[&str],
+    language: &str,
+    id: &str,
+    question_intent: &str,
+    options_intent: &str,
+) -> AgenticPlan {
+    let question = localized(question_intent, language);
+    let options = localized_options(options_intent, language);
+    if let Some(tool) = tool_for(tool_names, Capability::AskUser) {
+        let options = options
+            .iter()
+            .map(|(label, description)| {
+                json!({
+                    "label": label,
+                    "description": description,
+                })
+            })
+            .collect::<Vec<_>>();
+        return plan_one(
+            tool,
+            json!({
+                "questions": [{
+                    "header": "Report",
+                    "id": id,
+                    "question": question,
+                    "options": options,
+                    "multiple": false,
+                }]
+            })
+            .to_string(),
+        );
+    }
+
+    let mut text = question;
+    for (index, (label, description)) in options.iter().enumerate() {
+        text.push_str(&format!("\n{}. {label} — {description}", index + 1));
+    }
+    AgenticPlan::Final(text)
+}
+
+fn localized(intent: &str, language: &str) -> String {
+    seed::response_for(intent, language)
+        .or_else(|| seed::response_for(intent, "en"))
+        .unwrap_or_default()
+}
+
+fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
+    localized(intent, language)
+        .split("||")
+        .filter_map(|entry| {
+            let (label, description) = entry.split_once('|')?;
+            Some((label.to_owned(), description.to_owned()))
+        })
+        .collect()
+}
+
+fn is_report_question(text: &str) -> bool {
+    ["en", "ru", "hi", "zh"].into_iter().any(|language| {
+        [
+            "agentic_report_target_question",
+            "agentic_report_contents_question",
+        ]
+        .into_iter()
+        .any(|intent| text.contains(&localized(intent, language)))
+    })
+}
+
+fn answer_texts(messages: &[ChatMessage], start: usize) -> Vec<(usize, String)> {
+    messages
+        .iter()
+        .enumerate()
+        .skip(start)
+        .filter(|(_, message)| {
+            message.role.eq_ignore_ascii_case("user") || message.role.eq_ignore_ascii_case("tool")
+        })
+        .map(|(index, message)| (index, message.content.plain_text()))
+        .collect()
+}
+
+fn parse_target(text: &str) -> Option<ReportTarget> {
+    if matches_option(text, "agentic_report_target_options", 2, "github_issue") {
+        return Some(ReportTarget::GithubIssue);
+    }
+    if matches_option(text, "agentic_report_target_options", 3, "formal_ai") {
+        return Some(ReportTarget::FormalAi);
+    }
+    if matches_option(text, "agentic_report_target_options", 0, "harness_log") {
+        return Some(ReportTarget::HarnessLog);
+    }
+    matches_option(text, "agentic_report_target_options", 1, "server_log")
+        .then_some(ReportTarget::ServerLog)
+}
+
+fn parse_contents(text: &str) -> Option<ReportContents> {
+    if matches_option(text, "agentic_report_contents_options", 0, "both_logs") {
+        return Some(ReportContents::Both);
+    }
+    if matches_option(text, "agentic_report_contents_options", 1, "harness_log") {
+        return Some(ReportContents::Harness);
+    }
+    matches_option(text, "agentic_report_contents_options", 2, "server_log")
+        .then_some(ReportContents::Server)
+}
+
+fn matches_option(text: &str, intent: &str, option_index: usize, machine_value: &str) -> bool {
+    let normalized = normalize_prompt(text);
+    normalized.contains(machine_value)
+        || ["en", "ru", "hi", "zh"].into_iter().any(|language| {
+            localized_options(intent, language)
+                .get(option_index)
+                .is_some_and(|(label, _)| normalized.contains(&normalize_prompt(label)))
+        })
 }
 
 /// Whether `task` asks to report/file an issue.
@@ -81,10 +230,6 @@ pub(super) fn is_report_intent(task: &str) -> bool {
             && report_action_governs_subject(lexicon, &normalized))
 }
 
-/// Require a report verb and issue/repository object to form one local phrase.
-/// Coding tasks often mention an existing issue elsewhere in a create-file
-/// request; treating those unrelated tokens as a report command creates a
-/// duplicate issue instead of authoring the requested file.
 fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> bool {
     let padded = format!(" {normalized} ");
     let matches_for = |role| {
@@ -131,151 +276,121 @@ fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> b
     })
 }
 
-/// Compose the issue from the conversation: a title from the most recent
-/// non-report user turn, a body that transcribes the exchange deterministically.
-fn compose_report(messages: &[ChatMessage]) -> ReportRequest {
-    let turns: Vec<(String, String)> = messages
-        .iter()
-        .filter(|m| m.role.eq_ignore_ascii_case("user") || m.role.eq_ignore_ascii_case("assistant"))
-        .map(|m| (m.role.to_lowercase(), m.content.plain_text()))
-        .filter(|(_, text)| !text.trim().is_empty())
-        .collect();
+fn command_for(
+    target: ReportTarget,
+    contents: ReportContents,
+    messages: &[ChatMessage],
+    report_index: usize,
+    dialog_id: &str,
+) -> String {
+    match target {
+        ReportTarget::GithubIssue => github_command(contents, messages, report_index, dialog_id),
+        ReportTarget::HarnessLog => format!(
+            "formal-ai context export --session {} --source harness",
+            shell_quote(dialog_id)
+        ),
+        ReportTarget::ServerLog => format!(
+            "base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
+             curl -fsS \"$base/api/formal-ai/v1/conversations/{dialog_id}?include=server\""
+        ),
+        ReportTarget::FormalAi => format!(
+            "base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
+             curl -fsS -X POST \"$base/api/formal-ai/v1/conversations/{dialog_id}/learn\""
+        ),
+    }
+}
 
-    // The subject is the most recent user turn that is not the report request
-    // itself; fall back to a generic title when the report stands alone.
-    let subject = turns
+fn github_command(
+    contents: ReportContents,
+    messages: &[ChatMessage],
+    report_index: usize,
+    dialog_id: &str,
+) -> String {
+    let include = match contents {
+        ReportContents::Both => "both",
+        ReportContents::Harness => "harness",
+        ReportContents::Server => "server",
+    };
+    let title = issue_title(messages, report_index);
+    let intro = config("issue_report_body_intro");
+    format!(
+        "set -eu; context_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.lino\"); \
+         body_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.md\"); \
+         trap 'rm -f \"$context_file\" \"$body_file\"' EXIT; \
+         base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
+         curl -fsS \"$base/api/formal-ai/v1/conversations/{dialog_id}?include={include}\" -o \"$context_file\"; \
+         printf '%s\\n' {} > \"$body_file\"; \
+         if [ \"$(wc -c < \"$context_file\")\" -le 50000 ]; then \
+           printf '\\n### Complete agentic context\\n\\n```lino\\n' >> \"$body_file\"; \
+           cat \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
+         else \
+           context_url=$(gh gist create --filename formal-ai-context.lino \"$context_file\"); \
+           printf '\\n### Agentic context\\n\\nThe complete Links Notation context is available at %s.\\n\\n```lino\\n' \"$context_url\" >> \"$body_file\"; \
+           head -c 12000 \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
+         fi; \
+         gh issue create --repo {} --title {} --body-file \"$body_file\"",
+        shell_quote(&intro),
+        formal_ai_repo(),
+        shell_quote(&title),
+    )
+}
+
+fn dialog_id(messages: &[ChatMessage]) -> String {
+    let basis = messages
+        .iter()
+        .find(|message| message.role.eq_ignore_ascii_case("user"))
+        .map(|message| message.content.user_request_text())
+        .unwrap_or_default();
+    stable_id("dialog", &basis)
+}
+
+fn issue_title(messages: &[ChatMessage], report_index: usize) -> String {
+    let subject = messages[..report_index]
         .iter()
         .rev()
-        .skip(1)
-        .find(|(role, _)| role == "user")
-        .map(|(_, text)| text.trim().to_owned());
-    let title = match subject.as_deref() {
-        Some(text) if !text.is_empty() => {
+        .find(|message| message.role.eq_ignore_ascii_case("user"))
+        .map(|message| message.content.user_request_text())
+        .filter(|text| !text.trim().is_empty());
+    subject.map_or_else(
+        || config("issue_report_default_title"),
+        |text| {
             format!(
                 "{}{}",
                 config("issue_report_title_prefix"),
-                truncate(text, 72)
+                truncate(&text, 72)
             )
-        }
-        _ => config("issue_report_default_title"),
-    };
-
-    let mut body = format!("{}\n\n", config("issue_report_body_intro"));
-    if turns.is_empty() {
-        body.push('_');
-        body.push_str(&config("issue_report_empty_history"));
-        body.push_str("_\n");
-    } else {
-        body.push_str("### ");
-        body.push_str(&config("issue_report_conversation_heading"));
-        body.push_str("\n\n");
-        transcribe(&mut body, &turns);
-    }
-    body.push('\n');
-    body.push_str(&config("issue_report_body_footer"));
-
-    ReportRequest { title, body }
+        },
+    )
 }
 
-/// GitHub rejects an issue body longer than 65536 characters, and a body that
-/// long is unreadable anyway. Budget the transcript well under the limit so the
-/// framing text, the shell escaping and a trimming notice all still fit.
-const TRANSCRIPT_BUDGET: usize = 48_000;
-
-/// The most of a single turn that is transcribed. A fetched web page arrives as
-/// one assistant turn; without a per-turn cap it would crowd out every other
-/// turn in the report (issue #771).
-const TURN_BUDGET: usize = 8_000;
-
-/// Append each turn as its own attributed block: a bold role label, then the
-/// turn's text as a blockquote.
-///
-/// The previous rendering inlined the text into a `- **role:** {text}` bullet.
-/// Any turn containing a newline — which every real assistant answer does —
-/// escaped the list item there, so the turn's own headings and lists rendered as
-/// top-level issue content and the role attribution was lost after the first
-/// line. Quoting every line, blank ones included, keeps a turn contained however
-/// it is formatted, and keeps the whole report inside the size budget.
-fn transcribe(body: &mut String, turns: &[(String, String)]) {
-    let mut budget = TRANSCRIPT_BUDGET;
-    for (role, text) in turns {
-        let block = quoted_turn(role, &truncate(text.trim(), TURN_BUDGET));
-        if block.chars().count() > budget {
-            body.push('_');
-            body.push_str(&config("issue_report_transcript_trimmed"));
-            body.push_str("_\n");
-            return;
-        }
-        budget -= block.chars().count();
-        body.push_str(&block);
-    }
-}
-
-/// One turn rendered as `**role:**` followed by its blockquoted text.
-fn quoted_turn(role: &str, text: &str) -> String {
-    let mut block = format!("**{role}:**\n\n");
-    for line in text.lines() {
-        let line = line.trim_end();
-        if line.is_empty() {
-            // A bare `>` keeps a paragraph break inside the quote instead of
-            // ending it, which is what a blank line would do.
-            block.push_str(">\n");
-        } else {
-            block.push_str("> ");
-            block.push_str(line);
-            block.push('\n');
-        }
-    }
-    block.push('\n');
-    block
-}
-
-/// The issue-#687 report-issue recipe step: turn a recognised report request into
-/// a real `gh issue create` shell tool call, then surface the created issue URL.
-/// Agentic mode has no Formal AI web UI, so the "Report issue" button is
-/// unreachable; this makes the same action available in natural language.
-pub(super) fn plan_report_issue_step(
-    messages: &[ChatMessage],
-    tool_names: &[&str],
-    request: &ReportRequest,
-) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    let command = request.gh_command();
-    if progress.done(Capability::Run) {
-        return AgenticPlan::Final(final_answer(
-            &command,
-            progress.run_output.as_deref().unwrap_or_default(),
-        ));
-    }
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        return plan_one(tool, json!({ "command": command }).to_string());
-    }
-    AgenticPlan::Final(render(
-        "issue_report_tool_missing",
-        &[("repository", &formal_ai_repo())],
-    ))
-}
-
-/// The confirmation shown once the client's shell tool reports back. Surfaces the
-/// created issue URL from the tool output when present.
-pub(super) fn final_answer(command: &str, run_output: &str) -> String {
+fn report_finished(target: ReportTarget, run_output: &str, language: &str) -> String {
     let trimmed = run_output.trim();
-    trimmed
-        .split_whitespace()
-        .find(|token| token.starts_with("https://") && token.contains("/issues/"))
-        .map_or_else(
-            || {
-                if trimmed.is_empty() {
-                    render("issue_report_ran_command", &[("command", command)])
-                } else {
-                    format!(
-                        "{}\n\n```text\n{trimmed}\n```",
-                        config("issue_report_created")
-                    )
-                }
-            },
-            |url| render("issue_report_created_with_url", &[("url", url)]),
-        )
+    if target == ReportTarget::GithubIssue {
+        if let Some(url) = trimmed
+            .split_whitespace()
+            .find(|token| token.starts_with("https://") && token.contains("/issues/"))
+        {
+            return render("issue_report_created_with_url", &[("url", url)]);
+        }
+        return if trimmed.is_empty() {
+            config("issue_report_created")
+        } else {
+            format!(
+                "{}\n\n```text\n{trimmed}\n```",
+                config("issue_report_created")
+            )
+        };
+    }
+    let exported = localized("agentic_report_exported", language);
+    if trimmed.is_empty() {
+        exported
+    } else {
+        format!("{exported}\n\n```text\n{trimmed}\n```")
+    }
+}
+
+fn formal_ai_repo() -> String {
+    config("repository")
 }
 
 fn config(key: &str) -> String {
@@ -290,18 +405,18 @@ fn render(key: &str, values: &[(&str, &str)]) -> String {
     })
 }
 
-/// Single-quote escape a value for a POSIX shell command line.
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
 
-/// Truncate to at most `max` characters on a char boundary, appending an ellipsis
-/// when shortened. Deterministic and Unicode-safe.
 fn truncate(value: &str, max: usize) -> String {
     let value = value.trim();
     if value.chars().count() <= max {
         return value.to_owned();
     }
-    let head: String = value.chars().take(max.saturating_sub(1)).collect();
+    let head = value
+        .chars()
+        .take(max.saturating_sub(1))
+        .collect::<String>();
     format!("{}…", head.trim_end())
 }

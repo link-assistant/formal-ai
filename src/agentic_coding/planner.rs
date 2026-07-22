@@ -90,6 +90,7 @@ pub enum Capability {
     Subagent,
     ReadMany,
     MultiEdit,
+    AskUser,
 }
 
 impl Capability {
@@ -113,6 +114,7 @@ impl Capability {
             Self::Subagent => "tool:capability:subagent",
             Self::ReadMany => "tool:capability:read_many",
             Self::MultiEdit => "tool:capability:multi_edit",
+            Self::AskUser => "tool:capability:ask_user",
         }
     }
 
@@ -131,6 +133,7 @@ impl Capability {
             Self::Subagent => "subagent",
             Self::ReadMany => "read_many",
             Self::MultiEdit => "multi_edit",
+            Self::AskUser => "ask_user",
         }
     }
 }
@@ -260,11 +263,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // Agent-mode counterpart of the web UI's report action (issue #687).
-    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
-        return Some(report_issue::plan_report_issue_step(
-            messages, tool_names, &request,
-        ));
+    // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
+    // This is a conversation state machine: after the initial report intent it
+    // continues across structured tool results or plain-text user choices.
+    if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
+        return Some(plan);
     }
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));

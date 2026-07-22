@@ -519,6 +519,7 @@ const fn capability_slug(capability: Capability) -> &'static str {
         Capability::Subagent => "Subagent",
         Capability::ReadMany => "ReadMany",
         Capability::MultiEdit => "MultiEdit",
+        Capability::AskUser => "AskUser",
     }
 }
 

@@ -4,13 +4,19 @@ use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan};
 use formal_ai::memory_sync::SyncStore;
 use formal_ai::protocol::{chat_tool_executions, ChatMessage, ToolCall};
 
+fn confirmed_github(mut messages: Vec<ChatMessage>) -> Vec<ChatMessage> {
+    messages.push(ChatMessage::user("GitHub issue"));
+    messages.push(ChatMessage::user("Both logs"));
+    messages
+}
+
 #[test]
 fn report_action_calls_gh_through_the_advertised_shell_tool() {
-    let messages = vec![
+    let messages = confirmed_github(vec![
         ChatMessage::user("How old are you?"),
         ChatMessage::assistant("I do not have an age. Use Report issue if this answer is wrong."),
         ChatMessage::user("Report"),
-    ];
+    ]);
 
     let plan = plan_chat_step(&messages, &["bash", "websearch"]);
     let Some(AgenticPlan::ToolCalls(calls)) = plan else {
@@ -20,22 +26,26 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
     assert_eq!(calls[0].tool, "bash");
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     let command = arguments["command"].as_str().unwrap();
-    assert!(command.starts_with("gh issue create "), "{command}");
+    assert!(command.starts_with("set -eu;"), "{command}");
     assert!(
         command.contains("--repo link-assistant/formal-ai"),
         "{command}"
     );
-    assert!(command.contains("How old are you?"), "{command}");
-    assert!(command.contains("I do not have an age."), "{command}");
+    assert!(
+        command.contains("/api/formal-ai/v1/conversations/"),
+        "{command}"
+    );
+    assert!(command.contains("include=both"), "{command}");
+    assert!(!command.contains("I do not have an age."), "{command}");
     assert!(!command.contains("websearch"), "{command}");
 }
 
 #[test]
 fn report_action_shell_quotes_apostrophes_in_conversation_history() {
-    let messages = vec![
+    let messages = confirmed_github(vec![
         ChatMessage::user("The answer isn't correct"),
         ChatMessage::user("Report"),
-    ];
+    ]);
 
     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) else {
         panic!("report action did not emit a shell call");
@@ -55,7 +65,7 @@ fn localized_report_actions_route_to_shell() {
     ];
 
     for (language, prompt) in cases {
-        let messages = vec![ChatMessage::user(prompt)];
+        let messages = confirmed_github(vec![ChatMessage::user(prompt)]);
         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["bash"]) else {
             panic!("{language} report action did not emit a shell call");
         };
@@ -68,6 +78,8 @@ fn localized_report_actions_route_to_shell() {
 fn report_action_finishes_with_the_issue_url_after_gh_returns() {
     let messages = vec![
         ChatMessage::user("Report issue"),
+        ChatMessage::user("GitHub issue"),
+        ChatMessage::user("Both logs"),
         ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             "report_1".to_owned(),
             "bash".to_owned(),
@@ -99,6 +111,8 @@ fn report_action_resolves_an_unnamed_tool_result_by_call_id() {
     result.name = None;
     let messages = vec![
         ChatMessage::user("Report issue"),
+        ChatMessage::user("GitHub issue"),
+        ChatMessage::user("Both logs"),
         ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             "report_1".to_owned(),
             "bash".to_owned(),
@@ -118,9 +132,16 @@ fn report_action_does_not_become_a_web_search_without_shell_access() {
     let messages = vec![ChatMessage::user("Report")];
     match plan_chat_step(&messages, &["websearch"]) {
         Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.to_ascii_lowercase().contains("shell"), "{answer}");
+            assert!(
+                answer.to_ascii_lowercase().contains("harness log"),
+                "{answer}"
+            );
+            assert!(
+                !answer.to_ascii_lowercase().contains("websearch"),
+                "{answer}"
+            );
         }
-        other => panic!("expected a shell-access explanation, got {other:?}"),
+        other => panic!("expected the report gating question, got {other:?}"),
     }
 }
 
