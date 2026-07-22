@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784693688781)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.52s
+     Running tests/integration/mod.rs (target/debug/deps/integration-08cfe3e7788ceb02)
+
+running 3 tests
+test issue_819_local_path_search::codex_responses_schema_receives_the_local_find_command ... ok
+test issue_819_local_path_search::claude_anthropic_schema_receives_the_local_find_command ... ok
+test issue_819_local_path_search::agent_and_opencode_chat_schemas_receive_the_local_find_command ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 166 filtered out; finished in 0.72s
