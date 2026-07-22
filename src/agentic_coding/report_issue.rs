@@ -127,7 +127,6 @@ fn ask_or_render(
                     "id": id,
                     "question": question,
                     "options": options,
-                    "multiple": false,
                 }]
             })
             .to_string(),
