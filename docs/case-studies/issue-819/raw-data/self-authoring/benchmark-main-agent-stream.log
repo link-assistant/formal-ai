@@ -333,4 +333,3 @@
 {"type":"log","level":"info","timestamp":"2026-07-22T06:25:07.157Z","service":"state","key":"/tmp/gh-issue-solver-1784693688781","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-07-22T06:25:07.158Z","service":"default","hasError":false,"uptimeSeconds":9,"message":"Agent exiting"}
-

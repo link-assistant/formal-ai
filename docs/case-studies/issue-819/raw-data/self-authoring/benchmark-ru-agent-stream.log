@@ -329,4 +329,3 @@
 {"type":"log","level":"info","timestamp":"2026-07-22T06:25:40.232Z","service":"state","key":"/tmp/gh-issue-solver-1784693688781","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-07-22T06:25:40.233Z","service":"default","hasError":false,"uptimeSeconds":6,"message":"Agent exiting"}
-
