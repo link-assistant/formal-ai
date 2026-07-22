@@ -1,4 +1,14 @@
 meanings
+  response_lexeme_import_no_clean_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias en"
+  response_lexeme_import_no_clean_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias hi"
   response_lexeme_import_no_clean_alias_ru
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "wikipedia summary endpoint template"
-  wikiversity
-    defined-by source
-    lexeme en
-      surface
-        text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"

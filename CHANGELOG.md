@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.301.1] - 2026-07-22
+
+### Fixed
+
+- Route local Desktop, home, and workspace path discovery through a bounded
+  client-side `find` command instead of web search, including multilingual
+  action/scope/kind phrases and fuzzy remembered names.
+
 ## [0.301.0] - 2026-07-20
 
 ### Added

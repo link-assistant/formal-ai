@@ -48,6 +48,17 @@ cat > opencode.json <<EOF
         "formal-ai": { "name": "Formal AI Symbolic Production" }
       }
     }
+  },
+  "mcp": {
+    "issue771": {
+      "type": "local",
+      "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
+      "enabled": true
+    }
+  },
+  "tools": {
+    "websearch": false,
+    "webfetch": false
   }
 }
 EOF
@@ -120,11 +131,8 @@ run_turn() {
 # report request and its two required confirmations.
 run_turn research "В каких странах есть частные космические компании?"
 
-# The fetched page is far larger than the client's context budget, so the client
-# prunes and summarizes the session before serving the next prompt -- and the
-# turn that triggers that pruning is consumed by it rather than reaching us.
-# That is client behaviour we do not control. The confirmations continue the
-# same session after any pruning while also exercising the issue #822 contract.
+# The report flow exercises both issue #822 confirmation gates in the same
+# session after deterministic fixture-backed research.
 run_turn report "report" --continue --no-fork
 run_turn report_destination "GitHub issue" --continue --no-fork
 run_turn report_context "Both logs" --continue --no-fork
@@ -173,14 +181,14 @@ else
 fi
 
 # Requirement 1: the answer under review is an extract, not the whole page. The
-# extract's exact content depends on what the live web returned, so the size
-# bound above is the assertion; the citation is reported for the log only.
+# extract's exact content is not part of this regression, so the size bound above
+# is the assertion; the citation is reported for the log only.
 grep -q 'Source:' <<<"$body" \
   && echo "-- transcribed answer cites its source" \
   || echo "-- note: no source citation in this run (search returned no URL)"
 
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
-searches="$(grep -c 'agentic_outcome: planned ToolCalls.*tool: "websearch"' "$LOG" || true)"
+searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
 [ "$searches" -ge 1 ] || fail "the question never reached websearch"
 
 echo "== issue #771 E2E OK: report body is $size characters and its LiNo context is contained ($posts rounds) =="

@@ -20,6 +20,9 @@
 #                 server trace (useful for proving exact harness-side commands).
 #   ARTIFACT_DIR  Optional directory receiving the server log, Agent CLI log,
 #                 and generated file after a successful live replay.
+#   RESEARCH_MCP_FIXTURE
+#                 Optional repository-relative path to a deterministic MCP
+#                 server that replaces Agent's hosted websearch/webfetch tools.
 #   ATTEMPTS      How many times to (re)drive the CLI before giving up (default: 5).
 #                 The third-party CLI is non-deterministic — see the retry note
 #                 below — so a stalled first attempt is retried, not fatal.
@@ -50,6 +53,18 @@ EXPECT_FILE="${EXPECT_FILE:-meanings-tomato-detail.lino}"
 EXPECT_TEXT="${EXPECT_TEXT:-томаты}"
 EXPECT_SERVER_TEXTS="${EXPECT_SERVER_TEXTS:-}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
+RESEARCH_MCP_FIXTURE="${RESEARCH_MCP_FIXTURE:-}"
+research_mcp_path=""
+if [ -n "$RESEARCH_MCP_FIXTURE" ]; then
+  case "$RESEARCH_MCP_FIXTURE" in
+    /*) research_mcp_path="$RESEARCH_MCP_FIXTURE" ;;
+    *) research_mcp_path="$ROOT/$RESEARCH_MCP_FIXTURE" ;;
+  esac
+  if [ ! -f "$research_mcp_path" ]; then
+    echo "!! research MCP fixture not found: $research_mcp_path" >&2
+    exit 1
+  fi
+fi
 # Minimum /v1/chat/completions round-trips the recipe must drive. The default (4)
 # fits the web recipes (search → fetch → write → verify → final = 5 posts). A
 # no-web recipe (e.g. the diagram task: write → verify → final = 3 posts) sets
@@ -87,6 +102,28 @@ cat > opencode.json <<EOF
 }
 EOF
 
+# Meaning-detail E2Es must exercise search and fetch, but Agent's built-in
+# `websearch` delegates to a hosted provider outside this repository. When a
+# fixture is requested, keep the full tool loop while replacing both built-ins
+# with repository-owned MCP tools. The normal harness path is unchanged.
+if [ -n "$RESEARCH_MCP_FIXTURE" ]; then
+  node - "$research_mcp_path" <<'NODE'
+const fs = require("node:fs");
+
+const configPath = "opencode.json";
+const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+config.mcp = {
+  agent_cli_e2e: {
+    type: "local",
+    command: ["node", process.argv[2]],
+    enabled: true,
+  },
+};
+config.tools = { websearch: false, webfetch: false };
+fs.writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
+NODE
+fi
+
 # FORMAL_AI_AGENT_MODE=1 flips the permission gate on for tool-call execution
 # (see AssociativePackage / permission_for_capability). FORMAL_AI_TRACE_REQUESTS=1
 # adds a request trace to the server log so a failed run has visible planner
@@ -107,11 +144,10 @@ fi
 echo "== server up on $PORT =="
 
 # `--disable-stdin` prevents the CLI from opening its interactive prompt (this
-# script drives a single prompt through). `--no-summarize-session` keeps the
-# round-trip on the formal-ai provider under test: the Agent CLI otherwise asks
-# an unrelated public model to summarize the completed session, so that
-# provider's availability can turn a successfully written artifact into exit
-# code 1. 180s is generous for a 4-step loop where each POST is deterministic
+# script drives a single prompt through). `--no-summarize-session` and
+# `--compaction-model same` keep the round-trip on the formal-ai provider under
+# test: Agent otherwise may call an unrelated hosted model between local tool
+# turns. 180s is generous for a 4-step loop where each POST is deterministic
 # and finishes in <100ms — the extra time absorbs npm-install setup on a cold CI
 # runner.
 #
@@ -132,6 +168,7 @@ for attempt in $(seq 1 "$ATTEMPTS"); do
     --prompt "$TASK" \
     --disable-stdin \
     --no-summarize-session \
+    --compaction-model same \
     --model "formal-ai/formal-ai" \
     > "$AGENT_LOG" 2>&1
   RC=$?

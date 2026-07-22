@@ -2,15 +2,17 @@ self_ast_census
   target src/seed/shell_intents.rs
   language rust
   fidelity signature
-  byte_len 6793
-  line_count 164
-  content_id source_module_9779032d5c881a61
-  symbol_count 7
+  byte_len 10147
+  line_count 237
+  content_id source_module_1f117977f5a11c2b
+  symbol_count 9
   symbols
     enum ShellIntentArgument 24 42
     struct ShellIntent 47 54
     struct WorkspaceCommands 58 67
-    struct ShellIntentVocabulary 72 84
-    function shell_intent_vocabulary 88 128
-    function parse_intent 131 148
-    function collect_language_values 152 164
+    struct LocalPathSearchScope 71 76
+    struct LocalPathSearchKind 80 85
+    struct ShellIntentVocabulary 90 110
+    function shell_intent_vocabulary 114 201
+    function parse_intent 204 221
+    function collect_language_values 225 237

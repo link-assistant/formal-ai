@@ -1,4 +1,14 @@
 meanings
+  wikiversity
+    defined-by source
+    lexeme en
+      surface
+        text "wikiversity"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"
   wiktionary
     defined-by source_kind
     lexeme en

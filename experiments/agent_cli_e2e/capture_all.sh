@@ -31,6 +31,7 @@ echo "# Real Agent CLI ↔ formal-ai E2E — live multi-recipe run"
 echo "# Captured $COMMIT on branch $BRANCH"
 echo "# $FA_VERSION | agent $AGENT_VERSION"
 echo "# Four recipe axes driven by the REAL @link-assistant/agent CLI over the OpenAI-compatible endpoint."
+echo "# Meaning search/fetch turns use the committed MCP fixture for reproducible Wikidata evidence."
 echo
 
 recipe() {
@@ -44,13 +45,15 @@ recipe() {
 recipe 1 4 "tomato meaning (search → fetch → write → verify → final)" \
   PORT=8768 \
   EXPECT_FILE=meanings-tomato-detail.lino \
-  EXPECT_TEXT=томаты
+  EXPECT_TEXT=томаты \
+  RESEARCH_MCP_FIXTURE=experiments/agent_cli_e2e/mock-meaning-mcp.mjs
 
 recipe 2 4 "potato meaning (different wording, same recipe)" \
   PORT=8769 \
   TASK="Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata." \
   EXPECT_FILE=meanings-potato-detail.lino \
-  EXPECT_TEXT=potatoes
+  EXPECT_TEXT=potatoes \
+  RESEARCH_MCP_FIXTURE=experiments/agent_cli_e2e/mock-meaning-mcp.mjs
 
 recipe 3 4 "generated diagrams (non-lexeme axis, no web step: write → verify → final)" \
   PORT=8770 \

@@ -1,0 +1,32 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784693688781)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 35.58s
+     Running tests/unit/mod.rs (target/debug/deps/unit-c5d3a26461fa5fa9)
+
+running 4 tests
+
+thread 'issue_819::reported_desktop_request_uses_find_instead_of_the_web' (13617) panicked at tests/unit/issue_819.rs:25:5:
+assertion `left == right` failed
+  left: "websearch"
+ right: "bash"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_819::reported_desktop_request_uses_find_instead_of_the_web ... FAILED
+
+thread 'issue_819::fuzzy_find_command_locates_the_reported_folder_name' (13614) panicked at tests/unit/issue_819.rs:75:49:
+shell command
+test issue_819::fuzzy_find_command_locates_the_reported_folder_name ... FAILED
+test issue_819::open_web_find_requests_still_use_web_search ... ok
+
+thread 'issue_819::local_path_discovery_generalizes_across_language_action_kind_and_scope' (13615) panicked at tests/unit/issue_819.rs:11:6:
+Locate quarterly-report.pdf on this computer
+test issue_819::local_path_discovery_generalizes_across_language_action_kind_and_scope ... FAILED
+
+failures:
+
+failures:
+    issue_819::fuzzy_find_command_locates_the_reported_folder_name
+    issue_819::local_path_discovery_generalizes_across_language_action_kind_and_scope
+    issue_819::reported_desktop_request_uses_find_instead_of_the_web
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 1956 filtered out; finished in 0.72s
+
+error: test failed, to rerun pass `--test unit`

@@ -19,15 +19,9 @@ mkdir -p "$FAKE_BIN"
 cd "$WORKDIR"
 
 # The context limit below is a HARNESS knob (the server never enforces it) and is
-# deliberately far larger than any real transcript. Run 29742025207 flaked here:
-# the research turn fetches LIVE web pages, so its transcript size depends on what
-# fec.gov / usatoday / wikipedia serve that day. Once the transcript crossed the
-# previous 200000-token limit's safety threshold, opencode summarised the session
-# mid-run and replaced the pending "Report this problem" prompt with its own
-# "Continue if you have next steps" continuation; the server logged
-# `fallthrough (task unrecognised)`, no `gh` ever ran, and the test failed for a
-# reason unrelated to the behaviour under test. Removing the compaction trigger
-# removes that live-content dependency.
+# deliberately far larger than the deterministic fixture transcript. This keeps
+# client-side compaction from replacing the pending report prompt, which would
+# test Agent's session maintenance instead of Formal AI's continued conversation.
 cat > opencode.json <<EOF
 {
   "\$schema": "https://opencode.ai/config.json",
@@ -46,6 +40,17 @@ cat > opencode.json <<EOF
         }
       }
     }
+  },
+  "mcp": {
+    "issue687": {
+      "type": "local",
+      "command": ["node", "$ROOT/experiments/agent_cli_e2e/mock-research-mcp.mjs"],
+      "enabled": true
+    }
+  },
+  "tools": {
+    "websearch": false,
+    "webfetch": false
   }
 }
 EOF
@@ -123,7 +128,7 @@ grep -q '999999' "$AGENT_LOG" \
 
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
 [ "$posts" -ge 11 ] || fail "expected at least 11 chat rounds, got $posts"
-searches="$(grep -c 'agentic_outcome: planned ToolCalls.*tool: "websearch"' "$LOG" || true)"
+searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
 [ "$searches" -ge 2 ] || fail "initial and contextual research did not both reach websearch"
 
 echo "== issue #687 E2E OK: report executed, recall retained context, follow-up researched it ($posts rounds) =="

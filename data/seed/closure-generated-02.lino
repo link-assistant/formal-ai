@@ -1,4 +1,9 @@
 meanings
+  lexeme_import_cannot_remove_stale
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot remove stale"
   lexeme_import_cannot_stage
     defined-by intent
     lexeme en
@@ -224,6 +229,11 @@ meanings
     lexeme en
       surface
         text "local shell"
+  locate
+    defined-by concept
+    lexeme en
+      surface
+        text "locate"
   ls
     defined-by concept
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase kak u tebya dela"
-  pattern_wellbeing_phrase_kak_u_vas_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u vas dela"
-  pattern_wellbeing_phrase_kak_vashi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak vashi dela"

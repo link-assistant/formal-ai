@@ -1,0 +1,18 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "formal-ai-issue-819-tui-proof",
+      "dependencies": {
+        "@xterm/headless": "6.0.0",
+        "command-stream": "0.14.1",
+      },
+    },
+  },
+  "packages": {
+    "@xterm/headless": ["@xterm/headless@6.0.0", "", {}, "sha512-5Yj1QINYCyzrZtf8OFIHi47iQtI+0qYFPHmouEfG8dHNxbZ9Tb9YGSuLcsEwj9Z+OL75GJqPyJbyoFer80a2Hw=="],
+
+    "command-stream": ["command-stream@0.14.1", "", {}, "sha512-08KAFC/g9YV4koVWk6Qu1Un2hZBCZ3jI8tXR1M24tSB1Ic+IoOLZN/kdg5aat4erHxZ/WIXSwUnhffIFfun01g=="],
+  }
+}
