@@ -429,6 +429,8 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
 /// exits before returning the tool result to Formal AI.
 #[test]
 fn agent_cli_e2e_disables_hosted_session_summarization() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let harness = fs::read_to_string(format!(
         "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
@@ -438,6 +440,20 @@ fn agent_cli_e2e_disables_hosted_session_summarization() {
     assert!(harness.contains(
         "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
     ));
+    assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
+
+    for script in ["run_issue_687.sh", "run_issue_771.sh", "run_issue_781.sh"] {
+        let research_harness =
+            fs::read_to_string(format!("{manifest_dir}/experiments/agent_cli_e2e/{script}"))
+                .expect("research E2E harness should be readable");
+
+        assert!(
+            research_harness.contains("mock-research-mcp.mjs")
+                && research_harness.contains("\"websearch\": false")
+                && research_harness.contains("\"webfetch\": false"),
+            "{script} must disable Agent's hosted research tools"
+        );
+    }
 }
 
 #[test]

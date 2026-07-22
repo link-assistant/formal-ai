@@ -1437,6 +1437,10 @@ jobs:
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
+    env:
+      # Keep every real Agent invocation inside this required gate local. Some
+      # issue-specific scripts do not pass the CLI's no-summary flag directly.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v6
 
