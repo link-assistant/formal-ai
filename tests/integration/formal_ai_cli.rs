@@ -51,7 +51,7 @@ fn cli_version_flag_prints_crate_version() {
 #[test]
 fn cli_chat_command_prints_text_response() {
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
-        .args(["chat", "--prompt", "Hi"])
+        .args(["--silent", "chat", "--prompt", "Hi"])
         .env_remove("FORMAL_AI_DEFINITION_FUSION")
         .output()
         .expect("failed to execute binary");
