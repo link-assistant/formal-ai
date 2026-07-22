@@ -204,7 +204,7 @@ fn local_path_discovery_benchmark_routes_every_case_to_find() {
             assert!(command.starts_with("find "), "{id}: {command}");
             match expected_root {
                 "CURRENT_DIRECTORY" => {
-                    assert!(command.starts_with("find \".\""), "{id}: {command}")
+                    assert!(command.starts_with("find \".\""), "{id}: {command}");
                 }
                 marker => assert!(command.contains(marker), "{id}: {command}"),
             }
