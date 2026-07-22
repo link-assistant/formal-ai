@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.302.0] - 2026-07-22
+
+### Added
+- Add confirmation-gated full-context agentic reports, a conversation-context API and CLI, deterministic JSON/OpenCode-to-Links-Notation adapters, and verbose-by-default diagnostics with an explicit `--silent` opt-out.
+
 ## [0.301.1] - 2026-07-22
 
 ### Fixed
