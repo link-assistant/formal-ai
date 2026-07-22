@@ -48,9 +48,14 @@ start_server() {
   local server_port="$1"
   local server_log="$2"
   local dialog_dir="$3"
+  # Private, empty memory per run so this server's memory-fed planning stays
+  # independent of what other E2E scripts recorded into the shared
+  # ~/.formal-ai/memory.lino (issue #828); FORMAL_AI_DREAMING=0 stops the
+  # background compaction thread from mutating it mid-run.
   FORMAL_AI_AGENT_MODE=1 \
     FORMAL_AI_TRACE_REQUESTS=1 \
     FORMAL_AI_DIALOG_LOG_DIR="$dialog_dir" \
+    FORMAL_AI_MEMORY_PATH="${server_log%/*}/memory.lino" FORMAL_AI_DREAMING=0 \
     "$BIN" serve --host 127.0.0.1 --port "$server_port" > "$server_log" 2>&1 &
   CURRENT_SERVER_PID=$!
   curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \

@@ -78,8 +78,13 @@ exit 2
 EOF
 chmod +x "$FAKE_BIN/gh"
 
+# Private, empty memory per run so the chat handler's memory-fed planning and the
+# `POST /v1/chat/completions` round count stay deterministic and independent of
+# what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
+# (issue #828). FORMAL_AI_DREAMING=0 stops background compaction of that file.
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+  FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 SERVER_PID=$!
 curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
