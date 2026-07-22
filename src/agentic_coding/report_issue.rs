@@ -9,6 +9,16 @@ use crate::engine::{normalize_prompt, stable_id};
 use crate::protocol::ChatMessage;
 use crate::{language, seed};
 
+const CONTEXT_EXPORT_COMMAND: &str = "formal-ai context export";
+const CONTEXT_SESSION_FLAG: &str = " --session ";
+const HARNESS_SOURCE_FLAG: &str = " --source harness";
+const BASE_URL_SETUP: &str =
+    "base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; ";
+const SERVER_CONTEXT_PREFIX: &str = "curl -fsS \"$base/api/formal-ai/v1/conversations/";
+const SERVER_CONTEXT_SUFFIX: &str = "?include=server\"";
+const LEARNING_CONTEXT_PREFIX: &str = "curl -fsS -X POST \"$base/api/formal-ai/v1/conversations/";
+const LEARNING_CONTEXT_SUFFIX: &str = "/learn\"";
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ReportTarget {
     HarnessLog,
@@ -149,12 +159,11 @@ fn localized(intent: &str, language: &str) -> String {
 }
 
 fn localized_options(intent: &str, language: &str) -> Vec<(String, String)> {
-    localized(intent, language)
-        .split("||")
-        .filter_map(|entry| {
-            let (label, description) = entry.split_once('|')?;
-            Some((label.to_owned(), description.to_owned()))
-        })
+    seed::response_values_for(intent, language)
+        .or_else(|| seed::response_values_for(intent, "en"))
+        .unwrap_or_default()
+        .chunks_exact(2)
+        .map(|pair| (pair[0].clone(), pair[1].clone()))
         .collect()
 }
 
@@ -286,19 +295,28 @@ fn command_for(
 ) -> String {
     match target {
         ReportTarget::GithubIssue => github_command(contents, messages, report_index, dialog_id),
-        ReportTarget::HarnessLog => format!(
-            "formal-ai context export --session {} --source harness",
-            shell_quote(dialog_id)
-        ),
-        ReportTarget::ServerLog => format!(
-            "base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
-             curl -fsS \"$base/api/formal-ai/v1/conversations/{dialog_id}?include=server\""
-        ),
-        ReportTarget::FormalAi => format!(
-            "base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
-             curl -fsS -X POST \"$base/api/formal-ai/v1/conversations/{dialog_id}/learn\""
-        ),
+        ReportTarget::HarnessLog => {
+            let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
+            command.push_str(CONTEXT_SESSION_FLAG);
+            command.push_str(&shell_quote(dialog_id));
+            command.push_str(HARNESS_SOURCE_FLAG);
+            command
+        }
+        ReportTarget::ServerLog => {
+            conversation_command(SERVER_CONTEXT_PREFIX, dialog_id, SERVER_CONTEXT_SUFFIX)
+        }
+        ReportTarget::FormalAi => {
+            conversation_command(LEARNING_CONTEXT_PREFIX, dialog_id, LEARNING_CONTEXT_SUFFIX)
+        }
     }
+}
+
+fn conversation_command(prefix: &str, dialog_id: &str, suffix: &str) -> String {
+    let mut command = BASE_URL_SETUP.to_owned();
+    command.push_str(prefix);
+    command.push_str(dialog_id);
+    command.push_str(suffix);
+    command
 }
 
 fn github_command(

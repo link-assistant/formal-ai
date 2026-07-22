@@ -35,6 +35,12 @@ agent_info
     value "Ran {command} to file the issue on GitHub."
   field issue_report_tool_missing
     value "I can report this to {repository} once the client advertises a shell tool."
+  field context_opencode_export_failed
+    value "OpenCode context export failed: {error}"
+  field context_dialog_log_unavailable
+    value "{variable} is not configured"
+  field context_learning_failed
+    value "Failed to record report: {error}"
   field web_research_no_content
     value "Research completed for {query}, but the tool returned no content."
   field web_research_source_label

@@ -161,9 +161,17 @@ fn opencode_context(
     let result = command.output()?;
     if !result.status.success() {
         let diagnostic = String::from_utf8_lossy(&result.stderr);
-        return Err(format!("OpenCode context export failed: {}", diagnostic.trim()).into());
+        let message =
+            config("context_opencode_export_failed").replace("{error}", diagnostic.trim());
+        return Err(message.into());
     }
     Ok(String::from_utf8(result.stdout)?)
+}
+
+fn config(key: &str) -> String {
+    formal_ai::seed::agent_info()
+        .remove(key)
+        .unwrap_or_else(|| key.to_owned())
 }
 
 fn read_input(path: &Path) -> Result<String, Box<dyn Error>> {

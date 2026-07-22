@@ -22,7 +22,8 @@ pub fn load_conversation_context(dialog_id: &str) -> io::Result<Value> {
     let directory = configured_dialog_log_directory().ok_or_else(|| {
         io::Error::new(
             io::ErrorKind::NotFound,
-            format!("{DIALOG_LOG_DIRECTORY_ENV} is not configured"),
+            config("context_dialog_log_unavailable")
+                .replace("{variable}", DIALOG_LOG_DIRECTORY_ENV),
         )
     })?;
     load_conversation_context_from(&directory, dialog_id)
@@ -96,13 +97,22 @@ pub fn load_conversation_context_from(directory: &Path, dialog_id: &str) -> io::
 #[must_use]
 pub fn conversation_context_to_lino(dialog_id: &str, context: &Value) -> String {
     let nested = crate::json_lino::json_to_lino(context);
-    let mut output = format!("conversation {dialog_id}\n");
+    let mut output = String::from("conversation");
+    output.push(' ');
+    output.push_str(dialog_id);
+    output.push('\n');
     for line in nested.lines() {
         output.push_str("  ");
         output.push_str(line);
         output.push('\n');
     }
     output
+}
+
+fn config(key: &str) -> String {
+    crate::seed::agent_info()
+        .remove(key)
+        .unwrap_or_else(|| key.to_owned())
 }
 
 fn extract_messages(body: &str) -> Option<Vec<Value>> {

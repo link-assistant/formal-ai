@@ -52,7 +52,7 @@ pub(super) fn handle_learning_request(dialog_id: &str) -> ApiHttpResponse {
     };
     let document = crate::conversation_context::conversation_context_to_lino(dialog_id, &context);
     let mut store = SyncStore::open();
-    match store.record_chat_exchange(&format!("agentic report {dialog_id}"), &document) {
+    match store.record_chat_exchange(&format!("agentic_report_{dialog_id}"), &document) {
         Ok(events_recorded) => json_response(
             200,
             &json!({
@@ -61,6 +61,15 @@ pub(super) fn handle_learning_request(dialog_id: &str) -> ApiHttpResponse {
                 "events_recorded": events_recorded,
             }),
         ),
-        Err(error) => error_response(500, &format!("failed to record report: {error}")),
+        Err(error) => error_response(
+            500,
+            &config("context_learning_failed").replace("{error}", &error.to_string()),
+        ),
     }
+}
+
+fn config(key: &str) -> String {
+    crate::seed::agent_info()
+        .remove(key)
+        .unwrap_or_else(|| key.to_owned())
 }
