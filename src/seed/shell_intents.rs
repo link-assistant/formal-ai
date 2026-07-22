@@ -95,6 +95,8 @@ pub struct ShellIntentVocabulary {
     pub argument_noise: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
+    /// Seed-defined portable command with root, predicate, and pattern slots.
+    pub local_path_search_command_template: String,
     /// Verbs that ask to discover a path by name.
     pub local_path_search_actions: Vec<String>,
     /// Local filesystem scope phrases and the roots they map to.
@@ -125,6 +127,8 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
             }
             "local_path_search" => {
+                vocab.local_path_search_command_template =
+                    group.find_child_value("command_template").to_owned();
                 vocab.local_path_search_actions = group
                     .children
                     .iter()

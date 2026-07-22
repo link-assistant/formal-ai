@@ -54,11 +54,12 @@ The associative seed now separates three axes:
 - local scope: Desktop, user home/computer, or current directory/workspace; and
 - object kind: directory or file.
 
-All natural-language cues live in `data/seed/shell-intents.lino`; Rust only
-parses associations and composes the command. A request must match an action and
-an explicit local scope. Kind is optional, but when present supplies `-type d`
-or `-type f`. This mandatory-scope rule is the main boundary that keeps “search
-the web” and “find information online” on the web path.
+All natural-language cues and the portable command template live in
+`data/seed/shell-intents.lino`; Rust only parses associations and fills the
+template slots. A request must match an action and an explicit local scope. Kind
+is optional, but when present supplies `-type d` or `-type f`. This
+mandatory-scope rule is the main boundary that keeps “search the web” and “find
+information online” on the web path.
 
 After removing action, scope, kind, and ordinary argument noise, the composer
 keeps at most eight alphanumeric query words. It emits the complete sequence

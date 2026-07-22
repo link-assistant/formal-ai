@@ -138,10 +138,16 @@ fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Opt
         .or_else(|| path_argument(prompt).map(|_| "-type f"))
         .map(|predicate| format!(" {predicate}"))
         .unwrap_or_default();
-    Some(format!(
-        "find \"{}\"{} \\( {} \\) -print -quit",
-        scope.0.root, predicate, patterns
-    ))
+    let template = &vocab.local_path_search_command_template;
+    if template.is_empty() {
+        return None;
+    }
+    Some(
+        template
+            .replace("{root}", &scope.0.root)
+            .replace("{predicate}", &predicate)
+            .replace("{patterns}", &patterns),
+    )
 }
 
 fn longest_contained<'a>(text: &str, candidates: &'a [String]) -> Option<&'a str> {

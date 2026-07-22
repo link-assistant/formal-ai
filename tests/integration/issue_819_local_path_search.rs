@@ -36,11 +36,11 @@ fn agent_and_opencode_chat_schemas_receive_the_local_find_command() {
             "model": "formal-ai",
             "messages": [{"role": "user", "content": PROMPT}],
             "tools": [
-                chat_tool(tool_name, schema),
-                chat_tool("websearch", web_search_schema())
+                chat_tool(tool_name, &schema),
+                chat_tool("websearch", &web_search_schema())
             ]
         });
-        let response = post("/v1/chat/completions", body);
+        let response = post("/v1/chat/completions", &body);
         let call = &response["choices"][0]["message"]["tool_calls"][0]["function"];
         assert_eq!(call["name"], tool_name, "{client}: {response}");
         let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
@@ -67,7 +67,7 @@ fn claude_anthropic_schema_receives_the_local_find_command() {
             "input_schema": web_search_schema()
         }]
     });
-    let response = post("/api/anthropic/v1/messages", body);
+    let response = post("/api/anthropic/v1/messages", &body);
     assert_eq!(response["stop_reason"], "tool_use", "{response}");
     let call = response["content"]
         .as_array()
@@ -99,7 +99,7 @@ fn codex_responses_schema_receives_the_local_find_command() {
             "parameters": web_search_schema()
         }]
     });
-    let response = post("/v1/responses", body);
+    let response = post("/v1/responses", &body);
     let call = response["output"]
         .as_array()
         .unwrap()
@@ -122,7 +122,7 @@ fn assert_find_command(value: &Value, client: &str) {
     assert!(!command.contains("websearch"), "{client}: {command}");
 }
 
-fn chat_tool(name: &str, parameters: Value) -> Value {
+fn chat_tool(name: &str, parameters: &Value) -> Value {
     json!({"type": "function", "function": {"name": name, "parameters": parameters}})
 }
 
@@ -134,7 +134,7 @@ fn web_search_schema() -> Value {
     })
 }
 
-fn post(path: &str, body: Value) -> Value {
+fn post(path: &str, body: &Value) -> Value {
     enable_http_agent_mode_for_current_process();
     let response = handle_api_request("POST", path, &body.to_string());
     assert_eq!(response.status_code, 200, "{}", response.body);

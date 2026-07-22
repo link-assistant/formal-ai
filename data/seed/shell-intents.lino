@@ -79,6 +79,7 @@ shell_intents
       scope 在源码中
       scope 在仓库中
   local_path_search
+    command_template "find \"{root}\"{predicate} \\( {patterns} \\) -print -quit"
     actions
       language en
         action find
