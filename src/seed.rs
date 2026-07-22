@@ -170,7 +170,8 @@ pub use roles::{
     ROLE_WIKIDATA_ENTITY_ANCHOR, ROLE_YEAR_UNIT_CUE,
 };
 pub use shell_intents::{
-    shell_intent_vocabulary, ShellIntent, ShellIntentArgument, ShellIntentVocabulary,
+    shell_intent_vocabulary, LocalPathSearchKind, LocalPathSearchScope, ShellIntent,
+    ShellIntentArgument, ShellIntentVocabulary,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
 pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};

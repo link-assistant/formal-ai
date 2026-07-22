@@ -19,8 +19,7 @@ fn first_tool_call(prompt: &str) -> (String, serde_json::Value) {
 
 #[test]
 fn reported_desktop_request_uses_find_instead_of_the_web() {
-    let (tool, arguments) =
-        first_tool_call("Find hive-mind-control center folder on my desktop");
+    let (tool, arguments) = first_tool_call("Find hive-mind-control center folder on my desktop");
 
     assert_eq!(tool, "bash");
     let command = arguments["command"].as_str().expect("shell command");
@@ -73,10 +72,8 @@ fn local_path_discovery_generalizes_across_language_action_kind_and_scope() {
 fn fuzzy_find_command_locates_the_reported_folder_name() {
     let (_, arguments) = first_tool_call("Find hive-mind-control center folder on my desktop");
     let command = arguments["command"].as_str().expect("shell command");
-    let fixture = std::env::temp_dir().join(format!(
-        "formal-ai-issue819-find-{}",
-        std::process::id()
-    ));
+    let fixture =
+        std::env::temp_dir().join(format!("formal-ai-issue819-find-{}", std::process::id()));
     let expected = fixture.join("Archive/hive-control-center");
     std::fs::create_dir_all(&expected).expect("reported folder fixture");
 

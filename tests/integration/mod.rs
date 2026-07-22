@@ -33,6 +33,7 @@ mod issue_754_cursor;
 mod issue_755_file_read_write;
 mod issue_758_capability_routing;
 mod issue_776_translation;
+mod issue_819_local_path_search;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

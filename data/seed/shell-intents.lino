@@ -78,6 +78,111 @@ shell_intents
       scope 在代码中
       scope 在源码中
       scope 在仓库中
+  local_path_search
+    actions
+      language en
+        action find
+        action locate
+        action "look for"
+        action "search for"
+      language ru
+        action найди
+        action найти
+        action отыщи
+      language hi
+        action खोजें
+        action ढूँढें
+      language zh
+        action 查找
+        action 搜索
+        action 定位
+    scopes
+      scope desktop
+        root "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}"
+        language en
+          cue "on my desktop"
+          cue "on the desktop"
+          cue "in my desktop"
+          cue "in the desktop"
+        language ru
+          cue "на моём рабочем столе"
+          cue "на моем рабочем столе"
+          cue "на рабочем столе"
+        language hi
+          cue "मेरे डेस्कटॉप पर"
+          cue "डेस्कटॉप पर"
+        language zh
+          cue 在我的桌面上
+          cue 在桌面上
+      scope home
+        root "${FORMAL_AI_HOME_DIR:-$HOME}"
+        language en
+          cue "on this computer"
+          cue "on my computer"
+          cue "on this machine"
+          cue "on my machine"
+          cue "in my home folder"
+        language ru
+          cue "на этом компьютере"
+          cue "на моём компьютере"
+          cue "в домашней папке"
+        language hi
+          cue "इस कंप्यूटर पर"
+          cue "मेरे कंप्यूटर पर"
+          cue "होम फ़ोल्डर में"
+        language zh
+          cue 在这台电脑上
+          cue 在我的电脑上
+          cue 在主文件夹中
+      scope current
+        root .
+        language en
+          cue "in this directory"
+          cue "in the current directory"
+          cue "in this folder"
+          cue "in the current folder"
+          cue "in this workspace"
+        language ru
+          cue "в этом каталоге"
+          cue "в текущем каталоге"
+          cue "в этой папке"
+        language hi
+          cue "इस निर्देशिका में"
+          cue "वर्तमान फ़ोल्डर में"
+        language zh
+          cue 在此目录中
+          cue 在当前目录中
+          cue 在此文件夹中
+    kinds
+      kind directory
+        predicate "-type d"
+        language en
+          cue folder
+          cue directory
+        language ru
+          cue папку
+          cue папка
+          cue каталог
+        language hi
+          cue फ़ोल्डर
+          cue निर्देशिका
+        language zh
+          cue 文件夹
+          cue 目录
+      kind file
+        predicate "-type f"
+        language en
+          cue file
+          cue document
+        language ru
+          cue файл
+          cue документ
+        language hi
+          cue फ़ाइल
+          cue दस्तावेज़
+        language zh
+          cue 文件
+          cue 文档
   workspace_commands
     workspace
       marker Cargo.toml

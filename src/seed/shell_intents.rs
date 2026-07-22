@@ -66,6 +66,24 @@ pub struct WorkspaceCommands {
     pub build: String,
 }
 
+/// One local filesystem scope and the shell root searched for that scope.
+#[derive(Debug, Clone, Default)]
+pub struct LocalPathSearchScope {
+    /// Shell expression used as the first `find` operand.
+    pub root: String,
+    /// Multilingual phrases that identify this as a local filesystem request.
+    pub cues: Vec<String>,
+}
+
+/// One requested filesystem object kind and its portable `find` predicate.
+#[derive(Debug, Clone, Default)]
+pub struct LocalPathSearchKind {
+    /// Predicate such as `-type d` or `-type f`.
+    pub predicate: String,
+    /// Multilingual nouns that identify the requested kind.
+    pub cues: Vec<String>,
+}
+
 /// The semantic shell-intent vocabulary: the ordered intent table plus the
 /// name-lead cue words that introduce a `NameLead` argument.
 #[derive(Debug, Clone, Default)]
@@ -77,6 +95,12 @@ pub struct ShellIntentVocabulary {
     pub argument_noise: Vec<String>,
     /// Phrases that distinguish repository/file search from internet search.
     pub local_search_scopes: Vec<String>,
+    /// Verbs that ask to discover a path by name.
+    pub local_path_search_actions: Vec<String>,
+    /// Local filesystem scope phrases and the roots they map to.
+    pub local_path_search_scopes: Vec<LocalPathSearchScope>,
+    /// File/folder kind phrases and their `find` predicates.
+    pub local_path_search_kinds: Vec<LocalPathSearchKind>,
     /// Workspace marker → test/install/build mappings in preference order.
     pub workspace_commands: Vec<WorkspaceCommands>,
     /// Intent → command mappings in declaration (most-specific-first) order.
@@ -99,6 +123,50 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
             }
             "local_search_scopes" => {
                 vocab.local_search_scopes = collect_language_values(group, "scope");
+            }
+            "local_path_search" => {
+                vocab.local_path_search_actions = group
+                    .children
+                    .iter()
+                    .find(|child| child.name == "actions")
+                    .map(|node| collect_language_values(node, "action"))
+                    .unwrap_or_default();
+                vocab.local_path_search_scopes = group
+                    .children
+                    .iter()
+                    .find(|child| child.name == "scopes")
+                    .map(|node| {
+                        node.children
+                            .iter()
+                            .filter(|child| child.name == "scope")
+                            .map(|scope| LocalPathSearchScope {
+                                root: scope.find_child_value("root").to_owned(),
+                                cues: collect_language_values(scope, "cue")
+                                    .into_iter()
+                                    .map(|cue| cue.to_lowercase())
+                                    .collect(),
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
+                vocab.local_path_search_kinds = group
+                    .children
+                    .iter()
+                    .find(|child| child.name == "kinds")
+                    .map(|node| {
+                        node.children
+                            .iter()
+                            .filter(|child| child.name == "kind")
+                            .map(|kind| LocalPathSearchKind {
+                                predicate: kind.find_child_value("predicate").to_owned(),
+                                cues: collect_language_values(kind, "cue")
+                                    .into_iter()
+                                    .map(|cue| cue.to_lowercase())
+                                    .collect(),
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
             }
             "workspace_commands" => {
                 vocab.workspace_commands = group
