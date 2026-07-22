@@ -11,6 +11,9 @@
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
+const ROOT_TEMPLATE_SLOT: &str = concat!("{", "root", "}");
+const PREDICATE_TEMPLATE_SLOT: &str = concat!("{", "predicate", "}");
+const PATTERNS_TEMPLATE_SLOT: &str = concat!("{", "patterns", "}");
 
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
@@ -33,10 +36,15 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
     let vocab = seed::terminal_command_vocabulary();
-    let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
+    let intent_vocab = seed::shell_intent_vocabulary();
+    let path_search = local_path_search_command(prompt, &intent_vocab);
+    let intent = intent_shell_command(prompt, &intent_vocab);
     let listing = asks_for_directory_listing(prompt);
     let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
-    let semantic = listing.then(|| String::from("ls")).or(intent);
+    let semantic = listing
+        .then(|| String::from("ls"))
+        .or(path_search)
+        .or(intent);
 
     if let Some(command) = prefixed_shell_command(prompt, &vocab) {
         let first = command
@@ -64,6 +72,93 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     semantic
         .or_else(|| named_shell_command(prompt, &vocab))
         .or_else(|| bare_shell_command(prompt, &vocab))
+}
+
+/// Resolve a natural-language local path lookup to one portable `find` command.
+///
+/// The action, scope and file-kind language all comes from the shell-intent seed.
+/// A local scope is mandatory, which preserves the boundary between requests such
+/// as "find a folder on my desktop" and open-web "find information" prompts.
+pub(super) fn local_path_search_command_for_task(prompt: &str) -> Option<String> {
+    local_path_search_command(prompt, &seed::shell_intent_vocabulary())
+}
+
+fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let action = longest_contained(&lower, &vocab.local_path_search_actions)?;
+    let scope = vocab
+        .local_path_search_scopes
+        .iter()
+        .flat_map(|scope| scope.cues.iter().map(move |cue| (scope, cue)))
+        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .max_by_key(|(_, cue)| cue.chars().count())?;
+    let mut subject = lower;
+    subject = subject.replace(action, " ");
+    subject = subject.replace(scope.1, " ");
+    let kind = vocab
+        .local_path_search_kinds
+        .iter()
+        .flat_map(|kind| kind.cues.iter().map(move |cue| (kind, cue)))
+        .filter(|(_, cue)| subject.contains(cue.as_str()))
+        .max_by_key(|(_, cue)| cue.chars().count());
+
+    if let Some((_, cue)) = kind {
+        subject = subject.replace(cue, " ");
+    }
+    let noise = vocab
+        .argument_noise
+        .iter()
+        .map(String::as_str)
+        .collect::<Vec<_>>();
+    let words = subject
+        .split(|character: char| !character.is_alphanumeric())
+        .filter(|word| !word.is_empty() && !noise.contains(word))
+        .take(8)
+        .collect::<Vec<_>>();
+    if words.is_empty() {
+        return None;
+    }
+
+    let mut variants = vec![words.clone()];
+    if words.len() >= 3 {
+        for omitted in 0..words.len() {
+            variants.push(
+                words
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(index, word)| (index != omitted).then_some(*word))
+                    .collect(),
+            );
+        }
+    }
+    let patterns = variants
+        .into_iter()
+        .map(|parts| format!("-iname '*{}*'", parts.join("*")))
+        .collect::<Vec<_>>()
+        .join(" -o ");
+    let predicate = kind
+        .map(|(kind, _)| kind.predicate.as_str())
+        .or_else(|| path_argument(prompt).map(|_| "-type f"))
+        .map(|predicate| format!(" {predicate}"))
+        .unwrap_or_default();
+    let template = &vocab.local_path_search_command_template;
+    if template.is_empty() {
+        return None;
+    }
+    Some(
+        template
+            .replace(ROOT_TEMPLATE_SLOT, &scope.0.root)
+            .replace(PREDICATE_TEMPLATE_SLOT, &predicate)
+            .replace(PATTERNS_TEMPLATE_SLOT, &patterns),
+    )
+}
+
+fn longest_contained<'a>(text: &str, candidates: &'a [String]) -> Option<&'a str> {
+    candidates
+        .iter()
+        .filter(|candidate| text.contains(candidate.as_str()))
+        .max_by_key(|candidate| candidate.chars().count())
+        .map(String::as_str)
 }
 
 fn strip_balanced_outer_quotes(prompt: &str) -> &str {

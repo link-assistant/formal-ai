@@ -984,6 +984,11 @@ meanings
     lexeme en
       surface
         text "hive mind"
+  home
+    defined-by concept
+    lexeme en
+      surface
+        text "home"
   how_it_works
     defined-by intent
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "lexeme import fetch failed"
-  lexeme_import_fetch_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch invalid json"

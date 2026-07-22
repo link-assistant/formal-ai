@@ -1,4 +1,14 @@
 meanings
+  pattern_wellbeing_phrase_privet_kak_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase privet kak dela"
+  pattern_wellbeing_phrase_sab_kaisa_chal_raha_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase sab kaisa chal raha hai hi"
   pattern_wellbeing_phrase_tum_kaise_ho_hi
     defined-by prompt_pattern
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import refused batch zh"
-  response_lexeme_import_reparse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed en"
-  response_lexeme_import_reparse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import reparse failed hi"

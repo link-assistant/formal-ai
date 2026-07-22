@@ -1,4 +1,14 @@
 meanings
+  response_lexeme_import_reparse_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed en"
+  response_lexeme_import_reparse_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import reparse failed hi"
   response_lexeme_import_reparse_failed_ru
     defined-by response_template
     lexeme en

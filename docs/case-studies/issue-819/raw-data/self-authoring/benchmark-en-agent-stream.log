@@ -1,0 +1,327 @@
+{"type":"config","level":"info","timestamp":"2026-07-22T06:25:29.231Z","service":"default","source":"lino-arguments (CLI args > env vars > .lenv > defaults)","config":{"verbose":false,"dryRun":false,"generateTitle":false,"outputResponseModel":true,"summarizeSession":false,"retryOnRateLimits":true,"compactJson":true,"configContent":"{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:9785/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formalai/formal-ai\"}","disableAutoupdate":false,"disablePrune":false,"enableExperimentalModels":false,"disableAutocompact":false,"experimental":false,"experimentalWatcher":false,"retryTimeout":604800,"maxRetryDelay":1200,"minRetryInterval":30,"streamChunkTimeoutMs":120000,"streamStepTimeoutMs":600000,"mcpDefaultToolCallTimeout":120000,"mcpMaxToolCallTimeout":600000,"verifyImagesAtReadTool":true,"readOnly":false,"permissionMode":"auto"},"message":"Agent configuration resolved"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.297Z","service":"default","version":"0.25.0","command":"/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --model formalai/formal-ai --permission-mode auto --output-format stream-json --compact-json --disable-stdin --no-summarize-session --prompt Create file data/benchmarks/local-path-discovery/en.lino containing\nlocal_path_search_case_en_desktop_directory_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find project-alpha folder on my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate quarterly-report.pdf file on this computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for invoices directory in this directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for tax-return document on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_file_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_file_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find release-notes file on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate archive folder in my home folder\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look_lower\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look_lower\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"look for build-output directory in the current folder\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search_machine\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search_machine\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"search for roadmap document on my machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_folder_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_folder_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find design-assets folder in my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_current_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate meeting-notes file in this workspace\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_search\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for client-records directory on this machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_document_look\n  record_type \"local_path_search_case\"\n  id \"en_current_document_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for product-brief document in the current directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_directory_find_article\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find_article\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find photo-library directory on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate_personal\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate_personal\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate budget-sheet file on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"","workingDirectory":"/tmp/gh-issue-solver-1784693688781","scriptPath":"/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","message":"Agent started"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.299Z","service":"default","directory":"/tmp/gh-issue-solver-1784693688781","message":"creating instance"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.307Z","service":"project","directory":"/tmp/gh-issue-solver-1784693688781","message":"fromDirectory"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.392Z","service":"project","status":"started","message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.399Z","service":"project","status":"completed","duration":7,"message":"git.rev-parse"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.448Z","service":"default","processArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--no-summarize-session","--prompt","Create file data/benchmarks/local-path-discovery/en.lino containing\nlocal_path_search_case_en_desktop_directory_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find project-alpha folder on my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate quarterly-report.pdf file on this computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for invoices directory in this directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for tax-return document on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_file_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_file_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find release-notes file on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate archive folder in my home folder\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look_lower\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look_lower\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"look for build-output directory in the current folder\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search_machine\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search_machine\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"search for roadmap document on my machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_folder_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_folder_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find design-assets folder in my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_current_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate meeting-notes file in this workspace\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_search\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for client-records directory on this machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_document_look\n  record_type \"local_path_search_case\"\n  id \"en_current_document_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for product-brief document in the current directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_directory_find_article\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find_article\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find photo-library directory on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate_personal\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate_personal\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate budget-sheet file on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\""],"bunArgv":["/home/box/.bun/bin/bun","/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js","--model","formalai/formal-ai","--permission-mode","auto","--output-format","stream-json","--compact-json","--disable-stdin","--no-summarize-session","--prompt","Create file data/benchmarks/local-path-discovery/en.lino containing\nlocal_path_search_case_en_desktop_directory_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find project-alpha folder on my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate quarterly-report.pdf file on this computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for invoices directory in this directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for tax-return document on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_file_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_file_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find release-notes file on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_locate\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate archive folder in my home folder\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_directory_look_lower\n  record_type \"local_path_search_case\"\n  id \"en_current_directory_look_lower\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"look for build-output directory in the current folder\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_document_search_machine\n  record_type \"local_path_search_case\"\n  id \"en_home_document_search_machine\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"search for roadmap document on my machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_folder_find\n  record_type \"local_path_search_case\"\n  id \"en_desktop_folder_find\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find design-assets folder in my desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_file_locate\n  record_type \"local_path_search_case\"\n  id \"en_current_file_locate\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate meeting-notes file in this workspace\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_directory_search\n  record_type \"local_path_search_case\"\n  id \"en_home_directory_search\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Search for client-records directory on this machine\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_current_document_look\n  record_type \"local_path_search_case\"\n  id \"en_current_document_look\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Look for product-brief document in the current directory\"\n  expected_root \"CURRENT_DIRECTORY\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_desktop_directory_find_article\n  record_type \"local_path_search_case\"\n  id \"en_desktop_directory_find_article\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Find photo-library directory on the desktop\"\n  expected_root \"FORMAL_AI_DESKTOP_DIR\"\n  expected_predicate \"-type d\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\"\nlocal_path_search_case_en_home_file_locate_personal\n  record_type \"local_path_search_case\"\n  id \"en_home_file_locate_personal\"\n  source \"self_authored_multilingual_variation\"\n  language \"en\"\n  prompt \"Locate budget-sheet file on my computer\"\n  expected_root \"FORMAL_AI_HOME_DIR\"\n  expected_predicate \"-type f\"\n  expected_tool \"bash\"\n  prohibited_tool \"websearch\""],"cliModelArg":"formalai/formal-ai","yargsModel":"formalai/formal-ai","message":"model resolution: argv sources"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.450Z","service":"default","rawModel":"formalai/formal-ai","providerID":"formalai","modelID":"formal-ai","message":"using explicit provider/model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.466Z","service":"provider","status":"started","message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.477Z","service":"config","path":"/home/box/.config/link-assistant-agent/config.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.487Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.json","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.490Z","service":"config","path":"/home/box/.config/link-assistant-agent/opencode.jsonc","message":"loading"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.524Z","service":"models.dev","path":"/home/box/.cache/link-assistant-agent/models.json","age":29689,"message":"cache is fresh, triggering background refresh"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.525Z","service":"models.dev","file":{},"message":"refreshing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.613Z","service":"provider","message":"init"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.702Z","service":"claude-oauth","path":"/home/box/.claude/.credentials.json","message":"credentials file not found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","providerID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","providerID":"formalai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","providerID":"@link-assistant","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","providerID":"opencode","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","providerID":"kilo","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.711Z","service":"provider","status":"completed","duration":245,"message":"state"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.713Z","service":"provider","modelID":"big-pickle","providerID":"opencode","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.713Z","service":"provider","modelID":"minimax-m2.5-free","providerID":"kilo","message":"resolved short model name (single match)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.714Z","service":"default","models":["opencode/big-pickle","kilo/minimax-m2.5-free","same"],"source":"default","message":"compaction models cascade configured"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.736Z","service":"server","method":"POST","path":"/session","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.736Z","service":"server","status":"started","method":"POST","path":"/session","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.742Z","service":"session","id":"ses_0777fd171ffevxlFxkgamiFjz5","version":"agent-cli-1.0.0","projectID":"2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","directory":"/tmp/gh-issue-solver-1784693688781","title":"New session - 2026-07-22T06:25:29.742Z","time":{"created":1784701529742,"updated":1784701529742},"message":"created"}
+
+{"type":"session.created","level":"info","timestamp":"2026-07-22T06:25:29.743Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-22T06:25:29.744Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.745Z","service":"server","status":"completed","duration":9,"method":"POST","path":"/session","message":"request"}
+{"type":"*","level":"info","timestamp":"2026-07-22T06:25:29.746Z","service":"bus","message":"subscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.748Z","service":"server","method":"POST","path":"/session/ses_0777fd171ffevxlFxkgamiFjz5/message","message":"request"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.749Z","service":"server","status":"started","method":"POST","path":"/session/ses_0777fd171ffevxlFxkgamiFjz5/message","message":"request"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.769Z","service":"server","status":"completed","duration":21,"method":"POST","path":"/session/ses_0777fd171ffevxlFxkgamiFjz5/message","message":"request"}
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:29.791Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:29.799Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-22T06:25:29.803Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.808Z","service":"session.prompt","step":0,"sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.826Z","service":"session.prompt","hint":"Enable with --generate-title flag or AGENT_GENERATE_TITLE=true","message":"title generation disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.826Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","step":1,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.831Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.835Z","service":"provider","status":"started","providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.835Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.836Z","service":"provider","providerID":"formalai","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.836Z","service":"provider","status":"completed","duration":1,"providerID":"formalai","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"provider","providerID":"formalai","modelID":"formal-ai","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"getModel"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"provider","status":"started","providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","globalVerboseFetchInstalled":true,"verboseAtCreation":false,"message":"provider SDK fetch chain configured"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.838Z","service":"provider","providerID":"opencode","pkg":"@ai-sdk/openai-compatible","message":"using bundled provider (no installation needed)"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.839Z","service":"provider","status":"completed","duration":1,"providerID":"opencode","message":"getSDK"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:29.840Z","service":"provider","providerID":"opencode","modelID":"big-pickle","message":"found"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:30.762Z","service":"token","message":"loaded gpt-tokenizer (o200k_base)"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:30.780Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:30.782Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784693688781","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.070Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-22T06:25:31.090Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.122Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.123Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-22T06:25:31.123Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-22T06:25:31.124Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.331Z","service":"snapshot","hash":"baf76c4575ff471b14b7e6e9b10fa37beb5c3026\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.334Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-22T06:25:31.335Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.338Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.344Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:31.344Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888034cb001s0JKJ8k3YW5NsC"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.348Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:31.348Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888034cb001s0JKJ8k3YW5NsC"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.364Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:31.364Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888034cb001s0JKJ8k3YW5NsC"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.366Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-22T06:25:31.366Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","role":"assistant","content":[{"type":"text","text":"I'll use write on .formal-ai/general-change-plan.lino so I can verify the next step before continuing."}]}
+{"type":"log","level":"warn","timestamp":"2026-07-22T06:25:31.380Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19762,"output":13278,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19762,"sseCompletionTokens":13278,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.499Z","service":"snapshot","hash":"657580a2344ba448656eb94b15fc3e08619b086e\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.505Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-22T06:25:31.505Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","status":"success","duration_ms":1759}
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.505Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:31.634Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.636Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.656Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.656Z","service":"session.prompt","step":1,"sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.689Z","service":"session.prompt","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.689Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","step":2,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.689Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.692Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.692Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":33040,"providerTokens":33040,"estimatedInputTokens":1248,"usingEstimate":false,"tokensBreakdown":{"input":19762,"cacheRead":0,"output":13278},"overflow":false,"headroom":18768,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.693Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.693Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784693688781","limit":200,"message":"tree"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-22T06:25:31.704Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-22T06:25:31.705Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:31.708Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.708Z","service":"session.summary","hint":"Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true","message":"session summarization disabled"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:31.832Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-22T06:25:31.840Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.058Z","service":"snapshot","hash":"493afb8f394a092da409989815c203a6ed4cb7ea\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.060Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-22T06:25:32.060Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.064Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.065Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.065Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888037a0001E203pDDCSnMf17"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.066Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.066Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888037a0001E203pDDCSnMf17"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.070Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.070Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f888037a0001E203pDDCSnMf17"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.071Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-22T06:25:32.071Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","role":"assistant","content":[{"type":"text","text":"I'll use write on data/benchmarks/local-path-discovery/en.lino so I can verify the next step before continuing."}]}
+{"type":"log","level":"warn","timestamp":"2026-07-22T06:25:32.071Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19864,"output":5660,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19864,"sseCompletionTokens":5660,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.180Z","service":"snapshot","hash":"123291ee4b4ce60301c98e79f4c870eac37258a8\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.181Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-22T06:25:32.181Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","status":"success","duration_ms":2435}
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:32.182Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.330Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:32.333Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:32.356Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.356Z","service":"session.prompt","step":2,"sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.383Z","service":"session.prompt","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.384Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","step":3,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.384Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.386Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.386Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":25524,"providerTokens":25524,"estimatedInputTokens":1273,"usingEstimate":false,"tokensBreakdown":{"input":19864,"cacheRead":0,"output":5660},"overflow":false,"headroom":26284,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:32.387Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.387Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784693688781","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.541Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-22T06:25:32.544Z","service":"bus","message":"publishing"}
+
+{"type":"session.updated","level":"info","timestamp":"2026-07-22T06:25:32.603Z","service":"bus","message":"publishing"}
+
+{"type":"session.diff","level":"info","timestamp":"2026-07-22T06:25:32.604Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.790Z","service":"snapshot","hash":"41e6327c634135ea1ab07f26d843263b7b5d6ec4\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.792Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-22T06:25:32.792Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.794Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.795Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.795Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f88803a7a001h7qeW4FVbZNYTA"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.797Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.797Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f88803a7a001h7qeW4FVbZNYTA"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.801Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-22T06:25:32.801Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","role":"assistant","content":[{"type":"text","text":"I'll use bash on cat data/benchmarks/local-path-discovery/en.lino so I can verify the next step before continuing."}]}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.802Z","service":"bus","message":"publishing"}
+
+{"type":"tool_use","timestamp":"2026-07-22T06:25:32.802Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","name":"unknown","input":{},"tool_use_id":"prt_f88803a7a001h7qeW4FVbZNYTA"}
+{"type":"log","level":"warn","timestamp":"2026-07-22T06:25:32.803Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":19975,"output":180,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":19975,"sseCompletionTokens":180,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:32.918Z","service":"snapshot","hash":"86781f84f18e3d3e28527a7e033d93c4108089f3\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:32.919Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-22T06:25:32.919Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","status":"success","duration_ms":3173}
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:32.920Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.061Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.062Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.064Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.065Z","service":"session.prompt","step":3,"sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.121Z","service":"session.prompt","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","finishReason":"unknown","zeroTokens":false,"hint":"Provider returned undefined finishReason but made tool calls","message":"continuing loop despite unknown finish reason - tool calls detected"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.121Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","step":4,"message":"resolving model"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.121Z","service":"session.prompt","providerID":"formalai","modelID":"formal-ai","resolvedModelID":"formal-ai","message":"model resolved successfully"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.123Z","service":"session.compaction","baseModelContextLimit":60000,"compactionModelContextLimit":200000,"message":"compaction model has larger context — using full base model context"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.123Z","service":"session.compaction","modelID":"formal-ai","contextLimit":60000,"outputLimit":8192,"usableContextWindow":51808,"safeLimit":51808,"safetyMarginRatio":1,"compactionModelID":"big-pickle","compactionModelContextLimit":200000,"currentTokens":20155,"providerTokens":20155,"estimatedInputTokens":2509,"usingEstimate":false,"tokensBreakdown":{"input":19975,"cacheRead":0,"output":180},"overflow":false,"headroom":31653,"message":"overflow check"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.124Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.124Z","service":"ripgrep","cwd":"/tmp/gh-issue-solver-1784693688781","limit":200,"message":"tree"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.264Z","service":"session.processor","message":"process"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-22T06:25:33.267Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.667Z","service":"snapshot","hash":"d6877d8d3795248974b4cc0528177f38aa7722d4\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.670Z","service":"bus","message":"publishing"}
+
+{"type":"init","timestamp":"2026-07-22T06:25:33.670Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5"}
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.671Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.673Z","service":"bus","message":"publishing"}
+
+{"type":"message","timestamp":"2026-07-22T06:25:33.673Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","role":"assistant","content":[{"type":"text","text":"Completed the general change request for data/benchmarks/local-path-discovery/en.lino and verified it with `cat data/benchmarks/local-path-discovery/en.lino`.\n\nPlan event (.formal-ai/general-change-plan.lino):\n\ngeneral_change_plan\n  id \"general_change_plan_903ff95609fed343\"\n  goal \"Create file data/benchmarks/local-path-discovery/en.lino containing\\nlocal_path_search_case_en_desktop_directory_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_directory_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find project-alpha folder on my desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_file_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_file_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate quarterly-report.pdf file on this computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_directory_look\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_directory_look\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Look for invoices directory in this directory\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_document_search\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_document_search\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Search for tax-return document on my computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_file_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_file_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find release-notes file on the desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_directory_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_directory_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate archive folder in my home folder\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_directory_look_lower\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_directory_look_lower\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"look for build-output directory in the current folder\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_document_search_machine\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_document_search_machine\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"search for roadmap document on my machine\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_folder_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_folder_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find design-assets folder in my desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_file_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_file_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate meeting-notes file in this workspace\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_directory_search\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_directory_search\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Search for client-records directory on this machine\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_document_look\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_document_look\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Look for product-brief document in the current directory\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_directory_find_article\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_directory_find_article\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find photo-library directory on the desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_file_locate_personal\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_file_locate_personal\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate budget-sheet file on my computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\"\n  target \"data/benchmarks/local-path-discovery/en.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_0c8287280d8ae505\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to data/benchmarks/local-path-discovery/en.lino\"\n    expected_evidence \"workspace file data/benchmarks/local-path-discovery/en.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"local_path_search_case_en_desktop_directory_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_directory_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find project-alpha folder on my desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_file_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_file_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate quarterly-report.pdf file on this computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_directory_look\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_directory_look\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Look for invoices directory in this directory\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_document_search\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_document_search\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Search for tax-return document on my computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_file_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_file_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find release-notes file on the desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_directory_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_directory_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate archive folder in my home folder\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_directory_look_lower\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_directory_look_lower\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"look for build-output directory in the current folder\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_document_search_machine\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_document_search_machine\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"search for roadmap document on my machine\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_folder_find\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_folder_find\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find design-assets folder in my desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_file_locate\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_file_locate\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate meeting-notes file in this workspace\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_directory_search\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_directory_search\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Search for client-records directory on this machine\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_current_document_look\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_current_document_look\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Look for product-brief document in the current directory\\\"\\n  expected_root \\\"CURRENT_DIRECTORY\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_desktop_directory_find_article\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_desktop_directory_find_article\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Find photo-library directory on the desktop\\\"\\n  expected_root \\\"FORMAL_AI_DESKTOP_DIR\\\"\\n  expected_predicate \\\"-type d\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\\nlocal_path_search_case_en_home_file_locate_personal\\n  record_type \\\"local_path_search_case\\\"\\n  id \\\"en_home_file_locate_personal\\\"\\n  source \\\"self_authored_multilingual_variation\\\"\\n  language \\\"en\\\"\\n  prompt \\\"Locate budget-sheet file on my computer\\\"\\n  expected_root \\\"FORMAL_AI_HOME_DIR\\\"\\n  expected_predicate \\\"-type f\\\"\\n  expected_tool \\\"bash\\\"\\n  prohibited_tool \\\"websearch\\\"\"\n    command \"cat data/benchmarks/local-path-discovery/en.lino\"\n  verification_command \"cat data/benchmarks/local-path-discovery/en.lino\""}]}
+{"type":"log","level":"warn","timestamp":"2026-07-22T06:25:33.673Z","service":"session.processor","providerID":"formalai","requestedModelID":"formal-ai","recoveredTokens":{"input":25170,"output":11985,"reasoning":0,"cache":{"write":0,"read":0}},"recoveredCost":0,"ssePromptTokens":25170,"sseCompletionTokens":11985,"issue":"https://github.com/link-assistant/agent/issues/249","message":"recovered usage from raw SSE stream — AI SDK dropped token data"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.799Z","service":"snapshot","hash":"6aa01f1f7d523d2eb50b34cedb0a39ea31fa2d96\n","cwd":"/tmp/gh-issue-solver-1784693688781","git":"/home/box/.local/share/link-assistant-agent/snapshot/2fe11d0942a897d66dd6f5ead77f8b0c3ac6935b","message":"tracking"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.800Z","service":"bus","message":"publishing"}
+
+{"type":"result","timestamp":"2026-07-22T06:25:33.800Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5","status":"success","duration_ms":4054}
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.801Z","service":"bus","message":"publishing"}
+
+{"type":"message.part.updated","level":"info","timestamp":"2026-07-22T06:25:33.931Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.932Z","service":"bus","message":"publishing"}
+
+{"type":"message.updated","level":"info","timestamp":"2026-07-22T06:25:33.938Z","service":"bus","message":"publishing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.938Z","service":"session.prompt","step":4,"sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.970Z","service":"session.prompt","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"exiting loop"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.971Z","service":"session.compaction","message":"pruning"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:33.998Z","service":"session.prompt","sessionID":"ses_0777fd171ffevxlFxkgamiFjz5","message":"cancel"}
+
+{"type":"session.status","level":"info","timestamp":"2026-07-22T06:25:33.999Z","service":"bus","message":"publishing"}
+
+{"type":"session.idle","level":"info","timestamp":"2026-07-22T06:25:33.999Z","service":"bus","message":"publishing"}
+
+{"type":"idle","timestamp":"2026-07-22T06:25:33.999Z","session_id":"ses_0777fd171ffevxlFxkgamiFjz5"}
+{"type":"*","level":"info","timestamp":"2026-07-22T06:25:33.999Z","service":"bus","message":"unsubscribing"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:34.000Z","service":"default","directory":"/tmp/gh-issue-solver-1784693688781","message":"disposing instance"}
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:34.000Z","service":"state","key":"/tmp/gh-issue-solver-1784693688781","message":"waiting for state disposal to complete"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:34.002Z","service":"state","key":"/tmp/gh-issue-solver-1784693688781","message":"state disposal completed"}
+
+{"type":"log","level":"info","timestamp":"2026-07-22T06:25:34.002Z","service":"default","hasError":false,"uptimeSeconds":6,"message":"Agent exiting"}
