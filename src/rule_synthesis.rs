@@ -91,13 +91,10 @@ pub fn try_recall_approved_rule(
     let Some(spec) = program_spec(&plan.resolved_task, &context.language) else {
         return rule;
     };
-    log.append(
-        "learning_ledger_recall",
-        format!(
-            "lesson={} rule={} modifier={} approved_by={}",
-            lesson.lesson_id, lesson.rule_id, lesson.modifier, lesson.reviewer
-        ),
-    );
+    log.append("learning_ledger_recall.lesson", lesson.lesson_id);
+    log.append("learning_ledger_recall.rule", lesson.rule_id);
+    log.append("learning_ledger_recall.modifier", lesson.modifier);
+    log.append("learning_ledger_recall.approved_by", lesson.reviewer);
     log.append("write_program_plan", plan.links_notation());
     SelectedRule::WriteProgram(spec)
 }
