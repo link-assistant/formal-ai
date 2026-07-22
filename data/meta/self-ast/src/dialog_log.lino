@@ -2,18 +2,22 @@ self_ast_census
   target src/dialog_log.rs
   language rust
   fidelity signature
-  byte_len 6184
-  line_count 180
-  content_id source_module_510c4880a73ec246
-  symbol_count 10
+  byte_len 7420
+  line_count 218
+  content_id source_module_21fa1a29cd5dbb97
+  symbol_count 14
   symbols
     static REQUEST_SEQUENCE 24 24
-    static LOG_WRITE_LOCK 25 25
-    function trace_request_if_enabled 28 32
-    struct DialogExchangeLog 36 42
-    function record_api_exchange_if_enabled 48 78
-    function write_dialog_exchange 85 131
-    function dialog_id 133 144
-    function first_user_prompt 146 180
-    function text 147 156
-    function user_content 158 176
+    static VERBOSE_ENABLED 25 25
+    static LOG_WRITE_LOCK 26 26
+    function configure_verbose 29 31
+    function verbose_enabled 35 38
+    function configured_directory 42 55
+    function trace_request_if_enabled 58 62
+    struct DialogExchangeLog 66 72
+    function record_api_exchange_if_enabled 78 112
+    function write_dialog_exchange 119 165
+    function dialog_id 167 182
+    function first_user_prompt 184 218
+    function text 185 194
+    function user_content 196 214

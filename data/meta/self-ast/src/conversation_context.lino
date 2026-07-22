@@ -1,0 +1,17 @@
+self_ast_census
+  target src/conversation_context.rs
+  language rust
+  fidelity signature
+  byte_len 4355
+  line_count 129
+  content_id source_module_c15e80c3945b1134
+  symbol_count 8
+  symbols
+    const DIALOG_LOG_DIRECTORY_ENV 12 12
+    const VARIABLE_PLACEHOLDER 13 13
+    function configured_dialog_log_directory 17 19
+    function load_conversation_context 22 31
+    function load_conversation_context_from 34 95
+    function conversation_context_to_lino 99 111
+    function config 113 117
+    function extract_messages 119 129
