@@ -424,6 +424,22 @@ fn meaning_detail_e2e_uses_the_local_research_fixture() {
     }
 }
 
+/// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
+/// between tool turns. If that unrelated provider is unavailable, the client
+/// exits before returning the tool result to Formal AI.
+#[test]
+fn agent_cli_e2e_disables_hosted_session_summarization() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+
+    assert!(harness.contains(
+        "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
+    ));
+}
+
 #[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
