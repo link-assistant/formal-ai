@@ -6,6 +6,9 @@ use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use formal_ai::conversation_context::conversation_context_to_lino;
+use serde_json::Value;
+
 fn temporary_directory(label: &str) -> PathBuf {
     let nonce = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -28,7 +31,7 @@ db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', ('ses_fixture', '/wo
 db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', 'ses_fixture', 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
 db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', 'ses_fixture', 1, 1, json.dumps({'role':'user'})))
 db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'find a:b'})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'true'})))
 db.commit()
 ";
     let output = Command::new("python3")
@@ -51,7 +54,7 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
     create_opencode_fixture(&database);
     let before = fs::read(&database).unwrap();
 
-    let run = || {
+    let run = |format: Option<&str>| {
         Command::new(env!("CARGO_BIN_EXE_formal-ai"))
             .args([
                 "--silent",
@@ -64,11 +67,18 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
                 "--db",
             ])
             .arg(&database)
+            .args(
+                format
+                    .map(|value| ["--format", value])
+                    .into_iter()
+                    .flatten(),
+            )
             .output()
             .expect("run OpenCode context export")
     };
-    let first = run();
-    let second = run();
+    let first = run(None);
+    let second = run(None);
+    let json = run(Some("json"));
     assert!(
         first.status.success(),
         "{}",
@@ -82,6 +92,17 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
     );
 
     let lino = String::from_utf8(first.stdout).unwrap();
+    assert!(
+        json.status.success(),
+        "{}",
+        String::from_utf8_lossy(&json.stderr)
+    );
+    let tree: Value = serde_json::from_slice(&json.stdout).expect("OpenCode JSON export");
+    assert_eq!(
+        lino,
+        conversation_context_to_lino("ses_fixture", &tree),
+        "OpenCode and arbitrary JSON exports must use one shared LiNo serializer"
+    );
     for expected in [
         "conversation ses_fixture",
         "directory \"/workspace/a:b\"",
@@ -92,6 +113,7 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
         "tokens",
         "cost 0.01",
         "output result",
+        "text \"true\"",
         "name \"unsafe:key\"",
         "value preserved",
     ] {

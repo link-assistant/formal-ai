@@ -1,0 +1,100 @@
+diff --git a/tests/integration/issue_822_complete_transcript.rs b/tests/integration/issue_822_complete_transcript.rs
+index 3df667bd..122223a1 100644
+--- a/tests/integration/issue_822_complete_transcript.rs
++++ b/tests/integration/issue_822_complete_transcript.rs
+@@ -25,8 +25,8 @@ fn temporary_directory() -> PathBuf {
+ fn exchange(
+     timestamp_unix_ms: u128,
+     request_id: &str,
+-    request_body: Value,
+-    response_body: Value,
++    request_body: &Value,
++    response_body: &Value,
+ ) -> DialogExchangeLog {
+     let request_body = request_body.to_string();
+     let response_body = response_body.to_string();
+@@ -57,7 +57,7 @@ fn write_exchanges(directory: &std::path::Path, exchanges: &[DialogExchangeLog])
+     fs::write(directory.join(format!("{DIALOG_ID}.jsonl")), jsonl).expect("write dialog fixture");
+ }
+
+-fn chat_response(message: Value) -> Value {
++fn chat_response(message: &Value) -> Value {
+     json!({
+         "id": "response",
+         "choices": [{"index": 0, "message": message, "finish_reason": "stop"}]
+@@ -90,18 +90,18 @@ fn export_merges_incremental_and_cumulative_requests_with_every_response() {
+         exchange(
+             10,
+             "request-z",
+-            json!({"model": "formal-ai", "messages": [system, first_user]}),
+-            chat_response(first_assistant.clone()),
++            &json!({"model": "formal-ai", "messages": [system, first_user]}),
++            &chat_response(&first_assistant),
+         ),
+         exchange(
+             10,
+             "request-a",
+-            json!({"model": "formal-ai", "messages": [second_user]}),
+-            chat_response(second_assistant.clone()),
++            &json!({"model": "formal-ai", "messages": [second_user]}),
++            &chat_response(&second_assistant),
+         ),
+         exchange(
+             11,
+             "request-m",
+-            json!({
++            &json!({
+                 "model": "formal-ai",
+                 "messages": [
+                     system,
+@@ -113,7 +113,7 @@ fn export_merges_incremental_and_cumulative_requests_with_every_response() {
+                     tool_result
+                 ]
+             }),
+-            chat_response(final_assistant),
++            &chat_response(&final_assistant),
+         ),
+     ];
+     write_exchanges(&directory, &exchanges);
+@@ -201,8 +201,8 @@ fn export_collects_responses_gemini_and_direct_assistant_envelopes() {
+         exchange(
+             30,
+             "request-responses",
+-            json!({
++            &json!({
+                 "model": "formal-ai",
+                 "input": "Responses question"
+             }),
+-            json!({
++            &json!({
+                 "id": "resp_1",
+                 "output": [
+                     {
+@@ -216,11 +216,11 @@ fn export_collects_responses_gemini_and_direct_assistant_envelopes() {
+         exchange(
+             31,
+             "request-gemini",
+-            json!({
++            &json!({
+                 "model": "formal-ai",
+                 "contents": [gemini_user]
+             }),
+-            json!({
++            &json!({
+                 "candidates": [{
+                     "content": gemini_assistant,
+                     "finishReason": "STOP"
+@@ -230,10 +230,10 @@ fn export_collects_responses_gemini_and_direct_assistant_envelopes() {
+         exchange(
+             32,
+             "request-direct",
+-            json!({
++            &json!({
+                 "model": "formal-ai",
+                 "messages": [{"role": "user", "content": "Direct question"}]
+             }),
+-            json!({"role": "assistant", "content": "Direct answer"}),
++            &json!({"role": "assistant", "content": "Direct answer"}),
+         ),
+     ];
+     write_exchanges(&directory, &exchanges);

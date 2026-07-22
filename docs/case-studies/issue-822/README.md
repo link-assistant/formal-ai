@@ -42,13 +42,13 @@ Three independent gaps combined into the incomplete reports:
 | Requirement | Implementation and regression evidence |
 | --- | --- |
 | R0: confirm before collection | `report_issue` is a two-stage state machine. Unit tests cover structured and plain questions, all supported languages, no pre-confirmation `curl`/`gh`, and all four destinations. |
-| R1: automatic full context | Dialog exchanges are persisted by default under a stable id derived from the first user prompt, while an explicit safe harness id is preserved verbatim. `context export` assembles every recorded request message and exchange. |
-| R2: matching server logs | Conversation export includes every sorted exchange record under `server_logs`; the report command selects `harness`, `server`, or `both`. |
+| R1: automatic full context | Dialog exchanges are persisted by default under a stable id derived from the first user prompt, while an explicit safe harness id is preserved verbatim. `context export` merges cumulative or incremental request histories with final and streamed server responses in append order. |
+| R2: matching server logs | Conversation export includes every matching exchange record under `server_logs` in physical JSONL order; the report command selects `harness`, `server`, or `both`. |
 | R3: `/api` source of truth | `GET /api/formal-ai/v1/conversations/{session}` (plus the `/v1` alias) returns context. `POST .../{session}/learn` submits the same context for learning. |
 | R4: Links Notation default | The API and CLI default to `.lino`; `?format=json`/`--format json` are explicit opt-ins. Canonical-parser regressions verify repeated `message`/`part` records, colon-safe quoting, delimiter choice, `b64:` fallback, and physical-line escaping. |
 | R5: verbose by default | Server request tracing, full response/thinking output, proxy bodies, and dialog persistence are enabled by default. Global `--silent` disables them. |
 | R6: arbitrary JSON conversion | `formal-ai context json-to-lino --path ...` uses the general native serializer; integration coverage invokes stdin and file paths. |
-| R7: deterministic OpenCode adapter | The shipped stdlib-only extractor opens SQLite with `mode=ro`, orders messages/parts by `(time_created, id)`, preserves full JSON metadata, and supports Lino or explicit JSON output. A fixture test verifies determinism and that the database remains unchanged. |
+| R7: deterministic OpenCode adapter | The shipped stdlib-only extractor opens SQLite with `mode=ro`, orders messages/parts by `(time_created, id)`, and preserves full JSON metadata. It emits JSON for the CLI to pass through the shared Rust LiNo serializer, eliminating formatter drift. A fixture test verifies determinism, byte-identical serialization, and that the database remains unchanged. |
 | Whole flow | `run_issue_822.sh` drives the real Agent CLI through destination and contents confirmation, executes a PATH-local fake `gh`, and verifies the resulting issue carries inline or linked complete transcript and server logs. |
 
 ## Interfaces
@@ -110,8 +110,13 @@ The wrapper rejected `formal-ai` as an available Agent model before a session
 could start and automatically posted the linked failure comment. The complete
 captured output is preserved in
 [`raw-data/self-coding-live.log`](raw-data/self-coding-live.log). Because no
-Formal AI session authored the changes, the commits intentionally carry no
-self-authorship trailers.
+Formal AI session authored the original implementation, those commits
+intentionally carry no self-authorship trailers.
+
+The follow-up CI repair was subsequently authored through the local Formal AI
+server and Agent CLI. Its session, failing regressions, applied fixes, and
+scope boundaries are recorded in
+[`self-hosting-fix/README.md`](self-hosting-fix/README.md).
 
 ## Captured inputs
 

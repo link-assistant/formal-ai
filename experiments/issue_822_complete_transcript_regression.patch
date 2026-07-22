@@ -1,0 +1,174 @@
+diff --git a/tests/integration/mod.rs b/tests/integration/mod.rs
+index 8f40bc71..725abf46 100644
+--- a/tests/integration/mod.rs
++++ b/tests/integration/mod.rs
+@@ -34,6 +34,7 @@ mod issue_754_cursor;
+ mod issue_755_file_read_write;
+ mod issue_758_capability_routing;
+ mod issue_776_translation;
++mod issue_822_complete_transcript;
+ mod issue_822_context;
+ mod logging_proxy;
+ mod memory_query;
+diff --git a/tests/integration/issue_822_complete_transcript.rs b/tests/integration/issue_822_complete_transcript.rs
+new file mode 100644
+index 00000000..6cb488a8
+--- /dev/null
++++ b/tests/integration/issue_822_complete_transcript.rs
+@@ -0,0 +1,138 @@
++//! Complete multi-exchange transcript regressions for issue #822.
++
++use std::fs;
++use std::path::PathBuf;
++use std::time::{SystemTime, UNIX_EPOCH};
++
++use formal_ai::conversation_context::load_conversation_context_from;
++use formal_ai::dialog_log::DialogExchangeLog;
++use formal_ai::proxy::summarize_proxy_exchange;
++use serde_json::{json, Value};
++
++const DIALOG_ID: &str = "issue-822-multi-exchange";
++
++fn temporary_directory() -> PathBuf {
++    let nonce = SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .expect("clock after Unix epoch")
++        .as_nanos();
++    std::env::temp_dir().join(format!(
++        "formal-ai-issue-822-complete-transcript-{}-{nonce}",
++        std::process::id()
++    ))
++}
++
++fn exchange(
++    timestamp_unix_ms: u128,
++    request_id: &str,
++    request_body: Value,
++    response_body: Value,
++) -> DialogExchangeLog {
++    let request_body = request_body.to_string();
++    let response_body = response_body.to_string();
++    DialogExchangeLog {
++        timestamp_unix_ms,
++        dialog_id: DIALOG_ID.to_owned(),
++        request_id: request_id.to_owned(),
++        exchange: summarize_proxy_exchange(
++            "POST",
++            "/v1/chat/completions",
++            request_body.as_bytes(),
++            200,
++            "application/json",
++            response_body.as_bytes(),
++            true,
++        ),
++    }
++}
++
++fn write_exchanges(directory: &std::path::Path, exchanges: &[DialogExchangeLog]) {
++    fs::create_dir_all(directory).expect("create fixture directory");
++    let mut jsonl = exchanges
++        .iter()
++        .map(|exchange| serde_json::to_string(exchange).expect("serialize exchange"))
++        .collect::<Vec<_>>()
++        .join("\n");
++    jsonl.push('\n');
++    fs::write(directory.join(format!("{DIALOG_ID}.jsonl")), jsonl)
++        .expect("write dialog fixture");
++}
++
++fn chat_response(message: Value) -> Value {
++    json!({
++        "id": "response",
++        "choices": [{"index": 0, "message": message, "finish_reason": "stop"}]
++    })
++}
++
++#[test]
++fn export_merges_incremental_and_cumulative_requests_with_every_response() {
++    let directory = temporary_directory();
++    let system = json!({"role": "system", "content": "Use all context"});
++    let first_user = json!({"role": "user", "content": "First question"});
++    let first_assistant = json!({"role": "assistant", "content": "First answer"});
++    let second_user = json!({"role": "user", "content": "Second question"});
++    let second_assistant = json!({
++        "role": "assistant",
++        "content": null,
++        "tool_calls": [{
++            "id": "call_1",
++            "type": "function",
++            "function": {"name": "bash", "arguments": "{\"command\":\"pwd\"}"}
++        }]
++    });
++    let tool_result = json!({
++        "role": "tool",
++        "tool_call_id": "call_1",
++        "content": "/workspace"
++    });
++    let final_assistant = json!({"role": "assistant", "content": "Complete"});
++
++    let exchanges = vec![
++        exchange(
++            10,
++            "request-z",
++            json!({"model": "formal-ai", "messages": [system, first_user]}),
++            chat_response(first_assistant.clone()),
++        ),
++        exchange(
++            10,
++            "request-a",
++            json!({"model": "formal-ai", "messages": [second_user]}),
++            chat_response(second_assistant.clone()),
++        ),
++        exchange(
++            11,
++            "request-m",
++            json!({
++                "model": "formal-ai",
++                "messages": [
++                    system,
++                    first_user,
++                    first_assistant,
++                    second_user,
++                    second_assistant,
++                    tool_result
++                ]
++            }),
++            chat_response(final_assistant),
++        ),
++    ];
++    write_exchanges(&directory, &exchanges);
++
++    let context = load_conversation_context_from(&directory, DIALOG_ID)
++        .expect("load complete context");
++    let messages = context["messages"].as_array().expect("message list");
++    let contents = messages
++        .iter()
++        .filter_map(|message| message.get("content"))
++        .filter_map(Value::as_str)
++        .collect::<Vec<_>>();
++
++    assert_eq!(messages.len(), 7, "{context:#}");
++    assert_eq!(
++        contents,
++        [
++            "Use all context",
++            "First question",
++            "First answer",
++            "Second question",
++            "/workspace",
++            "Complete"
++        ],
++        "{context:#}"
++    );
++    assert_eq!(
++        messages
++            .iter()
++            .filter(|message| message.get("tool_calls").is_some())
++            .count(),
++        1,
++        "overlapping cumulative history must not duplicate tool calls"
++    );
++    assert_eq!(context["metadata"]["exchange_count"], 3);
++
++    fs::remove_dir_all(directory).expect("remove fixture directory");
++}

@@ -2,16 +2,23 @@ self_ast_census
   target src/conversation_context.rs
   language rust
   fidelity signature
-  byte_len 4355
-  line_count 129
-  content_id source_module_c15e80c3945b1134
-  symbol_count 8
+  byte_len 9466
+  line_count 285
+  content_id source_module_f0751200dfe2eb79
+  symbol_count 15
   symbols
-    const DIALOG_LOG_DIRECTORY_ENV 12 12
-    const VARIABLE_PLACEHOLDER 13 13
-    function configured_dialog_log_directory 17 19
-    function load_conversation_context 22 31
-    function load_conversation_context_from 34 95
-    function conversation_context_to_lino 99 111
-    function config 113 117
-    function extract_messages 119 129
+    const DIALOG_LOG_DIRECTORY_ENV 13 13
+    const VARIABLE_PLACEHOLDER 14 14
+    function configured_dialog_log_directory 18 20
+    function load_conversation_context 23 32
+    function load_conversation_context_from 35 81
+    function conversation_context_to_lino 85 97
+    function config 99 103
+    function extract_messages 105 115
+    function assemble_transcript 117 133
+    function append_with_overlap 135 142
+    function extract_response_messages 144 149
+    function response_messages_from_value 151 179
+    struct StreamingToolCall 182 187
+    function into_value 190 199
+    function extract_sse_message 202 285

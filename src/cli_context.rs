@@ -153,12 +153,9 @@ fn opencode_context(
 ) -> Result<String, Box<dyn Error>> {
     const EXTRACTOR: &str = include_str!("../scripts/opencode-conversation-to-lino.py");
     let mut command = Command::new("python3");
-    command.args(["-c", EXTRACTOR, session]);
+    command.args(["-c", EXTRACTOR, session, "--format", "json"]);
     if let Some(path) = db {
         command.arg("--db").arg(path);
-    }
-    if format == ContextFormat::Json {
-        command.args(["--format", "json"]);
     }
     let result = command.output()?;
     if !result.status.success() {
@@ -167,7 +164,8 @@ fn opencode_context(
             config("context_opencode_export_failed").replace(ERROR_PLACEHOLDER, diagnostic.trim());
         return Err(message.into());
     }
-    Ok(String::from_utf8(result.stdout)?)
+    let context: Value = serde_json::from_slice(&result.stdout)?;
+    render_server_context(session, &context, format)
 }
 
 fn config(key: &str) -> String {

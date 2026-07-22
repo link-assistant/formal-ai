@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 291
   full_ast_module_count 43
   signature_module_count 248
-  symbol_count 5986
-  content_id self_ast_census_index_edff4f2b06ddf5e9
+  symbol_count 5993
+  content_id self_ast_census_index_d101dad44c7da0c3
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -63,7 +63,7 @@ self_ast_census_index
     src/calculation_time.rs signature 4 source_module_d1f1e0b165700b3f
     src/calculation_word_problem.rs signature 24 source_module_9a1e1bed263ecfe9
     src/change_request.rs signature 20 source_module_bcf2749e602b677a
-    src/cli_context.rs signature 14 source_module_6151923e0ce91bb2
+    src/cli_context.rs signature 14 source_module_60a704b272827a7d
     src/cli_import.rs signature 2 source_module_a03f4f2a6132bf13
     src/cli_improve.rs signature 5 source_module_9c508efbe830879e
     src/cli_memory.rs signature 5 source_module_d10c6067fc63e984
@@ -88,7 +88,7 @@ self_ast_census_index
     src/coding/mod.rs signature 6 source_module_49a3b915ebdccaa6
     src/concepts.rs signature 38 source_module_02e62ce334566ff2
     src/context_capacity.rs signature 10 source_module_bd0071a033bc1360
-    src/conversation_context.rs signature 8 source_module_c15e80c3945b1134
+    src/conversation_context.rs signature 15 source_module_f0751200dfe2eb79
     src/cue_lexicon.rs signature 14 source_module_b87ef3c68e46efcd
     src/dialog_log.rs signature 14 source_module_21fa1a29cd5dbb97
     src/document_formats.rs signature 11 source_module_81b5abd825d2d9d2
