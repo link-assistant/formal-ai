@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "collectedAt": "2026-07-22T22:16:17.565Z",
+  "collectedAt": "2026-07-22T22:23:32.899Z",
   "issueNumber": 828,
   "prNumber": "829",
   "branchName": "issue-828-4962df13517a",
@@ -13,7 +13,7 @@
     "solveLog": "./dev/log/issues/828/pulls/829/sessions/d76d13c2-6660-447b-84d5-ad48d489a436/solve.log",
     "solveLogRange": {
       "startByte": 0,
-      "endByte": 7556913
+      "endByte": 7740541
     },
     "sessionFiles": [
       "./dev/log/issues/828/pulls/829/sessions/d76d13c2-6660-447b-84d5-ad48d489a436/claude-d76d13c2-6660-447b-84d5-ad48d489a436.jsonl"
