@@ -96,7 +96,13 @@ fn write_native_document(out: &mut String, value: &Value) {
 
 fn write_native_object(out: &mut String, indent: usize, object: &Map<String, Value>) {
     for (key, value) in object {
-        write_native_named_value(out, indent, key, value);
+        if native_bare_reference(key) {
+            write_native_named_value(out, indent, key, value);
+        } else {
+            write_line(out, indent, "field", None);
+            write_line(out, indent + 2, "name", Some(&native_string_token(key)));
+            write_native_named_value(out, indent + 2, "value", value);
+        }
     }
 }
 

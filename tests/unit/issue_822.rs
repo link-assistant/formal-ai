@@ -226,7 +226,8 @@ fn generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars() {
         "parts": [
             {"type": "tool-call", "arguments": {"path": "a:b"}},
             {"type": "tool-result", "content": "complete"}
-        ]
+        ],
+        "unsafe:key": {"space key": "preserved"}
     });
     let lino = json_to_lino(&source);
 
@@ -236,6 +237,8 @@ fn generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars() {
     assert!(lino.contains("\"scheme:value\\r\\nnext\\tcell\""), "{lino}");
     assert!(lino.contains("\"a:b\""), "{lino}");
     assert!(lino.contains("b64:"), "{lino}");
+    assert!(lino.contains("name \"unsafe:key\""), "{lino}");
+    assert!(lino.contains("name \"space key\""), "{lino}");
     assert!(!lino.contains("messages 0"), "{lino}");
     assert!(!lino.contains("parts 0"), "{lino}");
     parse_canonical_lino(&lino).expect("generic export must satisfy the canonical grammar");

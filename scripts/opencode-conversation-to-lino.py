@@ -61,6 +61,10 @@ def item_name(key: str) -> str:
     return f"{key}_item"
 
 
+def safe_key(key: str) -> bool:
+    return bool(key) and all(character in BARE_SAFE for character in key)
+
+
 def emit(node: Any, key: str | None, depth: int, output: list[str]) -> None:
     """Render dictionaries, scalar lists, and native repeated-key sequences."""
     pad = INDENT * depth
@@ -69,7 +73,14 @@ def emit(node: Any, key: str | None, depth: int, output: list[str]) -> None:
             output.append(f"{pad}{key}")
         child_depth = depth + 1 if key is not None else depth
         for child_key in sorted(node):
-            emit(node[child_key], str(child_key), child_depth, output)
+            child_key = str(child_key)
+            if safe_key(child_key):
+                emit(node[child_key], child_key, child_depth, output)
+            else:
+                child_pad = INDENT * child_depth
+                output.append(f"{child_pad}field")
+                output.append(f"{child_pad}{INDENT}name {quote(child_key)}")
+                emit(node[child_key], "value", child_depth + 1, output)
         return
 
     if isinstance(node, list):

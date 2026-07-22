@@ -27,7 +27,7 @@ db.execute('CREATE TABLE part (id TEXT PRIMARY KEY, message_id TEXT, session_id 
 db.execute('INSERT INTO session VALUES (?, ?, ?, ?, ?, ?)', ('ses_fixture', '/workspace/a:b', json.dumps({'providerID':'formalai','id':'formal-ai'}), '1.18.4', 1, 9))
 db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_b', 'ses_fixture', 2, 4, json.dumps({'role':'assistant','tokens':{'input':31},'cost':0.01})))
 db.execute('INSERT INTO message VALUES (?, ?, ?, ?, ?)', ('msg_a', 'ses_fixture', 1, 1, json.dumps({'role':'user'})))
-db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result'}})))
+db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_b', 'msg_b', 'ses_fixture', 4, 4, json.dumps({'type':'tool','tool':'websearch','state':{'status':'completed','output':'result','input':{'unsafe:key':'preserved'}}})))
 db.execute('INSERT INTO part VALUES (?, ?, ?, ?, ?, ?)', ('part_a', 'msg_a', 'ses_fixture', 1, 1, json.dumps({'type':'text','text':'find a:b'})))
 db.commit()
 "#;
@@ -92,6 +92,8 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
         "tokens",
         "cost 0.01",
         "output result",
+        "name \"unsafe:key\"",
+        "value preserved",
     ] {
         assert!(lino.contains(expected), "missing {expected:?}:\n{lino}");
     }
@@ -99,6 +101,7 @@ fn opencode_export_is_complete_native_read_only_and_deterministic() {
     assert_eq!(lino.matches("      part\n").count(), 2, "{lino}");
     assert!(!lino.contains("message_0"), "{lino}");
     assert!(lino.find("id msg_a") < lino.find("id msg_b"), "{lino}");
+    links_notation::parse_lino(&lino).expect("OpenCode output must satisfy canonical grammar");
 
     fs::remove_dir_all(directory).unwrap();
 }
