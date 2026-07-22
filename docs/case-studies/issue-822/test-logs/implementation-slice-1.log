@@ -1,0 +1,57 @@
+   Compiling syn v2.0.117
+   Compiling serde_core v1.0.228
+   Compiling memchr v2.8.0
+   Compiling once_cell v1.21.4
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+   Compiling bitflags v2.11.1
+   Compiling thread-priority v1.2.0
+   Compiling aho-corasick v1.1.4
+   Compiling nom v8.0.0
+   Compiling regex-automata v0.4.14
+   Compiling serde_json v1.0.149
+   Compiling links-notation v0.13.0
+   Compiling regex v1.12.3
+   Compiling wasm-bindgen-macro-support v0.2.121
+   Compiling lino-objects-codec v0.2.1
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling clap_derive v4.6.1
+   Compiling thiserror v1.0.69
+   Compiling clap v4.6.1
+   Compiling wasm-bindgen-macro v0.2.121
+   Compiling wasm-bindgen v0.2.121
+   Compiling serde v1.0.228
+   Compiling num-bigint v0.4.6
+   Compiling rust_decimal v1.42.0
+   Compiling chrono v0.4.44
+   Compiling lino-arguments v0.3.0
+   Compiling js-sys v0.3.98
+   Compiling console_error_panic_hook v0.1.7
+   Compiling num-rational v0.4.2
+   Compiling wasm-bindgen-futures v0.4.71
+   Compiling serde-wasm-bindgen v0.6.5
+   Compiling web-sys v0.3.98
+   Compiling link-calculator v0.19.0
+error[E0004]: non-exhaustive patterns: `planner::Capability::AskUser` not covered
+   --> src/agentic_coding/general_planner.rs:508:11
+    |
+508 |     match capability {
+    |           ^^^^^^^^^^ pattern `planner::Capability::AskUser` not covered
+    |
+note: `planner::Capability` defined here
+   --> src/agentic_coding/planner.rs:79:10
+    |
+ 79 | pub enum Capability {
+    |          ^^^^^^^^^^
+...
+ 93 |     AskUser,
+    |     ------- not covered
+    = note: the matched value is of type `planner::Capability`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+521 ~         Capability::MultiEdit => "MultiEdit",
+522 ~         planner::Capability::AskUser => todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `formal-ai` (lib) due to 1 previous error

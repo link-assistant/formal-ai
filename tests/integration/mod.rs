@@ -34,6 +34,8 @@ mod issue_755_file_read_write;
 mod issue_758_capability_routing;
 mod issue_776_translation;
 mod issue_819_local_path_search;
+mod issue_822_complete_transcript;
+mod issue_822_context;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

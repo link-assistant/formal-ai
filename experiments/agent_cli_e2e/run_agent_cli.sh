@@ -144,11 +144,12 @@ fi
 echo "== server up on $PORT =="
 
 # `--disable-stdin` prevents the CLI from opening its interactive prompt (this
-# script drives a single prompt through). 180s is generous for a 4-step loop
-# where each POST is deterministic and finishes in <100ms — the extra time
-# absorbs npm-install setup on a cold CI runner.
-# `--no-summarize-session --compaction-model same` prevents Agent from calling
-# a hosted summarization model between local tool turns.
+# script drives a single prompt through). `--no-summarize-session` and
+# `--compaction-model same` keep the round-trip on the formal-ai provider under
+# test: Agent otherwise may call an unrelated hosted model between local tool
+# turns. 180s is generous for a 4-step loop where each POST is deterministic
+# and finishes in <100ms — the extra time absorbs npm-install setup on a cold CI
+# runner.
 #
 # The external `@link-assistant/agent` CLI is *non-deterministic*: it
 # occasionally exits 0 after only the first tool round (a websearch) without

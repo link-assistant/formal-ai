@@ -33,6 +33,10 @@ For one end-to-end reference covering every client, runtime mode, tool,
 memory/API setting, transcript location, language, and user surface, start with
 the **[Configuration guide](docs/configuration/README.md)**.
 
+Complete agentic transcript capture, JSON/Links Notation export, OpenCode
+SQLite extraction, and redaction guidance are covered in
+**[Output and session debugging](docs/configuration/output-sessions.md)**.
+
 Every interface has a dedicated landing page on the
 [site](https://link-assistant.github.io/formal-ai/) with copy-paste install
 instructions, and a single universal installer covers all of them. The script is

@@ -1,0 +1,113 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.52s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2a084cb6b146678d)
+
+running 22 tests
+test issue_687::conversation_recall::what_were_we_talking_about_recalls_prior_turns ... ok
+test issue_687::conversation_recall::non_recall_prompts_do_not_hijack_the_recall_recipe ... ok
+test issue_687::conversation_recall::multilingual_summary_phrases_use_the_shared_history_solver ... ok
+test issue_687::learn_about::learn_about_it_researches_the_prior_topic ... ok
+test issue_687::factual_question::election_search_then_fetch_then_answers_from_results ... ok
+test issue_687::factual_question::future_election_question_emits_a_web_search ... ok
+test issue_687::multilingual_web_research::chinese_question_reaches_the_web ... ok
+test issue_687::multilingual_web_research::research_imperative_carries_the_bare_topic ... ok
+test issue_687::learn_about::whole_reported_sequence_keeps_the_last_substantive_topic ... ok
+test issue_687::report_issue::bare_report_after_conversation_files_the_issue ... ok
+test issue_687::report_issue::bare_russian_report_files_the_issue ... ok
+test issue_687::factual_question::research_prefers_an_official_source_and_cites_it ... ok
+test issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command ... ok
+test issue_687::multilingual_web_research::english_question_reaches_the_web ... ok
+test issue_687::report_issue::report_request_emits_gh_issue_create ... ok
+test issue_687::report_issue::report_then_confirms_with_created_url ... ok
+test issue_687::multilingual_web_research::hindi_question_reaches_the_web ... ok
+test issue_687::multilingual_web_research::russian_question_reaches_the_web ... ok
+test issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data ... ok
+test issue_687::learn_about::earlier_research_results_do_not_complete_a_new_research_turn ... ok
+test issue_687::report_issue::unrelated_report_shaped_prompt_is_not_an_issue_filing ... ok
+test issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 1943 filtered out; finished in 5.71s
+
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.31s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2a084cb6b146678d)
+
+running 10 tests
+test issue_714_agentic_mode::completed_client_tool_execution_becomes_durable_learning_evidence ... ok
+test issue_714_agentic_mode::completed_client_tool_execution_is_recovered_even_when_result_name_is_absent ... ok
+test issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool ... ok
+test issue_714_agentic_mode::report_action_resolves_an_unnamed_tool_result_by_call_id ... ok
+test issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns ... ok
+test issue_714_agentic_mode::report_action_shell_quotes_apostrophes_in_conversation_history ... ok
+test issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access ... ok
+test issue_714_agentic_mode::localized_report_actions_route_to_shell ... ok
+test issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias ... ok
+test issue_714_agentic_mode::ordinary_report_writing_is_not_mistaken_for_issue_reporting ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1955 filtered out; finished in 0.70s
+
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.69s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2a084cb6b146678d)
+
+running 10 tests
+test issue_771::report_format::a_multiline_turn_is_not_interpolated_into_the_shell_command ... ok
+test issue_771::report_format::complete_context_is_requested_in_links_notation ... ok
+test issue_771::report_format::the_intro_and_complete_context_heading_frame_the_upload ... ok
+test issue_771::report_format::oversized_context_links_the_full_file_and_keeps_a_bounded_preview ... ok
+test issue_771::report_format::a_huge_transcript_does_not_grow_the_command ... ok
+test issue_771::research_answer::a_short_page_is_still_answered_verbatim ... ok
+test issue_771::research_answer::does_not_dump_the_whole_fetched_page ... ok
+test issue_771::research_answer::keeps_the_sentence_that_answers_the_question_and_cites_the_source ... ok
+test issue_771::reported_session::the_reported_session_files_a_readable_issue ... ok
+test issue_771::multilingual_extraction::every_supported_language_gets_an_extract_and_not_a_page_dump ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1955 filtered out; finished in 5.78s
+
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.99s
+     Running tests/integration/mod.rs (target/debug/deps/integration-849c47f0d6741291)
+
+running 4 tests
+test issue_714_agentic_mode::chat_completions_routes_report_to_bash_not_websearch ... ok
+test issue_714_agentic_mode::responses_routes_report_to_any_run_capability_alias ... ok
+test issue_714_agentic_mode::gemini_continues_after_the_client_returns_a_function_response ... ok
+test issue_714_agentic_mode::gemini_routes_localized_report_to_shell_alias ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 165 filtered out; finished in 0.90s

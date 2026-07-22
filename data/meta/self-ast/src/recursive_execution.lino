@@ -1,0 +1,23 @@
+self_ast_census
+  target src/recursive_execution.rs
+  language rust
+  fidelity signature
+  byte_len 5786
+  line_count 185
+  content_id source_module_3e3c247e37a54ec7
+  symbol_count 14
+  symbols
+    struct RecursiveTask 10 17
+    function leaf 22 28
+    function branch 32 38
+    struct TaskAttempt 43 48
+    function passed 53 58
+    function failed 62 67
+    trait TaskExecutor 75 81
+    function attempt 77 77
+    function extend_for 80 80
+    enum RecursiveExecution 85 90
+    struct RecursiveRun 94 105
+    function is_passed 110 112
+    function executed_leaf_count 116 122
+    function solve_recursively 132 185

@@ -1,4 +1,144 @@
 meanings
+  response_lexeme_import_no_clean_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias en"
+  response_lexeme_import_no_clean_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias hi"
+  response_lexeme_import_no_clean_alias_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias ru"
+  response_lexeme_import_no_clean_alias_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no clean alias zh"
+  response_lexeme_import_no_labels_in_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache en"
+  response_lexeme_import_no_labels_in_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache hi"
+  response_lexeme_import_no_labels_in_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache ru"
+  response_lexeme_import_no_labels_in_cache_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import no labels in cache zh"
+  response_lexeme_import_number_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost en"
+  response_lexeme_import_number_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost hi"
+  response_lexeme_import_number_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost ru"
+  response_lexeme_import_number_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import number lost zh"
+  response_lexeme_import_part_of_speech_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost en"
+  response_lexeme_import_part_of_speech_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost hi"
+  response_lexeme_import_part_of_speech_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost ru"
+  response_lexeme_import_part_of_speech_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import part of speech lost zh"
+  response_lexeme_import_qid_absent_from_cache_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache en"
+  response_lexeme_import_qid_absent_from_cache_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache hi"
+  response_lexeme_import_qid_absent_from_cache_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache ru"
+  response_lexeme_import_qid_absent_from_cache_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from cache zh"
+  response_lexeme_import_qid_absent_from_fetch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch en"
+  response_lexeme_import_qid_absent_from_fetch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch hi"
+  response_lexeme_import_qid_absent_from_fetch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch ru"
+  response_lexeme_import_qid_absent_from_fetch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import qid absent from fetch zh"
+  response_lexeme_import_refused_batch_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch en"
+  response_lexeme_import_refused_batch_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch hi"
+  response_lexeme_import_refused_batch_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch ru"
+  response_lexeme_import_refused_batch_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import refused batch zh"
   response_lexeme_import_reparse_failed_en
     defined-by response_template
     lexeme en
@@ -1254,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "wikipedia summary endpoint template"
-  wikiversity
-    defined-by source
-    lexeme en
-      surface
-        text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  will
-    defined-by concept
-    lexeme en
-      surface
-        text "will"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  words
-    defined-by concept
-    lexeme en
-      surface
-        text "words"
-  would
-    defined-by concept
-    lexeme en
-      surface
-        text "would"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"
-  writing
-    defined-by word_surface
-    lexeme en
-      surface
-        text "writing"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

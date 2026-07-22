@@ -1,0 +1,23 @@
+self_ast_census
+  target src/cli_context.rs
+  language rust
+  fidelity signature
+  byte_len 5896
+  line_count 194
+  content_id source_module_60a704b272827a7d
+  symbol_count 14
+  symbols
+    const ERROR_PLACEHOLDER 11 11
+    struct ContextArgs 14 17
+    enum ContextAction 20 51
+    enum ContextSource 54 60
+    enum ContextFormat 63 66
+    function run_context 68 88
+    function export_context 90 127
+    function load_server_context 129 136
+    function render_server_context 138 147
+    function opencode_context 149 169
+    const EXTRACTOR 154 154
+    function config 171 175
+    function read_input 177 185
+    function write_output 187 194

@@ -1,0 +1,35 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.06s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 17 tests
+test data_files::lexical_completeness_does_not_regress ... ok
+test data_files::meaning_definitions_are_unique ... ok
+test data_files::grounded_meaning_coverage_does_not_regress ... ok
+test data_files::meaning_slugs_are_globally_unique ... ok
+test data_files::meaning_seed_uses_id_fact_format ... ok
+test data_files::seed_lino_files_have_no_keyword_restating_comments ... ok
+test data_files::seed_lino_files_have_no_empty_redefinition_fields ... ok
+test data_files::seed_lino_files_have_no_codepoint_byte_dumps ... ok
+test data_files::seed_lino_files_have_no_synthetic_surface_ids ... ok
+
+thread 'data_files::seed_lino_values_never_pipe_pack_multi_values' (55057) panicked at tests/unit/data_files.rs:226:13:
+/tmp/gh-issue-solver-1784701857721/data/seed/multilingual-responses.lino:21 packs the `text` multi-value with `|`; use a reference list `text ("a" "b")` instead:     text "Harness log|Export the complete agentic harness log.||Server log|Export the matching Formal AI server log.||GitHub issue|File an issue with complete context.||Report to Formal AI|Store the report so this instance can learn."
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test data_files::seed_lino_values_never_pipe_pack_multi_values ... FAILED
+test data_files::wiktionary_cache_breadth_does_not_regress ... ok
+test data_files::cache_source_json_is_pretty_printed ... ok
+test data_files::wikidata_cache_uses_compact_native_lino ... ok
+test data_files::wikidata_lino_cache_rebuilds_full_json_losslessly ... ok
+test data_files::wiktionary_cache_is_pretty_printed_and_rebuilds_full_json ... ok
+test data_files::lino_data_files_avoid_jsonish_and_unresolved_tokens ... ok
+test data_files::lino_data_files_are_parseable_human_readable_and_bounded ... ok
+
+failures:
+
+failures:
+    data_files::seed_lino_values_never_pipe_pack_multi_values
+
+test result: FAILED. 16 passed; 1 failed; 0 ignored; 0 measured; 1950 filtered out; finished in 5.26s
+
+error: test failed, to rerun pass `--test unit`

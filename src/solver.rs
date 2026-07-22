@@ -33,7 +33,7 @@ use crate::intent_formalization::{
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::rule_synthesis::try_construct_unknown_rule;
+use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
@@ -514,7 +514,8 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let selected_rule = select_rule_for_intent(&intent_formalization);
-        let rule = try_construct_unknown_rule(selected_rule, prompt, history, &mut log);
+        let recalled_rule = try_recall_approved_rule(selected_rule, prompt, history, &mut log);
+        let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
         let rule =
             if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
                 log.append("write_program_coreference_rewrite", rewrite.trace);

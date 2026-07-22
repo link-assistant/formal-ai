@@ -1,0 +1,42 @@
+Diff in /tmp/gh-issue-solver-1784701857721/src/cli_context.rs:140:
+     if format == ContextFormat::Json {
+         return Ok(format!("{}\n", serde_json::to_string_pretty(context)?));
+     }
+-    Ok(formal_ai::conversation_context::conversation_context_to_lino(
+-        session, context,
+-    ))
++    Ok(formal_ai::conversation_context::conversation_context_to_lino(session, context))
+ }
+
+ fn opencode_context(
+Diff in /tmp/gh-issue-solver-1784701857721/src/main.rs:6:
+ use clap::{Args as ClapArgs, Subcommand, ValueEnum};
+ use lino_arguments::Parser;
+
+-mod cli_import;
+ mod cli_context;
++mod cli_import;
+ mod cli_improve;
+ mod cli_memory;
+ mod cli_shared_dialog;
+Diff in /tmp/gh-issue-solver-1784701857721/src/main.rs:14:
+ mod cli_statement_audit;
+
+-use cli_import::{run_import, ImportAction};
+ use cli_context::{run_context, ContextArgs};
++use cli_import::{run_import, ImportAction};
+ use cli_improve::{run_improve, ImproveArgs};
+ use cli_memory::{load_memory_or_empty, run_memory};
+ use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
+Diff in /tmp/gh-issue-solver-1784701857721/tests/unit/issue_822.rs:141:
+     assert_eq!(lino.matches("  message\n").count(), 2, "{lino}");
+     assert_eq!(lino.matches("  part\n").count(), 2, "{lino}");
+     assert!(!lino.contains("entry"), "{lino}");
+-    assert!(
+-        lino.contains("\"scheme:value\\r\\nnext\\tcell\""),
+-        "{lino}"
+-    );
++    assert!(lino.contains("\"scheme:value\\r\\nnext\\tcell\""), "{lino}");
+     assert!(lino.contains("\"a:b\""), "{lino}");
+     assert!(lino.contains("b64:"), "{lino}");
+     assert!(!lino.contains("messages 0"), "{lino}");

@@ -2,107 +2,118 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 11909
-  line_count 307
-  content_id source_module_b8e6d6780b6aa321
-  symbol_count 17
+  byte_len 15322
+  line_count 441
+  content_id source_module_7ba6809d5dbf18de
+  symbol_count 32
   symbols
-    function formal_ai_repo 24 26
-    struct ReportRequest 30 35
-    function gh_command 41 48
-    function report_issue_request_for 59 67
-    function is_report_intent 70 82
-    function report_action_governs_subject 88 132
-    function compose_report 136 178
-    const TRANSCRIPT_BUDGET 183 183
-    const TURN_BUDGET 188 188
-    function transcribe 199 212
-    function quoted_turn 215 231
-    function plan_report_issue_step 237 257
-    function final_answer 261 279
-    function config 281 285
-    function render 287 291
-    function shell_quote 294 296
-    function truncate 300 307
+    const CONTEXT_EXPORT_COMMAND 12 12
+    const CONTEXT_SESSION_FLAG 13 13
+    const HARNESS_SOURCE_FLAG 14 14
+    const BASE_URL_SETUP 15 16
+    const SERVER_CONTEXT_PREFIX 17 17
+    const SERVER_CONTEXT_SUFFIX 18 18
+    const LEARNING_CONTEXT_PREFIX 19 19
+    const LEARNING_CONTEXT_SUFFIX 20 20
+    enum ReportTarget 23 28
+    enum ReportContents 31 35
+    function plan_report_flow 39 113
+    function ask_or_render 115 153
+    function localized 155 159
+    function localized_options 161 168
+    function is_report_question 170 179
+    function answer_texts 181 191
+    function parse_target 193 205
+    function parse_contents 207 216
+    function matches_option 218 226
+    function is_report_intent 229 241
+    function report_action_governs_subject 243 287
+    function command_for 289 312
+    function conversation_command 314 320
+    function github_command 322 441
+    function dialog_id 357 364
+    function issue_title 366 383
+    function report_finished 385 409
+    function formal_ai_repo 411 413
+    function config 415 419
+    function render 421 425
+    function shell_quote 427 429
+    function truncate 431 441
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7421
-    named_node_count 1551
-    distinct_node_kinds 73
+    total_link_count 11625
+    named_node_count 2385
+    distinct_node_kinds 69
     node_kinds
-      arguments 132
-      array_expression 4
-      array_type 6
-      attribute 1
-      attribute_item 1
-      binary_expression 14
-      block 37
-      call_expression 132
-      char_literal 6
-      closure_expression 21
-      closure_parameters 21
-      compound_assignment_expr 1
-      const_item 2
+      arguments 205
+      array_expression 6
+      array_type 9
+      attribute 2
+      attribute_item 2
+      binary_expression 23
+      block 59
+      call_expression 205
+      char_literal 1
+      closure_expression 37
+      closure_parameters 37
+      const_item 8
       crate 3
-      declaration_list 1
-      doc_comment 61
-      else_clause 4
-      escape_sequence 14
-      expression_statement 35
-      field_declaration 2
-      field_declaration_list 1
-      field_expression 105
-      field_identifier 107
-      field_initializer_list 1
-      for_expression 2
-      function_item 14
-      generic_function 2
-      generic_type 4
-      identifier 304
-      if_expression 9
-      impl_item 1
-      inner_doc_comment_marker 13
-      integer_literal 7
-      let_condition 1
-      let_declaration 25
-      line_comment 65
-      macro_invocation 11
-      match_arm 2
-      match_block 1
-      match_expression 1
-      match_pattern 2
-      mutable_specifier 5
-      outer_doc_comment_marker 48
-      parameter 21
-      parameters 14
+      doc_comment 4
+      else_clause 3
+      enum_item 2
+      enum_variant 7
+      enum_variant_list 2
+      escape_sequence 83
+      expression_statement 37
+      field_expression 149
+      field_identifier 149
+      for_expression 1
+      function_item 22
+      generic_function 4
+      generic_type 8
+      identifier 556
+      if_expression 16
+      index_expression 6
+      inner_doc_comment_marker 1
+      integer_literal 18
+      let_condition 3
+      let_declaration 39
+      line_comment 8
+      macro_invocation 13
+      match_arm 7
+      match_block 2
+      match_expression 2
+      match_pattern 7
+      mutable_specifier 3
+      outer_doc_comment_marker 3
+      parameter 47
+      parameters 22
       parenthesized_expression 2
-      primitive_type 19
-      reference_expression 20
-      reference_type 23
-      return_expression 5
-      scoped_identifier 22
+      primitive_type 50
+      range_expression 3
+      reference_expression 19
+      reference_type 49
+      return_expression 14
+      scoped_identifier 46
       scoped_type_identifier 1
-      scoped_use_list 1
-      self 3
-      self_parameter 1
-      shorthand_field_initializer 2
+      scoped_use_list 3
       source_file 1
-      string_content 41
-      string_literal 38
-      struct_expression 1
-      struct_item 1
-      super 9
-      token_tree 22
-      tuple_expression 5
-      tuple_pattern 7
-      tuple_struct_pattern 2
+      string_content 160
+      string_literal 83
+      super 3
+      token_tree 28
+      try_expression 1
+      tuple_expression 6
+      tuple_pattern 13
+      tuple_struct_pattern 4
       tuple_type 3
-      type_arguments 6
-      type_identifier 33
-      unary_expression 5
-      use_declaration 5
-      use_list 1
-      visibility_modifier 8
+      type_arguments 12
+      type_identifier 44
+      unary_expression 7
+      use_as_clause 1
+      use_declaration 6
+      use_list 3
+      visibility_modifier 2

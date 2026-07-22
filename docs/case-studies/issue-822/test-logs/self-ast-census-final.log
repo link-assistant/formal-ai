@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.48s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 9 tests
+test issue_538_agentic::self_ast_census_generalises_to_different_sources ... ok
+test issue_673_self_ast_census::drift_check_fails_on_a_fixture_with_a_stale_census ... ok
+test issue_673_self_ast_census::census_regenerates_deterministically_and_incrementally ... ok
+test issue_538_agentic::self_ast_census_is_real_and_deterministic ... ok
+test issue_673_self_ast_census::the_workspace_census_is_addressable_without_a_multi_megabyte_seed ... ok
+test issue_673_self_ast_census::the_index_resolves_every_path_symbol_the_method_registry_knows ... ok
+test issue_673_self_ast_census::every_owned_module_has_a_committed_census_with_its_fidelity_marker ... ok
+test issue_673_self_ast_census::the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census ... ok
+test issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render has been running for over 60 seconds
+test issue_673_self_ast_census::committed_census_documents_match_what_the_sources_render ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1958 filtered out; finished in 88.56s

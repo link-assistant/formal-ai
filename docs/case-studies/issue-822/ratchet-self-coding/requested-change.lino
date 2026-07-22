@@ -1,0 +1,14 @@
+change_request
+  id "change_request_fb91ad3c36bc6f1f"
+  request "Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
+  human_gated "true"
+  target_module "src/agentic_coding/planner.rs"
+  target_content_id "source_module_600879e2bb22a203"
+  derived_requirement "The system must add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
+  proposed_test "user_requested_change_please_add_a_new_capability_to_formal_ai"
+  reviewable_pull_request
+    step "Record the derived requirement for review: The system must add a new capability to Formal AI: let users ask it to reverse-sort a program's output."
+    step "Add the failing test `user_requested_change_please_add_a_new_capability_to_formal_ai` that pins the requested behaviour"
+    step "Edit the grounded target module `src/agentic_coding/planner.rs` until the test passes"
+    step "Run the benchmark gate; only a green run is reviewable"
+    step "Open a reviewable pull request; a human approves before it merges"

@@ -1,0 +1,293 @@
+diff --git a/src/conversation_context.rs b/src/conversation_context.rs
+index 45aa8a27..0807ea13 100644
+--- a/src/conversation_context.rs
++++ b/src/conversation_context.rs
+@@ -1,10 +1,11 @@
+ //! Full agentic conversation export for reports and diagnostic tools (#822).
+
++use std::collections::BTreeMap;
+ use std::fs;
+ use std::io;
+ use std::path::{Path, PathBuf};
+
+-use serde_json::{json, Value};
++use serde_json::{json, Map, Value};
+
+ use crate::dialog_log::DialogExchangeLog;
+
+@@ -44,16 +45,11 @@ pub fn load_conversation_context_from(directory: &Path, dialog_id: &str) -> io::
+     }
+     let path = directory.join(format!("{dialog_id}.jsonl"));
+     let text = fs::read_to_string(path)?;
+-    let mut exchanges = text
++    let exchanges = text
+         .lines()
+         .filter(|line| !line.trim().is_empty())
+         .map(|line| serde_json::from_str::<DialogExchangeLog>(line).map_err(io::Error::other))
+         .collect::<io::Result<Vec<_>>>()?;
+-    exchanges.sort_by(|left, right| {
+-        left.timestamp_unix_ms
+-            .cmp(&right.timestamp_unix_ms)
+-            .then_with(|| left.request_id.cmp(&right.request_id))
+-    });
+     if exchanges.is_empty() {
+         return Err(io::Error::new(
+             io::ErrorKind::NotFound,
+@@ -61,17 +57,7 @@ pub fn load_conversation_context_from(directory: &Path, dialog_id: &str) -> io::
+         ));
+     }
+
+-    let messages = exchanges
+-        .iter()
+-        .rev()
+-        .find_map(|record| {
+-            record
+-                .exchange
+-                .request_body
+-                .as_deref()
+-                .and_then(extract_messages)
+-        })
+-        .unwrap_or_default();
++    let messages = assemble_transcript(&exchanges);
+     let first_timestamp = exchanges.first().map_or(0, |row| row.timestamp_unix_ms);
+     let last_timestamp = exchanges.last().map_or(0, |row| row.timestamp_unix_ms);
+     let server_logs = exchanges
+@@ -127,3 +113,173 @@ fn extract_messages(body: &str) -> Option<Vec<Value>> {
+         .filter(|input| !input.is_null())
+         .map(|input| vec![json!({"role": "user", "content": input})])
+ }
++
++fn assemble_transcript(exchanges: &[DialogExchangeLog]) -> Vec<Value> {
++    let mut transcript = Vec::new();
++    for record in exchanges {
++        if let Some(messages) = record
++            .exchange
++            .request_body
++            .as_deref()
++            .and_then(extract_messages)
++        {
++            append_with_overlap(&mut transcript, messages);
++        }
++        if let Some(body) = record.exchange.response_body.as_deref() {
++            append_with_overlap(&mut transcript, extract_response_messages(body));
++        }
++    }
++    transcript
++}
++
++fn append_with_overlap(transcript: &mut Vec<Value>, incoming: Vec<Value>) {
++    let limit = transcript.len().min(incoming.len());
++    let overlap = (1..=limit)
++        .rev()
++        .find(|size| transcript[transcript.len() - size..] == incoming[..*size])
++        .unwrap_or(0);
++    transcript.extend(incoming.into_iter().skip(overlap));
++}
++
++fn extract_response_messages(body: &str) -> Vec<Value> {
++    serde_json::from_str::<Value>(body).map_or_else(
++        |_| extract_sse_message(body).into_iter().collect(),
++        |root| response_messages_from_value(&root),
++    )
++}
++
++fn response_messages_from_value(root: &Value) -> Vec<Value> {
++    if let Some(choices) = root.get("choices").and_then(Value::as_array) {
++        return choices
++            .iter()
++            .filter_map(|choice| choice.get("message").cloned())
++            .collect();
++    }
++    if let Some(output) = root.get("output").and_then(Value::as_array) {
++        return output
++            .iter()
++            .filter(|item| {
++                item.get("type")
++                    .and_then(Value::as_str)
++                    .is_none_or(|kind| kind == "message")
++            })
++            .cloned()
++            .collect();
++    }
++    if let Some(candidates) = root.get("candidates").and_then(Value::as_array) {
++        return candidates
++            .iter()
++            .filter_map(|candidate| candidate.get("content").cloned())
++            .collect();
++    }
++    if root.get("role").is_some() && root.get("content").is_some() {
++        return vec![root.clone()];
++    }
++    Vec::new()
++}
++
++#[derive(Default)]
++struct StreamingToolCall {
++    id: String,
++    kind: String,
++    name: String,
++    arguments: String,
++}
++
++impl StreamingToolCall {
++    fn into_value(self) -> Value {
++        json!({
++            "id": self.id,
++            "type": if self.kind.is_empty() { "function" } else { &self.kind },
++            "function": {
++                "name": self.name,
++                "arguments": self.arguments,
++            },
++        })
++    }
++}
++
++fn extract_sse_message(body: &str) -> Option<Value> {
++    let mut role = None;
++    let mut content = String::new();
++    let mut tool_calls = BTreeMap::<u64, StreamingToolCall>::new();
++    for line in body.lines() {
++        let Some(data) = line.trim().strip_prefix("data:").map(str::trim) else {
++            continue;
++        };
++        if data.is_empty() || data == "[DONE]" {
++            continue;
++        }
++        let Ok(event) = serde_json::from_str::<Value>(data) else {
++            continue;
++        };
++        let Some(delta) = event
++            .get("choices")
++            .and_then(Value::as_array)
++            .and_then(|choices| choices.first())
++            .and_then(|choice| choice.get("delta"))
++            .and_then(Value::as_object)
++        else {
++            continue;
++        };
++        if let Some(value) = delta.get("role").and_then(Value::as_str) {
++            role = Some(value.to_owned());
++        }
++        if let Some(value) = delta.get("content").and_then(Value::as_str) {
++            content.push_str(value);
++        }
++        let Some(calls) = delta.get("tool_calls").and_then(Value::as_array) else {
++            continue;
++        };
++        for (position, call) in calls.iter().enumerate() {
++            let index = call
++                .get("index")
++                .and_then(Value::as_u64)
++                .unwrap_or(position as u64);
++            let accumulated = tool_calls.entry(index).or_default();
++            if let Some(value) = call.get("id").and_then(Value::as_str) {
++                accumulated.id.push_str(value);
++            }
++            if let Some(value) = call.get("type").and_then(Value::as_str) {
++                accumulated.kind.push_str(value);
++            }
++            if let Some(function) = call.get("function").and_then(Value::as_object) {
++                if let Some(value) = function.get("name").and_then(Value::as_str) {
++                    accumulated.name.push_str(value);
++                }
++                if let Some(value) = function.get("arguments").and_then(Value::as_str) {
++                    accumulated.arguments.push_str(value);
++                }
++            }
++        }
++    }
++
++    if role.is_none() && content.is_empty() && tool_calls.is_empty() {
++        return None;
++    }
++    let mut message = Map::new();
++    message.insert(
++        String::from("role"),
++        Value::String(role.unwrap_or_else(|| String::from("assistant"))),
++    );
++    message.insert(
++        String::from("content"),
++        if content.is_empty() {
++            Value::Null
++        } else {
++            Value::String(content)
++        },
++    );
++    if !tool_calls.is_empty() {
++        message.insert(
++            String::from("tool_calls"),
++            Value::Array(
++                tool_calls
++                    .into_values()
++                    .map(StreamingToolCall::into_value)
++                    .collect(),
++            ),
++        );
++    }
++    Some(Value::Object(message))
++}
+diff --git a/tests/integration/issue_822_complete_transcript.rs b/tests/integration/issue_822_complete_transcript.rs
+index 6cb488a8..3c663ae1 100644
+--- a/tests/integration/issue_822_complete_transcript.rs
++++ b/tests/integration/issue_822_complete_transcript.rs
+@@ -151,6 +151,60 @@ fn export_merges_incremental_and_cumulative_requests_with_every_response() {
+         "overlapping cumulative history must not duplicate tool calls"
+     );
+     assert_eq!(context["metadata"]["exchange_count"], 3);
++    assert_eq!(context["server_logs"][0]["request_id"], "request-z");
++    assert_eq!(context["server_logs"][1]["request_id"], "request-a");
+
+     fs::remove_dir_all(directory).expect("remove fixture directory");
+ }
++
++#[test]
++fn export_reconstructs_the_final_streamed_assistant_message() {
++    let directory = temporary_directory();
++    let request = json!({
++        "model": "formal-ai",
++        "messages": [{"role": "user", "content": "Run a command"}],
++        "stream": true
++    });
++    let stream = concat!(
++        "data: {\"choices\":[{\"delta\":{\"role\":\"assistant\",\"content\":\"Done \"}}]}\n\n",
++        "data: {\"choices\":[{\"delta\":{\"content\":\"now\",\"tool_calls\":[{",
++        "\"index\":0,\"id\":\"call_1\",\"type\":\"function\",",
++        "\"function\":{\"name\":\"bash\",\"arguments\":\"{\\\"command\\\":\"}}]}}]}\n\n",
++        "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{",
++        "\"index\":0,\"function\":{\"arguments\":\"\\\"pwd\\\"}\"}}]}}]}\n\n",
++        "data: [DONE]\n\n"
++    );
++    let request_body = request.to_string();
++    let record = DialogExchangeLog {
++        timestamp_unix_ms: 20,
++        dialog_id: DIALOG_ID.to_owned(),
++        request_id: String::from("request-stream"),
++        exchange: summarize_proxy_exchange(
++            "POST",
++            "/v1/chat/completions",
++            request_body.as_bytes(),
++            200,
++            "text/event-stream",
++            stream.as_bytes(),
++            true,
++        ),
++    };
++    write_exchanges(&directory, &[record]);
++
++    let context = load_conversation_context_from(&directory, DIALOG_ID)
++        .expect("load streaming context");
++    let messages = context["messages"].as_array().expect("message list");
++
++    assert_eq!(messages.len(), 2, "{context:#}");
++    assert_eq!(messages[0]["role"], "user");
++    assert_eq!(messages[0]["content"], "Run a command");
++    assert_eq!(messages[1]["role"], "assistant");
++    assert_eq!(messages[1]["content"], "Done now");
++    assert_eq!(messages[1]["tool_calls"][0]["id"], "call_1");
++    assert_eq!(
++        messages[1]["tool_calls"][0]["function"]["arguments"],
++        "{\"command\":\"pwd\"}"
++    );
++
++    fs::remove_dir_all(directory).expect("remove fixture directory");
++}

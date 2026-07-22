@@ -10,6 +10,7 @@ use std::fmt::Write as _;
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::{Event, EventLog};
+use crate::learning_ledger::LearningLedger;
 use crate::substitution::SubstitutionRuleSet;
 
 const CODING_MODIFICATION_SUITE_LINO: &str =
@@ -181,6 +182,188 @@ pub fn learn_rules_from_unknown_traces(
     }
 
     LearningRun::new(gate, traces.len(), proposals, rejections)
+}
+
+/// A full-context report staged in the existing human-gated learning pipeline.
+///
+/// Uploading a report is evidence, not approval: the trace is synthesised into
+/// candidates, but no ledger is promoted until a maintainer runs the benchmark
+/// and explicitly approves the resulting repair case.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReportedLearning {
+    /// Unknown-path trace recovered from the report's server-side events.
+    pub trace: UnknownTrace,
+    /// Candidate rules and rejections produced by the normal learner.
+    pub learning: LearningRun,
+    /// Explicit marker that a human decision is still required.
+    pub awaiting_human_review: bool,
+    /// Always `None` at ingestion time; promotion is a separate reviewed action.
+    pub promoted_ledger: Option<LearningLedger>,
+}
+
+/// Feed a #822 full conversation context into rule synthesis.
+///
+/// The server logger may carry many unrelated fields. Only a structured
+/// `learning_trace.events` sequence is accepted, and only known event kinds are
+/// copied into the learner. This avoids treating arbitrary user/tool text as an
+/// executable lesson. The prompt embedded beside those events supplies trace
+/// provenance; legacy traces fall back to the most recent user message.
+#[must_use]
+pub fn learn_from_reported_conversation(context: &serde_json::Value) -> Option<ReportedLearning> {
+    let (trace_prompt, events) = find_learning_trace(context)?;
+    let prompt = trace_prompt.or_else(|| {
+        context
+            .get("messages")?
+            .as_array()?
+            .iter()
+            .rev()
+            .find(|message| {
+                message.get("role").and_then(serde_json::Value::as_str) == Some("user")
+            })?
+            .get("content")?
+            .as_str()
+            .map(str::to_owned)
+    })?;
+    let mut log = EventLog::new();
+    for event in &events {
+        let kind = event.get("kind")?.as_str()?;
+        let payload = event.get("payload")?.as_str()?;
+        match kind {
+            "selected_rule" => {
+                log.append("selected_rule", payload);
+            }
+            "rule_synthesis_candidate" => {
+                log.append("rule_synthesis_candidate", payload);
+            }
+            "rule_verification" => {
+                log.append("rule_verification", payload);
+            }
+            "write_program_plan" => {
+                log.append("write_program_plan", payload);
+            }
+            _ => {}
+        }
+    }
+    let trace = UnknownTrace::from_event_log(&prompt, "unknown", &log)?;
+    // Ingestion never claims that CI ran. A real benchmark result is supplied
+    // later when a maintainer constructs and approves the repair case.
+    let learning = learn_rules_from_unknown_traces(
+        std::slice::from_ref(&trace),
+        BenchmarkGateReport::issue_362_from_counts(0, 0),
+    );
+    Some(ReportedLearning {
+        trace,
+        learning,
+        awaiting_human_review: true,
+        promoted_ledger: None,
+    })
+}
+
+/// Project the learnable subset of a symbolic answer into structured server-log metadata.
+///
+/// This is embedded in protocol responses only when a verified rule
+/// candidate exists, allowing the #822 report export to preserve the exact
+/// learner inputs without scraping natural-language output.
+#[must_use]
+pub fn learning_trace_from_symbolic_answer(
+    prompt: &str,
+    answer: &SymbolicAnswer,
+) -> Option<serde_json::Value> {
+    let candidate = event_payload(&answer.links_notation, "rule_synthesis_candidate")?;
+    let verification = event_payload(&answer.links_notation, "rule_verification")?;
+    let selected = event_payload(&answer.links_notation, "selected_rule")?;
+    Some(serde_json::json!({
+        "prompt": prompt,
+        "events": [
+            {"kind": "selected_rule", "payload": selected},
+            {"kind": "rule_synthesis_candidate", "payload": candidate},
+            {"kind": "rule_verification", "payload": verification}
+        ]
+    }))
+}
+
+fn event_payload(links: &str, kind: &str) -> Option<String> {
+    let marker = format!(" {kind} ");
+    let start = links.find(&marker)? + marker.len();
+    let tail = &links[start..];
+    let end = tail
+        .find("; step_")
+        .or_else(|| tail.find("'\n"))
+        .or_else(|| tail.find("\"\n"))
+        .unwrap_or(tail.len());
+    let flattened = tail[..end].trim();
+    if kind == "selected_rule" {
+        return Some(flattened.to_owned());
+    }
+    // Event payloads are quoted inside the flattened answer record, so their
+    // original line breaks arrive escaped (and may be escaped twice by the
+    // outer Links Notation string). Restore them before field extraction.
+    let normalized = flattened.replace(r"\\n", "\n").replace(r"\n", "\n");
+    let flattened = normalized.as_str();
+    let fields: &[&str] = if kind == "rule_synthesis_candidate" {
+        &[
+            "id",
+            "source",
+            "base_task",
+            "modifier",
+            "operation",
+            "operation_modifier",
+            "target",
+            "resolved_task",
+        ]
+    } else {
+        &[
+            "candidate",
+            "fixture",
+            "input",
+            "expected_order",
+            "lowering_check",
+            "render_check",
+            "status",
+        ]
+    };
+    let mut payload = kind.to_owned();
+    for (index, field) in fields.iter().enumerate() {
+        let needle = format!(" {field} ");
+        let Some(field_start) = flattened.find(&needle).map(|at| at + needle.len()) else {
+            continue;
+        };
+        let field_tail = &flattened[field_start..];
+        let field_end = fields[index + 1..]
+            .iter()
+            .filter_map(|next| field_tail.find(&format!(" {next} ")))
+            .min()
+            .unwrap_or(field_tail.len());
+        let value = field_tail[..field_end].trim();
+        if !value.is_empty() {
+            let _ = write!(payload, "\n  {field} {value}");
+        }
+    }
+    Some(payload)
+}
+
+fn find_learning_trace(
+    value: &serde_json::Value,
+) -> Option<(Option<String>, Vec<serde_json::Value>)> {
+    match value {
+        serde_json::Value::Object(object) => {
+            if let Some(trace) = object.get("learning_trace") {
+                if let Some(events) = trace.get("events").and_then(serde_json::Value::as_array) {
+                    let prompt = trace
+                        .get("prompt")
+                        .and_then(serde_json::Value::as_str)
+                        .map(str::to_owned);
+                    return Some((prompt, events.clone()));
+                }
+            }
+            object.values().find_map(find_learning_trace)
+        }
+        serde_json::Value::Array(values) => values.iter().find_map(find_learning_trace),
+        serde_json::Value::String(text) => serde_json::from_str(text)
+            .ok()
+            .and_then(|nested| find_learning_trace(&nested)),
+        _ => None,
+    }
 }
 
 /// One learned seed-rule candidate.

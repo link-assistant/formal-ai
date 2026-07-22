@@ -1,0 +1,51 @@
+meanings
+  wikiversity
+    defined-by source
+    lexeme en
+      surface
+        text "wikiversity"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"
+  wiktionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wiktionary"
+  will
+    defined-by concept
+    lexeme en
+      surface
+        text "will"
+  wordnet
+    defined-by source
+    lexeme en
+      surface
+        text "wordnet"
+  words
+    defined-by concept
+    lexeme en
+      surface
+        text "words"
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
+  your
+    defined-by word_surface
+    lexeme en
+      surface
+        text "your"

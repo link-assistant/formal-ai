@@ -2,56 +2,57 @@ self_ast_census
   target src/server.rs
   language rust
   fidelity signature
-  byte_len 35735
-  line_count 977
-  content_id source_module_395078f4cb90b184
-  symbol_count 48
+  byte_len 36638
+  line_count 999
+  content_id source_module_8ae7bc0a88061a44
+  symbol_count 49
   symbols
-    static HTTP_AGENT_MODE_FORCED 31 31
-    const ADVERTISED_MAX_OUTPUT_TOKENS 33 33
-    struct ApiHttpResponse 36 47
-    function into_deprecated_alias 55 58
-    struct ApiAuthConfig 62 64
-    struct ParsedHttpRequest 66 71
-    function bearer_token 75 79
-    function from_env 82 90
-    function allows 93 99
-    function handle_api_request 103 105
-    function handle_api_request_with_headers 108 115
-    function record_exchange_best_effort 120 131
-    function handle_api_request_with_auth 134 148
-    function dispatch_api_request_with_auth 150 286
-    function requires_bearer_auth 288 293
-    function mcp_origin_allowed 295 313
-    function handle_dynamic_protocol_route 315 357
-    function handle_openai_models_request 359 404
-    function handle_gemini_generate_content_request 406 451
-    function normalize_protocol_model_id 453 459
-    function gemini_model_metadata_path 461 464
-    function gemini_model_action_path 466 470
-    function vertex_models_path 472 478
-    struct VertexModelRoute 481 483
-    function vertex_model_action_path 485 494
-    function first_non_empty_env 496 506
-    function bearer_token_from_headers 508 516
-    function api_key_from_headers 518 526
-    function parse_bearer_token 528 536
-    function unsupported_model_response 538 551
-    function enable_http_agent_mode_for_current_process 558 560
-    function http_solver 562 569
-    function chat_completion_sse_response 586 695
-    function sse_chunk 699 705
-    function handle_anthropic_messages_request 711 749
-    function handle_memory_since_request 757 761
-    function handle_memory_import_request 765 778
-    function query_param 780 788
-    function links_notation_response 790 797
-    function serve 799 820
-    function handle_connection 822 834
-    function read_request 836 883
-    function write_response 885 921
-    function json_response 923 933
-    function error_response 935 948
-    function find_header_end 950 952
-    function request_headers 954 963
-    function content_length 965 977
+    module conversation_reports 31 31
+    static HTTP_AGENT_MODE_FORCED 33 33
+    const ADVERTISED_MAX_OUTPUT_TOKENS 35 35
+    struct ApiHttpResponse 38 49
+    function into_deprecated_alias 57 60
+    struct ApiAuthConfig 64 66
+    struct ParsedHttpRequest 68 73
+    function bearer_token 77 81
+    function from_env 84 92
+    function allows 95 101
+    function handle_api_request 105 107
+    function handle_api_request_with_headers 110 117
+    function record_exchange_best_effort 122 133
+    function handle_api_request_with_auth 136 150
+    function dispatch_api_request_with_auth 152 288
+    function requires_bearer_auth 290 295
+    function mcp_origin_allowed 297 315
+    function handle_dynamic_protocol_route 317 379
+    function handle_openai_models_request 381 426
+    function handle_gemini_generate_content_request 428 473
+    function normalize_protocol_model_id 475 481
+    function gemini_model_metadata_path 483 486
+    function gemini_model_action_path 488 492
+    function vertex_models_path 494 500
+    struct VertexModelRoute 503 505
+    function vertex_model_action_path 507 516
+    function first_non_empty_env 518 528
+    function bearer_token_from_headers 530 538
+    function api_key_from_headers 540 548
+    function parse_bearer_token 550 558
+    function unsupported_model_response 560 573
+    function enable_http_agent_mode_for_current_process 580 582
+    function http_solver 584 591
+    function chat_completion_sse_response 608 717
+    function sse_chunk 721 727
+    function handle_anthropic_messages_request 733 771
+    function handle_memory_since_request 779 783
+    function handle_memory_import_request 787 800
+    function query_param 802 810
+    function links_notation_response 812 819
+    function serve 821 842
+    function handle_connection 844 856
+    function read_request 858 905
+    function write_response 907 943
+    function json_response 945 955
+    function error_response 957 970
+    function find_header_end 972 974
+    function request_headers 976 985
+    function content_length 987 999

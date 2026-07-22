@@ -12,6 +12,15 @@ in-repo agentic driver in `src/agentic_coding/`, running against the
 OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
 in the same pull request.
 
+This section is the development policy and target workflow, not a claim that
+the repository is already autonomously self-coded. When an existing tool gap
+forces a manual tool extension, record that boundary plainly, retry a smallest
+leaf through Formal AI, and measure only genuinely session-authored lines. A
+reviewed task decomposition must name its smallest leaves; the acceptance floor
+is at least one real Formal-AI/Agent-CLI-authored leaf out of every five (20%),
+with a captured session and paired commit trailers. Raise that measured share
+over time; never relabel manual work as self-authored.
+
 Concretely, every change must follow these rules:
 
 1. **The tool authors the change, not you.** Drive the Agent CLI + Formal AI to

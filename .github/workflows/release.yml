@@ -1656,11 +1656,20 @@ jobs:
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         # The reported session answered a question from a whole scraped page and
         # then filed it, producing a 51KB issue whose transcript escaped its own
-        # markdown. Asserts over the real transport that every turn stays inside
-        # an attributed block and the body fits GitHub's issue size limit.
+        # markdown. Asserts over the real transport that the context stays in a
+        # LiNo fence and the body fits GitHub's issue size limit.
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
+
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        # The first two turns must only ask for destination and included logs;
+        # the third executes a PATH-local fake gh and validates the full Lino
+        # context obtained from the matching server conversation.
+        timeout-minutes: 5
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
 
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
         # The exact reported marketplace question drives Agent, OpenCode,

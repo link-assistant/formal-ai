@@ -353,6 +353,15 @@ pub fn response_for(intent: &str, language: &str) -> Option<String> {
     None
 }
 
+/// Look up a localized response whose `text` is a native reference list.
+///
+/// Scalar text is returned as a one-element vector, which keeps this helper
+/// useful for seed records that may migrate between scalar and list forms.
+#[must_use]
+pub fn response_values_for(intent: &str, language: &str) -> Option<Vec<String>> {
+    response_for(intent, language).map(|text| split_pipe_list(&text))
+}
+
 /// Generic key/value config from `agent-info.lino`.
 #[must_use]
 pub fn agent_info() -> BTreeMap<String, String> {

@@ -33,37 +33,38 @@ cd "$WORKDIR"
 CONFIG="{\"provider\":{\"formal-ai\":{\"npm\":\"@ai-sdk/openai-compatible\",\"name\":\"Formal AI\",\"options\":{\"baseURL\":\"http://127.0.0.1:$PORT/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formal-ai/formal-ai\"}"
 printf '%s\n' "$CONFIG" > opencode.json
 
-RC=1
-for attempt in 1 2; do
-  set +e
-  FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
+run_turn() {
+  local prompt="$1"
+  shift
+  FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
+    FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     timeout 60 "$AGENT" run \
-      --prompt "Report issue" \
+      --prompt "$prompt" \
       --disable-stdin \
       --model "formal-ai/formal-ai" \
-      > "$AGENT_LOG" 2>&1
-  RC=$?
-  set -e
-  if [[ "$RC" -eq 0 && -f "$CAPTURE" ]]; then
-    break
-  fi
-  echo "Agent CLI report attempt $attempt failed with exit $RC; retrying."
-done
+      --no-summarize-session \
+      "$@" >> "$AGENT_LOG" 2>&1
+}
+
+run_turn "Report issue"
+test ! -f "$CAPTURE"
+run_turn "GitHub issue" --continue --no-fork
+test ! -f "$CAPTURE"
+run_turn "Both logs" --continue --no-fork
 
 echo "== agent stderr/out tail =="
 tail -40 "$AGENT_LOG"
 echo "== relevant server trace =="
 awk '/formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome/' "$LOG" | tail -40
 
-test "$RC" -eq 0
 test -f "$CAPTURE"
 grep -Fxq issue "$CAPTURE"
 grep -Fxq create "$CAPTURE"
 grep -Fxq link-assistant/formal-ai "$CAPTURE"
 grep -q 'issues/999' "$AGENT_LOG"
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG")"
-test "$posts" -ge 2
+test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"
 grep -Fq 'tool "bash"' "$MEMORY"

@@ -100,6 +100,8 @@ mod issue_781;
 mod issue_781_option_evidence;
 mod issue_781_option_network;
 mod issue_819;
+mod issue_822;
+mod issue_823_recursive_learning;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

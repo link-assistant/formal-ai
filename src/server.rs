@@ -28,6 +28,8 @@ use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
+mod conversation_reports;
+
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
 pub const ADVERTISED_MAX_OUTPUT_TOKENS: i64 = 8_192;
@@ -167,7 +169,7 @@ fn dispatch_api_request_with_auth(
 
     crate::dialog_log::trace_request_if_enabled(method, normalized_path, body);
 
-    if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, body) {
+    if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, query, body) {
         return response;
     }
 
@@ -315,8 +317,28 @@ fn mcp_origin_allowed(headers: &[(&str, &str)]) -> bool {
 fn handle_dynamic_protocol_route(
     method: &str,
     normalized_path: &str,
+    query: &str,
     body: &str,
 ) -> Option<ApiHttpResponse> {
+    if method == "GET" {
+        let dialog_id = normalized_path
+            .strip_prefix("/api/formal-ai/v1/conversations/")
+            .or_else(|| normalized_path.strip_prefix("/v1/conversations/"));
+        if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            return Some(conversation_reports::handle_context_request(
+                dialog_id, query,
+            ));
+        }
+    }
+    if method == "POST" {
+        let dialog_id = normalized_path
+            .strip_prefix("/api/formal-ai/v1/conversations/")
+            .or_else(|| normalized_path.strip_prefix("/v1/conversations/"))
+            .and_then(|suffix| suffix.strip_suffix("/learn"));
+        if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            return Some(conversation_reports::handle_learning_request(dialog_id));
+        }
+    }
     if method == "GET" && normalized_path == "/api/gemini/v1beta/models" {
         return Some(json_response(200, &gemini_model_list()));
     }

@@ -1,4 +1,44 @@
 meanings
+  pattern_wellbeing_phrase_kak_u_vas_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak u vas dela"
+  pattern_wellbeing_phrase_kak_vashi_dela
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vashi dela"
+  pattern_wellbeing_phrase_kak_vy_pozhivaete
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kak vy pozhivaete"
+  pattern_wellbeing_phrase_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase kya haal hai hi"
+  pattern_wellbeing_phrase_ni_hai_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hai hao ma zh"
+  pattern_wellbeing_phrase_ni_hao_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni hao ma zh"
+  pattern_wellbeing_phrase_ni_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase ni zenmeyang zh"
+  pattern_wellbeing_phrase_nin_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase nin zenmeyang zh"
   pattern_wellbeing_phrase_privet_kak_dela
     defined-by prompt_pattern
     lexeme en
@@ -354,6 +394,106 @@ meanings
     lexeme en
       surface
         text "response agentic action before tool zh"
+  response_agentic_report_contents_options_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options en"
+  response_agentic_report_contents_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options hi"
+  response_agentic_report_contents_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options ru"
+  response_agentic_report_contents_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options zh"
+  response_agentic_report_contents_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question en"
+  response_agentic_report_contents_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question hi"
+  response_agentic_report_contents_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question ru"
+  response_agentic_report_contents_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question zh"
+  response_agentic_report_exported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported en"
+  response_agentic_report_exported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported hi"
+  response_agentic_report_exported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported ru"
+  response_agentic_report_exported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported zh"
+  response_agentic_report_target_options_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options en"
+  response_agentic_report_target_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options hi"
+  response_agentic_report_target_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options ru"
+  response_agentic_report_target_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options zh"
+  response_agentic_report_target_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question en"
+  response_agentic_report_target_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question hi"
+  response_agentic_report_target_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question ru"
+  response_agentic_report_target_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question zh"
   response_assistant_free_time_en
     defined-by response_template
     lexeme en
@@ -1254,143 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import missing provenance zh"
-  response_lexeme_import_no_clean_alias_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no clean alias en"
-  response_lexeme_import_no_clean_alias_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no clean alias hi"
-  response_lexeme_import_no_clean_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no clean alias ru"
-  response_lexeme_import_no_clean_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no clean alias zh"
-  response_lexeme_import_no_labels_in_cache_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no labels in cache en"
-  response_lexeme_import_no_labels_in_cache_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no labels in cache hi"
-  response_lexeme_import_no_labels_in_cache_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no labels in cache ru"
-  response_lexeme_import_no_labels_in_cache_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import no labels in cache zh"
-  response_lexeme_import_number_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import number lost en"
-  response_lexeme_import_number_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import number lost hi"
-  response_lexeme_import_number_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import number lost ru"
-  response_lexeme_import_number_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import number lost zh"
-  response_lexeme_import_part_of_speech_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import part of speech lost en"
-  response_lexeme_import_part_of_speech_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import part of speech lost hi"
-  response_lexeme_import_part_of_speech_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import part of speech lost ru"
-  response_lexeme_import_part_of_speech_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import part of speech lost zh"
-  response_lexeme_import_qid_absent_from_cache_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache en"
-  response_lexeme_import_qid_absent_from_cache_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache hi"
-  response_lexeme_import_qid_absent_from_cache_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache ru"
-  response_lexeme_import_qid_absent_from_cache_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from cache zh"
-  response_lexeme_import_qid_absent_from_fetch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch en"
-  response_lexeme_import_qid_absent_from_fetch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch hi"
-  response_lexeme_import_qid_absent_from_fetch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch ru"
-  response_lexeme_import_qid_absent_from_fetch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import qid absent from fetch zh"
-  response_lexeme_import_refused_batch_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch en"
-  response_lexeme_import_refused_batch_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch hi"
-  response_lexeme_import_refused_batch_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch ru"
-  response_lexeme_import_refused_batch_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import refused batch zh"

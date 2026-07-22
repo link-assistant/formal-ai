@@ -1,0 +1,54 @@
+Diff in /tmp/gh-issue-solver-1784701857721/tests/unit/issue_822.rs:24:
+     ))
+ }
+
+-fn one_call(messages: &[ChatMessage], tools: &[&str]) -> formal_ai::agentic_coding::PlannedToolCall {
++fn one_call(
++    messages: &[ChatMessage],
++    tools: &[&str],
++) -> formal_ai::agentic_coding::PlannedToolCall {
+     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(messages, tools) else {
+-        panic!("expected one tool call, got {:?}", plan_chat_step(messages, tools));
++        panic!(
++            "expected one tool call, got {:?}",
++            plan_chat_step(messages, tools)
++        );
+     };
+     assert_eq!(calls.len(), 1);
+     calls.into_iter().next().unwrap()
+Diff in /tmp/gh-issue-solver-1784701857721/tests/unit/issue_822.rs:111:
+     ] {
+         let call = one_call(&[ChatMessage::user(prompt)], &["question", "bash"]);
+         assert_eq!(call.tool, "question", "prompt={prompt:?}");
+-        assert!(call.arguments.contains("report_target"), "prompt={prompt:?}");
++        assert!(
++            call.arguments.contains("report_target"),
++            "prompt={prompt:?}"
++        );
+     }
+ }
+
+Diff in /tmp/gh-issue-solver-1784701857721/tests/unit/issue_822.rs:215:
+         "server_logs",
+         "response_1",
+     ] {
+-        assert!(lino.body.contains(expected), "missing {expected:?}: {}", lino.body);
++        assert!(
++            lino.body.contains(expected),
++            "missing {expected:?}: {}",
++            lino.body
++        );
+     }
+
+     let json_response = handle_api_request(
+Diff in /tmp/gh-issue-solver-1784701857721/tests/unit/issue_822.rs:235:
+
+ #[test]
+ fn opencode_extractor_is_shipped_with_the_crate() {
+-    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+-        .join("scripts/opencode-conversation-to-lino.py");
++    let path =
++        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("scripts/opencode-conversation-to-lino.py");
+     assert!(path.is_file(), "missing extractor at {}", path.display());
+     assert!(
+         fs::read_to_string(path)

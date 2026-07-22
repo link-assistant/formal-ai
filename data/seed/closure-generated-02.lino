@@ -1,4 +1,44 @@
 meanings
+  lexeme_import_cannot_remove_stale
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot remove stale"
+  lexeme_import_cannot_stage
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot stage"
+  lexeme_import_cannot_write_json
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot write json"
+  lexeme_import_cannot_write_lino
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot write lino"
+  lexeme_import_denotation_lost
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import denotation lost"
+  lexeme_import_duplicate_qid
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import duplicate qid"
+  lexeme_import_duplicate_slug
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import duplicate slug"
+  lexeme_import_fetch_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import fetch failed"
   lexeme_import_fetch_invalid_json
     defined-by intent
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase kak u tebya dela"
-  pattern_wellbeing_phrase_kak_u_vas_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u vas dela"
-  pattern_wellbeing_phrase_kak_vashi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak vashi dela"
-  pattern_wellbeing_phrase_kak_vy_pozhivaete
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak vy pozhivaete"
-  pattern_wellbeing_phrase_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kya haal hai hi"
-  pattern_wellbeing_phrase_ni_hai_hao_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase ni hai hao ma zh"
-  pattern_wellbeing_phrase_ni_hao_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase ni hao ma zh"
-  pattern_wellbeing_phrase_ni_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase ni zenmeyang zh"
-  pattern_wellbeing_phrase_nin_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase nin zenmeyang zh"

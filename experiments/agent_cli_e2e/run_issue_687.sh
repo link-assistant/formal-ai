@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Real Agent CLI reproduction for issue #687. Four separate CLI invocations
-# continue one session so the test covers transport, client-side tool execution,
-# server-side history interpretation, and contextual follow-up research.
+# Real Agent CLI reproduction for issue #687. Six separate CLI invocations
+# continue one session so the test covers transport, the two report confirmation
+# choices, client-side tool execution, history interpretation, and follow-up research.
 
 set -uo pipefail
 
@@ -91,7 +91,9 @@ run_turn() {
   local prompt="$2"
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
-  PATH="$FAKE_BIN:$PATH" timeout 180 "$AGENT" \
+  FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
+    LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
+    PATH="$FAKE_BIN:$PATH" timeout 180 "$AGENT" \
     --prompt "$prompt" \
     --disable-stdin \
     --model formal-ai/formal-ai \
@@ -101,6 +103,8 @@ run_turn() {
 
 run_turn research "When are the next elections in the USA?"
 run_turn report "Report this problem" --continue --no-fork
+run_turn report_destination "GitHub issue" --continue --no-fork
+run_turn report_context "Both logs" --continue --no-fork
 run_turn recall "What were we talking about?" --continue --no-fork
 run_turn follow_up "Learn about it." --continue --no-fork
 
@@ -123,7 +127,7 @@ grep -q '999999' "$AGENT_LOG" \
   || fail "report confirmation did not surface the created issue URL"
 
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
-[ "$posts" -ge 9 ] || fail "expected at least 9 chat rounds, got $posts"
+[ "$posts" -ge 11 ] || fail "expected at least 11 chat rounds, got $posts"
 searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
 [ "$searches" -ge 2 ] || fail "initial and contextual research did not both reach websearch"
 

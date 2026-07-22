@@ -2,36 +2,36 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 8994
-  line_count 262
-  content_id source_module_ec1829b2308354b6
+  byte_len 9069
+  line_count 264
+  content_id source_module_0ccb8c3eb91ec34d
   symbol_count 10
   symbols
     function tool_for 16 41
     function tool_matches_capability 43 53
-    function classify_tool 57 114
-    function plan_shared_capability_step 116 145
-    function task_matches 147 157
-    function arguments_for 159 205
-    function wildcard_token 207 211
-    function file_tokens 213 226
-    function shell_fallback 228 258
-    function shell_quote 260 262
+    function classify_tool 57 115
+    function plan_shared_capability_step 117 146
+    function task_matches 148 158
+    function arguments_for 160 207
+    function wildcard_token 209 213
+    function file_tokens 215 228
+    function shell_fallback 230 260
+    function shell_quote 262 264
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7742
-    named_node_count 1599
+    total_link_count 7799
+    named_node_count 1612
     distinct_node_kinds 61
     node_kinds
-      arguments 152
+      arguments 153
       array_expression 2
       array_type 3
       binary_expression 33
       block 40
-      call_expression 152
+      call_expression 153
       char_literal 25
       closure_expression 22
       closure_parameters 22
@@ -46,7 +46,7 @@ self_ast_census
       function_item 10
       generic_function 1
       generic_type 7
-      identifier 377
+      identifier 383
       if_expression 15
       inner_doc_comment_marker 1
       integer_literal 1
@@ -56,10 +56,10 @@ self_ast_census
       lifetime_parameter 1
       line_comment 9
       macro_invocation 13
-      match_arm 13
+      match_arm 14
       match_block 2
       match_expression 2
-      match_pattern 13
+      match_pattern 14
       mutable_specifier 2
       outer_doc_comment_marker 8
       parameter 19
@@ -69,7 +69,7 @@ self_ast_census
       reference_expression 2
       reference_type 17
       return_expression 7
-      scoped_identifier 65
+      scoped_identifier 68
       scoped_use_list 1
       source_file 1
       string_content 74

@@ -457,6 +457,27 @@ fn agent_cli_e2e_disables_hosted_session_summarization() {
 }
 
 #[test]
+fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
+    // Run 29911330673 completed the self-AST recipe and wrote its validated
+    // artifact, then the external Agent CLI tried to summarize the session
+    // through `opencode/big-pickle`. That unrelated provider was unavailable,
+    // turning a successful formal-ai round-trip into exit code 1. Keep the
+    // harness focused on the provider under test and preserve its strict
+    // zero-exit assertion by disabling the optional post-run summary.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .unwrap();
+
+    assert_eq!(
+        harness.matches("\n    --no-summarize-session \\\n").count(),
+        1,
+        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
+    );
+}
+
+#[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [

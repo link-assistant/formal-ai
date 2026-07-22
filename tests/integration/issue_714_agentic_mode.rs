@@ -19,7 +19,9 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
             "messages": [
                 {"role": "user", "content": "The previous answer is incorrect"},
                 {"role": "assistant", "content": "Use Report issue to send feedback."},
-                {"role": "user", "content": "Report"}
+                {"role": "user", "content": "Report"},
+                {"role": "user", "content": "GitHub issue"},
+                {"role": "user", "content": "Both logs"}
             ],
             "tools": [function_tool("bash"), function_tool("websearch")]
         }),
@@ -33,7 +35,8 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     assert!(arguments["command"]
         .as_str()
         .is_some_and(|command| command.contains("gh issue create")
-            && command.contains("The previous answer is incorrect")));
+            && command.contains("/api/formal-ai/v1/conversations/")
+            && command.contains("include=both")));
 }
 
 #[test]
@@ -46,7 +49,11 @@ fn responses_routes_report_to_any_run_capability_alias() {
         TOKEN,
         &serde_json::json!({
             "model": "formal-ai",
-            "input": "Create issue",
+            "input": [
+                {"role": "user", "content": "Create issue"},
+                {"role": "user", "content": "GitHub issue"},
+                {"role": "user", "content": "Both logs"}
+            ],
             "tools": [{
                 "type": "function",
                 "name": "run_command",
@@ -76,7 +83,11 @@ fn gemini_routes_localized_report_to_shell_alias() {
         "/api/gemini/v1beta/models/formal-ai:generateContent",
         TOKEN,
         &serde_json::json!({
-            "contents": [{"role": "user", "parts": [{"text": "报告问题"}]}],
+            "contents": [
+                {"role": "user", "parts": [{"text": "报告问题"}]},
+                {"role": "user", "parts": [{"text": "GitHub issue"}]},
+                {"role": "user", "parts": [{"text": "Both logs"}]}
+            ],
             "tools": [{"functionDeclarations": [{
                 "name": "shell",
                 "parameters": {"type": "object"}
@@ -107,6 +118,8 @@ fn gemini_continues_after_the_client_returns_a_function_response() {
         &serde_json::json!({
             "contents": [
                 {"role": "user", "parts": [{"text": "Report issue"}]},
+                {"role": "user", "parts": [{"text": "GitHub issue"}]},
+                {"role": "user", "parts": [{"text": "Both logs"}]},
                 {"role": "model", "parts": [{"functionCall": {
                     "id": "report_1",
                     "name": "shell",
