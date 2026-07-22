@@ -2,40 +2,45 @@ self_ast_census
   target src/self_improvement.rs
   language rust
   fidelity signature
-  byte_len 17856
-  line_count 516
-  content_id source_module_2c4c8355b9d76c5f
-  symbol_count 32
+  byte_len 24412
+  line_count 689
+  content_id source_module_7aba1443a1e121b4
+  symbol_count 37
   symbols
-    const CODING_MODIFICATION_SUITE_LINO 15 16
-    struct UnknownTrace 24 31
-    function new 36 45
-    function from_event_log 50 57
-    function from_symbolic_answer 63 72
-    function links_notation 76 88
-    struct BenchmarkGateReport 94 105
-    function new 110 124
-    function issue_362_from_counts 131 147
-    function permits_adoption 151 153
-    function status_slug 155 161
-    function learn_rules_from_unknown_traces 166 184
-    struct LearnedRuleProposal 188 209
-    enum LearnedRuleAdoption 213 218
-    function slug 221 226
-    struct LearningRejection 231 236
-    struct LearningRun 240 251
-    function new 254 279
-    function adoptable_rules 283 288
-    function links_notation 292 325
-    function propose_rule_from_trace 328 401
-    function learned_program_rule_lino 403 412
-    function require_field 414 416
-    function field_value 418 432
-    function validate_slug 434 444
-    struct ParsedRecord 447 449
-    function field 452 456
-    function parse_first_record 459 474
-    function unquote 476 499
-    function push_quoted_field 501 503
-    function push_quoted_nested_field 505 507
-    function quote 509 516
+    const CODING_MODIFICATION_SUITE_LINO 16 17
+    struct UnknownTrace 25 32
+    function new 37 46
+    function from_event_log 51 58
+    function from_symbolic_answer 64 73
+    function links_notation 77 89
+    struct BenchmarkGateReport 95 106
+    function new 111 125
+    function issue_362_from_counts 132 148
+    function permits_adoption 152 154
+    function status_slug 156 162
+    function learn_rules_from_unknown_traces 167 185
+    struct ReportedLearning 193 202
+    function learn_from_reported_conversation 211 254
+    function learning_trace_from_symbolic_answer 262 277
+    function event_payload 279 337
+    function find_learning_events 339 357
+    struct LearnedRuleProposal 361 382
+    enum LearnedRuleAdoption 386 391
+    function slug 394 399
+    struct LearningRejection 404 409
+    struct LearningRun 413 424
+    function new 427 452
+    function adoptable_rules 456 461
+    function links_notation 465 498
+    function propose_rule_from_trace 501 574
+    function learned_program_rule_lino 576 585
+    function require_field 587 589
+    function field_value 591 605
+    function validate_slug 607 617
+    struct ParsedRecord 620 622
+    function field 625 629
+    function parse_first_record 632 647
+    function unquote 649 672
+    function push_quoted_field 674 676
+    function push_quoted_nested_field 678 680
+    function quote 682 689

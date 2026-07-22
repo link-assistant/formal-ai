@@ -319,6 +319,16 @@ pub fn canonical_ledger() -> LearningLedger {
     ledger
 }
 
+/// Recall an approved, committed lesson for the live solver path.
+///
+/// Returning an owned entry keeps the runtime caller independent of the
+/// ledger's storage lifetime. Only the canonical human-approved ledger is
+/// consulted; proposed or merely uploaded lessons never reach this path.
+#[must_use]
+pub fn approved_lesson_for(prompt: &str) -> Option<LedgerEntry> {
+    canonical_ledger().lesson_for(prompt).cloned()
+}
+
 fn normalise(prompt: &str) -> String {
     prompt.trim().to_lowercase()
 }

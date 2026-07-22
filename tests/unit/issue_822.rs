@@ -351,6 +351,59 @@ fn conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_
 }
 
 #[test]
+fn conversation_learning_endpoint_stages_structured_server_trace_for_review() {
+    let _lock = DIALOG_LOG_ENV_LOCK
+        .get_or_init(|| Mutex::new(()))
+        .lock()
+        .unwrap();
+    let directory = isolated_directory("conversation-learning");
+    let _env = EnvRestore::set("FORMAL_AI_DIALOG_LOG_DIR", &directory);
+    let headers = [("X-Formal-AI-Dialog-ID", "issue-822-learning")];
+    let request = json!({
+        "model": "formal-ai",
+        "messages": [{
+            "role": "user",
+            "content": "List the files but sort the results in reverse order"
+        }]
+    })
+    .to_string();
+    let response = json!({
+        "choices": [],
+        "learning_trace": {"events": [
+            {"kind": "selected_rule", "payload": "initial unknown reason no_seed_route next try_rule_synthesis"},
+            {"kind": "rule_synthesis_candidate", "payload": "rule_synthesis_candidate\n  id reverse_sort_list_files\n  base_task list_files\n  modifier reverse_sort\n  resolved_task list_files_reverse_sort"},
+            {"kind": "rule_verification", "payload": "rule_verification\n  fixture list_files_output_order\n  status passed"}
+        ]}
+    })
+    .to_string();
+    write_dialog_exchange(
+        &directory,
+        "POST",
+        "/v1/chat/completions",
+        &headers,
+        &request,
+        200,
+        "application/json",
+        &response,
+    )
+    .expect("dialog log");
+
+    let staged = handle_api_request(
+        "POST",
+        "/api/formal-ai/v1/conversations/issue-822-learning/learn",
+        "",
+    );
+    assert_eq!(staged.status_code, 200, "{}", staged.body);
+    let body: Value = serde_json::from_str(&staged.body).expect("learning response");
+    assert_eq!(body["learning_trace_found"], true);
+    assert_eq!(body["rule_proposals"], 1);
+    assert_eq!(body["awaiting_human_review"], true);
+    assert_eq!(body["promoted"], false, "uploading must not imply approval");
+
+    fs::remove_dir_all(directory).expect("remove test directory");
+}
+
+#[test]
 fn opencode_extractor_is_shipped_with_the_crate() {
     let path =
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("scripts/opencode-conversation-to-lino.py");

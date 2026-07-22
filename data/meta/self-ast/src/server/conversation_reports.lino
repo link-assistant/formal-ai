@@ -2,12 +2,12 @@ self_ast_census
   target src/server/conversation_reports.rs
   language rust
   fidelity signature
-  byte_len 2937
-  line_count 77
-  content_id source_module_e3997f44e839493d
+  byte_len 3316
+  line_count 82
+  content_id source_module_03a580955fe3fd7f
   symbol_count 4
   symbols
     const ERROR_PLACEHOLDER 8 8
     function handle_context_request 10 42
-    function handle_learning_request 44 71
-    function config 73 77
+    function handle_learning_request 44 76
+    function config 78 82

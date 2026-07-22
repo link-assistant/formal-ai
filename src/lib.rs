@@ -69,6 +69,7 @@ pub mod proxy;
 pub mod question_generation;
 pub mod rebuild_plan;
 pub mod recipe_interpreter;
+pub mod recursive_execution;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
@@ -186,7 +187,8 @@ pub use knowledge::{
 };
 pub use language::{detect as detect_language, Language};
 pub use learning_ledger::{
-    canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
+    approved_lesson_for, canonical_ledger, HumanApproval, LearningLedger, LedgerEntry,
+    PromotionRejected,
 };
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
@@ -267,8 +269,9 @@ pub use self_healing::{
     canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
 };
 pub use self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
-    LearningRejection, LearningRun, UnknownTrace,
+    learn_from_reported_conversation, learn_rules_from_unknown_traces,
+    learning_trace_from_symbolic_answer, BenchmarkGateReport, LearnedRuleAdoption,
+    LearnedRuleProposal, LearningRejection, LearningRun, ReportedLearning, UnknownTrace,
 };
 pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,

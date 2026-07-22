@@ -66,6 +66,42 @@ pub fn try_construct_unknown_rule(
     construction.rule
 }
 
+/// Resolve an unknown program follow-up from a previously approved lesson.
+///
+/// This is deliberately before fresh synthesis in the solver. The ledger
+/// supplies the approved modifier, while the active conversation supplies the
+/// current base task and language, so recall generalises across compatible
+/// program artifacts instead of replaying a stale answer string.
+pub fn try_recall_approved_rule(
+    rule: SelectedRule,
+    follow_up: &str,
+    history: &[ConversationTurn],
+    log: &mut EventLog,
+) -> SelectedRule {
+    if !matches!(rule, SelectedRule::Unknown) {
+        return rule;
+    }
+    let Some(lesson) = crate::learning_ledger::approved_lesson_for(follow_up) else {
+        return rule;
+    };
+    let Some(context) = active_program_context(history) else {
+        return rule;
+    };
+    let plan = crate::program_plan::lower(&context.task, std::slice::from_ref(&lesson.modifier));
+    let Some(spec) = program_spec(&plan.resolved_task, &context.language) else {
+        return rule;
+    };
+    log.append(
+        "learning_ledger_recall",
+        format!(
+            "lesson={} rule={} modifier={} approved_by={}",
+            lesson.lesson_id, lesson.rule_id, lesson.modifier, lesson.reviewer
+        ),
+    );
+    log.append("write_program_plan", plan.links_notation());
+    SelectedRule::WriteProgram(spec)
+}
+
 #[must_use]
 fn construct_rule_from_unknown(
     follow_up: &str,

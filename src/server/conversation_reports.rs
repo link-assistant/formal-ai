@@ -53,6 +53,7 @@ pub(super) fn handle_learning_request(dialog_id: &str) -> ApiHttpResponse {
         Err(error) => return error_response(500, &error.to_string()),
     };
     let document = crate::conversation_context::conversation_context_to_lino(dialog_id, &context);
+    let staged = crate::self_improvement::learn_from_reported_conversation(&context);
     let mut store = SyncStore::open();
     match store.record_chat_exchange(&format!("agentic_report_{dialog_id}"), &document) {
         Ok(events_recorded) => json_response(
@@ -61,6 +62,10 @@ pub(super) fn handle_learning_request(dialog_id: &str) -> ApiHttpResponse {
                 "dialog_id": dialog_id,
                 "learned": true,
                 "events_recorded": events_recorded,
+                "learning_trace_found": staged.is_some(),
+                "rule_proposals": staged.as_ref().map_or(0, |run| run.learning.proposals.len()),
+                "awaiting_human_review": staged.as_ref().is_some_and(|run| run.awaiting_human_review),
+                "promoted": false,
             }),
         ),
         Err(error) => error_response(
