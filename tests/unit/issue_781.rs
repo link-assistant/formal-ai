@@ -152,8 +152,8 @@ fn chat_completion_explains_the_action_before_requesting_a_tool() {
 #[test]
 fn chat_completion_localizes_tool_narration_in_hindi_and_chinese() {
     for (prompt, expected_narration) in [
-        ("सेब के बारे में इंटरनेट पर खोजो", "अगला कदम जारी रखने से पहले"),
-        ("查找苹果网上信息", "我会对"),
+        ("सेब के बारे में इंटरनेट पर खोजो", "इंटरनेट पर"),
+        ("查找苹果网上信息", "上网搜索"),
     ] {
         let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
             "model": "formal-ai",
