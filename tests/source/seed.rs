@@ -51,7 +51,7 @@ pub use embedded::{
     MEANINGS_UNITS_LINO, MEANING_FILES, MODEL_ALIASES_LINO, MULTILINGUAL_RESPONSES_LINO,
     NUMERIC_LIST_OPERATIONS_LINO, OPERATION_VOCABULARY_LINO, PERSONAS_LINO,
     PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO, PROMPT_PATTERNS_LINO,
-    SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
+    RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
@@ -275,22 +275,24 @@ pub struct ResponseRecord {
 /// Parse `multilingual-responses.lino` into structured records.
 #[must_use]
 pub fn multilingual_responses() -> Vec<ResponseRecord> {
-    let tree = parse_lino(MULTILINGUAL_RESPONSES_LINO);
     let mut out = Vec::new();
-    if let Some(root) = tree.children.first() {
-        for entry in root.children.iter().filter(|c| c.name == "response") {
-            let intent = entry.find_child_value("intent").to_string();
-            let language = entry.find_child_value("language").to_string();
-            let text = entry.find_child_value("text").to_string();
-            if intent.is_empty() || language.is_empty() {
-                continue;
+    for source in RESPONSE_FILES {
+        let tree = parse_lino(source);
+        if let Some(root) = tree.children.first() {
+            for entry in root.children.iter().filter(|c| c.name == "response") {
+                let intent = entry.find_child_value("intent").to_string();
+                let language = entry.find_child_value("language").to_string();
+                let text = entry.find_child_value("text").to_string();
+                if intent.is_empty() || language.is_empty() {
+                    continue;
+                }
+                out.push(ResponseRecord {
+                    id: entry.id.clone(),
+                    intent,
+                    language,
+                    text,
+                });
             }
-            out.push(ResponseRecord {
-                id: entry.id.clone(),
-                intent,
-                language,
-                text,
-            });
         }
     }
     out

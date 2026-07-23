@@ -69,6 +69,9 @@ pub struct WorkspaceCommands {
 /// One local filesystem scope and the shell root searched for that scope.
 #[derive(Debug, Clone, Default)]
 pub struct LocalPathSearchScope {
+    /// Stable scope key (`desktop`, `home`, `current`) used to select the
+    /// location-aware, command-free narration phrasing.
+    pub name: String,
     /// Shell expression used as the first `find` operand.
     pub root: String,
     /// Multilingual phrases that identify this as a local filesystem request.
@@ -145,6 +148,7 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                             .iter()
                             .filter(|child| child.name == "scope")
                             .map(|scope| LocalPathSearchScope {
+                                name: scope.id.clone(),
                                 root: scope.find_child_value("root").to_owned(),
                                 cues: collect_language_values(scope, "cue")
                                     .into_iter()

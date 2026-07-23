@@ -1,0 +1,161 @@
+multilingual_responses
+  response response_agentic_action_find_desktop_en
+    intent agentic_action_find_desktop
+    language en
+    text "Let me look on your Desktop for {subject}."
+  response response_agentic_action_find_desktop_ru
+    intent agentic_action_find_desktop
+    language ru
+    text "Посмотрю на вашем рабочем столе: {subject}."
+  response response_agentic_action_find_desktop_hi
+    intent agentic_action_find_desktop
+    language hi
+    text "मैं आपके डेस्कटॉप पर {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_desktop_zh
+    intent agentic_action_find_desktop
+    language zh
+    text "我来在你的桌面上查找 {subject}。"
+  response response_agentic_action_find_home_en
+    intent agentic_action_find_home
+    language en
+    text "Let me look in your home folder for {subject}."
+  response response_agentic_action_find_home_ru
+    intent agentic_action_find_home
+    language ru
+    text "Посмотрю в вашей домашней папке: {subject}."
+  response response_agentic_action_find_home_hi
+    intent agentic_action_find_home
+    language hi
+    text "मैं आपके होम फ़ोल्डर में {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_home_zh
+    intent agentic_action_find_home
+    language zh
+    text "我来在你的主目录中查找 {subject}。"
+  response response_agentic_action_find_current_en
+    intent agentic_action_find_current
+    language en
+    text "Let me look in the current folder for {subject}."
+  response response_agentic_action_find_current_ru
+    intent agentic_action_find_current
+    language ru
+    text "Посмотрю в текущей папке: {subject}."
+  response response_agentic_action_find_current_hi
+    intent agentic_action_find_current
+    language hi
+    text "मैं मौजूदा फ़ोल्डर में {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_current_zh
+    intent agentic_action_find_current
+    language zh
+    text "我来在当前目录中查找 {subject}。"
+  response response_agentic_action_search_en
+    intent agentic_action_search
+    language en
+    text "Let me search the web for {target}."
+  response response_agentic_action_search_ru
+    intent agentic_action_search
+    language ru
+    text "Поищу в интернете: {target}."
+  response response_agentic_action_search_hi
+    intent agentic_action_search
+    language hi
+    text "मैं इंटरनेट पर {target} खोजता हूँ।"
+  response response_agentic_action_search_zh
+    intent agentic_action_search
+    language zh
+    text "我来上网搜索 {target}。"
+  response response_agentic_action_read_en
+    intent agentic_action_read
+    language en
+    text "Let me open {target} and read what it says."
+  response response_agentic_action_read_ru
+    intent agentic_action_read
+    language ru
+    text "Открою {target} и прочитаю содержимое."
+  response response_agentic_action_read_hi
+    intent agentic_action_read
+    language hi
+    text "मैं {target} खोलकर उसकी सामग्री पढ़ता हूँ।"
+  response response_agentic_action_read_zh
+    intent agentic_action_read
+    language zh
+    text "我来打开 {target}，读取其中的内容。"
+  response response_agentic_action_search_code_en
+    intent agentic_action_search_code
+    language en
+    text "Let me search the code for {target}."
+  response response_agentic_action_search_code_ru
+    intent agentic_action_search_code
+    language ru
+    text "Поищу в коде: {target}."
+  response response_agentic_action_search_code_hi
+    intent agentic_action_search_code
+    language hi
+    text "मैं कोड में {target} खोजता हूँ।"
+  response response_agentic_action_search_code_zh
+    intent agentic_action_search_code
+    language zh
+    text "我来在代码中查找 {target}。"
+  response response_agentic_action_edit_en
+    intent agentic_action_edit
+    language en
+    text "Let me update {target} for you."
+  response response_agentic_action_edit_ru
+    intent agentic_action_edit
+    language ru
+    text "Обновлю {target}."
+  response response_agentic_action_edit_hi
+    intent agentic_action_edit
+    language hi
+    text "मैं {target} को अपडेट करता हूँ।"
+  response response_agentic_action_edit_zh
+    intent agentic_action_edit
+    language zh
+    text "我来更新 {target}。"
+  response response_agentic_action_run_en
+    intent agentic_action_run
+    language en
+    text "Let me run a quick command to get that for you."
+  response response_agentic_action_run_ru
+    intent agentic_action_run
+    language ru
+    text "Выполню короткую команду, чтобы это получить."
+  response response_agentic_action_run_hi
+    intent agentic_action_run
+    language hi
+    text "मैं यह पाने के लिए एक छोटी कमांड चलाता हूँ।"
+  response response_agentic_action_run_zh
+    intent agentic_action_run
+    language zh
+    text "我来运行一个命令来完成这个。"
+  response response_agentic_action_ask_user_en
+    intent agentic_action_ask_user
+    language en
+    text "Let me ask you a couple of quick questions so I get this right."
+  response response_agentic_action_ask_user_ru
+    intent agentic_action_ask_user
+    language ru
+    text "Задам пару коротких вопросов, чтобы всё сделать правильно."
+  response response_agentic_action_ask_user_hi
+    intent agentic_action_ask_user
+    language hi
+    text "मैं इसे सही करने के लिए आपसे कुछ छोटे सवाल पूछता हूँ।"
+  response response_agentic_action_ask_user_zh
+    intent agentic_action_ask_user
+    language zh
+    text "我来问你几个简短的问题，以便把这件事做对。"
+  response response_agentic_action_generic_en
+    intent agentic_action_generic
+    language en
+    text "Let me take the next step to handle that for you."
+  response response_agentic_action_generic_ru
+    intent agentic_action_generic
+    language ru
+    text "Сделаю следующий шаг, чтобы с этим разобраться."
+  response response_agentic_action_generic_hi
+    intent agentic_action_generic
+    language hi
+    text "मैं इसे पूरा करने के लिए अगला कदम उठाता हूँ।"
+  response response_agentic_action_generic_zh
+    intent agentic_action_generic
+    language zh
+    text "我来采取下一步来处理这个。"

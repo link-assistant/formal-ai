@@ -12,6 +12,12 @@
 pub const AGENT_INFO_LINO: &str = include_str!("../../../data/seed/agent-info.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-agentic.lino");
+pub const RESPONSE_FILES: &[&str] = &[
+    MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+];
 pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../../data/seed/facts.lino");
@@ -109,6 +115,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-agentic.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),

@@ -109,11 +109,56 @@ meanings
     lexeme en
       surface
         text "agent suggestion active"
-  agentic_action_before_tool
+  agentic_action_ask_user
     defined-by intent
     lexeme en
       surface
-        text "agentic action before tool"
+        text "agentic action ask user"
+  agentic_action_edit
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action edit"
+  agentic_action_find_current
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find current"
+  agentic_action_find_desktop
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find desktop"
+  agentic_action_find_home
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find home"
+  agentic_action_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action generic"
+  agentic_action_read
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action read"
+  agentic_action_run
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action run"
+  agentic_action_search
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action search"
+  agentic_action_search_code
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action search code"
   agentic_report_contents_options
     defined-by intent
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "learning resource"
-  lexeme_import_block_parse_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import block parse failed"
-  lexeme_import_cache_budget_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache budget reached"
-  lexeme_import_cache_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache invalid json"
-  lexeme_import_cache_miss_offline
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache miss offline"
-  lexeme_import_cache_unreadable
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache unreadable"
-  lexeme_import_cannot_create
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot create"
-  lexeme_import_cannot_inspect
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot inspect"
-  lexeme_import_cannot_install
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot install"
-  lexeme_import_cannot_list
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot list"
