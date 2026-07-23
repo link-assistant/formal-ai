@@ -19,31 +19,52 @@ fn arguments(call: &PlannedToolCall) -> Value {
 }
 
 #[test]
-fn local_find_without_matches_explains_the_result_to_a_beginner() {
-    let prompt = "Find willow-archive folder on my desktop";
-    for empty_result in [
-        r#"{"output":"","exit_code":0}"#,
-        "(no output)",
-        "(Bash completed with no output)",
-    ] {
-        let mut messages = vec![ChatMessage::user(prompt)];
-        let find = one_call(&messages, &["bash", "websearch"]);
-        assert_eq!(find.tool, "bash");
-        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            "find_empty".to_owned(),
-            find.tool,
-            find.arguments,
-        )]));
-        messages.push(ChatMessage::tool_result("find_empty", "bash", empty_result));
+fn local_find_without_matches_is_explained_in_every_supported_language() {
+    let cases = [
+        // language: "en"
+        (
+            "Find willow-archive folder on my desktop",
+            "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.",
+        ),
+        (
+            "Найди папку willow-archive на моём рабочем столе",
+            "В указанном месте не найдено подходящего файла или папки. Проверьте имя или попросите поискать в более широком месте.",
+        ),
+        (
+            "मेरे डेस्कटॉप पर willow-archive फ़ोल्डर खोजें",
+            "बताए गए स्थान पर कोई मिलता हुआ फ़ाइल या फ़ोल्डर नहीं मिला। नाम जाँचें या मुझे किसी बड़े स्थान में खोजने को कहें।",
+        ),
+        (
+            "在我的桌面上查找 willow-archive 文件夹",
+            "在指定位置未找到匹配的文件或文件夹。请检查名称，或让我扩大搜索范围。",
+        ),
+    ];
+    for (prompt, expected) in cases {
+        for empty_result in [
+            r#"{"output":"","exit_code":0}"#,
+            "(no output)",
+            "(Bash completed with no output)",
+        ] {
+            let mut messages = vec![ChatMessage::user(prompt)];
+            let find = one_call(&messages, &["bash", "websearch"]);
+            assert_eq!(find.tool, "bash");
+            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                "find_empty".to_owned(),
+                find.tool,
+                find.arguments,
+            )]));
+            messages.push(ChatMessage::tool_result("find_empty", "bash", empty_result));
 
-        let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &["bash", "websearch"])
-        else {
-            panic!("empty find result should produce a final explanation");
-        };
-        let lower = answer.to_ascii_lowercase();
-        assert!(lower.contains("no matching file or folder"), "{answer}");
-        assert!(!lower.contains("without output"), "{answer}");
-        assert!(!lower.contains("(no output)"), "{answer}");
+            let Some(AgenticPlan::Final(answer)) =
+                plan_chat_step(&messages, &["bash", "websearch"])
+            else {
+                panic!("empty find result should produce a final explanation");
+            };
+            assert_eq!(answer, expected, "prompt={prompt}");
+            let lower = answer.to_ascii_lowercase();
+            assert!(!lower.contains("without output"), "{answer}");
+            assert!(!lower.contains("(no output)"), "{answer}");
+        }
     }
 }
 
