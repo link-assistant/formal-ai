@@ -84,9 +84,87 @@ pub(super) fn local_path_search_command_for_task(prompt: &str) -> Option<String>
 }
 
 fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    let template = &vocab.local_path_search_command_template;
+    if template.is_empty() {
+        return None;
+    }
+    let parts = extract_local_path_search(prompt, vocab)?;
+    let words = parts.words.iter().map(String::as_str).collect::<Vec<_>>();
+
+    let mut variants = vec![words.clone()];
+    if words.len() >= 3 {
+        for omitted in 0..words.len() {
+            variants.push(
+                words
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(index, word)| (index != omitted).then_some(*word))
+                    .collect(),
+            );
+        }
+    }
+    let patterns = variants
+        .into_iter()
+        .map(|parts| format!("-iname '*{}*'", parts.join("*")))
+        .collect::<Vec<_>>()
+        .join(" -o ");
+    let predicate = parts
+        .predicate
+        .as_deref()
+        .map(|predicate| format!(" {predicate}"))
+        .unwrap_or_default();
+    Some(
+        template
+            .replace(ROOT_TEMPLATE_SLOT, &parts.scope_root)
+            .replace(PREDICATE_TEMPLATE_SLOT, &predicate)
+            .replace(PATTERNS_TEMPLATE_SLOT, &patterns),
+    )
+}
+
+/// A location-aware, command-free description of a local path lookup.
+///
+/// The narration layer uses this to explain *what* is being looked for and
+/// *where* — never echoing the raw `find` command, which `OpenCode` already prints
+/// when the step actually runs (issue #819).
+pub(super) struct LocalPathSearchNarration {
+    /// The requested name, cleaned of the verb, scope and kind glue words.
+    pub subject: String,
+    /// The matched scope key (`desktop`, `home`, `current`) used to phrase the
+    /// location naturally in the user's language.
+    pub scope: String,
+}
+
+/// Describe a natural-language local path lookup for the pre-tool narration.
+///
+/// Returns `None` for any prompt that is not a local filesystem search, so the
+/// caller falls back to the generic per-capability phrasing.
+pub(super) fn local_path_search_narration(prompt: &str) -> Option<LocalPathSearchNarration> {
+    let prompt = strip_balanced_outer_quotes(prompt.trim());
+    let vocab = seed::shell_intent_vocabulary();
+    let parts = extract_local_path_search(prompt, &vocab)?;
+    Some(LocalPathSearchNarration {
+        subject: parts.words.join(" "),
+        scope: parts.scope_name,
+    })
+}
+
+/// The scope, kind predicate and cleaned subject words shared by the `find`
+/// command builder and the narration layer, so both agree on exactly what a
+/// local path lookup targets.
+struct LocalPathSearchParts {
+    scope_name: String,
+    scope_root: String,
+    predicate: Option<String>,
+    words: Vec<String>,
+}
+
+fn extract_local_path_search(
+    prompt: &str,
+    vocab: &ShellIntentVocabulary,
+) -> Option<LocalPathSearchParts> {
     let lower = prompt.to_lowercase();
     let action = longest_contained(&lower, &vocab.local_path_search_actions)?;
-    let scope = vocab
+    let (scope, scope_cue) = vocab
         .local_path_search_scopes
         .iter()
         .flat_map(|scope| scope.cues.iter().map(move |cue| (scope, cue)))
@@ -94,7 +172,7 @@ fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Opt
         .max_by_key(|(_, cue)| cue.chars().count())?;
     let mut subject = lower;
     subject = subject.replace(action, " ");
-    subject = subject.replace(scope.1, " ");
+    subject = subject.replace(scope_cue.as_str(), " ");
     let kind = vocab
         .local_path_search_kinds
         .iter()
@@ -114,43 +192,20 @@ fn local_path_search_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Opt
         .split(|character: char| !character.is_alphanumeric())
         .filter(|word| !word.is_empty() && !noise.contains(word))
         .take(8)
+        .map(str::to_owned)
         .collect::<Vec<_>>();
     if words.is_empty() {
         return None;
     }
-
-    let mut variants = vec![words.clone()];
-    if words.len() >= 3 {
-        for omitted in 0..words.len() {
-            variants.push(
-                words
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(index, word)| (index != omitted).then_some(*word))
-                    .collect(),
-            );
-        }
-    }
-    let patterns = variants
-        .into_iter()
-        .map(|parts| format!("-iname '*{}*'", parts.join("*")))
-        .collect::<Vec<_>>()
-        .join(" -o ");
     let predicate = kind
-        .map(|(kind, _)| kind.predicate.as_str())
-        .or_else(|| path_argument(prompt).map(|_| "-type f"))
-        .map(|predicate| format!(" {predicate}"))
-        .unwrap_or_default();
-    let template = &vocab.local_path_search_command_template;
-    if template.is_empty() {
-        return None;
-    }
-    Some(
-        template
-            .replace(ROOT_TEMPLATE_SLOT, &scope.0.root)
-            .replace(PREDICATE_TEMPLATE_SLOT, &predicate)
-            .replace(PATTERNS_TEMPLATE_SLOT, &patterns),
-    )
+        .map(|(kind, _)| kind.predicate.clone())
+        .or_else(|| path_argument(prompt).map(|_| String::from("-type f")));
+    Some(LocalPathSearchParts {
+        scope_name: scope.name.clone(),
+        scope_root: scope.root.clone(),
+        predicate,
+        words,
+    })
 }
 
 fn longest_contained<'a>(text: &str, candidates: &'a [String]) -> Option<&'a str> {
