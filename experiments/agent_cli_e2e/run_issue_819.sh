@@ -13,10 +13,18 @@ AGENT="${AGENT:-agent}"
 OPENCODE="${OPENCODE:-opencode}"
 CLIENTS="${CLIENTS:-agent opencode claude codex}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
+EMPTY_RESULT="${EMPTY_RESULT:-0}"
 PROMPT="Find hive-mind-control center folder on my desktop"
 WORKDIR="$(mktemp -d)"
 DESKTOP_DIR="$WORKDIR/Desktop"
 EXPECTED_PATH="$DESKTOP_DIR/Archive/hive-control-center"
+EMPTY_MESSAGE="No matching file or folder was found in the requested location."
+EXPECTED_RESULT="$EXPECTED_PATH"
+EMPTY_ARG=""
+if [ "$EMPTY_RESULT" = "1" ]; then
+  EXPECTED_RESULT="$EMPTY_MESSAGE"
+  EMPTY_ARG="EMPTY"
+fi
 TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
 CURRENT_SERVER_PID=""
 
@@ -171,10 +179,10 @@ run_client() {
 
   preserve_raw_artifacts "$client" "$client_dir"
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "$client" "$sequence" "$EXPECTED_PATH" \
+    "$dialog_dir" "$client" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
     || fail "$client dialog structure was incomplete" "$client_log" "$server_log"
-  grep -Fq "$EXPECTED_PATH" "$client_log" \
-    || fail "$client did not display the discovered path" "$client_log" "$server_log"
+  grep -Fq "$EXPECTED_RESULT" "$client_log" \
+    || fail "$client did not display the expected result" "$client_log" "$server_log"
   preserve_sequence "$client" "$sequence"
   echo "== issue #819 $client E2E OK: user -> find -> result -> final =="
   tail -20 "$client_log"
@@ -196,13 +204,13 @@ run_opencode_tui() {
   ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
     ISSUE819_TUI_CWD="$WORKDIR" \
     ISSUE819_DESKTOP_DIR="$DESKTOP_DIR" \
-    ISSUE819_EXPECT_PATH="$EXPECTED_PATH" \
+    ISSUE819_EXPECT_RESULT="$EXPECTED_RESULT" \
     ISSUE819_TUI_OUTPUT="$transcript" \
     node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1 \
     || fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
 
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_PATH" \
+    "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
     || fail "OpenCode TUI dialog structure was incomplete" "$client_log" "$server_log"
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR/opencode-tui"
@@ -216,7 +224,11 @@ run_opencode_tui() {
   stop_server
 }
 
-mkdir -p "$EXPECTED_PATH"
+if [ "$EMPTY_RESULT" = "1" ]; then
+  mkdir -p "$DESKTOP_DIR"
+else
+  mkdir -p "$EXPECTED_PATH"
+fi
 (cd "$TUI_DIR" && bun install --frozen-lockfile && bun test) \
   || fail "command-stream TUI regression failed"
 

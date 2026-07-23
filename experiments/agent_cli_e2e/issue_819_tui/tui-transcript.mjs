@@ -47,6 +47,7 @@ export async function captureTuiTranscript({
   command,
   cwd,
   environment = {},
+  interactions = [],
   stopMarker,
   stopMarkerOccurrences = 1,
   outputPath,
@@ -66,8 +67,10 @@ export async function captureTuiTranscript({
   })`script -qefc ${command} /dev/null`;
   const frames = [];
   const seenFrames = new Set();
+  const pendingInteractions = [...interactions];
   let raw = '';
   const timeout = setTimeout(() => runner.kill('SIGTERM'), timeoutMs);
+  const stdin = pendingInteractions.length > 0 ? await runner.streams.stdin : null;
 
   try {
     for await (const chunk of runner.stream()) {
@@ -79,6 +82,21 @@ export async function captureTuiTranscript({
       if (frame && !seenFrames.has(frame)) {
         seenFrames.add(frame);
         frames.push(frame);
+      }
+      while (
+        stdin &&
+        pendingInteractions.length > 0 &&
+        raw.includes(pendingInteractions[0].after)
+      ) {
+        const interaction = pendingInteractions.shift();
+        for (const input of interaction.inputs) {
+          stdin.write(input);
+          if (interaction.delayMs) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, interaction.delayMs),
+            );
+          }
+        }
       }
       if (
         stopMarker &&
@@ -98,6 +116,7 @@ export async function captureTuiTranscript({
     frame_count: frames.length,
     frames,
     sequence: unrollFrames(frames),
+    interaction_count: interactions.length - pendingInteractions.length,
     stop_marker_seen:
       !stopMarker || raw.split(stopMarker).length - 1 >= stopMarkerOccurrences,
   };

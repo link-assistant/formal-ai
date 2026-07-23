@@ -1,10 +1,14 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const [dialogDirectory, client, outputPath, expectedPath] = process.argv.slice(2);
-if (!dialogDirectory || !client || !outputPath || !expectedPath) {
-  throw new Error('usage: verify-dialog.mjs DIALOG_DIR CLIENT OUTPUT EXPECTED_PATH');
+const [dialogDirectory, client, outputPath, expectedResult, emptyFlag] =
+  process.argv.slice(2);
+if (!dialogDirectory || !client || !outputPath || !expectedResult) {
+  throw new Error(
+    'usage: verify-dialog.mjs DIALOG_DIR CLIENT OUTPUT EXPECTED_RESULT [EMPTY]',
+  );
 }
+const expectEmpty = emptyFlag === 'EMPTY';
 
 const records = [];
 for (const name of await readdir(dialogDirectory)) {
@@ -66,21 +70,21 @@ if (calls.some((call) => call.name.toLowerCase().includes('web'))) {
 
 const resultExchange = exchanges.find(
   (record) =>
-    record.request_body.includes(expectedPath) &&
+    (expectEmpty || record.request_body.includes(expectedResult)) &&
     /(role["']?\s*:\s*["']tool|tool_result|function_call_output)/u.test(record.request_body),
 );
 if (!resultExchange) throw new Error(`${client}: client never returned the tool result`);
 
 const finalExchange = [...exchanges]
   .reverse()
-  .find((record) => record.response_body?.includes(expectedPath));
-if (!finalExchange) throw new Error(`${client}: final answer omitted the discovered path`);
+  .find((record) => record.response_body?.includes(expectedResult));
+if (!finalExchange) throw new Error(`${client}: final answer omitted the expected result`);
 
 const sequence = [
   { role: 'user', content: prompt },
   { role: 'assistant', tool_call: localCalls[0] },
-  { role: 'tool', content: expectedPath },
-  { role: 'assistant', content: expectedPath },
+  { role: 'tool', content: expectEmpty ? '' : expectedResult },
+  { role: 'assistant', content: expectedResult },
 ];
 await writeFile(
   outputPath,

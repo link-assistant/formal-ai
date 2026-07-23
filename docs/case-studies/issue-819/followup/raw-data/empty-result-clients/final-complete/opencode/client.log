@@ -1,0 +1,8 @@
+[0m
+> build · formal-ai
+[0m
+I'll use bash on find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*… so I can verify the next step before continuing.
+[0m$ [0mfind "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \) -print -quit
+(no output)
+[0m
+No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.

@@ -1,0 +1,1280 @@
+== Agent CLI attempt 1 ==
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:05.936Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:05.938Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js --prompt Find hive-mind-control center folder on my desktop --disable-stdin --model formal-ai/formal-ai --no-summarize-session",
+  "workingDirectory": "/tmp/tmp.fkdr3JIY6x",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:05.938Z",
+  "service": "default",
+  "directory": "/tmp/tmp.fkdr3JIY6x",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:05.939Z",
+  "service": "project",
+  "directory": "/tmp/tmp.fkdr3JIY6x",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.043Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Find hive-mind-control center folder on my desktop",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "--prompt",
+    "Find hive-mind-control center folder on my desktop",
+    "--disable-stdin",
+    "--model",
+    "formal-ai/formal-ai",
+    "--no-summarize-session"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.043Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.046Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.056Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.058Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.059Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.062Z",
+  "service": "config",
+  "path": "/tmp/tmp.fkdr3JIY6x/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.130Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "age": 217765,
+  "message": "cache is fresh, triggering background refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.131Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.200Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.256Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.257Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 211,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.260Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.260Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.261Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.305Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.306Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.310Z",
+  "service": "session",
+  "id": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.fkdr3JIY6x",
+  "title": "New session - 2026-07-23T08:21:06.310Z",
+  "time": {
+    "created": 1784794866310,
+    "updated": 1784794866310
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.310Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.311Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 5,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.323Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.326Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_071ef9d7affedVWdxQjqKCp1Zs/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.326Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_071ef9d7affedVWdxQjqKCp1Zs/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.344Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 18,
+  "method": "POST",
+  "path": "/session/ses_071ef9d7affedVWdxQjqKCp1Zs/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.354Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.363Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.374Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.399Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.400Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.401Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.402Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.403Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.403Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.404Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 2,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.405Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.406Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:06.407Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.325Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.337Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.400Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.424Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.655Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.655Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:07.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.040Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784794868040,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106925001R9wLYNW1vNTUdj",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.044Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.047Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784794868047,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e10694c001lHKAhOgEodczcX",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "tool",
+    "callID": "call_8a326fcc11545b08",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.049Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784794868049,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e10694c001lHKAhOgEodczcX",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "tool",
+    "callID": "call_8a326fcc11545b08",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit"
+      },
+      "time": {
+        "start": 1784794868047
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.078Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784794868078,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106948001CLEuMWnJPM0dGm",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "text",
+    "text": "I'll use bash on find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*… so I can verify the next step before continuing.",
+    "time": {
+      "start": 1784794868077,
+      "end": 1784794868077
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.083Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1784794868084,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e10694c001lHKAhOgEodczcX",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "tool",
+    "callID": "call_8a326fcc11545b08",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit"
+      },
+      "output": "",
+      "title": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit",
+      "metadata": {
+        "output": "",
+        "exit": 0
+      },
+      "time": {
+        "start": 1784794868047,
+        "end": 1784794868080
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-23T08:21:08.088Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 9971,
+    "output": 489,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 9971,
+  "sseCompletionTokens": 489,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.092Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784794868092,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106979001bpeb8I44Npafgc",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e106683001FtLO13t4Ss0wWd",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 9971,
+      "output": 489,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10460,
+      "headroom": 28396,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.093Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.094Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.108Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.109Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.130Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.130Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.143Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.143Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.160Z",
+  "service": "session.prompt",
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.161Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.161Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.170Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.170Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10460,
+  "providerTokens": 10460,
+  "estimatedInputTokens": 79,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 9971,
+    "cacheRead": 0,
+    "output": 489
+  },
+  "overflow": false,
+  "headroom": 41348,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.171Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.193Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.202Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.309Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1784794868309,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106a50001ahhQfp6wwoC8jF",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e1069ca001exjKkguwYKzcoZ",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.311Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.312Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1784794868313,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106a56001RZ5r2P1U9B3A93",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e1069ca001exjKkguwYKzcoZ",
+    "type": "text",
+    "text": "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.",
+    "time": {
+      "start": 1784794868312,
+      "end": 1784794868312
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-23T08:21:08.313Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10198,
+    "output": 117,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10198,
+  "sseCompletionTokens": 117,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1784794868315,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "part": {
+    "id": "prt_f8e106a5a001C38ZR2VS0xy0ty",
+    "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+    "messageID": "msg_f8e1069ca001exjKkguwYKzcoZ",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10198,
+      "output": 117,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10315,
+      "headroom": 28541,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.315Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.316Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.389Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.389Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.411Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.411Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.411Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.411Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.415Z",
+  "service": "session.prompt",
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.416Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.452Z",
+  "service": "session.prompt",
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.454Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.455Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784794868455,
+  "sessionID": "ses_071ef9d7affedVWdxQjqKCp1Zs"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.457Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.457Z",
+  "service": "default",
+  "directory": "/tmp/tmp.fkdr3JIY6x",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.465Z",
+  "service": "state",
+  "key": "/tmp/tmp.fkdr3JIY6x",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.488Z",
+  "service": "state",
+  "key": "/tmp/tmp.fkdr3JIY6x",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.489Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
