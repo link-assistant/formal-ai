@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.302.1] - 2026-07-23
+
+### Fixed
+
+- Explain empty local file and folder searches in beginner-friendly language,
+  including client placeholders such as `(no output)`.
+- Let report confirmations select and execute multiple destinations in one
+  interaction.
+- Keep temporary Formal AI server diagnostics out of wrapped fullscreen TUIs
+  while retaining them in a durable session log.
+
 ## [0.302.0] - 2026-07-22
 
 ### Added
