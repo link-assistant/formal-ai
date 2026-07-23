@@ -1,0 +1,1060 @@
+source_links
+  engine meta_language
+  language rust
+  module_count 150
+  faithful_count 150
+  coverage_permille 1000
+  fully_faithful true
+  total_link_count 1163839
+  total_named_node_count 234513
+  modules
+    module
+      path "src/agent.rs"
+      byte_len 22131
+      content_id "source_module_d6dc0c5386fb1128"
+      total_link_count 17932
+      named_node_count 3543
+      faithful true
+    module
+      path "src/agentic_coding/associative_learning.rs"
+      byte_len 1606
+      content_id "source_module_926e3e97b31fa30a"
+      total_link_count 817
+      named_node_count 148
+      faithful true
+    module
+      path "src/agentic_coding/capability_router.rs"
+      byte_len 9069
+      content_id "source_module_0ccb8c3eb91ec34d"
+      total_link_count 7799
+      named_node_count 1612
+      faithful true
+    module
+      path "src/agentic_coding/change_request.rs"
+      byte_len 6697
+      content_id "source_module_61a59fbbec0b673f"
+      total_link_count 2184
+      named_node_count 471
+      faithful true
+    module
+      path "src/agentic_coding/code_artifact.rs"
+      byte_len 12305
+      content_id "source_module_e7ae952e38a7e937"
+      total_link_count 9058
+      named_node_count 1837
+      faithful true
+    module
+      path "src/agentic_coding/code_rewrite_learning.rs"
+      byte_len 1689
+      content_id "source_module_302ed77316482eda"
+      total_link_count 832
+      named_node_count 152
+      faithful true
+    module
+      path "src/agentic_coding/command_reroute.rs"
+      byte_len 5426
+      content_id "source_module_139b89dd9d8b59c2"
+      total_link_count 3897
+      named_node_count 791
+      faithful true
+    module
+      path "src/agentic_coding/conversation_recall.rs"
+      byte_len 1604
+      content_id "source_module_404a4a2038b3bca1"
+      total_link_count 1001
+      named_node_count 207
+      faithful true
+    module
+      path "src/agentic_coding/corpus.rs"
+      byte_len 4807
+      content_id "source_module_c5ffda9bccd862d1"
+      total_link_count 2534
+      named_node_count 519
+      faithful true
+    module
+      path "src/agentic_coding/diagram.rs"
+      byte_len 10818
+      content_id "source_module_aba808e67764ead3"
+      total_link_count 4987
+      named_node_count 935
+      faithful true
+    module
+      path "src/agentic_coding/dreaming_audit.rs"
+      byte_len 9613
+      content_id "source_module_8394e196895bd775"
+      total_link_count 6753
+      named_node_count 1406
+      faithful true
+    module
+      path "src/agentic_coding/driver.rs"
+      byte_len 11737
+      content_id "source_module_24c3e8c46a44d30e"
+      total_link_count 6918
+      named_node_count 1375
+      faithful true
+    module
+      path "src/agentic_coding/execution_learning.rs"
+      byte_len 1666
+      content_id "source_module_628af88f6119fb0e"
+      total_link_count 832
+      named_node_count 152
+      faithful true
+    module
+      path "src/agentic_coding/explain.rs"
+      byte_len 6321
+      content_id "source_module_e380b76f9d24205d"
+      total_link_count 2100
+      named_node_count 450
+      faithful true
+    module
+      path "src/agentic_coding/file_read.rs"
+      byte_len 19865
+      content_id "source_module_d2579b19a103da3a"
+      total_link_count 16565
+      named_node_count 3337
+      faithful true
+    module
+      path "src/agentic_coding/formalize.rs"
+      byte_len 20700
+      content_id "source_module_0841b6b93be1278d"
+      total_link_count 15013
+      named_node_count 3011
+      faithful true
+    module
+      path "src/agentic_coding/general_planner.rs"
+      byte_len 24191
+      content_id "source_module_9e5c6401e95b57fa"
+      total_link_count 14094
+      named_node_count 2883
+      faithful true
+    module
+      path "src/agentic_coding/google_trends_catalog.rs"
+      byte_len 5975
+      content_id "source_module_0269b7242306e817"
+      total_link_count 4428
+      named_node_count 907
+      faithful true
+    module
+      path "src/agentic_coding/google_trends_learning.rs"
+      byte_len 5443
+      content_id "source_module_fd8f391bbc37c7f2"
+      total_link_count 1875
+      named_node_count 397
+      faithful true
+    module
+      path "src/agentic_coding/intent_router.rs"
+      byte_len 7519
+      content_id "source_module_921511547e4f1fdf"
+      total_link_count 4051
+      named_node_count 853
+      faithful true
+    module
+      path "src/agentic_coding/learning_report.rs"
+      byte_len 9764
+      content_id "source_module_3ffba31d28de33ed"
+      total_link_count 5463
+      named_node_count 1138
+      faithful true
+    module
+      path "src/agentic_coding/learning_report/handler_precedence_learning.rs"
+      byte_len 1906
+      content_id "source_module_5ff54faf317da562"
+      total_link_count 834
+      named_node_count 153
+      faithful true
+    module
+      path "src/agentic_coding/learning_report/hardcoded_language_learning.rs"
+      byte_len 1089
+      content_id "source_module_e5ac3463e6ab1441"
+      total_link_count 759
+      named_node_count 131
+      faithful true
+    module
+      path "src/agentic_coding/learning_report/lexeme_import_learning.rs"
+      byte_len 1087
+      content_id "source_module_b20f73940b989c92"
+      total_link_count 759
+      named_node_count 131
+      faithful true
+    module
+      path "src/agentic_coding/learning_report/self_hosting_learning.rs"
+      byte_len 1928
+      content_id "source_module_7b2e0b88d89f491b"
+      total_link_count 865
+      named_node_count 162
+      faithful true
+    module
+      path "src/agentic_coding/ledger.rs"
+      byte_len 5342
+      content_id "source_module_8b5c7302a0e16cfc"
+      total_link_count 1753
+      named_node_count 380
+      faithful true
+    module
+      path "src/agentic_coding/lexicon.rs"
+      byte_len 13379
+      content_id "source_module_16601e4b778ef5d2"
+      total_link_count 10759
+      named_node_count 2150
+      faithful true
+    module
+      path "src/agentic_coding/meaning_detail.rs"
+      byte_len 30967
+      content_id "source_module_763b6af219dd70d8"
+      total_link_count 17019
+      named_node_count 3501
+      faithful true
+    module
+      path "src/agentic_coding/mod.rs"
+      byte_len 5017
+      content_id "source_module_aca1c8b8f52e8ae8"
+      total_link_count 2447
+      named_node_count 406
+      faithful true
+    module
+      path "src/agentic_coding/narration.rs"
+      byte_len 4442
+      content_id "source_module_c692ae3f00f44408"
+      total_link_count 3025
+      named_node_count 616
+      faithful true
+    module
+      path "src/agentic_coding/planner.rs"
+      byte_len 39599
+      content_id "source_module_2e7705b6d4a01daa"
+      total_link_count 19258
+      named_node_count 3855
+      faithful true
+    module
+      path "src/agentic_coding/progress.rs"
+      byte_len 5744
+      content_id "source_module_a2b32a73ada7108d"
+      total_link_count 4233
+      named_node_count 874
+      faithful true
+    module
+      path "src/agentic_coding/question_catalog.rs"
+      byte_len 14682
+      content_id "source_module_512a32489f4c308d"
+      total_link_count 6380
+      named_node_count 1326
+      faithful true
+    module
+      path "src/agentic_coding/rebuild_plan.rs"
+      byte_len 6470
+      content_id "source_module_1b3baad04d15abbb"
+      total_link_count 1762
+      named_node_count 390
+      faithful true
+    module
+      path "src/agentic_coding/repair_strategy.rs"
+      byte_len 7235
+      content_id "source_module_7dd17a52ae12d7d3"
+      total_link_count 2346
+      named_node_count 527
+      faithful true
+    module
+      path "src/agentic_coding/report_issue.rs"
+      byte_len 16954
+      content_id "source_module_f8d2f7e22938d5e3"
+      total_link_count 12950
+      named_node_count 2655
+      faithful true
+    module
+      path "src/agentic_coding/routing_learning.rs"
+      byte_len 1571
+      content_id "source_module_976ea373edb73248"
+      total_link_count 822
+      named_node_count 149
+      faithful true
+    module
+      path "src/agentic_coding/self_ast.rs"
+      byte_len 11266
+      content_id "source_module_9104c8097027e9ae"
+      total_link_count 5369
+      named_node_count 1065
+      faithful true
+    module
+      path "src/agentic_coding/self_heal.rs"
+      byte_len 6124
+      content_id "source_module_dea3882ec18d6743"
+      total_link_count 2189
+      named_node_count 460
+      faithful true
+    module
+      path "src/agentic_coding/shell_command.rs"
+      byte_len 27902
+      content_id "source_module_e7b496ddb3db2f68"
+      total_link_count 20069
+      named_node_count 4164
+      faithful true
+    module
+      path "src/agentic_coding/source_links.rs"
+      byte_len 9464
+      content_id "source_module_6177a1573de819fc"
+      total_link_count 3731
+      named_node_count 756
+      faithful true
+    module
+      path "src/agentic_coding/statement_audit.rs"
+      byte_len 1361
+      content_id "source_module_f46b2ecd4614188b"
+      total_link_count 797
+      named_node_count 154
+      faithful true
+    module
+      path "src/agentic_coding/tool_result.rs"
+      byte_len 14358
+      content_id "source_module_426e7573215251c1"
+      total_link_count 13436
+      named_node_count 2727
+      faithful true
+    module
+      path "src/agentic_coding/web_research.rs"
+      byte_len 20112
+      content_id "source_module_85bad4c71c32d543"
+      total_link_count 12624
+      named_node_count 2686
+      faithful true
+    module
+      path "src/anthropic.rs"
+      byte_len 24076
+      content_id "source_module_4521391b735b65a0"
+      total_link_count 14828
+      named_node_count 3022
+      faithful true
+    module
+      path "src/arithmetic.rs"
+      byte_len 28181
+      content_id "source_module_0c0cbf53baa417f0"
+      total_link_count 21481
+      named_node_count 4201
+      faithful true
+    module
+      path "src/arithmetic_word_tables.rs"
+      byte_len 2773
+      content_id "source_module_05d1534ee9527818"
+      total_link_count 2468
+      named_node_count 419
+      faithful true
+    module
+      path "src/associative_package.rs"
+      byte_len 29574
+      content_id "source_module_5dd11f9849f8ff8f"
+      total_link_count 19568
+      named_node_count 3908
+      faithful true
+    module
+      path "src/associative_persistence.rs"
+      byte_len 26312
+      content_id "source_module_f3088323046aedae"
+      total_link_count 15149
+      named_node_count 3175
+      faithful true
+    module
+      path "src/attachment_context.rs"
+      byte_len 4771
+      content_id "source_module_b623663841aa0b5c"
+      total_link_count 3210
+      named_node_count 623
+      faithful true
+    module
+      path "src/bin/with-formal-ai.rs"
+      byte_len 470
+      content_id "source_module_d5c1c302b4fe286e"
+      total_link_count 452
+      named_node_count 78
+      faithful true
+    module
+      path "src/calculation.rs"
+      byte_len 32008
+      content_id "source_module_805047ac48b4f4de"
+      total_link_count 22128
+      named_node_count 4450
+      faithful true
+    module
+      path "src/calculation_time.rs"
+      byte_len 2781
+      content_id "source_module_d1f1e0b165700b3f"
+      total_link_count 2491
+      named_node_count 465
+      faithful true
+    module
+      path "src/calculation_word_problem.rs"
+      byte_len 21548
+      content_id "source_module_9a1e1bed263ecfe9"
+      total_link_count 17754
+      named_node_count 3547
+      faithful true
+    module
+      path "src/change_request.rs"
+      byte_len 13818
+      content_id "source_module_bcf2749e602b677a"
+      total_link_count 7048
+      named_node_count 1451
+      faithful true
+    module
+      path "src/cli_context.rs"
+      byte_len 5896
+      content_id "source_module_60a704b272827a7d"
+      total_link_count 5043
+      named_node_count 996
+      faithful true
+    module
+      path "src/cli_import.rs"
+      byte_len 4334
+      content_id "source_module_a03f4f2a6132bf13"
+      total_link_count 2549
+      named_node_count 499
+      faithful true
+    module
+      path "src/cli_improve.rs"
+      byte_len 6364
+      content_id "source_module_9c508efbe830879e"
+      total_link_count 3763
+      named_node_count 768
+      faithful true
+    module
+      path "src/cli_memory.rs"
+      byte_len 11976
+      content_id "source_module_d10c6067fc63e984"
+      total_link_count 7551
+      named_node_count 1492
+      faithful true
+    module
+      path "src/cli_shared_dialog.rs"
+      byte_len 2905
+      content_id "source_module_db14f3ca2c903557"
+      total_link_count 1952
+      named_node_count 377
+      faithful true
+    module
+      path "src/cli_statement_audit.rs"
+      byte_len 3192
+      content_id "source_module_374652e87d6c3b7b"
+      total_link_count 2675
+      named_node_count 507
+      faithful true
+    module
+      path "src/client_integrations.rs"
+      byte_len 33704
+      content_id "source_module_a43fbe696ccc8087"
+      total_link_count 27854
+      named_node_count 5646
+      faithful true
+    module
+      path "src/client_integrations/command.rs"
+      byte_len 1884
+      content_id "source_module_708767cb4cfa58dd"
+      total_link_count 1852
+      named_node_count 396
+      faithful true
+    module
+      path "src/client_integrations/session_files.rs"
+      byte_len 6538
+      content_id "source_module_95e0d5b8ee2dac03"
+      total_link_count 6259
+      named_node_count 1277
+      faithful true
+    module
+      path "src/client_integrations/url.rs"
+      byte_len 1461
+      content_id "source_module_e3b7a2362cbd33cf"
+      total_link_count 1415
+      named_node_count 268
+      faithful true
+    module
+      path "src/code_editing.rs"
+      byte_len 1467
+      content_id "source_module_413d0ed57919a2dc"
+      total_link_count 1351
+      named_node_count 263
+      faithful true
+    module
+      path "src/coding/blueprint.rs"
+      byte_len 28400
+      content_id "source_module_781f64bb9be78111"
+      total_link_count 12326
+      named_node_count 2547
+      faithful true
+    module
+      path "src/coding/blueprint_data.rs"
+      byte_len 14226
+      content_id "source_module_2fd8d953e9efd199"
+      total_link_count 7311
+      named_node_count 1242
+      faithful true
+    module
+      path "src/coding/blueprint_programs.rs"
+      byte_len 24194
+      content_id "source_module_9f566854313f0a89"
+      total_link_count 468
+      named_node_count 69
+      faithful true
+    module
+      path "src/coding/catalog/languages.rs"
+      byte_len 7061
+      content_id "source_module_bbb778031347f349"
+      total_link_count 3244
+      named_node_count 589
+      faithful true
+    module
+      path "src/coding/catalog/mod.rs"
+      byte_len 6650
+      content_id "source_module_4bdf510848b96cbc"
+      total_link_count 4047
+      named_node_count 867
+      faithful true
+    module
+      path "src/coding/catalog/tasks.rs"
+      byte_len 4094
+      content_id "source_module_b2816ff1b10e9514"
+      total_link_count 1483
+      named_node_count 273
+      faithful true
+    module
+      path "src/coding/catalog/templates_core.rs"
+      byte_len 24654
+      content_id "source_module_650d30f4dd5e1c4c"
+      total_link_count 5230
+      named_node_count 878
+      faithful true
+    module
+      path "src/coding/catalog/templates_extended.rs"
+      byte_len 16117
+      content_id "source_module_801accd3ed6888f4"
+      total_link_count 4732
+      named_node_count 792
+      faithful true
+    module
+      path "src/coding/catalog/types.rs"
+      byte_len 3900
+      content_id "source_module_8db09cc11dc61920"
+      total_link_count 2707
+      named_node_count 520
+      faithful true
+    module
+      path "src/coding/cst.rs"
+      byte_len 7257
+      content_id "source_module_1a42390eb3eaea38"
+      total_link_count 4751
+      named_node_count 911
+      faithful true
+    module
+      path "src/coding/guidance.rs"
+      byte_len 22800
+      content_id "source_module_f4cd2b586efda027"
+      total_link_count 6073
+      named_node_count 1232
+      faithful true
+    module
+      path "src/coding/mod.rs"
+      byte_len 1287
+      content_id "source_module_49a3b915ebdccaa6"
+      total_link_count 387
+      named_node_count 83
+      faithful true
+    module
+      path "src/concepts.rs"
+      byte_len 19098
+      content_id "source_module_02e62ce334566ff2"
+      total_link_count 14646
+      named_node_count 2935
+      faithful true
+    module
+      path "src/context_capacity.rs"
+      byte_len 3634
+      content_id "source_module_bd0071a033bc1360"
+      total_link_count 2961
+      named_node_count 564
+      faithful true
+    module
+      path "src/conversation_context.rs"
+      byte_len 9466
+      content_id "source_module_f0751200dfe2eb79"
+      total_link_count 8337
+      named_node_count 1754
+      faithful true
+    module
+      path "src/cue_lexicon.rs"
+      byte_len 5741
+      content_id "source_module_b87ef3c68e46efcd"
+      total_link_count 3543
+      named_node_count 738
+      faithful true
+    module
+      path "src/dialog_log.rs"
+      byte_len 7420
+      content_id "source_module_21fa1a29cd5dbb97"
+      total_link_count 5847
+      named_node_count 1223
+      faithful true
+    module
+      path "src/document_formats.rs"
+      byte_len 7211
+      content_id "source_module_81b5abd825d2d9d2"
+      total_link_count 4362
+      named_node_count 855
+      faithful true
+    module
+      path "src/dreaming.rs"
+      byte_len 33797
+      content_id "source_module_8cc495382503b30c"
+      total_link_count 20315
+      named_node_count 4213
+      faithful true
+    module
+      path "src/dreaming/cues.rs"
+      byte_len 1120
+      content_id "source_module_c4abdc1af84b644e"
+      total_link_count 703
+      named_node_count 148
+      faithful true
+    module
+      path "src/dreaming/learning.rs"
+      byte_len 23106
+      content_id "source_module_9e323d698a659687"
+      total_link_count 16763
+      named_node_count 3534
+      faithful true
+    module
+      path "src/dreaming/lexicon.rs"
+      byte_len 3866
+      content_id "source_module_14f4c530d1709a72"
+      total_link_count 2622
+      named_node_count 545
+      faithful true
+    module
+      path "src/dreaming/support.rs"
+      byte_len 2165
+      content_id "source_module_97a5224caa148647"
+      total_link_count 2136
+      named_node_count 434
+      faithful true
+    module
+      path "src/dreaming_application.rs"
+      byte_len 8316
+      content_id "source_module_320e816503e53256"
+      total_link_count 5552
+      named_node_count 1187
+      faithful true
+    module
+      path "src/dreaming_runtime.rs"
+      byte_len 6113
+      content_id "source_module_d225b958d1d259d1"
+      total_link_count 3595
+      named_node_count 743
+      faithful true
+    module
+      path "src/engine.rs"
+      byte_len 36126
+      content_id "source_module_7a8f32540e9dd4f0"
+      total_link_count 22196
+      named_node_count 4421
+      faithful true
+    module
+      path "src/engine_assistant_name.rs"
+      byte_len 1976
+      content_id "source_module_583e88ddfdd53ff1"
+      total_link_count 1274
+      named_node_count 223
+      faithful true
+    module
+      path "src/engine_responses.rs"
+      byte_len 7577
+      content_id "source_module_19d5244d48b02550"
+      total_link_count 6406
+      named_node_count 1155
+      faithful true
+    module
+      path "src/event_log.rs"
+      byte_len 32001
+      content_id "source_module_6b51bcfd94a60b49"
+      total_link_count 18864
+      named_node_count 3773
+      faithful true
+    module
+      path "src/fuzzy.rs"
+      byte_len 1790
+      content_id "source_module_5143524b0b1c425e"
+      total_link_count 1889
+      named_node_count 355
+      faithful true
+    module
+      path "src/gemini.rs"
+      byte_len 11519
+      content_id "source_module_3a72b7d5cd915cac"
+      total_link_count 8656
+      named_node_count 1731
+      faithful true
+    module
+      path "src/github_logs.rs"
+      byte_len 13292
+      content_id "source_module_c6da49890238f2b8"
+      total_link_count 9764
+      named_node_count 1936
+      faithful true
+    module
+      path "src/google_trends_catalog.rs"
+      byte_len 16922
+      content_id "source_module_ee49e2390496ff67"
+      total_link_count 11979
+      named_node_count 2488
+      faithful true
+    module
+      path "src/google_trends_learning.rs"
+      byte_len 10185
+      content_id "source_module_226800007a830eee"
+      total_link_count 5174
+      named_node_count 1061
+      faithful true
+    module
+      path "src/intent_formalization.rs"
+      byte_len 36593
+      content_id "source_module_b20cd265ab2878c6"
+      total_link_count 22780
+      named_node_count 4509
+      faithful true
+    module
+      path "src/json_lino.rs"
+      byte_len 25534
+      content_id "source_module_c2dd76615e0c55c5"
+      total_link_count 21642
+      named_node_count 4443
+      faithful true
+    module
+      path "src/knowledge.rs"
+      byte_len 12556
+      content_id "source_module_ac68f141e8e56529"
+      total_link_count 5510
+      named_node_count 1137
+      faithful true
+    module
+      path "src/language.rs"
+      byte_len 8634
+      content_id "source_module_d8ae2ac3b4b16847"
+      total_link_count 6093
+      named_node_count 1201
+      faithful true
+    module
+      path "src/learning_ledger.rs"
+      byte_len 13976
+      content_id "source_module_b3603c2c577cd078"
+      total_link_count 7241
+      named_node_count 1509
+      faithful true
+    module
+      path "src/lexeme_import.rs"
+      byte_len 34577
+      content_id "source_module_d380e6fbec7c2969"
+      total_link_count 26083
+      named_node_count 5358
+      faithful true
+    module
+      path "src/lib.rs"
+      byte_len 15228
+      content_id "source_module_4b7f5405befd65bb"
+      total_link_count 7827
+      named_node_count 1166
+      faithful true
+    module
+      path "src/link_store.rs"
+      byte_len 19351
+      content_id "source_module_4163b0ff62ebee82"
+      total_link_count 15452
+      named_node_count 3154
+      faithful true
+    module
+      path "src/links_format.rs"
+      byte_len 6127
+      content_id "source_module_17ae7d7e69b8c450"
+      total_link_count 2510
+      named_node_count 581
+      faithful true
+    module
+      path "src/links_query.rs"
+      byte_len 17407
+      content_id "source_module_434647cf5697218d"
+      total_link_count 14596
+      named_node_count 3076
+      faithful true
+    module
+      path "src/links_substitution_query/links.rs"
+      byte_len 21974
+      content_id "source_module_b93fba6da2b6abdb"
+      total_link_count 14454
+      named_node_count 3001
+      faithful true
+    module
+      path "src/links_substitution_query/mod.rs"
+      byte_len 6813
+      content_id "source_module_c280ddedbe0be41b"
+      total_link_count 3816
+      named_node_count 816
+      faithful true
+    module
+      path "src/links_substitution_query/text.rs"
+      byte_len 8111
+      content_id "source_module_54590acf88bfa6d5"
+      total_link_count 5873
+      named_node_count 1197
+      faithful true
+    module
+      path "src/main.rs"
+      byte_len 32431
+      content_id "source_module_146bb160cad8fb20"
+      total_link_count 18710
+      named_node_count 3707
+      faithful true
+    module
+      path "src/mcp.rs"
+      byte_len 3691
+      content_id "source_module_654776bf80d8f389"
+      total_link_count 2975
+      named_node_count 551
+      faithful true
+    module
+      path "src/memory.rs"
+      byte_len 20996
+      content_id "source_module_0450cc7d94d2b9e1"
+      total_link_count 15881
+      named_node_count 3196
+      faithful true
+    module
+      path "src/memory/bundle.rs"
+      byte_len 17259
+      content_id "source_module_aa109e11a210ec80"
+      total_link_count 11926
+      named_node_count 2508
+      faithful true
+    module
+      path "src/memory_sync.rs"
+      byte_len 13260
+      content_id "source_module_c741226eb9c28f61"
+      total_link_count 8884
+      named_node_count 1909
+      faithful true
+    module
+      path "src/meta_construction.rs"
+      byte_len 9337
+      content_id "source_module_da0a9566309dca10"
+      total_link_count 5201
+      named_node_count 1067
+      faithful true
+    module
+      path "src/meta_core.rs"
+      byte_len 6559
+      content_id "source_module_e646686ca2a955c3"
+      total_link_count 2296
+      named_node_count 499
+      faithful true
+    module
+      path "src/meta_frame.rs"
+      byte_len 28128
+      content_id "source_module_7510a94d5a02872f"
+      total_link_count 16495
+      named_node_count 3397
+      faithful true
+    module
+      path "src/meta_method_dispatch.rs"
+      byte_len 10481
+      content_id "source_module_49f16a60da440ee4"
+      total_link_count 6618
+      named_node_count 1269
+      faithful true
+    module
+      path "src/meta_reasoning.rs"
+      byte_len 8707
+      content_id "source_module_b243496e16b9ae75"
+      total_link_count 4216
+      named_node_count 880
+      faithful true
+    module
+      path "src/meta_self_improvement.rs"
+      byte_len 12627
+      content_id "source_module_fe49f604e1624bf6"
+      total_link_count 7167
+      named_node_count 1467
+      faithful true
+    module
+      path "src/method_registry.rs"
+      byte_len 9938
+      content_id "source_module_0d9b169193384e14"
+      total_link_count 5348
+      named_node_count 1104
+      faithful true
+    module
+      path "src/network_endpoint.rs"
+      byte_len 3129
+      content_id "source_module_de934b153e58a89a"
+      total_link_count 2114
+      named_node_count 423
+      faithful true
+    module
+      path "src/normal_markov.rs"
+      byte_len 9197
+      content_id "source_module_067ff2a2160ba9ec"
+      total_link_count 6087
+      named_node_count 1188
+      faithful true
+    module
+      path "src/option_evidence.rs"
+      byte_len 8661
+      content_id "source_module_1f2d1da71ed9537a"
+      total_link_count 5307
+      named_node_count 1079
+      faithful true
+    module
+      path "src/option_network.rs"
+      byte_len 28795
+      content_id "source_module_ae6baa27a0c553b5"
+      total_link_count 17674
+      named_node_count 3646
+      faithful true
+    module
+      path "src/probability.rs"
+      byte_len 30740
+      content_id "source_module_3f3c6886898f65a7"
+      total_link_count 18928
+      named_node_count 3766
+      faithful true
+    module
+      path "src/program_coreference.rs"
+      byte_len 1243
+      content_id "source_module_0a7619805d84aa4a"
+      total_link_count 402
+      named_node_count 82
+      faithful true
+    module
+      path "src/program_plan.rs"
+      byte_len 10092
+      content_id "source_module_a5c5548d2a9d7437"
+      total_link_count 5296
+      named_node_count 1101
+      faithful true
+    module
+      path "src/promotion.rs"
+      byte_len 32137
+      content_id "source_module_f3844682c78a45f0"
+      total_link_count 20814
+      named_node_count 4310
+      faithful true
+    module
+      path "src/promotion/gates.rs"
+      byte_len 5747
+      content_id "source_module_74fc74a473706724"
+      total_link_count 4069
+      named_node_count 824
+      faithful true
+    module
+      path "src/promotion/materialize.rs"
+      byte_len 6989
+      content_id "source_module_663c5d47bf1e780f"
+      total_link_count 5257
+      named_node_count 1097
+      faithful true
+    module
+      path "src/proof_engine/arithmetic.rs"
+      byte_len 9410
+      content_id "source_module_ca53fd63b58c1da7"
+      total_link_count 6472
+      named_node_count 1267
+      faithful true
+    module
+      path "src/proof_engine/decision.rs"
+      byte_len 2937
+      content_id "source_module_7a80444518e8bf7c"
+      total_link_count 2373
+      named_node_count 466
+      faithful true
+    module
+      path "src/proof_engine/decision/boolean.rs"
+      byte_len 20758
+      content_id "source_module_4171702e82d3b59d"
+      total_link_count 14652
+      named_node_count 2935
+      faithful true
+    module
+      path "src/proof_engine/decision/linear.rs"
+      byte_len 26526
+      content_id "source_module_ff27915ed529c29a"
+      total_link_count 23025
+      named_node_count 4587
+      faithful true
+    module
+      path "src/proof_engine/decision/linear/proofs.rs"
+      byte_len 8824
+      content_id "source_module_aee7bc9d6f13d37c"
+      total_link_count 4439
+      named_node_count 772
+      faithful true
+    module
+      path "src/proof_engine/decision/linear/search.rs"
+      byte_len 2070
+      content_id "source_module_e2bc0de84e71906d"
+      total_link_count 1721
+      named_node_count 320
+      faithful true
+    module
+      path "src/proof_engine/decision/sat.rs"
+      byte_len 10313
+      content_id "source_module_b20026ef46af48a2"
+      total_link_count 6289
+      named_node_count 1268
+      faithful true
+    module
+      path "src/proof_engine/library.rs"
+      byte_len 51583
+      content_id "source_module_d27ce3227011977f"
+      total_link_count 9680
+      named_node_count 2021
+      faithful true
+    module
+      path "src/proof_engine/mod.rs"
+      byte_len 34490
+      content_id "source_module_101b777fdcc94d8a"
+      total_link_count 8611
+      named_node_count 1693
+      faithful true
+    module
+      path "src/proof_engine/presenter.rs"
+      byte_len 18676
+      content_id "source_module_5232f4600af613b0"
+      total_link_count 9839
+      named_node_count 1890
+      faithful true
+    module
+      path "src/proof_engine/types.rs"
+      byte_len 11800
+      content_id "source_module_24d7dff201c3547d"
+      total_link_count 6871
+      named_node_count 1344
+      faithful true
+    module
+      path "src/protocol.rs"
+      byte_len 35825
+      content_id "source_module_90d02655e9e60535"
+      total_link_count 22622
+      named_node_count 4504
+      faithful true
+    module
+      path "src/protocol/content.rs"
+      byte_len 1432
+      content_id "source_module_0e0e77bd15b551ea"
+      total_link_count 1186
+      named_node_count 229
+      faithful true
+    module
+      path "src/protocol/output.rs"
+      byte_len 5033
+      content_id "source_module_c853f369660740b1"
+      total_link_count 3396
+      named_node_count 634
+      faithful true
+    module
+      path "src/protocol/recording.rs"
+      byte_len 5592
+      content_id "source_module_3b5afa0422a8eff6"
+      total_link_count 4618
+      named_node_count 976
+      faithful true

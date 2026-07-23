@@ -1,0 +1,64 @@
+self_source_links
+  engine meta_language
+  language rust
+  task translate_entire_source_to_links_and_back
+  entire_source
+    file_count 292
+    total_bytes 4051870
+    manifest_content_id "source_tree_d815d8fdca929ba1"
+  round_trip_proof
+    slice_size 6
+    slice_faithful_count 6
+    slice_fully_faithful true
+    source_links
+      engine meta_language
+      language rust
+      module_count 6
+      faithful_count 6
+      coverage_permille 1000
+      fully_faithful true
+      total_link_count 60121
+      total_named_node_count 12048
+      modules
+        module
+          path "src/agent.rs"
+          byte_len 22131
+          content_id "source_module_d6dc0c5386fb1128"
+          total_link_count 17932
+          named_node_count 3543
+          faithful true
+        module
+          path "src/associative_persistence.rs"
+          byte_len 26312
+          content_id "source_module_f3088323046aedae"
+          total_link_count 15149
+          named_node_count 3175
+          faithful true
+        module
+          path "src/gemini.rs"
+          byte_len 11519
+          content_id "source_module_3a72b7d5cd915cac"
+          total_link_count 8656
+          named_node_count 1731
+          faithful true
+        module
+          path "src/proof_engine/presenter.rs"
+          byte_len 18676
+          content_id "source_module_5232f4600af613b0"
+          total_link_count 9839
+          named_node_count 1890
+          faithful true
+        module
+          path "src/self_explanation.rs"
+          byte_len 13911
+          content_id "source_module_63e0dac82b827118"
+          total_link_count 6115
+          named_node_count 1213
+          faithful true
+        module
+          path "src/solver_handlers/response_language_followup.rs"
+          byte_len 5576
+          content_id "source_module_27705e51071bc6d0"
+          total_link_count 2430
+          named_node_count 496
+          faithful true
