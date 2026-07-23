@@ -1477,19 +1477,3 @@ multilingual_responses
     intent budget_search_solution
     language zh
     text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"
-  response response_agentic_action_before_tool_en
-    intent agentic_action_before_tool
-    language en
-    text "I'll use {tool} on {target} so I can verify the next step before continuing."
-  response response_agentic_action_before_tool_ru
-    intent agentic_action_before_tool
-    language ru
-    text "Я использую {tool} для «{target}», чтобы проверить следующий шаг перед продолжением."
-  response response_agentic_action_before_tool_hi
-    intent agentic_action_before_tool
-    language hi
-    text "अगला कदम जारी रखने से पहले उसकी पुष्टि करने के लिए मैं {target} पर {tool} का उपयोग करूँगा।"
-  response response_agentic_action_before_tool_zh
-    intent agentic_action_before_tool
-    language zh
-    text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"

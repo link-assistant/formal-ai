@@ -22,6 +22,7 @@
     "seed/agent-info.lino",
     "seed/interface-capabilities.lino",
     "seed/multilingual-responses.lino",
+    "seed/multilingual-responses-agentic.lino",
     "seed/concepts.lino",
     "seed/concept-contexts.lino",
     "seed/facts.lino",
