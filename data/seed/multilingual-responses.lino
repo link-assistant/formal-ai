@@ -2,19 +2,19 @@ multilingual_responses
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en
-    text "What would you like to report?"
+    text "What would you like to report? Select one or more."
   response response_agentic_report_target_question_ru
     intent agentic_report_target_question
     language ru
-    text "Что вы хотите отправить?"
+    text "Что вы хотите отправить? Выберите один или несколько вариантов."
   response response_agentic_report_target_question_hi
     intent agentic_report_target_question
     language hi
-    text "आप क्या रिपोर्ट करना चाहेंगे?"
+    text "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
   response response_agentic_report_target_question_zh
     intent agentic_report_target_question
     language zh
-    text "您想报告什么?"
+    text "您想报告什么？请选择一个或多个选项。"
   response response_agentic_report_target_options_en
     intent agentic_report_target_options
     language en
@@ -725,6 +725,22 @@ multilingual_responses
     intent tool_result_empty_search
     language zh
     text "未找到匹配项。"
+  response response_tool_result_empty_local_path_search_en
+    intent tool_result_empty_local_path_search
+    language en
+    text "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location."
+  response response_tool_result_empty_local_path_search_ru
+    intent tool_result_empty_local_path_search
+    language ru
+    text "В указанном месте не найдено подходящего файла или папки. Проверьте имя или попросите поискать в более широком месте."
+  response response_tool_result_empty_local_path_search_hi
+    intent tool_result_empty_local_path_search
+    language hi
+    text "बताए गए स्थान पर कोई मिलता हुआ फ़ाइल या फ़ोल्डर नहीं मिला। नाम जाँचें या मुझे किसी बड़े स्थान में खोजने को कहें।"
+  response response_tool_result_empty_local_path_search_zh
+    intent tool_result_empty_local_path_search
+    language zh
+    text "在指定位置未找到匹配的文件或文件夹。请检查名称，或让我扩大搜索范围。"
   response response_tool_result_empty_generic_en
     intent tool_result_empty_generic
     language en

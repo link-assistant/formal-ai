@@ -1,4 +1,29 @@
 meanings
+  wikipedia
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wikipedia"
+  wikipedia_article_question
+    defined-by intent
+    lexeme en
+      surface
+        text "wikipedia article question"
+  wikipedia_fallback_language
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia fallback language"
+  wikipedia_lookup
+    defined-by name
+    lexeme en
+      surface
+        text "wikipedia lookup"
+  wikipedia_summary_endpoint_template
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia summary endpoint template"
   wikiversity
     defined-by source
     lexeme en

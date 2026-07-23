@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 292
   full_ast_module_count 43
   signature_module_count 249
-  symbol_count 6024
-  content_id self_ast_census_index_5be961dd7bf4af53
+  symbol_count 6026
+  content_id self_ast_census_index_48c7d394e443e5d5
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -43,14 +43,14 @@ self_ast_census_index
     src/agentic_coding/question_catalog.rs full_ast 24 source_module_512a32489f4c308d
     src/agentic_coding/rebuild_plan.rs full_ast 9 source_module_1b3baad04d15abbb
     src/agentic_coding/repair_strategy.rs full_ast 9 source_module_7dd17a52ae12d7d3
-    src/agentic_coding/report_issue.rs full_ast 32 source_module_7ba6809d5dbf18de
+    src/agentic_coding/report_issue.rs full_ast 33 source_module_f8d2f7e22938d5e3
     src/agentic_coding/routing_learning.rs full_ast 7 source_module_976ea373edb73248
     src/agentic_coding/self_ast.rs full_ast 19 source_module_9104c8097027e9ae
     src/agentic_coding/self_heal.rs full_ast 10 source_module_dea3882ec18d6743
     src/agentic_coding/shell_command.rs full_ast 30 source_module_697dc618df9fdacc
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 3 source_module_f46b2ecd4614188b
-    src/agentic_coding/tool_result.rs full_ast 28 source_module_15c1e5c429963f02
+    src/agentic_coding/tool_result.rs full_ast 28 source_module_426e7573215251c1
     src/agentic_coding/web_research.rs full_ast 28 source_module_85bad4c71c32d543
     src/anthropic.rs signature 22 source_module_4521391b735b65a0
     src/arithmetic.rs signature 50 source_module_0c0cbf53baa417f0
@@ -69,7 +69,7 @@ self_ast_census_index
     src/cli_memory.rs signature 5 source_module_d10c6067fc63e984
     src/cli_shared_dialog.rs signature 5 source_module_db14f3ca2c903557
     src/cli_statement_audit.rs signature 5 source_module_374652e87d6c3b7b
-    src/client_integrations.rs signature 44 source_module_1054cc0d78d648f5
+    src/client_integrations.rs signature 45 source_module_a43fbe696ccc8087
     src/client_integrations/command.rs signature 5 source_module_708767cb4cfa58dd
     src/client_integrations/session_files.rs signature 15 source_module_95e0d5b8ee2dac03
     src/client_integrations/url.rs signature 5 source_module_e3b7a2362cbd33cf

@@ -48,6 +48,7 @@ pub(super) fn plan_report_flow(
     // it hijack later unrelated requests after the assistant acknowledged it.
     if messages[report_index + 1..].iter().any(|message| {
         message.role.eq_ignore_ascii_case("assistant")
+            && message.tool_calls.is_empty()
             && !message.content.plain_text().trim().is_empty()
             && !is_report_question(&message.content.plain_text())
     }) {
@@ -56,31 +57,43 @@ pub(super) fn plan_report_flow(
     let report_prompt = messages[report_index].content.user_request_text();
     let language = language::detect(&report_prompt).slug();
     let choices = answer_texts(messages, report_index + 1);
-    let target = choices
-        .iter()
-        .find_map(|(index, text)| parse_target(text).map(|target| (target, *index)));
+    let targets = choices.iter().find_map(|(index, text)| {
+        let targets = parse_targets(text);
+        (!targets.is_empty()).then_some((targets, *index))
+    });
 
-    let Some((target, target_index)) = target else {
+    let Some((targets, target_index)) = targets else {
         return Some(ask_or_render(
             tool_names,
             language,
             "report_target",
             "agentic_report_target_question",
             "agentic_report_target_options",
+            true,
         ));
     };
 
-    let contents = choices
+    let explicit_contents = choices
         .iter()
-        .filter(|(index, _)| *index >= target_index)
+        .filter(|(index, _)| *index > target_index)
         .find_map(|(_, text)| parse_contents(text));
-    if target == ReportTarget::GithubIssue && contents.is_none() {
+    let selected_harness = targets.contains(&ReportTarget::HarnessLog);
+    let selected_server = targets.contains(&ReportTarget::ServerLog);
+    let inferred_contents = match (selected_harness, selected_server) {
+        (true, true) => Some(ReportContents::Both),
+        (true, false) => Some(ReportContents::Harness),
+        (false, true) => Some(ReportContents::Server),
+        (false, false) => None,
+    };
+    let contents = explicit_contents.or(inferred_contents);
+    if targets.contains(&ReportTarget::GithubIssue) && contents.is_none() {
         return Some(ask_or_render(
             tool_names,
             language,
             "report_contents",
             "agentic_report_contents_question",
             "agentic_report_contents_options",
+            false,
         ));
     }
 
@@ -89,15 +102,15 @@ pub(super) fn plan_report_flow(
     let progress = Progress::scan(&messages[report_index + 1..]);
     if progress.done(Capability::Run) {
         return Some(AgenticPlan::Final(report_finished(
-            target,
+            &targets,
             progress.run_output.as_deref().unwrap_or_default(),
             language,
         )));
     }
 
     let dialog_id = dialog_id(messages);
-    let command = command_for(
-        target,
+    let command = command_for_targets(
+        &targets,
         contents.unwrap_or(ReportContents::Both),
         messages,
         report_index,
@@ -118,6 +131,7 @@ fn ask_or_render(
     id: &str,
     question_intent: &str,
     options_intent: &str,
+    multiple: bool,
 ) -> AgenticPlan {
     let question = localized(question_intent, language);
     let options = localized_options(options_intent, language);
@@ -139,6 +153,7 @@ fn ask_or_render(
                     "id": id,
                     "question": question,
                     "options": options,
+                    "multiple": multiple,
                 }]
             })
             .to_string(),
@@ -190,18 +205,24 @@ fn answer_texts(messages: &[ChatMessage], start: usize) -> Vec<(usize, String)> 
         .collect()
 }
 
-fn parse_target(text: &str) -> Option<ReportTarget> {
-    if matches_option(text, "agentic_report_target_options", 2, "github_issue") {
-        return Some(ReportTarget::GithubIssue);
-    }
-    if matches_option(text, "agentic_report_target_options", 3, "formal_ai") {
-        return Some(ReportTarget::FormalAi);
-    }
-    if matches_option(text, "agentic_report_target_options", 0, "harness_log") {
-        return Some(ReportTarget::HarnessLog);
-    }
-    matches_option(text, "agentic_report_target_options", 1, "server_log")
-        .then_some(ReportTarget::ServerLog)
+fn parse_targets(text: &str) -> Vec<ReportTarget> {
+    [
+        (ReportTarget::HarnessLog, 0, "harness_log"),
+        (ReportTarget::ServerLog, 1, "server_log"),
+        (ReportTarget::GithubIssue, 2, "github_issue"),
+        (ReportTarget::FormalAi, 3, "formal_ai"),
+    ]
+    .into_iter()
+    .filter_map(|(target, option_index, machine_value)| {
+        matches_option(
+            text,
+            "agentic_report_target_options",
+            option_index,
+            machine_value,
+        )
+        .then_some(target)
+    })
+    .collect()
 }
 
 fn parse_contents(text: &str) -> Option<ReportContents> {
@@ -286,6 +307,31 @@ fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> b
     })
 }
 
+fn command_for_targets(
+    targets: &[ReportTarget],
+    contents: ReportContents,
+    messages: &[ChatMessage],
+    report_index: usize,
+    dialog_id: &str,
+) -> String {
+    let commands = targets
+        .iter()
+        .map(|target| command_for(*target, contents, messages, report_index, dialog_id))
+        .collect::<Vec<_>>();
+    if commands.len() == 1 {
+        return commands.into_iter().next().unwrap_or_default();
+    }
+    let mut combined = String::from("set -eu; ");
+    combined.push_str(
+        &commands
+            .iter()
+            .map(|command| command.strip_prefix("set -eu; ").unwrap_or(command))
+            .collect::<Vec<_>>()
+            .join("; "),
+    );
+    combined
+}
+
 fn command_for(
     target: ReportTarget,
     contents: ReportContents,
@@ -300,11 +346,15 @@ fn command_for(
             command.push_str(CONTEXT_SESSION_FLAG);
             command.push_str(&shell_quote(dialog_id));
             command.push_str(HARNESS_SOURCE_FLAG);
+            command.push_str(" --output ");
+            command.push_str(&shell_quote(&format!("formal-ai-harness-{dialog_id}.lino")));
             command
         }
-        ReportTarget::ServerLog => {
-            conversation_command(SERVER_CONTEXT_PREFIX, dialog_id, SERVER_CONTEXT_SUFFIX)
-        }
+        ReportTarget::ServerLog => format!(
+            "{} -o {}",
+            conversation_command(SERVER_CONTEXT_PREFIX, dialog_id, SERVER_CONTEXT_SUFFIX),
+            shell_quote(&format!("formal-ai-server-{dialog_id}.lino"))
+        ),
         ReportTarget::FormalAi => {
             conversation_command(LEARNING_CONTEXT_PREFIX, dialog_id, LEARNING_CONTEXT_SUFFIX)
         }
@@ -382,9 +432,9 @@ fn issue_title(messages: &[ChatMessage], report_index: usize) -> String {
     )
 }
 
-fn report_finished(target: ReportTarget, run_output: &str, language: &str) -> String {
+fn report_finished(targets: &[ReportTarget], run_output: &str, language: &str) -> String {
     let trimmed = run_output.trim();
-    if target == ReportTarget::GithubIssue {
+    if targets.contains(&ReportTarget::GithubIssue) {
         if let Some(url) = trimmed
             .split_whitespace()
             .find(|token| token.starts_with("https://") && token.contains("/issues/"))
