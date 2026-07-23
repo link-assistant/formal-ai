@@ -7,6 +7,7 @@
 //! asserted precisely.
 
 use formal_ai::protocol::ChatCompletionRequest;
+use formal_ai::seed::response_for;
 use formal_ai::{create_chat_completion_with_solver, SolverConfig, UniversalSolver};
 
 fn agent_solver() -> UniversalSolver {
@@ -66,6 +67,43 @@ fn desktop_find_reads_as_a_spoken_sentence() {
     assert!(narration.contains("hive"), "{narration}");
     // A spoken sentence, not a bare label or a command echo.
     assert!(narration.ends_with('.'), "{narration}");
+}
+
+#[test]
+fn agentic_action_narration_is_seeded_for_every_supported_language() {
+    // The step narration must read naturally in every supported language, not
+    // just English — a fix that only pins one language leaves the others free
+    // to regress. Each language is asserted with a phrase a native speaker
+    // would recognise, and none of them echoes the raw command.
+    // English (en): the Desktop find is spoken, not printed.
+    let english = response_for("agentic_action_find_desktop", "en").expect("English narration");
+    assert!(english.contains("Desktop"), "{english}");
+    assert!(!english.contains("find \""), "{english}");
+    // Russian (русский): «рабочем столе» is the Desktop.
+    let russian = response_for("agentic_action_find_desktop", "ru").expect("Russian narration");
+    assert!(russian.contains("столе"), "{russian}");
+    // Hindi (हिंदी): डेस्कटॉप is the Desktop.
+    let hindi = response_for("agentic_action_find_desktop", "hi").expect("Hindi narration");
+    assert!(hindi.contains("डेस्कटॉप"), "{hindi}");
+    // Chinese (中文): 桌面 is the Desktop.
+    let chinese = response_for("agentic_action_find_desktop", "zh").expect("Chinese narration");
+    assert!(chinese.contains("桌面"), "{chinese}");
+
+    // The web-search step, too, is worded distinctly per language so the user
+    // can always tell a local search from an internet search.
+    assert!(response_for("agentic_action_search", "en") // english
+        .expect("English web-search narration")
+        .to_lowercase()
+        .contains("web"));
+    assert!(response_for("agentic_action_search", "ru")
+        .expect("Russian web-search narration")
+        .contains("интернете"));
+    assert!(response_for("agentic_action_search", "hi")
+        .expect("Hindi web-search narration")
+        .contains("इंटरनेट"));
+    assert!(response_for("agentic_action_search", "zh")
+        .expect("Chinese web-search narration")
+        .contains("上网"));
 }
 
 #[test]
