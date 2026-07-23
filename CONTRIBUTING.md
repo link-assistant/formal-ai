@@ -85,6 +85,20 @@ guide defines the fixture markers, logging proxy assertions, phrasing matrices,
 and CI shape needed to prove that a result came from Formal AI and that the
 client actually executed the expected tools.
 
+### Spawn a reference assistant when you need a natural-language target
+
+When a change is about *how Formal AI talks* to the user — narration before a
+tool runs, an error explanation, the wording of a question — it helps to see how
+a strong conversational assistant would phrase the same step. Spinning up a free
+model in `claude`, `codex`, or `opencode` on the *identical* prompt and reading
+its reply gives a concrete, natural target to match, and is a recommended way to
+calibrate tone before writing the seed catalog text and its tests. Treat those
+transcripts as reference examples only: the phrasing you ship still lives in the
+`.lino` seed data (never hardcoded in the solver), and every user-visible string
+must be asserted by a test. Issue #819's narration rewrite was tuned this way —
+the desirable "Let me look on your Desktop for …" shape came from comparing
+Formal AI's output against `claude` and `codex` on the reported request.
+
 ### Replaying the self-coding loop
 
 ```bash

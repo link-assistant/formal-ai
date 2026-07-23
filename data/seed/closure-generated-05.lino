@@ -1,4 +1,229 @@
 meanings
+  tool_web_search
+    defined-by tool
+    lexeme en
+      surface
+        text "tool web search"
+  tool_wikipedia_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool wikipedia lookup"
+  tool_write_program
+    defined-by tool
+    lexeme en
+      surface
+        text "tool write program"
+  total
+    defined-by word_surface
+    lexeme en
+      surface
+        text "total"
+  touch
+    defined-by concept
+    lexeme en
+      surface
+        text "touch"
+  trace_
+    defined-by identifier
+    lexeme en
+      surface
+        text "trace"
+  traffic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "traffic"
+  travel_guide
+    defined-by category
+    lexeme en
+      surface
+        text "travel guide"
+  trim
+    defined-by concept
+    lexeme en
+      surface
+        text "trim"
+  trim_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "trim whitespace"
+  true
+    defined-by concept
+    lexeme en
+      surface
+        text "true"
+  truthfulness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "truthfulness"
+  ts
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ts"
+  tue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "tue"
+  two_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "two paths"
+  ui
+    defined-by concept
+    lexeme en
+      surface
+        text "ui"
+  uname
+    defined-by token
+    lexeme en
+      surface
+        text "uname"
+  uncomment_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "uncomment lines"
+  uniqueness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "uniqueness"
+  unknown_reasoning_question
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning question"
+  unknown_reasoning_trace
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning trace"
+  usd
+    defined-by word_surface
+    lexeme en
+      surface
+        text "usd"
+  veracity
+    defined-by word_surface
+    lexeme en
+      surface
+        text "veracity"
+  verbose
+    defined-by concept
+    lexeme en
+      surface
+        text "verbose"
+  views
+    defined-by word_surface
+    lexeme en
+      surface
+        text "views"
+  visited
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visited"
+  visitor
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitor"
+  visitors
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitors"
+  visual-property
+    defined-by category
+    lexeme en
+      surface
+        text "visual property"
+  vscode
+    defined-by environment
+    lexeme en
+      surface
+        text "vscode"
+  vscode_local_sync
+    defined-by flow
+    lexeme en
+      surface
+        text "vscode local sync"
+  was
+    defined-by concept
+    lexeme en
+      surface
+        text "was"
+  web-search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "web search"
+  web_research_no_content
+    defined-by field
+    lexeme en
+      surface
+        text "web research no content"
+  web_research_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "web research source label"
+  webvm
+    defined-by word_surface
+    lexeme en
+      surface
+        text "webvm"
+  wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "wellbeing"
+  were
+    defined-by concept
+    lexeme en
+      surface
+        text "were"
+  wget
+    defined-by token
+    lexeme en
+      surface
+        text "wget"
+  whitespace
+    defined-by concept
+    lexeme en
+      surface
+        text "whitespace"
+  whoami
+    defined-by concept
+    lexeme en
+      surface
+        text "whoami"
+  wikibooks
+    defined-by source
+    lexeme en
+      surface
+        text "wikibooks"
+  wikidata
+    defined-by source
+    lexeme en
+      surface
+        text "wikidata"
+  wikihow
+    defined-by source
+    lexeme en
+      surface
+        text "wikihow"
+  wikinews
+    defined-by source
+    lexeme en
+      surface
+        text "wikinews"
   wikipedia
     defined-by source_kind
     lexeme en

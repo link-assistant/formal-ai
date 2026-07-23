@@ -1,4 +1,49 @@
 meanings
+  lexeme_import_block_parse_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import block parse failed"
+  lexeme_import_cache_budget_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cache budget reached"
+  lexeme_import_cache_invalid_json
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cache invalid json"
+  lexeme_import_cache_miss_offline
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cache miss offline"
+  lexeme_import_cache_unreadable
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cache unreadable"
+  lexeme_import_cannot_create
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot create"
+  lexeme_import_cannot_inspect
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot inspect"
+  lexeme_import_cannot_install
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot install"
+  lexeme_import_cannot_list
+    defined-by intent
+    lexeme en
+      surface
+        text "lexeme import cannot list"
   lexeme_import_cannot_remove_stale
     defined-by intent
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern wellbeing phrase how are you doing en"
-  pattern_wellbeing_phrase_how_are_you_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are you en"
-  pattern_wellbeing_phrase_how_do_you_do_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how do you do en"
-  pattern_wellbeing_phrase_how_is_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how is it going en"
-  pattern_wellbeing_phrase_how_s_it_going_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how s it going en"
-  pattern_wellbeing_phrase_kaise_ho_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kaise ho hi"
-  pattern_wellbeing_phrase_kak_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak dela"
-  pattern_wellbeing_phrase_kak_pozhivaesh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak pozhivaesh"
-  pattern_wellbeing_phrase_kak_tvoi_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak tvoi dela"
-  pattern_wellbeing_phrase_kak_u_tebya_dela
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase kak u tebya dela"
