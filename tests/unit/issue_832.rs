@@ -48,6 +48,44 @@ fn every_report_context_is_exported_by_the_local_cli() {
 }
 
 #[test]
+fn local_report_export_is_available_in_every_supported_language() {
+    for (language, prompt) in [
+        ("English", "Report this problem"),
+        ("ru", "Сообщи об этой проблеме"),
+        ("hi", "इस समस्या की रिपोर्ट करें"),
+        ("zh", "报告这个问题"),
+    ] {
+        let messages = vec![
+            ChatMessage::user(prompt),
+            ChatMessage::tool_result(
+                "choose_reports",
+                "request_user_input",
+                r#"{"report_target":"github_issue"}"#,
+            ),
+            ChatMessage::tool_result(
+                "choose_contents",
+                "request_user_input",
+                r#"{"report_contents":"both_logs"}"#,
+            ),
+        ];
+        let call = one_call(&messages, &["request_user_input", "bash"]);
+        let command = serde_json::from_str::<Value>(&call.arguments)
+            .expect("tool arguments are JSON")["command"]
+            .as_str()
+            .expect("report command")
+            .to_owned();
+
+        assert!(
+            command.contains("formal-ai context export")
+                && command.contains("--source both")
+                && command.contains("gh issue create"),
+            "language={language}, prompt={prompt:?}: {command}"
+        );
+        assert!(!command.contains("curl"), "language={language}: {command}");
+    }
+}
+
+#[test]
 fn failed_github_report_is_not_acknowledged_as_filed() {
     let mut messages = vec![
         ChatMessage::user("The local folder search returned no result"),
