@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.302.2] - 2026-07-23
+
+### Fixed
+- Agentic step narration now explains each action in natural language instead of
+  echoing the shell command that OpenCode already prints, and drops the robotic
+  "so I can verify the next step before continuing" tail (#819). Local-path finds,
+  web searches, and report prompts are worded distinctly across all supported
+  languages (en, ru, hi, zh), with the empty-result case explained in beginner
+  terms.
+
 ## [0.302.1] - 2026-07-23
 
 ### Fixed
