@@ -1,0 +1,35 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 32.02s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 10 tests
+test issue_714_agentic_mode::completed_client_tool_execution_is_recovered_even_when_result_name_is_absent ... ok
+test issue_714_agentic_mode::completed_client_tool_execution_becomes_durable_learning_evidence ... ok
+test issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access ... ok
+test issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns ... ok
+test issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool ... ok
+test issue_714_agentic_mode::report_action_resolves_an_unnamed_tool_result_by_call_id ... ok
+test issue_714_agentic_mode::report_action_shell_quotes_apostrophes_in_conversation_history ... ok
+test issue_714_agentic_mode::localized_report_actions_route_to_shell ... ok
+test issue_714_agentic_mode::screenshot_search_prompt_routes_to_opencode_websearch_alias ... ok
+test issue_714_agentic_mode::ordinary_report_writing_is_not_mistaken_for_issue_reporting ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1982 filtered out; finished in 16.53s
+
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.16s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 10 tests
+test issue_771::report_format::oversized_context_links_the_full_file_and_keeps_a_bounded_latest_preview ... ok
+test issue_771::report_format::complete_context_is_requested_in_links_notation ... ok
+test issue_771::report_format::the_intro_and_complete_context_heading_frame_the_upload ... ok
+test issue_771::report_format::a_multiline_turn_is_not_interpolated_into_the_shell_command ... ok
+test issue_771::report_format::a_huge_transcript_does_not_grow_the_command ... ok
+test issue_771::research_answer::a_short_page_is_still_answered_verbatim ... ok
+test issue_771::research_answer::keeps_the_sentence_that_answers_the_question_and_cites_the_source ... ok
+test issue_771::research_answer::does_not_dump_the_whole_fetched_page ... ok
+test issue_771::reported_session::the_reported_session_files_a_readable_issue ... ok
+test issue_771::multilingual_extraction::every_supported_language_gets_an_extract_and_not_a_page_dump ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1982 filtered out; finished in 21.51s

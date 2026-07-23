@@ -1,0 +1,9 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.55s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 2 tests
+test with_formal_ai::with_formal_ai_rejects_an_incompatible_existing_server ... ok
+test with_formal_ai::with_formal_ai_reuses_an_existing_loopback_listener ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 185 filtered out; finished in 0.09s
