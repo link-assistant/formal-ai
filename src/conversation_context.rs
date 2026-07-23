@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use serde_json::{json, Map, Value};
 
 use crate::dialog_log::DialogExchangeLog;
+use crate::memory_sync::SyncStore;
 
 /// Environment variable containing the complete per-dialog JSONL logs.
 pub const DIALOG_LOG_DIRECTORY_ENV: &str = "FORMAL_AI_DIALOG_LOG_DIR";
@@ -77,6 +78,31 @@ pub fn load_conversation_context_from(directory: &Path, dialog_id: &str) -> io::
         },
         "messages": messages,
         "server_logs": server_logs,
+    }))
+}
+
+/// Store a reported conversation in shared memory and stage any learning trace.
+///
+/// `directory` is optional so both the HTTP server and the local CLI use the
+/// same implementation while tests and diagnostic tools can select a fixture.
+pub fn learn_from_conversation(dialog_id: &str, directory: Option<&Path>) -> io::Result<Value> {
+    let context = directory.map_or_else(
+        || load_conversation_context(dialog_id),
+        |path| load_conversation_context_from(path, dialog_id),
+    )?;
+    let document = conversation_context_to_lino(dialog_id, &context);
+    let staged = crate::self_improvement::learn_from_reported_conversation(&context);
+    let mut store = SyncStore::open();
+    let events_recorded =
+        store.record_chat_exchange(&format!("agentic_report_{dialog_id}"), &document)?;
+    Ok(json!({
+        "dialog_id": dialog_id,
+        "learned": true,
+        "events_recorded": events_recorded,
+        "learning_trace_found": staged.is_some(),
+        "rule_proposals": staged.as_ref().map_or(0, |run| run.learning.proposals.len()),
+        "awaiting_human_review": staged.as_ref().is_some_and(|run| run.awaiting_human_review),
+        "promoted": false,
     }))
 }
 

@@ -1,0 +1,18 @@
+self_ast_census
+  target src/client_integrations/server.rs
+  language rust
+  fidelity signature
+  byte_len 5473
+  line_count 160
+  content_id source_module_3f888a869002c4ed
+  symbol_count 9
+  symbols
+    struct ServerGuard 13 16
+    function drop 19 22
+    function maybe_start_server 25 56
+    function verify_server_version 58 89
+    function temporary_server_output_log 91 97
+    function parse_host_port 99 120
+    function formal_ai_binary_path 122 133
+    function wait_for_server 135 151
+    function render 153 160

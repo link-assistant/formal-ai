@@ -32,11 +32,11 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     assert_eq!(call["function"]["name"], "bash");
     let arguments: serde_json::Value =
         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
-    assert!(arguments["command"]
-        .as_str()
-        .is_some_and(|command| command.contains("gh issue create")
-            && command.contains("/api/formal-ai/v1/conversations/")
-            && command.contains("include=both")));
+    assert!(arguments["command"].as_str().is_some_and(|command| command
+        .contains("gh issue create")
+        && command.contains("formal-ai context export")
+        && command.contains("--source both")
+        && !command.contains("curl")));
 }
 
 #[test]

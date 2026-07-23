@@ -31,6 +31,8 @@ agent_info
     value "Filed the issue on GitHub."
   field issue_report_created_with_url
     value "Filed the issue on GitHub: {url}"
+  field issue_report_failed
+    value "I couldn't file the issue on GitHub."
   field issue_report_ran_command
     value "Ran {command} to file the issue on GitHub."
   field issue_report_tool_missing
@@ -41,6 +43,16 @@ agent_info
     value "{variable} is not configured"
   field context_learning_failed
     value "Failed to record report: {error}"
+  field client_server_health_invalid
+    value "Existing Formal AI server at {address} returned an invalid health response."
+  field client_server_version_missing
+    value "Existing Formal AI server at {address} does not report its version; stop it and retry."
+  field client_server_version_mismatch
+    value "Existing Formal AI server at {address} is version {running_version}, but this launcher is version {expected_version}; stop the old server and retry."
+  field client_server_exited_before_listening
+    value "Formal AI server exited before listening: {status}"
+  field client_server_did_not_listen
+    value "Formal AI server did not listen on {address}."
   field web_research_no_content
     value "Research completed for {query}, but the tool returned no content."
   field web_research_source_label

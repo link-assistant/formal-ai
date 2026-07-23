@@ -299,14 +299,15 @@ mod report_format {
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
         assert!(!command.contains("# Обзор"), "{command}");
-        assert!(command.contains("curl -fsS"), "{command}");
+        assert!(command.contains("formal-ai context export"), "{command}");
+        assert!(!command.contains("curl"), "{command}");
         assert!(command.contains("--body-file"), "{command}");
     }
 
     #[test]
     fn complete_context_is_requested_in_links_notation() {
         let command = command_for("first question", "an answer");
-        assert!(command.contains("include=both"), "{command}");
+        assert!(command.contains("--source both"), "{command}");
         assert!(
             command.contains("formal-ai-report.XXXXXX.lino"),
             "{command}"
@@ -379,7 +380,7 @@ mod reported_session {
 
         let command = report_command(&messages);
         assert!(!command.contains("Главное меню"), "{command}");
-        assert!(command.contains("include=both"), "{command}");
+        assert!(command.contains("--source both"), "{command}");
         assert!(command.contains("gh issue create"), "{command}");
         assert!(command.contains("--body-file"), "{command}");
     }

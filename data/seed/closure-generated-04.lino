@@ -1,4 +1,34 @@
 meanings
+  response_lexeme_import_duplicate_qid_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid hi"
+  response_lexeme_import_duplicate_qid_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid ru"
+  response_lexeme_import_duplicate_qid_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid zh"
+  response_lexeme_import_duplicate_slug_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate slug en"
+  response_lexeme_import_duplicate_slug_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate slug hi"
+  response_lexeme_import_duplicate_slug_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate slug ru"
   response_lexeme_import_duplicate_slug_zh
     defined-by response_template
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool result empty list"
-  tool_result_empty_local_path_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty local path search"
-  tool_result_empty_search
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty search"
-  tool_result_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result failed"
-  tool_roleplay
-    defined-by tool
-    lexeme en
-      surface
-        text "tool roleplay"
-  tool_summarize_conversation
-    defined-by tool
-    lexeme en
-      surface
-        text "tool summarize conversation"
-  tool_url_navigate
-    defined-by tool
-    lexeme en
-      surface
-        text "tool url navigate"

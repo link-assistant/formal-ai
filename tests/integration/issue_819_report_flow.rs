@@ -187,7 +187,10 @@ fn opencode_report_selection_runs_one_combined_action_without_leaking_it() {
     let command = arguments["command"].as_str().expect("combined command");
     // Every selected destination is fulfilled in a single executable step.
     assert!(command.contains("gh issue create"), "{command}");
-    assert!(command.contains("include=server"), "{command}");
+    assert!(command.contains("--source harness"), "{command}");
+    assert!(command.contains("--source server"), "{command}");
+    assert!(command.contains("--source both"), "{command}");
+    assert!(!command.contains("curl"), "{command}");
 
     // But the message the user reads never contains that command.
     let narration = message_text(&choice["message"]);

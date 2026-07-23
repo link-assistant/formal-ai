@@ -1,4 +1,34 @@
 meanings
+  pattern_test_status_phrase_ya_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase ya zdes ru"
+  pattern_wellbeing_phrase_aap_kaise_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aap kaise hain hi"
+  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase aapka kya haal hai hi"
+  pattern_wellbeing_phrase_guode_zenmeyang_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase guode zenmeyang zh"
+  pattern_wellbeing_phrase_how_are_things_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are things en"
+  pattern_wellbeing_phrase_how_are_you_doing_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern wellbeing phrase how are you doing en"
   pattern_wellbeing_phrase_how_are_you_en
     defined-by prompt_pattern
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import duplicate qid en"
-  response_lexeme_import_duplicate_qid_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid hi"
-  response_lexeme_import_duplicate_qid_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid ru"
-  response_lexeme_import_duplicate_qid_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid zh"
-  response_lexeme_import_duplicate_slug_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug en"
-  response_lexeme_import_duplicate_slug_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug hi"
-  response_lexeme_import_duplicate_slug_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate slug ru"

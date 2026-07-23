@@ -151,8 +151,6 @@ src/cli_memory.rs	Wrote {} events (events-only)
 src/cli_shared_dialog.rs	Wrote demo_memory to {}.
 src/client_integrations.rs	# <<< formal-ai {tool}
 src/client_integrations.rs	# >>> formal-ai {tool}
-src/client_integrations.rs	formal-ai serve did not listen on {address}
-src/client_integrations.rs	formal-ai serve exited before listening: {status}
 src/client_integrations.rs	temporary config path escapes its root: {relative}
 src/client_integrations.rs	temporary config path must be relative: {relative}
 src/client_integrations.rs	unsupported tool `{tool}`; supported tools: {supported}

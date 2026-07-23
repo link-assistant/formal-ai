@@ -104,6 +104,7 @@ mod issue_819_followup;
 mod issue_819_narration;
 mod issue_822;
 mod issue_823_recursive_learning;
+mod issue_832;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

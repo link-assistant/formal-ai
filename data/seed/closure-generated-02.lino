@@ -1,4 +1,34 @@
 meanings
+  kubectl
+    defined-by token
+    lexeme en
+      surface
+        text "kubectl"
+  kupi_slona
+    defined-by intent
+    lexeme en
+      surface
+        text "kupi slona"
+  language-detection
+    defined-by category
+    lexeme en
+      surface
+        text "language detection"
+  last_message
+    defined-by concept
+    lexeme en
+      surface
+        text "last message"
+  learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "learn from source"
+  learning_resource
+    defined-by kind
+    lexeme en
+      surface
+        text "learning resource"
   lexeme_import_block_parse_failed
     defined-by intent
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase wo zai zheli zh"
-  pattern_test_status_phrase_ya_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase ya zdes ru"
-  pattern_wellbeing_phrase_aap_kaise_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase aap kaise hain hi"
-  pattern_wellbeing_phrase_aapka_kya_haal_hai_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase aapka kya haal hai hi"
-  pattern_wellbeing_phrase_guode_zenmeyang_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase guode zenmeyang zh"
-  pattern_wellbeing_phrase_how_are_things_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are things en"
-  pattern_wellbeing_phrase_how_are_you_doing_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern wellbeing phrase how are you doing en"
