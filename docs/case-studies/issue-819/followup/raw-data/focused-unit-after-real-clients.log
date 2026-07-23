@@ -1,0 +1,12 @@
+   Compiling formal-ai v0.302.0 (/tmp/gh-issue-solver-1784790843774)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.20s
+     Running tests/unit/mod.rs (target/debug/deps/unit-6857834c12417275)
+
+running 5 tests
+test issue_819_followup::report_destination_question_allows_multiple_selections ... ok
+test issue_819_followup::narrated_question_tool_call_does_not_end_the_report_flow ... ok
+test issue_819_followup::selected_report_actions_are_combined_into_one_executable_step ... ok
+test issue_819_followup::combined_report_step_executes_every_selected_action ... ok
+test issue_819_followup::local_find_without_matches_explains_the_result_to_a_beginner ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 1981 filtered out; finished in 15.99s

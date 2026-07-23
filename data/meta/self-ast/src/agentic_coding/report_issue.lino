@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 15322
-  line_count 441
-  content_id source_module_7ba6809d5dbf18de
-  symbol_count 32
+  byte_len 16954
+  line_count 491
+  content_id source_module_f8d2f7e22938d5e3
+  symbol_count 33
   symbols
     const CONTEXT_EXPORT_COMMAND 12 12
     const CONTEXT_SESSION_FLAG 13 13
@@ -17,48 +17,50 @@ self_ast_census
     const LEARNING_CONTEXT_SUFFIX 20 20
     enum ReportTarget 23 28
     enum ReportContents 31 35
-    function plan_report_flow 39 113
-    function ask_or_render 115 153
-    function localized 155 159
-    function localized_options 161 168
-    function is_report_question 170 179
-    function answer_texts 181 191
-    function parse_target 193 205
-    function parse_contents 207 216
-    function matches_option 218 226
-    function is_report_intent 229 241
-    function report_action_governs_subject 243 287
-    function command_for 289 312
-    function conversation_command 314 320
-    function github_command 322 441
-    function dialog_id 357 364
-    function issue_title 366 383
-    function report_finished 385 409
-    function formal_ai_repo 411 413
-    function config 415 419
-    function render 421 425
-    function shell_quote 427 429
-    function truncate 431 441
+    function plan_report_flow 39 126
+    function ask_or_render 128 168
+    function localized 170 174
+    function localized_options 176 183
+    function is_report_question 185 194
+    function answer_texts 196 206
+    function parse_targets 208 226
+    function parse_contents 228 237
+    function matches_option 239 247
+    function is_report_intent 250 262
+    function report_action_governs_subject 264 308
+    function command_for_targets 310 333
+    function command_for 335 362
+    function conversation_command 364 370
+    function github_command 372 491
+    function dialog_id 407 414
+    function issue_title 416 433
+    function report_finished 435 459
+    function formal_ai_repo 461 463
+    function config 465 469
+    function render 471 475
+    function shell_quote 477 479
+    function truncate 481 491
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 11625
-    named_node_count 2385
-    distinct_node_kinds 69
+    total_link_count 12950
+    named_node_count 2655
+    distinct_node_kinds 70
     node_kinds
-      arguments 205
-      array_expression 6
-      array_type 9
+      arguments 230
+      array_expression 7
+      array_type 12
       attribute 2
       attribute_item 2
       binary_expression 23
       block 59
-      call_expression 205
+      boolean_literal 10
+      call_expression 230
       char_literal 1
-      closure_expression 37
-      closure_parameters 37
+      closure_expression 39
+      closure_parameters 39
       const_item 8
       crate 3
       doc_comment 4
@@ -67,52 +69,52 @@ self_ast_census
       enum_variant 7
       enum_variant_list 2
       escape_sequence 83
-      expression_statement 37
-      field_expression 149
-      field_identifier 149
+      expression_statement 36
+      field_expression 176
+      field_identifier 176
       for_expression 1
-      function_item 22
-      generic_function 4
-      generic_type 8
-      identifier 556
-      if_expression 16
+      function_item 23
+      generic_function 6
+      generic_type 10
+      identifier 614
+      if_expression 14
       index_expression 6
       inner_doc_comment_marker 1
-      integer_literal 18
+      integer_literal 19
       let_condition 3
-      let_declaration 39
+      let_declaration 46
       line_comment 8
-      macro_invocation 13
-      match_arm 7
-      match_block 2
-      match_expression 2
-      match_pattern 7
-      mutable_specifier 3
+      macro_invocation 15
+      match_arm 11
+      match_block 3
+      match_expression 3
+      match_pattern 11
+      mutable_specifier 4
       outer_doc_comment_marker 3
-      parameter 47
-      parameters 22
-      parenthesized_expression 2
-      primitive_type 50
+      parameter 53
+      parameters 23
+      parenthesized_expression 3
+      primitive_type 53
       range_expression 3
-      reference_expression 19
-      reference_type 49
-      return_expression 14
-      scoped_identifier 46
+      reference_expression 28
+      reference_type 53
+      return_expression 12
+      scoped_identifier 52
       scoped_type_identifier 1
       scoped_use_list 3
       source_file 1
-      string_content 160
-      string_literal 83
+      string_content 165
+      string_literal 88
       super 3
-      token_tree 28
+      token_tree 33
       try_expression 1
-      tuple_expression 6
-      tuple_pattern 13
+      tuple_expression 11
+      tuple_pattern 18
       tuple_struct_pattern 4
       tuple_type 3
-      type_arguments 12
-      type_identifier 44
-      unary_expression 7
+      type_arguments 16
+      type_identifier 52
+      unary_expression 9
       use_as_clause 1
       use_declaration 6
       use_list 3

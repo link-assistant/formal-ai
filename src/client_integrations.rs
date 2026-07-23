@@ -1,9 +1,9 @@
 use std::error::Error;
 use std::fmt::Write as _;
-use std::fs;
+use std::fs::{self, OpenOptions};
 use std::net::TcpStream;
 use std::path::{Component, Path, PathBuf};
-use std::process::{Child, Command};
+use std::process::{Child, Command, Stdio};
 use std::time::{Duration, Instant};
 
 use clap::{Args as ClapArgs, ValueEnum};
@@ -138,6 +138,7 @@ struct RenderContext {
 
 struct ServerGuard {
     child: Child,
+    output_log: PathBuf,
 }
 
 impl Drop for ServerGuard {
@@ -170,7 +171,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         .ok_or("missing tool; pass one of the supported tool names")?;
     let integration = find_integration(tool, &integrations)?;
     let context = render_context(integration, args)?;
-    let _server = if args.start_server || !args.no_start_server {
+    let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
             eprintln!("formal-ai: started a temporary server in agent mode (tool and shell execution enabled)");
@@ -186,6 +187,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         args.summarize,
         args.interactive,
         args.non_interactive,
+        server.as_ref().map(|server| server.output_log.as_path()),
     )
 }
 
@@ -303,6 +305,7 @@ fn run_ephemeral(
     keep_summarization: bool,
     force_interactive: bool,
     force_non_interactive: bool,
+    temporary_server_log: Option<&Path>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
@@ -393,7 +396,8 @@ fn run_ephemeral(
     let server_log = std::env::var_os("FORMAL_AI_PROXY_LOG")
         .map(PathBuf::from)
         .filter(|path| path.exists())
-        .map(|path| fs::canonicalize(&path).unwrap_or(path));
+        .map(|path| fs::canonicalize(&path).unwrap_or(path))
+        .or_else(|| temporary_server_log.map(Path::to_path_buf));
     print_session_files(integration, session_file.as_deref(), server_log.as_deref());
     let preserve_temp = session_file
         .as_deref()
@@ -915,6 +919,12 @@ fn maybe_start_server(
         return Ok(None);
     }
     let binary = formal_ai_binary_path()?;
+    let output_log = temporary_server_output_log(port)?;
+    let output = OpenOptions::new()
+        .create(true)
+        .truncate(true)
+        .write(true)
+        .open(&output_log)?;
     let mut child = Command::new(binary)
         .args([
             "serve",
@@ -924,9 +934,19 @@ fn maybe_start_server(
             "--port",
             &port.to_string(),
         ])
+        .stdout(Stdio::from(output.try_clone()?))
+        .stderr(Stdio::from(output))
         .spawn()?;
     wait_for_server(&address, &mut child)?;
-    Ok(Some(ServerGuard { child }))
+    Ok(Some(ServerGuard { child, output_log }))
+}
+
+fn temporary_server_output_log(port: u16) -> Result<PathBuf, Box<dyn Error>> {
+    let directory = crate::dialog_log::configured_directory()
+        .unwrap_or_else(|| std::env::temp_dir().join("formal-ai-dialog-logs"));
+    fs::create_dir_all(&directory)?;
+    let pid = std::process::id();
+    Ok(directory.join(format!("temporary-server-{pid}-{port}.log")))
 }
 
 fn parse_host_port(

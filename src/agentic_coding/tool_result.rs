@@ -2,6 +2,7 @@
 
 use serde_json::Value;
 
+use super::shell_command::local_path_search_command_for_task;
 use crate::protocol::ChatMessage;
 use crate::seed::{
     ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FIRST_REFERENCE,
@@ -36,7 +37,9 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
         return fill("tool_result_failed", language, label, "", "", &error);
     }
     if result.payload.trim().is_empty() {
-        let intent = if is_listing(label) {
+        let intent = if local_path_search_command_for_task(prompt).is_some() {
+            "tool_result_empty_local_path_search"
+        } else if is_listing(label) {
             "tool_result_empty_list"
         } else if is_search(label) {
             "tool_result_empty_search"
@@ -208,7 +211,21 @@ fn normalize(raw: &str) -> NormalizedResult {
 }
 
 fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
-    let trimmed = payload.trim().to_owned();
+    let trimmed = payload.trim();
+    let trimmed = if matches!(
+        trimmed.to_ascii_lowercase().as_str(),
+        "(empty)"
+            | "(no output)"
+            | "(bash completed with no output)"
+            | "no output"
+            | "command completed with no output"
+            | "command completed without output"
+            | "command produced no output"
+    ) {
+        String::new()
+    } else {
+        trimmed.to_owned()
+    };
     if let Ok(json) = serde_json::from_str::<Value>(&trimmed) {
         if let Some(text) = mcp_text_content(&json) {
             return NormalizedResult {

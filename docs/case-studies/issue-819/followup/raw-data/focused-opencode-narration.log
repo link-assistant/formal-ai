@@ -1,0 +1,8 @@
+   Compiling formal-ai v0.302.0 (/tmp/gh-issue-solver-1784790843774)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 23.98s
+     Running tests/unit/mod.rs (target/debug/deps/unit-6857834c12417275)
+
+running 1 test
+test issue_819_followup::narrated_question_tool_call_does_not_end_the_report_flow ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1985 filtered out; finished in 0.48s

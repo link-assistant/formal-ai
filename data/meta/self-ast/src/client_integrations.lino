@@ -2,10 +2,10 @@ self_ast_census
   target src/client_integrations.rs
   language rust
   fidelity signature
-  byte_len 32827
-  line_count 980
-  content_id source_module_1054cc0d78d648f5
-  symbol_count 44
+  byte_len 33704
+  line_count 1000
+  content_id source_module_a43fbe696ccc8087
+  symbol_count 45
   symbols
     module command 20 20
     module session_files 21 21
@@ -16,38 +16,39 @@ self_ast_census
     function as_str 42 49
     struct WithFormalAiArgs 55 120
     struct RenderContext 123 137
-    struct ServerGuard 139 141
-    function drop 144 147
-    function run_with_formal_ai 150 190
-    function select_integrations 192 204
-    function find_integration 206 226
-    function render_context 228 297
-    function run_ephemeral 299 419
-    function temp_scoped_path 421 435
-    function build_invocation_args 437 517
-    function contains_model_arg 519 522
-    function write_global_config 524 561
-    function undo_global_config 563 599
-    function restore_backup 601 617
-    function ensure_backup 619 632
-    function render_toml_settings 634 652
-    function set_toml_string 654 670
-    function table_at_path_mut 672 683
-    function merge_json_config 685 698
-    function render_json_settings 700 708
-    function json_settings_value 710 719
-    function set_json_string 721 751
-    function merge_json_value 753 767
-    function merge_shell_env_config 769 789
-    function remove_managed_block 791 811
-    function shell_double_quote 813 816
-    function render_template 818 838
-    function codex_model_catalog 840 874
-    function global_config_path 876 885
-    function backup_path 887 891
-    function write_file 893 899
-    function ensure_trailing_newline 901 906
-    function maybe_start_server 908 930
-    function parse_host_port 932 953
-    function formal_ai_binary_path 955 966
-    function wait_for_server 968 980
+    struct ServerGuard 139 142
+    function drop 145 148
+    function run_with_formal_ai 151 192
+    function select_integrations 194 206
+    function find_integration 208 228
+    function render_context 230 299
+    function run_ephemeral 301 423
+    function temp_scoped_path 425 439
+    function build_invocation_args 441 521
+    function contains_model_arg 523 526
+    function write_global_config 528 565
+    function undo_global_config 567 603
+    function restore_backup 605 621
+    function ensure_backup 623 636
+    function render_toml_settings 638 656
+    function set_toml_string 658 674
+    function table_at_path_mut 676 687
+    function merge_json_config 689 702
+    function render_json_settings 704 712
+    function json_settings_value 714 723
+    function set_json_string 725 755
+    function merge_json_value 757 771
+    function merge_shell_env_config 773 793
+    function remove_managed_block 795 815
+    function shell_double_quote 817 820
+    function render_template 822 842
+    function codex_model_catalog 844 878
+    function global_config_path 880 889
+    function backup_path 891 895
+    function write_file 897 903
+    function ensure_trailing_newline 905 910
+    function maybe_start_server 912 942
+    function temporary_server_output_log 944 950
+    function parse_host_port 952 973
+    function formal_ai_binary_path 975 986
+    function wait_for_server 988 1000

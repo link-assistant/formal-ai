@@ -519,6 +519,26 @@ meanings
     lexeme en
       surface
         text "response tool result empty list zh"
+  response_tool_result_empty_local_path_search_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search en"
+  response_tool_result_empty_local_path_search_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search hi"
+  response_tool_result_empty_local_path_search_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search ru"
+  response_tool_result_empty_local_path_search_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response tool result empty local path search zh"
   response_tool_result_empty_search_en
     defined-by response_template
     lexeme en
@@ -1119,6 +1139,11 @@ meanings
     lexeme en
       surface
         text "tool result empty list"
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
   tool_result_empty_search
     defined-by intent
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "wikinews"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
