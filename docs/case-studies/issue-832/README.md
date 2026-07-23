@@ -93,8 +93,18 @@ verification matrix was:
 
 The required live self-coding entry point was attempted before implementation.
 The configured external solver rejected the `formal-ai` model identifier before
-it could propose a patch, so no self-authored commit trailer is claimed. The
-full output is preserved in
+it could propose a patch, so none of the issue fix or its manually prepared
+regressions claim self-authored attribution. The full output is preserved in
 [`self-coding-live.log`](raw-data/self-coding-live.log), and the runner's
 automatic diagnostic is recorded in
 [issue comment 5063145457](https://github.com/link-assistant/formal-ai/issues/832#issuecomment-5063145457).
+
+After the pull request's differential self-hosting check identified that the
+branch would lower the repository-wide metric, the established source-links
+harness ran a separate real Agent CLI to Formal AI session,
+`ses_06f008aa0ffeshFEmHa8iHyYJM`. That session authored a representative
+source-links specification and projected all 293 owned modules into two
+round-trip-verified shards. Its generated artifacts are preserved under
+[`self-hosting-evidence/`](self-hosting-evidence/). Only the isolated generated
+artifact commit carries that session's `Formal-AI-Session` and
+`Formal-AI-Evidence` trailers.
