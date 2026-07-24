@@ -128,6 +128,37 @@ commit; an honest 0% release is valid. The metric counts additions plus
 deletions from non-merge commits and ignores binary files. Reproduce it with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
+## Contribution rights and external material
+
+By intentionally submitting a contribution to this repository, you represent
+that you have the authority to submit it and offer your copyrightable
+contribution under the repository's [Unlicense](LICENSE), including its
+public-domain dedication and permissive fallback terms. If you do not own the
+rights or cannot make that offer, do not submit the material.
+
+Third-party material remains subject to its own license and terms. Identify the
+source, exact revision, license, required notices, and any naming or use
+conditions in the pull request and repository provenance record. Public access,
+zero price, AI generation, or appearance in an issue does not remove those
+conditions. Follow [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) and complete
+[`docs/legal/source-review.md`](docs/legal/source-review.md) before using any
+external material for training or distillation.
+
+Never paste or attach any of the following to issues, pull requests,
+discussions, logs, fixtures, or commits:
+
+- leaked material or proprietary source code;
+- a paid or access-controlled dataset without redistribution permission;
+- a large verbatim copyrighted work or bulk model output;
+- credentials, private keys, confidential information, or trade secrets; or
+- real personal data.
+
+For debugging or critique, use the smallest lawful excerpt, link to the
+authorized source, record provenance, and redact unrelated content. Maintainers
+may remove, redact, or quarantine suspect material and its downstream copies
+while a rights, privacy, safety, or Terms-of-Service concern is investigated.
+Removal from a public thread is not approval to retain another copy.
+
 ## Development Setup
 
 1. **Fork and clone the repository**

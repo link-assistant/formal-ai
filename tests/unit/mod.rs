@@ -34,6 +34,7 @@ mod docs_requirements_issue_659;
 mod docs_requirements_issue_660;
 mod docs_requirements_issue_686;
 mod docs_requirements_issue_712;
+mod docs_requirements_issue_834;
 mod dreaming_runtime;
 mod formal_ai;
 mod github_logs;
