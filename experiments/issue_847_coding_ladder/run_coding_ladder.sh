@@ -126,9 +126,15 @@ for task in tasks:
                     haystack += handle.read()
             except OSError:
                 pass
-    refused = ("could not determine" in haystack.lower()
-               or "could not determine" in haystack.replace("\\u0060", "").lower()
-               or "не смог определить" in haystack.lower())
+    # Two distinct non-answers must both count as failure:
+    #   * the unknown-prompt refusal ("I could not determine ...")
+    #   * a misroute that answers a different question than the one asked
+    #     (e.g. a decomposition request formalized as write_program(rust, missing))
+    lowered = haystack.lower()
+    refused = ("could not determine" in lowered
+               or "не смог определить" in lowered
+               or "i do not have a template for language" in lowered
+               or "supported languages:" in lowered)
     expected = task.get("expect_answer")
     answered = expected is None or (
         not refused and expected.lower() in output.lower()
