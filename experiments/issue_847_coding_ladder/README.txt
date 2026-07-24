@@ -36,18 +36,35 @@ are ignored by that guard so the harness can write its own results.
 
 BASELINE @ v0.303.0 (main), agent CLI 0.25.0, 2026-07-25
 --------------------------------------------------------
-  TOTAL 2/13
-    L1 0/2    L2 0/3    L3 1/5    L4 1/3
+Dataset expanded to 130 tasks across 16 families (see generate_prompts.py).
 
-Both passes are READ-ONLY (846.L4.read_excluded, 710.L3.status_row).
-Zero write operations succeeded at any level.
+  TOTAL 38/130
+    L1 0/16   L2 0/12   L3 3/28   L4 35/74
+
+  read 12/12   atomic_edit 6/22   knowledge 4/8   verification 4/5
+  create 3/6   multilingual 3/11  decomposition 2/6  error_recovery 2/4
+  search 1/8   replace_delete 1/5
+  issue_to_pr 0/16   test_authoring 0/8   targeted_edit 0/7
+  deliverable 0/5    multifile 0/4       refactor 0/3
+
+An earlier 13-task sample reported 2/13 and concluded "no level where
+Formal AI can write code". That was too small a sample and partly wrong.
 
 THE HEADLINE FINDING
 --------------------
-There is no level at which coding currently works. The ladder was built to
-find the complexity at which tasks stop failing; that level does not exist
-yet, because the floor operation -- "add this string to that array in this
-named file" -- fails.
+The boundary is not LEVEL, it is ARTIFACT KIND.
+
+All 10 passing write tasks are "append a line to a prose or config file"
+(.md, .yml, .toml, .lino, .sh, .gitignore) or a numeric constant swap.
+ZERO writes produce valid code: test_authoring 0/8, targeted_edit 0/7,
+refactor 0/3, multifile 0/4, deliverable 0/5.
+
+Text insertion works. Code generation does not. That distinction is only
+visible with breadth across artifact types, which is why the dataset was
+expanded from 13 to 130.
+
+read 12/12 shows navigation is not the bottleneck. search 1/8 is the
+surprise: locating a symbol fails where reading a named file succeeds.
 
 Root cause is intent routing, not tool wiring. The agent CLI advertises
 `write`, `edit` and `bash` (confirmed in the server log), and Formal AI simply
@@ -80,6 +97,17 @@ and open a pull request" cannot pass 2/2. Three defects, all now fixed:
 A fourth was found after that: `meta.L2.decompose` still passed because the
 model neither refused nor answered -- it misrouted to `write_program`. Misroute
 detection was added.
+
+A fifth, on the 130-task run, which first reported 49/130 with
+test_authoring 7/8: asked for a Rust test file, the agent creates the file
+whose entire content is the echoed prompt fragment --
+
+  $ cat tests/unit/ladder_spotcheck.rs
+  one Rust test named ladder_spec_probe asserting the crate version string is not empty.
+
+-- and a grep for the test name passes on that. The runner now requires any
+.rs file a task was asked to create to contain an `fn` item. Ten tasks were
+reclassified pass -> fail and test_authoring went 7/8 -> 0/8.
 
 Generalisable lesson, and the same one behind #839 and #842: assert on the
 OBSERVED EFFECT, never on narration. "I created the file" with no file is a
