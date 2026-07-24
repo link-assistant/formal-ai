@@ -108,6 +108,14 @@ requirements. The release territories and use case decide which review applies.
 - `test-logs/reproduction-before.log` shows all ten regression tests failing on
   the missing controls.
 - `test-logs/core-policy-after.log` shows the nine individual controls passing.
+- `test-logs/focused-after.log` shows all ten issue-specific tests passing.
+- `test-logs/full-suite.log` records the all-features result: 188 binary tests,
+  481 integration tests, 2,001 unit tests, and doc tests passed with no
+  failures. The slow-test reporter identified existing agent-replay and ratchet
+  cases, all of which completed successfully.
+- `test-logs/fmt-check.log`, `test-logs/clippy.log`,
+  `test-logs/check-file-size.log`, and
+  `test-logs/check-hardcoded-language.log` record the remaining local gates.
 - `tests/unit/docs_requirements_issue_834.rs` protects every checklist item and
   the whole task.
 
