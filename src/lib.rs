@@ -33,6 +33,7 @@ pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod intent_formalization;
+pub mod issue_report;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
