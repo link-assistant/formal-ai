@@ -56,7 +56,7 @@ grep '^{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 rm "$OUT/agent-stream.raw.log" "$OUT/agent-stderr.log"
 
 cp "$work/self-source-links.lino" "$OUT/self-source-links.lino"
-cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino"
+cp "$work/.formal-ai/general-change-plan.lino" "$OUT/general-change-plan.lino" 2>/dev/null || true
 "$BIN" agent --task "$TASK" --session-json "$OUT/session.json" >/dev/null
 
 echo "issue #841 self-hosting evidence written to $OUT"
