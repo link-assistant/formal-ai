@@ -157,7 +157,9 @@ fn sample_export(records: usize) -> String {
     let mut text = String::from("conversation ses_06ac01b87ffeW5XnFmtYE8Amil\n  messages\n");
     for index in 0..records {
         text.push_str("    message\n");
-        text.push_str(&format!("      role user\n      text \"turn {index}\"\n"));
+        text.push_str("      role user\n      text \"turn ");
+        text.push_str(&index.to_string());
+        text.push_str("\"\n");
     }
     text
 }

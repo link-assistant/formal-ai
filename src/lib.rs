@@ -18,6 +18,7 @@ pub(crate) mod concepts;
 pub mod context_capacity;
 pub mod conversation_context;
 pub mod cue_lexicon;
+pub mod dialog_conversation;
 pub mod dialog_log;
 pub mod document_formats;
 pub mod dreaming;

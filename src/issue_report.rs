@@ -255,7 +255,7 @@ impl ReportBody {
 
         lines.push(self.labels.legend.clone());
         lines.push(String::new());
-        let fence = pick_fence(self.turns.iter().map(|turn| turn.content.as_str()));
+        let fence = pick_fence(&self.turns.iter().map(|turn| turn.content.as_str()));
         lines.push(fence.clone());
         if self.earlier_omitted > 0 {
             let label = if self.earlier_omitted == 1 && !self.labels.omitted_earlier_one.is_empty()
@@ -300,14 +300,14 @@ fn push_fields(lines: &mut Vec<String>, fields: &[ReportField]) {
 }
 
 fn push_code_block(lines: &mut Vec<String>, language: &str, content: &str) {
-    let fence = pick_fence(std::iter::once(content));
+    let fence = pick_fence(&std::iter::once(content));
     lines.push(format!("{fence}{language}"));
     lines.push(content.to_owned());
     lines.push(fence);
 }
 
 /// Choose a fence long enough that no sample can terminate the block early.
-fn pick_fence<'a>(samples: impl Iterator<Item = &'a str> + Clone) -> String {
+fn pick_fence<'a>(samples: &(impl Iterator<Item = &'a str> + Clone)) -> String {
     let mut fence = String::from("```");
     while samples.clone().any(|sample| sample.contains(&fence)) {
         fence.push('`');

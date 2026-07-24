@@ -142,6 +142,9 @@ pub fn handle_api_request_with_auth(
 ) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
     let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
+    // The planner reads this back when it writes a report command, so the
+    // exported session is the caller's own session and not a guess (#839).
+    let _dialog = crate::dialog_log::DialogScope::begin(headers);
     let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,

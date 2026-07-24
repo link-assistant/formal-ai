@@ -73,6 +73,12 @@ agent_info
     value "Exported bytes"
   field context_opencode_export_failed
     value "OpenCode context export failed: {error}"
+  field context_harness_unavailable
+    value "Harness session {session} could not be exported: {error}"
+  field context_export_empty
+    value "The context export for session {session} contains no messages."
+  field context_session_unresolved
+    value "No harness session could be resolved; set {variable} or pass an explicit --session."
   field context_dialog_log_unavailable
     value "{variable} is not configured"
   field context_learning_failed
