@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.303.0] - 2026-07-24
+
+### Added
+
+- Added a conservative legal/compliance policy, explicit contribution-rights
+  rules, and a fail-closed training/distillation source registry with
+  per-source provenance, privacy, terms, attribution, naming, and approval
+  requirements.
+- Added exact-version guidance for Llama 3.3 and Mistral 7B, OpenRouter/provider
+  term checks, personal-data and prohibited-use controls, an EU AI Act
+  assessment, disclaimer limits, and an issue #834 evidence-backed case study.
+
 ## [0.302.3] - 2026-07-24
 
 ### Fixed
