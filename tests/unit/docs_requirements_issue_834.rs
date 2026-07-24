@@ -328,6 +328,6 @@ fn issue_834_whole_task_has_traceable_research_and_an_operational_gate() {
     );
     assert_contains_all(
         "REQUIREMENTS.md",
-        &["issue #834 legal & compliance self-audit", "r457", "r466"],
+        &["issue #834 legal & compliance self-audit", "r484", "r493"],
     );
 }

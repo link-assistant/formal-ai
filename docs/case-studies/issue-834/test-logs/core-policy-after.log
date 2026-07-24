@@ -1,0 +1,17 @@
+   Compiling formal-ai v0.302.3 (/tmp/gh-issue-solver-1784882342944)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.14s
+     Running tests/unit/mod.rs (target/debug/deps/unit-bc0b68dac9d7c579)
+
+running 9 tests
+test docs_requirements_issue_834::closed_api_scraping_and_competing_model_training_are_prohibited ... ok
+test docs_requirements_issue_834::as_is_disclaimer_and_non_waivable_limits_are_explicit ... ok
+test docs_requirements_issue_834::contribution_rules_reject_leaks_paid_data_and_large_copyrighted_payloads ... ok
+test docs_requirements_issue_834::every_training_or_distillation_artifact_requires_registered_provenance ... ok
+test docs_requirements_issue_834::public_domain_dedication_covers_human_authored_contributions ... ok
+test docs_requirements_issue_834::model_specific_attribution_and_naming_obligations_are_reviewed ... ok
+test docs_requirements_issue_834::prohibited_use_safeguards_cover_high_risk_abuse ... ok
+test docs_requirements_issue_834::real_personal_data_is_excluded_from_training ... ok
+test docs_requirements_issue_834::eu_ai_act_open_source_exemption_is_assessed_without_overclaiming ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1994 filtered out; finished in 0.01s
+
