@@ -1,0 +1,391 @@
+{
+  "summary": {
+    "total": 24,
+    "passed": 8,
+    "failed": 16,
+    "by_level": {
+      "L1": {
+        "passed": 1,
+        "total": 3
+      },
+      "L2": {
+        "passed": 1,
+        "total": 6
+      },
+      "L3": {
+        "passed": 2,
+        "total": 7
+      },
+      "L4": {
+        "passed": 4,
+        "total": 8
+      }
+    },
+    "by_seed": {
+      "838": {
+        "passed": 3,
+        "total": 10
+      },
+      "827": {
+        "passed": 1,
+        "total": 7
+      },
+      "826": {
+        "passed": 4,
+        "total": 7
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "838.L1",
+      "level": 1,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Find hive-mind-control center folder on my desktop",
+      "note": "Ground truth Desktop/Archive/hive-control-center. Must not return the .pem decoy, must not web-search.",
+      "answer": "Let me look on your Desktop for hive mind control center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d \\\\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\\\) -print -quit\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-ladder.Cz0dmu/Desktop/Archive/hive-control-center\nThe `find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit` command completed. Output:\n\n```text\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-ladder.Cz0dmu/Desktop/Archive/hive-control-center\n```",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "838.L2.a",
+      "level": 2,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Is the request 'Find hive-mind-control center folder on my desktop' a local filesystem search or a web search?",
+      "note": "Routing decision in isolation.",
+      "answer": "Let me look on your Desktop for is request hive mind control center a filesystem.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d \\\\( -iname '*is*request*hive*mind*control*center*a*filesystem*' -o -iname '*request*hive*mind*control*center*a*filesystem*' -o -iname '*is*hive*mind*control*center*a*filesystem*' -o -iname '*is*request*mind*control*center*a*filesystem*' -o -iname '*is*request*hive*control*center*a*filesystem*' -o -iname '*is*request*hive*mind*center*a*filesystem*' -o -iname '*is*request*hive*mind*control*a*filesystem*' -o -iname '*is*request*hive*mind*control*center*filesystem*' -o -iname '*is*request*hive*mind*control*center*a*' \\\\) -print -quit\"}\n[result] (no output)\nNo matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.",
+      "error": null,
+      "missing_expect": [
+        "local"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L2.b",
+      "level": 2,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "List the folders on my desktop",
+      "note": "The observe step, alone.",
+      "answer": "I could not determine `List the folders on my desktop` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.",
+      "error": null,
+      "missing_expect": [
+        "Archive"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L3.a",
+      "level": 3,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Search hive-mind-control-center on my desktop",
+      "note": "Verb 'Search' must route local exactly like 'Find'.",
+      "answer": "Let me search the web for hive mind control center on my desktop.\n[tool websearch] {\"query\":\"hive mind control center on my desktop\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [
+        "hive-control-center"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L3.b",
+      "level": 3,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Find hive-mind-control center folder on desktop",
+      "note": "Dropping the possessive 'my' must not change the route (the #838 flip).",
+      "answer": "Let me search the web for hive mind control center folder on desktop.\n[tool websearch] {\"query\":\"hive mind control center folder on desktop\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [
+        "hive-control-center"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L3.c",
+      "level": 3,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "What is inside the Archive folder on my desktop?",
+      "note": "One level of recursion; both entries should be visible.",
+      "answer": "Let me search the web for What is inside the Archive folder on my desktop.\n[tool websearch] {\"query\":\"What is inside the Archive folder on my desktop\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [
+        "hive-control-center"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L4.a",
+      "level": 4,
+      "seed": "838",
+      "lang": "ru",
+      "prompt": "Найди папку hive-mind-control center на моём рабочем столе",
+      "note": "Same intent in Russian must route identically (#386 convention).",
+      "answer": "Посмотрю на вашем рабочем столе: hive mind control center.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d \\\\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\\\) -print -quit\"}\n[result] /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-ladder.Cz0dmu/Desktop/Archive/hive-control-center\nКоманда `find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit` выполнена. Результат:\n\n```text\n/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T//formal-ai-ladder.Cz0dmu/Desktop/Archive/hive-control-center\n```",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "838.L4.b",
+      "level": 4,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Is there a folder named exactly 'hive-mind-control-center' on my desktop? Answer yes or no and say what the closest match is.",
+      "note": "Fuzzy near-match must be named, not silently substituted (standard 3.3).",
+      "answer": "I could not determine `Is there a folder named exactly 'hive-mind-control-center' on my desktop? Answer yes or no and say what the closest match is` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.",
+      "error": null,
+      "missing_expect": [
+        "hive-control-center"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "838.L4.c",
+      "level": 4,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "On my desktop, is hive-control-center a file or a folder?",
+      "note": "Type discrimination (standard 3.4) - the .pem decoy is a file.",
+      "answer": "Let me search the web for On my desktop, is hive-control-center a file or a folder.\n[tool websearch] {\"query\":\"On my desktop, is hive-control-center a file or a folder\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "838.L4.d",
+      "level": 4,
+      "seed": "838",
+      "lang": "en",
+      "prompt": "Find a folder called zzz-nonexistent-folder on my desktop",
+      "note": "True negative: absence must be reported honestly, scoped, without inventing a match.",
+      "answer": "Let me look on your Desktop for a zzz nonexistent.\n[tool bash] {\"command\":\"find \\\"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\\\" -type d \\\\( -iname '*a*zzz*nonexistent*' -o -iname '*zzz*nonexistent*' -o -iname '*a*nonexistent*' -o -iname '*a*zzz*' \\\\) -print -quit\"}\n[result] (no output)\nNo matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.",
+      "error": null,
+      "missing_expect": [
+        "not"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "827.L1",
+      "level": 1,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Что такое фуфломицин?",
+      "note": "Must synthesize a definition (drugs without proven efficacy), not echo page titles.",
+      "answer": "Поищу в интернете: Что такое фуфломицин.\n[tool websearch] {\"query\":\"Что такое фуфломицин\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [
+        "эффективност"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "827.L2.a",
+      "level": 2,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Дай определение слова фуфломицин одним предложением",
+      "note": "Synthesis step alone, explicitly one sentence.",
+      "answer": "Я не смог определить `Дай определение слова фуфломицин одним предложением` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
+      "error": null,
+      "missing_expect": [
+        "эффективност"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "827.L2.b",
+      "level": 2,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Что такое фуфломицин? Затем: так что это такое то?",
+      "note": "Follow-up must resolve against the antecedent, never fall back to the capability menu.",
+      "answer": "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса.",
+      "error": null,
+      "missing_expect": [
+        "эффективност"
+      ],
+      "leaked_forbid": [
+        "Приветствия",
+        "Hello World"
+      ],
+      "pass": false
+    },
+    {
+      "id": "827.L3.a",
+      "level": 3,
+      "seed": "827",
+      "lang": "en",
+      "prompt": "What is a fufloмицин (фуфломицин)? Answer in English.",
+      "note": "Cross-language synthesis of the same concept.",
+      "answer": "I could not determine `a fufloмицин (фуфломицин)? Answer in English` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`.",
+      "error": null,
+      "missing_expect": [
+        "efficacy"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "827.L3.b",
+      "level": 3,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Так что это такое то?",
+      "note": "Bare follow-up with NO antecedent: must ask what is meant, never print the capability menu.",
+      "answer": "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [
+        "Приветствия",
+        "Hello World"
+      ],
+      "pass": false
+    },
+    {
+      "id": "827.L4.a",
+      "level": 4,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Приведи один пример препарата, который называют фуфломицином",
+      "note": "Instantiation: needs a concrete example, not page furniture.",
+      "answer": "Я не смог определить `Приведи один пример препарата, который называют фуфломицином` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "827.L4.b",
+      "level": 4,
+      "seed": "827",
+      "lang": "ru",
+      "prompt": "Что означает слово это в предложении: так что это такое то?",
+      "note": "Pure anaphora resolution, isolated from any lookup.",
+      "answer": "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [
+        "Приветствия"
+      ],
+      "pass": false
+    },
+    {
+      "id": "826.L1",
+      "level": 1,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "ФБС vs ФБО",
+      "note": "Comparison of two marketplace fulfilment models; refusal is a failure.",
+      "answer": "Я не смог определить `ФБС vs ФБО` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
+      "error": null,
+      "missing_expect": [
+        "склад"
+      ],
+      "leaked_forbid": [
+        "не смог определить"
+      ],
+      "pass": false
+    },
+    {
+      "id": "826.L2.a",
+      "level": 2,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "Что такое ФБО?",
+      "note": "One half of the comparison; decomposition target.",
+      "answer": "Поищу в интернете: Что такое ФБО.\n[tool websearch] {\"query\":\"Что такое ФБО\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "826.L2.b",
+      "level": 2,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "Зарепорти баг",
+      "note": "Russian report intent must be recognized without falling back to English.",
+      "answer": "Я не смог определить `Зарепорти баг` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [
+        "не смог определить"
+      ],
+      "pass": false
+    },
+    {
+      "id": "826.L3.a",
+      "level": 3,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "Что такое ФБС?",
+      "note": "The other half.",
+      "answer": "Поищу в интернете: Что такое ФБС.\n[tool websearch] {\"query\":\"Что такое ФБС\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "826.L3.b",
+      "level": 3,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "Сообщи об ошибке",
+      "note": "Second Russian phrasing of the same report intent.",
+      "answer": "Что вы хотите отправить? Выберите один или несколько вариантов.\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    },
+    {
+      "id": "826.L4.a",
+      "level": 4,
+      "seed": "826",
+      "lang": "ru",
+      "prompt": "Чем отличается ФБС от ФБО одним предложением?",
+      "note": "The comparison reduced to its single distinguishing axis (who stores the goods).",
+      "answer": "Поищу в интернете: Чем отличается ФБС от ФБО одним предложением.\n[tool websearch] {\"query\":\"Чем отличается ФБС от ФБО одним предложением\"}\n[result] (tool not executed by harness)\n(tool not executed by harness)",
+      "error": null,
+      "missing_expect": [
+        "склад"
+      ],
+      "leaked_forbid": [],
+      "pass": false
+    },
+    {
+      "id": "826.L4.b",
+      "level": 4,
+      "seed": "826",
+      "lang": "en",
+      "prompt": "Report a bug",
+      "note": "English baseline for the same intent; must behave identically to the Russian forms.",
+      "answer": "What would you like to report? Select one or more.\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.",
+      "error": null,
+      "missing_expect": [],
+      "leaked_forbid": [],
+      "pass": true
+    }
+  ]
+}
