@@ -22,4 +22,3 @@ delivery evidence into a whole-task requirement.
 All ten tests must pass in one run. Every future training artifact must be
 inside the canonical directory and equal the union of approved registry paths.
 Documentation alone cannot override that fail-closed check.
-

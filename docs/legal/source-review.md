@@ -65,4 +65,3 @@ review into every required `source-registry.json` field, then run:
 ```bash
 cargo test --test unit docs_requirements_issue_834
 ```
-

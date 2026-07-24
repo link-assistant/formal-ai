@@ -22,4 +22,3 @@
       real personal data.
 - [ ] Any safety, privacy, security, regional, or prohibited-use review
       triggered by `LEGAL-COMPLIANCE.md` is recorded.
-

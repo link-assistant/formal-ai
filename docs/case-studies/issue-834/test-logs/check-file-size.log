@@ -9,19 +9,19 @@
 [2026-07-24T09:07:31Z INFO  rust_script::manifest] manifest: [[bin]]
     name = "check-file-size_f44e811dd0dd9d2d28964f1c"
     path = "/tmp/gh-issue-solver-1784882342944/scripts/check-file-size.rs"
-    
+
     [dependencies]
     walkdir = "2"
-    
+
     [package]
     authors = ["Anonymous"]
     edition = "2021"
     name = "check-file-size_f44e811dd0dd9d2d28964f1c"
     version = "0.1.0"
-    
+
     [profile.release]
     strip = true
-    
+
 [2026-07-24T09:07:31Z INFO  rust_script] action: InputAction { cargo_output: false, force_compile: false, execute: true, pkg_path: "/home/box/.cache/rust-script/projects/f44e811dd0dd9d2d28964f1c", script_path: "/tmp/gh-issue-solver-1784882342944/scripts/check-file-size.rs", using_cache: true, toolchain_version: None, debug: false, manifest: "[[bin]]\nname = \"check-file-size_f44e811dd0dd9d2d28964f1c\"\npath = \"/tmp/gh-issue-solver-1784882342944/scripts/check-file-size.rs\"\n\n[dependencies]\nwalkdir = \"2\"\n\n[package]\nauthors = [\"Anonymous\"]\nedition = \"2021\"\nname = \"check-file-size_f44e811dd0dd9d2d28964f1c\"\nversion = \"0.1.0\"\n\n[profile.release]\nstrip = true\n", script: None, build_kind: Normal, bin_name: "check-file-size_f44e811dd0dd9d2d28964f1c", original_script_path: Some("scripts/check-file-size.rs") }
 [2026-07-24T09:07:31Z INFO  rust_script] creating pkg dir...
 [2026-07-24T09:07:31Z INFO  rust_script] generating Cargo package...
@@ -182,4 +182,3 @@ The following files are approaching their configured line limits:
 Consider extracting code to prevent concurrent PR merge limit violations.
 
 All checked files are within their line limits
-

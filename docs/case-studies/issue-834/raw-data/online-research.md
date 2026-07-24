@@ -130,4 +130,3 @@ warranty. No researched source supports treating that language as permission
 to ignore mandatory consumer, privacy, product-safety, or intentional-harm
 rules. The policy therefore treats disclaimers as allocation language and uses
 testing, human review, containment, and counsel as substantive controls.
-

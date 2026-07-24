@@ -28,4 +28,3 @@ update parameters without a fresh source review and approved registry entry.
 Provider filters and metadata do not replace review. Pin the exact model,
 version, provider route, terms date, permitted use, artifact hashes, and
 downstream obligations.
-

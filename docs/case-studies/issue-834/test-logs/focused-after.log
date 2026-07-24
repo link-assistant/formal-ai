@@ -15,4 +15,3 @@ test docs_requirements_issue_834::real_personal_data_is_excluded_from_training .
 test docs_requirements_issue_834::issue_834_whole_task_has_traceable_research_and_an_operational_gate ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 1993 filtered out; finished in 0.02s
-

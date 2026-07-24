@@ -25,4 +25,3 @@
   architecture and create permission by relabeling.
 - **Claim a broad EU open-source exemption now.** Formal AI has no trained GPAI
   model today, and the future exemption would remain limited.
-

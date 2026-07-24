@@ -14,4 +14,3 @@ test docs_requirements_issue_834::real_personal_data_is_excluded_from_training .
 test docs_requirements_issue_834::eu_ai_act_open_source_exemption_is_assessed_without_overclaiming ... ok
 
 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1994 filtered out; finished in 0.01s
-
