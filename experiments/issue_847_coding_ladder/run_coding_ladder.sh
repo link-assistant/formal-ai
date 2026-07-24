@@ -110,8 +110,15 @@ for task in tasks:
         cwd=root, capture_output=True, text=True,
     ).returncode == 0
 
+    # Judge `expect_answer` against the assistant's ANSWER only. The agent CLI
+    # emits verbose JSON logs on the same streams, and matching against the raw
+    # combined output produced false positives (a bare "1." or "yes" occurs
+    # incidentally in log payloads while the model actually refused).
+    refused = "could not determine" in output.lower() or "не смог определить" in output.lower()
     expected = task.get("expect_answer")
-    answered = expected is None or expected.lower() in output.lower()
+    answered = expected is None or (
+        not refused and expected.lower() in output.lower()
+    )
     ok = verified and answered and not timed_out
 
     reason = ""
@@ -119,13 +126,15 @@ for task in tasks:
         reason = f"timeout after {timeout_s}s"
     elif not verified:
         reason = "verify failed (no observable effect)"
+    elif refused:
+        reason = "refused (unknown-prompt fallback)"
     elif not answered:
         reason = f"answer missing {expected!r}"
 
     results.append({
         "id": task["id"], "level": task["level"], "seed": task.get("seed"),
         "prompt": task["prompt"], "note": task.get("note", ""),
-        "pass": ok, "reason": reason, "timed_out": timed_out,
+        "pass": ok, "reason": reason, "timed_out": timed_out, "refused": refused,
         "verified_effect": verified,
         "output_tail": output[-2000:],
     })
