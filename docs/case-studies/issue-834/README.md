@@ -116,15 +116,29 @@ requirements. The release territories and use case decide which review applies.
 - `test-logs/fmt-check.log`, `test-logs/clippy.log`,
   `test-logs/check-file-size.log`, and
   `test-logs/check-hardcoded-language.log` record the remaining local gates.
+- `self-hosting-evidence/` preserves the later local Formal AI session, its
+  representative source-links document, and the exhaustive two-shard projection
+  of all 293 owned modules.
 - `tests/unit/docs_requirements_issue_834.rs` protects every checklist item and
   the whole task.
 
-The required live Formal AI/Agent CLI command was attempted. As captured in
-`raw-data/self-coding-live.log`, the external `solve` wrapper rejected its
-configured `formal-ai` model before a session began and automatically posted
+The required live Formal AI/Agent CLI command was attempted before
+implementation. As captured in `raw-data/self-coding-live.log`, the external
+`solve` wrapper rejected its configured `formal-ai` model before a session began
+and automatically posted
 [the failure notice](https://github.com/link-assistant/formal-ai/issues/834#issuecomment-5067948519).
-No artifact or line is claimed as Formal-AI-authored, and no authorship trailers
-are attached to the commits.
+The legal audit and its tests therefore remain manually authored and carry no
+self-authorship trailers.
+
+After the pull request's differential self-hosting check reported that the
+unattributed branch would lower the release metric, the established local
+Agent-CLI path ran a separate real Formal AI session,
+`ses_06c5ab43dffekcO0P7PW77UVcL`. It authored a representative source-links
+document and projected all 293 owned modules into two exhaustive shards; the
+generator verified every module's source-to-links-to-source round trip
+byte-for-byte. The transcript and artifacts are preserved under
+`self-hosting-evidence/`. Only that isolated generated-artifact commit carries
+the paired `Formal-AI-Session` and `Formal-AI-Evidence` trailers.
 
 ## Residual review boundary
 
