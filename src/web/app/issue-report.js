@@ -261,58 +261,118 @@ function truncateLines(lines, maxBytes, omittedLabel) {
   return { text: `${result}\n`, omitted };
 }
 
+// Splits a document the way Rust's `str::lines` does: no trailing empty line.
+function documentLines(document) {
+  const lines = document.split("\n");
+  if (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
+  return lines;
+}
+
+const headToken = (line) => line.trimStart().split(/\s+/u)[0] ?? "";
+
+// Every run of two or more consecutive siblings at `indent` sharing a head token.
+function runsAt(lines, indent) {
+  const runs = [];
+  let starts = [];
+  let head = "";
+  const closeRun = (end) => {
+    if (starts.length >= 2) {
+      runs.push({ indent, start: starts[0], end, starts });
+    }
+    starts = [];
+  };
+  lines.forEach((line, index) => {
+    // Blank lines and deeper lines belong to the record being read.
+    if (!line.trim() || indentOf(line) > indent) return;
+    const token = headToken(line);
+    const continues = indentOf(line) === indent && starts.length > 0 && token === head;
+    if (!continues) {
+      closeRun(index);
+      head = token;
+    }
+    if (indentOf(line) === indent) starts.push(index);
+  });
+  closeRun(lines.length);
+  return runs;
+}
+
+// The run that holds the most bytes, across every indentation level.
+function longestRecordRun(lines) {
+  const indents = [...new Set(lines.filter((line) => line.trim()).map(indentOf))].sort(
+    (left, right) => left - right,
+  );
+  let best = null;
+  let largest = -1;
+  for (const indent of indents) {
+    for (const run of runsAt(lines, indent)) {
+      const size = joinedLength(lines.slice(run.start, run.end));
+      if (size > largest) {
+        largest = size;
+        best = run;
+      }
+    }
+  }
+  return best;
+}
+
+const recordRange = (run, index) => [
+  run.starts[index],
+  index + 1 < run.starts.length ? run.starts[index + 1] : run.end,
+];
+
 // Shrinks a Links Notation document without ever cutting inside a record; see
 // the Rust doc comment on `truncate_records` for the #838 background.
 export function truncateRecords(value, maxBytes, omittedLabel) {
   const document = text(value);
   if (byteLength(document) <= maxBytes) return { text: document, omitted: 0 };
 
-  const lines = document.split("\n");
-  const indents = lines
-    .filter((line) => line.trim())
-    .map(indentOf)
-    .filter((indent) => indent > 0);
-  if (indents.length === 0) return truncateLines(lines, maxBytes, omittedLabel);
-  const baseIndent = Math.min(...indents);
+  const lines = documentLines(document);
+  const run = longestRecordRun(lines);
+  // Nothing repeats, so there is no record level to thin: keep whole lines.
+  if (!run) return truncateLines(lines, maxBytes, omittedLabel);
 
-  const header = [];
-  const records = [];
-  for (const line of lines) {
-    if (line.trim() && indentOf(line) === baseIndent) {
-      records.push([line]);
-    } else if (records.length > 0) {
-      records[records.length - 1].push(line);
-    } else {
-      header.push(line);
-    }
-  }
-
-  const marker = `${" ".repeat(baseIndent)}${text(omittedLabel)}`;
-  const budget = Math.max(0, maxBytes - (joinedLength(header) + byteLength(marker) + 1));
-  const sizes = records.map(joinedLength);
+  const indent = " ".repeat(run.indent);
+  const surrounding =
+    joinedLength(lines.slice(0, run.start)) + joinedLength(lines.slice(run.end)) + indent.length;
+  const budget = Math.max(0, maxBytes - (surrounding + byteLength(omittedLabel) + 1));
+  const sizes = run.starts.map((_, index) => {
+    const [from, to] = recordRange(run, index);
+    return joinedLength(lines.slice(from, to));
+  });
   let headCount = 0;
   let tailCount = 0;
   let used = 0;
   // Half the budget goes to the opening records (what the session was about)
   // and the rest to the closing ones (where it went wrong).
-  while (headCount < records.length && used + sizes[headCount] <= Math.floor(budget / 2)) {
+  while (headCount < sizes.length && used + sizes[headCount] <= Math.floor(budget / 2)) {
     used += sizes[headCount];
     headCount += 1;
   }
   while (
-    headCount + tailCount < records.length &&
-    used + sizes[records.length - 1 - tailCount] <= budget
+    headCount + tailCount < sizes.length &&
+    used + sizes[sizes.length - 1 - tailCount] <= budget
   ) {
-    used += sizes[records.length - 1 - tailCount];
+    used += sizes[sizes.length - 1 - tailCount];
     tailCount += 1;
   }
 
-  const omitted = records.length - headCount - tailCount;
-  if (omitted === 0) return { text: document, omitted: 0 };
+  const omitted = sizes.length - headCount - tailCount;
+  if (omitted === 0) return truncateLines(lines, maxBytes, omittedLabel);
 
-  const kept = [...header];
-  for (const record of records.slice(0, headCount)) kept.push(...record);
-  kept.push(`${" ".repeat(baseIndent)}${renderCount(omittedLabel, omitted)}`);
-  for (const record of records.slice(records.length - tailCount)) kept.push(...record);
-  return { text: `${kept.join("\n")}\n`, omitted };
+  const kept = lines.slice(0, run.start);
+  for (let index = 0; index < headCount; index += 1) {
+    const [from, to] = recordRange(run, index);
+    kept.push(...lines.slice(from, to));
+  }
+  kept.push(`${indent}${renderCount(omittedLabel, omitted)}`);
+  for (let index = sizes.length - tailCount; index < sizes.length; index += 1) {
+    const [from, to] = recordRange(run, index);
+    kept.push(...lines.slice(from, to));
+  }
+  kept.push(...lines.slice(run.end));
+
+  const truncated = `${kept.join("\n")}\n`;
+  // The structure around the records does not fit on its own.
+  if (byteLength(truncated) > maxBytes) return truncateLines(lines, maxBytes, omittedLabel);
+  return { text: truncated, omitted };
 }

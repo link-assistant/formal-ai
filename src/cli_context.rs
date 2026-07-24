@@ -13,6 +13,10 @@ const ERROR_PLACEHOLDER: &str = "{error}";
 const SESSION_PLACEHOLDER: &str = "{session}";
 const VARIABLE_PLACEHOLDER: &str = "{variable}";
 /// Session argument resolved from the harness itself rather than typed by hand.
+/// Punctuation between the two sides of a both-sources failure. Format, not
+/// prose: each side already carries its own seed-grounded sentence.
+const ERROR_JOIN: &str = "; ";
+
 const LATEST_SESSION: &str = "latest";
 /// Environment override for the session id, matching the HTTP header (#839).
 const SESSION_ENV: &str = "FORMAL_AI_DIALOG_ID";
@@ -75,13 +79,32 @@ enum ContextAction {
     },
 }
 
+/// Which capture a context export reads from.
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
-enum ContextSource {
+pub enum ContextSource {
+    /// Prefer Formal AI's own capture, fall back to the harness.
     Auto,
+    /// The conversation the coding harness itself stored.
     Harness,
+    /// The conversation Formal AI's server recorded.
     Server,
+    /// Both captures merged into one document.
     Both,
+    /// `OpenCode`'s `SQLite` database, named explicitly.
     Opencode,
+}
+
+impl ContextSource {
+    /// The `--source` value this variant was selected by.
+    pub(crate) const fn name(self) -> &'static str {
+        match self {
+            Self::Auto => "auto",
+            Self::Harness => "harness",
+            Self::Server => "server",
+            Self::Both => "both",
+            Self::Opencode => "opencode",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
@@ -105,8 +128,9 @@ pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
             format,
             output,
         } => {
-            let session = resolve_session(&session, db.as_deref())?;
-            let text = export_context(&session, source, db.as_deref(), log_dir.as_deref(), format)?;
+            let (session, context) =
+                exported_context(&session, source, db.as_deref(), log_dir.as_deref())?;
+            let text = render_context(&session, &context, format)?;
             write_output(&output, &text)?;
         }
         ContextAction::Session { db } => {
@@ -132,16 +156,18 @@ pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
 /// Silent source substitution is what made #838 look successful while it
 /// attached 271 KB of base64 proxy frames, so every branch below either returns
 /// the source that was asked for or an error naming what went wrong (#839).
-fn export_context(
+/// Returns the resolved session id beside the document, because `latest` only
+/// becomes a real identifier here and the report body has to name it.
+pub fn exported_context(
     session: &str,
     source: ContextSource,
     db: Option<&Path>,
     log_dir: Option<&Path>,
-    format: ContextFormat,
-) -> Result<String, Box<dyn Error>> {
-    let context = context_document(session, source, db, log_dir)?;
-    ensure_records(session, source, &context)?;
-    render_context(session, &context, format)
+) -> Result<(String, Value), Box<dyn Error>> {
+    let session = resolve_session(session, db)?;
+    let context = context_document(&session, source, db, log_dir)?;
+    ensure_records(&session, source, &context)?;
+    Ok((session, context))
 }
 
 fn context_document(
@@ -236,7 +262,7 @@ fn merged_context(
             .replace(SESSION_PLACEHOLDER, session)
             .replace(
                 ERROR_PLACEHOLDER,
-                &format!("{harness_error}; {server_error}"),
+                &format!("{harness_error}{ERROR_JOIN}{server_error}"),
             )
             .into());
     }
@@ -334,7 +360,7 @@ fn read_input(path: &Path) -> Result<String, Box<dyn Error>> {
     }
 }
 
-fn write_output(path: &Path, text: &str) -> Result<(), Box<dyn Error>> {
+pub fn write_output(path: &Path, text: &str) -> Result<(), Box<dyn Error>> {
     if path.as_os_str() == "-" {
         std::io::stdout().write_all(text.as_bytes())?;
     } else {

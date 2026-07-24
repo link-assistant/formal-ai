@@ -50,6 +50,12 @@ pub const COUNT_PLACEHOLDER: &str = "{count}";
 /// capped well below the hard limit and falls back to the first turn alone.
 pub const TITLE_MAX_LENGTH: usize = 120;
 
+/// Punctuation only, never translated: the `` ` `` fences and the `+` that join
+/// the first and last user turn of a §4 title, and the colon after a turn's
+/// role prefix in the reproduction block.
+const TITLE_JOIN: &str = "` + `";
+const TURN_SEPARATOR: &str = ": ";
+
 /// A `- **label**: value` row inside the Environment or User Context section.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default)]
@@ -284,7 +290,7 @@ impl ReportBody {
             };
             let mut rows = turn.content.split('\n');
             let first = rows.next().unwrap_or_default();
-            lines.push(format!("{head}: {first}"));
+            lines.push(format!("{head}{TURN_SEPARATOR}{first}"));
             for row in rows {
                 lines.push(format!("   {row}"));
             }
@@ -359,7 +365,7 @@ pub fn issue_title(turns: &[ReportTurn], settings: &TitleSettings) -> String {
     };
 
     if let Some(last) = subjects.last().filter(|last| *last != first) {
-        let combined = format!("{}`{first}` + `{last}`", settings.prefix);
+        let combined = format!("{}`{first}{TITLE_JOIN}{last}`", settings.prefix);
         if combined.chars().count() <= TITLE_MAX_LENGTH {
             return combined;
         }
@@ -427,10 +433,14 @@ pub struct TruncatedRecords {
 ///
 /// Issue #838 was filed with `tail -c 12000 | sed '1d'` applied to a `.lino`
 /// export: a byte offset lands mid-record and destroys the tree, so the reader
-/// receives an unparseable fragment of one base64 HTTP body. Records here are
-/// the sibling blocks at the shallowest indented level (each `message` under
-/// `messages`, for example). Whole records are kept from the head and the tail;
-/// the gap between them carries an explicit `omitted N` marker.
+/// receives an unparseable fragment of one base64 HTTP body.
+///
+/// The records are the longest run of consecutive siblings that repeat one head
+/// token — the `message` blocks under `messages`, in a conversation export. Only
+/// that run is thinned: everything around it (the `conversation` line, the
+/// metadata block, the closing structure) is reproduced verbatim, whole records
+/// are kept from both ends of the run, and the gap between them carries an
+/// explicit `omitted N` marker at the run's own indentation.
 #[must_use]
 pub fn truncate_records(text: &str, max_bytes: usize, omitted_label: &str) -> TruncatedRecords {
     if text.len() <= max_bytes {
@@ -441,72 +451,149 @@ pub fn truncate_records(text: &str, max_bytes: usize, omitted_label: &str) -> Tr
     }
 
     let lines: Vec<&str> = text.lines().collect();
-    let Some(base_indent) = lines
-        .iter()
-        .filter(|line| !line.trim().is_empty())
-        .map(|line| indent_of(line))
-        .filter(|indent| *indent > 0)
-        .min()
-    else {
-        // A flat document has no nesting to protect: keep whole lines instead.
+    let Some(run) = longest_record_run(&lines) else {
+        // Nothing repeats, so there is no record level to thin: keep whole lines.
         return truncate_lines(&lines, max_bytes, omitted_label);
     };
 
-    let mut header: Vec<&str> = Vec::new();
-    let mut records: Vec<Vec<&str>> = Vec::new();
-    for line in &lines {
-        let starts_record = !line.trim().is_empty() && indent_of(line) == base_indent;
-        if starts_record {
-            records.push(vec![line]);
-        } else if let Some(current) = records.last_mut() {
-            current.push(line);
-        } else {
-            header.push(line);
-        }
-    }
-
-    let marker = format!("{}{}", " ".repeat(base_indent), omitted_label);
-    let budget = max_bytes.saturating_sub(joined_len(&header) + marker.len() + 1);
-    let sizes: Vec<usize> = records.iter().map(|record| joined_len(record)).collect();
+    let indent = " ".repeat(run.indent);
+    let surrounding =
+        joined_len(&lines[..run.start]) + joined_len(&lines[run.end..]) + indent.len();
+    let budget = max_bytes.saturating_sub(surrounding + omitted_label.len() + 1);
+    let sizes: Vec<usize> = (0..run.len())
+        .map(|record| joined_len(&lines[run.record(record)]))
+        .collect();
     let (mut head_count, mut tail_count, mut used) = (0, 0, 0);
     // Half the budget goes to the opening records (what the session was about)
     // and the rest to the closing ones (where it went wrong).
-    while head_count < records.len() && used + sizes[head_count] <= budget / 2 {
+    while head_count < sizes.len() && used + sizes[head_count] <= budget / 2 {
         used += sizes[head_count];
         head_count += 1;
     }
-    while head_count + tail_count < records.len()
-        && used + sizes[records.len() - 1 - tail_count] <= budget
+    while head_count + tail_count < sizes.len()
+        && used + sizes[sizes.len() - 1 - tail_count] <= budget
     {
-        used += sizes[records.len() - 1 - tail_count];
+        used += sizes[sizes.len() - 1 - tail_count];
         tail_count += 1;
     }
 
-    let omitted = records.len() - head_count - tail_count;
+    let omitted = sizes.len() - head_count - tail_count;
     if omitted == 0 {
-        return TruncatedRecords {
-            text: text.to_owned(),
-            omitted: 0,
-        };
+        return truncate_lines(&lines, max_bytes, omitted_label);
     }
 
-    let rendered_marker = format!(
-        "{}{}",
-        " ".repeat(base_indent),
-        render_count(omitted_label, omitted)
-    );
-    let mut kept: Vec<&str> = header;
-    for record in &records[..head_count] {
-        kept.extend(record.iter().copied());
+    let marker = format!("{indent}{}", render_count(omitted_label, omitted));
+    let mut kept: Vec<&str> = lines[..run.start].to_vec();
+    for record in 0..head_count {
+        kept.extend_from_slice(&lines[run.record(record)]);
     }
-    kept.push(&rendered_marker);
-    for record in &records[records.len() - tail_count..] {
-        kept.extend(record.iter().copied());
+    kept.push(&marker);
+    for record in sizes.len() - tail_count..sizes.len() {
+        kept.extend_from_slice(&lines[run.record(record)]);
+    }
+    kept.extend_from_slice(&lines[run.end..]);
+
+    let truncated = format!("{}\n", kept.join("\n"));
+    if truncated.len() > max_bytes {
+        // The structure around the records does not fit on its own.
+        return truncate_lines(&lines, max_bytes, omitted_label);
     }
     TruncatedRecords {
-        text: format!("{}\n", kept.join("\n")),
+        text: truncated,
         omitted,
     }
+}
+
+/// A run of consecutive sibling records sharing one head token.
+struct RecordRun {
+    /// Indentation every record in the run starts at.
+    indent: usize,
+    /// Line index of the first record.
+    start: usize,
+    /// Line index just past the last record.
+    end: usize,
+    /// Line index each record starts at.
+    starts: Vec<usize>,
+}
+
+impl RecordRun {
+    const fn len(&self) -> usize {
+        self.starts.len()
+    }
+
+    /// The line range of one record, including its indented children.
+    fn record(&self, index: usize) -> std::ops::Range<usize> {
+        self.starts[index]..self.starts.get(index + 1).copied().unwrap_or(self.end)
+    }
+}
+
+/// The run that holds the most bytes, across every indentation level.
+///
+/// Picking the level by size rather than by depth is what keeps a real export
+/// readable: a conversation's bytes live in the repeated `message` blocks, not
+/// in the two top-level blocks that contain them.
+fn longest_record_run(lines: &[&str]) -> Option<RecordRun> {
+    let mut indents: Vec<usize> = lines
+        .iter()
+        .filter(|line| !line.trim().is_empty())
+        .map(|line| indent_of(line))
+        .collect();
+    indents.sort_unstable();
+    indents.dedup();
+
+    let mut best: Option<(usize, RecordRun)> = None;
+    for indent in indents {
+        for run in runs_at(lines, indent) {
+            let size = joined_len(&lines[run.start..run.end]);
+            if best.as_ref().is_none_or(|(largest, _)| *largest < size) {
+                best = Some((size, run));
+            }
+        }
+    }
+    best.map(|(_, run)| run)
+}
+
+/// Every run of two or more consecutive siblings at `indent` sharing a head
+/// token.
+fn runs_at(lines: &[&str], indent: usize) -> Vec<RecordRun> {
+    let mut runs = Vec::new();
+    let mut starts: Vec<usize> = Vec::new();
+    let mut head = "";
+    for (index, line) in lines.iter().enumerate() {
+        if line.trim().is_empty() || indent_of(line) > indent {
+            // Blank lines and deeper lines belong to the record being read.
+            continue;
+        }
+        let token = head_token(line);
+        let continues = indent_of(line) == indent && !starts.is_empty() && token == head;
+        if !continues {
+            close_run(&mut runs, &mut starts, indent, index);
+            head = token;
+        }
+        if indent_of(line) == indent {
+            starts.push(index);
+        }
+    }
+    close_run(&mut runs, &mut starts, indent, lines.len());
+    runs
+}
+
+/// End the run being collected, keeping it only if it has records to thin.
+fn close_run(runs: &mut Vec<RecordRun>, starts: &mut Vec<usize>, indent: usize, end: usize) {
+    let starts = std::mem::take(starts);
+    if starts.len() < 2 {
+        return;
+    }
+    runs.push(RecordRun {
+        indent,
+        start: starts[0],
+        end,
+        starts,
+    });
+}
+
+fn head_token(line: &str) -> &str {
+    line.split_whitespace().next().unwrap_or("")
 }
 
 fn truncate_lines(lines: &[&str], max_bytes: usize, omitted_label: &str) -> TruncatedRecords {

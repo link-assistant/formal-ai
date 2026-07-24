@@ -543,11 +543,12 @@ pub(crate) fn split_first_token(content: &str) -> Option<(&str, &str)> {
     Some((head, tail))
 }
 
-// A tiny deterministic ISO-8601 stamp that does not pull in `chrono`. The
-// browser side records `new Date().toISOString()`; for the CLI we emit a
-// fixed-precision UTC string built from the system clock.
+/// A tiny deterministic ISO-8601 stamp that does not pull in `chrono`. The
+/// browser side records `new Date().toISOString()`; for the CLI we emit a
+/// fixed-precision UTC string built from the system clock.
 #[allow(clippy::cast_possible_wrap)]
-pub(crate) fn isoformat_now() -> String {
+#[must_use]
+pub fn isoformat_now() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
