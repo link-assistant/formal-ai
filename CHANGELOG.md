@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.302.3] - 2026-07-24
+
+### Fixed
+
+- Export agentic report context locally, report GitHub command failures
+  truthfully, and reject stale Formal AI servers before launching a client.
+
 ## [0.302.2] - 2026-07-23
 
 ### Fixed
