@@ -79,7 +79,11 @@ def reset_repo():
 def repo_is_clean():
     proc = subprocess.run(["git", "status", "--porcelain"], cwd=root,
                           capture_output=True, text=True)
-    return not proc.stdout.strip()
+    # This harness writes its own results.json inside experiments/, so changes
+    # under experiments/ are expected and must not block a run.
+    dirty = [line for line in proc.stdout.splitlines()
+             if line.strip() and "experiments/" not in line]
+    return not dirty
 
 if not repo_is_clean():
     print("refusing to run: working tree is dirty; commit or stash first", file=sys.stderr)
