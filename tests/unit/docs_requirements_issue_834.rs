@@ -34,6 +34,16 @@ fn registry() -> Value {
     serde_json::from_str(&read(REGISTRY)).expect("training source registry must be valid JSON")
 }
 
+fn value_is_populated(value: &Value) -> bool {
+    match value {
+        Value::Null => false,
+        Value::String(value) => !value.trim().is_empty(),
+        Value::Array(values) => !values.is_empty(),
+        Value::Object(values) => !values.is_empty(),
+        Value::Bool(_) | Value::Number(_) => true,
+    }
+}
+
 fn artifact_files(path: &Path) -> Vec<String> {
     if !path.exists() {
         return Vec::new();
@@ -91,26 +101,62 @@ fn every_training_or_distillation_artifact_requires_registered_provenance() {
         "id",
         "artifact_paths",
         "source_kind",
+        "upstream_creator",
         "upstream_name",
         "upstream_version",
         "provider",
+        "provider_route",
         "acquired_at",
         "acquisition_method",
+        "intended_use",
+        "intended_output_name",
+        "intended_output_license",
+        "intended_distribution",
+        "input_provenance",
         "upstream_license",
         "license_url",
         "terms_url",
         "terms_checked_at",
+        "terms_snapshot",
         "training_permission",
+        "distribution_permission",
         "attribution_requirements",
         "naming_requirements",
+        "acceptable_use_requirements",
+        "scale_revenue_thresholds",
+        "patent_trademark_terms",
+        "downstream_license_requirements",
         "territory_restrictions",
-        "personal_data_status",
         "rights_reservation_status",
+        "personal_data_status",
+        "reidentification_assessment",
+        "retention_deletion_duties",
+        "privacy_review",
+        "safety_review",
+        "security_review",
+        "regional_review",
         "reviewer",
         "approval_status",
+        "approved_at",
+        "re_review_triggers",
         "evidence_paths",
         "sha256",
     ];
+
+    let declared_fields = registry["required_source_fields"]
+        .as_array()
+        .expect("registry required_source_fields must be an array");
+    assert_eq!(
+        declared_fields.len(),
+        required_fields.len(),
+        "the registry schema and executable required-field contract must stay equal"
+    );
+    for field in required_fields {
+        assert!(
+            declared_fields.iter().any(|declared| declared == field),
+            "registry schema must declare required source field {field}"
+        );
+    }
 
     let sources = registry["sources"]
         .as_array()
@@ -119,8 +165,8 @@ fn every_training_or_distillation_artifact_requires_registered_provenance() {
     for source in sources {
         for field in required_fields {
             assert!(
-                !source[field].is_null(),
-                "registry entry {:?} is missing {field}",
+                value_is_populated(&source[field]),
+                "registry entry {:?} has a missing or empty {field}",
                 source["id"]
             );
         }
