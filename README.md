@@ -926,6 +926,16 @@ rust-script scripts/mine-hive-mind-dataset.rs --collect
 The script wraps `formal-ai github-logs plan|collect` with the focused Hive
 Mind defaults used by `docs/case-studies/issue-115/`.
 
+## Legal and Data-Source Compliance
+
+Read [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) before adding third-party
+material, model output, personal-data-adjacent content, or a training or
+distillation pipeline. Formal AI currently has no approved neural training
+sources. Future parameter-updating artifacts must pass the fail-closed review
+in [`data/training/`](data/training/README.md); benchmark fixtures and runtime
+retrieval data are separate classifications and cannot silently become
+training data.
+
 ## Development
 
 ```bash

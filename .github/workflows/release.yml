@@ -606,6 +606,13 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: bash scripts/simulate-fresh-merge.sh
 
+      # Run 30087447926 exhausted `/` on two hosted runners after restoring the
+      # target-heavy cache: rustc first killed the runner worker, then failed to
+      # create a temp directory and made ld crash with SIGBUS. Reuse the cleanup
+      # already required by the repository's other heavy build jobs.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 

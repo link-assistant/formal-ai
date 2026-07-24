@@ -363,6 +363,34 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     );
 }
 
+/// Run 30087447926 exhausted `/` twice while the test job rebuilt the package
+/// on top of its restored, target-heavy cache. The first attempt killed the
+/// runner worker; the second could not create a rustc temp directory and made
+/// the linker crash with SIGBUS.
+#[test]
+fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+    let cleanup_name = "- name: Free up runner disk space";
+    let cache_name = "- name: Restore cargo registry cache";
+
+    assert!(
+        test_job.contains(cleanup_name),
+        "the test job must reclaim disposable hosted-runner SDKs before a \
+         target-heavy build can exhaust the root filesystem"
+    );
+
+    let cleanup = workflow_step_block(test_job, "Free up runner disk space");
+    assert!(
+        cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+        "the test job must use the repository's established, observable disk cleanup"
+    );
+    assert!(
+        test_job.find(cleanup_name) < test_job.find(cache_name),
+        "runner cleanup must happen before restoring the multi-gigabyte target cache"
+    );
+}
+
 /// Issue #812: nothing validated the pipeline definitions themselves, and
 /// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
 /// is set to `warn` -- so clippy printed findings and exited 0.
