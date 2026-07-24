@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.87s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 3 tests
+test issue_832::health_response_identifies_the_running_binary_version ... ok
+test issue_832::every_report_context_is_exported_by_the_local_cli ... ok
+test issue_832::failed_github_report_is_not_acknowledged_as_filed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1989 filtered out; finished in 1.18s

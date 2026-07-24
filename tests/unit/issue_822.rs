@@ -134,11 +134,8 @@ fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() 
     let call = one_call(&messages, &["request_user_input", "bash"]);
     assert_eq!(call.tool, "bash");
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(
-        command.contains("/api/formal-ai/v1/conversations/"),
-        "{command}"
-    );
-    assert!(command.contains("include=both"), "{command}");
+    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.contains("--source both"), "{command}");
     assert!(command.contains("formal-ai-context.lino"), "{command}");
     assert!(command.contains("--body-file"), "{command}");
     assert!(command.contains("tail -c 12000"), "{command}");
@@ -175,11 +172,8 @@ fn server_log_confirmation_exports_only_the_matching_server_log() {
     ];
     let call = one_call(&messages, &["request_user_input", "bash"]);
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(
-        command.contains("/api/formal-ai/v1/conversations/"),
-        "{command}"
-    );
-    assert!(command.contains("include=server"), "{command}");
+    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.contains("--source server"), "{command}");
     assert!(!command.contains("gh issue create"), "{command}");
 }
 
@@ -192,12 +186,8 @@ fn formal_ai_confirmation_submits_the_matching_context_for_learning() {
     ];
     let call = one_call(&messages, &["request_user_input", "bash"]);
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(
-        command.contains("/api/formal-ai/v1/conversations/"),
-        "{command}"
-    );
-    assert!(command.contains("/learn"), "{command}");
-    assert!(command.contains("-X POST"), "{command}");
+    assert!(command.contains("formal-ai context learn"), "{command}");
+    assert!(command.contains("--session"), "{command}");
     assert!(!command.contains("gh issue create"), "{command}");
 }
 

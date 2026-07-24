@@ -31,11 +31,9 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
         command.contains("--repo link-assistant/formal-ai"),
         "{command}"
     );
-    assert!(
-        command.contains("/api/formal-ai/v1/conversations/"),
-        "{command}"
-    );
-    assert!(command.contains("include=both"), "{command}");
+    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.contains("--source both"), "{command}");
+    assert!(!command.contains("curl"), "{command}");
     assert!(!command.contains("I do not have an age."), "{command}");
     assert!(!command.contains("websearch"), "{command}");
 }

@@ -96,9 +96,10 @@ fn selected_report_actions_are_combined_into_one_executable_step() {
     let args = arguments(&call);
     let command = args["command"].as_str().expect("combined shell command");
     assert!(command.contains("--source harness"), "{command}");
-    assert!(command.contains("include=server"), "{command}");
-    assert!(command.contains("include=both"), "{command}");
+    assert!(command.contains("--source server"), "{command}");
+    assert!(command.contains("--source both"), "{command}");
     assert!(command.contains("gh issue create"), "{command}");
+    assert!(!command.contains("curl"), "{command}");
 }
 
 #[test]
@@ -127,7 +128,7 @@ fn narrated_question_tool_call_does_not_end_the_report_flow() {
         .expect("combined shell command")
         .to_owned();
     assert!(command.contains("--source harness"), "{command}");
-    assert!(command.contains("include=server"), "{command}");
+    assert!(command.contains("--source server"), "{command}");
     assert!(command.contains("gh issue create"), "{command}");
 }
 
@@ -169,18 +170,6 @@ printf 'harness context\n' > "$out"
 "#,
         ),
         (
-            "curl",
-            r#"#!/bin/sh
-printf 'curl %s\n' "$*" >> "$REPORT_CAPTURE"
-out=
-while [ "$#" -gt 0 ]; do
-  if [ "$1" = "-o" ]; then shift; out=$1; fi
-  shift
-done
-if [ -n "$out" ]; then printf 'conversation context\n' > "$out"; fi
-"#,
-        ),
-        (
             "gh",
             r#"#!/bin/sh
 printf 'gh %s\n' "$*" >> "$REPORT_CAPTURE"
@@ -216,8 +205,9 @@ fi
     );
     let actions = std::fs::read_to_string(&capture).expect("action capture");
     assert!(actions.contains("formal-ai context export"), "{actions}");
-    assert!(actions.contains("include=server"), "{actions}");
-    assert!(actions.contains("include=both"), "{actions}");
+    assert!(actions.contains("--source harness"), "{actions}");
+    assert!(actions.contains("--source server"), "{actions}");
+    assert!(actions.contains("--source both"), "{actions}");
     assert!(actions.contains("gh issue create"), "{actions}");
     assert!(
         String::from_utf8_lossy(&output.stdout).contains("/issues/99999"),

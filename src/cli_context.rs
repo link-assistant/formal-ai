@@ -48,6 +48,15 @@ enum ContextAction {
         #[arg(short, long, default_value = "-")]
         output: PathBuf,
     },
+    /// Store one complete conversation so this Formal AI instance can learn.
+    Learn {
+        /// Formal AI conversation/session identifier.
+        #[arg(long)]
+        session: String,
+        /// Explicit Formal AI dialog-log directory.
+        #[arg(long)]
+        log_dir: Option<PathBuf>,
+    },
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
@@ -82,6 +91,16 @@ pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
         } => {
             let text = export_context(&session, source, db.as_deref(), log_dir.as_deref(), format)?;
             write_output(&output, &text)?;
+        }
+        ContextAction::Learn { session, log_dir } => {
+            let result = formal_ai::conversation_context::learn_from_conversation(
+                &session,
+                log_dir.as_deref(),
+            )?;
+            write_output(
+                Path::new("-"),
+                &format!("{}\n", serde_json::to_string_pretty(&result)?),
+            )?;
         }
     }
     Ok(())

@@ -1,0 +1,45 @@
+   Compiling formal-ai v0.302.2 (/tmp/formal-ai-issue832-before)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.16s
+     Running tests/unit/mod.rs (/tmp/gh-issue-solver-1784837344897/target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 3 tests
+test issue_832::health_response_identifies_the_running_binary_version ... FAILED
+test issue_832::every_report_context_is_exported_by_the_local_cli ... FAILED
+test issue_832::failed_github_report_is_not_acknowledged_as_filed ... FAILED
+
+failures:
+
+---- issue_832::health_response_identifies_the_running_binary_version stdout ----
+[trace] GET /health (0 byte body)
+
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_6c759a895ca47bfc.jsonl
+
+thread 'issue_832::health_response_identifies_the_running_binary_version' (19740) panicked at tests/unit/issue_832.rs:79:5:
+assertion `left == right` failed
+  left: Null
+ right: "0.302.2"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- issue_832::every_report_context_is_exported_by_the_local_cli stdout ----
+
+thread 'issue_832::every_report_context_is_exported_by_the_local_cli' (19738) panicked at tests/unit/issue_832.rs:31:9:
+set -eu; formal-ai context export --session 'dialog_01f4819a9c803d7a' --source harness --output 'formal-ai-harness-dialog_01f4819a9c803d7a.lino'; base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; curl -fsS "$base/api/formal-ai/v1/conversations/dialog_01f4819a9c803d7a?include=server" -o 'formal-ai-server-dialog_01f4819a9c803d7a.lino'; context_file=$(mktemp "${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.lino"); body_file=$(mktemp "${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.md"); trap 'rm -f "$context_file" "$body_file"' EXIT; base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; curl -fsS "$base/api/formal-ai/v1/conversations/dialog_01f4819a9c803d7a?include=both" -o "$context_file"; printf '%s\n' 'Reported from an agentic session via natural language (no web UI available).' > "$body_file"; if [ "$(wc -c < "$context_file")" -le 50000 ]; then printf '\n### Complete agentic context\n\n```lino\n' >> "$body_file"; cat "$context_file" >> "$body_file"; printf '\n```\n' >> "$body_file"; else context_url=$(gh gist create --filename formal-ai-context.lino "$context_file"); printf '\n### Agentic context\n\nThe complete Links Notation context is available at %s.\n\n```lino\n' "$context_url" >> "$body_file"; tail -c 12000 "$context_file" | sed '1d' >> "$body_file"; printf '\n```\n' >> "$body_file"; fi; gh issue create --repo link-assistant/formal-ai --title 'Formal AI: The local folder search returned no result' --body-file "$body_file"
+
+---- issue_832::failed_github_report_is_not_acknowledged_as_filed stdout ----
+
+thread 'issue_832::failed_github_report_is_not_acknowledged_as_filed' (19739) panicked at tests/unit/issue_832.rs:69:5:
+Filed the issue on GitHub.
+
+```text
+{"output":"curl: (7) Failed to connect","exit_code":7}
+```
+
+
+failures:
+    issue_832::every_report_context_is_exported_by_the_local_cli
+    issue_832::failed_github_report_is_not_acknowledged_as_filed
+    issue_832::health_response_identifies_the_running_binary_version
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 1989 filtered out; finished in 1.15s
+
+error: test failed, to rerun pass `--test unit`

@@ -39,6 +39,7 @@ mod issue_819_report_flow;
 mod issue_819_tui_isolation;
 mod issue_822_complete_transcript;
 mod issue_822_context;
+mod issue_832_server_compatibility;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

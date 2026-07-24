@@ -7,7 +7,8 @@ use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use formal_ai::conversation_context::conversation_context_to_lino;
-use serde_json::Value;
+use formal_ai::dialog_log::write_dialog_exchange;
+use serde_json::{json, Value};
 
 fn temporary_directory(label: &str) -> PathBuf {
     let nonce = SystemTime::now()
@@ -148,6 +149,55 @@ fn general_json_converter_defaults_to_links_notation() {
     assert!(lino.contains("messages\n  message\n"), "{lino}");
     assert!(lino.contains("content \"a:b\""), "{lino}");
     assert!(!lino.contains("message_0"), "{lino}");
+}
+
+#[test]
+fn local_context_learning_uses_the_dialog_log_without_a_server() {
+    let directory = temporary_directory("learn");
+    fs::create_dir_all(&directory).unwrap();
+    let dialog_id = "issue-832-local-learning";
+    let request = json!({
+        "model": "formal-ai",
+        "messages": [{"role": "user", "content": "Report this conversation"}]
+    })
+    .to_string();
+    write_dialog_exchange(
+        &directory,
+        "POST",
+        "/v1/chat/completions",
+        &[("X-Formal-AI-Dialog-ID", dialog_id)],
+        &request,
+        200,
+        "application/json",
+        r#"{"choices":[{"message":{"role":"assistant","content":"Recorded."}}]}"#,
+    )
+    .expect("dialog fixture");
+    let memory = directory.join("memory.lino");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "--silent",
+            "context",
+            "learn",
+            "--session",
+            dialog_id,
+            "--log-dir",
+        ])
+        .arg(&directory)
+        .env("FORMAL_AI_MEMORY_PATH", &memory)
+        .output()
+        .expect("run local context learning");
+
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let result: Value = serde_json::from_slice(&output.stdout).expect("learning JSON");
+    assert_eq!(result["dialog_id"], dialog_id);
+    assert_eq!(result["learned"], true);
+    assert!(memory.is_file(), "reported context was not stored");
+    fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]

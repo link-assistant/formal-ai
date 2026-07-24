@@ -12,7 +12,6 @@ const transcript = await captureTuiTranscript({
   command: required('ISSUE819_TUI_COMMAND'),
   cwd: required('ISSUE819_TUI_CWD'),
   environment: {
-    FORMAL_AI_BASE_URL: required('ISSUE819_FORMAL_AI_BASE_URL'),
     PATH: required('ISSUE819_TUI_PATH'),
   },
   interactions: [

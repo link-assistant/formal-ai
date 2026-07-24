@@ -1,0 +1,11 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.17s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 1 test
+test issue_822_context::local_context_learning_uses_the_dialog_log_without_a_server ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 186 filtered out; finished in 0.02s

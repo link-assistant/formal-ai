@@ -185,6 +185,7 @@ fn dispatch_api_request_with_auth(
             &json!({
                 "status": "ok",
                 "model": canonical_model_id(),
+                "version": env!("CARGO_PKG_VERSION"),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),

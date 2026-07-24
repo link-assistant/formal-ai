@@ -5,6 +5,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8780}"
 WORKDIR="$(mktemp -d)"
@@ -37,7 +38,8 @@ run_turn() {
   local prompt="$1"
   shift
   FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
-    FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
+    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$BIN_DIR:$PATH" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     timeout 60 "$AGENT" run \
       --prompt "$prompt" \

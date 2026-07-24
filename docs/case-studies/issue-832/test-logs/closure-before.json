@@ -1,0 +1,13 @@
+{
+  "defined": 1926,
+  "roles": 258,
+  "wiktionary": 242,
+  "wordnet": 323,
+  "ids": 416,
+  "distinct_value_tokens": 2339,
+  "unresolved": {
+    "issue_report_failed": 1
+  },
+  "unresolved_distinct": 1,
+  "unresolved_occurrences": 1
+}

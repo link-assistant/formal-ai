@@ -10,14 +10,8 @@ use crate::protocol::ChatMessage;
 use crate::{language, seed};
 
 const CONTEXT_EXPORT_COMMAND: &str = "formal-ai context export";
+const CONTEXT_LEARN_COMMAND: &str = "formal-ai context learn";
 const CONTEXT_SESSION_FLAG: &str = " --session ";
-const HARNESS_SOURCE_FLAG: &str = " --source harness";
-const BASE_URL_SETUP: &str =
-    "base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; ";
-const SERVER_CONTEXT_PREFIX: &str = "curl -fsS \"$base/api/formal-ai/v1/conversations/";
-const SERVER_CONTEXT_SUFFIX: &str = "?include=server\"";
-const LEARNING_CONTEXT_PREFIX: &str = "curl -fsS -X POST \"$base/api/formal-ai/v1/conversations/";
-const LEARNING_CONTEXT_SUFFIX: &str = "/learn\"";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ReportTarget {
@@ -341,31 +335,35 @@ fn command_for(
 ) -> String {
     match target {
         ReportTarget::GithubIssue => github_command(contents, messages, report_index, dialog_id),
-        ReportTarget::HarnessLog => {
-            let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
-            command.push_str(CONTEXT_SESSION_FLAG);
-            command.push_str(&shell_quote(dialog_id));
-            command.push_str(HARNESS_SOURCE_FLAG);
-            command.push_str(" --output ");
-            command.push_str(&shell_quote(&format!("formal-ai-harness-{dialog_id}.lino")));
-            command
-        }
-        ReportTarget::ServerLog => format!(
-            "{} -o {}",
-            conversation_command(SERVER_CONTEXT_PREFIX, dialog_id, SERVER_CONTEXT_SUFFIX),
-            shell_quote(&format!("formal-ai-server-{dialog_id}.lino"))
+        ReportTarget::HarnessLog => export_command(
+            dialog_id,
+            "harness",
+            &format!("formal-ai-harness-{dialog_id}.lino"),
         ),
-        ReportTarget::FormalAi => {
-            conversation_command(LEARNING_CONTEXT_PREFIX, dialog_id, LEARNING_CONTEXT_SUFFIX)
-        }
+        ReportTarget::ServerLog => export_command(
+            dialog_id,
+            "server",
+            &format!("formal-ai-server-{dialog_id}.lino"),
+        ),
+        ReportTarget::FormalAi => learning_command(dialog_id),
     }
 }
 
-fn conversation_command(prefix: &str, dialog_id: &str, suffix: &str) -> String {
-    let mut command = BASE_URL_SETUP.to_owned();
-    command.push_str(prefix);
-    command.push_str(dialog_id);
-    command.push_str(suffix);
+fn export_command(dialog_id: &str, source: &str, output: &str) -> String {
+    let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
+    command.push_str(CONTEXT_SESSION_FLAG);
+    command.push_str(&shell_quote(dialog_id));
+    command.push_str(" --source ");
+    command.push_str(source);
+    command.push_str(" --output ");
+    command.push_str(&shell_quote(output));
+    command
+}
+
+fn learning_command(dialog_id: &str) -> String {
+    let mut command = CONTEXT_LEARN_COMMAND.to_owned();
+    command.push_str(CONTEXT_SESSION_FLAG);
+    command.push_str(&shell_quote(dialog_id));
     command
 }
 
@@ -386,8 +384,7 @@ fn github_command(
         "set -eu; context_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.lino\"); \
          body_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.md\"); \
          trap 'rm -f \"$context_file\" \"$body_file\"' EXIT; \
-         base=${{FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}}; base=${{base%/v1}}; \
-         curl -fsS \"$base/api/formal-ai/v1/conversations/{dialog_id}?include={include}\" -o \"$context_file\"; \
+         formal-ai context export --session {} --source {include} --output \"$context_file\"; \
          printf '%s\\n' {} > \"$body_file\"; \
          if [ \"$(wc -c < \"$context_file\")\" -le 50000 ]; then \
            printf '\\n### Complete agentic context\\n\\n```lino\\n' >> \"$body_file\"; \
@@ -398,6 +395,7 @@ fn github_command(
            tail -c 12000 \"$context_file\" | sed '1d' >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
          fi; \
          gh issue create --repo {} --title {} --body-file \"$body_file\"",
+        shell_quote(dialog_id),
         shell_quote(&intro),
         formal_ai_repo(),
         shell_quote(&title),
@@ -441,13 +439,11 @@ fn report_finished(targets: &[ReportTarget], run_output: &str, language: &str) -
         {
             return render("issue_report_created_with_url", &[("url", url)]);
         }
+        let failed = config("issue_report_failed");
         return if trimmed.is_empty() {
-            config("issue_report_created")
+            failed
         } else {
-            format!(
-                "{}\n\n```text\n{trimmed}\n```",
-                config("issue_report_created")
-            )
+            format!("{failed}\n\n```text\n{trimmed}\n```")
         };
     }
     let exported = localized("agentic_report_exported", language);

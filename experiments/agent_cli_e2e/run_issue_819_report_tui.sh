@@ -59,17 +59,24 @@ EOF
 cat > "$FAKE_BIN/formal-ai" <<EOF
 #!/usr/bin/env bash
 echo "formal-ai \$*" >> "$ACTIONS_LOG"
-EOF
-cat > "$FAKE_BIN/curl" <<EOF
-#!/usr/bin/env bash
-echo "curl \$*" >> "$ACTIONS_LOG"
+output=""
+while [ "\$#" -gt 0 ]; do
+  if [ "\$1" = "--output" ]; then
+    shift
+    output="\$1"
+  fi
+  shift
+done
+if [ -n "\$output" ]; then
+  printf 'conversation fixture\n' > "\$output"
+fi
 EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 echo "gh \$*" >> "$ACTIONS_LOG"
 echo "$ISSUE_URL"
 EOF
-chmod +x "$FAKE_BIN/formal-ai" "$FAKE_BIN/curl" "$FAKE_BIN/gh"
+chmod +x "$FAKE_BIN/formal-ai" "$FAKE_BIN/gh"
 
 FORMAL_AI_AGENT_MODE=1 \
   FORMAL_AI_TRACE_REQUESTS=1 \
@@ -83,7 +90,6 @@ SERVER_PID=$!
 
 ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
   ISSUE819_TUI_CWD="$WORKDIR" \
-  ISSUE819_FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT" \
   ISSUE819_TUI_PATH="$FAKE_BIN:$PATH" \
   ISSUE819_REPORT_URL="$ISSUE_URL" \
   ISSUE819_TUI_OUTPUT="$TRANSCRIPT" \
@@ -91,8 +97,8 @@ ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT'
     > "$CLIENT_LOG" 2>&1 \
   || fail "OpenCode report TUI transcript failed"
 
-for action in 'formal-ai context export' 'curl -fsS' 'gh issue create'; do
-  grep -Fq "$action" "$ACTIONS_LOG" \
+for action in '--source harness' '--source server' '--source both' 'gh issue create'; do
+  grep -Fq -- "$action" "$ACTIONS_LOG" \
     || fail "selected report action did not execute: $action"
 done
 

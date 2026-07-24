@@ -1,4 +1,34 @@
 meanings
+  tool_result_empty_local_path_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty local path search"
+  tool_result_empty_search
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result empty search"
+  tool_result_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "tool result failed"
+  tool_roleplay
+    defined-by tool
+    lexeme en
+      surface
+        text "tool roleplay"
+  tool_summarize_conversation
+    defined-by tool
+    lexeme en
+      surface
+        text "tool summarize conversation"
+  tool_url_navigate
+    defined-by tool
+    lexeme en
+      surface
+        text "tool url navigate"
   tool_web_search
     defined-by tool
     lexeme en

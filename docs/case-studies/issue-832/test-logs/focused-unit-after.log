@@ -1,0 +1,43 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.29s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 5 tests
+test issue_819_followup::report_destination_question_allows_multiple_selections ... ok
+test issue_819_followup::narrated_question_tool_call_does_not_end_the_report_flow ... ok
+test issue_819_followup::selected_report_actions_are_combined_into_one_executable_step ... ok
+test issue_819_followup::combined_report_step_executes_every_selected_action ... ok
+test issue_819_followup::local_find_without_matches_is_explained_in_every_supported_language ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 1987 filtered out; finished in 21.74s
+
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.00s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 12 tests
+test issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars ... ok
+test issue_822::conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_default ... ok
+test issue_822::opencode_extractor_is_shipped_with_the_crate ... ok
+test issue_822::conversation_learning_endpoint_stages_structured_server_trace_for_review ... ok
+test issue_822::report_asks_what_the_user_wants_before_collecting_any_context ... ok
+test issue_822::report_uses_a_plain_question_when_no_structured_question_tool_exists ... ok
+test issue_822::formal_ai_confirmation_submits_the_matching_context_for_learning ... ok
+test issue_822::harness_export_waits_for_confirmation_and_ignores_prior_run_results ... ok
+test issue_822::confirmed_github_report_fetches_complete_lino_context_after_both_questions ... ok
+test issue_822::report_confirmation_is_available_in_every_supported_language ... ok
+test issue_822::github_report_asks_which_logs_to_include_before_filing ... ok
+test issue_822::server_log_confirmation_exports_only_the_matching_server_log ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 1980 filtered out; finished in 0.91s
+
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.43s
+     Running tests/unit/mod.rs (target/debug/deps/unit-ae2ca3a7dd783214)
+
+running 3 tests
+test issue_832::health_response_identifies_the_running_binary_version ... ok
+test issue_832::every_report_context_is_exported_by_the_local_cli ... ok
+test issue_832::failed_github_report_is_not_acknowledged_as_filed ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1989 filtered out; finished in 1.15s
