@@ -1,0 +1,126 @@
+{
+  "_comment": "Coding-task decomposition ladder for issue #847. EVERY task is real work from a real open Formal AI issue that has never had a pull request, decomposed L1 (whole issue -> PR) down to L4 (one atomic edit). No synthetic toy tasks: the point is to teach Formal AI to code on the work we actually need done, so a passing L4 is a real contribution and not a throwaway. Driven through `formal-ai with agent`, i.e. the exact path Hive Mind uses (link-assistant/hive-mind#2059).",
+  "corpus_note": "Seeds drawn from the 43 open formal-ai issues with no PR on any branch, so an attempt cannot collide with in-flight work.",
+  "verification_note": "`verify` runs in the repository root after the agent finishes. Tasks are ordered so a level-N task's precondition is the repo's real current state, not the output of another task. Mutating tasks are reverted by the runner via `git checkout -- .` so every task starts from a clean tree.",
+  "levels": {
+    "1": "Whole issue -> pull request (the Hive Mind `solve` shape).",
+    "2": "One coherent deliverable of that issue.",
+    "3": "One concrete edit, location named.",
+    "4": "One atomic operation on one named file."
+  },
+  "tasks": [
+    {
+      "id": "846.L1",
+      "level": 1,
+      "seed": "846",
+      "prompt": "Solve GitHub issue https://github.com/link-assistant/formal-ai/issues/846 in this repository and open a pull request with the fix.",
+      "verify": "true",
+      "note": "Ceiling. Whole issue -> PR. Records the gap between what Hive Mind will ask for and what is currently possible."
+    },
+    {
+      "id": "846.L2.filters",
+      "level": 2,
+      "seed": "846",
+      "prompt": "In this repository, add a paths-ignore filter for experiments/**, dev/log/** and docs/case-studies/** to the push trigger of .github/workflows/release.yml so that commits touching only those folders do not run the pipeline.",
+      "verify": "grep -q 'paths-ignore' .github/workflows/release.yml && grep -A6 'paths-ignore' .github/workflows/release.yml | grep -q 'experiments'",
+      "note": "One coherent deliverable of #846: the workflow-level fix."
+    },
+    {
+      "id": "846.L3.exclude_docs",
+      "level": 3,
+      "seed": "846",
+      "prompt": "In scripts/detect-code-changes.rs, the docs-changed output is computed from the .md file extension alone and ignores the excluded_folders list. Change it so files inside excluded folders do not set docs-changed.",
+      "verify": "grep -n 'docs_changed' scripts/detect-code-changes.rs | grep -qv 'has_extension(f, \"md\")' && ! grep -q 'let docs_changed = changed_files.iter().any(|f| has_extension(f, \"md\"));' scripts/detect-code-changes.rs",
+      "note": "One concrete edit with the file and the defect named. This is the smallest genuinely useful fix in #846."
+    },
+    {
+      "id": "846.L4.read_excluded",
+      "level": 4,
+      "seed": "846",
+      "prompt": "In this repository, read scripts/detect-code-changes.rs and tell me every folder listed in the excluded_folders array.",
+      "verify": "true",
+      "expect_answer": "experiments/",
+      "note": "Atomic read against the real file #846 changes. Read-only floor: if this fails, no coding task above it is reachable."
+    },
+    {
+      "id": "846.L4.add_folder",
+      "level": 4,
+      "seed": "846",
+      "prompt": "In the file scripts/detect-code-changes.rs, add \"dev/log/\" to the excluded_folders array.",
+      "verify": "grep -q 'dev/log/' scripts/detect-code-changes.rs",
+      "note": "Atomic single-string edit to a real source file, on the exact array #846 is about."
+    },
+
+    {
+      "id": "843.L1",
+      "level": 1,
+      "seed": "843",
+      "prompt": "Solve GitHub issue https://github.com/link-assistant/formal-ai/issues/843 in this repository and open a pull request with the fix.",
+      "verify": "true",
+      "note": "Second ceiling case, against a reasoning-core issue rather than a CI issue."
+    },
+    {
+      "id": "843.L3.remove_fake",
+      "level": 3,
+      "seed": "843",
+      "prompt": "In src/solver.rs, the function record_external_search emits a fabricated source:http evidence link pointing at https://example.org with a sha256 of the prompt. Remove that fabricated source:http and cache_hit emission so no fake provenance is recorded.",
+      "verify": "! grep -q 'example.org' src/solver.rs",
+      "note": "The single highest-value edit in #843, with file and function named."
+    },
+    {
+      "id": "843.L4.locate_fake",
+      "level": 4,
+      "seed": "843",
+      "prompt": "In this repository, find where the string example.org is emitted as evidence and tell me the file and function name.",
+      "verify": "true",
+      "expect_answer": "solver.rs",
+      "note": "Atomic search on the real defect. Precondition for 843.L3."
+    },
+
+    {
+      "id": "700.L2.new_module",
+      "level": 2,
+      "seed": "700",
+      "prompt": "Create a new Rust module file src/si_units.rs in this repository containing a public function millimetres_to_metres that takes an f64 and returns it divided by 1000.0, plus a unit test asserting millimetres_to_metres(1000.0) equals 1.0.",
+      "verify": "test -f src/si_units.rs && grep -q 'fn millimetres_to_metres' src/si_units.rs && grep -q '#\\[test\\]' src/si_units.rs",
+      "note": "First real deliverable of #700 (universal measuring units): a new module plus its test, in the repo's own conventions."
+    },
+    {
+      "id": "700.L3.single_fn",
+      "level": 3,
+      "seed": "700",
+      "prompt": "Create a new file src/si_units.rs in this repository containing exactly one public Rust function named millimetres_to_metres that takes an f64 and returns that value divided by 1000.0.",
+      "verify": "test -f src/si_units.rs && grep -q 'pub fn millimetres_to_metres' src/si_units.rs",
+      "note": "The same #700 deliverable with the test half removed - isolates whether composition or code generation is the failure."
+    },
+
+    {
+      "id": "710.L3.status_row",
+      "level": 3,
+      "seed": "710",
+      "prompt": "In REQUIREMENTS.md, find the row for requirement R67 and report its current implementation status verbatim.",
+      "verify": "true",
+      "expect_answer": "R67",
+      "note": "#710 is largely REQUIREMENTS.md status reconciliation; this is the read step that every such fix starts from."
+    },
+
+    {
+      "id": "meta.L2.decompose",
+      "level": 2,
+      "seed": "847",
+      "prompt": "Split this coding task into at least two smaller independent subtasks and list them as a numbered list, nothing else: 'Add a paths-ignore filter for experiments/** to the push trigger in .github/workflows/release.yml and make docs-changed in scripts/detect-code-changes.rs respect the excluded_folders list.'",
+      "verify": "true",
+      "expect_answer": "1.",
+      "note": "Decomposition itself as a task. If Formal AI cannot split a task it cannot drive its own ladder, so this is a prerequisite capability rather than a nice-to-have. Tracked separately."
+    },
+    {
+      "id": "meta.L3.is_atomic",
+      "level": 3,
+      "seed": "847",
+      "prompt": "Answer with one word, yes or no: is the following coding task already atomic, meaning it cannot be usefully split further? 'In the file scripts/detect-code-changes.rs, add \"dev/log/\" to the excluded_folders array.'",
+      "verify": "true",
+      "expect_answer": "yes",
+      "note": "The termination test for recursive decomposition: knowing when to stop splitting."
+    }
+  ]
+}

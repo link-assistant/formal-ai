@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "total": 4,
+    "passed": 1,
+    "failed": 3,
+    "by_level": {
+      "L4": {
+        "passed": 1,
+        "total": 4
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "L4.write_file",
+      "level": 4,
+      "seed": null,
+      "prompt": "Create a file named /tmp/fa_ladder/hello.txt containing exactly the word hello",
+      "note": "Floor case. If this fails, every level above it is unreachable and the ladder measures nothing else.",
+      "pass": false,
+      "reason": "verify failed (no observable effect)",
+      "timed_out": false,
+      "verified_effect": false,
+      "output_tail": " \"timestamp\": \"2026-07-24T20:10:28.312Z\",\n  \"service\": \"session.prompt\",\n  \"sessionID\": \"ses_06a3ff6caffecuTJ9VkG0qFsxG\",\n  \"message\": \"cancel\"\n}\n\n{\n  \"type\": \"session.status\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.312Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session.idle\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.312Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session_idle\",\n  \"timestamp\": 1784923828312,\n  \"sessionID\": \"ses_06a3ff6caffecuTJ9VkG0qFsxG\"\n}\n{\n  \"type\": \"*\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.312Z\",\n  \"service\": \"bus\",\n  \"message\": \"unsubscribing\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.312Z\",\n  \"service\": \"default\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"disposing instance\"\n}\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.313Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"waiting for state disposal to complete\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.313Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"state disposal completed\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:28.313Z\",\n  \"service\": \"default\",\n  \"hasError\": false,\n  \"uptimeSeconds\": 10,\n  \"message\": \"Agent exiting\"\n}\n\nformal-ai: started a temporary server in agent mode (tool and shell execution enabled)\n\nformal-ai: session files for debugging:\n  agent: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-agent-home-config-89236-1784923817841480000/.local/share/link-assistant-agent/storage/session/ac1b8f06b367ae6062361c4e95f17b0b434dfdb8/ses_06a3ff6caffecuTJ9VkG0qFsxG.json   (resume: agent --resume ses_06a3ff6caffecuTJ9VkG0qFsxG)\n  server log: /Users/konard/.formal-ai/dialog-logs/temporary-server-89236-8080.log\n"
+    },
+    {
+      "id": "L4.read_file",
+      "level": 4,
+      "seed": null,
+      "prompt": "Read the file /tmp/fa_ladder/source.txt and tell me the number on the second line",
+      "note": "Read-only counterpart; judged by answer content, not filesystem effect.",
+      "pass": true,
+      "reason": "",
+      "timed_out": false,
+      "verified_effect": true,
+      "output_tail": "\"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"session.prompt\",\n  \"sessionID\": \"ses_06a3fcd97ffe9n9vISyGDB5pnR\",\n  \"message\": \"cancel\"\n}\n\n{\n  \"type\": \"session.status\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session.idle\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session_idle\",\n  \"timestamp\": 1784923839134,\n  \"sessionID\": \"ses_06a3fcd97ffe9n9vISyGDB5pnR\"\n}\n{\n  \"type\": \"*\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"bus\",\n  \"message\": \"unsubscribing\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"default\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"disposing instance\"\n}\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.134Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"waiting for state disposal to complete\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.135Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"state disposal completed\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:39.135Z\",\n  \"service\": \"default\",\n  \"hasError\": false,\n  \"uptimeSeconds\": 11,\n  \"message\": \"Agent exiting\"\n}\n\nformal-ai: started a temporary server in agent mode (tool and shell execution enabled)\n\n\nformal-ai: session files for debugging:\n  agent: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-agent-home-config-89268-1784923828389379000/.local/share/link-assistant-agent/storage/session/ac1b8f06b367ae6062361c4e95f17b0b434dfdb8/ses_06a3fcd97ffe9n9vISyGDB5pnR.json   (resume: agent --resume ses_06a3fcd97ffe9n9vISyGDB5pnR)\n  server log: /Users/konard/.formal-ai/dialog-logs/temporary-server-89268-8080.log\n"
+    },
+    {
+      "id": "L4.append_line",
+      "level": 4,
+      "seed": null,
+      "prompt": "Append the line DONE to the end of the file /tmp/fa_ladder/source.txt",
+      "note": "Mutation of an existing file rather than creation.",
+      "pass": false,
+      "reason": "verify failed (no observable effect)",
+      "timed_out": false,
+      "verified_effect": false,
+      "output_tail": " \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"session.prompt\",\n  \"sessionID\": \"ses_06a3fa306ffehwM0O78LR0efVn\",\n  \"message\": \"cancel\"\n}\n\n{\n  \"type\": \"session.status\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session.idle\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session_idle\",\n  \"timestamp\": 1784923849768,\n  \"sessionID\": \"ses_06a3fa306ffehwM0O78LR0efVn\"\n}\n{\n  \"type\": \"*\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"bus\",\n  \"message\": \"unsubscribing\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"default\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"disposing instance\"\n}\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"waiting for state disposal to complete\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.768Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"state disposal completed\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:10:49.769Z\",\n  \"service\": \"default\",\n  \"hasError\": false,\n  \"uptimeSeconds\": 11,\n  \"message\": \"Agent exiting\"\n}\n\nformal-ai: started a temporary server in agent mode (tool and shell execution enabled)\n\nformal-ai: session files for debugging:\n  agent: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-agent-home-config-89310-1784923839208045000/.local/share/link-assistant-agent/storage/session/ac1b8f06b367ae6062361c4e95f17b0b434dfdb8/ses_06a3fa306ffehwM0O78LR0efVn.json   (resume: agent --resume ses_06a3fa306ffehwM0O78LR0efVn)\n  server log: /Users/konard/.formal-ai/dialog-logs/temporary-server-89310-8080.log\n"
+    },
+    {
+      "id": "L4.replace_string",
+      "level": 4,
+      "seed": null,
+      "prompt": "In the file /tmp/fa_ladder/source.txt replace the word apple with banana",
+      "note": "Targeted edit; the classic edit-tool operation.",
+      "pass": false,
+      "reason": "verify failed (no observable effect)",
+      "timed_out": false,
+      "verified_effect": false,
+      "output_tail": " \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"session.prompt\",\n  \"sessionID\": \"ses_06a3f7981ffePI8Y9K48TFXHga\",\n  \"message\": \"cancel\"\n}\n\n{\n  \"type\": \"session.status\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session.idle\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"bus\",\n  \"message\": \"publishing\"\n}\n\n{\n  \"type\": \"session_idle\",\n  \"timestamp\": 1784923860266,\n  \"sessionID\": \"ses_06a3f7981ffePI8Y9K48TFXHga\"\n}\n{\n  \"type\": \"*\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"bus\",\n  \"message\": \"unsubscribing\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"default\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"disposing instance\"\n}\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.266Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"waiting for state disposal to complete\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.267Z\",\n  \"service\": \"state\",\n  \"key\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"message\": \"state disposal completed\"\n}\n\n{\n  \"type\": \"log\",\n  \"level\": \"info\",\n  \"timestamp\": \"2026-07-24T20:11:00.267Z\",\n  \"service\": \"default\",\n  \"hasError\": false,\n  \"uptimeSeconds\": 10,\n  \"message\": \"Agent exiting\"\n}\n\nformal-ai: started a temporary server in agent mode (tool and shell execution enabled)\n\nformal-ai: session files for debugging:\n  agent: /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-agent-home-config-89354-1784923849841522000/.local/share/link-assistant-agent/storage/session/ac1b8f06b367ae6062361c4e95f17b0b434dfdb8/ses_06a3f7981ffePI8Y9K48TFXHga.json   (resume: agent --resume ses_06a3f7981ffePI8Y9K48TFXHga)\n  server log: /Users/konard/.formal-ai/dialog-logs/temporary-server-89354-8080.log\n"
+    }
+  ]
+}
