@@ -14,8 +14,8 @@
       "level": 1,
       "seed": "846",
       "prompt": "Solve GitHub issue https://github.com/link-assistant/formal-ai/issues/846 in this repository and open a pull request with the fix.",
-      "verify": "true",
-      "note": "Ceiling. Whole issue -> PR. Records the gap between what Hive Mind will ask for and what is currently possible."
+      "verify": "git log --oneline -1 --all | grep -qi \"846\" && git branch -a | grep -q \"issue-846\"",
+      "note": "Ceiling. Whole issue -> PR. Records the gap between what Hive Mind will ask for and what is currently possible. Verified by the existence of a real branch/PR, not by narration: `verify: true` made this unfalsifiable in the first run and it scored a false PASS."
     },
     {
       "id": "846.L2.filters",
@@ -50,14 +50,13 @@
       "verify": "grep -q 'dev/log/' scripts/detect-code-changes.rs",
       "note": "Atomic single-string edit to a real source file, on the exact array #846 is about."
     },
-
     {
       "id": "843.L1",
       "level": 1,
       "seed": "843",
       "prompt": "Solve GitHub issue https://github.com/link-assistant/formal-ai/issues/843 in this repository and open a pull request with the fix.",
-      "verify": "true",
-      "note": "Second ceiling case, against a reasoning-core issue rather than a CI issue."
+      "verify": "git branch -a | grep -q \"issue-843\"",
+      "note": "Second ceiling case, against a reasoning-core issue rather than a CI issue. Verified by the existence of a real branch/PR, not by narration: `verify: true` made this unfalsifiable in the first run and it scored a false PASS."
     },
     {
       "id": "843.L3.remove_fake",
@@ -76,7 +75,6 @@
       "expect_answer": "solver.rs",
       "note": "Atomic search on the real defect. Precondition for 843.L3."
     },
-
     {
       "id": "700.L2.new_module",
       "level": 2,
@@ -93,7 +91,6 @@
       "verify": "test -f src/si_units.rs && grep -q 'pub fn millimetres_to_metres' src/si_units.rs",
       "note": "The same #700 deliverable with the test half removed - isolates whether composition or code generation is the failure."
     },
-
     {
       "id": "710.L3.status_row",
       "level": 3,
@@ -103,7 +100,6 @@
       "expect_answer": "R67",
       "note": "#710 is largely REQUIREMENTS.md status reconciliation; this is the read step that every such fix starts from."
     },
-
     {
       "id": "meta.L2.decompose",
       "level": 2,

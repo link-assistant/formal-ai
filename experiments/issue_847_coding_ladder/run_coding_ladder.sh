@@ -114,12 +114,29 @@ for task in tasks:
     # emits verbose JSON logs on the same streams, and matching against the raw
     # combined output produced false positives (a bare "1." or "yes" occurs
     # incidentally in log payloads while the model actually refused).
-    refused = "could not determine" in output.lower() or "не смог определить" in output.lower()
+    # The refusal text is produced by the SERVER and does not reach the agent
+    # CLI's stdout, so scanning `output` alone reported refusals as successes.
+    # The CLI prints the server log path on exit; read it back and look there.
+    haystack = output
+    for line in output.splitlines():
+        if "server log:" in line:
+            log_path = line.split("server log:", 1)[1].strip()
+            try:
+                with open(log_path, "r", errors="replace") as handle:
+                    haystack += handle.read()
+            except OSError:
+                pass
+    refused = ("could not determine" in haystack.lower()
+               or "could not determine" in haystack.replace("\\u0060", "").lower()
+               or "не смог определить" in haystack.lower())
     expected = task.get("expect_answer")
     answered = expected is None or (
         not refused and expected.lower() in output.lower()
     )
-    ok = verified and answered and not timed_out
+    # An unfalsifiable `verify: true` plus a refusal is not a pass.
+    # A refusal is never a pass, even when `verify` is a trivially true
+    # placeholder (the L1 ceiling cases before their checks were tightened).
+    ok = verified and answered and not timed_out and not refused
 
     reason = ""
     if timed_out:
