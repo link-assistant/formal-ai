@@ -233,7 +233,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
@@ -300,7 +299,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -579,7 +577,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -688,7 +685,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -1348,7 +1344,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
@@ -1437,7 +1432,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
