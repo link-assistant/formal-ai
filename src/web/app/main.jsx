@@ -17,6 +17,12 @@ import { ChakraProvider, chakra } from "@chakra-ui/react";
 import { system as chakraSystem } from "./theme.js";
 import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
 
+// Issue #839: the six-section issue-report document is no longer written here.
+// `src/issue_report.rs` owns the format for every surface and
+// `./issue-report.js` mirrors it for the browser (the wasm worker cannot link
+// the Rust core), so this file only assembles the facts and the labels.
+import { renderReportBody } from "./issue-report.js";
+
 const {
   createElement: h,
   Fragment,
@@ -2220,14 +2226,17 @@ function formatThemeField(context) {
   return preference;
 }
 
-function appendUserContextBlock(lines, context) {
+// Issue #839: returns the User Context section as data (`{label, value}`), not
+// as rendered Markdown — the shared builder in `./issue-report.js` decides how
+// a field looks so the web and the CLI cannot drift.
+function userContextFields(context) {
   const safe = context && typeof context === "object" ? context : {};
   const entries = [];
   const push = (label, value) => {
     if (value === undefined || value === null) return;
     const text = String(value).trim();
     if (!text) return;
-    entries.push(`- **${label}**: ${text}`);
+    entries.push({ label, value: text });
   };
 
   push("UI languages", formatUiLanguagesField(safe.uiLanguage, safe.browserLanguages));
@@ -2264,11 +2273,7 @@ function appendUserContextBlock(lines, context) {
   // Issue #386: the inference-only location ("time zone / locale only") is the
   // default, so it is omitted. An explicit preference is reported above.
 
-  if (entries.length === 0) return;
-  lines.push("## User Context");
-  lines.push("");
-  for (const entry of entries) lines.push(entry);
-  lines.push("");
+  return entries;
 }
 
 function randomItem(items) {
@@ -5346,59 +5351,18 @@ function createDemoTurns() {
   return turns;
 }
 
-function appendCodeBlock(lines, value) {
-  const text = String(value ?? "");
-  const fence = text.includes("```") ? "````" : "```";
-  lines.push(fence);
-  lines.push(text);
-  lines.push(fence);
-}
-
-// Issue #78: render the entire dialog as a single fenced block with `U:` /
-// `A:` line prefixes, instead of one Markdown subsection per message. Keeps
-// the prefilled GitHub issue body short enough to fit the `?body=` query
-// string (which truncates around 8 KB) and easier for a maintainer to scan.
-function pickDialogFence(messages) {
-  let fence = "```";
-  while (messages.some((message) => String(message.content ?? "").includes(fence))) {
-    fence += "`";
-  }
-  return fence;
-}
-
-function appendDialogBlock(lines, messages, effectiveFocus, options = {}) {
-  if (messages.length === 0) {
-    lines.push("No messages have been sent yet.");
-    return;
-  }
-
-  lines.push("Legend: `U` = user, `A` = agent.");
-  lines.push("");
-  const fence = pickDialogFence(messages);
-  lines.push(fence);
-  const earlierOmitted = Math.max(0, Number(options.earlierOmitted) || 0);
-  if (earlierOmitted > 0) {
-    lines.push(`... omitted ${earlierOmitted} earlier ${earlierOmitted === 1 ? "message" : "messages"} ...`);
-  }
-  messages.forEach((message) => {
-    const prefix = message.role === "user" ? "U" : "A";
-    const annotations = [];
-    if (message.intent === "unknown") {
-      annotations.push(`intent: ${message.intent}`);
-    }
-    if (effectiveFocus && effectiveFocus.id === message.id) {
-      if (message.intent && message.intent !== "unknown") {
-        annotations.push(`intent: ${message.intent}`);
-      }
-      annotations.push("reported");
-    }
-    const head = annotations.length > 0 ? `${prefix} (${annotations.join(", ")})` : prefix;
-    const content = String(message.content ?? "");
-    const [first, ...rest] = content.split("\n");
-    lines.push(`${head}: ${first}`);
-    rest.forEach((row) => lines.push(`   ${row}`));
-  });
-  lines.push(fence);
+// Issue #78 renders the whole dialog as one fenced block with `U:` / `A:` line
+// prefixes rather than a Markdown subsection per message, which is what keeps
+// the prefilled `?body=` query string under GitHub's cap. Issue #839 moved that
+// rendering into the shared builder; what stays here is the mapping from a
+// browser message to a turn, including which turn the user asked about.
+function reportTurns(messages, effectiveFocus) {
+  return messages.map((message) => ({
+    role: message.role,
+    content: String(message.content ?? ""),
+    intent: message.intent ?? "",
+    reported: Boolean(effectiveFocus && effectiveFocus.id === message.id),
+  }));
 }
 
 // Issue #140: GitHub caps the prefilled-issue URL at 8192 characters, so for
@@ -5478,8 +5442,10 @@ function appendLimitedTraceItems(lines, items, formatter) {
   });
 }
 
-function appendReasoningTraceBlock(lines, focusMessage) {
-  if (!focusMessage || focusMessage.role !== "assistant") return;
+// Issue #839: the trace is returned as the lines that go inside the fence; the
+// shared builder owns the heading and the fence itself.
+function reasoningTraceLines(focusMessage) {
+  if (!focusMessage || focusMessage.role !== "assistant") return [];
 
   const trace = [];
   if (focusMessage.intent) {
@@ -5529,15 +5495,9 @@ function appendReasoningTraceBlock(lines, focusMessage) {
     });
   }
 
-  if (trace.length === 0) return;
+  if (trace.length === 0) return [];
 
-  lines.push("");
-  lines.push("## Reasoning Trace");
-  lines.push("");
-  lines.push("Focused assistant turn:");
-  lines.push("");
-  appendCodeBlock(lines, truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS));
-  lines.push("");
+  return truncateMessageContent(trace.join("\n"), REPORT_TRACE_MAX_CHARS).split("\n");
 }
 
 function buildIssueUrl(title, body, labels) {
@@ -5710,63 +5670,76 @@ function formatVersionWithWorker(version, workerState) {
   return `${version} (${short})`;
 }
 
-function createIssueReportBody({
-  messages,
-  focusMessage,
-  workerState,
-  demoMode,
-  demoStatus,
-  diagnosticsMode,
-  userContext,
-  earlierOmitted = 0,
-}) {
-  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
-  // Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
-  // settings that sit at their default. Manual mode is the interactive default,
-  // so Mode/Status are only worth reporting while a demo is playing, and
-  // Diagnostics is only reported when it has been turned on.
-  const lines = [
-    "## Environment",
-    "",
-    `- **Version**: ${formatVersionWithWorker(APP_VERSION, workerState)}`,
-    `- **URL**: ${window.location.href}`,
+// Issue #839: every phrase the report document contains comes from
+// `data/seed/agent-info.lino`, the same file the CLI reads, so the two surfaces
+// cannot say different things. The seed reaches the browser through
+// `seed.agentInfo`; the values below are its shipped English text, used while
+// the seed is still loading.
+const REPORT_LABEL_DEFAULTS = {
+  issue_report_dialog_legend: "Legend: `U` = user, `A` = agent, `T` = tool result.",
+  issue_report_no_messages: "No messages have been sent yet.",
+  issue_report_omitted_messages: "... omitted {count} earlier messages ...",
+  issue_report_omitted_message: "... omitted {count} earlier message ...",
+  issue_report_trace_heading: "Focused assistant turn:",
+  issue_report_description_placeholder:
+    "<!-- Please describe what looked wrong or incomplete. -->",
+  issue_report_memory_note:
+    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
+};
+
+function reportLabels(agentInfo) {
+  const seeded = agentInfo && typeof agentInfo === "object" ? agentInfo : {};
+  const label = (key) => String(seeded[key] || REPORT_LABEL_DEFAULTS[key]);
+  return {
+    legend: label("issue_report_dialog_legend"),
+    no_messages: label("issue_report_no_messages"),
+    omitted_earlier: label("issue_report_omitted_messages"),
+    omitted_earlier_one: label("issue_report_omitted_message"),
+    trace_heading: label("issue_report_trace_heading"),
+    description_placeholder: label("issue_report_description_placeholder"),
+    memory_note: label("issue_report_memory_note"),
+  };
+}
+
+// Issue #386: fold the worker into the version (`0.174.0 (wasm)`) and drop
+// settings that sit at their default. Manual mode is the interactive default,
+// so Mode/Status are only worth reporting while a demo is playing, and
+// Diagnostics is only reported when it has been turned on.
+function environmentFields({ workerState, demoMode, demoStatus, diagnosticsMode }) {
+  const fields = [
+    { label: "Version", value: formatVersionWithWorker(APP_VERSION, workerState) },
+    { label: "URL", value: window.location.href },
   ];
   if (demoMode) {
-    lines.push("- **Mode**: demo");
-    lines.push(`- **Status**: ${demoStatus}`);
+    fields.push({ label: "Mode", value: "demo" });
+    fields.push({ label: "Status", value: demoStatus });
   }
   if (diagnosticsMode) {
-    lines.push("- **Diagnostics**: on");
+    fields.push({ label: "Diagnostics", value: "on" });
   }
-  lines.push(`- **Timestamp**: ${new Date().toISOString()}`);
-  lines.push("");
+  fields.push({ label: "Timestamp", value: new Date().toISOString() });
+  return fields;
+}
 
-  appendUserContextBlock(lines, userContext);
-  lines.push("## Reproduction of dialog");
-  lines.push("");
-
-  appendDialogBlock(lines, messages, effectiveFocus, { earlierOmitted });
-
-  // Issue #386: the reasoning trace is only meaningful next to the full dialog.
-  // When earlier turns had to be dropped to fit GitHub's URL cap the dialog is
-  // no longer complete, so the trace is omitted to avoid misleading context.
-  if (earlierOmitted === 0) {
-    appendReasoningTraceBlock(lines, effectiveFocus);
-  }
-
-  lines.push("");
-  lines.push("## Description");
-  lines.push("");
-  lines.push("<!-- Please describe what looked wrong or incomplete. -->");
-  lines.push("");
-  lines.push("## Attach full memory (optional)");
-  lines.push("");
-  lines.push(
-    "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md).",
-  );
-  lines.push("");
-
-  return lines.join("\n");
+// Issue #839: this function now only gathers facts. `renderReportBody` — the
+// browser mirror of `src/issue_report.rs` — turns them into the document, so
+// the web report and the agentic report are the same six sections by
+// construction rather than by review.
+function createIssueReportBody(context) {
+  const { messages, focusMessage, userContext, agentInfo, earlierOmitted = 0 } = context;
+  const effectiveFocus = focusMessage ?? lastUnknownAssistantMessage(messages);
+  return renderReportBody({
+    labels: reportLabels(agentInfo),
+    environment: environmentFields(context),
+    user_context: userContextFields(userContext),
+    turns: reportTurns(messages, effectiveFocus),
+    earlier_omitted: earlierOmitted,
+    // Issue #386: the reasoning trace is only meaningful next to the full
+    // dialog. When earlier turns had to be dropped to fit GitHub's URL cap the
+    // dialog is no longer complete, so the shared builder drops the trace too.
+    reasoning_trace: reasoningTraceLines(effectiveFocus),
+    attachments: [],
+  });
 }
 
 function createIssueUrl(context) {
@@ -9003,6 +8976,9 @@ function App() {
     demoStatus,
     diagnosticsMode,
     userContext,
+    // Issue #839: the report document's own phrases come from the seed, so the
+    // web and the CLI file issues that read identically.
+    agentInfo: seed && seed.agentInfo ? seed.agentInfo : {},
   };
   const currentReportUrl = createIssueUrl(reportContext);
 
