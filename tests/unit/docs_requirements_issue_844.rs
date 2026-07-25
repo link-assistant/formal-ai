@@ -100,8 +100,8 @@ fn the_global_requirements_index_records_issue_844() {
         GLOBAL_REQUIREMENTS,
         &[
             "issue #844",
-            "r494",
-            "r503",
+            "r501",
+            "r510",
             "statement-level deduplication",
             "identifier",
         ],

@@ -1,0 +1,35 @@
+self_ast_census
+  target src/cli_report.rs
+  language rust
+  fidelity signature
+  byte_len 13848
+  line_count 392
+  content_id source_module_c317d32202610bc8
+  symbol_count 26
+  symbols
+    const DEFAULT_INLINE_BYTES 31 31
+    const DEFAULT_EXCERPT_BYTES 33 33
+    const DEFAULT_SURFACE 35 35
+    const LINO 37 37
+    const TRACE_SEPARATOR 40 40
+    const ERROR_PLACEHOLDER 41 41
+    const URL_PLACEHOLDER 42 42
+    struct ReportArgs 45 48
+    enum ReportAction 51 88
+    enum OversizeContext 92 97
+    enum GistVisibility 104 109
+    function run_report 111 147
+    function context_path 151 153
+    function context_filename 155 167
+    function report_body 169 205
+    function version 207 209
+    function ui_language 212 222
+    function export_trace 227 242
+    function report_turns 244 250
+    function report_turn 252 260
+    function message_text 267 288
+    function collect_text 290 308
+    struct AttachmentSettings 310 315
+    function attach_context 323 355
+    function upload_gist 358 386
+    function config 388 392

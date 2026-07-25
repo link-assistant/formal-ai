@@ -10,6 +10,7 @@ mod cli_context;
 mod cli_import;
 mod cli_improve;
 mod cli_memory;
+mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
@@ -17,6 +18,7 @@ use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
@@ -85,6 +87,8 @@ enum Command {
     Dataset,
     /// Export complete conversations or convert arbitrary JSON to Links Notation.
     Context(ContextArgs),
+    /// Build the issue-report document every Formal AI surface files (#839).
+    Report(ReportArgs),
     Serve {
         #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
         host: String,
@@ -554,6 +558,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Context(args) => run_context(args)?,
+        Command::Report(args) => run_report(args)?,
         Command::Memory { action } => run_memory(action)?,
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,

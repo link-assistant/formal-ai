@@ -1,4 +1,134 @@
 meanings
+  response_lexeme_import_cannot_install_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot install zh"
+  response_lexeme_import_cannot_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list en"
+  response_lexeme_import_cannot_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list hi"
+  response_lexeme_import_cannot_list_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list ru"
+  response_lexeme_import_cannot_list_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list zh"
+  response_lexeme_import_cannot_remove_stale_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale en"
+  response_lexeme_import_cannot_remove_stale_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale hi"
+  response_lexeme_import_cannot_remove_stale_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale ru"
+  response_lexeme_import_cannot_remove_stale_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale zh"
+  response_lexeme_import_cannot_stage_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage en"
+  response_lexeme_import_cannot_stage_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage hi"
+  response_lexeme_import_cannot_stage_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage ru"
+  response_lexeme_import_cannot_stage_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage zh"
+  response_lexeme_import_cannot_write_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json en"
+  response_lexeme_import_cannot_write_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json hi"
+  response_lexeme_import_cannot_write_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json ru"
+  response_lexeme_import_cannot_write_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json zh"
+  response_lexeme_import_cannot_write_lino_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino en"
+  response_lexeme_import_cannot_write_lino_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino hi"
+  response_lexeme_import_cannot_write_lino_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino ru"
+  response_lexeme_import_cannot_write_lino_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino zh"
+  response_lexeme_import_denotation_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost en"
+  response_lexeme_import_denotation_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost hi"
+  response_lexeme_import_denotation_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost ru"
+  response_lexeme_import_denotation_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost zh"
+  response_lexeme_import_duplicate_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid en"
   response_lexeme_import_duplicate_qid_hi
     defined-by response_template
     lexeme en
@@ -1264,133 +1394,3 @@ meanings
     lexeme en
       surface
         text "symbolic ai"
-  tabler
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler"
-  tabler-icons
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler icons"
-  tail
-    defined-by token
-    lexeme en
-      surface
-        text "tail"
-  tar
-    defined-by token
-    lexeme en
-      surface
-        text "tar"
-  test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "test status"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  title
-    defined-by concept
-    lexeme en
-      surface
-        text "title"
-  title_case
-    defined-by operation
-    lexeme en
-      surface
-        text "title case"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"
-  tool_result_empty_list
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty list"
