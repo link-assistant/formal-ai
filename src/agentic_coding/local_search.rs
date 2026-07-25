@@ -315,8 +315,11 @@ fn quoted_literal(prompt: &str) -> Option<String> {
                         .chars()
                         .next()
                         .is_some_and(|character| !character.is_alphanumeric());
+                let transport_wrapper =
+                    prompt[..*opening].trim().is_empty() && prompt[after..].trim().is_empty();
                 let literal = prompt[*opening + quote.len_utf8()..*closing].trim();
                 (right_boundary
+                    && !transport_wrapper
                     && !literal.is_empty()
                     && literal.chars().count() <= 128
                     && literal.chars().any(char::is_alphanumeric))

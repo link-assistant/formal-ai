@@ -119,6 +119,18 @@ fn quoted_local_name_excludes_trailing_answer_instructions() {
 }
 
 #[test]
+fn transport_wrapped_local_request_does_not_treat_the_whole_prompt_as_a_name() {
+    let call = one_call(&[ChatMessage::user(
+        "\"Find hive-mind-control center folder on my desktop\"",
+    )]);
+    let command = command(&call);
+    assert!(
+        command.contains("-iname 'hive-mind-control-center'"),
+        "{command}"
+    );
+}
+
+#[test]
 fn unnamed_openai_tool_result_widens_by_matching_its_call_id() {
     let mut messages = vec![ChatMessage::user(
         "Find hive-mind-control center folder on my desktop",
