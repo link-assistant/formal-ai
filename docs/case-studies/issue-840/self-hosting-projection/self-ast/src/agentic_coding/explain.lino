@@ -1,0 +1,74 @@
+self_ast_census
+  target src/agentic_coding/explain.rs
+  language rust
+  fidelity full_ast
+  byte_len 6321
+  line_count 125
+  content_id source_module_e380b76f9d24205d
+  symbol_count 9
+  symbols
+    const EXPLAIN_PATH 31 31
+    function cached_explanation 39 42
+    static EXPLANATION 40 40
+    const EXPLAIN_TASK 49 58
+    const EXPLAIN_KEYWORDS 58 58
+    function is_explain_task 69 88
+    function render_document 98 100
+    function explanation 105 107
+    function final_answer 112 125
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2100
+    named_node_count 450
+    distinct_node_kinds 47
+    node_kinds
+      arguments 18
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      binary_expression 8
+      block 6
+      boolean_literal 1
+      call_expression 18
+      closure_expression 1
+      closure_parameters 1
+      const_item 3
+      crate 1
+      doc_comment 54
+      escape_sequence 11
+      expression_statement 2
+      field_expression 15
+      field_identifier 15
+      function_item 5
+      generic_type 1
+      identifier 62
+      if_expression 1
+      inner_doc_comment_marker 24
+      integer_literal 1
+      let_declaration 4
+      lifetime 1
+      line_comment 58
+      macro_invocation 2
+      outer_doc_comment_marker 30
+      parameter 2
+      parameters 5
+      parenthesized_expression 3
+      primitive_type 6
+      reference_type 6
+      return_expression 1
+      scoped_identifier 4
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      string_content 25
+      string_literal 18
+      token_tree 8
+      type_arguments 1
+      type_identifier 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6
