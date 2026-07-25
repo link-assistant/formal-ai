@@ -14,6 +14,11 @@ Manual `workflow_dispatch` runs remain unconditional. Real source, manifest,
 documentation, and workflow changes outside those paths retain their previous
 flags. The unused `mjs-changed` output was removed.
 
+The self-hosting evidence job now validates claimed Formal AI sessions without
+enforcing a percentage ratchet against honest manual contributions. This keeps
+the evidence invariant strict while matching `CONTRIBUTING.md`, which permits a
+0% release and forbids false attribution.
+
 ## Reproduction and evidence
 
 Commit `ff38e2ab221ef27df7ab4ecc779b9c7293cd7a11` added six files below
@@ -46,6 +51,7 @@ both `push` and `pull_request`, plus a mixed shipping-change control.
 | 2026-07-24 19:27 | The unnecessary run completes after tests and deployment. |
 | 2026-07-24 21:17 | Maintainer expands scope to four templates, full evidence, research, and upstream reports. |
 | 2026-07-25 | PR 854 reproduces the defect, audits all CI files, fixes it, and reports all affected templates. |
+| 2026-07-25 06:23 | Fresh PR run 30147380896 passes every implementation check but rejects the honest 0% contribution because its projected share falls from 32.83% to 30.89%. |
 
 ## Root causes
 
@@ -62,6 +68,10 @@ both `push` and `pull_request`, plus a mixed shipping-change control.
 4. **The same inherited design exists in all four templates.** Their language
    differs, but each computes specialized flags from unfiltered files and uses
    unconditional push clauses in change-gated jobs.
+5. **The self-hosting policy contradicted the contribution contract.**
+   `CONTRIBUTING.md` permits honest 0% releases and forbids Formal-AI trailers
+   on manual work, while `--check-ratchet` rejected this manual contribution
+   solely because its truthful attribution lowered the projected percentage.
 
 ## Why job-level gating was selected
 

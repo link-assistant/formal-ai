@@ -29,6 +29,8 @@
 - Run focused and repository-wide quality checks.
 - Preserve atomic history, update the draft PR metadata, merge current `main`,
   push only `issue-846-a407746d16fa`, mark PR ready, and verify fresh CI.
+- Keep Formal-AI evidence validation strict without forcing false attribution
+  onto an honest manual contribution.
 
 ## Requirement-to-proof map
 
@@ -43,3 +45,4 @@
 | Manual behavior | Every affected condition retains `workflow_dispatch`; policy test asserts it. |
 | Evidence/case study | Revision-pinned `raw-data/`, this analysis, requirements, plans, and research. |
 | Template comparison/reporting | Complete tree captures and four linked upstream reports. |
+| Honest attribution | Evidence validation remains; the contradictory percentage gate is not run on PRs; regression test covers the workflow contract. |

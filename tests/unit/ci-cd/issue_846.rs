@@ -81,6 +81,22 @@ fn excluded_only_change_matrix_is_covered_for_pushes_and_pull_requests() {
 }
 
 #[test]
+fn honest_manual_contributions_are_not_rejected_by_the_self_hosting_job() {
+    let workflow = repository_file(".github/workflows/release.yml");
+    let evidence_job = job(&workflow, "evidence-check", "docker-build");
+
+    assert!(
+        evidence_job.contains("self-hosting-metric.rs --since"),
+        "the job must still validate every claimed Formal-AI session and evidence file"
+    );
+    assert!(
+        !evidence_job.contains("--check-ratchet"),
+        "CONTRIBUTING.md permits an honest 0% release and forbids adding Formal-AI trailers \
+         to manual work, so the evidence job must not reject unattributed contributions"
+    );
+}
+
+#[test]
 fn case_study_preserves_the_incident_and_complete_template_audit() {
     let readme = repository_file("docs/case-studies/issue-846/README.md");
     for required in [
