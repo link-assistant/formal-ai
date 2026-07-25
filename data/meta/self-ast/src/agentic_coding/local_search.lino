@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/local_search.rs
   language rust
   fidelity full_ast
-  byte_len 23668
-  line_count 709
-  content_id source_module_862492fc66765094
+  byte_len 23845
+  line_count 712
+  content_id source_module_a9951ab7df880a08
   symbol_count 46
   symbols
     const DESKTOP_ROOT 17 17
@@ -26,52 +26,52 @@ self_ast_census
     function role_matches 234 249
     function surface_position 251 268
     function explicit_file_literal 270 294
-    function quoted_literal 296 327
-    function strip_role 329 342
-    function longest_role_surface 344 351
-    function remove_surface 353 372
-    function surface_present 374 382
-    function contains_cjk 384 387
-    function plan_find 389 432
-    function answer_for_candidates 434 497
-    function plan_contents 499 534
-    function run 536 539
-    function exact_command 541 543
-    function substring_command 545 553
-    function find_command 555 568
-    function inventory_command 570 580
-    function scope_listing_command 582 588
-    function contents_command 590 595
-    function metadata_command 597 599
-    function kind_predicate 601 607
-    function run_results 609 631
-    function best_candidate 633 642
-    function similarity 644 661
-    function basename 663 669
-    function render_listing 671 675
-    function render_not_found 677 681
-    function render_type 683 699
-    function localized 701 705
-    function shell_quote 707 709
+    function quoted_literal 296 330
+    function strip_role 332 345
+    function longest_role_surface 347 354
+    function remove_surface 356 375
+    function surface_present 377 385
+    function contains_cjk 387 390
+    function plan_find 392 435
+    function answer_for_candidates 437 500
+    function plan_contents 502 537
+    function run 539 542
+    function exact_command 544 546
+    function substring_command 548 556
+    function find_command 558 571
+    function inventory_command 573 583
+    function scope_listing_command 585 591
+    function contents_command 593 598
+    function metadata_command 600 602
+    function kind_predicate 604 610
+    function run_results 612 634
+    function best_candidate 636 645
+    function similarity 647 664
+    function basename 666 672
+    function render_listing 674 678
+    function render_not_found 680 684
+    function render_type 686 702
+    function localized 704 708
+    function shell_quote 710 712
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20267
-    named_node_count 4055
+    total_link_count 20409
+    named_node_count 4086
     distinct_node_kinds 80
     node_kinds
-      arguments 369
+      arguments 373
       array_expression 4
       array_type 10
       assignment_expression 4
       attribute 3
       attribute_item 3
-      binary_expression 66
+      binary_expression 69
       block 101
       boolean_literal 13
-      call_expression 369
+      call_expression 373
       char_literal 19
       closure_expression 48
       closure_parameters 48
@@ -87,8 +87,8 @@ self_ast_census
       expression_statement 69
       field_declaration 8
       field_declaration_list 2
-      field_expression 277
-      field_identifier 283
+      field_expression 281
+      field_identifier 287
       field_initializer 2
       field_initializer_list 2
       for_expression 3
@@ -96,13 +96,13 @@ self_ast_census
       function_modifiers 1
       generic_function 5
       generic_type 24
-      identifier 1040
+      identifier 1046
       if_expression 38
-      index_expression 24
+      index_expression 26
       inner_doc_comment_marker 6
       integer_literal 43
       let_condition 6
-      let_declaration 69
+      let_declaration 70
       lifetime 3
       line_comment 17
       macro_invocation 21
@@ -117,7 +117,7 @@ self_ast_census
       parameters 33
       parenthesized_expression 4
       primitive_type 69
-      range_expression 11
+      range_expression 13
       reference_expression 68
       reference_type 80
       return_expression 25
@@ -137,7 +137,7 @@ self_ast_census
       tuple_struct_pattern 20
       type_arguments 29
       type_identifier 86
-      unary_expression 31
+      unary_expression 32
       use_declaration 6
       use_list 1
       visibility_modifier 7
