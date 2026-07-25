@@ -24,7 +24,13 @@ sandbox.self = sandbox;
 sandbox.globalThis = sandbox;
 sandbox.fetch = async (url) => {
   const relative = String(url).split("?")[0];
-  const text = fs.readFileSync(path.join(webDir, relative), "utf8");
+  // `src/web/seed/` is an ignored build artifact produced from `data/seed/`.
+  // Read the tracked canonical source directly so this parity check behaves
+  // identically in a clean checkout and in a previously built worktree.
+  const file = relative.startsWith("seed/")
+    ? path.join(root, "data", relative)
+    : path.join(webDir, relative);
+  const text = fs.readFileSync(file, "utf8");
   return { ok: true, status: 200, async text() { return text; } };
 };
 vm.createContext(sandbox);
