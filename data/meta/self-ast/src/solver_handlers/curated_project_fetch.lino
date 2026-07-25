@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/curated_project_fetch.rs
   language rust
   fidelity signature
-  byte_len 2528
-  line_count 65
-  content_id source_module_46cb28fb842dc015
+  byte_len 2121
+  line_count 55
+  content_id source_module_bf19dc9b83ee0654
   symbol_count 2
   symbols
-    function try_curated_http_fetch 11 47
-    function match_curated_github_url 50 65
+    function try_curated_http_fetch 11 37
+    function match_curated_github_url 40 55

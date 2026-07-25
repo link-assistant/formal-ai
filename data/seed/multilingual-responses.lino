@@ -1,4 +1,20 @@
 multilingual_responses
+  response response_http_fetch_curated_project_en
+    intent http_fetch_curated_project
+    language en
+    text "HTTP fetch requested for `{url}`.\n\nThis URL matches a curated promoted project. README summary (through the formalize → summarize → deformalize pipeline): {summary}\n\nSource: [{url}]({url})"
+  response response_http_fetch_curated_project_ru
+    intent http_fetch_curated_project
+    language ru
+    text "HTTP-запрос на `{url}`.\n\nЭтот URL соответствует курируемому продвигаемому проекту. Резюме README (через formalize → summarize → deformalize): {summary}\n\nSource: [{url}]({url})"
+  response response_http_fetch_curated_project_hi
+    intent http_fetch_curated_project
+    language hi
+    text "HTTP अनुरोध `{url}` के लिए किया गया।\n\nयह URL स्थानीय रूप से क्यूरेट की गई परियोजना से मेल खाता है। README सारांश: {summary}\n\nस्रोत: [{url}]({url})"
+  response response_http_fetch_curated_project_zh
+    intent http_fetch_curated_project
+    language zh
+    text "已请求获取 `{url}`。\n\n此 URL 与本地精选项目匹配。README 摘要：{summary}\n\n来源：[{url}]({url})"
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en
