@@ -904,6 +904,26 @@ meanings
     lexeme en
       surface
         text "response unknown zh"
+  response_unresolved_reference_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unresolved reference en"
+  response_unresolved_reference_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unresolved reference hi"
+  response_unresolved_reference_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unresolved reference ru"
+  response_unresolved_reference_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unresolved reference zh"
   response_wellbeing_en
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool intent routing"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_result_completed
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result completed"
-  tool_result_empty_generic
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty generic"
-  tool_result_empty_list
-    defined-by intent
-    lexeme en
-      surface
-        text "tool result empty list"

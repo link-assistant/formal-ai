@@ -77,6 +77,8 @@ roles
     kind predicate
   common_typo
     kind meaning
+  comparison_connective
+    kind meaning
   comparison_difference_cue
     kind predicate
   comparison_table_noun
@@ -476,6 +478,8 @@ roles
   translation_target_marker
     kind predicate
   translation_unquoted_frame
+    kind meaning
+  unresolved_reference
     kind meaning
   url_navigate
     kind meaning

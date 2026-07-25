@@ -72,7 +72,7 @@ pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_hi
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
-    try_who_is_question,
+    try_unresolved_reference, try_who_is_question,
 };
 pub use web_requests::{
     detect_web_search_query, try_explicit_repository_lookup, try_http_fetch, try_project_lookup,

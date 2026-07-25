@@ -29,8 +29,8 @@ use crate::solver_handlers::{
     try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
     try_software_project_request, try_source_conflict, try_source_refresh,
     try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
-    SelfAwarenessRuntime,
+    try_translation, try_unresolved_reference, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -236,6 +236,7 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
         "response_language_followup",
         response_language_followup_noop,
     ),
+    ("unresolved_reference", try_unresolved_reference),
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("calendar_create_event", try_calendar_create_event),

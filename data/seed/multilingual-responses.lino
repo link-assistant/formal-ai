@@ -401,6 +401,22 @@ multilingual_responses
     intent clarification
     language zh
     text "抱歉造成困惑。我是 formal-ai，一个确定性的符号化 AI。我能回答问候、身份问题、概念查询（什么是X？）、算术以及 Hello World 程序。请尝试上述任一类型的问题，或在 Links Notation 中添加一个事实。"
+  response response_unresolved_reference_en
+    intent unresolved_reference
+    language en
+    text "I do not know what \"that\" refers to here — nothing was named before it in this conversation. Please say which thing you mean, and I will answer about it."
+  response response_unresolved_reference_ru
+    intent unresolved_reference
+    language ru
+    text "Не понимаю, к чему относится «это» — в этом разговоре раньше ничего не называлось. Уточните, пожалуйста, о чём именно речь, и я отвечу."
+  response response_unresolved_reference_hi
+    intent unresolved_reference
+    language hi
+    text "मुझे नहीं पता कि यहाँ «यह» किसे संदर्भित करता है — इस बातचीत में पहले कुछ भी नामित नहीं हुआ। कृपया बताइए आपका मतलब किस चीज़ से है, फिर मैं उत्तर दूँगा।"
+  response response_unresolved_reference_zh
+    intent unresolved_reference
+    language zh
+    text "我不清楚这里的「这」指的是什么——此前的对话中没有提到任何事物。请说明您指的是哪一个，我再来回答。"
   response response_capabilities_en
     intent capabilities
     language en

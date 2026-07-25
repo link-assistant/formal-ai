@@ -419,6 +419,51 @@ meanings
         text 我不懂
       surface
         text 听不懂
+  comparison_connective
+    defined-by inquiry
+    role comparison_connective
+    lexeme en
+      surface
+        text vs
+      surface
+        text "vs."
+      surface
+        text versus
+    lexeme ru
+      surface
+        text против
+      surface
+        text vs
+    lexeme hi
+      surface
+        text बनाम
+    lexeme zh
+      surface
+        text 对比
+  unresolved_reference
+    defined-by inquiry
+    defined-by clarification
+    role unresolved_reference
+    lexeme en
+      surface
+        text "what is that then"
+      surface
+        text "so what is that"
+      surface
+        text "so what is it"
+      surface
+        text "what is that thing"
+    lexeme ru
+      surface
+        text "что это такое"
+      surface
+        text "что оно такое"
+    lexeme hi
+      surface
+        text "तो यह क्या है"
+    lexeme zh
+      surface
+        text 那这是什么
   capability_query
     defined-by capability
     defined-by inquiry
@@ -463,8 +508,6 @@ meanings
         text "твои возможности"
       surface
         text "что за дичь"
-      surface
-        text "что это такое"
       surface
         text "что происходит"
       surface

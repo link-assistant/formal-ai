@@ -24,16 +24,16 @@ use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::normalize_prompt;
 use crate::seed::{
     self, Slot, WordForm, ROLE_ASSISTANT_SELF_REFERENCE, ROLE_CAPABILITY_QUERY,
-    ROLE_CAPABILITY_QUERY_MORE, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_ENUMERATION_CONSTRAINT,
-    ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB, ROLE_NON_REFERENTIAL_SUBJECT,
-    ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
-    ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_SELF_INTRODUCTION_REQUEST,
-    ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_MEDIUM, ROLE_WEB_SEARCH_ACTION,
-    ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY,
-    ROLE_WEB_SEARCH_NEWS_SUBJECT, ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT,
-    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
-    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
-    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+    ROLE_CAPABILITY_QUERY_MORE, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_COMPARISON_CONNECTIVE,
+    ROLE_ENUMERATION_CONSTRAINT, ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB,
+    ROLE_NON_REFERENTIAL_SUBJECT, ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN,
+    ROLE_RESEARCH_QUESTION_OPENER, ROLE_RESEARCH_SUPERLATIVE_MODIFIER,
+    ROLE_SELF_INTRODUCTION_REQUEST, ROLE_TERM_INFORMATION_REQUEST_OPENER, ROLE_WEB_MEDIUM,
+    ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX, ROLE_WEB_SEARCH_IMPERATIVE_LEAD,
+    ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
+    ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
+    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL,
+    ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -160,6 +160,12 @@ pub(super) fn extract_web_search_request(
         return Some(WebSearchRequest {
             query,
             kind: WebSearchQueryKind::RecordsInformationRequest,
+        });
+    }
+    if let Some(query) = extract_bare_comparison_request(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ImplicitResearchQuestion,
         });
     }
     if let Some(query) = extract_enumeration_research_request(&normalized_words) {
@@ -764,6 +770,32 @@ fn prompt_names_engineered_brand(prompt: &str) -> bool {
         prev_is_lower_latin = character.is_ascii_lowercase();
     }
     false
+}
+
+/// A bare two-term comparison — `ФБС vs ФБО`, `Postgres versus MySQL` — is a
+/// research request even though it carries no verb and no question mark.
+///
+/// Issue #842: this shape was refused outright while both of its halves ("Что
+/// такое ФБО?", "Что такое ФБС?") were researched normally, which is the
+/// composition failure the ladder was built to measure. The recogniser is
+/// deliberately narrow — exactly three tokens, the middle one a seeded
+/// comparison connective, both sides non-empty — so ordinary prose containing
+/// "versus" keeps its own route.
+fn extract_bare_comparison_request(normalized: &str) -> Option<String> {
+    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
+    let [left, connective, right] = tokens[..] else {
+        return None;
+    };
+    if !bare_literals(ROLE_COMPARISON_CONNECTIVE)
+        .iter()
+        .any(|marker| marker.trim() == connective)
+    {
+        return None;
+    }
+    if left.is_empty() || right.is_empty() {
+        return None;
+    }
+    valid_search_query(normalized)
 }
 
 fn extract_enumeration_research_request(normalized: &str) -> Option<String> {

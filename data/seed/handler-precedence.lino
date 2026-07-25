@@ -21,6 +21,7 @@ handler_precedence
   roleplay
   translation
   response_language_followup
+  unresolved_reference # issue 842 a bare demonstrative with no antecedent asks what is meant, never the capability menu
   capabilities
   calendar_reasoning
   calendar_create_event

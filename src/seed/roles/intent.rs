@@ -12,6 +12,14 @@
 /// "समझ नहीं आया", "我不明白", …). A meaning carrying this role is `defined_by`
 /// the `clarification` and `understanding` concepts.
 pub const ROLE_CLARIFICATION_REQUEST: &str = "clarification_request";
+/// Semantic role: a question whose subject is a bare demonstrative.
+///
+/// "так что это такое то?", "what is that then?", … — the request names no
+/// topic of its own and only makes sense against an antecedent. Issue #842
+/// recorded these being answered with the full capability menu, which is never
+/// a useful reply to "so what is it, then?"; the correct response is to ask
+/// what is meant.
+pub const ROLE_UNRESOLVED_REFERENCE: &str = "unresolved_reference";
 /// Semantic role: the user asking what the assistant is able to do.
 ///
 /// A request to enumerate its capabilities ("what can you do", "что ты умеешь",
@@ -453,6 +461,13 @@ pub const ROLE_RESEARCH_EVIDENCE_DOMAIN: &str = "research_evidence_domain";
 /// "evaluation", "comparison", "discount", "price", "cost", … — the assessment
 /// a research question is framed around.
 pub const ROLE_RESEARCH_EVALUATION_DOMAIN: &str = "research_evaluation_domain";
+/// Semantic role: the connective of a bare two-term comparison.
+///
+/// "vs", "versus", "против", "对比", … — the whole of a request like
+/// `ФБС vs ФБО`, which names two topics and asks, without any verb, how they
+/// differ. Issue #842 recorded that shape being refused while both of its
+/// halves ("Что такое ФБО?", "Что такое ФБС?") were researched normally.
+pub const ROLE_COMPARISON_CONNECTIVE: &str = "comparison_connective";
 /// Semantic role: an opener that asks to list every member of a set.
 ///
 /// "list all …", "show all …", "перечисли всех …", "列出所有 …", … — the lead-in
