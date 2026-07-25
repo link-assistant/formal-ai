@@ -1,16 +1,14 @@
-# Task-decomposition surfaces for issue 847, E57.
-#
-# Decomposition is a working task like any other, so the surfaces that make
-# splitting, atomicity and first-step prompts recognisable live here, in seed
-# data. Following the issue 386 convention the Rust modules
-# `src/task_decomposition.rs` and `src/solver_handlers/task_decomposition.rs`
-# name only the language-independent roles below; no per-language phrase list
-# appears in Rust.
-#
-# The observable and unobservable action pair is the checkability oracle from
-# the acceptance list. A sub-task is a valid child only when a human can tell,
-# by looking, whether it is done. Adding a folder to an array is observable;
-# understanding a codebase is not.
+# `Task-decomposition surfaces for issue 847, E57.`
+# `Decomposition is a working task like any other, so the surfaces that make`
+# `splitting, atomicity and first-step prompts recognisable live here, in seed`
+# `data. Following the issue 386 convention the Rust modules`
+# `src/task_decomposition.rs and src/solver_handlers/task_decomposition.rs`
+# `name only the language-independent roles below; no per-language phrase list`
+# `appears in Rust.`
+# `The observable and unobservable action pair is the checkability oracle from`
+# `the acceptance list. A sub-task is a valid child only when a human can tell,`
+# `by looking, whether it is done. Adding a folder to an array is observable;`
+# `understanding a codebase is not.`
 meanings
   task_decomposition_action
     defined-by action
@@ -78,7 +76,7 @@ meanings
       surface
         text 细分
   subtask_unit_noun
-    defined-by thing
+    defined-by entity
     role subtask_unit_noun
     lexeme en
       surface
@@ -139,7 +137,7 @@ meanings
       surface
         text 小任务
   decomposable_task_noun
-    defined-by thing
+    defined-by entity
     role decomposable_task_noun
     lexeme en
       surface
