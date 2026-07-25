@@ -2,54 +2,54 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 44128
-  line_count 999
-  content_id source_module_ba460df287e497a3
+  byte_len 42293
+  line_count 979
+  content_id source_module_5ae78389fa7a1e45
   symbol_count 46
   symbols
-    function try_http_fetch 23 86
-    function match_curated_github_url 94 110
-    function try_url_navigate 117 141
-    const WEB_SEARCH_RRF_K 148 148
-    const WEB_SEARCH_PROVIDERS 154 154
-    function try_web_search 156 168
-    function detect_web_search_query 177 180
-    function answer_web_search_query 182 295
-    const PROMOTED_PROJECT_ORGS 297 297
-    enum RepositoryPlatform 300 304
-    function label 307 313
-    function host 315 321
-    struct RepositoryReference 325 330
-    function slug 333 335
-    function try_project_lookup 345 360
-    function try_explicit_repository_lookup 362 387
-    function try_project_lookup_with_response_language 389 405
-    function try_project_lookup_internal 407 464
-    function render_project_lookup 466 547
-    function render_generic_repository_lookup 549 653
-    function append_repository_evidence 655 662
-    function matched_project 666 680
-    function promoted_project_by_repo 682 689
-    function is_promoted_project 691 695
-    function repository_from_prompt 697 701
-    function repository_from_concept_term 703 710
-    function repository_from_slug 712 732
-    function repository_from_url 734 762
-    function clean_repository_segment 764 776
-    function is_text_url_extraction_prompt 778 782
-    function normalize_concept_term 784 790
-    function registry_static 795 799
-    static REGISTRY 797 797
-    function extract_http_fetch_url 801 807
-    function http_fetch_url_for 819 821
-    function agentic_fetch_url_for 829 832
-    function extract_url_navigate_url 834 840
-    function first_url_candidate 842 850
-    function trim_url_token 852 856
-    function is_url_wrapper_punctuation 858 863
-    function is_url_trailing_punctuation 865 867
-    function normalize_url_candidate 869 898
-    function looks_like_hostname 900 922
-    function role_evidences_web_intent 943 962
-    function is_http_fetch_prompt 972 979
-    function is_url_navigate_prompt 987 999
+    function try_http_fetch 24 30
+    function try_http_fetch_with_offline 34 90
+    function try_url_navigate 97 121
+    const WEB_SEARCH_RRF_K 128 128
+    const WEB_SEARCH_PROVIDERS 134 134
+    function try_web_search 136 148
+    function detect_web_search_query 157 160
+    function answer_web_search_query 162 275
+    const PROMOTED_PROJECT_ORGS 277 277
+    enum RepositoryPlatform 280 284
+    function label 287 293
+    function host 295 301
+    struct RepositoryReference 305 310
+    function slug 313 315
+    function try_project_lookup 325 340
+    function try_explicit_repository_lookup 342 367
+    function try_project_lookup_with_response_language 369 385
+    function try_project_lookup_internal 387 444
+    function render_project_lookup 446 527
+    function render_generic_repository_lookup 529 633
+    function append_repository_evidence 635 642
+    function matched_project 646 660
+    function promoted_project_by_repo 662 669
+    function is_promoted_project 671 675
+    function repository_from_prompt 677 681
+    function repository_from_concept_term 683 690
+    function repository_from_slug 692 712
+    function repository_from_url 714 742
+    function clean_repository_segment 744 756
+    function is_text_url_extraction_prompt 758 762
+    function normalize_concept_term 764 770
+    function registry_static 775 779
+    static REGISTRY 777 777
+    function extract_http_fetch_url 781 787
+    function http_fetch_url_for 799 801
+    function agentic_fetch_url_for 809 812
+    function extract_url_navigate_url 814 820
+    function first_url_candidate 822 830
+    function trim_url_token 832 836
+    function is_url_wrapper_punctuation 838 843
+    function is_url_trailing_punctuation 845 847
+    function normalize_url_candidate 849 878
+    function looks_like_hostname 880 902
+    function role_evidences_web_intent 923 942
+    function is_http_fetch_prompt 952 959
+    function is_url_navigate_prompt 967 979

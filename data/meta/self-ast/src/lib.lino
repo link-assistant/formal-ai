@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 15228
-  line_count 349
-  content_id source_module_4b7f5405befd65bb
-  symbol_count 117
+  byte_len 15485
+  line_count 354
+  content_id source_module_c2c1908093fe47b6
+  symbol_count 118
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -111,16 +111,17 @@ self_ast_census
     module solver_synthesis 104 104
     module solver_terminal 105 105
     module solver_unknown_reasoning 106 106
-    module statement_audit 107 107
-    module statement_verification 108 108
-    module storage_policy 109 109
-    module substitution 110 110
-    module summarization 111 111
-    module telegram 112 112
-    module telegram_runtime 113 113
-    module thinking 114 114
-    module translation 115 115
-    module unknown_opener 116 116
-    module web_engine_core 117 117
-    module web_search_core 118 118
-    module world_model 119 119
+    module source_fetch 107 107
+    module statement_audit 108 108
+    module statement_verification 109 109
+    module storage_policy 110 110
+    module substitution 111 111
+    module summarization 112 112
+    module telegram 113 113
+    module telegram_runtime 114 114
+    module thinking 115 115
+    module translation 116 116
+    module unknown_opener 117 117
+    module web_engine_core 118 118
+    module web_search_core 119 119
+    module world_model 120 120
