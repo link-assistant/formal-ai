@@ -39,11 +39,34 @@
 #      documents live in the repository rather than in this bundle because
 #      tests/unit/issue_673_self_ast_census.rs pins them, and they are the commit
 #      the self-AST session is recorded against.
+#   5. self-healing-case.lino — the third self-inspection axis, run as its own real
+#      Agent CLI session: the self-healing recipe (src/agentic_coding/self_heal.rs)
+#      walks issue #558's closed loop — reason about the failure, map it onto the
+#      source through a source-to-links round-trip, gate a lesson on a benchmark,
+#      and emit the reviewable repair case as Links Notation. It is the recipe that
+#      renders `data/meta/self-healing-case.lino` (`self_heal::render_document()`,
+#      pinned byte-for-byte by tests/unit/issue_558_self_healing.rs), so this
+#      session is the recorded authoring event that committed document belongs to.
+#   6. how-formal-ai-works.lino — the fourth axis, its own real Agent CLI session:
+#      the self-explanation recipe (src/agentic_coding/explain.rs) answers "how does
+#      Formal AI work?" by resolving every claim against the *current* owned source
+#      manifest, so the document it writes is a content-addressed description of the
+#      source tree as this branch leaves it (it names the manifest content id and the
+#      module content ids it cites). tests/unit/issue_558_self_explanation.rs asserts
+#      it live rather than pinning bytes, precisely because it moves with the source
+#      — which makes it a genuine per-branch artifact rather than checked-in data.
+#   7. rebuild-and-reattach.lino — the fifth axis, its own real Agent CLI session:
+#      the rebuild-and-reattach recipe (src/agentic_coding/rebuild_plan.rs) takes the
+#      canonical accepted change through the same green-gate-plus-approval the ledger
+#      enforces and emits the ordered, reversible steps to regenerate the WebAssembly
+#      worker, reattach it to the browser UI, hot-swap the local server, and verify
+#      the UI runs the accepted version — each step grounded in the artifact it
+#      reattaches. It is asserted live for the same reason as (6).
 #
-# All four are genuine Formal AI output — no human wrote their lines. Each Agent
+# All seven are genuine Formal AI output — no human wrote their lines. Each Agent
 # CLI session is the recorded authoring event its pair of artifacts is attributed
 # to; the exhaustive rendering is the same task that session performed, rendered
-# in full rather than sliced. Artifacts 1-3 are point-in-time, reproducible
+# in full rather than sliced. Artifacts 1-3 and 5-7 are point-in-time, reproducible
 # self-hosting records that no test pins; artifact 4 is checked seed data.
 #
 # The server below runs with a private, empty memory (FORMAL_AI_MEMORY_PATH +
@@ -65,18 +88,43 @@ TASK='Translate the entire source code of our system to the links / meta languag
 # the committed census under data/meta/self-ast (src/self_ast_census.rs, which
 # calls the very same `ast_census` this recipe runs on one module).
 AST_TASK='Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.'
+# The canonical self-healing request the planner routes to the repair-case recipe
+# (src/agentic_coding/self_heal.rs::SELF_HEAL_TASK). Its committed rendering is
+# data/meta/self-healing-case.lino (`self_heal::render_document()`).
+HEAL_TASK='When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.'
+# The canonical self-explanation request the planner routes to the grounded
+# explanation recipe (src/agentic_coding/explain.rs::EXPLAIN_TASK). Its output is a
+# function of the owned source manifest, so it moves with the branch.
+EXPLAIN_TASK='Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.'
+# The canonical rebuild-and-reattach request the planner routes to the WebAssembly
+# reattachment recipe (src/agentic_coding/rebuild_plan.rs::REBUILD_TASK).
+REBUILD_TASK='An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.'
+
+# Which axes to run: `all` (the default, a full regeneration) or a single axis
+# name — `source-links`, `self-ast`, `self-heal`, `explain`, `rebuild`. Running one lets a branch
+# add a session's artifacts without rewriting the transcripts of the sessions
+# already recorded, so `LOG` moves the server trace aside for a partial run.
+ONLY="${ONLY:-all}"
+LOG="${LOG:-$OUT/formal-ai.log}"
+axis() { [[ "$ONLY" == all || "$ONLY" == "$1" ]]; }
 
 command -v "$AGENT" >/dev/null
 [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
 mkdir -p "$OUT"
 work="$(mktemp -d)"
 ast_work="$(mktemp -d)"
+heal_work="$(mktemp -d)"
+explain_work="$(mktemp -d)"
+rebuild_work="$(mktemp -d)"
 mem="$(mktemp -d)"
-cleanup() { kill "${server_pid:-}" 2>/dev/null || true; rm -rf "$work" "$ast_work" "$mem"; }
+cleanup() {
+  kill "${server_pid:-}" 2>/dev/null || true
+  rm -rf "$work" "$ast_work" "$heal_work" "$explain_work" "$rebuild_work" "$mem"
+}
 trap cleanup EXIT
 # Each session gets its own committed git workspace, exactly as the Agent CLI
 # expects to be started in one.
-for fixture in "$work" "$ast_work"; do
+for fixture in "$work" "$ast_work" "$heal_work" "$explain_work" "$rebuild_work"; do
   git -C "$fixture" init -q
   git -C "$fixture" config user.email self-coding@example.invalid
   git -C "$fixture" config user.name self-coding-fixture
@@ -89,7 +137,7 @@ done
 # invariant every E2E server enforces.
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$mem/memory.lino" FORMAL_AI_DREAMING=0 \
-  "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$OUT/formal-ai.log" 2>&1 &
+  "$BIN" serve --host 127.0.0.1 --port "$PORT" >"$LOG" 2>&1 &
 server_pid=$!
 curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   "http://127.0.0.1:$PORT/health" >/dev/null
@@ -108,6 +156,7 @@ run_session() {
   rm "$OUT/$transcript.raw.log" "$OUT/$transcript.stderr.log"
 }
 
+if axis source-links; then
 run_session "$work" "$TASK" agent-stream
 
 # Formal AI's own authored artifacts. These are the self-authored, counted lines;
@@ -135,7 +184,9 @@ else
   (cd "$ROOT" && cargo run --release --quiet --example project_source_links_sharded -- "$OUT") \
     2>"$OUT/whole-repository-projection.summary.log"
 fi
+fi
 
+if axis self-ast; then
 # (3) The second self-inspection axis, run as its own real Agent CLI session: the
 # CST/AST recipe (src/agentic_coding/self_ast.rs) parses a module of our own
 # reasoning meta algorithm through the sole CST/AST engine here (the
@@ -155,11 +206,62 @@ cp "$ast_work/self-ast.lino" "$OUT/self-ast.lino"
 # tests/unit/issue_673_self_ast_census.rs fails if it drifts.
 (cd "$ROOT" && cargo run --release --quiet --example regenerate_self_ast_census) \
   2>"$OUT/self-ast-census.summary.log"
+fi
+
+if axis self-heal; then
+# (5) The third self-inspection axis, again as its own real Agent CLI session: the
+# self-healing recipe (src/agentic_coding/self_heal.rs) runs issue #558's closed
+# loop and writes the reviewable repair case as Links Notation. The same
+# `self_heal::render_document()` output is what `data/meta/self-healing-case.lino`
+# is committed as (tests/unit/issue_558_self_healing.rs pins it byte-for-byte), so
+# this session is the authoring event that document is attributed to.
+run_session "$heal_work" "$HEAL_TASK" agent-stream-self-heal
+cp "$heal_work/self-healing-case.lino" "$OUT/self-healing-case.lino"
+"$BIN" agent --task "$HEAL_TASK" --session-json "$OUT/self-heal-session.json" >/dev/null
+fi
+
+if axis explain; then
+# (6) The fourth axis: the self-explanation recipe (src/agentic_coding/explain.rs)
+# grounds "how does Formal AI work?" in the owned source manifest itself, citing
+# module content ids. The document is therefore a description of the source tree as
+# this branch leaves it — including the modules this PR adds — which is why
+# tests/unit/issue_558_self_explanation.rs asserts it live instead of pinning bytes.
+run_session "$explain_work" "$EXPLAIN_TASK" agent-stream-explain
+cp "$explain_work/how-formal-ai-works.lino" "$OUT/how-formal-ai-works.lino"
+"$BIN" agent --task "$EXPLAIN_TASK" --session-json "$OUT/explain-session.json" >/dev/null
+fi
+
+if axis rebuild; then
+# (7) The fifth axis: the rebuild-and-reattach recipe
+# (src/agentic_coding/rebuild_plan.rs) accepts the canonical change through the
+# green-gate-plus-approval path and writes the ordered, reversible steps to
+# regenerate the WebAssembly worker and reattach it to the UI, each grounded in the
+# artifact it reattaches.
+run_session "$rebuild_work" "$REBUILD_TASK" agent-stream-rebuild
+cp "$rebuild_work/rebuild-and-reattach.lino" "$OUT/rebuild-and-reattach.lino"
+"$BIN" agent --task "$REBUILD_TASK" --session-json "$OUT/rebuild-session.json" >/dev/null
+fi
 
 echo "issue #839 self-hosting evidence written to $OUT"
-echo "source-links session id(s): $(grep -o 'ses_[A-Za-z0-9]*' "$OUT/agent-stream.jsonl" | sort -u | tr '\n' ' ')"
-echo "self-AST session id(s): $(grep -o 'ses_[A-Za-z0-9]*' "$OUT/agent-stream-self-ast.jsonl" | sort -u | tr '\n' ' ')"
-echo "whole-repository projection shards: $(cat "$OUT"/whole-repository-projection-*.lino | wc -l) lines across $(ls "$OUT"/whole-repository-projection-*.lino | wc -l) files"
-tail -1 "$OUT/whole-repository-projection.summary.log"
-tail -1 "$OUT/self-ast-census.summary.log"
-git -C "$ROOT" status --porcelain data/meta/self-ast | sed 's/^/census: /'
+for pair in "source-links:agent-stream" "self-AST:agent-stream-self-ast" "self-healing:agent-stream-self-heal" "explain:agent-stream-explain" "rebuild:agent-stream-rebuild"; do
+  transcript="$OUT/${pair#*:}.jsonl"
+  [[ -f "$transcript" ]] || continue
+  echo "${pair%%:*} session id(s): $(grep -o 'ses_[A-Za-z0-9]*' "$transcript" | sort -u | tr '\n' ' ')"
+done
+if axis source-links; then
+  echo "whole-repository projection shards: $(cat "$OUT"/whole-repository-projection-*.lino | wc -l) lines across $(ls "$OUT"/whole-repository-projection-*.lino | wc -l) files"
+  tail -1 "$OUT/whole-repository-projection.summary.log"
+fi
+if axis self-ast; then
+  tail -1 "$OUT/self-ast-census.summary.log"
+  git -C "$ROOT" status --porcelain data/meta/self-ast | sed 's/^/census: /'
+fi
+if axis self-heal; then
+  git -C "$ROOT" status --porcelain data/meta/self-healing-case.lino | sed 's/^/self-heal: /'
+fi
+if axis explain; then
+  grep -m1 'source_manifest_content_id' "$OUT/how-formal-ai-works.lino" | sed 's/^ */explain: /'
+fi
+if axis rebuild; then
+  echo "rebuild: $(grep -c '^    step ' "$OUT/rebuild-and-reattach.lino") ordered steps, $(grep -c '^    artifact ' "$OUT/rebuild-and-reattach.lino") reattached artifacts"
+fi
