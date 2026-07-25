@@ -8,6 +8,7 @@ import { TextDecoder, TextEncoder } from "node:util";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const webDir = path.join(root, "src", "web");
+let canonicalSeedFetches = 0;
 const sandbox = {
   console,
   location: { search: "" },
@@ -24,12 +25,14 @@ sandbox.self = sandbox;
 sandbox.globalThis = sandbox;
 sandbox.fetch = async (url) => {
   const relative = String(url).split("?")[0];
+  const isCanonicalSeed = relative.startsWith("seed/");
   // `src/web/seed/` is an ignored build artifact produced from `data/seed/`.
   // Read the tracked canonical source directly so this parity check behaves
   // identically in a clean checkout and in a previously built worktree.
-  const file = relative.startsWith("seed/")
+  const file = isCanonicalSeed
     ? path.join(root, "data", relative)
     : path.join(webDir, relative);
+  canonicalSeedFetches += Number(isCanonicalSeed);
   const text = fs.readFileSync(file, "utf8");
   return { ok: true, status: 200, async text() { return text; } };
 };
@@ -45,6 +48,9 @@ for (let index = 0; index <= 20; index += 1) {
   load(`worker/formal_ai_worker_${String(index).padStart(2, "0")}.js`);
 }
 await vm.runInContext("loadSeed()", sandbox);
+if (canonicalSeedFetches === 0) {
+  throw new Error("browser parity did not hydrate the canonical seed");
+}
 
 const localCases = [
   "Search hive-control-center on my desktop",
