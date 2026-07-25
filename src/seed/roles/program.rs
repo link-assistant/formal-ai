@@ -237,6 +237,6 @@ pub const ROLE_PROGRAM_SYNTHESIS_TASK: &str = "program_synthesis_task";
 /// identifier rung of the summarization ladder (issue #844) reads it through
 /// [`crate::seed::Lexicon::words_for_role`] and suffixes any candidate whose
 /// whole rendered form collides, so shortening "the type of a match" to an
-/// identifier yields `type_of_match` rather than the reserved `type`. Read only
-/// by the Rust identifier renderer.
+/// identifier yields `type_match`, and shortening "the type" yields `type_`
+/// rather than the reserved `type`. Read only by the Rust identifier renderer.
 pub const ROLE_IDENTIFIER_RESERVED_WORD: &str = "identifier_reserved_word";
