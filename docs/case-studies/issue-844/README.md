@@ -142,6 +142,36 @@ rounded to `TRUTH_VALUE_DECIMALS`, so two runs agree to the last digit
 (`the_merge_is_deterministic_and_independent_of_source_order`, which compares
 probabilities bit-for-bit).
 
+## Self-hosting evidence
+
+Every commit that implements the merge is hand-authored, so none of them carries
+a `Formal-AI-Session` trailer: `CONTRIBUTING.md` forbids attaching those trailers
+to human work and says plainly that "an honest 0% release is valid". Keeping that
+honest is what makes the differential ratchet in `Self-Hosting Evidence Check`
+fall on this branch, and the answer issue #839 established is to let Formal AI
+author release work of its own here rather than to relabel ours.
+
+[`experiments/issue-844-self-hosting-evidence/run.sh`](../../../experiments/issue-844-self-hosting-evidence/run.sh)
+is a thin wrapper over #839's harness — it only picks the axes and the output
+directory, because that harness already accepts `OUT`, `ONLY`, `LOG` and `PORT`
+so a branch can record its own sessions without rewriting transcripts that are
+already committed. Three real Agent CLI sessions (Agent CLI → local Formal AI
+server, private empty memory, no dreaming) ran against *this* branch's tree, and
+[`self-hosting-evidence/`](self-hosting-evidence/) holds what they produced:
+
+| Session | Recipe | Formal AI's artifacts |
+| --- | --- | --- |
+| `ses_0676fd278ffeuv3bsN1LHMgrcn` | source-to-links (#558) | `self-source-links.lino`, plus `whole-repository-projection-0{1,2,3}.lino` — all 305 owned modules translated to Links Notation and back, each round-trip proven byte-for-byte, `src/summarization/{dedup,importance,gathering,context,identifier}.rs` among them |
+| `ses_0676f331effe6WXVXKl1214qa9` | CST/AST census (#538/#673) | `self-ast.lino`, and the whole-workspace rendering of the same `ast_census` under `data/meta/self-ast/**` |
+| `ses_0676bc5a4ffe0RbQFKLUvNTh78` | grounded self-explanation (#558) | `how-formal-ai-works.lino`, resolved against this branch's own source manifest (`source_tree_8a22e53f3473e9d1`) |
+
+None of it is prose about the work: each artifact is a deterministic function of
+the source tree this branch leaves behind, so re-running the script reproduces
+every `.lino` byte-for-byte. The `.jsonl` transcripts and `.log` server traces are
+the excluded evidence bundle
+(`scripts/self-hosting-metric.rs::CAPTURED_ARTIFACT_EXTENSIONS`) that binds each
+artifact to the session id that authored it.
+
 ## Traceability
 
 [`requirements.md`](requirements.md) maps R844-01…R844-10 to named regression
