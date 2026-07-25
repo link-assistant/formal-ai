@@ -705,12 +705,12 @@ fn json_settings_value(
 ) -> Result<Value, Box<dyn Error>> {
     let mut value = Value::Object(serde_json::Map::new());
     for (path, setting_value) in settings {
-        set_json_string(&mut value, path, setting_value, context)?;
+        set_json_setting(&mut value, path, setting_value, context)?;
     }
     Ok(value)
 }
 
-fn set_json_string(
+fn set_json_setting(
     root: &mut Value,
     dotted_path: &str,
     value: &str,
@@ -738,7 +738,14 @@ fn set_json_string(
     let object = current
         .as_object_mut()
         .ok_or("JSON setting path conflicts with a scalar value")?;
-    object.insert(last.clone(), Value::String(render_template(value, context)));
+    let rendered = render_template(value, context);
+    let setting = if let Some(literal) = rendered.strip_prefix("json:") {
+        serde_json::from_str(literal)
+            .map_err(|error| format!("invalid typed JSON setting `{rendered}`: {error}"))?
+    } else {
+        Value::String(rendered)
+    };
+    object.insert(last.clone(), setting);
     Ok(())
 }
 
