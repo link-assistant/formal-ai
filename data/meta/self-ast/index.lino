@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 294
   full_ast_module_count 43
   signature_module_count 251
-  symbol_count 6076
-  content_id self_ast_census_index_6c22cec0d2679be3
+  symbol_count 6077
+  content_id self_ast_census_index_c48813b0ec435921
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -258,7 +258,7 @@ self_ast_census_index
     src/solver_handlers/text_edit_ops.rs signature 31 source_module_cf0ed8dd0895cdc1
     src/solver_handlers/text_manipulation.rs signature 35 source_module_4d076a37c10da367
     src/solver_handlers/user_intent.rs signature 24 source_module_16bead8f2595412c
-    src/solver_handlers/web_requests.rs signature 46 source_module_5ae78389fa7a1e45
+    src/solver_handlers/web_requests.rs signature 47 source_module_18a3391d53c6d4b3
     src/solver_handlers/web_search_intent.rs signature 54 source_module_10d41e2e310fa8d7
     src/solver_handlers_policy.rs signature 2 source_module_a264a68f6d76c720
     src/solver_helpers/code.rs signature 19 source_module_da127d9d69b86a44
