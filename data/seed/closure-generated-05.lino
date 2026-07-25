@@ -1,4 +1,49 @@
 meanings
+  tool_append_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool append memory"
+  tool_brainstorm
+    defined-by tool
+    lexeme en
+      surface
+        text "tool brainstorm"
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
   tool_http_fetch
     defined-by tool
     lexeme en

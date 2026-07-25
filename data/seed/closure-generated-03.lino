@@ -1,4 +1,49 @@
 meanings
+  pattern_test_status_keyword_test_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status keyword test zh"
+  pattern_test_status_phrase_are_you_there_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase are you there en"
+  pattern_test_status_phrase_i_am_here_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase i am here en"
+  pattern_test_status_phrase_kya_aap_vahan_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase kya aap vahan hain hi"
+  pattern_test_status_phrase_main_yahan_hun_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase main yahan hun hi"
+  pattern_test_status_phrase_ni_zai_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase ni zai ma zh"
+  pattern_test_status_phrase_success_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase success hi"
+  pattern_test_status_phrase_success_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase success zh"
+  pattern_test_status_phrase_test_passed_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test passed en"
   pattern_test_status_phrase_test_proyden_ru
     defined-by prompt_pattern
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import cannot write json en"
-  response_lexeme_import_cannot_write_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json hi"
-  response_lexeme_import_cannot_write_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json ru"
-  response_lexeme_import_cannot_write_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json zh"
-  response_lexeme_import_cannot_write_lino_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino en"
-  response_lexeme_import_cannot_write_lino_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino hi"
-  response_lexeme_import_cannot_write_lino_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino ru"
-  response_lexeme_import_cannot_write_lino_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino zh"
-  response_lexeme_import_denotation_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost en"
-  response_lexeme_import_denotation_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost hi"
