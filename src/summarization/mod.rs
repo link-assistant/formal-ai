@@ -306,6 +306,21 @@ impl SummarizationConfig {
         self
     }
 
+    /// Builder helper to keep the boilerplate kinds (`install`, `example`) in
+    /// the output.
+    ///
+    /// The default drops them because a compressed project summary should not
+    /// carry setup steps. A merged multi-source context is the case that needs
+    /// the opposite: when the sources are a question and its answers, the
+    /// install command *is* the answer, and the evidence weight of
+    /// [`importance::score`] — not the sentence's kind — is what decides its
+    /// importance.
+    #[must_use]
+    pub const fn keeping_boilerplate(mut self) -> Self {
+        self.drop_boilerplate = false;
+        self
+    }
+
     /// Builder helper to clamp the number of statements.
     #[must_use]
     pub const fn with_max_statements(mut self, cap: usize) -> Self {
@@ -347,13 +362,23 @@ impl SummarizationConfig {
 /// with a full stop. Without them a Hindi page is one enormous statement, so
 /// anything that ranks or trims sentences — the web-research extract of issue
 /// #771, for one — degrades to returning the whole document.
+///
+/// A full stop glued to the next character ends nothing: `crates.io`, `docs.rs`
+/// and `1.96` are single tokens, and splitting inside them turns one fact into
+/// two fragments ("the crate is published on crates" and "io"), which a
+/// multi-source merge then ranks and presents as separate facts. Only a full
+/// stop followed by whitespace, punctuation or the end of the text closes a
+/// sentence; the other terminators stay eager, because none of them appears
+/// inside a word.
 #[must_use]
 pub fn formalize(text: &str) -> Vec<Statement> {
     let mut out = Vec::new();
     let mut buffer = String::new();
-    for ch in text.chars() {
+    let mut chars = text.chars().peekable();
+    while let Some(ch) = chars.next() {
         buffer.push(ch);
-        if matches!(ch, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '\n') {
+        let inside_token = ch == '.' && chars.peek().is_some_and(|next| next.is_alphanumeric());
+        if !inside_token && matches!(ch, '.' | '!' | '?' | '。' | '…' | '।' | '॥' | '\n') {
             push_sentence(&mut buffer, &mut out);
         }
     }

@@ -54,6 +54,11 @@ use crate::substitution::{SubstitutionGraph, SubstitutionLink};
 /// dependency cycle (a statement whose dependency contradicts it), which can
 /// oscillate rather than settle. It is multiplied by the statement count so a
 /// deep dependency chain still relaxes fully before the guard trips.
+///
+/// A cycle that repeats a visited state exactly never reaches this guard:
+/// [`Context::recalculate`] collapses it to the mean of the cycle. The guard
+/// still catches the slow case — a cycle that spirals towards its fixpoint
+/// without ever revisiting a state.
 const MAX_RECALCULATION_PASSES_PER_STATEMENT: usize = 4;
 
 /// How one statement depends on another inside a context.
@@ -305,6 +310,22 @@ impl Context {
     /// changes (converged) or the `MAX_RECALCULATION_PASSES_PER_STATEMENT`
     /// bound trips. The dependency structure is mirrored into the links network
     /// so the context stays a single inspectable graph.
+    ///
+    /// A negative-feedback cycle need not settle by relaxation: two statements
+    /// that contradict each other, each carrying evidence that saturates its own
+    /// support, make the update the exact swap `x ← 1 - x`, which oscillates
+    /// forever. Left to the pass bound alone the returned values are whichever
+    /// half of the oscillation the last pass happened to land on — for a
+    /// first-party claim against a first-party denial, that means *both* sides
+    /// can come out probable, which is precisely the consensus a contradiction
+    /// must not produce. So the cascade remembers the states it has visited: when
+    /// a pass reproduces one exactly, the cycle is collapsed to the mean of its
+    /// states. For the single-contradiction case the update is affine in the
+    /// twin's value, so that mean *is* the cycle's fixpoint (the swap settles at
+    /// `0.5`: maximal uncertainty, which is the honest reading of "two original
+    /// sources flatly disagree"). The collapse is verified rather than assumed —
+    /// `converged` is only reported when one further pass leaves the mean
+    /// unchanged.
     pub fn recalculate(&mut self) -> RecalculationReport {
         let ids: Vec<String> = self.statements.keys().cloned().collect();
         let before: BTreeMap<String, TruthValue> = ids
@@ -318,12 +339,18 @@ impl Context {
 
         let mut iterations = 0;
         let mut converged = false;
+        let mut visited: Vec<BTreeMap<String, TruthValue>> = Vec::new();
         while iterations < limit {
             iterations += 1;
             let snapshot: BTreeMap<String, TruthValue> = ids
                 .iter()
                 .map(|id| (id.clone(), self.statements[id].truth))
                 .collect();
+            if let Some(start) = visited.iter().position(|seen| *seen == snapshot) {
+                converged = self.collapse_cycle(&ids, &visited[start..]);
+                break;
+            }
+            visited.push(snapshot.clone());
             let mut changed = false;
             for id in &ids {
                 let recomputed = self.assess_with_dependencies(id, &snapshot);
@@ -361,6 +388,42 @@ impl Context {
             converged,
             updated,
         }
+    }
+
+    /// Settle an oscillating cascade on the mean of the cycle it fell into.
+    ///
+    /// `cycle` is the run of states the relaxation repeats, in visit order. Each
+    /// statement takes the mean of its values over those states, which is the
+    /// cycle's fixpoint whenever the update is affine in the values it reads —
+    /// the mutual-contradiction case this exists for. Returns whether one further
+    /// pass leaves the collapsed state unchanged, i.e. whether the mean really is
+    /// a fixpoint; the values are kept either way, because the centre of the
+    /// oscillation is still a better answer than an arbitrary half of it.
+    fn collapse_cycle(&mut self, ids: &[String], cycle: &[BTreeMap<String, TruthValue>]) -> bool {
+        if cycle.is_empty() {
+            return false;
+        }
+        // `cycle.len()` is bounded by the pass limit, so the division is exact
+        // enough for the six-decimal grid `TruthValue` snaps to.
+        #[allow(clippy::cast_precision_loss)]
+        let period = cycle.len() as f64;
+        let collapsed: BTreeMap<String, TruthValue> = ids
+            .iter()
+            .map(|id| {
+                let sum: f64 = cycle
+                    .iter()
+                    .map(|state| state.get(id).copied().unwrap_or(TruthValue::UNKNOWN).get())
+                    .sum();
+                (id.clone(), TruthValue::new(sum / period))
+            })
+            .collect();
+        for (id, value) in &collapsed {
+            if let Some(statement) = self.statements.get_mut(id) {
+                statement.truth = *value;
+            }
+        }
+        ids.iter()
+            .all(|id| self.assess_with_dependencies(id, &collapsed) == collapsed[id])
     }
 
     /// Assess one statement from its own evidence plus the current truth values

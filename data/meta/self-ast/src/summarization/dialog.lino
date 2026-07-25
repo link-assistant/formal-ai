@@ -2,9 +2,9 @@ self_ast_census
   target src/summarization/dialog.rs
   language rust
   fidelity signature
-  byte_len 3384
+  byte_len 3409
   line_count 98
-  content_id source_module_2e926d9ceba02a59
+  content_id source_module_ab1a647e1983251e
   symbol_count 7
   symbols
     struct DialogTurn 17 20

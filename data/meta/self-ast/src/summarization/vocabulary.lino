@@ -1,0 +1,22 @@
+self_ast_census
+  target src/summarization/vocabulary.rs
+  language rust
+  fidelity signature
+  byte_len 5818
+  line_count 153
+  content_id source_module_4595af02f99e71e2
+  symbol_count 13
+  symbols
+    function function_words 27 30
+    static CACHE 28 28
+    function negation_cues 34 37
+    static CACHE 35 35
+    function reserved_words 41 44
+    static CACHE 42 42
+    function words_for 46 52
+    function is_reserved_word 60 65
+    function tokenize 76 90
+    function flush 92 98
+    function strip_words 107 127
+    function mentions_word 132 139
+    function cjk_words_longest_first 145 153

@@ -2,9 +2,9 @@ self_ast_census
   target src/summarization/resource.rs
   language rust
   fidelity signature
-  byte_len 12788
-  line_count 354
-  content_id source_module_843175b39873000f
+  byte_len 12921
+  line_count 355
+  content_id source_module_38f92a468be1b09a
   symbol_count 19
   symbols
     enum RepositoryEntry 46 51
@@ -17,12 +17,12 @@ self_ast_census
     function is_directory 120 122
     function summary 130 135
     function links_notation 139 144
-    function summary 151 181
-    function identity_sentence 183 200
-    function links_notation 204 254
-    function formalize_repository_resource 259 270
-    function formalize_repository_directory 274 316
-    function summarize_repository_resource 322 327
-    function child_summary_cap 332 339
-    function pluralize 341 347
-    function push_field 349 354
+    function summary 151 182
+    function identity_sentence 184 201
+    function links_notation 205 255
+    function formalize_repository_resource 260 271
+    function formalize_repository_directory 275 317
+    function summarize_repository_resource 323 328
+    function child_summary_cap 333 340
+    function pluralize 342 348
+    function push_field 350 355

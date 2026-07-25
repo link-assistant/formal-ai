@@ -20,10 +20,21 @@
 //! graph: a contradicted pair settles at the probability its evidence supports,
 //! and both sides stay inspectable. Nothing is presented as consensus that the
 //! sources disagree about.
+//!
+//! The table above is exhaustive on purpose: a denial reaches a statement
+//! *only* through the edge, never also as a contradicting
+//! [`crate::relative_meta_logic::RelativeEvidence`] record on the statement
+//! itself. Attaching both would count the same denial twice, and
+//! [`crate::world_model::Context`] synthesizes a dependency's evidence at
+//! [`crate::relative_meta_logic::SourceTier::OriginalFirstParty`], so the second
+//! copy would also silently promote an unoriginal denier to first-party trust.
+//! The ranking keeps the contradicting records
+//! ([`super::importance::RankedStatement::evidence`]) because the recheck gate
+//! needs both stances to tell a contested claim from a confirmed one.
 
 use super::dedup::{DedupReport, SourcedStatement};
 use super::importance::{rank, RankedStatement};
-use crate::relative_meta_logic::TruthValue;
+use crate::relative_meta_logic::{Stance, TruthValue};
 use crate::world_model::{Context, Dependency, Statement as WorldStatement};
 
 /// A merged context plus the reports that explain how it was built.
@@ -97,7 +108,25 @@ impl MergedContext {
     /// recheck gate first.
     #[must_use]
     pub fn summary(&self, config: &super::SummarizationConfig) -> String {
-        let statements = super::importance::to_statements(&self.ranked, self.total_sources());
+        self.render(&self.ranked, config)
+    }
+
+    /// Render a set of ranked statements at the requested rung.
+    ///
+    /// The two label rungs ([`super::SummarizationMode::is_label_only`]) are
+    /// below the statement scale, so they go through
+    /// [`super::label_for_mode`] like every other call site: asking a merged
+    /// context for an identifier must return a name, not the first sentence of
+    /// the best-evidenced fact. The label is taken from the top-ranked statement
+    /// alone, because that ranking is the merge's total order — letting
+    /// [`super::to_topic`] pick a maximum among equal weights would name the
+    /// context after whichever tied fact happened to come last.
+    fn render(&self, ranked: &[RankedStatement], config: &super::SummarizationConfig) -> String {
+        let statements = super::importance::to_statements(ranked, self.total_sources());
+        if config.mode.is_label_only() {
+            let head = &statements[..statements.len().min(1)];
+            return super::label_for_mode(config.mode, &super::to_topic("", head));
+        }
         let summarized = super::summarize(&statements, config);
         super::deformalize(&summarized)
     }
@@ -118,9 +147,7 @@ impl MergedContext {
             .into_iter()
             .map(|item| item.ranked.clone())
             .collect();
-        let statements = super::importance::to_statements(&survivors, self.total_sources());
-        let summarized = super::summarize(&statements, config);
-        super::deformalize(&summarized)
+        self.render(&survivors, config)
     }
 }
 
@@ -153,7 +180,11 @@ pub fn merge_into_context(id: &str, observations: &[SourcedStatement]) -> Merged
     let mut statements = Vec::with_capacity(ranked.len());
     for item in &ranked {
         let mut statement = WorldStatement::new(&item.statement.representative.text);
-        for evidence in &item.evidence {
+        for evidence in item
+            .evidence
+            .iter()
+            .filter(|record| record.stance == Stance::Supports)
+        {
             statement = statement.with_evidence(evidence.clone());
         }
         for pair in &report.contradictions {

@@ -2,58 +2,59 @@ self_ast_census
   target src/world_model.rs
   language rust
   fidelity signature
-  byte_len 28673
-  line_count 732
-  content_id source_module_d4b7f287ac56afc1
-  symbol_count 50
+  byte_len 32125
+  line_count 795
+  content_id source_module_b497c4f0f2c013ac
+  symbol_count 51
   symbols
-    const MAX_RECALCULATION_PASSES_PER_STATEMENT 57 57
-    struct Dependency 67 72
-    function supports 77 82
-    function contradicts 86 91
-    struct Statement 102 115
-    function new 121 134
-    function with_evidence 138 141
-    function with_dependency 145 148
-    function with_prior 152 155
-    struct Action 164 171
-    function new 176 182
-    function adding 186 189
-    function removing 193 196
-    function id 200 209
-    struct Context 219 226
-    function new 231 237
-    function assert_link 240 242
-    function retract_link 245 247
-    function holds 251 253
-    function links 257 259
-    function statements 263 265
-    function statement 269 271
-    function add_statement 276 281
-    function extend_statements 289 297
-    function recalculate 308 364
-    function assess_with_dependencies 369 390
-    function sync_statement_links 394 412
-    function apply_action 418 426
-    function predict 436 449
-    function difference 459 483
-    function merge_from 491 499
-    function split_off 508 526
-    function links_notation 531 533
-    function state_links 536 542
-    function statement_changes_against 545 561
-    function is_statement_layer_link 566 572
-    struct RecalculationReport 576 583
-    struct StatementChange 587 596
-    struct LinkConflict 601 606
-    struct ContextDiff 610 617
-    function is_empty 623 625
-    function links_notation 629 646
-    struct Prediction 652 665
-    function is_noop 671 673
-    struct WorldModel 685 692
-    function new 697 703
-    function difference 709 711
-    function predict 716 718
-    function target_reached 723 725
-    function commit_current_to_general 729 731
+    const MAX_RECALCULATION_PASSES_PER_STATEMENT 62 62
+    struct Dependency 72 77
+    function supports 82 87
+    function contradicts 91 96
+    struct Statement 107 120
+    function new 126 139
+    function with_evidence 143 146
+    function with_dependency 150 153
+    function with_prior 157 160
+    struct Action 169 176
+    function new 181 187
+    function adding 191 194
+    function removing 198 201
+    function id 205 214
+    struct Context 224 231
+    function new 236 242
+    function assert_link 245 247
+    function retract_link 250 252
+    function holds 256 258
+    function links 262 264
+    function statements 268 270
+    function statement 274 276
+    function add_statement 281 286
+    function extend_statements 294 302
+    function recalculate 329 391
+    function collapse_cycle 402 427
+    function assess_with_dependencies 432 453
+    function sync_statement_links 457 475
+    function apply_action 481 489
+    function predict 499 512
+    function difference 522 546
+    function merge_from 554 562
+    function split_off 571 589
+    function links_notation 594 596
+    function state_links 599 605
+    function statement_changes_against 608 624
+    function is_statement_layer_link 629 635
+    struct RecalculationReport 639 646
+    struct StatementChange 650 659
+    struct LinkConflict 664 669
+    struct ContextDiff 673 680
+    function is_empty 686 688
+    function links_notation 692 709
+    struct Prediction 715 728
+    function is_noop 734 736
+    struct WorldModel 748 755
+    function new 760 766
+    function difference 772 774
+    function predict 779 781
+    function target_reached 786 788
+    function commit_current_to_general 792 794

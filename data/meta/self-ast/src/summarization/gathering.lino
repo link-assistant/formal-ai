@@ -1,0 +1,34 @@
+self_ast_census
+  target src/summarization/gathering.rs
+  language rust
+  fidelity signature
+  byte_len 14536
+  line_count 407
+  content_id source_module_97c13dcdcaa1f002
+  symbol_count 25
+  symbols
+    struct FetchedSource 36 47
+    function new 52 60
+    function supplying 64 67
+    function linking 71 74
+    function digest 78 80
+    trait SourceProvider 85 88
+    function fetch 87 87
+    struct CacheEntry 99 104
+    struct SourceCache 112 115
+    function new 120 122
+    function get 129 139
+    function put 143 155
+    function url_count 159 161
+    function body_count 166 168
+    struct GatheringPlan 173 182
+    function new 187 194
+    function requiring 198 201
+    function seeded_with 205 208
+    struct FetchRecord 213 224
+    struct GatheringReport 228 246
+    function is_closed 251 253
+    function trace 260 279
+    function research_tier 285 291
+    function gather 301 395
+    function dedupe_urls 398 407

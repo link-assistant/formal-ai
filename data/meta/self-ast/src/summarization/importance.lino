@@ -1,0 +1,18 @@
+self_ast_census
+  target src/summarization/importance.rs
+  language rust
+  fidelity signature
+  byte_len 8623
+  line_count 232
+  content_id source_module_9f18af13a98a1611
+  symbol_count 9
+  symbols
+    struct ImportanceScore 42 53
+    function blend 58 70
+    struct RankedStatement 75 89
+    function evidence_summary 95 103
+    function is_contested 107 109
+    function rank 120 146
+    function score 150 198
+    function percentage 201 207
+    function to_statements 216 232

@@ -87,15 +87,31 @@ pub trait SourceProvider {
     fn fetch(&mut self, url: &str) -> Option<FetchedSource>;
 }
 
+/// What the cache remembers about one URL: its provenance, and the content
+/// address of the body it served.
+///
+/// Provenance is per-URL and the body is shared, because two URLs can serve the
+/// same bytes at *different* trust tiers — an unoriginal repost of a first-party
+/// announcement is the ordinary case. Storing the tier, the supplied attributes
+/// and the outgoing links per URL is what keeps the shared body from
+/// impersonating whichever URL happened to be fetched first.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CacheEntry {
+    digest: String,
+    tier: SourceTier,
+    supplies: Vec<String>,
+    links: Vec<String>,
+}
+
 /// A content-addressed store of fetched documents.
 ///
-/// Two maps, both ordered so iteration is deterministic: URLs index into
-/// digests, digests hold bodies. Mirrors and reposts therefore cost one body,
-/// however many URLs serve it.
+/// Two maps, both ordered so iteration is deterministic: URLs index onto their
+/// provenance plus a digest, digests hold bodies. Mirrors and reposts therefore
+/// cost one body, however many URLs serve it.
 #[derive(Debug, Clone, Default)]
 pub struct SourceCache {
-    index: BTreeMap<String, String>,
-    documents: BTreeMap<String, FetchedSource>,
+    index: BTreeMap<String, CacheEntry>,
+    bodies: BTreeMap<String, String>,
 }
 
 impl SourceCache {
@@ -106,18 +122,36 @@ impl SourceCache {
     }
 
     /// The cached document for `url`, if it was fetched before.
+    ///
+    /// Reconstructed from this URL's own provenance and the shared body, so a
+    /// cache hit is indistinguishable from the original fetch.
     #[must_use]
-    pub fn get(&self, url: &str) -> Option<&FetchedSource> {
-        self.index
-            .get(url)
-            .and_then(|digest| self.documents.get(digest))
+    pub fn get(&self, url: &str) -> Option<FetchedSource> {
+        let entry = self.index.get(url)?;
+        let text = self.bodies.get(&entry.digest)?;
+        Some(FetchedSource {
+            url: url.to_string(),
+            tier: entry.tier,
+            text: text.clone(),
+            supplies: entry.supplies.clone(),
+            links: entry.links.clone(),
+        })
     }
 
-    /// Store `source`, keyed by its content address.
+    /// Store `source`: its body under its content address, its provenance under
+    /// its URL.
     pub fn put(&mut self, source: FetchedSource) {
         let digest = source.digest();
-        self.index.insert(source.url.clone(), digest.clone());
-        self.documents.entry(digest).or_insert(source);
+        self.bodies.entry(digest.clone()).or_insert(source.text);
+        self.index.insert(
+            source.url,
+            CacheEntry {
+                digest,
+                tier: source.tier,
+                supplies: source.supplies,
+                links: source.links,
+            },
+        );
     }
 
     /// How many URLs the cache knows.
@@ -130,7 +164,7 @@ impl SourceCache {
     /// sources mirror each other.
     #[must_use]
     pub fn body_count(&self) -> usize {
-        self.documents.len()
+        self.bodies.len()
     }
 }
 
@@ -299,7 +333,7 @@ pub fn gather(
         let mut next: Vec<String> = Vec::new();
         for url in &frontier {
             seen.push(url.clone());
-            let cached = cache.get(url).cloned();
+            let cached = cache.get(url);
             let from_cache = cached.is_some();
             let Some(document) = cached.or_else(|| provider.fetch(url)) else {
                 // An unreachable source is recorded by its absence: it is
