@@ -20,8 +20,12 @@ FILES
 -----
   prompts.json   13 tasks across 4 levels, seeded from issues #846, #843,
                  #700, #710 plus two decomposition meta-tasks (#847).
+  generate_prompts.py   Writes prompts.json. Edit this, never prompts.json.
   run_coding_ladder.sh  Runs each task, verifies by observed effect, reverts
                  the tree between tasks, writes results.json.
+  new_branch_for.sh     The L1 verify: exits 0 only for a branch that appeared
+                 DURING the task, measured against the ref snapshot the runner
+                 takes before launching it.
   results.json   Output of the last run. Regenerate; do not hand-edit.
 
 USAGE
@@ -108,6 +112,25 @@ whose entire content is the echoed prompt fragment --
 -- and a grep for the test name passes on that. The runner now requires any
 .rs file a task was asked to create to contain an `fn` item. Ten tasks were
 reclassified pass -> fail and test_authoring went 7/8 -> 0/8.
+
+A sixth, found when the 130-task run was first repeated on Linux: L1 jumped
+from 0/16 to 7/16 with no engine change that could explain it. The verify was
+`git branch -a | grep -q "issue-846"`, and `-a` includes remote-tracking refs.
+The machine that produced 0/16 had never fetched them; the machine that
+produced 7/16 had. Every one of those seven "passes" was a branch pushed by
+someone else weeks earlier -- one of them the very branch the measurement was
+running from. L1 tasks now verify through new_branch_for.sh, which requires a
+ref that is absent from a snapshot taken immediately before the task starts.
+
+A seventh, on the same run: `formal-ai with agent` copies its whole
+configuration into $TMPDIR/formal-ai-agent-home-config-<pid>-<nanos>/ and never
+removes it -- about 200 MB per task. At task 88 of 130 the filesystem tightened
+and the temporary server stopped coming up, so the last 42 tasks measured
+nothing at all while recording ordinary FAILs (and, where `verify` happened to
+be satisfied by the tree's existing state, ordinary PASSes). The runner now
+reclaims the scratch home after every task and reports a task whose server
+never started as NOT MEASURED, counted separately from a failure. A run with a
+non-zero NOT MEASURED count is incomplete, not bad news.
 
 Generalisable lesson, and the same one behind #839 and #842: assert on the
 OBSERVED EFFECT, never on narration. "I created the file" with no file is a

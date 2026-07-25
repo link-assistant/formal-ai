@@ -94,6 +94,20 @@ def reclaim_agent_scratch():
     for path in glob.glob(os.path.join(tmp, "formal-ai-agent-home-config-*")):
         shutil.rmtree(path, ignore_errors=True)
 
+def snapshot_branches():
+    """Record every ref before a task so `new_branch_for.sh` can spot new ones.
+
+    L1 tasks ("solve the issue and open a pull request") are verified by a
+    branch existing. Without a before-picture that check passes on branches
+    that were already in the clone -- remote-tracking refs included -- which
+    silently credits the agent with work other people did.
+    """
+    proc = subprocess.run(["git", "for-each-ref", "--format=%(refname)"],
+                          cwd=root, capture_output=True, text=True)
+    with open(os.path.join(os.path.dirname(out_path), ".branches-before"),
+              "w") as handle:
+        handle.write(proc.stdout)
+
 def repo_is_clean():
     proc = subprocess.run(["git", "status", "--porcelain"], cwd=root,
                           capture_output=True, text=True)
@@ -128,6 +142,7 @@ def write_results():
 for task in tasks:
     structural = ""
     reset_repo()
+    snapshot_branches()
     cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]
     try:
         proc = subprocess.run(
