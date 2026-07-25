@@ -454,6 +454,11 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  client_integration_invalid_typed_json_setting
+    defined-by intent
+    lexeme en
+      surface
+        text "client integration invalid typed json setting"
   client_server_did_not_listen
     defined-by field
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "knowledge representation"
-  kubaturit
-    defined-by term
-    lexeme en
-      surface
-        text "kubaturit"
