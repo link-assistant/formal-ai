@@ -403,7 +403,7 @@ source_links
     module
       path "src/cli_context.rs"
       byte_len 15290
-      content_id "source_module_d7772038a93565c7"
+      content_id "source_module_e612e83017271e23"
       total_link_count 11302
       named_node_count 2312
       faithful true
