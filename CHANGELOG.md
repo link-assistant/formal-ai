@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.304.1] - 2026-07-25
+
+### Fixed
+
+- Honor excluded CI paths on direct pushes instead of unconditionally running
+  tests, coverage, and end-to-end jobs.
+
 ## [0.304.0] - 2026-07-25
 
 ### Added
