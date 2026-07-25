@@ -12,11 +12,11 @@ use serde_json::{json, Value};
 const ERROR_PLACEHOLDER: &str = "{error}";
 const SESSION_PLACEHOLDER: &str = "{session}";
 const VARIABLE_PLACEHOLDER: &str = "{variable}";
-/// Session argument resolved from the harness itself rather than typed by hand.
 /// Punctuation between the two sides of a both-sources failure. Format, not
 /// prose: each side already carries its own seed-grounded sentence.
 const ERROR_JOIN: &str = "; ";
 
+/// Session argument resolved from the harness itself rather than typed by hand.
 const LATEST_SESSION: &str = "latest";
 /// Environment override for the session id, matching the HTTP header (#839).
 const SESSION_ENV: &str = "FORMAL_AI_DIALOG_ID";
