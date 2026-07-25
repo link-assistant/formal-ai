@@ -5,14 +5,19 @@
     "": {
       "name": "formal-ai-issue-819-tui-proof",
       "dependencies": {
-        "@xterm/headless": "6.0.0",
-        "command-stream": "0.14.1",
+        "agent-commander": "0.9.1",
       },
     },
   },
   "packages": {
     "@xterm/headless": ["@xterm/headless@6.0.0", "", {}, "sha512-5Yj1QINYCyzrZtf8OFIHi47iQtI+0qYFPHmouEfG8dHNxbZ9Tb9YGSuLcsEwj9Z+OL75GJqPyJbyoFer80a2Hw=="],
 
-    "command-stream": ["command-stream@0.14.1", "", {}, "sha512-08KAFC/g9YV4koVWk6Qu1Un2hZBCZ3jI8tXR1M24tSB1Ic+IoOLZN/kdg5aat4erHxZ/WIXSwUnhffIFfun01g=="],
+    "agent-commander": ["agent-commander@0.9.1", "", { "dependencies": { "command-stream": "^0.15.0" }, "bin": { "start-agent": "bin/start-agent.mjs", "stop-agent": "bin/stop-agent.mjs" } }, "sha512-yyVKu7D+DO0FelPaBJHJbAo7fgbbcy7+DOXw3BVgOL84EJ/Yevyzr7Ra7oklOTtZXxuxyyWRWhcoDroZhUOAPg=="],
+
+    "command-stream": ["command-stream@0.15.0", "", { "dependencies": { "@xterm/headless": "^6.0.0", "node-pty": "^1.2.0-beta.14" } }, "sha512-Lphe8u3lZocvxdLspqPesAl+EBAFe2VAbL3Ag6wU4XcHCVWJDHQE/KXdU6J2XevipXn0ZzoIqDCYCHaHsXhWtg=="],
+
+    "node-addon-api": ["node-addon-api@7.1.1", "", {}, "sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ=="],
+
+    "node-pty": ["node-pty@1.2.0-beta.14", "", { "dependencies": { "node-addon-api": "^7.1.0" } }, "sha512-XORU9BQgpxVgqr7WivjJ17mLenOHUgKKWzuZZNaw3NDYgHc/wPJQMSaoLDrpEgqV6aU1nNwil1o/OqYj6lWmUA=="],
   }
 }

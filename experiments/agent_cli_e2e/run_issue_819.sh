@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Real local path-discovery proof for issue #819. Agent, OpenCode, Claude Code,
 # and Codex must execute one client-side `find`, return its result, and finish.
-# A second OpenCode run captures its real TUI frame-by-frame through
-# link-foundation/command-stream and verifies the complete dialog sequence.
+# A second pass captures OpenCode, Claude Code, and Codex through the published
+# agent-commander adapter and verifies the complete visible dialog sequence.
 
 set -uo pipefail
 
@@ -12,6 +12,7 @@ PORT="${PORT:-8784}"
 AGENT="${AGENT:-agent}"
 OPENCODE="${OPENCODE:-opencode}"
 CLIENTS="${CLIENTS:-agent opencode claude codex}"
+TUI_CLIENTS="${TUI_CLIENTS:-opencode claude codex}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 EMPTY_RESULT="${EMPTY_RESULT:-0}"
 PROMPT="Find hive-mind-control center folder on my desktop"
@@ -189,38 +190,60 @@ run_client() {
   stop_server
 }
 
-run_opencode_tui() {
-  local tui_port="$1"
-  local client_dir="$WORKDIR/opencode-tui"
+run_client_tui() {
+  local client="$1"
+  local tui_port="$2"
+  local client_dir="$WORKDIR/$client-tui"
   local client_log="$client_dir/client.log"
   local server_log="$client_dir/formal-ai.log"
   local dialog_dir="$client_dir/dialogs"
   local sequence="$client_dir/dialog-sequence.json"
-  local transcript="$client_dir/tui-transcript.json"
+  local terminal_dir="$client_dir/terminal"
+  local executable=""
+  local prefix_args="[]"
+  local extra_args="[]"
   mkdir -p "$dialog_dir"
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 
-  ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
+  case "$client" in
+    opencode)
+      executable="$OPENCODE"
+      extra_args='["."]'
+      ;;
+    claude|codex)
+      executable="$BIN"
+      prefix_args="[\"with\",\"--port\",\"$tui_port\",\"--no-start-server\",\"--interactive\",\"$client\",\"--\"]"
+      ;;
+    *)
+      fail "unknown issue #819 TUI client: $client" "$client_log" "$server_log"
+      ;;
+  esac
+
+  ISSUE819_TUI_CLIENT="$client" \
+    ISSUE819_TUI_EXECUTABLE="$executable" \
+    ISSUE819_TUI_PREFIX_ARGS="$prefix_args" \
+    ISSUE819_TUI_EXTRA_ARGS="$extra_args" \
     ISSUE819_TUI_CWD="$WORKDIR" \
     ISSUE819_DESKTOP_DIR="$DESKTOP_DIR" \
+    ISSUE819_TUI_PROMPT="$PROMPT" \
     ISSUE819_EXPECT_RESULT="$EXPECTED_RESULT" \
-    ISSUE819_TUI_OUTPUT="$transcript" \
-    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1 \
-    || fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
+    ISSUE819_TUI_ARTIFACT_DIR="$terminal_dir" \
+    node "$TUI_DIR/capture-client.mjs" > "$client_log" 2>&1 \
+    || fail "$client TUI transcript failed" "$client_log" "$server_log"
 
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
-    || fail "OpenCode TUI dialog structure was incomplete" "$client_log" "$server_log"
+    "$dialog_dir" "$client-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
+    || fail "$client TUI dialog structure was incomplete" "$client_log" "$server_log"
   if [ -n "$ARTIFACT_DIR" ]; then
-    mkdir -p "$ARTIFACT_DIR/opencode-tui"
-    cp "$client_log" "$ARTIFACT_DIR/opencode-tui/client.log"
-    cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
-    cp "$sequence" "$ARTIFACT_DIR/opencode-tui/dialog-sequence.json"
-    cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
-    cp -R "$dialog_dir" "$ARTIFACT_DIR/opencode-tui/dialogs"
+    mkdir -p "$ARTIFACT_DIR/$client-tui"
+    cp "$client_log" "$ARTIFACT_DIR/$client-tui/client.log"
+    cp "$server_log" "$ARTIFACT_DIR/$client-tui/formal-ai.log"
+    cp "$sequence" "$ARTIFACT_DIR/$client-tui/dialog-sequence.json"
+    cp -R "$terminal_dir" "$ARTIFACT_DIR/$client-tui/terminal"
+    cp -R "$dialog_dir" "$ARTIFACT_DIR/$client-tui/dialogs"
   fi
-  echo "== issue #819 OpenCode TUI OK: deduplicated frames + complete dialog =="
+  echo "== issue #819 $client TUI OK: unrolled transcript + resize + animation =="
   stop_server
 }
 
@@ -237,4 +260,8 @@ for client in $CLIENTS; do
   run_client "$client" "$((PORT + client_index))"
   client_index=$((client_index + 1))
 done
-run_opencode_tui "$((PORT + 20))"
+tui_index=0
+for client in $TUI_CLIENTS; do
+  run_client_tui "$client" "$((PORT + 20 + tui_index))"
+  tui_index=$((tui_index + 1))
+done
