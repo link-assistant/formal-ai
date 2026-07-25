@@ -523,10 +523,6 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // after the suite passed. See
         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
         ("test", 25),
-        // Issue #842: the #840 task ladder. A release build of the server plus
-        // 24 request/route/answer round trips against it; the budget matches
-        // `test` because the build dominates and starts cold.
-        ("task-ladder", 25),
         // Issue #812: raised from 15; measured worst case on main was 14.1 min.
         ("coverage", 25),
         ("build", 10),

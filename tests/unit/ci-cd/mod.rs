@@ -25,4 +25,5 @@ mod rust_paths;
 mod source_test_placement;
 mod workflow_fixtures;
 mod workflow_release;
+mod workflow_task_ladder;
 mod workspace_manifest_resolution;
