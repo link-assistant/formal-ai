@@ -589,6 +589,16 @@ meanings
     lexeme en
       surface
         text "context dialog log unavailable"
+  context_export_empty
+    defined-by field
+    lexeme en
+      surface
+        text "context export empty"
+  context_harness_unavailable
+    defined-by field
+    lexeme en
+      surface
+        text "context harness unavailable"
   context_learning_failed
     defined-by field
     lexeme en
@@ -614,6 +624,11 @@ meanings
     lexeme en
       surface
         text "context programming"
+  context_session_unresolved
+    defined-by field
+    lexeme en
+      surface
+        text "context session unresolved"
   context_signal_processing
     defined-by context
     lexeme en
@@ -1294,6 +1309,36 @@ meanings
     lexeme en
       surface
         text "issue report body intro"
+  issue_report_bytes_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report bytes label"
+  issue_report_command_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report command missing"
+  issue_report_context_excerpt_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context excerpt note"
+  issue_report_context_gist_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context gist note"
+  issue_report_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context heading"
+  issue_report_context_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context note"
   issue_report_conversation_heading
     defined-by field
     lexeme en
@@ -1314,83 +1359,38 @@ meanings
     lexeme en
       surface
         text "issue report default title"
+  issue_report_description_placeholder
+    defined-by field
+    lexeme en
+      surface
+        text "issue report description placeholder"
+  issue_report_dialog_legend
+    defined-by field
+    lexeme en
+      surface
+        text "issue report dialog legend"
   issue_report_empty_history
     defined-by field
     lexeme en
       surface
         text "issue report empty history"
+  issue_report_export_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report export heading"
   issue_report_failed
     defined-by field
     lexeme en
       surface
         text "issue report failed"
-  issue_report_ran_command
+  issue_report_gist_failed
     defined-by field
     lexeme en
       surface
-        text "issue report ran command"
-  issue_report_title_prefix
+        text "issue report gist failed"
+  issue_report_language_label
     defined-by field
     lexeme en
       surface
-        text "issue report title prefix"
-  issue_report_tool_missing
-    defined-by field
-    lexeme en
-      surface
-        text "issue report tool missing"
-  issue_report_transcript_trimmed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report transcript trimmed"
-  issue_template_labels
-    defined-by field
-    lexeme en
-      surface
-        text "issue template labels"
-  javascript
-    defined-by programming_language
-    lexeme en
-      surface
-        text "javascript"
-  join
-    defined-by concept
-    lexeme en
-      surface
-        text "join"
-  join_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "join lines"
-  kebab
-    defined-by concept
-    lexeme en
-      surface
-        text "kebab"
-  kebab-case
-    defined-by phrase
-    lexeme en
-      surface
-        text "kebab case"
-  kebab_case
-    defined-by operation
-    lexeme en
-      surface
-        text "kebab case"
-  kill
-    defined-by token
-    lexeme en
-      surface
-        text "kill"
-  knowledge-representation
-    defined-by category
-    lexeme en
-      surface
-        text "knowledge representation"
-  kubaturit
-    defined-by term
-    lexeme en
-      surface
-        text "kubaturit"
+        text "issue report language label"

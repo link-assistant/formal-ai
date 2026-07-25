@@ -26,12 +26,14 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
     assert_eq!(calls[0].tool, "bash");
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     let command = arguments["command"].as_str().unwrap();
-    assert!(command.starts_with("set -eu;"), "{command}");
+    // A multi-line script under `set -eu`, so a failed preflight or a failed
+    // body render stops before `gh issue create` (#839 §5).
+    assert!(command.starts_with("set -eu\n"), "{command}");
     assert!(
         command.contains("--repo link-assistant/formal-ai"),
         "{command}"
     );
-    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.contains("formal-ai report body"), "{command}");
     assert!(command.contains("--source both"), "{command}");
     assert!(!command.contains("curl"), "{command}");
     assert!(!command.contains("I do not have an age."), "{command}");
