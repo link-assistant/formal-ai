@@ -1,4 +1,9 @@
 meanings
+  kubaturit
+    defined-by term
+    lexeme en
+      surface
+        text "kubaturit"
   kubectl
     defined-by token
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase vy zdes ru"
-  pattern_test_status_phrase_wo_zai_zheli_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase wo zai zheli zh"
