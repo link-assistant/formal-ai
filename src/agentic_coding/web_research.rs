@@ -15,8 +15,8 @@ use crate::seed::{self, Slot};
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
-        .or_else(|| seed_prefix_subject(&task, seed::ROLE_RESEARCH_QUESTION_OPENER))
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
+        .or_else(|| seed_prefix_subject(&task, seed::ROLE_RESEARCH_QUESTION_OPENER))
     {
         return if is_context_reference(&query) {
             topic_from_history(messages)
@@ -79,8 +79,8 @@ pub(super) fn definition_followup_topic(messages: &[ChatMessage], task: &str) ->
             }
         }
         if !antecedent.is_empty() {
-            return seed_prefix_subject(&antecedent, seed::ROLE_RESEARCH_QUESTION_OPENER)
-                .or_else(|| crate::solver_handlers::detect_web_search_query(&antecedent))
+            return crate::solver_handlers::detect_web_search_query(&antecedent)
+                .or_else(|| seed_prefix_subject(&antecedent, seed::ROLE_RESEARCH_QUESTION_OPENER))
                 .or(Some(antecedent));
         }
     }
@@ -514,8 +514,8 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
             {
                 return None;
             }
-            let topic = seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER)
-                .or_else(|| crate::solver_handlers::detect_web_search_query(&text))
+            let topic = crate::solver_handlers::detect_web_search_query(&text)
+                .or_else(|| seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER))
                 .unwrap_or_else(|| trim_question_punctuation(&text));
             (!topic.trim().is_empty() && !is_context_reference(&topic)).then_some(topic)
         })
