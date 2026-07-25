@@ -30,6 +30,7 @@ mod shell_command_transform;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
+mod task_decomposition;
 mod text_edit_ops;
 mod text_manipulation;
 mod user_intent;
@@ -68,6 +69,9 @@ pub use shell_command_transform::{
 };
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
+pub use task_decomposition::{
+    looks_like_task_decomposition, try_task_decomposition, try_task_decomposition_with_depth,
+};
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,

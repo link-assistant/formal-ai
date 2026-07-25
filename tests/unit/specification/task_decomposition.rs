@@ -1,0 +1,306 @@
+//! Task-decomposition specifications (issue #847).
+//!
+//! Decomposition is itself a task the engine must be able to do: splitting a
+//! task into sub-tasks and judging whether a task is atomic are two views of
+//! one recursion. Each test below pins one line of the issue's acceptance
+//! checklist, and the multilingual tests pin it in all four supported
+//! languages so recognition can only come from the seed lexicon (issue #386).
+
+use formal_ai::task_decomposition::{decompose_task, is_checkable, split_once_checkable};
+use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
+
+/// A task with two independent halves, in each supported language. Every
+/// variant names two observable edits joined by that language's "and".
+const COMPOSITE_TASKS: [(&str, &str); 4] = [
+    (
+        "en",
+        "Add the flag to release.yml and update the changelog.",
+    ),
+    ("ru", "Добавь флаг в release.yml и обнови changelog."),
+    ("hi", "release.yml में फ़्लैग जोड़ें और changelog अपडेट करें।"),
+    ("zh", "在 release.yml 中添加标志并更新 changelog。"),
+];
+
+/// "Split this task into subtasks", asked in each supported language.
+const SPLIT_PROMPTS: [(&str, &str); 4] = [
+    (
+        "en",
+        "Split this task into subtasks: 'Add the flag to release.yml and update the changelog.'",
+    ),
+    (
+        "ru",
+        "Разбей задачу на подзадачи: «Добавь флаг в release.yml и обнови changelog.»",
+    ),
+    (
+        "hi",
+        "इस कार्य को उपकार्यों में विभाजित करें: 'release.yml में फ़्लैग जोड़ें और changelog अपडेट करें।'",
+    ),
+    (
+        "zh",
+        "把这个任务拆分成子任务：“在 release.yml 中添加标志并更新 changelog。”",
+    ),
+];
+
+/// "Is this task atomic?", asked in each supported language about a task that
+/// is a single observable edit.
+const ATOMICITY_PROMPTS: [(&str, &str); 4] = [
+    (
+        "en",
+        "Is this task atomic? 'Add dev/log/ to the excluded_folders array.'",
+    ),
+    (
+        "ru",
+        "Эта задача атомарная? «Добавь dev/log/ в массив excluded_folders.»",
+    ),
+    (
+        "hi",
+        "क्या यह कार्य अविभाज्य है? 'excluded_folders सूची में dev/log/ जोड़ें।'",
+    ),
+    (
+        "zh",
+        "这个任务是原子的吗？“在 excluded_folders 数组中添加 dev/log/。”",
+    ),
+];
+
+fn decomposition_solver() -> UniversalSolver {
+    UniversalSolver::new(SolverConfig {
+        offline: true,
+        execution_surface: ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        ..SolverConfig::default()
+    })
+}
+
+/// Acceptance: recognised in every supported language, never the unknown
+/// fallback.
+#[test]
+fn splitting_is_recognised_in_every_supported_language() {
+    let solver = decomposition_solver();
+    for (language, prompt) in SPLIT_PROMPTS {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent, "task_decomposition",
+            "{language}: expected the decomposition intent, got {} for {prompt}",
+            response.intent
+        );
+    }
+}
+
+/// Acceptance: "Is this task atomic?" is answerable standalone, in every
+/// supported language.
+#[test]
+fn atomicity_is_recognised_in_every_supported_language() {
+    let solver = decomposition_solver();
+    for (language, prompt) in ATOMICITY_PROMPTS {
+        let response = solver.solve(prompt);
+        assert_eq!(
+            response.intent, "task_atomicity",
+            "{language}: expected the atomicity intent for {prompt}"
+        );
+        assert!(
+            !response.answer.trim().is_empty(),
+            "{language}: the atomicity answer must not be empty"
+        );
+    }
+}
+
+/// Acceptance: the result is a list of children, each with an observable
+/// completion criterion.
+#[test]
+fn every_child_has_an_observable_completion_criterion() {
+    for (language, task) in COMPOSITE_TASKS {
+        let decomposition = decompose_task(task, 4);
+        assert!(
+            !decomposition.is_atomic(),
+            "{language}: a two-edit task must split"
+        );
+        let leaves = decomposition.leaves();
+        assert!(
+            leaves.len() >= 2,
+            "{language}: expected at least two children, got {}",
+            leaves.len()
+        );
+        for leaf in leaves {
+            assert!(
+                is_checkable(&leaf.text),
+                "{language}: child without an observable completion criterion: {}",
+                leaf.text
+            );
+        }
+    }
+}
+
+/// The issue names "Understand the codebase" as exactly the child a
+/// decomposition must never emit: it has no observable completion criterion.
+#[test]
+fn an_unobservable_fragment_never_becomes_a_child() {
+    assert!(!is_checkable("Understand the codebase"));
+    assert!(!is_checkable("Изучи кодовую базу"));
+
+    let decomposition = decompose_task("Understand the codebase and fix the bug.", 4);
+    for leaf in decomposition.leaves() {
+        assert!(
+            !leaf.text.eq_ignore_ascii_case("understand the codebase"),
+            "an unobservable fragment must be merged, not emitted as a child"
+        );
+    }
+}
+
+/// Acceptance: the recursion terminates — every leaf is atomic, or the depth
+/// bound was reached and is reported rather than hidden.
+#[test]
+fn recursion_terminates_with_atomic_leaves_or_a_reported_depth_bound() {
+    // Two sentences, the first of which splits again — so a depth of 1 really
+    // does cut the recursion short rather than merely stopping where it would
+    // have stopped anyway.
+    let task =
+        "Fix the failing test and update the changelog. Open a pull request and announce it.";
+    let bounded = decompose_task(task, 1);
+    assert!(
+        bounded.depth_bound_reached(),
+        "a depth of 1 must cut this task short"
+    );
+    assert!(
+        bounded
+            .numbered_lines("[cut]")
+            .iter()
+            .any(|line| line.contains("[cut]")),
+        "a depth bound must be reported in the rendered lines"
+    );
+
+    let unbounded = decompose_task(task, 6);
+    assert!(
+        !unbounded.depth_bound_reached(),
+        "a generous depth must reach atomic leaves: {:?}",
+        unbounded.numbered_lines("[cut]")
+    );
+    for leaf in unbounded.leaves() {
+        assert!(
+            leaf.atomic,
+            "every leaf of a terminated recursion is atomic: {}",
+            leaf.text
+        );
+    }
+}
+
+/// The depth bound is configuration, not a constant: lowering
+/// `max_decomposition_depth` must be visible in the answer.
+#[test]
+fn the_configured_depth_bound_is_reported_in_the_answer() {
+    let prompt = "Split this task into subtasks: 'Fix the failing test and update the changelog. Open a pull request and announce it.'";
+    let shallow = UniversalSolver::new(SolverConfig {
+        offline: true,
+        execution_surface: ExecutionSurface::RustLibrary,
+        temperature: 0.0,
+        max_decomposition_depth: 1,
+        ..SolverConfig::default()
+    })
+    .solve(prompt);
+    assert!(
+        shallow.answer.contains("depth"),
+        "a truncated recursion must say so, got: {}",
+        shallow.answer
+    );
+
+    let deep = decomposition_solver().solve(prompt);
+    assert!(
+        !deep.answer.contains("[depth bound reached]"),
+        "the default depth reaches atomic leaves for this task, got: {}",
+        deep.answer
+    );
+}
+
+/// Acceptance: every sub-task is a first-class inspectable `sub_impulse:`
+/// event, reusing the existing structure rather than a parallel one.
+#[test]
+fn every_sub_task_surfaces_as_a_sub_impulse_event() {
+    let response = decomposition_solver().solve(
+        "Split this task into subtasks: 'Add the flag to release.yml and update the changelog.'",
+    );
+    let sub_impulses: Vec<&String> = response
+        .evidence_links
+        .iter()
+        .filter(|link| link.starts_with("sub_impulse"))
+        .collect();
+    assert!(
+        sub_impulses.len() >= 2,
+        "each sub-task must be inspectable as a sub_impulse event, got {sub_impulses:?}"
+    );
+    assert!(
+        response.links_notation.contains("sub_task"),
+        "the sub-tasks must be present in the links notation record"
+    );
+}
+
+/// Acceptance: deterministic — the same task and configuration always produce
+/// the same decomposition.
+#[test]
+fn decomposition_is_deterministic_for_a_given_config() {
+    let prompt = "Split this task into subtasks: 'Fix the failing test, update the changelog and open a pull request.'";
+    let first = decomposition_solver().solve(prompt);
+    let second = decomposition_solver().solve(prompt);
+    assert_eq!(first.answer, second.answer);
+    assert_eq!(first.links_notation, second.links_notation);
+
+    let structural = decompose_task(prompt, 4);
+    assert_eq!(
+        structural.to_links_notation(),
+        decompose_task(prompt, 4).to_links_notation()
+    );
+}
+
+/// Acceptance: the whole spectrum, from a GitHub issue down to a single atomic
+/// edit. The bottom of the ladder must report itself as atomic — that is the
+/// recursion's base case.
+#[test]
+fn the_spectrum_runs_from_issue_to_atomic_edit() {
+    let issue = decompose_task("Solve issue 843 and open a pull request.", 4);
+    assert!(!issue.is_atomic(), "an issue-level task still splits");
+
+    let edit = decompose_task(
+        "In the file scripts/detect-code-changes.rs, add dev/log/ to the excluded_folders array.",
+        4,
+    );
+    assert!(
+        edit.is_atomic(),
+        "a single-file single-edit task is the bottom of the ladder: {:?}",
+        edit.numbered_lines("[cut]")
+    );
+    assert_eq!(edit.root.reason.slug(), "direct_method");
+}
+
+/// A real task taken from this repository's own corpus: the issue that asked
+/// for `experiments/` to stop triggering the code-change detector. A human
+/// reading the two children agrees they are smaller than the parent and that
+/// doing both is doing the parent.
+#[test]
+fn a_real_corpus_task_splits_into_smaller_jointly_sufficient_children() {
+    let decomposition = decompose_task(
+        "Add a paths-ignore filter for experiments to release.yml and make docs-changed respect excluded_folders.",
+        4,
+    );
+    let leaves = decomposition.leaves();
+    assert_eq!(
+        leaves.len(),
+        2,
+        "got {:?}",
+        decomposition.numbered_lines("")
+    );
+    assert!(leaves[0].text.contains("release.yml"));
+    assert!(leaves[1].text.contains("excluded_folders"));
+    for leaf in leaves {
+        assert!(
+            leaf.text.len() < decomposition.task.len(),
+            "a child must be smaller than its parent: {}",
+            leaf.text
+        );
+        assert!(is_checkable(&leaf.text));
+    }
+}
+
+/// A task with nothing to split off is the base case, not an error: the
+/// splitter returns no parts rather than inventing a second child.
+#[test]
+fn an_atomic_task_yields_no_split() {
+    assert!(split_once_checkable("Add dev/log/ to the excluded_folders array.").is_empty());
+}
