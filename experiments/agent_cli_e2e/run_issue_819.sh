@@ -41,6 +41,7 @@ fail() {
   local message="$1"
   local client_log="${2:-}"
   local server_log="${3:-}"
+  preserve_failed_run "$client_log"
   echo "!! $message" >&2
   if [ -n "$client_log" ]; then
     echo "== client log ==" >&2
@@ -51,6 +52,21 @@ fail() {
     tail -180 "$server_log" >&2 2>/dev/null
   fi
   exit 1
+}
+
+preserve_failed_run() {
+  local client_log="$1"
+  if [ -z "$ARTIFACT_DIR" ] || [ -z "$client_log" ]; then
+    return
+  fi
+  local client_dir
+  client_dir="$(dirname "$client_log")"
+  if [ ! -d "$client_dir" ]; then
+    return
+  fi
+  local destination="$ARTIFACT_DIR/$(basename "$client_dir")"
+  mkdir -p "$destination"
+  cp -R "$client_dir/." "$destination/"
 }
 
 start_server() {

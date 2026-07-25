@@ -30,10 +30,30 @@ cleanup() {
 trap cleanup EXIT
 
 fail() {
+  preserve_artifacts
   echo "!! $1" >&2
   tail -120 "$CLIENT_LOG" >&2 2>/dev/null
   tail -180 "$SERVER_LOG" >&2 2>/dev/null
   exit 1
+}
+
+preserve_artifacts() {
+  if [ -z "$ARTIFACT_DIR" ]; then
+    return
+  fi
+  mkdir -p "$ARTIFACT_DIR"
+  for source in "$CLIENT_LOG" "$SERVER_LOG" "$ACTIONS_LOG" "$ISSUE_BODY"; do
+    if [ -f "$source" ]; then
+      cp "$source" "$ARTIFACT_DIR/$(basename "$source")"
+    fi
+  done
+  for source in "$TERMINAL_DIR" "$DIALOG_DIR"; do
+    if [ -d "$source" ]; then
+      local destination="$ARTIFACT_DIR/$(basename "$source")"
+      mkdir -p "$destination"
+      cp -R "$source/." "$destination/"
+    fi
+  done
 }
 
 mkdir -p "$FAKE_BIN" "$DIALOG_DIR"
@@ -115,15 +135,7 @@ grep -Fq '### Complete agentic context' "$ISSUE_BODY" \
 grep -Fq 'conversation fixture' "$ISSUE_BODY" \
   || fail "the resulting issue body omitted the exported conversation"
 
-if [ -n "$ARTIFACT_DIR" ]; then
-  mkdir -p "$ARTIFACT_DIR"
-  cp "$CLIENT_LOG" "$ARTIFACT_DIR/client.log"
-  cp "$SERVER_LOG" "$ARTIFACT_DIR/formal-ai.log"
-  cp "$ACTIONS_LOG" "$ARTIFACT_DIR/report-actions.log"
-  cp "$ISSUE_BODY" "$ARTIFACT_DIR/issue-body.md"
-  cp -R "$TERMINAL_DIR" "$ARTIFACT_DIR/terminal"
-  cp -R "$DIALOG_DIR" "$ARTIFACT_DIR/dialogs"
-fi
+preserve_artifacts
 
 echo "== issue #838 OpenCode report TUI OK: selections, actions, and issue body =="
 cat "$ACTIONS_LOG"
