@@ -20,6 +20,7 @@ use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
 use crate::seed::market_price_assets;
+use crate::source_fetch::{CachedSourceClient, FetchError, SourceCapture, SourceTransport};
 
 /// Sentence terminators across the scripts the solver recognises: ASCII stops,
 /// CJK full stop / exclamation / question, the Devanagari danda and double
@@ -197,6 +198,14 @@ pub struct StatementVerificationPlan {
     pub statements: Vec<StatementPlan>,
 }
 
+/// Executed verification state: the assessed plan and every exact capture that
+/// contributed evidence to it.
+#[derive(Debug, Clone, PartialEq)]
+pub struct StatementVerificationExecution {
+    pub plan: StatementVerificationPlan,
+    pub captures: Vec<SourceCapture>,
+}
+
 impl StatementVerificationPlan {
     /// Extract statements from `sample` and plan grounding for each, with no
     /// evidence collected yet (the deterministic offline path).
@@ -219,6 +228,43 @@ impl StatementVerificationPlan {
     #[must_use]
     pub const fn len(&self) -> usize {
         self.statements.len()
+    }
+
+    /// Execute the plan against URLs selected by the caller's search provider.
+    ///
+    /// A successful retrieval is not evidence by itself. The caller must
+    /// classify the exact captured bytes, and may return `None` when the source
+    /// is irrelevant or cannot be classified. Failed retrieval aborts instead
+    /// of being treated as evidence.
+    pub fn execute<T, F, C>(
+        sample: &str,
+        client: &CachedSourceClient<T>,
+        source_urls: F,
+        classify: C,
+    ) -> Result<StatementVerificationExecution, FetchError>
+    where
+        T: SourceTransport,
+        F: Fn(&str) -> Vec<String>,
+        C: Fn(&str, &SourceCapture) -> Option<RelativeEvidence>,
+    {
+        let mut captures = Vec::new();
+        let mut statements = Vec::new();
+        for statement in extract_statements(sample) {
+            let query = grounding_query(&statement);
+            let mut evidence = Vec::new();
+            for url in source_urls(&query) {
+                let capture = client.fetch(&url)?;
+                if let Some(classified) = classify(&statement, &capture) {
+                    evidence.push(classified);
+                }
+                captures.push(capture);
+            }
+            statements.push(StatementPlan::new(statement, &evidence));
+        }
+        Ok(StatementVerificationExecution {
+            plan: Self { statements },
+            captures,
+        })
     }
 }
 

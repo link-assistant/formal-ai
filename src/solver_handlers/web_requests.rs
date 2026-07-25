@@ -5,6 +5,7 @@ use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{self, projects_registry, ProjectRecord};
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
 use crate::summarization::{describe_project, SummarizationConfig, SummarizationMode};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
@@ -25,88 +26,67 @@ pub fn try_http_fetch(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    try_http_fetch_with_offline(prompt, normalized, log, true)
+}
+
+/// Execute an explicit HTTP request when the caller has opted out of offline
+/// mode. A failed request records an error, never source provenance.
+pub fn try_http_fetch_with_offline(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    offline: bool,
+) -> Option<SymbolicAnswer> {
     let url = extract_http_fetch_url(prompt, normalized)?;
     log.append("http_fetch:request", url.clone());
-    let language = detect_language(prompt).slug();
-    let project_summary = match_curated_github_url(&url).map(|project| {
-        log.append("http_fetch:curated_project", project.repo_slug());
-        log.append("summarization:mode", "standard".to_owned());
-        log.append("summarization:language", language.to_owned());
-        let config = SummarizationConfig::default()
-            .with_mode(SummarizationMode::Standard)
-            .with_language(language);
-        describe_project(project, &config)
-    });
-    let body = project_summary.map_or_else(
-        || {
-            format!(
-                "HTTP fetch requested for `{url}`.\n\n\
-                 The browser web app attempts a direct `fetch()` first and shows the \
-                 response body when the server allows CORS. If the request is blocked \
-                 by CORS, the web app checks CORS-readable frame-policy metadata before \
-                 deciding whether to show an embedded iframe or keep a direct external \
-                 link.\n\n\
-                 Source: [{url}]({url})"
-            )
-        },
-        |summary| match language {
-            "ru" => format!(
-                "HTTP-запрос на `{url}`.\n\n\
-                 Этот URL соответствует курируемому продвигаемому проекту. \
-                 Резюме README (через formalize → summarize → \
-                 deformalize): {summary}\n\n\
-                 В браузерной демо-версии сначала выполняется прямой `fetch()`; \
-                 если CORS блокирует ответ, проверяется frame-policy и при \
-                 необходимости открывается iframe или показывается прямая \
-                 ссылка.\n\n\
-                 Source: [{url}]({url})"
-            ),
-            _ => format!(
-                "HTTP fetch requested for `{url}`.\n\n\
-                 This URL matches a curated promoted project. README summary \
-                 (through the formalize → summarize → \
-                 deformalize pipeline): {summary}\n\n\
-                 The browser web app attempts a direct `fetch()` first and shows \
-                 the response body when the server allows CORS. If the request \
-                 is blocked by CORS, the web app checks CORS-readable \
-                 frame-policy metadata before deciding whether to show an \
-                 embedded iframe or keep a direct external link.\n\n\
-                 Source: [{url}]({url})"
-            ),
-        },
-    );
+    if offline {
+        log.append("policy:offline", url.clone());
+        let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
+            .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
+            .replace("{qid}", &url);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "http_fetch",
+            "response:http_fetch",
+            &body,
+            1.0,
+        ));
+    }
+    let cache_dir =
+        std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
+    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(true);
+    let capture = match client.fetch(&url) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("error:fetch", error.to_string());
+            let body = seed::response_for("lexeme_import_fetch_failed", "en")
+                .unwrap_or_else(|| String::from("lexeme_import_fetch_failed"))
+                .replace("{qid}", &url)
+                .replace(&["{", "error", "}"].concat(), &error.to_string());
+            return Some(finalize_simple(
+                prompt,
+                log,
+                "http_fetch",
+                "response:http_fetch_failed",
+                &body,
+                0.0,
+            ));
+        }
+    };
+    capture.record(log);
+    let body = String::from_utf8_lossy(capture.bytes())
+        .chars()
+        .take(8_000)
+        .collect::<String>();
     Some(finalize_simple(
         prompt,
         log,
         "http_fetch",
         "response:http_fetch",
         &body,
-        0.95,
+        1.0,
     ))
-}
-
-/// Match an absolute URL against the curated project registry. Returns the
-/// project record when the URL points to a `github.com/<org>/<name>`
-/// repository whose `<org>/<name>` matches a curated entry. Sub-paths
-/// (`/blob/`, `/tree/`, etc.) are also matched so a README fetch URL like
-/// `https://github.com/link-assistant/hive-mind/blob/main/README.md` still
-/// resolves to the curated record.
-fn match_curated_github_url(url: &str) -> Option<&'static ProjectRecord> {
-    let lower = url.to_lowercase();
-    let after_scheme = lower
-        .strip_prefix("https://")
-        .or_else(|| lower.strip_prefix("http://"))?;
-    let after_host = after_scheme.strip_prefix("github.com/")?;
-    let mut segments = after_host.split('/');
-    let org = segments.next()?.trim_matches('/');
-    let name = segments.next()?.trim_matches('/');
-    if org.is_empty() || name.is_empty() {
-        return None;
-    }
-    let registry = registry_static();
-    registry.projects.iter().find(|project| {
-        project.org.eq_ignore_ascii_case(org) && project.name.eq_ignore_ascii_case(name)
-    })
 }
 
 /// Match prompts that ask the assistant to navigate to or display a URL

@@ -104,6 +104,7 @@ pub(crate) mod solver_search;
 pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
+pub mod source_fetch;
 pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
@@ -299,9 +300,12 @@ pub use solver::{
 };
 pub use solver_handlers::{answer_memory_recall, execute_memory_query, MemoryQueryExecution};
 pub use solver_helpers::humanize_url;
+pub use source_fetch::{
+    sha256_hex, CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
+};
 pub use statement_verification::{
     assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
-    MarketPriceClaim,
+    MarketPriceClaim, StatementVerificationExecution, StatementVerificationPlan,
 };
 pub use storage_policy::{
     apply_auto_free_space_for_write, apply_auto_free_space_with_snapshot, auto_free_space_choice,
@@ -339,9 +343,10 @@ pub use web_engine_core::{
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
-    parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output, FusedEntry, ProviderCategory,
-    ProviderRanking, ProviderSpec, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS,
-    WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+    execute_duckduckgo_search, parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output,
+    FusedEntry, ProviderCategory, ProviderRanking, ProviderSpec, SearchExecution,
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS, WEB_SEARCH_PROVIDER_LIMIT,
+    WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
 pub use world_model::{
     Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,

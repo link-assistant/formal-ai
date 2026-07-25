@@ -769,6 +769,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
+ "sha2",
  "thread-priority",
  "toml_edit",
  "walkdir",
