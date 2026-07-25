@@ -34,7 +34,20 @@
 //! context "carries a probability", and why an unoriginal mirror moves nothing.
 
 use super::dedup::{DedupReport, MergedStatement};
+use super::vocabulary;
+use crate::language::Language;
 use crate::relative_meta_logic::{RelativeEvidence, Stance, StatementAssessment, TruthValue};
+
+/// Seed intents carrying the wording of an evidence report, and the placeholders
+/// their templates fill (`data/seed/multilingual-responses-summarization.lino`).
+const INTENT_EVIDENCE_SUMMARY: &str = "summarization_evidence_summary";
+const INTENT_EVIDENCE_DENIED: &str = "summarization_evidence_denied";
+const INTENT_DISPUTED_STATEMENT: &str = "summarization_disputed_statement";
+const ASSERTED_PLACEHOLDER: &str = "{asserted}";
+const TOTAL_PLACEHOLDER: &str = "{total}";
+const DENIED_PLACEHOLDER: &str = "{denied}";
+const STATEMENT_PLACEHOLDER: &str = "{statement}";
+const EVIDENCE_PLACEHOLDER: &str = "{evidence}";
 
 /// The importance breakdown of one merged statement. Every field is a
 /// percentage in `0..=100`, so a caller can show the arithmetic instead of a
@@ -90,17 +103,38 @@ pub struct RankedStatement {
 }
 
 impl RankedStatement {
-    /// Human-readable evidence summary: `"asserted by 9 of 11 sources"`, with
-    /// `", denied by 2"` appended when the fact is contested.
+    /// Human-readable evidence summary in English: `"asserted by 9 of 11
+    /// sources"`, with `", denied by 2"` appended when the fact is contested.
     #[must_use]
     pub fn evidence_summary(&self, total_sources: usize) -> String {
-        let asserted = self.statement.source_count();
+        self.evidence_summary_in(total_sources, Language::English)
+    }
+
+    /// The same summary in `language`, worded by the seed rather than by this
+    /// module (R379): the counts are the only thing computed here.
+    #[must_use]
+    pub fn evidence_summary_in(&self, total_sources: usize, language: Language) -> String {
         let denied = if self.denied_by.is_empty() {
             String::new()
         } else {
-            format!(", denied by {}", self.denied_by.len())
+            vocabulary::rendered_response(
+                INTENT_EVIDENCE_DENIED,
+                language,
+                &[(DENIED_PLACEHOLDER, &self.denied_by.len().to_string())],
+            )
         };
-        format!("asserted by {asserted} of {total_sources} sources{denied}")
+        vocabulary::rendered_response(
+            INTENT_EVIDENCE_SUMMARY,
+            language,
+            &[
+                (
+                    ASSERTED_PLACEHOLDER,
+                    &self.statement.source_count().to_string(),
+                ),
+                (TOTAL_PLACEHOLDER, &total_sources.to_string()),
+                (DENIED_PLACEHOLDER, &denied),
+            ],
+        )
     }
 
     /// Is this fact contested by at least one source?
@@ -215,16 +249,33 @@ fn percentage(part: usize, whole: usize) -> u8 {
 /// one side of a contradiction would report a consensus that does not exist.
 #[must_use]
 pub fn to_statements(ranked: &[RankedStatement], total_sources: usize) -> Vec<super::Statement> {
+    to_statements_in(ranked, total_sources, Language::English)
+}
+
+/// [`to_statements`] with the disagreement note worded in `language`, from the
+/// seed (R379).
+#[must_use]
+pub fn to_statements_in(
+    ranked: &[RankedStatement],
+    total_sources: usize,
+    language: Language,
+) -> Vec<super::Statement> {
     ranked
         .iter()
         .map(|item| {
             let mut statement = item.statement.representative.clone();
             statement.weight = item.score.weight;
             if item.is_contested() {
-                statement.text = format!(
-                    "{} (disputed: {})",
-                    statement.text.trim_end_matches('.'),
-                    item.evidence_summary(total_sources)
+                statement.text = vocabulary::rendered_response(
+                    INTENT_DISPUTED_STATEMENT,
+                    language,
+                    &[
+                        (STATEMENT_PLACEHOLDER, statement.text.trim_end_matches('.')),
+                        (
+                            EVIDENCE_PLACEHOLDER,
+                            &item.evidence_summary_in(total_sources, language),
+                        ),
+                    ],
                 );
             }
             statement

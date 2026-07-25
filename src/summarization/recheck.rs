@@ -97,15 +97,18 @@ impl RecheckedStatement {
     }
 
     /// A one-line trace: verdict, posterior, and evidence counts.
+    ///
+    /// Only `name=value` fields, like every other trace payload in the crate, so
+    /// the line is a machine record rather than a sentence to translate (R379).
     #[must_use]
     pub fn trace_payload(&self) -> String {
-        format!(
-            "verdict={} {} sources={} denied={}",
-            self.verdict.slug(),
+        [
+            format!("verdict={}", self.verdict.slug()),
             self.plan.assessment.trace_payload(),
-            self.ranked.statement.source_count(),
-            self.ranked.denied_by.len(),
-        )
+            format!("sources={}", self.ranked.statement.source_count()),
+            format!("denied={}", self.ranked.denied_by.len()),
+        ]
+        .join(" ")
     }
 }
 

@@ -138,6 +138,42 @@ pub fn mentions_word(tokens: &[String], vocabulary: &[String]) -> bool {
     })
 }
 
+/// Render a seed response template for `language`, substituting `values`.
+///
+/// R379 (`docs/design/no-hardcoded-natural-language.md`): the wording the merge
+/// shows a reader is seed data, so the only strings in the Rust source are the
+/// intent slug and the placeholder names. An unsupported or unknown language
+/// falls back to English, which every response file is required to carry;
+/// nothing is invented here when a template is missing.
+#[must_use]
+pub fn rendered_response(
+    intent: &str,
+    language: crate::language::Language,
+    values: &[(&str, &str)],
+) -> String {
+    let template = response_template(intent, language.slug())
+        .or_else(|| response_template(intent, crate::language::Language::English.slug()))
+        .unwrap_or_default();
+    values
+        .iter()
+        .fold(template.to_owned(), |rendered, (placeholder, value)| {
+            rendered.replace(placeholder, value)
+        })
+}
+
+/// The seed response text for an intent and language slug.
+///
+/// The embedded seed is immutable at runtime, so every record is parsed once and
+/// cached — a summary ranks many statements, and each one asks for its wording.
+fn response_template(intent: &str, language: &str) -> Option<&'static str> {
+    static CACHE: OnceLock<Vec<crate::seed::ResponseRecord>> = OnceLock::new();
+    CACHE
+        .get_or_init(crate::seed::multilingual_responses)
+        .iter()
+        .find(|record| record.intent == intent && record.language == language)
+        .map(|record| record.text.as_str())
+}
+
 /// The CJK members of `vocabulary`, longest first, so `没有` is stripped before
 /// `有` and a shorter word never eats a longer one's characters. `sort_by_key`
 /// is stable, so equal-length words keep their seed declaration order and the

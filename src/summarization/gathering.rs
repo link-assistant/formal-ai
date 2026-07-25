@@ -28,6 +28,11 @@
 use super::dedup::SourcedStatement;
 use crate::engine::stable_id;
 use crate::option_network::{Candidate, Constraint, OptionNetwork, Supply, Tier};
+
+/// The two line kinds of [`GatheringReport::trace`]: one fetch record per
+/// document, then the single termination record.
+const FETCH_RECORD: &str = "fetch";
+const STOP_RECORD: &str = "stop";
 use crate::relative_meta_logic::SourceTier;
 use std::collections::BTreeMap;
 
@@ -256,25 +261,34 @@ impl GatheringReport {
     /// plus the termination verdict. A warm-cache replay of the same plan
     /// produces the same text except for the `cache=` flags, which is what makes
     /// "replays byte-identically from the cache" checkable.
+    ///
+    /// Every line is a keyword followed by `name=value` fields, so the trace is
+    /// a machine record with no natural language to translate (R379).
     #[must_use]
     pub fn trace(&self) -> String {
         let mut lines = Vec::with_capacity(self.fetches.len() + 1);
         for record in &self.fetches {
-            lines.push(format!(
-                "fetch url={} depth={} digest={} supplies=[{}]",
-                record.url,
-                record.depth,
-                record.digest,
-                record.supplies.join(",")
-            ));
+            lines.push(
+                [
+                    FETCH_RECORD.to_owned(),
+                    format!("url={}", record.url),
+                    format!("depth={}", record.depth),
+                    format!("digest={}", record.digest),
+                    format!("supplies=[{}]", record.supplies.join(",")),
+                ]
+                .join(" "),
+            );
         }
-        lines.push(format!(
-            "stop depth={} converged={} depth_bound={} open=[{}]",
-            self.depth_reached,
-            self.converged,
-            self.stopped_at_depth_bound,
-            self.open_attributes.join(",")
-        ));
+        lines.push(
+            [
+                STOP_RECORD.to_owned(),
+                format!("depth={}", self.depth_reached),
+                format!("converged={}", self.converged),
+                format!("depth_bound={}", self.stopped_at_depth_bound),
+                format!("open=[{}]", self.open_attributes.join(",")),
+            ]
+            .join(" "),
+        );
         lines.join("\n")
     }
 }

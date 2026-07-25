@@ -657,7 +657,7 @@ pub use identifier::{
     is_valid_identifier, to_identifier, IdentifierBudget, NamingConvention,
     DEFAULT_IDENTIFIER_MAX_LENGTH, DEFAULT_IDENTIFIER_MAX_WORDS,
 };
-pub use importance::{rank, ImportanceScore, RankedStatement};
+pub use importance::{rank, to_statements_in, ImportanceScore, RankedStatement};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
 pub use recheck::{recheck, RecheckReport, RecheckedStatement, Verdict};
 pub use resource::{

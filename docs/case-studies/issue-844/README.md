@@ -142,6 +142,24 @@ rounded to `TRUTH_VALUE_DECIMALS`, so two runs agree to the last digit
 (`the_merge_is_deterministic_and_independent_of_source_order`, which compares
 probabilities bit-for-bit).
 
+## Wording is data, traces are machine records
+
+The two kinds of line in that output are governed by different rules
+(`docs/design/no-hardcoded-natural-language.md`, R379):
+
+- `asserted by 3 of 5 sources`, `, denied by 1` and the `(disputed: …)` wrapper
+  are prose a reader sees, so they live in
+  [`data/seed/multilingual-responses-summarization.lino`](../../../data/seed/multilingual-responses-summarization.lino)
+  — one record per intent per language (en, ru, hi, zh) — and are rendered by
+  `summarization::vocabulary::rendered_response`. The Rust source carries only
+  intent slugs and placeholder names, and `to_statements_in` /
+  `ImportanceScore::evidence_summary_in` take the language from the caller
+  (`the_evidence_wording_comes_from_the_seed_for_every_supported_language`);
+- `fetch url=… depth=… digest=…` and `verdict=… sources=…` are machine records,
+  not sentences: every whitespace-separated field is a `name=value` pair with a
+  slug on the left, which is what the trace assertions in
+  `tests/unit/issue_844_statement_merge.rs` pin. They are never translated.
+
 ## Self-hosting evidence
 
 Every commit that implements the merge is hand-authored, so none of them carries

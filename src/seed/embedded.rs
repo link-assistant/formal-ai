@@ -18,6 +18,8 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-summarization.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
@@ -143,6 +145,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-agentic.lino",
             MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-summarization.lino",
+            MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
@@ -328,12 +334,13 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 /// The ordered set of multilingual-response files, walked by
 /// [`super::multilingual_responses`].
 ///
-/// Split so neither breaches the seed file-size guard; each wraps its records
+/// Split so none breaches the seed file-size guard; each wraps its records
 /// under a top-level `multilingual_responses` node and the parser walks all of
 /// them, so an intent may live in whichever file keeps the sizes balanced.
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
 ];
 
 /// The ordered set of meaning-lexicon files, concatenated by [`super::lexicon`].

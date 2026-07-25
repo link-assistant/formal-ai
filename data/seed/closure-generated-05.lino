@@ -1,4 +1,79 @@
 meanings
+  statement_audit_unknown_tier
+    defined-by intent
+    lexeme en
+      surface
+        text "statement audit unknown tier"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
+  structured-knowledge
+    defined-by category
+    lexeme en
+      surface
+        text "structured knowledge"
+  structured_knowledge
+    defined-by kind
+    lexeme en
+      surface
+        text "structured knowledge"
+  submission
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submission"
+  submit
+    defined-by word_surface
+    lexeme en
+      surface
+        text "submit"
+  substitute
+    defined-by word_surface
+    lexeme en
+      surface
+        text "substitute"
+  sudo
+    defined-by token
+    lexeme en
+      surface
+        text "sudo"
+  sum_to_ten
+    defined-by task
+    lexeme en
+      surface
+        text "sum to ten"
+  summarization_disputed_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization disputed statement"
+  summarization_evidence_denied
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence denied"
+  summarization_evidence_summary
+    defined-by intent
+    lexeme en
+      surface
+        text "summarization evidence summary"
+  summarize_conversation
+    defined-by name
+    lexeme en
+      surface
+        text "summarize conversation"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
   tabler
     defined-by concept
     lexeme en

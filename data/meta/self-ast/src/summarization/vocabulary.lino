@@ -2,10 +2,10 @@ self_ast_census
   target src/summarization/vocabulary.rs
   language rust
   fidelity signature
-  byte_len 5818
-  line_count 153
-  content_id source_module_4595af02f99e71e2
-  symbol_count 13
+  byte_len 7346
+  line_count 189
+  content_id source_module_16af636d118b518c
+  symbol_count 16
   symbols
     function function_words 27 30
     static CACHE 28 28
@@ -19,4 +19,7 @@ self_ast_census
     function flush 92 98
     function strip_words 107 127
     function mentions_word 132 139
-    function cjk_words_longest_first 145 153
+    function rendered_response 149 162
+    function response_template 168 175
+    static CACHE 169 169
+    function cjk_words_longest_first 181 189
