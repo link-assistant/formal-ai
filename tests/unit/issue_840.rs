@@ -299,6 +299,17 @@ fn definition_imperatives_route_to_research_in_every_supported_language() {
 }
 
 #[test]
+fn unresolved_definition_question_with_output_instruction_routes_to_research() {
+    let prompt = "What is a fufloмицин (фуфломицин)? Answer in English.";
+    let call = one_call(&[ChatMessage::user(prompt)]);
+    assert_eq!(call.tool, "websearch", "{call:?}");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&call.arguments).expect("search arguments");
+    let query = arguments["query"].as_str().expect("search query");
+    assert!(query.contains("фуфломицин"), "{query}");
+}
+
+#[test]
 fn later_definition_followup_reuses_the_prior_user_topic() {
     let call = one_call(&[
         ChatMessage::user("Что такое фуфломицин?"),

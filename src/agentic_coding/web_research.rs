@@ -17,6 +17,7 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
     if let Some(query) = seed_research_subject(&task)
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
         .or_else(|| seed_definition_subject(&task))
+        .or_else(|| seed_unresolved_question_subject(&task))
     {
         return if is_context_reference(&query) {
             topic_from_history(messages)
@@ -122,6 +123,21 @@ fn seed_definition_subject(task: &str) -> Option<String> {
                 .map(trim_question_punctuation)
                 .filter(|subject| !subject.trim().is_empty())
         })
+}
+
+/// Recover an open-world question whose output instruction follows its question
+/// mark (for example, "What is X? Answer in English."). The ordinary web intent
+/// detector sees the seeded opener but deliberately leaves broad factual
+/// questions to the symbolic solver. Only promote that subject after the local
+/// engine reports it unresolved, so locally known facts keep their established
+/// route.
+fn seed_unresolved_question_subject(task: &str) -> Option<String> {
+    let subject = seed_prefix_subject(task, seed::ROLE_RESEARCH_QUESTION_OPENER)?;
+    matches!(
+        FormalAiEngine.answer(task).intent.as_str(),
+        "unknown" | "web_search"
+    )
+    .then_some(subject)
 }
 
 fn seed_prefix_subject(task: &str, role: &str) -> Option<String> {
