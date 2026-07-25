@@ -52,6 +52,22 @@ def fetch_session(connection: sqlite3.Connection, session_id: str) -> dict[str, 
     return session
 
 
+def resolve_session_id(connection: sqlite3.Connection, session_id: str) -> str:
+    """Resolve the ``latest`` alias to the most recently created session.
+
+    A report must export the session the user is actually in (#839), so the
+    caller may ask for ``latest`` instead of pasting an identifier by hand.
+    """
+    if session_id != "latest":
+        return session_id
+    row = connection.execute(
+        "SELECT id FROM session ORDER BY time_created DESC, id DESC LIMIT 1"
+    ).fetchone()
+    if row is None:
+        raise LookupError("no opencode session exists yet")
+    return row["id"]
+
+
 def fetch_messages(
     connection: sqlite3.Connection, session_id: str
 ) -> list[dict[str, Any]]:
@@ -130,6 +146,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-o", "--output", default="-", help="output path (default: stdout)"
     )
+    parser.add_argument(
+        "--resolve-only",
+        action="store_true",
+        help="print the resolved session id and exit",
+    )
     return parser.parse_args()
 
 
@@ -138,7 +159,11 @@ def main() -> int:
     try:
         connection = open_ro(os.path.expanduser(args.db))
         try:
-            tree = build_tree(connection, args.session_id)
+            session_id = resolve_session_id(connection, args.session_id)
+            if args.resolve_only:
+                print(session_id)
+                return 0
+            tree = build_tree(connection, session_id)
         finally:
             connection.close()
     except (FileNotFoundError, LookupError, sqlite3.Error) as error:

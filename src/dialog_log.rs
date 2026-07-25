@@ -7,6 +7,7 @@
 //! the default; `--silent` disables it and `FORMAL_AI_DIALOG_LOG_DIR` overrides
 //! its location.
 
+use std::cell::RefCell;
 use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -17,13 +18,29 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::dialog_conversation::{
+    turns_in_exchange, write_conversation_record, DialogConversationLog,
+};
 use crate::engine::stable_id;
 use crate::proxy::{summarize_proxy_exchange, ProxyExchangeLog};
 use crate::server::ApiHttpResponse;
 
+/// Header carrying the caller's own session identifier (#839).
+///
+/// Every surface that owns a session id — the opencode harness, the desktop
+/// app, the VS Code extension — sends it here, and the whole pipeline uses that
+/// id: the log filename, the conversation record, and the `--session` argument
+/// of the report the agent generates. Without it a report can only guess.
+pub const DIALOG_ID_HEADER: &str = "x-formal-ai-dialog-id";
+
 static REQUEST_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 static VERBOSE_ENABLED: AtomicBool = AtomicBool::new(true);
 static LOG_WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+thread_local! {
+    /// Session id declared by the request currently being served on this thread.
+    static CURRENT_DIALOG_ID: RefCell<Option<String>> = const { RefCell::new(None) };
+}
 
 /// Configure process-wide diagnostic capture (`true` by default).
 pub fn configure_verbose(enabled: bool) {
@@ -52,6 +69,38 @@ pub fn configured_directory() -> Option<PathBuf> {
     let memory_path = crate::shared_memory::shared_memory_path();
     let parent = memory_path.parent().unwrap_or_else(|| Path::new("."));
     Some(parent.join("dialog-logs"))
+}
+
+/// Remember the caller's declared session id for the duration of one request.
+///
+/// The planner reads it back through [`current_dialog_id`] so a report exports
+/// the session the user is actually in (#839, §2.1) instead of a content hash
+/// of their first sentence.
+#[derive(Debug)]
+pub struct DialogScope {
+    previous: Option<String>,
+}
+
+impl DialogScope {
+    /// Enter a request scope, adopting the header's session id when present.
+    #[must_use]
+    pub fn begin(headers: &[(&str, &str)]) -> Self {
+        Self {
+            previous: CURRENT_DIALOG_ID.with(|slot| slot.replace(explicit_dialog_id(headers))),
+        }
+    }
+}
+
+impl Drop for DialogScope {
+    fn drop(&mut self) {
+        CURRENT_DIALOG_ID.with(|slot| slot.replace(self.previous.take()));
+    }
+}
+
+/// Session id declared by the request being served, when the caller sent one.
+#[must_use]
+pub fn current_dialog_id() -> Option<String> {
+    CURRENT_DIALOG_ID.with(|slot| slot.borrow().clone())
 }
 
 /// Dump inbound request details in verbose mode or when explicitly requested.
@@ -144,6 +193,17 @@ pub fn write_dialog_exchange(
         response_body.as_bytes(),
         true,
     );
+    // Two records, two shapes: the proxy trace below explains the transport,
+    // the conversation record beside it holds the turns a report needs (#839).
+    write_conversation_record(
+        directory,
+        &DialogConversationLog {
+            timestamp_unix_ms,
+            dialog_id: dialog_id.clone(),
+            request_id: request_id.clone(),
+            messages: turns_in_exchange(Some(request_body), Some(response_body)),
+        },
+    )?;
     let record = DialogExchangeLog {
         timestamp_unix_ms,
         dialog_id: dialog_id.clone(),
@@ -165,20 +225,27 @@ pub fn write_dialog_exchange(
 }
 
 fn dialog_id(headers: &[(&str, &str)], request_body: &str, path: &str) -> String {
-    let explicit = headers.iter().find_map(|(name, value)| {
-        name.eq_ignore_ascii_case("x-formal-ai-dialog-id")
-            .then(|| value.trim())
-            .filter(|value| !value.is_empty())
-    });
-    if let Some(explicit) = explicit.filter(|value| {
-        value
-            .chars()
-            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '_' | '-'))
-    }) {
-        return explicit.to_owned();
-    }
-    let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
-    stable_id("dialog", &basis)
+    explicit_dialog_id(headers).unwrap_or_else(|| {
+        let basis = first_user_prompt(request_body).unwrap_or_else(|| path.to_owned());
+        stable_id("dialog", &basis)
+    })
+}
+
+/// The caller-declared session id, validated as a safe path component.
+fn explicit_dialog_id(headers: &[(&str, &str)]) -> Option<String> {
+    headers
+        .iter()
+        .find_map(|(name, value)| {
+            name.eq_ignore_ascii_case(DIALOG_ID_HEADER)
+                .then(|| value.trim())
+                .filter(|value| !value.is_empty())
+        })
+        .filter(|value| {
+            value.chars().all(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '_' | '-')
+            })
+        })
+        .map(str::to_owned)
 }
 
 fn first_user_prompt(body: &str) -> Option<String> {

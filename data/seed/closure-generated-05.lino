@@ -1,14 +1,4 @@
 meanings
-  supported_languages
-    defined-by field
-    lexeme en
-      surface
-        text "supported languages"
-  symbolic-ai
-    defined-by category
-    lexeme en
-      surface
-        text "symbolic ai"
   tabler
     defined-by concept
     lexeme en
@@ -29,41 +19,6 @@ meanings
     lexeme en
       surface
         text "tar"
-  task_atomicity_no
-    defined-by intent
-    lexeme en
-      surface
-        text "task atomicity no"
-  task_atomicity_yes
-    defined-by intent
-    lexeme en
-      surface
-        text "task atomicity yes"
-  task_decomposition_atomic
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition atomic"
-  task_decomposition_depth_bound
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition depth bound"
-  task_decomposition_depth_marker
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition depth marker"
-  task_decomposition_lead
-    defined-by intent
-    lexeme en
-      surface
-        text "task decomposition lead"
-  task_first_step_lead
-    defined-by intent
-    lexeme en
-      surface
-        text "task first step lead"
   test_status
     defined-by intent
     lexeme en

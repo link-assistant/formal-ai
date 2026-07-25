@@ -1,4 +1,134 @@
 meanings
+  response_lexeme_import_cannot_install_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot install zh"
+  response_lexeme_import_cannot_list_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list en"
+  response_lexeme_import_cannot_list_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list hi"
+  response_lexeme_import_cannot_list_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list ru"
+  response_lexeme_import_cannot_list_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot list zh"
+  response_lexeme_import_cannot_remove_stale_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale en"
+  response_lexeme_import_cannot_remove_stale_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale hi"
+  response_lexeme_import_cannot_remove_stale_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale ru"
+  response_lexeme_import_cannot_remove_stale_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot remove stale zh"
+  response_lexeme_import_cannot_stage_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage en"
+  response_lexeme_import_cannot_stage_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage hi"
+  response_lexeme_import_cannot_stage_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage ru"
+  response_lexeme_import_cannot_stage_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot stage zh"
+  response_lexeme_import_cannot_write_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json en"
+  response_lexeme_import_cannot_write_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json hi"
+  response_lexeme_import_cannot_write_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json ru"
+  response_lexeme_import_cannot_write_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write json zh"
+  response_lexeme_import_cannot_write_lino_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino en"
+  response_lexeme_import_cannot_write_lino_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino hi"
+  response_lexeme_import_cannot_write_lino_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino ru"
+  response_lexeme_import_cannot_write_lino_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import cannot write lino zh"
+  response_lexeme_import_denotation_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost en"
+  response_lexeme_import_denotation_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost hi"
+  response_lexeme_import_denotation_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost ru"
+  response_lexeme_import_denotation_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import denotation lost zh"
+  response_lexeme_import_duplicate_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import duplicate qid en"
   response_lexeme_import_duplicate_qid_hi
     defined-by response_template
     lexeme en
@@ -694,146 +824,6 @@ meanings
     lexeme en
       surface
         text "response statement audit unknown tier en"
-  response_task_atomicity_no_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no en"
-  response_task_atomicity_no_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no hi"
-  response_task_atomicity_no_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no ru"
-  response_task_atomicity_no_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity no zh"
-  response_task_atomicity_yes_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes en"
-  response_task_atomicity_yes_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes hi"
-  response_task_atomicity_yes_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes ru"
-  response_task_atomicity_yes_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task atomicity yes zh"
-  response_task_decomposition_atomic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic en"
-  response_task_decomposition_atomic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic hi"
-  response_task_decomposition_atomic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic ru"
-  response_task_decomposition_atomic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition atomic zh"
-  response_task_decomposition_depth_bound_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound en"
-  response_task_decomposition_depth_bound_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound hi"
-  response_task_decomposition_depth_bound_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound ru"
-  response_task_decomposition_depth_bound_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth bound zh"
-  response_task_decomposition_depth_marker_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker en"
-  response_task_decomposition_depth_marker_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker hi"
-  response_task_decomposition_depth_marker_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker ru"
-  response_task_decomposition_depth_marker_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition depth marker zh"
-  response_task_decomposition_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead en"
-  response_task_decomposition_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead hi"
-  response_task_decomposition_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead ru"
-  response_task_decomposition_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task decomposition lead zh"
-  response_task_first_step_lead_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead en"
-  response_task_first_step_lead_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead hi"
-  response_task_first_step_lead_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead ru"
-  response_task_first_step_lead_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response task first step lead zh"
   response_test_status_en
     defined-by response_template
     lexeme en
@@ -1394,3 +1384,13 @@ meanings
     lexeme en
       surface
         text "summarize conversation"
+  supported_languages
+    defined-by field
+    lexeme en
+      surface
+        text "supported languages"
+  symbolic-ai
+    defined-by category
+    lexeme en
+      surface
+        text "symbolic ai"
