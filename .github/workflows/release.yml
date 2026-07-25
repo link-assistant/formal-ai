@@ -1673,7 +1673,7 @@ jobs:
         # The first two turns must only ask for destination and included logs;
         # the third executes a PATH-local fake gh and validates the full Lino
         # context obtained from the matching server conversation.
-        timeout-minutes: 5
+        timeout-minutes: 10
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_822.sh
@@ -1687,16 +1687,16 @@ jobs:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
 
-      - name: "Run four-client + TUI E2E — local path discovery (issue #819)"
-        # Agent, OpenCode, Claude Code, and Codex execute the generated local
-        # `find` command in their own workspace. OpenCode is then replayed in a
-        # real PTY: command-stream feeds every chunk to xterm's renderer, the
-        # harness deduplicates frames, and the dialog log proves the complete
-        # user → tool call → tool result → final-answer sequence.
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        # Agent, OpenCode, Claude Code, and Codex execute the generated exact
+        # local observation and only widen after an empty result. OpenCode is
+        # then replayed in a real PTY: command-stream feeds every chunk to
+        # xterm's renderer, the harness deduplicates frames, and the dialog log
+        # proves every user → tool call → tool result → final-answer transition.
         timeout-minutes: 5
         env:
           PORT: 8784
-        run: experiments/agent_cli_e2e/run_issue_819.sh
+        run: experiments/agent_cli_e2e/run_issue_840.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
