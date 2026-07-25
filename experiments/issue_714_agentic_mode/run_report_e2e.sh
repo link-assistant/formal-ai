@@ -70,7 +70,7 @@ test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"
 grep -Fq 'tool "bash"' "$MEMORY"
-grep -Fq 'gh issue create' "$MEMORY"
+grep -Fq 'formal-ai context report' "$MEMORY"
 grep -Fq 'issues/999' "$MEMORY"
 
 echo "Agent CLI invoked gh and retained its result as learning evidence in $posts chat rounds."
