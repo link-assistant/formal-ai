@@ -11,6 +11,7 @@ use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
 
+use super::curated_project_fetch::try_curated_http_fetch;
 use super::finalize_simple;
 use super::installation_conversion::is_install_conversion_request;
 use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
@@ -39,39 +40,8 @@ pub fn try_http_fetch_with_offline(
 ) -> Option<SymbolicAnswer> {
     let url = extract_http_fetch_url(prompt, normalized)?;
     log.append("http_fetch:request", url.clone());
-    if let Some(project) = match_curated_github_url(&url) {
-        let language = detect_language(prompt).slug();
-        log.append("http_fetch:curated_project", project.repo_slug());
-        log.append("summarization:mode", "standard".to_owned());
-        log.append("summarization:language", language.to_owned());
-        let config = SummarizationConfig::default()
-            .with_mode(SummarizationMode::Standard)
-            .with_language(language);
-        let summary = describe_project(project, &config);
-        let body = match language {
-            "ru" => format!(
-                "HTTP-запрос на `{url}`.\n\n\
-                 Этот URL соответствует курируемому продвигаемому проекту. \
-                 Резюме README (через formalize → summarize → \
-                 deformalize): {summary}\n\n\
-                 Source: [{url}]({url})"
-            ),
-            _ => format!(
-                "HTTP fetch requested for `{url}`.\n\n\
-                 This URL matches a curated promoted project. README summary \
-                 (through the formalize → summarize → \
-                 deformalize pipeline): {summary}\n\n\
-                 Source: [{url}]({url})"
-            ),
-        };
-        return Some(finalize_simple(
-            prompt,
-            log,
-            "http_fetch",
-            "response:http_fetch",
-            &body,
-            0.95,
-        ));
+    if let Some(answer) = try_curated_http_fetch(prompt, &url, log) {
+        return Some(answer);
     }
     if offline {
         log.append("policy:offline", url.clone());
@@ -121,27 +91,6 @@ pub fn try_http_fetch_with_offline(
         &body,
         1.0,
     ))
-}
-
-/// Match a GitHub repository URL against the bundled project registry.
-///
-/// This is local seed data, not a claim that an external request occurred.
-fn match_curated_github_url(url: &str) -> Option<&'static ProjectRecord> {
-    let lower = url.to_lowercase();
-    let after_scheme = lower
-        .strip_prefix("https://")
-        .or_else(|| lower.strip_prefix("http://"))?;
-    let after_host = after_scheme.strip_prefix("github.com/")?;
-    let mut segments = after_host.split('/');
-    let org = segments.next()?.trim_matches('/');
-    let name = segments.next()?.trim_matches('/');
-    if org.is_empty() || name.is_empty() {
-        return None;
-    }
-    let registry = registry_static();
-    registry.projects.iter().find(|project| {
-        project.org.eq_ignore_ascii_case(org) && project.name.eq_ignore_ascii_case(name)
-    })
 }
 
 /// Match prompts that ask the assistant to navigate to or display a URL
@@ -827,7 +776,7 @@ fn normalize_concept_term(value: &str) -> String {
 /// Lazy-init the curated projects registry once per process. The seed file is
 /// embedded via `include_str!` and the parsed form is immutable, so a `OnceLock`
 /// is enough and avoids re-parsing on every prompt.
-fn registry_static() -> &'static crate::seed::ProjectsRegistry {
+pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
     use std::sync::OnceLock;
     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
     REGISTRY.get_or_init(projects_registry)

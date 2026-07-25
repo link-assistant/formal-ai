@@ -10,6 +10,7 @@ mod calendar;
 mod calendar_ics;
 mod compound_interest;
 mod conversation_memory;
+mod curated_project_fetch;
 mod definition_merge;
 mod document_originality;
 mod document_request;
