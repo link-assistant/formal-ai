@@ -105,6 +105,79 @@ fn an_oversize_subject_is_truncated_on_a_word_boundary() {
     assert!(long[quoted.len()..].starts_with(' '), "{title}");
 }
 
+/// Every language this agent supports, with a subject, the turn that asks for
+/// the report, and the separator that language writes between phrases — all
+/// written the way a speaker of that language would type them.
+///
+/// The set matches the `supported_languages` field of `data/seed/agent-info.lino`
+/// (English, Russian, Hindi, Chinese) — the same list
+/// `tests/e2e/scripts/check-language-test-coverage.mjs` reads. Chinese has an
+/// empty separator because it does not space its words.
+const SUPPORTED_LANGUAGE_CASES: [(&str, &str, &str, &str); 4] = [
+    (
+        "English",
+        "Find hive-mind on my desktop",
+        "report issue",
+        " ",
+    ),
+    ("Russian", "Что такое фуфломицин?", "Зарепорти баг", " "),
+    (
+        "Hindi",
+        "मेरे डेस्कटॉप पर हाइव-माइंड खोजें",
+        "समस्या रिपोर्ट करें",
+        " ",
+    ),
+    ("Chinese", "在我的桌面上找到蜂巢思维", "报告问题", ""),
+];
+
+/// The convention quotes the user's own words, so it has to hold in every
+/// supported language and not only in the Latin and Cyrillic titles the issue
+/// was filed with.
+///
+/// Rule 1 (drop the report-invoking turn) is a role-and-flag decision, not a
+/// text match, so it must not depend on the script the request is written in:
+/// a Hindi or Chinese `report issue` turn is dropped exactly like the English
+/// one, leaving the real subject quoted verbatim.
+#[test]
+fn the_title_quotes_the_subject_in_every_supported_language() {
+    for (language, subject, request, _) in SUPPORTED_LANGUAGE_CASES {
+        let turns = conversation(&[subject, request]);
+        assert_eq!(
+            issue_title(&turns, &settings()),
+            format!("Formal AI: `{subject}`"),
+            "the {language} subject should be quoted on its own"
+        );
+    }
+}
+
+/// An oversize subject is cut by characters in every script.
+///
+/// A byte cut would split a Cyrillic, Devanagari or Han character in half and
+/// leave the title invalid; a character cut cannot. Scripts that do not
+/// separate words with spaces (Chinese) have no word boundary to fall back on,
+/// so the cut lands mid-phrase — but still on a character, and still inside the
+/// 120-character budget the title convention allows.
+#[test]
+fn an_oversize_subject_is_cut_by_characters_in_every_supported_language() {
+    for (language, subject, request, separator) in SUPPORTED_LANGUAGE_CASES {
+        let long = format!("{subject}{separator}").repeat(12).trim().to_owned();
+        let title = issue_title(&conversation(&[&long, request]), &settings());
+        assert!(
+            title.chars().count() <= 120,
+            "{language}: {} characters in {title}",
+            title.chars().count()
+        );
+        assert!(title.ends_with("…`"), "{language}: {title}");
+        let quoted = title
+            .trim_start_matches("Formal AI: `")
+            .trim_end_matches("…`");
+        // What is kept is a prefix of the original text: no character was cut
+        // in half, in any script.
+        assert!(long.starts_with(quoted), "{language}: {title}");
+        assert!(!quoted.is_empty(), "{language}: {title}");
+    }
+}
+
 /// A Links Notation export with `count` message records.
 fn exported_context(count: usize) -> String {
     let messages: Vec<_> = (0..count)
