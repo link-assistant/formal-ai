@@ -56,7 +56,7 @@ echo "repo:    $ROOT"
 echo
 
 python3 - "$PROMPTS" "$OUT" "$ONLY" "$TIMEOUT" "$BIN" "$ROOT" <<'PY'
-import json, subprocess, sys
+import json, os, re, subprocess, sys
 
 prompts_path, out_path, only, timeout_s, binary, root = sys.argv[1:7]
 timeout_s = int(timeout_s)
@@ -91,6 +91,7 @@ if not repo_is_clean():
 
 results = []
 for task in tasks:
+    structural = ""
     reset_repo()
     cmd = [binary, "with", "agent", "--non-interactive", "-p", task["prompt"]]
     try:
@@ -109,6 +110,24 @@ for task in tasks:
         ["/bin/sh", "-c", task.get("verify", "true")],
         cwd=root, capture_output=True, text=True,
     ).returncode == 0
+
+    # Structural sanity: a substring `verify` cannot tell real code from the
+    # prompt echoed back into the file. Observed failure mode -- asked for a
+    # Rust test file, the agent creates the file whose entire content is the
+    # sentence fragment "one Rust test named X asserting ...". grep for the
+    # test name then passes. Any .rs the task created must actually parse as
+    # Rust to the extent of containing a function item.
+    if verified:
+        for created in re.findall(r'\b((?:src|tests|scripts)/[\w./-]+\.rs)\b', task["prompt"]):
+            path = os.path.join(root, created)
+            if not os.path.exists(path):
+                continue
+            with open(path, "r", errors="replace") as handle:
+                body = handle.read()
+            if "fn " not in body:
+                verified = False
+                structural = f"{created} has no `fn` item (prompt echoed as content?)"
+                break
 
     # Judge `expect_answer` against the assistant's ANSWER only. The agent CLI
     # emits verbose JSON logs on the same streams, and matching against the raw
@@ -145,10 +164,11 @@ for task in tasks:
     ok = verified and answered and not timed_out and not refused
 
     reason = ""
+    structural = locals().get("structural", "")
     if timed_out:
         reason = f"timeout after {timeout_s}s"
     elif not verified:
-        reason = "verify failed (no observable effect)"
+        reason = structural or "verify failed (no observable effect)"
     elif refused:
         reason = "refused (unknown-prompt fallback)"
     elif not answered:
