@@ -71,6 +71,7 @@
     "seed/meanings-semantic-meta.lino",
     "seed/meanings-skill-compiler.lino",
     "seed/meanings-software-project.lino",
+    "seed/meanings-statement-merge.lino",
     "seed/meanings-summary.lino",
     "seed/meanings-tool-access.lino",
     "seed/meanings-translation.lino",

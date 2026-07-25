@@ -197,6 +197,8 @@ roles
     kind predicate
   http_fetch
     kind meaning
+  identifier_reserved_word
+    kind meaning
   implementation_language_noun
     kind meaning
   implementation_language_preposition
@@ -428,6 +430,10 @@ roles
   software_requirement_category
     kind predicate
   software_step_granularity
+    kind meaning
+  statement_function_word
+    kind meaning
+  statement_negation_cue
     kind meaning
   summary_classification_cue
     kind predicate

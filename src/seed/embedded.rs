@@ -98,6 +98,8 @@ pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
 pub const MEANINGS_CONVERSATION_LINO: &str =
     include_str!("../../data/seed/meanings-conversation.lino");
+pub const MEANINGS_STATEMENT_MERGE_LINO: &str =
+    include_str!("../../data/seed/meanings-statement-merge.lino");
 pub const MEANINGS_SUMMARY_LINO: &str = include_str!("../../data/seed/meanings-summary.lino");
 pub const MEANINGS_CODING_CATALOG_LINO: &str =
     include_str!("../../data/seed/meanings-coding-catalog.lino");
@@ -281,6 +283,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/meanings-conversation.lino",
             MEANINGS_CONVERSATION_LINO,
         ),
+        (
+            "data/seed/meanings-statement-merge.lino",
+            MEANINGS_STATEMENT_MERGE_LINO,
+        ),
         ("data/seed/meanings-summary.lino", MEANINGS_SUMMARY_LINO),
         (
             "data/seed/meanings-coding-catalog.lino",
@@ -373,6 +379,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_CONVERSATION_LINO,
     MEANINGS_SUMMARY_LINO,
+    MEANINGS_STATEMENT_MERGE_LINO,
     MEANINGS_CODING_CATALOG_LINO,
     MEANINGS_LEXICON_IMPORT_01_LINO,
     MEANINGS_LEXICON_IMPORT_02_LINO,
