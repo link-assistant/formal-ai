@@ -46,19 +46,31 @@ fn temp_cache() -> std::path::PathBuf {
 
 #[test]
 fn external_search_never_fabricates_source_provenance() {
-    let answer = UniversalSolver::default().solve("An unrecognized term requiring research");
-    assert!(
-        answer
-            .evidence_links
-            .iter()
-            .all(|link| !link.contains("example.org")),
-        "{:?}",
-        answer.evidence_links
-    );
-    assert!(answer
-        .evidence_links
-        .iter()
-        .all(|link| !link.starts_with("source:http:") && !link.starts_with("cache_hit:")));
+    let prompts = [
+        ("english", "An unrecognized term requiring research"),
+        ("ru", "Исследуй неизвестный термин"),
+        ("hi", "किसी अज्ञात शब्द पर शोध करें"),
+        ("zh", "研究一个未知术语"),
+    ];
+    for (locale, prompt) in prompts {
+        let answer = UniversalSolver::default().solve(prompt);
+        assert!(
+            answer
+                .evidence_links
+                .iter()
+                .all(|link| !link.contains("example.org")),
+            "{locale}: {:?}",
+            answer.evidence_links
+        );
+        assert!(
+            answer
+                .evidence_links
+                .iter()
+                .all(|link| !link.starts_with("source:http:") && !link.starts_with("cache_hit:")),
+            "{locale}: {:?}",
+            answer.evidence_links
+        );
+    }
 }
 
 #[test]
