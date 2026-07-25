@@ -38,6 +38,11 @@ export function unrollFrames(frames) {
   return sequence;
 }
 
+export function renderedMarkerOccurrences(frame, marker) {
+  const count = (value) => value.split(marker).length - 1;
+  return Math.max(count(frame), count(frame.replace(/\n/gu, '')));
+}
+
 /**
  * Stream an actual TUI through a PTY, render every output chunk, and retain
  * only distinct terminal frames. `command` is passed as one safely quoted
@@ -69,6 +74,7 @@ export async function captureTuiTranscript({
   const seenFrames = new Set();
   const pendingInteractions = [...interactions];
   let raw = '';
+  let stopMarkerSeen = false;
   const timeout = setTimeout(() => runner.kill('SIGTERM'), timeoutMs);
   const stdin = pendingInteractions.length > 0 ? await runner.streams.stdin : null;
 
@@ -83,6 +89,11 @@ export async function captureTuiTranscript({
         seenFrames.add(frame);
         frames.push(frame);
       }
+      stopMarkerSeen =
+        stopMarkerSeen ||
+        (stopMarker &&
+          renderedMarkerOccurrences(frame, stopMarker) >=
+            stopMarkerOccurrences);
       while (
         stdin &&
         pendingInteractions.length > 0 &&
@@ -98,10 +109,7 @@ export async function captureTuiTranscript({
           }
         }
       }
-      if (
-        stopMarker &&
-        raw.split(stopMarker).length - 1 >= stopMarkerOccurrences
-      ) {
+      if (stopMarkerSeen) {
         runner.kill('SIGTERM');
         break;
       }
@@ -117,8 +125,7 @@ export async function captureTuiTranscript({
     frames,
     sequence: unrollFrames(frames),
     interaction_count: interactions.length - pendingInteractions.length,
-    stop_marker_seen:
-      !stopMarker || raw.split(stopMarker).length - 1 >= stopMarkerOccurrences,
+    stop_marker_seen: !stopMarker || stopMarkerSeen,
   };
   if (outputPath) {
     await writeFile(outputPath, `${JSON.stringify(transcript, null, 2)}\n`);

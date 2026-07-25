@@ -204,13 +204,21 @@ run_opencode_tui() {
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 
-  ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
+  if ! ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
     ISSUE819_TUI_CWD="$WORKDIR" \
     ISSUE819_DESKTOP_DIR="$DESKTOP_DIR" \
     ISSUE819_EXPECT_RESULT="$EXPECTED_RESULT" \
     ISSUE819_TUI_OUTPUT="$transcript" \
-    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1 \
-    || fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
+    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1; then
+    if [ -n "$ARTIFACT_DIR" ]; then
+      mkdir -p "$ARTIFACT_DIR/opencode-tui/dialogs"
+      cp "$client_log" "$ARTIFACT_DIR/opencode-tui/client.log"
+      cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
+      cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
+      cp -R "$dialog_dir/." "$ARTIFACT_DIR/opencode-tui/dialogs/"
+    fi
+    fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
+  fi
 
   node "$TUI_DIR/verify-dialog.mjs" \
     "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
