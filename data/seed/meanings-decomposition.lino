@@ -1,0 +1,622 @@
+# Task-decomposition surfaces for issue 847, E57.
+#
+# Decomposition is a working task like any other, so the surfaces that make
+# splitting, atomicity and first-step prompts recognisable live here, in seed
+# data. Following the issue 386 convention the Rust modules
+# `src/task_decomposition.rs` and `src/solver_handlers/task_decomposition.rs`
+# name only the language-independent roles below; no per-language phrase list
+# appears in Rust.
+#
+# The observable and unobservable action pair is the checkability oracle from
+# the acceptance list. A sub-task is a valid child only when a human can tell,
+# by looking, whether it is done. Adding a folder to an array is observable;
+# understanding a codebase is not.
+meanings
+  task_decomposition_action
+    defined-by action
+    role task_decomposition_action
+    lexeme en
+      surface
+        text "split"
+      surface
+        text "break down"
+      surface
+        text "break into"
+      surface
+        text "breakdown"
+      surface
+        text "decompose"
+      surface
+        text "decomposition"
+      surface
+        text "divide"
+      surface
+        text "subdivide"
+    lexeme ru
+      surface
+        text разбей
+      surface
+        text разбить
+      surface
+        text разбейте
+      surface
+        text раздели
+      surface
+        text разделить
+      surface
+        text декомпозируй
+      surface
+        text декомпозировать
+      surface
+        text декомпозиция
+      surface
+        text разложи
+      surface
+        text разложить
+    lexeme hi
+      surface
+        text विभाजित
+      surface
+        text विभाजन
+      surface
+        text बाँटें
+      surface
+        text बांटें
+      surface
+        text तोड़ें
+      surface
+        text विघटित
+    lexeme zh
+      surface
+        text 拆分
+      surface
+        text 拆解
+      surface
+        text 分解
+      surface
+        text 划分
+      surface
+        text 细分
+  subtask_unit_noun
+    defined-by thing
+    role subtask_unit_noun
+    lexeme en
+      surface
+        text "subtask"
+      surface
+        text "subtasks"
+      surface
+        text "sub task"
+      surface
+        text "sub tasks"
+      surface
+        text "step"
+      surface
+        text "steps"
+      surface
+        text "smaller pieces"
+      surface
+        text "smaller parts"
+    lexeme ru
+      surface
+        text подзадачи
+      surface
+        text подзадач
+      surface
+        text подзадачу
+      surface
+        text подзадача
+      surface
+        text шаги
+      surface
+        text шагов
+      surface
+        text шага
+      surface
+        text шаг
+      surface
+        text части
+    lexeme hi
+      surface
+        text उपकार्य
+      surface
+        text उपकार्यों
+      surface
+        text उपकार्यो
+      surface
+        text चरण
+      surface
+        text चरणों
+      surface
+        text हिस्सों
+    lexeme zh
+      surface
+        text 子任务
+      surface
+        text 子步骤
+      surface
+        text 步骤
+      surface
+        text 小任务
+  decomposable_task_noun
+    defined-by thing
+    role decomposable_task_noun
+    lexeme en
+      surface
+        text "task"
+      surface
+        text "tasks"
+      surface
+        text "issue"
+      surface
+        text "problem"
+      surface
+        text "work item"
+      surface
+        text "plan"
+    lexeme ru
+      surface
+        text задачу
+      surface
+        text задача
+      surface
+        text задачи
+      surface
+        text задачей
+      surface
+        text проблему
+      surface
+        text проблема
+      surface
+        text план
+    lexeme hi
+      surface
+        text कार्य
+      surface
+        text कार्यों
+      surface
+        text काम
+      surface
+        text समस्या
+      surface
+        text योजना
+    lexeme zh
+      surface
+        text 任务
+      surface
+        text 问题
+      surface
+        text 工作
+      surface
+        text 计划
+  subtask_enumeration_cue
+    defined-by action
+    role subtask_enumeration_cue
+    lexeme en
+      surface
+        text "list"
+      surface
+        text "enumerate"
+      surface
+        text "what are"
+      surface
+        text "which are"
+      surface
+        text "name the"
+    lexeme ru
+      surface
+        text перечисли
+      surface
+        text перечислить
+      surface
+        text назови
+      surface
+        text какие
+      surface
+        text каковы
+      surface
+        text список
+    lexeme hi
+      surface
+        text सूची
+      surface
+        text सूचीबद्ध
+      surface
+        text गिनाएं
+      surface
+        text कौन
+      surface
+        text क्या
+    lexeme zh
+      surface
+        text 列出
+      surface
+        text 列举
+      surface
+        text 罗列
+      surface
+        text 有哪些
+  task_atomicity_predicate
+    defined-by property
+    role task_atomicity_predicate
+    lexeme en
+      surface
+        text "atomic"
+      surface
+        text "atomicity"
+      surface
+        text "indivisible"
+      surface
+        text "irreducible"
+    lexeme ru
+      surface
+        text атомарн
+      surface
+        text атомарная
+      surface
+        text атомарной
+      surface
+        text неделим
+      surface
+        text неделимая
+    lexeme hi
+      surface
+        text अविभाज्य
+      surface
+        text परमाण्विक
+      surface
+        text अणुक
+    lexeme zh
+      surface
+        text 原子
+      surface
+        text 不可分
+      surface
+        text 不可再分
+  task_first_step_cue
+    defined-by inquiry
+    role task_first_step_cue
+    lexeme en
+      surface
+        text "first step"
+      surface
+        text "next step"
+      surface
+        text "start with"
+      surface
+        text "begin with"
+    lexeme ru
+      surface
+        text первый шаг
+      surface
+        text первым шагом
+      surface
+        text следующий шаг
+      surface
+        text начать с
+      surface
+        text начни с
+    lexeme hi
+      surface
+        text पहला कदम
+      surface
+        text पहला चरण
+      surface
+        text अगला कदम
+      surface
+        text शुरुआत
+    lexeme zh
+      surface
+        text 第一步
+      surface
+        text 下一步
+      surface
+        text 首先做
+      surface
+        text 从哪里开始
+  observable_task_action
+    defined-by action
+    role observable_task_action
+    lexeme en
+      surface
+        text "add"
+      surface
+        text "adds"
+      surface
+        text "append"
+      surface
+        text "apply"
+      surface
+        text "bump"
+      surface
+        text "build"
+      surface
+        text "close"
+      surface
+        text "commit"
+      surface
+        text "create"
+      surface
+        text "delete"
+      surface
+        text "disable"
+      surface
+        text "document"
+      surface
+        text "drop"
+      surface
+        text "emit"
+      surface
+        text "enable"
+      surface
+        text "export"
+      surface
+        text "extract"
+      surface
+        text "fix"
+      surface
+        text "generate"
+      surface
+        text "implement"
+      surface
+        text "insert"
+      surface
+        text "install"
+      surface
+        text "introduce"
+      surface
+        text "land"
+      surface
+        text "make"
+      surface
+        text "merge"
+      surface
+        text "move"
+      surface
+        text "open"
+      surface
+        text "publish"
+      surface
+        text "register"
+      surface
+        text "remove"
+      surface
+        text "rename"
+      surface
+        text "replace"
+      surface
+        text "revert"
+      surface
+        text "rewrite"
+      surface
+        text "refactor"
+      surface
+        text "run"
+      surface
+        text "set"
+      surface
+        text "solve"
+      surface
+        text "stop"
+      surface
+        text "test"
+      surface
+        text "update"
+      surface
+        text "wire"
+      surface
+        text "write"
+    lexeme ru
+      surface
+        text добавь
+      surface
+        text добавьте
+      surface
+        text добавить
+      surface
+        text создай
+      surface
+        text создать
+      surface
+        text напиши
+      surface
+        text написать
+      surface
+        text реализуй
+      surface
+        text реализовать
+      surface
+        text обнови
+      surface
+        text обновить
+      surface
+        text удали
+      surface
+        text удалить
+      surface
+        text исправь
+      surface
+        text исправить
+      surface
+        text переименуй
+      surface
+        text замени
+      surface
+        text заменить
+      surface
+        text перенеси
+      surface
+        text запусти
+      surface
+        text установи
+      surface
+        text открой
+      surface
+        text закрой
+      surface
+        text объедини
+      surface
+        text включи
+      surface
+        text выключи
+      surface
+        text сделай
+      surface
+        text сделать
+      surface
+        text реши
+      surface
+        text решить
+    lexeme hi
+      surface
+        text जोड़ें
+      surface
+        text जोड़ो
+      surface
+        text जोड़
+      surface
+        text बनाएं
+      surface
+        text बनाओ
+      surface
+        text लिखें
+      surface
+        text लागू
+      surface
+        text अपडेट
+      surface
+        text हटाएं
+      surface
+        text ठीक
+      surface
+        text बदलें
+      surface
+        text चलाएं
+      surface
+        text खोलें
+      surface
+        text स्थापित
+      surface
+        text हल
+    lexeme zh
+      surface
+        text 添加
+      surface
+        text 增加
+      surface
+        text 创建
+      surface
+        text 新建
+      surface
+        text 修改
+      surface
+        text 更新
+      surface
+        text 删除
+      surface
+        text 移除
+      surface
+        text 修复
+      surface
+        text 实现
+      surface
+        text 编写
+      surface
+        text 运行
+      surface
+        text 安装
+      surface
+        text 打开
+      surface
+        text 关闭
+      surface
+        text 合并
+      surface
+        text 重命名
+      surface
+        text 替换
+      surface
+        text 移动
+      surface
+        text 设置
+      surface
+        text 解决
+  unobservable_task_action
+    defined-by action
+    role unobservable_task_action
+    lexeme en
+      surface
+        text "understand"
+      surface
+        text "explore"
+      surface
+        text "investigate"
+      surface
+        text "study"
+      surface
+        text "learn"
+      surface
+        text "familiarize"
+      surface
+        text "familiarise"
+      surface
+        text "consider"
+      surface
+        text "think"
+      surface
+        text "analyze"
+      surface
+        text "analyse"
+      surface
+        text "research"
+      surface
+        text "get familiar"
+      surface
+        text "look into"
+    lexeme ru
+      surface
+        text пойми
+      surface
+        text понять
+      surface
+        text изучи
+      surface
+        text изучить
+      surface
+        text исследуй
+      surface
+        text исследовать
+      surface
+        text разберись
+      surface
+        text ознакомься
+      surface
+        text подумай
+      surface
+        text проанализируй
+    lexeme hi
+      surface
+        text समझें
+      surface
+        text समझो
+      surface
+        text अध्ययन
+      surface
+        text जांचें
+      surface
+        text विचार
+      surface
+        text परिचित
+    lexeme zh
+      surface
+        text 理解
+      surface
+        text 了解
+      surface
+        text 研究
+      surface
+        text 探索
+      surface
+        text 熟悉
+      surface
+        text 思考

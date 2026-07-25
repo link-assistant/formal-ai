@@ -127,6 +127,8 @@ roles
     kind predicate
   currency_usd_reference
     kind predicate
+  decomposable_task_noun
+    kind meaning
   definition_artifact_request
     kind meaning
   definition_command
@@ -259,6 +261,8 @@ roles
     kind predicate
   numeric_concept
     kind predicate
+  observable_task_action
+    kind meaning
   ontology_category
     kind predicate
   ontology_root
@@ -429,11 +433,21 @@ roles
     kind predicate
   software_step_granularity
     kind meaning
+  subtask_enumeration_cue
+    kind meaning
+  subtask_unit_noun
+    kind meaning
   summary_classification_cue
     kind predicate
   summary_statement_kind
     kind meaning
   tabletop_game_tracker
+    kind meaning
+  task_atomicity_predicate
+    kind meaning
+  task_decomposition_action
+    kind meaning
+  task_first_step_cue
     kind meaning
   term_information_request_opener
     kind meaning
@@ -476,6 +490,8 @@ roles
   translation_target_marker
     kind predicate
   translation_unquoted_frame
+    kind meaning
+  unobservable_task_action
     kind meaning
   url_navigate
     kind meaning

@@ -116,7 +116,10 @@ fn atomicity_is_answerable_in_every_supported_language() {
             "hi",
             "क्या यह कार्य अविभाज्य है? 'excluded_folders सूची में dev/log/ जोड़ें।'",
         ),
-        ("zh", "这个任务是原子的吗？“在 excluded_folders 数组中添加 dev/log/。”"),
+        (
+            "zh",
+            "这个任务是原子的吗？“在 excluded_folders 数组中添加 dev/log/。”",
+        ),
     ];
 
     for (language, prompt) in prompts {

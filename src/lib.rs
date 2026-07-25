@@ -109,6 +109,7 @@ pub mod statement_verification;
 pub mod storage_policy;
 pub mod substitution;
 pub mod summarization;
+pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
 pub mod thinking;
