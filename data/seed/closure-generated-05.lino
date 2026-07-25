@@ -1,4 +1,19 @@
 meanings
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
   tool_read_local_file
     defined-by tool
     lexeme en

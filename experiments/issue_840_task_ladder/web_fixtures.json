@@ -1,0 +1,40 @@
+{
+  "_comment": [
+    "Offline web-search corpus for the issue #840/#842 task ladder.",
+    "",
+    "Without it a `websearch` tool call returns nothing, so every #827 node",
+    "measures only whether the request was ROUTED to search — never whether the",
+    "answer was SYNTHESIZED from what search returned. Issue #842's definition of",
+    "done asks for exactly this variant.",
+    "",
+    "Each document is served when every one of its `keywords` appears in the",
+    "query (case-insensitive), first match wins. The text is a paraphrase of what",
+    "a provider returns for that query, deliberately including the page furniture",
+    "('развернуть', neighbouring headings) the original reports showed being",
+    "echoed back verbatim, so the ladder can tell synthesis from echoing.",
+    "",
+    "Set FIXTURES=none to restore the routing-only measurement."
+  ],
+  "documents": [
+    {
+      "keywords": ["фуфломицин"],
+      "text": "Фуфломицин — развернуть\nЧто такое рок — развернуть\n\nФуфломицин (жаргонное, от «фуфло» + «-мицин») — пренебрежительное название лекарственных препаратов с недоказанной эффективностью: их эффективность не подтверждена качественными клиническими исследованиями. К ним обычно относят ряд иммуномодуляторов и «противовирусных» средств, например арбидол (умифеновир), а также гомеопатические препараты вроде оциллококцинума. Термин широко используется врачами доказательной медицины.\n\nЧитайте также — развернуть"
+    },
+    {
+      "keywords": ["fufl"],
+      "text": "Fufloмицин (фуфломицин) is a Russian slang term for a medicine of unproven efficacy: a drug whose efficacy has never been confirmed by good-quality clinical trials. Evidence-based physicians apply it to a range of immunomodulators, so-called antivirals such as umifenovir (Arbidol), and homeopathic products."
+    },
+    {
+      "keywords": ["фбс", "фбо"],
+      "text": "ФБО vs ФБС — развернуть\n\nФБО («Фулфилмент оператором») и ФБС («Фулфилмент силами продавца») — две модели работы с маркетплейсом. Ключевое отличие — кто хранит товар: при ФБО товар лежит на складе маркетплейса, который сам собирает и отправляет заказы; при ФБС товар хранится на складе продавца, который упаковывает заказ сам и передаёт его в доставку маркетплейса."
+    },
+    {
+      "keywords": ["фбо"],
+      "text": "ФБО («Фулфилмент оператором») — модель, при которой продавец заранее поставляет товар на склад маркетплейса. Склад маркетплейса хранит товар, собирает и отправляет заказы покупателям."
+    },
+    {
+      "keywords": ["фбс"],
+      "text": "ФБС («Фулфилмент силами продавца») — модель, при которой товар хранится на складе продавца. Продавец сам собирает и упаковывает заказ, а маркетплейс только доставляет его покупателю."
+    }
+  ]
+}

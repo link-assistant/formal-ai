@@ -839,6 +839,16 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix chto znachit"
+  pattern_concept_prefix_day_opredelenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix day opredelenie"
+  pattern_concept_prefix_day_opredelenie_slova
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix day opredelenie slova"
   pattern_concept_prefix_define
     defined-by prompt_pattern
     lexeme en
@@ -919,6 +929,11 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix opredelenie"
+  pattern_concept_prefix_opredelenie_slova
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opredelenie slova"
   pattern_concept_prefix_rasskazhi_mne_o
     defined-by prompt_pattern
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern test status phrase test passed en"
-  pattern_test_status_phrase_test_proyden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test proyden ru"
-  pattern_test_status_phrase_vy_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase vy zdes ru"
-  pattern_test_status_phrase_wo_zai_zheli_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase wo zai zheli zh"

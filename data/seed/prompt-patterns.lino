@@ -124,6 +124,21 @@ prompt_patterns
     language ru
     kind prefix
     text "расскажи за "
+  pattern pattern_concept_prefix_day_opredelenie_slova
+    intent concept_lookup
+    language ru
+    kind prefix
+    text "дай определение слова "
+  pattern pattern_concept_prefix_day_opredelenie
+    intent concept_lookup
+    language ru
+    kind prefix
+    text "дай определение "
+  pattern pattern_concept_prefix_opredelenie_slova
+    intent concept_lookup
+    language ru
+    kind prefix
+    text "определение слова "
   pattern pattern_concept_prefix_opishi
     intent concept_lookup
     language ru

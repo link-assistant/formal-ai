@@ -1,4 +1,19 @@
 meanings
+  pattern_test_status_phrase_test_proyden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test proyden ru"
+  pattern_test_status_phrase_vy_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase vy zdes ru"
+  pattern_test_status_phrase_wo_zai_zheli_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase wo zai zheli zh"
   pattern_test_status_phrase_ya_zdes_ru
     defined-by prompt_pattern
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import denotation lost hi"
-  response_lexeme_import_denotation_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost ru"
-  response_lexeme_import_denotation_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost zh"
-  response_lexeme_import_duplicate_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid en"
