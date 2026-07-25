@@ -209,7 +209,12 @@ fn local_path_discovery_benchmark_routes_every_case_to_find() {
                 marker => assert!(command.contains(marker), "{id}: {command}"),
             }
             assert!(command.contains(expected_predicate), "{id}: {command}");
-            assert!(command.ends_with("-print -quit"), "{id}: {command}");
+            // `-print`, not `-print -quit`: issue #842 measured the desktop
+            // lookup answering with one match where several existed, because
+            // `-quit` stops the walk at the first hit. Every match is printed
+            // now, so the answer can report what is actually there.
+            assert!(command.ends_with("-print"), "{id}: {command}");
+            assert!(!command.contains("-quit"), "{id}: {command}");
             languages.insert(language);
             passed += 1;
         }

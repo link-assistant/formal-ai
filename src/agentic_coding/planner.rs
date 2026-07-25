@@ -286,6 +286,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
     }
+    // "What is inside X on my desktop?" names a scope to open, not a name to
+    // discover, so it is resolved before the by-name lookup below: otherwise the
+    // folder name in the request would be searched for instead of listed.
+    if let Some(command) = shell_command::local_listing_command_for_task(&task) {
+        if tool_for(tool_names, Capability::Run).is_some() {
+            return Some(plan_shell_step(messages, tool_names, &command));
+        }
+    }
     // A path lookup with an explicit local scope must execute on the user's
     // machine even when a client also advertises Glob and web-search tools.
     if let Some(command) = shell_command::local_path_search_command_for_task(&task) {

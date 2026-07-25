@@ -100,7 +100,7 @@ fn opencode_empty_find_result_is_explained_for_a_beginner() {
                     "type": "function",
                     "function": {
                         "name": "run_shell_command",
-                        "arguments": "{\"command\":\"find \\\"$HOME/Desktop\\\" -type d -print -quit\"}"
+                        "arguments": "{\"command\":\"find \\\"$HOME/Desktop\\\" -type d -print\"}"
                     }
                 }]
             },

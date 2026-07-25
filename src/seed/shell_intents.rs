@@ -100,6 +100,14 @@ pub struct ShellIntentVocabulary {
     pub local_search_scopes: Vec<String>,
     /// Seed-defined portable command with root, predicate, and pattern slots.
     pub local_path_search_command_template: String,
+    /// Seed-defined command listing a whole local scope (`{root}` slot).
+    pub local_listing_command_template: String,
+    /// Seed-defined command listing one named folder inside a local scope
+    /// (`{root}` and `{subject}` slots).
+    pub local_listing_subject_command_template: String,
+    /// Phrases that ask to see what a local scope contains, as opposed to
+    /// asking to discover one path by name.
+    pub local_listing_actions: Vec<String>,
     /// Verbs that ask to discover a path by name.
     pub local_path_search_actions: Vec<String>,
     /// Local filesystem scope phrases and the roots they map to.
@@ -133,6 +141,18 @@ pub fn shell_intent_vocabulary() -> ShellIntentVocabulary {
                 group
                     .find_child_value("command_template")
                     .clone_into(&mut vocab.local_path_search_command_template);
+                group
+                    .find_child_value("listing_command_template")
+                    .clone_into(&mut vocab.local_listing_command_template);
+                group
+                    .find_child_value("listing_subject_command_template")
+                    .clone_into(&mut vocab.local_listing_subject_command_template);
+                vocab.local_listing_actions = group
+                    .children
+                    .iter()
+                    .find(|child| child.name == "listing_actions")
+                    .map(|node| collect_language_values(node, "action"))
+                    .unwrap_or_default();
                 vocab.local_path_search_actions = group
                     .children
                     .iter()

@@ -14,6 +14,7 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 const ROOT_TEMPLATE_SLOT: &str = concat!("{", "root", "}");
 const PREDICATE_TEMPLATE_SLOT: &str = concat!("{", "predicate", "}");
 const PATTERNS_TEMPLATE_SLOT: &str = concat!("{", "patterns", "}");
+const SUBJECT_TEMPLATE_SLOT: &str = concat!("{", "subject", "}");
 
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
@@ -206,6 +207,75 @@ fn extract_local_path_search(
         predicate,
         words,
     })
+}
+
+/// Resolve *"list the folders on my desktop"* / *"what is inside the Archive
+/// folder on my desktop?"* into the concrete listing command.
+///
+/// Issue #842 found that these observation steps failed at the shallow rungs of
+/// its task ladder even though the underlying capability worked at the deepest
+/// one: the request names a scope the planner
+/// already understands, but no discovery verb, so it fell through to the
+/// unknown-prompt refusal or to web search. A listing cue plus an explicit local
+/// scope is enough to answer it here.
+///
+/// The `current` scope is deliberately excluded: *"list the files in this
+/// folder"* is already answered by the established prose-listing route, and
+/// re-answering it here would change a settled command for no gain.
+pub(super) fn local_listing_command_for_task(prompt: &str) -> Option<String> {
+    let prompt = strip_balanced_outer_quotes(prompt.trim());
+    let vocab = seed::shell_intent_vocabulary();
+    local_listing_command(prompt, &vocab)
+}
+
+fn local_listing_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
+    if vocab.local_listing_command_template.is_empty() {
+        return None;
+    }
+    let lower = prompt.to_lowercase();
+    let action = longest_contained(&lower, &vocab.local_listing_actions)?;
+    let (scope, scope_cue) = vocab
+        .local_path_search_scopes
+        .iter()
+        .filter(|scope| scope.name != "current")
+        .flat_map(|scope| scope.cues.iter().map(move |cue| (scope, cue)))
+        .filter(|(_, cue)| lower.contains(cue.as_str()))
+        .max_by_key(|(_, cue)| cue.chars().count())?;
+
+    // Whatever is left after the listing cue, the scope and the kind noun is the
+    // name of the folder being opened — absent for "list the folders on my
+    // desktop", present ("archive") for "what is inside the Archive folder".
+    let mut subject = lower.replacen(action, " ", 1);
+    subject = subject.replace(scope_cue.as_str(), " ");
+    for kind in &vocab.local_path_search_kinds {
+        for cue in &kind.cues {
+            subject = subject.replace(cue.as_str(), " ");
+        }
+    }
+    let noise = vocab
+        .argument_noise
+        .iter()
+        .map(String::as_str)
+        .collect::<Vec<_>>();
+    let words = subject
+        .split(|character: char| !character.is_alphanumeric())
+        .filter(|word| !word.is_empty() && !noise.contains(word))
+        .take(4)
+        .collect::<Vec<_>>();
+
+    if words.is_empty() {
+        return Some(
+            vocab
+                .local_listing_command_template
+                .replace(ROOT_TEMPLATE_SLOT, &scope.root),
+        );
+    }
+    Some(
+        vocab
+            .local_listing_subject_command_template
+            .replace(ROOT_TEMPLATE_SLOT, &scope.root)
+            .replace(SUBJECT_TEMPLATE_SLOT, &words.join("*")),
+    )
 }
 
 fn longest_contained<'a>(text: &str, candidates: &'a [String]) -> Option<&'a str> {
