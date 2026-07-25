@@ -19,7 +19,7 @@ const expectedResult = required('ISSUE819_EXPECT_RESULT');
 const promptAfter = {
   opencode: 'Ask anything...',
   claude: 'Tips for getting started',
-  codex: '@filename',
+  codex: 'formal-ai default',
 }[tool];
 const startupInteractions =
   {
