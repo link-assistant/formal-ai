@@ -93,6 +93,46 @@ pub fn load_conversation_records(
         .collect()
 }
 
+/// The dialog whose conversation record was written most recently.
+///
+/// `latest` has to resolve to something even where the harness cannot be asked
+/// — a headless CI runner has no opencode database, and an embedding
+/// application may have no harness at all. The server recorded the dialog it
+/// served, so for a server-reading export that record is the answer, and it is
+/// still the caller's own conversation rather than a guess (#839, §2.1).
+/// A directory that does not exist yet simply has no candidate.
+#[must_use]
+pub fn latest_conversation_id(directory: &Path) -> Option<String> {
+    let mut newest: Option<(u128, String)> = None;
+    for entry in fs::read_dir(directory).ok()?.flatten() {
+        let name = entry.file_name();
+        let Some(dialog_id) = name.to_str()?.strip_suffix(CONVERSATION_LOG_SUFFIX) else {
+            continue;
+        };
+        let Some(timestamp) = last_record_timestamp(&entry.path()) else {
+            continue;
+        };
+        if newest
+            .as_ref()
+            .is_none_or(|(previous, _)| timestamp > *previous)
+        {
+            newest = Some((timestamp, dialog_id.to_owned()));
+        }
+    }
+    newest.map(|(_, dialog_id)| dialog_id)
+}
+
+/// When the last record of a conversation log was written, or `None` when the
+/// file holds nothing readable.
+fn last_record_timestamp(path: &Path) -> Option<u128> {
+    let text = fs::read_to_string(path).ok()?;
+    text.lines()
+        .filter(|line| !line.trim().is_empty())
+        .filter_map(|line| serde_json::from_str::<DialogConversationLog>(line).ok())
+        .map(|record| record.timestamp_unix_ms)
+        .next_back()
+}
+
 /// Merge conversation records into one transcript without repeating the
 /// cumulative history each request resends.
 #[must_use]

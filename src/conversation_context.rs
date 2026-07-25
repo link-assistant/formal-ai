@@ -22,6 +22,19 @@ pub fn configured_dialog_log_directory() -> Option<PathBuf> {
     crate::dialog_log::configured_directory()
 }
 
+/// The most recently recorded dialog, from an explicit or configured directory.
+///
+/// Used to resolve `latest` where the harness cannot answer (#839, §2.1): the
+/// server knows which dialog it just served, and that record is the caller's
+/// own conversation, not a guess.
+#[must_use]
+pub fn latest_recorded_dialog(directory: Option<&Path>) -> Option<String> {
+    if let Some(path) = directory {
+        return crate::dialog_conversation::latest_conversation_id(path);
+    }
+    crate::dialog_conversation::latest_conversation_id(&configured_dialog_log_directory()?)
+}
+
 /// Load a complete conversation by its stable dialog/session identifier.
 pub fn load_conversation_context(dialog_id: &str) -> io::Result<Value> {
     let directory = configured_dialog_log_directory().ok_or_else(|| {

@@ -354,3 +354,69 @@ fn conversations_sharing_a_first_message_do_not_collide() {
 
     fs::remove_dir_all(directory).unwrap();
 }
+
+/// A machine with no harness database still exports its own conversation.
+///
+/// CI runners and embedding applications have no `opencode.db`, and #839 asks
+/// the report to carry the conversation, not to abort because one of the two
+/// captures is missing. `latest` therefore also stands for the dialog the
+/// server itself last recorded — while `--source harness` keeps failing loudly,
+/// because there the caller named the capture they wanted.
+#[test]
+fn latest_falls_back_to_the_session_the_server_recorded() {
+    let directory = temporary_directory("latest-server");
+    let missing_database = directory.join("absent-opencode.db");
+    record_server_exchange(&directory, "ses_earlier_dialog", "First topic", "Earlier.");
+    std::thread::sleep(std::time::Duration::from_millis(5));
+    record_server_exchange(&directory, "ses_current_dialog", "Second topic", "Current.");
+
+    let exported = export(&[
+        "--session",
+        "latest",
+        "--source",
+        "both",
+        "--db",
+        missing_database.to_str().expect("database path"),
+        "--log-dir",
+        directory.to_str().expect("log directory"),
+        "--format",
+        "json",
+    ]);
+    assert!(
+        exported.status.success(),
+        "`latest` must resolve from the server's own records when the harness \
+         has no database:\n{}",
+        String::from_utf8_lossy(&exported.stderr)
+    );
+    let document = String::from_utf8(exported.stdout).expect("context JSON");
+    assert!(
+        document.contains("ses_current_dialog") && document.contains("Current."),
+        "the export must carry the most recently recorded dialog:\n{document}"
+    );
+    assert!(
+        !document.contains("Earlier."),
+        "`latest` must not merge an older, unrelated dialog:\n{document}"
+    );
+
+    // Naming the harness explicitly still fails instead of exporting the server.
+    let harness = export(&[
+        "--session",
+        "latest",
+        "--source",
+        "harness",
+        "--db",
+        missing_database.to_str().expect("database path"),
+        "--log-dir",
+        directory.to_str().expect("log directory"),
+        "--format",
+        "json",
+    ]);
+    assert!(
+        !harness.status.success(),
+        "`--source harness` must not silently fall back to the server log:\n{}",
+        String::from_utf8_lossy(&harness.stdout)
+    );
+    assert!(harness.stdout.is_empty(), "{harness:?}");
+
+    fs::remove_dir_all(directory).unwrap();
+}

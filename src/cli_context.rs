@@ -164,10 +164,55 @@ pub fn exported_context(
     db: Option<&Path>,
     log_dir: Option<&Path>,
 ) -> Result<(String, Value), Box<dyn Error>> {
-    let session = resolve_session(session, db)?;
-    let context = context_document(&session, source, db, log_dir)?;
-    ensure_records(&session, source, &context)?;
-    Ok((session, context))
+    let mut failure = None;
+    for candidate in session_candidates(session, source, db, log_dir)? {
+        let exported = context_document(&candidate, source, db, log_dir)
+            .and_then(|context| ensure_records(&candidate, source, &context).map(|()| context));
+        match exported {
+            Ok(context) => return Ok((candidate, context)),
+            Err(error) => failure = Some(error),
+        }
+    }
+    Err(failure.unwrap_or_else(|| unresolved_session().into()))
+}
+
+/// The session ids `latest` may stand for, most authoritative first.
+///
+/// An explicit id is the only candidate — a report must never quietly export a
+/// different conversation than the one it was asked for. `latest` asks the
+/// harness first, and for a source that reads Formal AI's own capture it also
+/// offers the dialog the server last recorded, so a machine with no harness
+/// database (a CI runner, an embedding application) can still export the
+/// conversation it is inside (#839, §2.1). `--source harness` and
+/// `--source opencode` name the harness, so there the harness failure stands.
+fn session_candidates(
+    session: &str,
+    source: ContextSource,
+    db: Option<&Path>,
+    log_dir: Option<&Path>,
+) -> Result<Vec<String>, Box<dyn Error>> {
+    let session = session.trim();
+    if !session.is_empty() && session != LATEST_SESSION {
+        return Ok(vec![session.to_owned()]);
+    }
+    if let Some(declared) = declared_session() {
+        return Ok(vec![declared]);
+    }
+    if matches!(source, ContextSource::Harness | ContextSource::Opencode) {
+        return Ok(vec![harness_session(db)?]);
+    }
+
+    let harness = harness_session(db);
+    let mut candidates: Vec<String> = harness.as_ref().ok().cloned().into_iter().collect();
+    if let Some(recorded) = formal_ai::conversation_context::latest_recorded_dialog(log_dir) {
+        if !candidates.contains(&recorded) {
+            candidates.push(recorded);
+        }
+    }
+    if candidates.is_empty() {
+        return Err(harness.err().unwrap_or_else(|| unresolved_session().into()));
+    }
+    Ok(candidates)
 }
 
 fn context_document(
@@ -309,21 +354,32 @@ fn resolve_session(session: &str, db: Option<&Path>) -> Result<String, Box<dyn E
     if !session.is_empty() && session != LATEST_SESSION {
         return Ok(session.to_owned());
     }
-    if let Some(declared) = std::env::var(SESSION_ENV)
+    if let Some(declared) = declared_session() {
+        return Ok(declared);
+    }
+    harness_session(db)
+}
+
+/// The session id this process was told to use, if any.
+fn declared_session() -> Option<String> {
+    std::env::var(SESSION_ENV)
         .ok()
         .map(|value| value.trim().to_owned())
         .filter(|value| !value.is_empty())
-    {
-        return Ok(declared);
-    }
+}
+
+/// Ask the harness which session this shell is inside.
+fn harness_session(db: Option<&Path>) -> Result<String, Box<dyn Error>> {
     let output = run_extractor(&[LATEST_SESSION, "--resolve-only"], db)?;
     let resolved = String::from_utf8(output)?.trim().to_owned();
     if resolved.is_empty() {
-        return Err(config("context_session_unresolved")
-            .replace(VARIABLE_PLACEHOLDER, SESSION_ENV)
-            .into());
+        return Err(unresolved_session().into());
     }
     Ok(resolved)
+}
+
+fn unresolved_session() -> String {
+    config("context_session_unresolved").replace(VARIABLE_PLACEHOLDER, SESSION_ENV)
 }
 
 /// Run the harness extractor, returning its stdout or its own diagnostic.
