@@ -842,4 +842,3 @@ pub(crate) fn error_response(status_code: u16, message: &str) -> ApiHttpResponse
         deprecated: false,
     }
 }
-
