@@ -1694,27 +1694,17 @@ jobs:
         # preserves scrollback, explicit resize input, asciicast, static SVG,
         # and animation alongside the complete dialog sequence.
         timeout-minutes: 5
-        env:
-          PORT: 8784
-          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
+        env: { PORT: 8784, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery }
         run: experiments/agent_cli_e2e/run_issue_819.sh
 
       - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
         timeout-minutes: 3
-        env:
-          PORT: 8804
-          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
         run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
 
       - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
         timeout-minutes: 3
-        env:
-          PORT: 8805
-          MODE: tui
-          ONLY: 838.L1
-          OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json
-          TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder
-          REQUIRE_ALL_PASS: 1
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
         run: experiments/issue_840_task_ladder/run_ladder.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"

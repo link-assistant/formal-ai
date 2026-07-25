@@ -64,7 +64,8 @@ preserve_failed_run() {
   if [ ! -d "$client_dir" ]; then
     return
   fi
-  local destination="$ARTIFACT_DIR/$(basename "$client_dir")"
+  local destination
+  destination="$ARTIFACT_DIR/$(basename "$client_dir")"
   mkdir -p "$destination"
   cp -R "$client_dir/." "$destination/"
 }

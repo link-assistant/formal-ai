@@ -1,4 +1,8 @@
 multilingual_responses
+  response response_client_integration_invalid_typed_json_setting_en
+    intent client_integration_invalid_typed_json_setting
+    language en
+    text "invalid typed JSON setting `{rendered}`: {error}"
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en

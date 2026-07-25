@@ -29,6 +29,8 @@ use url::{base_url_with_port, join_url_path};
 
 const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8080";
 const EMPTY_BACKUP_SENTINEL: &str = "# formal-ai-empty-config-backup-v1\n";
+const RENDERED_PLACEHOLDER: &str = concat!("{", "rendered", "}");
+const ERROR_PLACEHOLDER: &str = concat!("{", "error", "}");
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum ClientProtocol {
@@ -741,12 +743,19 @@ fn set_json_setting(
     let rendered = render_template(value, context);
     let setting = if let Some(literal) = rendered.strip_prefix("json:") {
         serde_json::from_str(literal)
-            .map_err(|error| format!("invalid typed JSON setting `{rendered}`: {error}"))?
+            .map_err(|error| invalid_typed_json_setting_error(&rendered, &error))?
     } else {
         Value::String(rendered)
     };
     object.insert(last.clone(), setting);
     Ok(())
+}
+
+fn invalid_typed_json_setting_error(rendered: &str, error: &serde_json::Error) -> String {
+    crate::seed::response_for("client_integration_invalid_typed_json_setting", "en")
+        .unwrap_or_else(|| "client_integration_invalid_typed_json_setting".to_owned())
+        .replace(RENDERED_PLACEHOLDER, rendered)
+        .replace(ERROR_PLACEHOLDER, &error.to_string())
 }
 
 fn merge_json_value(base: &mut Value, overlay: Value) {

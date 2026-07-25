@@ -49,7 +49,8 @@ preserve_artifacts() {
   done
   for source in "$TERMINAL_DIR" "$DIALOG_DIR"; do
     if [ -d "$source" ]; then
-      local destination="$ARTIFACT_DIR/$(basename "$source")"
+      local destination
+      destination="$ARTIFACT_DIR/$(basename "$source")"
       mkdir -p "$destination"
       cp -R "$source/." "$destination/"
     fi
