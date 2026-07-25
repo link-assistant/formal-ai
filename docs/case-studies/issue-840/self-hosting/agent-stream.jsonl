@@ -1140,4 +1140,3 @@ AI SDK Warning: System messages in the prompt or messages fields can be a securi
 {"type":"log","level":"info","timestamp":"2026-07-24T22:48:24.026Z","service":"state","key":"/tmp/tmp.Ckf910PxaL","message":"state disposal completed"}
 
 {"type":"log","level":"info","timestamp":"2026-07-24T22:48:24.027Z","service":"default","hasError":false,"uptimeSeconds":4,"message":"Agent exiting"}
-
