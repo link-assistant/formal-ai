@@ -77,8 +77,8 @@ impl SubTask {
     ///
     /// A leaf the bound stopped at but which would not have split anyway is not
     /// counted: reporting it would tell the reader the answer is truncated when
-    /// it is complete. This is the same test [`Self::collect_rows`] uses to
-    /// decide whether to mark a row, so the note and the markers agree.
+    /// it is complete. This is the same test `collect_rows` uses to decide
+    /// whether to mark a row, so the note and the markers agree.
     #[must_use]
     pub fn has_depth_bound_leaf(&self) -> bool {
         if self.children.is_empty() {
