@@ -16,7 +16,7 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
-        .or_else(|| seed_prefix_subject(&task, seed::ROLE_RESEARCH_QUESTION_OPENER))
+        .or_else(|| seed_definition_subject(&task))
     {
         return if is_context_reference(&query) {
             topic_from_history(messages)
@@ -100,6 +100,28 @@ pub(super) fn definition_followup_clarification(task: &str) -> String {
 /// conversation history before creating a tool call.
 fn seed_research_subject(task: &str) -> Option<String> {
     seed_prefix_subject(task, seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+}
+
+fn seed_definition_subject(task: &str) -> Option<String> {
+    let normalized = crate::engine::normalize_prompt(task);
+    let lexicon = seed::lexicon();
+    lexicon
+        .role_word_forms(seed::ROLE_RESEARCH_QUESTION_OPENER)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Prefix)
+        .filter(|form| {
+            lexicon.mentions_role(
+                seed::ROLE_DEFINITION_COMMAND,
+                &crate::engine::normalize_prompt(form.before_slot()),
+            )
+        })
+        .find_map(|form| {
+            let prefix = crate::engine::normalize_prompt(form.before_slot());
+            normalized
+                .strip_prefix(&prefix)
+                .map(trim_question_punctuation)
+                .filter(|subject| !subject.trim().is_empty())
+        })
 }
 
 fn seed_prefix_subject(task: &str, role: &str) -> Option<String> {

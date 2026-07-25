@@ -2,85 +2,86 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 22795
-  line_count 556
-  content_id source_module_0c028cea2b153950
-  symbol_count 32
+  byte_len 23556
+  line_count 578
+  content_id source_module_089165b17ae554fa
+  symbol_count 33
   symbols
     function web_research_query_for 15 38
     function is_definition_followup 40 45
     function definition_followup_topic 47 88
     function definition_followup_clarification 90 95
     function seed_research_subject 101 103
-    function seed_prefix_subject 105 118
-    const MAX_RESEARCH_ROUNDS 130 130
-    function plan_web_research_step 132 158
-    function plan_fetches 166 178
-    function plan_deeper_round 187 224
-    function uncovered_aspects 237 251
-    const MIN_ASPECT_CHARS 255 255
-    function aspects_of 257 272
-    const VERBATIM_EVIDENCE_LIMIT 278 278
-    const EXTRACT_SENTENCES 282 282
-    function final_answer 284 316
-    function extract_answer 327 364
-    function relevance 374 380
-    function character_overlap 388 404
-    function truncate_chars 408 415
-    function seed_text 417 421
-    function render_seed_text 423 429
-    function preferred_url 435 437
-    const MAX_RESEARCH_SOURCES 443 443
-    function research_urls 445 454
-    function urls_in 456 465
-    function authoritative_host 467 483
-    function is_context_reference 485 497
-    function topic_from_history 499 522
-    function is_conversation_meta_request 524 541
-    function trim_question_punctuation 543 548
-    function latest_user_text 550 556
+    function seed_definition_subject 105 125
+    function seed_prefix_subject 127 140
+    const MAX_RESEARCH_ROUNDS 152 152
+    function plan_web_research_step 154 180
+    function plan_fetches 188 200
+    function plan_deeper_round 209 246
+    function uncovered_aspects 259 273
+    const MIN_ASPECT_CHARS 277 277
+    function aspects_of 279 294
+    const VERBATIM_EVIDENCE_LIMIT 300 300
+    const EXTRACT_SENTENCES 304 304
+    function final_answer 306 338
+    function extract_answer 349 386
+    function relevance 396 402
+    function character_overlap 410 426
+    function truncate_chars 430 437
+    function seed_text 439 443
+    function render_seed_text 445 451
+    function preferred_url 457 459
+    const MAX_RESEARCH_SOURCES 465 465
+    function research_urls 467 476
+    function urls_in 478 487
+    function authoritative_host 489 505
+    function is_context_reference 507 519
+    function topic_from_history 521 544
+    function is_conversation_meta_request 546 563
+    function trim_question_punctuation 565 570
+    function latest_user_text 572 578
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 14746
-    named_node_count 3146
+    total_link_count 15351
+    named_node_count 3280
     distinct_node_kinds 71
     node_kinds
-      arguments 314
+      arguments 332
       array_expression 3
       array_type 9
       attribute 1
       attribute_item 1
-      binary_expression 31
-      block 65
+      binary_expression 32
+      block 68
       boolean_literal 1
       break_expression 2
-      call_expression 314
+      call_expression 332
       char_literal 25
-      closure_expression 53
-      closure_parameters 53
+      closure_expression 57
+      closure_parameters 57
       const_item 5
-      crate 23
+      crate 26
       doc_comment 85
       else_clause 4
       escape_sequence 6
       expression_statement 53
-      field_expression 253
-      field_identifier 249
+      field_expression 267
+      field_identifier 263
       float_literal 3
       for_expression 1
-      function_item 27
+      function_item 28
       generic_function 4
-      generic_type 22
-      identifier 643
+      generic_type 23
+      identifier 674
       if_expression 23
       index_expression 3
       inner_doc_comment_marker 6
       integer_literal 15
       let_condition 3
-      let_declaration 43
+      let_declaration 46
       line_comment 119
       macro_invocation 9
       match_arm 7
@@ -90,15 +91,15 @@ self_ast_census
       mutable_specifier 9
       or_pattern 1
       outer_doc_comment_marker 79
-      parameter 45
-      parameters 27
+      parameter 46
+      parameters 28
       parenthesized_expression 3
-      primitive_type 54
+      primitive_type 55
       range_expression 3
-      reference_expression 36
-      reference_type 47
+      reference_expression 38
+      reference_type 48
       return_expression 15
-      scoped_identifier 100
+      scoped_identifier 109
       scoped_type_identifier 3
       scoped_use_list 2
       self 1
@@ -112,10 +113,10 @@ self_ast_census
       tuple_pattern 8
       tuple_struct_pattern 6
       tuple_type 1
-      type_arguments 26
+      type_arguments 27
       type_cast_expression 2
-      type_identifier 58
-      unary_expression 14
+      type_identifier 60
+      unary_expression 15
       use_declaration 5
       use_list 2
       visibility_modifier 6
