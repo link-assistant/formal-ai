@@ -1,0 +1,22 @@
+
+running 17 tests
+test issue_844_statement_merge::a_saturated_mutual_contradiction_settles_at_maximal_uncertainty ... ok
+test issue_844_statement_merge::gathering_respects_the_depth_bound_on_an_endless_chain ... ok
+test issue_844_statement_merge::a_warm_cache_replays_the_same_gathering_without_fetching ... ok
+test issue_844_statement_merge::contradictions_become_contradicts_edges_and_are_reported_as_disagreement ... ok
+test issue_844_statement_merge::a_merge_that_conflates_two_facts_can_be_split ... ok
+test issue_844_statement_merge::a_statement_no_trusted_source_asserts_is_withheld_but_kept ... ok
+test issue_844_statement_merge::inflected_wordings_stay_separate_because_the_merge_does_not_stem ... ok
+test issue_844_statement_merge::an_unoriginal_mirror_adds_no_probability ... ok
+test issue_844_statement_merge::recursive_gathering_terminates_by_fixpoint_over_a_citation_cycle ... ok
+test issue_844_statement_merge::n_sources_asserting_one_fact_yield_one_statement_with_a_justification_link ... ok
+test issue_844_statement_merge::gathering_stops_once_the_unmet_difference_is_empty ... ok
+test issue_844_statement_merge::the_identifier_rung_is_the_bottom_of_the_ladder ... ok
+test issue_844_statement_merge::wording_differences_merge_but_extra_content_does_not ... ok
+test issue_844_statement_merge::the_stack_overflow_case_works_end_to_end ... ok
+test issue_844_statement_merge::ranking_reflects_observed_frequency_and_source_stance ... ok
+test issue_844_statement_merge::the_identifier_rung_produces_valid_identifiers_under_a_length_budget ... ok
+test issue_844_statement_merge::the_merge_is_deterministic_and_independent_of_source_order ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 2004 filtered out; finished in 0.26s
+

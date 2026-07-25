@@ -1287,3 +1287,26 @@ AI has no approved neural training or distillation sources.
 | R491 | Preserve the Unlicense **AS IS** / no-warranty language while documenting mandatory-law and harm limits. | Implemented by the warranty/liability policy section; covered by `as_is_disclaimer_and_non_waivable_limits_are_explicit`. |
 | R492 | Preserve primary research, source issue/PR feedback, an explicit requirements map, solution plan, honest Agent CLI attempt, and community review hook. | Implemented by `docs/case-studies/issue-834/`, `.github/pull_request_template.md`, and the changelog fragment. |
 | R493 | Verify each issue checklist item and the complete workflow with executable regression coverage. | Implemented by ten tests in `tests/unit/docs_requirements_issue_834.rs`, including artifact/registry equality and whole-task traceability. |
+
+## Issue #844 Statement-Level Merging Into A Context
+
+Issue [#844](https://github.com/link-assistant/formal-ai/issues/844) asks for
+statement-level deduplication, evidence-weighted importance, recursive source
+gathering with a recheck before presenting, a merge target that is a context
+rather than a list, and an identifier rung below the topic rung. PR
+[#855](https://github.com/link-assistant/formal-ai/pull/855) implements all of
+it behind a `SourceProvider` seam, because the HTTP transport is issue #843's
+job and remains open. See `docs/case-studies/issue-844/`.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R494 | Deduplicate at the statement level so N sources asserting one fact yield one fact, each merge recorded as an explainable link. | Implemented by `src/summarization/dedup.rs` (`StatementSignature`, `MergedStatement`, `MergeLink`); covered by `n_sources_asserting_one_fact_yield_one_statement_with_a_justification_link`. |
+| R495 | Stay conservative: merge wording differences only, never stem, so a different inflection or extra content stays a separate fact (`NON-GOALS.md:39`). | Implemented by the content-term signature over seed-known function words; covered by `wording_differences_merge_but_extra_content_does_not` and `inflected_wordings_stay_separate_because_the_merge_does_not_stem`. |
+| R496 | Make every merge reversible, so a merge that conflates two facts can be split back into its variants. | Implemented by `DedupReport::split`; covered by `a_merge_that_conflates_two_facts_can_be_split`. |
+| R497 | Weight importance by evidence: the kind prior blended with observed link frequency and source stance, with unoriginal mirrors adding nothing. | Implemented by `src/summarization/importance.rs`; covered by `ranking_reflects_observed_frequency_and_source_stance` and `an_unoriginal_mirror_adds_no_probability`. |
+| R498 | Gather sources recursively from the unmet difference, bounded by depth and terminating at a fixpoint. | Implemented by `src/summarization/gathering.rs` (`GatheringPlan`, `gather`); covered by three gathering tests including a citation cycle and an endless chain. |
+| R499 | Cache every fetch content-addressed and per URL, so a warm cache replays byte-identically without reaching the provider or inheriting another URL's tier. | Implemented by `SourceCache` (digest-keyed bodies, one entry per URL); covered by `a_warm_cache_replays_the_same_gathering_without_fetching`. |
+| R500 | Recheck before presenting: an unsupported statement is withheld from the summary while staying in the context. | Implemented by `src/summarization/recheck.rs` and `MergedContext::checked_summary`; covered by `a_statement_no_trusted_source_asserts_is_withheld_but_kept`. |
+| R501 | Merge into a `world_model::Context`: a probability per statement, contradictions as mutual `Contradicts` edges, disagreement reported rather than resolved, and no fabricated consensus between two original sources that disagree. | Implemented by `src/summarization/context.rs` plus the cycle-collapse fixpoint in `Context::recalculate`; covered by `contradictions_become_contradicts_edges_and_are_reported_as_disagreement` and `a_saturated_mutual_contradiction_settles_at_maximal_uncertainty`. |
+| R502 | Extend the summarization ladder downward with an identifier rung honouring syntactic constraints, a length budget, and naming conventions. | Implemented by `src/summarization/identifier.rs` and `SummarizationMode::Identifier`; covered by `the_identifier_rung_produces_valid_identifiers_under_a_length_budget` and `the_identifier_rung_is_the_bottom_of_the_ladder`. |
+| R503 | Run the Stack Overflow case end to end, deterministically and without neural inference (`NON-GOALS.md:7`, `GOALS.md:54`), with case-study traceability and release metadata. | Implemented by `examples/issue_844_statement_merge.rs`, `docs/case-studies/issue-844/`, and the changelog fragment; covered by `the_stack_overflow_case_works_end_to_end`, `the_merge_is_deterministic_and_independent_of_source_order`, and `tests/unit/docs_requirements_issue_844.rs`. |

@@ -1,0 +1,69 @@
+=== recursive gathering (cold cache) ===
+  fetch https://stackoverflow.com/q/1
+  fetch https://stackoverflow.com/a/1
+  fetch https://stackoverflow.com/a/2
+  fetch https://stackoverflow.com/a/3
+  fetch https://docs.rs/formal-ai
+fetch url=https://stackoverflow.com/q/1 depth=0 digest=source_d0d296b6b0558557 supplies=[question]
+fetch url=https://stackoverflow.com/a/1 depth=1 digest=source_f576afafc8da8103 supplies=[install]
+fetch url=https://stackoverflow.com/a/2 depth=1 digest=source_c0f90e50a4301c1c supplies=[install]
+fetch url=https://stackoverflow.com/a/3 depth=1 digest=source_577c492c78ed2c0d supplies=[]
+fetch url=https://docs.rs/formal-ai depth=2 digest=source_fe1cffafd2dd6bc2 supplies=[install]
+stop depth=2 converged=true depth_bound=false open=[license]
+
+cached: 5 urls, 5 distinct bodies
+
+=== replay from the warm cache ===
+no fetch lines above means the provider was never called; byte-identical trace: true
+
+=== merged facts, ranked by evidence ===
+ 26  p=1.000  Install it with cargo install formal-ai.  [asserted by 3 of 5 sources]
+ 26  p=0.940  How do I install formal-ai?  [asserted by 1 of 5 sources]
+ 23  p=0.800  The crate is published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+ 23  p=0.300  The crate is not published on crates.io.  [asserted by 1 of 5 sources, denied by 1]
+
+=== merges, with the justification of each ===
+  "The install is cargo install formal-ai." from https://stackoverflow.com/a/2 folded in on <asserted:ai cargo formal install>
+  "Install it with cargo install formal-ai." from https://docs.rs/formal-ai folded in on <asserted:ai cargo formal install>
+
+=== disagreements, reported rather than resolved ===
+  "The crate is published on crates.io" (asserted by 1 of 5 sources, denied by 1) contradicts "The crate is not published on crates.io" (asserted by 1 of 5 sources, denied by 1)
+
+=== recheck before presenting ===
+verdict=confirmed prior=0.600000 support=1.000000 contradiction=0.000000 posterior=1.000000 ignored=0 sources=3 denied=0
+verdict=confirmed prior=0.600000 support=0.850000 contradiction=0.000000 posterior=0.940000 ignored=0 sources=1 denied=0
+verdict=confirmed prior=0.600000 support=0.500000 contradiction=0.000000 posterior=0.800000 ignored=1 sources=1 denied=1
+verdict=unsupported prior=0.600000 support=0.000000 contradiction=0.500000 posterior=0.300000 ignored=1 sources=1 denied=1
+
+=== the ladder, all the way down ===
+Full: Install it with cargo install formal-ai. How do I install formal-ai? The crate is published on crates.io (disputed: asserted by 1 of 5 sources, denied by 1).
+Standard: Install it with cargo install formal-ai. How do I install formal-ai?
+Short: Install it with cargo install formal-ai.
+Topic: Install it with cargo install
+Identifier: install_cargo_install
+
+=== the context as links ===
+substitution_graph
+  id "substitution_graph_741ec0dd5d9ce3d2"
+  link "context:issue-844-stack-overflow -> sources:5"
+  link "source:https://docs.rs/formal-ai -> statement:world_statement_fe1cffafd2dd6bc2"
+  link "source:https://stackoverflow.com/a/1 -> statement:world_statement_6e4749d26a21c91c"
+  link "source:https://stackoverflow.com/a/1 -> statement:world_statement_fe1cffafd2dd6bc2"
+  link "source:https://stackoverflow.com/a/2 -> statement:world_statement_fe1cffafd2dd6bc2"
+  link "source:https://stackoverflow.com/a/3 -> statement:world_statement_577c492c78ed2c0d"
+  link "source:https://stackoverflow.com/q/1 -> statement:world_statement_d0d296b6b0558557"
+  link "variant:variant_577c492c78ed2c0d -> statement:world_statement_577c492c78ed2c0d"
+  link "variant:variant_6e4749d26a21c91c -> statement:world_statement_6e4749d26a21c91c"
+  link "variant:variant_c0f90e50a4301c1c -> statement:world_statement_fe1cffafd2dd6bc2"
+  link "variant:variant_d0d296b6b0558557 -> statement:world_statement_d0d296b6b0558557"
+  link "variant:variant_fe1cffafd2dd6bc2 -> statement:world_statement_fe1cffafd2dd6bc2"
+  link "world_statement_577c492c78ed2c0d -> contradicts:world_statement_6e4749d26a21c91c"
+  link "world_statement_577c492c78ed2c0d -> truth:0.231810"
+  link "world_statement_577c492c78ed2c0d -> world:statement"
+  link "world_statement_6e4749d26a21c91c -> contradicts:world_statement_577c492c78ed2c0d"
+  link "world_statement_6e4749d26a21c91c -> truth:0.615341"
+  link "world_statement_6e4749d26a21c91c -> world:statement"
+  link "world_statement_d0d296b6b0558557 -> truth:0.940000"
+  link "world_statement_d0d296b6b0558557 -> world:statement"
+  link "world_statement_fe1cffafd2dd6bc2 -> truth:1.000000"
+  link "world_statement_fe1cffafd2dd6bc2 -> world:statement"
