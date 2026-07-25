@@ -26,9 +26,14 @@ USAGE
   cargo build --release
   experiments/issue_840_task_ladder/run_ladder.sh
   ONLY=838 experiments/issue_840_task_ladder/run_ladder.sh   # filter by id
+  MODE=tui ONLY=838.L1 experiments/issue_840_task_ladder/run_ladder.sh
+      # same node through the real OpenCode PTY; writes transcript, frames,
+      # asciicast, static SVG, and animated SVG beside the results
 
-Knobs: BIN, PORT, TASKS, OUT, ONLY, SANDBOX, SANDBOX_KEEP.
-Exits 0 always — this is a measurement harness, not a CI gate.
+Knobs: BIN, PORT, TASKS, OUT, ONLY, SANDBOX, SANDBOX_KEEP, MODE,
+TUI_ARTIFACT_DIR, REQUIRE_ALL_PASS.
+The measurement harness exits 0 by default. Set REQUIRE_ALL_PASS=1 to make a
+selected TUI subset a CI gate.
 
 BASELINE @ v0.303.0 (main 1873e873), 2026-07-25
 -----------------------------------------------

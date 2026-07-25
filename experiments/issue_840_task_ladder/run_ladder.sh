@@ -13,16 +13,19 @@
 #   OUT        Results JSON path (default: <scriptdir>/results.json)
 #   ONLY       Optional substring filter on task id (e.g. ONLY=838 or ONLY=838.L4)
 #   SANDBOX    Optional pre-existing sandbox dir; created and populated if unset
+#   MODE       `http` (default) or `tui` for the real OpenCode interface
+#   TUI_ARTIFACT_DIR  Transcript/frames/cast/SVG root in TUI mode
+#   REQUIRE_ALL_PASS  Exit nonzero when a selected TUI node fails (default: 0)
 #
 # A node PASSES when every `expect` substring appears in the answer and no
 # `forbid` substring does. Matching is case-insensitive. Nodes with an empty
 # `expect` list are judged only by `forbid` (used where any sensible answer is
 # acceptable but a specific failure mode must not occur).
 #
-# Exits 0 always: this is a measurement harness, not a gate. Read results.json
-# (and the printed summary) for the outcome. `experiments/` is excluded from
-# `any-code-changed` in scripts/detect-code-changes.rs, so this file does not
-# gate CI.
+# HTTP mode exits 0: this is a measurement harness, not a gate. TUI mode also
+# exits 0 unless REQUIRE_ALL_PASS=1. Read results.json (and the printed summary)
+# for the outcome. `experiments/` is excluded from `any-code-changed` in
+# scripts/detect-code-changes.rs, so this file alone does not gate CI.
 
 set -uo pipefail
 
@@ -34,6 +37,8 @@ TASKS="${TASKS:-$HERE/tasks.json}"
 OUT="${OUT:-$HERE/results.json}"
 ONLY="${ONLY:-}"
 SANDBOX="${SANDBOX:-}"
+MODE="${MODE:-http}"
+TUI_ARTIFACT_DIR="${TUI_ARTIFACT_DIR:-$OUT.artifacts}"
 
 if [ ! -x "$BIN" ]; then
   echo "formal-ai binary not found at $BIN (build with: cargo build --release)" >&2
@@ -41,6 +46,10 @@ if [ ! -x "$BIN" ]; then
 fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "python3 is required for JSON handling" >&2
+  exit 0
+fi
+if [ "$MODE" = "tui" ] && ! command -v opencode >/dev/null 2>&1; then
+  echo "opencode is required for MODE=tui" >&2
   exit 0
 fi
 
@@ -81,6 +90,19 @@ if ! curl -fsS "http://127.0.0.1:$PORT/v1/models" >/dev/null 2>&1; then
   echo "server never came up on port $PORT; log tail:" >&2
   tail -20 "$SERVER_LOG" >&2
   exit 0
+fi
+
+if [ "$MODE" = "tui" ]; then
+  TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
+  (cd "$TUI_DIR" && bun install --frozen-lockfile) || exit 1
+  ISSUE840_TASKS="$TASKS" \
+    ISSUE840_OUT="$OUT" \
+    ISSUE840_ONLY="$ONLY" \
+    ISSUE840_SANDBOX="$SANDBOX" \
+    ISSUE840_PORT="$PORT" \
+    ISSUE840_ARTIFACT_DIR="$TUI_ARTIFACT_DIR" \
+    node "$TUI_DIR/capture-ladder.mjs"
+  exit $?
 fi
 
 # --- drive every node --------------------------------------------------------
