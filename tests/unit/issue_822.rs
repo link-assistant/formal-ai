@@ -134,13 +134,19 @@ fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() 
     let call = one_call(&messages, &["request_user_input", "bash"]);
     assert_eq!(call.tool, "bash");
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(command.contains("formal-ai context export"), "{command}");
+    // The complete context is still exported and attached — but by the local
+    // CLI, into a file: `formal-ai report body` renders the document and writes
+    // the whole `.lino` context alongside it (#839 §7).
+    assert!(command.contains("formal-ai report body"), "{command}");
     assert!(command.contains("--source both"), "{command}");
-    assert!(command.contains("formal-ai-context.lino"), "{command}");
+    assert!(command.contains("--context-output"), "{command}");
+    assert!(command.contains("context.lino"), "{command}");
     assert!(command.contains("--body-file"), "{command}");
-    assert!(command.contains("tail -c 12000"), "{command}");
-    assert!(command.contains("sed '1d'"), "{command}");
-    assert!(!command.contains("head -c 12000"), "{command}");
+    // #839 §2.3: byte-offset truncation cut Links Notation mid-record, so no
+    // step may slice the context on its way into the body.
+    assert!(!command.contains("tail -c"), "{command}");
+    assert!(!command.contains("head -c"), "{command}");
+    assert!(!command.contains("sed '1d'"), "{command}");
     assert!(!command.contains("exit status 1"), "{command}");
 }
 
@@ -159,7 +165,15 @@ fn harness_export_waits_for_confirmation_and_ignores_prior_run_results() {
     ];
     let call = one_call(&messages, &["request_user_input", "bash"]);
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(command.starts_with("formal-ai context export"), "{command}");
+    // The export is the script's only step; everything before it is the `set -eu`
+    // header and the `command -v` preflight #839 §5 requires.
+    assert!(command.starts_with("set -eu\n"), "{command}");
+    assert!(
+        command
+            .lines()
+            .any(|line| line.starts_with("formal-ai context export")),
+        "{command}"
+    );
     assert!(command.contains("--source harness"), "{command}");
 }
 
