@@ -32,11 +32,14 @@ fn chat_completions_routes_report_to_bash_not_websearch() {
     assert_eq!(call["function"]["name"], "bash");
     let arguments: serde_json::Value =
         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
-    assert!(arguments["command"].as_str().is_some_and(|command| command
-        .contains("gh issue create")
-        && command.contains("formal-ai context export")
-        && command.contains("--source both")
-        && !command.contains("curl")));
+    assert!(arguments["command"].as_str().is_some_and(|command| {
+        command.starts_with("formal-ai context report")
+            && command.contains("--source both")
+            && command.contains("--repository link-assistant/formal-ai")
+            && !command.contains("curl")
+            && !command.contains(';')
+            && !command.contains("&&")
+    }));
 }
 
 #[test]
@@ -69,9 +72,13 @@ fn responses_routes_report_to_any_run_capability_alias() {
         .find(|item| item["type"] == "function_call")
         .expect("report should emit a Responses function call");
     assert_eq!(call["name"], "run_command");
-    assert!(call["arguments"]
-        .as_str()
-        .is_some_and(|arguments| arguments.contains("gh issue create")));
+    let arguments: serde_json::Value =
+        serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+    assert!(arguments["command"].as_str().is_some_and(|command| command
+        .starts_with("formal-ai context report")
+        && command.contains("--source both")
+        && !command.contains(';')
+        && !command.contains("&&")));
 }
 
 #[test]
@@ -104,7 +111,10 @@ fn gemini_routes_localized_report_to_shell_alias() {
     assert_eq!(call["name"], "shell");
     assert!(call["args"]["command"]
         .as_str()
-        .is_some_and(|command| command.contains("gh issue create")));
+        .is_some_and(|command| command.starts_with("formal-ai context report")
+            && command.contains("--source both")
+            && !command.contains(';')
+            && !command.contains("&&")));
 }
 
 #[test]

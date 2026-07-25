@@ -1,4 +1,129 @@
 meanings
+  pattern_how_does_it_work_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how does it work en"
+  pattern_how_does_x_work_prefix_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how does x work prefix en"
+  pattern_how_it_works_bare_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how it works bare en"
+  pattern_how_it_works_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how it works ru"
+  pattern_how_x_works_prefix_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how x works prefix en"
+  pattern_kak_ono_rabotaet_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak ono rabotaet ru"
+  pattern_kak_rabotaet_x_prefix_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak rabotaet x prefix ru"
+  pattern_kak_ustroen_x_prefix_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak ustroen x prefix ru"
+  pattern_kak_ustroena_x_prefix_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak ustroena x prefix ru"
+  pattern_kak_ustroeno_x_prefix_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern kak ustroeno x prefix ru"
+  pattern_test_status_keyword_test_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status keyword test en"
+  pattern_test_status_keyword_test_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status keyword test hi"
+  pattern_test_status_keyword_test_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status keyword test ru"
+  pattern_test_status_keyword_test_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status keyword test zh"
+  pattern_test_status_phrase_are_you_there_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase are you there en"
+  pattern_test_status_phrase_i_am_here_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase i am here en"
+  pattern_test_status_phrase_kya_aap_vahan_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase kya aap vahan hain hi"
+  pattern_test_status_phrase_main_yahan_hun_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase main yahan hun hi"
+  pattern_test_status_phrase_ni_zai_ma_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase ni zai ma zh"
+  pattern_test_status_phrase_success_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase success hi"
+  pattern_test_status_phrase_success_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase success zh"
+  pattern_test_status_phrase_test_passed_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test passed en"
+  pattern_test_status_phrase_test_proyden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase test proyden ru"
+  pattern_test_status_phrase_vy_zdes_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase vy zdes ru"
+  pattern_test_status_phrase_wo_zai_zheli_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern test status phrase wo zai zheli zh"
   pattern_test_status_phrase_ya_zdes_ru
     defined-by prompt_pattern
     lexeme en
@@ -569,6 +694,66 @@ meanings
     lexeme en
       surface
         text "response agentic action generic zh"
+  response_agentic_action_list_current_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current en"
+  response_agentic_action_list_current_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current hi"
+  response_agentic_action_list_current_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current ru"
+  response_agentic_action_list_current_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list current zh"
+  response_agentic_action_list_desktop_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop en"
+  response_agentic_action_list_desktop_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop hi"
+  response_agentic_action_list_desktop_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop ru"
+  response_agentic_action_list_desktop_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list desktop zh"
+  response_agentic_action_list_home_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home en"
+  response_agentic_action_list_home_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home hi"
+  response_agentic_action_list_home_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home ru"
+  response_agentic_action_list_home_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic action list home zh"
   response_agentic_action_read_en
     defined-by response_template
     lexeme en
@@ -869,6 +1054,46 @@ meanings
     lexeme en
       surface
         text "response clarification zh"
+  response_comparison_decomposed_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence en"
+  response_comparison_decomposed_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence hi"
+  response_comparison_decomposed_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence ru"
+  response_comparison_decomposed_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed evidence zh"
+  response_comparison_decomposed_no_evidence_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence en"
+  response_comparison_decomposed_no_evidence_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence hi"
+  response_comparison_decomposed_no_evidence_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence ru"
+  response_comparison_decomposed_no_evidence_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response comparison decomposed no evidence zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -929,6 +1154,26 @@ meanings
     lexeme en
       surface
         text "response courtesy response zh"
+  response_definition_followup_clarify_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify en"
+  response_definition_followup_clarify_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify hi"
+  response_definition_followup_clarify_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify ru"
+  response_definition_followup_clarify_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response definition followup clarify zh"
   response_document_originality_check_sample_missing_en
     defined-by response_template
     lexeme en
@@ -1149,248 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import cache budget reached zh"
-  response_lexeme_import_cache_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json en"
-  response_lexeme_import_cache_invalid_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json hi"
-  response_lexeme_import_cache_invalid_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json ru"
-  response_lexeme_import_cache_invalid_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache invalid json zh"
-  response_lexeme_import_cache_miss_offline_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline en"
-  response_lexeme_import_cache_miss_offline_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline hi"
-  response_lexeme_import_cache_miss_offline_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline ru"
-  response_lexeme_import_cache_miss_offline_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache miss offline zh"
-  response_lexeme_import_cache_unreadable_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable en"
-  response_lexeme_import_cache_unreadable_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable hi"
-  response_lexeme_import_cache_unreadable_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable ru"
-  response_lexeme_import_cache_unreadable_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache unreadable zh"
-  response_lexeme_import_cannot_create_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create en"
-  response_lexeme_import_cannot_create_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create hi"
-  response_lexeme_import_cannot_create_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create ru"
-  response_lexeme_import_cannot_create_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot create zh"
-  response_lexeme_import_cannot_inspect_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect en"
-  response_lexeme_import_cannot_inspect_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect hi"
-  response_lexeme_import_cannot_inspect_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect ru"
-  response_lexeme_import_cannot_inspect_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot inspect zh"
-  response_lexeme_import_cannot_install_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install en"
-  response_lexeme_import_cannot_install_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install hi"
-  response_lexeme_import_cannot_install_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install ru"
-  response_lexeme_import_cannot_install_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot install zh"
-  response_lexeme_import_cannot_list_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot list en"
-  response_lexeme_import_cannot_list_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot list hi"
-  response_lexeme_import_cannot_list_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot list ru"
-  response_lexeme_import_cannot_list_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot list zh"
-  response_lexeme_import_cannot_remove_stale_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot remove stale en"
-  response_lexeme_import_cannot_remove_stale_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot remove stale hi"
-  response_lexeme_import_cannot_remove_stale_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot remove stale ru"
-  response_lexeme_import_cannot_remove_stale_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot remove stale zh"
-  response_lexeme_import_cannot_stage_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage en"
-  response_lexeme_import_cannot_stage_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage hi"
-  response_lexeme_import_cannot_stage_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage ru"
-  response_lexeme_import_cannot_stage_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot stage zh"
-  response_lexeme_import_cannot_write_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json en"
-  response_lexeme_import_cannot_write_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json hi"
-  response_lexeme_import_cannot_write_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json ru"
-  response_lexeme_import_cannot_write_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write json zh"
-  response_lexeme_import_cannot_write_lino_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino en"
-  response_lexeme_import_cannot_write_lino_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino hi"
-  response_lexeme_import_cannot_write_lino_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino ru"
-  response_lexeme_import_cannot_write_lino_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cannot write lino zh"
-  response_lexeme_import_denotation_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost en"
-  response_lexeme_import_denotation_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost hi"
-  response_lexeme_import_denotation_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost ru"
-  response_lexeme_import_denotation_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import denotation lost zh"
-  response_lexeme_import_duplicate_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import duplicate qid en"

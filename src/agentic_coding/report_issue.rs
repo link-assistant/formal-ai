@@ -94,17 +94,29 @@ pub(super) fn plan_report_flow(
     // Earlier harness commands are part of the context being reported, not the
     // execution of this confirmation flow. Only inspect turns after "Report".
     let progress = Progress::scan(&messages[report_index + 1..]);
-    if progress.done(Capability::Run) {
+    let completed = progress.count(Capability::Run);
+    let outputs = report_run_outputs(&messages[report_index + 1..]);
+    if let Some(failed) = outputs
+        .last()
+        .filter(|output| super::tool_result::normalized_payload(output).is_none())
+    {
+        return Some(AgenticPlan::Final(super::tool_result::render(
+            "shell",
+            failed,
+            &report_prompt,
+        )));
+    }
+    if completed >= targets.len() {
         return Some(AgenticPlan::Final(report_finished(
             &targets,
-            progress.run_output.as_deref().unwrap_or_default(),
+            &outputs.join("\n"),
             language,
         )));
     }
 
     let dialog_id = dialog_id(messages);
-    let command = command_for_targets(
-        &targets,
+    let command = command_for(
+        targets[completed],
         contents.unwrap_or(ReportContents::Both),
         messages,
         report_index,
@@ -301,31 +313,6 @@ fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> b
     })
 }
 
-fn command_for_targets(
-    targets: &[ReportTarget],
-    contents: ReportContents,
-    messages: &[ChatMessage],
-    report_index: usize,
-    dialog_id: &str,
-) -> String {
-    let commands = targets
-        .iter()
-        .map(|target| command_for(*target, contents, messages, report_index, dialog_id))
-        .collect::<Vec<_>>();
-    if commands.len() == 1 {
-        return commands.into_iter().next().unwrap_or_default();
-    }
-    let mut combined = String::from("set -eu; ");
-    combined.push_str(
-        &commands
-            .iter()
-            .map(|command| command.strip_prefix("set -eu; ").unwrap_or(command))
-            .collect::<Vec<_>>()
-            .join("; "),
-    );
-    combined
-}
-
 fn command_for(
     target: ReportTarget,
     contents: ReportContents,
@@ -347,6 +334,18 @@ fn command_for(
         ),
         ReportTarget::FormalAi => learning_command(dialog_id),
     }
+}
+
+fn report_run_outputs(messages: &[ChatMessage]) -> Vec<String> {
+    messages
+        .iter()
+        .enumerate()
+        .filter(|message| {
+            message.1.role.eq_ignore_ascii_case("tool")
+                && super::progress::result_capability(messages, message.0) == Some(Capability::Run)
+        })
+        .map(|(_, message)| message.content.plain_text())
+        .collect()
 }
 
 fn export_command(dialog_id: &str, source: &str, output: &str) -> String {
@@ -379,24 +378,13 @@ fn github_command(
         ReportContents::Server => "server",
     };
     let title = issue_title(messages, report_index);
-    let intro = config("issue_report_body_intro");
     format!(
-        "set -eu; context_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.lino\"); \
-         body_file=$(mktemp \"${{TMPDIR:-/tmp}}/formal-ai-report.XXXXXX.md\"); \
-         trap 'rm -f \"$context_file\" \"$body_file\"' EXIT; \
-         formal-ai context export --session {} --source {include} --output \"$context_file\"; \
-         printf '%s\\n' {} > \"$body_file\"; \
-         if [ \"$(wc -c < \"$context_file\")\" -le 50000 ]; then \
-           printf '\\n### Complete agentic context\\n\\n```lino\\n' >> \"$body_file\"; \
-           cat \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
-         else \
-           context_url=$(gh gist create --filename formal-ai-context.lino \"$context_file\"); \
-           printf '\\n### Agentic context\\n\\nThe complete Links Notation context is available at %s.\\n\\n```lino\\n' \"$context_url\" >> \"$body_file\"; \
-           tail -c 12000 \"$context_file\" | sed '1d' >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; \
-         fi; \
-         gh issue create --repo {} --title {} --body-file \"$body_file\"",
+        concat!(
+            "formal-ai context report",
+            " --session {} --source {} --repository {} --title {}"
+        ),
         shell_quote(dialog_id),
-        shell_quote(&intro),
+        include,
         formal_ai_repo(),
         shell_quote(&title),
     )
@@ -421,6 +409,7 @@ fn issue_title(messages: &[ChatMessage], report_index: usize) -> String {
     subject.map_or_else(
         || config("issue_report_default_title"),
         |text| {
+            let text = text.split_whitespace().collect::<Vec<_>>().join(" ");
             format!(
                 "{}{}",
                 config("issue_report_title_prefix"),

@@ -11,7 +11,7 @@ fn confirmed_github(mut messages: Vec<ChatMessage>) -> Vec<ChatMessage> {
 }
 
 #[test]
-fn report_action_calls_gh_through_the_advertised_shell_tool() {
+fn report_action_delegates_to_the_atomic_context_command() {
     let messages = confirmed_github(vec![
         ChatMessage::user("How old are you?"),
         ChatMessage::assistant("I do not have an age. Use Report issue if this answer is wrong."),
@@ -26,13 +26,19 @@ fn report_action_calls_gh_through_the_advertised_shell_tool() {
     assert_eq!(calls[0].tool, "bash");
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     let command = arguments["command"].as_str().unwrap();
-    assert!(command.starts_with("set -eu;"), "{command}");
     assert!(
-        command.contains("--repo link-assistant/formal-ai"),
+        command.starts_with("formal-ai context report "),
         "{command}"
     );
-    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(
+        command.contains("--repository link-assistant/formal-ai"),
+        "{command}"
+    );
     assert!(command.contains("--source both"), "{command}");
+    assert!(
+        !command.contains(';') && !command.contains("&&"),
+        "{command}"
+    );
     assert!(!command.contains("curl"), "{command}");
     assert!(!command.contains("I do not have an age."), "{command}");
     assert!(!command.contains("websearch"), "{command}");
@@ -68,7 +74,7 @@ fn localized_report_actions_route_to_shell() {
             panic!("{language} report action did not emit a shell call");
         };
         assert_eq!(calls[0].tool, "bash", "language={language}");
-        assert!(calls[0].arguments.contains("gh issue create"));
+        assert!(calls[0].arguments.contains("formal-ai context report"));
     }
 }
 

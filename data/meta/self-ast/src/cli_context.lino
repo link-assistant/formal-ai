@@ -2,22 +2,31 @@ self_ast_census
   target src/cli_context.rs
   language rust
   fidelity signature
-  byte_len 6576
-  line_count 213
-  content_id source_module_bd34f4052ccccf8f
-  symbol_count 14
+  byte_len 10932
+  line_count 345
+  content_id source_module_5a91bba6f3f64212
+  symbol_count 23
   symbols
-    const ERROR_PLACEHOLDER 11 11
-    struct ContextArgs 14 17
-    enum ContextAction 20 60
-    enum ContextSource 63 69
-    enum ContextFormat 72 75
-    function run_context 77 107
-    function export_context 109 146
-    function load_server_context 148 155
-    function render_server_context 157 166
-    function opencode_context 168 188
-    const EXTRACTOR 173 173
-    function config 190 194
-    function read_input 196 204
-    function write_output 206 213
+    const ERROR_PLACEHOLDER 12 12
+    static REPORT_TEMP_SEQUENCE 13 13
+    struct ContextArgs 16 19
+    enum ContextAction 22 77
+    enum ContextSource 80 86
+    enum ContextFormat 89 92
+    function run_context 94 133
+    function report_context 135 174
+    function checked_output 176 186
+    function trailing_chars 188 196
+    struct TemporaryPath 198 198
+    function new 201 222
+    function path 224 226
+    function drop 230 232
+    function unique_suffix 235 239
+    function export_context 241 278
+    function load_server_context 280 287
+    function render_server_context 289 298
+    function opencode_context 300 320
+    const EXTRACTOR 305 305
+    function config 322 326
+    function read_input 328 336
+    function write_output 338 345

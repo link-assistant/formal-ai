@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 14358
+  byte_len 14312
   line_count 443
-  content_id source_module_426e7573215251c1
+  content_id source_module_15053895ae2cec9e
   symbol_count 28
   symbols
     struct NormalizedResult 12 16

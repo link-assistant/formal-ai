@@ -210,7 +210,7 @@ mod report_issue {
     }
 
     #[test]
-    fn report_request_emits_gh_issue_create() {
+    fn report_request_emits_atomic_context_report() {
         for prompt in [
             "Report this issue on GitHub",
             "Please file a bug report for the Formal AI repository",
@@ -223,16 +223,21 @@ mod report_issue {
             ]);
             let calls = tool_calls(&messages);
             assert_eq!(calls.len(), 1, "{prompt:?} should emit one call");
-            assert_eq!(calls[0].tool, "bash", "{prompt:?} should shell out to gh");
+            assert_eq!(calls[0].tool, "bash", "{prompt:?} should use the shell");
             let args = arguments(&calls[0]);
             let command = args["command"].as_str().expect("command string");
             assert!(
-                command.contains("gh issue create"),
-                "{prompt:?} should run `gh issue create`, got: {command}"
+                command.starts_with("formal-ai context report "),
+                "{prompt:?} should delegate the atomic report action, got: {command}"
             );
             assert!(
                 command.contains("link-assistant/formal-ai"),
                 "{prompt:?} should target the Formal AI repo, got: {command}"
+            );
+            assert!(command.contains("--source both"), "{command}");
+            assert!(
+                !command.contains(';') && !command.contains("&&"),
+                "{command}"
             );
         }
     }
@@ -248,7 +253,7 @@ mod report_issue {
         assert_eq!(calls[0].tool, "bash");
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create"));
+        assert!(command.starts_with("formal-ai context report "));
     }
 
     #[test]
@@ -311,7 +316,10 @@ mod report_issue {
         assert_eq!(calls[0].tool, "bash");
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create"), "{command}");
+        assert!(
+            command.starts_with("formal-ai context report "),
+            "{command}"
+        );
     }
 
     #[test]
@@ -333,7 +341,10 @@ mod report_issue {
                 .as_str()
                 .expect("command string")
                 .to_owned();
-            assert!(command.contains("gh issue create"), "{prompt:?}: {command}");
+            assert!(
+                command.starts_with("formal-ai context report "),
+                "{prompt:?}: {command}"
+            );
         }
     }
 
@@ -349,7 +360,14 @@ mod report_issue {
         let calls = tool_calls(&messages);
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create --repo link-assistant/formal-ai"));
+        assert!(
+            command.starts_with("formal-ai context report "),
+            "{command}"
+        );
+        assert!(
+            command.contains("--repository link-assistant/formal-ai"),
+            "{command}"
+        );
         // POSIX single-quote escaping renders a literal `'` as `'\''`.
         assert!(
             command.contains("'\\''"),

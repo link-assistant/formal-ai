@@ -1,4 +1,69 @@
 meanings
+  issue_report_title_prefix
+    defined-by field
+    lexeme en
+      surface
+        text "issue report title prefix"
+  issue_report_tool_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report tool missing"
+  issue_report_transcript_trimmed
+    defined-by field
+    lexeme en
+      surface
+        text "issue report transcript trimmed"
+  issue_template_labels
+    defined-by field
+    lexeme en
+      surface
+        text "issue template labels"
+  javascript
+    defined-by programming_language
+    lexeme en
+      surface
+        text "javascript"
+  join
+    defined-by concept
+    lexeme en
+      surface
+        text "join"
+  join_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "join lines"
+  kebab
+    defined-by concept
+    lexeme en
+      surface
+        text "kebab"
+  kebab-case
+    defined-by phrase
+    lexeme en
+      surface
+        text "kebab case"
+  kebab_case
+    defined-by operation
+    lexeme en
+      surface
+        text "kebab case"
+  kill
+    defined-by token
+    lexeme en
+      surface
+        text "kill"
+  knowledge-representation
+    defined-by category
+    lexeme en
+      surface
+        text "knowledge representation"
+  kubaturit
+    defined-by term
+    lexeme en
+      surface
+        text "kubaturit"
   kubectl
     defined-by token
     lexeme en
@@ -299,13 +364,73 @@ meanings
     lexeme en
       surface
         text "local library"
+  local_search_contents_listing
+    defined-by intent
+    lexeme en
+      surface
+        text "local search contents listing"
+  local_search_found_closest
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found closest"
+  local_search_found_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found directory"
+  local_search_found_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found file"
+  local_search_found_path
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found path"
+  local_search_mismatch_requested_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search mismatch requested directory"
+  local_search_mismatch_requested_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search mismatch requested file"
+  local_search_not_found
+    defined-by intent
+    lexeme en
+      surface
+        text "local search not found"
+  local_search_route_local
+    defined-by intent
+    lexeme en
+      surface
+        text "local search route local"
+  local_search_scope_listing
+    defined-by intent
+    lexeme en
+      surface
+        text "local search scope listing"
+  local_search_type_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type directory"
+  local_search_type_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type file"
   local_shell
     defined-by word_surface
     lexeme en
       surface
         text "local shell"
   locate
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "locate"
@@ -400,7 +525,7 @@ meanings
       surface
         text "mv"
   named
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "named"
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern how do x work prefix en"
-  pattern_how_does_it_work_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how does it work en"
-  pattern_how_does_x_work_prefix_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how does x work prefix en"
-  pattern_how_it_works_bare_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how it works bare en"
-  pattern_how_it_works_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how it works ru"
-  pattern_how_x_works_prefix_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how x works prefix en"
-  pattern_kak_ono_rabotaet_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ono rabotaet ru"
-  pattern_kak_rabotaet_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak rabotaet x prefix ru"
-  pattern_kak_ustroen_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroen x prefix ru"
-  pattern_kak_ustroena_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroena x prefix ru"
-  pattern_kak_ustroeno_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroeno x prefix ru"
-  pattern_test_status_keyword_test_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test en"
-  pattern_test_status_keyword_test_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test hi"
-  pattern_test_status_keyword_test_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test ru"
-  pattern_test_status_keyword_test_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test zh"
-  pattern_test_status_phrase_are_you_there_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase are you there en"
-  pattern_test_status_phrase_i_am_here_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase i am here en"
-  pattern_test_status_phrase_kya_aap_vahan_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase kya aap vahan hain hi"
-  pattern_test_status_phrase_main_yahan_hun_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase main yahan hun hi"
-  pattern_test_status_phrase_ni_zai_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase ni zai ma zh"
-  pattern_test_status_phrase_success_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase success hi"
-  pattern_test_status_phrase_success_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase success zh"
-  pattern_test_status_phrase_test_passed_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test passed en"
-  pattern_test_status_phrase_test_proyden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test proyden ru"
-  pattern_test_status_phrase_vy_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase vy zdes ru"
-  pattern_test_status_phrase_wo_zai_zheli_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase wo zai zheli zh"

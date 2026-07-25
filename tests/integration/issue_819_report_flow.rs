@@ -5,7 +5,7 @@
 //! reported the problem. Every one of those steps is driven here through the
 //! real `handle_api_request` entry point — the same path `OpenCode` calls — so
 //! the whole conversation (find → empty result → report → multiselect →
-//! combined action) is exercised end to end, and each assistant message is
+//! sequential report actions) is exercised end to end, and each assistant message is
 //! asserted to be natural and free of the raw command that `OpenCode` prints
 //! itself when the step runs.
 
@@ -86,9 +86,25 @@ fn opencode_desktop_find_is_narrated_naturally_and_runs_find() {
 }
 
 #[test]
-fn opencode_empty_find_result_is_explained_for_a_beginner() {
-    // The find ran and produced no output; the assistant must explain the empty
-    // result in plain words instead of leaving the user staring at "(no output)".
+fn opencode_desktop_listing_narration_does_not_expose_the_internal_root() {
+    let response = chat(&json!({
+        "model": "formal-ai",
+        "messages": [{"role": "user", "content": "List the folders on my desktop"}],
+        "tools": opencode_tools(),
+    }));
+    let choice = &response["choices"][0];
+    assert_eq!(choice["finish_reason"], "tool_calls", "{response}");
+    let narration = message_text(&choice["message"]);
+    assert_command_free(&narration, "desktop listing narration");
+    assert!(narration.contains("Desktop"), "{narration}");
+    assert!(!narration.contains("FORMAL_AI_DESKTOP_DIR"), "{narration}");
+    assert!(!narration.contains("$HOME"), "{narration}");
+}
+
+#[test]
+fn opencode_empty_exact_find_result_widens_without_command_leakage() {
+    // The exact find ran and produced no output; the assistant must widen one
+    // step instead of treating one observation as proof of absence.
     let response = chat(&json!({
         "model": "formal-ai",
         "messages": [
@@ -109,14 +125,15 @@ fn opencode_empty_find_result_is_explained_for_a_beginner() {
         "tools": opencode_tools(),
     }));
     let choice = &response["choices"][0];
-    assert_eq!(choice["finish_reason"], "stop", "{response}");
-    let answer = message_text(&choice["message"]);
-    assert_command_free(&answer, "empty-result explanation");
-    let lower = answer.to_lowercase();
-    assert!(
-        lower.contains("no matching") || lower.contains("was found") || lower.contains("check"),
-        "the empty result should be explained plainly: {answer}"
-    );
+    assert_eq!(choice["finish_reason"], "tool_calls", "{response}");
+    let call = &choice["message"]["tool_calls"][0]["function"];
+    assert_eq!(call["name"], "run_shell_command", "{response}");
+    let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+    let command = arguments["command"].as_str().expect("widened command");
+    assert!(command.contains("*hive*"), "{command}");
+    assert!(!command.contains("-print -quit"), "{command}");
+    let narration = message_text(&choice["message"]);
+    assert_command_free(&narration, "widened-search narration");
 }
 
 #[test]
@@ -151,7 +168,7 @@ fn opencode_report_asks_one_multiselect_question_without_a_command() {
 }
 
 #[test]
-fn opencode_report_selection_runs_one_combined_action_without_leaking_it() {
+fn opencode_report_selection_runs_the_first_atomic_action_without_leaking_it() {
     let response = chat(&json!({
         "model": "formal-ai",
         "messages": [
@@ -184,17 +201,18 @@ fn opencode_report_selection_runs_one_combined_action_without_leaking_it() {
     assert_eq!(call["name"], "run_shell_command", "{response}");
 
     let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
-    let command = arguments["command"].as_str().expect("combined command");
-    // Every selected destination is fulfilled in a single executable step.
-    assert!(command.contains("gh issue create"), "{command}");
+    let command = arguments["command"].as_str().expect("atomic command");
+    // One selected destination is fulfilled per observable step.
     assert!(command.contains("--source harness"), "{command}");
-    assert!(command.contains("--source server"), "{command}");
-    assert!(command.contains("--source both"), "{command}");
+    assert!(!command.contains("--source server"), "{command}");
+    assert!(!command.contains("gh issue create"), "{command}");
+    assert!(!command.contains(';'), "{command}");
+    assert!(!command.contains("&&"), "{command}");
     assert!(!command.contains("curl"), "{command}");
 
     // But the message the user reads never contains that command.
     let narration = message_text(&choice["message"]);
-    assert_command_free(&narration, "combined report narration");
+    assert_command_free(&narration, "atomic report narration");
 }
 
 fn chat(body: &Value) -> Value {

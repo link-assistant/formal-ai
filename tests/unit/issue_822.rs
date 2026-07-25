@@ -134,13 +134,11 @@ fn confirmed_github_report_fetches_complete_lino_context_after_both_questions() 
     let call = one_call(&messages, &["request_user_input", "bash"]);
     assert_eq!(call.tool, "bash");
     let command = arguments(&call)["command"].as_str().unwrap().to_owned();
-    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.starts_with("formal-ai context report"), "{command}");
     assert!(command.contains("--source both"), "{command}");
-    assert!(command.contains("formal-ai-context.lino"), "{command}");
-    assert!(command.contains("--body-file"), "{command}");
-    assert!(command.contains("tail -c 12000"), "{command}");
-    assert!(command.contains("sed '1d'"), "{command}");
-    assert!(!command.contains("head -c 12000"), "{command}");
+    assert!(command.contains("--repository link-assistant/formal-ai"));
+    assert!(!command.contains(';'), "{command}");
+    assert!(!command.contains("&&"), "{command}");
     assert!(!command.contains("exit status 1"), "{command}");
 }
 

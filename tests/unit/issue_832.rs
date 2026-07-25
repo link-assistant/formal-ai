@@ -34,17 +34,12 @@ fn report_command() -> String {
 #[test]
 fn every_report_context_is_exported_by_the_local_cli() {
     let command = report_command();
-
-    for source in ["harness", "server", "both"] {
-        assert!(
-            command.contains("formal-ai context export")
-                && command.contains(&format!("--source {source}")),
-            "missing local {source} export in: {command}"
-        );
-    }
+    assert!(command.contains("formal-ai context export"), "{command}");
+    assert!(command.contains("--source harness"), "{command}");
+    assert!(!command.contains("--source server"), "{command}");
+    assert!(!command.contains("--source both"), "{command}");
     assert!(!command.contains("curl"), "{command}");
-    assert!(!command.contains("FORMAL_AI_BASE_URL"), "{command}");
-    assert!(command.contains("gh issue create"), "{command}");
+    assert!(!command.contains(';'), "{command}");
 }
 
 #[test]
@@ -76,9 +71,9 @@ fn local_report_export_is_available_in_every_supported_language() {
             .to_owned();
 
         assert!(
-            command.contains("formal-ai context export")
+            command.contains("formal-ai context report")
                 && command.contains("--source both")
-                && command.contains("gh issue create"),
+                && command.contains("--repository link-assistant/formal-ai"),
             "language={language}, prompt={prompt:?}: {command}"
         );
         assert!(!command.contains("curl"), "language={language}: {command}");

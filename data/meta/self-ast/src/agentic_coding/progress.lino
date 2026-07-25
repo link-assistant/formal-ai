@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 5744
+  byte_len 5755
   line_count 146
-  content_id source_module_a2b32a73ada7108d
+  content_id source_module_c3276fab9432a63e
   symbol_count 10
   symbols
     struct Progress 13 22
@@ -22,8 +22,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4233
-    named_node_count 874
+    total_link_count 4245
+    named_node_count 876
     distinct_node_kinds 62
     node_kinds
       arguments 68
@@ -76,7 +76,7 @@ self_ast_census
       string_literal 3
       struct_expression 1
       struct_item 1
-      super 16
+      super 17
       try_expression 2
       tuple_expression 1
       tuple_pattern 1
@@ -87,4 +87,4 @@ self_ast_census
       unary_expression 7
       use_declaration 2
       use_list 1
-      visibility_modifier 14
+      visibility_modifier 15

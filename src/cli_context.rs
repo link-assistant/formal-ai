@@ -4,11 +4,13 @@ use std::error::Error;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use clap::{Args, Subcommand, ValueEnum};
 use serde_json::Value;
 
 const ERROR_PLACEHOLDER: &str = "{error}";
+static REPORT_TEMP_SEQUENCE: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Debug, Args)]
 pub struct ContextArgs {
@@ -57,6 +59,21 @@ enum ContextAction {
         #[arg(long)]
         log_dir: Option<PathBuf>,
     },
+    /// File a GitHub issue containing one complete agentic conversation.
+    Report {
+        /// Harness or Formal AI conversation/session identifier.
+        #[arg(long)]
+        session: String,
+        /// Context source to include.
+        #[arg(long, value_enum, default_value_t = ContextSource::Both)]
+        source: ContextSource,
+        /// GitHub repository in OWNER/REPO form.
+        #[arg(long)]
+        repository: String,
+        /// GitHub issue title.
+        #[arg(long)]
+        title: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, PartialEq, Eq)]
@@ -102,8 +119,123 @@ pub fn run_context(args: ContextArgs) -> Result<(), Box<dyn Error>> {
                 &format!("{}\n", serde_json::to_string_pretty(&result)?),
             )?;
         }
+        ContextAction::Report {
+            session,
+            source,
+            repository,
+            title,
+        } => {
+            let url = report_context(&session, source, &repository, &title)?;
+            write_output(Path::new("-"), &format!("{url}\n"))?;
+        }
     }
     Ok(())
+}
+
+fn report_context(
+    session: &str,
+    source: ContextSource,
+    repository: &str,
+    title: &str,
+) -> Result<String, Box<dyn Error>> {
+    let context = export_context(session, source, None, None, ContextFormat::Lino)?;
+    let intro = config("issue_report_body_intro");
+    let body = if context.len() <= 50_000 {
+        format!(
+            "{intro}\n\n{}\n\n```lino\n{}\n```\n",
+            config("issue_report_context_heading"),
+            context.trim_end()
+        )
+    } else {
+        let (context_path, mut context_file) = TemporaryPath::new("lino")?;
+        context_file.write_all(context.as_bytes())?;
+        let context_url = checked_output(
+            Command::new("gh")
+                .args(["gist", "create", "--filename", "formal-ai-context.lino"])
+                .arg(context_path.path()),
+        )?;
+        let excerpt = trailing_chars(&context, 12_000);
+        format!(
+            "{intro}\n\n{}\n\n{}\n\n```lino\n{}\n```\n",
+            config("issue_report_context_link_heading"),
+            config("issue_report_context_link_intro").replace("{url}", context_url.trim()),
+            excerpt.trim_start()
+        )
+    };
+
+    let (body_path, mut body_file) = TemporaryPath::new("md")?;
+    body_file.write_all(body.as_bytes())?;
+    checked_output(
+        Command::new("gh")
+            .args(["issue", "create", "--repo", repository, "--title", title])
+            .arg("--body-file")
+            .arg(body_path.path()),
+    )
+}
+
+fn checked_output(command: &mut Command) -> Result<String, Box<dyn Error>> {
+    let output = command.output()?;
+    if output.status.success() {
+        return Ok(String::from_utf8(output.stdout)?.trim().to_owned());
+    }
+    let diagnostic = String::from_utf8_lossy(&output.stderr);
+    Err(config("context_command_failed")
+        .replace("{status}", &output.status.to_string())
+        .replace(ERROR_PLACEHOLDER, diagnostic.trim())
+        .into())
+}
+
+fn trailing_chars(text: &str, limit: usize) -> &str {
+    if limit == 0 {
+        return &text[text.len()..];
+    }
+    text.char_indices()
+        .rev()
+        .nth(limit - 1)
+        .map_or(text, |(index, _)| &text[index..])
+}
+
+struct TemporaryPath(PathBuf);
+
+impl TemporaryPath {
+    fn new(extension: &str) -> std::io::Result<(Self, std::fs::File)> {
+        loop {
+            let sequence = REPORT_TEMP_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+            let path = std::env::temp_dir().join(format!(
+                "formal-ai-report-{}-{}-{sequence}.{extension}",
+                std::process::id(),
+                unique_suffix(),
+            ));
+            let mut options = std::fs::OpenOptions::new();
+            options.write(true).create_new(true);
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::OpenOptionsExt;
+                options.mode(0o600);
+            }
+            match options.open(&path) {
+                Ok(file) => return Ok((Self(path), file)),
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+                Err(error) => return Err(error),
+            }
+        }
+    }
+
+    fn path(&self) -> &Path {
+        &self.0
+    }
+}
+
+impl Drop for TemporaryPath {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_file(&self.0);
+    }
+}
+
+fn unique_suffix() -> u128 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |duration| duration.as_nanos())
 }
 
 fn export_context(

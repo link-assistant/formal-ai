@@ -139,6 +139,21 @@ meanings
     lexeme en
       surface
         text "agentic action generic"
+  agentic_action_list_current
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list current"
+  agentic_action_list_desktop
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list desktop"
+  agentic_action_list_home
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list home"
   agentic_action_read
     defined-by intent
     lexeme en
@@ -385,7 +400,7 @@ meanings
       surface
         text "bundle root header"
   called
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "called"
@@ -519,6 +534,16 @@ meanings
     lexeme en
       surface
         text "comments"
+  comparison_decomposed_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed evidence"
+  comparison_decomposed_no_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed no evidence"
   concept_lookup
     defined-by intent
     lexeme en
@@ -579,6 +604,11 @@ meanings
     lexeme en
       surface
         text "context bsd operating systems"
+  context_command_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context command failed"
   context_delimiter
     defined-by kind
     lexeme en
@@ -759,6 +789,11 @@ meanings
     lexeme en
       surface
         text "default language"
+  definition_followup_clarify
+    defined-by intent
+    lexeme en
+      surface
+        text "definition followup clarify"
   delete
     defined-by phrase
     lexeme en
@@ -794,8 +829,13 @@ meanings
     lexeme en
       surface
         text "did"
+  directories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "directories"
   directory
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "directory"
@@ -969,6 +1009,11 @@ meanings
     lexeme en
       surface
         text "file handle"
+  files
+    defined-by word_surface
+    lexeme en
+      surface
+        text "files"
   filesystem
     defined-by word_surface
     lexeme en
@@ -985,10 +1030,15 @@ meanings
       surface
         text "fizzbuzz"
   folder
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "folder"
+  folders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folders"
   fontawesome
     defined-by concept
     lexeme en
@@ -1294,6 +1344,21 @@ meanings
     lexeme en
       surface
         text "issue report body intro"
+  issue_report_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context heading"
+  issue_report_context_link_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link heading"
+  issue_report_context_link_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link intro"
   issue_report_conversation_heading
     defined-by field
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "issue report ran command"
-  issue_report_title_prefix
-    defined-by field
-    lexeme en
-      surface
-        text "issue report title prefix"
-  issue_report_tool_missing
-    defined-by field
-    lexeme en
-      surface
-        text "issue report tool missing"
-  issue_report_transcript_trimmed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report transcript trimmed"
-  issue_template_labels
-    defined-by field
-    lexeme en
-      surface
-        text "issue template labels"
-  javascript
-    defined-by programming_language
-    lexeme en
-      surface
-        text "javascript"
-  join
-    defined-by concept
-    lexeme en
-      surface
-        text "join"
-  join_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "join lines"
-  kebab
-    defined-by concept
-    lexeme en
-      surface
-        text "kebab"
-  kebab-case
-    defined-by phrase
-    lexeme en
-      surface
-        text "kebab case"
-  kebab_case
-    defined-by operation
-    lexeme en
-      surface
-        text "kebab case"
-  kill
-    defined-by token
-    lexeme en
-      surface
-        text "kill"
-  knowledge-representation
-    defined-by category
-    lexeme en
-      surface
-        text "knowledge representation"
-  kubaturit
-    defined-by term
-    lexeme en
-      surface
-        text "kubaturit"

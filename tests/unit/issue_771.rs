@@ -278,8 +278,8 @@ mod multilingual_extraction {
     }
 }
 
-// Requirement 2 after #822: the issue command uploads the canonical complete
-// Links Notation context instead of rebuilding a lossy Markdown transcript.
+// Requirement 2 after #822: one atomic CLI command owns complete context
+// export and issue creation instead of interpolating a transcript into shell.
 mod report_format {
     use super::*;
 
@@ -299,20 +299,18 @@ mod report_format {
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
         assert!(!command.contains("# Обзор"), "{command}");
-        assert!(command.contains("formal-ai context export"), "{command}");
+        assert!(command.starts_with("formal-ai context report"), "{command}");
         assert!(!command.contains("curl"), "{command}");
-        assert!(command.contains("--body-file"), "{command}");
+        assert!(!command.contains(';'), "{command}");
+        assert_eq!(command.lines().count(), 1, "{command}");
     }
 
     #[test]
     fn complete_context_is_requested_in_links_notation() {
         let command = command_for("first question", "an answer");
         assert!(command.contains("--source both"), "{command}");
-        assert!(
-            command.contains("formal-ai-report.XXXXXX.lino"),
-            "{command}"
-        );
-        assert!(command.contains("```lino"), "{command}");
+        assert!(command.contains("--repository link-assistant/formal-ai"));
+        assert!(command.contains("--title 'Formal AI: first question'"));
     }
 
     #[test]
@@ -323,7 +321,7 @@ mod report_format {
     }
 
     #[test]
-    fn oversized_context_links_the_full_file_and_keeps_a_bounded_latest_preview() {
+    fn oversized_context_is_delegated_without_embedding_any_context_bytes() {
         let mut messages = Vec::new();
         for _ in 0..12 {
             messages.push(ChatMessage::user(scraped_page()));
@@ -331,28 +329,19 @@ mod report_format {
         }
         messages.push(ChatMessage::user("report"));
         let command = report_command(&messages);
-        assert!(command.contains("wc -c"), "{command}");
-        assert!(command.contains("gh gist create"), "{command}");
-        assert!(command.contains("tail -c 12000"), "{command}");
-        assert!(command.contains("sed '1d'"), "{command}");
-        assert!(!command.contains("head -c 12000"), "{command}");
-        assert!(
-            command.contains("complete Links Notation context"),
-            "{command}"
-        );
+        assert!(command.starts_with("formal-ai context report"), "{command}");
+        assert!(command.chars().count() < 512, "{command}");
+        assert_eq!(command.matches("Главное меню").count(), 1, "{command}");
+        assert!(!command.contains("gh gist create"), "{command}");
     }
 
     #[test]
-    fn the_intro_and_complete_context_heading_frame_the_upload() {
+    fn report_body_copy_remains_seed_configuration_for_the_cli() {
         let command = command_for("a question", "an answer");
-        assert!(
-            command.contains("Reported from an agentic session"),
-            "{command}"
-        );
-        assert!(
-            command.contains("### Complete agentic context"),
-            "{command}"
-        );
+        let config = include_str!("../../data/seed/agent-info.lino");
+        assert!(command.starts_with("formal-ai context report"), "{command}");
+        assert!(config.contains("Reported from an agentic session"));
+        assert!(config.contains("### Complete agentic context"));
     }
 }
 
@@ -381,7 +370,7 @@ mod reported_session {
         let command = report_command(&messages);
         assert!(!command.contains("Главное меню"), "{command}");
         assert!(command.contains("--source both"), "{command}");
-        assert!(command.contains("gh issue create"), "{command}");
-        assert!(command.contains("--body-file"), "{command}");
+        assert!(command.starts_with("formal-ai context report"), "{command}");
+        assert!(!command.contains(';'), "{command}");
     }
 }

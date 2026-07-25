@@ -2,7 +2,7 @@
 
 use serde_json::Value;
 
-use super::shell_command::local_path_search_command_for_task;
+use super::local_search;
 use crate::protocol::ChatMessage;
 use crate::seed::{
     ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FIRST_REFERENCE,
@@ -37,7 +37,7 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
         return fill("tool_result_failed", language, label, "", "", &error);
     }
     if result.payload.trim().is_empty() {
-        let intent = if local_path_search_command_for_task(prompt).is_some() {
+        let intent = if local_search::request_for(prompt).is_some() {
             "tool_result_empty_local_path_search"
         } else if is_listing(label) {
             "tool_result_empty_list"

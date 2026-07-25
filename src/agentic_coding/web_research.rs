@@ -15,6 +15,7 @@ use crate::seed::{self, Slot};
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
     if let Some(query) = seed_research_subject(&task)
+        .or_else(|| seed_prefix_subject(&task, seed::ROLE_RESEARCH_QUESTION_OPENER))
         .or_else(|| crate::solver_handlers::detect_web_search_query(&task))
     {
         return if is_context_reference(&query) {
@@ -36,14 +37,75 @@ pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String>
     (asks_question && unresolved).then(|| trim_question_punctuation(&task))
 }
 
+pub(super) fn is_definition_followup(task: &str) -> bool {
+    seed::lexicon().mentions_role(
+        seed::ROLE_DEFINITION_ANTECEDENT_FOLLOWUP,
+        &crate::engine::normalize_prompt(task),
+    )
+}
+
+pub(super) fn definition_followup_topic(messages: &[ChatMessage], task: &str) -> Option<String> {
+    // A compound one-turn prompt can state the antecedent before the follow-up.
+    let normalized = crate::engine::normalize_prompt(task);
+    let mut forms = seed::lexicon().words_for_role(seed::ROLE_DEFINITION_ANTECEDENT_FOLLOWUP);
+    forms.sort_by_key(|form| std::cmp::Reverse(form.chars().count()));
+    if let Some(prefix) = forms.into_iter().find_map(|form| {
+        let form = crate::engine::normalize_prompt(&form);
+        normalized
+            .find(&form)
+            .map(|position| normalized[..position].trim())
+            .filter(|prefix| !prefix.is_empty())
+    }) {
+        let mut antecedent = prefix
+            .trim_end_matches(|character: char| {
+                character.is_whitespace()
+                    || character.is_ascii_punctuation()
+                    || matches!(character, '？' | '。')
+            })
+            .trim()
+            .to_owned();
+        let mut continuations =
+            seed::lexicon().words_for_role(seed::ROLE_CLAUSE_CONTINUATION_MARKER);
+        continuations.sort_by_key(|marker| std::cmp::Reverse(marker.chars().count()));
+        for marker in continuations {
+            let marker = crate::engine::normalize_prompt(&marker);
+            if antecedent == marker {
+                antecedent.clear();
+                break;
+            }
+            if antecedent.ends_with(&format!(" {marker}")) {
+                antecedent.truncate(antecedent.len() - marker.len() - 1);
+                break;
+            }
+        }
+        if !antecedent.is_empty() {
+            return seed_prefix_subject(&antecedent, seed::ROLE_RESEARCH_QUESTION_OPENER)
+                .or_else(|| crate::solver_handlers::detect_web_search_query(&antecedent))
+                .or(Some(antecedent));
+        }
+    }
+    topic_from_history(messages)
+}
+
+pub(super) fn definition_followup_clarification(task: &str) -> String {
+    let language = crate::language::detect(task).slug();
+    seed::response_for("definition_followup_clarify", language)
+        .or_else(|| seed::response_for("definition_followup_clarify", "en"))
+        .unwrap_or_default()
+}
+
 /// Extract the subject carried by a seed-declared research imperative. The
 /// shared web detector deliberately rejects pronouns as standalone searches;
 /// the agentic planner accepts them here because it can resolve them against
 /// conversation history before creating a tool call.
 fn seed_research_subject(task: &str) -> Option<String> {
+    seed_prefix_subject(task, seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+}
+
+fn seed_prefix_subject(task: &str, role: &str) -> Option<String> {
     let normalized = crate::engine::normalize_prompt(task);
     seed::lexicon()
-        .role_word_forms(seed::ROLE_WEB_SEARCH_IMPERATIVE_LEAD)
+        .role_word_forms(role)
         .into_iter()
         .filter(|form| form.slot() == Slot::Prefix)
         .find_map(|form| {
@@ -452,7 +514,8 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
             {
                 return None;
             }
-            let topic = crate::solver_handlers::detect_web_search_query(&text)
+            let topic = seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER)
+                .or_else(|| crate::solver_handlers::detect_web_search_query(&text))
                 .unwrap_or_else(|| trim_question_punctuation(&text));
             (!topic.trim().is_empty() && !is_context_reference(&topic)).then_some(topic)
         })
