@@ -2,9 +2,9 @@ self_ast_census
   target src/task_decomposition.rs
   language rust
   fidelity signature
-  byte_len 18247
+  byte_len 18307
   line_count 518
-  content_id source_module_73c5e4de6acddbd3
+  content_id source_module_aa5e92f1136cfd1b
   symbol_count 32
   symbols
     struct SubTask 39 56

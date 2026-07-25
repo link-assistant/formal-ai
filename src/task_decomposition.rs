@@ -184,9 +184,9 @@ impl Decomposition {
             .into_iter()
             .map(|(path, text, bounded)| {
                 if bounded {
-                    format!("{path}. {text} {marker}")
+                    format!("{}. {} {}", path.as_str(), text.as_str(), marker)
                 } else {
-                    format!("{path}. {text}")
+                    format!("{}. {}", path.as_str(), text.as_str())
                 }
             })
             .collect()
@@ -417,7 +417,7 @@ fn distribute_head_action(segments: &[String]) -> Vec<String> {
             {
                 return segment.clone();
             }
-            format!("{head} {segment}")
+            format!("{} {}", head.as_str(), segment.as_str())
         })
         .collect()
 }

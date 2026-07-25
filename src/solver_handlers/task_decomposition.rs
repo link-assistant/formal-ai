@@ -171,18 +171,17 @@ fn first_step_answer(decomposition: &Decomposition, language: &str) -> (&'static
     let first = leaves
         .first()
         .map_or_else(|| decomposition.task.clone(), |leaf| leaf.text.clone());
-    ("task_first_step", format!("{lead}\n{first}"))
+    (
+        "task_first_step",
+        format!("{}\n{}", lead.as_str(), first.as_str()),
+    )
 }
 
 fn split_answer(decomposition: &Decomposition, language: &str) -> (&'static str, String) {
     if decomposition.is_atomic() {
         return (
             "task_decomposition",
-            response(
-                language,
-                "task_decomposition_atomic",
-                "This task is already atomic.",
-            ),
+            seeded(language, "task_decomposition_atomic"),
         );
     }
     let lead = response(
@@ -204,11 +203,7 @@ fn with_sub_tasks(lead: &str, decomposition: &Decomposition, language: &str) -> 
     let mut lines = vec![lead.to_owned()];
     lines.extend(decomposition.numbered_lines(&marker));
     if decomposition.depth_bound_reached() {
-        lines.push(response(
-            language,
-            "task_decomposition_depth_bound",
-            "The marked sub-tasks can still be split further.",
-        ));
+        lines.push(seeded(language, "task_decomposition_depth_bound"));
     }
     lines.join("\n")
 }
@@ -220,6 +215,16 @@ fn response(language: &str, intent: &str, fallback: &str) -> String {
     response_for(intent, language)
         .or_else(|| response_for(intent, "en"))
         .unwrap_or_else(|| fallback.to_owned())
+}
+
+/// Full-sentence replies live only in the seed (R379 forbids user-facing prose
+/// in `src/`). The English seed row for every decomposition intent is guaranteed
+/// present and test-pinned, so a missing translation degrades to English and
+/// never to an empty answer in practice.
+fn seeded(language: &str, intent: &str) -> String {
+    response_for(intent, language)
+        .or_else(|| response_for(intent, "en"))
+        .unwrap_or_default()
 }
 
 /// Recover the task the prompt is asking about.
