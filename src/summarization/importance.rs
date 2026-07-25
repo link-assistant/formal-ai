@@ -1,7 +1,7 @@
 //! Evidence-weighted importance for merged statements.
 //!
 //! The pre-#844 pipeline ranked statements by a static kind prior alone
-//! ([`super::weight_for_kind`]): a `purpose` sentence always outranked a
+//! (`super::weight_for_kind`): a `purpose` sentence always outranked a
 //! `feature` sentence, however many sources said it. Issue #844 asks the rank to
 //! also reflect *observed* evidence — how many sources assert the fact, and
 //! whether any source denies it.
@@ -27,9 +27,10 @@
 //!
 //! The probability side is delegated to [`crate::relative_meta_logic`] rather
 //! than reinvented: each asserting source becomes a [`Stance::Supports`]
-//! evidence record at its own [`SourceTier`], each denying source a
-//! [`Stance::Contradicts`] one, and [`StatementAssessment::assess_assumed_true`]
-//! turns them into a posterior. That is how every statement in the merged
+//! evidence record at its own [`crate::relative_meta_logic::SourceTier`], each
+//! denying source a [`Stance::Contradicts`] one, and
+//! [`StatementAssessment::assess_assumed_true`] turns them into a posterior.
+//! That is how every statement in the merged
 //! context "carries a probability", and why an unoriginal mirror moves nothing.
 
 use super::dedup::{DedupReport, MergedStatement};

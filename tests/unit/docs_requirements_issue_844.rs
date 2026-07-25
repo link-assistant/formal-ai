@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 const CASE_STUDY: &str = "docs/case-studies/issue-844/README.md";
 const REQUIREMENTS: &str = "docs/case-studies/issue-844/requirements.md";
@@ -67,7 +67,9 @@ fn every_issue_844_requirement_maps_to_a_regression_test_that_exists() {
         ids.push(id.to_owned());
         for name in tests.split(',').map(str::trim) {
             let name = name.trim_matches('`');
-            if name.ends_with(".rs") {
+            // The column also cites the file the tests live in; only the bare
+            // function names are checked for existence.
+            if Path::new(name).extension().is_some() {
                 continue;
             }
             named_tests.push(name.to_owned());
