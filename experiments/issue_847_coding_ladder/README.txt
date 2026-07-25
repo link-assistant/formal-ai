@@ -38,18 +38,30 @@ The working tree must be clean: tasks edit the real repository and are
 reverted with `git checkout -- .` between runs. Changes under experiments/
 are ignored by that guard so the harness can write its own results.
 
-BASELINE @ v0.303.0 (main), agent CLI 0.25.0, 2026-07-25
---------------------------------------------------------
+BASELINE @ v0.304.0 (this branch), agent CLI 0.25.0, Linux, 2026-07-25
+----------------------------------------------------------------------
 Dataset expanded to 130 tasks across 16 families (see generate_prompts.py).
+Measured with the fixed harness: L1 verified through new_branch_for.sh, the
+agent scratch home reclaimed after every task, 0 tasks NOT MEASURED.
 
-  TOTAL 38/130
-    L1 0/16   L2 0/12   L3 3/28   L4 35/74
+  TOTAL 45/130
+    L1 0/16   L2 3/12   L3 4/28   L4 38/74
 
-  read 12/12   atomic_edit 6/22   knowledge 4/8   verification 4/5
-  create 3/6   multilingual 3/11  decomposition 2/6  error_recovery 2/4
+  read 12/12   atomic_edit 6/22   knowledge 6/8   verification 4/5
+  create 3/6   multilingual 4/11  decomposition 6/6  error_recovery 2/4
   search 1/8   replace_delete 1/5
   issue_to_pr 0/16   test_authoring 0/8   targeted_edit 0/7
   deliverable 0/5    multifile 0/4       refactor 0/3
+
+decomposition 6/6 is this PR's contribution: every split, atomicity and
+first-step prompt now routes to the decomposition handler instead of the
+unknown-prompt fallback. On the pre-PR binary the same six scored 2/6.
+
+The v0.303.0 (main) baseline of this dataset read 38/130 with
+decomposition 2/6 and L1 0/16. The three deltas -- decomposition 2->6,
+knowledge 4->6, multilingual 3->4 -- are the decomposition surfaces this PR
+adds; L1 held at 0/16 under the corrected verify (an intermediate Linux run
+mismeasured it as 7/16 before new_branch_for.sh landed; see defect six below).
 
 An earlier 13-task sample reported 2/13 and concluded "no level where
 Formal AI can write code". That was too small a sample and partly wrong.
