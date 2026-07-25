@@ -391,6 +391,7 @@ pub struct FusedEntry {
 
 /// Search-provider response plus the capture proving where its rankings came
 /// from.
+#[cfg(not(target_arch = "wasm32"))]
 #[derive(Debug, Clone, PartialEq)]
 pub struct SearchExecution {
     pub captures: Vec<crate::source_fetch::SourceCapture>,
@@ -400,6 +401,7 @@ pub struct SearchExecution {
 
 /// Execute `DuckDuckGo`'s public Instant Answer provider through the common
 /// cached fetch boundary and feed its returned URLs into RRF.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
     client: &crate::source_fetch::CachedSourceClient<T>,
     query: &str,
@@ -444,6 +446,7 @@ pub fn execute_duckduckgo_search<T: crate::source_fetch::SourceTransport>(
     })
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn collect_duckduckgo_topics(value: &serde_json::Value, rows: &mut Vec<(String, String)>) {
     let Some(items) = value.as_array() else {
         return;
@@ -459,8 +462,9 @@ fn collect_duckduckgo_topics(value: &serde_json::Value, rows: &mut Vec<(String, 
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn percent_encode_query(query: &str) -> String {
-    use std::fmt::Write;
+    use core::fmt::Write;
 
     let mut encoded = String::new();
     for byte in query.bytes() {
