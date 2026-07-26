@@ -531,3 +531,36 @@ fn reference_differential_is_machine_checked_and_wired_into_release_ci() {
         "the differential comparison must execute in release CI"
     );
 }
+
+#[test]
+fn issue_840_agent_cli_e2e_covers_every_seed_journey_including_russian_reporting() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let issue_harness =
+        std::fs::read_to_string(root.join("experiments/agent_cli_e2e/run_issue_840.sh")).unwrap();
+    let local_harness =
+        std::fs::read_to_string(root.join("experiments/agent_cli_e2e/run_issue_819.sh")).unwrap();
+    let all_issue_harnesses = format!("{issue_harness}\n{local_harness}");
+    for prompt in [
+        "Find hive-mind-control center folder on my desktop",
+        "Что такое фуфломицин? Затем: так что это такое то?",
+        "ФБС vs ФБО",
+        "Зарепорти баг",
+    ] {
+        assert!(
+            all_issue_harnesses.contains(prompt),
+            "the real Agent CLI harness omits {prompt}"
+        );
+    }
+    assert!(
+        issue_harness.contains("issue_714_agentic_mode/run_report_e2e.sh"),
+        "the Russian report request must reach the real report executor"
+    );
+
+    let report_harness =
+        std::fs::read_to_string(root.join("experiments/issue_714_agentic_mode/run_report_e2e.sh"))
+            .unwrap();
+    assert!(
+        report_harness.contains(r#"REPORT_PROMPT="${REPORT_PROMPT:-Report issue}""#),
+        "the reusable report harness must accept the issue #840 Russian prompt"
+    );
+}

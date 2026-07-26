@@ -165,3 +165,14 @@ run_agent_case \
   "comparison" "$((PORT + 31))" \
   "ФБС vs ФБО" \
   "ФБО evidence" 2 0
+
+report_artifacts=""
+if [ -n "$ARTIFACT_DIR" ]; then
+  report_artifacts="$ARTIFACT_DIR/report"
+fi
+BIN="$BIN" \
+AGENT="$AGENT" \
+PORT="$((PORT + 32))" \
+REPORT_PROMPT="Зарепорти баг" \
+ARTIFACT_DIR="$report_artifacts" \
+  "$ROOT/experiments/issue_714_agentic_mode/run_report_e2e.sh"

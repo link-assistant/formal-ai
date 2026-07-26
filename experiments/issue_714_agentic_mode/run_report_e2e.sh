@@ -8,6 +8,8 @@ BIN="${BIN:-$ROOT/target/release/formal-ai}"
 BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8780}"
+REPORT_PROMPT="${REPORT_PROMPT:-Report issue}"
+ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 WORKDIR="$(mktemp -d)"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
@@ -49,7 +51,7 @@ run_turn() {
       "$@" >> "$AGENT_LOG" 2>&1
 }
 
-run_turn "Report issue"
+run_turn "$REPORT_PROMPT"
 test ! -f "$CAPTURE"
 run_turn "GitHub issue" --continue --no-fork
 test ! -f "$CAPTURE"
@@ -70,7 +72,19 @@ test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"
 grep -Fq 'tool "bash"' "$MEMORY"
-grep -Fq 'formal-ai context report' "$MEMORY"
+grep -Fq 'formal-ai report body' "$MEMORY"
 grep -Fq 'issues/999' "$MEMORY"
+
+if [ -n "$ARTIFACT_DIR" ]; then
+  mkdir -p "$ARTIFACT_DIR"
+  cp "$AGENT_LOG" "$ARTIFACT_DIR/agent-cli.log"
+  cp "$LOG" "$ARTIFACT_DIR/formal-ai.log"
+  cp "$CAPTURE" "$ARTIFACT_DIR/gh-invocation.txt"
+  cp "$MEMORY" "$ARTIFACT_DIR/memory.lino"
+  if [ -d "$WORKDIR/dialog-logs" ]; then
+    mkdir -p "$ARTIFACT_DIR/dialogs"
+    cp -R "$WORKDIR/dialog-logs/." "$ARTIFACT_DIR/dialogs/"
+  fi
+fi
 
 echo "Agent CLI invoked gh and retained its result as learning evidence in $posts chat rounds."
