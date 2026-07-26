@@ -7,6 +7,7 @@ AGENT="${AGENT:-agent}"
 PORT="${PORT:-8874}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-874/agent-cli-evidence/explicit-containing}"
 TASK='Create file associative-stack-summary.md containing Formal AI stores inspectable knowledge as a links network with Links Notation as its portable text representation.'
+EXPECTED='Formal AI stores inspectable knowledge as a links network with Links Notation as its portable text representation.'
 
 command -v "$AGENT" >/dev/null
 [[ -x "$BIN" ]] || {
@@ -75,6 +76,11 @@ fi
 result="$work/associative-stack-summary.md"
 if [[ ! -f "$result" ]]; then
   echo "Agent CLI did not create associative-stack-summary.md" >&2
+  exit 1
+fi
+if ! printf '%s' "$EXPECTED" | cmp -s - "$result"; then
+  echo "Agent CLI created unexpected documentation bytes:" >&2
+  diff -u <(printf '%s' "$EXPECTED") "$result" >&2 || true
   exit 1
 fi
 
