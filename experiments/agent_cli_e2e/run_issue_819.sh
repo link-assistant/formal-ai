@@ -203,7 +203,7 @@ run_client() {
 
   preserve_raw_artifacts "$client" "$client_dir"
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "$client" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
+    "$dialog_dir" "$client" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" "$PROMPT" \
     || fail "$client dialog structure was incomplete" "$client_log" "$server_log"
   grep -Fq "$EXPECTED_RESULT" "$client_log" \
     || fail "$client did not display the expected result" "$client_log" "$server_log"
@@ -268,7 +268,8 @@ run_client_tui() {
     || fail "$client TUI transcript failed" "$client_log" "$server_log"
 
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "$client-tui-$wording" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
+    "$dialog_dir" "$client-tui-$wording" "$sequence" "$EXPECTED_RESULT" \
+    "$EMPTY_ARG" "$tui_prompt" \
     || fail "$client TUI dialog structure was incomplete" "$client_log" "$server_log"
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR/$artifact_key"

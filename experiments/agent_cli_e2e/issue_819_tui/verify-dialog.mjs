@@ -1,7 +1,14 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const [dialogDirectory, client, outputPath, expectedResult, emptyFlag] =
+const [
+  dialogDirectory,
+  client,
+  outputPath,
+  expectedResult,
+  emptyFlag,
+  requestedPrompt,
+] =
   process.argv.slice(2);
 if (!dialogDirectory || !client || !outputPath || !expectedResult) {
   throw new Error(
@@ -18,7 +25,8 @@ for (const name of await readdir(dialogDirectory)) {
 }
 records.sort((left, right) => left.timestamp_unix_ms - right.timestamp_unix_ms);
 
-const prompt = 'Find hive-mind-control center folder on my desktop';
+const prompt =
+  requestedPrompt ?? 'Find hive-mind-control center folder on my desktop';
 const exchanges = records.filter((record) => record.request_body?.includes(prompt));
 if (exchanges.length < 2) {
   throw new Error(`${client}: expected a complete two-turn dialog, got ${exchanges.length}`);

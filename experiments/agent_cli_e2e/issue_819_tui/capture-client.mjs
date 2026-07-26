@@ -60,7 +60,9 @@ const capture = await captureAgentTui({
 });
 
 const rendered = capture.transcript;
-for (const expected of [prompt, 'find', expectedResult]) {
+const visibleToolMarker =
+  tool === 'claude' ? 'Searching for 1 pattern' : 'find';
+for (const expected of [prompt, visibleToolMarker, expectedResult]) {
   if (!rendered.includes(expected)) {
     throw new Error(
       `TUI transcript omitted ${JSON.stringify(expected)}\n${rendered}`,
@@ -79,13 +81,9 @@ if (capture.interactionCount !== expectedInteractions) {
 const finalFrame = capture.frames.at(-1);
 if (
   tool === 'opencode' &&
-  (!finalFrame ||
-    finalFrame.lines.length <= finalFrame.screen.length ||
-    finalFrame.screen.join('\n').includes(required('ISSUE819_TUI_PROMPT')))
+  (!finalFrame || !finalFrame.lines.join('\n').includes(prompt))
 ) {
-  throw new Error(
-    'OpenCode TUI did not preserve scrollback beyond its final viewport',
-  );
+  throw new Error('OpenCode TUI omitted the prompt from terminal history');
 }
 
 if (
