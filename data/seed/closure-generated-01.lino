@@ -469,6 +469,31 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  client_contract_missing_evidence_error
+    defined-by intent
+    lexeme en
+      surface
+        text "client contract missing evidence error"
+  client_contract_parse_observation_error
+    defined-by intent
+    lexeme en
+      surface
+        text "client contract parse observation error"
+  client_contract_parse_transcript_error
+    defined-by intent
+    lexeme en
+      surface
+        text "client contract parse transcript error"
+  client_contract_read_observations_error
+    defined-by intent
+    lexeme en
+      surface
+        text "client contract read observations error"
+  client_contract_read_transcript_error
+    defined-by intent
+    lexeme en
+      surface
+        text "client contract read transcript error"
   client_server_did_not_listen
     defined-by field
     lexeme en
@@ -1024,6 +1049,11 @@ meanings
     lexeme en
       surface
         text "file handle"
+  file_write_command_output_reference
+    defined-by concept
+    lexeme en
+      surface
+        text "file write command output reference"
   files
     defined-by word_surface
     lexeme en
@@ -1089,6 +1119,21 @@ meanings
     lexeme en
       surface
         text "function catalog"
+  general_plan_command_capture_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command capture action"
+  general_plan_command_output_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command output evidence"
+  general_plan_command_verification_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan command verification evidence"
   genuine
     defined-by word_surface
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "issue"
-  issue_364_unknown_trace_learning
-    defined-by concept
-    lexeme en
-      surface
-        text "issue 364 unknown trace learning"
-  issue_report_body_footer
-    defined-by field
-    lexeme en
-      surface
-        text "issue report body footer"
-  issue_report_body_intro
-    defined-by field
-    lexeme en
-      surface
-        text "issue report body intro"
-  issue_report_bytes_label
-    defined-by field
-    lexeme en
-      surface
-        text "issue report bytes label"
-  issue_report_command_missing
-    defined-by field
-    lexeme en
-      surface
-        text "issue report command missing"
-  issue_report_context_excerpt_note
-    defined-by field
-    lexeme en
-      surface
-        text "issue report context excerpt note"
-  issue_report_context_gist_note
-    defined-by field
-    lexeme en
-      surface
-        text "issue report context gist note"
-  issue_report_context_heading
-    defined-by field
-    lexeme en
-      surface
-        text "issue report context heading"
-  issue_report_context_link_heading
-    defined-by field
-    lexeme en
-      surface
-        text "issue report context link heading"

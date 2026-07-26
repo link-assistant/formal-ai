@@ -11,6 +11,7 @@ pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
 pub mod change_request;
+pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
@@ -139,6 +140,10 @@ pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
+pub use client_contract_learning::{
+    learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
+    ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
+};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,

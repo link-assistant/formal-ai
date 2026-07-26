@@ -374,17 +374,28 @@ fn plan_general_change_step(
         if writes == 0 {
             return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
         }
-        if writes == 1 {
+        if writes == 1 && plan.steps.get(1).is_some_and(|step| step.command.is_none()) {
             return plan_one(tool, write_arguments(&plan.target, &plan.content));
         }
     }
-    if let Some(tool) =
-        tool_for(tool_names, Capability::Run).filter(|_| !progress.done(Capability::Run))
-    {
-        return plan_one(
-            tool,
-            json!({ "command": plan.verification_command }).to_string(),
-        );
+    if let Some(tool) = tool_for(tool_names, Capability::Run) {
+        let runs = progress.count(Capability::Run);
+        if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref()) {
+            if runs == 0 {
+                return plan_one(tool, json!({ "command": generation }).to_string());
+            }
+            if runs == 1 {
+                return plan_one(
+                    tool,
+                    json!({ "command": plan.verification_command }).to_string(),
+                );
+            }
+        } else if runs == 0 {
+            return plan_one(
+                tool,
+                json!({ "command": plan.verification_command }).to_string(),
+            );
+        }
     }
     AgenticPlan::Final(format!(
         "Completed the general change request for {} and verified it with `{}`.\n\nPlan event ({}):\n\n{}",
@@ -872,11 +883,7 @@ pub(super) fn classify_tool(name: &str) -> Option<Capability> {
 
 /// The text of the most recent `user` turn.
 fn latest_user_text(messages: &[ChatMessage]) -> Option<String> {
-    messages
-        .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
+    crate::protocol::latest_user_request(messages)
 }
 
 /// Keywords that mark a user turn as the canonical issue-#468 formalization task.

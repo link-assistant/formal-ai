@@ -2,13 +2,22 @@ self_ast_census
   target src/protocol/content.rs
   language rust
   fidelity signature
-  byte_len 1432
-  line_count 43
-  content_id source_module_0e0e77bd15b551ea
-  symbol_count 5
+  byte_len 7185
+  line_count 181
+  content_id source_module_c8f01edf04d1857c
+  symbol_count 14
   symbols
-    function plain_text 5 14
-    function user_request_text 22 24
-    function strip_system_reminders 27 43
-    const OPEN 28 28
-    const CLOSE 29 29
+    function latest_user_request 10 21
+    function client_working_directory 39 46
+    function declared_directory 48 75
+    const WORKSPACE_LIST 49 49
+    function is_usable_directory 80 83
+    function system_prompt_text 87 94
+    function plain_text 98 107
+    function user_request_text 115 117
+    function user_request_text_without_system_echo 132 134
+    function strip_system_echo 145 163
+    const MIN_ECHO 146 146
+    function strip_system_reminders 165 181
+    const OPEN 166 166
+    const CLOSE 167 167
