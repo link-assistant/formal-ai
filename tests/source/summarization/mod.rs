@@ -313,7 +313,7 @@ pub fn formalize(text: &str) -> Vec<Statement> {
                 .chars()
                 .next_back()
                 .is_some_and(|previous| previous.is_ascii_digit())
-            && characters.peek().is_some_and(|next| next.is_ascii_digit());
+            && characters.peek().is_some_and(char::is_ascii_digit);
         buffer.push(ch);
         if !decimal_point && matches!(ch, '.' | '!' | '?' | '。' | '…' | '\n') {
             push_sentence(&mut buffer, &mut out);
