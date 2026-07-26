@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.305.0] - 2026-07-26
+
+### Added
+
+- Add a meanings-driven grounded-action recipe with stateful local discovery, definition follow-up, comparison, and report journeys.
+
 ## [0.304.1] - 2026-07-25
 
 ### Fixed
