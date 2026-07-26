@@ -1,0 +1,5 @@
+?? .formal-ai/
+?? associative-stack-summary.md
+?? dialog-logs/
+?? memory.lino
+?? memory.lino.lock
