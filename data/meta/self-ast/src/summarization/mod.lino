@@ -2,10 +2,10 @@ self_ast_census
   target src/summarization/mod.rs
   language rust
   fidelity signature
-  byte_len 22767
-  line_count 587
-  content_id source_module_d7e68c1e21027b25
-  symbol_count 34
+  byte_len 23845
+  line_count 616
+  content_id source_module_4beb55fffbd47c28
+  symbol_count 35
   symbols
     const DEFAULT_MAX_STATEMENTS 57 57
     enum StatementKind 63 83
@@ -25,19 +25,20 @@ self_ast_census
     function with_language 265 268
     function with_max_statements 272 275
     function effective_max_statements 281 300
-    function formalize 312 330
-    function push_sentence 332 346
-    function classify_sentence 359 379
-    function weight_for_kind 381 393
-    function summarize 401 439
-    function deformalize 445 461
-    function ends_with_terminal_punct 463 467
-    function to_topic 475 485
-    function clamp_words 487 494
-    function apply_compound_words 499 520
-    function apply_semantic_primes 529 555
-    function describe_project 563 571
-    module dialog 573 573
-    module file 574 574
-    module markdown 575 575
-    module resource 576 576
+    function formalize 312 327
+    function period_belongs_to_token 335 359
+    function push_sentence 361 375
+    function classify_sentence 388 408
+    function weight_for_kind 410 422
+    function summarize 430 468
+    function deformalize 474 490
+    function ends_with_terminal_punct 492 496
+    function to_topic 504 514
+    function clamp_words 516 523
+    function apply_compound_words 528 549
+    function apply_semantic_primes 558 584
+    function describe_project 592 600
+    module dialog 602 602
+    module file 603 603
+    module markdown 604 604
+    module resource 605 605
