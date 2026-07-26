@@ -1,0 +1,27 @@
+{
+  "client": "opencode-tui",
+  "exchange_count": 3,
+  "sequence": [
+    {
+      "role": "user",
+      "content": "Find hive-mind-control center folder on my desktop"
+    },
+    {
+      "role": "assistant",
+      "tool_call": {
+        "name": "bash",
+        "arguments": {
+          "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit"
+        }
+      }
+    },
+    {
+      "role": "tool",
+      "content": ""
+    },
+    {
+      "role": "assistant",
+      "content": "No matching file or folder was found in the requested location."
+    }
+  ]
+}

@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 36871
-  line_count 991
-  content_id source_module_f26af21c519bde8d
+  byte_len 37148
+  line_count 997
+  content_id source_module_7f98b95dbe4240ec
   symbol_count 48
   symbols
     module content 26 26
@@ -33,25 +33,25 @@ self_ast_census
     function tool_call_kind 305 307
     function function 313 326
     struct FunctionCall 331 334
-    struct ChatCompletion 337 344
-    struct ChatChoice 347 351
-    struct TokenUsage 354 358
-    struct ResponsesRequest 361 378
-    function to_chat_completion_request 390 410
-    function responses_input_tokens 413 415
-    function append_response_input 421 440
-    function append_response_item 444 510
-    function create_chat_completion 513 515
-    function create_chat_completion_with_solver 518 523
-    function create_chat_completion_with_solver_and_memory 526 560
-    function command_reroute_plan 562 573
-    enum AgenticOutcome 579 588
-    function agentic_outcome 594 650
-    function chat_completion_from_plan 656 726
-    function chat_completion_from_symbolic 728 759
-    function create_response 762 766
-    function create_response_with_solver 769 774
-    function create_response_with_solver_and_memory 777 811
-    function response_from_plan 817 932
-    function response_from_symbolic 934 973
-    function response_reasoning_item 975 991
+    struct ChatCompletion 337 346
+    struct ChatChoice 349 353
+    struct TokenUsage 356 360
+    struct ResponsesRequest 363 380
+    function to_chat_completion_request 392 412
+    function responses_input_tokens 415 417
+    function append_response_input 423 442
+    function append_response_item 446 512
+    function create_chat_completion 515 517
+    function create_chat_completion_with_solver 520 525
+    function create_chat_completion_with_solver_and_memory 528 562
+    function command_reroute_plan 564 575
+    enum AgenticOutcome 581 590
+    function agentic_outcome 596 652
+    function chat_completion_from_plan 658 729
+    function chat_completion_from_symbolic 731 765
+    function create_response 768 772
+    function create_response_with_solver 775 780
+    function create_response_with_solver_and_memory 783 817
+    function response_from_plan 823 938
+    function response_from_symbolic 940 979
+    function response_reasoning_item 981 997

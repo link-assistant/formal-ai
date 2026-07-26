@@ -7,6 +7,117 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.305.1] - 2026-07-26
+
+### Fixed
+
+- Route multilingual process-list requests through explicit Agent permissions,
+  use `tasklist` on Windows, and learn successful trusted research for otherwise
+  unknown browser requests.
+
+## [0.305.0] - 2026-07-26
+
+### Added
+
+- Add a meanings-driven grounded-action recipe with stateful local discovery, definition follow-up, comparison, and report journeys.
+
+## [0.304.1] - 2026-07-25
+
+### Fixed
+
+- Honor excluded CI paths on direct pushes instead of unconditionally running
+  tests, coverage, and end-to-end jobs.
+
+## [0.304.0] - 2026-07-25
+
+### Added
+- `formal-ai report body` renders the complete issue-report document — the same
+  six sections the web reporter emits — from an exported conversation, with the
+  full Links Notation context attached inline or as a gist (#839). One shared
+  builder (`src/issue_report.rs`, mirrored for the browser by
+  `src/web/app/issue-report.js` and kept honest by a parity test) now formats
+  reports for the web, CLI, desktop, Telegram, and VS Code surfaces.
+- `formal-ai context session` prints the harness session identifier the current
+  shell is inside, so a report can export the session the user is actually in.
+- New guide [`docs/report-issue.md`](docs/report-issue.md) documenting the
+  report document, the CLI flags, the source semantics, and the gist-visibility
+  choice.
+
+### Fixed
+- `report issue` now exports the real harness session instead of a hash of the
+  conversation's first message. The HTTP server records the
+  `x-formal-ai-dialog-id` header of every request, so the exported session is the
+  caller's own and two conversations that open with the same sentence no longer
+  collide (#839, #838).
+- A named `--source` that cannot be exported now fails loudly instead of
+  silently degrading to a different capture. Issue #838 was filed with 271 KB of
+  base64 HTTP proxy traffic in place of the conversation while the run reported
+  success; the server's conversation record is now a separate artifact from the
+  proxy trace.
+- Oversize contexts are trimmed by whole Links Notation records with an explicit
+  `... omitted N records ...` marker instead of `tail -c 12000`, which cut
+  mid-record by construction. The complete context is attached as a gist
+  (`secret` by default, an explicit documented choice).
+- The generated report script verifies every program it calls with `command -v`
+  before it runs, and its scratch template expands to a real filename — #838's
+  gist was named `formal-ai-report.XXXXXX.lino`.
+- Report titles quote what the conversation was about rather than defaulting to
+  `Formal AI agentic session report`: the trailing report request is dropped,
+  and the first and last remaining user turns are quoted when they fit.
+
+## [0.303.0] - 2026-07-24
+
+### Added
+
+- Added a conservative legal/compliance policy, explicit contribution-rights
+  rules, and a fail-closed training/distillation source registry with
+  per-source provenance, privacy, terms, attribution, naming, and approval
+  requirements.
+- Added exact-version guidance for Llama 3.3 and Mistral 7B, OpenRouter/provider
+  term checks, personal-data and prohibited-use controls, an EU AI Act
+  assessment, disclaimer limits, and an issue #834 evidence-backed case study.
+
+## [0.302.3] - 2026-07-24
+
+### Fixed
+
+- Export agentic report context locally, report GitHub command failures
+  truthfully, and reject stale Formal AI servers before launching a client.
+
+## [0.302.2] - 2026-07-23
+
+### Fixed
+- Agentic step narration now explains each action in natural language instead of
+  echoing the shell command that OpenCode already prints, and drops the robotic
+  "so I can verify the next step before continuing" tail (#819). Local-path finds,
+  web searches, and report prompts are worded distinctly across all supported
+  languages (en, ru, hi, zh), with the empty-result case explained in beginner
+  terms.
+
+## [0.302.1] - 2026-07-23
+
+### Fixed
+
+- Explain empty local file and folder searches in beginner-friendly language,
+  including client placeholders such as `(no output)`.
+- Let report confirmations select and execute multiple destinations in one
+  interaction.
+- Keep temporary Formal AI server diagnostics out of wrapped fullscreen TUIs
+  while retaining them in a durable session log.
+
+## [0.302.0] - 2026-07-22
+
+### Added
+- Add confirmation-gated full-context agentic reports, a conversation-context API and CLI, deterministic JSON/OpenCode-to-Links-Notation adapters, and verbose-by-default diagnostics with an explicit `--silent` opt-out.
+
+## [0.301.1] - 2026-07-22
+
+### Fixed
+
+- Route local Desktop, home, and workspace path discovery through a bounded
+  client-side `find` command instead of web search, including multilingual
+  action/scope/kind phrases and fuzzy remembered names.
+
 ## [0.301.0] - 2026-07-20
 
 ### Added

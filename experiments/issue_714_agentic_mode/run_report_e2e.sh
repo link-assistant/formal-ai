@@ -5,8 +5,11 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 BIN="${BIN:-$ROOT/target/release/formal-ai}"
+BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8780}"
+REPORT_PROMPT="${REPORT_PROMPT:-Report issue}"
+ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 WORKDIR="$(mktemp -d)"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
@@ -33,41 +36,55 @@ cd "$WORKDIR"
 CONFIG="{\"provider\":{\"formal-ai\":{\"npm\":\"@ai-sdk/openai-compatible\",\"name\":\"Formal AI\",\"options\":{\"baseURL\":\"http://127.0.0.1:$PORT/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"}}}},\"model\":\"formal-ai/formal-ai\"}"
 printf '%s\n' "$CONFIG" > opencode.json
 
-RC=1
-for attempt in 1 2; do
-  set +e
-  FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$PATH" \
+run_turn() {
+  local prompt="$1"
+  shift
+  FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
+    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    FORMAL_AI_GH_CAPTURE="$CAPTURE" PATH="$FAKE_BIN:$BIN_DIR:$PATH" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     timeout 60 "$AGENT" run \
-      --prompt "Report issue" \
+      --prompt "$prompt" \
       --disable-stdin \
       --model "formal-ai/formal-ai" \
-      > "$AGENT_LOG" 2>&1
-  RC=$?
-  set -e
-  if [[ "$RC" -eq 0 && -f "$CAPTURE" ]]; then
-    break
-  fi
-  echo "Agent CLI report attempt $attempt failed with exit $RC; retrying."
-done
+      --no-summarize-session \
+      "$@" >> "$AGENT_LOG" 2>&1
+}
+
+run_turn "$REPORT_PROMPT"
+test ! -f "$CAPTURE"
+run_turn "GitHub issue" --continue --no-fork
+test ! -f "$CAPTURE"
+run_turn "Both logs" --continue --no-fork
 
 echo "== agent stderr/out tail =="
 tail -40 "$AGENT_LOG"
 echo "== relevant server trace =="
 awk '/formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome/' "$LOG" | tail -40
 
-test "$RC" -eq 0
 test -f "$CAPTURE"
 grep -Fxq issue "$CAPTURE"
 grep -Fxq create "$CAPTURE"
 grep -Fxq link-assistant/formal-ai "$CAPTURE"
 grep -q 'issues/999' "$AGENT_LOG"
 posts="$(grep -c 'POST /v1/chat/completions' "$LOG")"
-test "$posts" -ge 2
+test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"
 grep -Fq 'tool "bash"' "$MEMORY"
-grep -Fq 'gh issue create' "$MEMORY"
+grep -Fq 'formal-ai report body' "$MEMORY"
 grep -Fq 'issues/999' "$MEMORY"
+
+if [ -n "$ARTIFACT_DIR" ]; then
+  mkdir -p "$ARTIFACT_DIR"
+  cp "$AGENT_LOG" "$ARTIFACT_DIR/agent-cli.log"
+  cp "$LOG" "$ARTIFACT_DIR/formal-ai.log"
+  cp "$CAPTURE" "$ARTIFACT_DIR/gh-invocation.txt"
+  cp "$MEMORY" "$ARTIFACT_DIR/memory.lino"
+  if [ -d "$WORKDIR/dialog-logs" ]; then
+    mkdir -p "$ARTIFACT_DIR/dialogs"
+    cp -R "$WORKDIR/dialog-logs/." "$ARTIFACT_DIR/dialogs/"
+  fi
+fi
 
 echo "Agent CLI invoked gh and retained its result as learning evidence in $posts chat rounds."

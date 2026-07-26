@@ -2,49 +2,57 @@ self_ast_census
   target src/json_lino.rs
   language rust
   fidelity signature
-  byte_len 20900
-  line_count 614
-  content_id source_module_bc33916793565aab
-  symbol_count 41
+  byte_len 25534
+  line_count 746
+  content_id source_module_c2dd76615e0c55c5
+  symbol_count 49
   symbols
-    const ARRAY_ENTRY 34 34
-    const ENTITIES_KEY 35 35
-    function strip_empty 47 65
-    function normal_form 67 69
-    function json_to_lino 76 81
-    function json_cache_file 89 106
-    function json_cache_projection 114 116
-    function single_entity 118 125
-    function write_document 127 137
-    function write_entity_fields 142 152
-    function write_language_strings 154 165
-    function write_language_aliases 167 191
-    function language_text 193 195
-    function write_object_entries 197 201
-    function write_named_value 203 220
-    function write_array_element 222 239
-    function write_line 241 249
-    function is_scalar 251 256
-    function scalar_token 258 266
-    function scalar_array_token 268 271
-    function string_token 276 283
-    function is_scalar_literal 285 287
-    function quoted_string 289 300
-    function is_bare_reference 302 307
-    struct RawNode 316 320
-    function lino_to_json 322 346
-    function parse_raw_tree 348 384
-    function parse_raw_line 386 399
-    function navigate_mut 401 407
-    function value_of 409 423
-    function object_of 425 431
-    function entity_value 435 446
-    function reexpand_language_strings 448 458
-    function reexpand_language_aliases 460 475
-    function language_entry 477 485
-    function is_entity_id 487 492
-    function parse_token 494 515
-    function parse_scalar_array 517 527
-    function split_scalar_tokens 529 578
-    function parse_single_quoted_string 580 610
-    function is_parenthesized 612 614
+    const ARRAY_ENTRY 35 35
+    const ENTITIES_KEY 36 36
+    function strip_empty 48 66
+    function normal_form 68 70
+    function json_to_lino 77 81
+    function write_native_document 89 95
+    function write_native_object 97 107
+    function write_native_named_value 109 131
+    function write_native_sequence 133 166
+    function singular_item_name 168 178
+    function native_scalar_token 180 188
+    function native_string_token 190 206
+    function native_bare_reference 208 213
+    function json_cache_file 221 238
+    function json_cache_projection 246 248
+    function single_entity 250 257
+    function write_document 259 269
+    function write_entity_fields 274 284
+    function write_language_strings 286 297
+    function write_language_aliases 299 323
+    function language_text 325 327
+    function write_object_entries 329 333
+    function write_named_value 335 352
+    function write_array_element 354 371
+    function write_line 373 381
+    function is_scalar 383 388
+    function scalar_token 390 398
+    function scalar_array_token 400 403
+    function string_token 408 415
+    function is_scalar_literal 417 419
+    function quoted_string 421 432
+    function is_bare_reference 434 439
+    struct RawNode 448 452
+    function lino_to_json 454 478
+    function parse_raw_tree 480 516
+    function parse_raw_line 518 531
+    function navigate_mut 533 539
+    function value_of 541 555
+    function object_of 557 563
+    function entity_value 567 578
+    function reexpand_language_strings 580 590
+    function reexpand_language_aliases 592 607
+    function language_entry 609 617
+    function is_entity_id 619 624
+    function parse_token 626 647
+    function parse_scalar_array 649 659
+    function split_scalar_tokens 661 710
+    function parse_single_quoted_string 712 742
+    function is_parenthesized 744 746

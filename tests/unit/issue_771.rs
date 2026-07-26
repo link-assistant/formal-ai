@@ -21,20 +21,10 @@
 use std::fmt::Write as _;
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::issue_report::{truncate_records, ReportAttachment, ReportBody, ReportLabels};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 5] = ["websearch", "webfetch", "read", "write", "bash"];
-
-/// GitHub rejects an issue body longer than this many *characters* — not bytes,
-/// which matters here because the reported session is in Russian and every
-/// Cyrillic character costs two bytes. The composed report must stay under it no
-/// matter how large the transcribed conversation is.
-const GITHUB_BODY_LIMIT: usize = 65_536;
-
-/// The length GitHub measures a body by.
-fn body_length(body: &str) -> usize {
-    body.chars().count()
-}
 
 fn plan(messages: &[ChatMessage]) -> AgenticPlan {
     plan_chat_step(messages, &TOOLS).expect("planner should recognise the task")
@@ -94,21 +84,17 @@ fn scraped_page() -> String {
     page
 }
 
-/// The `gh issue create --body` argument the planner would run, unquoted.
-fn reported_body(messages: &[ChatMessage]) -> String {
-    let calls = tool_calls(messages);
+/// The confirmed `gh issue create` command the planner would run.
+fn report_command(messages: &[ChatMessage]) -> String {
+    let mut messages = messages.to_vec();
+    messages.push(ChatMessage::user("GitHub issue"));
+    messages.push(ChatMessage::user("Both logs"));
+    let calls = tool_calls(&messages);
     let command = arguments(&calls[0])["command"]
         .as_str()
         .expect("command string")
         .to_owned();
-    let body_flag = command
-        .find("--body '")
-        .expect("report command should carry a --body argument");
-    let quoted = &command[body_flag + "--body '".len()..];
-    let quoted = quoted
-        .strip_suffix('\'')
-        .expect("body argument should be single-quoted");
-    quoted.replace("'\\''", "'")
+    command
 }
 
 // Requirement 1: the research answer is a query-relevant extract, not a page dump.
@@ -293,115 +279,137 @@ mod multilingual_extraction {
     }
 }
 
-// Requirement 2: every transcribed turn stays inside its own attributed block.
+// Requirement 2 after #822: the issue command uploads the canonical complete
+// Links Notation context instead of rebuilding a lossy Markdown transcript.
 mod report_format {
     use super::*;
 
-    fn body_for(user: &str, assistant: &str) -> String {
+    fn command_for(user: &str, assistant: &str) -> String {
         let messages = vec![
             ChatMessage::user(user),
             ChatMessage::assistant(assistant),
             ChatMessage::user("report"),
         ];
-        reported_body(&messages)
+        report_command(&messages)
+    }
+
+    /// A phrase declared once in the seed, read the way the report reads it.
+    fn seed_value(key: &str) -> String {
+        formal_ai::seed::agent_info()
+            .remove(key)
+            .unwrap_or_else(|| panic!("seed defines {key}"))
     }
 
     #[test]
-    fn a_multiline_turn_does_not_escape_its_block() {
-        // The reported body inlined this after `- **assistant:** `, so every line
-        // but the first rendered as top-level markdown.
-        let body = body_for(
+    fn a_multiline_turn_is_not_interpolated_into_the_shell_command() {
+        let command = command_for(
             "В каких странах есть частные космические компании?",
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
-        // Everything between the conversation heading and the closing footer is
-        // transcript, and none of it may render as top-level markdown.
-        let transcript = body
-            .split_once("### ")
-            .and_then(|(_, rest)| rest.split_once('\n'))
-            .map(|(_, rest)| rest)
-            .expect("body should carry a conversation heading")
-            .rsplit_once("\n\n")
-            .map(|(transcript, _footer)| transcript)
-            .expect("body should end with the footer");
-        for line in transcript.lines() {
-            let is_contained = line.trim().is_empty()
-                || line.starts_with("**")
-                || line.starts_with('>')
-                || line.starts_with('_');
-            assert!(
-                is_contained,
-                "every transcript line must stay inside an attributed block, \
-                 but this one escaped it: {line:?}\n---\n{body}"
-            );
+        assert!(!command.contains("# Обзор"), "{command}");
+        assert!(command.contains("formal-ai report body"), "{command}");
+        assert!(!command.contains("curl"), "{command}");
+        assert!(command.contains("--body-file"), "{command}");
+    }
+
+    #[test]
+    fn complete_context_is_requested_in_links_notation() {
+        let command = command_for("first question", "an answer");
+        assert!(command.contains("--source both"), "{command}");
+        // The complete `.lino` context is written beside the body, under a real
+        // filename: #838 attached a gist literally named after the unexpanded
+        // `mktemp` template it was given (#839 §1).
+        assert!(command.contains("--context-output"), "{command}");
+        assert!(command.contains("context.lino"), "{command}");
+        for line in command.lines().filter(|line| !line.contains("mktemp")) {
+            assert!(!line.contains("XXXXXX"), "{command}");
         }
     }
 
     #[test]
-    fn each_turn_is_attributed_to_its_role() {
-        let body = body_for("first question\nsecond line", "an answer\nover two lines");
-        assert!(body.contains("**user:**"), "{body}");
-        assert!(body.contains("**assistant:**"), "{body}");
-        // Continuation lines belong to the turn that introduced them.
-        assert!(body.contains("> second line"), "{body}");
-        assert!(body.contains("> over two lines"), "{body}");
+    fn a_huge_transcript_does_not_grow_the_command() {
+        let short = command_for("why?", "brief");
+        let huge = command_for("why?", &scraped_page());
+        assert_eq!(short, huge, "conversation bytes belong in the context file");
     }
 
     #[test]
-    fn a_huge_transcript_stays_within_the_github_body_limit() {
-        let body = body_for("why is this broken?", &scraped_page());
-        assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "body must fit GitHub's {GITHUB_BODY_LIMIT} character limit, got {}",
-            body_length(&body)
-        );
-        assert!(
-            body.contains("**assistant:**"),
-            "the trimmed transcript must still attribute the turn:\n{body}"
-        );
-    }
-
-    #[test]
-    fn an_exhausted_transcript_budget_says_so_instead_of_truncating_silently() {
-        // Many large turns cannot all be transcribed. The report must stop at a
-        // stated boundary rather than trailing off mid-conversation.
+    fn oversized_context_is_bounded_on_record_boundaries_not_by_the_shell() {
         let mut messages = Vec::new();
         for _ in 0..12 {
             messages.push(ChatMessage::user(scraped_page()));
             messages.push(ChatMessage::assistant(scraped_page()));
         }
         messages.push(ChatMessage::user("report"));
-        let body = reported_body(&messages);
+        let command = report_command(&messages);
+        // Bounding the context is `formal-ai report body`'s job now. The shell
+        // used to do it with `tail -c 12000 | sed '1d'`, a byte offset that
+        // lands mid-record and destroyed the export in #838 (#839 §2.3).
+        for slice in ["wc -c", "tail -c", "head -c", "sed '1d'"] {
+            assert!(!command.contains(slice), "{slice} in: {command}");
+        }
 
+        // What replaced it: whole records from both ends of the run and an
+        // explicit count of the ones dropped in between.
+        let mut context = String::from("conversation ses_771\n  messages\n");
+        for index in 0..200 {
+            write!(
+                context,
+                "    message\n      role user\n      text \"turn {index}: {}\"\n",
+                scraped_page().lines().next().unwrap_or_default()
+            )
+            .expect("writing to a String cannot fail");
+        }
+        let label = seed_value("issue_report_omitted_records");
+        let preview = truncate_records(&context, 12_000, &label);
+        assert!(preview.text.len() <= 12_000, "{}", preview.text.len());
+        assert!(preview.omitted > 0, "the fixture must not fit");
+        assert!(preview.text.contains("omitted"), "{}", preview.text);
         assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "body must stay bounded, got {}",
-            body_length(&body)
+            preview.text.starts_with("conversation ses_771\n"),
+            "{}",
+            preview.text
         );
-        assert!(
-            body.contains("trimmed to keep this report within GitHub"),
-            "an exhausted budget must be stated, not silent:\n{body}"
-        );
-        assert!(
-            body.trim_end()
-                .ends_with("Filed automatically by Formal AI in agentic mode."),
-            "the footer must still close a trimmed report:\n{body}"
-        );
+        for line in preview.text.lines() {
+            assert!(
+                line.is_empty()
+                    || line.starts_with("conversation ")
+                    || line.starts_with("  messages")
+                    || line.starts_with("    message")
+                    || line.starts_with("      role ")
+                    || line.starts_with("      text ")
+                    || line.trim_start().starts_with("..."),
+                "record split at: {line}"
+            );
+        }
     }
 
     #[test]
-    fn the_intro_heading_and_footer_still_frame_the_transcript() {
-        let body = body_for("a question", "an answer");
+    fn the_complete_context_heading_frames_the_upload_in_the_rendered_body() {
+        // The framing moved out of the shell heredoc and into the shared body
+        // builder, so the same headings now reach web, CLI and every other
+        // surface (#839 §3).
+        let body = ReportBody {
+            labels: ReportLabels::from_seed(),
+            attachments: vec![ReportAttachment {
+                heading: seed_value("issue_report_context_heading"),
+                note: seed_value("issue_report_context_note"),
+                language: String::from("lino"),
+                content: String::from("conversation ses_771\n"),
+            }],
+            ..ReportBody::default()
+        };
+        let rendered = body.render();
         assert!(
-            body.starts_with("Reported from an agentic session"),
-            "{body}"
+            rendered.contains("### Complete agentic context"),
+            "{rendered}"
         );
-        assert!(body.contains("### Conversation"), "{body}");
         assert!(
-            body.trim_end()
-                .ends_with("Filed automatically by Formal AI in agentic mode."),
-            "{body}"
+            rendered.contains("complete Links Notation context"),
+            "{rendered}"
         );
+        assert!(rendered.contains("```lino"), "{rendered}");
+        assert!(rendered.contains("conversation ses_771"), "{rendered}");
     }
 }
 
@@ -427,21 +435,10 @@ mod reported_session {
         messages.push(ChatMessage::assistant(answer));
         messages.push(ChatMessage::user("report"));
 
-        let body = reported_body(&messages);
-        assert!(
-            body_length(&body) < GITHUB_BODY_LIMIT,
-            "reported body was {} characters",
-            body_length(&body)
-        );
-        assert!(
-            !body.contains("Главное меню"),
-            "the scraped navigation chrome must never reach the issue:\n{body}"
-        );
-        assert!(body.contains("**user:**"), "{body}");
-        assert!(body.contains("**assistant:**"), "{body}");
-        assert!(
-            body.contains("Частные космические компании работают в США"),
-            "the issue must show the answer under review:\n{body}"
-        );
+        let command = report_command(&messages);
+        assert!(!command.contains("Главное меню"), "{command}");
+        assert!(command.contains("--source both"), "{command}");
+        assert!(command.contains("gh issue create"), "{command}");
+        assert!(command.contains("--body-file"), "{command}");
     }
 }

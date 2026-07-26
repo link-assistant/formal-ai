@@ -1,10 +1,8 @@
 use std::error::Error;
 use std::fmt::Write as _;
 use std::fs;
-use std::net::TcpStream;
 use std::path::{Component, Path, PathBuf};
-use std::process::{Child, Command};
-use std::time::{Duration, Instant};
+use std::process::Command;
 
 use clap::{Args as ClapArgs, ValueEnum};
 use serde_json::Value;
@@ -18,9 +16,11 @@ use crate::seed::{
 use crate::DEFAULT_MODEL;
 
 mod command;
+mod server;
 mod session_files;
 mod url;
 use command::resolve_integration_command;
+use server::maybe_start_server;
 use session_files::{
     newest_changed_session_file, print_session_files, session_file_snapshot, user_home_dir,
     TempConfigDir,
@@ -136,17 +136,6 @@ struct RenderContext {
     model_catalog_path: String,
 }
 
-struct ServerGuard {
-    child: Child,
-}
-
-impl Drop for ServerGuard {
-    fn drop(&mut self) {
-        let _ = self.child.kill();
-        let _ = self.child.wait();
-    }
-}
-
 pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>> {
     let integrations = seed_client_integrations();
     if args.global || args.undo {
@@ -170,7 +159,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         .ok_or("missing tool; pass one of the supported tool names")?;
     let integration = find_integration(tool, &integrations)?;
     let context = render_context(integration, args)?;
-    let _server = if args.start_server || !args.no_start_server {
+    let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
             eprintln!("formal-ai: started a temporary server in agent mode (tool and shell execution enabled)");
@@ -186,6 +175,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
         args.summarize,
         args.interactive,
         args.non_interactive,
+        server.as_ref().map(|server| server.output_log.as_path()),
     )
 }
 
@@ -303,6 +293,7 @@ fn run_ephemeral(
     keep_summarization: bool,
     force_interactive: bool,
     force_non_interactive: bool,
+    temporary_server_log: Option<&Path>,
 ) -> Result<(), Box<dyn Error>> {
     let invocation = &integration.invocation;
     let mut context = context.clone();
@@ -393,7 +384,8 @@ fn run_ephemeral(
     let server_log = std::env::var_os("FORMAL_AI_PROXY_LOG")
         .map(PathBuf::from)
         .filter(|path| path.exists())
-        .map(|path| fs::canonicalize(&path).unwrap_or(path));
+        .map(|path| fs::canonicalize(&path).unwrap_or(path))
+        .or_else(|| temporary_server_log.map(Path::to_path_buf));
     print_session_files(integration, session_file.as_deref(), server_log.as_deref());
     let preserve_temp = session_file
         .as_deref()
@@ -903,78 +895,4 @@ fn ensure_trailing_newline(mut value: String) -> String {
         value.push('\n');
     }
     value
-}
-
-fn maybe_start_server(
-    base_url: &str,
-    port_override: Option<u16>,
-) -> Result<Option<ServerGuard>, Box<dyn Error>> {
-    let (host, port) = parse_host_port(base_url, port_override)?;
-    let address = format!("{host}:{port}");
-    if TcpStream::connect(&address).is_ok() {
-        return Ok(None);
-    }
-    let binary = formal_ai_binary_path()?;
-    let mut child = Command::new(binary)
-        .args([
-            "serve",
-            "--agent-mode",
-            "--host",
-            &host,
-            "--port",
-            &port.to_string(),
-        ])
-        .spawn()?;
-    wait_for_server(&address, &mut child)?;
-    Ok(Some(ServerGuard { child }))
-}
-
-fn parse_host_port(
-    base_url: &str,
-    port_override: Option<u16>,
-) -> Result<(String, u16), Box<dyn Error>> {
-    let (_, rest) = base_url
-        .split_once("://")
-        .ok_or("base URL must include a scheme, for example http://127.0.0.1:8080")?;
-    let authority = rest.split('/').next().unwrap_or(rest);
-    let (host, parsed_port) = if let Some(stripped) = authority.strip_prefix('[') {
-        let (inside, after) = stripped
-            .split_once(']')
-            .ok_or("invalid bracketed IPv6 host in base URL")?;
-        let port = after.strip_prefix(':').and_then(|value| value.parse().ok());
-        (inside.to_string(), port)
-    } else if let Some((host, port)) = authority.split_once(':') {
-        (host.to_string(), port.parse().ok())
-    } else {
-        (authority.to_string(), None)
-    };
-    let port = port_override.or(parsed_port).unwrap_or(8080);
-    Ok((host, port))
-}
-
-fn formal_ai_binary_path() -> Result<PathBuf, Box<dyn Error>> {
-    let current = std::env::current_exe()?;
-    let stem = current.file_stem().and_then(|value| value.to_str());
-    if stem == Some("formal-ai") {
-        return Ok(current);
-    }
-    let sibling = current.with_file_name(format!("formal-ai{}", std::env::consts::EXE_SUFFIX));
-    if sibling.exists() {
-        return Ok(sibling);
-    }
-    Ok(PathBuf::from("formal-ai"))
-}
-
-fn wait_for_server(address: &str, child: &mut Child) -> Result<(), Box<dyn Error>> {
-    let deadline = Instant::now() + Duration::from_secs(5);
-    while Instant::now() < deadline {
-        if let Some(status) = child.try_wait()? {
-            return Err(format!("formal-ai serve exited before listening: {status}").into());
-        }
-        if TcpStream::connect(address).is_ok() {
-            return Ok(());
-        }
-        std::thread::sleep(Duration::from_millis(50));
-    }
-    Err(format!("formal-ai serve did not listen on {address}").into())
 }

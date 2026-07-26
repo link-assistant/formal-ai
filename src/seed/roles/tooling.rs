@@ -91,6 +91,14 @@ pub const ROLE_LOCAL_SHELL_REQUEST_CUE: &str = "local_shell_request_cue";
 /// self-description. Carried by `tool_argument_marker`; read by the Rust
 /// natural-language-tool handler.
 pub const ROLE_TOOL_ARGUMENT_MARKER: &str = "tool_argument_marker";
+/// Semantic role: plain-text payloads that report a failed tool operation.
+///
+/// Some client-owned tools return a successful transport envelope whose text
+/// is only a provider denial, quota response, or other failure notice. These
+/// multilingual forms live in `data/seed/meanings-tool-access.lino`; result
+/// consumers query the role after normalizing the payload so failed operations
+/// cannot be mistaken for grounded evidence.
+pub const ROLE_TOOL_RESULT_FAILURE_SIGNAL: &str = "tool_result_failure_signal";
 /// Semantic role: a natural-language request to create a repository issue.
 ///
 /// Surface templates live in `data/seed/meanings-agent-actions.lino`; the

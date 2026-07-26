@@ -341,6 +341,8 @@ pub struct ChatCompletion {
     pub model: String,
     pub choices: Vec<ChatChoice>,
     pub usage: TokenUsage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub learning_trace: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -722,6 +724,7 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        learning_trace: None,
     }
 }
 
@@ -733,6 +736,8 @@ fn chat_completion_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
+    let learning_trace =
+        crate::self_improvement::learning_trace_from_symbolic_answer(prompt, &symbolic_answer);
     let thinking_steps = symbolic_answer.thinking_steps;
     let reasoning = render_thinking_steps(&thinking_steps);
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
@@ -755,6 +760,7 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        learning_trace,
     }
 }
 

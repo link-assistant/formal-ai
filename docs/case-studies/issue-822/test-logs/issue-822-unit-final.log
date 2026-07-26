@@ -1,0 +1,22 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.71s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2acf671e24946423)
+
+running 11 tests
+test issue_822::generic_json_to_lino_uses_native_sequences_and_lossless_safe_scalars ... ok
+test issue_822::opencode_extractor_is_shipped_with_the_crate ... ok
+[trace] GET /api/formal-ai/v1/conversations/issue-822-full-context (0 byte body)
+
+[trace] GET /api/formal-ai/v1/conversations/issue-822-full-context (0 byte body)
+
+test issue_822::conversation_api_returns_full_transcript_server_logs_and_metadata_as_lino_by_default ... ok
+test issue_822::report_asks_what_the_user_wants_before_collecting_any_context ... ok
+test issue_822::report_uses_a_plain_question_when_no_structured_question_tool_exists ... ok
+test issue_822::confirmed_github_report_fetches_complete_lino_context_after_both_questions ... ok
+test issue_822::report_confirmation_is_available_in_every_supported_language ... ok
+test issue_822::formal_ai_confirmation_submits_the_matching_context_for_learning ... ok
+test issue_822::harness_export_waits_for_confirmation_and_ignores_prior_run_results ... ok
+test issue_822::github_report_asks_which_logs_to_include_before_filing ... ok
+test issue_822::server_log_confirmation_exports_only_the_matching_server_log ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 1956 filtered out; finished in 2.13s

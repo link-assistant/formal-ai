@@ -26,8 +26,10 @@ use crate::seed::{canonical_model_id, merged_bundle, try_resolve_model_id};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
-mod http_io;
-pub use http_io::serve;
+mod conversation_reports;
+mod transport;
+
+pub use transport::serve;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
 
@@ -134,6 +136,9 @@ pub fn handle_api_request_with_auth(
 ) -> ApiHttpResponse {
     let normalized_path = path.split('?').next().unwrap_or(path);
     let authorized = !requires_bearer_auth(method, normalized_path) || auth.allows(headers);
+    // The planner reads this back when it writes a report command, so the
+    // exported session is the caller's own session and not a guess (#839).
+    let _dialog = crate::dialog_log::DialogScope::begin(headers);
     let response = dispatch_api_request_with_auth(method, path, headers, body, auth);
     crate::dialog_log::record_api_exchange_if_enabled(
         method, path, headers, body, &response, authorized,
@@ -161,7 +166,7 @@ fn dispatch_api_request_with_auth(
 
     crate::dialog_log::trace_request_if_enabled(method, normalized_path, body);
 
-    if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, body) {
+    if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, query, body) {
         return response;
     }
 
@@ -193,6 +198,7 @@ fn dispatch_api_request_with_auth(
             &json!({
                 "status": "ok",
                 "model": canonical_model_id(),
+                "version": env!("CARGO_PKG_VERSION"),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),
@@ -325,8 +331,28 @@ fn mcp_origin_allowed(headers: &[(&str, &str)]) -> bool {
 fn handle_dynamic_protocol_route(
     method: &str,
     normalized_path: &str,
+    query: &str,
     body: &str,
 ) -> Option<ApiHttpResponse> {
+    if method == "GET" {
+        let dialog_id = normalized_path
+            .strip_prefix("/api/formal-ai/v1/conversations/")
+            .or_else(|| normalized_path.strip_prefix("/v1/conversations/"));
+        if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            return Some(conversation_reports::handle_context_request(
+                dialog_id, query,
+            ));
+        }
+    }
+    if method == "POST" {
+        let dialog_id = normalized_path
+            .strip_prefix("/api/formal-ai/v1/conversations/")
+            .or_else(|| normalized_path.strip_prefix("/v1/conversations/"))
+            .and_then(|suffix| suffix.strip_suffix("/learn"));
+        if let Some(dialog_id) = dialog_id.filter(|id| !id.is_empty()) {
+            return Some(conversation_reports::handle_learning_request(dialog_id));
+        }
+    }
     if method == "GET" && normalized_path == "/api/gemini/v1beta/models" {
         return Some(json_response(200, &gemini_model_list()));
     }

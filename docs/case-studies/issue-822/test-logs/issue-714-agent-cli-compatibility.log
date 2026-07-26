@@ -1,0 +1,58 @@
+== agent stderr/out tail ==
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:38:32.391Z",
+  "service": "default",
+  "directory": "/tmp/tmp.ilz3od9Ia6",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:38:32.391Z",
+  "service": "state",
+  "key": "/tmp/tmp.ilz3od9Ia6",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:38:32.394Z",
+  "service": "state",
+  "key": "/tmp/tmp.ilz3od9Ia6",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:38:32.394Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 5,
+  "message": "Agent exiting"
+}
+
+== relevant server trace ==
+formal-ai server listening on http://127.0.0.1:8790
+[trace] GET /health (0 byte body)
+[trace] POST /v1/chat/completions (49258 byte body)
+[trace] agentic_outcome: 14 advertised tools: ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"]
+[trace] agentic_outcome: planned Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+[trace] POST /v1/chat/completions (49616 byte body)
+[trace] agentic_outcome: 14 advertised tools: ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"]
+[trace] agentic_outcome: planned Final("Which context should the GitHub issue include?\n1. Both logs — Include harness and server logs; attach a trimmed preview and link the full context if too large.\n2. Harness log — Include the complete harness conversation only.\n3. Server log — Include the complete matching server log only.")
+[trace] POST /v1/chat/completions (49984 byte body)
+[trace] agentic_outcome: 14 advertised tools: ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"]
+[trace] agentic_outcome: planned ToolCalls([PlannedToolCall { tool: "bash", arguments: "{\"command\":\"set -eu; context_file=$(mktemp \\\"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.lino\\\"); body_file=$(mktemp \\\"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.md\\\"); trap 'rm -f \\\"$context_file\\\" \\\"$body_file\\\"' EXIT; base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; curl -fsS \\\"$base/api/formal-ai/v1/conversations/dialog_0c794ed27fcae834?include=both\\\" -o \\\"$context_file\\\"; printf '%s\\\\n' 'Reported from an agentic session via natural language (no web UI available).' > \\\"$body_file\\\"; if [ \\\"$(wc -c < \\\"$context_file\\\")\\\" -le 50000 ]; then printf '\\\\n### Complete agentic context\\\\n\\\\n```lino\\\\n' >> \\\"$body_file\\\"; cat \\\"$context_file\\\" >> \\\"$body_file\\\"; printf '\\\\n```\\\\n' >> \\\"$body_file\\\"; else context_url=$(gh gist create --filename formal-ai-context.lino \\\"$context_file\\\"); printf '\\\\n### Agentic context\\\\n\\\\nThe complete Links Notation context is available at %s.\\\\n\\\\n```lino\\\\n' \\\"$context_url\\\" >> \\\"$body_file\\\"; head -c 12000 \\\"$context_file\\\" >> \\\"$body_file\\\"; printf '\\\\n```\\\\n' >> \\\"$body_file\\\"; fi; gh issue create --repo link-assistant/formal-ai --title 'Formal AI agentic session report' --body-file \\\"$body_file\\\"\"}" }])
+[trace] GET /api/formal-ai/v1/conversations/dialog_0c794ed27fcae834 (0 byte body)
+[trace] POST /v1/chat/completions (51757 byte body)
+[trace] agentic_outcome: 14 advertised tools: ["bash", "batch", "codesearch", "edit", "glob", "grep", "list", "read", "task", "todoread", "todowrite", "webfetch", "websearch", "write"]
+[trace] agentic_outcome: planned Final("The `set -eu; context_file=$(mktemp \"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.lino\"); body_file=$(mktemp \"${TMPDIR:-/tmp}/formal-ai-report.XXXXXX.md\"); trap 'rm -f \"$context_file\" \"$body_file\"' EXIT; base=${FORMAL_AI_BASE_URL:-http://127.0.0.1:3000}; base=${base%/v1}; curl -fsS \"$base/api/formal-ai/v1/conversations/dialog_0c794ed27fcae834?include=both\" -o \"$context_file\"; printf '%s\\n' 'Reported from an agentic session via natural language (no web UI available).' > \"$body_file\"; if [ \"$(wc -c < \"$context_file\")\" -le 50000 ]; then printf '\\n### Complete agentic context\\n\\n```lino\\n' >> \"$body_file\"; cat \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; else context_url=$(gh gist create --filename formal-ai-context.lino \"$context_file\"); printf '\\n### Agentic context\\n\\nThe complete Links Notation context is available at %s.\\n\\n```lino\\n' \"$context_url\" >> \"$body_file\"; head -c 12000 \"$context_file\" >> \"$body_file\"; printf '\\n```\\n' >> \"$body_file\"; fi; gh issue create --repo link-assistant/formal-ai --title 'Formal AI agentic session report' --body-file \"$body_file\"` command completed. Output:\n\n```text\nhttps://github.com/link-assistant/formal-ai/issues/999\n```")
+Agent CLI invoked gh and retained its result as learning evidence in 4 chat rounds.

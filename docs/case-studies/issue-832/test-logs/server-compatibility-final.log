@@ -1,0 +1,10 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.80s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 3 tests
+test issue_832_server_compatibility::incompatible_existing_server_is_rejected ... ok
+test issue_832_server_compatibility::matching_existing_server_is_reused ... ok
+test issue_832_server_compatibility::legacy_server_without_a_version_is_rejected ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 185 filtered out; finished in 0.05s

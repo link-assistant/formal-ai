@@ -74,10 +74,12 @@ The assistant should use a universal problem-solving loop:
 3. Search local links first, then external sources if local data is insufficient.
 4. Convert findings into link-native meanings with source metadata.
 5. Split the problem into smaller tasks until each task is executable or answerable.
-6. Generate candidate solutions, tests, and traces.
-7. Execute or validate candidates where the environment allows it.
-8. Record results, failures, and learned procedures.
-9. Return the smallest sufficient answer plus links to the relevant trace.
+6. Draft experiments together with tests and traces.
+7. Select a passing draft, execute it where permitted, and compose its result.
+8. On failure, shrink to smaller tasks; at an unsupported leaf, extend the tool,
+   retry the leaf, then climb back up and retest the whole task.
+9. Record results, failures, and learned procedures.
+10. Return the smallest sufficient answer plus links to the relevant trace.
 
 This loop can be implemented first as ordinary Rust logic, then increasingly represented as link substitutions, triggers, and reusable associative packages.
 
@@ -91,9 +93,9 @@ The reasoning loop above is the outer skeleton. The inner mechanics should be a 
 4. **History lookup**: check whether the same or a similar requirement has been solved before; if so, reuse the prior solution and record a `cache_hit` link.
 5. **Decomposition**: when the requirement is composite (multiple clauses, "and", "with tests", "with benchmarks"), split it into sub-impulses and recursively formalize each one until every sub-requirement is small enough to be solved directly.
 6. **TDD-style test generation**: derive at least one executable check or assertion that any candidate solution must pass.
-7. **Solution synthesis**: build candidate solutions by (a) reusing known parts, (b) reasoning from rules, (c) random or evolutionary search where the structure allows, picking the strategy by compute budget.
-8. **Combination**: combine the partial solutions back into a full solution that addresses the original requirement.
-9. **Verification**: run the candidate against the generated tests; on failure, surface the failure as a `trace:execution_failure` link instead of silently retrying.
+7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts, (b) reasoning from rules, and (c) random or evolutionary search where structure and compute budget allow; select only a test-passing draft and record why it won.
+8. **Composition**: combine selected partial solutions back into a full solution that addresses the original requirement.
+9. **Verification and recursive recovery**: run the composed solution against the whole-task test. On failure, record `trace:execution_failure`, descend to smaller tasks, and retry upward after their tests pass. At an elementary task with no method, extend the general tool and retry that leaf. Bounds on depth and retries keep this executable loop finite.
 10. **Simplification**: apply transformation rules that preserve meaning to shorten the answer and the reasoning trace. Pick the smallest sufficient form.
 11. **Documentation and presentation**: produce the user-facing reply, the Links Notation trace, and the visible evidence links. If the user asks for execution, run the code in the appropriate isolation level.
 
@@ -276,6 +278,14 @@ breadth grows by data alone through the meta language (issue
 tasks are handled as verified algorithmic plans over files, shell, and
 structured web — no vision required at this stage (issue
 [#707](https://github.com/link-assistant/formal-ai/issues/707)).
+
+The executable recursive controller and the first live learning back-edge now
+exist: failed branches descend through an explicit task tree and retry upward;
+verified unknown-path events exported by the conversation API enter the normal
+rule learner; and an exact repeated failure consults a human-approved ledger
+lesson before deriving a new rule. This is a bounded first slice, not a claim
+that the entire external-CLI orchestrator or autonomous self-coding loop is
+complete.
 
 Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
 the same deterministic path to user-requested text and code edits: follow-up

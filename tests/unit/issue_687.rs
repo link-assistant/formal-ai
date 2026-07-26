@@ -203,41 +203,50 @@ mod multilingual_web_research {
 mod report_issue {
     use super::*;
 
+    fn confirmed_github(mut messages: Vec<ChatMessage>) -> Vec<ChatMessage> {
+        messages.push(ChatMessage::user("GitHub issue"));
+        messages.push(ChatMessage::user("Both logs"));
+        messages
+    }
+
     #[test]
-    fn report_request_emits_gh_issue_create() {
+    fn report_request_emits_atomic_report_script() {
         for prompt in [
             "Report this issue on GitHub",
             "Please file a bug report for the Formal AI repository",
             "open an issue about this",
         ] {
-            let messages = vec![
+            let messages = confirmed_github(vec![
                 ChatMessage::user("When next elections in the USA?"),
                 ChatMessage::assistant("I could not determine that."),
                 ChatMessage::user(prompt),
-            ];
+            ]);
             let calls = tool_calls(&messages);
             assert_eq!(calls.len(), 1, "{prompt:?} should emit one call");
             assert_eq!(calls[0].tool, "bash", "{prompt:?} should shell out to gh");
             let args = arguments(&calls[0]);
             let command = args["command"].as_str().expect("command string");
             assert!(
-                command.contains("gh issue create"),
-                "{prompt:?} should run `gh issue create`, got: {command}"
+                command.starts_with("set -eu\n")
+                    && command.contains("formal-ai report body")
+                    && command.contains("gh issue create"),
+                "{prompt:?} should render and file one atomic report script, got: {command}"
             );
             assert!(
                 command.contains("link-assistant/formal-ai"),
                 "{prompt:?} should target the Formal AI repo, got: {command}"
             );
+            assert!(command.contains("--source both"), "{command}");
         }
     }
 
     #[test]
     fn bare_report_after_conversation_files_the_issue() {
-        let messages = vec![
+        let messages = confirmed_github(vec![
             ChatMessage::user("What we were talking about?"),
             ChatMessage::assistant("We discussed the next US elections."),
             ChatMessage::user("Report"),
-        ];
+        ]);
         let calls = tool_calls(&messages);
         assert_eq!(calls[0].tool, "bash");
         let args = arguments(&calls[0]);
@@ -279,7 +288,7 @@ mod report_issue {
 
     #[test]
     fn report_then_confirms_with_created_url() {
-        let mut messages = vec![ChatMessage::user("Report this to GitHub")];
+        let mut messages = confirmed_github(vec![ChatMessage::user("Report this to GitHub")]);
         let create = tool_calls(&messages).remove(0);
         answer_tool_call(
             &mut messages,
@@ -296,11 +305,11 @@ mod report_issue {
     #[test]
     fn bare_russian_report_files_the_issue() {
         // language: ru — Russian (русский) bare "сообщи" is the minimal report.
-        let messages = vec![
+        let messages = confirmed_github(vec![
             ChatMessage::user("Когда следующие выборы в США?"),
             ChatMessage::assistant("Я не смог это определить."),
             ChatMessage::user("сообщи"),
-        ];
+        ]);
         let calls = tool_calls(&messages);
         assert_eq!(calls[0].tool, "bash");
         let args = arguments(&calls[0]);
@@ -316,11 +325,11 @@ mod report_issue {
             "कृपया इस समस्या की रिपोर्ट करें",
             "请报告这个问题",
         ] {
-            let messages = vec![
+            let messages = confirmed_github(vec![
                 ChatMessage::user("The answer did not use the available tool."),
                 ChatMessage::assistant("I could not determine that."),
                 ChatMessage::user(prompt),
-            ];
+            ]);
             let calls = tool_calls(&messages);
             assert_eq!(calls[0].tool, "bash", "{prompt:?}");
             let command = arguments(&calls[0])["command"]
@@ -335,15 +344,19 @@ mod report_issue {
     fn conversation_text_is_shell_escaped_in_the_command() {
         // An apostrophe in the conversation must not break out of the shell quoting
         // when the report body transcribes it.
-        let messages = vec![
+        let messages = confirmed_github(vec![
             ChatMessage::user("it's broken and I can't proceed"),
             ChatMessage::assistant("I could not determine that."),
             ChatMessage::user("Report this issue on GitHub"),
-        ];
+        ]);
         let calls = tool_calls(&messages);
         let args = arguments(&calls[0]);
         let command = args["command"].as_str().unwrap();
-        assert!(command.contains("gh issue create --repo link-assistant/formal-ai"));
+        assert!(command.contains("gh issue create"), "{command}");
+        assert!(
+            command.contains("gh issue create --repo link-assistant/formal-ai"),
+            "{command}"
+        );
         // POSIX single-quote escaping renders a literal `'` as `'\''`.
         assert!(
             command.contains("'\\''"),

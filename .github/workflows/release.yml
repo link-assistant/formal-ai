@@ -147,21 +147,12 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
-      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
-      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
-      # commit was already immutable, and while the only way to move the measured
-      # range forward (cutting a tag) was what it blocked. Enforcement belongs
-      # here, where the commits can still be amended. The check is differential:
-      # it compares the release share projected *with* this branch against the
-      # one projected for the base alone, so a regression already on main cannot
-      # block unrelated pull requests.
-      - name: Check the self-hosting ratchet against the merge base
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          base="origin/${GITHUB_BASE_REF}"
-          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
+      # Issue #846: do not enforce the percentage ratchet on pull requests.
+      # CONTRIBUTING.md permits honest 0% releases and explicitly forbids adding
+      # Formal-AI trailers to human-authored or manually corrected work. A
+      # percentage gate made those valid contributions impossible to merge.
+      # The validation above remains strict for commits that claim Formal AI
+      # authorship; release recording still reports the measured percentage.
 
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
@@ -233,7 +224,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
@@ -300,7 +290,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -579,7 +568,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -605,6 +593,13 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: bash scripts/simulate-fresh-merge.sh
+
+      # Run 30087447926 exhausted `/` on two hosted runners after restoring the
+      # target-heavy cache: rustc first killed the runner worker, then failed to
+      # create a temp directory and made ld crash with SIGBUS. Reuse the cleanup
+      # already required by the repository's other heavy build jobs.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -681,7 +676,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -1341,7 +1335,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
@@ -1430,13 +1423,16 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
+    env:
+      # Keep every real Agent invocation inside this required gate local. Some
+      # issue-specific scripts do not pass the CLI's no-summary flag directly.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
       - uses: actions/checkout@v6
 
@@ -1493,10 +1489,13 @@ jobs:
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
+        # Search/fetch stay real client-executed MCP turns, backed by the cached
+        # Wikidata documents rather than Agent's availability-sensitive Exa tool.
         env:
           PORT: 8768
           EXPECT_FILE: meanings-tomato-detail.lino
           EXPECT_TEXT: томаты
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
@@ -1507,6 +1506,7 @@ jobs:
           TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
           EXPECT_FILE: meanings-potato-detail.lino
           EXPECT_TEXT: potatoes
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
@@ -1648,11 +1648,20 @@ jobs:
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         # The reported session answered a question from a whole scraped page and
         # then filed it, producing a 51KB issue whose transcript escaped its own
-        # markdown. Asserts over the real transport that every turn stays inside
-        # an attributed block and the body fits GitHub's issue size limit.
+        # markdown. Asserts over the real transport that the context stays in a
+        # LiNo fence and the body fits GitHub's issue size limit.
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
+
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        # The first two turns must only ask for destination and included logs;
+        # the third executes a PATH-local fake gh and validates the full Lino
+        # context obtained from the matching server conversation.
+        timeout-minutes: 10
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
 
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
         # The exact reported marketplace question drives Agent, OpenCode,
@@ -1662,6 +1671,28 @@ jobs:
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
+
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        # Agent, OpenCode, Claude Code, and Codex execute the generated exact
+        # local observation and only widen after an empty result. OpenCode is
+        # then replayed in a real PTY: command-stream feeds every chunk to
+        # xterm's renderer, the harness deduplicates frames, and the dialog log
+        # proves every user → tool call → tool result → final-answer transition.
+        timeout-minutes: 5
+        env:
+          PORT: 8784
+        run: experiments/agent_cli_e2e/run_issue_840.sh
+
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        # Third-party free-model runs are recorded rather than repeated here:
+        # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
+        # reruns Formal AI's 24-node real-server ladder and checks its raw local
+        # transcript against the best conclusive reference run, including the
+        # widening procedure, command simplicity, kind check, and PEM decoy.
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate

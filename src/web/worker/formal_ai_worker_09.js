@@ -319,6 +319,7 @@ function tryWhoIsQuestion(prompt) {
 // never as hardcoded per-language word lists in worker code.
 
 let cachedTerminalCommandVocabulary = null;
+let cachedShellIntentVocabulary = null;
 // Parse the loaded terminal-command vocabulary into pooled trigger lists.
 // Mirrors terminal_command_vocabulary() in src/seed/terminal_commands.rs;
 // phrases/verbs are pooled across every language because detection is
@@ -397,20 +398,37 @@ function detectTerminalCommand(prompt) {
   return null;
 }
 
-// The natural-language prose lives in data/seed/multilingual-responses.lino
-// under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
-// mode on) intents, with a `{command}` placeholder. This mirror only looks the
-// template up via answerFor() and fills in the detected command, so no
-// per-language wording is hardcoded in the worker. Parity with the Rust solver
-// (src/solver_terminal.rs, terminal_body) is kept by both engines reading the
-// same seed intent.
+function shellIntentVocabulary() {
+  if (cachedShellIntentVocabulary) return cachedShellIntentVocabulary;
+  const root = parseLinoTree(SHELL_INTENTS_LINO);
+  const container = root.children.find((child) => child.name === "shell_intents") || root;
+  const intents = (container.children.find((child) => child.name === "intents") || {}).children || [];
+  const pairs = [];
+  for (const intent of intents) {
+    if (intent.name !== "intent" || (childValue(intent, "argument") || "none") !== "none") continue;
+    const command = childValue(intent, "command");
+    if (!command || command.startsWith("formal-ai:")) continue;
+    for (const language of intent.children.filter((child) => child.name === "language")) {
+      for (const cue of language.children.filter((child) => child.name === "cue"))
+        pairs.push([cue.value.toLowerCase(), command]);
+    }
+  }
+  return (cachedShellIntentVocabulary = pairs);
+}
+function detectSemanticShellCommand(prompt) {
+  const lower = String(prompt || "").toLowerCase();
+  let best = null;
+  for (const [cue, command] of shellIntentVocabulary())
+    if (lower.includes(cue) && (!best || cue.length > best[0].length)) best = [cue, command];
+  return best ? best[1] : null;
+}
 function terminalCommandBody(command, language, agentModeOn) {
   const intent = agentModeOn ? "agent_suggestion_active" : "agent_suggestion";
   return answerFor(intent, language).split("{command}").join(command);
 }
 
 function tryTerminalCommand(prompt, language, preferences) {
-  const command = detectTerminalCommand(prompt);
+  const command = detectTerminalCommand(prompt) || detectSemanticShellCommand(prompt);
   if (!command) return null;
   const agentModeOn = Boolean(preferences && preferences.agentMode);
   return {

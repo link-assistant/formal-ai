@@ -137,9 +137,11 @@ function isReadOnlyShellCommand(command) {
     "grep",
     "head",
     "ls",
+    "ps",
     "pwd",
     "rg",
     "stat",
+    "tasklist",
     "tail",
     "wc",
   ].includes(program);

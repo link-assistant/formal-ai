@@ -20,6 +20,7 @@ source provenance for download-on-test integration. Only permissive licenses
 | Text/code edit profile | #408 | [`text-manipulation-suite.lino`](../data/benchmarks/text-manipulation-suite.lino) | `issue_408_text_code_edit_profile_passes_local_ratchet` | 1440 |
 | Procedural how-to / instruction-following | #444 | [`procedural-howto-suite.lino`](../data/benchmarks/procedural-howto-suite.lino) | `issue_444_procedural_howto_suite_routes_each_case` | 12 |
 | Nemotron training-data sample ingestion | #482 | [`nemotron-training-samples.lino`](../data/benchmarks/nemotron-training-samples.lino) | `issue_482_nemotron_training_ingestion_ratchet_passes_all_samples` | 10 |
+| Multilingual local-path discovery | #819 | [`local-path-discovery-suite.lino`](../data/benchmarks/local-path-discovery-suite.lino) | `local_path_discovery_benchmark_routes_every_case_to_find` | 56 |
 
 Related earlier work: issue **#103** introduced the competitor-derived prompt
 matrix in [`tests/unit/specification/prompt_variations.rs`](../tests/unit/specification/prompt_variations.rs)
@@ -85,6 +86,13 @@ files or full splits.
 | Source | License | Domain | Upstream |
 | --- | --- | --- | --- |
 | Nemotron Pretraining Legal v1 | CC-BY-4.0 | legal training-data ingestion | <https://huggingface.co/datasets/nvidia/Nemotron-Pretraining-Legal-v1> |
+
+### Multilingual local-path discovery — issue #819
+
+Records 56 self-authored prompts spanning English, Russian, Hindi, and Chinese,
+the three local scopes, and file/directory targets. Every case must select the
+shell tool, emit a bounded `find` command with the expected root and predicate,
+and avoid web search. The suite has no imported payload or upstream license.
 
 ### Text/code edit profile — issue #408
 
@@ -165,6 +173,9 @@ cargo test --test unit issue_444_procedural_howto_suite_routes_each_case -- --no
 
 # Nemotron training-data sample ingestion (#482)
 cargo test --test unit issue_482_nemotron_training -- --nocapture
+
+# Multilingual local-path discovery (#819)
+cargo test --test unit local_path_discovery_benchmark_routes_every_case_to_find -- --nocapture
 ```
 
 ## Conventions

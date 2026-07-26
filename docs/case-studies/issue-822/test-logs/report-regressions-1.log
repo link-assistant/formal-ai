@@ -1,0 +1,225 @@
+   Compiling formal-ai v0.301.0 (/tmp/gh-issue-solver-1784701857721)
+warning: function `meta_language_label_for_format` is never used
+   --> src/summarization/file.rs:429:4
+    |
+429 | fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `formal-ai` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 28.26s
+     Running tests/unit/mod.rs (target/debug/deps/unit-2a084cb6b146678d)
+
+running 82 tests
+test agentic_coding::corpus_search_reports_no_results_for_an_unrelated_query ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+test agentic_coding::corpus_fetch_reports_a_404_for_an_unknown_url ... ok
+test assistant_name::reported_russian_name_question_is_answered ... ok
+
+thread 'issue_425::natural_language_markdown_to_docx_conversion_reports_package_layer' (19135) panicked at tests/unit/issue_425.rs:266:5:
+assertion `left == right` failed
+  left: "unknown"
+ right: "document_format_conversion"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test issue_425::natural_language_markdown_to_docx_conversion_reports_package_layer ... FAILED
+
+thread 'issue_425::natural_language_markdown_to_txt_conversion_reports_lossy_fallbacks' (19136) panicked at tests/unit/issue_425.rs:241:5:
+assertion `left == right` failed
+  left: "unknown"
+ right: "document_format_conversion"
+test issue_425::natural_language_markdown_to_txt_conversion_reports_lossy_fallbacks ... FAILED
+test agentic_general_planner::explicit_issue_named_file_write_is_not_misrouted_to_issue_reporting ... ok
+test issue_540_agent_cli::dreaming_audit_reports_an_open_gap_when_a_stage_loses_its_grounding ... ok
+
+thread 'issue_558_source_links::render_document_is_valid_links_and_reports_the_whole_repo' (19143) panicked at tests/unit/issue_558_source_links.rs:187:5:
+assertion failed: document.contains("slice_fully_faithful true")
+test issue_558_source_links::render_document_is_valid_links_and_reports_the_whole_repo ... FAILED
+test issue_649_world_model::predict_reports_statement_movement ... ok
+test issue_657_self_hosting_learning::a_gated_report_states_the_decision_its_gate_implies ... ok
+test issue_657_self_hosting_learning::a_report_ranks_any_persisted_network ... ok
+test issue_657_self_hosting_learning::every_registered_report_routes_from_its_own_task ... ok
+test issue_657_self_hosting_learning::no_report_carries_another_reports_issue ... ok
+test issue_657_self_hosting_learning::report_identities_are_unique ... ok
+test issue_657_self_hosting_learning::reports_share_a_canonical_field_order ... ok
+test issue_657_self_hosting_learning::the_renderer_does_not_name_any_report ... ok
+test issue_659_hardcoded_language_learning::issue_659_report_is_derived_from_persisted_observations ... ok
+test issue_660_lexeme_import_learning::issue_660_report_is_derived_from_persisted_observations ... ok
+test courtesy_response::reported_russian_praise_is_a_courtesy_response ... ok
+test issue_686_agent_cli::associative_report_is_derived_from_persisted_usage_not_canned ... ok
+
+thread 'issue_687::learn_about::whole_reported_sequence_keeps_the_last_substantive_topic' (19156) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::learn_about::whole_reported_sequence_keeps_the_last_substantive_topic ... FAILED
+
+thread 'issue_687::report_issue::bare_report_after_conversation_files_the_issue' (19157) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::report_issue::bare_report_after_conversation_files_the_issue ... FAILED
+
+thread 'issue_687::report_issue::bare_russian_report_files_the_issue' (19158) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("Что вы хотите отправить?\n1. Журнал агента — Экспортировать полный журнал агентного клиента.\n2. Журнал сервера — Экспортировать соответствующий журнал сервера Formal AI.\n3. Задача GitHub — Создать задачу с полным контекстом.\n4. Сообщить Formal AI — Сохранить отчёт для обучения этого экземпляра.")
+test issue_687::report_issue::bare_russian_report_files_the_issue ... FAILED
+test issue_680_intent_routing::edit_second_step_reports_completion_not_a_repeated_call ... ok
+
+thread 'issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command' (19160) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command ... FAILED
+
+thread 'issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data' (19161) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data ... FAILED
+
+thread 'issue_687::report_issue::report_request_emits_gh_issue_create' (19162) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::report_issue::report_request_emits_gh_issue_create ... FAILED
+
+thread 'issue_687::report_issue::report_then_confirms_with_created_url' (19163) panicked at tests/unit/issue_687.rs:31:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_687::report_issue::report_then_confirms_with_created_url ... FAILED
+test issue_687::report_issue::unrelated_report_shaped_prompt_is_not_an_issue_filing ... ok
+
+thread 'issue_714_agentic_mode::localized_report_actions_route_to_shell' (19165) panicked at tests/unit/issue_714_agentic_mode.rs:60:13:
+en report action did not emit a shell call
+test issue_714_agentic_mode::localized_report_actions_route_to_shell ... FAILED
+test issue_714_agentic_mode::ordinary_report_writing_is_not_mistaken_for_issue_reporting ... ok
+
+thread 'issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool' (19167) panicked at tests/unit/issue_714_agentic_mode.rs:17:9:
+report action did not emit a tool call: Some(Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn."))
+test issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool ... FAILED
+
+thread 'issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access' (19168) panicked at tests/unit/issue_714_agentic_mode.rs:121:13:
+What would you like to report?
+1. Harness log — Export the complete agentic harness log.
+2. Server log — Export the matching Formal AI server log.
+3. GitHub issue — File an issue with complete context.
+4. Report to Formal AI — Store the report so this instance can learn.
+test issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access ... FAILED
+
+thread 'issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns' (19169) panicked at tests/unit/issue_714_agentic_mode.rs:84:45:
+What would you like to report?
+1. Harness log — Export the complete agentic harness log.
+2. Server log — Export the matching Formal AI server log.
+3. GitHub issue — File an issue with complete context.
+4. Report to Formal AI — Store the report so this instance can learn.
+test issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns ... FAILED
+
+thread 'issue_714_agentic_mode::report_action_resolves_an_unnamed_tool_result_by_call_id' (19170) panicked at tests/unit/issue_714_agentic_mode.rs:111:45:
+What would you like to report?
+1. Harness log — Export the complete agentic harness log.
+2. Server log — Export the matching Formal AI server log.
+3. GitHub issue — File an issue with complete context.
+4. Report to Formal AI — Store the report so this instance can learn.
+test issue_714_agentic_mode::report_action_resolves_an_unnamed_tool_result_by_call_id ... FAILED
+
+thread 'issue_714_agentic_mode::report_action_shell_quotes_apostrophes_in_conversation_history' (19171) panicked at tests/unit/issue_714_agentic_mode.rs:41:9:
+report action did not emit a shell call
+test issue_714_agentic_mode::report_action_shell_quotes_apostrophes_in_conversation_history ... FAILED
+test issue_715_renderer_artifacts::learning_report_fields_carrying_code_survive_the_grammar ... ok
+test issue_716_agentic_execution::failed_compile_is_reported_and_the_run_command_is_not_attempted ... ok
+test issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report ... ok
+
+thread 'issue_771::report_format::a_huge_transcript_stays_within_the_github_body_limit' (19179) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::report_format::a_huge_transcript_stays_within_the_github_body_limit ... FAILED
+
+thread 'issue_771::report_format::a_multiline_turn_does_not_escape_its_block' (19180) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::report_format::a_multiline_turn_does_not_escape_its_block ... FAILED
+
+thread 'issue_771::report_format::an_exhausted_transcript_budget_says_so_instead_of_truncating_silently' (19181) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::report_format::an_exhausted_transcript_budget_says_so_instead_of_truncating_silently ... FAILED
+
+thread 'issue_771::report_format::each_turn_is_attributed_to_its_role' (19182) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::report_format::each_turn_is_attributed_to_its_role ... FAILED
+
+thread 'issue_771::report_format::the_intro_heading_and_footer_still_frame_the_transcript' (19183) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::report_format::the_intro_heading_and_footer_still_frame_the_transcript ... FAILED
+test issue_745::reported_object_type_collisions_choose_the_right_capability ... ok
+
+thread 'issue_771::reported_session::the_reported_session_files_a_readable_issue' (19184) panicked at tests/unit/issue_771.rs:46:41:
+expected tool calls, got Final("What would you like to report?\n1. Harness log — Export the complete agentic harness log.\n2. Server log — Export the matching Formal AI server log.\n3. GitHub issue — File an issue with complete context.\n4. Report to Formal AI — Store the report so this instance can learn.")
+test issue_771::reported_session::the_reported_session_files_a_readable_issue ... FAILED
+test issue_781::reported_prompt_uses_web_search_with_the_agent_cli_tool_set ... ok
+test issue_781_option_network::an_unpriced_option_is_still_reported_but_ranks_after_priced_ones ... ok
+test issue_822::confirmed_github_report_fetches_complete_lino_context_after_both_questions ... ok
+test issue_781::reported_prompt_uses_namespaced_mcp_research_tools ... ok
+test issue_822::github_report_asks_which_logs_to_include_before_filing ... ok
+test issue_822::report_asks_what_the_user_wants_before_collecting_any_context ... ok
+test issue_822::report_uses_a_plain_question_when_no_structured_question_tool_exists ... ok
+[trace] POST /v1/links/query (20 byte body)
+{"query":"NONSENSE"}
+[dialog-log] appended exchange to /home/box/.formal-ai/dialog-logs/dialog_58f973d812a38f1a.jsonl
+test local_surface::links_query_route_reports_parse_errors ... ok
+test memory_maintenance::dreaming_reports_bigger_storage_when_recomputable_data_cannot_satisfy_target ... ok
+test proof_request::arithmetic_disproof_reports_counterexample ... ok
+test issue_822::report_confirmation_is_available_in_every_supported_language ... ok
+test specification::behavior_rules::behavior_rules_count_followup_answers_reported_russian_prompt ... ok
+test software_project::software_project_followup_reports_approved_state_after_implementation ... ok
+test specification::calculator_delegation::placeholder_unknown_equations_are_solved_instead_of_reported_unknown ... ok
+test specification::capabilities::runtime_gated_capabilities_report_current_configuration ... ok
+test specification::chat_surface::unknown_answer_mentions_localized_report_path_in_russian ... ok
+test specification::chat_surface::unknown_answer_mentions_report_issue_and_export_memory ... ok
+test specification::code_generation::single_turn::execution_failures_are_reported_with_full_trace ... ok
+test specification::code_generation::single_turn::typescript_hello_world_seed_reports_unavailable_execution ... ok
+test specification::conversation_history::solve_with_history_reports_no_dialog_history_matches ... ok
+test specification::issue_146::reported_self_awareness_prompts_have_exact_answer_examples ... ok
+test specification::issue_462::reported_russian_spider_man_release_order_prompt_is_fact_lookup ... ok
+test specification::issue_467::reported_russian_air_india_stroller_baggage_prompt_is_fact_lookup ... ok
+test specification::openai_compatibility::chat_completion_reports_token_usage ... ok
+test specification::probabilistic_reasoning::ranking_mechanics::store_serialization_reports_record_count_and_each_record ... ok
+test specification::reasoning_paths::arithmetic_reports_division_by_zero_without_panicking ... ok
+warning: self-hosting ratchet would fall from 100.00% to 7.14% for v1.2.0
+::warning title=Self-hosting ratchet fell::self-hosting ratchet would fall from 100.00% to 7.14% for v1.2.0
+test specification::self_hosting_metric::a_falling_ratchet_reports_at_release_time_instead_of_blocking_it ... ok
+test specification::summarization_pipeline::directory_summary_reports_recursive_aggregate_counts ... ok
+test specification::translation_via_links::translation_gaps_are_reported_without_language_placeholders ... ok
+test web_requests::research_result_followup_reports_prior_search_failure_instead_of_defining_result ... ok
+
+thread 'specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts' (19199) panicked at tests/unit/specification/benchmarks.rs:704:5:
+benchmark pass-count floor dropped: passed=8 minimum_pass_count=12
+benchmark pass/fail counts: passed=8 failed=4 total=12 minimum_pass_count=12
+FAIL humaneval_0_has_close_elements missing ["```python", "def has_close_elements"]
+FAIL humaneval_0_has_close_elements_paraphrase missing ["```python", "def has_close_elements", "Execution status: tests passed"]
+FAIL mbpp_2_similar_elements missing ["```python", "def similar_elements", "set"]
+FAIL mbpp_2_similar_elements_paraphrase missing ["def similar_elements", "Execution status: tests passed"]
+
+test specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts ... FAILED
+test issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run ... ok
+test issue_499_learn_from_source::the_reported_prompt_no_longer_returns_unknown ... ok
+test issue_498_google_trends_learning::committed_google_trends_learning_report_is_generated_by_the_recipe ... ok
+test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli has been running for over 60 seconds
+test issue_499_learn_from_source::the_reported_directive_drives_the_learning_recipe_via_agent_cli ... ok
+
+failures:
+
+failures:
+    issue_425::natural_language_markdown_to_docx_conversion_reports_package_layer
+    issue_425::natural_language_markdown_to_txt_conversion_reports_lossy_fallbacks
+    issue_558_source_links::render_document_is_valid_links_and_reports_the_whole_repo
+    issue_687::learn_about::whole_reported_sequence_keeps_the_last_substantive_topic
+    issue_687::report_issue::bare_report_after_conversation_files_the_issue
+    issue_687::report_issue::bare_russian_report_files_the_issue
+    issue_687::report_issue::conversation_text_is_shell_escaped_in_the_command
+    issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data
+    issue_687::report_issue::report_request_emits_gh_issue_create
+    issue_687::report_issue::report_then_confirms_with_created_url
+    issue_714_agentic_mode::localized_report_actions_route_to_shell
+    issue_714_agentic_mode::report_action_calls_gh_through_the_advertised_shell_tool
+    issue_714_agentic_mode::report_action_does_not_become_a_web_search_without_shell_access
+    issue_714_agentic_mode::report_action_finishes_with_the_issue_url_after_gh_returns
+    issue_714_agentic_mode::report_action_resolves_an_unnamed_tool_result_by_call_id
+    issue_714_agentic_mode::report_action_shell_quotes_apostrophes_in_conversation_history
+    issue_771::report_format::a_huge_transcript_stays_within_the_github_body_limit
+    issue_771::report_format::a_multiline_turn_does_not_escape_its_block
+    issue_771::report_format::an_exhausted_transcript_budget_says_so_instead_of_truncating_silently
+    issue_771::report_format::each_turn_is_attributed_to_its_role
+    issue_771::report_format::the_intro_heading_and_footer_still_frame_the_transcript
+    issue_771::reported_session::the_reported_session_files_a_readable_issue
+    specification::benchmarks::issue_304_benchmark_suite_reports_pass_fail_counts
+
+test result: FAILED. 59 passed; 23 failed; 0 ignored; 0 measured; 1883 filtered out; finished in 112.16s
+
+error: test failed, to rerun pass `--test unit`

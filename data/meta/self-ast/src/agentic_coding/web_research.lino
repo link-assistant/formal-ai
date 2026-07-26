@@ -2,114 +2,122 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 19992
-  line_count 489
-  content_id source_module_601eb36a8926ca83
-  symbol_count 28
+  byte_len 24259
+  line_count 591
+  content_id source_module_c2310b53917cd104
+  symbol_count 34
   symbols
-    function web_research_query_for 15 37
-    function seed_research_subject 43 56
-    const MAX_RESEARCH_ROUNDS 68 68
-    function plan_web_research_step 70 96
-    function plan_fetches 104 116
-    function plan_deeper_round 125 162
-    function uncovered_aspects 175 189
-    const MIN_ASPECT_CHARS 193 193
-    function aspects_of 195 210
-    const VERBATIM_EVIDENCE_LIMIT 216 216
-    const EXTRACT_SENTENCES 220 220
-    function final_answer 222 254
-    function extract_answer 265 302
-    function relevance 312 318
-    function character_overlap 326 342
-    function truncate_chars 346 353
-    function seed_text 355 359
-    function render_seed_text 361 367
-    function preferred_url 373 375
-    const MAX_RESEARCH_SOURCES 381 381
-    function research_urls 383 392
-    function urls_in 394 403
-    function authoritative_host 405 421
-    function is_context_reference 423 435
-    function topic_from_history 437 459
-    function is_conversation_meta_request 461 478
-    function trim_question_punctuation 480 485
-    function latest_user_text 487 489
+    function web_research_query_for 15 39
+    function is_definition_followup 41 46
+    function definition_followup_topic 48 89
+    function definition_followup_clarification 91 96
+    function seed_research_subject 102 104
+    function seed_definition_subject 106 126
+    function seed_unresolved_question_subject 134 141
+    function seed_prefix_subject 143 156
+    const MAX_RESEARCH_ROUNDS 168 168
+    function plan_web_research_step 170 196
+    function plan_fetches 204 216
+    function plan_deeper_round 225 262
+    function uncovered_aspects 275 289
+    const MIN_ASPECT_CHARS 293 293
+    function aspects_of 295 310
+    const MAX_EXTRACT_CHARS 315 315
+    const EXTRACT_SENTENCES 319 319
+    function final_answer 321 358
+    function extract_answer 369 403
+    function relevance 413 419
+    function character_overlap 427 443
+    function truncate_chars 447 454
+    function seed_text 456 460
+    function render_seed_text 462 468
+    function preferred_url 474 476
+    const MAX_RESEARCH_SOURCES 482 482
+    function research_urls 484 493
+    function urls_in 495 504
+    function authoritative_host 506 522
+    function is_context_reference 524 536
+    function topic_from_history 538 561
+    function is_conversation_meta_request 563 580
+    function trim_question_punctuation 582 587
+    function latest_user_text 589 591
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 12495
-    named_node_count 2655
-    distinct_node_kinds 69
+    total_link_count 15547
+    named_node_count 3318
+    distinct_node_kinds 71
     node_kinds
-      arguments 256
+      arguments 330
       array_expression 3
-      array_type 8
+      array_type 9
       attribute 1
       attribute_item 1
-      binary_expression 26
-      block 54
+      binary_expression 31
+      block 69
       boolean_literal 1
-      call_expression 256
-      char_literal 23
-      closure_expression 41
-      closure_parameters 41
+      break_expression 2
+      call_expression 330
+      char_literal 25
+      closure_expression 56
+      closure_parameters 56
       const_item 5
-      crate 18
-      doc_comment 85
+      crate 27
+      doc_comment 90
       else_clause 4
       escape_sequence 6
-      expression_statement 41
-      field_expression 211
-      field_identifier 207
+      expression_statement 53
+      field_expression 260
+      field_identifier 256
       float_literal 3
-      function_item 23
+      for_expression 1
+      function_item 29
       generic_function 4
-      generic_type 20
-      identifier 530
-      if_expression 19
-      index_expression 2
+      generic_type 24
+      identifier 688
+      if_expression 23
+      index_expression 3
       inner_doc_comment_marker 6
-      integer_literal 14
-      let_condition 2
-      let_declaration 36
-      line_comment 118
-      macro_invocation 7
+      integer_literal 15
+      let_condition 3
+      let_declaration 47
+      line_comment 126
+      macro_invocation 10
       match_arm 7
       match_block 2
       match_expression 2
       match_pattern 7
-      mutable_specifier 6
+      mutable_specifier 9
       or_pattern 1
-      outer_doc_comment_marker 79
-      parameter 38
-      parameters 23
+      outer_doc_comment_marker 84
+      parameter 47
+      parameters 29
       parenthesized_expression 3
-      primitive_type 47
-      range_expression 2
-      reference_expression 27
-      reference_type 41
-      return_expression 14
-      scoped_identifier 75
+      primitive_type 56
+      range_expression 3
+      reference_expression 39
+      reference_type 49
+      return_expression 15
+      scoped_identifier 112
       scoped_type_identifier 3
       scoped_use_list 2
       self 1
       source_file 1
-      string_content 29
-      string_literal 29
-      super 5
-      token_tree 19
-      try_expression 5
+      string_content 37
+      string_literal 37
+      super 8
+      token_tree 24
+      try_expression 6
       tuple_expression 1
       tuple_pattern 8
-      tuple_struct_pattern 5
+      tuple_struct_pattern 6
       tuple_type 1
-      type_arguments 24
+      type_arguments 28
       type_cast_expression 2
-      type_identifier 52
-      unary_expression 12
+      type_identifier 62
+      unary_expression 16
       use_declaration 5
       use_list 2
-      visibility_modifier 3
+      visibility_modifier 6

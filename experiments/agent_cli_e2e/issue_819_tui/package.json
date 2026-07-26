@@ -1,0 +1,12 @@
+{
+  "name": "formal-ai-issue-819-tui-proof",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test tui-transcript.test.mjs"
+  },
+  "dependencies": {
+    "@xterm/headless": "6.0.0",
+    "command-stream": "0.14.1"
+  }
+}

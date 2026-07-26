@@ -1,0 +1,99 @@
+diff --git a/tests/integration/issue_822_complete_transcript.rs b/tests/integration/issue_822_complete_transcript.rs
+index 584743b8..bdd91a74 100644
+--- a/tests/integration/issue_822_complete_transcript.rs
++++ b/tests/integration/issue_822_complete_transcript.rs
+@@ -207,3 +207,105 @@ fn export_reconstructs_the_final_streamed_assistant_message() {
+
+     fs::remove_dir_all(directory).expect("remove fixture directory");
+ }
++
++#[test]
++fn export_collects_responses_gemini_and_direct_assistant_envelopes() {
++    let directory = temporary_directory();
++    let responses_assistant = json!({
++        "type": "message",
++        "role": "assistant",
++        "content": [{"type": "output_text", "text": "Responses answer"}]
++    });
++    let gemini_user = json!({
++        "role": "user",
++        "parts": [{"text": "Gemini question"}]
++    });
++    let gemini_assistant = json!({
++        "role": "model",
++        "parts": [{"text": "Gemini answer"}]
++    });
++
++    let exchanges = vec![
++        exchange(
++            30,
++            "request-responses",
++            json!({
++                "model": "formal-ai",
++                "input": "Responses question"
++            }),
++            json!({
++                "id": "resp_1",
++                "output": [
++                    {
++                        "type": "reasoning",
++                        "summary": [{"type": "summary_text", "text": "internal"}]
++                    },
++                    responses_assistant
++                ]
++            }),
++        ),
++        exchange(
++            31,
++            "request-gemini",
++            json!({
++                "model": "formal-ai",
++                "contents": [gemini_user]
++            }),
++            json!({
++                "candidates": [{
++                    "content": gemini_assistant,
++                    "finishReason": "STOP"
++                }]
++            }),
++        ),
++        exchange(
++            32,
++            "request-direct",
++            json!({
++                "model": "formal-ai",
++                "messages": [{"role": "user", "content": "Direct question"}]
++            }),
++            json!({"role": "assistant", "content": "Direct answer"}),
++        ),
++    ];
++    write_exchanges(&directory, &exchanges);
++
++    let context =
++        load_conversation_context_from(&directory, DIALOG_ID).expect("load response envelopes");
++    let messages = context["messages"].as_array().expect("message list");
++
++    assert_eq!(messages.len(), 6, "{context:#}");
++    assert_eq!(messages[0]["role"], "user");
++    assert_eq!(messages[0]["content"], "Responses question");
++    assert_eq!(messages[1]["role"], "assistant");
++    assert_eq!(
++        messages[1]["content"][0]["text"],
++        "Responses answer"
++    );
++    assert_eq!(messages[2]["role"], "user");
++    assert_eq!(messages[2]["parts"][0]["text"], "Gemini question");
++    assert_eq!(messages[3]["role"], "model");
++    assert_eq!(messages[3]["parts"][0]["text"], "Gemini answer");
++    assert_eq!(messages[4]["content"], "Direct question");
++    assert_eq!(messages[5]["content"], "Direct answer");
++    assert!(
++        messages.iter().all(|message| message.get("type")
++            != Some(&Value::String(String::from("reasoning")))),
++        "reasoning envelope items are server metadata, not conversation messages: {context:#}"
++    );
++    assert_eq!(context["metadata"]["first_timestamp_unix_ms"], 30);
++    assert_eq!(context["metadata"]["last_timestamp_unix_ms"], 32);
++
++    fs::remove_dir_all(directory).expect("remove fixture directory");
++}

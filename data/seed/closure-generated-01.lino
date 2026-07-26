@@ -109,11 +109,96 @@ meanings
     lexeme en
       surface
         text "agent suggestion active"
-  agentic_action_before_tool
+  agentic_action_ask_user
     defined-by intent
     lexeme en
       surface
-        text "agentic action before tool"
+        text "agentic action ask user"
+  agentic_action_edit
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action edit"
+  agentic_action_find_current
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find current"
+  agentic_action_find_desktop
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find desktop"
+  agentic_action_find_home
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action find home"
+  agentic_action_generic
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action generic"
+  agentic_action_list_current
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list current"
+  agentic_action_list_desktop
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list desktop"
+  agentic_action_list_home
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list home"
+  agentic_action_read
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action read"
+  agentic_action_run
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action run"
+  agentic_action_search
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action search"
+  agentic_action_search_code
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action search code"
+  agentic_report_contents_options
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report contents options"
+  agentic_report_contents_question
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report contents question"
+  agentic_report_exported
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report exported"
+  agentic_report_target_options
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report target options"
+  agentic_report_target_question
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic report target question"
   ai-orchestration
     defined-by category
     lexeme en
@@ -315,7 +400,7 @@ meanings
       surface
         text "bundle root header"
   called
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "called"
@@ -384,6 +469,31 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  client_server_did_not_listen
+    defined-by field
+    lexeme en
+      surface
+        text "client server did not listen"
+  client_server_exited_before_listening
+    defined-by field
+    lexeme en
+      surface
+        text "client server exited before listening"
+  client_server_health_invalid
+    defined-by field
+    lexeme en
+      surface
+        text "client server health invalid"
+  client_server_version_mismatch
+    defined-by field
+    lexeme en
+      surface
+        text "client server version mismatch"
+  client_server_version_missing
+    defined-by field
+    lexeme en
+      surface
+        text "client server version missing"
   clones
     defined-by word_surface
     lexeme en
@@ -424,6 +534,16 @@ meanings
     lexeme en
       surface
         text "comments"
+  comparison_decomposed_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed evidence"
+  comparison_decomposed_no_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed no evidence"
   concept_lookup
     defined-by intent
     lexeme en
@@ -484,11 +604,36 @@ meanings
     lexeme en
       surface
         text "context bsd operating systems"
+  context_command_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context command failed"
   context_delimiter
     defined-by kind
     lexeme en
       surface
         text "context delimiter"
+  context_dialog_log_unavailable
+    defined-by field
+    lexeme en
+      surface
+        text "context dialog log unavailable"
+  context_export_empty
+    defined-by field
+    lexeme en
+      surface
+        text "context export empty"
+  context_harness_unavailable
+    defined-by field
+    lexeme en
+      surface
+        text "context harness unavailable"
+  context_learning_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context learning failed"
   context_machine_learning
     defined-by context
     lexeme en
@@ -499,11 +644,21 @@ meanings
     lexeme en
       surface
         text "context neural network"
+  context_opencode_export_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context opencode export failed"
   context_programming
     defined-by context
     lexeme en
       surface
         text "context programming"
+  context_session_unresolved
+    defined-by field
+    lexeme en
+      surface
+        text "context session unresolved"
   context_signal_processing
     defined-by context
     lexeme en
@@ -649,6 +804,11 @@ meanings
     lexeme en
       surface
         text "default language"
+  definition_followup_clarify
+    defined-by intent
+    lexeme en
+      surface
+        text "definition followup clarify"
   delete
     defined-by phrase
     lexeme en
@@ -684,8 +844,13 @@ meanings
     lexeme en
       surface
         text "did"
+  directories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "directories"
   directory
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "directory"
@@ -859,6 +1024,11 @@ meanings
     lexeme en
       surface
         text "file handle"
+  files
+    defined-by word_surface
+    lexeme en
+      surface
+        text "files"
   filesystem
     defined-by word_surface
     lexeme en
@@ -875,10 +1045,15 @@ meanings
       surface
         text "fizzbuzz"
   folder
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "folder"
+  folders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folders"
   fontawesome
     defined-by concept
     lexeme en
@@ -909,6 +1084,11 @@ meanings
     lexeme en
       surface
         text "func"
+  function_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "function catalog"
   genuine
     defined-by word_surface
     lexeme en
@@ -984,6 +1164,11 @@ meanings
     lexeme en
       surface
         text "hive mind"
+  home
+    defined-by concept
+    lexeme en
+      surface
+        text "home"
   how_it_works
     defined-by intent
     lexeme en
@@ -1179,218 +1364,33 @@ meanings
     lexeme en
       surface
         text "issue report body intro"
-  issue_report_conversation_heading
+  issue_report_bytes_label
     defined-by field
     lexeme en
       surface
-        text "issue report conversation heading"
-  issue_report_created
+        text "issue report bytes label"
+  issue_report_command_missing
     defined-by field
     lexeme en
       surface
-        text "issue report created"
-  issue_report_created_with_url
+        text "issue report command missing"
+  issue_report_context_excerpt_note
     defined-by field
     lexeme en
       surface
-        text "issue report created with url"
-  issue_report_default_title
+        text "issue report context excerpt note"
+  issue_report_context_gist_note
     defined-by field
     lexeme en
       surface
-        text "issue report default title"
-  issue_report_empty_history
+        text "issue report context gist note"
+  issue_report_context_heading
     defined-by field
     lexeme en
       surface
-        text "issue report empty history"
-  issue_report_ran_command
+        text "issue report context heading"
+  issue_report_context_link_heading
     defined-by field
     lexeme en
       surface
-        text "issue report ran command"
-  issue_report_title_prefix
-    defined-by field
-    lexeme en
-      surface
-        text "issue report title prefix"
-  issue_report_tool_missing
-    defined-by field
-    lexeme en
-      surface
-        text "issue report tool missing"
-  issue_report_transcript_trimmed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report transcript trimmed"
-  issue_template_labels
-    defined-by field
-    lexeme en
-      surface
-        text "issue template labels"
-  javascript
-    defined-by programming_language
-    lexeme en
-      surface
-        text "javascript"
-  join
-    defined-by concept
-    lexeme en
-      surface
-        text "join"
-  join_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "join lines"
-  kebab
-    defined-by concept
-    lexeme en
-      surface
-        text "kebab"
-  kebab-case
-    defined-by phrase
-    lexeme en
-      surface
-        text "kebab case"
-  kebab_case
-    defined-by operation
-    lexeme en
-      surface
-        text "kebab case"
-  kill
-    defined-by token
-    lexeme en
-      surface
-        text "kill"
-  knowledge-representation
-    defined-by category
-    lexeme en
-      surface
-        text "knowledge representation"
-  kubaturit
-    defined-by term
-    lexeme en
-      surface
-        text "kubaturit"
-  kubectl
-    defined-by token
-    lexeme en
-      surface
-        text "kubectl"
-  kupi_slona
-    defined-by intent
-    lexeme en
-      surface
-        text "kupi slona"
-  language-detection
-    defined-by category
-    lexeme en
-      surface
-        text "language detection"
-  last_message
-    defined-by concept
-    lexeme en
-      surface
-        text "last message"
-  learn_from_source
-    defined-by intent
-    lexeme en
-      surface
-        text "learn from source"
-  learning_resource
-    defined-by kind
-    lexeme en
-      surface
-        text "learning resource"
-  lexeme_import_block_parse_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import block parse failed"
-  lexeme_import_cache_budget_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache budget reached"
-  lexeme_import_cache_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache invalid json"
-  lexeme_import_cache_miss_offline
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache miss offline"
-  lexeme_import_cache_unreadable
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cache unreadable"
-  lexeme_import_cannot_create
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot create"
-  lexeme_import_cannot_inspect
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot inspect"
-  lexeme_import_cannot_install
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot install"
-  lexeme_import_cannot_list
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot list"
-  lexeme_import_cannot_remove_stale
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot remove stale"
-  lexeme_import_cannot_stage
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot stage"
-  lexeme_import_cannot_write_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot write json"
-  lexeme_import_cannot_write_lino
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import cannot write lino"
-  lexeme_import_denotation_lost
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import denotation lost"
-  lexeme_import_duplicate_qid
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import duplicate qid"
-  lexeme_import_duplicate_slug
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import duplicate slug"
-  lexeme_import_fetch_failed
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch failed"
-  lexeme_import_fetch_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "lexeme import fetch invalid json"
+        text "issue report context link heading"

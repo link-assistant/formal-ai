@@ -12,6 +12,15 @@ in-repo agentic driver in `src/agentic_coding/`, running against the
 OpenAI-compatible `formal-ai serve` server), and we get *every* requirement done
 in the same pull request.
 
+This section is the development policy and target workflow, not a claim that
+the repository is already autonomously self-coded. When an existing tool gap
+forces a manual tool extension, record that boundary plainly, retry a smallest
+leaf through Formal AI, and measure only genuinely session-authored lines. A
+reviewed task decomposition must name its smallest leaves; the acceptance floor
+is at least one real Formal-AI/Agent-CLI-authored leaf out of every five (20%),
+with a captured session and paired commit trailers. Raise that measured share
+over time; never relabel manual work as self-authored.
+
 Concretely, every change must follow these rules:
 
 1. **The tool authors the change, not you.** Drive the Agent CLI + Formal AI to
@@ -76,6 +85,20 @@ guide defines the fixture markers, logging proxy assertions, phrasing matrices,
 and CI shape needed to prove that a result came from Formal AI and that the
 client actually executed the expected tools.
 
+### Spawn a reference assistant when you need a natural-language target
+
+When a change is about *how Formal AI talks* to the user — narration before a
+tool runs, an error explanation, the wording of a question — it helps to see how
+a strong conversational assistant would phrase the same step. Spinning up a free
+model in `claude`, `codex`, or `opencode` on the *identical* prompt and reading
+its reply gives a concrete, natural target to match, and is a recommended way to
+calibrate tone before writing the seed catalog text and its tests. Treat those
+transcripts as reference examples only: the phrasing you ship still lives in the
+`.lino` seed data (never hardcoded in the solver), and every user-visible string
+must be asserted by a test. Issue #819's narration rewrite was tuned this way —
+the desirable "Let me look on your Desktop for …" shape came from comparing
+Formal AI's output against `claude` and `codex` on the reported request.
+
 ### Replaying the self-coding loop
 
 ```bash
@@ -104,6 +127,37 @@ a commit. Do not add these trailers to a human-authored or manually corrected
 commit; an honest 0% release is valid. The metric counts additions plus
 deletions from non-merge commits and ignores binary files. Reproduce it with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
+
+## Contribution rights and external material
+
+By intentionally submitting a contribution to this repository, you represent
+that you have the authority to submit it and offer your copyrightable
+contribution under the repository's [Unlicense](LICENSE), including its
+public-domain dedication and permissive fallback terms. If you do not own the
+rights or cannot make that offer, do not submit the material.
+
+Third-party material remains subject to its own license and terms. Identify the
+source, exact revision, license, required notices, and any naming or use
+conditions in the pull request and repository provenance record. Public access,
+zero price, AI generation, or appearance in an issue does not remove those
+conditions. Follow [LEGAL-COMPLIANCE.md](LEGAL-COMPLIANCE.md) and complete
+[`docs/legal/source-review.md`](docs/legal/source-review.md) before using any
+external material for training or distillation.
+
+Never paste or attach any of the following to issues, pull requests,
+discussions, logs, fixtures, or commits:
+
+- leaked material or proprietary source code;
+- a paid or access-controlled dataset without redistribution permission;
+- a large verbatim copyrighted work or bulk model output;
+- credentials, private keys, confidential information, or trade secrets; or
+- real personal data.
+
+For debugging or critique, use the smallest lawful excerpt, link to the
+authorized source, record provenance, and redact unrelated content. Maintainers
+may remove, redact, or quarantine suspect material and its downstream copies
+while a rights, privacy, safety, or Terms-of-Service concern is investigated.
+Removal from a public thread is not approval to retain another copy.
 
 ## Development Setup
 

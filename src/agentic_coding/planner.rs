@@ -10,6 +10,7 @@ use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
+use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::dreaming_audit;
@@ -25,6 +26,7 @@ use super::google_trends_learning;
 use super::intent_router;
 use super::learning_report;
 use super::ledger;
+use super::local_search;
 use super::meaning_detail;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
@@ -90,6 +92,7 @@ pub enum Capability {
     Subagent,
     ReadMany,
     MultiEdit,
+    AskUser,
 }
 
 impl Capability {
@@ -113,6 +116,7 @@ impl Capability {
             Self::Subagent => "tool:capability:subagent",
             Self::ReadMany => "tool:capability:read_many",
             Self::MultiEdit => "tool:capability:multi_edit",
+            Self::AskUser => "tool:capability:ask_user",
         }
     }
 
@@ -131,6 +135,7 @@ impl Capability {
             Self::Subagent => "subagent",
             Self::ReadMany => "read_many",
             Self::MultiEdit => "multi_edit",
+            Self::AskUser => "ask_user",
         }
     }
 }
@@ -260,17 +265,28 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if question_catalog::is_question_catalog_task(&task) {
         return Some(plan_question_catalog_step(messages, tool_names));
     }
-    // Agent-mode counterpart of the web UI's report action (issue #687).
-    if let Some(request) = report_issue::report_issue_request_for(&task, messages) {
-        return Some(report_issue::plan_report_issue_step(
-            messages, tool_names, &request,
-        ));
+    // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
+    // This is a conversation state machine: after the initial report intent it
+    // continues across structured tool results or plain-text user choices.
+    if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
+        return Some(plan);
     }
     if let Some(answer) = conversation_recall::recall_answer_for(messages) {
         return Some(AgenticPlan::Final(answer));
     }
     if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
         return Some(AgenticPlan::Final(answer));
+    }
+    if web_research::is_definition_followup(&task) {
+        if let Some(query) = web_research::definition_followup_topic(messages, &task) {
+            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+                return Some(plan);
+            }
+        } else {
+            return Some(AgenticPlan::Final(
+                web_research::definition_followup_clarification(&task),
+            ));
+        }
     }
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
@@ -282,6 +298,14 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         if let Some(file_task) = file_read_task_for(&task) {
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
+    }
+    // A meanings-driven explicit local scope dominates generic search verbs.
+    // This state machine observes each result and widens only after emptiness.
+    if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = comparison::plan_comparison_step(&task, messages, tool_names) {
+        return Some(plan);
     }
     if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
     {
@@ -377,7 +401,7 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
     if progress.done(Capability::Run) {
         return AgenticPlan::Final(tool_result::render(
             command,
-            progress.run_output.as_deref().unwrap_or_default(),
+            progress.run_outputs.last().map_or("", String::as_str),
             latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }

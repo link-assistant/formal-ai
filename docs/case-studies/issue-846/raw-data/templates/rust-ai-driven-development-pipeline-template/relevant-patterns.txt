@@ -1,0 +1,48 @@
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:20://! - experiments/ folder (experimental scripts)
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:31://!   - mjs-changed: 'true' if any .mjs files changed
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:32://!   - docs-changed: 'true' if any .md files changed
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:34://!   - any-code-changed: 'true' if any code files changed (excludes docs, changelog.d, experiments, examples)
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:172:    let excluded_folders = ["changelog.d/", "docs/", "experiments/", "examples/"];
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:218:    set_output("mjs-changed", if mjs_changed { "true" } else { "false" });
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:222:    set_output("docs-changed", if docs_changed { "true" } else { "false" });
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:253:        "any-code-changed",
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/scripts/detect-code-changes.rs:358:            "real merge pushes that introduce Rust source changes should set any-code-changed"
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/actions/setup-buildx-resilient/action.yml:13:  See docs/case-studies/issue-69/README.md and the upstream investigations in
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:60:  detect-changes:
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:68:      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:70:      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:94:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:95:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:156:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:157:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:194:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:195:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:232:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:235:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:237:        needs.detect-changes.outputs.rs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:238:        needs.detect-changes.outputs.toml-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:239:        needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:240:        needs.detect-changes.outputs.workflow-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:241:        needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:262:    needs: [detect-changes, cargo-lock]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:263:    # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:269:          github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:271:          needs.detect-changes.outputs.rs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:272:          needs.detect-changes.outputs.toml-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:273:          needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:274:          needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:346:    needs: [detect-changes, cargo-lock]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:347:    # Note: !cancelled() is required because detect-changes is skipped on workflow_dispatch,
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:353:          github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:355:          needs.detect-changes.outputs.any-code-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:356:          needs.detect-changes.outputs.rs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:357:          needs.detect-changes.outputs.toml-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:358:          needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:406:    needs: [detect-changes, cargo-lock]
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:412:          github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:414:          needs.detect-changes.outputs.rs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:415:          needs.detect-changes.outputs.toml-changed == 'true'
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:502:      github.event_name == 'push' &&
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:624:      # docs/case-studies/issue-69/README.md.
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:790:      # docs/case-studies/issue-69/README.md.
+/tmp/tmp.La44QvWGNf/rust-ai-driven-development-pipeline-template/.github/workflows/release.yml:900:        (github.event_name == 'push' && github.ref == 'refs/heads/main') ||

@@ -201,7 +201,9 @@ test.describe('formal-ai demo UI', () => {
     expect(body).not.toContain('## Reproduction Steps');
     // Issue #78: the dialog is now a single fenced code block with `U:` /
     // `A:` line prefixes instead of one Markdown subsection per message.
-    expect(body).toContain('Legend: `U` = user, `A` = agent.');
+    // Issue #839: the legend is the seeded one every surface shares, so it also
+    // names the `T` prefix the CLI uses for tool results.
+    expect(body).toContain('Legend: `U` = user, `A` = agent, `T` = tool result.');
     expect(body).toContain('U: Hello');
     expect(body).toContain('A: Hi');
     expect(body).not.toContain('reported');
