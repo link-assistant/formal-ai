@@ -5,7 +5,8 @@
 //! reported the problem. Every one of those steps is driven here through the
 //! real `handle_api_request` entry point — the same path `OpenCode` calls — so
 //! the whole conversation (find → empty result → report → multiselect →
-//! sequential report actions) is exercised end to end, and each assistant message is
+//! sequential report actions) is exercised end to end, and each assistant
+//! message is
 //! asserted to be natural and free of the raw command that `OpenCode` prints
 //! itself when the step runs.
 
@@ -167,52 +168,158 @@ fn opencode_report_asks_one_multiselect_question_without_a_command() {
     );
 }
 
+/// Three destinations produce three commands, and GitHub is filed last.
+///
+/// Until #839 all three were packed into one `set -eu` line: one exit status,
+/// one tool result, and a narration that reported whatever the last step
+/// printed. Each destination now runs on its own, so a failed export cannot
+/// hide behind a filed issue — and the exports the issue describes have already
+/// succeeded by the time `gh issue create` runs.
 #[test]
-fn opencode_report_selection_runs_the_first_atomic_action_without_leaking_it() {
+fn opencode_report_selection_runs_one_command_per_destination() {
+    let mut messages = report_selection_messages();
+
+    let harness = next_command(&mut messages);
+    assert!(harness.contains("--source harness"), "{harness}");
+    assert!(!harness.contains("gh issue create"), "{harness}");
+
+    let server = next_command(&mut messages);
+    assert!(server.contains("--source server"), "{server}");
+    assert!(!server.contains("gh issue create"), "{server}");
+
+    let github = next_command(&mut messages);
+    assert!(github.contains("gh issue create"), "{github}");
+    assert!(github.contains("--source both"), "{github}");
+    // The body is rendered by a testable command and handed over as a file;
+    // #838 was filed by a `tail -c 12000` of a proxy trace instead.
+    assert!(github.contains("formal-ai report body"), "{github}");
+    assert!(github.contains("--body-file"), "{github}");
+    assert!(!github.contains("tail -c"), "{github}");
+    assert!(!github.contains("curl"), "{github}");
+
+    // Every command the script runs is verified to exist first (#839, §5).
+    for command in [&harness, &server, &github] {
+        assert!(command.starts_with("set -eu\n"), "{command}");
+        assert!(
+            command.contains("command -v formal-ai >/dev/null 2>&1 ||"),
+            "{command}"
+        );
+    }
+    assert!(
+        github.contains("command -v gh >/dev/null 2>&1 ||"),
+        "{github}"
+    );
+}
+
+/// The real session, not a hash of the first sentence.
+///
+/// `handle_api_request` is called without a session header here, so the script
+/// asks the CLI to resolve the session this shell is inside. #838 asked for
+/// `dialog_a57762f1eb61e809`, an id no harness had ever heard of.
+#[test]
+fn the_report_command_never_invents_a_session_identifier() {
+    let mut messages = report_selection_messages();
+    let command = next_command(&mut messages);
+    assert!(command.contains("--session 'latest'"), "{command}");
+    assert!(!command.contains("--session 'dialog_"), "{command}");
+}
+
+/// Filing is only reported when GitHub printed an issue URL (#839, §5).
+#[test]
+fn a_report_without_an_issue_url_is_narrated_as_a_failure() {
+    let mut messages = report_selection_messages();
+    for _ in 0..2 {
+        let _ = next_command(&mut messages);
+    }
+    let github = next_command(&mut messages);
+    assert!(github.contains("gh issue create"), "{github}");
+
+    let failed = final_message(&messages);
+    assert!(!failed.contains("https://"), "{failed}");
+    assert!(failed.to_lowercase().contains("couldn't"), "{failed}");
+
+    let url = "https://github.com/link-assistant/formal-ai/issues/4242";
+    if let Some(last) = messages.last_mut() {
+        last["content"] = json!(url);
+    }
+    let created = final_message(&messages);
+    assert!(created.contains(url), "{created}");
+}
+
+/// The conversation up to the point where the destinations have been chosen.
+fn report_selection_messages() -> Vec<Value> {
+    vec![
+        json!({"role": "user", "content": FIND_PROMPT}),
+        json!({"role": "assistant", "content": "No matching file or folder was found."}),
+        json!({"role": "user", "content": "Report this problem"}),
+        json!({
+            "role": "assistant",
+            "tool_calls": [{
+                "id": "choose_reports",
+                "type": "function",
+                "function": {
+                    "name": "request_user_input",
+                    "arguments": "{\"questions\":[{\"multiple\":true}]}"
+                }
+            }]
+        }),
+        json!({
+            "role": "tool",
+            "tool_call_id": "choose_reports",
+            "name": "request_user_input",
+            "content": "{\"report_target\":[\"Harness log\",\"Server log\",\"GitHub issue\"]}"
+        }),
+    ]
+}
+
+/// Ask for the next step, assert it is a shell command the narration hides, and
+/// record it in `messages` as if the harness had run it.
+fn next_command(messages: &mut Vec<Value>) -> String {
     let response = chat(&json!({
         "model": "formal-ai",
-        "messages": [
-            {"role": "user", "content": FIND_PROMPT},
-            {"role": "assistant", "content": "No matching file or folder was found."},
-            {"role": "user", "content": "Report this problem"},
-            {
-                "role": "assistant",
-                "tool_calls": [{
-                    "id": "choose_reports",
-                    "type": "function",
-                    "function": {
-                        "name": "request_user_input",
-                        "arguments": "{\"questions\":[{\"multiple\":true}]}"
-                    }
-                }]
-            },
-            {
-                "role": "tool",
-                "tool_call_id": "choose_reports",
-                "name": "request_user_input",
-                "content": "{\"report_target\":[\"Harness log\",\"Server log\",\"GitHub issue\"]}"
-            }
-        ],
+        "messages": messages,
         "tools": opencode_tools(),
     }));
     let choice = &response["choices"][0];
     assert_eq!(choice["finish_reason"], "tool_calls", "{response}");
-    let call = &choice["message"]["tool_calls"][0]["function"];
-    assert_eq!(call["name"], "run_shell_command", "{response}");
+    let call = &choice["message"]["tool_calls"][0];
+    assert_eq!(call["function"]["name"], "run_shell_command", "{response}");
+    assert_command_free(&message_text(&choice["message"]), "report narration");
 
-    let arguments: Value = serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
-    let command = arguments["command"].as_str().expect("atomic command");
-    // One selected destination is fulfilled per observable step.
-    assert!(command.contains("--source harness"), "{command}");
-    assert!(!command.contains("--source server"), "{command}");
-    assert!(!command.contains("gh issue create"), "{command}");
-    assert!(!command.contains(';'), "{command}");
-    assert!(!command.contains("&&"), "{command}");
-    assert!(!command.contains("curl"), "{command}");
+    let arguments: Value =
+        serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+    let command = arguments["command"]
+        .as_str()
+        .expect("shell command")
+        .to_owned();
+    let id = format!("report_{}", messages.len());
+    messages.push(json!({
+        "role": "assistant",
+        "tool_calls": [{
+            "id": &id,
+            "type": "function",
+            "function": {"name": "run_shell_command", "arguments": call["function"]["arguments"]}
+        }]
+    }));
+    messages.push(json!({
+        "role": "tool",
+        "tool_call_id": id,
+        "name": "run_shell_command",
+        "content": ""
+    }));
+    command
+}
 
-    // But the message the user reads never contains that command.
-    let narration = message_text(&choice["message"]);
-    assert_command_free(&narration, "atomic report narration");
+/// The closing narration once every command has answered.
+fn final_message(messages: &[Value]) -> String {
+    let response = chat(&json!({
+        "model": "formal-ai",
+        "messages": messages,
+        "tools": opencode_tools(),
+    }));
+    let choice = &response["choices"][0];
+    assert_eq!(choice["finish_reason"], "stop", "{response}");
+    message_text(&choice["message"])
 }
 
 fn chat(body: &Value) -> Value {

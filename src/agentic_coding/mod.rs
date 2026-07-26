@@ -50,6 +50,7 @@ pub mod question_catalog;
 pub mod rebuild_plan;
 pub mod repair_strategy;
 mod report_issue;
+mod report_script;
 pub mod routing_learning;
 pub mod self_ast;
 pub mod self_heal;

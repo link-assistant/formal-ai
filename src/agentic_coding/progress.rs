@@ -16,7 +16,11 @@ pub struct Progress {
     pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) attempted_fetches: Vec<String>,
     pub(super) search_output: Option<String>,
-    pub(super) run_output: Option<String>,
+    /// Every shell result of this turn, in arrival order.
+    ///
+    /// A report runs one command per destination (#839), so keeping only the
+    /// last one would drop the export results the moment the issue was filed.
+    pub(super) run_outputs: Vec<String>,
     pub(super) fetch_result: Option<String>,
     pub(super) search_result: Option<String>,
 }
@@ -28,7 +32,7 @@ impl Progress {
         let mut fetched_pages = Vec::new();
         let mut attempted_fetches = Vec::new();
         let mut search_output = None;
-        let mut run_output = None;
+        let mut run_outputs = Vec::new();
         let mut fetch_result = None;
         let mut search_result = None;
         // Ignore results from earlier user turns.
@@ -67,7 +71,7 @@ impl Progress {
                 }
             }
             if capability == Capability::Run {
-                run_output = Some(message.content.plain_text());
+                run_outputs.push(message.content.plain_text());
             }
             completed.push(capability);
         }
@@ -77,7 +81,7 @@ impl Progress {
             fetched_pages,
             attempted_fetches,
             search_output,
-            run_output,
+            run_outputs,
             fetch_result,
             search_result,
         }

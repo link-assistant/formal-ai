@@ -262,9 +262,10 @@ fn test_job_skips_non_code_changes() {
         "test job should run when the CI workflow itself changed"
     );
     assert!(
-        test.contains("github.event_name == 'push'")
+        !test.contains("github.event_name == 'push'")
             && test.contains("github.event_name == 'workflow_dispatch'"),
-        "test job should still always run on push and manual dispatch"
+        "issue #846 requires pushes to obey detect-changes while manual \
+         dispatch remains unconditional"
     );
     assert!(
         // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs

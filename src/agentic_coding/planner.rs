@@ -401,7 +401,7 @@ fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str)
     if progress.done(Capability::Run) {
         return AgenticPlan::Final(tool_result::render(
             command,
-            progress.run_output.as_deref().unwrap_or_default(),
+            progress.run_outputs.last().map_or("", String::as_str),
             latest_user_text(messages).as_deref().unwrap_or_default(),
         ));
     }

@@ -5,13 +5,32 @@ use std::fmt::Write as _;
 use serde_json::json;
 
 use super::planner::{plan_one, tool_for, AgenticPlan, Capability, Progress};
-use crate::engine::{normalize_prompt, stable_id};
+use super::report_script::{shell_quote, ReportScript};
+use crate::engine::normalize_prompt;
+use crate::issue_report::{issue_title, ReportTurn, TitleSettings};
 use crate::protocol::ChatMessage;
 use crate::{language, seed};
 
+const REPORT_BODY_COMMAND: &str = "formal-ai report body";
 const CONTEXT_EXPORT_COMMAND: &str = "formal-ai context export";
 const CONTEXT_LEARN_COMMAND: &str = "formal-ai context learn";
+const ISSUE_CREATE_COMMAND: &str = "gh issue create --repo ";
 const CONTEXT_SESSION_FLAG: &str = " --session ";
+const SOURCE_FLAG: &str = " --source ";
+const OUTPUT_FLAG: &str = " --output ";
+const CONTEXT_OUTPUT_FLAG: &str = " --context-output ";
+const SURFACE_FLAG: &str = " --surface ";
+const TITLE_FLAG: &str = " --title ";
+const BODY_FILE_FLAG: &str = " --body-file ";
+/// Programs the generated script checks for before it does anything.
+const FORMAL_AI_PROGRAM: &str = "formal-ai";
+const GH_PROGRAM: &str = "gh";
+/// Surface recorded in the report body's User Context section.
+const AGENTIC_SURFACE: &str = "agentic-cli";
+const BODY_FILE: &str = "body.md";
+const CONTEXT_FILE: &str = "context.lino";
+/// Session argument that makes the CLI resolve the live harness session.
+const LATEST_SESSION: &str = "latest";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ReportTarget {
@@ -94,34 +113,23 @@ pub(super) fn plan_report_flow(
     // Earlier harness commands are part of the context being reported, not the
     // execution of this confirmation flow. Only inspect turns after "Report".
     let progress = Progress::scan(&messages[report_index + 1..]);
-    let completed = progress.count(Capability::Run);
-    let outputs = report_run_outputs(&messages[report_index + 1..]);
-    if let Some(failed) = outputs
-        .last()
-        .filter(|output| super::tool_result::normalized_payload(output).is_none())
-    {
-        return Some(AgenticPlan::Final(super::tool_result::render(
-            "shell",
-            failed,
-            &report_prompt,
-        )));
-    }
-    if completed >= targets.len() {
-        return Some(AgenticPlan::Final(report_finished(
-            &targets,
-            &outputs.join("\n"),
-            language,
-        )));
-    }
-
-    let dialog_id = dialog_id(messages);
-    let command = command_for(
-        targets[completed],
+    let dialog_id = dialog_id();
+    let commands = commands_for_targets(
+        &targets,
         contents.unwrap_or(ReportContents::Both),
         messages,
         report_index,
         &dialog_id,
     );
+    // One destination per command, so a failed export cannot be hidden behind a
+    // filed issue. The turn is only finished once every command has answered.
+    let Some(command) = commands.get(progress.run_outputs.len()) else {
+        return Some(AgenticPlan::Final(report_finished(
+            &targets,
+            &progress.run_outputs,
+            language,
+        )));
+    };
     if let Some(tool) = tool_for(tool_names, Capability::Run) {
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     }
@@ -313,6 +321,28 @@ fn report_action_governs_subject(lexicon: &seed::Lexicon, normalized: &str) -> b
     })
 }
 
+/// One shell script per destination, GitHub last.
+///
+/// #838 packed every destination into one `set -eu` line, so the exports and
+/// the filing shared a single exit status and a single tool result: whichever
+/// step failed, the narration reported what the *last* one printed. Separate
+/// commands keep each destination's output attributable, and filing last means
+/// the issue is only created once the exports it describes have succeeded.
+fn commands_for_targets(
+    targets: &[ReportTarget],
+    contents: ReportContents,
+    messages: &[ChatMessage],
+    report_index: usize,
+    dialog_id: &str,
+) -> Vec<String> {
+    let mut ordered = targets.to_vec();
+    ordered.sort_by_key(|target| usize::from(*target == ReportTarget::GithubIssue));
+    ordered
+        .iter()
+        .map(|target| command_for(*target, contents, messages, report_index, dialog_id))
+        .collect()
+}
+
 fn command_for(
     target: ReportTarget,
     contents: ReportContents,
@@ -324,104 +354,138 @@ fn command_for(
         ReportTarget::GithubIssue => github_command(contents, messages, report_index, dialog_id),
         ReportTarget::HarnessLog => export_command(
             dialog_id,
-            "harness",
+            ReportContents::Harness,
             &format!("formal-ai-harness-{dialog_id}.lino"),
         ),
         ReportTarget::ServerLog => export_command(
             dialog_id,
-            "server",
+            ReportContents::Server,
             &format!("formal-ai-server-{dialog_id}.lino"),
         ),
         ReportTarget::FormalAi => learning_command(dialog_id),
     }
 }
 
-fn report_run_outputs(messages: &[ChatMessage]) -> Vec<String> {
-    messages
-        .iter()
-        .enumerate()
-        .filter(|message| {
-            message.1.role.eq_ignore_ascii_case("tool")
-                && super::progress::result_capability(messages, message.0) == Some(Capability::Run)
-        })
-        .map(|(_, message)| message.content.plain_text())
-        .collect()
-}
-
-fn export_command(dialog_id: &str, source: &str, output: &str) -> String {
+fn export_command(dialog_id: &str, contents: ReportContents, output: &str) -> String {
     let mut command = CONTEXT_EXPORT_COMMAND.to_owned();
     command.push_str(CONTEXT_SESSION_FLAG);
     command.push_str(&shell_quote(dialog_id));
-    command.push_str(" --source ");
-    command.push_str(source);
-    command.push_str(" --output ");
+    command.push_str(SOURCE_FLAG);
+    command.push_str(source_name(contents));
+    command.push_str(OUTPUT_FLAG);
     command.push_str(&shell_quote(output));
-    command
+    let mut script = ReportScript::new();
+    script.step(FORMAL_AI_PROGRAM, command);
+    script.render()
 }
 
 fn learning_command(dialog_id: &str) -> String {
     let mut command = CONTEXT_LEARN_COMMAND.to_owned();
     command.push_str(CONTEXT_SESSION_FLAG);
     command.push_str(&shell_quote(dialog_id));
-    command
+    let mut script = ReportScript::new();
+    script.step(FORMAL_AI_PROGRAM, command);
+    script.render()
 }
 
+/// Render the body with `formal-ai report body`, then file it.
+///
+/// The body is a file, not a shell-assembled string: `formal-ai report body`
+/// fails when the export is empty, and `set -eu` then stops the script before
+/// `gh issue create` can file an issue that claims context it does not have.
 fn github_command(
     contents: ReportContents,
     messages: &[ChatMessage],
     report_index: usize,
     dialog_id: &str,
 ) -> String {
-    let include = match contents {
+    let mut script = ReportScript::new();
+    let body_file = script.scratch(BODY_FILE);
+    let context_file = script.scratch(CONTEXT_FILE);
+
+    let mut body = REPORT_BODY_COMMAND.to_owned();
+    body.push_str(CONTEXT_SESSION_FLAG);
+    body.push_str(&shell_quote(dialog_id));
+    body.push_str(SOURCE_FLAG);
+    body.push_str(source_name(contents));
+    body.push_str(SURFACE_FLAG);
+    body.push_str(AGENTIC_SURFACE);
+    body.push_str(OUTPUT_FLAG);
+    body.push_str(&body_file);
+    body.push_str(CONTEXT_OUTPUT_FLAG);
+    body.push_str(&context_file);
+    script.step(FORMAL_AI_PROGRAM, body);
+
+    let mut create = ISSUE_CREATE_COMMAND.to_owned();
+    create.push_str(&formal_ai_repo());
+    create.push_str(TITLE_FLAG);
+    create.push_str(&shell_quote(&report_title(messages, report_index)));
+    create.push_str(BODY_FILE_FLAG);
+    create.push_str(&body_file);
+    script.step(GH_PROGRAM, create);
+
+    script.render()
+}
+
+const fn source_name(contents: ReportContents) -> &'static str {
+    match contents {
         ReportContents::Both => "both",
         ReportContents::Harness => "harness",
         ReportContents::Server => "server",
-    };
-    let title = issue_title(messages, report_index);
-    format!(
-        concat!(
-            "formal-ai context report",
-            " --session {} --source {} --repository {} --title {}"
-        ),
-        shell_quote(dialog_id),
-        include,
-        formal_ai_repo(),
-        shell_quote(&title),
+    }
+}
+
+/// The session to export.
+///
+/// Until #839 this was an FNV hash of the conversation's first user message, so
+/// #838 asked for `dialog_a57762f1eb61e809` while the session it meant was
+/// `ses_06ac01b87ffeW5XnFmtYE8Amil`, and any two conversations that opened with
+/// the same sentence asked for the same export. The request being served
+/// carries the real id in `x-formal-ai-dialog-id`; when it does not, `latest`
+/// makes the CLI resolve the session this shell is actually inside.
+fn dialog_id() -> String {
+    crate::dialog_log::current_dialog_id()
+        .map(|id| id.trim().to_owned())
+        .filter(|id| !id.is_empty())
+        .unwrap_or_else(|| LATEST_SESSION.to_owned())
+}
+
+fn report_title(messages: &[ChatMessage], report_index: usize) -> String {
+    issue_title(
+        &title_turns(messages, report_index),
+        &TitleSettings::from_seed(),
     )
 }
 
-fn dialog_id(messages: &[ChatMessage]) -> String {
-    let basis = messages
+/// The user turns the title convention may quote (#839, §4).
+///
+/// Only the turn that opened *this* report flow is marked report-invoking: an
+/// earlier report request that the agent already answered is part of the story
+/// being reported, which is why issue #826's title ends with `Зарепорти баг`.
+fn title_turns(messages: &[ChatMessage], report_index: usize) -> Vec<ReportTurn> {
+    messages[..=report_index]
         .iter()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
-        .unwrap_or_default();
-    stable_id("dialog", &basis)
+        .enumerate()
+        .filter(|(_, message)| message.role.eq_ignore_ascii_case("user"))
+        .map(|(index, message)| ReportTurn {
+            report_invoking: index == report_index,
+            ..ReportTurn::new(message.role.as_str(), message.content.user_request_text())
+        })
+        .collect()
 }
 
-fn issue_title(messages: &[ChatMessage], report_index: usize) -> String {
-    let subject = messages[..report_index]
+/// Narrate what the destinations reported, over every command that ran.
+fn report_finished(targets: &[ReportTarget], run_outputs: &[String], language: &str) -> String {
+    let trimmed = run_outputs
         .iter()
-        .rev()
-        .find(|message| message.role.eq_ignore_ascii_case("user"))
-        .map(|message| message.content.user_request_text())
-        .filter(|text| !text.trim().is_empty());
-    subject.map_or_else(
-        || config("issue_report_default_title"),
-        |text| {
-            let text = text.split_whitespace().collect::<Vec<_>>().join(" ");
-            format!(
-                "{}{}",
-                config("issue_report_title_prefix"),
-                truncate(&text, 72)
-            )
-        },
-    )
-}
-
-fn report_finished(targets: &[ReportTarget], run_output: &str, language: &str) -> String {
-    let trimmed = run_output.trim();
+        .map(|output| output.trim())
+        .filter(|output| !output.is_empty())
+        .collect::<Vec<_>>()
+        .join("\n");
     if targets.contains(&ReportTarget::GithubIssue) {
+        // Honesty rule (#839, §5): the URL GitHub printed is the only evidence
+        // that an issue exists. Without it the report failed, whatever else the
+        // exports may have printed.
         if let Some(url) = trimmed
             .split_whitespace()
             .find(|token| token.starts_with("https://") && token.contains("/issues/"))
@@ -457,20 +521,4 @@ fn render(key: &str, values: &[(&str, &str)]) -> String {
     values.iter().fold(config(key), |text, (name, value)| {
         text.replace(&format!("{{{name}}}"), value)
     })
-}
-
-fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
-
-fn truncate(value: &str, max: usize) -> String {
-    let value = value.trim();
-    if value.chars().count() <= max {
-        return value.to_owned();
-    }
-    let head = value
-        .chars()
-        .take(max.saturating_sub(1))
-        .collect::<String>();
-    format!("{}…", head.trim_end())
 }

@@ -619,6 +619,16 @@ meanings
     lexeme en
       surface
         text "context dialog log unavailable"
+  context_export_empty
+    defined-by field
+    lexeme en
+      surface
+        text "context export empty"
+  context_harness_unavailable
+    defined-by field
+    lexeme en
+      surface
+        text "context harness unavailable"
   context_learning_failed
     defined-by field
     lexeme en
@@ -644,6 +654,11 @@ meanings
     lexeme en
       surface
         text "context programming"
+  context_session_unresolved
+    defined-by field
+    lexeme en
+      surface
+        text "context session unresolved"
   context_signal_processing
     defined-by context
     lexeme en
@@ -1344,6 +1359,26 @@ meanings
     lexeme en
       surface
         text "issue report body intro"
+  issue_report_bytes_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report bytes label"
+  issue_report_command_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report command missing"
+  issue_report_context_excerpt_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context excerpt note"
+  issue_report_context_gist_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context gist note"
   issue_report_context_heading
     defined-by field
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "issue report context link intro"
-  issue_report_conversation_heading
-    defined-by field
-    lexeme en
-      surface
-        text "issue report conversation heading"
-  issue_report_created
-    defined-by field
-    lexeme en
-      surface
-        text "issue report created"
-  issue_report_created_with_url
-    defined-by field
-    lexeme en
-      surface
-        text "issue report created with url"
-  issue_report_default_title
-    defined-by field
-    lexeme en
-      surface
-        text "issue report default title"
-  issue_report_empty_history
-    defined-by field
-    lexeme en
-      surface
-        text "issue report empty history"
-  issue_report_failed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report failed"
-  issue_report_ran_command
-    defined-by field
-    lexeme en
-      surface
-        text "issue report ran command"

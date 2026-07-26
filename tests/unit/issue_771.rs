@@ -21,6 +21,7 @@
 use std::fmt::Write as _;
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
+use formal_ai::issue_report::{truncate_records, ReportAttachment, ReportBody, ReportLabels};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const TOOLS: [&str; 5] = ["websearch", "webfetch", "read", "write", "bash"];
@@ -278,8 +279,8 @@ mod multilingual_extraction {
     }
 }
 
-// Requirement 2 after #822: one atomic CLI command owns complete context
-// export and issue creation instead of interpolating a transcript into shell.
+// Requirement 2 after #822: the issue command uploads the canonical complete
+// Links Notation context instead of rebuilding a lossy Markdown transcript.
 mod report_format {
     use super::*;
 
@@ -292,6 +293,13 @@ mod report_format {
         report_command(&messages)
     }
 
+    /// A phrase declared once in the seed, read the way the report reads it.
+    fn seed_value(key: &str) -> String {
+        formal_ai::seed::agent_info()
+            .remove(key)
+            .unwrap_or_else(|| panic!("seed defines {key}"))
+    }
+
     #[test]
     fn a_multiline_turn_is_not_interpolated_into_the_shell_command() {
         let command = command_for(
@@ -299,18 +307,23 @@ mod report_format {
             "# Обзор\n\nСписок:\n- SpaceX\n- Blue Origin\n\nИтого семь стран.",
         );
         assert!(!command.contains("# Обзор"), "{command}");
-        assert!(command.starts_with("formal-ai context report"), "{command}");
+        assert!(command.contains("formal-ai report body"), "{command}");
         assert!(!command.contains("curl"), "{command}");
-        assert!(!command.contains(';'), "{command}");
-        assert_eq!(command.lines().count(), 1, "{command}");
+        assert!(command.contains("--body-file"), "{command}");
     }
 
     #[test]
     fn complete_context_is_requested_in_links_notation() {
         let command = command_for("first question", "an answer");
         assert!(command.contains("--source both"), "{command}");
-        assert!(command.contains("--repository link-assistant/formal-ai"));
-        assert!(command.contains("--title 'Formal AI: first question'"));
+        // The complete `.lino` context is written beside the body, under a real
+        // filename: #838 attached a gist literally named after the unexpanded
+        // `mktemp` template it was given (#839 §1).
+        assert!(command.contains("--context-output"), "{command}");
+        assert!(command.contains("context.lino"), "{command}");
+        for line in command.lines().filter(|line| !line.contains("mktemp")) {
+            assert!(!line.contains("XXXXXX"), "{command}");
+        }
     }
 
     #[test]
@@ -321,7 +334,7 @@ mod report_format {
     }
 
     #[test]
-    fn oversized_context_is_delegated_without_embedding_any_context_bytes() {
+    fn oversized_context_is_bounded_on_record_boundaries_not_by_the_shell() {
         let mut messages = Vec::new();
         for _ in 0..12 {
             messages.push(ChatMessage::user(scraped_page()));
@@ -329,19 +342,74 @@ mod report_format {
         }
         messages.push(ChatMessage::user("report"));
         let command = report_command(&messages);
-        assert!(command.starts_with("formal-ai context report"), "{command}");
-        assert!(command.chars().count() < 512, "{command}");
-        assert_eq!(command.matches("Главное меню").count(), 1, "{command}");
-        assert!(!command.contains("gh gist create"), "{command}");
+        // Bounding the context is `formal-ai report body`'s job now. The shell
+        // used to do it with `tail -c 12000 | sed '1d'`, a byte offset that
+        // lands mid-record and destroyed the export in #838 (#839 §2.3).
+        for slice in ["wc -c", "tail -c", "head -c", "sed '1d'"] {
+            assert!(!command.contains(slice), "{slice} in: {command}");
+        }
+
+        // What replaced it: whole records from both ends of the run and an
+        // explicit count of the ones dropped in between.
+        let mut context = String::from("conversation ses_771\n  messages\n");
+        for index in 0..200 {
+            write!(
+                context,
+                "    message\n      role user\n      text \"turn {index}: {}\"\n",
+                scraped_page().lines().next().unwrap_or_default()
+            )
+            .expect("writing to a String cannot fail");
+        }
+        let label = seed_value("issue_report_omitted_records");
+        let preview = truncate_records(&context, 12_000, &label);
+        assert!(preview.text.len() <= 12_000, "{}", preview.text.len());
+        assert!(preview.omitted > 0, "the fixture must not fit");
+        assert!(preview.text.contains("omitted"), "{}", preview.text);
+        assert!(
+            preview.text.starts_with("conversation ses_771\n"),
+            "{}",
+            preview.text
+        );
+        for line in preview.text.lines() {
+            assert!(
+                line.is_empty()
+                    || line.starts_with("conversation ")
+                    || line.starts_with("  messages")
+                    || line.starts_with("    message")
+                    || line.starts_with("      role ")
+                    || line.starts_with("      text ")
+                    || line.trim_start().starts_with("..."),
+                "record split at: {line}"
+            );
+        }
     }
 
     #[test]
-    fn report_body_copy_remains_seed_configuration_for_the_cli() {
-        let command = command_for("a question", "an answer");
-        let config = include_str!("../../data/seed/agent-info.lino");
-        assert!(command.starts_with("formal-ai context report"), "{command}");
-        assert!(config.contains("Reported from an agentic session"));
-        assert!(config.contains("### Complete agentic context"));
+    fn the_complete_context_heading_frames_the_upload_in_the_rendered_body() {
+        // The framing moved out of the shell heredoc and into the shared body
+        // builder, so the same headings now reach web, CLI and every other
+        // surface (#839 §3).
+        let body = ReportBody {
+            labels: ReportLabels::from_seed(),
+            attachments: vec![ReportAttachment {
+                heading: seed_value("issue_report_context_heading"),
+                note: seed_value("issue_report_context_note"),
+                language: String::from("lino"),
+                content: String::from("conversation ses_771\n"),
+            }],
+            ..ReportBody::default()
+        };
+        let rendered = body.render();
+        assert!(
+            rendered.contains("### Complete agentic context"),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("complete Links Notation context"),
+            "{rendered}"
+        );
+        assert!(rendered.contains("```lino"), "{rendered}");
+        assert!(rendered.contains("conversation ses_771"), "{rendered}");
     }
 }
 
@@ -370,7 +438,7 @@ mod reported_session {
         let command = report_command(&messages);
         assert!(!command.contains("Главное меню"), "{command}");
         assert!(command.contains("--source both"), "{command}");
-        assert!(command.starts_with("formal-ai context report"), "{command}");
-        assert!(!command.contains(';'), "{command}");
+        assert!(command.contains("gh issue create"), "{command}");
+        assert!(command.contains("--body-file"), "{command}");
     }
 }

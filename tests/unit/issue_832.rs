@@ -14,8 +14,19 @@ fn one_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     calls.into_iter().next().unwrap()
 }
 
-fn report_command() -> String {
-    let messages = vec![
+fn command_of(call: &PlannedToolCall) -> String {
+    serde_json::from_str::<Value>(&call.arguments).expect("tool arguments are JSON")["command"]
+        .as_str()
+        .expect("report command")
+        .to_owned()
+}
+
+/// One command per selected destination, in planned order.
+///
+/// #839 §8 replaced the single combined step with individually verifiable ones,
+/// so the transcript has to carry each result back before the next is planned.
+fn report_commands() -> Vec<String> {
+    let mut messages = vec![
         ChatMessage::user("The local folder search returned no result"),
         ChatMessage::user("Report"),
         ChatMessage::tool_result(
@@ -24,22 +35,48 @@ fn report_command() -> String {
             r#"{"report_target":["Harness log","Server log","GitHub issue"]}"#,
         ),
     ];
-    let call = one_call(&messages, &["request_user_input", "bash"]);
-    serde_json::from_str::<Value>(&call.arguments).expect("tool arguments are JSON")["command"]
-        .as_str()
-        .expect("report command")
-        .to_owned()
+    let mut commands = Vec::new();
+    for _ in 0..3 {
+        let call = one_call(&messages, &["request_user_input", "bash"]);
+        assert_eq!(call.tool, "bash");
+        commands.push(command_of(&call));
+        let id = format!("report_{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            id.clone(),
+            call.tool,
+            call.arguments,
+        )]));
+        messages.push(ChatMessage::tool_result(
+            id,
+            "bash",
+            "https://github.com/link-assistant/formal-ai/issues/1",
+        ));
+    }
+    commands
 }
 
 #[test]
 fn every_report_context_is_exported_by_the_local_cli() {
-    let command = report_command();
-    assert!(command.contains("formal-ai context export"), "{command}");
-    assert!(command.contains("--source harness"), "{command}");
-    assert!(!command.contains("--source server"), "{command}");
-    assert!(!command.contains("--source both"), "{command}");
-    assert!(!command.contains("curl"), "{command}");
-    assert!(!command.contains(';'), "{command}");
+    let commands = report_commands();
+    // GitHub is filed last, and its body is rendered locally too: `formal-ai
+    // report body` exports the merged context and writes the document #839 §3
+    // specifies, instead of assembling one in the shell.
+    let expected = [
+        ("harness", "formal-ai context export"),
+        ("server", "formal-ai context export"),
+        ("both", "formal-ai report body"),
+    ];
+
+    for ((source, program), command) in expected.iter().zip(&commands) {
+        assert!(
+            command.contains(program) && command.contains(&format!("--source {source}")),
+            "missing local {source} export in: {command}"
+        );
+        assert!(!command.contains("curl"), "{command}");
+        assert!(!command.contains("FORMAL_AI_BASE_URL"), "{command}");
+    }
+    let github = &commands[2];
+    assert!(github.contains("gh issue create"), "{github}");
 }
 
 #[test]
@@ -63,17 +100,12 @@ fn local_report_export_is_available_in_every_supported_language() {
                 r#"{"report_contents":"both_logs"}"#,
             ),
         ];
-        let call = one_call(&messages, &["request_user_input", "bash"]);
-        let command = serde_json::from_str::<Value>(&call.arguments)
-            .expect("tool arguments are JSON")["command"]
-            .as_str()
-            .expect("report command")
-            .to_owned();
+        let command = command_of(&one_call(&messages, &["request_user_input", "bash"]));
 
         assert!(
-            command.contains("formal-ai context report")
+            command.contains("formal-ai report body")
                 && command.contains("--source both")
-                && command.contains("--repository link-assistant/formal-ai"),
+                && command.contains("gh issue create"),
             "language={language}, prompt={prompt:?}: {command}"
         );
         assert!(!command.contains("curl"), "language={language}: {command}");

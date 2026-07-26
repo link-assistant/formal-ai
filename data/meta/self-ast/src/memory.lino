@@ -2,9 +2,9 @@ self_ast_census
   target src/memory.rs
   language rust
   fidelity signature
-  byte_len 20996
-  line_count 592
-  content_id source_module_0450cc7d94d2b9e1
+  byte_len 21004
+  line_count 593
+  content_id source_module_3ea693058f8b85e8
   symbol_count 37
   symbols
     module bundle 43 43
@@ -41,6 +41,6 @@ self_ast_census
     function unescape_value 499 519
     function parse_quoted 521 536
     function split_first_token 538 544
-    function isoformat_now 550 558
-    function format_iso8601 561 570
-    function days_to_date 577 592
+    function isoformat_now 551 559
+    function format_iso8601 562 571
+    function days_to_date 578 593

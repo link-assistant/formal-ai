@@ -1,4 +1,129 @@
 meanings
+  pattern_courtesy_keyword_spasibo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword spasibo"
+  pattern_courtesy_keyword_thanks
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword thanks"
+  pattern_courtesy_keyword_xiexie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword xiexie"
+  pattern_courtesy_phrase_fine_thank_you
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase fine thank you"
+  pattern_courtesy_phrase_horosho_spasibo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase horosho spasibo"
+  pattern_courtesy_phrase_thank_you
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase thank you"
+  pattern_courtesy_phrase_theek_dhanyavad
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase theek dhanyavad"
+  pattern_courtesy_phrase_wo_hen_hao_xiexie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase wo hen hao xiexie"
+  pattern_farewell_keyword_alvida
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword alvida"
+  pattern_farewell_keyword_bye
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword bye"
+  pattern_farewell_keyword_ciao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword ciao"
+  pattern_farewell_keyword_goodbye
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword goodbye"
+  pattern_farewell_keyword_poka
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword poka"
+  pattern_farewell_keyword_zaijian
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell keyword zaijian"
+  pattern_farewell_phrase_do_svidaniya
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern farewell phrase do svidaniya"
+  pattern_greeting_keyword_hello
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword hello"
+  pattern_greeting_keyword_hey
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword hey"
+  pattern_greeting_keyword_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword hi"
+  pattern_greeting_keyword_namaste
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword namaste"
+  pattern_greeting_keyword_nihao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword nihao"
+  pattern_greeting_keyword_privet
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword privet"
+  pattern_greeting_keyword_shalom
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword shalom"
+  pattern_greeting_keyword_zdravstvuyte
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting keyword zdravstvuyte"
+  pattern_greeting_phrase_shabbat_shalom
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern greeting phrase shabbat shalom"
+  pattern_how_do_x_work_prefix_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern how do x work prefix en"
   pattern_how_does_it_work_en
     defined-by prompt_pattern
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "response greeting ru"
-  response_greeting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting zh"
-  response_identity_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity en"
-  response_identity_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity hi"
-  response_identity_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity ru"
-  response_identity_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response identity zh"
-  response_inappropriate_content_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content en"
-  response_inappropriate_content_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content hi"
-  response_inappropriate_content_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content ru"
-  response_inappropriate_content_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response inappropriate content zh"
-  response_kupi_slona_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona en"
-  response_kupi_slona_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona hi"
-  response_kupi_slona_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona ru"
-  response_kupi_slona_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response kupi slona zh"
-  response_learn_from_source_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source en"
-  response_learn_from_source_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source hi"
-  response_learn_from_source_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source ru"
-  response_learn_from_source_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response learn from source zh"
-  response_lexeme_import_block_parse_failed_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed en"
-  response_lexeme_import_block_parse_failed_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed hi"
-  response_lexeme_import_block_parse_failed_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed ru"
-  response_lexeme_import_block_parse_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import block parse failed zh"
-  response_lexeme_import_cache_budget_reached_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached en"
-  response_lexeme_import_cache_budget_reached_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached hi"
-  response_lexeme_import_cache_budget_reached_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached ru"
-  response_lexeme_import_cache_budget_reached_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import cache budget reached zh"

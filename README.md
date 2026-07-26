@@ -797,6 +797,10 @@ operation, and recommend larger storage when the reserve cannot be met.
 
 The Rust library re-exports the same helpers — `export_memory_full`, `import_memory_full`, `suggest_memory_migrations`, `BundleInfo`, `ParsedBundle` — so embedders writing their own surface get the same defaults. The prefilled **Report issue** link records the dialog as a single compact `U:`/`A:` code block and points to [`docs/upload-memory.md`](docs/upload-memory.md) for attaching the full memory export (GitHub Gist or `.zip` workflow, plus redaction reminders) instead of repeating those instructions inline.
 
+### Reporting an issue
+
+Asking Formal AI to `report issue` — in the web app, from a coding harness, or through `formal-ai report body` — files the same six-section document from every surface: environment, user context, the whole dialog, the reasoning trace, a description placeholder, and the memory-attachment pointer. One builder produces it, so the surfaces cannot drift apart. [`docs/report-issue.md`](docs/report-issue.md) documents the document, the CLI flags, what each `--source` means, how oversize conversations are attached, and who can read the gist that carries them.
+
 ### Teaching behavior in chat
 
 The chat surface can explain and modify behavior rules without leaving the dialog. Behavior is surfaced as a series of `When X then Y` (or `When X do Y`) statements grouped by topic, and the same grammar can also update the dialog:

@@ -43,8 +43,60 @@ agent_info
     value "Ran {command} to file the issue on GitHub."
   field issue_report_tool_missing
     value "I can report this to {repository} once the client advertises a shell tool."
+  field issue_report_dialog_legend
+    value "Legend: `U` = user, `A` = agent, `T` = tool result."
+  field issue_report_no_messages
+    value "No messages have been sent yet."
+  field issue_report_omitted_messages
+    value "... omitted {count} earlier messages ..."
+  field issue_report_omitted_message
+    value "... omitted {count} earlier message ..."
+  field issue_report_omitted_records
+    value "... omitted {count} records ..."
+  field issue_report_trace_heading
+    value "Focused assistant turn:"
+  field issue_report_description_placeholder
+    value "<!-- Please describe what looked wrong or incomplete. -->"
+  field issue_report_memory_note
+    value "Click **Export memory** to save `formal-ai-memory.lino`, redact it, and attach it (as a `.zip` if needed). See the [upload-memory guide](https://github.com/link-assistant/formal-ai/blob/main/docs/upload-memory.md)."
+  field issue_report_context_heading
+    value "### Complete agentic context"
+  field issue_report_context_note
+    value "The complete Links Notation context of this session is attached below."
+  field issue_report_context_gist_note
+    value "The complete Links Notation context is attached as a gist: {url}"
+  field issue_report_context_excerpt_note
+    value "The complete Links Notation context did not fit, so {count} records are omitted from the excerpt below."
+  field issue_report_gist_failed
+    value "The complete context could not be uploaded as a gist: {error}"
+  field issue_report_export_heading
+    value "How this context was assembled:"
+  field issue_report_command_missing
+    value "The command {command} is not installed, so this report could not run."
+  field issue_report_version_label
+    value Version
+  field issue_report_timestamp_label
+    value Timestamp
+  field issue_report_surface_label
+    value Surface
+  field issue_report_language_label
+    value "UI language"
+  field issue_report_session_label
+    value Session
+  field issue_report_source_label
+    value "Context source"
+  field issue_report_records_label
+    value "Exported records"
+  field issue_report_bytes_label
+    value "Exported bytes"
   field context_opencode_export_failed
     value "OpenCode context export failed: {error}"
+  field context_harness_unavailable
+    value "Harness session {session} could not be exported: {error}"
+  field context_export_empty
+    value "The context export for session {session} contains no messages."
+  field context_session_unresolved
+    value "No harness session could be resolved; set {variable} or pass an explicit --session."
   field context_dialog_log_unavailable
     value "{variable} is not configured"
   field context_learning_failed

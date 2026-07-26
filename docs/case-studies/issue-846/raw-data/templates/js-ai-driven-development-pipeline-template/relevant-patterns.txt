@@ -1,0 +1,59 @@
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:15:# See docs/case-studies/issue-23 for why this is critical.
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/simulate-fresh-merge.sh:20:echo "This prevents stale merge preview issues (see docs/case-studies/issue-23)"
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/check-file-line-limits.sh:15:# docs/case-studies/*/data/ mirror external sources verbatim and must not
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/check-file-line-limits.sh:54:# output, and docs/case-studies/*/data holds verbatim external sources
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/check-file-line-limits.sh:61:  -not -path "./docs/case-studies/*/data/*" \
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:20:// - experiments/ folder (experimental scripts)
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:24://   mjs-changed, js-changed, package-changed, docs-changed,
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:25://   workflow-changed, any-code-changed
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:111:  const excludedFolders = ['.changeset/', 'docs/', 'experiments/', 'examples/'];
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:136:  setOutput('mjs-changed', mjsChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:147:  setOutput('docs-changed', docsChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:170:  setOutput('any-code-changed', anyCodeChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:23:# See: docs/case-studies/issue-25/DETAILED-COMPARISON.md for context
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/links.yml:61:            --exclude-path docs/case-studies
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:51:# See: docs/case-studies/issue-25/DETAILED-COMPARISON.md for context
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:58:  detect-changes:
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:66:      mjs-changed: ${{ steps.changes.outputs.mjs-changed }}
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:69:      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:71:      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:90:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:92:      github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:93:      needs.detect-changes.outputs.mjs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:94:      needs.detect-changes.outputs.js-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:107:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:109:      github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:110:      needs.detect-changes.outputs.mjs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:111:      needs.detect-changes.outputs.js-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:112:      needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:113:      needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:157:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:158:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:194:  # See docs/case-studies/issue-23 for why fresh merge simulation is critical
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:201:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:203:      github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:204:      needs.detect-changes.outputs.mjs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:205:      needs.detect-changes.outputs.js-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:206:      needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:207:      needs.detect-changes.outputs.package-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:208:      needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:243:  # See docs/case-studies/issue-23 for why this is critical.
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:254:        detect-changes,
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:267:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:268:        needs.detect-changes.outputs.any-code-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:269:        needs.detect-changes.outputs.mjs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:270:        needs.detect-changes.outputs.js-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:271:        needs.detect-changes.outputs.package-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:272:        needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:274:      (github.event_name == 'push' || needs.changeset-check.result == 'success' || needs.changeset-check.result == 'skipped') &&
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:347:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:348:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:384:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:386:      github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:387:      needs.detect-changes.outputs.docs-changed == 'true'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/release.yml:437:      github.event_name == 'push' &&
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:50:        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:59:          GITHUB_PAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:70:        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:81:    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+/tmp/tmp.La44QvWGNf/js-ai-driven-development-pipeline-template/.github/workflows/example-app.yml:223:      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
