@@ -15,7 +15,7 @@ mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
-use cli_clients::{run_clients, ClientsFormat};
+use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
@@ -148,6 +148,8 @@ enum Command {
     Clients {
         #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
         format: ClientsFormat,
+        #[command(subcommand)]
+        action: Option<ClientsAction>,
     },
     /// Import lexical semantics in bulk from external sources (issue #660,
     /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
@@ -574,7 +576,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
-        Command::Clients { format } => run_clients(format),
+        Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,

@@ -30,8 +30,9 @@ rounds. A `curl` using the canonical key passed the whole time.
 | `clients.lock` | `<client-id> <installer> <spec>` — the pinned version of every client. |
 | `install_client.sh` | Installs one pinned client (`npm`/`npm-native`/`pipx`/`tarball`/`appimage`/`script`). |
 | `lib.sh` | Shared harness: stack management, fixtures, proxy assertions, headless and PTY drivers. |
+| `plan_matrix.sh` | Generates CI/local leg properties from the seed registry plus `clients.lock`. |
 | `run_leg.sh` | Runs every case for one client. |
-| `run_matrix.sh` | Runs several legs one after another on a single machine (CI runs them in parallel). |
+| `run_matrix.sh` | Runs several legs serially and learns from their successful observations. |
 | `replay.sh` | Replays the committed transcripts offline; needs `jq` and nothing else. |
 | `recorded/` | Committed transcripts, one directory per client and case. |
 
@@ -44,9 +45,10 @@ seed without a pin, a CI leg and a documented row fails
 
 ## The four leg shapes
 
-Not every client answers a prompt, so not every leg can assert on one. Handing a
-client assertions its integration can never satisfy produces a red leg that
-means nothing — or, worse, a green one. `matrix_client_shape` picks:
+Not every client answers a prompt, so not every leg can assert on one. The
+`verification` block in `data/seed/client-integrations.lino` selects the surface
+and carries the exact flags, environment, output constraints, launch checks,
+sandbox prerequisites and file-delivery contract used by the leg:
 
 | Shape | Clients | What the leg proves |
 | --- | --- | --- |
@@ -101,8 +103,9 @@ experiments/agentic_cli_matrix/run_matrix.sh codex claude # just these
 ```
 
 Each leg's base port is its position in `clients.lock` — `8900 + index * 60` —
-which is the same formula the workflow's `base_port` values use.
-`tests/unit/issue_671_matrix_coverage.rs` asserts the two agree, because a leg
+which is emitted by `plan_matrix.sh` for both the workflow and local runner.
+`tests/unit/issue_671_matrix_coverage.rs` asserts the generated plan has one
+unique range per seeded client, because a leg
 that quietly shares a port with another leg ends up asserting against a
 stranger's server.
 
@@ -160,6 +163,28 @@ and must *not* name our model (if it ever does, the client stopped driving its
 own and the leg is no longer testing the MCP surface), and a `launch` transcript
 legitimately holds only startup traffic — its real assertion, the process
 configuration, is live-only and cannot be archived.
+
+## Automatic contract learning
+
+Successful prompt legs write
+`artifacts/<client>/contract-observations.jsonl`. The headless `read-file` and
+interactive cases deliberately use different task wording; both must succeed
+before the learner treats the behavior as reusable. `run_matrix.sh` combines
+those files locally, and the workflow's `learn` job combines them across
+parallel artifacts:
+
+```bash
+formal-ai clients learn artifacts/*/contract-observations.jsonl \
+  > artifacts/logs/client-contract-learning.lino
+```
+
+The result compares observed file delivery with the seeded contract and
+proposes a response-tool requirement only when the same tool was invoked for
+every independently worded observation. It is an audit artifact, never a seed
+edit: each proposal points to its proxy transcript and remains
+`awaiting_human_review`. See the
+[Agent CLI reference execution](../../docs/case-studies/issue-671/README.md)
+for the committed 16-observation report and real CLI trace.
 
 Some clients run their shell tool inside their own sandbox. Codex uses
 bubblewrap, which needs unprivileged user namespaces; inside a container that

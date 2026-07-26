@@ -10,6 +10,9 @@
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
+use formal_ai::client_contract_learning::{
+    learn_client_contracts, load_observations, ClientContractObservation, DeliveryMode,
+};
 use formal_ai::seed::client_integrations;
 
 fn root() -> PathBuf {
@@ -76,17 +79,22 @@ fn every_pinned_client_is_a_real_seeded_client() {
 }
 
 #[test]
-fn every_seeded_client_has_a_ci_leg() {
+fn ci_matrix_is_generated_instead_of_repeating_client_ids() {
     let workflow = read(".github/workflows/agentic-cli-matrix.yml");
-    let missing: Vec<_> = seeded_ids()
-        .into_iter()
-        .filter(|id| !workflow.contains(&format!("- client: {id}\n")))
-        .collect();
-
     assert!(
-        missing.is_empty(),
-        "clients with no leg in .github/workflows/agentic-cli-matrix.yml: {missing:?}"
+        workflow.contains("fromJSON(needs.build.outputs.matrix)"),
+        "CI must consume the registry-derived matrix plan"
     );
+    for id in seeded_ids() {
+        assert!(
+            !workflow.contains(&format!("matrix.client == '{id}'")),
+            "CI behavior for {id} is hardcoded instead of coming from the client contract"
+        );
+        assert!(
+            !workflow.contains(&format!("- client: {id}\n")),
+            "CI repeats {id} instead of deriving the leg from the registry"
+        );
+    }
 }
 
 #[test]
@@ -105,11 +113,10 @@ fn every_seeded_client_has_a_documented_matrix_row() {
 
 #[test]
 fn every_ci_leg_gets_its_own_port_range() {
-    let workflow = read(".github/workflows/agentic-cli-matrix.yml");
-    let ports: Vec<u32> = workflow
-        .lines()
-        .filter_map(|line| line.trim().strip_prefix("base_port: "))
-        .filter_map(|value| value.trim().parse().ok())
+    let ports: Vec<usize> = locked_order()
+        .iter()
+        .enumerate()
+        .map(|(index, _)| 8900 + index * 60)
         .collect();
 
     assert_eq!(
@@ -133,24 +140,212 @@ fn every_ci_leg_gets_its_own_port_range() {
     }
 }
 
-/// CI runs the legs in parallel; `run_matrix.sh` runs them one after another on
-/// a single machine and derives each port from the client's lockfile position.
-/// The two must agree, or a local reproduction of a red leg quietly drives a
-/// different port than CI did.
 #[test]
-fn ci_leg_ports_match_the_local_runner_formula() {
+fn ci_and_local_runners_share_the_registry_plan() {
     let workflow = read(".github/workflows/agentic-cli-matrix.yml");
-    for (index, id) in locked_order().iter().enumerate() {
-        let expected = 8900 + index * 60;
-        let leg = workflow
-            .split("- client: ")
-            .find(|chunk| chunk.starts_with(&format!("{id}\n")))
-            .unwrap_or_else(|| panic!("no CI leg for {id}"));
+    let planner = read("experiments/agentic_cli_matrix/plan_matrix.sh");
+    assert!(workflow.contains("experiments/agentic_cli_matrix/plan_matrix.sh"));
+    assert!(read("experiments/agentic_cli_matrix/run_matrix.sh").contains("matrix_plan"));
+    assert!(
+        planner.contains("set -euo pipefail"),
+        "a failed registry lookup must abort matrix generation"
+    );
+}
+
+#[test]
+fn every_client_behavior_is_a_seeded_verification_contract() {
+    for client in client_integrations() {
+        let contract = &client.verification;
         assert!(
-            leg.contains(&format!("base_port: {expected}\n")),
-            "leg {id} must use base_port {expected} (position {index} in clients.lock)"
+            !contract.surface.is_empty(),
+            "{} has no verification surface",
+            client.id
+        );
+        if contract.surface == "cli" {
+            assert!(
+                matches!(contract.file_delivery.as_str(), "tool_call" | "in_band"),
+                "{} has no testable file-delivery contract",
+                client.id
+            );
+        }
+        if contract.surface == "server" {
+            assert!(
+                !contract.launch_args.is_empty()
+                    && !contract.launch_ready.is_empty()
+                    && !contract.launch_http_path.is_empty(),
+                "{} has no complete server launch contract",
+                client.id
+            );
+        }
+        if contract.surface == "mcp" {
+            assert!(
+                !contract.vendor_auth_error.is_empty(),
+                "{} does not seed its upstream credential boundary",
+                client.id
+            );
+        }
+    }
+}
+
+#[test]
+fn matrix_scripts_do_not_branch_on_client_identity() {
+    for script in [
+        "experiments/agentic_cli_matrix/lib.sh",
+        "experiments/agentic_cli_matrix/run_leg.sh",
+    ] {
+        let contents = read(script);
+        for forbidden in [
+            r#"[ "$CLIENT" ="#,
+            r#"case "$CLIENT" in"#,
+            r#"case "$1" in"#,
+        ] {
+            assert!(
+                !contents.contains(forbidden),
+                "{script} still selects behavior with `{forbidden}`"
+            );
+        }
+    }
+}
+
+#[test]
+fn repeated_independent_observations_propose_a_human_gated_reusable_contract() {
+    let observations = vec![
+        ClientContractObservation::new(
+            "future-client",
+            "read_file",
+            "read the fixture and return its bytes",
+            DeliveryMode::ToolCall,
+            ["workspace_read"],
+            "headless.jsonl",
+        ),
+        ClientContractObservation::new(
+            "future-client",
+            "read_file",
+            "show the exact text stored in the fixture",
+            DeliveryMode::ToolCall,
+            ["workspace_read"],
+            "interactive.jsonl",
+        ),
+    ];
+
+    let report = learn_client_contracts(&observations, &[]);
+    assert!(report.awaiting_human_review);
+    assert_eq!(report.proposals.len(), 1);
+    assert_eq!(report.proposals[0].client_id, "future-client");
+    assert_eq!(report.proposals[0].value, "workspace_read");
+    assert!(report
+        .links_notation()
+        .contains("decision \"awaiting_human_review\""));
+}
+
+#[test]
+fn successful_matrix_runs_feed_the_human_gated_learner() {
+    let leg = read("experiments/agentic_cli_matrix/run_leg.sh");
+    let workflow = read(".github/workflows/agentic-cli-matrix.yml");
+    assert!(
+        leg.contains("matrix_observe_case read_file"),
+        "real read-file cases are not normalized into learning observations"
+    );
+    assert!(
+        leg.contains("verification.required_response_tools"),
+        "human-approved response-tool requirements are not enforced by the live leg"
+    );
+    assert!(
+        workflow.contains("formal-ai clients learn"),
+        "CI does not aggregate successful real-client observations"
+    );
+    assert!(
+        workflow.contains("human_gated \"true\""),
+        "CI does not assert that inferred amendments remain human-gated"
+    );
+}
+
+#[test]
+fn committed_real_sessions_produce_a_deterministic_review_artifact() {
+    let observations_path =
+        root().join("docs/case-studies/issue-671/agent-cli-contract-learning/observations.jsonl");
+    let observations = load_observations(&[&observations_path]).expect("load observations");
+    let report = learn_client_contracts(&observations, &client_integrations());
+
+    assert_eq!(report.observation_count, 16);
+    assert_eq!(report.independently_worded_groups, 8);
+    assert_eq!(report.findings.len(), 8);
+    assert!(
+        report
+            .findings
+            .iter()
+            .all(|finding| finding.status == "confirmed"),
+        "the recorded delivery behavior drifted from the seed: {:?}",
+        report.findings
+    );
+    assert_eq!(
+        report.proposals.len(),
+        7,
+        "seven tool-bearing clients should propose their repeatedly observed read tool"
+    );
+    assert!(report.awaiting_human_review);
+    for observation in &observations {
+        assert!(
+            root().join(&observation.evidence).is_file(),
+            "observation evidence is missing: {}",
+            observation.evidence
         );
     }
+
+    let expected = read(
+        "docs/case-studies/issue-671/agent-cli-contract-learning/client-contract-learning-report.lino",
+    );
+    assert_eq!(expected, format!("{}\n", report.links_notation()));
+}
+
+#[test]
+fn formal_ai_executes_contract_learning_through_the_real_agent_cli() {
+    assert!(
+        read(".github/workflows/release.yml").contains("run_issue_671_contract_learning.sh"),
+        "the required real Agent CLI execution must run in CI"
+    );
+    let expected = read(
+        "docs/case-studies/issue-671/agent-cli-contract-learning/client-contract-learning-report.lino",
+    );
+    let agent_authored = read(
+        "docs/case-studies/issue-671/agent-cli-contract-learning/agent-authored-client-contract-learning-report.lino",
+    );
+    assert_eq!(
+        agent_authored, expected,
+        "the report written by Agent CLI must match Formal AI's deterministic output"
+    );
+
+    let plan =
+        read("docs/case-studies/issue-671/agent-cli-contract-learning/general-change-plan.lino");
+    assert!(plan.contains("capability \"Run\""));
+    assert!(plan.contains("formal-ai clients learn"));
+    assert!(plan.contains("> 'client-contract-learning-report.lino'"));
+    assert!(plan.contains("command \"cat client-contract-learning-report.lino\""));
+    assert!(
+        !plan.contains("expected_evidence \"its exact stdout\""),
+        "the command-output reference must not be treated as literal file content"
+    );
+
+    let stream = read("docs/case-studies/issue-671/agent-cli-contract-learning/agent-stream.jsonl");
+    assert!(stream.contains("\"status\":\"success\""));
+    assert!(stream.contains("Completed the general change request"));
+}
+
+#[test]
+fn shell_registry_reads_keep_false_and_empty_arrays_distinct_from_missing_data() {
+    let library = read("experiments/agentic_cli_matrix/lib.sh");
+    assert!(
+        !library.contains("jq -er"),
+        "jq -e reports a valid boolean false or empty stream as lookup failure"
+    );
+    assert!(
+        library.contains("if $value == null then error(\"field is missing\")"),
+        "scalar lookups must reject only missing data"
+    );
+    assert!(
+        library.contains("then $value[]"),
+        "array lookups must allow a valid empty contract array"
+    );
 }
 
 /// Recorded transcripts committed under `recorded/`.
@@ -235,6 +430,7 @@ fn matrix_scripts_are_executable() {
         "experiments/agentic_cli_matrix/install_client.sh",
         "experiments/agentic_cli_matrix/run_leg.sh",
         "experiments/agentic_cli_matrix/run_matrix.sh",
+        "experiments/agentic_cli_matrix/plan_matrix.sh",
         "experiments/agentic_cli_matrix/replay.sh",
     ] {
         let path: &Path = &root().join(script);

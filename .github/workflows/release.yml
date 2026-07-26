@@ -1746,6 +1746,14 @@ jobs:
           PORT: 8885
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
 
+      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        # The real Agent CLI asks Formal AI to derive the human-gated client
+        # contract proposals, write the exact command output, and verify it.
+        timeout-minutes: 5
+        env:
+          PORT: 8886
+        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
+
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         # The real Agent CLI delegates the repository scan to the public release
         # binary in its own workspace, then consumes the command result before

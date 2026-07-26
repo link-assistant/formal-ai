@@ -25,13 +25,15 @@ matrix_base_port() {
 }
 
 targets=("$@")
+PLAN="$(matrix_plan)"
 if [ ${#targets[@]} -eq 0 ]; then
-  mapfile -t targets < <(matrix_lock_ids)
+  mapfile -t targets < <(printf '%s' "$PLAN" | jq -r '.[].client')
 fi
 
 failed=()
 for client in "${targets[@]}"; do
-  port="$(matrix_base_port "$client")"
+  port="$(printf '%s' "$PLAN" | jq -r --arg client "$client" \
+    '.[] | select(.client == $client) | .base_port')"
   [ -n "$port" ] || matrix_fail "$client is not in $LOCKFILE"
   log="$LOGS/$client.log"
   # Extra flags for one client come from `MATRIX_ARGS_<CLIENT>`, e.g.
@@ -54,5 +56,19 @@ done
 if [ ${#failed[@]} -gt 0 ]; then
   echo "!! failed legs: ${failed[*]}" >&2
   exit 1
+fi
+
+observations=()
+for client in "${targets[@]}"; do
+  observation="$ROOT/experiments/agentic_cli_matrix/artifacts/$client/contract-observations.jsonl"
+  [ -s "$observation" ] && observations+=("$observation")
+done
+if [ ${#observations[@]} -gt 0 ]; then
+  report="$LOGS/client-contract-learning.lino"
+  "$BIN" clients learn "${observations[@]}" > "$report" \
+    || matrix_fail "could not learn from successful real-client observations"
+  matrix_note "human-gated client-contract learning report -> $report"
+else
+  matrix_note "selected surfaces produced no prompt observations to learn from"
 fi
 echo "== all legs OK: ${targets[*]} =="

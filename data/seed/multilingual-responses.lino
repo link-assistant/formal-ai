@@ -1477,35 +1477,3 @@ multilingual_responses
     intent budget_search_solution
     language zh
     text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"
-  response response_supplied_file_contents_en
-    intent supplied_file_contents
-    language en
-    text "Contents of `{path}`:\n\n{body}"
-  response response_supplied_file_contents_ru
-    intent supplied_file_contents
-    language ru
-    text "Содержимое `{path}`:\n\n{body}"
-  response response_supplied_file_contents_hi
-    intent supplied_file_contents
-    language hi
-    text "`{path}` की सामग्री:\n\n{body}"
-  response response_supplied_file_contents_zh
-    intent supplied_file_contents
-    language zh
-    text "`{path}` 的内容：\n\n{body}"
-  response response_supplied_file_first_line_en
-    intent supplied_file_first_line
-    language en
-    text "First line of `{path}`: {line}"
-  response response_supplied_file_first_line_ru
-    intent supplied_file_first_line
-    language ru
-    text "Первая строка `{path}`: {line}"
-  response response_supplied_file_first_line_hi
-    intent supplied_file_first_line
-    language hi
-    text "`{path}` की पहली पंक्ति: {line}"
-  response response_supplied_file_first_line_zh
-    intent supplied_file_first_line
-    language zh
-    text "`{path}` 的第一行：{line}"

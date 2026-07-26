@@ -9,11 +9,16 @@
 //! per-leg capability assertions from this output, so a client added to the
 //! seed cannot silently escape end-to-end coverage.
 
+use std::error::Error;
 use std::fmt::Write as _;
+use std::path::PathBuf;
 
-use clap::ValueEnum;
+use clap::{Subcommand, ValueEnum};
 use serde_json::{json, Map, Value};
 
+use formal_ai::client_contract_learning::{
+    learn_client_contracts, load_observations, observe_proxy_transcript,
+};
 use formal_ai::seed::{client_integrations, ClientIntegration, ConfigFormat};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
@@ -22,6 +27,28 @@ pub enum ClientsFormat {
     Text,
     /// One JSON array describing every client.
     Json,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ClientsAction {
+    /// Normalize one real proxy transcript into a reusable observation.
+    Observe {
+        #[arg(long, value_name = "PATH")]
+        transcript: PathBuf,
+        #[arg(long)]
+        client: String,
+        #[arg(long)]
+        capability: String,
+        #[arg(long)]
+        task_wording: String,
+        #[arg(long, default_value = "")]
+        expected_marker: String,
+    },
+    /// Infer human-gated contract amendments from observation JSONL files.
+    Learn {
+        #[arg(required = true, value_name = "OBSERVATIONS_JSONL")]
+        observations: Vec<PathBuf>,
+    },
 }
 
 /// Render the client registry in the requested format.
@@ -47,6 +74,7 @@ const fn config_format_name(format: &ConfigFormat) -> &'static str {
 
 fn client_json(integration: &ClientIntegration) -> Value {
     let invocation = &integration.invocation;
+    let verification = &integration.verification;
     let mut endpoints = Map::new();
     for (protocol, path) in &integration.endpoints {
         endpoints.insert(protocol.clone(), Value::String(path.clone()));
@@ -95,6 +123,29 @@ fn client_json(integration: &ClientIntegration) -> Value {
         "supports_no_summarize": !invocation.no_summarize_args.is_empty(),
         "session_root": invocation.session_root,
         "global_configs": global_configs,
+        "verification": {
+            "surface": verification.surface,
+            "file_delivery": verification.file_delivery,
+            "headless_args": verification.headless_args,
+            "interactive_env": verification
+                .interactive_env
+                .iter()
+                .map(|entry| format!("{}={}", entry.key, entry.value))
+                .collect::<Vec<_>>(),
+            "interactive_preamble": verification.interactive_preamble,
+            "required_request_tools": verification.required_request_tools,
+            "required_response_tools": verification.required_response_tools,
+            "forbidden_output": verification.forbidden_output,
+            "launch_args": verification.launch_args,
+            "launch_ready": verification.launch_ready,
+            "launch_required_output": verification.launch_required_output,
+            "launch_http_path": verification.launch_http_path,
+            "launch_subcommands": verification.launch_subcommands,
+            "extension_glob": verification.extension_glob,
+            "chromium_sandbox_fallback": verification.chromium_sandbox_fallback,
+            "sandbox_user_namespaces": verification.sandbox_user_namespaces,
+            "vendor_auth_error": verification.vendor_auth_error,
+        },
     })
 }
 
@@ -133,6 +184,11 @@ fn client_text(integration: &ClientIntegration) -> String {
             invocation.no_summarize_args.join(" ")
         }
     );
+    let _ = writeln!(
+        out,
+        "  verification_surface: {}",
+        verification_surface(integration)
+    );
     for config in &integration.global_configs {
         let _ = writeln!(
             out,
@@ -150,6 +206,42 @@ fn client_text(integration: &ClientIntegration) -> String {
     out
 }
 
-pub fn run_clients(format: ClientsFormat) {
-    print!("{}", render_clients(format));
+const fn verification_surface(integration: &ClientIntegration) -> &str {
+    let surface = integration.verification.surface.as_str();
+    if surface.is_empty() {
+        "unspecified"
+    } else {
+        surface
+    }
+}
+
+pub fn run_clients(
+    format: ClientsFormat,
+    action: Option<ClientsAction>,
+) -> Result<(), Box<dyn Error>> {
+    match action {
+        None => print!("{}", render_clients(format)),
+        Some(ClientsAction::Observe {
+            transcript,
+            client,
+            capability,
+            task_wording,
+            expected_marker,
+        }) => {
+            let observation = observe_proxy_transcript(
+                &transcript,
+                &client,
+                &capability,
+                &task_wording,
+                &expected_marker,
+            )?;
+            println!("{}", observation.json_line());
+        }
+        Some(ClientsAction::Learn { observations }) => {
+            let observations = load_observations(&observations)?;
+            let report = learn_client_contracts(&observations, &client_integrations());
+            println!("{}", report.links_notation());
+        }
+    }
+    Ok(())
 }

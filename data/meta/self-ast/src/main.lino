@@ -2,9 +2,9 @@ self_ast_census
   target src/main.rs
   language rust
   fidelity signature
-  byte_len 33279
-  line_count 953
-  content_id source_module_11195ddec1c42b73
+  byte_len 33381
+  line_count 955
+  content_id source_module_da6cba32491b693b
   symbol_count 34
   symbols
     module cli_clients 9 9
@@ -17,27 +17,27 @@ self_ast_census
     module cli_statement_audit 16 16
     const DEFAULT_AGENT_TASK 41 61
     struct Args 50 61
-    enum Command 64 271
-    enum MemoryAction 274 420
-    enum BundleAction 423 447
-    enum GithubLogsAction 450 455
-    struct GithubLogsOptions 458 494
-    enum OutputFormat 497 501
-    enum DefinitionFusionMode 504 507
-    enum TelegramMode 510 513
-    function fmt 516 522
-    function fmt 526 531
-    function fmt 535 540
-    function main 543 647
-    function run_github_logs 649 670
-    function run_agent 672 696
-    function into_config 699 711
-    struct TelegramRunArgs 714 723
-    function solver_for_chat 725 738
-    function print_thinking_trace 747 765
-    function run_chat 767 819
-    function run_bundle 821 885
-    function run_environments 887 908
-    function read_input 910 918
-    function run_telegram 920 945
-    function parse_allowed_updates 947 953
+    enum Command 64 273
+    enum MemoryAction 276 422
+    enum BundleAction 425 449
+    enum GithubLogsAction 452 457
+    struct GithubLogsOptions 460 496
+    enum OutputFormat 499 503
+    enum DefinitionFusionMode 506 509
+    enum TelegramMode 512 515
+    function fmt 518 524
+    function fmt 528 533
+    function fmt 537 542
+    function main 545 649
+    function run_github_logs 651 672
+    function run_agent 674 698
+    function into_config 701 713
+    struct TelegramRunArgs 716 725
+    function solver_for_chat 727 740
+    function print_thinking_trace 749 767
+    function run_chat 769 821
+    function run_bundle 823 887
+    function run_environments 889 910
+    function read_input 912 920
+    function run_telegram 922 947
+    function parse_allowed_updates 949 955

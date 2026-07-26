@@ -63,6 +63,10 @@ matrix_lock_ids() {
   awk '!/^#/ && NF >= 3 { print $1 }' "$LOCKFILE"
 }
 
+matrix_plan() {
+  "$MATRIX_DIR/plan_matrix.sh"
+}
+
 # Where an isolated (`MATRIX_ISOLATED_NPM=1`) install of one client lives.
 matrix_client_prefix() {
   echo "${MATRIX_PREFIX_ROOT:-$HOME/.formal-ai-matrix/clients}/$1"
@@ -132,43 +136,59 @@ matrix_client_field() {
     echo "!! formal-ai clients --format json failed" >&2
     return 1
   }
-  value="$(printf '%s' "$registry" | jq -er --arg id "$id" --arg field "$field" \
-    '.[] | select(.id == $id) | .[$field] | if type == "array" then join(" ") else tostring end')" || {
+  value="$(printf '%s' "$registry" | jq -r --arg id "$id" --arg field "$field" \
+    '[.[] | select(.id == $id)] |
+     if length != 1 then error("client is missing or duplicated")
+     else .[0] | getpath($field | split(".")) as $value |
+       if $value == null then error("field is missing")
+       elif ($value | type) == "array" then $value | join(" ")
+       else $value | tostring
+       end
+     end')" || {
     echo "!! client '$id' has no field '$field' in the seed registry" >&2
     return 1
   }
   printf '%s' "$value"
 }
 
-# Not every "client" is a terminal program that takes a prompt.
-#
-#   cli     — a prompt goes in, an answer comes out (codex, claude, aider, …).
-#   server  — the client *is* a server with a web UI: `t3 --help` documents
-#             `start`/`serve`/`auth`/`project`/`connect` and its only positional
-#             argument is a working directory, so `t3 --no-browser 'say hi'`
-#             reads the prompt as a *cwd* and exits 0 having answered nothing.
-#             Driving a turn means a browser over its WebSocket API.
-#   gui     — a desktop application: the VS Code extension host and OpenCode
-#             Desktop's Electron shell (docs/case-studies/issue-762).
-#   mcp     — the client does not use us as a *model* at all: it calls us as a
-#             tool server over JSON-RPC while its own vendor model drives.
-#             Read from the registry, so a client whose integration is MCP
-#             cannot be handed prompt-shaped assertions that can never hold.
-#
-# These shapes get a launch leg rather than a prompt leg, plus a constraint
-# assertion that fails the moment upstream grows a headless prompt path — the
-# issue-#671 rule that a limitation is asserted, never skipped.
+# Print an array field one value per line, preserving spaces inside values.
+matrix_client_values() {
+  local id="$1" field="$2" registry
+  registry="$("$BIN" clients --format json)" \
+    || matrix_fail "formal-ai clients --format json failed"
+  printf '%s' "$registry" | jq -r --arg id "$id" --arg field "$field" \
+    '[.[] | select(.id == $id)] |
+     if length != 1 then error("client is missing or duplicated")
+     else .[0] | getpath($field | split(".")) as $value |
+       if ($value | type) == "array" then $value[]
+       else error("field is missing or is not an array")
+       end
+     end'
+}
+
+# Not every integration is a prompt CLI. The surface is an upstream contract,
+# declared in the same seed entry as invocation and configuration behavior.
 matrix_client_shape() {
-  case "$1" in
-    t3code) echo server ;;
-    opencode-vscode | opencode-desktop) echo gui ;;
-    *)
-      if [ "$(matrix_client_field "$1" default_protocol)" = mcp ]; then
-        echo mcp
-      else
-        echo cli
-      fi
-      ;;
+  matrix_client_field "$1" verification.surface
+}
+
+# Expand the deliberately small template vocabulary used by verification
+# launch arguments. No shell evaluation is involved.
+matrix_expand_verification_template() {
+  local value="$1" port="${2:-}" vscode_dir="${MATRIX_VSCODE_DIR:-$HOME/.formal-ai-matrix/vscode}"
+  value="${value//\{workdir\}/${WORKDIR:-$PWD}}"
+  value="${value//\{port\}/$port}"
+  value="${value//\{vscode_dir\}/$vscode_dir}"
+  printf '%s' "$value"
+}
+
+matrix_client_bool() {
+  local value
+  value="$(matrix_client_field "$1" "$2")" || matrix_fail "cannot read $2 for $1"
+  case "$value" in
+    true) return 0 ;;
+    false) return 1 ;;
+    *) matrix_fail "$2 for '$1' was '$value', expected true or false" ;;
   esac
 }
 
@@ -437,6 +457,22 @@ matrix_record_case() {
   matrix_note "recorded $RECORDED_DIR/$CLIENT/$case_name.jsonl"
 }
 
+# Turn a successful real-client case into normalized learning input while its
+# proxy transcript is still available. This runs on every leg, independently of
+# whether the sanitized replay artifact is being refreshed.
+matrix_observe_case() {
+  local capability="$1" task_wording="$2" expected_marker="$3"
+  "$BIN" clients observe \
+    --transcript "$PROXY_LOG" \
+    --client "$CLIENT" \
+    --capability "$capability" \
+    --task-wording "$task_wording" \
+    --expected-marker "$expected_marker" \
+    >> "$MATRIX_OBSERVATIONS" \
+    || matrix_fail "$capability: could not normalize the real proxy transcript"
+  matrix_note "observed $CLIENT/$capability for human-gated contract learning"
+}
+
 # --- driving the client -------------------------------------------------------
 
 MATRIX_CLIENT_LOG=""
@@ -457,7 +493,9 @@ matrix_run_headless() {
   # user argument: putting `--file alpha.txt` first makes `--message` swallow
   # `--file` and aider exits with a usage error.
   local trailing=()
-  [ -n "${MATRIX_TRAILING_ARGS:-}" ] && read -r -a trailing <<< "$MATRIX_TRAILING_ARGS"
+  if declare -p MATRIX_TRAILING_ARGS > /dev/null 2>&1; then
+    trailing=("${MATRIX_TRAILING_ARGS[@]}")
+  fi
   timeout "${CASE_TIMEOUT:-180}" "$BIN" with \
     --no-start-server --base-url "$BASE_URL" --non-interactive \
     "$client" "${extra[@]}" "$@" "$prompt" "${trailing[@]}" \

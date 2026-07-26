@@ -1,6 +1,6 @@
 use formal_ai::agentic_coding::general_planner::{compose_general_change_plan, PLAN_PATH};
 use formal_ai::agentic_coding::{plan_chat_step, run_agentic_task, AgenticPlan};
-use formal_ai::protocol::ChatMessage;
+use formal_ai::protocol::{ChatMessage, ToolCall};
 
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
 const EN_TASK_ALT: &str = "Write file artifacts/unseen-case.md with text capability composed plan";
@@ -103,6 +103,78 @@ fn general_task_preserves_exact_multiline_lino_payload() {
         serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
     assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
     assert_eq!(write["content"], payload);
+}
+
+#[test]
+fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phrase() {
+    let task = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
+    let plan = compose_general_change_plan(task).expect("command-output plan");
+
+    assert_eq!(plan.target, "reports/learned.txt");
+    assert!(
+        plan.content.is_empty(),
+        "the referential phrase `its exact stdout` is not literal file content"
+    );
+    assert_eq!(
+        plan.steps
+            .iter()
+            .map(|step| format!("{:?}", step.capability))
+            .collect::<Vec<_>>(),
+        ["Write", "Run", "Run"]
+    );
+    assert_eq!(
+        plan.steps[1].command.as_deref(),
+        Some("printf learned-output > 'reports/learned.txt'")
+    );
+}
+
+#[test]
+fn command_stdout_plan_executes_generate_then_verify_through_cli_tools() {
+    let task = "Execute the auto-learning task. Run 'printf learned-output' and write its exact \
+                stdout to reports/learned.txt";
+    let tools = ["write", "bash"];
+    let mut messages = vec![ChatMessage::user(task)];
+    let mut commands = Vec::new();
+
+    for (index, result) in [
+        "wrote the plan",
+        "created reports/learned.txt",
+        "learned-output",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let AgenticPlan::ToolCalls(calls) =
+            plan_chat_step(&messages, &tools).expect("next planned tool call")
+        else {
+            panic!("step {index} must be a tool call");
+        };
+        let call = &calls[0];
+        let arguments: serde_json::Value =
+            serde_json::from_str(&call.arguments).expect("tool arguments");
+        if call.tool == "bash" {
+            commands.push(arguments["command"].as_str().expect("command").to_owned());
+        }
+        let id = format!("command-output-{index}");
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            &id,
+            &call.tool,
+            call.arguments.clone(),
+        )]));
+        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+    }
+
+    assert_eq!(
+        commands,
+        [
+            "printf learned-output > 'reports/learned.txt'",
+            "cat reports/learned.txt",
+        ]
+    );
+    assert!(matches!(
+        plan_chat_step(&messages, &tools),
+        Some(AgenticPlan::Final(answer)) if answer.contains("Completed the general change request")
+    ));
 }
 
 #[test]

@@ -44,6 +44,8 @@ WORKDIR="$(mktemp -d)"
 
 rm -rf -- "$ARTIFACTS"
 mkdir -p "$ARTIFACTS"
+MATRIX_OBSERVATIONS="$ARTIFACTS/contract-observations.jsonl"
+: > "$MATRIX_OBSERVATIONS"
 matrix_make_fixtures "$WORKDIR"
 
 cleanup() {
@@ -95,13 +97,12 @@ case_greeting() {
 # ---------------------------------------------------------------------------
 case_read_file() {
   matrix_start_stack read-file "$((BASE_PORT + 10))"
-  # `aider` advertises no tools and never goes looking for files: its entire
-  # model is that the user adds files to the chat and it sends their bytes
-  # in-band. So the leg does what an aider user does. The assertion below is
-  # unchanged — the marker has to reach the client's own output — only the road
-  # there is aider's rather than a tool call.
-  MATRIX_TRAILING_ARGS=""
-  [ "$CLIENT" = aider ] && MATRIX_TRAILING_ARGS="--file alpha.txt"
+  # File delivery is an upstream capability: tool-bearing clients fetch the
+  # fixture, while prompt-format clients receive its bytes in-band. Both the
+  # invocation and the assertion come from the seed-defined contract.
+  MATRIX_TRAILING_ARGS=()
+  mapfile -t MATRIX_TRAILING_ARGS \
+    < <(matrix_client_values "$CLIENT" verification.headless_args)
   matrix_run_headless read-file "$CLIENT" \
     "read the file alpha.txt and print its contents"
   matrix_assert_proxy_ok read-file
@@ -115,20 +116,25 @@ case_read_file() {
   # *last* JSONL row, and the last row of a converged run is the final answer,
   # which carries no tool calls.
   if jq -es 'any(.[]; (.request_tools // []) | length > 0)' "$PROXY_LOG" > /dev/null; then
+    [ "$(matrix_client_field "$CLIENT" verification.file_delivery)" = tool_call ] \
+      || matrix_fail "read-file: the client advertised tools but its contract says file delivery is in-band"
     jq -es 'any(.[]; (.response_tool_calls // []) | length > 0)' "$PROXY_LOG" > /dev/null \
       || matrix_fail "read-file: no exchange planned a tool call"
+    local required_response_tool
+    while IFS= read -r required_response_tool; do
+      jq -es --arg tool "$required_response_tool" \
+        'any(.[]; any(.response_tool_calls[]?; .name == $tool))' \
+        "$PROXY_LOG" > /dev/null \
+        || matrix_fail "read-file: required response tool '$required_response_tool' was not invoked"
+    done < <(matrix_client_values "$CLIENT" verification.required_response_tools)
     matrix_pass "read-file: a real tool call fetched $ALPHA_MARKER"
   else
-    # Documented upstream constraint, asserted rather than skipped: aider is a
-    # prompt-format client (fenced *file listing* edit blocks), not a
-    # function-calling one, so no leg may expect a tool call from it — and the
-    # server has to answer from the bytes the client supplied in-band instead.
-    # An aider release that starts advertising tools fails here loudly, because
-    # then the tool-call assertion above is the one that must hold.
-    [ "$CLIENT" = aider ] \
-      || matrix_fail "read-file: $CLIENT advertised no tools at all (only aider is expected to be prompt-format)"
-    matrix_pass "read-file: aider advertises no tools upstream; the answer came from the bytes it supplied in-band"
+    [ "$(matrix_client_field "$CLIENT" verification.file_delivery)" = in_band ] \
+      || matrix_fail "read-file: $CLIENT advertised no tools but its contract requires a tool call"
+    matrix_pass "read-file: prompt-format client supplied fixture bytes in-band"
   fi
+  matrix_observe_case read_file \
+    "read the file alpha.txt and print its contents" "$ALPHA_MARKER"
   matrix_record_case read-file
 }
 
@@ -166,22 +172,18 @@ case_interactive() {
   # path every one of these TUIs shares.
   # The wait after the prompt is on the *rendered answer*, not on a stopwatch:
   # see `matrix_keystrokes`.
-  # aider adds files to the chat by command, not by tool call — `/add` is the
-  # interactive twin of the `--file` the headless case passes.
-  local preamble=()
-  [ "$CLIENT" = aider ] && preamble=('3:/add alpha.txt' '2:\r')
-  # Gemini CLI decides "interactive" before it ever looks at the terminal:
-  # `isHeadlessMode()` in 0.51.0 returns true whenever `CI` or `GITHUB_ACTIONS`
-  # is `"true"` — unless `GEMINI_CLI_INTEGRATION_TEST` is set, the flag its own
-  # interactive integration tests use. On a real PTY under Actions the TUI
-  # therefore never started and the CLI exited 42 with "No input provided via
-  # stdin", while the identical command renders the TUI on a developer machine.
-  # The flag restores the tty-based decision; it is not a skip, so the case
-  # still has to launch, reach the server and render the answer.
-  [ "$CLIENT" = gemini ] && export GEMINI_CLI_INTEGRATION_TEST=true
+  local preamble=() entry key value
+  mapfile -t preamble \
+    < <(matrix_client_values "$CLIENT" verification.interactive_preamble)
+  while IFS= read -r entry; do
+    key="${entry%%=*}"
+    value="${entry#*=}"
+    printf -v "$key" '%s' "$value"
+    export "$key"
+  done < <(matrix_client_values "$CLIENT" verification.interactive_env)
   matrix_run_interactive interactive "$CLIENT" \
     '10:\r' '4:\r' '4:\r' '4:\r' "${preamble[@]}" \
-    '4:read the file alpha.txt and print its contents' '3:\r' \
+    '4:show me the exact text stored in alpha.txt' '3:\r' \
     "await:$ALPHA_MARKER" '2:\x03' '2:\x03'
   matrix_assert_launched interactive
   # Reaching the server at all from a TUI is the assertion issue #713 needed:
@@ -200,6 +202,8 @@ case_interactive() {
   # the wire — issue #671's comment asks for assertions on streamed output.
   matrix_assert_output_contains interactive "$ALPHA_MARKER" "$MATRIX_CLIENT_LOG"
   matrix_pass "interactive: TUI launched, submitted an empty message and answered"
+  matrix_observe_case read_file \
+    "show me the exact text stored in alpha.txt" "$ALPHA_MARKER"
   matrix_record_case interactive
 }
 
@@ -256,44 +260,16 @@ case_constraints() {
   matrix_note "constraints: advertised tools = ${tools:-<none>}"
   printf '%s\n' "$tools" > "$ARTIFACTS/constraints/advertised-tools.txt"
 
-  case "$CLIENT" in
-    gemini)
-      # Upstream constraint #620 — the Gemini CLI's headless `-p` mode advertises
-      # no functionDeclarations — was LIFTED, and this matrix is how we found
-      # out. Under the pinned @google/gemini-cli@0.51.0 the headless run
-      # advertises read_file, glob, grep_search and friends, and the `read-file`
-      # case above now proves a real headless tool call round-trips.
-      #
-      # Per issue #671 the assertion is not deleted, it is inverted: a release
-      # that takes the tools away again would silently turn every headless
-      # gemini case into prose-only coverage, and this is what says so.
-      grep -q read_file <<< "$tools" \
-        || matrix_fail "constraints: gemini headless -p no longer advertises read_file (was lifted upstream in 0.51.0; issue #620)"
-      matrix_pass "constraints: gemini headless -p advertises functionDeclarations (upstream #620 constraint lifted in 0.51.0)"
-      ;;
-    codex)
-      # Issue #746: the real Codex TUI advertises web search as a *hosted*
-      # `{"type":"web_search"}` tool, which a hand-written request never does.
-      # This is the assertion that a curl-only matrix cannot make.
-      grep -q web_search <<< "$tools" \
-        || matrix_fail "constraints: codex no longer advertises the hosted web_search tool (issue #746)"
-      matrix_pass "constraints: codex advertised the hosted web_search tool (issue #746)"
-      ;;
-    *)
-      matrix_pass "constraints: recorded advertised tools for $CLIENT"
-      ;;
-  esac
-
-  case "$CLIENT" in
-    codex | gemini | qwen)
-      # Issues #511 / PR #512: these CLIs have no headless approval handshake,
-      # so a leg must never be written to expect an approval prompt. If one
-      # appears, the tool loop has silently changed shape.
-      matrix_assert_output_lacks constraints "Allow command?" "$MATRIX_CLIENT_LOG"
-      matrix_assert_output_lacks constraints "approve this action" "$MATRIX_CLIENT_LOG"
-      matrix_pass "constraints: $CLIENT still has no headless approval handshake (issue #511)"
-      ;;
-  esac
+  local required forbidden
+  while IFS= read -r required; do
+    grep -qF -- "$required" <<< "$tools" \
+      || matrix_fail "constraints: required advertised tool '$required' is missing"
+    matrix_pass "constraints: advertised required tool $required"
+  done < <(matrix_client_values "$CLIENT" verification.required_request_tools)
+  while IFS= read -r forbidden; do
+    matrix_assert_output_lacks constraints "$forbidden" "$MATRIX_CLIENT_LOG"
+    matrix_pass "constraints: headless output lacks forbidden marker '$forbidden'"
+  done < <(matrix_client_values "$CLIENT" verification.forbidden_output)
 
   matrix_record_case constraints
 }
@@ -310,68 +286,51 @@ case_launch() {
   local shape="$1" port=$((BASE_PORT + 50))
   matrix_start_stack launch "$BASE_PORT"
 
-  case "$CLIENT" in
-    t3code)
-      matrix_launch_client launch "$CLIENT" "$shape" \
-        serve --no-browser --host 127.0.0.1 --port "$port" \
-        --base-dir "$WORKDIR/t3-base"
-      matrix_await_log launch "Listening on http://127.0.0.1:$port" 120
-      matrix_assert_launched launch
-      # The pairing URL is what a human opens; printing it is the client's own
-      # statement that the headless path ends at a browser.
-      matrix_log_matches "$MATRIX_CLIENT_LOG" "Pairing URL: http://127.0.0.1:$port/pair" \
-        || matrix_fail "launch: t3 printed no pairing URL for the port it bound"
-      [ "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$port/")" = 200 ] \
-        || matrix_fail "launch: the T3 Code web UI did not answer 200"
-      matrix_pass "launch: t3code served its web UI on $port through formal-ai with"
-
-      # Upstream constraint, asserted rather than skipped. `t3 --help` documents
-      # exactly these subcommands, and its only positional argument is a working
-      # directory — which is why `t3 --no-browser 'say hi'` exits 0 having read
-      # the prompt as a path. A release that adds a prompt-taking subcommand
-      # fails here, and this leg must then grow the full case list.
-      local subcommands
-      subcommands="$("$(matrix_client_field "$CLIENT" command)" --help 2> /dev/null \
+  local launch_args=() raw ready required http_path extension_glob expected actual
+  while IFS= read -r raw; do
+    launch_args+=("$(matrix_expand_verification_template "$raw" "$port")")
+  done < <(matrix_client_values "$CLIENT" verification.launch_args)
+  extension_glob="$(matrix_client_field "$CLIENT" verification.extension_glob)"
+  if [ -n "$extension_glob" ]; then
+    extension_glob="$(matrix_expand_verification_template "$extension_glob" "$port")"
+    compgen -G "$extension_glob" > /dev/null \
+      || matrix_fail "launch: required extension is missing: $extension_glob"
+  fi
+  if matrix_client_bool "$CLIENT" verification.chromium_sandbox_fallback \
+    && ! unshare --user --map-root-user true > /dev/null 2>&1; then
+    matrix_note "launch: this host denies unprivileged user namespaces — adding --no-sandbox"
+    launch_args+=(--no-sandbox --disable-gpu)
+  fi
+  matrix_launch_client launch "$CLIENT" "$shape" "${launch_args[@]}"
+  if [ "$shape" = server ]; then
+    ready="$(matrix_expand_verification_template \
+      "$(matrix_client_field "$CLIENT" verification.launch_ready)" "$port")"
+    [ -z "$ready" ] || matrix_await_log launch "$ready" 120
+    matrix_assert_launched launch
+    while IFS= read -r required; do
+      required="$(matrix_expand_verification_template "$required" "$port")"
+      matrix_log_matches "$MATRIX_CLIENT_LOG" "$required" \
+        || matrix_fail "launch: required output is missing: $required"
+    done < <(matrix_client_values "$CLIENT" verification.launch_required_output)
+    http_path="$(matrix_client_field "$CLIENT" verification.launch_http_path)"
+    [ -z "$http_path" ] \
+      || [ "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$port$http_path")" = 200 ] \
+      || matrix_fail "launch: server surface did not answer 200 at $http_path"
+    expected="$(matrix_client_values "$CLIENT" verification.launch_subcommands | sort | tr '\n' ' ')"
+    if [ -n "$expected" ]; then
+      actual="$("$(matrix_client_field "$CLIENT" command)" --help 2> /dev/null \
         | awk '/^SUBCOMMANDS/ { found = 1; next } found && NF { print $1 }' | sort | tr '\n' ' ')"
-      matrix_note "launch: t3 subcommands = ${subcommands:-<none>}"
-      [ "$subcommands" = "auth connect project serve start " ] \
-        || matrix_fail "launch: t3's subcommands changed to '$subcommands' — check for a new headless prompt path (issue #671)"
-      matrix_pass "launch: t3code still exposes no headless prompt path (only auth/connect/project/serve/start)"
-      ;;
-    *)
-      local launch_args=()
-      if [ "$CLIENT" = opencode-vscode ]; then
-        # Point the editor at the extension tree `install_client.sh` populated.
-        # The leg runs under an isolated HOME, so the default `~/.vscode` is
-        # empty — a bare editor would launch happily and prove nothing about the
-        # OpenCode extension this row is named for.
-        local vscode_dir="${MATRIX_VSCODE_DIR:-$HOME/.formal-ai-matrix/vscode}"
-        [ -d "$vscode_dir/extensions/sst-dev.opencode-"* ] 2> /dev/null \
-          || ls -d "$vscode_dir/extensions/"sst-dev.opencode* > /dev/null 2>&1 \
-          || matrix_fail "launch: the sst-dev.opencode extension is not installed in $vscode_dir/extensions"
-        launch_args=(--extensions-dir "$vscode_dir/extensions"
-          --user-data-dir "$WORKDIR/vscode-user-data" "$WORKDIR")
-        # Chromium's SUID sandbox needs either unprivileged user namespaces or a
-        # setuid helper, and on a host with neither VS Code exits 0 printing
-        # *nothing at all* — the failure mode that made this leg look like a
-        # wrapper bug. The check is on the kernel, not on a hardcoded flag, so
-        # CI keeps exercising the real sandboxed path.
-        if ! unshare --user --map-root-user true > /dev/null 2>&1; then
-          matrix_note "launch: this host denies unprivileged user namespaces — adding --no-sandbox"
-          launch_args+=(--no-sandbox --disable-gpu)
-        fi
-      fi
-      matrix_launch_client launch "$CLIENT" "$shape" "${launch_args[@]}"
-      matrix_assert_still_running launch 20
-      matrix_assert_launched launch
-      # The GUI rows are interactive-only by registry, and that is the whole
-      # reason they get a launch leg instead of a prompt leg. If the seed ever
-      # claims a headless mode for one, this leg is understating its coverage.
-      matrix_supports_headless "$CLIENT" \
-        && matrix_fail "launch: the registry now claims $CLIENT has a headless mode — give it the full case list"
-      matrix_pass "launch: $CLIENT is a GUI client with no headless prompt path"
-      ;;
-  esac
+      [ "$actual" = "$expected" ] \
+        || matrix_fail "launch: subcommands changed from '$expected' to '$actual' — check for a prompt path"
+    fi
+    matrix_pass "launch: server surface satisfied its seeded launch contract"
+  else
+    matrix_assert_still_running launch 20
+    matrix_assert_launched launch
+    matrix_supports_headless "$CLIENT" \
+      && matrix_fail "launch: registry now claims a GUI headless mode — give it the full case list"
+    matrix_pass "launch: GUI surface satisfied its seeded launch contract"
+  fi
 
   # The point of the leg is that the *app* was pointed at our server, not merely
   # that a binary started — and a launch leg cannot prove that from traffic,
@@ -443,7 +402,11 @@ case_mcp() {
   matrix_run_headless mcp "$CLIENT" "hi"
   [ "$MATRIX_CLIENT_STATUS" -ne 0 ] \
     || matrix_fail "mcp: $CLIENT ran a headless turn without vendor credentials — give it the full case list"
-  matrix_log_matches_ci "$MATRIX_CLIENT_LOG" "authentication required" \
+  local vendor_auth_error
+  vendor_auth_error="$(matrix_client_field "$CLIENT" verification.vendor_auth_error)"
+  [ -n "$vendor_auth_error" ] \
+    || matrix_fail "mcp: no vendor credential constraint is defined"
+  matrix_log_matches_ci "$MATRIX_CLIENT_LOG" "$vendor_auth_error" \
     || matrix_fail "mcp: $CLIENT failed for some reason other than missing credentials: $(matrix_strip_ansi "$MATRIX_CLIENT_LOG" | head -3)"
   matrix_pass "mcp: $CLIENT still requires vendor credentials for its own model (upstream constraint)"
 

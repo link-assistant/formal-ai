@@ -8,17 +8,15 @@ from observable evidence.
 This runbook documents the workflow that surfaced #624, #626, and #627, and it
 feeds the CI e2e suite proposed in #625.
 
-**Scope — what CI actually runs today.** Everything below is a *local* runbook.
-The only agentic job in CI is `test-agent-cli-e2e`
-(`.github/workflows/release.yml`), which drives our own Agent CLI against
-`formal-ai serve` — with no recording proxy, no `with-formal-ai` wrapper, and
-no other vendor CLI (codex, opencode, gemini, qwen, claude, grok, and aider
-appear nowhere in the workflows). The multi-CLI × proxy matrix described in
-*CI Shape* below is the target shape, tracked by
-[#625](https://github.com/link-assistant/formal-ai/issues/625) and
-[#671](https://github.com/link-assistant/formal-ai/issues/671); the OpenAI
-Responses and Gemini `streamGenerateContent` paths mentioned later are covered
-only by these manual procedures so far.
+**Scope — what CI actually runs today.** The release workflow keeps the focused
+Agent CLI check, and
+[`agentic-cli-matrix.yml`](../../.github/workflows/agentic-cli-matrix.yml)
+drives every seeded third-party client through the recording proxy. Its matrix
+is generated from `formal-ai clients --format json` plus the version lock, so
+adding a client or changing its verification contract changes CI without a
+second client-id switch. Successful prompt legs also emit observations for the
+human-gated contract learner described below. The manual commands remain useful
+for reproducing a single leg or collecting visual GUI evidence.
 
 ## Setup
 
@@ -348,18 +346,21 @@ repro lets maintainers separate a server routing bug from a CLI integration bug.
 runs this sequence as one job per client on every pull request that touches
 server, protocol, seed or matrix code (#625 / #671):
 
-1. Build `formal-ai` once and share the binary with every leg.
-2. Install the client's pinned version from
+1. Build `formal-ai` once and derive a JSON matrix plan from the seed registry.
+2. Share that binary and plan with every generated leg.
+3. Install the client's pinned version from
    [`experiments/agentic_cli_matrix/clients.lock`](../../experiments/agentic_cli_matrix/clients.lock).
    The GUI rows (OpenCode Desktop's AppImage, the VS Code extension host,
    Cursor) install under Xvfb.
-3. Create the fixture workspace and marker files.
-4. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port <leg port>`.
-5. Start `formal-ai proxy --listen 127.0.0.1:<leg port + 1> --upstream http://127.0.0.1:<leg port> --log proxy.jsonl --body`.
-6. Run the case sequence for that CLI, headless and through a real PTY.
-7. Assert on both `proxy.jsonl` and stripped CLI output.
-8. Fail on regressions in provenance, offered tools, returned tool calls, schema,
+4. Create the fixture workspace and marker files.
+5. Start `formal-ai serve --agent-mode --host 127.0.0.1 --port <leg port>`.
+6. Start `formal-ai proxy --listen 127.0.0.1:<leg port + 1> --upstream http://127.0.0.1:<leg port> --log proxy.jsonl --body`.
+7. Run the contract-selected case sequence for that client.
+8. Assert on both `proxy.jsonl` and stripped client output.
+9. Fail on regressions in provenance, offered tools, returned tool calls, schema,
    round count, or final marker content.
+10. Aggregate successful headless and interactive observations and render a
+    deterministic review artifact with `formal-ai clients learn`.
 
 Every recorded `proxy.jsonl` is uploaded as a build artifact — on green legs as
 well as red ones — so `claude`, `grok` and `aider`, the integrations PR #648
@@ -388,12 +389,13 @@ without one, so coverage cannot be "inferred from the shared adapters" again.
 | `grok` | `@vibe-kit/grok-cli` | `cli` — headless + PTY |
 | `aider` | `aider-chat` | `cli` — headless + PTY |
 
-The leg shape is not hardcoded per client: `run_leg.sh` reads
-`supports_non_interactive` and `default_protocol` from
-`formal-ai clients --format json`, so a client with no headless invocation gets
-an interactive-only leg rather than a skip, and a client whose integration is
-MCP cannot be handed prompt-shaped assertions that can never hold. There are
-four shapes, and every client gets exactly one:
+The leg shape and its client-specific behavior are not hardcoded in the
+harness. `run_leg.sh` reads the `verification` object from
+`formal-ai clients --format json`: surface, file-delivery mode, headless flags,
+interactive environment and onboarding keys, required/forbidden tools, launch
+arguments/readiness checks, extension package, sandbox needs and the expected
+vendor-auth boundary. There are four surfaces, and every client gets exactly
+one:
 
 - **`cli`** — prompt in, answer out. The full case list below runs against it.
 - **`server`** (`t3code`) — the client is a web app that serves a UI rather than
@@ -461,14 +463,43 @@ experiments/agentic_cli_matrix/replay.sh                  # offline, jq only
 ```
 
 `run_matrix.sh` is the CI matrix serialised onto one machine; each leg's base
-port is `8900 + <position in clients.lock> * 60`, the same formula the workflow
-uses, and a unit test asserts the two agree. `replay.sh` re-asserts the
+port is `8900 + <position in clients.lock> * 60`, the same formula emitted by
+`plan_matrix.sh` for CI, and a unit test asserts the plan has no overlaps.
+`replay.sh` re-asserts the
 transcript-level invariants of every transcript under `recorded/` with no CLI,
 no server, no network and no credentials, which is what makes the never-run
 integrations actually replayable rather than merely archived. See
 [`experiments/agentic_cli_matrix/README.md`](../../experiments/agentic_cli_matrix/README.md)
 for `MATRIX_ARGS_<CLIENT>`, `MATRIX_ISOLATED_NPM` and the Python pin `aider`
 needs.
+
+### Learning reusable verification contracts
+
+Every successful prompt leg normalizes its `read-file` and independently worded
+interactive run with:
+
+```bash
+formal-ai clients observe \
+  --transcript proxy.jsonl \
+  --client <client> \
+  --capability read_file \
+  --task-wording "<the exact prompt>" \
+  --expected-marker ALPHA_MARKER_11111
+```
+
+`formal-ai clients learn observations.jsonl [...]` groups observations by
+client and capability. A behavior is reusable only after at least two distinct
+normalized task wordings agree. The learner compares delivery mode with the
+seeded contract and intersects invoked tool names across every observation; it
+never edits the seed. Any proposed `file_delivery` or
+`required_response_tool` amendment is emitted with stable evidence links and
+`decision "awaiting_human_review"`.
+
+The CI `learn` job aggregates every real-client artifact and publishes
+`client-contract-learning.lino`. The committed
+[issue #671 Agent CLI case study](../case-studies/issue-671/README.md) contains
+the deterministic 16-observation baseline and proves that Formal AI can plan
+and execute the same learning command through the real Agent CLI.
 
 ### What driving the real CLIs found
 
