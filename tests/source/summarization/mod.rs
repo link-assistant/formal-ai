@@ -306,9 +306,16 @@ impl SummarizationConfig {
 pub fn formalize(text: &str) -> Vec<Statement> {
     let mut out = Vec::new();
     let mut buffer = String::new();
-    for ch in text.chars() {
+    let mut characters = text.chars().peekable();
+    while let Some(ch) = characters.next() {
+        let decimal_point = ch == '.'
+            && buffer
+                .chars()
+                .next_back()
+                .is_some_and(|previous| previous.is_ascii_digit())
+            && characters.peek().is_some_and(char::is_ascii_digit);
         buffer.push(ch);
-        if matches!(ch, '.' | '!' | '?' | '。' | '…' | '\n') {
+        if !decimal_point && matches!(ch, '.' | '!' | '?' | '。' | '…' | '\n') {
             push_sentence(&mut buffer, &mut out);
         }
     }

@@ -10,6 +10,7 @@ use super::capability_router;
 pub(super) use super::capability_router::tool_for;
 use super::change_request;
 use super::code_artifact;
+use super::comparison;
 use super::conversation_recall;
 use super::diagram;
 use super::dreaming_audit;
@@ -25,6 +26,7 @@ use super::google_trends_learning;
 use super::intent_router;
 use super::learning_report;
 use super::ledger;
+use super::local_search;
 use super::meaning_detail;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
@@ -275,6 +277,17 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
     if let Some(answer) = tool_result::follow_up_answer(messages, &task) {
         return Some(AgenticPlan::Final(answer));
     }
+    if web_research::is_definition_followup(&task) {
+        if let Some(query) = web_research::definition_followup_topic(messages, &task) {
+            if let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query) {
+                return Some(plan);
+            }
+        } else {
+            return Some(AgenticPlan::Final(
+                web_research::definition_followup_clarification(&task),
+            ));
+        }
+    }
     if let Some(plan) = intent_router::plan_edit_step(&task, messages, tool_names) {
         return Some(plan);
     }
@@ -286,12 +299,13 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
             return Some(plan_file_read_step(&file_task, messages, tool_names));
         }
     }
-    // A path lookup with an explicit local scope must execute on the user's
-    // machine even when a client also advertises Glob and web-search tools.
-    if let Some(command) = shell_command::local_path_search_command_for_task(&task) {
-        if tool_for(tool_names, Capability::Run).is_some() {
-            return Some(plan_shell_step(messages, tool_names, &command));
-        }
+    // A meanings-driven explicit local scope dominates generic search verbs.
+    // This state machine observes each result and widens only after emptiness.
+    if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
+        return Some(plan);
+    }
+    if let Some(plan) = comparison::plan_comparison_step(&task, messages, tool_names) {
+        return Some(plan);
     }
     if let Some(plan) = capability_router::plan_shared_capability_step(&task, messages, tool_names)
     {

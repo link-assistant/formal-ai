@@ -44,6 +44,7 @@ mod issue_839_context_export;
 mod issue_839_report_format;
 mod issue_839_report_parity;
 mod issue_839_report_script;
+mod issue_840_grounded_action;
 mod logging_proxy;
 mod memory_query;
 mod multi_protocol_api;

@@ -580,9 +580,13 @@ meanings
     lexeme en
       surface
         text define
+      surface
+        text "give a definition of"
     lexeme ru
       surface
         text определи
+      surface
+        text "дай определение"
     lexeme hi
       surface
         text "परिभाषित करें"

@@ -30,6 +30,13 @@ USAGE
 Knobs: BIN, PORT, TASKS, OUT, ONLY, SANDBOX, SANDBOX_KEEP.
 Exits 0 always — this is a measurement harness, not a CI gate.
 
+The release workflow wraps this measurement with
+`experiments/issue_840_reference_agents/run_differential_gate.sh`. That wrapper
+compares all 24 results and the raw 838.L1 tool transcript against the recorded
+reference-agent baseline, and exits nonzero on a regression. Provider quota
+exhaustion remains INCONCLUSIVE in that baseline rather than becoming a model
+failure.
+
 BASELINE @ v0.303.0 (main 1873e873), 2026-07-25
 -----------------------------------------------
   TOTAL  8/24
@@ -73,7 +80,8 @@ local-filesystem request is itself the defect.
 CI SAFETY
 ---------
 `experiments/` is excluded from `any-code-changed` (scripts/detect-code-changes.rs:155)
-and from the release-gating diff (.github/workflows/release.yml:381). Keep this
+and from the release-gating diff (.github/workflows/release.yml:381), but the
+explicit differential step runs whenever the release-test job runs. Keep this
 directory free of *.md and *.mjs: `docs-changed` and `mjs-changed` are computed
 by file extension alone and ignore the folder exclusion. That is why this file
 is README.txt and not README.md.
