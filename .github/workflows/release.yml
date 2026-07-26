@@ -1678,11 +1678,25 @@ jobs:
         # Claude Code, and Codex are then replayed in real PTYs through the
         # published adapter, producing scrollback-aware transcripts, asciicasts,
         # snapshots, and animations for the complete visible dialog.
-        timeout-minutes: 5
+        # Six bounded 120-second PTY captures provide two independent wordings
+        # for each of the three interactive clients.
+        timeout-minutes: 15
         env:
           PORT: 8784
           ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
         run: experiments/agent_cli_e2e/run_issue_840.sh
+
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        # The preceding real-client captures emit independently worded facts.
+        # Formal AI then asks the real Agent CLI to run the deterministic
+        # learner, byte-compares its report, and leaves every proposal gated.
+        timeout-minutes: 5
+        env:
+          PORT: 8795
+          OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl
+          OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning
+          GENERATE_EXPECTED: 1
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
 
       - name: "Run reference differential gate — grounded action recipe (issue #840)"
         # Third-party free-model runs are recorded rather than repeated here:

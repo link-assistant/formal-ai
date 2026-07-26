@@ -1,4 +1,6 @@
 import { captureAgentTui } from 'agent-commander';
+import { appendFile, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 const required = (name) => {
   const value = process.env[name];
@@ -16,6 +18,8 @@ const jsonArray = (name) => {
 
 const tool = required('ISSUE819_TUI_CLIENT');
 const expectedResult = required('ISSUE819_EXPECT_RESULT');
+const prompt = required('ISSUE819_TUI_PROMPT');
+const artifactDirectory = required('ISSUE819_TUI_ARTIFACT_DIR');
 const promptAfter = {
   opencode: 'Ask anything...',
   claude: 'Tips for getting started',
@@ -36,7 +40,7 @@ const capture = await captureAgentTui({
   prefixArgs: jsonArray('ISSUE819_TUI_PREFIX_ARGS'),
   extraArgs: jsonArray('ISSUE819_TUI_EXTRA_ARGS'),
   model: tool === 'opencode' ? 'formal-ai/formal-ai' : undefined,
-  prompt: required('ISSUE819_TUI_PROMPT'),
+  prompt,
   promptAfter,
   startupInteractions,
   extraEnv: {
@@ -51,15 +55,12 @@ const capture = await captureAgentTui({
   stopMarker: expectedResult,
   stopMarkerGraceMilliseconds: 4_000,
   timeoutMilliseconds: 120_000,
-  artifactDirectory: required('ISSUE819_TUI_ARTIFACT_DIR'),
+  artifactDirectory,
+  artifactOptions: { borderRadius: 0 },
 });
 
 const rendered = capture.transcript;
-for (const expected of [
-  'Find hive-mind-control center folder on my desktop',
-  'find',
-  expectedResult,
-]) {
+for (const expected of [prompt, 'find', expectedResult]) {
   if (!rendered.includes(expected)) {
     throw new Error(
       `TUI transcript omitted ${JSON.stringify(expected)}\n${rendered}`,
@@ -85,6 +86,84 @@ if (
   throw new Error(
     'OpenCode TUI did not preserve scrollback beyond its final viewport',
   );
+}
+
+if (
+  capture.asciicast.header.width !== 80 ||
+  capture.asciicast.header.height !== 30
+) {
+  throw new Error(
+    `${tool} TUI started at ${capture.asciicast.header.width}x${capture.asciicast.header.height}, expected 80x30`,
+  );
+}
+
+const artifacts = [
+  'transcript.txt',
+  'frames.json',
+  'session.cast',
+  'snapshot.svg',
+  'recording.svg',
+  'recording.gif',
+];
+for (const artifact of artifacts) {
+  if ((await readFile(join(artifactDirectory, artifact))).length === 0) {
+    throw new Error(`${tool} TUI wrote an empty ${artifact}`);
+  }
+}
+const recording = await readFile(
+  join(artifactDirectory, 'recording.svg'),
+  'utf8',
+);
+const rendererFeatures = {
+  css_keyframes:
+    recording.includes('@keyframes') &&
+    recording.includes('steps(1, end)') &&
+    !recording.includes('<animate'),
+  embedded_font:
+    recording.includes('@font-face') &&
+    recording.includes('data:font/woff2;base64,'),
+  exact_cell_grid:
+    recording.includes('textLength=') &&
+    recording.includes('lengthAdjust="spacingAndGlyphs"'),
+  preserved_whitespace: recording.includes('xml:space="preserve"'),
+  square_terminal_frame: recording.includes('rx="0"'),
+};
+for (const [feature, present] of Object.entries(rendererFeatures)) {
+  if (!present) {
+    throw new Error(`${tool} TUI recording omitted ${feature}`);
+  }
+}
+const gifHeader = (
+  await readFile(join(artifactDirectory, 'recording.gif'))
+)
+  .subarray(0, 6)
+  .toString();
+if (gifHeader !== 'GIF89a') {
+  throw new Error(`${tool} TUI wrote invalid GIF header ${gifHeader}`);
+}
+
+const observationFile = process.env.ISSUE819_TUI_OBSERVATION_FILE;
+if (observationFile) {
+  const observation = {
+    client_id: tool,
+    capability: 'tui_replay',
+    task_wording: prompt,
+    delivery: 'tool_call',
+    advertised_tools: [],
+    invoked_tools: [],
+    observed_contract: {
+      tui_initial_geometry: ['80x30'],
+      tui_artifact: artifacts,
+      tui_renderer_feature: [
+        ...Object.keys(rendererFeatures),
+        'gif_fallback',
+      ],
+    },
+    evidence:
+      process.env.ISSUE819_TUI_EVIDENCE ??
+      join(artifactDirectory, 'recording.svg'),
+  };
+  await appendFile(observationFile, `${JSON.stringify(observation)}\n`);
 }
 
 process.stdout.write(`${rendered}\n`);
