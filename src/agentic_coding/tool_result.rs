@@ -5,8 +5,9 @@ use serde_json::Value;
 use super::local_search;
 use crate::protocol::ChatMessage;
 use crate::seed::{
-    ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FIRST_REFERENCE,
-    ROLE_TOOL_RESULT_LINE_REQUEST, ROLE_TOOL_RESULT_SECOND_REFERENCE, ROLE_TOOL_RESULT_URL_REQUEST,
+    ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FAILURE_SIGNAL,
+    ROLE_TOOL_RESULT_FIRST_REFERENCE, ROLE_TOOL_RESULT_LINE_REQUEST,
+    ROLE_TOOL_RESULT_SECOND_REFERENCE, ROLE_TOOL_RESULT_URL_REQUEST,
 };
 
 struct NormalizedResult {
@@ -24,10 +25,10 @@ pub(super) fn normalized_payload(raw: &str) -> Option<String> {
 }
 
 fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
+    crate::seed::lexicon().mentions_role(
+        ROLE_TOOL_RESULT_FAILURE_SIGNAL,
+        &crate::engine::normalize_prompt(text),
+    )
 }
 
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {

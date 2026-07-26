@@ -132,6 +132,43 @@ meanings
         text 查询
       surface
         text 用于
+  tool_result_failure
+    defined-by concept
+    role tool_result_failure_signal
+    lexeme en
+      surface
+        text "error"
+      surface
+        text "failed"
+      surface
+        text "not found"
+      surface
+        text 404
+      surface
+        text "you can t perform that action at this time"
+      surface
+        text "too many requests"
+      surface
+        text "rate limit"
+      surface
+        text "temporarily unavailable"
+    lexeme ru
+      surface
+        text "не удалось"
+      surface
+        text "действие недоступно"
+      surface
+        text "слишком много запросов"
+    lexeme hi
+      surface
+        text "कार्रवाई नहीं कर सकते"
+      surface
+        text "बहुत अधिक अनुरोध"
+    lexeme zh
+      surface
+        text 无法执行此操作
+      surface
+        text 请求过多
   tool_result_detail_request
     defined-by action
     role tool_result_detail_request

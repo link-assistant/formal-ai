@@ -309,11 +309,10 @@ fn aspects_of(query: &str) -> Vec<String> {
         .collect()
 }
 
-/// Evidence at or below this many characters is already an answer, so it is
-/// reported verbatim. Above it the fetch result is a whole web page — site
-/// chrome, navigation and unrelated articles around the part that answers the
-/// question — and must be extracted from rather than dumped (issue #771).
-const VERBATIM_EVIDENCE_LIMIT: usize = 600;
+/// Maximum fallback length when no sentence overlaps the question. Even a
+/// short fetch can be a whole page made of terse navigation labels, so length
+/// is never treated as proof that a payload is already an answer.
+const MAX_EXTRACT_CHARS: usize = 600;
 
 /// How many sentences an extract keeps. Enough for a claim plus its immediate
 /// qualification, short enough to stay an answer rather than a transcript.
@@ -333,6 +332,11 @@ fn final_answer(query: &str, progress: &Progress) -> String {
             })
             .collect::<Vec<_>>()
             .join("\n\n");
+    }
+    if !progress.attempted_fetches.is_empty() {
+        // Search-result snippets and URLs are discovery metadata, not a
+        // substitute for pages that every fetch attempt failed to read.
+        return render_seed_text("web_research_no_content", "query", query);
     }
     let evidence = progress
         .fetched_text
@@ -363,9 +367,6 @@ fn final_answer(query: &str, progress: &Progress) -> String {
 /// so it works in every supported language — see [`relevance`] for how the
 /// space-less scripts are handled.
 fn extract_answer(query: &str, evidence: &str) -> String {
-    if evidence.chars().count() <= VERBATIM_EVIDENCE_LIMIT {
-        return evidence.to_owned();
-    }
     let sentences = crate::summarization::formalize(evidence);
     let mut scored: Vec<(usize, f32, &str)> = sentences
         .iter()
@@ -382,7 +383,7 @@ fn extract_answer(query: &str, evidence: &str) -> String {
     if scored.is_empty() {
         // Nothing overlaps the query: fall back to the head of the document
         // rather than the whole of it, so the answer stays bounded either way.
-        return truncate_chars(evidence, VERBATIM_EVIDENCE_LIMIT);
+        return truncate_chars(evidence, MAX_EXTRACT_CHARS);
     }
     // Rank by relevance, keep the best few, then restore document order.
     scored.sort_by(|left, right| {

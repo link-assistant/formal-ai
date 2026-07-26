@@ -475,6 +475,8 @@ roles
     kind meaning
   tool_result_detail_request
     kind meaning
+  tool_result_failure_signal
+    kind predicate
   tool_result_first_reference
     kind meaning
   tool_result_line_request
