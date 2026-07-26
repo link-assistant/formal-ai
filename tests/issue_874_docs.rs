@@ -3,10 +3,7 @@ use std::path::PathBuf;
 
 const DIRECT_COMPONENTS: &[(&str, &str)] = &[
     ("doublets", "https://github.com/linksplatform/doublets-rs"),
-    (
-        "platform-mem",
-        "https://github.com/linksplatform/mem-rs",
-    ),
+    ("platform-mem", "https://github.com/linksplatform/mem-rs"),
     (
         "links-notation",
         "https://github.com/link-foundation/links-notation",
@@ -27,10 +24,7 @@ const DIRECT_COMPONENTS: &[(&str, &str)] = &[
         "lino-arguments",
         "https://github.com/link-foundation/lino-arguments",
     ),
-    (
-        "lino-i18n",
-        "https://github.com/link-foundation/lino-i18n",
-    ),
+    ("lino-i18n", "https://github.com/link-foundation/lino-i18n"),
 ];
 
 const RELATED_COMPONENTS: &[&str] = &[
@@ -145,9 +139,10 @@ fn related_repositories_are_linked_without_overstating_runtime_integration() {
 
 #[test]
 fn whole_guide_explains_the_associative_stack_end_to_end() {
+    let guide = guide();
     assert_contains_all(
         "whole associative stack guide",
-        &guide(),
+        &guide,
         &[
             "links network",
             "Links Notation",
@@ -166,5 +161,13 @@ fn whole_guide_explains_the_associative_stack_end_to_end() {
             "Agent CLI",
             "Hive Mind",
         ],
+    );
+
+    let agent_authored_leaf = read(
+        "docs/case-studies/issue-874/agent-cli-evidence/explicit-containing/agent-authored-summary.md",
+    );
+    assert!(
+        guide.contains(agent_authored_leaf.trim()),
+        "guide must include the documentation leaf authored through Formal AI and Agent CLI"
     );
 }
