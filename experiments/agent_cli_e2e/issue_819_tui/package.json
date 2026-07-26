@@ -6,6 +6,6 @@
     "test": "bun test tui-transcript.test.mjs"
   },
   "dependencies": {
-    "agent-commander": "0.9.1"
+    "agent-commander": "0.10.0"
   }
 }

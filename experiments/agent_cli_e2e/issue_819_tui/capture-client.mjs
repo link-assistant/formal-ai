@@ -42,12 +42,10 @@ const capture = await captureAgentTui({
   extraEnv: {
     FORMAL_AI_DESKTOP_DIR: required('ISSUE819_DESKTOP_DIR'),
   },
-  cols: 120,
-  rows: 12,
   interactions: [
     {
       after: expectedResult,
-      resize: { cols: 132, rows: 14 },
+      resize: { cols: 96, rows: 36 },
     },
   ],
   stopMarker: expectedResult,
