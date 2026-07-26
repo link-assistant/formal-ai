@@ -7,7 +7,7 @@ running 4 tests
 thread 'related_repositories_are_linked_without_overstating_runtime_integration' (13583) panicked at tests/issue_874_docs.rs:52:54:
 read /tmp/gh-issue-solver-1785094883723/docs/associative-tech-stack.md: No such file or directory (os error 2)
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-test related_repositories_are_linked_without_overstating_runtime_integration ... 
+test related_repositories_are_linked_without_overstating_runtime_integration ...
 thread 'whole_guide_explains_the_associative_stack_end_to_end' (13584) panicked at tests/issue_874_docs.rs:52:54:
 read /tmp/gh-issue-solver-1785094883723/docs/associative-tech-stack.md: No such file or directory (os error 2)
 FAILED
