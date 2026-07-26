@@ -2,9 +2,7 @@
 
 use std::collections::BTreeSet;
 
-use formal_ai::client_contract_learning::{
-    ClientContractObservation, learn_client_contracts,
-};
+use formal_ai::client_contract_learning::{learn_client_contracts, ClientContractObservation};
 use formal_ai::seed::{client_integrations, response_for};
 
 #[test]
