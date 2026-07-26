@@ -1,0 +1,15 @@
+learning_ledger
+  engine "meta_language"
+  human_gated "true"
+  lesson_count "1"
+  lesson
+    lesson_id "promoted_lesson_bb17a3d0304074a9"
+    case_id "repair_case_9de88924139c1553"
+    failure_prompt "List the files but sort the results in reverse order"
+    module_path "src/agentic_coding/planner.rs"
+    rule_id "reverse_sort_list_files"
+    modifier "reverse_sort"
+    resolved_task "list_files_reverse_sort"
+    benchmark_suite "issue_362_multilingual_coding_modification"
+    benchmark_passed "4"
+    reviewer "maintainer"

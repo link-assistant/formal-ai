@@ -1,0 +1,609 @@
+multilingual_responses
+  response response_agentic_action_list_desktop_en
+    intent agentic_action_list_desktop
+    language en
+    text "Let me list the items directly on your Desktop."
+  response response_agentic_action_list_desktop_ru
+    intent agentic_action_list_desktop
+    language ru
+    text "Покажу объекты непосредственно на вашем рабочем столе."
+  response response_agentic_action_list_desktop_hi
+    intent agentic_action_list_desktop
+    language hi
+    text "मैं आपके डेस्कटॉप पर सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_desktop_zh
+    intent agentic_action_list_desktop
+    language zh
+    text "我来列出桌面上的直接项目。"
+  response response_agentic_action_list_home_en
+    intent agentic_action_list_home
+    language en
+    text "Let me list the items directly in your home folder."
+  response response_agentic_action_list_home_ru
+    intent agentic_action_list_home
+    language ru
+    text "Покажу объекты непосредственно в вашей домашней папке."
+  response response_agentic_action_list_home_hi
+    intent agentic_action_list_home
+    language hi
+    text "मैं आपके होम फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_home_zh
+    intent agentic_action_list_home
+    language zh
+    text "我来列出主目录中的直接项目。"
+  response response_agentic_action_list_current_en
+    intent agentic_action_list_current
+    language en
+    text "Let me list the items directly in the current folder."
+  response response_agentic_action_list_current_ru
+    intent agentic_action_list_current
+    language ru
+    text "Покажу объекты непосредственно в текущей папке."
+  response response_agentic_action_list_current_hi
+    intent agentic_action_list_current
+    language hi
+    text "मैं मौजूदा फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+  response response_agentic_action_list_current_zh
+    intent agentic_action_list_current
+    language zh
+    text "我来列出当前目录中的直接项目。"
+  response response_agentic_action_find_desktop_en
+    intent agentic_action_find_desktop
+    language en
+    text "Let me look on your Desktop for {subject}."
+  response response_agentic_action_find_desktop_ru
+    intent agentic_action_find_desktop
+    language ru
+    text "Посмотрю на вашем рабочем столе: {subject}."
+  response response_agentic_action_find_desktop_hi
+    intent agentic_action_find_desktop
+    language hi
+    text "मैं आपके डेस्कटॉप पर {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_desktop_zh
+    intent agentic_action_find_desktop
+    language zh
+    text "我来在你的桌面上查找 {subject}。"
+  response response_agentic_action_find_home_en
+    intent agentic_action_find_home
+    language en
+    text "Let me look in your home folder for {subject}."
+  response response_agentic_action_find_home_ru
+    intent agentic_action_find_home
+    language ru
+    text "Посмотрю в вашей домашней папке: {subject}."
+  response response_agentic_action_find_home_hi
+    intent agentic_action_find_home
+    language hi
+    text "मैं आपके होम फ़ोल्डर में {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_home_zh
+    intent agentic_action_find_home
+    language zh
+    text "我来在你的主目录中查找 {subject}。"
+  response response_agentic_action_find_current_en
+    intent agentic_action_find_current
+    language en
+    text "Let me look in the current folder for {subject}."
+  response response_agentic_action_find_current_ru
+    intent agentic_action_find_current
+    language ru
+    text "Посмотрю в текущей папке: {subject}."
+  response response_agentic_action_find_current_hi
+    intent agentic_action_find_current
+    language hi
+    text "मैं मौजूदा फ़ोल्डर में {subject} ढूँढता हूँ।"
+  response response_agentic_action_find_current_zh
+    intent agentic_action_find_current
+    language zh
+    text "我来在当前目录中查找 {subject}。"
+  response response_agentic_action_search_en
+    intent agentic_action_search
+    language en
+    text "Let me search the web for {target}."
+  response response_agentic_action_search_ru
+    intent agentic_action_search
+    language ru
+    text "Поищу в интернете: {target}."
+  response response_agentic_action_search_hi
+    intent agentic_action_search
+    language hi
+    text "मैं इंटरनेट पर {target} खोजता हूँ।"
+  response response_agentic_action_search_zh
+    intent agentic_action_search
+    language zh
+    text "我来上网搜索 {target}。"
+  response response_agentic_action_read_en
+    intent agentic_action_read
+    language en
+    text "Let me open {target} and read what it says."
+  response response_agentic_action_read_ru
+    intent agentic_action_read
+    language ru
+    text "Открою {target} и прочитаю содержимое."
+  response response_agentic_action_read_hi
+    intent agentic_action_read
+    language hi
+    text "मैं {target} खोलकर उसकी सामग्री पढ़ता हूँ।"
+  response response_agentic_action_read_zh
+    intent agentic_action_read
+    language zh
+    text "我来打开 {target}，读取其中的内容。"
+  response response_agentic_action_search_code_en
+    intent agentic_action_search_code
+    language en
+    text "Let me search the code for {target}."
+  response response_agentic_action_search_code_ru
+    intent agentic_action_search_code
+    language ru
+    text "Поищу в коде: {target}."
+  response response_agentic_action_search_code_hi
+    intent agentic_action_search_code
+    language hi
+    text "मैं कोड में {target} खोजता हूँ।"
+  response response_agentic_action_search_code_zh
+    intent agentic_action_search_code
+    language zh
+    text "我来在代码中查找 {target}。"
+  response response_agentic_action_edit_en
+    intent agentic_action_edit
+    language en
+    text "Let me update {target} for you."
+  response response_agentic_action_edit_ru
+    intent agentic_action_edit
+    language ru
+    text "Обновлю {target}."
+  response response_agentic_action_edit_hi
+    intent agentic_action_edit
+    language hi
+    text "मैं {target} को अपडेट करता हूँ।"
+  response response_agentic_action_edit_zh
+    intent agentic_action_edit
+    language zh
+    text "我来更新 {target}。"
+  response response_agentic_action_run_en
+    intent agentic_action_run
+    language en
+    text "Let me run a quick command to get that for you."
+  response response_agentic_action_run_ru
+    intent agentic_action_run
+    language ru
+    text "Выполню короткую команду, чтобы это получить."
+  response response_agentic_action_run_hi
+    intent agentic_action_run
+    language hi
+    text "मैं यह पाने के लिए एक छोटी कमांड चलाता हूँ।"
+  response response_agentic_action_run_zh
+    intent agentic_action_run
+    language zh
+    text "我来运行一个命令来完成这个。"
+  response response_agentic_action_ask_user_en
+    intent agentic_action_ask_user
+    language en
+    text "Let me ask you a couple of quick questions so I get this right."
+  response response_agentic_action_ask_user_ru
+    intent agentic_action_ask_user
+    language ru
+    text "Задам пару коротких вопросов, чтобы всё сделать правильно."
+  response response_agentic_action_ask_user_hi
+    intent agentic_action_ask_user
+    language hi
+    text "मैं इसे सही करने के लिए आपसे कुछ छोटे सवाल पूछता हूँ।"
+  response response_agentic_action_ask_user_zh
+    intent agentic_action_ask_user
+    language zh
+    text "我来问你几个简短的问题，以便把这件事做对。"
+  response response_agentic_action_generic_en
+    intent agentic_action_generic
+    language en
+    text "Let me take the next step to handle that for you."
+  response response_agentic_action_generic_ru
+    intent agentic_action_generic
+    language ru
+    text "Сделаю следующий шаг, чтобы с этим разобраться."
+  response response_agentic_action_generic_hi
+    intent agentic_action_generic
+    language hi
+    text "मैं इसे पूरा करने के लिए अगला कदम उठाता हूँ।"
+  response response_agentic_action_generic_zh
+    intent agentic_action_generic
+    language zh
+    text "我来采取下一步来处理这个。"
+  response response_local_search_route_local_en
+    intent local_search_route_local
+    language en
+    text "It is a local filesystem request."
+  response response_local_search_route_local_ru
+    intent local_search_route_local
+    language ru
+    text "Это запрос к локальной файловой системе."
+  response response_local_search_route_local_hi
+    intent local_search_route_local
+    language hi
+    text "यह स्थानीय फ़ाइल सिस्टम का अनुरोध है।"
+  response response_local_search_route_local_zh
+    intent local_search_route_local
+    language zh
+    text "这是本地文件系统请求。"
+  response response_local_search_found_directory_en
+    intent local_search_found_directory
+    language en
+    text "Found the folder at {path}. The search was limited to {scope}."
+  response response_local_search_found_directory_ru
+    intent local_search_found_directory
+    language ru
+    text "Папка найдена: {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_directory_hi
+    intent local_search_found_directory
+    language hi
+    text "फ़ोल्डर {path} पर मिला। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_directory_zh
+    intent local_search_found_directory
+    language zh
+    text "在 {path} 找到文件夹。搜索范围仅限于 {scope}。"
+  response response_local_search_found_file_en
+    intent local_search_found_file
+    language en
+    text "Found the file at {path}. The search was limited to {scope}."
+  response response_local_search_found_file_ru
+    intent local_search_found_file
+    language ru
+    text "Файл найден: {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_file_hi
+    intent local_search_found_file
+    language hi
+    text "फ़ाइल {path} पर मिली। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_file_zh
+    intent local_search_found_file
+    language zh
+    text "在 {path} 找到文件。搜索范围仅限于 {scope}。"
+  response response_local_search_found_path_en
+    intent local_search_found_path
+    language en
+    text "Found {path}. The search was limited to {scope}."
+  response response_local_search_found_path_ru
+    intent local_search_found_path
+    language ru
+    text "Найден путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_path_hi
+    intent local_search_found_path
+    language hi
+    text "{path} मिला। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_path_zh
+    intent local_search_found_path
+    language zh
+    text "找到 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_found_closest_en
+    intent local_search_found_closest
+    language en
+    text "No exact match for {requested}; the closest matching name is {actual} at {path}. The search was limited to {scope}."
+  response response_local_search_found_closest_ru
+    intent local_search_found_closest
+    language ru
+    text "Точного совпадения для {requested} нет; ближайшее имя — {actual}, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_found_closest_hi
+    intent local_search_found_closest
+    language hi
+    text "{requested} का सटीक मिलान नहीं मिला; निकटतम नाम {actual} है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_found_closest_zh
+    intent local_search_found_closest
+    language zh
+    text "没有与 {requested} 完全匹配的名称；最接近的是 {actual}，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_mismatch_requested_directory_en
+    intent local_search_mismatch_requested_directory
+    language en
+    text "No folder matched {requested}; the closest name is a non-directory path, {actual}, at {path}. The search was limited to {scope}."
+  response response_local_search_mismatch_requested_directory_ru
+    intent local_search_mismatch_requested_directory
+    language ru
+    text "Папка {requested} не найдена; ближайшее имя {actual} относится не к папке, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_mismatch_requested_directory_hi
+    intent local_search_mismatch_requested_directory
+    language hi
+    text "{requested} नाम का फ़ोल्डर नहीं मिला; निकटतम नाम {actual} फ़ोल्डर नहीं है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_mismatch_requested_directory_zh
+    intent local_search_mismatch_requested_directory
+    language zh
+    text "未找到名为 {requested} 的文件夹；最接近的名称 {actual} 不是文件夹，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_mismatch_requested_file_en
+    intent local_search_mismatch_requested_file
+    language en
+    text "No regular file matched {requested}; the closest name is a different path type, {actual}, at {path}. The search was limited to {scope}."
+  response response_local_search_mismatch_requested_file_ru
+    intent local_search_mismatch_requested_file
+    language ru
+    text "Обычный файл {requested} не найден; ближайшее имя {actual} относится к другому типу пути, путь {path}. Поиск был ограничен областью {scope}."
+  response response_local_search_mismatch_requested_file_hi
+    intent local_search_mismatch_requested_file
+    language hi
+    text "{requested} नाम की सामान्य फ़ाइल नहीं मिली; निकटतम नाम {actual} किसी अन्य पथ प्रकार का है: {path}। खोज {scope} तक सीमित थी।"
+  response response_local_search_mismatch_requested_file_zh
+    intent local_search_mismatch_requested_file
+    language zh
+    text "未找到名为 {requested} 的常规文件；最接近的名称 {actual} 属于其他路径类型，路径为 {path}。搜索范围仅限于 {scope}。"
+  response response_local_search_not_found_en
+    intent local_search_not_found
+    language en
+    text "{requested} was not found after exact, substring, and nearby-name checks within {scope}. No wider location was searched."
+  response response_local_search_not_found_ru
+    intent local_search_not_found
+    language ru
+    text "{requested} не найден после точной проверки, поиска по части имени и проверки близких имён в {scope}. За пределами этой области поиск не выполнялся."
+  response response_local_search_not_found_hi
+    intent local_search_not_found
+    language hi
+    text "{scope} में सटीक, आंशिक और निकटतम नाम की जाँच के बाद {requested} नहीं मिला। इसके बाहर खोज नहीं की गई।"
+  response response_local_search_not_found_zh
+    intent local_search_not_found
+    language zh
+    text "在 {scope} 内完成精确、子串和近似名称检查后仍未找到 {requested}。未搜索更大的范围。"
+  response response_local_search_scope_listing_en
+    intent local_search_scope_listing
+    language en
+    text "Items found directly within {scope}:\n{items}"
+  response response_local_search_scope_listing_ru
+    intent local_search_scope_listing
+    language ru
+    text "Объекты непосредственно в {scope}:\n{items}"
+  response response_local_search_scope_listing_hi
+    intent local_search_scope_listing
+    language hi
+    text "{scope} के भीतर सीधे मिले आइटम:\n{items}"
+  response response_local_search_scope_listing_zh
+    intent local_search_scope_listing
+    language zh
+    text "{scope} 内的直接项目：\n{items}"
+  response response_local_search_contents_listing_en
+    intent local_search_contents_listing
+    language en
+    text "Contents of {scope}:\n{items}"
+  response response_local_search_contents_listing_ru
+    intent local_search_contents_listing
+    language ru
+    text "Содержимое {scope}:\n{items}"
+  response response_local_search_contents_listing_hi
+    intent local_search_contents_listing
+    language hi
+    text "{scope} की सामग्री:\n{items}"
+  response response_local_search_contents_listing_zh
+    intent local_search_contents_listing
+    language zh
+    text "{scope} 的内容：\n{items}"
+  response response_local_search_type_directory_en
+    intent local_search_type_directory
+    language en
+    text "{path} is a folder. It was verified within {scope}."
+  response response_local_search_type_directory_ru
+    intent local_search_type_directory
+    language ru
+    text "{path} — это папка. Тип проверен в области {scope}."
+  response response_local_search_type_directory_hi
+    intent local_search_type_directory
+    language hi
+    text "{path} एक फ़ोल्डर है। प्रकार {scope} में सत्यापित किया गया।"
+  response response_local_search_type_directory_zh
+    intent local_search_type_directory
+    language zh
+    text "{path} 是文件夹。已在 {scope} 范围内验证类型。"
+  response response_local_search_type_file_en
+    intent local_search_type_file
+    language en
+    text "{path} is a file. It was verified within {scope}."
+  response response_local_search_type_file_ru
+    intent local_search_type_file
+    language ru
+    text "{path} — это файл. Тип проверен в области {scope}."
+  response response_local_search_type_file_hi
+    intent local_search_type_file
+    language hi
+    text "{path} एक फ़ाइल है। प्रकार {scope} में सत्यापित किया गया।"
+  response response_local_search_type_file_zh
+    intent local_search_type_file
+    language zh
+    text "{path} 是文件。已在 {scope} 范围内验证类型。"
+  response response_definition_followup_clarify_en
+    intent definition_followup_clarify
+    language en
+    text "What does “it” refer to here?"
+  response response_definition_followup_clarify_ru
+    intent definition_followup_clarify
+    language ru
+    text "Что именно вы имеете в виду под «это»?"
+  response response_definition_followup_clarify_hi
+    intent definition_followup_clarify
+    language hi
+    text "यहाँ “यह” से आपका क्या मतलब है?"
+  response response_definition_followup_clarify_zh
+    intent definition_followup_clarify
+    language zh
+    text "这里的“这”具体指什么？"
+  response response_comparison_decomposed_no_evidence_en
+    intent comparison_decomposed_no_evidence
+    language en
+    text "I searched for {left} and {right} separately, but the available search tool returned no usable evidence. The comparison remains unverified."
+  response response_comparison_decomposed_no_evidence_ru
+    intent comparison_decomposed_no_evidence
+    language ru
+    text "Я выполнил отдельный поиск по {left} и {right}, но инструмент не вернул пригодных свидетельств. Сравнение остаётся непроверенным."
+  response response_comparison_decomposed_no_evidence_hi
+    intent comparison_decomposed_no_evidence
+    language hi
+    text "मैंने {left} और {right} को अलग-अलग खोजा, लेकिन खोज साधन ने उपयोगी साक्ष्य नहीं लौटाया। तुलना अभी सत्यापित नहीं है।"
+  response response_comparison_decomposed_no_evidence_zh
+    intent comparison_decomposed_no_evidence
+    language zh
+    text "我分别搜索了 {left} 和 {right}，但搜索工具没有返回可用证据，因此比较尚未验证。"
+  response response_comparison_decomposed_evidence_en
+    intent comparison_decomposed_evidence
+    language en
+    text "Separate evidence for {left} and {right}:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_ru
+    intent comparison_decomposed_evidence
+    language ru
+    text "Отдельно собранные сведения по {left} и {right}:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_hi
+    intent comparison_decomposed_evidence
+    language hi
+    text "{left} और {right} के लिए अलग-अलग साक्ष्य:\n\n{evidence}"
+  response response_comparison_decomposed_evidence_zh
+    intent comparison_decomposed_evidence
+    language zh
+    text "{left} 和 {right} 的独立证据：\n\n{evidence}"
+  response response_supplied_file_contents_en
+    intent supplied_file_contents
+    language en
+    text "Contents of `{path}`:\n\n{body}"
+  response response_supplied_file_contents_ru
+    intent supplied_file_contents
+    language ru
+    text "Содержимое `{path}`:\n\n{body}"
+  response response_supplied_file_contents_hi
+    intent supplied_file_contents
+    language hi
+    text "`{path}` की सामग्री:\n\n{body}"
+  response response_supplied_file_contents_zh
+    intent supplied_file_contents
+    language zh
+    text "`{path}` 的内容：\n\n{body}"
+  response response_supplied_file_first_line_en
+    intent supplied_file_first_line
+    language en
+    text "First line of `{path}`: {line}"
+  response response_supplied_file_first_line_ru
+    intent supplied_file_first_line
+    language ru
+    text "Первая строка `{path}`: {line}"
+  response response_supplied_file_first_line_hi
+    intent supplied_file_first_line
+    language hi
+    text "`{path}` की पहली पंक्ति: {line}"
+  response response_supplied_file_first_line_zh
+    intent supplied_file_first_line
+    language zh
+    text "`{path}` 的第一行：{line}"
+  response response_general_plan_command_capture_action_en
+    intent general_plan_command_capture_action
+    language en
+    text "run the explicit command and capture stdout in {target}"
+  response response_general_plan_command_capture_action_ru
+    intent general_plan_command_capture_action
+    language ru
+    text "выполнить явно указанную команду и сохранить stdout в {target}"
+  response response_general_plan_command_capture_action_hi
+    intent general_plan_command_capture_action
+    language hi
+    text "स्पष्ट कमांड चलाएँ और stdout को {target} में सहेजें"
+  response response_general_plan_command_capture_action_zh
+    intent general_plan_command_capture_action
+    language zh
+    text "运行明确指定的命令并将 stdout 保存到 {target}"
+  response response_general_plan_command_output_evidence_en
+    intent general_plan_command_output_evidence
+    language en
+    text "command-created workspace file {target}"
+  response response_general_plan_command_output_evidence_ru
+    intent general_plan_command_output_evidence
+    language ru
+    text "файл рабочей области {target}, созданный командой"
+  response response_general_plan_command_output_evidence_hi
+    intent general_plan_command_output_evidence
+    language hi
+    text "कमांड से बनाई गई कार्यक्षेत्र फ़ाइल {target}"
+  response response_general_plan_command_output_evidence_zh
+    intent general_plan_command_output_evidence
+    language zh
+    text "由命令创建的工作区文件 {target}"
+  response response_general_plan_command_verification_evidence_en
+    intent general_plan_command_verification_evidence
+    language en
+    text "captured stdout from the explicit command in {target}"
+  response response_general_plan_command_verification_evidence_ru
+    intent general_plan_command_verification_evidence
+    language ru
+    text "stdout явно указанной команды сохранён в {target}"
+  response response_general_plan_command_verification_evidence_hi
+    intent general_plan_command_verification_evidence
+    language hi
+    text "स्पष्ट कमांड का stdout {target} में सहेजा गया"
+  response response_general_plan_command_verification_evidence_zh
+    intent general_plan_command_verification_evidence
+    language zh
+    text "明确指定的命令的 stdout 已保存到 {target}"
+  response response_client_contract_read_observations_error_en
+    intent client_contract_read_observations_error
+    language en
+    text "read observations {path}: {error}"
+  response response_client_contract_read_observations_error_ru
+    intent client_contract_read_observations_error
+    language ru
+    text "не удалось прочитать наблюдения {path}: {error}"
+  response response_client_contract_read_observations_error_hi
+    intent client_contract_read_observations_error
+    language hi
+    text "अवलोकन {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_observations_error_zh
+    intent client_contract_read_observations_error
+    language zh
+    text "无法读取观测记录 {path}：{error}"
+  response response_client_contract_parse_observation_error_en
+    intent client_contract_parse_observation_error
+    language en
+    text "parse observation {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_ru
+    intent client_contract_parse_observation_error
+    language ru
+    text "не удалось разобрать наблюдение {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_hi
+    intent client_contract_parse_observation_error
+    language hi
+    text "अवलोकन {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_observation_error_zh
+    intent client_contract_parse_observation_error
+    language zh
+    text "无法解析观测记录 {path}:{line}：{error}"
+  response response_client_contract_read_transcript_error_en
+    intent client_contract_read_transcript_error
+    language en
+    text "read transcript {path}: {error}"
+  response response_client_contract_read_transcript_error_ru
+    intent client_contract_read_transcript_error
+    language ru
+    text "не удалось прочитать протокол {path}: {error}"
+  response response_client_contract_read_transcript_error_hi
+    intent client_contract_read_transcript_error
+    language hi
+    text "प्रतिलेख {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_transcript_error_zh
+    intent client_contract_read_transcript_error
+    language zh
+    text "无法读取交互记录 {path}：{error}"
+  response response_client_contract_parse_transcript_error_en
+    intent client_contract_parse_transcript_error
+    language en
+    text "parse transcript {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_ru
+    intent client_contract_parse_transcript_error
+    language ru
+    text "не удалось разобрать протокол {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_hi
+    intent client_contract_parse_transcript_error
+    language hi
+    text "प्रतिलेख {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_transcript_error_zh
+    intent client_contract_parse_transcript_error
+    language zh
+    text "无法解析交互记录 {path}:{line}：{error}"
+  response response_client_contract_missing_evidence_error_en
+    intent client_contract_missing_evidence_error
+    language en
+    text "{path} contains neither a tool call nor expected marker `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_ru
+    intent client_contract_missing_evidence_error
+    language ru
+    text "{path} не содержит ни вызова инструмента, ни ожидаемого маркера `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_hi
+    intent client_contract_missing_evidence_error
+    language hi
+    text "{path} में न साधन आमंत्रण है, न अपेक्षित चिह्न `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_zh
+    intent client_contract_missing_evidence_error
+    language zh
+    text "{path} 既不包含工具调用，也不包含预期标记 `{expected_marker}`"

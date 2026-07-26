@@ -64,6 +64,12 @@ multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
 
+## Issue #819 Local-Path Discovery
+
+The local-path discovery suite contains only self-authored multilingual prompts
+and deterministic routing expectations. It imports no upstream dataset or
+third-party payload, so no additional upstream license applies.
+
 ## Issue #482 Nemotron Training-Data Samples
 
 | Source | License | Upstream revision | Sampled rows | Download mode |

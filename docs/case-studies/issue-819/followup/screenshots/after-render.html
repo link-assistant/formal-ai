@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Issue 819 OpenCode report flow after fix</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+        background: #080b0d;
+        color: #d8dee9;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 15% 10%, #16242a 0, transparent 32rem),
+          #080b0d;
+      }
+      main {
+        width: 1040px;
+        border: 1px solid #33424a;
+        border-radius: 12px;
+        background: #0c1114;
+        box-shadow: 0 28px 90px #000c;
+        overflow: hidden;
+      }
+      header {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        height: 42px;
+        padding: 0 16px;
+        border-bottom: 1px solid #29363c;
+        background: #11191d;
+      }
+      header span {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #44545d;
+      }
+      header span:first-child {
+        background: #e06c75;
+      }
+      header span:nth-child(2) {
+        background: #e5c07b;
+      }
+      header span:nth-child(3) {
+        background: #98c379;
+      }
+      pre {
+        box-sizing: border-box;
+        min-height: 675px;
+        margin: 0;
+        padding: 30px 38px;
+        font-size: 18px;
+        line-height: 1.42;
+        white-space: pre-wrap;
+      }
+      .accent {
+        color: #56b6c2;
+      }
+      .success {
+        color: #98c379;
+      }
+      .muted {
+        color: #7f8c93;
+      }
+    </style>
+  </head>
+  <body>
+    <main aria-label="OpenCode terminal after the issue 819 fix">
+      <header><span></span><span></span><span></span></header>
+      <pre><span class="accent">█▀▀█  OpenCode
+█  █</span>  /tmp/formal-ai-issue-819
+<span class="accent">▀▀▀▀</span>
+
+› Report
+
+I'll use question on Report so I can verify the next step before continuing.
+
+   <span class="accent">Report</span>   Confirm
+
+  What would you like to report? Select one or more. <span class="muted">(select all that apply)</span>
+
+  1. <span class="success">[✓] Harness log</span>
+     <span class="muted">Export the complete agentic harness log.</span>
+  2. <span class="success">[✓] Server log</span>
+     <span class="muted">Export the matching Formal AI server log.</span>
+  3. <span class="success">[✓] GitHub issue</span>
+     <span class="muted">File an issue with complete context.</span>
+  4. [ ] Report to Formal AI
+     <span class="muted">Store the report so this instance can learn.</span>
+  5. [ ] Type your own answer
+
+  <span class="muted">⇆ tab   ↑↓ select   enter toggle   esc dismiss</span></pre>
+    </main>
+  </body>
+</html>

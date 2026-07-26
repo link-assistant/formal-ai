@@ -2,10 +2,10 @@ self_ast_census
   target src/learning_ledger.rs
   language rust
   fidelity signature
-  byte_len 13407
-  line_count 341
-  content_id source_module_d311a679f02a8492
-  symbol_count 24
+  byte_len 13976
+  line_count 355
+  content_id source_module_b3603c2c577cd078
+  symbol_count 26
   symbols
     struct HumanApproval 39 42
     function granted 47 52
@@ -27,7 +27,9 @@ self_ast_census
     function links_notation 275 294
     function content_id 299 301
     function canonical_ledger 311 320
-    function normalise 322 324
-    function field 326 328
-    function nested 330 332
-    function quote 334 341
+    function approved_lesson_for 328 334
+    static APPROVED_LEDGER 329 329
+    function normalise 336 338
+    function field 340 342
+    function nested 344 346
+    function quote 348 355

@@ -1,0 +1,57 @@
+self_ast_census
+  target src/agentic_coding/routing_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 1571
+  line_count 41
+  content_id source_module_976ea373edb73248
+  symbol_count 7
+  symbols
+    const ROUTING_LEARNING_PATH 9 9
+    const ROUTING_LEARNING_TASK 10 10
+    static REPORT 12 20
+    function is_routing_learning_task 23 25
+    function render_document 28 30
+    function render_document_from 34 36
+    function final_answer 39 41
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 822
+    named_node_count 149
+    distinct_node_kinds 32
+    node_kinds
+      arguments 5
+      attribute 4
+      attribute_item 4
+      block 4
+      call_expression 5
+      const_item 2
+      doc_comment 6
+      field_expression 4
+      field_identifier 11
+      field_initializer 7
+      field_initializer_list 1
+      function_item 4
+      identifier 27
+      inner_doc_comment_marker 5
+      line_comment 6
+      macro_invocation 1
+      outer_doc_comment_marker 1
+      parameter 3
+      parameters 4
+      primitive_type 6
+      reference_type 5
+      scoped_identifier 2
+      source_file 1
+      static_item 1
+      string_content 7
+      string_literal 7
+      struct_expression 1
+      super 1
+      token_tree 1
+      type_identifier 5
+      use_declaration 1
+      visibility_modifier 7

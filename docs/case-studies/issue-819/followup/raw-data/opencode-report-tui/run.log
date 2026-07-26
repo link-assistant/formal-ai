@@ -1,0 +1,5 @@
+== issue #819 OpenCode report TUI OK: three selections, three actions ==
+formal-ai context export --session dialog_9b6b1422027158eb --source harness --output formal-ai-harness-dialog_9b6b1422027158eb.lino
+curl -fsS http://127.0.0.1:8914/api/formal-ai/v1/conversations/dialog_9b6b1422027158eb?include=server -o formal-ai-server-dialog_9b6b1422027158eb.lino
+curl -fsS http://127.0.0.1:8914/api/formal-ai/v1/conversations/dialog_9b6b1422027158eb?include=both -o /tmp/formal-ai-report.wLBCwR.lino
+gh issue create --repo link-assistant/formal-ai --title Formal AI agentic session report --body-file /tmp/formal-ai-report.j7Hoe6.md

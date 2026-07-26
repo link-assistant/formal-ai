@@ -1,0 +1,74 @@
+system_explanation
+  engine meta_language
+  question "how does Formal AI work?"
+  source_file_count 292
+  source_manifest_content_id "source_tree_464f1031f611befc"
+  section_count 5
+  citation_count 13
+  sections
+    section
+      topic "deterministic_meta_algorithm"
+      statement "Formal AI answers agentic requests with a deterministic planner state machine: a keyword-routed recipe walk (write, verify, final answer), never neural inference, so every step is a reproducible function of its inputs."
+      citations
+        citation
+          kind source
+          path "src/agentic_coding/planner.rs"
+          content_id "source_module_600879e2bb22a203"
+        citation
+          kind source
+          path "src/agentic_coding/mod.rs"
+          content_id "source_module_aca1c8b8f52e8ae8"
+    section
+      topic "source_to_links_round_trip"
+      statement "The entire owned source tree is embedded as content-addressed data and projected through the single CST/AST engine (tree-sitter); every owned module round-trips source to links and back byte-for-byte, so the system's own code is present in its data as links."
+      citations
+        citation
+          kind source
+          path "src/self_source_links.rs"
+          content_id "source_module_2331204f81670611"
+        citation
+          kind source
+          path "src/agentic_coding/self_ast.rs"
+          content_id "source_module_9104c8097027e9ae"
+        citation
+          kind test
+          path "tests/unit/issue_558_source_links.rs"
+    section
+      topic "self_healing_loop"
+      statement "When Formal AI cannot answer, it does not simply fail: it captures the failure as a structured RepairCase (unknown trace, a verified source-to-links mapping, and a benchmark gate) that never advances past awaiting human review."
+      citations
+        citation
+          kind source
+          path "src/self_healing.rs"
+          content_id "source_module_444e90593e01e8e0"
+        citation
+          kind data
+          path "data/meta/self-healing-case.lino"
+        citation
+          kind test
+          path "tests/unit/issue_558_self_healing.rs"
+    section
+      topic "human_gated_promotion_ledger"
+      statement "An approved lesson is promoted into a durable learning ledger only when the benchmark gate is green and a human approves; a repeated failure is then answered from the ledger instead of being re-derived, which is the concrete payoff of auto learning."
+      citations
+        citation
+          kind source
+          path "src/learning_ledger.rs"
+          content_id "source_module_b3603c2c577cd078"
+        citation
+          kind data
+          path "data/meta/learning-ledger.lino"
+        citation
+          kind test
+          path "tests/unit/issue_558_learning_ledger.rs"
+    section
+      topic "agentic_interface"
+      statement "Every capability is reachable over the OpenAI-compatible agentic interface used by external CLIs (Codex, OpenCode, Gemini, Agent CLI), driven by the same deterministic planner and proven over the wire by server integration tests."
+      citations
+        citation
+          kind source
+          path "src/agentic_coding/driver.rs"
+          content_id "source_module_24c3e8c46a44d30e"
+        citation
+          kind test
+          path "tests/integration/issue_558_learning_ledger.rs"

@@ -1,0 +1,6 @@
+bun install v1.3.14 (0d9b296a)
+
++ @xterm/headless@6.0.0
++ command-stream@0.14.1
+
+2 packages installed [208.00ms]

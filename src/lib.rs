@@ -11,12 +11,15 @@ pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
 pub mod change_request;
+pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod context_capacity;
+pub mod conversation_context;
 pub mod cue_lexicon;
+pub mod dialog_conversation;
 pub mod dialog_log;
 pub mod document_formats;
 pub mod dreaming;
@@ -32,6 +35,7 @@ pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod intent_formalization;
+pub mod issue_report;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
@@ -68,6 +72,7 @@ pub mod proxy;
 pub mod question_generation;
 pub mod rebuild_plan;
 pub mod recipe_interpreter;
+pub mod recursive_execution;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
@@ -137,6 +142,10 @@ pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
+pub use client_contract_learning::{
+    learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
+    ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
+};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
@@ -187,7 +196,8 @@ pub use knowledge::{
 };
 pub use language::{detect as detect_language, Language};
 pub use learning_ledger::{
-    canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
+    approved_lesson_for, canonical_ledger, HumanApproval, LearningLedger, LedgerEntry,
+    PromotionRejected,
 };
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
@@ -268,8 +278,9 @@ pub use self_healing::{
     canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
 };
 pub use self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
-    LearningRejection, LearningRun, UnknownTrace,
+    learn_from_reported_conversation, learn_rules_from_unknown_traces,
+    learning_trace_from_symbolic_answer, BenchmarkGateReport, LearnedRuleAdoption,
+    LearnedRuleProposal, LearningRejection, LearningRun, ReportedLearning, UnknownTrace,
 };
 pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,

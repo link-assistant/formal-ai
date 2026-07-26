@@ -1,0 +1,1 @@
+Create associative-stack-summary.md with a top-level heading "Associative stack summary" and one concise paragraph explaining that Formal AI keeps inspectable knowledge in a links network and uses Links Notation as its portable text representation. Do not create or change any other file.

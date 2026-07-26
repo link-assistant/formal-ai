@@ -1,11 +1,19 @@
 #!/usr/bin/env node
 
-// Deterministic, read-only web research fixture for issue #781 CLI E2E tests.
-// All four external clients execute these tools themselves, giving CI stable
-// evidence while preserving each client's real protocol and tool-call loop.
-// Separate captured runs retain Agent/OpenCode's network-backed evidence.
+// Deterministic, read-only web research fixture for CLI E2E tests. External
+// clients execute these tools themselves, giving CI stable evidence while
+// preserving each client's real protocol and tool-call loop.
 
 import readline from "node:readline";
+
+const oversizedSpaceCompanyPage = [
+  "Private space companies operate in the United States, China, India, Japan, and several European countries.",
+  ...Array.from(
+    { length: 1_400 },
+    (_, index) =>
+      `Evidence record ${index + 1}: commercial launch, satellite, and spacecraft firms operate under national licensing regimes.`,
+  ),
+].join("\n");
 
 const sources = new Map([
   [
@@ -20,7 +28,44 @@ const sources = new Map([
     "https://shop.example.test/compatible-a325-45-adapter",
     "Candidate adapter listing: 12 V, 2 A, 24 W, center-positive 3.5 x 1.35 mm plug; compatible with Acer Aspire 3 A325-45.",
   ],
+  [
+    "https://elections.example.test/us/2026-calendar",
+    "United States election calendar: the next regular federal general election is the 2026 midterm election on November 3, 2026.",
+  ],
+  [
+    "https://elections.example.test/us/offices",
+    "The 2026 United States elections include all 435 House seats, 33 regularly scheduled Senate seats, and state and local contests.",
+  ],
+  [
+    "https://space.example.test/countries/private-companies",
+    oversizedSpaceCompanyPage,
+  ],
+  [
+    "https://space.example.test/licensing-overview",
+    "Private space activity exists across North America, Europe, and Asia, subject to each country's launch and satellite licensing rules.",
+  ],
 ]);
+
+function searchResults(query) {
+  const normalized = String(query).toLowerCase();
+  if (/acer|a325/.test(normalized)) {
+    return [
+      "Acer specifications https://acer.example.test/a325-45/specifications",
+      "Connector reference https://parts.example.test/acer-a325-45/connector",
+      "Candidate listing https://shop.example.test/compatible-a325-45-adapter",
+    ];
+  }
+  if (/election|united states|usa/.test(normalized)) {
+    return [
+      "US election calendar https://elections.example.test/us/2026-calendar",
+      "Offices on the ballot https://elections.example.test/us/offices",
+    ];
+  }
+  return [
+    "Private space companies by country https://space.example.test/countries/private-companies",
+    "Licensing overview https://space.example.test/licensing-overview",
+  ];
+}
 
 function result(id, value) {
   process.stdout.write(`${JSON.stringify({ jsonrpc: "2.0", id, result: value })}\n`);
@@ -58,7 +103,7 @@ function handle(message) {
       tools: [
         {
           name: "websearch",
-          description: "Search deterministic web evidence for the issue #781 charger task",
+          description: "Search deterministic web evidence for Agent CLI E2E scenarios",
           inputSchema: {
             type: "object",
             properties: { query: { type: "string" } },
@@ -75,7 +120,7 @@ function handle(message) {
         },
         {
           name: "webfetch",
-          description: "Fetch one deterministic issue #781 evidence page",
+          description: "Fetch one deterministic Agent CLI evidence page",
           inputSchema: {
             type: "object",
             properties: { url: { type: "string" } },
@@ -97,16 +142,12 @@ function handle(message) {
   if (method === "tools/call") {
     const name = params.name;
     const args = params.arguments || {};
-    process.stderr.write(`[issue-781-mcp] ${name} ${JSON.stringify(args)}\n`);
+    process.stderr.write(`[agent-cli-research-mcp] ${name} ${JSON.stringify(args)}\n`);
     if (name === "websearch") {
       result(
         id,
         textResult(
-          [
-            "Acer specifications https://acer.example.test/a325-45/specifications",
-            "Connector reference https://parts.example.test/acer-a325-45/connector",
-            "Candidate listing https://shop.example.test/compatible-a325-45-adapter",
-          ].join("\n"),
+          searchResults(args.query).join("\n"),
         ),
       );
       return;
@@ -137,6 +178,6 @@ input.on("line", (line) => {
   try {
     handle(JSON.parse(line));
   } catch (exception) {
-    process.stderr.write(`[issue-781-mcp] invalid request: ${exception.message}\n`);
+    process.stderr.write(`[agent-cli-research-mcp] invalid request: ${exception.message}\n`);
   }
 });

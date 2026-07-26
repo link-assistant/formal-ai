@@ -1,0 +1,63 @@
+== report: Report issue ==
+== destination: GitHub issue ==
+== contents: Both logs ==
+== issue #822 E2E OK: two confirmations preceded a complete-context issue (4 rounds) ==
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1784705853913,
+  "sessionID": "ses_0773e04b0ffendu3ccPW7AY298"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.913Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.914Z",
+  "service": "default",
+  "directory": "/tmp/tmp.dxIWJxJCm1",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.914Z",
+  "service": "state",
+  "key": "/tmp/tmp.dxIWJxJCm1",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.916Z",
+  "service": "state",
+  "key": "/tmp/tmp.dxIWJxJCm1",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-22T07:37:33.916Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 6,
+  "message": "Agent exiting"
+}

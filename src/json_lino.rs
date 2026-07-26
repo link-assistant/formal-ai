@@ -29,6 +29,7 @@
 //! value `"146"` — is never silently retyped: ambiguous strings are quoted on
 //! encode and recognised as strings on decode.
 
+use base64::Engine as _;
 use serde_json::{Map, Number, Value};
 
 const ARRAY_ENTRY: &str = "entry";
@@ -74,10 +75,141 @@ fn normal_form(value: &Value) -> Value {
 
 #[must_use]
 pub fn json_to_lino(value: &Value) -> String {
-    let value = normal_form(value);
     let mut out = String::new();
-    write_document(&mut out, &value);
+    write_native_document(&mut out, value);
     out
+}
+
+/// Render arbitrary JSON in native, human-reviewable Links Notation.
+///
+/// Record arrays use repeated singular item headers (`messages` → `message`,
+/// `parts` → `part`) instead of synthetic indices. Scalar arrays remain inline.
+/// This is the generic agent-tool conversion path; the cache codec below keeps
+/// its historical, round-trippable `entry` representation for compatibility.
+fn write_native_document(out: &mut String, value: &Value) {
+    match value {
+        Value::Object(object) => write_native_object(out, 0, object),
+        Value::Array(items) => write_native_sequence(out, 0, "items", items),
+        scalar => write_line(out, 0, "value", Some(&native_scalar_token(scalar))),
+    }
+}
+
+fn write_native_object(out: &mut String, indent: usize, object: &Map<String, Value>) {
+    for (key, value) in object {
+        if native_bare_reference(key) {
+            write_native_named_value(out, indent, key, value);
+        } else {
+            write_line(out, indent, "field", None);
+            write_line(out, indent + 2, "name", Some(&native_string_token(key)));
+            write_native_named_value(out, indent + 2, "value", value);
+        }
+    }
+}
+
+fn write_native_named_value(out: &mut String, indent: usize, name: &str, value: &Value) {
+    match value {
+        Value::Object(object) => {
+            write_line(out, indent, name, None);
+            write_native_object(out, indent + 2, object);
+        }
+        Value::Array(items) if items.iter().all(is_scalar) => write_line(
+            out,
+            indent,
+            name,
+            Some(&format!(
+                "({})",
+                items
+                    .iter()
+                    .map(native_scalar_token)
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            )),
+        ),
+        Value::Array(items) => write_native_sequence(out, indent, name, items),
+        scalar => write_line(out, indent, name, Some(&native_scalar_token(scalar))),
+    }
+}
+
+fn write_native_sequence(out: &mut String, indent: usize, name: &str, items: &[Value]) {
+    write_line(out, indent, name, None);
+    let item_name = singular_item_name(name);
+    for item in items {
+        match item {
+            Value::Object(object) => {
+                write_line(out, indent + 2, &item_name, None);
+                write_native_object(out, indent + 4, object);
+            }
+            Value::Array(nested) if nested.iter().all(is_scalar) => write_line(
+                out,
+                indent + 2,
+                &item_name,
+                Some(&format!(
+                    "({})",
+                    nested
+                        .iter()
+                        .map(native_scalar_token)
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                )),
+            ),
+            Value::Array(nested) => {
+                write_native_sequence(out, indent + 2, &item_name, nested);
+            }
+            scalar => write_line(
+                out,
+                indent + 2,
+                &item_name,
+                Some(&native_scalar_token(scalar)),
+            ),
+        }
+    }
+}
+
+fn singular_item_name(name: &str) -> String {
+    match name {
+        "messages" => String::from("message"),
+        "parts" => String::from("part"),
+        _ if name.ends_with("ies") && name.len() > 3 => {
+            format!("{}y", &name[..name.len() - 3])
+        }
+        _ if name.ends_with('s') && name.len() > 1 => name[..name.len() - 1].to_owned(),
+        _ => format!("{name}_item"),
+    }
+}
+
+fn native_scalar_token(value: &Value) -> String {
+    match value {
+        Value::Null => String::from("null"),
+        Value::Bool(value) => value.to_string(),
+        Value::Number(value) => value.to_string(),
+        Value::String(value) => native_string_token(value),
+        Value::Array(_) | Value::Object(_) => String::new(),
+    }
+}
+
+fn native_string_token(value: &str) -> String {
+    let flat = value
+        .replace('\r', "\\r")
+        .replace('\n', "\\n")
+        .replace('\t', "\\t");
+    if native_bare_reference(&flat) && !is_scalar_literal(&flat) {
+        return flat;
+    }
+    if !flat.contains('"') {
+        return format!("\"{flat}\"");
+    }
+    if !flat.contains('\'') {
+        return format!("'{flat}'");
+    }
+    let encoded = base64::engine::general_purpose::STANDARD.encode(value.as_bytes());
+    format!("\"b64:{encoded}\"")
+}
+
+fn native_bare_reference(value: &str) -> bool {
+    !value.is_empty()
+        && value.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '_' | '.' | '-' | '/')
+        })
 }
 
 /// Encode a cached source document.

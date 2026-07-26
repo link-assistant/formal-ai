@@ -152,8 +152,8 @@ fn chat_completion_explains_the_action_before_requesting_a_tool() {
 #[test]
 fn chat_completion_localizes_tool_narration_in_hindi_and_chinese() {
     for (prompt, expected_narration) in [
-        ("सेब के बारे में इंटरनेट पर खोजो", "अगला कदम जारी रखने से पहले"),
-        ("查找苹果网上信息", "我会对"),
+        ("सेब के बारे में इंटरनेट पर खोजो", "इंटरनेट पर"),
+        ("查找苹果网上信息", "上网搜索"),
     ] {
         let request: ChatCompletionRequest = serde_json::from_value(serde_json::json!({
             "model": "formal-ai",
@@ -431,6 +431,98 @@ fn a_failed_source_is_not_retried_or_used_as_evidence() {
     let answer = final_answer(&messages);
     assert!(answer.contains("19.5 V"), "{answer}");
     assert!(!answer.contains("HTTP 403"), "{answer}");
+}
+
+#[test]
+fn a_plain_text_provider_denial_is_not_used_as_research_evidence() {
+    let mut messages = vec![ChatMessage::user(
+        "Find the voltage required by this laptop charger?",
+    )];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &["Blocked https://example.test/blocked Working https://example.test/working"],
+    );
+
+    let blocked = tool_calls(&messages);
+    assert_eq!(
+        arguments(&blocked[0])["url"],
+        "https://example.test/blocked"
+    );
+    answer_tool_calls(
+        &mut messages,
+        &blocked,
+        &["You can't perform that action at this time."],
+    );
+
+    let working = tool_calls(&messages);
+    assert_eq!(
+        arguments(&working[0])["url"],
+        "https://example.test/working",
+        "the denial is an observed failed attempt, not fetched evidence"
+    );
+    answer_tool_calls(&mut messages, &working, &["The adapter requires 19.5 V."]);
+
+    let answer = final_answer(&messages);
+    assert!(answer.contains("19.5 V"), "{answer}");
+    assert!(!answer.contains("can't perform"), "{answer}");
+}
+
+#[test]
+fn research_reports_no_content_when_every_fetch_attempt_fails() {
+    let mut messages = vec![ChatMessage::user(
+        "Find the voltage required by this laptop charger?",
+    )];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &["Only result https://example.test/blocked"],
+    );
+
+    let blocked = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &blocked,
+        &["You can't perform that action at this time."],
+    );
+
+    let answer = final_answer(&messages);
+    assert!(answer.contains("returned no content"), "{answer}");
+    assert!(!answer.contains("example.test/blocked"), "{answer}");
+    assert!(!answer.contains("can't perform"), "{answer}");
+}
+
+#[test]
+fn short_fetched_pages_are_synthesized_instead_of_repeated_verbatim() {
+    let mut messages = vec![ChatMessage::user("Formal AI definition?")];
+    let search = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &search,
+        &["Documentation https://example.test/formal-ai"],
+    );
+
+    let fetch = tool_calls(&messages);
+    answer_tool_calls(
+        &mut messages,
+        &fetch,
+        &[concat!(
+            "Formal AI definition: a deterministic agent that derives answers ",
+            "from explicit meanings and observed tool evidence. ",
+            "All installers are listed below. Edit this page. Expand or collapse."
+        )],
+    );
+
+    let answer = final_answer(&messages);
+    assert!(answer.contains("deterministic agent"), "{answer}");
+    for furniture in ["All installers", "Edit this page", "Expand or collapse"] {
+        assert!(
+            !answer.contains(furniture),
+            "page furniture leaked into the synthesis: {answer}"
+        );
+    }
 }
 
 #[test]

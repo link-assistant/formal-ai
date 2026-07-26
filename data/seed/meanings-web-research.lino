@@ -34,6 +34,10 @@ meanings
     role research_question_opener
     lexeme en
       surface
+        text "define …"
+      surface
+        text "give a definition of …"
+      surface
         text "what is the …"
       surface
         text "what is a …"
@@ -113,6 +117,10 @@ meanings
         text "what does …"
     lexeme ru
       surface
+        text "дай определение …"
+      surface
+        text "определи …"
+      surface
         text "что такое …"
       surface
         text "что за …"
@@ -154,6 +162,8 @@ meanings
         text "ты знаешь …"
     lexeme hi
       surface
+        text "परिभाषित करें …"
+      surface
         text "क्या …"
       surface
         text "क्या होता है …"
@@ -178,6 +188,8 @@ meanings
       surface
         text "बताओ …"
     lexeme zh
+      surface
+        text 定义…
       surface
         text 有没有…
       surface

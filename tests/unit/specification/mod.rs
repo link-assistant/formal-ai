@@ -53,6 +53,7 @@ mod dreaming_meta_algorithm;
 mod forced_language_seam;
 mod formalization;
 mod github_repository_traffic;
+mod grounded_action_meta_algorithm;
 mod intent_formalization;
 mod issue_146;
 mod issue_402;

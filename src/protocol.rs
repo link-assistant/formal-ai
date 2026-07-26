@@ -24,6 +24,7 @@ use crate::protocol_responses::response_arguments_for_tool;
 use crate::solver::UniversalSolver;
 
 mod content;
+pub use content::{client_working_directory, latest_user_request, system_prompt_text};
 mod output;
 mod recording;
 pub use output::*;
@@ -340,6 +341,8 @@ pub struct ChatCompletion {
     pub model: String,
     pub choices: Vec<ChatChoice>,
     pub usage: TokenUsage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub learning_trace: Option<Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -593,6 +596,19 @@ enum AgenticOutcome {
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
     let trace = std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1");
     if !request.requests_tool_execution() {
+        // A client that speaks no function calling can still ground a file
+        // read: `aider` puts the file's bytes in the conversation itself
+        // (issue #671). Answering from what is already here needs no tool, so
+        // it belongs on this side of the gate — but still only in agent mode,
+        // which is what promises the client a workspace-aware answer.
+        if agent_mode {
+            if let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages) {
+                if trace {
+                    eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
+                }
+                return AgenticOutcome::Planned(AgenticPlan::Final(answer));
+            }
+        }
         if trace {
             eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
         }
@@ -647,6 +663,7 @@ fn chat_completion_from_plan(
 ) -> ChatCompletion {
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
+    let workspace = client_working_directory(&request.messages);
 
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -661,6 +678,7 @@ fn chat_completion_from_plan(
                         &call.tool,
                         call.arguments,
                         prompt,
+                        workspace.as_deref(),
                     );
                     ToolCall::function(stable_id("call", &seed), call.tool, arguments)
                 })
@@ -706,6 +724,7 @@ fn chat_completion_from_plan(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        learning_trace: None,
     }
 }
 
@@ -717,6 +736,8 @@ fn chat_completion_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let prompt_tokens = message_input_tokens(&request.messages);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
+    let learning_trace =
+        crate::self_improvement::learning_trace_from_symbolic_answer(prompt, &symbolic_answer);
     let thinking_steps = symbolic_answer.thinking_steps;
     let reasoning = render_thinking_steps(&thinking_steps);
     let mut message = ChatMessage::assistant(symbolic_answer.answer);
@@ -739,6 +760,7 @@ fn chat_completion_from_symbolic(
             completion_tokens,
             total_tokens: prompt_tokens.saturating_add(completion_tokens),
         },
+        learning_trace,
     }
 }
 
@@ -806,6 +828,9 @@ fn response_from_plan(
 ) -> ResponseObject {
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
+    // The Responses surface carries the same client prose in its own shape, so
+    // the declaration is read from the chat projection rather than parsed twice.
+    let workspace = client_working_directory(&request.to_chat_completion_request().messages);
 
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
@@ -826,8 +851,13 @@ fn response_from_plan(
                 let tool = call.tool;
                 let planned_arguments = call.arguments;
                 let seed = format!("{prompt}|{index}|{tool}|{planned_arguments}");
-                let arguments =
-                    response_arguments_for_tool(&request.tools, &tool, planned_arguments, prompt);
+                let arguments = response_arguments_for_tool(
+                    &request.tools,
+                    &tool,
+                    planned_arguments,
+                    prompt,
+                    workspace.as_deref(),
+                );
                 output_tokens = output_tokens.saturating_add(
                     estimate_tokens(&tool).saturating_add(estimate_tokens(&arguments)),
                 );

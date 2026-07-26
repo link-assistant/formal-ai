@@ -1,0 +1,15 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 26.30s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 4 tests
+test issue_819_report_flow::opencode_report_asks_one_multiselect_question_without_a_command ... ok
+test issue_819_report_flow::opencode_report_selection_runs_one_combined_action_without_leaking_it ... ok
+test issue_819_report_flow::opencode_desktop_find_is_narrated_naturally_and_runs_find ... ok
+test issue_819_report_flow::opencode_empty_find_result_is_explained_for_a_beginner ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 183 filtered out; finished in 16.54s

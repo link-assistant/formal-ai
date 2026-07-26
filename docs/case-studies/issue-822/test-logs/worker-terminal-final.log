@@ -1,0 +1,2 @@
+[issue-513] src/web/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.
+[issue-513] worker terminal vocabulary is in sync with seed.

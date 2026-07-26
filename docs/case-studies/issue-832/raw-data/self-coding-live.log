@@ -1,0 +1,34 @@
+📁 Log file: /tmp/gh-issue-solver-1784837344897/solve-2026-07-23T20-34-37-781Z.log
+   (All output will be logged here)
+
+🚀 solve v2.8.11
+🔧 Raw command executed:
+   /home/box/.nvm/versions/node/v20.20.2/bin/node /home/box/.bun/bin/solve https://github.com/link-assistant/formal-ai/issues/832 --tool agent --model formal-ai --verbose
+
+🧭 Execution context: docker container (indicators: /.dockerenv) — per-task disk usage is scoped to this container.
+📈 Resource usage (solve start):
+   CPU load: 2.00 1.96 2.07 (6 CPUs)
+   Memory: 9.9 GB available / 11.7 GB total (1.8 GB used)
+   Process RSS: 87 MB, heap 19 MB
+   Disk (/): 146.0 GB available / 192.7 GB total (24.2% used)
+📈 [RESOURCES] phase=solve_start ts=2026-07-23T20%3A34%3A38.996Z load1=2 load5=1.96 load15=2.07 cpuCount=6 memTotalBytes=12541489152 memAvailableBytes=10626256896 memUsedBytes=1915232256 processRssBytes=91484160 diskPath=%2F diskTotalBytes=206900281344 diskAvailableBytes=156749475840 diskUsedBytes=50134028288 diskUsedPercent=24.23101020565812 mem=9.9%20GB%20available%20%2F%2011.7%20GB%20total disk=146.0%20GB%20available%20%2F%20192.7%20GB%20total
+❌ Unrecognized model: "formal-ai"
+   Available models for agent: grok, grok-code, grok-code-fast-1, big-pickle, gpt-5-nano, minimax-m2.5-free, nemotron-3-super-free, glm-5-free, glm-4.5-air-free, deepseek-r1-free, giga-potato-free, trinity-large-preview, qwen3.6-plus-free, kimi-k2.5-free, glm-4.7-free, minimax-m2.1-free, sonnet, haiku, opus, gemini-3-pro
+📈 Resource usage (solve exit 1):
+   CPU load: 2.00 1.96 2.07 (6 CPUs)
+   Memory: 9.9 GB available / 11.7 GB total (1.8 GB used)
+   Process RSS: 88 MB, heap 20 MB
+   Disk (/): 146.0 GB available / 192.7 GB total (24.2% used)
+📈 [RESOURCES] phase=solve_exit ts=2026-07-23T20%3A34%3A40.097Z load1=2 load5=1.96 load15=2.07 cpuCount=6 memTotalBytes=12541489152 memAvailableBytes=10626170880 memUsedBytes=1915318272 processRssBytes=92139520 diskPath=%2F diskTotalBytes=206900281344 diskAvailableBytes=156749422592 diskUsedBytes=50134081536 diskUsedPercent=24.231035941727523 mem=9.9%20GB%20available%20%2F%2011.7%20GB%20total disk=146.0%20GB%20available%20%2F%20192.7%20GB%20total
+
+❌ Invalid model name
+📁 Full log file: /tmp/gh-issue-solver-1784837344897/solve-2026-07-23T20-34-37-781Z.log
+
+💬 Notifying issue #832 about solver failure...
+github.com
+  ✓ Logged in to github.com account konard (/home/box/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'user', 'workflow'
+{"url":"https://api.github.com/repos/link-assistant/formal-ai/issues/comments/5063145457","html_url":"https://github.com/link-assistant/formal-ai/issues/832#issuecomment-5063145457","issue_url":"https://api.github.com/repos/link-assistant/formal-ai/issues/832","id":5063145457,"node_id":"IC_kwDOSbOoU88AAAABLcl38Q","user":{"login":"konard","id":1431904,"node_id":"MDQ6VXNlcjE0MzE5MDQ=","avatar_url":"https://avatars.githubusercontent.com/u/1431904?u=eef2c91c80a671714d3fd8c08ef91b297840056b&v=4","gravatar_id":"","url":"https://api.github.com/users/konard","html_url":"https://github.com/konard","followers_url":"https://api.github.com/users/konard/followers","following_url":"https://api.github.com/users/konard/following{/other_user}","gists_url":"https://api.github.com/users/konard/gists{/gist_id}","starred_url":"https://api.github.com/users/konard/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/konard/subscriptions","organizations_url":"https://api.github.com/users/konard/orgs","repos_url":"https://api.github.com/users/konard/repos","events_url":"https://api.github.com/users/konard/events{/privacy}","received_events_url":"https://api.github.com/users/konard/received_events","type":"User","user_view_type":"public","site_admin":false},"created_at":"2026-07-23T20:34:42Z","updated_at":"2026-07-23T20:34:42Z","author_association":"MEMBER","body":"## 🚨 Solution Draft Failed\n\nThe automated solver stopped before creating a pull request, so no PR was opened for this issue.\n\n### Failure\n- **Repository**: `link-assistant/formal-ai`\n- **Issue**: #832\n- **Tool**: `agent`\n- **Requested model**: `formal-ai`\n\n**Reason**\n```text\nInvalid model name\n```\n\n### What you can do\n- Resolve the repository, account, permissions, or environment problem described above, then rerun the solver.\n- Repository owner or Hive Mind administrator path: handle manual recreation or fix of the repository when the required action is outside the requester access.\n\nLogs were not attached because `--attach-logs` was not enabled.\n","reactions":{"url":"https://api.github.com/repos/link-assistant/formal-ai/issues/comments/5063145457/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"performed_via_github_app":null,"minimized":null,"pin":null}  ✅ Solver failure comment posted to issue #832 (id=5063145457)

@@ -425,8 +425,9 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
 
     assert!(workflow.contains("--self-hosting-ledger"));
     assert!(
-        workflow.contains("--check-ratchet"),
-        "issue #812: the ratchet must be enforced at the pull-request gate"
+        !workflow.contains("--check-ratchet"),
+        "issue #846: an honest manual contribution must not be blocked for omitting false \
+         Formal-AI attribution"
     );
     assert!(version_script.contains("self-hosting-metric.rs"));
     assert!(

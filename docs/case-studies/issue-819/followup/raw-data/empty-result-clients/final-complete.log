@@ -1,0 +1,69 @@
+bun install v1.3.14 (0d9b296a)
+
+Checked 2 installs across 3 packages (no changes) [5.00ms]
+bun test v1.3.14 (0d9b296a)
+
+tui-transcript.test.mjs:
+(pass) command-stream renders, deduplicates, and unrolls complete TUI frames [320.20ms]
+(pass) command-stream sends scheduled input through the PTY [357.35ms]
+
+ 2 pass
+ 0 fail
+ 6 expect() calls
+Ran 2 tests across 1 file. [1077.00ms]
+== issue #819 agent E2E OK: user -> find -> result -> final ==
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.488Z",
+  "service": "state",
+  "key": "/tmp/tmp.fkdr3JIY6x",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-23T08:21:08.489Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
+
+== issue #819 opencode E2E OK: user -> find -> result -> final ==
+[0m
+> build · formal-ai
+[0m
+I'll use bash on find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*… so I can verify the next step before continuing.
+[0m$ [0mfind "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \) -print -quit
+(no output)
+[0m
+No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.
+== issue #819 claude E2E OK: user -> find -> result -> final ==
+No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.
+formal-ai: session files for debugging:
+  claude: /tmp/formal-ai-claude-home-config-42045-1784794876681672359/projects/-tmp-gh-issue-solver-1784790843774/71f80695-c05a-4085-86f0-2dbab2d46ed1.jsonl   (resume: claude --resume 71f80695-c05a-4085-86f0-2dbab2d46ed1)
+== issue #819 codex E2E OK: user -> find -> result -> final ==
+2026-07-23T08:21:27.849628Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportStarted"
+2026-07-23T08:21:27.849698Z DEBUG opentelemetry-http:  name="ReqwestBlockingClient.Send"
+2026-07-23T08:21:27.850375Z DEBUG reqwest::connect: starting new connection: https://ab.chatgpt.com/
+2026-07-23T08:21:27.852900Z DEBUG hyper_util::client::legacy::connect::http: connecting to 172.64.155.209:443
+2026-07-23T08:21:27.856339Z DEBUG hyper_util::client::legacy::connect::http: connected to 172.64.155.209:443
+2026-07-23T08:21:27.950158Z DEBUG hyper_util::client::legacy::pool: pooling idle connection for ("https", ab.chatgpt.com)
+2026-07-23T08:21:27.951045Z DEBUG opentelemetry-otlp:  name="HttpMetricsClient.ExportSucceeded"
+2026-07-23T08:21:27.951133Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-23T08:21:27.951179Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadAdjustingRemainingIntervalAfterFlush" remaining_interval=58
+2026-07-23T08:21:27.951187Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadLoopAlive" Next export will happen after interval, unless flush or shutdown is triggered. interval_in_millisecs=58025
+2026-07-23T08:21:27.951390Z DEBUG opentelemetry_sdk:  name="MeterProvider.Shutdown" User initiated shutdown of MeterProvider.
+2026-07-23T08:21:27.951541Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExportingDueToShutdown"
+2026-07-23T08:21:27.951566Z DEBUG opentelemetry_sdk:  name="MeterProviderInvokingObservableCallbacks" count=0
+2026-07-23T08:21:27.952169Z DEBUG opentelemetry_sdk:  name="NoMetricsCollected"
+2026-07-23T08:21:27.952185Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExport" export_result="Ok(())"
+2026-07-23T08:21:27.966780Z DEBUG opentelemetry_sdk:  name="PeriodReaderInvokedExporterShutdown" shutdown_result="Ok(())"
+2026-07-23T08:21:27.966848Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadExiting" reason="ShutdownRequested"
+2026-07-23T08:21:27.966856Z DEBUG opentelemetry_sdk:  name="PeriodReaderThreadStopped"
+formal-ai: session files for debugging:
+  codex: /tmp/formal-ai-codex-home-config-43607-1784794885805861342/.codex/sessions/2026/07/23/rollout-2026-07-23T08-21-26-019f8e10-b0d9-77b1-9128-025aa6821fdc.jsonl   (resume: codex resume 019f8e10-b0d9-77b1-9128-025aa6821fdc)
+== issue #819 OpenCode TUI OK: deduplicated frames + complete dialog ==
