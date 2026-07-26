@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.306.1] - 2026-07-26
+
+### Added
+
+- A standalone associative technology stack guide that links each component
+  and explains its runtime, architecture, or development role (#874).
+
 ## [0.306.0] - 2026-07-26
 
 ### Fixed
