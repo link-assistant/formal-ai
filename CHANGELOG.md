@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.305.1] - 2026-07-26
+
+### Fixed
+
+- Route multilingual process-list requests through explicit Agent permissions,
+  use `tasklist` on Windows, and learn successful trusted research for otherwise
+  unknown browser requests.
+
 ## [0.305.0] - 2026-07-26
 
 ### Added
