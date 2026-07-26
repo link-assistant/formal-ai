@@ -74,6 +74,16 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
         .or_else(|| bare_shell_command(prompt, &vocab))
 }
 
+/// Resolve only the seed-backed natural-language shell intent.
+///
+/// The interactive solver uses this narrower entry point after its explicit
+/// terminal syntax checks, so ordinary Chat requests and the agentic planner
+/// share one semantic intent table without broadening Chat detection to every
+/// named shell token.
+pub fn semantic_shell_command_for_task(prompt: &str) -> Option<String> {
+    intent_shell_command(prompt, &seed::shell_intent_vocabulary())
+}
+
 /// Resolve a natural-language local path lookup to one portable `find` command.
 ///
 /// The action, scope and file-kind language all comes from the shell-intent seed.

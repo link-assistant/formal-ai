@@ -2,4 +2,3 @@ AI SDK Warning: System messages in the prompt or messages fields can be a securi
 AI SDK Warning (opencode.chat / big-pickle): The feature "specificationVersion" is used in a compatibility mode. Using v2 specification compatibility mode. Some features may not be available.
 AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
 {"type":"result","timestamp":"2026-07-26T09:04:49.518Z","session_id":"ses_06254d3c7ffeYSeIzs87mkLzjl","status":"error","output":"Error: File not found: /tmp/gh-issue-solver-1785055571813/tests/unit/issue_870.rs."}
-

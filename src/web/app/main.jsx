@@ -4936,6 +4936,7 @@ function normalizeDesktopStatus(status) {
     : "out-of-box";
   return {
     shell: String(status.shell || "Electron"),
+    platform: String(status.platform || ""),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
     apiBase,
     staticBase: String(status.staticBase || ""),
@@ -5094,6 +5095,14 @@ function terminalCommandFromAnswer(answer) {
     }
   }
   return "";
+}
+
+function desktopShellCommand(command, status) {
+  const value = String(command || "").trim();
+  if (value === "ps" && status && status.platform === "win32") {
+    return "tasklist";
+  }
+  return value;
 }
 
 function shellOutputMarkdown(body, t) {
@@ -8185,12 +8194,17 @@ function App() {
     const sentAt = new Date().toISOString();
     const demoFlag = isDemo ? true : undefined;
     if (operation.action === "append" && operation.statement) {
+      const learnedAssociation = operation.kind === "associative_research";
       await recordMemoryEvent({
-        kind: "message",
-        role: "user",
-        intent: "memory_write",
+        kind: learnedAssociation ? "associative_research" : "message",
+        role: learnedAssociation ? "system" : "user",
+        intent: learnedAssociation ? "associative_research" : "memory_write",
         content: operation.statement,
-        evidence: ["memory_write:natural_language"],
+        evidence: [
+          learnedAssociation
+            ? "memory_write:associative_research"
+            : "memory_write:natural_language",
+        ],
         sentAt,
         conversationId,
         conversationTitle,
@@ -8323,7 +8337,7 @@ function App() {
 
   const requestTerminalCommandExecution = useCallback(
     async (command, answer) => {
-      const safeCommand = String(command || "").trim();
+      const safeCommand = desktopShellCommand(command, desktopStatusRef.current);
       if (!safeCommand) {
         appendAssistantMessage(answer);
         return;

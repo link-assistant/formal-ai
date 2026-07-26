@@ -147,7 +147,7 @@ en
     externalServiceStackExchange
       label "Stack Exchange answers"
     externalServiceMediawikiFamily
-      label "Wikibooks, Wikiversity & Wikivoyage"
+      label "Wikifunctions, Rosetta Code & Wikimedia guides"
     externalServiceGithub
       label "GitHub project docs"
     language
@@ -378,7 +378,7 @@ ru
     externalServiceStackExchange
       label "Ответы Stack Exchange"
     externalServiceMediawikiFamily
-      label "Wikibooks, Wikiversity и Wikivoyage"
+      label "Wikifunctions, Rosetta Code и справочники Wikimedia"
     externalServiceGithub
       label "Документация проектов GitHub"
     language
@@ -599,7 +599,7 @@ zh
     externalServiceStackExchange
       label "Stack Exchange 回答"
     externalServiceMediawikiFamily
-      label "Wikibooks、Wikiversity 和 Wikivoyage"
+      label "Wikifunctions、Rosetta Code 和 Wikimedia 指南"
     externalServiceGithub
       label "GitHub 项目文档"
     language
@@ -826,7 +826,7 @@ hi
     externalServiceStackExchange
       label "Stack Exchange उत्तर"
     externalServiceMediawikiFamily
-      label "Wikibooks, Wikiversity और Wikivoyage"
+      label "Wikifunctions, Rosetta Code और Wikimedia गाइड"
     externalServiceGithub
       label "GitHub प्रोजेक्ट दस्तावेज़"
     language

@@ -1,18 +1,12 @@
 // Worker module 20 of 21. Loaded by ../formal_ai_worker.js.
 function reciprocalRankFusion(perProviderResults, k) {
-  // R194: the Rust/WASM core owns the fusion logic so the offline trace and
-  // the browser worker agree to the last byte. We try WASM first and only
-  // fall back to the JS implementation when the worker booted in
-  // `js fallback` mode (e.g. WASM disabled in the browser).
+  // Rust/WASM owns fusion; this compact branch keeps JS-only mode usable.
   const wasmFused = wasmReciprocalRankFusion(perProviderResults);
-  if (wasmFused !== null) {
-    return wasmFused;
-  }
+  if (wasmFused !== null) return wasmFused;
   // Cormack, Clarke, Buettcher 2009: score(d) = Σ 1 / (k + rank_i(d)).
   const fused = new Map();
   for (const provider of perProviderResults) {
-    const list = Array.isArray(provider.results) ? provider.results : [];
-    list.forEach((item, index) => {
+    (Array.isArray(provider.results) ? provider.results : []).forEach((item, index) => {
       if (!item || !item.url) return;
       const rank = index + 1;
       const score = 1 / (k + rank);
@@ -24,78 +18,45 @@ function reciprocalRankFusion(perProviderResults, k) {
         if (!existing.excerpt && item.excerpt) existing.excerpt = item.excerpt;
       } else {
         fused.set(item.url, {
-          url: item.url,
-          title: item.title || item.url,
-          excerpt: item.excerpt || "",
-          score,
+          url: item.url, title: item.title || item.url,
+          excerpt: item.excerpt || "", score,
           providers: [{ id: provider.id, rank }],
         });
       }
     });
   }
-  return Array.from(fused.values()).sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return b.providers.length - a.providers.length;
-  });
+  return Array.from(fused.values()).sort((a, b) =>
+    (b.score - a.score) || (b.providers.length - a.providers.length));
 }
 
-// Issue #153/#180: identify "the same entity" returned by different providers
-// so the fused list shows one bullet with the other URLs collapsed under
-// "Other sources:". A single result can carry several canonical identifiers
-// (Wikidata Q-id, Wikipedia page key, Wiktionary headword) — dedupe walks all
-// of them and merges into the first existing group it finds. Returning a
-// list makes the Wikipedia↔Wikidata merge robust against percent-encoding
-// differences in the two providers' URLs.
+// Cross-provider identifiers let one entity absorb alternate result URLs.
 function canonicalEntityKeys(meta) {
   if (!meta) return [];
   const keys = [];
   if (meta.qid && /^Q\d+$/.test(meta.qid)) keys.push(`Q:${meta.qid}`);
-  if (meta.wikipediaKey) {
-    const lang = meta.wikipediaLanguage || "en";
-    keys.push(`WP:${lang}:${meta.wikipediaKey}`);
-  }
-  if (meta.wiktionaryKey) {
-    const lang = meta.wiktionaryLanguage || "en";
-    keys.push(`WT:${lang}:${meta.wiktionaryKey}`);
-  }
-  if (meta.wikinewsKey) {
-    const lang = meta.wikinewsLanguage || "en";
-    keys.push(`WN:${lang}:${meta.wikinewsKey}`);
+  for (const [prefix, key, language] of [
+    ["WP", meta.wikipediaKey, meta.wikipediaLanguage],
+    ["WT", meta.wiktionaryKey, meta.wiktionaryLanguage],
+    ["WN", meta.wikinewsKey, meta.wikinewsLanguage],
+  ]) {
+    if (key) keys.push(`${prefix}:${language || "en"}:${key}`);
   }
   return keys;
 }
 
-// Backwards-compatible shim: prefer the primary key but keep the historical
-// single-key signature for callers that still rely on it.
-function canonicalEntityKey(meta) {
-  const keys = canonicalEntityKeys(meta);
-  return keys.length > 0 ? keys[0] : null;
-}
-
 function buildItemMetadataIndex(perProvider) {
-  // The richer the meta the better — an entry that carries a Wikidata `qid`
-  // is preferred over a Wikipedia-only entry for the same URL, because the
-  // Q-id is what cross-provider dedupe groups by. Without this preference,
-  // the Wikipedia URL would be indexed by the Wikipedia provider's meta
-  // (`WP:en:Apple`) and a separate Wikidata entry for the same fact (`Q:Q89`)
-  // would never collapse into one bullet.
   const byUrl = new Map();
   const rank = (item) => (item && item.qid ? 2 : 1);
-  function record(url, item) {
+  const record = (url, item) => {
     if (!url || !item) return;
     const existing = byUrl.get(url);
-    if (!existing || rank(item) > rank(existing)) {
-      byUrl.set(url, item);
-    }
-  }
+    if (!existing || rank(item) > rank(existing)) byUrl.set(url, item);
+  };
   for (const provider of perProvider) {
     if (!provider || !Array.isArray(provider.results)) continue;
     for (const item of provider.results) {
       if (!item || !item.url) continue;
       record(item.url, item);
-      // Wikidata results carry the Wikipedia URL of the same entity inline;
-      // index that too so the Wikipedia provider's entry is recognised as
-      // a duplicate of the Wikidata one.
       if (item.wikipediaUrl) record(item.wikipediaUrl, item);
     }
   }
@@ -107,162 +68,90 @@ function dedupeFusedEntries(fused, metaByUrl, evidence) {
   const allGroups = [];
   const standalone = [];
 
-  function alreadyHasProvider(target, candidate) {
-    return target.providers.some(
-      (existing) => existing.id === candidate.id && existing.rank === candidate.rank,
-    );
-  }
+  const alreadyHasProvider = (target, candidate) => target.providers.some(
+    (existing) => existing.id === candidate.id && existing.rank === candidate.rank,
+  );
 
   fused.forEach((entry, index) => {
     const meta = metaByUrl.get(entry.url) || null;
     const keys = canonicalEntityKeys(meta);
     const enriched = Object.assign({}, entry, {
       qid: (meta && meta.qid) || "",
-      wikipediaKey: (meta && meta.wikipediaKey) || "",
-      wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
-      wiktionaryKey: (meta && meta.wiktionaryKey) || "",
-      wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
-      wikinewsKey: (meta && meta.wikinewsKey) || "",
-      wikinewsLanguage: (meta && meta.wikinewsLanguage) || "",
+      wikipediaKey: (meta && meta.wikipediaKey) || "", wikipediaLanguage: (meta && meta.wikipediaLanguage) || "",
+      wiktionaryKey: (meta && meta.wiktionaryKey) || "", wiktionaryLanguage: (meta && meta.wiktionaryLanguage) || "",
+      wikinewsKey: (meta && meta.wikinewsKey) || "", wikinewsLanguage: (meta && meta.wikinewsLanguage) || "",
       sourceKind: (meta && meta.sourceKind) || "",
-      virtualId:
-        (meta && meta.virtualId) ||
-        (meta && meta.qid) ||
+      virtualId: (meta && meta.virtualId) || (meta && meta.qid) ||
         (meta && meta.wikipediaKey ? `WP:${meta.wikipediaKey}` : ""),
-      alternateUrls: [],
-      keys: keys.slice(),
-      originalRank: index,
+      alternateUrls: [], keys: keys.slice(), originalRank: index,
     });
 
     if (keys.length === 0) {
       standalone.push(enriched);
       return;
     }
-    let head = null;
-    for (const key of keys) {
-      if (groupsByKey.has(key)) {
-        head = groupsByKey.get(key);
-        break;
-      }
-    }
+    const head = keys.map((key) => groupsByKey.get(key)).find(Boolean) || null;
     if (!head) {
       allGroups.push(enriched);
-      for (const key of keys) {
-        if (!groupsByKey.has(key)) groupsByKey.set(key, enriched);
-      }
+      for (const key of keys) if (!groupsByKey.has(key)) groupsByKey.set(key, enriched);
       return;
     }
-    // Found an existing group — absorb this entry into it.
     head.score += enriched.score;
     head.alternateUrls.push({
-      url: enriched.url,
-      title: enriched.title,
-      providers: enriched.providers,
-      sourceKind: enriched.sourceKind,
+      url: enriched.url, title: enriched.title,
+      providers: enriched.providers, sourceKind: enriched.sourceKind,
     });
-    for (const p of enriched.providers) {
-      if (!alreadyHasProvider(head, p)) head.providers.push(p);
-    }
-    // Register the absorbed entry's keys against the head group too so a third
-    // provider matching either canonical id still merges in.
-    for (const key of keys) {
-      if (!groupsByKey.has(key)) groupsByKey.set(key, head);
-    }
-    // Prefer the richest virtualId once we know more identifiers.
+    for (const p of enriched.providers) if (!alreadyHasProvider(head, p)) head.providers.push(p);
+    for (const key of keys) if (!groupsByKey.has(key)) groupsByKey.set(key, head);
     if (!head.virtualId && enriched.virtualId) head.virtualId = enriched.virtualId;
     if (!head.qid && enriched.qid) head.qid = enriched.qid;
-    if (!head.wikipediaKey && enriched.wikipediaKey) {
-      head.wikipediaKey = enriched.wikipediaKey;
-      head.wikipediaLanguage = enriched.wikipediaLanguage;
+    for (const [key, language] of [
+      ["wikipediaKey", "wikipediaLanguage"],
+      ["wiktionaryKey", "wiktionaryLanguage"],
+      ["wikinewsKey", "wikinewsLanguage"],
+    ]) {
+      if (!head[key] && enriched[key]) [head[key], head[language]] = [enriched[key], enriched[language]];
     }
-    if (!head.wiktionaryKey && enriched.wiktionaryKey) {
-      head.wiktionaryKey = enriched.wiktionaryKey;
-      head.wiktionaryLanguage = enriched.wiktionaryLanguage;
-    }
-    if (!head.wikinewsKey && enriched.wikinewsKey) {
-      head.wikinewsKey = enriched.wikinewsKey;
-      head.wikinewsLanguage = enriched.wikinewsLanguage;
-    }
-    if (Array.isArray(evidence)) {
-      evidence.push(`web_search:dedupe:${keys[0]}:absorbed:${enriched.url}`);
-    }
+    if (Array.isArray(evidence)) evidence.push(`web_search:dedupe:${keys[0]}:absorbed:${enriched.url}`);
   });
   const merged = [...allGroups, ...standalone];
   merged.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    if (b.providers.length !== a.providers.length) {
-      return b.providers.length - a.providers.length;
-    }
-    // Issue #180: stable order by provider priority so DDG-led entries beat
-    // Wikidata-only entries on perfect ties.
+    const primary = (b.score - a.score) || (b.providers.length - a.providers.length);
+    if (primary) return primary;
     const ap = providerPriorityScore(a.providers);
     const bp = providerPriorityScore(b.providers);
-    if (ap !== bp) return ap - bp;
-    return a.originalRank - b.originalRank;
+    return (ap - bp) || (a.originalRank - b.originalRank);
   });
   return merged;
 }
 
 function providerPriorityScore(providers) {
   if (!Array.isArray(providers) || providers.length === 0) return 999;
-  let best = 999;
-  for (const p of providers) {
-    const score = WEB_SEARCH_PROVIDER_PRIORITY[p && p.id] || 999;
-    if (score < best) best = score;
-  }
-  return best;
+  return Math.min(...providers.map((p) => WEB_SEARCH_PROVIDER_PRIORITY[p && p.id] || 999));
 }
 
-// Issue #153: localized templates for the web search response. Keep these in
-// sync with the visible UI strings in `src/web/i18n-catalog.lino`. The worker
-// runs in a separate context that cannot import lino-i18n at runtime, so we
-// inline the small subset that is actually rendered to chat. `en` is always
-// the fallback when the catalogue for the active language is missing.
+// Localized search templates mirror i18n-catalog.lino; English is the fallback.
 const WEB_SEARCH_TEXTS = {
   en: {
-    header: (query, top, k) =>
-      `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
-    otherSources: "Other sources",
-    via: "via",
-    readMore: "Read more",
-    noResults: (query, providers) =>
-      `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
-    allDisabled: (providers) =>
-      `All CORS-readable search providers are disabled for this session. Tried: ${providers}.`,
-  },
+    header: (query, top, k) => `Search results for \`${query}\` — top ${top} after reciprocal rank fusion (k = ${k}).`,
+    otherSources: "Other sources", via: "via", readMore: "Read more",
+    noResults: (query, providers) => `No CORS-enabled web search results were returned for \`${query}\`.\n\nProviders tried: ${providers}.`,
+    allDisabled: (providers) => `All CORS-readable search providers are disabled for this session. Tried: ${providers}.` },
   ru: {
-    header: (query, top, k) =>
-      `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
-    otherSources: "Другие источники",
-    via: "через",
-    readMore: "Подробнее",
-    noResults: (query, providers) =>
-      `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
-    allDisabled: (providers) =>
-      `Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: ${providers}.`,
-  },
+    header: (query, top, k) => `Результаты поиска для \`${query}\` — топ ${top} после реципрокного объединения рангов (k = ${k}).`,
+    otherSources: "Другие источники", via: "через", readMore: "Подробнее",
+    noResults: (query, providers) => `Не получены результаты веб-поиска с поддержкой CORS для \`${query}\`.\n\nПопробованы провайдеры: ${providers}.`,
+    allDisabled: (providers) => `Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: ${providers}.` },
   zh: {
-    header: (query, top, k) =>
-      `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
-    otherSources: "其他来源",
-    via: "来自",
-    readMore: "阅读更多",
-    noResults: (query, providers) =>
-      `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
-    allDisabled: (providers) =>
-      `本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：${providers}。`,
-  },
+    header: (query, top, k) => `搜索 \`${query}\` 的结果 — 经互惠等级融合后的前 ${top} 项（k = ${k}）。`,
+    otherSources: "其他来源", via: "来自", readMore: "阅读更多",
+    noResults: (query, providers) => `未获取到 \`${query}\` 的可用 CORS 搜索结果。\n\n已尝试的提供方：${providers}。`,
+    allDisabled: (providers) => `本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：${providers}。` },
   hi: {
-    header: (query, top, k) =>
-      `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
-    otherSources: "अन्य स्रोत",
-    via: "के माध्यम से",
-    readMore: "और पढ़ें",
-    noResults: (query, providers) =>
-      `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
-    allDisabled: (providers) =>
-      `इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: ${providers}.`,
-  },
+    header: (query, top, k) => `\`${query}\` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष ${top} (k = ${k})।`,
+    otherSources: "अन्य स्रोत", via: "के माध्यम से", readMore: "और पढ़ें",
+    noResults: (query, providers) => `\`${query}\` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: ${providers}.`,
+    allDisabled: (providers) => `इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: ${providers}.` },
 };
 
 function webSearchTexts(language) {
@@ -312,7 +201,26 @@ async function tryWebSearch(prompt, language) {
   return runWebSearchQuery(request.query, language, request.kind);
 }
 
-async function runWebSearchQuery(query, language, queryKind) {
+const UNKNOWN_RESEARCH_STOPWORDS = new Set([
+  ...LOOKUP_STEM_STOPWORDS, "are", "how", "is", "was", "were", "what", "who",
+  "как", "кто", "такое", "что", "это", "क्या", "कैसे", "कौन", "है", "什么", "怎么", "是", "谁",
+]);
+
+function unknownResearchResultIsRelevant(query, entry) {
+  const normalizedQuery = normalizePrompt(query);
+  const normalizedResult = normalizePrompt(`${(entry && entry.title) || ""} ${(entry && entry.excerpt) || ""}`);
+  if (!normalizedQuery || !normalizedResult) return false;
+  const formalization = exactFormalizationMatch(query, normalizedQuery);
+  const subject = formalization && formalization.objectText !== null
+    ? normalizePrompt(formalization.objectText) : normalizedQuery;
+  const tokens = [...new Set((subject.match(/[\p{L}\p{N}]+/gu) || [])
+    .filter((token) => Array.from(token).length >= 3 && !UNKNOWN_RESEARCH_STOPWORDS.has(token)))];
+  if (tokens.length === 0) return false;
+  const resultTokens = new Set(normalizedResult.match(/[\p{L}\p{N}]+/gu) || []);
+  return tokens.filter((token) => resultTokens.has(token)).length >= Math.min(2, tokens.length);
+}
+
+async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   query = String(query || "").trim();
   if (!query) return null;
   const rrfK = webSearchRrfK();
@@ -320,16 +228,18 @@ async function runWebSearchQuery(query, language, queryKind) {
   const providerLimit = webSearchProviderLimit();
   const texts = webSearchTexts(language);
 
-  // Issue #180: pre-probe every provider once per browser session so the
-  // first user query does not waste sockets on CORS-blocked endpoints. The
-  // probe results live in `WEB_SEARCH_AVAILABLE`/`WEB_SEARCH_DISABLED` for
-  // the rest of the worker lifetime.
+  // Probe providers once per session and cache CORS failures.
   await ensureWebSearchProviderProbes();
 
-  // R194: the Rust core (`web_search_core::build_request_evidence`) is the
-  // source of truth for the `web_search:*` evidence prefix. We prepend its
-  // output and fall back to the inline list when the WASM worker booted in
-  // `js fallback` mode.
+  const isUnknownResearch = queryKind === "unknown_intent_research";
+  const enabledResearchProviders = isUnknownResearch ? UNKNOWN_INTENT_RESEARCH_PROVIDERS
+    .filter((provider) => externalServiceEnabled(preferences, provider.settingsKey)) : [];
+  const providerCatalog = isUnknownResearch
+    ? WEB_SEARCH_PROVIDERS.concat(enabledResearchProviders) : WEB_SEARCH_PROVIDERS;
+  const optedOutResearchProviders = isUnknownResearch
+    ? UNKNOWN_INTENT_RESEARCH_PROVIDERS.filter((provider) => !enabledResearchProviders.includes(provider)) : [];
+
+  // Use WASM evidence when available, with an equivalent JS fallback.
   const evidence = [];
   const wasmEvidence = wasmWebSearchRequestEvidence(query, language || "");
   if (Array.isArray(wasmEvidence) && wasmEvidence.length > 0) {
@@ -341,7 +251,7 @@ async function runWebSearchQuery(query, language, queryKind) {
     if (language) {
       evidence.push(`web_search:language:${language}`);
     }
-    for (const provider of WEB_SEARCH_PROVIDERS) {
+    for (const provider of providerCatalog) {
       evidence.push(`web_search:provider:${provider.id}`);
     }
     evidence.push(`web_search:combined:rrf:k=${rrfK}`);
@@ -349,12 +259,16 @@ async function runWebSearchQuery(query, language, queryKind) {
   if (queryKind) {
     evidence.push(`web_search:query_kind:${queryKind}`);
   }
+  if (isUnknownResearch) {
+    for (const provider of providerCatalog) {
+      const marker = `web_search:provider:${provider.id}`;
+      if (!evidence.includes(marker)) evidence.push(marker);
+    }
+  }
+  for (const provider of optedOutResearchProviders) evidence.push(`web_search:service_disabled:${provider.id}`);
 
-  // Issue #180: providers are tried in declared priority order so the rendered
-  // list matches the user's requested DDG → IA → WP → WD → Wiktionary
-  // sequence whenever scores tie. Session-disabled providers are skipped on
-  // top of the WASM-derived prefix and annotated for the diagnostics panel.
-  const ordered = WEB_SEARCH_PROVIDERS.slice().sort((a, b) => {
+  // Keep declared provider priority for tied scores and diagnostics.
+  const ordered = providerCatalog.slice().sort((a, b) => {
     const pa = typeof a.priority === "number" ? a.priority : 999;
     const pb = typeof b.priority === "number" ? b.priority : 999;
     return pa - pb;
@@ -372,7 +286,7 @@ async function runWebSearchQuery(query, language, queryKind) {
     if (queryKind === "unresolved_bare_term") return null;
     return {
       intent: "web_search",
-      content: texts.allDisabled(WEB_SEARCH_PROVIDERS.map((p) => p.id).join(", ")),
+      content: texts.allDisabled(providerCatalog.map((p) => p.id).join(", ")),
       confidence: 0.3, query, evidence,
       diagnostics: { providers: [], httpExchanges: consumeWebSearchDiagnostics() },
     };
@@ -402,7 +316,13 @@ async function runWebSearchQuery(query, language, queryKind) {
   const fused = reciprocalRankFusion(perProvider, rrfK);
   const metaByUrl = buildItemMetadataIndex(perProvider);
   const deduped = dedupeFusedEntries(fused, metaByUrl, evidence);
-  const top = deduped.slice(0, providerLimit);
+  const relevant = isUnknownResearch
+    ? deduped.filter((entry) => unknownResearchResultIsRelevant(query, entry)) : deduped;
+  if (isUnknownResearch) {
+    evidence.push(`web_search:relevance:accepted:${relevant.length}`);
+    evidence.push(`web_search:relevance:rejected:${deduped.length - relevant.length}`);
+  }
+  const top = relevant.slice(0, providerLimit);
   top.forEach((entry, index) => {
     evidence.push(`web_search:fused:${index + 1}:${entry.providers.map((p) => p.id).join("+")}:${entry.url}`);
     if (entry.virtualId) {

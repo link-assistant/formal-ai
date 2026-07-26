@@ -692,47 +692,16 @@ function extractQuoteAroundQuery(text, query, maxChars) {
 }
 
 const PROVIDER_DISPLAY_LABELS = {
-  duckduckgo: "DuckDuckGo",
-  "internet-archive": "Internet Archive",
-  wikipedia: "Википедия",
-  wikidata: "Викидата",
-  wiktionary: "Викисловарь",
-  wikinews: "Викиновости",
+  duckduckgo: "DuckDuckGo", "internet-archive": "Internet Archive", wikipedia: "Википедия",
+  wikidata: "Викидата", wiktionary: "Викисловарь", wikinews: "Викиновости",
+  stackexchange: "Stack Exchange", wikihow: "wikiHow", wikifunctions: "Wikifunctions", "rosetta-code": "Rosetta Code",
 };
 
 const PROVIDER_DISPLAY_LABELS_BY_LANG = {
-  en: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "Internet Archive",
-    wikipedia: "Wikipedia",
-    wikidata: "Wikidata",
-    wiktionary: "Wiktionary",
-    wikinews: "Wikinews",
-  },
-  ru: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "Архив Интернета",
-    wikipedia: "Википедия",
-    wikidata: "Викидата",
-    wiktionary: "Викисловарь",
-    wikinews: "Викиновости",
-  },
-  zh: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "互联网档案馆",
-    wikipedia: "维基百科",
-    wikidata: "维基数据",
-    wiktionary: "维基词典",
-    wikinews: "维基新闻",
-  },
-  hi: {
-    duckduckgo: "DuckDuckGo",
-    "internet-archive": "इंटरनेट आर्काइव",
-    wikipedia: "विकिपीडिया",
-    wikidata: "विकिडेटा",
-    wiktionary: "विक्षनरी",
-    wikinews: "Wikinews",
-  },
+  en: { duckduckgo: "DuckDuckGo", "internet-archive": "Internet Archive", wikipedia: "Wikipedia", wikidata: "Wikidata", wiktionary: "Wiktionary", wikinews: "Wikinews" },
+  ru: { duckduckgo: "DuckDuckGo", "internet-archive": "Архив Интернета", wikipedia: "Википедия", wikidata: "Викидата", wiktionary: "Викисловарь", wikinews: "Викиновости" },
+  zh: { duckduckgo: "DuckDuckGo", "internet-archive": "互联网档案馆", wikipedia: "维基百科", wikidata: "维基数据", wiktionary: "维基词典", wikinews: "维基新闻" },
+  hi: { duckduckgo: "DuckDuckGo", "internet-archive": "इंटरनेट आर्काइव", wikipedia: "विकिपीडिया", wikidata: "विकिडेटा", wiktionary: "विक्षनरी", wikinews: "Wikinews" },
 };
 
 function providerDisplayLabel(providerId, language) {
@@ -1040,11 +1009,52 @@ async function searchWikinews(query, language, limit) {
   return { ok: true, results: collected.slice(0, cap), finalUrl: lastFinalUrl };
 }
 
-// Issue #180: The priority order requested in the issue is
-// DuckDuckGo → Internet Archive → Wikipedia → Wikidata → Wiktionary → Wikinews → rest.
-// We also keep the corresponding light-weight probe URL so the per-session
-// availability check at the top of `tryWebSearch` can pre-flight every
-// provider once instead of failing the first user query.
+function researchProviderResult(outcome, results) {
+  const found = results.length > 0;
+  return { ok: found, results, finalUrl: outcome.finalUrl, error: found ? "" : (outcome.error || "no_results") };
+}
+
+async function searchMediaWikiOpenSearch(providerId, apiBase, pageBase, query, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
+  const url = `${apiBase}?action=opensearch&search=${encodeURIComponent(query)}&limit=${cap}&format=json&origin=*`;
+  const outcome = await fetchProviderJson(providerId, url);
+  if (!outcome.ok || !Array.isArray(outcome.data) || !Array.isArray(outcome.data[1]))
+    return researchProviderResult(outcome, []);
+  const titles = outcome.data[1];
+  const descriptions = Array.isArray(outcome.data[2]) ? outcome.data[2] : [];
+  const urls = Array.isArray(outcome.data[3]) ? outcome.data[3] : [];
+  const results = titles.slice(0, cap).map((title, index) => ({
+    title: title || query, sourceKind: providerId,
+    url: urls[index] || `${pageBase}${encodeURIComponent(String(title || query).replace(/\s+/g, "_"))}`,
+    excerpt: stripHtml(descriptions[index] || title || query) }));
+  return researchProviderResult(outcome, results);
+}
+
+async function searchStackExchange(query, _language, limit) {
+  const cap = typeof limit === "number" && Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 5;
+  const url = "https://api.stackexchange.com/2.3/search/advanced" +
+    `?order=desc&sort=relevance&q=${encodeURIComponent(query)}&site=stackoverflow&filter=withbody&pagesize=${cap}`;
+  const outcome = await fetchProviderJson("stackexchange", url);
+  if (!outcome.ok || !outcome.data || !Array.isArray(outcome.data.items))
+    return researchProviderResult(outcome, []);
+  const results = outcome.data.items.slice(0, cap).map((item) => ({
+    title: stripHtml(item.title || query), sourceKind: "stackexchange",
+    url: item.link || `https://stackoverflow.com/search?q=${encodeURIComponent(query)}`,
+    excerpt: stripHtml(item.body || item.title || query) }));
+  return researchProviderResult(outcome, results);
+}
+
+const UNKNOWN_INTENT_RESEARCH_PROVIDERS = [
+  ["stackexchange", "Stack Exchange / Stack Overflow", "externalServiceStackExchange", searchStackExchange],
+  ["wikihow", "wikiHow", "externalServiceWikihow", "https://www.wikihow.com/api.php", "https://www.wikihow.com/"],
+  ["wikifunctions", "Wikifunctions", "externalServiceMediawikiFamily", "https://www.wikifunctions.org/w/api.php", "https://www.wikifunctions.org/wiki/"], ["rosetta-code", "Rosetta Code", "externalServiceMediawikiFamily", "https://rosettacode.org/w/api.php", "https://rosettacode.org/wiki/"],
+].map(([id, label, settingsKey, api, pages], index) => ({
+  id, label, settingsKey, priority: index + 7,
+  run: typeof api === "function" ? api : (query, _language, limit) =>
+    searchMediaWikiOpenSearch(id, api, pages, query, limit)
+}));
+
+// Declared priority is DDG → IA → Wikipedia → Wikidata → Wiktionary → Wikinews.
 const WEB_SEARCH_PROVIDERS = [
   {
     id: "duckduckgo",
@@ -1099,10 +1109,12 @@ const WEB_SEARCH_PROVIDERS = [
   },
 ];
 
-const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS.reduce((acc, provider, index) => {
-  acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
-  return acc;
-}, Object.create(null));
+const WEB_SEARCH_PROVIDER_PRIORITY = WEB_SEARCH_PROVIDERS
+  .concat(UNKNOWN_INTENT_RESEARCH_PROVIDERS)
+  .reduce((acc, provider, index) => {
+    acc[provider.id] = typeof provider.priority === "number" ? provider.priority : index + 1;
+    return acc;
+  }, Object.create(null));
 
 function ensureWebSearchProviderProbes() {
   if (WEB_SEARCH_PROBE_PROMISE) return WEB_SEARCH_PROBE_PROMISE;

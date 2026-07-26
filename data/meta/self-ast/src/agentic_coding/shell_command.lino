@@ -2,69 +2,70 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 27902
-  line_count 728
-  content_id source_module_e7b496ddb3db2f68
-  symbol_count 34
+  byte_len 28370
+  line_count 738
+  content_id source_module_957dd103e847eb1e
+  symbol_count 35
   symbols
     const REPORT_ISSUE_ACTION 13 13
     const ROOT_TEMPLATE_SLOT 14 14
     const PREDICATE_TEMPLATE_SLOT 15 15
     const PATTERNS_TEMPLATE_SLOT 16 16
     function shell_command_for_task 36 75
-    function local_path_search_command_for_task 82 84
-    function local_path_search_command 86 122
-    struct LocalPathSearchNarration 129 135
-    function local_path_search_narration 141 149
-    struct LocalPathSearchParts 154 159
-    function extract_local_path_search 161 209
-    function longest_contained 211 217
-    function strip_balanced_outer_quotes 219 226
-    function prefixed_shell_command 232 250
-    function bare_shell_command 252 268
-    function prefix_boundary 270 276
-    function code_search_query_for_task 283 302
-    function intent_shell_command 317 354
-    function path_arguments 356 372
-    function collect_path_arguments 374 402
-    function local_search_query 404 430
-    function resolve_shell_command 432 438
-    function workspace_command 440 451
-    function remainder_argument 454 462
-    function path_argument 467 477
-    function name_lead_argument 482 497
-    function is_safe_path 501 508
-    function named_shell_command 524 564
-    function collect_command 568 581
-    function normalize_command_word 586 592
-    function is_prose_word 597 657
-    const PROSE_WORDS 598 652
-    function asks_for_directory_listing 663 724
-    function contains_any 726 728
+    function semantic_shell_command_for_task 83 85
+    function local_path_search_command_for_task 92 94
+    function local_path_search_command 96 132
+    struct LocalPathSearchNarration 139 145
+    function local_path_search_narration 151 159
+    struct LocalPathSearchParts 164 169
+    function extract_local_path_search 171 219
+    function longest_contained 221 227
+    function strip_balanced_outer_quotes 229 236
+    function prefixed_shell_command 242 260
+    function bare_shell_command 262 278
+    function prefix_boundary 280 286
+    function code_search_query_for_task 293 312
+    function intent_shell_command 327 364
+    function path_arguments 366 382
+    function collect_path_arguments 384 412
+    function local_search_query 414 440
+    function resolve_shell_command 442 448
+    function workspace_command 450 461
+    function remainder_argument 464 472
+    function path_argument 477 487
+    function name_lead_argument 492 507
+    function is_safe_path 511 518
+    function named_shell_command 534 574
+    function collect_command 578 591
+    function normalize_command_word 596 602
+    function is_prose_word 607 667
+    const PROSE_WORDS 608 662
+    function asks_for_directory_listing 673 734
+    function contains_any 736 738
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20069
-    named_node_count 4164
+    total_link_count 20243
+    named_node_count 4205
     distinct_node_kinds 73
     node_kinds
-      arguments 386
+      arguments 388
       array_expression 6
       array_type 5
       assignment_expression 4
       binary_expression 71
-      block 65
+      block 66
       break_expression 3
-      call_expression 386
+      call_expression 388
       char_literal 57
       closure_expression 94
       closure_parameters 94
       const_item 5
       continue_expression 2
       crate 3
-      doc_comment 104
+      doc_comment 110
       expression_statement 48
       field_declaration 6
       field_declaration_list 2
@@ -73,10 +74,10 @@ self_ast_census
       field_initializer 4
       field_initializer_list 2
       for_expression 5
-      function_item 27
+      function_item 28
       generic_function 7
-      generic_type 31
-      identifier 796
+      generic_type 32
+      identifier 802
       if_expression 20
       index_expression 5
       inner_doc_comment_marker 9
@@ -85,23 +86,23 @@ self_ast_census
       let_declaration 79
       lifetime 6
       lifetime_parameter 2
-      line_comment 115
+      line_comment 121
       macro_invocation 20
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
       mutable_specifier 5
-      outer_doc_comment_marker 95
-      parameter 62
-      parameters 27
+      outer_doc_comment_marker 101
+      parameter 63
+      parameters 28
       parenthesized_expression 10
-      primitive_type 64
+      primitive_type 65
       range_expression 9
-      reference_expression 38
-      reference_type 62
+      reference_expression 39
+      reference_type 63
       return_expression 10
-      scoped_identifier 33
+      scoped_identifier 34
       scoped_use_list 1
       self 1
       shorthand_field_initializer 2
@@ -116,10 +117,10 @@ self_ast_census
       tuple_expression 4
       tuple_pattern 14
       tuple_struct_pattern 5
-      type_arguments 38
-      type_identifier 82
+      type_arguments 39
+      type_identifier 84
       type_parameters 2
       unary_expression 30
       use_declaration 1
       use_list 1
-      visibility_modifier 7
+      visibility_modifier 8
