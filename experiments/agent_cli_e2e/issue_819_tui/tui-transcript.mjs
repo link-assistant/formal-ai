@@ -58,6 +58,7 @@ export async function captureTuiTranscript({
   outputPath,
   timeoutMs = 90_000,
 }) {
+  const abortController = new AbortController();
   const terminal = new Terminal({
     allowProposedApi: true,
     cols: 120,
@@ -69,21 +70,40 @@ export async function captureTuiTranscript({
     env: { ...process.env, ...environment, TERM: 'xterm-256color' },
     mirror: false,
     capture: true,
+    signal: abortController.signal,
   })`script -qefc ${command} /dev/null`;
   const frames = [];
   const seenFrames = new Set();
   const pendingInteractions = [...interactions];
   let raw = '';
   let stopMarkerSeen = false;
-  const timeout = setTimeout(() => runner.kill('SIGTERM'), timeoutMs);
-  const stdin = pendingInteractions.length > 0 ? await runner.streams.stdin : null;
+  let timedOut = false;
+  const timeoutSentinel = Symbol('TUI capture timeout');
+  let timeout;
+  const deadline = new Promise((resolve) => {
+    timeout = setTimeout(() => {
+      timedOut = true;
+      abortController.abort();
+      resolve(timeoutSentinel);
+    }, timeoutMs);
+  });
+  const beforeDeadline = (promise) => Promise.race([promise, deadline]);
+  const stream = runner.stream()[Symbol.asyncIterator]();
+  let stdin = null;
 
   try {
-    for await (const chunk of runner.stream()) {
+    if (pendingInteractions.length > 0) {
+      stdin = await beforeDeadline(Promise.resolve(runner.streams.stdin));
+    }
+    while (!timedOut) {
+      const next = await beforeDeadline(stream.next());
+      if (next === timeoutSentinel || next.done) break;
+      const chunk = next.value;
       if (chunk.type === 'exit') break;
       const text = chunk.data.toString();
       raw += text;
-      await writeTerminal(terminal, text);
+      const rendered = await beforeDeadline(writeTerminal(terminal, text));
+      if (rendered === timeoutSentinel) break;
       const frame = terminalSnapshot(terminal);
       if (frame && !seenFrames.has(frame)) {
         seenFrames.add(frame);
@@ -103,21 +123,28 @@ export async function captureTuiTranscript({
         for (const input of interaction.inputs) {
           stdin.write(input);
           if (interaction.delayMs) {
-            await new Promise((resolve) =>
-              setTimeout(resolve, interaction.delayMs),
+            const delayed = await beforeDeadline(
+              new Promise((resolve) =>
+                setTimeout(resolve, interaction.delayMs),
+              ),
             );
+            if (delayed === timeoutSentinel) break;
           }
         }
       }
       if (stopMarkerSeen) {
-        runner.kill('SIGTERM');
         break;
       }
     }
   } finally {
     clearTimeout(timeout);
+    if (!abortController.signal.aborted) abortController.abort();
+    try {
+      await beforeDeadline(stream.return?.() ?? Promise.resolve());
+    } finally {
+      terminal.dispose();
+    }
   }
-  terminal.dispose();
 
   const transcript = {
     command,
@@ -126,9 +153,13 @@ export async function captureTuiTranscript({
     sequence: unrollFrames(frames),
     interaction_count: interactions.length - pendingInteractions.length,
     stop_marker_seen: !stopMarker || stopMarkerSeen,
+    timed_out: timedOut,
   };
   if (outputPath) {
     await writeFile(outputPath, `${JSON.stringify(transcript, null, 2)}\n`);
+  }
+  if (timedOut) {
+    throw new Error(`TUI capture timed out after ${timeoutMs}ms`);
   }
   return transcript;
 }

@@ -1,4 +1,7 @@
 import { expect, test } from 'bun:test';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
@@ -62,4 +65,32 @@ test('rendered marker counting survives a hard-wrapped final result', () => {
   ].join('\n');
 
   expect(renderedMarkerOccurrences(frame, marker)).toBe(2);
+});
+
+test('capture timeout terminates the PTY and preserves partial evidence', async () => {
+  const artifactDirectory = await mkdtemp(join(tmpdir(), 'formal-ai-tui-'));
+  const outputPath = join(artifactDirectory, 'transcript.json');
+  const startedAt = performance.now();
+
+  try {
+    await expect(
+      captureTuiTranscript({
+        command: 'node tui-timeout-fixture.mjs',
+        cwd: directory,
+        stopMarker: 'result arrived',
+        outputPath,
+        timeoutMs: 500,
+      }),
+    ).rejects.toThrow('TUI capture timed out after 500ms');
+    expect(performance.now() - startedAt).toBeLessThan(2_000);
+
+    const transcript = JSON.parse(await readFile(outputPath, 'utf8'));
+    expect(transcript.timed_out).toBe(true);
+    expect(transcript.stop_marker_seen).toBe(false);
+    expect(transcript.sequence).toContain(
+      'Waiting for a result that never arrives...',
+    );
+  } finally {
+    await rm(artifactDirectory, { recursive: true, force: true });
+  }
 });
