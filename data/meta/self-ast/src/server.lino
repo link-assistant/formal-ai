@@ -2,10 +2,10 @@ self_ast_census
   target src/server.rs
   language rust
   fidelity signature
-  byte_len 31820
-  line_count 844
-  content_id source_module_c229f6541ba2e2f9
-  symbol_count 42
+  byte_len 34053
+  line_count 885
+  content_id source_module_38af8c77165c02c6
+  symbol_count 43
   symbols
     module conversation_reports 29 29
     module transport 30 30
@@ -21,31 +21,32 @@ self_ast_census
     function handle_api_request_with_headers 104 111
     function record_exchange_best_effort 116 127
     function handle_api_request_with_auth 130 147
-    function dispatch_api_request_with_auth 149 286
-    function requires_bearer_auth 288 293
-    function mcp_origin_allowed 295 313
-    function handle_dynamic_protocol_route 315 377
-    function handle_openai_models_request 379 424
-    function handle_gemini_generate_content_request 426 471
-    function normalize_protocol_model_id 473 479
-    function gemini_model_metadata_path 481 484
-    function gemini_model_action_path 486 490
-    function vertex_models_path 492 498
-    struct VertexModelRoute 501 503
-    function vertex_model_action_path 505 514
-    function first_non_empty_env 516 526
-    function bearer_token_from_headers 528 536
-    function api_key_from_headers 538 546
-    function parse_bearer_token 548 556
-    function unsupported_model_response 558 571
-    function enable_http_agent_mode_for_current_process 578 580
-    function http_solver 582 589
-    function chat_completion_sse_response 606 715
-    function sse_chunk 719 725
-    function handle_anthropic_messages_request 731 769
-    function handle_memory_since_request 777 781
-    function handle_memory_import_request 785 798
-    function query_param 800 808
-    function links_notation_response 810 817
-    function json_response 819 829
-    function error_response 831 844
+    function dispatch_api_request_with_auth 149 302
+    function requires_bearer_auth 304 309
+    function mcp_origin_allowed 311 329
+    function handle_dynamic_protocol_route 331 393
+    function handle_openai_models_request 395 440
+    function handle_gemini_generate_content_request 442 492
+    function normalize_protocol_model_id 494 500
+    function gemini_model_metadata_path 502 505
+    function gemini_model_action_path 507 511
+    function vertex_models_path 513 519
+    struct VertexModelRoute 522 524
+    function vertex_model_action_path 526 535
+    function first_non_empty_env 537 547
+    function bearer_token_from_headers 549 557
+    function api_key_from_headers 559 567
+    function parse_bearer_token 569 577
+    function is_vendor_hardcoded_gemini_model 595 597
+    function unsupported_model_response 599 612
+    function enable_http_agent_mode_for_current_process 619 621
+    function http_solver 623 630
+    function chat_completion_sse_response 647 756
+    function sse_chunk 760 766
+    function handle_anthropic_messages_request 772 810
+    function handle_memory_since_request 818 822
+    function handle_memory_import_request 826 839
+    function query_param 841 849
+    function links_notation_response 851 858
+    function json_response 860 870
+    function error_response 872 885

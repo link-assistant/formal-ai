@@ -1,0 +1,4 @@
+# Per-run output. The transcripts worth keeping are curated under `recorded/`;
+# a raw run directory holds server logs and TUI captures that are large, noisy
+# and machine-specific.
+artifacts/

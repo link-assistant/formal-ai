@@ -1,4 +1,49 @@
 meanings
+  issue_364_unknown_trace_learning
+    defined-by concept
+    lexeme en
+      surface
+        text "issue 364 unknown trace learning"
+  issue_report_body_footer
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body footer"
+  issue_report_body_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body intro"
+  issue_report_bytes_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report bytes label"
+  issue_report_command_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report command missing"
+  issue_report_context_excerpt_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context excerpt note"
+  issue_report_context_gist_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context gist note"
+  issue_report_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context heading"
+  issue_report_context_link_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link heading"
   issue_report_context_link_intro
     defined-by field
     lexeme en
@@ -1349,48 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept suffix kya hai"
-  pattern_concept_suffix_kya_hota_hai
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya hota hai"
-  pattern_concept_suffix_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya matlab"
-  pattern_concept_suffix_se_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix se kya matlab"
-  pattern_concept_suffix_shenmeyisi_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shenmeyisi simplified"
-  pattern_concept_suffix_shi_shei_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei simplified"
-  pattern_concept_suffix_shi_shei_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei traditional"
-  pattern_concept_suffix_shi_shenme_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme simplified"
-  pattern_concept_suffix_shi_shenme_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme traditional"
-  pattern_courtesy_keyword_blagodaryu
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword blagodaryu"

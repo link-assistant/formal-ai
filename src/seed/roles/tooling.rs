@@ -174,6 +174,16 @@ pub const ROLE_FILE_WRITE_ACTION_CUE: &str = "file_write_action_cue";
 /// so a *read* request ("show me the contents of …") is never mistaken for a
 /// write.
 pub const ROLE_FILE_WRITE_CONTENT_LEAD: &str = "file_write_content_lead";
+/// Semantic role: a reference to bytes produced by an explicitly requested
+/// command rather than literal prose to write.
+///
+/// Forms such as "stdout" and "command output" (plus translations) are carried
+/// by `file_write_command_output` in
+/// `data/seed/meanings-file-write.lino`. The general change planner combines
+/// this role with a seed-defined run verb, a quoted command, and a safe target
+/// path. That structural frame lowers "run COMMAND and write its output to
+/// FILE" to a shell redirect instead of writing the words "its output".
+pub const ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE: &str = "file_write_command_output_reference";
 /// Semantic role: a word that introduces or names the target file of a write
 /// (issue #680).
 ///

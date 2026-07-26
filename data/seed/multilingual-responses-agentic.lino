@@ -447,3 +447,163 @@ multilingual_responses
     intent comparison_decomposed_evidence
     language zh
     text "{left} 和 {right} 的独立证据：\n\n{evidence}"
+  response response_supplied_file_contents_en
+    intent supplied_file_contents
+    language en
+    text "Contents of `{path}`:\n\n{body}"
+  response response_supplied_file_contents_ru
+    intent supplied_file_contents
+    language ru
+    text "Содержимое `{path}`:\n\n{body}"
+  response response_supplied_file_contents_hi
+    intent supplied_file_contents
+    language hi
+    text "`{path}` की सामग्री:\n\n{body}"
+  response response_supplied_file_contents_zh
+    intent supplied_file_contents
+    language zh
+    text "`{path}` 的内容：\n\n{body}"
+  response response_supplied_file_first_line_en
+    intent supplied_file_first_line
+    language en
+    text "First line of `{path}`: {line}"
+  response response_supplied_file_first_line_ru
+    intent supplied_file_first_line
+    language ru
+    text "Первая строка `{path}`: {line}"
+  response response_supplied_file_first_line_hi
+    intent supplied_file_first_line
+    language hi
+    text "`{path}` की पहली पंक्ति: {line}"
+  response response_supplied_file_first_line_zh
+    intent supplied_file_first_line
+    language zh
+    text "`{path}` 的第一行：{line}"
+  response response_general_plan_command_capture_action_en
+    intent general_plan_command_capture_action
+    language en
+    text "run the explicit command and capture stdout in {target}"
+  response response_general_plan_command_capture_action_ru
+    intent general_plan_command_capture_action
+    language ru
+    text "выполнить явно указанную команду и сохранить stdout в {target}"
+  response response_general_plan_command_capture_action_hi
+    intent general_plan_command_capture_action
+    language hi
+    text "स्पष्ट कमांड चलाएँ और stdout को {target} में सहेजें"
+  response response_general_plan_command_capture_action_zh
+    intent general_plan_command_capture_action
+    language zh
+    text "运行明确指定的命令并将 stdout 保存到 {target}"
+  response response_general_plan_command_output_evidence_en
+    intent general_plan_command_output_evidence
+    language en
+    text "command-created workspace file {target}"
+  response response_general_plan_command_output_evidence_ru
+    intent general_plan_command_output_evidence
+    language ru
+    text "файл рабочей области {target}, созданный командой"
+  response response_general_plan_command_output_evidence_hi
+    intent general_plan_command_output_evidence
+    language hi
+    text "कमांड से बनाई गई कार्यक्षेत्र फ़ाइल {target}"
+  response response_general_plan_command_output_evidence_zh
+    intent general_plan_command_output_evidence
+    language zh
+    text "由命令创建的工作区文件 {target}"
+  response response_general_plan_command_verification_evidence_en
+    intent general_plan_command_verification_evidence
+    language en
+    text "captured stdout from the explicit command in {target}"
+  response response_general_plan_command_verification_evidence_ru
+    intent general_plan_command_verification_evidence
+    language ru
+    text "stdout явно указанной команды сохранён в {target}"
+  response response_general_plan_command_verification_evidence_hi
+    intent general_plan_command_verification_evidence
+    language hi
+    text "स्पष्ट कमांड का stdout {target} में सहेजा गया"
+  response response_general_plan_command_verification_evidence_zh
+    intent general_plan_command_verification_evidence
+    language zh
+    text "明确指定的命令的 stdout 已保存到 {target}"
+  response response_client_contract_read_observations_error_en
+    intent client_contract_read_observations_error
+    language en
+    text "read observations {path}: {error}"
+  response response_client_contract_read_observations_error_ru
+    intent client_contract_read_observations_error
+    language ru
+    text "не удалось прочитать наблюдения {path}: {error}"
+  response response_client_contract_read_observations_error_hi
+    intent client_contract_read_observations_error
+    language hi
+    text "अवलोकन {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_observations_error_zh
+    intent client_contract_read_observations_error
+    language zh
+    text "无法读取观测记录 {path}：{error}"
+  response response_client_contract_parse_observation_error_en
+    intent client_contract_parse_observation_error
+    language en
+    text "parse observation {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_ru
+    intent client_contract_parse_observation_error
+    language ru
+    text "не удалось разобрать наблюдение {path}:{line}: {error}"
+  response response_client_contract_parse_observation_error_hi
+    intent client_contract_parse_observation_error
+    language hi
+    text "अवलोकन {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_observation_error_zh
+    intent client_contract_parse_observation_error
+    language zh
+    text "无法解析观测记录 {path}:{line}：{error}"
+  response response_client_contract_read_transcript_error_en
+    intent client_contract_read_transcript_error
+    language en
+    text "read transcript {path}: {error}"
+  response response_client_contract_read_transcript_error_ru
+    intent client_contract_read_transcript_error
+    language ru
+    text "не удалось прочитать протокол {path}: {error}"
+  response response_client_contract_read_transcript_error_hi
+    intent client_contract_read_transcript_error
+    language hi
+    text "प्रतिलेख {path} पढ़ने में विफल: {error}"
+  response response_client_contract_read_transcript_error_zh
+    intent client_contract_read_transcript_error
+    language zh
+    text "无法读取交互记录 {path}：{error}"
+  response response_client_contract_parse_transcript_error_en
+    intent client_contract_parse_transcript_error
+    language en
+    text "parse transcript {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_ru
+    intent client_contract_parse_transcript_error
+    language ru
+    text "не удалось разобрать протокол {path}:{line}: {error}"
+  response response_client_contract_parse_transcript_error_hi
+    intent client_contract_parse_transcript_error
+    language hi
+    text "प्रतिलेख {path}:{line} का विश्लेषण विफल: {error}"
+  response response_client_contract_parse_transcript_error_zh
+    intent client_contract_parse_transcript_error
+    language zh
+    text "无法解析交互记录 {path}:{line}：{error}"
+  response response_client_contract_missing_evidence_error_en
+    intent client_contract_missing_evidence_error
+    language en
+    text "{path} contains neither a tool call nor expected marker `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_ru
+    intent client_contract_missing_evidence_error
+    language ru
+    text "{path} не содержит ни вызова инструмента, ни ожидаемого маркера `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_hi
+    intent client_contract_missing_evidence_error
+    language hi
+    text "{path} में न साधन आमंत्रण है, न अपेक्षित चिह्न `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_zh
+    intent client_contract_missing_evidence_error
+    language zh
+    text "{path} 既不包含工具调用，也不包含预期标记 `{expected_marker}`"

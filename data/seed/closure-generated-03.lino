@@ -1,4 +1,49 @@
 meanings
+  pattern_concept_suffix_kya_hota_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kya hota hai"
+  pattern_concept_suffix_kya_matlab
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kya matlab"
+  pattern_concept_suffix_se_kya_matlab
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix se kya matlab"
+  pattern_concept_suffix_shenmeyisi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shenmeyisi simplified"
+  pattern_concept_suffix_shi_shei_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shei simplified"
+  pattern_concept_suffix_shi_shei_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shei traditional"
+  pattern_concept_suffix_shi_shenme_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shenme simplified"
+  pattern_concept_suffix_shi_shenme_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shenme traditional"
+  pattern_courtesy_keyword_blagodaryu
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword blagodaryu"
   pattern_courtesy_keyword_dhanyavad
     defined-by prompt_pattern
     lexeme en
@@ -1189,6 +1234,106 @@ meanings
     lexeme en
       surface
         text "response clarification zh"
+  response_client_contract_missing_evidence_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error en"
+  response_client_contract_missing_evidence_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error hi"
+  response_client_contract_missing_evidence_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error ru"
+  response_client_contract_missing_evidence_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error zh"
+  response_client_contract_parse_observation_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error en"
+  response_client_contract_parse_observation_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error hi"
+  response_client_contract_parse_observation_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error ru"
+  response_client_contract_parse_observation_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error zh"
+  response_client_contract_parse_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error en"
+  response_client_contract_parse_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error hi"
+  response_client_contract_parse_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error ru"
+  response_client_contract_parse_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error zh"
+  response_client_contract_read_observations_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error en"
+  response_client_contract_read_observations_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error hi"
+  response_client_contract_read_observations_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error ru"
+  response_client_contract_read_observations_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error zh"
+  response_client_contract_read_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error en"
+  response_client_contract_read_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error hi"
+  response_client_contract_read_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error ru"
+  response_client_contract_read_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error zh"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en
@@ -1249,148 +1394,3 @@ meanings
     lexeme en
       surface
         text "response concept lookup in context no alias hi"
-  response_concept_lookup_in_context_no_alias_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias ru"
-  response_concept_lookup_in_context_no_alias_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context no alias zh"
-  response_concept_lookup_in_context_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context ru"
-  response_concept_lookup_in_context_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response concept lookup in context zh"
-  response_courtesy_response_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response en"
-  response_courtesy_response_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response hi"
-  response_courtesy_response_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response ru"
-  response_courtesy_response_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response courtesy response zh"
-  response_definition_followup_clarify_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify en"
-  response_definition_followup_clarify_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify hi"
-  response_definition_followup_clarify_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify ru"
-  response_definition_followup_clarify_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response definition followup clarify zh"
-  response_document_originality_check_sample_missing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing en"
-  response_document_originality_check_sample_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing hi"
-  response_document_originality_check_sample_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing ru"
-  response_document_originality_check_sample_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample missing zh"
-  response_document_originality_check_sample_present_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present en"
-  response_document_originality_check_sample_present_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present hi"
-  response_document_originality_check_sample_present_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present ru"
-  response_document_originality_check_sample_present_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response document originality check sample present zh"
-  response_farewell_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell en"
-  response_farewell_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell hi"
-  response_farewell_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell ru"
-  response_farewell_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response farewell zh"
-  response_github_repository_traffic_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic en"
-  response_github_repository_traffic_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic hi"
-  response_github_repository_traffic_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic ru"
-  response_github_repository_traffic_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response github repository traffic zh"
-  response_greeting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting en"

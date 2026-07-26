@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 14343
-  line_count 444
-  content_id source_module_a40eb9d990604cfb
+  byte_len 14649
+  line_count 448
+  content_id source_module_9e1d8504f6d0e8f0
   symbol_count 28
   symbols
     struct NormalizedResult 13 17
@@ -19,29 +19,29 @@ self_ast_census
     function normalize 164 212
     function from_payload 214 257
     function mcp_text_content 259 278
-    function strip_transport_envelope 280 312
-    function nonzero_status 314 322
-    function failed_status 324 334
-    function nonempty_text 336 346
-    function pretty_json 348 350
-    function result_tool 352 362
-    function result_label 364 381
-    function extract_urls 383 399
-    function is_listing 401 406
-    function is_search 408 413
-    function response_language 415 422
-    function fill 424 444
-    const TOOL_PLACEHOLDER 432 432
-    const FORMAT_PLACEHOLDER 433 433
-    const PAYLOAD_PLACEHOLDER 434 434
-    const ERROR_PLACEHOLDER 435 435
+    function strip_transport_envelope 284 316
+    function nonzero_status 318 326
+    function failed_status 328 338
+    function nonempty_text 340 350
+    function pretty_json 352 354
+    function result_tool 356 366
+    function result_label 368 385
+    function extract_urls 387 403
+    function is_listing 405 410
+    function is_search 412 417
+    function response_language 419 426
+    function fill 428 448
+    const TOOL_PLACEHOLDER 436 436
+    const FORMAT_PLACEHOLDER 437 437
+    const PAYLOAD_PLACEHOLDER 438 438
+    const ERROR_PLACEHOLDER 439 439
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13371
-    named_node_count 2716
+    total_link_count 13423
+    named_node_count 2730
     distinct_node_kinds 70
     node_kinds
       arguments 274
@@ -56,7 +56,7 @@ self_ast_census
       closure_parameters 53
       const_item 4
       crate 10
-      doc_comment 4
+      doc_comment 8
       else_clause 8
       escape_sequence 3
       expression_statement 39
@@ -77,14 +77,14 @@ self_ast_census
       let_condition 7
       let_declaration 55
       lifetime 2
-      line_comment 4
+      line_comment 8
       macro_invocation 5
       match_arm 8
       match_block 2
       match_expression 2
       match_pattern 8
       mutable_specifier 2
-      outer_doc_comment_marker 3
+      outer_doc_comment_marker 7
       parameter 42
       parameters 23
       parenthesized_expression 5
@@ -102,7 +102,7 @@ self_ast_census
       string_literal 105
       struct_expression 3
       struct_item 1
-      super 6
+      super 7
       token_tree 7
       try_expression 9
       tuple_pattern 5
@@ -112,5 +112,5 @@ self_ast_census
       unary_expression 14
       use_declaration 4
       use_list 1
-      visibility_modifier 5
+      visibility_modifier 6
       while_expression 1
