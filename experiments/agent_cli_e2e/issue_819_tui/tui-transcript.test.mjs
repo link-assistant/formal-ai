@@ -104,6 +104,16 @@ test('published adapter defaults to a faithful publishable replay bundle', async
     expect(recording).toContain('@keyframes');
     expect(recording).toContain('steps(1, end)');
     expect(recording).not.toContain('<animate');
+    for (const svg of [
+      recording,
+      await readFile(join(artifactDirectory, 'snapshot.svg'), 'utf8'),
+    ]) {
+      const textRuns = [...svg.matchAll(/<text\b[^>]*>([^<]*)<\/text>/gu)];
+      expect(textRuns.length).toBeGreaterThan(0);
+      for (const [, text] of textRuns) {
+        expect(text).not.toMatch(/^\s|\s$/u);
+      }
+    }
     expect(
       (await readFile(join(artifactDirectory, 'recording.gif')))
         .subarray(0, 6)

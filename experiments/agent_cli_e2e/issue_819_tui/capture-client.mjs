@@ -112,6 +112,14 @@ const recording = await readFile(
   join(artifactDirectory, 'recording.svg'),
   'utf8',
 );
+const snapshot = await readFile(
+  join(artifactDirectory, 'snapshot.svg'),
+  'utf8',
+);
+const hasPaddedTextRun = (svg) =>
+  [...svg.matchAll(/<text\b[^>]*>([^<]*)<\/text>/gu)].some(
+    ([, text]) => /^\s|\s$/u.test(text),
+  );
 const rendererFeatures = {
   css_keyframes:
     recording.includes('@keyframes') &&
@@ -125,6 +133,8 @@ const rendererFeatures = {
     recording.includes('lengthAdjust="spacingAndGlyphs"'),
   preserved_whitespace: recording.includes('xml:space="preserve"'),
   square_terminal_frame: recording.includes('rx="0"'),
+  visible_text_geometry:
+    !hasPaddedTextRun(snapshot) && !hasPaddedTextRun(recording),
 };
 for (const [feature, present] of Object.entries(rendererFeatures)) {
   if (!present) {

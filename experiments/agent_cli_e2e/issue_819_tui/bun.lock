@@ -6,6 +6,7 @@
       "name": "formal-ai-issue-819-tui-proof",
       "dependencies": {
         "agent-commander": "0.10.0",
+        "command-stream": "^0.17.2",
       },
     },
   },
@@ -60,7 +61,7 @@
 
     "color-name": ["color-name@1.1.4", "", {}, "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="],
 
-    "command-stream": ["command-stream@0.17.1", "", { "dependencies": { "@resvg/resvg-js": "^2.6.2", "@xterm/headless": "^6.0.0", "gifenc": "^1.0.3", "node-pty": "^1.2.0-beta.14" } }, "sha512-93ikWsOt+jKNGUTY1ZVRGZG1UALVesuM+tsqFbwVtsUG71FYDxLuRBQ+P3qNF8uxdf5v9ldNw1lzmGSQdlimWA=="],
+    "command-stream": ["command-stream@0.17.2", "", { "dependencies": { "@resvg/resvg-js": "^2.6.2", "@xterm/headless": "^6.0.0", "gifenc": "^1.0.3", "node-pty": "^1.2.0-beta.14" } }, "sha512-SEHSZgtfV6/llMw7mm0q/1w559EZd56rPmcGjkTWEkFwjtunqMM20qh8cr33S7CQ6FRfIVoiMjTPyvvnFOTvcw=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
