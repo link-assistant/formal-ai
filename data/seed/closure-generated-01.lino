@@ -139,6 +139,21 @@ meanings
     lexeme en
       surface
         text "agentic action generic"
+  agentic_action_list_current
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list current"
+  agentic_action_list_desktop
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list desktop"
+  agentic_action_list_home
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action list home"
   agentic_action_read
     defined-by intent
     lexeme en
@@ -385,7 +400,7 @@ meanings
       surface
         text "bundle root header"
   called
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "called"
@@ -519,6 +534,16 @@ meanings
     lexeme en
       surface
         text "comments"
+  comparison_decomposed_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed evidence"
+  comparison_decomposed_no_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "comparison decomposed no evidence"
   concept_lookup
     defined-by intent
     lexeme en
@@ -579,6 +604,11 @@ meanings
     lexeme en
       surface
         text "context bsd operating systems"
+  context_command_failed
+    defined-by field
+    lexeme en
+      surface
+        text "context command failed"
   context_delimiter
     defined-by kind
     lexeme en
@@ -774,6 +804,11 @@ meanings
     lexeme en
       surface
         text "default language"
+  definition_followup_clarify
+    defined-by intent
+    lexeme en
+      surface
+        text "definition followup clarify"
   delete
     defined-by phrase
     lexeme en
@@ -809,8 +844,13 @@ meanings
     lexeme en
       surface
         text "did"
+  directories
+    defined-by word_surface
+    lexeme en
+      surface
+        text "directories"
   directory
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "directory"
@@ -984,6 +1024,11 @@ meanings
     lexeme en
       surface
         text "file handle"
+  files
+    defined-by word_surface
+    lexeme en
+      surface
+        text "files"
   filesystem
     defined-by word_surface
     lexeme en
@@ -1000,10 +1045,15 @@ meanings
       surface
         text "fizzbuzz"
   folder
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "folder"
+  folders
+    defined-by word_surface
+    lexeme en
+      surface
+        text "folders"
   fontawesome
     defined-by concept
     lexeme en
@@ -1334,63 +1384,13 @@ meanings
     lexeme en
       surface
         text "issue report context heading"
-  issue_report_context_note
+  issue_report_context_link_heading
     defined-by field
     lexeme en
       surface
-        text "issue report context note"
-  issue_report_conversation_heading
+        text "issue report context link heading"
+  issue_report_context_link_intro
     defined-by field
     lexeme en
       surface
-        text "issue report conversation heading"
-  issue_report_created
-    defined-by field
-    lexeme en
-      surface
-        text "issue report created"
-  issue_report_created_with_url
-    defined-by field
-    lexeme en
-      surface
-        text "issue report created with url"
-  issue_report_default_title
-    defined-by field
-    lexeme en
-      surface
-        text "issue report default title"
-  issue_report_description_placeholder
-    defined-by field
-    lexeme en
-      surface
-        text "issue report description placeholder"
-  issue_report_dialog_legend
-    defined-by field
-    lexeme en
-      surface
-        text "issue report dialog legend"
-  issue_report_empty_history
-    defined-by field
-    lexeme en
-      surface
-        text "issue report empty history"
-  issue_report_export_heading
-    defined-by field
-    lexeme en
-      surface
-        text "issue report export heading"
-  issue_report_failed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report failed"
-  issue_report_gist_failed
-    defined-by field
-    lexeme en
-      surface
-        text "issue report gist failed"
-  issue_report_language_label
-    defined-by field
-    lexeme en
-      surface
-        text "issue report language label"
+        text "issue report context link intro"

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Real local path-discovery proof for issue #819. Agent, OpenCode, Claude Code,
-# and Codex must execute one client-side `find`, return its result, and finish.
+# Real local path-discovery proof for issues #819 and #840. Agent, OpenCode,
+# Claude Code, and Codex must execute the stateful client-side discovery loop,
+# return its result, and finish.
 # A second OpenCode run captures its real TUI frame-by-frame through
 # link-foundation/command-stream and verifies the complete dialog sequence.
 
@@ -14,15 +15,16 @@ OPENCODE="${OPENCODE:-opencode}"
 CLIENTS="${CLIENTS:-agent opencode claude codex}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 EMPTY_RESULT="${EMPTY_RESULT:-0}"
+RUN_TUI="${RUN_TUI:-1}"
+AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-60}"
 PROMPT="Find hive-mind-control center folder on my desktop"
 WORKDIR="$(mktemp -d)"
 DESKTOP_DIR="$WORKDIR/Desktop"
 EXPECTED_PATH="$DESKTOP_DIR/Archive/hive-control-center"
-EMPTY_MESSAGE="No matching file or folder was found in the requested location."
 EXPECTED_RESULT="$EXPECTED_PATH"
 EMPTY_ARG=""
 if [ "$EMPTY_RESULT" = "1" ]; then
-  EXPECTED_RESULT="$EMPTY_MESSAGE"
+  EXPECTED_RESULT="was not found after exact, substring, and nearby-name checks"
   EMPTY_ARG="EMPTY"
 fi
 TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
@@ -106,7 +108,8 @@ preserve_raw_artifacts() {
     mkdir -p "$ARTIFACT_DIR/$client"
     cp "$client_dir/client.log" "$ARTIFACT_DIR/$client/client.log"
     cp "$client_dir/formal-ai.log" "$ARTIFACT_DIR/$client/formal-ai.log"
-    cp -R "$client_dir/dialogs" "$ARTIFACT_DIR/$client/dialogs"
+    mkdir -p "$ARTIFACT_DIR/$client/dialogs"
+    cp -R "$client_dir/dialogs/." "$ARTIFACT_DIR/$client/dialogs/"
   fi
 }
 
@@ -137,7 +140,7 @@ run_client() {
         echo "== Agent CLI attempt $attempt ==" >> "$client_log"
         (
           cd "$WORKDIR"
-          FORMAL_AI_DESKTOP_DIR="$DESKTOP_DIR" "$AGENT" \
+          FORMAL_AI_DESKTOP_DIR="$DESKTOP_DIR" timeout "$AGENT_TIMEOUT_SECONDS" "$AGENT" \
             --prompt "$PROMPT" \
             --disable-stdin \
             --model formal-ai/formal-ai \
@@ -184,7 +187,7 @@ run_client() {
   grep -Fq "$EXPECTED_RESULT" "$client_log" \
     || fail "$client did not display the expected result" "$client_log" "$server_log"
   preserve_sequence "$client" "$sequence"
-  echo "== issue #819 $client E2E OK: user -> find -> result -> final =="
+  echo "== issues #819/#840 $client E2E OK: exact -> evidence-driven widen -> final =="
   tail -20 "$client_log"
   stop_server
 }
@@ -201,13 +204,21 @@ run_opencode_tui() {
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 
-  ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
+  if ! ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
     ISSUE819_TUI_CWD="$WORKDIR" \
     ISSUE819_DESKTOP_DIR="$DESKTOP_DIR" \
     ISSUE819_EXPECT_RESULT="$EXPECTED_RESULT" \
     ISSUE819_TUI_OUTPUT="$transcript" \
-    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1 \
-    || fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
+    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1; then
+    if [ -n "$ARTIFACT_DIR" ]; then
+      mkdir -p "$ARTIFACT_DIR/opencode-tui/dialogs"
+      cp "$client_log" "$ARTIFACT_DIR/opencode-tui/client.log"
+      cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
+      cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
+      cp -R "$dialog_dir/." "$ARTIFACT_DIR/opencode-tui/dialogs/"
+    fi
+    fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
+  fi
 
   node "$TUI_DIR/verify-dialog.mjs" \
     "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
@@ -218,7 +229,8 @@ run_opencode_tui() {
     cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
     cp "$sequence" "$ARTIFACT_DIR/opencode-tui/dialog-sequence.json"
     cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
-    cp -R "$dialog_dir" "$ARTIFACT_DIR/opencode-tui/dialogs"
+    mkdir -p "$ARTIFACT_DIR/opencode-tui/dialogs"
+    cp -R "$dialog_dir/." "$ARTIFACT_DIR/opencode-tui/dialogs/"
   fi
   echo "== issue #819 OpenCode TUI OK: deduplicated frames + complete dialog =="
   stop_server
@@ -228,6 +240,8 @@ if [ "$EMPTY_RESULT" = "1" ]; then
   mkdir -p "$DESKTOP_DIR"
 else
   mkdir -p "$EXPECTED_PATH"
+  printf '%s\n' "not the requested folder" \
+    > "$DESKTOP_DIR/Archive/hive-mind-bot.2025-12-26.private-key.pem"
 fi
 (cd "$TUI_DIR" && bun install --frozen-lockfile && bun test) \
   || fail "command-stream TUI regression failed"
@@ -237,4 +251,6 @@ for client in $CLIENTS; do
   run_client "$client" "$((PORT + client_index))"
   client_index=$((client_index + 1))
 done
-run_opencode_tui "$((PORT + 20))"
+if [ "$RUN_TUI" = "1" ]; then
+  run_opencode_tui "$((PORT + 20))"
+fi
