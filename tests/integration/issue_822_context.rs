@@ -216,7 +216,7 @@ fn verbose_is_global_default_and_silent_is_available() {
 
 #[cfg(unix)]
 #[test]
-fn local_context_report_builds_the_complete_issue_body_inside_one_cli_command() {
+fn local_report_body_builds_complete_context_without_invoking_github() {
     let directory = temporary_directory("report");
     let bin = directory.join("bin");
     fs::create_dir_all(&bin).unwrap();
@@ -266,6 +266,7 @@ exit 1
     let args_capture = directory.join("gh-args.txt");
     let body_capture = directory.join("gh-body.md");
     let body_mode_capture = directory.join("gh-body-mode.txt");
+    let context_capture = directory.join("complete-context.lino");
     let path = format!(
         "{}:{}",
         bin.display(),
@@ -275,17 +276,19 @@ exit 1
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args([
             "--silent",
-            "context",
             "report",
+            "body",
             "--session",
             dialog_id,
             "--source",
-            "both",
-            "--repository",
-            "link-assistant/formal-ai",
-            "--title",
-            "Grounded report",
+            "server",
+            "--log-dir",
         ])
+        .arg(&directory)
+        .arg("--output")
+        .arg(&body_capture)
+        .arg("--context-output")
+        .arg(&context_capture)
         .env("FORMAL_AI_DIALOG_LOG_DIR", &directory)
         .env("PATH", path)
         .env("GH_ARGS_CAPTURE", &args_capture)
@@ -299,20 +302,15 @@ exit 1
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    assert_eq!(
-        String::from_utf8_lossy(&output.stdout).trim(),
-        "https://github.com/link-assistant/formal-ai/issues/99999"
-    );
-    let args = fs::read_to_string(args_capture).unwrap();
-    assert!(args.contains("issue create --repo link-assistant/formal-ai"));
-    assert!(args.contains("--title Grounded report"), "{args}");
-    assert_eq!(
-        fs::read_to_string(body_mode_capture).unwrap().trim(),
-        "-rw-------"
+    assert!(output.stdout.is_empty());
+    assert!(
+        !args_capture.exists(),
+        "rendering an inline report body must not contact GitHub"
     );
     let body = fs::read_to_string(body_capture).unwrap();
     for expected in [
-        "Reported from an agentic session",
+        "## Environment",
+        "## Reproduction of dialog",
         "### Complete agentic context",
         "```lino",
         "conversation issue-840-atomic-report",
@@ -321,12 +319,18 @@ exit 1
     ] {
         assert!(body.contains(expected), "missing {expected:?}:\n{body}");
     }
+    assert!(
+        fs::read_to_string(context_capture)
+            .unwrap()
+            .contains("conversation issue-840-atomic-report"),
+        "the complete context copy was not preserved"
+    );
     fs::remove_dir_all(directory).unwrap();
 }
 
 #[cfg(unix)]
 #[test]
-fn oversized_local_context_report_links_the_full_gist_and_keeps_a_bounded_tail() {
+fn oversized_local_report_body_links_the_full_gist_and_keeps_a_bounded_excerpt() {
     let directory = temporary_directory("large-report");
     let bin = directory.join("bin");
     fs::create_dir_all(&bin).unwrap();
@@ -378,6 +382,7 @@ exit 1
     fs::set_permissions(&gh, permissions).unwrap();
     let args_capture = directory.join("gh-args.txt");
     let body_capture = directory.join("gh-body.md");
+    let context_capture = directory.join("complete-context.lino");
     let path = format!(
         "{}:{}",
         bin.display(),
@@ -387,17 +392,19 @@ exit 1
     let output = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
         .args([
             "--silent",
-            "context",
             "report",
+            "body",
             "--session",
             dialog_id,
             "--source",
-            "both",
-            "--repository",
-            "link-assistant/formal-ai",
-            "--title",
-            "Large grounded report",
+            "server",
+            "--log-dir",
         ])
+        .arg(&directory)
+        .arg("--output")
+        .arg(&body_capture)
+        .arg("--context-output")
+        .arg(&context_capture)
         .env("FORMAL_AI_DIALOG_LOG_DIR", &directory)
         .env("PATH", path)
         .env("GH_ARGS_CAPTURE", &args_capture)
@@ -411,11 +418,23 @@ exit 1
         String::from_utf8_lossy(&output.stderr)
     );
     let args = fs::read_to_string(args_capture).unwrap();
-    assert!(args.contains("gist create --filename formal-ai-context.lino"));
-    assert!(args.contains("issue create --repo link-assistant/formal-ai"));
+    assert!(
+        args.contains(
+            "gist create --filename formal-ai-context-issue-840-large-atomic-report.lino"
+        ),
+        "{args}"
+    );
+    assert!(!args.contains("issue create"), "{args}");
     let body = fs::read_to_string(body_capture).unwrap();
     assert!(body.contains("https://gist.github.com/example/complete-context"));
-    assert!(body.contains("TAIL-EVIDENCE"));
-    assert!(body.len() < 15_000, "bounded body was {} bytes", body.len());
+    assert!(
+        body.len() < 65_536,
+        "GitHub issue body was {} bytes",
+        body.len()
+    );
+    assert!(body.contains("... omitted "), "{body}");
+    let complete = fs::read_to_string(context_capture).unwrap();
+    assert!(complete.contains("TAIL-EVIDENCE"));
+    assert!(complete.len() > body.len());
     fs::remove_dir_all(directory).unwrap();
 }
