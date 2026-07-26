@@ -2,6 +2,10 @@
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
 use formal_ai::protocol::{ChatMessage, ToolCall};
+use formal_ai::seed::{
+    self, ROLE_LOCAL_PATH_DIRECTORY_KIND, ROLE_LOCAL_PATH_SCOPE_DESKTOP,
+    ROLE_LOCAL_PATH_SEARCH_ACTION,
+};
 
 fn one_call(messages: &[ChatMessage]) -> PlannedToolCall {
     let plan = plan_chat_step(
@@ -52,6 +56,70 @@ fn local_scope_dominates_search_verb_and_possessive_variations() {
         assert!(!command.contains("-print -quit"), "{prompt}: {command}");
         assert!(!command.contains(';'), "{prompt}: {command}");
         assert!(!command.contains("&&"), "{prompt}: {command}");
+    }
+}
+
+#[test]
+fn generated_local_routing_property_holds_for_twelve_prompts_per_language() {
+    let lexicon = seed::lexicon();
+    let supported = formal_ai::supported_languages();
+
+    for language in supported {
+        let language = language.as_str();
+        let actions = lexicon
+            .words_for_role_in_languages(ROLE_LOCAL_PATH_SEARCH_ACTION, &[language])
+            .into_iter()
+            .take(3)
+            .collect::<Vec<_>>();
+        let kinds = lexicon
+            .words_for_role_in_languages(ROLE_LOCAL_PATH_DIRECTORY_KIND, &[language])
+            .into_iter()
+            .take(2)
+            .collect::<Vec<_>>();
+        let all_scopes =
+            lexicon.words_for_role_in_languages(ROLE_LOCAL_PATH_SCOPE_DESKTOP, &[language]);
+        let scopes = [
+            all_scopes.first().expect("possessive desktop scope"),
+            all_scopes.last().expect("plain desktop scope"),
+        ];
+        assert_eq!(actions.len(), 3, "{language}: search actions");
+        assert_eq!(kinds.len(), 2, "{language}: directory kinds");
+
+        let mut generated = 0;
+        for action in &actions {
+            for scope in scopes {
+                for kind in &kinds {
+                    let prompt = match language {
+                        "hi" => format!("{scope} issue-840-target {kind} {action}"),
+                        "zh" => format!("{scope}{action} issue-840-target {kind}"),
+                        _ => format!("{action} issue-840-target {kind} {scope}"),
+                    };
+                    let call = one_call(&[ChatMessage::user(&prompt)]);
+                    assert_eq!(call.tool, "bash", "{language}: {prompt}: {call:?}");
+                    let command = command(&call);
+                    assert!(
+                        command.contains("FORMAL_AI_DESKTOP_DIR"),
+                        "{language}: {prompt}: {command}"
+                    );
+                    assert!(
+                        command.contains("-type d"),
+                        "{language}: {prompt}: {command}"
+                    );
+                    assert!(
+                        command.ends_with("-print"),
+                        "{language}: {prompt}: {command}"
+                    );
+                    assert!(
+                        !command.contains("-print -quit")
+                            && !command.contains(';')
+                            && !command.contains("&&"),
+                        "{language}: {prompt}: {command}"
+                    );
+                    generated += 1;
+                }
+            }
+        }
+        assert_eq!(generated, 12, "{language}: generated property cases");
     }
 }
 
