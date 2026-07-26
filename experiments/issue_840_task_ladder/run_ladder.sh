@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Drive every node of the issue #840 task ladder against a live `formal-ai serve`
-# and record pass/fail per node, so the whole 25-task dataset can be re-measured
+# and record pass/fail per node, so the whole 24-task dataset can be re-measured
 # after each change instead of re-reported by hand.
 #
 # Usage:
@@ -17,10 +17,12 @@
 #   TUI_ARTIFACT_DIR  Transcript/frames/cast/SVG root in TUI mode
 #   REQUIRE_ALL_PASS  Exit nonzero when a selected TUI node fails (default: 0)
 #
-# A node PASSES when every `expect` substring appears in the answer and no
-# `forbid` substring does. Matching is case-insensitive. Nodes with an empty
-# `expect` list are judged only by `forbid` (used where any sensible answer is
-# acceptable but a specific failure mode must not occur).
+# A node PASSES when every `expect` substring appears in assistant output and
+# no `forbid` substring does. Matching is case-insensitive. Raw tool results
+# remain in the recorded transcript as observation evidence, but are not agent
+# claims and therefore cannot by themselves trigger a forbidden-answer check.
+# Nodes with an empty `expect` list are judged only by `forbid` (used where any
+# sensible answer is acceptable but a specific failure mode must not occur).
 #
 # HTTP mode exits 0: this is a measurement harness, not a gate. TUI mode also
 # exits 0 unless REQUIRE_ALL_PASS=1. Read results.json (and the printed summary)
@@ -145,6 +147,7 @@ def ask(prompt):
     step is returned so assertions see both narration and tool output."""
     messages = [{"role": "user", "content": prompt}]
     transcript = []
+    assistant_output = []
     try:
         for _ in range(MAX_STEPS):
             payload = post(messages)
@@ -152,6 +155,7 @@ def ask(prompt):
             text = message.get("content") or ""
             if text:
                 transcript.append(text)
+                assistant_output.append(text)
             calls = message.get("tool_calls") or []
             if not calls:
                 break
@@ -171,8 +175,32 @@ def ask(prompt):
                         env={**os.environ, "HOME": sandbox},
                     )
                     result = (proc.stdout + proc.stderr).strip() or "(no output)"
+                elif name == "websearch":
+                    query = str(args.get("query") or "").lower()
+                    if "фуфломицин" in query or "fuflo" in query:
+                        if "english" in query:
+                            result = (
+                                "Fuflomicin is a disparaging colloquial label "
+                                "for a medicine without proven efficacy."
+                            )
+                        else:
+                            result = (
+                                "Фуфломицин — неодобрительное разговорное "
+                                "название лекарства без доказанной эффективности."
+                            )
+                    elif "фбс" in query:
+                        result = (
+                            "ФБС: продавец хранит товар на своём складе, "
+                            "собирает заказ и передаёт его маркетплейсу."
+                        )
+                    elif "фбо" in query:
+                        result = (
+                            "ФБО: товар хранится на складе маркетплейса, "
+                            "который собирает и доставляет заказ."
+                        )
+                    else:
+                        result = "No deterministic fixture evidence for this query."
                 else:
-                    # websearch and anything else: no live network in the harness
                     result = "(tool not executed by harness)"
                 transcript.append(f"[result] {result}")
                 messages.append({
@@ -180,20 +208,20 @@ def ask(prompt):
                     "name": name, "content": result,
                 })
     except Exception as exc:                      # noqa: BLE001 - harness
-        return "\n".join(transcript), f"{type(exc).__name__}: {exc}"
-    return "\n".join(transcript).strip(), None
+        return "\n".join(transcript), "\n".join(assistant_output), f"{type(exc).__name__}: {exc}"
+    return "\n".join(transcript).strip(), "\n".join(assistant_output).strip(), None
 
 results = []
 for node in nodes:
-    answer, error = ask(node["prompt"])
-    low = answer.lower()
+    answer, assistant_output, error = ask(node["prompt"])
+    low = assistant_output.lower()
     missing = [e for e in node.get("expect", []) if e.lower() not in low]
     leaked = [f for f in node.get("forbid", []) if f.lower() in low]
     ok = error is None and not missing and not leaked
     results.append({
         "id": node["id"], "level": node["level"], "seed": node["seed"],
         "lang": node["lang"], "prompt": node["prompt"], "note": node.get("note", ""),
-        "answer": answer, "error": error,
+        "answer": answer, "assistant_output": assistant_output, "error": error,
         "missing_expect": missing, "leaked_forbid": leaked, "pass": ok,
     })
     flag = "PASS" if ok else "FAIL"

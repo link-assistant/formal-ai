@@ -8,6 +8,13 @@ client_integrations
     endpoint_openai "/api/openai/v1"
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
+      required_request_tool "web_search"
+      forbidden_output "Allow command?"
+      forbidden_output "approve this action"
+      sandbox_user_namespaces "true"
     ephemeral
       temp_home_env "HOME"
       model_catalog_path ".codex/formal-ai-model-catalog.json"
@@ -57,6 +64,24 @@ client_integrations
     endpoint_anthropic "/api/anthropic"
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
+    verification
+      surface "server"
+      launch_arg "serve"
+      launch_arg "--no-browser"
+      launch_arg "--host"
+      launch_arg "127.0.0.1"
+      launch_arg "--port"
+      launch_arg "{port}"
+      launch_arg "--base-dir"
+      launch_arg "{workdir}/t3-base"
+      launch_ready "Listening on http://127.0.0.1:{port}"
+      launch_required_output "Pairing URL: http://127.0.0.1:{port}/pair"
+      launch_http_path "/"
+      launch_subcommand "auth"
+      launch_subcommand "connect"
+      launch_subcommand "project"
+      launch_subcommand "serve"
+      launch_subcommand "start"
     ephemeral
       non_interactive_arg "--no-browser"
       temp_home_env "CODEX_HOME"
@@ -103,6 +128,9 @@ client_integrations
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
     model_selector "{provider_id}/{model}"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
     ephemeral
       non_interactive_arg "run"
       mode_arg_position "before_invocation"
@@ -150,6 +178,15 @@ client_integrations
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
     model_selector "{provider_id}/{model}"
+    verification
+      surface "gui"
+      launch_arg "--extensions-dir"
+      launch_arg "{vscode_dir}/extensions"
+      launch_arg "--user-data-dir"
+      launch_arg "{workdir}/vscode-user-data"
+      launch_arg "{workdir}"
+      extension_glob "{vscode_dir}/extensions/sst-dev.opencode-*"
+      chromium_sandbox_fallback "true"
     ephemeral
       prepend_arg "--new-window"
       prepend_arg "--wait"
@@ -189,6 +226,8 @@ client_integrations
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai-local"
     model_selector "{provider_id}/{model}"
+    verification
+      surface "gui"
     ephemeral
       env "FORMAL_AI_API_KEY={api_key}"
       env "OPENCODE_ENABLE_EXA=1"
@@ -224,6 +263,9 @@ client_integrations
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
     model_selector "{provider_id}/{model}"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
     ephemeral
       interactive_arg "--interactive"
       non_interactive_arg "-p"
@@ -265,6 +307,9 @@ client_integrations
     endpoint_mcp "/mcp"
     api_key_env "FORMAL_AI_API_KEY"
     api_key_default "formal-ai"
+    verification
+      surface "mcp"
+      vendor_auth_error "authentication required"
     ephemeral
       non_interactive_arg "-p"
       temp_home_env "HOME"
@@ -289,6 +334,13 @@ client_integrations
     endpoint_vertex "/api/vertex"
     api_key_env "GEMINI_API_KEY"
     api_key_default "formal-ai"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
+      interactive_env "GEMINI_CLI_INTEGRATION_TEST=true"
+      required_request_tool "read_file"
+      forbidden_output "Allow command?"
+      forbidden_output "approve this action"
     ephemeral
       interactive_arg "--prompt-interactive"
       interactive_args_require_prompt "true"
@@ -322,6 +374,9 @@ client_integrations
     endpoint_anthropic "/api/anthropic"
     api_key_env "ANTHROPIC_AUTH_TOKEN"
     api_key_default "formal-ai"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
     ephemeral
       non_interactive_arg "--print"
       temp_home_env "CLAUDE_CONFIG_DIR"
@@ -350,6 +405,11 @@ client_integrations
     endpoint_openai "/api/openai/v1"
     api_key_env "OPENAI_API_KEY"
     api_key_default "formal-ai"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
+      forbidden_output "Allow command?"
+      forbidden_output "approve this action"
     ephemeral
       interactive_arg "--prompt-interactive"
       interactive_args_require_prompt "true"
@@ -378,6 +438,9 @@ client_integrations
     endpoint_openai "/api/openai/v1"
     api_key_env "GROK_API_KEY"
     api_key_default "formal-ai-local"
+    verification
+      surface "cli"
+      file_delivery "tool_call"
     ephemeral
       non_interactive_arg "--prompt"
       temp_home_env "HOME"
@@ -403,6 +466,13 @@ client_integrations
     api_key_env "OPENAI_API_KEY"
     api_key_default "formal-ai"
     model_selector "openai/{model}"
+    verification
+      surface "cli"
+      file_delivery "in_band"
+      headless_arg "--file"
+      headless_arg "alpha.txt"
+      interactive_preamble "3:/add alpha.txt"
+      interactive_preamble "2:\r"
     ephemeral
       non_interactive_arg "--message"
       temp_home_env "HOME"

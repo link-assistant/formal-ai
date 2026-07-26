@@ -1,0 +1,34 @@
+   Compiling formal-ai v0.305.1 (/tmp/gh-issue-solver-1785094883723)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.34s
+     Running tests/issue_874_docs.rs (target/debug/deps/issue_874_docs-e5b7249b12ec9c9a)
+
+running 4 tests
+
+thread 'related_repositories_are_linked_without_overstating_runtime_integration' (13583) panicked at tests/issue_874_docs.rs:52:54:
+read /tmp/gh-issue-solver-1785094883723/docs/associative-tech-stack.md: No such file or directory (os error 2)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test related_repositories_are_linked_without_overstating_runtime_integration ...
+thread 'whole_guide_explains_the_associative_stack_end_to_end' (13584) panicked at tests/issue_874_docs.rs:52:54:
+read /tmp/gh-issue-solver-1785094883723/docs/associative-tech-stack.md: No such file or directory (os error 2)
+FAILED
+test whole_guide_explains_the_associative_stack_end_to_end ... FAILED
+
+thread 'every_direct_associative_dependency_has_a_repository_and_usage_boundary' (13582) panicked at tests/issue_874_docs.rs:52:54:
+read /tmp/gh-issue-solver-1785094883723/docs/associative-tech-stack.md: No such file or directory (os error 2)
+test every_direct_associative_dependency_has_a_repository_and_usage_boundary ... FAILED
+
+thread 'associative_stack_guide_is_a_separate_discoverable_document' (13581) panicked at tests/issue_874_docs.rs:68:5:
+README must link the standalone associative stack guide
+test associative_stack_guide_is_a_separate_discoverable_document ... FAILED
+
+failures:
+
+failures:
+    associative_stack_guide_is_a_separate_discoverable_document
+    every_direct_associative_dependency_has_a_repository_and_usage_boundary
+    related_repositories_are_linked_without_overstating_runtime_integration
+    whole_guide_explains_the_associative_stack_end_to_end
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test issue_874_docs`

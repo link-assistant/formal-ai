@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-07-24/25",
+  "task_id": "838.L1",
+  "prompt": "Find hive-mind-control center folder on my desktop",
+  "fixture": {
+    "target": "Desktop/Archive/hive-control-center",
+    "decoy": "Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem",
+    "target_kind": "directory",
+    "decoy_kind": "file"
+  },
+  "policy": {
+    "quota_exhaustion": "inconclusive",
+    "permission_denial": "inconclusive",
+    "inconclusive_is_eligible_for_comparison": false
+  },
+  "transient_observations": [
+    {
+      "agent": "laguna-s-2.1-free",
+      "signal": "provider 429 while retrying",
+      "classification": "inconclusive",
+      "eventual_status": "pass"
+    }
+  ],
+  "agents": [
+    {
+      "agent": "claude-opus",
+      "status": "pass",
+      "command_count": 2,
+      "found": true,
+      "widened_after_empty": null,
+      "simple_commands": true,
+      "named_discrepancy": true
+    },
+    {
+      "agent": "codex",
+      "status": "pass",
+      "command_count": 2,
+      "found": true,
+      "widened_after_empty": true,
+      "simple_commands": true,
+      "named_discrepancy": false
+    },
+    {
+      "agent": "laguna-s-2.1-free",
+      "status": "pass",
+      "command_count": 5,
+      "found": true,
+      "widened_after_empty": true,
+      "simple_commands": true,
+      "named_discrepancy": true
+    },
+    {
+      "agent": "nemotron-3-ultra-free",
+      "status": "pass",
+      "command_count": 2,
+      "found": true,
+      "widened_after_empty": null,
+      "simple_commands": true,
+      "named_discrepancy": false
+    },
+    {
+      "agent": "mimo-v2.5-free",
+      "status": "pass",
+      "command_count": 3,
+      "found": true,
+      "widened_after_empty": null,
+      "simple_commands": true,
+      "named_discrepancy": false
+    },
+    {
+      "agent": "ling-3.0-flash-free",
+      "status": "pass",
+      "command_count": 4,
+      "found": true,
+      "widened_after_empty": "partial",
+      "simple_commands": false,
+      "named_discrepancy": false
+    },
+    {
+      "agent": "north-mini-code-free",
+      "status": "fail",
+      "command_count": 2,
+      "found": false,
+      "widened_after_empty": false,
+      "simple_commands": true,
+      "named_discrepancy": false
+    },
+    {
+      "agent": "deepseek-v4-flash-free",
+      "status": "inconclusive",
+      "command_count": 0,
+      "found": null,
+      "widened_after_empty": null,
+      "simple_commands": null,
+      "named_discrepancy": null,
+      "reason": "sandbox permission prompt"
+    }
+  ],
+  "best_reference": {
+    "agent": "laguna-s-2.1-free",
+    "status": "pass",
+    "command_count": 5,
+    "found": true,
+    "widened_after_empty": true,
+    "simple_commands": true,
+    "named_discrepancy": true,
+    "distinguished_target_kind": true,
+    "returned_decoy": false
+  },
+  "formal_ai_before": {
+    "version": "0.302.2",
+    "status": "fail",
+    "command_count": 1,
+    "found": false,
+    "widened_after_empty": false,
+    "simple_commands": false,
+    "named_discrepancy": false,
+    "distinguished_target_kind": false,
+    "returned_decoy": true
+  },
+  "task_ladder_before": {
+    "version": "0.303.0",
+    "passed": 8,
+    "total": 24
+  }
+}

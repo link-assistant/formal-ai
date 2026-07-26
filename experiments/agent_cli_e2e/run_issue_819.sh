@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Real local path-discovery proof for issue #819. Agent, OpenCode, Claude Code,
-# and Codex must execute one client-side `find`, return its result, and finish.
+# Real local path-discovery proof for issues #819 and #840. Agent, OpenCode,
+# Claude Code, and Codex execute the stateful client-side discovery loop.
 # A second pass captures OpenCode, Claude Code, and Codex through the published
-# agent-commander adapter and verifies the complete visible dialog sequence.
+# agent-commander/command-stream stack and verifies the visible dialog.
 
 set -uo pipefail
 
@@ -15,15 +15,16 @@ CLIENTS="${CLIENTS:-agent opencode claude codex}"
 TUI_CLIENTS="${TUI_CLIENTS:-opencode claude codex}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 EMPTY_RESULT="${EMPTY_RESULT:-0}"
+RUN_TUI="${RUN_TUI:-1}"
+AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-60}"
 PROMPT="Find hive-mind-control center folder on my desktop"
 WORKDIR="$(mktemp -d)"
 DESKTOP_DIR="$WORKDIR/Desktop"
 EXPECTED_PATH="$DESKTOP_DIR/Archive/hive-control-center"
-EMPTY_MESSAGE="No matching file or folder was found in the requested location."
 EXPECTED_RESULT="$EXPECTED_PATH"
 EMPTY_ARG=""
 if [ "$EMPTY_RESULT" = "1" ]; then
-  EXPECTED_RESULT="$EMPTY_MESSAGE"
+  EXPECTED_RESULT="was not found after exact, substring, and nearby-name checks"
   EMPTY_ARG="EMPTY"
 fi
 TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
@@ -155,7 +156,7 @@ run_client() {
         echo "== Agent CLI attempt $attempt ==" >> "$client_log"
         (
           cd "$WORKDIR"
-          FORMAL_AI_DESKTOP_DIR="$DESKTOP_DIR" "$AGENT" \
+          FORMAL_AI_DESKTOP_DIR="$DESKTOP_DIR" timeout "$AGENT_TIMEOUT_SECONDS" "$AGENT" \
             --prompt "$PROMPT" \
             --disable-stdin \
             --model formal-ai/formal-ai \
@@ -268,6 +269,8 @@ if [ "$EMPTY_RESULT" = "1" ]; then
   mkdir -p "$DESKTOP_DIR"
 else
   mkdir -p "$EXPECTED_PATH"
+  printf '%s\n' "not the requested folder" \
+    > "$DESKTOP_DIR/Archive/hive-mind-bot.2025-12-26.private-key.pem"
 fi
 (cd "$TUI_DIR" && bun install --frozen-lockfile && bun test) \
   || fail "command-stream TUI regression failed"
@@ -277,8 +280,10 @@ for client in $CLIENTS; do
   run_client "$client" "$((PORT + client_index))"
   client_index=$((client_index + 1))
 done
-tui_index=0
-for client in $TUI_CLIENTS; do
-  run_client_tui "$client" "$((PORT + 20 + tui_index))"
-  tui_index=$((tui_index + 1))
-done
+if [ "$RUN_TUI" = "1" ]; then
+  tui_index=0
+  for client in $TUI_CLIENTS; do
+    run_client_tui "$client" "$((PORT + 20 + tui_index))"
+    tui_index=$((tui_index + 1))
+  done
+fi

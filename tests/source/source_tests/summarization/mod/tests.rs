@@ -28,6 +28,18 @@ fn formalize_splits_on_punctuation() {
 }
 
 #[test]
+fn formalize_keeps_decimal_points_inside_sentences() {
+    let stmts = formalize("The adapter supplies 19.5 V. Its plug is 3.5 x 1.35 mm.");
+    assert_eq!(
+        stmts
+            .iter()
+            .map(|statement| statement.text.as_str())
+            .collect::<Vec<_>>(),
+        ["The adapter supplies 19.5 V.", "Its plug is 3.5 x 1.35 mm."]
+    );
+}
+
+#[test]
 fn classify_picks_install_for_npm_install() {
     assert_eq!(
         classify_sentence("Install foo with npm install foo."),

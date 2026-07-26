@@ -6,17 +6,21 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_clients;
 mod cli_context;
 mod cli_import;
 mod cli_improve;
 mod cli_memory;
+mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
 use formal_ai::agentic_coding::run_agentic_task;
@@ -85,6 +89,8 @@ enum Command {
     Dataset,
     /// Export complete conversations or convert arbitrary JSON to Links Notation.
     Context(ContextArgs),
+    /// Build the issue-report document every Formal AI surface files (#839).
+    Report(ReportArgs),
     Serve {
         #[arg(long, env = "FORMAL_AI_HOST", default_value = "127.0.0.1")]
         host: String,
@@ -134,6 +140,17 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Print the seed-baked registry of external agentic CLI clients that
+    /// `formal-ai with` can drive, including each client's protocols, endpoints,
+    /// headless invocation, and persistent-config location. `--format json`
+    /// makes the registry machine-readable so the multi-CLI end-to-end matrix
+    /// (issue #671) derives its legs from the same data the wrapper uses.
+    Clients {
+        #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
+        format: ClientsFormat,
+        #[command(subcommand)]
+        action: Option<ClientsAction>,
+    },
     /// Import lexical semantics in bulk from external sources (issue #660,
     /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
     /// validate-then-write pipeline.
@@ -554,10 +571,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Context(args) => run_context(args)?,
+        Command::Report(args) => run_report(args)?,
         Command::Memory { action } => run_memory(action)?,
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,

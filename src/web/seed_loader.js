@@ -61,6 +61,7 @@
     "seed/meanings-intent.lino",
     "seed/meanings-lexical-meta.lino",
     "seed/meanings-links-root.lino",
+    "seed/meanings-local-search.lino",
     "seed/meanings-meta.lino",
     "seed/meanings-ontology.lino",
     "seed/meanings-playwright.lino",

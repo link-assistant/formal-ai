@@ -1,4 +1,239 @@
 meanings
+  issue_364_unknown_trace_learning
+    defined-by concept
+    lexeme en
+      surface
+        text "issue 364 unknown trace learning"
+  issue_report_body_footer
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body footer"
+  issue_report_body_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report body intro"
+  issue_report_bytes_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report bytes label"
+  issue_report_command_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report command missing"
+  issue_report_context_excerpt_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context excerpt note"
+  issue_report_context_gist_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context gist note"
+  issue_report_context_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context heading"
+  issue_report_context_link_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link heading"
+  issue_report_context_link_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link intro"
+  issue_report_context_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context note"
+  issue_report_conversation_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report conversation heading"
+  issue_report_created
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created"
+  issue_report_created_with_url
+    defined-by field
+    lexeme en
+      surface
+        text "issue report created with url"
+  issue_report_default_title
+    defined-by field
+    lexeme en
+      surface
+        text "issue report default title"
+  issue_report_description_placeholder
+    defined-by field
+    lexeme en
+      surface
+        text "issue report description placeholder"
+  issue_report_dialog_legend
+    defined-by field
+    lexeme en
+      surface
+        text "issue report dialog legend"
+  issue_report_empty_history
+    defined-by field
+    lexeme en
+      surface
+        text "issue report empty history"
+  issue_report_export_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report export heading"
+  issue_report_failed
+    defined-by field
+    lexeme en
+      surface
+        text "issue report failed"
+  issue_report_gist_failed
+    defined-by field
+    lexeme en
+      surface
+        text "issue report gist failed"
+  issue_report_language_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report language label"
+  issue_report_memory_note
+    defined-by field
+    lexeme en
+      surface
+        text "issue report memory note"
+  issue_report_no_messages
+    defined-by field
+    lexeme en
+      surface
+        text "issue report no messages"
+  issue_report_omitted_message
+    defined-by field
+    lexeme en
+      surface
+        text "issue report omitted message"
+  issue_report_omitted_messages
+    defined-by field
+    lexeme en
+      surface
+        text "issue report omitted messages"
+  issue_report_omitted_records
+    defined-by field
+    lexeme en
+      surface
+        text "issue report omitted records"
+  issue_report_ran_command
+    defined-by field
+    lexeme en
+      surface
+        text "issue report ran command"
+  issue_report_records_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report records label"
+  issue_report_session_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report session label"
+  issue_report_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report source label"
+  issue_report_surface_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report surface label"
+  issue_report_timestamp_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report timestamp label"
+  issue_report_title_prefix
+    defined-by field
+    lexeme en
+      surface
+        text "issue report title prefix"
+  issue_report_tool_missing
+    defined-by field
+    lexeme en
+      surface
+        text "issue report tool missing"
+  issue_report_trace_heading
+    defined-by field
+    lexeme en
+      surface
+        text "issue report trace heading"
+  issue_report_transcript_trimmed
+    defined-by field
+    lexeme en
+      surface
+        text "issue report transcript trimmed"
+  issue_report_version_label
+    defined-by field
+    lexeme en
+      surface
+        text "issue report version label"
+  issue_template_labels
+    defined-by field
+    lexeme en
+      surface
+        text "issue template labels"
+  javascript
+    defined-by programming_language
+    lexeme en
+      surface
+        text "javascript"
+  join
+    defined-by concept
+    lexeme en
+      surface
+        text "join"
+  join_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "join lines"
+  kebab
+    defined-by concept
+    lexeme en
+      surface
+        text "kebab"
+  kebab-case
+    defined-by phrase
+    lexeme en
+      surface
+        text "kebab case"
+  kebab_case
+    defined-by operation
+    lexeme en
+      surface
+        text "kebab case"
+  kill
+    defined-by token
+    lexeme en
+      surface
+        text "kill"
+  knowledge-representation
+    defined-by category
+    lexeme en
+      surface
+        text "knowledge representation"
   kubaturit
     defined-by term
     lexeme en
@@ -304,13 +539,73 @@ meanings
     lexeme en
       surface
         text "local library"
+  local_search_contents_listing
+    defined-by intent
+    lexeme en
+      surface
+        text "local search contents listing"
+  local_search_found_closest
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found closest"
+  local_search_found_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found directory"
+  local_search_found_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found file"
+  local_search_found_path
+    defined-by intent
+    lexeme en
+      surface
+        text "local search found path"
+  local_search_mismatch_requested_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search mismatch requested directory"
+  local_search_mismatch_requested_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search mismatch requested file"
+  local_search_not_found
+    defined-by intent
+    lexeme en
+      surface
+        text "local search not found"
+  local_search_route_local
+    defined-by intent
+    lexeme en
+      surface
+        text "local search route local"
+  local_search_scope_listing
+    defined-by intent
+    lexeme en
+      surface
+        text "local search scope listing"
+  local_search_type_directory
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type directory"
+  local_search_type_file
+    defined-by intent
+    lexeme en
+      surface
+        text "local search type file"
   local_shell
     defined-by word_surface
     lexeme en
       surface
         text "local shell"
   locate
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "locate"
@@ -405,7 +700,7 @@ meanings
       surface
         text "mv"
   named
-    defined-by concept
+    defined-by word_surface
     lexeme en
       surface
         text "named"
@@ -1099,298 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept suffix kya hai"
-  pattern_concept_suffix_kya_hota_hai
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya hota hai"
-  pattern_concept_suffix_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya matlab"
-  pattern_concept_suffix_se_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix se kya matlab"
-  pattern_concept_suffix_shenmeyisi_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shenmeyisi simplified"
-  pattern_concept_suffix_shi_shei_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei simplified"
-  pattern_concept_suffix_shi_shei_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei traditional"
-  pattern_concept_suffix_shi_shenme_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme simplified"
-  pattern_concept_suffix_shi_shenme_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme traditional"
-  pattern_courtesy_keyword_blagodaryu
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword blagodaryu"
-  pattern_courtesy_keyword_dhanyavad
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword dhanyavad"
-  pattern_courtesy_keyword_spasibo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword spasibo"
-  pattern_courtesy_keyword_thanks
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword thanks"
-  pattern_courtesy_keyword_xiexie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword xiexie"
-  pattern_courtesy_phrase_fine_thank_you
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase fine thank you"
-  pattern_courtesy_phrase_horosho_spasibo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase horosho spasibo"
-  pattern_courtesy_phrase_thank_you
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase thank you"
-  pattern_courtesy_phrase_theek_dhanyavad
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase theek dhanyavad"
-  pattern_courtesy_phrase_wo_hen_hao_xiexie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase wo hen hao xiexie"
-  pattern_farewell_keyword_alvida
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword alvida"
-  pattern_farewell_keyword_bye
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword bye"
-  pattern_farewell_keyword_ciao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword ciao"
-  pattern_farewell_keyword_goodbye
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword goodbye"
-  pattern_farewell_keyword_poka
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword poka"
-  pattern_farewell_keyword_zaijian
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell keyword zaijian"
-  pattern_farewell_phrase_do_svidaniya
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern farewell phrase do svidaniya"
-  pattern_greeting_keyword_hello
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword hello"
-  pattern_greeting_keyword_hey
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword hey"
-  pattern_greeting_keyword_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword hi"
-  pattern_greeting_keyword_namaste
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword namaste"
-  pattern_greeting_keyword_nihao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword nihao"
-  pattern_greeting_keyword_privet
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword privet"
-  pattern_greeting_keyword_shalom
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword shalom"
-  pattern_greeting_keyword_zdravstvuyte
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting keyword zdravstvuyte"
-  pattern_greeting_phrase_shabbat_shalom
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern greeting phrase shabbat shalom"
-  pattern_how_do_x_work_prefix_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how do x work prefix en"
-  pattern_how_does_it_work_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how does it work en"
-  pattern_how_does_x_work_prefix_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how does x work prefix en"
-  pattern_how_it_works_bare_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how it works bare en"
-  pattern_how_it_works_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how it works ru"
-  pattern_how_x_works_prefix_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern how x works prefix en"
-  pattern_kak_ono_rabotaet_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ono rabotaet ru"
-  pattern_kak_rabotaet_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak rabotaet x prefix ru"
-  pattern_kak_ustroen_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroen x prefix ru"
-  pattern_kak_ustroena_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroena x prefix ru"
-  pattern_kak_ustroeno_x_prefix_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern kak ustroeno x prefix ru"
-  pattern_test_status_keyword_test_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test en"
-  pattern_test_status_keyword_test_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test hi"
-  pattern_test_status_keyword_test_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test ru"
-  pattern_test_status_keyword_test_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status keyword test zh"
-  pattern_test_status_phrase_are_you_there_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase are you there en"
-  pattern_test_status_phrase_i_am_here_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase i am here en"
-  pattern_test_status_phrase_kya_aap_vahan_hain_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase kya aap vahan hain hi"
-  pattern_test_status_phrase_main_yahan_hun_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase main yahan hun hi"
-  pattern_test_status_phrase_ni_zai_ma_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase ni zai ma zh"
-  pattern_test_status_phrase_success_hi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase success hi"
-  pattern_test_status_phrase_success_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase success zh"
-  pattern_test_status_phrase_test_passed_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test passed en"
-  pattern_test_status_phrase_test_proyden_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase test proyden ru"
-  pattern_test_status_phrase_vy_zdes_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern test status phrase vy zdes ru"

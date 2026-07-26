@@ -2,124 +2,108 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 27902
-  line_count 728
-  content_id source_module_e7b496ddb3db2f68
-  symbol_count 34
+  byte_len 22864
+  line_count 588
+  content_id source_module_dc5fa9360a1585f6
+  symbol_count 25
   symbols
     const REPORT_ISSUE_ACTION 13 13
-    const ROOT_TEMPLATE_SLOT 14 14
-    const PREDICATE_TEMPLATE_SLOT 15 15
-    const PATTERNS_TEMPLATE_SLOT 16 16
-    function shell_command_for_task 36 75
-    function local_path_search_command_for_task 82 84
-    function local_path_search_command 86 122
-    struct LocalPathSearchNarration 129 135
-    function local_path_search_narration 141 149
-    struct LocalPathSearchParts 154 159
-    function extract_local_path_search 161 209
-    function longest_contained 211 217
-    function strip_balanced_outer_quotes 219 226
-    function prefixed_shell_command 232 250
-    function bare_shell_command 252 268
-    function prefix_boundary 270 276
-    function code_search_query_for_task 283 302
-    function intent_shell_command 317 354
-    function path_arguments 356 372
-    function collect_path_arguments 374 402
-    function local_search_query 404 430
-    function resolve_shell_command 432 438
-    function workspace_command 440 451
-    function remainder_argument 454 462
-    function path_argument 467 477
-    function name_lead_argument 482 497
-    function is_safe_path 501 508
-    function named_shell_command 524 564
-    function collect_command 568 581
-    function normalize_command_word 586 592
-    function is_prose_word 597 657
-    const PROSE_WORDS 598 652
-    function asks_for_directory_listing 663 724
-    function contains_any 726 728
+    function shell_command_for_task 32 67
+    function semantic_shell_command_for_task 75 77
+    function strip_balanced_outer_quotes 79 86
+    function prefixed_shell_command 92 110
+    function bare_shell_command 112 128
+    function prefix_boundary 130 136
+    function code_search_query_for_task 143 162
+    function intent_shell_command 177 214
+    function path_arguments 216 232
+    function collect_path_arguments 234 262
+    function local_search_query 264 290
+    function resolve_shell_command 292 298
+    function workspace_command 300 311
+    function remainder_argument 314 322
+    function path_argument 327 337
+    function name_lead_argument 342 357
+    function is_safe_path 361 368
+    function named_shell_command 384 424
+    function collect_command 428 441
+    function normalize_command_word 446 452
+    function is_prose_word 457 517
+    const PROSE_WORDS 458 512
+    function asks_for_directory_listing 523 584
+    function contains_any 586 588
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20069
-    named_node_count 4164
-    distinct_node_kinds 73
+    total_link_count 15887
+    named_node_count 3284
+    distinct_node_kinds 66
     node_kinds
-      arguments 386
+      arguments 299
       array_expression 6
-      array_type 5
-      assignment_expression 4
-      binary_expression 71
-      block 65
+      array_type 4
+      assignment_expression 1
+      binary_expression 68
+      block 56
       break_expression 3
-      call_expression 386
+      call_expression 299
       char_literal 57
-      closure_expression 94
-      closure_parameters 94
-      const_item 5
+      closure_expression 76
+      closure_parameters 76
+      const_item 2
       continue_expression 2
       crate 3
-      doc_comment 104
-      expression_statement 48
-      field_declaration 6
-      field_declaration_list 2
-      field_expression 364
-      field_identifier 374
-      field_initializer 4
-      field_initializer_list 2
-      for_expression 5
-      function_item 27
-      generic_function 7
-      generic_type 31
-      identifier 796
-      if_expression 20
+      doc_comment 90
+      expression_statement 37
+      field_expression 273
+      field_identifier 273
+      for_expression 4
+      function_item 23
+      generic_function 3
+      generic_type 21
+      identifier 632
+      if_expression 16
       index_expression 5
       inner_doc_comment_marker 9
-      integer_literal 14
-      let_condition 5
-      let_declaration 79
-      lifetime 6
-      lifetime_parameter 2
-      line_comment 115
-      macro_invocation 20
+      integer_literal 11
+      let_condition 4
+      let_declaration 61
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 101
+      macro_invocation 14
       match_arm 11
       match_block 2
       match_expression 2
       match_pattern 11
-      mutable_specifier 5
-      outer_doc_comment_marker 95
-      parameter 62
-      parameters 27
-      parenthesized_expression 10
-      primitive_type 64
-      range_expression 9
-      reference_expression 38
-      reference_type 62
-      return_expression 10
-      scoped_identifier 33
+      mutable_specifier 3
+      outer_doc_comment_marker 81
+      parameter 54
+      parameters 23
+      parenthesized_expression 9
+      primitive_type 55
+      range_expression 8
+      reference_expression 30
+      reference_type 51
+      return_expression 8
+      scoped_identifier 27
       scoped_use_list 1
       self 1
-      shorthand_field_initializer 2
       source_file 1
-      string_content 131
-      string_literal 132
-      struct_expression 2
-      struct_item 2
-      super 5
-      token_tree 24
-      try_expression 12
-      tuple_expression 4
-      tuple_pattern 14
-      tuple_struct_pattern 5
-      type_arguments 38
-      type_identifier 82
-      type_parameters 2
-      unary_expression 30
+      string_content 113
+      string_literal 114
+      super 2
+      token_tree 16
+      try_expression 8
+      tuple_expression 2
+      tuple_pattern 6
+      tuple_struct_pattern 4
+      type_arguments 24
+      type_identifier 52
+      type_parameters 1
+      unary_expression 26
       use_declaration 1
       use_list 1
-      visibility_modifier 7
+      visibility_modifier 3

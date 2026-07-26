@@ -1,0 +1,36 @@
+sandbox: /tmp/formal-ai-ladder.GCL3bM
+PASS  838.L1       L1  'Find hive-mind-control center folder on my desktop'
+PASS  838.L2.a     L2  "Is the request 'Find hive-mind-control center folder on my"
+PASS  838.L2.b     L2  'List the folders on my desktop'
+PASS  838.L3.a     L3  'Search hive-mind-control-center on my desktop'
+PASS  838.L3.b     L3  'Find hive-mind-control center folder on desktop'
+PASS  838.L3.c     L3  'What is inside the Archive folder on my desktop?'
+PASS  838.L4.a     L4  'Найди папку hive-mind-control center на моём рабочем столе'
+PASS  838.L4.b     L4  "Is there a folder named exactly 'hive-mind-control-center'"
+PASS  838.L4.c     L4  'On my desktop, is hive-control-center a file or a folder?'
+PASS  838.L4.d     L4  'Find a folder called zzz-nonexistent-folder on my desktop'
+PASS  827.L1       L1  'Что такое фуфломицин?'
+PASS  827.L2.a     L2  'Дай определение слова фуфломицин одним предложением'
+PASS  827.L2.b     L2  'Что такое фуфломицин? Затем: так что это такое то?'
+PASS  827.L3.a     L3  'What is a fufloмицин (фуфломицин)? Answer in English.'
+PASS  827.L3.b     L3  'Так что это такое то?'
+PASS  827.L4.a     L4  'Приведи один пример препарата, который называют фуфломицин'
+PASS  827.L4.b     L4  'Что означает слово это в предложении: так что это такое то'
+PASS  826.L1       L1  'ФБС vs ФБО'
+PASS  826.L2.a     L2  'Что такое ФБО?'
+PASS  826.L2.b     L2  'Зарепорти баг'
+PASS  826.L3.a     L3  'Что такое ФБС?'
+PASS  826.L3.b     L3  'Сообщи об ошибке'
+PASS  826.L4.a     L4  'Чем отличается ФБС от ФБО одним предложением?'
+PASS  826.L4.b     L4  'Report a bug'
+
+TOTAL 24/24 passed
+  L1: 3/3
+  L2: 6/6
+  L3: 7/7
+  L4: 8/8
+  #826: 7/7
+  #827: 7/7
+  #838: 10/10
+
+issue #840 differential gate: PASS (24/24 ladder nodes; 2 commands vs laguna-s-2.1-free's 5)

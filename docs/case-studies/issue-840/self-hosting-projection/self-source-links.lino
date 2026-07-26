@@ -1,0 +1,64 @@
+self_source_links
+  engine meta_language
+  language rust
+  task translate_entire_source_to_links_and_back
+  entire_source
+    file_count 300
+    total_bytes 4150027
+    manifest_content_id "source_tree_bf6779c184848e43"
+  round_trip_proof
+    slice_size 6
+    slice_faithful_count 6
+    slice_fully_faithful true
+    source_links
+      engine meta_language
+      language rust
+      module_count 6
+      faithful_count 6
+      coverage_permille 1000
+      fully_faithful true
+      total_link_count 77592
+      total_named_node_count 15498
+      modules
+        module
+          path "src/agent.rs"
+          byte_len 22131
+          content_id "source_module_d6dc0c5386fb1128"
+          total_link_count 17932
+          named_node_count 3543
+          faithful true
+        module
+          path "src/associative_package.rs"
+          byte_len 29574
+          content_id "source_module_5dd11f9849f8ff8f"
+          total_link_count 19568
+          named_node_count 3908
+          faithful true
+        module
+          path "src/event_log.rs"
+          byte_len 32001
+          content_id "source_module_6b51bcfd94a60b49"
+          total_link_count 18864
+          named_node_count 3773
+          faithful true
+        module
+          path "src/proof_engine/mod.rs"
+          byte_len 34490
+          content_id "source_module_101b777fdcc94d8a"
+          total_link_count 8611
+          named_node_count 1693
+          faithful true
+        module
+          path "src/self_healing.rs"
+          byte_len 13305
+          content_id "source_module_444e90593e01e8e0"
+          total_link_count 5903
+          named_node_count 1218
+          faithful true
+        module
+          path "src/solver_handlers/shell_command_transform.rs"
+          byte_len 7958
+          content_id "source_module_5037a22174d9596e"
+          total_link_count 6714
+          named_node_count 1363
+          faithful true
