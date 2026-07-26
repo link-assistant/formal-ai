@@ -1,5 +1,7 @@
 //! Regression coverage for the grounded-action procedure in issue #840.
 
+use std::process::Command;
+
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::seed::{
@@ -461,4 +463,71 @@ fn inflected_comparison_excludes_output_format_from_the_right_operand() {
     let arguments: serde_json::Value =
         serde_json::from_str(&second.arguments).expect("search arguments");
     assert_eq!(arguments["query"], "фбо", "{second:?}");
+}
+
+#[test]
+fn reference_differential_is_machine_checked_and_wired_into_release_ci() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let reference_dir = root.join("experiments/issue_840_reference_agents");
+    let baseline_path = reference_dir.join("baseline.json");
+    let checker_path = reference_dir.join("check_differential.py");
+    let results_path = root.join("experiments/issue_840_task_ladder/results.json");
+
+    let baseline: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(&baseline_path).expect("machine-readable reference baseline"),
+    )
+    .expect("valid reference baseline JSON");
+    assert_eq!(
+        baseline["policy"]["quota_exhaustion"], "inconclusive",
+        "provider quota exhaustion must not be scored as a model failure"
+    );
+    assert_eq!(baseline["best_reference"]["agent"], "laguna-s-2.1-free");
+    assert_eq!(baseline["best_reference"]["command_count"], 5);
+
+    let checked = Command::new("python3")
+        .args([&checker_path, &baseline_path, &results_path])
+        .output()
+        .expect("run the issue #840 differential checker");
+    assert!(
+        checked.status.success(),
+        "{}",
+        String::from_utf8_lossy(&checked.stderr)
+    );
+
+    let mut regressed: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&results_path).unwrap()).unwrap();
+    let local = regressed["results"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .find(|row| row["id"] == "838.L1")
+        .unwrap();
+    local["assistant_output"] = serde_json::Value::String(
+        "The answer is hive-mind-bot.2025-12-26.private-key.pem".to_owned(),
+    );
+    local["pass"] = serde_json::Value::Bool(true);
+    let regression_path = std::env::temp_dir().join(format!(
+        "formal-ai-issue-840-regression-{}.json",
+        std::process::id()
+    ));
+    std::fs::write(
+        &regression_path,
+        serde_json::to_vec_pretty(&regressed).unwrap(),
+    )
+    .unwrap();
+    let rejected = Command::new("python3")
+        .args([&checker_path, &baseline_path, &regression_path])
+        .output()
+        .expect("run the issue #840 differential checker on a regression");
+    let _ = std::fs::remove_file(regression_path);
+    assert!(
+        !rejected.status.success(),
+        "a PEM-decoy regression must fail the differential gate"
+    );
+
+    let workflow = std::fs::read_to_string(root.join(".github/workflows/release.yml")).unwrap();
+    assert!(
+        workflow.contains("issue_840_reference_agents/run_differential_gate.sh"),
+        "the differential comparison must execute in release CI"
+    );
 }

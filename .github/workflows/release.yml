@@ -1683,6 +1683,17 @@ jobs:
           PORT: 8784
         run: experiments/agent_cli_e2e/run_issue_840.sh
 
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        # Third-party free-model runs are recorded rather than repeated here:
+        # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
+        # reruns Formal AI's 24-node real-server ladder and checks its raw local
+        # transcript against the best conclusive reference run, including the
+        # widening procedure, command simplicity, kind check, and PEM decoy.
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
+
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
         # `..._and_agent_cli_e2e_pass`, so the gate is only honest if a real
