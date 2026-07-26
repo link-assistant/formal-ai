@@ -107,6 +107,7 @@ mod issue_822;
 mod issue_823_recursive_learning;
 mod issue_832;
 mod issue_840;
+mod issue_870_routing;
 mod local_surface;
 mod memory_learning;
 mod memory_maintenance;

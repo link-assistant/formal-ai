@@ -5,8 +5,8 @@ self_ast_census_index
   module_count 300
   full_ast_module_count 46
   signature_module_count 254
-  symbol_count 6242
-  content_id self_ast_census_index_56ace9df94efb938
+  symbol_count 6243
+  content_id self_ast_census_index_fb6eff6ea3ac5ca6
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -38,7 +38,7 @@ self_ast_census_index
     src/agentic_coding/lexicon.rs full_ast 29 source_module_16601e4b778ef5d2
     src/agentic_coding/local_search.rs full_ast 46 source_module_a9951ab7df880a08
     src/agentic_coding/meaning_detail.rs full_ast 38 source_module_763b6af219dd70d8
-    src/agentic_coding/mod.rs full_ast 41 source_module_81833268cad38964
+    src/agentic_coding/mod.rs full_ast 41 source_module_b6fcfc2d20f3d90c
     src/agentic_coding/narration.rs full_ast 8 source_module_b9f0fb8457183458
     src/agentic_coding/planner.rs full_ast 37 source_module_ec6c1c8d73bba051
     src/agentic_coding/progress.rs full_ast 10 source_module_c875bf0c4cba80c3
@@ -50,7 +50,7 @@ self_ast_census_index
     src/agentic_coding/routing_learning.rs full_ast 7 source_module_976ea373edb73248
     src/agentic_coding/self_ast.rs full_ast 19 source_module_9104c8097027e9ae
     src/agentic_coding/self_heal.rs full_ast 10 source_module_dea3882ec18d6743
-    src/agentic_coding/shell_command.rs full_ast 24 source_module_b2e5c4a467f9a490
+    src/agentic_coding/shell_command.rs full_ast 25 source_module_dc5fa9360a1585f6
     src/agentic_coding/source_links.rs full_ast 11 source_module_6177a1573de819fc
     src/agentic_coding/statement_audit.rs full_ast 3 source_module_f46b2ecd4614188b
     src/agentic_coding/tool_result.rs full_ast 28 source_module_a40eb9d990604cfb
@@ -272,7 +272,7 @@ self_ast_census_index
     src/solver_helpers/mod.rs signature 48 source_module_a304521ac144d698
     src/solver_search.rs signature 37 source_module_8f024b0e2add7311
     src/solver_synthesis.rs signature 31 source_module_84f465acd66f6084
-    src/solver_terminal.rs signature 6 source_module_db322f020d39e763
+    src/solver_terminal.rs signature 6 source_module_a80e81d679f1c884
     src/solver_unknown_reasoning.rs signature 26 source_module_7f04109f89b9a1b4
     src/statement_audit/audit.rs signature 10 source_module_90287f161cf60b0d
     src/statement_audit/evidence.rs signature 13 source_module_975ca8f2588bc784

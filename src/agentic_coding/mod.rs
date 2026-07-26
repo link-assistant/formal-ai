@@ -119,5 +119,6 @@ pub use routing_learning::{
 };
 pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
 pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+pub(crate) use shell_command::semantic_shell_command_for_task;
 pub use source_links::{is_source_links_task, SOURCE_LINKS_PATH, SOURCE_LINKS_TASK};
 pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};

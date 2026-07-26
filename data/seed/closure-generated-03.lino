@@ -1,4 +1,9 @@
 meanings
+  pattern_courtesy_keyword_dhanyavad
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword dhanyavad"
   pattern_courtesy_keyword_spasibo
     defined-by prompt_pattern
     lexeme en
@@ -529,6 +534,11 @@ meanings
     lexeme en
       surface
         text "programming language"
+  programming_task_catalog
+    defined-by kind
+    lexeme en
+      surface
+        text "programming task catalog"
   project
     defined-by concept
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response greeting en"
-  response_greeting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting hi"
-  response_greeting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response greeting ru"

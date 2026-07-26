@@ -103,6 +103,42 @@ function resolveFormalizationWithId(formalization, resolvedId) {
   return next;
 }
 
+const associativeResearchId = (prompt) => stableBehaviorRuleId("associative_research", normalizePrompt(prompt));
+
+function recallAssociativeResearch(prompt, memory) {
+  const id = associativeResearchId(prompt);
+  for (const value of Array.isArray(memory) ? memory : []) {
+    const statement = String(value || "");
+    if (!statement.includes(id)) continue;
+    const association = parseLinoTree(statement).children.find((node) =>
+      node && node.name === "associative_research" && childValue(node, "id") === id);
+    if (!association) continue;
+    const content = childValue(association, "answer");
+    if (!content) continue;
+    const sources = association.children.filter((node) => node.name === "source" && node.value)
+      .map((node) => String(node.value));
+    return {
+      intent: "web_search", content, confidence: 0.86,
+      evidence: [`associative_research:memory_hit:${id}`, `associative_research:sources:${sources.length}`,
+        ...sources.map((source) => `source:${source}`)],
+      query: String(prompt || "").trim()
+    };
+  }
+  return null;
+}
+
+function associativeResearchMemoryOperation(prompt, answer) {
+  const fused = answer?.diagnostics?.fused;
+  if (!Array.isArray(fused) || fused.length === 0 || !answer.content) return null;
+  const id = associativeResearchId(prompt);
+  const sources = fused.map((entry) => String((entry && entry.url) || "").trim())
+    .filter((url, index, array) => url && array.indexOf(url) === index);
+  const lines = ["associative_research", `  id ${linoString(id)}`,
+    `  prompt ${linoString(normalizePrompt(prompt))}`, `  answer ${linoString(answer.content)}`,
+    ...sources.map((source) => `  source ${linoString(source)}`)];
+  return { action: "append", kind: "associative_research", statement: lines.join("\n") };
+}
+
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
@@ -895,9 +931,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
 
-  // Issue #513: recognize terminal-command requests (visible fix for #511)
-  // before the unknown fallback, so a shell request returns an agent_suggestion
-  // intent in both engines.
+  // Route literal and seeded semantic shell requests before unknown fallback.
   const terminal = tryTerminalCommand(prompt, language, preferences);
   if (terminal) {
     events.push(`handler:${terminal.intent}`);
@@ -905,31 +939,50 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
 
+  const learnedResearch = recallAssociativeResearch(prompt, memory);
+  if (learnedResearch) {
+    events.push("handler:associative_research_memory");
+    steps.push({ step: "dispatch_handler", detail: "recallAssociativeResearch" });
+    toolCalls.push({
+      tool: "associative_memory", inputs: { prompt, associationId: associativeResearchId(prompt) },
+      outputs: { intent: learnedResearch.intent, confidence: learnedResearch.confidence } });
+    return finalize(events, steps, toolCalls, learnedResearch, formalizationContext);
+  }
+
   const bareTermQuery = extractUnresolvedBareTermSearchQuery(prompt);
   if (bareTermQuery) {
     steps.push({ step: "invoke_tool", detail: "web_search_unresolved_bare_term" });
-    const bareTermSearch = await runWebSearchQuery(
-      bareTermQuery,
-      language,
-      "unresolved_bare_term",
-    );
+    const bareTermSearch = await runWebSearchQuery(bareTermQuery, language, "unresolved_bare_term");
     if (bareTermSearch) {
       events.push(`handler:${bareTermSearch.intent}`);
-      steps.push({
-        step: "dispatch_handler",
-        detail: "tryUnresolvedBareTermWebSearch",
-      });
+      steps.push({ step: "dispatch_handler", detail: "tryUnresolvedBareTermWebSearch" });
       toolCalls.push({
-        tool: "web_search",
-        inputs: { prompt, language, query: bareTermQuery },
+        tool: "web_search", inputs: { prompt, language, query: bareTermQuery },
         outputs: {
-          intent: bareTermSearch.intent,
-          confidence: bareTermSearch.confidence,
-          formalizedObject: bareTermSearch.formalizedObject || "",
-        },
+          intent: bareTermSearch.intent, confidence: bareTermSearch.confidence,
+          formalizedObject: bareTermSearch.formalizedObject || "" },
       });
       return finalize(events, steps, toolCalls, bareTermSearch, formalizationContext);
     }
+  }
+
+  steps.push({ step: "invoke_tool", detail: "unknown_intent_research" });
+  const researchedUnknown = await runWebSearchQuery(prompt, language, "unknown_intent_research", preferences);
+  const researchedSources = researchedUnknown?.diagnostics?.fused;
+  if (Array.isArray(researchedSources) && researchedSources.length > 0) {
+    const associationId = associativeResearchId(prompt);
+    researchedUnknown.evidence = [
+      ...(researchedUnknown.evidence || []),
+      `associative_research:learned:${associationId}`,
+      `associative_research:sources:${researchedSources.length}`,
+    ];
+    researchedUnknown.memoryOperation = associativeResearchMemoryOperation(prompt, researchedUnknown);
+    events.push("handler:unknown_intent_research");
+    steps.push({ step: "dispatch_handler", detail: "researchUnknownIntent" });
+    toolCalls.push({
+      tool: "web_search", inputs: { prompt, language, query: prompt, queryKind: "unknown_intent_research" },
+      outputs: { intent: researchedUnknown.intent, confidence: researchedUnknown.confidence, associationId } });
+    return finalize(events, steps, toolCalls, researchedUnknown, formalizationContext);
   }
 
   events.push("fallback:unknown");
@@ -942,12 +995,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   }, formalizationContext);
 }
 
-// Issue #180: every handler hit flows through this helper so the trace shows
-// the resolved-formalization fold (when the handler exposes a `formalizedObject`)
-// followed by a uniform `deformalize` step that captures how the symbolic
-// answer was projected into the natural-language `content`. Keeping the logic
-// here means new handlers automatically participate in the architecture
-// without having to repeat the bookkeeping.
+// Fold a handler's concrete entity back into its initial formalization trace.
 function applyResolvedFormalization(events, steps, formalizationContext, answer) {
   if (!formalizationContext || !answer || !answer.formalizedObject) return;
   const resolved = resolveFormalizationWithId(
@@ -955,8 +1003,7 @@ function applyResolvedFormalization(events, steps, formalizationContext, answer)
     answer.formalizedObject,
   );
   if (!resolved) return;
-  // Skip the extra step when the placeholder already matched the resolved id
-  // (e.g. cache hits where the formalization tuple already had a Q-id).
+  // Cache hits may already contain the resolved id.
   if (resolved.tuple === formalizationContext.initial.tuple) return;
   formalizationContext.resolved = resolved;
   events.push(`formalization:resolved:${resolved.tuple}`);

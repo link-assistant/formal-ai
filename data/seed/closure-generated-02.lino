@@ -1,4 +1,9 @@
 meanings
+  issue_report_context_link_intro
+    defined-by field
+    lexeme en
+      surface
+        text "issue report context link intro"
   issue_report_context_note
     defined-by field
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern courtesy keyword blagodaryu"
-  pattern_courtesy_keyword_dhanyavad
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword dhanyavad"

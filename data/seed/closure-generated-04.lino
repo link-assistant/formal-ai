@@ -1,4 +1,14 @@
 meanings
+  response_greeting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting hi"
+  response_greeting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response greeting ru"
   response_greeting_zh
     defined-by response_template
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "response tool result empty list zh"
-  response_tool_result_empty_local_path_search_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search en"
-  response_tool_result_empty_local_path_search_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response tool result empty local path search hi"

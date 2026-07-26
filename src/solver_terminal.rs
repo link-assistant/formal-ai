@@ -3,7 +3,8 @@
 //! When a prompt asks to run a shell/terminal command, the symbolic solver
 //! used to fall through to the `unknown` fallback. This module recognizes the
 //! shape of a terminal request (fenced/backtick command, a "run ... in
-//! terminal" phrasing, or an explicit leading shell token) and returns an
+//! terminal" phrasing, an explicit leading shell token, or a seed-backed
+//! semantic shell intent) and returns an
 //! `agent_suggestion` intent that (a) names the detected command, (b) explains
 //! agent mode, and (c) offers to switch agent mode on and grant the `shell`
 //! capability.
@@ -126,7 +127,8 @@ pub fn try_terminal_command(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let vocab = seed::terminal_command_vocabulary();
-    let command = detect_terminal_command(prompt, &vocab)?;
+    let command = detect_terminal_command(prompt, &vocab)
+        .or_else(|| crate::agentic_coding::semantic_shell_command_for_task(prompt))?;
     log.append("terminal:command", command.clone());
     log.append("terminal:agent_suggestion", "shell".to_owned());
     let body = terminal_body(&command, language);

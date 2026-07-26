@@ -338,19 +338,24 @@ shell_intents
       argument "none"
       language en
         cue "running processes"
+        cue "processes are running"
         cue "process list"
         cue "list of processes"
         cue "which processes"
         cue "list processes"
       language ru
         cue "запущенные процессы"
+        cue "процессы запущены"
+        cue "какие процессы"
         cue "список процессов"
         cue "работающие процессы"
       language hi
         cue "चल रही प्रक्रियाएं"
+        cue "कौन सी प्रक्रियाएं"
         cue "प्रक्रियाओं की सूची"
       language zh
         cue 正在运行的进程
+        cue 哪些进程正在运行
         cue 进程列表
     intent
       command ls
