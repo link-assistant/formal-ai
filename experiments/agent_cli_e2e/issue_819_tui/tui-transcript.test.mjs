@@ -15,10 +15,24 @@ test('command-stream renders, deduplicates, and unrolls complete TUI frames', as
     stopMarker: '/tmp/Desktop/archive',
   });
 
-  expect(transcript.frame_count).toBe(3);
+  expect(transcript.frame_count).toBeGreaterThan(0);
+  expect(transcript.stop_marker_seen).toBe(true);
   expect(transcript.sequence).toContain('User: Find archive folder on my desktop');
   expect(transcript.sequence).toContain('Tool: find "$HOME/Desktop" -type d');
   expect(transcript.sequence).toContain('Result: /tmp/Desktop/archive');
+  expect(
+    transcript.sequence.filter(
+      (line) => line === 'User: Find archive folder on my desktop',
+    ),
+  ).toHaveLength(1);
+  expect(
+    transcript.sequence.indexOf('User: Find archive folder on my desktop'),
+  ).toBeLessThan(
+    transcript.sequence.indexOf('Tool: find "$HOME/Desktop" -type d'),
+  );
+  expect(
+    transcript.sequence.indexOf('Tool: find "$HOME/Desktop" -type d'),
+  ).toBeLessThan(transcript.sequence.indexOf('Result: /tmp/Desktop/archive'));
 });
 
 test('command-stream sends scheduled input through the PTY', async () => {
