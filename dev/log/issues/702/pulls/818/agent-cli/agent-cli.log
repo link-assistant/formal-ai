@@ -1,0 +1,1691 @@
+{
+  "type": "config",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.295Z",
+  "service": "default",
+  "source": "lino-arguments (CLI args > env vars > .lenv > defaults)",
+  "config": {
+    "verbose": false,
+    "dryRun": false,
+    "generateTitle": false,
+    "outputResponseModel": true,
+    "summarizeSession": false,
+    "retryOnRateLimits": true,
+    "compactJson": false,
+    "disableAutoupdate": false,
+    "disablePrune": false,
+    "enableExperimentalModels": false,
+    "disableAutocompact": false,
+    "experimental": false,
+    "experimentalWatcher": false,
+    "retryTimeout": 604800,
+    "maxRetryDelay": 1200,
+    "minRetryInterval": 30,
+    "streamChunkTimeoutMs": 120000,
+    "streamStepTimeoutMs": 600000,
+    "mcpDefaultToolCallTimeout": 120000,
+    "mcpMaxToolCallTimeout": 600000,
+    "verifyImagesAtReadTool": true,
+    "readOnly": false,
+    "permissionMode": "auto"
+  },
+  "message": "Agent configuration resolved"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.306Z",
+  "service": "default",
+  "version": "0.25.0",
+  "command": "/home/box/.bun/bin/bun /home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js run --prompt Use Formal AI auto-learning to inspect the persisted issue 702 nested-context failures as an associative links network, rank the hierarchy observations and amendments, keep promotion human-review gated, and write context-hierarchy-learning-report.lino. --disable-stdin --no-summarize-session --compaction-model same --model formal-ai/formal-ai",
+  "workingDirectory": "/tmp/tmp.pIgdEnDDV1",
+  "scriptPath": "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+  "message": "Agent started"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.306Z",
+  "service": "default",
+  "directory": "/tmp/tmp.pIgdEnDDV1",
+  "message": "creating instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.307Z",
+  "service": "project",
+  "directory": "/tmp/tmp.pIgdEnDDV1",
+  "message": "fromDirectory"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.409Z",
+  "service": "storage",
+  "index": 0,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.414Z",
+  "service": "storage",
+  "index": 1,
+  "message": "running migration"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.418Z",
+  "service": "default",
+  "processArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Use Formal AI auto-learning to inspect the persisted issue 702 nested-context failures as an associative links network, rank the hierarchy observations and amendments, keep promotion human-review gated, and write context-hierarchy-learning-report.lino.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "bunArgv": [
+    "/home/box/.bun/bin/bun",
+    "/home/box/.bun/install/global/node_modules/@link-assistant/agent/src/index.js",
+    "run",
+    "--prompt",
+    "Use Formal AI auto-learning to inspect the persisted issue 702 nested-context failures as an associative links network, rank the hierarchy observations and amendments, keep promotion human-review gated, and write context-hierarchy-learning-report.lino.",
+    "--disable-stdin",
+    "--no-summarize-session",
+    "--compaction-model",
+    "same",
+    "--model",
+    "formal-ai/formal-ai"
+  ],
+  "cliModelArg": "formal-ai/formal-ai",
+  "yargsModel": "formal-ai/formal-ai",
+  "message": "model resolution: argv sources"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.419Z",
+  "service": "default",
+  "rawModel": "formal-ai/formal-ai",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "using explicit provider/model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.424Z",
+  "service": "provider",
+  "status": "started",
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.431Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/config.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.433Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.434Z",
+  "service": "config",
+  "path": "/home/box/.config/link-assistant-agent/opencode.jsonc",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.437Z",
+  "service": "config",
+  "path": "/tmp/tmp.pIgdEnDDV1/opencode.json",
+  "message": "loading"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.478Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "no cache found, awaiting refresh"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.479Z",
+  "service": "models.dev",
+  "file": {},
+  "message": "refreshing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.590Z",
+  "service": "models.dev",
+  "path": "/home/box/.cache/link-assistant-agent/models.json",
+  "message": "cache unavailable, using bundled data"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.712Z",
+  "service": "provider",
+  "message": "init"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.719Z",
+  "service": "claude-oauth",
+  "path": "/home/box/.claude/.credentials.json",
+  "message": "credentials file not found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "providerID": "formalai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "providerID": "@link-assistant",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "providerID": "kilo",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.720Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 296,
+  "message": "state"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.722Z",
+  "service": "provider",
+  "modelID": "big-pickle",
+  "providerID": "opencode",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.722Z",
+  "service": "provider",
+  "modelID": "minimax-m2.5-free",
+  "providerID": "kilo",
+  "message": "resolved short model name (single match)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.722Z",
+  "service": "default",
+  "models": [
+    "opencode/big-pickle",
+    "kilo/minimax-m2.5-free",
+    "same"
+  ],
+  "source": "default",
+  "message": "compaction models cascade configured"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.754Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.755Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.762Z",
+  "service": "session",
+  "id": "ses_05f59529effe7G09tczIQDpqz7",
+  "version": "agent-cli-1.0.0",
+  "projectID": "global",
+  "directory": "/tmp/tmp.pIgdEnDDV1",
+  "title": "New session - 2026-07-26T22:58:25.762Z",
+  "time": {
+    "created": 1785106705762,
+    "updated": 1785106705762
+  },
+  "message": "created"
+}
+
+{
+  "type": "session.created",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.775Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.776Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.777Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 22,
+  "method": "POST",
+  "path": "/session",
+  "message": "request"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.787Z",
+  "service": "bus",
+  "message": "subscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.802Z",
+  "service": "server",
+  "method": "POST",
+  "path": "/session/ses_05f59529effe7G09tczIQDpqz7/message",
+  "message": "request"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.802Z",
+  "service": "server",
+  "status": "started",
+  "method": "POST",
+  "path": "/session/ses_05f59529effe7G09tczIQDpqz7/message",
+  "message": "request"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.866Z",
+  "service": "server",
+  "status": "completed",
+  "duration": 64,
+  "method": "POST",
+  "path": "/session/ses_05f59529effe7G09tczIQDpqz7/message",
+  "message": "request"
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.884Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.891Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.899Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.910Z",
+  "service": "session.prompt",
+  "step": 0,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.922Z",
+  "service": "session.prompt",
+  "hint": "Enable with --generate-title flag or AGENT_GENERATE_TITLE=true",
+  "message": "title generation disabled"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.922Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "step": 1,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.923Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.925Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.925Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.925Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.926Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 1,
+  "providerID": "formal-ai",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.928Z",
+  "service": "provider",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.928Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.929Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "getModel"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.929Z",
+  "service": "provider",
+  "status": "started",
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.929Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "globalVerboseFetchInstalled": true,
+  "verboseAtCreation": false,
+  "message": "provider SDK fetch chain configured"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.929Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "pkg": "@ai-sdk/openai-compatible",
+  "message": "using bundled provider (no installation needed)"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.929Z",
+  "service": "provider",
+  "status": "completed",
+  "duration": 0,
+  "providerID": "opencode",
+  "message": "getSDK"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:25.930Z",
+  "service": "provider",
+  "providerID": "opencode",
+  "modelID": "big-pickle",
+  "message": "found"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:26.953Z",
+  "service": "token",
+  "message": "loaded gpt-tokenizer (o200k_base)"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:26.968Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.052Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.075Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.124Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.124Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.127Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.367Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785106707367,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b379001uzVzizBOQzTAl1",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.373Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.385Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707385,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b3ad0019AH1O3r7rYQDB5",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "tool",
+    "callID": "call_eba5c62450037932",
+    "tool": "write",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.392Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707392,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b3ad0019AH1O3r7rYQDB5",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "tool",
+    "callID": "call_eba5c62450037932",
+    "tool": "write",
+    "state": {
+      "status": "running",
+      "input": {
+        "content": "context_hierarchy_learning_report\n  issue \"702\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"nested_context_runtime_and_parity_fixtures_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"9\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:last-turn-only\"\n  multi_hop_recall \"observation:last-turn-only\"\n  learned_expression_01\n    id \"observation:last-turn-only\"\n    text \"message\nuser\nCoreference inspected only the immediately preceding user turn, so an unrelated intervening turn hid the still-relevant subject.\"\n    reads \"9\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"10\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"observation:fixed-depth-cap\"\n    text \"message\nuser\nCoding-idiom inheritance stopped after four parent languages even when a deeper ancestor was valid.\"\n    reads \"7\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:nested-scope-demand\"\n    text \"message\nuser\nConversation, dialogue, task, pull request, issue, repository, and organization scopes need one mechanism that can extend to arbitrary future nesting.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"3\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"lesson:shared-context-hierarchy\"\n    text \"learning_amendment\nassistant\nRepresent every scope with the existing link-carried Context and reuse one ContextHierarchy in dialogue turns, solver coreference, and agentic research so reference behavior and traces cannot drift.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"6\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:duplicate-reverse-scans\"\n    text \"message\nuser\nSolver coreference and agentic research each carried a private reverse history scan with different relevance rules and no shared trace.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"observation:implicit-boundary\"\n    text \"message\nuser\nA local miss did not distinguish an unresolved reference from permission to consult the outside world.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:lazy-nearest-first\"\n    text \"learning_amendment\nassistant\nResolve an exact local reference first, then walk inherited parents nearest-first and stop on the first match; report every visited scope and require an explicit decision before outside lookup.\nobservation:implicit-boundary\"\n    reads \"0\"\n    writes \"5\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_08\n    id \"lesson:explicit-inheritance\"\n    text \"learning_amendment\nassistant\nPut full, isolated, or conditional LinkPattern inheritance on every child-to-parent boundary and accumulate conditional filters across all boundaries crossed.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"5\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_09\n    id \"lesson:cycle-safe-unbounded\"\n    text \"learning_amendment\nassistant\nReject parent cycles and use an iterative visited set rather than a fixed depth constant, preserving termination without limiting valid nesting.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "filePath": "/tmp/tmp.pIgdEnDDV1/context-hierarchy-learning-report.lino"
+      },
+      "time": {
+        "start": 1785106707385
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.415Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707415,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b3ad0019AH1O3r7rYQDB5",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "tool",
+    "callID": "call_eba5c62450037932",
+    "tool": "write",
+    "state": {
+      "status": "completed",
+      "input": {
+        "content": "context_hierarchy_learning_report\n  issue \"702\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"nested_context_runtime_and_parity_fixtures_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"9\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:last-turn-only\"\n  multi_hop_recall \"observation:last-turn-only\"\n  learned_expression_01\n    id \"observation:last-turn-only\"\n    text \"message\nuser\nCoreference inspected only the immediately preceding user turn, so an unrelated intervening turn hid the still-relevant subject.\"\n    reads \"9\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"10\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"observation:fixed-depth-cap\"\n    text \"message\nuser\nCoding-idiom inheritance stopped after four parent languages even when a deeper ancestor was valid.\"\n    reads \"7\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:nested-scope-demand\"\n    text \"message\nuser\nConversation, dialogue, task, pull request, issue, repository, and organization scopes need one mechanism that can extend to arbitrary future nesting.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"3\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"lesson:shared-context-hierarchy\"\n    text \"learning_amendment\nassistant\nRepresent every scope with the existing link-carried Context and reuse one ContextHierarchy in dialogue turns, solver coreference, and agentic research so reference behavior and traces cannot drift.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"6\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:duplicate-reverse-scans\"\n    text \"message\nuser\nSolver coreference and agentic research each carried a private reverse history scan with different relevance rules and no shared trace.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"observation:implicit-boundary\"\n    text \"message\nuser\nA local miss did not distinguish an unresolved reference from permission to consult the outside world.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:lazy-nearest-first\"\n    text \"learning_amendment\nassistant\nResolve an exact local reference first, then walk inherited parents nearest-first and stop on the first match; report every visited scope and require an explicit decision before outside lookup.\nobservation:implicit-boundary\"\n    reads \"0\"\n    writes \"5\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_08\n    id \"lesson:explicit-inheritance\"\n    text \"learning_amendment\nassistant\nPut full, isolated, or conditional LinkPattern inheritance on every child-to-parent boundary and accumulate conditional filters across all boundaries crossed.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"5\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_09\n    id \"lesson:cycle-safe-unbounded\"\n    text \"learning_amendment\nassistant\nReject parent cycles and use an iterative visited set rather than a fixed depth constant, preserving termination without limiting valid nesting.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "filePath": "/tmp/tmp.pIgdEnDDV1/context-hierarchy-learning-report.lino"
+      },
+      "output": "",
+      "title": "tmp/tmp.pIgdEnDDV1/context-hierarchy-learning-report.lino",
+      "metadata": {
+        "diagnostics": {},
+        "filepath": "/tmp/tmp.pIgdEnDDV1/context-hierarchy-learning-report.lino",
+        "exists": false
+      },
+      "time": {
+        "start": 1785106707385,
+        "end": 1785106707410
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.417Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785106707417,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b3a70019zHJP02xKvLCbx",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "text",
+    "text": "Let me update context-hierarchy-learning-report.lino for you.",
+    "time": {
+      "start": 1785106707417,
+      "end": 1785106707417
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-26T22:58:27.426Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10173,
+    "output": 4955,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10173,
+  "sseCompletionTokens": 4955,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.431Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785106707431,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b3e200195pOxwJxN0cNw6",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b212001yXob9wXIXXpjxB",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10173,
+      "output": 4955,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 15128,
+      "headroom": 23728,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.432Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.437Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.438Z",
+  "service": "session.prompt",
+  "step": 1,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.442Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.443Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.445Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.457Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.457Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "step": 2,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.457Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.458Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.462Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 15128,
+  "providerTokens": 15128,
+  "estimatedInputTokens": 57,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10173,
+    "cacheRead": 0,
+    "output": 4955
+  },
+  "overflow": false,
+  "headroom": 36680,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.463Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.477Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.488Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.615Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785106707615,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b48100145mYycF706o09d",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.617Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707618,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b4a1001gWWGPWqxph7e2Y",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "tool",
+    "callID": "call_8ebe5ba07da66c27",
+    "tool": "bash",
+    "state": {
+      "status": "pending",
+      "input": {},
+      "raw": ""
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.620Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707620,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b4a1001gWWGPWqxph7e2Y",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "tool",
+    "callID": "call_8ebe5ba07da66c27",
+    "tool": "bash",
+    "state": {
+      "status": "running",
+      "input": {
+        "command": "cat context-hierarchy-learning-report.lino"
+      },
+      "time": {
+        "start": 1785106707618
+      }
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.627Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785106707627,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b49f001z7csy4tGwBH4td",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "text",
+    "text": "Let me run a quick command to get that for you.",
+    "time": {
+      "start": 1785106707626,
+      "end": 1785106707626
+    }
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.628Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "tool_use",
+  "timestamp": 1785106707628,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b4a1001gWWGPWqxph7e2Y",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "tool",
+    "callID": "call_8ebe5ba07da66c27",
+    "tool": "bash",
+    "state": {
+      "status": "completed",
+      "input": {
+        "command": "cat context-hierarchy-learning-report.lino"
+      },
+      "output": "context_hierarchy_learning_report\n  issue \"702\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"nested_context_runtime_and_parity_fixtures_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"9\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:last-turn-only\"\n  multi_hop_recall \"observation:last-turn-only\"\n  learned_expression_01\n    id \"observation:last-turn-only\"\n    text \"message\nuser\nCoreference inspected only the immediately preceding user turn, so an unrelated intervening turn hid the still-relevant subject.\"\n    reads \"9\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"10\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"observation:fixed-depth-cap\"\n    text \"message\nuser\nCoding-idiom inheritance stopped after four parent languages even when a deeper ancestor was valid.\"\n    reads \"7\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:nested-scope-demand\"\n    text \"message\nuser\nConversation, dialogue, task, pull request, issue, repository, and organization scopes need one mechanism that can extend to arbitrary future nesting.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"3\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"lesson:shared-context-hierarchy\"\n    text \"learning_amendment\nassistant\nRepresent every scope with the existing link-carried Context and reuse one ContextHierarchy in dialogue turns, solver coreference, and agentic research so reference behavior and traces cannot drift.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"6\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:duplicate-reverse-scans\"\n    text \"message\nuser\nSolver coreference and agentic research each carried a private reverse history scan with different relevance rules and no shared trace.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"observation:implicit-boundary\"\n    text \"message\nuser\nA local miss did not distinguish an unresolved reference from permission to consult the outside world.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:lazy-nearest-first\"\n    text \"learning_amendment\nassistant\nResolve an exact local reference first, then walk inherited parents nearest-first and stop on the first match; report every visited scope and require an explicit decision before outside lookup.\nobservation:implicit-boundary\"\n    reads \"0\"\n    writes \"5\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_08\n    id \"lesson:explicit-inheritance\"\n    text \"learning_amendment\nassistant\nPut full, isolated, or conditional LinkPattern inheritance on every child-to-parent boundary and accumulate conditional filters across all boundaries crossed.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"5\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_09\n    id \"lesson:cycle-safe-unbounded\"\n    text \"learning_amendment\nassistant\nReject parent cycles and use an iterative visited set rather than a fixed depth constant, preserving termination without limiting valid nesting.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+      "title": "cat context-hierarchy-learning-report.lino",
+      "metadata": {
+        "output": "context_hierarchy_learning_report\n  issue \"702\"\n  decision \"awaiting_human_review\"\n  promotion_gate \"nested_context_runtime_and_parity_fixtures_pass\"\n  record_type \"agent_cli_auto_learning\"\n  substrate \"links_network\"\n  retention_formula \"reads + writes + incoming_links + outgoing_links\"\n  expression_count \"9\"\n  validation_warning_count \"0\"\n  multi_hop_seed \"observation:last-turn-only\"\n  multi_hop_recall \"observation:last-turn-only\"\n  learned_expression_01\n    id \"observation:last-turn-only\"\n    text \"message\nuser\nCoreference inspected only the immediately preceding user turn, so an unrelated intervening turn hid the still-relevant subject.\"\n    reads \"9\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"10\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_02\n    id \"observation:fixed-depth-cap\"\n    text \"message\nuser\nCoding-idiom inheritance stopped after four parent languages even when a deeper ancestor was valid.\"\n    reads \"7\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_03\n    id \"observation:nested-scope-demand\"\n    text \"message\nuser\nConversation, dialogue, task, pull request, issue, repository, and organization scopes need one mechanism that can extend to arbitrary future nesting.\"\n    reads \"4\"\n    writes \"1\"\n    incoming_links \"3\"\n    outgoing_links \"0\"\n    retention_score \"8\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_04\n    id \"lesson:shared-context-hierarchy\"\n    text \"learning_amendment\nassistant\nRepresent every scope with the existing link-carried Context and reuse one ContextHierarchy in dialogue turns, solver coreference, and agentic research so reference behavior and traces cannot drift.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"6\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_05\n    id \"observation:duplicate-reverse-scans\"\n    text \"message\nuser\nSolver coreference and agentic research each carried a private reverse history scan with different relevance rules and no shared trace.\"\n    reads \"6\"\n    writes \"1\"\n    incoming_links \"0\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_06\n    id \"observation:implicit-boundary\"\n    text \"message\nuser\nA local miss did not distinguish an unresolved reference from permission to consult the outside world.\"\n    reads \"5\"\n    writes \"1\"\n    incoming_links \"1\"\n    outgoing_links \"0\"\n    retention_score \"7\"\n    qualifiers \"conversation_id=issue-702|kind=message|role=user\"\n    validation \"aligned\"\n  learned_expression_07\n    id \"lesson:lazy-nearest-first\"\n    text \"learning_amendment\nassistant\nResolve an exact local reference first, then walk inherited parents nearest-first and stop on the first match; report every visited scope and require an explicit decision before outside lookup.\nobservation:implicit-boundary\"\n    reads \"0\"\n    writes \"5\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"6\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_08\n    id \"lesson:explicit-inheritance\"\n    text \"learning_amendment\nassistant\nPut full, isolated, or conditional LinkPattern inheritance on every child-to-parent boundary and accumulate conditional filters across all boundaries crossed.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"4\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"5\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n  learned_expression_09\n    id \"lesson:cycle-safe-unbounded\"\n    text \"learning_amendment\nassistant\nReject parent cycles and use an iterative visited set rather than a fixed depth constant, preserving termination without limiting valid nesting.\nobservation:nested-scope-demand\"\n    reads \"0\"\n    writes \"3\"\n    incoming_links \"0\"\n    outgoing_links \"1\"\n    retention_score \"4\"\n    qualifiers \"conversation_id=issue-702|kind=learning_amendment|role=assistant\"\n    validation \"aligned\"\n",
+        "exit": 0
+      },
+      "time": {
+        "start": 1785106707618,
+        "end": 1785106707627
+      }
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-26T22:58:27.631Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 10234,
+    "output": 107,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 10234,
+  "sseCompletionTokens": 107,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.632Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785106707632,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b4af001HumPqXVNurf9Ii",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b406001nq8BlX8L1fLGoq",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 10234,
+      "output": 107,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 10341,
+      "headroom": 28515,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.633Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.636Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.656Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.656Z",
+  "service": "session.prompt",
+  "step": 2,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.662Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.662Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.662Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.662Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.669Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "finishReason": "unknown",
+  "zeroTokens": false,
+  "hint": "Provider returned undefined finishReason but made tool calls",
+  "message": "continuing loop despite unknown finish reason - tool calls detected"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.669Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "step": 3,
+  "message": "resolving model"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.669Z",
+  "service": "session.prompt",
+  "providerID": "formal-ai",
+  "modelID": "formal-ai",
+  "resolvedModelID": "formal-ai",
+  "message": "model resolved successfully"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.679Z",
+  "service": "session.compaction",
+  "baseModelContextLimit": 60000,
+  "compactionModelContextLimit": 200000,
+  "message": "compaction model has larger context — using full base model context"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.679Z",
+  "service": "session.compaction",
+  "modelID": "formal-ai",
+  "contextLimit": 60000,
+  "outputLimit": 8192,
+  "usableContextWindow": 51808,
+  "safeLimit": 51808,
+  "safetyMarginRatio": 1,
+  "compactionModelID": "big-pickle",
+  "compactionModelContextLimit": 200000,
+  "currentTokens": 10341,
+  "providerTokens": 10341,
+  "estimatedInputTokens": 1111,
+  "usingEstimate": false,
+  "tokensBreakdown": {
+    "input": 10234,
+    "cacheRead": 0,
+    "output": 107
+  },
+  "overflow": false,
+  "headroom": 41467,
+  "message": "overflow check"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.680Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.728Z",
+  "service": "session.processor",
+  "message": "process"
+}
+
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.763Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.881Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_start",
+  "timestamp": 1785106707881,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b5a7001C0AMhWBkvzvJ3y",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b4df001ymbZxxjeimGcCs",
+    "type": "step-start"
+  }
+}
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.884Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.886Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "text",
+  "timestamp": 1785106707886,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b5a9001ZAQa5hBV05ID8T",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b4df001ymbZxxjeimGcCs",
+    "type": "text",
+    "text": "Formal AI ranked 9 nested-context observations and hierarchy amendments; the human-review-gated report is in context-hierarchy-learning-report.lino.",
+    "time": {
+      "start": 1785106707885,
+      "end": 1785106707885
+    }
+  }
+}
+{
+  "type": "log",
+  "level": "warn",
+  "timestamp": "2026-07-26T22:58:27.887Z",
+  "service": "session.processor",
+  "providerID": "formal-ai",
+  "requestedModelID": "formal-ai",
+  "recoveredTokens": {
+    "input": 14779,
+    "output": 148,
+    "reasoning": 0,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  },
+  "recoveredCost": 0,
+  "ssePromptTokens": 14779,
+  "sseCompletionTokens": 148,
+  "issue": "https://github.com/link-assistant/agent/issues/249",
+  "message": "recovered usage from raw SSE stream — AI SDK dropped token data"
+}
+
+{
+  "type": "message.part.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "step_finish",
+  "timestamp": 1785106707889,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "part": {
+    "id": "prt_fa0a6b5b0001cC2vN6RdPndii3",
+    "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+    "messageID": "msg_fa0a6b4df001ymbZxxjeimGcCs",
+    "type": "step-finish",
+    "reason": "unknown",
+    "cost": 0,
+    "tokens": {
+      "input": 14779,
+      "output": 148,
+      "reasoning": 0,
+      "cache": {
+        "read": 0,
+        "write": 0
+      }
+    },
+    "model": {
+      "providerID": "formal-ai",
+      "requestedModelID": "formal-ai",
+      "respondedModelID": "formal-ai"
+    },
+    "context": {
+      "contextLimit": 60000,
+      "outputLimit": 8192,
+      "usableContext": 51808,
+      "safeLimit": 38856,
+      "safetyMargin": 0.75,
+      "currentTokens": 14927,
+      "headroom": 23929,
+      "overflow": false
+    }
+  }
+}
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.889Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.896Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.897Z",
+  "service": "session.prompt",
+  "step": 3,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "loop"
+}
+
+{
+  "type": "message.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.912Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.912Z",
+  "service": "session.summary",
+  "hint": "Enable with --summarize-session flag (enabled by default) or AGENT_SUMMARIZE_SESSION=true",
+  "message": "session summarization disabled"
+}
+
+{
+  "type": "session.updated",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.diff",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.913Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.920Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "exiting loop"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.921Z",
+  "service": "session.compaction",
+  "message": "pruning"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.927Z",
+  "service": "session.prompt",
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7",
+  "message": "cancel"
+}
+
+{
+  "type": "session.status",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session.idle",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.927Z",
+  "service": "bus",
+  "message": "publishing"
+}
+
+{
+  "type": "session_idle",
+  "timestamp": 1785106707927,
+  "sessionID": "ses_05f59529effe7G09tczIQDpqz7"
+}
+{
+  "type": "*",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.927Z",
+  "service": "bus",
+  "message": "unsubscribing"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.928Z",
+  "service": "default",
+  "directory": "/tmp/tmp.pIgdEnDDV1",
+  "message": "disposing instance"
+}
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.928Z",
+  "service": "state",
+  "key": "/tmp/tmp.pIgdEnDDV1",
+  "message": "waiting for state disposal to complete"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.930Z",
+  "service": "state",
+  "key": "/tmp/tmp.pIgdEnDDV1",
+  "message": "state disposal completed"
+}
+
+{
+  "type": "log",
+  "level": "info",
+  "timestamp": "2026-07-26T22:58:27.930Z",
+  "service": "default",
+  "hasError": false,
+  "uptimeSeconds": 4,
+  "message": "Agent exiting"
+}
+
