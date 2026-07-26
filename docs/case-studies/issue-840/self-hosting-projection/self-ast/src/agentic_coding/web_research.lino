@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/web_research.rs
   language rust
   fidelity full_ast
-  byte_len 24308
-  line_count 594
-  content_id source_module_2d8e1457b56df9be
+  byte_len 24379
+  line_count 595
+  content_id source_module_fd1bac996f7b643c
   symbol_count 34
   symbols
     function web_research_query_for 15 39
@@ -22,55 +22,55 @@ self_ast_census
     function uncovered_aspects 275 289
     const MIN_ASPECT_CHARS 293 293
     function aspects_of 295 310
-    const VERBATIM_EVIDENCE_LIMIT 316 316
-    const EXTRACT_SENTENCES 320 320
-    function final_answer 322 354
-    function extract_answer 365 402
-    function relevance 412 418
-    function character_overlap 426 442
-    function truncate_chars 446 453
-    function seed_text 455 459
-    function render_seed_text 461 467
-    function preferred_url 473 475
-    const MAX_RESEARCH_SOURCES 481 481
-    function research_urls 483 492
-    function urls_in 494 503
-    function authoritative_host 505 521
-    function is_context_reference 523 535
-    function topic_from_history 537 560
-    function is_conversation_meta_request 562 579
-    function trim_question_punctuation 581 586
-    function latest_user_text 588 594
+    const MAX_EXTRACT_CHARS 315 315
+    const EXTRACT_SENTENCES 319 319
+    function final_answer 321 358
+    function extract_answer 369 403
+    function relevance 413 419
+    function character_overlap 427 443
+    function truncate_chars 447 454
+    function seed_text 456 460
+    function render_seed_text 462 468
+    function preferred_url 474 476
+    const MAX_RESEARCH_SOURCES 482 482
+    function research_urls 484 493
+    function urls_in 495 504
+    function authoritative_host 506 522
+    function is_context_reference 524 536
+    function topic_from_history 538 561
+    function is_conversation_meta_request 563 580
+    function trim_question_punctuation 582 587
+    function latest_user_text 589 595
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15668
-    named_node_count 3350
+    total_link_count 15676
+    named_node_count 3349
     distinct_node_kinds 71
     node_kinds
-      arguments 336
+      arguments 335
       array_expression 3
       array_type 9
       attribute 1
       attribute_item 1
-      binary_expression 32
+      binary_expression 31
       block 69
       boolean_literal 1
       break_expression 2
-      call_expression 336
+      call_expression 335
       char_literal 25
       closure_expression 58
       closure_parameters 58
       const_item 5
       crate 26
-      doc_comment 91
+      doc_comment 90
       else_clause 4
       escape_sequence 6
       expression_statement 53
-      field_expression 269
-      field_identifier 265
+      field_expression 268
+      field_identifier 264
       float_literal 3
       for_expression 1
       function_item 29
@@ -83,7 +83,7 @@ self_ast_census
       integer_literal 15
       let_condition 3
       let_declaration 47
-      line_comment 125
+      line_comment 126
       macro_invocation 10
       match_arm 7
       match_block 2
@@ -91,7 +91,7 @@ self_ast_census
       match_pattern 7
       mutable_specifier 9
       or_pattern 1
-      outer_doc_comment_marker 85
+      outer_doc_comment_marker 84
       parameter 47
       parameters 29
       parenthesized_expression 3
@@ -105,8 +105,8 @@ self_ast_census
       scoped_use_list 2
       self 1
       source_file 1
-      string_content 36
-      string_literal 36
+      string_content 38
+      string_literal 38
       super 8
       token_tree 24
       try_expression 6
@@ -117,7 +117,7 @@ self_ast_census
       type_arguments 28
       type_cast_expression 2
       type_identifier 62
-      unary_expression 15
+      unary_expression 16
       use_declaration 5
       use_list 2
       visibility_modifier 6

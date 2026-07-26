@@ -2,47 +2,47 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 5755
-  line_count 146
-  content_id source_module_c3276fab9432a63e
+  byte_len 5984
+  line_count 150
+  content_id source_module_c875bf0c4cba80c3
   symbol_count 10
   symbols
-    struct Progress 13 22
-    function scan 25 84
-    function done 87 89
-    function count 91 96
-    function last 104 106
-    function fetch_result 108 110
-    function search_result 112 114
-    function result_capability 120 128
-    function result_tool_call 130 137
-    function fetch_call_url 139 146
+    struct Progress 13 26
+    function scan 29 88
+    function done 91 93
+    function count 95 100
+    function last 108 110
+    function fetch_result 112 114
+    function search_result 116 118
+    function result_capability 124 132
+    function result_tool_call 134 141
+    function fetch_call_url 143 150
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4245
-    named_node_count 876
+    total_link_count 4306
+    named_node_count 892
     distinct_node_kinds 62
     node_kinds
-      arguments 68
+      arguments 69
       array_type 3
-      assignment_expression 5
+      assignment_expression 4
       binary_expression 6
       block 22
-      call_expression 68
+      call_expression 69
       closure_expression 9
       closure_parameters 9
       continue_expression 2
       crate 3
       declaration_list 1
-      doc_comment 18
+      doc_comment 22
       expression_statement 23
       field_declaration 8
       field_declaration_list 1
-      field_expression 69
-      field_identifier 77
+      field_expression 70
+      field_identifier 78
       field_initializer_list 1
       for_expression 1
       function_item 9
@@ -55,9 +55,9 @@ self_ast_census
       integer_literal 2
       let_condition 6
       let_declaration 16
-      line_comment 19
+      line_comment 23
       mutable_specifier 8
-      outer_doc_comment_marker 11
+      outer_doc_comment_marker 15
       parameter 8
       parameters 9
       primitive_type 6
@@ -65,7 +65,7 @@ self_ast_census
       reference_expression 8
       reference_type 7
       return_expression 1
-      scoped_identifier 19
+      scoped_identifier 20
       scoped_type_identifier 3
       scoped_use_list 1
       self 10

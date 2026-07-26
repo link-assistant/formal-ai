@@ -2,80 +2,80 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 14312
-  line_count 443
-  content_id source_module_15053895ae2cec9e
+  byte_len 14343
+  line_count 444
+  content_id source_module_a40eb9d990604cfb
   symbol_count 28
   symbols
-    struct NormalizedResult 12 16
-    function normalized_payload 21 24
-    function looks_like_error 26 31
-    function render 33 59
-    function latest_turn_answer 61 80
-    function has_latest_turn_result 82 93
-    function is_write_run_recipe 95 114
-    function follow_up_answer 116 147
-    function requested_index 149 161
-    function normalize 163 211
-    function from_payload 213 256
-    function mcp_text_content 258 277
-    function strip_transport_envelope 279 311
-    function nonzero_status 313 321
-    function failed_status 323 333
-    function nonempty_text 335 345
-    function pretty_json 347 349
-    function result_tool 351 361
-    function result_label 363 380
-    function extract_urls 382 398
-    function is_listing 400 405
-    function is_search 407 412
-    function response_language 414 421
-    function fill 423 443
-    const TOOL_PLACEHOLDER 431 431
-    const FORMAT_PLACEHOLDER 432 432
-    const PAYLOAD_PLACEHOLDER 433 433
-    const ERROR_PLACEHOLDER 434 434
+    struct NormalizedResult 13 17
+    function normalized_payload 22 25
+    function looks_like_error 27 32
+    function render 34 60
+    function latest_turn_answer 62 81
+    function has_latest_turn_result 83 94
+    function is_write_run_recipe 96 115
+    function follow_up_answer 117 148
+    function requested_index 150 162
+    function normalize 164 212
+    function from_payload 214 257
+    function mcp_text_content 259 278
+    function strip_transport_envelope 280 312
+    function nonzero_status 314 322
+    function failed_status 324 334
+    function nonempty_text 336 346
+    function pretty_json 348 350
+    function result_tool 352 362
+    function result_label 364 381
+    function extract_urls 383 399
+    function is_listing 401 406
+    function is_search 408 413
+    function response_language 415 422
+    function fill 424 444
+    const TOOL_PLACEHOLDER 432 432
+    const FORMAT_PLACEHOLDER 433 433
+    const PAYLOAD_PLACEHOLDER 434 434
+    const ERROR_PLACEHOLDER 435 435
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13436
-    named_node_count 2727
+    total_link_count 13371
+    named_node_count 2716
     distinct_node_kinds 70
     node_kinds
-      arguments 275
-      array_expression 7
+      arguments 274
+      array_expression 6
       array_type 8
       assignment_expression 1
       binary_expression 39
       block 64
       boolean_literal 2
-      call_expression 275
-      closure_expression 54
-      closure_parameters 54
+      call_expression 274
+      closure_expression 53
+      closure_parameters 53
       const_item 4
-      crate 8
+      crate 10
       doc_comment 4
       else_clause 8
       escape_sequence 3
       expression_statement 39
       field_declaration 3
       field_declaration_list 1
-      field_expression 256
-      field_identifier 264
+      field_expression 253
+      field_identifier 261
       field_initializer 5
       field_initializer_list 3
       function_item 23
       generic_function 8
       generic_type 13
-      identifier 556
+      identifier 558
       if_expression 23
       index_expression 8
       inner_doc_comment_marker 1
       integer_literal 13
       let_condition 7
-      let_declaration 56
+      let_declaration 55
       lifetime 2
       line_comment 4
       macro_invocation 5
@@ -90,16 +90,16 @@ self_ast_census
       parenthesized_expression 5
       primitive_type 46
       range_expression 6
-      reference_expression 30
+      reference_expression 31
       reference_type 46
       return_expression 18
-      scoped_identifier 34
+      scoped_identifier 38
       scoped_type_identifier 1
       scoped_use_list 1
       shorthand_field_initializer 4
       source_file 1
-      string_content 100
-      string_literal 109
+      string_content 96
+      string_literal 105
       struct_expression 3
       struct_item 1
       super 6

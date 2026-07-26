@@ -1,13 +1,41 @@
 source_links
   engine meta_language
   language rust
-  module_count 145
-  faithful_count 145
+  module_count 150
+  faithful_count 150
   coverage_permille 1000
   fully_faithful true
-  total_link_count 1298917
-  total_named_node_count 261516
+  total_link_count 1347578
+  total_named_node_count 271089
   modules
+    module
+      path "src/proof_engine/mod.rs"
+      byte_len 34490
+      content_id "source_module_101b777fdcc94d8a"
+      total_link_count 8611
+      named_node_count 1693
+      faithful true
+    module
+      path "src/proof_engine/presenter.rs"
+      byte_len 18676
+      content_id "source_module_5232f4600af613b0"
+      total_link_count 9839
+      named_node_count 1890
+      faithful true
+    module
+      path "src/proof_engine/types.rs"
+      byte_len 11800
+      content_id "source_module_24d7dff201c3547d"
+      total_link_count 6871
+      named_node_count 1344
+      faithful true
+    module
+      path "src/protocol.rs"
+      byte_len 35825
+      content_id "source_module_90d02655e9e60535"
+      total_link_count 22622
+      named_node_count 4504
+      faithful true
     module
       path "src/protocol/content.rs"
       byte_len 1432
@@ -129,10 +157,10 @@ source_links
       faithful true
     module
       path "src/seed.rs"
-      byte_len 40196
-      content_id "source_module_dfb9e9dca464bb3d"
-      total_link_count 22587
-      named_node_count 4526
+      byte_len 40233
+      content_id "source_module_45c64a7a3854798c"
+      total_link_count 22594
+      named_node_count 4527
       faithful true
     module
       path "src/seed/agentic_tool_capabilities.rs"
@@ -283,10 +311,10 @@ source_links
       faithful true
     module
       path "src/seed/roles/tooling.rs"
-      byte_len 27711
-      content_id "source_module_0bbbed67029822d5"
-      total_link_count 5987
-      named_node_count 1453
+      byte_len 28230
+      content_id "source_module_f0cd657fb5409c5c"
+      total_link_count 6105
+      named_node_count 1481
       faithful true
     module
       path "src/seed/shell_intents.rs"
@@ -353,10 +381,10 @@ source_links
       faithful true
     module
       path "src/server.rs"
-      byte_len 36692
-      content_id "source_module_e2b160bbd210b1f7"
-      total_link_count 25206
-      named_node_count 4967
+      byte_len 31820
+      content_id "source_module_c229f6541ba2e2f9"
+      total_link_count 21223
+      named_node_count 4146
       faithful true
     module
       path "src/server/conversation_reports.rs"
@@ -364,6 +392,13 @@ source_links
       content_id "source_module_605a703e153ee173"
       total_link_count 2042
       named_node_count 409
+      faithful true
+    module
+      path "src/server/transport.rs"
+      byte_len 5569
+      content_id "source_module_8eeb2e2d068c530c"
+      total_link_count 4273
+      named_node_count 871
       faithful true
     module
       path "src/shared_dialog.rs"
@@ -871,10 +906,10 @@ source_links
       faithful true
     module
       path "src/summarization/mod.rs"
-      byte_len 22426
-      content_id "source_module_a289c90a7bce0eb1"
-      total_link_count 12235
-      named_node_count 2473
+      byte_len 22767
+      content_id "source_module_d7e68c1e21027b25"
+      total_link_count 12538
+      named_node_count 2536
       faithful true
     module
       path "src/summarization/resource.rs"

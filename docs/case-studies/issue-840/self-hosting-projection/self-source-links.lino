@@ -3,9 +3,9 @@ self_source_links
   language rust
   task translate_entire_source_to_links_and_back
   entire_source
-    file_count 295
-    total_bytes 4089140
-    manifest_content_id "source_tree_fc1df52a880eea86"
+    file_count 300
+    total_bytes 4150027
+    manifest_content_id "source_tree_bf6779c184848e43"
   round_trip_proof
     slice_size 6
     slice_faithful_count 6
@@ -17,8 +17,8 @@ self_source_links
       faithful_count 6
       coverage_permille 1000
       fully_faithful true
-      total_link_count 61845
-      total_named_node_count 12277
+      total_link_count 77592
+      total_named_node_count 15498
       modules
         module
           path "src/agent.rs"
@@ -35,18 +35,18 @@ self_source_links
           named_node_count 3908
           faithful true
         module
-          path "src/fuzzy.rs"
-          byte_len 1790
-          content_id "source_module_5143524b0b1c425e"
-          total_link_count 1889
-          named_node_count 355
+          path "src/event_log.rs"
+          byte_len 32001
+          content_id "source_module_6b51bcfd94a60b49"
+          total_link_count 18864
+          named_node_count 3773
           faithful true
         module
-          path "src/proof_engine/presenter.rs"
-          byte_len 18676
-          content_id "source_module_5232f4600af613b0"
-          total_link_count 9839
-          named_node_count 1890
+          path "src/proof_engine/mod.rs"
+          byte_len 34490
+          content_id "source_module_101b777fdcc94d8a"
+          total_link_count 8611
+          named_node_count 1693
           faithful true
         module
           path "src/self_healing.rs"
