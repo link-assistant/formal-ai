@@ -18,8 +18,9 @@
 //!   of the dialogue and identical on every replay.
 //! * **Four languages, no phrase table in Rust.** The question is recognized
 //!   through the `world_state_query` cue set in `data/meta/cue-lexicon.lino`,
-//!   and the reply prose is loaded from `data/seed/multilingual-responses.lino`
-//!   in the prompt's language with an English fallback.
+//!   and the reply prose is loaded from
+//!   `data/seed/multilingual-responses-agentic.lino` in the prompt's language
+//!   with an English fallback.
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
