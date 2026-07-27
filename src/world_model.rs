@@ -37,7 +37,8 @@
 //! decimal grid so the trace is byte-for-byte reproducible.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::Write as _;
+use std::error::Error;
+use std::fmt::{self, Write as _};
 
 use crate::engine::stable_id;
 use crate::relative_meta_logic::{
@@ -688,6 +689,33 @@ impl Prediction {
     }
 }
 
+/// Whether dialogue-local state may be promoted into shared general memory.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryPermission {
+    /// Keep dialogue state confined to its current context.
+    Denied,
+    /// Permit an explicit promotion into shared general memory.
+    Allowed,
+}
+
+/// A rejected attempt to cross the dialogue-to-general-memory boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryCommitError {
+    PermissionDenied,
+}
+
+impl fmt::Display for GeneralMemoryCommitError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PermissionDenied => {
+                formatter.write_str("general-memory promotion requires explicit permission")
+            }
+        }
+    }
+}
+
+impl Error for GeneralMemoryCommitError {}
+
 /// The per-dialogue world model: a `current` context, a `target` context, and a
 /// shared `general` context that per-dialogue contexts merge into.
 ///
@@ -703,7 +731,7 @@ pub struct WorldModel {
     /// The target state the user wants.
     pub target: Context,
     /// The shared world model per-dialogue contexts merge into.
-    pub general: Context,
+    general: Context,
 }
 
 impl WorldModel {
@@ -739,9 +767,23 @@ impl WorldModel {
         self.difference().is_empty()
     }
 
+    /// Read the shared context without exposing a mutation path around the
+    /// dialogue-to-general permission gate.
+    #[must_use]
+    pub const fn general(&self) -> &Context {
+        &self.general
+    }
+
     /// Merge the current dialogue context into the shared general world model
-    /// (ATMS context combination), returning the recalculation report.
-    pub fn commit_current_to_general(&mut self) -> RecalculationReport {
-        self.general.merge_from(&self.current)
+    /// (ATMS context combination) only when the caller explicitly permits that
+    /// boundary crossing.
+    pub fn commit_current_to_general(
+        &mut self,
+        permission: GeneralMemoryPermission,
+    ) -> Result<RecalculationReport, GeneralMemoryCommitError> {
+        match permission {
+            GeneralMemoryPermission::Denied => Err(GeneralMemoryCommitError::PermissionDenied),
+            GeneralMemoryPermission::Allowed => Ok(self.general.merge_from(&self.current)),
+        }
     }
 }

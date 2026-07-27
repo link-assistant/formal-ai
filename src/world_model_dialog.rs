@@ -31,6 +31,9 @@
 //!    (`data/meta/cue-lexicon.lino`), all four supported languages are covered
 //!    by that data, the behaviour is off until [`WorldModelMode`] is opted in,
 //!    and the whole dialogue model renders as Links Notation.
+//! 9. **Nested contexts** — every turn is a child of the preceding turn and
+//!    inherits it explicitly, so reference lookup is lazy, nearest-first, and
+//!    uses the same hierarchy as task/repository/organization scopes.
 //!
 //! Nothing here reads a clock, a random number, or the network: replaying the
 //! same turns always rebuilds the same contexts, the same event ids, and the
@@ -47,6 +50,9 @@ use crate::world_model::{
     WorldModel,
 };
 use crate::world_model_atoms::{classify, premise_split, state_atom, UtteranceKind};
+use crate::world_model_context::{
+    ContextHierarchy, ContextHierarchyError, ExternalLookup, InheritancePolicy, ReferenceResolution,
+};
 
 /// Whether the dialogue world model is maintained and traced.
 ///
@@ -276,6 +282,7 @@ impl ActionForecast {
 pub struct DialogueWorldModel {
     /// The current/target/general contexts (issue #649's holder).
     pub model: WorldModel,
+    contexts: ContextHierarchy,
     events: Vec<SyncEvent>,
     pending: Option<SubstitutionLink>,
     turns: usize,
@@ -291,8 +298,13 @@ impl DialogueWorldModel {
     /// An empty dialogue world model.
     #[must_use]
     pub fn new() -> Self {
+        let mut contexts = ContextHierarchy::new();
+        contexts
+            .insert(Context::new("dialogue"))
+            .unwrap_or_else(|error| unreachable!("fresh dialogue root failed: {error}"));
         Self {
             model: WorldModel::new(),
+            contexts,
             events: Vec::new(),
             pending: None,
             turns: 0,
@@ -317,6 +329,7 @@ impl DialogueWorldModel {
     /// the agent overwriting the user's goal.
     pub fn observe(&mut self, role: ConversationRole, text: &str) -> UtteranceKind {
         self.turns += 1;
+        self.begin_turn();
         let kind = classify(text);
         if role == ConversationRole::Assistant {
             return kind;
@@ -358,6 +371,25 @@ impl DialogueWorldModel {
     #[must_use]
     pub const fn pending_proposal(&self) -> Option<&SubstitutionLink> {
         self.pending.as_ref()
+    }
+
+    /// Nested turn contexts used for nearest-context-first reference lookup.
+    #[must_use]
+    pub const fn context_hierarchy(&self) -> &ContextHierarchy {
+        &self.contexts
+    }
+
+    /// Resolve a reference from the most recent dialogue turn.
+    ///
+    /// The returned trace records exactly which turn contexts were inspected.
+    /// An empty dialogue resolves from its root context.
+    pub fn resolve_reference(
+        &self,
+        reference: &str,
+        external_lookup: ExternalLookup,
+    ) -> Result<ReferenceResolution, ContextHierarchyError> {
+        self.contexts
+            .resolve(&self.current_scope_id(), reference, external_lookup)
     }
 
     /// The append-only synchronization log.
@@ -555,6 +587,10 @@ impl DialogueWorldModel {
                 let _ = writeln!(out, "  {line}");
             }
         }
+        let _ = writeln!(out, "  nested_contexts");
+        for line in self.contexts.links_notation().lines().skip(1) {
+            let _ = writeln!(out, "    {line}");
+        }
         out.trim_end().to_owned()
     }
 
@@ -569,6 +605,7 @@ impl DialogueWorldModel {
         };
         let turn = self.turns;
         self.model.current.assert_link(&link.from, &link.to);
+        self.assert_in_current_turn(&link);
         record_provenance(&mut self.model.current, text, &link, turn);
         if let Some((consequent, premise)) = premise_split(text) {
             self.depends_on(&consequent, &premise);
@@ -583,6 +620,7 @@ impl DialogueWorldModel {
         };
         let turn = self.turns;
         self.model.target.assert_link(&link.from, &link.to);
+        self.assert_in_current_turn(&link);
         record_provenance(&mut self.model.target, text, &link, turn);
         self.append(SyncEventKind::TargetAsserted, "user", link.pattern_text());
     }
@@ -592,6 +630,7 @@ impl DialogueWorldModel {
         let detail = match self.pending.take() {
             Some(link) => {
                 self.model.target.assert_link(&link.from, &link.to);
+                self.assert_in_current_turn(&link);
                 let turn = self.turns;
                 record_provenance(&mut self.model.target, text, &link, turn);
                 link.pattern_text()
@@ -617,6 +656,7 @@ impl DialogueWorldModel {
                     }
                 }
                 self.model.target.assert_link(&link.from, &link.to);
+                self.assert_in_current_turn(&link);
                 let turn = self.turns;
                 record_provenance(&mut self.model.target, text, &link, turn);
                 format!("{rejected} => {}", link.pattern_text())
@@ -646,6 +686,33 @@ impl DialogueWorldModel {
         self.events
             .last()
             .unwrap_or_else(|| unreachable!("an event was just pushed"))
+    }
+
+    fn begin_turn(&mut self) {
+        let child_id = self.current_scope_id();
+        let parent_id = if self.turns == 1 {
+            String::from("dialogue")
+        } else {
+            format!("dialogue:turn:{}", self.turns - 1)
+        };
+        self.contexts
+            .nest(Context::new(child_id), &parent_id, InheritancePolicy::Full)
+            .unwrap_or_else(|error| unreachable!("sequential dialogue nesting failed: {error}"));
+    }
+
+    fn assert_in_current_turn(&mut self, link: &SubstitutionLink) {
+        let scope_id = self.current_scope_id();
+        if let Some(context) = self.contexts.context_mut(&scope_id) {
+            context.assert_link(&link.from, &link.to);
+        }
+    }
+
+    fn current_scope_id(&self) -> String {
+        if self.turns == 0 {
+            String::from("dialogue")
+        } else {
+            format!("dialogue:turn:{}", self.turns)
+        }
     }
 }
 
