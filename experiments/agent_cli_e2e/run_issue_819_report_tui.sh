@@ -80,17 +80,7 @@ EOF
 cat > "$FAKE_BIN/formal-ai" <<EOF
 #!/usr/bin/env bash
 echo "formal-ai \$*" >> "$ACTIONS_LOG"
-output=""
-while [ "\$#" -gt 0 ]; do
-  if [ "\$1" = "--output" ]; then
-    shift
-    output="\$1"
-  fi
-  shift
-done
-if [ -n "\$output" ]; then
-  printf 'conversation fixture\n' > "\$output"
-fi
+exec "$BIN" "\$@"
 EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
@@ -121,6 +111,9 @@ ISSUE819_TUI_EXECUTABLE="$OPENCODE" \
   ISSUE819_TUI_PATH="$FAKE_BIN:$PATH" \
   ISSUE819_REPORT_URL="$ISSUE_URL" \
   ISSUE819_TUI_ARTIFACT_DIR="$TERMINAL_DIR" \
+  FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
+  FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" \
+  FORMAL_AI_DREAMING=0 \
   node "$ROOT/experiments/agent_cli_e2e/issue_819_tui/capture-report.mjs" \
     > "$CLIENT_LOG" 2>&1 \
   || fail "OpenCode report TUI transcript failed"
@@ -129,11 +122,13 @@ for action in '--source harness' '--source server' '--source both' 'gh issue cre
   grep -Fq -- "$action" "$ACTIONS_LOG" \
     || fail "selected report action did not execute: $action"
 done
-grep -Fq 'Reported from an agentic session' "$ISSUE_BODY" \
-  || fail "the resulting issue body omitted its report provenance"
+for provenance in '- **Session**:' '- **Context source**: both' '- **Surface**: agentic-cli'; do
+  grep -Fq -- "$provenance" "$ISSUE_BODY" \
+    || fail "the resulting issue body omitted report provenance: $provenance"
+done
 grep -Fq '### Complete agentic context' "$ISSUE_BODY" \
   || fail "the resulting issue body omitted its complete-context section"
-grep -Fq 'conversation fixture' "$ISSUE_BODY" \
+grep -Fq '## Reproduction of dialog' "$ISSUE_BODY" \
   || fail "the resulting issue body omitted the exported conversation"
 
 preserve_artifacts
