@@ -351,8 +351,9 @@ pub use telegram_runtime::{
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
-    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
-    normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    assess_arithmetic_claim, detect_language as detect_prompt_language,
+    evaluate_arithmetic_expression, normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,

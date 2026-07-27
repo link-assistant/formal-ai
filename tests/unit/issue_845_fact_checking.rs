@@ -5,10 +5,10 @@
 //! fact-checking operation is useful to every Formal AI surface.
 
 use formal_ai::{
-    AuditScope, Context, ContextAccessEventKind, Dependency, FactCheckError, FactChecker,
-    FormalSystem, GeneralMemoryPermission, ProbabilityBasis, RefutationOutcome, RefutationStage,
-    RelativeEvidence, SolverConfig, SourceTier, Stance, TruthValue, WorldModel, WorldStatement,
-    ASSUMED_TRUE_PRIOR,
+    assess_arithmetic_claim, ArithmeticClaimOutcome, AuditScope, Context, ContextAccessEventKind,
+    Dependency, FactCheckError, FactChecker, FormalSystem, GeneralMemoryPermission,
+    ProbabilityBasis, RefutationOutcome, RefutationStage, RelativeEvidence, SolverConfig,
+    SourceTier, Stance, TruthValue, WorldModel, WorldStatement, ASSUMED_TRUE_PRIOR,
 };
 
 fn checker(depth: u8) -> FactChecker {
@@ -16,6 +16,20 @@ fn checker(depth: u8) -> FactChecker {
         max_decomposition_depth: depth,
         ..SolverConfig::default()
     })
+}
+
+#[test]
+fn browser_wasm_core_assesses_arithmetic_without_javascript_solver_logic() {
+    let true_claim = assess_arithmetic_claim("1 + 1 = 2").unwrap();
+    assert_eq!(true_claim.outcome, ArithmeticClaimOutcome::Unrefuted);
+    assert_eq!(true_claim.left_value, "2");
+    assert_eq!(true_claim.right_value, "2");
+
+    let false_claim = assess_arithmetic_claim("1 + 1 = 3").unwrap();
+    assert_eq!(false_claim.outcome, ArithmeticClaimOutcome::Refuted);
+    assert_eq!(false_claim.relation, "=");
+
+    assert!(assess_arithmetic_claim("an unsupported claim").is_none());
 }
 
 #[test]
@@ -184,6 +198,28 @@ fn support_fallback_uses_source_tiers_and_marks_prior_only_unknowns() {
     assert_eq!(
         unknown_report.probability_basis,
         ProbabilityBasis::PriorOnly
+    );
+}
+
+#[test]
+fn a_dangling_dependency_does_not_turn_a_prior_into_evidence() {
+    let mut context = Context::new("incomplete_dialogue");
+    let statement = context.add_statement(
+        WorldStatement::new("an unsupported dependent claim")
+            .with_dependency(Dependency::supports("missing-statement")),
+    );
+
+    let report = checker(1).audit_context(&mut context);
+    let verification = report.statement(&statement).unwrap();
+
+    assert_eq!(
+        verification.probability,
+        TruthValue::new(ASSUMED_TRUE_PRIOR)
+    );
+    assert_eq!(
+        verification.probability_basis,
+        ProbabilityBasis::PriorOnly,
+        "a reference to absent evidence must not be reported as admitted evidence"
     );
 }
 

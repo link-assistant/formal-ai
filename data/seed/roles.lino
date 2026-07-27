@@ -161,6 +161,8 @@ roles
     kind predicate
   explanation_request_lead
     kind predicate
+  fact_check_current_dialogue_query
+    kind meaning
   fact_relation
     kind predicate
   feature_action_arithmetic

@@ -50,6 +50,17 @@ pub enum ProbabilityBasis {
     EvidenceWeighted,
 }
 
+impl ProbabilityBasis {
+    /// Stable machine slug used in Links Notation and localized report rows.
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::PriorOnly => "prior_only",
+            Self::EvidenceWeighted => "evidence_weighted",
+        }
+    }
+}
+
 /// Ordered stages in recursive disproof-first verification.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RefutationStage {
@@ -180,12 +191,7 @@ impl ContextAudit {
                 "probability",
                 &statement.probability.to_decimal_string(),
             );
-            push_link(
-                &mut out,
-                &id,
-                "basis",
-                basis_slug(statement.probability_basis),
-            );
+            push_link(&mut out, &id, "basis", statement.probability_basis.slug());
             if let Some(counterexample) = &statement.counterexample {
                 push_link(&mut out, &id, "counterexample", counterexample);
             }
@@ -608,7 +614,10 @@ fn build_statement_report(
         .evidence
         .iter()
         .any(|item| item.effective_mass() > 0.0)
-        || !statement.dependencies.is_empty();
+        || statement
+            .dependencies
+            .iter()
+            .any(|dependency| context.statement(&dependency.on).is_some());
     StatementVerification {
         statement_id: statement.id.clone(),
         text: statement.text.clone(),
@@ -658,13 +667,6 @@ const fn scope_slug(scope: AuditScope) -> &'static str {
     match scope {
         AuditScope::CurrentDialogue => "current_dialogue",
         AuditScope::GeneralMemory => "general_memory",
-    }
-}
-
-const fn basis_slug(basis: ProbabilityBasis) -> &'static str {
-    match basis {
-        ProbabilityBasis::PriorOnly => "prior_only",
-        ProbabilityBasis::EvidenceWeighted => "evidence_weighted",
     }
 }
 

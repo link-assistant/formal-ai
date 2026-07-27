@@ -1,4 +1,154 @@
 meanings
+  response_local_search_route_local_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local hi"
+  response_local_search_route_local_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local ru"
+  response_local_search_route_local_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search route local zh"
+  response_local_search_scope_listing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing en"
+  response_local_search_scope_listing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing hi"
+  response_local_search_scope_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing ru"
+  response_local_search_scope_listing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search scope listing zh"
+  response_local_search_type_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory en"
+  response_local_search_type_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory hi"
+  response_local_search_type_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory ru"
+  response_local_search_type_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type directory zh"
+  response_local_search_type_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file en"
+  response_local_search_type_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file hi"
+  response_local_search_type_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file ru"
+  response_local_search_type_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search type file zh"
+  response_mcp_instructions_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions en"
+  response_mcp_instructions_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions hi"
+  response_mcp_instructions_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions ru"
+  response_mcp_instructions_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp instructions zh"
+  response_mcp_prompt_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description en"
+  response_mcp_prompt_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description hi"
+  response_mcp_prompt_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description ru"
+  response_mcp_prompt_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp prompt description zh"
+  response_mcp_tool_description_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description en"
+  response_mcp_tool_description_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description hi"
+  response_mcp_tool_description_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description ru"
+  response_mcp_tool_description_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response mcp tool description zh"
+  response_meta_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation en"
+  response_meta_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation hi"
+  response_meta_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response meta explanation ru"
   response_meta_explanation_zh
     defined-by response_template
     lexeme en
@@ -1244,58 +1394,3 @@ meanings
     lexeme en
       surface
         text "wikiversity"
-  wikivoyage
-    defined-by source
-    lexeme en
-      surface
-        text "wikivoyage"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  will
-    defined-by concept
-    lexeme en
-      surface
-        text "will"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  words
-    defined-by concept
-    lexeme en
-      surface
-        text "words"
-  world_state_reached
-    defined-by intent
-    lexeme en
-      surface
-        text "world state reached"
-  world_state_remaining
-    defined-by intent
-    lexeme en
-      surface
-        text "world state remaining"
-  would
-    defined-by concept
-    lexeme en
-      surface
-        text "would"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"
-  writing
-    defined-by word_surface
-    lexeme en
-      surface
-        text "writing"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

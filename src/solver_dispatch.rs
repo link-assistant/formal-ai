@@ -19,18 +19,18 @@ use crate::solver_handlers::{
     try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
     try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
     try_coreference_request, try_definition_merge, try_document_originality_check,
-    try_document_request, try_execution_failure, try_fact_lookup, try_github_repository_traffic,
-    try_http_fetch, try_ill_formed, try_installation_conversion, try_javascript_execution,
-    try_learn_from_source, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
-    try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
-    try_punctuation_only_prompt, try_research_comparison_table, try_research_result_followup,
-    try_response_language_followup, try_roleplay_request, try_shell_command_transform,
-    try_shell_command_transform_with_history, try_shell_refusal, try_software_project_followup,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_world_state,
-    try_write_script, SelfAwarenessRuntime,
+    try_document_request, try_execution_failure, try_fact_checking, try_fact_lookup,
+    try_github_repository_traffic, try_http_fetch, try_ill_formed, try_installation_conversion,
+    try_javascript_execution, try_learn_from_source, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_network_query, try_number_riddle, try_numeric_list,
+    try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
+    try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
+    try_research_result_followup, try_response_language_followup, try_roleplay_request,
+    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
+    try_software_project_followup, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_world_state, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -131,6 +131,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "shell_command_transform",
     "text_manipulation",
     "response_language_followup",
+    "fact_checking",
     "world_state",
 ];
 
@@ -173,6 +174,9 @@ pub fn try_contextual_override(
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         "response_language_followup" => {
             try_response_language_followup(prompt, normalized, log, history, runtime.solver_config)
+        }
+        "fact_checking" => {
+            try_fact_checking(prompt, normalized, log, history, runtime.solver_config)
         }
         "world_state" => try_world_state(prompt, normalized, log, history, runtime.solver_config),
         _ => return ContextualOutcome::NotHandled,
