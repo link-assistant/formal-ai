@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-07-24T19:12:48Z",
+  "labels": [
+    {
+      "name": "enhancement"
+    }
+  ],
+  "number": 845,
+  "state": "OPEN",
+  "title": "Fact-checking: recursive disproof-first verification with context-relative probabilities over all statements (dialog-scoped by default)",
+  "updatedAt": "2026-07-24T19:12:48Z",
+  "url": "https://github.com/link-assistant/formal-ai/issues/845"
+}
