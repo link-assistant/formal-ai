@@ -288,7 +288,10 @@ fn commit_current_folds_into_general() {
         .current
         .add_statement(WorldStatement::new("a learned fact"));
 
-    model.commit_current_to_general();
+    let permission = model
+        .record_general_context_permission(true, "issue_649_commit_fixture")
+        .unwrap();
+    model.commit_current_to_general(&permission).unwrap();
 
     assert!(model.general.holds("fact", "learned"));
     assert_eq!(model.general.statements().len(), 1);

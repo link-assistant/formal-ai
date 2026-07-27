@@ -40,6 +40,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
 use crate::engine::stable_id;
+use crate::formal_system::FormalSystem;
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,
 };
@@ -219,6 +220,8 @@ impl Action {
 pub struct Context {
     /// The context id.
     pub id: String,
+    /// Named truth scope for every statement probability in this context.
+    formal_system: FormalSystem,
     /// The world-state links network (STRIPS atoms).
     links: SubstitutionGraph,
     /// The dependent statements, keyed by id for stable iteration and merge.
@@ -229,11 +232,30 @@ impl Context {
     /// An empty context with the given id.
     #[must_use]
     pub fn new(id: impl Into<String>) -> Self {
+        let id = id.into();
         Self {
-            id: id.into(),
+            formal_system: FormalSystem::new(id.clone()),
+            id,
             links: SubstitutionGraph::new(),
             statements: BTreeMap::new(),
         }
+    }
+
+    /// Create a context explicitly scoped to `formal_system`.
+    #[must_use]
+    pub fn with_formal_system(id: impl Into<String>, formal_system: FormalSystem) -> Self {
+        Self {
+            id: id.into(),
+            formal_system,
+            links: SubstitutionGraph::new(),
+            statements: BTreeMap::new(),
+        }
+    }
+
+    /// The named formal system relative to which probabilities are calculated.
+    #[must_use]
+    pub const fn formal_system(&self) -> &FormalSystem {
+        &self.formal_system
     }
 
     /// Assert a world-state atom (a link). Returns `true` if newly added.
@@ -296,6 +318,39 @@ impl Context {
         self.recalculate()
     }
 
+    /// Apply a deterministic batch of fact-check evidence and remove rejected
+    /// source labels, then recalculate the context once.
+    pub(crate) fn apply_fact_check_evidence(
+        &mut self,
+        evidence: &BTreeMap<String, Vec<RelativeEvidence>>,
+        rejected: &BTreeMap<String, BTreeSet<String>>,
+    ) -> RecalculationReport {
+        for (id, statement) in &mut self.statements {
+            if let Some(labels) = rejected.get(id) {
+                statement
+                    .evidence
+                    .retain(|item| !labels.contains(&item.source_label));
+            }
+            if let Some(additions) = evidence.get(id) {
+                for addition in additions {
+                    if let Some(existing) = statement
+                        .evidence
+                        .iter_mut()
+                        .find(|item| item.source_label == addition.source_label)
+                    {
+                        *existing = addition.clone();
+                    } else {
+                        statement.evidence.push(addition.clone());
+                    }
+                }
+                statement
+                    .evidence
+                    .sort_by(|left, right| left.source_label.cmp(&right.source_label));
+            }
+        }
+        self.recalculate()
+    }
+
     /// Re-evaluate every statement to a fixpoint (JTMS-style cascade).
     ///
     /// Each pass recomputes every statement's [`TruthValue`] from its own
@@ -318,6 +373,7 @@ impl Context {
 
         let mut iterations = 0;
         let mut converged = false;
+        let mut checked_links = Vec::new();
         while iterations < limit {
             iterations += 1;
             let snapshot: BTreeMap<String, TruthValue> = ids
@@ -327,6 +383,18 @@ impl Context {
             let mut changed = false;
             for id in &ids {
                 let recomputed = self.assess_with_dependencies(id, &snapshot);
+                for dependency in &self.statements[id].dependencies {
+                    if let Some(dependency_truth) = snapshot.get(&dependency.on) {
+                        checked_links.push(RecalculatedLink {
+                            iteration: iterations,
+                            statement_id: id.clone(),
+                            depends_on: dependency.on.clone(),
+                            stance: dependency.stance,
+                            dependency_truth: *dependency_truth,
+                            result: recomputed,
+                        });
+                    }
+                }
                 if recomputed != self.statements[id].truth {
                     if let Some(statement) = self.statements.get_mut(id) {
                         statement.truth = recomputed;
@@ -360,6 +428,7 @@ impl Context {
             iterations,
             converged,
             updated,
+            checked_links,
         }
     }
 
@@ -506,7 +575,7 @@ impl Context {
     /// two contexts can then diverge independently. Unknown ids are ignored.
     #[must_use]
     pub fn split_off(&self, child_id: impl Into<String>, statement_ids: &[String]) -> Self {
-        let mut child = Self::new(child_id);
+        let mut child = Self::with_formal_system(child_id, self.formal_system.clone());
         let selected: BTreeSet<&String> = statement_ids
             .iter()
             .filter(|id| self.statements.contains_key(*id))
@@ -580,6 +649,25 @@ pub struct RecalculationReport {
     pub converged: bool,
     /// The statements whose truth value moved during this recalculation.
     pub updated: Vec<StatementChange>,
+    /// Every dependency edge consulted, in deterministic pass/order sequence.
+    pub checked_links: Vec<RecalculatedLink>,
+}
+
+/// One dependency edge consulted during a JTMS recalculation pass.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RecalculatedLink {
+    /// One-based relaxation pass.
+    pub iteration: usize,
+    /// Dependent statement whose value was recalculated.
+    pub statement_id: String,
+    /// Statement supplying the dependency truth value.
+    pub depends_on: String,
+    /// Whether the dependency supports or contradicts the dependent.
+    pub stance: Stance,
+    /// Dependency value read during this pass.
+    pub dependency_truth: TruthValue,
+    /// Recalculated value produced for the dependent.
+    pub result: TruthValue,
 }
 
 /// One statement's probability moving from `before` to `after`.
@@ -673,6 +761,47 @@ impl Prediction {
     }
 }
 
+/// Append-only event kinds for the current/general context boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContextAccessEventKind {
+    /// A user explicitly approved general-memory access.
+    PermissionGranted,
+    /// General-memory access was considered without approval.
+    PermissionDenied,
+    /// A permission token was used to read/audit general memory.
+    GeneralContextRead,
+    /// Current-dialogue knowledge was committed to general memory.
+    CurrentCommitted,
+}
+
+/// An append-only record of a permission decision or boundary crossing.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ContextAccessEvent {
+    /// Zero-based append sequence.
+    pub sequence: usize,
+    /// Event kind.
+    pub kind: ContextAccessEventKind,
+    /// Stable permission id when a grant exists.
+    pub permission_id: Option<String>,
+    /// Caller-supplied purpose/reason retained in the trace.
+    pub reason: String,
+}
+
+/// Opaque capability proving that general-memory access was explicitly granted.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeneralContextPermission {
+    id: String,
+}
+
+/// Failure at the permissioned current/general context boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ContextAccessError {
+    /// The user did not approve the requested crossing.
+    PermissionDenied,
+    /// The supplied capability was not issued by this world model.
+    InvalidPermission,
+}
+
 /// The per-dialogue world model: a `current` context, a `target` context, and a
 /// shared `general` context that per-dialogue contexts merge into.
 ///
@@ -689,6 +818,8 @@ pub struct WorldModel {
     pub target: Context,
     /// The shared world model per-dialogue contexts merge into.
     pub general: Context,
+    /// Append-only permission/crossing trace.
+    context_access_events: Vec<ContextAccessEvent>,
 }
 
 impl WorldModel {
@@ -699,6 +830,7 @@ impl WorldModel {
             current: Context::new("current"),
             target: Context::new("target"),
             general: Context::new("general"),
+            context_access_events: Vec::new(),
         }
     }
 
@@ -724,9 +856,92 @@ impl WorldModel {
         self.difference().is_empty()
     }
 
-    /// Merge the current dialogue context into the shared general world model
-    /// (ATMS context combination), returning the recalculation report.
-    pub fn commit_current_to_general(&mut self) -> RecalculationReport {
-        self.general.merge_from(&self.current)
+    /// Record the user's explicit decision about general-memory access.
+    ///
+    /// Both approval and denial are appended to the trace. Only an approval
+    /// returns an opaque capability accepted by boundary-crossing operations.
+    pub fn record_general_context_permission(
+        &mut self,
+        approved: bool,
+        reason: impl Into<String>,
+    ) -> Result<GeneralContextPermission, ContextAccessError> {
+        let reason = reason.into();
+        let sequence = self.context_access_events.len();
+        if !approved {
+            self.context_access_events.push(ContextAccessEvent {
+                sequence,
+                kind: ContextAccessEventKind::PermissionDenied,
+                permission_id: None,
+                reason,
+            });
+            return Err(ContextAccessError::PermissionDenied);
+        }
+        let id = stable_id(
+            "general_context_permission",
+            &format!("sequence:{sequence};reason:{reason}"),
+        );
+        self.context_access_events.push(ContextAccessEvent {
+            sequence,
+            kind: ContextAccessEventKind::PermissionGranted,
+            permission_id: Some(id.clone()),
+            reason,
+        });
+        Ok(GeneralContextPermission { id })
+    }
+
+    /// Append-only permission and boundary-crossing trace.
+    #[must_use]
+    pub fn context_access_events(&self) -> &[ContextAccessEvent] {
+        &self.context_access_events
+    }
+
+    /// Permissioned mutable access used by whole-memory operations.
+    pub(crate) fn general_context_for_audit(
+        &mut self,
+        permission: &GeneralContextPermission,
+    ) -> Result<&mut Context, ContextAccessError> {
+        let reason = self.validate_general_permission(permission)?;
+        let sequence = self.context_access_events.len();
+        self.context_access_events.push(ContextAccessEvent {
+            sequence,
+            kind: ContextAccessEventKind::GeneralContextRead,
+            permission_id: Some(permission.id.clone()),
+            reason,
+        });
+        Ok(&mut self.general)
+    }
+
+    /// Merge the current dialogue context into shared general memory.
+    ///
+    /// This is the write-side current/general crossing and therefore accepts
+    /// only a capability produced by [`Self::record_general_context_permission`].
+    pub fn commit_current_to_general(
+        &mut self,
+        permission: &GeneralContextPermission,
+    ) -> Result<RecalculationReport, ContextAccessError> {
+        let reason = self.validate_general_permission(permission)?;
+        let report = self.general.merge_from(&self.current);
+        let sequence = self.context_access_events.len();
+        self.context_access_events.push(ContextAccessEvent {
+            sequence,
+            kind: ContextAccessEventKind::CurrentCommitted,
+            permission_id: Some(permission.id.clone()),
+            reason,
+        });
+        Ok(report)
+    }
+
+    fn validate_general_permission(
+        &self,
+        permission: &GeneralContextPermission,
+    ) -> Result<String, ContextAccessError> {
+        self.context_access_events
+            .iter()
+            .find(|event| {
+                event.kind == ContextAccessEventKind::PermissionGranted
+                    && event.permission_id.as_deref() == Some(permission.id.as_str())
+            })
+            .map(|event| event.reason.clone())
+            .ok_or(ContextAccessError::InvalidPermission)
     }
 }
