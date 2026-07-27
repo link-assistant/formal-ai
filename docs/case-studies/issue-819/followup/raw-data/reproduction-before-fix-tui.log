@@ -1,0 +1,27 @@
+   Compiling formal-ai v0.302.0 (/tmp/gh-issue-solver-1784790843774)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.40s
+     Running tests/integration/mod.rs (target/debug/deps/integration-c840054cdaa12907)
+
+running 1 test
+
+thread 'with_formal_ai::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui' (22999) panicked at tests/integration/with_formal_ai.rs:559:5:
+temporary server request trace leaked into the TUI:
+formal-ai shared memory: /tmp/formal-ai-with-22998-ThreadId2-0/home/.formal-ai/memory.lino
+formal-ai server listening on http://127.0.0.1:35387
+formal-ai: started a temporary server in agent mode (tool and shell execution enabled)
+[trace] POST /api/openai/v1/chat/completions (102 byte body)
+{"model":"formal-ai","messages":[{"role":"user","content":"ISSUE819_RAW_REQUEST_MUST_NOT_REACH_TUI"}]}
+[dialog-log] appended exchange to /tmp/formal-ai-with-22998-ThreadId2-0/home/.formal-ai/dialog-logs/dialog_2b8ef37a56f387d8.jsonl
+TUI_REMAINED_INTACT
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test with_formal_ai::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui ... FAILED
+
+failures:
+
+failures:
+    with_formal_ai::temporary_server_diagnostics_do_not_leak_into_the_wrapped_tui
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 175 filtered out; finished in 17.86s
+
+error: test failed, to rerun pass `--test integration`

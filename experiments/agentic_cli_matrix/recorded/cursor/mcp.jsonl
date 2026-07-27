@@ -1,0 +1,5 @@
+{"method":"GET","path":"/health","request_model":null,"request_tools":[],"status":200,"response_model":"formal-ai","response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/mcp","request_model":null,"request_tools":[],"status":200,"response_model":null,"response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/mcp","request_model":null,"request_tools":[],"status":200,"response_model":null,"response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/mcp","request_model":null,"request_tools":[],"status":200,"response_model":null,"response_tool_calls":[],"response_content_preview":""}
+{"method":"POST","path":"/mcp","request_model":null,"request_tools":[],"status":200,"response_model":null,"response_tool_calls":[],"response_content_preview":""}

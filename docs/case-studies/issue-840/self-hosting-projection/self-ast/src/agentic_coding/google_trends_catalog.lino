@@ -1,0 +1,81 @@
+self_ast_census
+  target src/agentic_coding/google_trends_catalog.rs
+  language rust
+  fidelity full_ast
+  byte_len 5975
+  line_count 152
+  content_id source_module_0269b7242306e817
+  symbol_count 11
+  symbols
+    const GOOGLE_TRENDS_CATALOG_PATH 14 14
+    const GOOGLE_TRENDS_CATALOG_TASK 17 22
+    const GOOGLE_TRENDS_KEYWORDS 22 22
+    function is_google_trends_catalog_task 31 40
+    function render_document 44 46
+    function final_answer 50 68
+    function verification_command 72 76
+    function render_catalog 78 135
+    function field 137 140
+    function escape_value 142 148
+    function round_confidence 150 152
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4428
+    named_node_count 907
+    distinct_node_kinds 52
+    node_kinds
+      arguments 59
+      array_expression 1
+      array_type 1
+      attribute 4
+      attribute_item 4
+      binary_expression 6
+      block 14
+      call_expression 59
+      char_literal 1
+      closure_expression 5
+      closure_parameters 5
+      const_item 3
+      crate 1
+      doc_comment 13
+      escape_sequence 32
+      expression_statement 30
+      field_expression 67
+      field_identifier 67
+      float_literal 2
+      for_expression 3
+      function_item 8
+      generic_function 1
+      generic_type 1
+      identifier 182
+      if_expression 3
+      inner_doc_comment_marker 6
+      integer_literal 20
+      let_condition 3
+      let_declaration 14
+      line_comment 13
+      macro_invocation 9
+      mutable_specifier 21
+      outer_doc_comment_marker 7
+      parameter 9
+      parameters 8
+      parenthesized_expression 2
+      primitive_type 16
+      reference_expression 42
+      reference_type 10
+      scoped_identifier 4
+      scoped_use_list 1
+      source_file 1
+      string_content 63
+      string_literal 47
+      token_tree 15
+      tuple_struct_pattern 3
+      type_arguments 2
+      type_identifier 9
+      use_as_clause 1
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6

@@ -16,6 +16,8 @@ pub const INTERFACE_CAPABILITIES_LINO: &str =
     include_str!("../../data/seed/interface-capabilities.lino");
 pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
+pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-agentic.lino");
 pub const CONCEPTS_LINO: &str = include_str!("../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../data/seed/concept-contexts.lino");
 pub const FACTS_LINO: &str = include_str!("../../data/seed/facts.lino");
@@ -93,6 +95,8 @@ pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meaning
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
+pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
+    include_str!("../../data/seed/meanings-local-search.lino");
 pub const MEANINGS_PLAYWRIGHT_LINO: &str = include_str!("../../data/seed/meanings-playwright.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../data/seed/meanings-research-table.lino");
@@ -137,6 +141,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses.lino",
             MULTILINGUAL_RESPONSES_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-agentic.lino",
+            MULTILINGUAL_RESPONSES_AGENTIC_LINO,
         ),
         ("data/seed/concepts.lino", CONCEPTS_LINO),
         ("data/seed/concept-contexts.lino", CONCEPT_CONTEXTS_LINO),
@@ -270,6 +278,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_AGENT_ACTIONS_LINO,
         ),
         (
+            "data/seed/meanings-local-search.lino",
+            MEANINGS_LOCAL_SEARCH_LINO,
+        ),
+        (
             "data/seed/meanings-playwright.lino",
             MEANINGS_PLAYWRIGHT_LINO,
         ),
@@ -319,6 +331,17 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
     ]
 }
 
+/// The ordered set of multilingual-response files, walked by
+/// [`super::multilingual_responses`].
+///
+/// Split so neither breaches the seed file-size guard; each wraps its records
+/// under a top-level `multilingual_responses` node and the parser walks all of
+/// them, so an intent may live in whichever file keeps the sizes balanced.
+pub const RESPONSE_FILES: &[&str] = &[
+    MULTILINGUAL_RESPONSES_LINO,
+    MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+];
+
 /// The ordered set of meaning-lexicon files, concatenated by [`super::lexicon`].
 ///
 /// Split across several `.lino` files so none breaches the seed file-size guard;
@@ -359,6 +382,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
+    MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_CONVERSATION_LINO,

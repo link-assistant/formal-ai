@@ -1,5 +1,5 @@
 general_change_plan
-  id "general_change_plan_01e784e6cd4319c4"
+  id "general_change_plan_7f80d22ec9052a9a"
   goal "Create file self-coding-result.txt containing self-coding=passed"
   target "self-coding-result.txt"
   step 1

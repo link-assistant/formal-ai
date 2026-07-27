@@ -1,0 +1,16 @@
+   Compiling formal-ai v0.302.0 (/tmp/gh-issue-solver-1784790843774)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.66s
+     Running tests/unit/mod.rs (target/debug/deps/unit-6857834c12417275)
+
+running 9 tests
+test issue_819::reported_desktop_request_uses_find_instead_of_the_web ... ok
+test issue_819::fuzzy_find_command_locates_the_reported_folder_name ... ok
+test issue_819::open_web_find_requests_still_use_web_search ... ok
+test issue_819_followup::report_destination_question_allows_multiple_selections ... ok
+test issue_819_followup::selected_report_actions_are_combined_into_one_executable_step ... ok
+test issue_819_followup::local_find_without_matches_explains_the_result_to_a_beginner ... ok
+test issue_819::local_path_discovery_generalizes_across_language_action_kind_and_scope ... ok
+test issue_819::local_path_discovery_benchmark_routes_every_case_to_find ... ok
+test issue_819::every_seeded_local_path_phrase_routes_to_find ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 1975 filtered out; finished in 30.20s

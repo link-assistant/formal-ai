@@ -1,0 +1,37 @@
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:17:- experiments/ folder (experimental scripts)
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:32:    - docs-changed: 'true' if any .md files changed
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:34:    - any-code-changed: 'true' if any code files changed (excludes docs, changelogs, experiments, examples)
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:129:        "experiments/",
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:133:        "python/experiments/",
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:176:    set_output("docs-changed", "true" if docs_changed else "false")
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/scripts/detect_code_changes.py:200:    set_output("any-code-changed", "true" if code_changed else "false")
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:70:        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_GITHUB_PAGES != 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:74:        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_GITHUB_PAGES == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:78:        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_GITHUB_PAGES == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/docs.yml:86:    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.DEPLOY_GITHUB_PAGES == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:38:  detect-changes:
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:47:      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:49:      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:103:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:104:    # !cancelled() lets this job evaluate even though detect-changes is skipped
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:108:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:110:        needs.detect-changes.outputs.py-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:111:        needs.detect-changes.outputs.tests-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:112:        needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:113:        needs.detect-changes.outputs.package-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:114:        needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:192:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:195:    # !cancelled() lets this job evaluate even though detect-changes is skipped
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:199:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:201:        needs.detect-changes.outputs.py-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:202:        needs.detect-changes.outputs.tests-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:203:        needs.detect-changes.outputs.package-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:204:        needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:269:    needs: [detect-changes, lint, test]
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:273:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:340:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:341:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:423:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:424:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:459:    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+/tmp/tmp.La44QvWGNf/python-ai-driven-development-pipeline-template/.github/workflows/release.yml:562:    # !cancelled() prevents the skipped detect-changes dependency from propagating

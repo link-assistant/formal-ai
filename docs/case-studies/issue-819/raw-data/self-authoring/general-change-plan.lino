@@ -1,0 +1,18 @@
+general_change_plan
+  id "general_change_plan_1fafddc081426ef2"
+  goal "Create file docs/case-studies/issue-819/agent-authored-requirement.lino containing\nrequirement issue_819_local_path_search\n  local_path_search_before_web_search\n  supported_clients agent opencode claude codex\n  tui_frames_via_command_stream"
+  target "docs/case-studies/issue-819/agent-authored-requirement.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_f466708a881f5d19"
+  step 2
+    capability "Write"
+    action "write the requested content to docs/case-studies/issue-819/agent-authored-requirement.lino"
+    expected_evidence "workspace file docs/case-studies/issue-819/agent-authored-requirement.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "requirement issue_819_local_path_search\n  local_path_search_before_web_search\n  supported_clients agent opencode claude codex\n  tui_frames_via_command_stream"
+    command "cat docs/case-studies/issue-819/agent-authored-requirement.lino"
+  verification_command "cat docs/case-studies/issue-819/agent-authored-requirement.lino"

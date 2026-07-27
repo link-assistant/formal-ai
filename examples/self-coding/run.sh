@@ -26,7 +26,12 @@ git -C "$work" config user.name self-coding-fixture
 cp "$ROOT/examples/self-coding/issue.md" "$work/ISSUE.md"
 git -C "$work" add ISSUE.md
 git -C "$work" commit -qm fixture
-FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 "$BIN" serve \
+# Private, empty memory per run so this server's memory-fed planning stays
+# independent of what other E2E scripts recorded into the shared
+# ~/.formal-ai/memory.lino (issue #828); FORMAL_AI_DREAMING=0 stops the
+# background compaction thread from mutating it mid-run.
+FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+  FORMAL_AI_MEMORY_PATH="$work/memory.lino" FORMAL_AI_DREAMING=0 "$BIN" serve \
   --host 127.0.0.1 --port "$PORT" >"$server" 2>&1 &
 server_pid=$!
 curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \

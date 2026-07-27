@@ -2,36 +2,35 @@ self_ast_census
   target src/solver_handlers/numeric_list/codegen.rs
   language rust
   fidelity signature
-  byte_len 18684
-  line_count 526
-  content_id source_module_f91665286a0a56a1
-  symbol_count 28
+  byte_len 18626
+  line_count 524
+  content_id source_module_e51088fd66a1b979
+  symbol_count 27
   symbols
     const MAX_EXPANSION_DEPTH 37 37
-    const MAX_INHERITANCE_DEPTH 40 40
-    function idiom_catalog 43 48
-    static TREE 44 44
-    function language_chain 52 71
-    function default_name 75 91
-    enum ValueType 94 98
-    function from_items 101 112
-    function links_label 116 122
-    enum ProgramStatement 126 149
-    function links_line 152 191
-    struct NumericProgram 196 203
-    function render 212 222
-    function links_notation 226 236
-    function literal 238 240
-    struct Composer 245 249
-    function new 252 274
-    function resolved_name 278 292
-    function resolved_type 296 306
-    function scaffold 310 321
-    function idiom 326 337
-    function select_case 345 367
-    function expand 374 410
-    function is_slot_char 413 415
-    function mutates_list_in_place 420 434
-    function build 438 491
-    function item_literals 496 510
-    function quoted_string_literal 512 526
+    function idiom_catalog 40 45
+    static TREE 41 41
+    function language_chain 49 69
+    function default_name 73 89
+    enum ValueType 92 96
+    function from_items 99 110
+    function links_label 114 120
+    enum ProgramStatement 124 147
+    function links_line 150 189
+    struct NumericProgram 194 201
+    function render 210 220
+    function links_notation 224 234
+    function literal 236 238
+    struct Composer 243 247
+    function new 250 272
+    function resolved_name 276 290
+    function resolved_type 294 304
+    function scaffold 308 319
+    function idiom 324 335
+    function select_case 343 365
+    function expand 372 408
+    function is_slot_char 411 413
+    function mutates_list_in_place 418 432
+    function build 436 489
+    function item_literals 494 508
+    function quoted_string_literal 510 524

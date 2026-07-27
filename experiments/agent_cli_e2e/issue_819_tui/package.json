@@ -1,0 +1,12 @@
+{
+  "name": "formal-ai-issue-819-tui-proof",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "bun test tui-transcript.test.mjs"
+  },
+  "dependencies": {
+    "agent-commander": "0.10.1",
+    "command-stream": "^0.17.2"
+  }
+}

@@ -1,4 +1,100 @@
 multilingual_responses
+  response response_client_integration_invalid_typed_json_setting_en
+    intent client_integration_invalid_typed_json_setting
+    language en
+    text "invalid typed JSON setting `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_ru
+    intent client_integration_invalid_typed_json_setting
+    language ru
+    text "недопустимая типизированная настройка JSON `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_hi
+    intent client_integration_invalid_typed_json_setting
+    language hi
+    text "अमान्य टाइप की गई JSON सेटिंग `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_zh
+    intent client_integration_invalid_typed_json_setting
+    language zh
+    text "无效的带类型 JSON 设置 `{rendered}`：{error}"
+  response response_agentic_report_target_question_en
+    intent agentic_report_target_question
+    language en
+    text "What would you like to report? Select one or more."
+  response response_agentic_report_target_question_ru
+    intent agentic_report_target_question
+    language ru
+    text "Что вы хотите отправить? Выберите один или несколько вариантов."
+  response response_agentic_report_target_question_hi
+    intent agentic_report_target_question
+    language hi
+    text "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
+  response response_agentic_report_target_question_zh
+    intent agentic_report_target_question
+    language zh
+    text "您想报告什么？请选择一个或多个选项。"
+  response response_agentic_report_target_options_en
+    intent agentic_report_target_options
+    language en
+    text ("Harness log" "Export the complete agentic harness log." "Server log" "Export the matching Formal AI server log." "GitHub issue" "File an issue with complete context." "Report to Formal AI" "Store the report so this instance can learn.")
+  response response_agentic_report_target_options_ru
+    intent agentic_report_target_options
+    language ru
+    text ("Журнал агента" "Экспортировать полный журнал агентного клиента." "Журнал сервера" "Экспортировать соответствующий журнал сервера Formal AI." "Задача GitHub" "Создать задачу с полным контекстом." "Сообщить Formal AI" "Сохранить отчёт для обучения этого экземпляра.")
+  response response_agentic_report_target_options_hi
+    intent agentic_report_target_options
+    language hi
+    text ("एजेंट लॉग" "पूरा एजेंटिक क्लाइंट लॉग निर्यात करें।" "सर्वर लॉग" "मिलता हुआ Formal AI सर्वर लॉग निर्यात करें।" "GitHub समस्या" "पूरे संदर्भ के साथ समस्या दर्ज करें।" "Formal AI को रिपोर्ट" "इस इंस्टेंस के सीखने के लिए रिपोर्ट सहेजें।")
+  response response_agentic_report_target_options_zh
+    intent agentic_report_target_options
+    language zh
+    text ("代理日志" "导出完整的代理客户端日志。" "服务器日志" "导出匹配的 Formal AI 服务器日志。" "GitHub 问题" "使用完整上下文创建问题。" "报告给 Formal AI" "保存报告供此实例学习。")
+  response response_agentic_report_contents_question_en
+    intent agentic_report_contents_question
+    language en
+    text "Which context should the GitHub issue include?"
+  response response_agentic_report_contents_question_ru
+    intent agentic_report_contents_question
+    language ru
+    text "Какой контекст включить в задачу GitHub?"
+  response response_agentic_report_contents_question_hi
+    intent agentic_report_contents_question
+    language hi
+    text "GitHub समस्या में कौन सा संदर्भ शामिल हो?"
+  response response_agentic_report_contents_question_zh
+    intent agentic_report_contents_question
+    language zh
+    text "GitHub 问题应包含哪些上下文?"
+  response response_agentic_report_contents_options_en
+    intent agentic_report_contents_options
+    language en
+    text ("Both logs" "Include harness and server logs; attach a trimmed preview and link the full context if too large." "Harness log" "Include the complete harness conversation only." "Server log" "Include the complete matching server log only.")
+  response response_agentic_report_contents_options_ru
+    intent agentic_report_contents_options
+    language ru
+    text ("Оба журнала" "Включить журналы агента и сервера; приложить сокращённый фрагмент и ссылку на полный контекст, если он слишком большой." "Журнал агента" "Включить только полный диалог агента." "Журнал сервера" "Включить только полный соответствующий журнал сервера.")
+  response response_agentic_report_contents_options_hi
+    intent agentic_report_contents_options
+    language hi
+    text ("दोनों लॉग" "एजेंट और सर्वर लॉग शामिल करें; बहुत बड़ा होने पर छोटा पूर्वावलोकन और पूरे संदर्भ का लिंक दें।" "एजेंट लॉग" "केवल पूरी एजेंट बातचीत शामिल करें।" "सर्वर लॉग" "केवल पूरा मिलता हुआ सर्वर लॉग शामिल करें।")
+  response response_agentic_report_contents_options_zh
+    intent agentic_report_contents_options
+    language zh
+    text ("两个日志" "包含代理和服务器日志;若内容过大则附上精简预览和完整上下文链接。" "代理日志" "仅包含完整代理对话。" "服务器日志" "仅包含完整的匹配服务器日志。")
+  response response_agentic_report_exported_en
+    intent agentic_report_exported
+    language en
+    text "Report context exported."
+  response response_agentic_report_exported_ru
+    intent agentic_report_exported
+    language ru
+    text "Контекст отчёта экспортирован."
+  response response_agentic_report_exported_hi
+    intent agentic_report_exported
+    language hi
+    text "रिपोर्ट का संदर्भ निर्यात किया गया।"
+  response response_agentic_report_exported_zh
+    intent agentic_report_exported
+    language zh
+    text "报告上下文已导出。"
   response response_mcp_instructions_en
     intent mcp_instructions
     language en
@@ -645,6 +741,22 @@ multilingual_responses
     intent tool_result_empty_search
     language zh
     text "未找到匹配项。"
+  response response_tool_result_empty_local_path_search_en
+    intent tool_result_empty_local_path_search
+    language en
+    text "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location."
+  response response_tool_result_empty_local_path_search_ru
+    intent tool_result_empty_local_path_search
+    language ru
+    text "В указанном месте не найдено подходящего файла или папки. Проверьте имя или попросите поискать в более широком месте."
+  response response_tool_result_empty_local_path_search_hi
+    intent tool_result_empty_local_path_search
+    language hi
+    text "बताए गए स्थान पर कोई मिलता हुआ फ़ाइल या फ़ोल्डर नहीं मिला। नाम जाँचें या मुझे किसी बड़े स्थान में खोजने को कहें।"
+  response response_tool_result_empty_local_path_search_zh
+    intent tool_result_empty_local_path_search
+    language zh
+    text "在指定位置未找到匹配的文件或文件夹。请检查名称，或让我扩大搜索范围。"
   response response_tool_result_empty_generic_en
     intent tool_result_empty_generic
     language en
@@ -1381,22 +1493,6 @@ multilingual_responses
     intent budget_search_solution
     language zh
     text "通过预算驱动的搜索找到：{expression} = {target}。\n没有可复用的部分或规则匹配，因此求解器将给定的数字与允许的运算组合起来，并以生成的相等性测试作为适应度函数对每个候选进行评分。\n搜索预算：{budget} 次候选评估；在 {evaluations} 次评估后找到了满足条件的组合。\n搜索路径：{trace_id}"
-  response response_agentic_action_before_tool_en
-    intent agentic_action_before_tool
-    language en
-    text "I'll use {tool} on {target} so I can verify the next step before continuing."
-  response response_agentic_action_before_tool_ru
-    intent agentic_action_before_tool
-    language ru
-    text "Я использую {tool} для «{target}», чтобы проверить следующий шаг перед продолжением."
-  response response_agentic_action_before_tool_hi
-    intent agentic_action_before_tool
-    language hi
-    text "अगला कदम जारी रखने से पहले उसकी पुष्टि करने के लिए मैं {target} पर {tool} का उपयोग करूँगा।"
-  response response_agentic_action_before_tool_zh
-    intent agentic_action_before_tool
-    language zh
-    text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
   response response_compiled_procedure_en
     intent compiled_procedure
     language en

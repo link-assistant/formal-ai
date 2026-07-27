@@ -1,0 +1,26 @@
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 16.22s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 1 test
+test issue_714_agentic_mode::chat_completions_routes_report_to_bash_not_websearch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 187 filtered out; finished in 0.80s
+
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.64s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 1 test
+test with_formal_ai_grok::with_formal_ai_grok_reaches_configured_openai_endpoint ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 187 filtered out; finished in 0.06s
+
+   Compiling formal-ai v0.302.2 (/tmp/gh-issue-solver-1784837344897)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.92s
+     Running tests/integration/mod.rs (target/debug/deps/integration-ccd581fcf4b56744)
+
+running 1 test
+test issue_680_intent_routing::chat_completions_routes_edit_intent_to_tool_call ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 187 filtered out; finished in 17.12s

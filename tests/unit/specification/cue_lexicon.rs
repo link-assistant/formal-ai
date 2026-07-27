@@ -34,6 +34,14 @@ const CONSULTED_SETS: &[(&str, CueMatch)] = &[
     ("calendar_digit_actions", CueMatch::Token),
     ("calendar_ru_date_marker", CueMatch::Substring),
     ("text_manipulation", CueMatch::Substring),
+    // Issue #702: the world-model dialogue's recognition vocabulary.
+    ("world_state_target", CueMatch::Substring),
+    ("world_state_query", CueMatch::Substring),
+    ("world_state_confirm", CueMatch::Token),
+    ("world_state_correct", CueMatch::Token),
+    ("world_state_because", CueMatch::Substring),
+    ("world_state_separator", CueMatch::Token),
+    ("world_state_filler", CueMatch::Token),
 ];
 
 #[test]

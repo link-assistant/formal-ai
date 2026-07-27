@@ -64,6 +64,12 @@ multilingual prompts and deterministic trace checks. The network benchmark
 downloads the external parquet files into `target/formal-ai-benchmarks`, which
 is a build artifact cache rather than checked-in source.
 
+## Issue #819 Local-Path Discovery
+
+The local-path discovery suite contains only self-authored multilingual prompts
+and deterministic routing expectations. It imports no upstream dataset or
+third-party payload, so no additional upstream license applies.
+
 ## Issue #482 Nemotron Training-Data Samples
 
 | Source | License | Upstream revision | Sampled rows | Download mode |
@@ -78,3 +84,19 @@ excerpt previews for ten deterministic random rows. The sampler records row
 offsets and provenance URLs in
 `docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and never
 downloads upstream parquet files or full splits.
+
+## Issue #702 World-State Tracking Slice
+
+| Source | License | Upstream revision | Vendored payload |
+| --- | --- | --- | --- |
+| bAbI tasks (1 single supporting fact, 2 two supporting facts, 6 yes/no state change) | CC-BY-3.0 | `8a6f3dbf1a7b1a5bd9c9a5b8dbd8b1b31e6dbdc6` | None — task *shape* only |
+| Everyday goal-directed assistant dialogues | CC-BY-4.0 | `issue-702` (this repository) | Self-authored |
+
+Canonical sources: <https://github.com/facebookarchive/bAbI-tasks> and
+<https://research.facebook.com/downloads/babi/>.
+
+`world-state-tracking-suite.lino` contains **no upstream text**. All sixteen
+dialogues are self-authored in the style of the upstream tasks (the local-profile
+convention issue #408 established), in English, Russian, Hindi and Chinese, so
+the CC-BY attributions above cover the reproduced task design rather than any
+redistributed data.

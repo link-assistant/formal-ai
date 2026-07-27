@@ -1,0 +1,124 @@
+self_ast_census
+  target src/agentic_coding/meaning_detail.rs
+  language rust
+  fidelity full_ast
+  byte_len 30967
+  line_count 761
+  content_id source_module_763b6af219dd70d8
+  symbol_count 38
+  symbols
+    const SINGULAR_FEATURE 47 47
+    const PLURAL_FEATURE 49 49
+    const NUMBER_FEATURES 54 54
+    struct SourceRef 63 68
+    struct ExtraRef 75 80
+    struct Concept 90 107
+    const MEANING_DETAIL_TASK 111 175
+    const POTATO_DETAIL_TASK 119 175
+    const TOMATO 130 175
+    const POTATO 181 218
+    const CONCEPTS 221 221
+    const DETAIL_KEYWORDS 225 225
+    function concept_for_task 237 245
+    function is_meaning_detail_task 250 256
+    struct LexemeForm 260 269
+    struct SourceLexeme 273 286
+    struct ExtraSurface 290 295
+    struct ConceptLexemes 299 304
+    struct RawLexeme 310 320
+    struct RawForm 324 328
+    function parse_entities 334 348
+    function parse_lexeme_entity 352 388
+    function parse_form 391 413
+    function has_feature 416 418
+    function case_key 424 433
+    function select_singular 440 451
+    function select_plural 460 469
+    function form_suffix 472 474
+    function lexeme_form 477 484
+    function derive_source 490 508
+    function concept_lexemes 517 545
+    function embedded_entities 548 554
+    function lexeme_core 560 612
+    function source_bundle 621 635
+    function language_name 638 646
+    function render_block 655 739
+    function enrich_block 744 746
+    function final_answer_for 751 761
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 17019
+    named_node_count 3501
+    distinct_node_kinds 68
+    node_kinds
+      arguments 229
+      array_expression 9
+      array_type 6
+      attribute 16
+      attribute_item 16
+      binary_expression 6
+      block 53
+      boolean_literal 1
+      call_expression 229
+      char_literal 1
+      closure_expression 28
+      closure_parameters 28
+      const_item 9
+      doc_comment 180
+      else_clause 1
+      escape_sequence 11
+      expression_statement 43
+      field_declaration 35
+      field_declaration_list 9
+      field_expression 221
+      field_identifier 307
+      field_initializer 51
+      field_initializer_list 20
+      for_expression 11
+      function_item 20
+      generic_function 2
+      generic_type 22
+      identifier 620
+      if_expression 11
+      inner_doc_comment_marker 39
+      integer_literal 2
+      let_condition 9
+      let_declaration 62
+      lifetime 18
+      lifetime_parameter 1
+      line_comment 198
+      macro_invocation 27
+      match_arm 7
+      match_block 2
+      match_expression 2
+      match_pattern 7
+      mutable_specifier 12
+      outer_doc_comment_marker 141
+      parameter 30
+      parameters 20
+      primitive_type 33
+      reference_expression 23
+      reference_type 58
+      return_expression 2
+      scoped_identifier 53
+      shorthand_field_initializer 12
+      source_file 1
+      string_content 130
+      string_literal 122
+      struct_expression 20
+      struct_item 9
+      token_tree 37
+      try_expression 14
+      tuple_expression 1
+      tuple_pattern 4
+      tuple_struct_pattern 14
+      type_arguments 24
+      type_identifier 120
+      type_parameters 1
+      unary_expression 2
+      use_as_clause 1
+      use_declaration 3
+      visibility_modifier 45
