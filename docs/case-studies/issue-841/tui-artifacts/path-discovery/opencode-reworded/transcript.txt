@@ -8,13 +8,13 @@ Ask anything... "Fix a TODO in the codebase"
 
 
  BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+› Look for the hive-mind-control center directory on the desktop
+
+
+
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
  BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
-› Find hive-mind-control center folder on my desktop
-
-
-
- BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
- BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
  BUILD  ■■■■■⬝⬝⬝ esc interrupt                                       ctrl+p cmd
  BUILD  ■■■■■■⬝⬝ esc interrupt                                       ctrl+p cmd
  BUILD  ⬝■■■■■■⬝ esc interrupt                                       ctrl+p cmd
@@ -25,9 +25,17 @@ Ask anything... "Fix a TODO in the codebase"
  BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                       ctrl+p cmd
  BUILD  ⬝⬝⬝⬝⬝⬝⬝■ esc interrupt                                       ctrl+p cmd
  BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                       ctrl+p cmd
- BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                       ctrl+p cmd
-Let me look on your Desktop
-for hive-mind-control-center.
+ BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝⬝■■■■■■ esc interrupt                                       ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■■■⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                                       ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+Let me look on
+your Desktop for hive-mind-control-center.
 
 $ find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d -iname 'hive-mind-
 control-center' -print
@@ -36,32 +44,33 @@ control-center' -print
 
 
 
- BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ⬝⬝■■■■■■ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ⬝■■■■■■⬝ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ■■■■■■⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ■■■■■⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
  BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+ BUILD  ■■■⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+ BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
 Let me look on your Desktop for hive-mind-control-center.
 
 $ find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d -iname '*hive*' -print
 
+
+
+
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
 /tmp/tmp.nicTk9mTIk/Desktop/Archive
 /tmp/tmp.nicTk9mTIk/Desktop/Archive/hive-control-center
 
 
 
- BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
- BUILD  ■■⬝⬝⬝⬝⬝⬝ esc interrupt                                                9.8K · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                9.8K · ctrl+p cmd
  BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                                9.8K · ctrl+p cmd
- BUILD                                                                       10.0K · ctrl+p cmd
+ BUILD                                                                       10.1K · ctrl+p cmd
 No exact match for hive-mind-control-
 center; the closest matching name is hive-control-center at /tmp/tmp.nicTk9mTIk/Desktop/Archive/
 hive-control-center. The search was limited to ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}.
 
-▣ Build · Formal AI Symbolic Production · 8.3s
+▣ Build · Formal AI Symbolic Production · 9.7s
 
 
 
- BUILD                                                                       10.0K · ctrl+p cmd
+ BUILD                                                                       10.1K · ctrl+p cmd

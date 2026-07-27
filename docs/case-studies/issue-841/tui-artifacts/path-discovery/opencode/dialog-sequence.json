@@ -1,6 +1,6 @@
 {
-  "client": "opencode-tui",
-  "exchange_count": 3,
+  "client": "opencode-tui-primary",
+  "exchange_count": 4,
   "sequence": [
     {
       "role": "user",
@@ -11,17 +11,30 @@
       "tool_call": {
         "name": "bash",
         "arguments": {
-          "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d \\( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \\) -print -quit"
+          "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print"
         }
       }
     },
     {
       "role": "tool",
-      "content": "/tmp/tmp.s6mkqCFVgt/Desktop/Archive/hive-control-center"
+      "content": ""
     },
     {
       "role": "assistant",
-      "content": "/tmp/tmp.s6mkqCFVgt/Desktop/Archive/hive-control-center"
+      "tool_call": {
+        "name": "bash",
+        "arguments": {
+          "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
+        }
+      }
+    },
+    {
+      "role": "tool",
+      "content": "/tmp/tmp.nicTk9mTIk/Desktop/Archive/hive-control-center"
+    },
+    {
+      "role": "assistant",
+      "content": "/tmp/tmp.nicTk9mTIk/Desktop/Archive/hive-control-center"
     }
   ]
 }

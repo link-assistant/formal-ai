@@ -1,10 +1,10 @@
 {
-  "client": "claude-tui-primary",
+  "client": "claude-tui-reworded",
   "exchange_count": 3,
   "sequence": [
     {
       "role": "user",
-      "content": "Find hive-mind-control center folder on my desktop"
+      "content": "Look for the hive-mind-control center directory on the desktop"
     },
     {
       "role": "assistant",

@@ -1,15 +1,15 @@
 {
-  "client": "claude-tui-primary",
-  "exchange_count": 3,
+  "client": "opencode-tui-reworded",
+  "exchange_count": 4,
   "sequence": [
     {
       "role": "user",
-      "content": "Find hive-mind-control center folder on my desktop"
+      "content": "Look for the hive-mind-control center directory on the desktop"
     },
     {
       "role": "assistant",
       "tool_call": {
-        "name": "Bash",
+        "name": "bash",
         "arguments": {
           "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname 'hive-mind-control-center' -print"
         }
@@ -22,7 +22,7 @@
     {
       "role": "assistant",
       "tool_call": {
-        "name": "Bash",
+        "name": "bash",
         "arguments": {
           "command": "find \"${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}\" -type d -iname '*hive*' -print"
         }
