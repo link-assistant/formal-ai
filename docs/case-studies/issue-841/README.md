@@ -38,12 +38,12 @@ projects before Formal AI switched to it.
 | Layer | JavaScript release | Rust release | Merged work |
 | --- | --- | --- | --- |
 | Generic PTY, resize, VT rendering, scrollback, unrolling, asciicast, faithful SVG/GIF, visible-text geometry, and timeout artifacts | [`command-stream` 0.17.2](https://github.com/link-foundation/command-stream/releases/tag/js-v0.17.2) | [`command-stream` 0.14.0](https://github.com/link-foundation/command-stream/releases/tag/rust-v0.14.0) | [#176](https://github.com/link-foundation/command-stream/pull/176), [#177](https://github.com/link-foundation/command-stream/pull/177), [#179](https://github.com/link-foundation/command-stream/pull/179), [#181](https://github.com/link-foundation/command-stream/pull/181), [#184](https://github.com/link-foundation/command-stream/pull/184), [#186](https://github.com/link-foundation/command-stream/pull/186) |
-| Agent-specific executable/argument builders, startup interactions, semantic events, and 4:3 replay bundles | [`agent-commander` 0.10.0](https://github.com/link-assistant/agent-commander/releases/tag/js_0.10.0) | [`agent-commander` 0.2.7](https://github.com/link-assistant/agent-commander/releases/tag/rust_0.2.7) | [#44](https://github.com/link-assistant/agent-commander/pull/44), [#45](https://github.com/link-assistant/agent-commander/pull/45), [#47](https://github.com/link-assistant/agent-commander/pull/47) |
+| Agent-specific executable/argument builders, startup interactions, semantic events, 4:3 replay bundles, and clean consumer installs | [`agent-commander` 0.10.1](https://github.com/link-assistant/agent-commander/releases/tag/js_0.10.1) | [`agent-commander` 0.2.7](https://github.com/link-assistant/agent-commander/releases/tag/rust_0.2.7) | [#44](https://github.com/link-assistant/agent-commander/pull/44), [#45](https://github.com/link-assistant/agent-commander/pull/45), [#47](https://github.com/link-assistant/agent-commander/pull/47), [#49](https://github.com/link-assistant/agent-commander/pull/49) |
 
 The JavaScript packages are also available from
 [npm: command-stream 0.17.2](https://www.npmjs.com/package/command-stream/v/0.17.2)
 and
-[npm: agent-commander 0.10.0](https://www.npmjs.com/package/agent-commander/v/0.10.0);
+[npm: agent-commander 0.10.1](https://www.npmjs.com/package/agent-commander/v/0.10.1);
 the Rust packages are available from
 [crates.io: command-stream 0.14.0](https://crates.io/crates/command-stream/0.14.0)
 and
@@ -66,6 +66,14 @@ fixed in
 released as 0.17.2, and consumed here. Both the published-package unit test and
 every real-client capture now reject leading or trailing row padding inside
 SVG text elements.
+
+The first `agent-commander` release also exposed a development-only
+`patch-package` postinstall to consumers, which broke clean and hoisted npm
+installs. That packaging defect was reported in
+[`agent-commander#48`](https://github.com/link-assistant/agent-commander/issues/48),
+fixed in
+[`agent-commander#49`](https://github.com/link-assistant/agent-commander/pull/49),
+released as 0.10.1, and verified here from a clean consumer directory.
 
 ### Browser-rendered progression
 
@@ -101,7 +109,7 @@ The review requested every dependency be brought current unless the upgrade
 breaks the project. All direct Rust, web, desktop, VS Code, E2E, and TUI
 dependencies were audited and upgraded to their latest compatible releases,
 including `base64` 0.23, `link-calculator` 0.20.3, `meta-language` 0.54.0,
-`thread-priority` 3.1.1, Electron 43.2.0, `agent-commander` 0.10.0, and its
+`thread-priority` 3.1.1, Electron 43.2.0, `agent-commander` 0.10.1, and its
 resolved `command-stream` 0.17.2.
 
 The supported Node 22 builds and tests pass. The remaining `npm audit`

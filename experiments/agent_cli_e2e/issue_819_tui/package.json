@@ -6,7 +6,7 @@
     "test": "bun test tui-transcript.test.mjs"
   },
   "dependencies": {
-    "agent-commander": "0.10.0",
+    "agent-commander": "0.10.1",
     "command-stream": "^0.17.2"
   }
 }

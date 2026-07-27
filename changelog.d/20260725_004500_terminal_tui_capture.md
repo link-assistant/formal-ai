@@ -9,5 +9,5 @@ bump: patch
 
 ### Fixed
 - Seed Claude's ephemeral configuration with the correct JSON onboarding value so interactive sessions do not repeat setup prompts.
-- Consume the published `agent-commander` 0.10.0 and `command-stream` 0.17.2 renderer fixes instead of Formal AI's lossy local terminal stack, including exact visible-text geometry without padded SVG text runs.
+- Consume the published `agent-commander` 0.10.1 and `command-stream` 0.17.2 renderer fixes instead of Formal AI's lossy local terminal stack, including exact visible-text geometry without padded SVG text runs and clean consumer installs.
 - Upgrade all direct Rust and JavaScript dependencies to their latest compatible releases.
