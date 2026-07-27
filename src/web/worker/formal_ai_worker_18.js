@@ -338,61 +338,49 @@ function wasmReadOutput(length) {
   return WEB_SEARCH_TEXT_DECODER.decode(view);
 }
 
+function wasmTextCall(exportName, payload) {
+  if (!wasm || typeof wasm[exportName] !== "function") return null;
+  const length = wasmWriteInput(payload);
+  if (length < 0) return null;
+  return wasmReadOutput(wasm[exportName](length) >>> 0);
+}
+
 // Engine-core bridges (R194 follow-up). Each function returns a value when
 // the WASM core is available, or `null` so the caller can fall back to the
 // pure-JS branch. Keeping a JS fallback covers offline mode and old browsers
 // where `WebAssembly.instantiate` is unavailable, but the canonical answer
 // always comes from Rust when the worker booted successfully.
-function wasmNormalizePrompt(text) {
-  if (!wasm || typeof wasm.engine_normalize_prompt !== "function") return null;
-  const length = wasmWriteInput(String(text || ""));
-  if (length < 0) return null;
-  const written = wasm.engine_normalize_prompt(length) >>> 0;
-  return wasmReadOutput(written);
-}
+function wasmNormalizePrompt(text) { return wasmTextCall("engine_normalize_prompt", String(text || "")); }
 
-function wasmDetectLanguage(text) {
-  if (!wasm || typeof wasm.engine_detect_language !== "function") return null;
-  const length = wasmWriteInput(String(text || ""));
-  if (length < 0) return null;
-  const written = wasm.engine_detect_language(length) >>> 0;
-  const slug = wasmReadOutput(written);
-  return slug || null;
-}
+function wasmDetectLanguage(text) { return wasmTextCall(
+  "engine_detect_language", String(text || "")) || null; }
 
 // Returns `{ ok: true, value }` on success, `{ ok: false, error }` on parse
 // or runtime failure (division by zero, overflow). `null` means the WASM core
 // is unavailable — the caller should fall back to the JS parser.
 function wasmEvaluateArithmetic(expression) {
-  if (!wasm || typeof wasm.engine_evaluate_arithmetic !== "function") return null;
-  const length = wasmWriteInput(String(expression || ""));
-  if (length < 0) return null;
-  const written = wasm.engine_evaluate_arithmetic(length) >>> 0;
-  if (written === 0) return null;
-  const text = wasmReadOutput(written);
+  const text = wasmTextCall("engine_evaluate_arithmetic", String(expression || ""));
+  if (!text) return null;
   if (text.startsWith("ERR:")) {
     return { ok: false, error: text.slice(4) };
   }
   return { ok: true, value: text };
 }
 
-function wasmStableId(prefix, value) {
-  if (!wasm || typeof wasm.engine_stable_id !== "function") return null;
-  const payload = `${String(prefix || "")}\n${String(value || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.engine_stable_id(length) >>> 0;
-  return wasmReadOutput(written) || null;
+function wasmFactCheckDialogue(payload) {
+  const text = wasmTextCall("engine_fact_check_dialogue", payload);
+  if (!text) return null;
+  try { return JSON.parse(text); }
+  catch (_error) { return null; }
 }
 
-function wasmSelectUnknownOpener(prompt, language) {
-  if (!wasm || typeof wasm.engine_select_unknown_opener !== "function") return null;
-  const payload = `${String(language || "")}\n${String(prompt || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.engine_select_unknown_opener(length) >>> 0;
-  return wasmReadOutput(written) || null;
+function wasmStableId(prefix, value) {
+  return wasmTextCall("engine_stable_id", `${String(prefix || "")}\n${String(value || "")}`) || null;
 }
+
+function wasmSelectUnknownOpener(prompt, language) { return wasmTextCall(
+  "engine_select_unknown_opener",
+  `${String(language || "")}\n${String(prompt || "")}`) || null; }
 
 function serializeIntentRouteForWasm(normalized, rawPrompt, route) {
   const lines = [String(normalized || ""), String(rawPrompt || "")];
@@ -426,13 +414,8 @@ function wasmMatchIntentRoute(normalized, rawPrompt, route) {
 // otherwise returns null so the caller can fall back to the JS list. The
 // Rust side owns the canonical evidence shape (issue #133 R194).
 function wasmWebSearchRequestEvidence(query, language) {
-  if (!wasm || typeof wasm.web_search_request_evidence !== "function") return null;
   const payload = `${String(query || "")}\n${String(language || "")}`;
-  const length = wasmWriteInput(payload);
-  if (length < 0) return null;
-  const written = wasm.web_search_request_evidence(length) >>> 0;
-  if (written === 0) return null;
-  const text = wasmReadOutput(written);
+  const text = wasmTextCall("web_search_request_evidence", payload);
   return text ? text.split("\n") : null;
 }
 

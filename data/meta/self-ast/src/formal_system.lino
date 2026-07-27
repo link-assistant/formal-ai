@@ -1,0 +1,15 @@
+self_ast_census
+  target src/formal_system.rs
+  language rust
+  fidelity signature
+  byte_len 2374
+  line_count 70
+  content_id source_module_b9bd52ba9fcf9820
+  symbol_count 6
+  symbols
+    struct FormalSystem 14 23
+    function new 28 35
+    function with_universe 39 42
+    function with_interpretation 46 49
+    function with_axiom 53 56
+    function id 60 69

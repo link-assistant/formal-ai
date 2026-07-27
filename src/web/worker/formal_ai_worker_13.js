@@ -299,6 +299,7 @@ const ROLE_CLARIFICATION_REQUEST = "clarification_request";
 const ROLE_CAPABILITY_QUERY = "capability_query";
 const ROLE_CAPABILITY_QUERY_MORE = "capability_query_more";
 const ROLE_SELF_FACT_QUERY = "self_fact_query";
+const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY = "fact_check_current_dialogue_query";
 const ROLE_SELF_INTRODUCTION_REQUEST = "self_introduction_request";
 // Issue #386 known-facts inventory roles — mirror the ROLE_KNOWLEDGE_INVENTORY_*
 // / ROLE_KNOWLEDGE_POSSESSION consts in src/seed/roles.rs. Their surface words

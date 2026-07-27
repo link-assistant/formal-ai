@@ -1034,6 +1034,31 @@ meanings
     lexeme en
       surface
         text "fabricated"
+  fact_check_arithmetic_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check arithmetic counterexample"
+  fact_check_current_dialogue
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check current dialogue"
+  fact_check_no_statements
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check no statements"
+  fact_check_statement
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement"
+  fact_check_statement_counterexample
+    defined-by intent
+    lexeme en
+      surface
+        text "fact check statement counterexample"
   fact_lookup
     defined-by intent
     lexeme en
@@ -1369,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "intent web search"
-  intent_wellbeing
-    defined-by intent
-    lexeme en
-      surface
-        text "intent wellbeing"
-  intent_write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "intent write program"
-  interface
-    defined-by concept
-    lexeme en
-      surface
-        text "interface"
-  invert
-    defined-by concept
-    lexeme en
-      surface
-        text "invert"
-  ionicons
-    defined-by concept
-    lexeme en
-      surface
-        text "ionicons"
-  issue
-    defined-by word_surface
-    lexeme en
-      surface
-        text "issue"

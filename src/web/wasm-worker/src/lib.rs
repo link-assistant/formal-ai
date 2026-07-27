@@ -3,7 +3,8 @@
 
 extern crate alloc;
 
-use alloc::string::String;
+use alloc::format;
+use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 use core::alloc::{GlobalAlloc, Layout};
 use core::cell::UnsafeCell;
@@ -25,8 +26,9 @@ mod web_engine_core;
 mod web_search_core;
 
 use web_engine_core::{
-    detect_language, evaluate_arithmetic_expression, matches_intent_route_payload,
-    normalize_prompt, select_unknown_opener, stable_id, Language,
+    assess_arithmetic_claim, detect_language, evaluate_arithmetic_expression,
+    matches_intent_route_payload, normalize_prompt, select_unknown_opener, stable_id,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome, Language,
 };
 use web_search_core::{
     build_request_evidence, default_search_plan_ids, parse_rrf_input, reciprocal_rank_fusion,
@@ -38,7 +40,7 @@ const GREETING: u32 = 1;
 const WRITE_PROGRAM: u32 = 2;
 const IDENTITY: u32 = 8;
 const UNKNOWN: u32 = 0;
-const INPUT_CAPACITY: usize = 4096;
+const INPUT_CAPACITY: usize = 65_536;
 const OUTPUT_CAPACITY: usize = 65_536;
 
 // Static byte buffers used by the JS↔WASM byte-buffer protocol.
@@ -400,6 +402,328 @@ pub extern "C" fn engine_evaluate_arithmetic(input_length: usize) -> usize {
             write_output(buffer.as_bytes())
         }
     }
+}
+
+/// Assess an arithmetic equality/inequality for the current-dialog fact
+/// checker. `OUTPUT` is a JSON object consumed by the UI-glue worker, or empty
+/// when the statement is outside the arithmetic decision procedure.
+#[no_mangle]
+pub extern "C" fn engine_assess_arithmetic_claim(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let Some(assessment) = assess_arithmetic_claim(text) else {
+        return 0;
+    };
+    write_output(serialize_arithmetic_assessment(&assessment).as_bytes())
+}
+
+/// Audit prior user turns in the current dialogue. `INPUT` contains five
+/// percent-encoded seed templates followed by percent-encoded user turns, one
+/// item per line. `OUTPUT` is the complete worker-answer JSON object.
+#[no_mangle]
+pub extern "C" fn engine_fact_check_dialogue(input_length: usize) -> usize {
+    reset_bump();
+    let bytes = unsafe {
+        core::slice::from_raw_parts(
+            core::ptr::addr_of!(INPUT).cast::<u8>(),
+            min(input_length, INPUT_CAPACITY),
+        )
+    };
+    let Ok(text) = core::str::from_utf8(bytes) else {
+        return 0;
+    };
+    let decoded = text.lines().map(decode_uri_component).collect::<Vec<_>>();
+    if decoded.len() < 5 {
+        return 0;
+    }
+    let templates = FactCheckTemplates {
+        audit: &decoded[0],
+        statement: &decoded[1],
+        statement_counterexample: &decoded[2],
+        arithmetic_counterexample: &decoded[3],
+        no_statements: &decoded[4],
+    };
+    let answer = build_dialogue_fact_check(&decoded[5..], templates);
+    write_output(answer.as_bytes())
+}
+
+struct FactCheckTemplates<'a> {
+    audit: &'a str,
+    statement: &'a str,
+    statement_counterexample: &'a str,
+    arithmetic_counterexample: &'a str,
+    no_statements: &'a str,
+}
+
+struct DialogueStatement {
+    id: String,
+    text: String,
+    probability: &'static str,
+    basis: &'static str,
+    outcome: &'static str,
+    counterexample: String,
+}
+
+fn build_dialogue_fact_check(turns: &[String], templates: FactCheckTemplates<'_>) -> String {
+    let mut statements = Vec::new();
+    for text in turns
+        .iter()
+        .map(|turn| turn.trim())
+        .filter(|turn| !turn.is_empty())
+    {
+        if !looks_declarative(text) {
+            continue;
+        }
+        let id = stable_id("world_statement", text);
+        if statements
+            .iter()
+            .any(|item: &DialogueStatement| item.id == id)
+        {
+            continue;
+        }
+        statements.push(assess_dialogue_statement(id, text, &templates));
+    }
+    statements.sort_by(|left, right| left.id.cmp(&right.id));
+
+    let summary = if statements.is_empty() {
+        templates.no_statements.to_string()
+    } else {
+        statements
+            .iter()
+            .map(|statement| render_dialogue_statement(statement, &templates))
+            .collect::<Vec<_>>()
+            .join("\n")
+    };
+    let content = fill_template(
+        templates.audit,
+        &[
+            ("count", statements.len().to_string()),
+            ("formal_system", String::from("current")),
+            ("summary", summary),
+        ],
+    );
+    serialize_dialogue_answer(&content, &statements)
+}
+
+fn looks_declarative(text: &str) -> bool {
+    let normalized = normalize_prompt(text);
+    let words = normalized.split_whitespace().collect::<Vec<_>>();
+    words.len() > 1
+        || words.first().is_some_and(|word| {
+            word.chars().count() > 1
+                && word.chars().any(|ch| {
+                    let code = ch as u32;
+                    (0x3400..=0x9fff).contains(&code) || (0xf900..=0xfaff).contains(&code)
+                })
+        })
+}
+
+fn assess_dialogue_statement(
+    id: String,
+    text: &str,
+    templates: &FactCheckTemplates<'_>,
+) -> DialogueStatement {
+    let assessment = assess_arithmetic_claim(text);
+    let (probability, basis, outcome, counterexample) = match assessment {
+        Some(value) if value.outcome == ArithmeticClaimOutcome::Unrefuted => {
+            ("1.000000", "evidence_weighted", "unrefuted", String::new())
+        }
+        Some(value) if value.outcome == ArithmeticClaimOutcome::Refuted => (
+            "0.000000",
+            "evidence_weighted",
+            "refuted",
+            fill_template(
+                templates.arithmetic_counterexample,
+                &[
+                    ("left", value.left_expression),
+                    ("left_value", value.left_value),
+                    ("right", value.right_expression),
+                    ("right_value", value.right_value),
+                    ("relation", value.relation.to_string()),
+                ],
+            ),
+        ),
+        _ => ("0.600000", "prior_only", "inconclusive", String::new()),
+    };
+    DialogueStatement {
+        id,
+        text: text.to_string(),
+        probability,
+        basis,
+        outcome,
+        counterexample,
+    }
+}
+
+fn render_dialogue_statement(
+    statement: &DialogueStatement,
+    templates: &FactCheckTemplates<'_>,
+) -> String {
+    let template = if statement.counterexample.is_empty() {
+        templates.statement
+    } else {
+        templates.statement_counterexample
+    };
+    fill_template(
+        template,
+        &[
+            ("statement", statement.text.clone()),
+            ("probability", statement.probability.to_string()),
+            ("basis", statement.basis.to_string()),
+            ("counterexample", statement.counterexample.clone()),
+        ],
+    )
+}
+
+fn fill_template(template: &str, replacements: &[(&str, String)]) -> String {
+    let mut rendered = template.to_string();
+    for (name, value) in replacements {
+        rendered = rendered.replace(&format!("{{{name}}}"), value);
+    }
+    rendered
+}
+
+fn serialize_dialogue_answer(content: &str, statements: &[DialogueStatement]) -> String {
+    let mut output = String::from("{\"intent\":\"fact_check_current_dialogue\",\"content\":");
+    push_json_string(&mut output, content);
+    output.push_str(",\"confidence\":1,\"evidence\":[");
+    for (index, statement) in statements.iter().enumerate() {
+        if index > 0 {
+            output.push(',');
+        }
+        let mut evidence = format!("fact_check:statement:{}", statement.id);
+        evidence.push(' ');
+        evidence.push_str(statement.probability);
+        evidence.push(' ');
+        evidence.push_str(statement.basis);
+        push_json_string(
+            &mut output,
+            &evidence,
+        );
+    }
+    if !statements.is_empty() {
+        output.push(',');
+    }
+    for (index, evidence) in [
+        format!(
+            "fact_check:audit:scope=current_dialogue;statements={}",
+            statements.len()
+        ),
+        String::from("fact_check:scope:current_dialogue"),
+        format!(
+            "fact_check:formal_system:{}",
+            stable_id(
+                "formal_system",
+                "name:current;universe:;interpretation:;"
+            )
+        ),
+    ]
+    .iter()
+    .enumerate()
+    {
+        if index > 0 {
+            output.push(',');
+        }
+        push_json_string(&mut output, evidence);
+    }
+    output.push_str("],\"trace\":[");
+    for (index, statement) in statements.iter().enumerate() {
+        if index > 0 {
+            output.push(',');
+        }
+        push_json_string(
+            &mut output,
+            &format!(
+                "fact_check:refutation:{}:disprove_statement:{}",
+                statement.id, statement.outcome
+            ),
+        );
+    }
+    output.push_str("]}");
+    output
+}
+
+fn decode_uri_component(value: &str) -> String {
+    let bytes = value.as_bytes();
+    let mut decoded = Vec::with_capacity(bytes.len());
+    let mut index = 0;
+    while index < bytes.len() {
+        if bytes[index] == b'%' && index + 2 < bytes.len() {
+            if let (Some(high), Some(low)) =
+                (hex_value(bytes[index + 1]), hex_value(bytes[index + 2]))
+            {
+                decoded.push((high << 4) | low);
+                index += 3;
+                continue;
+            }
+        }
+        decoded.push(bytes[index]);
+        index += 1;
+    }
+    String::from_utf8(decoded).unwrap_or_default()
+}
+
+const fn hex_value(value: u8) -> Option<u8> {
+    match value {
+        b'0'..=b'9' => Some(value - b'0'),
+        b'a'..=b'f' => Some(value - b'a' + 10),
+        b'A'..=b'F' => Some(value - b'A' + 10),
+        _ => None,
+    }
+}
+
+fn serialize_arithmetic_assessment(assessment: &ArithmeticClaimAssessment) -> String {
+    let outcome = match assessment.outcome {
+        ArithmeticClaimOutcome::Unrefuted => "unrefuted",
+        ArithmeticClaimOutcome::Refuted => "refuted",
+        ArithmeticClaimOutcome::Inconclusive => "inconclusive",
+    };
+    let mut output = String::from("{\"outcome\":");
+    push_json_string(&mut output, outcome);
+    for (name, value) in [
+        ("left", assessment.left_expression.as_str()),
+        ("left_value", assessment.left_value.as_str()),
+        ("right", assessment.right_expression.as_str()),
+        ("right_value", assessment.right_value.as_str()),
+        ("relation", assessment.relation),
+    ] {
+        output.push(',');
+        push_json_string(&mut output, name);
+        output.push(':');
+        push_json_string(&mut output, value);
+    }
+    output.push('}');
+    output
+}
+
+fn push_json_string(output: &mut String, value: &str) {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    output.push('"');
+    for ch in value.chars() {
+        match ch {
+            '"' => output.push_str("\\\""),
+            '\\' => output.push_str("\\\\"),
+            '\n' => output.push_str("\\n"),
+            '\r' => output.push_str("\\r"),
+            '\t' => output.push_str("\\t"),
+            value if value <= '\u{1f}' => {
+                let code = value as usize;
+                output.push_str("\\u00");
+                output.push(HEX[code >> 4] as char);
+                output.push(HEX[code & 0x0f] as char);
+            }
+            value => output.push(value),
+        }
+    }
+    output.push('"');
 }
 
 /// Build a stable FNV-1a id. `INPUT` contains `prefix\ntext`; `OUTPUT`
