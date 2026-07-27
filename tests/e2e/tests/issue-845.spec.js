@@ -38,15 +38,18 @@ for (const { language, query } of factCheckQueries) {
     page,
   }) => {
     const externalRequests = [];
-    page.on('request', (request) => {
-      const url = new URL(request.url());
+    await page.route('**/*', (route) => {
+      const url = new URL(route.request().url());
       if (
         (url.protocol === 'http:' || url.protocol === 'https:') &&
         url.hostname !== 'localhost' &&
         url.hostname !== '127.0.0.1'
       ) {
-        externalRequests.push(request.url());
+        externalRequests.push(route.request().url());
+        route.abort();
+        return;
       }
+      route.continue();
     });
 
     await page.goto('./');
