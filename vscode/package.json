@@ -133,10 +133,10 @@
     "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
-    "@vscode/test-web": "^0.0.80",
+    "@vscode/test-web": "^0.0.81",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "^0.28.1",
-    "typescript": "^5.9.3"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "@link-assistant/web-capture": "^1.10.10",

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Real local path-discovery proof for issues #819 and #840. Agent, OpenCode,
-# Claude Code, and Codex must execute the stateful client-side discovery loop,
-# return its result, and finish.
-# A second OpenCode run captures its real TUI frame-by-frame through
-# link-foundation/command-stream and verifies the complete dialog sequence.
+# Claude Code, and Codex execute the stateful client-side discovery loop.
+# A second pass captures OpenCode, Claude Code, and Codex through the published
+# agent-commander/command-stream stack and verifies the visible dialog.
 
 set -uo pipefail
 
@@ -13,11 +12,13 @@ PORT="${PORT:-8784}"
 AGENT="${AGENT:-agent}"
 OPENCODE="${OPENCODE:-opencode}"
 CLIENTS="${CLIENTS:-agent opencode claude codex}"
+TUI_CLIENTS="${TUI_CLIENTS:-opencode claude codex}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 EMPTY_RESULT="${EMPTY_RESULT:-0}"
 RUN_TUI="${RUN_TUI:-1}"
 AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-60}"
-PROMPT="Find hive-mind-control center folder on my desktop"
+PROMPT="${PROMPT:-Find hive-mind-control center folder on my desktop}"
+TUI_REWORDED_PROMPT="${TUI_REWORDED_PROMPT:-Look for the hive-mind-control center directory on the desktop}"
 WORKDIR="$(mktemp -d)"
 DESKTOP_DIR="$WORKDIR/Desktop"
 EXPECTED_PATH="$DESKTOP_DIR/Archive/hive-control-center"
@@ -28,6 +29,10 @@ if [ "$EMPTY_RESULT" = "1" ]; then
   EMPTY_ARG="EMPTY"
 fi
 TUI_DIR="$ROOT/experiments/agent_cli_e2e/issue_819_tui"
+TUI_OBSERVATION_FILE="${TUI_OBSERVATION_FILE:-}"
+if [ -z "$TUI_OBSERVATION_FILE" ] && [ -n "$ARTIFACT_DIR" ]; then
+  TUI_OBSERVATION_FILE="$ARTIFACT_DIR/tui-contract-observations.jsonl"
+fi
 CURRENT_SERVER_PID=""
 
 cleanup() {
@@ -42,6 +47,7 @@ fail() {
   local message="$1"
   local client_log="${2:-}"
   local server_log="${3:-}"
+  preserve_failed_run "$client_log"
   echo "!! $message" >&2
   if [ -n "$client_log" ]; then
     echo "== client log ==" >&2
@@ -52,6 +58,22 @@ fail() {
     tail -180 "$server_log" >&2 2>/dev/null
   fi
   exit 1
+}
+
+preserve_failed_run() {
+  local client_log="$1"
+  if [ -z "$ARTIFACT_DIR" ] || [ -z "$client_log" ]; then
+    return
+  fi
+  local client_dir
+  client_dir="$(dirname "$client_log")"
+  if [ ! -d "$client_dir" ]; then
+    return
+  fi
+  local destination
+  destination="$ARTIFACT_DIR/$(basename "$client_dir")"
+  mkdir -p "$destination"
+  cp -R "$client_dir/." "$destination/"
 }
 
 start_server() {
@@ -108,8 +130,7 @@ preserve_raw_artifacts() {
     mkdir -p "$ARTIFACT_DIR/$client"
     cp "$client_dir/client.log" "$ARTIFACT_DIR/$client/client.log"
     cp "$client_dir/formal-ai.log" "$ARTIFACT_DIR/$client/formal-ai.log"
-    mkdir -p "$ARTIFACT_DIR/$client/dialogs"
-    cp -R "$client_dir/dialogs/." "$ARTIFACT_DIR/$client/dialogs/"
+    cp -R "$client_dir/dialogs" "$ARTIFACT_DIR/$client/dialogs"
   fi
 }
 
@@ -182,57 +203,85 @@ run_client() {
 
   preserve_raw_artifacts "$client" "$client_dir"
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "$client" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
+    "$dialog_dir" "$client" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" "$PROMPT" \
     || fail "$client dialog structure was incomplete" "$client_log" "$server_log"
   grep -Fq "$EXPECTED_RESULT" "$client_log" \
     || fail "$client did not display the expected result" "$client_log" "$server_log"
   preserve_sequence "$client" "$sequence"
-  echo "== issues #819/#840 $client E2E OK: exact -> evidence-driven widen -> final =="
+  echo "== issue #819 $client E2E OK: user -> find -> result -> final =="
   tail -20 "$client_log"
   stop_server
 }
 
-run_opencode_tui() {
-  local tui_port="$1"
-  local client_dir="$WORKDIR/opencode-tui"
+run_client_tui() {
+  local client="$1"
+  local tui_port="$2"
+  local wording="$3"
+  local tui_prompt="$4"
+  local artifact_key="$client"
+  if [ "$wording" != "primary" ]; then
+    artifact_key="$client-$wording"
+  fi
+  local client_dir="$WORKDIR/$client-tui-$wording"
   local client_log="$client_dir/client.log"
   local server_log="$client_dir/formal-ai.log"
   local dialog_dir="$client_dir/dialogs"
   local sequence="$client_dir/dialog-sequence.json"
-  local transcript="$client_dir/tui-transcript.json"
+  local terminal_dir="$client_dir/terminal"
+  local observation_evidence="$terminal_dir/recording.svg"
+  local executable=""
+  local prefix_args="[]"
+  local extra_args="[]"
+  if [ -n "$ARTIFACT_DIR" ]; then
+    observation_evidence="$ARTIFACT_DIR/$artifact_key/terminal/recording.svg"
+  fi
   mkdir -p "$dialog_dir"
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 
-  if ! ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
+  case "$client" in
+    opencode)
+      executable="$OPENCODE"
+      extra_args='["."]'
+      ;;
+    claude|codex)
+      executable="$BIN"
+      prefix_args="[\"with\",\"--port\",\"$tui_port\",\"--no-start-server\",\"--interactive\",\"$client\",\"--\"]"
+      ;;
+    *)
+      fail "unknown issue #819 TUI client: $client" "$client_log" "$server_log"
+      ;;
+  esac
+
+  ISSUE819_TUI_CLIENT="$client" \
+    ISSUE819_TUI_EXECUTABLE="$executable" \
+    ISSUE819_TUI_PREFIX_ARGS="$prefix_args" \
+    ISSUE819_TUI_EXTRA_ARGS="$extra_args" \
     ISSUE819_TUI_CWD="$WORKDIR" \
     ISSUE819_DESKTOP_DIR="$DESKTOP_DIR" \
+    ISSUE819_TUI_PROMPT="$tui_prompt" \
     ISSUE819_EXPECT_RESULT="$EXPECTED_RESULT" \
-    ISSUE819_TUI_OUTPUT="$transcript" \
-    node "$TUI_DIR/capture-opencode.mjs" > "$client_log" 2>&1; then
-    if [ -n "$ARTIFACT_DIR" ]; then
-      mkdir -p "$ARTIFACT_DIR/opencode-tui/dialogs"
-      cp "$client_log" "$ARTIFACT_DIR/opencode-tui/client.log"
-      cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
-      cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
-      cp -R "$dialog_dir/." "$ARTIFACT_DIR/opencode-tui/dialogs/"
-    fi
-    fail "OpenCode TUI transcript failed" "$client_log" "$server_log"
-  fi
+    ISSUE819_TUI_ARTIFACT_DIR="$terminal_dir" \
+    ISSUE819_TUI_OBSERVATION_FILE="$TUI_OBSERVATION_FILE" \
+    ISSUE819_TUI_EVIDENCE="$observation_evidence" \
+    node "$TUI_DIR/capture-client.mjs" > "$client_log" 2>&1 \
+    || fail "$client TUI transcript failed" "$client_log" "$server_log"
 
   node "$TUI_DIR/verify-dialog.mjs" \
-    "$dialog_dir" "opencode-tui" "$sequence" "$EXPECTED_RESULT" "$EMPTY_ARG" \
-    || fail "OpenCode TUI dialog structure was incomplete" "$client_log" "$server_log"
+    "$dialog_dir" "$client-tui-$wording" "$sequence" "$EXPECTED_RESULT" \
+    "$EMPTY_ARG" "$tui_prompt" \
+    || fail "$client TUI dialog structure was incomplete" "$client_log" "$server_log"
   if [ -n "$ARTIFACT_DIR" ]; then
-    mkdir -p "$ARTIFACT_DIR/opencode-tui"
-    cp "$client_log" "$ARTIFACT_DIR/opencode-tui/client.log"
-    cp "$server_log" "$ARTIFACT_DIR/opencode-tui/formal-ai.log"
-    cp "$sequence" "$ARTIFACT_DIR/opencode-tui/dialog-sequence.json"
-    cp "$transcript" "$ARTIFACT_DIR/opencode-tui/tui-transcript.json"
-    mkdir -p "$ARTIFACT_DIR/opencode-tui/dialogs"
-    cp -R "$dialog_dir/." "$ARTIFACT_DIR/opencode-tui/dialogs/"
+    mkdir -p "$ARTIFACT_DIR/$artifact_key"
+    cp "$client_log" "$ARTIFACT_DIR/$artifact_key/client.log"
+    cp "$server_log" "$ARTIFACT_DIR/$artifact_key/formal-ai.log"
+    cp "$sequence" "$ARTIFACT_DIR/$artifact_key/dialog-sequence.json"
+    mkdir -p "$ARTIFACT_DIR/$artifact_key/terminal"
+    cp -R "$terminal_dir/." "$ARTIFACT_DIR/$artifact_key/terminal/"
+    mkdir -p "$ARTIFACT_DIR/$artifact_key/dialogs"
+    cp -R "$dialog_dir/." "$ARTIFACT_DIR/$artifact_key/dialogs/"
   fi
-  echo "== issue #819 OpenCode TUI OK: deduplicated frames + complete dialog =="
+  echo "== issue #819 $client $wording TUI OK: transcript + resize + SVG/GIF replay =="
   stop_server
 }
 
@@ -252,5 +301,16 @@ for client in $CLIENTS; do
   client_index=$((client_index + 1))
 done
 if [ "$RUN_TUI" = "1" ]; then
-  run_opencode_tui "$((PORT + 20))"
+  if [ -n "$TUI_OBSERVATION_FILE" ]; then
+    mkdir -p "$(dirname "$TUI_OBSERVATION_FILE")"
+    : > "$TUI_OBSERVATION_FILE"
+  fi
+  tui_index=0
+  for client in $TUI_CLIENTS; do
+    run_client_tui "$client" "$((PORT + 20 + tui_index))" "primary" "$PROMPT"
+    tui_index=$((tui_index + 1))
+    run_client_tui \
+      "$client" "$((PORT + 20 + tui_index))" "reworded" "$TUI_REWORDED_PROMPT"
+    tui_index=$((tui_index + 1))
+  done
 fi

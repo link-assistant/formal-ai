@@ -9,14 +9,14 @@ BIN="${BIN:-$ROOT/target/release/formal-ai}"
 OPENCODE="${OPENCODE:-opencode}"
 PORT="${PORT:-8804}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
-PROMPT="Report"
 ISSUE_URL="https://github.com/link-assistant/formal-ai/issues/9999"
 WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/bin"
 DIALOG_DIR="$WORKDIR/dialogs"
 ACTIONS_LOG="$WORKDIR/report-actions.log"
 SERVER_LOG="$WORKDIR/formal-ai.log"
-TRANSCRIPT="$WORKDIR/tui-transcript.json"
+ISSUE_BODY="$WORKDIR/issue-body.md"
+TERMINAL_DIR="$WORKDIR/terminal"
 CLIENT_LOG="$WORKDIR/client.log"
 SERVER_PID=""
 
@@ -30,10 +30,31 @@ cleanup() {
 trap cleanup EXIT
 
 fail() {
+  preserve_artifacts
   echo "!! $1" >&2
   tail -120 "$CLIENT_LOG" >&2 2>/dev/null
   tail -180 "$SERVER_LOG" >&2 2>/dev/null
   exit 1
+}
+
+preserve_artifacts() {
+  if [ -z "$ARTIFACT_DIR" ]; then
+    return
+  fi
+  mkdir -p "$ARTIFACT_DIR"
+  for source in "$CLIENT_LOG" "$SERVER_LOG" "$ACTIONS_LOG" "$ISSUE_BODY"; do
+    if [ -f "$source" ]; then
+      cp "$source" "$ARTIFACT_DIR/$(basename "$source")"
+    fi
+  done
+  for source in "$TERMINAL_DIR" "$DIALOG_DIR"; do
+    if [ -d "$source" ]; then
+      local destination
+      destination="$ARTIFACT_DIR/$(basename "$source")"
+      mkdir -p "$destination"
+      cp -R "$source/." "$destination/"
+    fi
+  done
 }
 
 mkdir -p "$FAKE_BIN" "$DIALOG_DIR"
@@ -59,21 +80,18 @@ EOF
 cat > "$FAKE_BIN/formal-ai" <<EOF
 #!/usr/bin/env bash
 echo "formal-ai \$*" >> "$ACTIONS_LOG"
-output=""
-while [ "\$#" -gt 0 ]; do
-  if [ "\$1" = "--output" ]; then
-    shift
-    output="\$1"
-  fi
-  shift
-done
-if [ -n "\$output" ]; then
-  printf 'conversation fixture\n' > "\$output"
-fi
+exec "$BIN" "\$@"
 EOF
 cat > "$FAKE_BIN/gh" <<EOF
 #!/usr/bin/env bash
 echo "gh \$*" >> "$ACTIONS_LOG"
+while [ "\$#" -gt 0 ]; do
+  if [ "\$1" = "--body-file" ]; then
+    cp "\$2" "$ISSUE_BODY"
+    break
+  fi
+  shift
+done
 echo "$ISSUE_URL"
 EOF
 chmod +x "$FAKE_BIN/formal-ai" "$FAKE_BIN/gh"
@@ -88,11 +106,14 @@ SERVER_PID=$!
   "http://127.0.0.1:$PORT/health" >/dev/null 2>&1 \
   || fail "server never came up on port $PORT"
 
-ISSUE819_TUI_COMMAND="$OPENCODE . --model formal-ai/formal-ai --prompt '$PROMPT' --auto --mini" \
+ISSUE819_TUI_EXECUTABLE="$OPENCODE" \
   ISSUE819_TUI_CWD="$WORKDIR" \
   ISSUE819_TUI_PATH="$FAKE_BIN:$PATH" \
   ISSUE819_REPORT_URL="$ISSUE_URL" \
-  ISSUE819_TUI_OUTPUT="$TRANSCRIPT" \
+  ISSUE819_TUI_ARTIFACT_DIR="$TERMINAL_DIR" \
+  FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
+  FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" \
+  FORMAL_AI_DREAMING=0 \
   node "$ROOT/experiments/agent_cli_e2e/issue_819_tui/capture-report.mjs" \
     > "$CLIENT_LOG" 2>&1 \
   || fail "OpenCode report TUI transcript failed"
@@ -101,15 +122,16 @@ for action in '--source harness' '--source server' '--source both' 'gh issue cre
   grep -Fq -- "$action" "$ACTIONS_LOG" \
     || fail "selected report action did not execute: $action"
 done
+for provenance in '- **Session**:' '- **Context source**: both' '- **Surface**: agentic-cli'; do
+  grep -Fq -- "$provenance" "$ISSUE_BODY" \
+    || fail "the resulting issue body omitted report provenance: $provenance"
+done
+grep -Fq '### Complete agentic context' "$ISSUE_BODY" \
+  || fail "the resulting issue body omitted its complete-context section"
+grep -Fq '## Reproduction of dialog' "$ISSUE_BODY" \
+  || fail "the resulting issue body omitted the exported conversation"
 
-if [ -n "$ARTIFACT_DIR" ]; then
-  mkdir -p "$ARTIFACT_DIR"
-  cp "$CLIENT_LOG" "$ARTIFACT_DIR/client.log"
-  cp "$SERVER_LOG" "$ARTIFACT_DIR/formal-ai.log"
-  cp "$ACTIONS_LOG" "$ARTIFACT_DIR/report-actions.log"
-  cp "$TRANSCRIPT" "$ARTIFACT_DIR/tui-transcript.json"
-  cp -R "$DIALOG_DIR" "$ARTIFACT_DIR/dialogs"
-fi
+preserve_artifacts
 
-echo "== issue #819 OpenCode report TUI OK: three selections, three actions =="
+echo "== issue #838 OpenCode report TUI OK: selections, actions, and issue body =="
 cat "$ACTIONS_LOG"

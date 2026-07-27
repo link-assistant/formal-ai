@@ -1673,16 +1673,16 @@ jobs:
         run: experiments/agent_cli_e2e/run_issue_781.sh
 
       - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
-        # Agent, OpenCode, Claude Code, and Codex execute the generated exact
-        # local observation and only widen after an empty result. OpenCode is
-        # then replayed in a real PTY: command-stream feeds every chunk to
-        # xterm's renderer, the harness deduplicates frames, and the dialog log
-        # proves every user → tool call → tool result → final-answer transition.
-        timeout-minutes: 5
+        timeout-minutes: 15
         env:
           PORT: 8784
+          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
         run: experiments/agent_cli_e2e/run_issue_840.sh
 
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        timeout-minutes: 5
+        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
       - name: "Run reference differential gate — grounded action recipe (issue #840)"
         # Third-party free-model runs are recorded rather than repeated here:
         # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
@@ -1693,6 +1693,16 @@ jobs:
         env:
           PORT: 8785
         run: experiments/issue_840_reference_agents/run_differential_gate.sh
+
+      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        timeout-minutes: 3
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
+        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
+
+      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        timeout-minutes: 3
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
+        run: experiments/issue_840_task_ladder/run_ladder.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
@@ -1780,6 +1790,10 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
           retention-days: 7
+      - name: Upload TUI transcripts and replay artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
 
   # === DEPLOY WEB APP ===
   # Deploy the production web app from src/web/ to GitHub Pages after a successful build.

@@ -1354,6 +1354,26 @@ meanings
     lexeme en
       surface
         text "response client contract read transcript error zh"
+  response_client_integration_invalid_typed_json_setting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting en"
+  response_client_integration_invalid_typed_json_setting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting hi"
+  response_client_integration_invalid_typed_json_setting_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting ru"
+  response_client_integration_invalid_typed_json_setting_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting zh"
   response_comparison_decomposed_evidence_en
     defined-by response_template
     lexeme en

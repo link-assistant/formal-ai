@@ -42,6 +42,10 @@ pub struct ClientContractObservation {
     pub advertised_tools: Vec<String>,
     #[serde(default)]
     pub invoked_tools: Vec<String>,
+    /// Additional observed contract fields whose stable intersection may be
+    /// proposed for human review.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub observed_contract: BTreeMap<String, Vec<String>>,
     pub evidence: String,
 }
 
@@ -67,6 +71,7 @@ impl ClientContractObservation {
             delivery,
             advertised_tools: Vec::new(),
             invoked_tools: invoked_tools.into_iter().map(Into::into).collect(),
+            observed_contract: BTreeMap::new(),
             evidence: evidence.into(),
         }
     }
@@ -208,6 +213,7 @@ pub fn learn_client_contracts(
         independently_worded_groups += 1;
 
         let stable_tools = stable_invoked_tools(&group);
+        let stable_contract = stable_observed_contract(&group);
         let accepted: BTreeSet<&str> = contracts
             .get(client_id)
             .map(|integration| {
@@ -281,6 +287,22 @@ pub fn learn_client_contracts(
                 evidence: evidence.clone(),
             });
         }
+        for (contract_field, values) in stable_contract {
+            for value in values {
+                let id = stable_id(
+                    "client_contract_proposal",
+                    &format!("{client_id}\0{capability}\0{contract_field}\0{value}"),
+                );
+                proposals.push(ClientContractProposal {
+                    id,
+                    client_id: client_id.to_owned(),
+                    capability: capability.to_owned(),
+                    field: contract_field.clone(),
+                    value,
+                    evidence: evidence.clone(),
+                });
+            }
+        }
     }
 
     ClientContractLearningReport {
@@ -324,6 +346,54 @@ fn stable_invoked_tools(group: &[&ClientContractObservation]) -> BTreeSet<String
         stable.retain(|tool| tools.contains(tool.as_str()));
     }
     stable
+}
+
+fn stable_observed_contract(
+    group: &[&ClientContractObservation],
+) -> BTreeMap<String, BTreeSet<String>> {
+    let mut observations = group.iter();
+    let Some(first) = observations.next() else {
+        return BTreeMap::new();
+    };
+    let mut stable = normalized_contract(&first.observed_contract);
+    for observation in observations {
+        let contract = normalized_contract(&observation.observed_contract);
+        stable.retain(|field, values| {
+            let Some(observed_values) = contract.get(field) else {
+                return false;
+            };
+            values.retain(|value| observed_values.contains(value));
+            !values.is_empty()
+        });
+    }
+    stable
+}
+
+fn normalized_contract(
+    contract: &BTreeMap<String, Vec<String>>,
+) -> BTreeMap<String, BTreeSet<String>> {
+    contract
+        .iter()
+        .filter(|(field, _)| is_observed_contract_field(field))
+        .filter_map(|(field, values)| {
+            let values = values
+                .iter()
+                .map(|value| value.trim())
+                .filter(|value| !value.is_empty())
+                .map(ToOwned::to_owned)
+                .collect::<BTreeSet<_>>();
+            (!values.is_empty()).then(|| (field.clone(), values))
+        })
+        .collect()
+}
+
+fn is_observed_contract_field(field: &str) -> bool {
+    let mut characters = field.chars();
+    matches!(characters.next(), Some('a'..='z'))
+        && characters.all(|character| {
+            character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'
+        })
+        && !matches!(field, "file_delivery" | "required_response_tool")
 }
 
 /// Load observation JSONL documents.
@@ -435,6 +505,7 @@ pub fn observe_proxy_transcript(
         delivery,
         advertised_tools: advertised_tools.into_iter().collect(),
         invoked_tools: invoked_tools.into_iter().collect(),
+        observed_contract: BTreeMap::new(),
         evidence: transcript.to_string_lossy().replace('\\', "/"),
     })
 }

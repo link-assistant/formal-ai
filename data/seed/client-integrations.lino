@@ -380,6 +380,8 @@ client_integrations
     ephemeral
       non_interactive_arg "--print"
       temp_home_env "CLAUDE_CONFIG_DIR"
+      temp_home_config_path ".claude.json"
+      temp_home_json_set "hasCompletedOnboarding=json:true"
       env "ANTHROPIC_AUTH_TOKEN={api_key}"
       env "ANTHROPIC_API_KEY="
       env "ANTHROPIC_BASE_URL={endpoint_base_url}"
