@@ -114,6 +114,11 @@ meanings
     lexeme en
       surface
         text "agentic action ask user"
+  agentic_action_before_tool
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action before tool"
   agentic_action_edit
     defined-by intent
     lexeme en

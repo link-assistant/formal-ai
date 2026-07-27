@@ -88,6 +88,10 @@ pub use google_trends_catalog::{
 pub use google_trends_learning::{
     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
 };
+pub use learning_report::context_hierarchy_learning::{
+    is_context_hierarchy_learning_task, CONTEXT_HIERARCHY_LEARNING_PATH,
+    CONTEXT_HIERARCHY_LEARNING_TASK,
+};
 pub use learning_report::handler_precedence_learning::{
     is_handler_precedence_learning_task, HANDLER_PRECEDENCE_LEARNING_PATH,
     HANDLER_PRECEDENCE_LEARNING_TASK,
