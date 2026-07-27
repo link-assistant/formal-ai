@@ -1,4 +1,29 @@
 meanings
+  pattern_concept_prefix_znachenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix znachenie"
+  pattern_concept_suffix_de_yisi_shi_shenme_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix de yisi shi shenme simplified"
+  pattern_concept_suffix_ka_arth
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth"
+  pattern_concept_suffix_ka_arth_batao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth batao"
+  pattern_concept_suffix_kaun_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kaun hai"
   pattern_concept_suffix_kaun_hain
     defined-by prompt_pattern
     lexeme en
@@ -724,6 +749,86 @@ meanings
     lexeme en
       surface
         text "reserved role"
+  response_agent_procedure_readback_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable en"
+  response_agent_procedure_readback_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable hi"
+  response_agent_procedure_readback_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable ru"
+  response_agent_procedure_readback_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure readback unavailable zh"
+  response_agent_procedure_verification_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed en"
+  response_agent_procedure_verification_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed hi"
+  response_agent_procedure_verification_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed ru"
+  response_agent_procedure_verification_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verification failed zh"
+  response_agent_procedure_verified_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified en"
+  response_agent_procedure_verified_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified hi"
+  response_agent_procedure_verified_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified ru"
+  response_agent_procedure_verified_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure verified zh"
+  response_agent_procedure_write_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable en"
+  response_agent_procedure_write_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable hi"
+  response_agent_procedure_write_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable ru"
+  response_agent_procedure_write_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure write unavailable zh"
   response_agent_suggestion_active_en
     defined-by response_template
     lexeme en
@@ -1289,108 +1394,3 @@ meanings
     lexeme en
       surface
         text "response client contract parse observation error en"
-  response_client_contract_parse_observation_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error hi"
-  response_client_contract_parse_observation_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error ru"
-  response_client_contract_parse_observation_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error zh"
-  response_client_contract_parse_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error en"
-  response_client_contract_parse_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error hi"
-  response_client_contract_parse_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error ru"
-  response_client_contract_parse_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error zh"
-  response_client_contract_read_observations_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error en"
-  response_client_contract_read_observations_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error hi"
-  response_client_contract_read_observations_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error ru"
-  response_client_contract_read_observations_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error zh"
-  response_client_contract_read_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error en"
-  response_client_contract_read_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error hi"
-  response_client_contract_read_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error ru"
-  response_client_contract_read_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error zh"
-  response_client_integration_invalid_typed_json_setting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting en"
-  response_client_integration_invalid_typed_json_setting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting hi"
-  response_client_integration_invalid_typed_json_setting_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting ru"
-  response_client_integration_invalid_typed_json_setting_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting zh"
-  response_comparison_decomposed_evidence_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence en"
-  response_comparison_decomposed_evidence_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response comparison decomposed evidence hi"

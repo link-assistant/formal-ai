@@ -16,7 +16,9 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed;
-use crate::skill_procedure::{compile_procedure, CompiledProcedure, ProcedureCompileError};
+use crate::skill_procedure::{
+    compile_procedure, CompiledProcedure, ProcedureCompileError, ProcedureLearningProposal,
+};
 
 use super::finalize_simple;
 
@@ -29,6 +31,10 @@ pub fn try_compiled_procedure(
     match compile_procedure(prompt) {
         Ok(procedure) => {
             log.append("skill_compile:procedure", procedure.id.clone());
+            log.append(
+                "skill_compile:procedure_artifact",
+                procedure.artifact_links_notation(),
+            );
             for step in &procedure.steps {
                 log.append(
                     "skill_compile:procedure_step",
@@ -45,9 +51,19 @@ pub fn try_compiled_procedure(
                 1.0,
             ))
         }
-        Err(ProcedureCompileError::UncompilableStep { step, gap, .. }) => {
+        Err(error @ ProcedureCompileError::UncompilableStep { .. }) => {
+            let proposal = ProcedureLearningProposal::from_compile_error(&error)
+                .expect("an uncompilable procedure step always produces a proposal");
+            let ProcedureCompileError::UncompilableStep { step, gap, .. } = error else {
+                unreachable!("matched above")
+            };
             log.append("skill_gap", gap.clone());
-            let body = render_procedure_gap(&step, &gap, language);
+            log.append("skill_learning_proposal", proposal.id.clone());
+            log.append(
+                "skill_learning_proposal:artifact",
+                proposal.links_notation(),
+            );
+            let body = render_procedure_gap(&step, &gap, &proposal, language);
             Some(finalize_simple(
                 prompt,
                 log,
@@ -70,22 +86,29 @@ fn template(intent: &str, language: &str) -> String {
 
 /// The compiled program, its steps, and how to run it.
 ///
-/// The prose lives in `data/seed/multilingual-responses.lino` under the
-/// `compiled_procedure` intent; this function only fills `{program}` and `{steps}`.
+/// The prose lives in `data/seed/multilingual-responses-procedure.lino` under the
+/// `compiled_procedure` intent; this function fills the complete persisted artifact
+/// and the inspectable step restatement.
 #[allow(clippy::literal_string_with_formatting_args)]
 fn render_compiled_procedure(procedure: &CompiledProcedure, language: &str) -> String {
     template("compiled_procedure", language)
-        .replace("{program}", &procedure.links_notation())
+        .replace("{program}", &procedure.artifact_links_notation())
         .replace("{steps}", &procedure.restate_steps())
 }
 
 /// The honest named gap: which clause has no compiled capability, and what follows.
 ///
-/// The prose lives under the `skill_gap` intent; this function fills `{step}` and
-/// `{gap}` only.
+/// The prose lives under the `skill_gap` intent; this function fills the named
+/// gap and the non-executable, human-gated learning proposal.
 #[allow(clippy::literal_string_with_formatting_args)]
-fn render_procedure_gap(step: &str, gap: &str, language: &str) -> String {
+fn render_procedure_gap(
+    step: &str,
+    gap: &str,
+    proposal: &ProcedureLearningProposal,
+    language: &str,
+) -> String {
     template("skill_gap", language)
         .replace("{step}", step)
         .replace("{gap}", gap)
+        .replace("{proposal}", &proposal.links_notation())
 }

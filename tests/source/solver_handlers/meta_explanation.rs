@@ -2,7 +2,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{self, response_for, Slot};
-use crate::skill_procedure::{compile_procedure, CompiledProcedure};
+use crate::skill_procedure::{extract_compiled_procedure_artifact, CompiledProcedure};
 
 use super::finalize_simple;
 use super::self_awareness::{
@@ -84,29 +84,27 @@ fn why_explanation_body(language: &str) -> String {
     }
 }
 
-/// Recover the most recent procedure compiled earlier in this dialog.
+/// Recover the most recent persisted artifact from an earlier assistant turn.
 ///
-/// Issue #674: compiled procedures stay inspectable across turns without extra
-/// state. Conversation history reaches handlers as `prior_turn:user` events, so the
-/// latest user message that still compiles *is* the compiled artifact — the same
-/// recompile-from-history mechanism `behavior_rules::collect_runtime_rules` uses.
+/// The original user prose is deliberately not recompiled: the explanation cites
+/// the exact integrity-checked program that was published and could be executed.
 fn compiled_procedure_from_history(log: &EventLog) -> Option<CompiledProcedure> {
     log.events()
         .iter()
         .rev()
-        .filter(|event| event.kind == "prior_turn:user")
-        .find_map(|event| compile_procedure(&event.payload).ok())
+        .filter(|event| event.kind == "prior_turn:assistant")
+        .find_map(|event| extract_compiled_procedure_artifact(&event.payload).ok())
 }
 
 /// Cite the compiled steps and the source sentence spans they were read from.
 fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> String {
-    let heading = match language {
-        "ru" => "Последняя скомпилированная процедура — я выполнил её шаги по порядку:",
-        "hi" => "पिछली compile की गई procedure — मैंने इसके steps क्रम से चलाए:",
-        "zh" => "上一次编译的流程——我按顺序执行了它的步骤：",
-        _ => "The last compiled procedure — I ran its steps in order:",
-    };
-    format!("\n\n{heading}\n\n{}", procedure.restate_steps())
+    let template = response_for("compiled_procedure_explanation", language)
+        .or_else(|| response_for("compiled_procedure_explanation", "en"))
+        .unwrap_or_default();
+    format!(
+        "\n\n{}",
+        template.replace("{steps}", &procedure.restate_steps())
+    )
 }
 
 /// True when the prompt asks the assistant to justify its previous answer.

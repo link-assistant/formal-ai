@@ -1,21 +1,18 @@
-# Issue 674: compiling arbitrary natural-language programs
+# Issue 674: compiling and learning natural-language procedures
 
-Issue [#674](https://github.com/link-assistant/formal-ai/issues/674) (E55) closes
-the last `ARCHITECTURE.md` §16 question carried from the E20 batch: procedures a
-user states in ordinary prose fell outside the trigger/response subset
-`src/skill_compiler.rs` recognizes, so `docs/USER-JOURNEYS.md` F2 — "Wei compiles
-a natural-language skill" — could only be scaffolded.
+Issue [#674](https://github.com/link-assistant/formal-ai/issues/674) closes the
+`ARCHITECTURE.md` §16 question carried from the E20 batch. The old skill
+compiler understood quoted trigger/response rules and labelled `Skill`/`Step`
+forms, but not a procedure stated as ordinary prose. `docs/USER-JOURNEYS.md` F2
+therefore stopped before a stored program could be inspected, replayed, or used
+by the Agent CLI.
 
-## What compiles now
-
-The reference procedure from the journey, phrased as running prose that matches
-no existing compiler template:
+The reference impulse is deliberately not an existing template:
 
 > When I paste a link, fetch its title, translate it to Russian, save both, and
 > reply with the translation.
 
-`compile_procedure` in `src/skill_procedure.rs` reads it as one trigger plus four
-ordered steps:
+It becomes one trigger and four ordered typed operations:
 
 ```text
 1. skill_procedure_fetch(skill_procedure_object_title) — "fetch its title" [21..36]
@@ -24,69 +21,118 @@ ordered steps:
 4. skill_procedure_reply(skill_procedure_object_translation) — "reply with the translation" [78..104]
 ```
 
-Every span is a byte range into the original request, which is what makes the
-compiled skill answerable to *"why did you do that?"*: the rationale quotes the
-words each step came from rather than paraphrasing them.
+## One decomposition path
 
-## Three design decisions
+The procedure compiler does not own a second sentence splitter.
+`ordered_requirement_spans` in `src/intent_formalization.rs` is the shared
+decomposition primitive used by both the solver's problem-frame construction
+and procedure compilation. Separators come from
+`ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR`; punctuation, multilingual surfaces,
+and original UTF-8 byte offsets are handled in one place.
 
-**The vocabulary is data, not match arms.** Step verbs, step objects, clause
-connectives, and trigger leads all live in
-`data/seed/meanings-skill-procedure.lino` under the `skill_procedure_*` roles
-(the operation-vocabulary precedent from E33). The meaning slug *is* the
-canonical step kind — `skill_procedure_fetch` is both the seed entry and the kind
-a `ProcedureHost` dispatches on — so adding a capability is a seed edit plus a
-host arm, never a new branch in the parser.
+After its cheap procedure-shape guards pass, `compile_procedure_with_ledger`
+calls `formalize_intent`, retains the same stable impulse id, and materializes
+every ordered clause as a `ProcedureRequirement`. The trigger and each
+executable step point back to the requirement they realize. This makes the
+chain inspectable:
 
-**The compiled program is language-independent.** `links_notation` and
-`link_records` project canonical slugs only; no source text reaches the export.
-The English, Russian, Hindi, and Chinese phrasings of the reference procedure all
-content-address to the same id and the same skill links, while each keeps its own
-citations. That is the round-trip guard the issue asked for.
+```text
+user impulse
+  -> formalized impulse id
+  -> ordered source-grounded requirements
+  -> typed trigger and steps
+  -> canonical program
+  -> content-addressed artifact
+```
 
-**A gap compiles nothing.** When a clause has no vocabulary entry the compiler
-returns `ProcedureCompileError::UncompilableStep` naming the clause, its span, and
-`no compiled capability for "…"`. `src/solver_handlers/procedure_rules.rs`
-appends a `skill_gap` event and replies with that gap in the user's language. No
-partial program is emitted, because a half-compiled procedure would run steps the
-user did not agree to stop at.
+Two guards prevent ordinary prompts from being hijacked. A program needs a
+seeded trigger lead and at least two recognized operations. A named capability
+gap is returned only after the prompt has proved that it is a procedure.
 
-**No sentence is typed into the engine.** Both replies — the compiled-skill
-answer and the gap report — and the gap name itself are templates in
-`data/seed/multilingual-responses.lino` (`compiled_procedure`, `skill_gap`,
-`skill_gap_name`, each in en/ru/hi/zh), looked up with `seed::response_for`. The
-handler fills `{program}`, `{steps}`, `{step}`, and `{gap}` and nothing else, so
-the R379 guard (`scripts/check-hardcoded-language.rs`) stays green and a fifth
-language is a data edit. One wording constraint surfaced while migrating: the
-canonical Links Notation parser rejects a `:` that follows an escaped quote in
-the same quoted value, so the English gap line reads `… the step "{step}" —
-{gap}.` (probe: `experiments/issue-674-lino-escape-probe.rs`).
+## Two views of one compiled program
 
-## Why the compiler cannot hijack ordinary prompts
+`CompiledProcedure::links_notation` is the canonical semantic view. It contains
+only meaning slugs, so equivalent English, Russian, Hindi, and Chinese impulses
+produce byte-identical canonical links and the same content id.
 
-Two guards must both hold before a prompt is treated as a program: it must open
-with a seeded trigger lead, and at least two of its clauses must resolve to step
-verbs. A gap is reported only after the prompt has already proved itself a
-procedure by that test, so an ordinary sentence containing an unknown verb falls
-through to the normal pipeline rather than being refused.
+`CompiledProcedure::artifact_links_notation` is the durable executable view. It
+adds the source impulse, formalized impulse id, ordered requirements, source
+spans, trigger, steps, and canonical program. Its parser recomputes the
+canonical program, package id, step ids, ordering, and source-span integrity.
+A modified or incomplete artifact is rejected.
+
+The generic `ProcedureHost` interpreter walks a parsed artifact in order and
+threads each result into the next operation. No generated Rust or JavaScript
+handler is needed: hosts provide permissioned semantics for canonical operation
+kinds, while the stored `.lino` remains the reviewable program. The solver,
+interpreter, later *"why did you do that?"* answer, and Agent planner all consume
+the same artifact. The explanation handler reads the earlier assistant artifact;
+it does not recompile mutable conversation prose.
+
+## Honest failure and human-gated learning
+
+A clause with no typed operation aborts the entire compile with
+`ProcedureCompileError::UncompilableStep`. It records the exact clause, byte
+span, and `no compiled capability for "…"`. The solver emits `skill_gap` plus a
+complete `procedure_learning_proposal` artifact and compiles no prefix.
+
+That proposal is an automatic learning signal, not an automatic permission to
+execute new behavior. Promotion into the append-only
+`data/meta/procedure-capability-ledger.lino` requires all of the following:
+
+1. a canonical kind that already has typed host semantics;
+2. non-empty, unique reviewed surfaces for en, ru, hi, and zh;
+3. a named regression suite with at least one pass and zero failures;
+4. explicit approval by a non-empty human reviewer.
+
+Declined review, a red suite, unknown operation kinds, duplicate proposals, and
+missing language parity are rejected. Approved surfaces enter the same
+data-driven classifier as seed vocabulary after restart; they do not create a
+new Rust parser branch. A genuinely new operation still needs an explicit
+permissioned host implementation, which keeps learning from silently inventing
+side effects.
+
+## Agent CLI execution
+
+Agent mode routes the same arbitrary procedure through
+`src/agentic_coding/procedure.rs`. The external Agent CLI receives the Formal AI
+server's tool calls, writes `compiled-procedure.lino`, reads it back for
+verification, and returns the same artifact and source-cited restatement.
+
+`experiments/issue-674-agent-cli/run.sh` is the reproducible driver. It compares
+the Agent-authored file byte-for-byte with
+`data/meta/issue-674-compiled-procedure.lino`. The retained server log, external
+Agent stream, session evidence, and authored artifact live under
+`docs/case-studies/issue-674/agent-cli/`.
+
+## Seeded language, not handler prose
+
+Step verbs, objects, trigger leads, and separators live in
+`data/seed/meanings-skill-procedure.lino`. User-visible compiled, explanation,
+gap, and learning-proposal text lives in
+`data/seed/multilingual-responses-procedure.lino` for en/ru/hi/zh. Rust fills artifact
+placeholders only. The canonical gap name stays English because it is an
+identity-bearing event value; the surrounding response is localized.
 
 ## Verification
 
-`cargo test arbitrary_skill_compilation` covers the acceptance criteria:
+`cargo test arbitrary_skill_compilation` covers the original criteria and the
+review-expanded whole-task path:
 
-- `arbitrary_four_step_procedure_compiles_executes_and_restates_its_steps` —
-  compiles, runs every step through a host threading each output into the next,
-  and checks each citation against the original bytes;
-- `same_procedure_in_every_supported_language_compiles_to_the_same_skill_links` —
-  byte-identical links and one shared id across en/ru/hi/zh;
-- `uncompilable_step_reports_a_named_gap_and_compiles_nothing_partially` and
-  `solver_answers_an_uncompilable_step_with_the_gap_and_a_skill_gap_event` — the
-  honest gap and its event;
-- `solver_compiles_a_freely_phrased_procedure_and_can_restate_it_later` — the
-  end-to-end solver path, including the later "why did you do that?" turn.
+- arbitrary prose compiles and executes in order;
+- all source clauses become formalized requirements with exact spans;
+- en/ru/hi/zh produce identical canonical links and ids;
+- an unknown operation emits a named gap and no partial program;
+- the complete artifact round-trips, rejects tampering, and executes after
+  parsing;
+- *"why?"* succeeds from the persisted assistant artifact without the original
+  user turn;
+- automatic proposals remain inert until green tests and human approval, then
+  survive a ledger round-trip and generalize in all four languages;
+- the solver, interpreter, explanation, in-repo Agent planner, and external
+  Agent CLI use the same artifact bytes.
 
-`examples/issue_674_procedure_compiler.rs` runs the same four phrasings and the
-gap case as a demonstration:
+For an interactive compiler demonstration:
 
 ```bash
 cargo run --example issue_674_procedure_compiler

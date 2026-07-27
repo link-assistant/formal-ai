@@ -54,7 +54,9 @@ pub use embedded::{
     RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
-pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
+pub use meanings::{
+    lexicon, parse_lexicon_text, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm,
+};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };

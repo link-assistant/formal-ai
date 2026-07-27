@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/mod.rs
   language rust
   fidelity full_ast
-  byte_len 5349
-  line_count 129
-  content_id source_module_a981aa90d9940255
-  symbol_count 41
+  byte_len 5454
+  line_count 131
+  content_id source_module_4c498c1279f2ca65
+  symbol_count 42
   symbols
     module associative_learning 21 21
     module capability_router 22 22
@@ -34,38 +34,40 @@ self_ast_census
     module meaning_detail 45 45
     module narration 46 46
     module planner 47 47
-    module progress 48 48
-    module question_catalog 49 49
-    module rebuild_plan 50 50
-    module repair_strategy 51 51
-    module report_issue 52 52
-    module report_script 53 53
-    module routing_learning 54 54
-    module self_ast 55 55
-    module self_heal 56 56
-    module shell_command 57 57
-    module source_links 58 58
-    module statement_audit 59 59
-    module tool_result 60 60
-    module web_research 61 61
+    module procedure 48 48
+    module progress 49 49
+    module question_catalog 50 50
+    module rebuild_plan 51 51
+    module repair_strategy 52 52
+    module report_issue 53 53
+    module report_script 54 54
+    module routing_learning 55 55
+    module self_ast 56 56
+    module self_heal 57 57
+    module shell_command 58 58
+    module source_links 59 59
+    module statement_audit 60 60
+    module tool_result 61 61
+    module web_research 62 62
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2616
-    named_node_count 434
-    distinct_node_kinds 12
+    total_link_count 2689
+    named_node_count 446
+    distinct_node_kinds 13
     node_kinds
       crate 5
       doc_comment 19
-      identifier 176
+      identifier 181
       inner_doc_comment_marker 19
       line_comment 19
-      mod_item 41
+      mod_item 42
       scoped_identifier 8
-      scoped_use_list 28
+      scoped_use_list 29
       source_file 1
-      use_declaration 31
-      use_list 28
-      visibility_modifier 59
+      use_as_clause 1
+      use_declaration 32
+      use_list 29
+      visibility_modifier 61

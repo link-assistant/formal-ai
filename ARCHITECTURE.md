@@ -793,19 +793,30 @@ before falling back to behavior-rule re-derivation; a replay appends
 `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
 
 `src/skill_procedure.rs` covers the prose that falls outside that typed shape
-(E55, issue #674). It splits a request such as "when I paste a link, fetch its
-title, translate it to Russian, save both, and reply with the translation" into
-ordered clauses and maps each clause onto a step verb seeded in
-`data/seed/meanings-skill-procedure.lino`, so the vocabulary grows as data. Two
-guards keep ordinary prompts out: the request needs a seeded trigger lead and at
-least two recognized steps. The compiled program is projected from canonical
-slugs only, so the English, Russian, Hindi, and Chinese phrasings of one
-procedure content-address to the same id and the same `LinkRecord`s. Each step
-keeps the source sentence span it was read from, which is what
-`src/solver_handlers/meta_explanation.rs` quotes when asked *"why did you do
-that?"*. A clause with no vocabulary entry compiles nothing at all:
-`src/solver_handlers/procedure_rules.rs` answers with the named gap and appends a
-`skill_gap` event rather than dropping the step.
+(E55, issue #674). It reuses `intent_formalization::ordered_requirement_spans`
+to decompose a request such as "when I paste a link, fetch its title, translate
+it to Russian, save both, and reply with the translation", then maps each
+source-grounded requirement onto a step verb seeded in
+`data/seed/meanings-skill-procedure.lino`. Two guards keep ordinary prompts out:
+the request needs a seeded trigger lead and at least two recognized steps. The
+canonical program contains meaning slugs only, so English, Russian, Hindi, and
+Chinese phrasings content-address to the same id and `LinkRecord`s.
+
+The durable artifact adds the formalized impulse id, ordered requirements,
+source spans, trigger, and typed steps. Parsing it recomputes its canonical
+program and ids and validates its provenance before the generic
+`ProcedureHost` interpreter may walk it. The solver publishes this artifact,
+the later *"why did you do that?"* handler restores it without recompiling
+conversation prose, and the Agent planner writes and reads back the same bytes
+before claiming success.
+
+A clause with no vocabulary entry compiles nothing at all:
+`src/solver_handlers/procedure_rules.rs` answers with the named gap, appends a
+`skill_gap` event, and emits a review-only learning proposal rather than
+dropping the step. A proposal can add multilingual aliases to the durable
+capability ledger only for an existing typed operation, after a green
+regression gate and explicit human approval; it cannot silently authorize a new
+side effect.
 
 `src/associative_package.rs` is the R65 package boundary. It models
 Deep.Foundation-inspired packages in the local doublet architecture with
@@ -1245,16 +1256,14 @@ each source has a 3-check repository-local 10% floor and must pass the stronger
 30/30 local ratchet.
 
 Arbitrary natural-language programming beyond the trigger/response subset of
-`src/skill_compiler.rs` is closed by E55 (issue #674): `src/skill_procedure.rs`
-compiles a freely phrased multi-step procedure by splitting it into ordered
-clauses and mapping each onto the step vocabulary seeded in
-`data/seed/meanings-skill-procedure.lino` — so growing the vocabulary is a data
-edit, not a new Rust match arm. The compiled program carries canonical slugs
-only, which is why the same procedure stated in English, Russian, Hindi, or
-Chinese content-addresses to one identical set of skill links. A clause with no
-vocabulary entry compiles nothing: the solver replies with the named gap and
-records a `skill_gap` event, and every compiled step keeps the source sentence
-span it was read from so *"why did you do that?"* can quote it.
+`src/skill_compiler.rs` is closed by E55 (issue #674): the shared intent
+formalizer decomposes freely phrased procedures into ordered source-grounded
+requirements; `src/skill_procedure.rs` lowers all of them into typed operations,
+persists an integrity-checked executable artifact, and interprets it through a
+permissioned host. Canonical slugs give equivalent en/ru/hi/zh procedures one
+set of skill links. Unknown steps produce a named gap and an inert,
+human-gated learning proposal with no partial compile. The solver, explanation
+handler, and Agent CLI route all use the same persisted artifact.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.

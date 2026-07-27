@@ -305,8 +305,12 @@ pub use skill_compiler::{
     CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
 };
 pub use skill_procedure::{
-    compile_procedure, CompiledProcedure, ProcedureCompileError, ProcedureHost, ProcedureRun,
-    ProcedureRunError, ProcedureStep, ProcedureTrigger, StepOutcome,
+    compile_procedure, compile_procedure_with_ledger, extract_compiled_procedure_artifact,
+    ApprovedProcedureLesson, CompiledProcedure, ProcedureArtifactError, ProcedureCapabilityLedger,
+    ProcedureCapabilityLesson, ProcedureCompileError, ProcedureHost, ProcedureLearnedSurface,
+    ProcedureLearningApproval, ProcedureLearningError, ProcedureLearningGate,
+    ProcedureLearningProposal, ProcedureRequirement, ProcedureRun, ProcedureRunError,
+    ProcedureStep, ProcedureTrigger, StepOutcome,
 };
 pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,

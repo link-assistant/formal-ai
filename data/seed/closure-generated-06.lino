@@ -1,4 +1,129 @@
 meanings
+  were
+    defined-by concept
+    lexeme en
+      surface
+        text "were"
+  wget
+    defined-by token
+    lexeme en
+      surface
+        text "wget"
+  whitespace
+    defined-by concept
+    lexeme en
+      surface
+        text "whitespace"
+  whoami
+    defined-by concept
+    lexeme en
+      surface
+        text "whoami"
+  wikibooks
+    defined-by source
+    lexeme en
+      surface
+        text "wikibooks"
+  wikidata
+    defined-by source
+    lexeme en
+      surface
+        text "wikidata"
+  wikifunctions
+    defined-by source
+    lexeme en
+      surface
+        text "wikifunctions"
+  wikihow
+    defined-by source
+    lexeme en
+      surface
+        text "wikihow"
+  wikinews
+    defined-by source
+    lexeme en
+      surface
+        text "wikinews"
+  wikipedia
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wikipedia"
+  wikipedia_article_question
+    defined-by intent
+    lexeme en
+      surface
+        text "wikipedia article question"
+  wikipedia_fallback_language
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia fallback language"
+  wikipedia_lookup
+    defined-by name
+    lexeme en
+      surface
+        text "wikipedia lookup"
+  wikipedia_summary_endpoint_template
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia summary endpoint template"
+  wikiversity
+    defined-by source
+    lexeme en
+      surface
+        text "wikiversity"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"
+  wiktionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wiktionary"
+  will
+    defined-by concept
+    lexeme en
+      surface
+        text "will"
+  wordnet
+    defined-by source
+    lexeme en
+      surface
+        text "wordnet"
+  words
+    defined-by concept
+    lexeme en
+      surface
+        text "words"
+  world_state_reached
+    defined-by intent
+    lexeme en
+      surface
+        text "world state reached"
+  world_state_remaining
+    defined-by intent
+    lexeme en
+      surface
+        text "world state remaining"
+  would
+    defined-by concept
+    lexeme en
+      surface
+        text "would"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
+  writing
+    defined-by word_surface
+    lexeme en
+      surface
+        text "writing"
   your
     defined-by word_surface
     lexeme en

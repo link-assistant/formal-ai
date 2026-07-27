@@ -99,6 +99,26 @@ meanings
     lexeme en
       surface
         text "advertising platform"
+  agent_procedure_readback_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure readback unavailable"
+  agent_procedure_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verification failed"
+  agent_procedure_verified
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verified"
+  agent_procedure_write_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure write unavailable"
   agent_suggestion
     defined-by intent
     lexeme en
@@ -584,6 +604,11 @@ meanings
     lexeme en
       surface
         text "compiled procedure"
+  compiled_procedure_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure explanation"
   concept_lookup
     defined-by intent
     lexeme en
@@ -880,7 +905,7 @@ meanings
       surface
         text "df"
   did
-    defined-by word_surface
+    defined-by concept
     lexeme en
       surface
         text "did"
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "intent url navigate"
-  intent_web_search
-    defined-by intent
-    lexeme en
-      surface
-        text "intent web search"
-  intent_wellbeing
-    defined-by intent
-    lexeme en
-      surface
-        text "intent wellbeing"
-  intent_write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "intent write program"
-  interface
-    defined-by concept
-    lexeme en
-      surface
-        text "interface"
-  invert
-    defined-by concept
-    lexeme en
-      surface
-        text "invert"

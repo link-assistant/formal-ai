@@ -28,6 +28,7 @@ use super::learning_report;
 use super::ledger;
 use super::local_search;
 use super::meaning_detail;
+use super::procedure;
 pub(super) use super::progress::Progress;
 use super::question_catalog;
 use super::rebuild_plan;
@@ -162,6 +163,11 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
     {
         return Some(plan);
+    }
+    // A freely phrased procedure is one generalized compile → persist → verify
+    // recipe on both the symbolic and Agent CLI surfaces.
+    if let Some(procedure) = procedure::compile_task(&task) {
+        return Some(procedure::plan_step(messages, tool_names, &procedure));
     }
     // Specific self-inspection routes precede broad formalization. Associative
     // learning comes before self-healing because both accept auto-learning terms;

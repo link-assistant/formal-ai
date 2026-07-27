@@ -25,6 +25,9 @@ use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 use crate::{concepts, cue_lexicon};
 
+mod requirements;
+pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
     Task,

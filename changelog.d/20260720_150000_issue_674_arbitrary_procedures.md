@@ -3,8 +3,9 @@ bump: minor
 ---
 
 ### Added
-- Freely phrased multi-step procedures now compile into typed, executable skills: `src/skill_procedure.rs` splits a request such as "when I paste a link, fetch its title, translate it to Russian, save both, and reply with the translation" into ordered clauses and maps each onto the step vocabulary seeded in `data/seed/meanings-skill-procedure.lino` (issue #674).
+- Freely phrased multi-step procedures now reuse the solver's intent formalization and shared source-span decomposition before lowering every ordered requirement into a typed executable operation (issue #674).
 - The compiled program carries canonical slugs only, so the English, Russian, Hindi, and Chinese phrasings of the same procedure content-address to one identical set of skill links (issue #674).
-- Compiled procedures stay inspectable: every step records the source sentence span it was read from, and "why did you do that?" re-states the compiled steps with those spans (issue #674).
-- A step outside the vocabulary now compiles nothing at all: the solver replies with the named gap ("no compiled capability for …") and records a `skill_gap` event instead of silently dropping the step (issue #674).
-- Every sentence the procedure compiler shows the user — the compiled-skill reply, the run-and-cite hint, and the gap report and its capability name — is seeded prose under the `compiled_procedure`, `skill_gap`, and `skill_gap_name` intents in `data/seed/multilingual-responses.lino` (en, ru, hi, zh); the handler only fills `{program}`, `{steps}`, `{step}`, and `{gap}`, so R379 holds and a new language is a data change (issue #674).
+- Complete `.lino` procedure artifacts now round-trip through integrity validation and a generic host interpreter; the solver, later "why?" explanation, and Agent planner consume that persisted artifact instead of recompiling prose (issue #674).
+- A step outside the vocabulary compiles nothing at all and records a complete review-only learning proposal. Multilingual aliases can enter the durable procedure-capability ledger only for an existing typed operation, after a green regression suite and explicit human approval (issue #674).
+- Formal AI's Agent path writes the same compiled artifact, reads it back for verification, and returns its source-cited restatement; a reproducible external Agent CLI replay preserves byte-exact evidence (issue #674).
+- Every sentence the procedure compiler shows the user — compiled output, later explanation, named gap, and proposal notice — is seeded prose under `compiled_procedure`, `compiled_procedure_explanation`, `skill_gap`, and `skill_gap_name` in en/ru/hi/zh (issue #674).

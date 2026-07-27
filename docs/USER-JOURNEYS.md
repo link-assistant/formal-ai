@@ -290,6 +290,33 @@ is data-driven and configurable through the seed.
   [`VISION.md`](../VISION.md#current-direction) and
   [`ROADMAP.md`](../ROADMAP.md).
 
+### F2 — Wei compiles a natural-language skill
+
+- **Persona & pain:** Wei wants to write a skill in plain language and have the
+  agent execute or compile it.
+- **Journey today:** Wei states the procedure in plain language — *"when I paste
+  a link, fetch its title, translate it to Russian, save both, and reply with
+  the translation"* — and the shared intent formalizer decomposes it into
+  source-grounded requirements. `src/skill_procedure.rs` lowers those
+  requirements into an ordered typed `.lino` artifact whose operations come
+  from seeded and human-approved vocabulary. The stored artifact is parsed,
+  integrity-checked, and walked step by step through a permissioned host; it
+  re-states the exact source spans and compiles identically from Russian, Hindi,
+  and Chinese. A step outside the vocabulary compiles nothing, records a named
+  review-only learning proposal, and can enter the durable ledger only after
+  green regression tests and explicit human approval. Formal AI's Agent path
+  writes, reads back, and returns the same artifact through the external Agent
+  CLI.
+- **Why it matters:** *Computation Model* describes five rule shapes ranked from
+  most reviewable to most flexible, with natural-language skills at the flexible
+  end.
+- **Status:** Supported today for freely phrased procedures through
+  [#674](https://github.com/link-assistant/formal-ai/issues/674)
+  (`cargo test arbitrary_skill_compilation`). Stored `.lino` procedures are
+  walked by the generic interpreter; generating a bespoke Rust/JS handler is
+  intentionally unnecessary for these typed operations. See
+  *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
+
 ---
 
 ## Potential Future Journeys
@@ -313,27 +340,6 @@ vision text that motivates it; build status stays in
 - **Status:** Potential future; the interactive step-by-step debugging view is
   tracked by [#667](https://github.com/link-assistant/formal-ai/issues/667). See
   *Operating Principles* and the *visual graph* non-goal.
-
-### F2 — Wei compiles a natural-language skill
-
-- **Persona & pain:** Wei wants to write a skill in plain language and have the
-  agent execute or compile it.
-- **Journey today:** Wei states the procedure in plain language — *"when I paste
-  a link, fetch its title, translate it to Russian, save both, and reply with
-  the translation"* — and `src/skill_procedure.rs` compiles it into an ordered,
-  typed program whose steps come from the seeded vocabulary in
-  `data/seed/meanings-skill-procedure.lino`. The compiled skill executes step by
-  step through a host, re-states its steps with the source spans they were read
-  from, and compiles identically from the Russian, Hindi, and Chinese phrasings.
-  A step outside the vocabulary compiles nothing and is reported as a named gap.
-- **Why it matters:** *Computation Model* describes five rule shapes ranked from
-  most reviewable to most flexible, with natural-language skills at the flexible
-  end.
-- **Status:** Implemented for freely-phrased procedures by
-  [#674](https://github.com/link-assistant/formal-ai/issues/674)
-  (`cargo test arbitrary_skill_compilation`); walking a stored `.lino` skill and
-  compiling it into a Rust/JS handler remains potential future. See
-  *Computation Model* in [`VISION.md`](../VISION.md#computation-model).
 
 ### F3 — Olúwa syncs memory to the cloud and across devices
 
@@ -411,7 +417,7 @@ today, ○ = potential future on that surface.
 | J10 Bounded agent task | ● | ● | ● | ○ | ● | ○ |
 | J11 Edit the previous answer | ● | ● | ● | ● | ● | ● |
 | F1 Visual graph | ○ | — | — | ○ | — | ○ |
-| F2 Compiled skills | ○ | ○ | ○ | ○ | ○ | ○ |
+| F2 Compiled skills | ● | ● | ● | ● | ● | ● |
 | F3 Cloud memory sync | ○ | ○ | ○ | ○ | ○ | ○ |
 | F4 Search-based solving | ○ | ○ | ○ | ○ | ○ | ○ |
 | F5 WebVM execution | — | — | — | ○ | — | ○ |

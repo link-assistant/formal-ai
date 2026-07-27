@@ -14,9 +14,12 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
+    include_str!("../../../data/seed/multilingual-responses-procedure.lino");
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
 ];
 pub const CONCEPTS_LINO: &str = include_str!("../../../data/seed/concepts.lino");
 pub const CONCEPT_CONTEXTS_LINO: &str = include_str!("../../../data/seed/concept-contexts.lino");

@@ -2,12 +2,12 @@ self_ast_census
   target src/solver_handlers/procedure_rules.rs
   language rust
   fidelity signature
-  byte_len 3641
-  line_count 91
-  content_id source_module_9ca09e1f89cfaa18
+  byte_len 4569
+  line_count 114
+  content_id source_module_72fb99dc4ea17ecb
   symbol_count 4
   symbols
-    function try_compiled_procedure 24 62
-    function template 65 69
-    function render_compiled_procedure 76 80
-    function render_procedure_gap 87 91
+    function try_compiled_procedure 26 78
+    function template 81 85
+    function render_compiled_procedure 93 97
+    function render_procedure_gap 104 114
