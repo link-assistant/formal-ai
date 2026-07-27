@@ -94,6 +94,87 @@ test asserts.
 mode knobs in `SolverConfig`.
 **Prior art.** Feature flags with a shadow/trace mode before enforcement.
 
+## R702-9 — Acceptance suite and benchmark ratchet
+
+**Plan.** Cover the scripted dialogue, dependency recalculation, safe and
+destructive predictions, and merge/split round-trip as direct behavior tests.
+Replay sixteen self-authored bAbI-shaped dialogues across en/ru/hi/zh and reject
+any pass count below the committed `minimum_pass_count`.
+**Reuses.** Existing benchmark fixture and ratchet conventions.
+**Prior art.** bAbI state tracking and monotonic quality gates.
+
+## R702-10 — Case-study data and analysis
+
+**Plan.** Retain authenticated issue/PR snapshots, a requirement matrix,
+per-requirement implementation plans, root-cause analysis, and a verification
+map under `docs/case-studies/issue-702/`, then pin their presence and key claims
+with an automated documentation test.
+**Reuses.** The repository's prior case-study layout.
+**Prior art.** Requirements traceability matrices.
+
+## R702-11 — Unlimited nested contexts
+
+**Plan.** Represent every scope with the existing `Context` and keep the
+child→parent relation in `ContextHierarchy`. Walk iteratively with a visited set,
+not recursion or a configured depth constant, so a conversation/dialog/task/PR/
+issue/repository/organization chain and future scopes use the same mechanism.
+Reject missing parents, self-parenting, duplicates, and cycles at mutation time.
+**Reuses.** `Context`, deterministic `BTreeMap` ordering, Links Notation.
+**Prior art.** Lexical environments and dynamically nested configuration scopes.
+
+## R702-12 — Full, isolated, and conditional inheritance
+
+**Plan.** Put an `InheritancePolicy` on each child→parent boundary. `Full` passes
+all ancestor links, `Isolated` stops lookup, and `Conditional` carries
+`LinkPattern`s. Conditions accumulate across boundaries so a distant link is
+visible only if it satisfies at least one pattern from every conditional scope
+it crosses.
+**Reuses.** `LinkPattern`; the new public `LinkPattern::matches` applies the same
+variable-binding semantics as substitution rules.
+**Prior art.** Module export lists, capability attenuation, and lexical shadowing.
+
+## R702-13 — Lazy nearest-first reference resolution
+
+**Plan.** `resolve(start, reference, external_policy)` checks exact `from`
+matches in the start context and walks outward only until the first visible
+match. The result names every inspected context, the resolving context and
+depth, and matched links. A miss is either `Unresolved` or
+`ExternalLookupRequired`; the resolver never performs network work itself.
+**Reuses.** Context links and deterministic Links Notation traces.
+**Prior art.** Lexical name resolution and local-first cache lookup.
+
+## R702-14 — Generalized runtime adoption
+
+**Plan.** Make each dialogue turn a full-inheritance child of the previous turn;
+replace immediate-last-user coreference with the common hierarchy and record its
+resolution trace; replace the agentic research path's private reverse scan; and
+remove the four-level coding-language inheritance cap in both Rust and browser
+implementations, retaining visited-set cycle termination.
+**Reuses.** Existing coreference seeds, research topic extraction, and
+Rust/browser code-idiom catalogs.
+**Prior art.** Scope-chain lookup in interpreters; cycle-safe prototype chains.
+
+## R702-15 — Formal AI Agent CLI self-hosting and learning
+
+**Plan.** Persist the hierarchy failure observations as links, register a
+`LearningReport` descriptor so the shared `AssociativeMemory` adapter performs
+ranking and multi-hop recall, then run that exact issue-702 learning task through
+the repository's OpenAI-compatible Formal AI server from the real external Agent
+CLI. Preserve the exact report, both transcripts, and session provenance; assert
+the retained bytes equal the production renderer.
+**Reuses.** Shared auto-learning renderer, agentic CLI harness, and
+`CONTRIBUTING.md` evidence bundle convention.
+**Prior art.** Compiler bootstrapping and golden artifact comparison.
+
+## R702-16 — Permission-gated general memory
+
+**Plan.** Remove public mutation access to `WorldModel::general` and make
+`commit_current_to_general` accept an explicit `GeneralMemoryPermission`.
+`Denied` returns an error before mutation; `Allowed` performs the existing
+context merge. Keep a read-only accessor for inspection.
+**Reuses.** `Context::merge_from` and fail-closed enum gates.
+**Prior art.** Capability boundaries and explicit transaction authorization.
+
 ## R702-D — bAbI-style tracking slice with a ratchet
 
 **Plan.** [`data/benchmarks/world-state-tracking-suite.lino`](../../../data/benchmarks/world-state-tracking-suite.lino)

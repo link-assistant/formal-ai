@@ -1275,8 +1275,11 @@ layer — utterance classification from cue data, a `DialogueWorldModel` that
 maintains current/target contexts with provenance and a hash-chained
 synchronization log, a chat handler that answers "what is left to do?" from the
 current→target difference in all four languages, and a bAbI-style state-tracking
-benchmark slice with a ratchet. The whole feature is **trace-only until opted
-in**: `SolverConfig::world_model_mode` defaults to `Off`. The case study lives in
+benchmark slice with a ratchet. It also provides one unlimited, explicitly
+inherited context hierarchy for dialogue turns, tasks, pull requests, issues,
+repositories, and organizations, with lazy nearest-first reference resolution.
+The whole feature is **trace-only until opted in**:
+`SolverConfig::world_model_mode` defaults to `Off`. The case study lives in
 `docs/case-studies/issue-702`.
 
 | ID | Requirement | Status |
@@ -1291,6 +1294,12 @@ in**: `SolverConfig::world_model_mode` defaults to `Off`. The case study lives i
 | R702-8 | Keep everything links (no embeddings, no graph/edge/vertex terms), support all four languages, put the knobs in `SolverConfig`, and stay trace-only until opted in. | Implemented by `WorldModelMode::{Off, Track}` in `SolverConfig::world_model_mode` (env override `FORMAL_AI_WORLD_MODEL_MODE`), Links Notation artifacts, and data-driven cue sets. Covered by `the_world_model_mode_is_off_until_it_is_opted_in`, `the_world_model_handler_is_inert_until_the_knob_is_opted_in`, `the_whole_dialogue_model_renders_as_links_notation`, and `the_answer_is_recomputed_from_the_dialogue_and_never_mentions_embeddings`. |
 | R702-9 | Acceptance: a scripted multi-turn dialogue, a premise change with its trace, a prediction that shrinks the diff and flags a destructive action, merge/split round-trips, and a bAbI-style state-tracking benchmark slice with a ratchet. | Implemented by `a_scripted_dialogue_tracks_state_answers_the_goal_question_and_forecasts` plus `data/benchmarks/world-state-tracking-suite.lino` (16 dialogues, en/ru/hi/zh, held-out paraphrases) with the ratchet test `issue_702_world_state_suite_tracks_each_case` (`minimum_pass_count` 16), catalogued in `docs/benchmarks.md`. |
 | R702-10 | Collect the issue data and the analysis under `docs/case-studies/issue-702/`. | Implemented by `docs/case-studies/issue-702/{README.md,requirements.md,solution-plans.md,raw-data/}` and protected by `tests/unit/docs_requirements_issue_702.rs`. |
+| R702-11 | Support unlimited nested contexts for conversation, dialogue, task, pull request, issue, repository, organization, and future scopes. | `ContextHierarchy` in `src/world_model_context.rs` stores named `Context`s and iterative child→parent declarations with cycle rejection and no depth constant. Covered at 320 levels by `reference_resolution_has_no_fixed_context_depth_limit_and_is_lazy`. |
+| R702-12 | Make inheritance explicit: full, fully isolated, or partial and conditional for any link-carried axiom, fact, requirement, or goal. | `InheritancePolicy::{Full, Isolated, Conditional(Vec<LinkPattern>)}` applies conditions cumulatively at every crossed boundary. Covered by `local_links_shadow_fully_inherited_links`, `isolated_contexts_stop_inheritance_and_gate_external_lookup`, and `conditional_inheritance_filters_links_at_every_boundary`. |
+| R702-13 | Resolve references lazily from the closest context outward, stop at the nearest exact match, and reach the outside world only when explicitly allowed. | `ContextHierarchy::resolve` returns a `ReferenceResolution` with ordered `visited` contexts, nearest context/depth, matched links, and `Unresolved` versus `ExternalLookupRequired`; it performs no network action. Covered by the nested-context contract tests and Links Notation trace test. |
+| R702-14 | Apply the generalized resolver in relevant runtime paths and remove obsolete fixed inheritance limits. | Dialogue turns are real nested contexts; solver coreference and agentic research-topic recall use `ContextHierarchy`; coding-idiom inheritance is unbounded but cycle-safe in Rust and the browser worker. Covered by `dialogue_turns_are_real_nested_contexts_not_only_a_standalone_utility`, `runtime_coreference_searches_nearest_relevant_ancestor_turn`, issue-687 research tests, and the Rust/browser parity guard. |
+| R702-15 | Exercise the same task through Formal AI auto-learning and the real Agent CLI, retaining self-hosting evidence required by the contributing workflow. | `context_hierarchy_learning::REPORT` ranks the persisted issue-702 observations through the shared `AssociativeMemory` pipeline; the external Agent CLI wrote and verified the byte-reproducible report in three live server turns. Evidence is retained under `dev/log/issues/702/pulls/818/agent-cli/`. |
+| R702-16 | Treat the dialogue `current` → shared `general` memory transition as an explicit permission boundary. | `WorldModel::general` is read-only and `commit_current_to_general(GeneralMemoryPermission)` fails closed on `Denied`; covered by `dialogue_state_requires_explicit_permission_before_entering_general_memory`. |
 
 ## Issue #834 Legal & Compliance Self-Audit
 

@@ -23,6 +23,7 @@ changes, and predict what an action would do *before* it runs.
 | --- | --- |
 | [`raw-data/issue-702.json`](raw-data/issue-702.json) | Issue body: the eight numbered plans and the acceptance criteria. |
 | [`raw-data/issue-702-comments.json`](raw-data/issue-702-comments.json) | Issue discussion. |
+| [`raw-data/pr-818-comments.json`](raw-data/pr-818-comments.json) | PR conversation clarification requiring unlimited nested contexts, explicit inheritance, lazy reference resolution, and Formal AI Agent CLI evidence. |
 | [`raw-data/issue-651-parent.json`](raw-data/issue-651-parent.json) | Parent epic that groups the world-model work. |
 | [`raw-data/pr-675.json`](raw-data/pr-675.json) | The PR that landed the #649 substrate this issue builds on. |
 
@@ -33,7 +34,9 @@ conversation.
 
 ## 2. Requirements
 
-R702-1 … R702-8 (features) and R702-A … R702-E (acceptance criteria) are stated
+The original feature requirements R702-1 … R702-8, acceptance/data requirements
+R702-9 … R702-10, review clarifications R702-11 … R702-16, and acceptance
+criteria R702-A … R702-I are stated
 verbatim with their status and covering test in
 [`requirements.md`](requirements.md), and mirrored in the repository-level
 [`REQUIREMENTS.md`](../../../REQUIREMENTS.md).
@@ -50,6 +53,16 @@ therefore not in the reasoning substrate but in the **absence of a dialogue→li
 ingestion path and of a handler that answers from the difference**. That is what
 this issue closes.
 
+The PR review exposed a second, more general root cause. Context lookup existed
+as one-off loops: coreference inspected only the last user turn, agentic research
+walked history independently, and coding-idiom inheritance stopped after four
+levels. There was no reusable declaration of parent scope, isolation, or
+conditional visibility, and no inspectable boundary between a local miss and
+permission to consult an outside source. The issue discussion also identified
+the dialogue-local `current` → shared `general` transition as a second
+permission boundary; the original public field and argument-free merge could
+cross it without an explicit decision.
+
 ## 4. Implemented Design
 
 | Layer | Path | Role |
@@ -57,9 +70,13 @@ this issue closes.
 | Utterance classification | [`src/world_model_atoms.rs`](../../../src/world_model_atoms.rs) | `classify` (fact / wish / confirmation / correction / state query) and `state_atom` (`text → SubstitutionLink`), driven entirely by cue data. |
 | Recognition vocabulary | [`data/meta/cue-lexicon.lino`](../../../data/meta/cue-lexicon.lino) | `world_state_target`, `world_state_query`, `world_state_confirm`, `world_state_correct`, `world_state_because`, `world_state_separator`, `world_state_filler` — en/ru/hi/zh, no Rust phrase tables. |
 | Dialogue model | [`src/world_model_dialog.rs`](../../../src/world_model_dialog.rs) | `DialogueWorldModel`: current/target contexts with provenance, hash-chained `SyncEvent` log, `difference`/`remaining`, `depends_on`/`revise_statement`, `forecast`, `merge_from`/`split_current`, `WorldModelMode`, `record_world_model` trace artifact. |
+| Nested contexts | [`src/world_model_context.rs`](../../../src/world_model_context.rs) | `ContextHierarchy`, unlimited cycle-safe nesting, full/isolated/conditional inheritance, and lazy nearest-first `ReferenceResolution` with an explicit outside-lookup decision. |
+| General-memory boundary | [`src/world_model.rs`](../../../src/world_model.rs) | Read-only `general()` plus fail-closed `commit_current_to_general(GeneralMemoryPermission)`. |
+| Runtime reference use | [`src/solver_handlers/benchmark_prompts.rs`](../../../src/solver_handlers/benchmark_prompts.rs), [`src/agentic_coding/web_research.rs`](../../../src/agentic_coding/web_research.rs) | Solver coreference and agentic research-topic recall use the shared hierarchy instead of immediate-turn or private reverse-scan behavior. |
+| Rust/browser inheritance parity | [`src/solver_handlers/numeric_list/codegen.rs`](../../../src/solver_handlers/numeric_list/codegen.rs), [`src/web/worker/formal_ai_worker_07.js`](../../../src/web/worker/formal_ai_worker_07.js) | Coding-language inheritance has no fixed depth cap and stops malformed cycles with a visited set in both runtimes. |
 | Chat surface | [`src/solver_handlers/world_state.rs`](../../../src/solver_handlers/world_state.rs) | Contextual handler: rebuilds the model from `history`, answers `world_state_remaining` / `world_state_reached` from the difference, emits `world_state:*` evidence links. |
 | Dispatch | [`src/solver_dispatch.rs`](../../../src/solver_dispatch.rs) | `"world_state"` in `CONTEXTUAL_HANDLER_NAMES` (contextual handlers receive both history and `SolverConfig`). |
-| Localization | [`data/seed/multilingual-responses.lino`](../../../data/seed/multilingual-responses.lino) | `world_state_remaining` / `world_state_reached` templates in en/ru/hi/zh with `{count}`, `{remaining}`, `{diff_id}` placeholders. |
+| Localization | [`data/seed/multilingual-responses-agentic.lino`](../../../data/seed/multilingual-responses-agentic.lino) | `world_state_remaining` / `world_state_reached` templates in en/ru/hi/zh with `{count}`, `{remaining}`, `{diff_id}` placeholders. |
 | Knob | [`src/solver.rs`](../../../src/solver.rs), [`src/solver_helpers/mod.rs`](../../../src/solver_helpers/mod.rs) | `SolverConfig::world_model_mode` (`Off` by default) with the `FORMAL_AI_WORLD_MODEL_MODE` env override. |
 
 The answer is **computed, not remembered**: the handler rebuilds the model from
@@ -88,6 +105,10 @@ the same answer and no state is cached between turns.
 | bAbI-style tracking slice with the pass-count ratchet (`minimum_pass_count` = 16) | [`tests/unit/specification/world_state_benchmarks.rs`](../../../tests/unit/specification/world_state_benchmarks.rs), [`data/benchmarks/world-state-tracking-suite.lino`](../../../data/benchmarks/world-state-tracking-suite.lino) |
 | Cue sets consulted by Rust all exist in the lexicon data | [`tests/unit/specification/cue_lexicon.rs`](../../../tests/unit/specification/cue_lexicon.rs) |
 | Contextual handler roster stays declared | [`tests/unit/specification/method_registry.rs`](../../../tests/unit/specification/method_registry.rs) |
+| Unlimited nesting, inheritance modes, lazy lookup, outside gate, dialogue/runtime integration, and Rust/browser parity | [`tests/unit/issue_702_nested_contexts.rs`](../../../tests/unit/issue_702_nested_contexts.rs) |
+| Existing agentic research-topic behavior after generalization | `issue_687::learn_about` in [`tests/unit/issue_687.rs`](../../../tests/unit/issue_687.rs) |
+| Derived auto-learning behavior, general-memory permission, and exact retained artifact | [`tests/unit/issue_702_nested_contexts.rs`](../../../tests/unit/issue_702_nested_contexts.rs) |
+| Formal AI Agent CLI self-hosting and learning evidence | [`dev/log/issues/702/pulls/818/analysis.md`](../../../dev/log/issues/702/pulls/818/analysis.md), [`agent-cli/`](../../../dev/log/issues/702/pulls/818/agent-cli/) |
 | Documentation traceability | [`tests/unit/docs_requirements_issue_702.rs`](../../../tests/unit/docs_requirements_issue_702.rs) |
 
 Run them with:

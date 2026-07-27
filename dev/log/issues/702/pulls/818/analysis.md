@@ -66,7 +66,8 @@ python3 scripts/close-total.py                   # unresolved_distinct: 0
 
 ## 5. Attribution
 
-The commits in the range `f32db790..HEAD` were authored in this session and
+The original implementation commits in the range `f32db790..59e6cb4a` were
+authored in this session and
 carry `Formal-AI-Session: issue-702-claude-20260721` together with
 `Formal-AI-Evidence` pointing at this file, per
 [`CONTRIBUTING.md`](../../../../../../CONTRIBUTING.md) § *Recording self-authorship*.
@@ -79,3 +80,48 @@ Reproduce the measurement with:
 ```bash
 python3 experiments/self_hosting_ratchet_replay/replay.py v0.301.0 HEAD
 ```
+
+## 6. Nested-context follow-up — Formal AI Agent CLI evidence
+
+The external `@link-assistant/agent` CLI executed the issue-702 nested-context
+auto-learning task against the repository's release-mode `formal-ai serve`
+endpoint on 2026-07-26. The run used isolated memory and the standard
+`experiments/agent_cli_e2e/run_agent_cli.sh` harness.
+
+### Task
+
+> Use Formal AI auto-learning to inspect the persisted issue 702
+> nested-context failures as an associative links network, rank the hierarchy
+> observations and amendments, keep promotion human-review gated, and write
+> context-hierarchy-learning-report.lino.
+
+Formal AI routed that request to `context_hierarchy_learning::REPORT`. The
+shared associative-memory renderer parsed the persisted observations, ranked
+nine expressions by reads, writes, incoming links, and outgoing links, performed
+bounded recall, and produced a proposal whose promotion gate is
+`nested_context_runtime_and_parity_fixtures_pass`.
+
+### Live replay
+
+- Agent binary: `/home/box/.bun/bin/agent`
+- Formal AI binary: `target/release/formal-ai`
+- Agent session: `ses_05f59529effe7G09tczIQDpqz7`
+- Server round trips: 3
+- Planned sequence: `write` → `bash` verification → final answer
+- Agent exit: 0 on attempt 1
+- Generated report SHA-256:
+  `d54aacff54b88c58af6d9587d6ec0253eba38ffcfcecf2455a3ed9e7a440321e`
+
+### Retained evidence
+
+- `agent-cli/agent-cli.log` — external CLI process/session and tool transcript.
+- `agent-cli/formal-ai.log` — server requests and deterministic planner choices.
+- `agent-cli/context-hierarchy-learning-report.lino` — exact generated report.
+
+`real_agent_cli_learning_artifact_is_byte_reproducible` compares the retained
+report byte-for-byte with `context_hierarchy_learning::render_document()`.
+`formal_ai_executes_the_nested_context_learning_task` independently verifies
+the same write/verify/final recipe in the in-process driver. The production
+hierarchy behavior and its promotion gate are covered by the unlimited-depth,
+inheritance-mode, runtime-coreference, browser-parity, quote-safety, and
+general-memory-permission tests in `tests/unit/issue_702_nested_contexts.rs`.
