@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- changelog-insert-here -->
 
+## [0.308.0] - 2026-07-27
+
+### Added
+
+- Added deterministic, disproof-first fact checking with named formal-system probabilities, tiered evidence fallback, JTMS dependency traces, and explicit permission for general-memory audits.
+
 ## [0.307.1] - 2026-07-27
 
 ### Added
