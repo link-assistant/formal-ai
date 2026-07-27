@@ -37,7 +37,8 @@
 //! decimal grid so the trace is byte-for-byte reproducible.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::Write as _;
+use std::error::Error;
+use std::fmt::{self, Write as _};
 
 use crate::engine::stable_id;
 use crate::relative_meta_logic::{
@@ -394,7 +395,7 @@ impl Context {
     fn sync_statement_links(&mut self) {
         // Drop stale statement-layer links, then re-emit from the current state.
         for link in self.links.links() {
-            if is_statement_layer_link(&link) {
+            if is_derived_statement_link(&link) {
                 self.links.remove_link(&link.from, &link.to);
             }
         }
@@ -563,7 +564,22 @@ impl Context {
 
 /// Whether a link belongs to the statement bookkeeping layer rather than the
 /// world state, so diffs and merges can operate on state atoms alone.
+///
+/// The layer has two halves: links [`Context::recalculate`] derives itself (see
+/// [`is_derived_statement_link`]) and links a caller attaches to a statement —
+/// the `provenance:` trail back to the dialogue turn that asserted it and the
+/// `asserts:` pointer to the state atom it produced (issue #702). Both halves
+/// are bookkeeping, so neither ever shows up in a state difference; only the
+/// derived half is regenerated on every recalculation.
 fn is_statement_layer_link(link: &SubstitutionLink) -> bool {
+    is_derived_statement_link(link)
+        || link.to.starts_with("provenance:")
+        || link.to.starts_with("asserts:")
+}
+
+/// Whether a link is one [`Context::sync_statement_links`] regenerates from the
+/// statements themselves, and must therefore sweep before re-emitting.
+fn is_derived_statement_link(link: &SubstitutionLink) -> bool {
     link.to == "world:statement"
         || link.to.starts_with("truth:")
         || link.to.starts_with("supports:")
@@ -673,6 +689,33 @@ impl Prediction {
     }
 }
 
+/// Whether dialogue-local state may be promoted into shared general memory.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryPermission {
+    /// Keep dialogue state confined to its current context.
+    Denied,
+    /// Permit an explicit promotion into shared general memory.
+    Allowed,
+}
+
+/// A rejected attempt to cross the dialogue-to-general-memory boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryCommitError {
+    PermissionDenied,
+}
+
+impl fmt::Display for GeneralMemoryCommitError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PermissionDenied => {
+                formatter.write_str("general-memory promotion requires explicit permission")
+            }
+        }
+    }
+}
+
+impl Error for GeneralMemoryCommitError {}
+
 /// The per-dialogue world model: a `current` context, a `target` context, and a
 /// shared `general` context that per-dialogue contexts merge into.
 ///
@@ -688,7 +731,7 @@ pub struct WorldModel {
     /// The target state the user wants.
     pub target: Context,
     /// The shared world model per-dialogue contexts merge into.
-    pub general: Context,
+    general: Context,
 }
 
 impl WorldModel {
@@ -724,9 +767,23 @@ impl WorldModel {
         self.difference().is_empty()
     }
 
+    /// Read the shared context without exposing a mutation path around the
+    /// dialogue-to-general permission gate.
+    #[must_use]
+    pub const fn general(&self) -> &Context {
+        &self.general
+    }
+
     /// Merge the current dialogue context into the shared general world model
-    /// (ATMS context combination), returning the recalculation report.
-    pub fn commit_current_to_general(&mut self) -> RecalculationReport {
-        self.general.merge_from(&self.current)
+    /// (ATMS context combination) only when the caller explicitly permits that
+    /// boundary crossing.
+    pub fn commit_current_to_general(
+        &mut self,
+        permission: GeneralMemoryPermission,
+    ) -> Result<RecalculationReport, GeneralMemoryCommitError> {
+        match permission {
+            GeneralMemoryPermission::Denied => Err(GeneralMemoryCommitError::PermissionDenied),
+            GeneralMemoryPermission::Allowed => Ok(self.general.merge_from(&self.current)),
+        }
     }
 }

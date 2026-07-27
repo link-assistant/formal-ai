@@ -11,6 +11,8 @@ use super::planner::{fetch_arguments, plan_one, tool_for, AgenticPlan, Capabilit
 use crate::engine::FormalAiEngine;
 use crate::protocol::ChatMessage;
 use crate::seed::{self, Slot};
+use crate::world_model::Context;
+use crate::world_model_context::{ContextHierarchy, ExternalLookup, InheritancePolicy};
 
 pub(super) fn web_research_query_for(messages: &[ChatMessage]) -> Option<String> {
     let task = latest_user_text(messages)?;
@@ -539,25 +541,49 @@ fn topic_from_history(messages: &[ChatMessage]) -> Option<String> {
     let latest = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
-    messages[..latest]
-        .iter()
-        .enumerate()
-        .rev()
-        .find_map(|(index, message)| {
-            if !message.role.eq_ignore_ascii_case("user") {
-                return None;
-            }
+    let mut hierarchy = ContextHierarchy::new();
+    hierarchy.insert(Context::new("conversation")).ok()?;
+    let mut parent_id = String::from("conversation");
+
+    for (index, message) in messages[..latest].iter().enumerate() {
+        let context_id = format!("conversation:turn:{}", index + 1);
+        let mut context = Context::new(&context_id);
+        if message.role.eq_ignore_ascii_case("user") {
             let text = message.content.plain_text();
-            if super::report_issue::is_report_intent(&text)
-                || is_conversation_meta_request(&text, &messages[..index])
+            if !super::report_issue::is_report_intent(&text)
+                && !is_conversation_meta_request(&text, &messages[..index])
             {
-                return None;
+                let topic = crate::solver_handlers::detect_web_search_query(&text)
+                    .or_else(|| seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER))
+                    .unwrap_or_else(|| trim_question_punctuation(&text));
+                if !topic.trim().is_empty() && !is_context_reference(&topic) {
+                    context.assert_link("research_topic", &topic);
+                }
             }
-            let topic = crate::solver_handlers::detect_web_search_query(&text)
-                .or_else(|| seed_prefix_subject(&text, seed::ROLE_RESEARCH_QUESTION_OPENER))
-                .unwrap_or_else(|| trim_question_punctuation(&text));
-            (!topic.trim().is_empty() && !is_context_reference(&topic)).then_some(topic)
-        })
+        }
+        hierarchy
+            .nest(context, &parent_id, InheritancePolicy::Full)
+            .ok()?;
+        parent_id = context_id;
+    }
+
+    hierarchy
+        .nest(
+            Context::new("conversation:current"),
+            &parent_id,
+            InheritancePolicy::Full,
+        )
+        .ok()?;
+    hierarchy
+        .resolve(
+            "conversation:current",
+            "research_topic",
+            ExternalLookup::Denied,
+        )
+        .ok()?
+        .links
+        .first()
+        .map(|link| link.to.clone())
 }
 
 fn is_conversation_meta_request(prompt: &str, preceding: &[ChatMessage]) -> bool {

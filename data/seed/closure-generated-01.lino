@@ -114,6 +114,11 @@ meanings
     lexeme en
       surface
         text "agentic action ask user"
+  agentic_action_before_tool
+    defined-by intent
+    lexeme en
+      surface
+        text "agentic action before tool"
   agentic_action_edit
     defined-by intent
     lexeme en
@@ -1049,11 +1054,6 @@ meanings
     lexeme en
       surface
         text "file handle"
-  file_write_command_output_reference
-    defined-by concept
-    lexeme en
-      surface
-        text "file write command output reference"
   files
     defined-by word_surface
     lexeme en

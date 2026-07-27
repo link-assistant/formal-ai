@@ -1,4 +1,24 @@
 meanings
+  response_concept_lookup_in_context_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context en"
+  response_concept_lookup_in_context_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context hi"
+  response_concept_lookup_in_context_no_alias_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias en"
+  response_concept_lookup_in_context_no_alias_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response concept lookup in context no alias hi"
   response_concept_lookup_in_context_no_alias_ru
     defined-by response_template
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "response meta explanation ru"
-  response_meta_explanation_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response meta explanation zh"
-  response_physical_action_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question en"
-  response_physical_action_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question hi"
-  response_physical_action_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response physical action question ru"
