@@ -452,9 +452,17 @@ changelog.d/20260720_130000_issue_804_macos_sign_debug.md	0.301.0
 changelog.d/20260720_140000_issue_673_workspace_ast_census.md	0.301.0
 changelog.d/20260720_140000_issue_808_ci_cd_fixes.md	0.301.0
 changelog.d/20260720_150000_issue_812_ci_false_positives.md	0.301.0
+changelog.d/20260720_180000_issue_671_agentic_cli_matrix.md	0.306.0
+changelog.d/20260721_120000_issue_702_dialogue_world_model.md	0.307.0
 changelog.d/20260722_045300_local_path_discovery.md	0.301.1
 changelog.d/20260722_083000_complete_agentic_reports.md	0.302.0
 changelog.d/20260723_080600_issue_819_followup.md	0.302.1
 changelog.d/20260723_160146_issue_819_natural_step_narration.md	0.302.2
 changelog.d/20260723_203006_issue_832_reliable_reports.md	0.302.3
+changelog.d/20260724_224500_grounded_action_recipe.md	0.305.0
 changelog.d/20260724_legal_compliance_intake.md	0.303.0
+changelog.d/20260725_002000_issue-839-report-full-conversation.md	0.304.0
+changelog.d/20260725_004500_terminal_tui_capture.md	0.307.1
+changelog.d/20260725_062200_excluded_ci_paths.md	0.304.1
+changelog.d/20260726_093200_issue_870_process_routing.md	0.305.1
+changelog.d/20260726_195500_associative_tech_stack.md	0.306.1

@@ -1,0 +1,5 @@
+grounded_action_authored_invariant
+  record_type meta_invariant
+  trigger "empty observation"
+  decision "widen within the bounded scope"
+  prohibition "do not claim absence"

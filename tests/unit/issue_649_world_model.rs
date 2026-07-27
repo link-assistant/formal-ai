@@ -13,8 +13,8 @@
 //!   contexts (ATMS-style).
 
 use formal_ai::{
-    Action, Context, Dependency, RelativeEvidence, SourceTier, Stance, TruthValue, WorldModel,
-    WorldStatement,
+    Action, Context, Dependency, GeneralMemoryPermission, RelativeEvidence, SourceTier, Stance,
+    TruthValue, WorldModel, WorldStatement,
 };
 
 /// A context is always a links network: asserted atoms round-trip through the
@@ -288,11 +288,10 @@ fn commit_current_folds_into_general() {
         .current
         .add_statement(WorldStatement::new("a learned fact"));
 
-    let permission = model
-        .record_general_context_permission(true, "issue_649_commit_fixture")
-        .unwrap();
-    model.commit_current_to_general(&permission).unwrap();
+    model
+        .commit_current_to_general(GeneralMemoryPermission::Allowed)
+        .expect("explicit general-memory permission");
 
-    assert!(model.general.holds("fact", "learned"));
-    assert_eq!(model.general.statements().len(), 1);
+    assert!(model.general().holds("fact", "learned"));
+    assert_eq!(model.general().statements().len(), 1);
 }

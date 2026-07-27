@@ -33,10 +33,10 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// The ratchet stops *this* migration from silently regrowing the mirror; it
 /// does not veto merging upstream `main`. When a merge brings in legitimate
 /// worker changes from other PRs, re-baseline this ceiling to the merged count
-/// (last re-baselined at 26_809 after main's attachment-routing fix added a
-/// net 14 lines after the previous semantic web-search re-baseline).
+/// Issue #840's local-scope guard then removed a net 2 lines from the browser
+/// mirror, lowering the ratchet from 26_809 to 26_807.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_809;
+const CEILING_TOTAL_LINES: usize = 26_807;
 
 const WORKER_DIR: &str = "src/web/worker";
 

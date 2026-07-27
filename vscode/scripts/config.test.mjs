@@ -57,8 +57,9 @@ test("readConfig clamps an invalid port back to the default", () => {
 });
 
 test("statusFromConfig defaults to the in-process surface", () => {
-  const status = statusFromConfig({}, { shell: "VS Code" });
+  const status = statusFromConfig({}, { shell: "VS Code", platform: "win32" });
   assert.equal(status.shell, "VS Code");
+  assert.equal(status.platform, "win32");
   assert.equal(status.mode, "in-process");
   assert.equal(status.apiBase, "");
   assert.equal(status.apiReady, false);

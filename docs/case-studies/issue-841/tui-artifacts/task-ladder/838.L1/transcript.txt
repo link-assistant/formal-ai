@@ -1,0 +1,61 @@
+█▀▀█  OpenCode
+█  █  ~
+▀▀▀▀
+
+Ask anything... "Fix a TODO in the codebase"
+
+ BUILD                                                                       Formal AI Symbolic Production · ctrl+p cmd
+
+
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+› Find hive-mind-control center folder on my desktop
+
+
+
+ BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■■■⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝■■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝⬝⬝ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝⬝■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝⬝■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+Let me look on your Desktop for hive mind control center.
+
+$ find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -type d \( -iname '*hive*mind*control*center*' -o -iname
+'*mind*control*center*' -o -iname '*hive*control*center*' -o -iname '*hive*mind*center*' -o -iname
+'*hive*mind*control*' \) -print -quit
+
+
+
+
+ BUILD  ⬝⬝⬝⬝■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝⬝⬝■■■■■ esc interrupt                                               Formal AI Symbolic Production · ctrl+p cmd
+/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center
+
+
+
+ BUILD  ⬝⬝■■■■■■ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ⬝■■■■■■⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■■■⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■■⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd
+ BUILD  ■■■■⬝⬝⬝⬝ esc interrupt                                          9.9K Formal AI Symbolic Production · ctrl+p cmd
+ BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd
+The find "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}" -
+type d \( -iname '*hive*mind*control*center*' -o -iname '*mind*control*center*' -o -iname '*hive*control*center*' -o -
+iname '*hive*mind*center*' -o -iname '*hive*mind*control*' \) -print -quit command completed. Output:
+
+/tmp/formal-ai-ladder.uz4Dfn/Desktop/Archive/hive-control-center
+
+▣ Build · Formal AI Symbolic Production · 4.1s
+
+
+
+ BUILD                                                                 10.1K Formal AI Symbolic Production · ctrl+p cmd

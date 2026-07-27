@@ -1,13 +1,19 @@
 //! Public-boundary end-to-end coverage for issue #845.
 
 use formal_ai::{
-    AuditScope, Dependency, FactChecker, FormalSystem, GeneralContextPermission, ProbabilityBasis,
+    AuditScope, Dependency, FactChecker, FormalSystem, GeneralMemoryPermission, ProbabilityBasis,
     RelativeEvidence, SolverConfig, SourceTier, Stance, TruthValue, WorldModel, WorldStatement,
 };
 
 #[test]
 fn world_model_audit_runs_proof_probability_jtms_and_permission_boundaries() {
     let mut model = WorldModel::new();
+    model
+        .current
+        .add_statement(WorldStatement::new("general-memory-only statement"));
+    model
+        .commit_current_to_general(GeneralMemoryPermission::Allowed)
+        .unwrap();
     model.current = formal_ai::Context::with_formal_system(
         "current_dialogue",
         FormalSystem::new("integer_arithmetic")
@@ -30,10 +36,6 @@ fn world_model_audit_runs_proof_probability_jtms_and_permission_boundaries() {
         WorldStatement::new("the false premise supports this unknown")
             .with_dependency(Dependency::supports(false_premise.clone())),
     );
-    model
-        .general
-        .add_statement(WorldStatement::new("general-memory-only statement"));
-
     let checker = FactChecker::from_solver_config(SolverConfig {
         max_decomposition_depth: 2,
         ..SolverConfig::default()
@@ -62,11 +64,12 @@ fn world_model_audit_runs_proof_probability_jtms_and_permission_boundaries() {
     assert!(checker
         .audit_world_model(&mut model, AuditScope::GeneralMemory, None)
         .is_err());
-    let permission: GeneralContextPermission = model
-        .record_general_context_permission(true, "integration whole-memory audit")
-        .unwrap();
     let general = checker
-        .audit_world_model(&mut model, AuditScope::GeneralMemory, Some(&permission))
+        .audit_world_model(
+            &mut model,
+            AuditScope::GeneralMemory,
+            Some(GeneralMemoryPermission::Allowed),
+        )
         .unwrap();
     assert_eq!(general.statements.len(), 1);
 }

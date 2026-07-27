@@ -13,7 +13,7 @@ use crate::proof_engine::{attempt_proof, ProofMethod, ProofOutcome};
 use crate::relative_meta_logic::{RelativeEvidence, SourceTier, Stance, TruthValue};
 use crate::solver::SolverConfig;
 use crate::world_model::{
-    Context, ContextAccessError, GeneralContextPermission, RecalculationReport, WorldModel,
+    Context, GeneralMemoryCommitError, GeneralMemoryPermission, RecalculationReport, WorldModel,
 };
 
 /// Which world-model boundary a fact-check operation may inspect.
@@ -31,18 +31,13 @@ pub enum AuditScope {
 pub enum FactCheckError {
     /// General-memory access was requested without an explicit grant.
     PermissionRequired,
-    /// The supplied grant was not issued by this world model.
-    InvalidPermission,
     /// The requested statement does not exist in the context.
     UnknownStatement(String),
 }
 
-impl From<ContextAccessError> for FactCheckError {
-    fn from(error: ContextAccessError) -> Self {
-        match error {
-            ContextAccessError::PermissionDenied => Self::PermissionRequired,
-            ContextAccessError::InvalidPermission => Self::InvalidPermission,
-        }
+impl From<GeneralMemoryCommitError> for FactCheckError {
+    fn from(_error: GeneralMemoryCommitError) -> Self {
+        Self::PermissionRequired
     }
 }
 
@@ -288,14 +283,14 @@ impl FactChecker {
         &self,
         world_model: &mut WorldModel,
         scope: AuditScope,
-        permission: Option<&GeneralContextPermission>,
+        permission: Option<GeneralMemoryPermission>,
     ) -> Result<ContextAudit, FactCheckError> {
         match scope {
             AuditScope::CurrentDialogue => {
                 Ok(self.audit_context_with_scope(&mut world_model.current, scope))
             }
             AuditScope::GeneralMemory => {
-                let permission = permission.ok_or(FactCheckError::PermissionRequired)?;
+                let permission = permission.unwrap_or(GeneralMemoryPermission::Denied);
                 let context = world_model.general_context_for_audit(permission)?;
                 Ok(self.audit_context_with_scope(context, scope))
             }

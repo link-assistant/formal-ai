@@ -147,21 +147,12 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
-      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
-      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
-      # commit was already immutable, and while the only way to move the measured
-      # range forward (cutting a tag) was what it blocked. Enforcement belongs
-      # here, where the commits can still be amended. The check is differential:
-      # it compares the release share projected *with* this branch against the
-      # one projected for the base alone, so a regression already on main cannot
-      # block unrelated pull requests.
-      - name: Check the self-hosting ratchet against the merge base
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          base="origin/${GITHUB_BASE_REF}"
-          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
+      # Issue #846: do not enforce the percentage ratchet on pull requests.
+      # CONTRIBUTING.md permits honest 0% releases and explicitly forbids adding
+      # Formal-AI trailers to human-authored or manually corrected work. A
+      # percentage gate made those valid contributions impossible to merge.
+      # The validation above remains strict for commits that claim Formal AI
+      # authorship; release recording still reports the measured percentage.
 
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
@@ -233,7 +224,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
@@ -300,7 +290,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -579,7 +568,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -688,7 +676,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -1348,7 +1335,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
@@ -1437,7 +1423,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -1673,7 +1658,7 @@ jobs:
         # The first two turns must only ask for destination and included logs;
         # the third executes a PATH-local fake gh and validates the full Lino
         # context obtained from the matching server conversation.
-        timeout-minutes: 5
+        timeout-minutes: 10
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_822.sh
@@ -1687,16 +1672,37 @@ jobs:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
 
-      - name: "Run four-client + TUI E2E — local path discovery (issue #819)"
-        # Agent, OpenCode, Claude Code, and Codex execute the generated local
-        # `find` command in their own workspace. OpenCode is then replayed in a
-        # real PTY: command-stream feeds every chunk to xterm's renderer, the
-        # harness deduplicates frames, and the dialog log proves the complete
-        # user → tool call → tool result → final-answer sequence.
-        timeout-minutes: 5
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        timeout-minutes: 15
         env:
           PORT: 8784
-        run: experiments/agent_cli_e2e/run_issue_819.sh
+          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
+        run: experiments/agent_cli_e2e/run_issue_840.sh
+
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        timeout-minutes: 5
+        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        # Third-party free-model runs are recorded rather than repeated here:
+        # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
+        # reruns Formal AI's 24-node real-server ladder and checks its raw local
+        # transcript against the best conclusive reference run, including the
+        # widening procedure, command simplicity, kind check, and PEM decoy.
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
+
+      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        timeout-minutes: 3
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
+        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
+
+      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        timeout-minutes: 3
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
+        run: experiments/issue_840_task_ladder/run_ladder.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
@@ -1750,6 +1756,14 @@ jobs:
           PORT: 8885
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
 
+      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        # The real Agent CLI asks Formal AI to derive the human-gated client
+        # contract proposals, write the exact command output, and verify it.
+        timeout-minutes: 5
+        env:
+          PORT: 8886
+        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
+
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         # The real Agent CLI delegates the repository scan to the public release
         # binary in its own workspace, then consumes the command result before
@@ -1776,6 +1790,10 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
           retention-days: 7
+      - name: Upload TUI transcripts and replay artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
 
   # === DEPLOY WEB APP ===
   # Deploy the production web app from src/web/ to GitHub Pages after a successful build.

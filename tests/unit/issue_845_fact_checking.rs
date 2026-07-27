@@ -6,8 +6,9 @@
 
 use formal_ai::{
     AuditScope, Context, ContextAccessEventKind, Dependency, FactCheckError, FactChecker,
-    FormalSystem, ProbabilityBasis, RefutationOutcome, RefutationStage, RelativeEvidence,
-    SolverConfig, SourceTier, Stance, TruthValue, WorldModel, WorldStatement, ASSUMED_TRUE_PRIOR,
+    FormalSystem, GeneralMemoryPermission, ProbabilityBasis, RefutationOutcome, RefutationStage,
+    RelativeEvidence, SolverConfig, SourceTier, Stance, TruthValue, WorldModel, WorldStatement,
+    ASSUMED_TRUE_PRIOR,
 };
 
 fn checker(depth: u8) -> FactChecker {
@@ -213,29 +214,44 @@ fn general_memory_requires_recorded_permission_and_commit_uses_the_same_gate() {
     let mut model = WorldModel::new();
     model
         .current
-        .add_statement(WorldStatement::new("current dialogue fact"));
-    model
-        .general
         .add_statement(WorldStatement::new("general memory fact"));
+    model
+        .commit_current_to_general(GeneralMemoryPermission::Allowed)
+        .unwrap();
+    model.current = Context::new("current");
+    model
+        .current
+        .add_statement(WorldStatement::new("current dialogue fact"));
     let fact_checker = checker(1);
 
     let denied = fact_checker.audit_world_model(&mut model, AuditScope::GeneralMemory, None);
     assert!(matches!(denied, Err(FactCheckError::PermissionRequired)));
 
-    let permission = model
-        .record_general_context_permission(true, "user approved full-memory audit")
-        .unwrap();
     let audit = fact_checker
-        .audit_world_model(&mut model, AuditScope::GeneralMemory, Some(&permission))
+        .audit_world_model(
+            &mut model,
+            AuditScope::GeneralMemory,
+            Some(GeneralMemoryPermission::Allowed),
+        )
         .unwrap();
-    model.commit_current_to_general(&permission).unwrap();
+    model
+        .commit_current_to_general(GeneralMemoryPermission::Allowed)
+        .unwrap();
 
     assert_eq!(audit.scope, AuditScope::GeneralMemory);
     assert!(model
         .context_access_events()
         .iter()
         .any(|event| event.kind == ContextAccessEventKind::PermissionGranted));
-    assert_eq!(model.general.statements().len(), 2);
+    assert!(model
+        .context_access_events()
+        .iter()
+        .any(|event| event.kind == ContextAccessEventKind::PermissionDenied));
+    assert!(model
+        .context_access_events()
+        .iter()
+        .any(|event| event.kind == ContextAccessEventKind::GeneralContextRead));
+    assert_eq!(model.general().statements().len(), 2);
 }
 
 #[test]
@@ -243,15 +259,19 @@ fn current_dialogue_is_the_default_scope_and_audit_enumerates_every_statement() 
     assert_eq!(AuditScope::default(), AuditScope::CurrentDialogue);
 
     let mut model = WorldModel::new();
+    model
+        .current
+        .add_statement(WorldStatement::new("not in the current dialogue"));
+    model
+        .commit_current_to_general(GeneralMemoryPermission::Allowed)
+        .unwrap();
+    model.current = Context::new("current");
     let first = model
         .current
         .add_statement(WorldStatement::new("1 + 1 = 2"));
     let second = model
         .current
         .add_statement(WorldStatement::new("1 + 1 = 3"));
-    model
-        .general
-        .add_statement(WorldStatement::new("not in the current dialogue"));
 
     let audit = checker(2)
         .audit_world_model(&mut model, AuditScope::default(), None)

@@ -1,0 +1,408 @@
+meanings
+  local_path_search_action
+    defined-by action
+    role local_path_search_action
+    lexeme en
+      surface
+        text find
+      surface
+        text search
+      surface
+        text locate
+      surface
+        text "look for"
+      surface
+        text "is there"
+    lexeme ru
+      surface
+        text найди
+      surface
+        text найти
+      surface
+        text отыщи
+      surface
+        text поиск
+      surface
+        text "есть ли"
+    lexeme hi
+      surface
+        text खोजें
+      surface
+        text ढूँढें
+      surface
+        text खोज
+    lexeme zh
+      surface
+        text 查找
+      surface
+        text 搜索
+      surface
+        text 定位
+      surface
+        text 有没有
+  local_path_list_action
+    defined-by action
+    role local_path_list_action
+    lexeme en
+      surface
+        text list
+      surface
+        text show
+    lexeme ru
+      surface
+        text перечисли
+      surface
+        text покажи
+    lexeme hi
+      surface
+        text सूची
+      surface
+        text दिखाएँ
+    lexeme zh
+      surface
+        text 列出
+      surface
+        text 显示
+  local_path_contents_request
+    defined-by inquiry
+    role local_path_contents_request
+    lexeme en
+      surface
+        text "what is inside …"
+      surface
+        text "what's inside …"
+      surface
+        text "show contents of …"
+    lexeme ru
+      surface
+        text "что внутри …"
+      surface
+        text "покажи содержимое …"
+    lexeme hi
+      surface
+        text "… के अंदर क्या है"
+      surface
+        text "… की सामग्री दिखाएँ"
+    lexeme zh
+      surface
+        text "…里面有什么"
+      surface
+        text "显示…的内容"
+  local_path_type_request
+    defined-by inquiry
+    role local_path_type_request
+    lexeme en
+      surface
+        text "file or a folder"
+      surface
+        text "file or folder"
+      surface
+        text "folder or a file"
+    lexeme ru
+      surface
+        text "файл или папка"
+      surface
+        text "папка или файл"
+    lexeme hi
+      surface
+        text "फ़ाइल या फ़ोल्डर"
+    lexeme zh
+      surface
+        text 文件还是文件夹
+  local_path_scope_desktop
+    defined-by concept
+    role local_path_scope_desktop
+    lexeme en
+      surface
+        text "on my desktop"
+      surface
+        text "on the desktop"
+      surface
+        text "on desktop"
+      surface
+        text "in my desktop"
+      surface
+        text "in the desktop"
+      surface
+        text "in desktop"
+    lexeme ru
+      surface
+        text "на моём рабочем столе"
+      surface
+        text "на моем рабочем столе"
+      surface
+        text "на рабочем столе"
+    lexeme hi
+      surface
+        text "मेरे डेस्कटॉप पर"
+      surface
+        text "डेस्कटॉप पर"
+    lexeme zh
+      surface
+        text 在我的桌面上
+      surface
+        text 在桌面上
+      surface
+        text 桌面上
+  local_path_scope_home
+    defined-by concept
+    role local_path_scope_home
+    lexeme en
+      surface
+        text "on this computer"
+      surface
+        text "on my computer"
+      surface
+        text "on this machine"
+      surface
+        text "on my machine"
+      surface
+        text "in my home folder"
+    lexeme ru
+      surface
+        text "на этом компьютере"
+      surface
+        text "на моём компьютере"
+      surface
+        text "на моем компьютере"
+      surface
+        text "в домашней папке"
+    lexeme hi
+      surface
+        text "इस कंप्यूटर पर"
+      surface
+        text "मेरे कंप्यूटर पर"
+      surface
+        text "होम फ़ोल्डर में"
+    lexeme zh
+      surface
+        text 在这台电脑上
+      surface
+        text 在我的电脑上
+      surface
+        text 在主文件夹中
+  local_path_scope_current
+    defined-by concept
+    role local_path_scope_current
+    lexeme en
+      surface
+        text "in this directory"
+      surface
+        text "in the current directory"
+      surface
+        text "in this folder"
+      surface
+        text "in the current folder"
+      surface
+        text "in this workspace"
+    lexeme ru
+      surface
+        text "в этом каталоге"
+      surface
+        text "в текущем каталоге"
+      surface
+        text "в этой папке"
+    lexeme hi
+      surface
+        text "इस निर्देशिका में"
+      surface
+        text "वर्तमान फ़ोल्डर में"
+    lexeme zh
+      surface
+        text 在此目录中
+      surface
+        text 在当前目录中
+      surface
+        text 在此文件夹中
+  local_path_directory_kind
+    defined-by concept
+    role local_path_directory_kind
+    lexeme en
+      surface
+        text folder
+      surface
+        text folders
+      surface
+        text directory
+      surface
+        text directories
+    lexeme ru
+      surface
+        text папку
+      surface
+        text папка
+      surface
+        text папки
+      surface
+        text каталог
+    lexeme hi
+      surface
+        text फ़ोल्डर
+      surface
+        text निर्देशिका
+    lexeme zh
+      surface
+        text 文件夹
+      surface
+        text 目录
+  local_path_file_kind
+    defined-by concept
+    role local_path_file_kind
+    lexeme en
+      surface
+        text file
+      surface
+        text files
+      surface
+        text document
+    lexeme ru
+      surface
+        text файл
+      surface
+        text файла
+      surface
+        text файлы
+      surface
+        text документ
+    lexeme hi
+      surface
+        text फ़ाइल
+      surface
+        text दस्तावेज़
+    lexeme zh
+      surface
+        text 文件
+      surface
+        text 文档
+  local_path_query_noise
+    defined-by concept
+    role local_path_query_noise
+    lexeme en
+      surface
+        text the
+      surface
+        text a
+      surface
+        text an
+      surface
+        text called
+      surface
+        text named
+      surface
+        text exactly
+      surface
+        text for
+      surface
+        text request
+      surface
+        text is
+    lexeme ru
+      surface
+        text с
+      surface
+        text именем
+      surface
+        text точно
+      surface
+        text это
+    lexeme hi
+      surface
+        text नामक
+    lexeme zh
+      surface
+        text 名为
+  local_path_route_question
+    defined-by inquiry
+    role local_path_route_question
+    lexeme en
+      surface
+        text "local filesystem search or a web search"
+    lexeme ru
+      surface
+        text "локальный поиск или веб-поиск"
+    lexeme hi
+      surface
+        text "स्थानीय फ़ाइल खोज या वेब खोज"
+    lexeme zh
+      surface
+        text 本地文件搜索还是网络搜索
+  definition_antecedent_followup
+    defined-by inquiry
+    role definition_antecedent_followup
+    lexeme en
+      surface
+        text "so what is it then"
+      surface
+        text "what is that then"
+    lexeme ru
+      surface
+        text "так что это такое то"
+      surface
+        text "так что же это"
+    lexeme hi
+      surface
+        text "तो यह क्या है"
+    lexeme zh
+      surface
+        text 那这到底是什么
+  comparison_infix
+    defined-by relation
+    role comparison_infix
+    lexeme en
+      surface
+        text vs
+      surface
+        text versus
+      surface
+        text "different from"
+    lexeme ru
+      surface
+        text vs
+      surface
+        text против
+      surface
+        text отличается
+    lexeme hi
+      surface
+        text बनाम
+    lexeme zh
+      surface
+        text 对比
+      surface
+        text 与
+  comparison_rhs_marker
+    defined-by relation
+    role comparison_rhs_marker
+    lexeme en
+      surface
+        text from
+    lexeme ru
+      surface
+        text от
+    lexeme hi
+      surface
+        text से
+    lexeme zh
+      surface
+        text 和
+  comparison_query_noise
+    defined-by concept
+    role comparison_query_noise
+    lexeme en
+      surface
+        text "in one sentence"
+      surface
+        text "one sentence"
+    lexeme ru
+      surface
+        text "одним предложением"
+      surface
+        text "в одном предложении"
+    lexeme hi
+      surface
+        text "एक वाक्य में"
+    lexeme zh
+      surface
+        text 用一句话
+      surface
+        text 一句话

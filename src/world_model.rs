@@ -37,7 +37,8 @@
 //! decimal grid so the trace is byte-for-byte reproducible.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::Write as _;
+use std::error::Error;
+use std::fmt::{self, Write as _};
 
 use crate::engine::stable_id;
 use crate::formal_system::FormalSystem;
@@ -463,7 +464,7 @@ impl Context {
     fn sync_statement_links(&mut self) {
         // Drop stale statement-layer links, then re-emit from the current state.
         for link in self.links.links() {
-            if is_statement_layer_link(&link) {
+            if is_derived_statement_link(&link) {
                 self.links.remove_link(&link.from, &link.to);
             }
         }
@@ -632,7 +633,22 @@ impl Context {
 
 /// Whether a link belongs to the statement bookkeeping layer rather than the
 /// world state, so diffs and merges can operate on state atoms alone.
+///
+/// The layer has two halves: links [`Context::recalculate`] derives itself (see
+/// [`is_derived_statement_link`]) and links a caller attaches to a statement —
+/// the `provenance:` trail back to the dialogue turn that asserted it and the
+/// `asserts:` pointer to the state atom it produced (issue #702). Both halves
+/// are bookkeeping, so neither ever shows up in a state difference; only the
+/// derived half is regenerated on every recalculation.
 fn is_statement_layer_link(link: &SubstitutionLink) -> bool {
+    is_derived_statement_link(link)
+        || link.to.starts_with("provenance:")
+        || link.to.starts_with("asserts:")
+}
+
+/// Whether a link is one [`Context::sync_statement_links`] regenerates from the
+/// statements themselves, and must therefore sweep before re-emitting.
+fn is_derived_statement_link(link: &SubstitutionLink) -> bool {
     link.to == "world:statement"
         || link.to.starts_with("truth:")
         || link.to.starts_with("supports:")
@@ -787,20 +803,32 @@ pub struct ContextAccessEvent {
     pub reason: String,
 }
 
-/// Opaque capability proving that general-memory access was explicitly granted.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct GeneralContextPermission {
-    id: String,
+/// Whether dialogue-local state may be promoted into shared general memory.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralMemoryPermission {
+    /// Keep dialogue state confined to its current context.
+    Denied,
+    /// Permit an explicit promotion into shared general memory.
+    Allowed,
 }
 
-/// Failure at the permissioned current/general context boundary.
+/// A rejected attempt to cross the dialogue-to-general-memory boundary.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ContextAccessError {
-    /// The user did not approve the requested crossing.
+pub enum GeneralMemoryCommitError {
     PermissionDenied,
-    /// The supplied capability was not issued by this world model.
-    InvalidPermission,
 }
+
+impl fmt::Display for GeneralMemoryCommitError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::PermissionDenied => {
+                formatter.write_str("general-memory promotion requires explicit permission")
+            }
+        }
+    }
+}
+
+impl Error for GeneralMemoryCommitError {}
 
 /// The per-dialogue world model: a `current` context, a `target` context, and a
 /// shared `general` context that per-dialogue contexts merge into.
@@ -817,7 +845,7 @@ pub struct WorldModel {
     /// The target state the user wants.
     pub target: Context,
     /// The shared world model per-dialogue contexts merge into.
-    pub general: Context,
+    general: Context,
     /// Append-only permission/crossing trace.
     context_access_events: Vec<ContextAccessEvent>,
 }
@@ -856,37 +884,29 @@ impl WorldModel {
         self.difference().is_empty()
     }
 
-    /// Record the user's explicit decision about general-memory access.
-    ///
-    /// Both approval and denial are appended to the trace. Only an approval
-    /// returns an opaque capability accepted by boundary-crossing operations.
-    pub fn record_general_context_permission(
+    /// Read the shared context without exposing a mutation path around the
+    /// dialogue-to-general permission gate.
+    #[must_use]
+    pub const fn general(&self) -> &Context {
+        &self.general
+    }
+
+    /// Merge the current dialogue context into the shared general world model
+    /// (ATMS context combination) only when the caller explicitly permits that
+    /// boundary crossing.
+    pub fn commit_current_to_general(
         &mut self,
-        approved: bool,
-        reason: impl Into<String>,
-    ) -> Result<GeneralContextPermission, ContextAccessError> {
-        let reason = reason.into();
-        let sequence = self.context_access_events.len();
-        if !approved {
-            self.context_access_events.push(ContextAccessEvent {
-                sequence,
-                kind: ContextAccessEventKind::PermissionDenied,
-                permission_id: None,
-                reason,
-            });
-            return Err(ContextAccessError::PermissionDenied);
-        }
-        let id = stable_id(
-            "general_context_permission",
-            &format!("sequence:{sequence};reason:{reason}"),
-        );
-        self.context_access_events.push(ContextAccessEvent {
-            sequence,
-            kind: ContextAccessEventKind::PermissionGranted,
-            permission_id: Some(id.clone()),
+        permission: GeneralMemoryPermission,
+    ) -> Result<RecalculationReport, GeneralMemoryCommitError> {
+        let reason = "current-to-general-memory commit";
+        let permission_id = self.record_general_memory_permission(permission, reason)?;
+        let report = self.general.merge_from(&self.current);
+        self.push_context_access_event(
+            ContextAccessEventKind::CurrentCommitted,
+            Some(permission_id),
             reason,
-        });
-        Ok(GeneralContextPermission { id })
+        );
+        Ok(report)
     }
 
     /// Append-only permission and boundary-crossing trace.
@@ -895,53 +915,54 @@ impl WorldModel {
         &self.context_access_events
     }
 
-    /// Permissioned mutable access used by whole-memory operations.
+    /// Permissioned mutable access used by whole-memory fact-check operations.
     pub(crate) fn general_context_for_audit(
         &mut self,
-        permission: &GeneralContextPermission,
-    ) -> Result<&mut Context, ContextAccessError> {
-        let reason = self.validate_general_permission(permission)?;
-        let sequence = self.context_access_events.len();
-        self.context_access_events.push(ContextAccessEvent {
-            sequence,
-            kind: ContextAccessEventKind::GeneralContextRead,
-            permission_id: Some(permission.id.clone()),
+        permission: GeneralMemoryPermission,
+    ) -> Result<&mut Context, GeneralMemoryCommitError> {
+        let reason = "fact-check general-memory audit";
+        let permission_id = self.record_general_memory_permission(permission, reason)?;
+        self.push_context_access_event(
+            ContextAccessEventKind::GeneralContextRead,
+            Some(permission_id),
             reason,
-        });
+        );
         Ok(&mut self.general)
     }
 
-    /// Merge the current dialogue context into shared general memory.
-    ///
-    /// This is the write-side current/general crossing and therefore accepts
-    /// only a capability produced by [`Self::record_general_context_permission`].
-    pub fn commit_current_to_general(
+    fn record_general_memory_permission(
         &mut self,
-        permission: &GeneralContextPermission,
-    ) -> Result<RecalculationReport, ContextAccessError> {
-        let reason = self.validate_general_permission(permission)?;
-        let report = self.general.merge_from(&self.current);
+        permission: GeneralMemoryPermission,
+        reason: &str,
+    ) -> Result<String, GeneralMemoryCommitError> {
+        if permission == GeneralMemoryPermission::Denied {
+            self.push_context_access_event(ContextAccessEventKind::PermissionDenied, None, reason);
+            return Err(GeneralMemoryCommitError::PermissionDenied);
+        }
         let sequence = self.context_access_events.len();
-        self.context_access_events.push(ContextAccessEvent {
-            sequence,
-            kind: ContextAccessEventKind::CurrentCommitted,
-            permission_id: Some(permission.id.clone()),
+        let permission_id = stable_id(
+            "general_memory_permission",
+            &format!("sequence:{sequence};reason:{reason}"),
+        );
+        self.push_context_access_event(
+            ContextAccessEventKind::PermissionGranted,
+            Some(permission_id.clone()),
             reason,
-        });
-        Ok(report)
+        );
+        Ok(permission_id)
     }
 
-    fn validate_general_permission(
-        &self,
-        permission: &GeneralContextPermission,
-    ) -> Result<String, ContextAccessError> {
-        self.context_access_events
-            .iter()
-            .find(|event| {
-                event.kind == ContextAccessEventKind::PermissionGranted
-                    && event.permission_id.as_deref() == Some(permission.id.as_str())
-            })
-            .map(|event| event.reason.clone())
-            .ok_or(ContextAccessError::InvalidPermission)
+    fn push_context_access_event(
+        &mut self,
+        kind: ContextAccessEventKind,
+        permission_id: Option<String>,
+        reason: &str,
+    ) {
+        self.context_access_events.push(ContextAccessEvent {
+            sequence: self.context_access_events.len(),
+            kind,
+            permission_id,
+            reason: reason.to_owned(),
+        });
     }
 }

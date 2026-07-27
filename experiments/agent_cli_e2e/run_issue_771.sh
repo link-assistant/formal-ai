@@ -7,7 +7,7 @@
 # execution, and the server's reading of the resulting history. Two properties
 # are asserted on the argv a PATH-local fake gh records:
 #
-#   1. the transcribed turns stay inside a LiNo code block, so no line of a
+#   1. the transcribed turns stay inside a fenced code block, so no line of a
 #      multi-line turn escapes and renders as top-level markdown;
 #   2. the body stays far under GitHub's 65536-character issue limit even though
 #      the fetched page is much larger than that.
@@ -157,18 +157,56 @@ size="$(wc -m < "$BODY_FILE" | tr -d ' ')"
 [ "$size" -lt "$GITHUB_BODY_LIMIT" ] \
   || fail "issue body was $size characters, over GitHub's $GITHUB_BODY_LIMIT limit"
 
-# Every preview line must be between one opening and closing fence -- never bare
-# prose that would render as top-level markdown.
+# Every transcribed turn must sit between an opening and a closing fence --
+# never bare prose that would render as top-level markdown.
+#
+# Issue #839 gave this surface the web reporter's six-section document, so the
+# body now carries several fenced blocks (the dialog, the reasoning trace, and
+# the LiNo context attachment) instead of the single `lino` block #771 shipped.
+# The property being pinned is unchanged and asserted more precisely: fences
+# balance, exactly one of them is the complete LiNo context, that context is the
+# last block in the document, and no transcript line escapes into the markdown.
 escaped="$(REPORT_BODY="$body" python3 - <<'PY'
 import os
+import re
 
 lines = os.environ["REPORT_BODY"].splitlines()
-openings = [index for index, line in enumerate(lines) if line == "```lino"]
-closings = [index for index, line in enumerate(lines) if line == "```"]
-if len(openings) != 1 or len(closings) != 1 or openings[0] >= closings[0]:
-    print("invalid LiNo fence structure")
-elif any(line.strip() for line in lines[closings[0] + 1:]):
-    print("content follows the closing LiNo fence")
+# A block opens with a run of backticks plus an optional language and closes
+# with the identical run. The renderer lengthens the run until no content can
+# terminate it early, so a line inside a block never looks like a fence.
+fence_pattern = re.compile(r"^(`{3,})(\S*)\s*$")
+# `U: `, `A (intent: unknown): `, `T: ` and the indented continuation rows of a
+# multi-line turn -- the shapes issue #771 saw leak out of the block.
+turn_pattern = re.compile(r"^(?:[UAT](?: \([^)]*\))?: |   \S)")
+
+fence = None
+outside = []
+lino_blocks = 0
+last_close = -1
+for index, line in enumerate(lines):
+    if fence is None:
+        opening = fence_pattern.match(line)
+        if opening:
+            fence = opening.group(1)
+            if opening.group(2) == "lino":
+                lino_blocks += 1
+            continue
+        outside.append(line)
+    elif line.rstrip() == fence:
+        fence = None
+        last_close = index
+
+problems = []
+if fence is not None:
+    problems.append("a fenced block was never closed")
+if lino_blocks != 1:
+    problems.append(f"expected exactly one lino context block, found {lino_blocks}")
+if any(line.strip() for line in lines[last_close + 1:]):
+    problems.append("content follows the last closing fence")
+leaked = [line for line in outside if turn_pattern.match(line)]
+if leaked:
+    problems.append(f"transcript lines outside any fence: {leaked[:3]}")
+print("\n".join(problems))
 PY
 )" || fail "could not scan the transcript"
 [ -z "$escaped" ] \
