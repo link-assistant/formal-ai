@@ -1262,8 +1262,13 @@ requirements; `src/skill_procedure.rs` lowers all of them into typed operations,
 persists an integrity-checked executable artifact, and interprets it through a
 permissioned host. Canonical slugs give equivalent en/ru/hi/zh procedures one
 set of skill links. Unknown steps produce a named gap and an inert,
-human-gated learning proposal with no partial compile. The solver, explanation
-handler, and Agent CLI route all use the same persisted artifact.
+human-gated learning proposal with no partial compile. Observations pair each
+unsupported multilingual surface with a successful seeded paraphrase, allowing
+the learner to infer one typed candidate while conflicting meanings fail
+closed; promotion still requires green tests and explicit human approval. The
+solver, explanation handler, public conformance CLI, and Agent CLI route all use
+the same persisted artifact, and Agent verifies the interpreter's execution
+record before it reports success.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.

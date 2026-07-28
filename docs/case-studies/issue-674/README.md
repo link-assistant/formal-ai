@@ -77,27 +77,43 @@ span, and `no compiled capability for "…"`. The solver emits `skill_gap` plus 
 complete `procedure_learning_proposal` artifact and compiles no prefix.
 
 That proposal is an automatic learning signal, not an automatic permission to
-execute new behavior. Promotion into the append-only
+execute new behavior. The learning path accepts observations that pair an
+unsupported surface with a successful, already-seeded paraphrase. It resolves
+the paraphrases through the same vocabulary used by the compiler and infers the
+canonical typed operation; callers do not provide the operation kind. All
+observations must resolve to one meaning, and at least one unsupported surface
+must belong to the original named gap, otherwise inference fails closed.
+
+The resulting content-addressed candidate and its evidence are inspectable
+Links notation. Promotion into the append-only
 `data/meta/procedure-capability-ledger.lino` requires all of the following:
 
 1. a canonical kind that already has typed host semantics;
-2. non-empty, unique reviewed surfaces for en, ru, hi, and zh;
+2. non-empty, unique observed surfaces for en, ru, hi, and zh, each supported
+   by a successful paraphrase resolving to that same kind;
 3. a named regression suite with at least one pass and zero failures;
 4. explicit approval by a non-empty human reviewer.
 
 Declined review, a red suite, unknown operation kinds, duplicate proposals, and
-missing language parity are rejected. Approved surfaces enter the same
-data-driven classifier as seed vocabulary after restart; they do not create a
-new Rust parser branch. A genuinely new operation still needs an explicit
-permissioned host implementation, which keeps learning from silently inventing
-side effects.
+missing language parity are rejected. Candidate identity and paraphrase evidence
+survive the ledger round trip, and tampering is rejected. Approved surfaces
+enter the same data-driven classifier as seed vocabulary after restart; they do
+not create a new Rust parser branch. A genuinely new operation still needs an
+explicit permissioned host implementation, which keeps learning from silently
+inventing side effects.
 
 ## Agent CLI execution
 
 Agent mode routes the same arbitrary procedure through
 `src/agentic_coding/procedure.rs`. The external Agent CLI receives the Formal AI
 server's tool calls, writes `compiled-procedure.lino`, reads it back for
-verification, and returns the same artifact and source-cited restatement.
+verification, and runs the public
+`formal-ai procedure conformance --artifact … --trigger …` command. Formal AI
+verifies the returned step-by-step `procedure_run` before returning the same
+artifact, execution evidence, and source-cited restatement. The conformance host
+is deliberately side-effect-free, but it is the same generic interpreter path
+used by the public CLI and proves that Agent executes rather than merely stores
+the compiled program.
 
 `experiments/issue-674-agent-cli/run.sh` is the reproducible driver. It compares
 the Agent-authored file byte-for-byte with
@@ -128,7 +144,10 @@ review-expanded whole-task path:
 - *"why?"* succeeds from the persisted assistant artifact without the original
   user turn;
 - automatic proposals remain inert until green tests and human approval, then
-  survive a ledger round-trip and generalize in all four languages;
+  infer one typed operation from successful paraphrases, survive a
+  tamper-checked ledger round-trip, and generalize in all four languages;
+- the public CLI and Agent run the persisted artifact through the same ordered
+  interpreter and retain the complete execution record;
 - the solver, interpreter, explanation, in-repo Agent planner, and external
   Agent CLI use the same artifact bytes.
 

@@ -1,18 +1,21 @@
 # External Agent CLI evidence
 
-The external `@link-assistant/agent` 0.25.0 client executed the reference
+The external `@link-assistant/agent` 0.25.3 client executed the reference
 procedure against the release `formal-ai serve` OpenAI-compatible endpoint.
-Agent session `ses_05b57107fffebK9lpe7eqHCuGv` completed three requests:
+Agent session `ses_0559382b9ffeZg7gTXqS6kySQU` completed four requests:
 
 1. Formal AI compiled the natural-language impulse and asked Agent to write
    `compiled-procedure.lino`.
 2. Formal AI asked Agent to read the same path back with `cat`.
-3. Formal AI verified the tool result and returned the complete artifact plus
-   its source-cited step restatement.
+3. Formal AI verified the artifact and asked Agent to execute
+   `formal-ai procedure conformance` against the persisted file.
+4. Formal AI verified the complete `procedure_run` and returned the artifact,
+   execution evidence, and source-cited step restatement.
 
 `agent-authored-compiled-procedure.lino` is the file from the Agent workspace.
 The replay driver used `cmp` to prove it is byte-identical to
-`data/meta/issue-674-compiled-procedure.lino`.
+`data/meta/issue-674-compiled-procedure.lino`, and it rejected a stream without
+the public conformance command.
 
 Evidence files:
 

@@ -304,8 +304,11 @@ is data-driven and configurable through the seed.
   re-states the exact source spans and compiles identically from Russian, Hindi,
   and Chinese. A step outside the vocabulary compiles nothing, records a named
   review-only learning proposal, and can enter the durable ledger only after
-  green regression tests and explicit human approval. Formal AI's Agent path
-  writes, reads back, and returns the same artifact through the external Agent
+  successful seeded paraphrases infer one consistent typed candidate in all
+  four languages, green regression tests pass, and a human explicitly approves
+  it. Formal AI's Agent path writes and reads back the same artifact, executes
+  it through the public `formal-ai procedure conformance` command, verifies the
+  execution record, and only then returns success through the external Agent
   CLI.
 - **Why it matters:** *Computation Model* describes five rule shapes ranked from
   most reviewable to most flexible, with natural-language skills at the flexible

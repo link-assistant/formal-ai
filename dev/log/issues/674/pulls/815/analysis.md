@@ -1,7 +1,8 @@
 # Issue #674 (E55) — compile arbitrary natural-language programs
 
-- Session: `issue-674-claude-20260720`
-- Agent: formal-ai (Claude Opus 4.8) via `/solve`
+- Initial session: `issue-674-claude-20260720`
+- Review replay: `ses_0559382b9ffeZg7gTXqS6kySQU`
+- Agent: formal-ai through the external Agent CLI
 - Issue: <https://github.com/link-assistant/formal-ai/issues/674>
 - Pull request: <https://github.com/link-assistant/formal-ai/pull/815>
 
@@ -90,28 +91,77 @@ program, and `procedure_rules` appends the `skill_gap` event.
 
 ## 6. Recovering the procedure a turn later
 
-`src/solver_handlers/meta_explanation.rs` does not store the compiled
-procedure. It re-compiles the most recent `prior_turn:user` event that compiles,
-which is the same history mechanism `collect_runtime_rules` in
-`behavior_rules.rs` already uses. No new state, and the citation survives across
-turns — pinned by
-`solver_compiles_a_freely_phrased_procedure_and_can_restate_it_later`.
+The solver puts the complete artifact in its assistant response.
+`src/solver_handlers/meta_explanation.rs` extracts that persisted artifact from
+conversation history, parses it with integrity checks, and cites its retained
+source spans. It does not recompile the earlier user prose. This is pinned by
+`solver_compiles_a_freely_phrased_procedure_and_can_restate_it_later` and
+`compiled_artifact_round_trips_executes_and_explains_without_recompiling_user_prose`.
 
-## 7. Verification performed
+## 7. Review feedback and the deeper root causes
+
+The July 28 review asked for the vision to be implemented more deeply through
+automatic learning and the same real task execution via Formal AI's Agent CLI.
+Two concrete gaps remained:
+
+1. The first learning API required its caller to supply
+   `canonical_kind`. That was a human-authored mapping, not automatic inference.
+2. Agent wrote and read back the program but never invoked the interpreter, so
+   its success proved persistence rather than execution.
+
+`ProcedureLearningProposal::infer_candidate` now consumes multilingual
+observations pairing each missing surface with a successful, already-supported
+paraphrase. It resolves those paraphrases through the seeded compiler
+vocabulary, derives one typed operation, and fails closed on conflicts. The
+candidate id covers the proposal, inferred lesson, and observation evidence.
+`promote_candidate` still requires a green regression suite and explicit human
+approval; schema 2 of the ledger preserves and revalidates the candidate
+evidence after restart.
+
+The public `formal-ai procedure conformance` command parses the persisted
+artifact and runs the generic interpreter through a deterministic,
+side-effect-free host. Agent now performs write, readback, conformance
+execution, and result verification before its final response. The external
+0.25.3 Agent replay completed four server turns and retained the exact
+`procedure_run` under `docs/case-studies/issue-674/agent-cli/`.
+
+## 8. CI failure and merge-conflict investigation
+
+Run `30328997145` failed only in the repository file-size gate:
+`.github/workflows/release.yml` had grown to 2,018 lines against the 2,000-line
+hard limit. The five repeated sccache setup blocks are now a local composite
+action at `.github/actions/setup-sccache/action.yml`, reducing the workflow to
+1,998 lines while keeping each job's behavior. The disk-usage policy scans the
+new action too.
+
+The branch was also behind `main`. Merging `origin/main` produced conflicts
+only in generated closure and self-AST artifacts; those were regenerated from
+the merged source instead of being hand-combined.
+
+## 9. Verification performed
 
 | Command | Result |
 | --- | --- |
-| `cargo test arbitrary_skill_compilation` | 5 passed |
-| `cargo test --all-features --test unit --test source` | unit + source suites pass |
-| `cargo clippy --all-targets --all-features -- -D warnings` | clean |
-| `cargo fmt --check` | clean |
+| `cargo test --test unit arbitrary_skill_compilation` | 15 passed |
+| `cargo test --lib --bins --tests --all-features --verbose` | 2,134 passed, 2 ignored |
+| `cargo test --doc --verbose` | clean |
 | `RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features` | clean |
-| `python3 scripts/audit-total-closure.py` | `UNRESOLVED distinct: 0` |
-| `python3 scripts/build-views.py --check` | `560 entities, ok` |
-| `cargo run --example regenerate_self_ast_census` | in sync |
-| `bash scripts/sync-seed.sh` | no drift |
+| `cargo clippy --lib --bins --tests --all-features -- -D warnings` | clean |
+| `cargo check --examples --all-features` | clean |
+| `cargo fmt --check` | clean |
+| `cargo build --release --bin formal-ai` | clean |
+| `experiments/issue-674-agent-cli/run.sh` | four-turn external Agent replay passed |
+| `rust-script scripts/check-file-size.rs` | release workflow is under the hard limit |
+| `rust-script scripts/check-disk-usage-policy.rs` | workflow and local action are compliant |
+| `actionlint .github/workflows/release.yml` | clean |
+| `python3 scripts/close-total.py` | generated closure refreshed |
+| `python3 experiments/closure_audit.py` | zero true meaning gaps |
+| `cargo run --example regenerate_self_ast_census` | generated census refreshed |
 
-## 8. Two follow-ups the seed edit forced
+Fresh GitHub Actions results are checked at finalization rather than inferred
+from an older run.
+
+## 10. Two follow-ups the seed edit forced
 
 - The nine new bare English surfaces (`address`, `body`, `both`, `content`,
   `headline`, `retrieve`, `save`, `shorten`, `store`) failed
@@ -126,9 +176,12 @@ turns — pinned by
 Both were caught locally by running the full unit suite before pushing, not by
 CI.
 
-## 9. What is *not* done
+## 11. Deliberate safety boundary
 
-`docs/USER-JOURNEYS.md` F2 keeps a future half: walking a stored `.lino` skill
-step by step, and compiling a procedure into a Rust/JS handler, remain
-unimplemented. The status line says so rather than claiming the journey is
-complete.
+Learned vocabulary can select only an operation that already has typed,
+permissioned host semantics. A new side effect still needs an implementation
+and review; evidence and a language model are not allowed to grant authority.
+For reproducible review, the public conformance command uses a side-effect-free
+host that records the exact ordered dataflow. Production hosts can provide
+permissioned fetch, translate, store, and reply implementations without
+changing the compiled program or learning protocol.
