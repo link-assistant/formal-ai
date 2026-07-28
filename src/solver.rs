@@ -33,7 +33,7 @@ use crate::intent_formalization::{
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::rule_synthesis::try_construct_unknown_rule;
+use crate::rule_synthesis::{try_construct_unknown_rule, try_recall_approved_rule};
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
@@ -197,6 +197,13 @@ pub struct SolverConfig {
     /// item. Proposal-only — no skill is auto-promoted without review — and
     /// trace-only either way (R13/C3).
     pub skill_mode: crate::skill_ledger::SkillMode,
+    /// Whether the dialogue's symbolic world model is maintained and traced
+    /// (issue #702): `Off` (default) leaves the solver exactly as it was — no
+    /// current/target contexts are built and the state-query handler declines;
+    /// `Track` rebuilds the model from the conversation, records it as a trace
+    /// artifact, and answers "what is left to reach my goal?" from the
+    /// current->target difference. Trace-only in either mode (R13).
+    pub world_model_mode: crate::world_model_dialog::WorldModelMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -257,6 +264,7 @@ impl Default for SolverConfig {
             recursion_mode: crate::meta_construction::RecursionMode::default(),
             selection_mode: crate::selection::SelectionMode::default(),
             skill_mode: crate::skill_ledger::SkillMode::default(),
+            world_model_mode: crate::world_model_dialog::WorldModelMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -514,7 +522,8 @@ impl UniversalSolver {
             self.solve_sub_impulses(&mut log, &sub_impulses, probability_store, intent_cache);
 
         let selected_rule = select_rule_for_intent(&intent_formalization);
-        let rule = try_construct_unknown_rule(selected_rule, prompt, history, &mut log);
+        let recalled_rule = try_recall_approved_rule(selected_rule, prompt, history, &mut log);
+        let rule = try_construct_unknown_rule(recalled_rule, prompt, history, &mut log);
         let rule =
             if let Some(rewrite) = rewrite_bare_program_coreference_rule(&rule, prompt, history) {
                 log.append("write_program_coreference_rewrite", rewrite.trace);

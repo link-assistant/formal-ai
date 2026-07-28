@@ -109,6 +109,17 @@ impl LinkPattern {
         }
     }
 
+    /// Whether this pattern accepts a concrete link.
+    ///
+    /// Bindings are local to this match. Repeated variables in one pattern must
+    /// still agree (for example, `$value -> $value`), but values never leak
+    /// between separate calls. Context inheritance uses this as its declarative
+    /// partial-inheritance boundary.
+    #[must_use]
+    pub fn matches(&self, link: &SubstitutionLink) -> bool {
+        pattern_matches_link(self, link, &mut BTreeMap::new())
+    }
+
     fn instantiate(&self, bindings: &BTreeMap<String, String>) -> Option<SubstitutionLink> {
         Some(SubstitutionLink {
             from: self.from.instantiate(bindings)?,

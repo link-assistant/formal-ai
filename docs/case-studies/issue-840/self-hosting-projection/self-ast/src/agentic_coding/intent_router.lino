@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/intent_router.rs
+  language rust
+  fidelity full_ast
+  byte_len 7519
+  line_count 181
+  content_id source_module_921511547e4f1fdf
+  symbol_count 6
+  symbols
+    function plan_web_fetch_step 31 47
+    function plan_web_search_step 53 81
+    function tool_result_exists 83 113
+    function plan_edit_step 130 147
+    function read_arguments 149 156
+    function edit_arguments 166 181
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4051
+    named_node_count 853
+    distinct_node_kinds 48
+    node_kinds
+      arguments 66
+      array_type 7
+      binary_expression 3
+      block 17
+      boolean_literal 3
+      call_expression 66
+      closure_expression 8
+      closure_parameters 8
+      crate 3
+      doc_comment 49
+      expression_statement 16
+      field_expression 43
+      field_identifier 43
+      function_item 6
+      generic_type 3
+      identifier 192
+      if_expression 7
+      index_expression 1
+      inner_doc_comment_marker 16
+      integer_literal 3
+      let_condition 1
+      let_declaration 12
+      line_comment 49
+      macro_invocation 4
+      outer_doc_comment_marker 33
+      parameter 15
+      parameters 6
+      primitive_type 12
+      range_expression 1
+      reference_expression 6
+      reference_type 18
+      return_expression 9
+      scoped_identifier 28
+      scoped_use_list 1
+      source_file 1
+      string_content 23
+      string_literal 23
+      super 6
+      token_tree 8
+      try_expression 6
+      tuple_pattern 2
+      tuple_struct_pattern 3
+      type_arguments 3
+      type_identifier 12
+      unary_expression 2
+      use_declaration 5
+      use_list 1
+      visibility_modifier 3

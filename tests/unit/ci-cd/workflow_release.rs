@@ -262,9 +262,10 @@ fn test_job_skips_non_code_changes() {
         "test job should run when the CI workflow itself changed"
     );
     assert!(
-        test.contains("github.event_name == 'push'")
+        !test.contains("github.event_name == 'push'")
             && test.contains("github.event_name == 'workflow_dispatch'"),
-        "test job should still always run on push and manual dispatch"
+        "issue #846 requires pushes to obey detect-changes while manual \
+         dispatch remains unconditional"
     );
     assert!(
         // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs
@@ -363,6 +364,34 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     );
 }
 
+/// Run 30087447926 exhausted `/` twice while the test job rebuilt the package
+/// on top of its restored, target-heavy cache. The first attempt killed the
+/// runner worker; the second could not create a rustc temp directory and made
+/// the linker crash with SIGBUS.
+#[test]
+fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
+    let workflow = release_workflow();
+    let test_job = job_block(&workflow, "test");
+    let cleanup_name = "- name: Free up runner disk space";
+    let cache_name = "- name: Restore cargo registry cache";
+
+    assert!(
+        test_job.contains(cleanup_name),
+        "the test job must reclaim disposable hosted-runner SDKs before a \
+         target-heavy build can exhaust the root filesystem"
+    );
+
+    let cleanup = workflow_step_block(test_job, "Free up runner disk space");
+    assert!(
+        cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+        "the test job must use the repository's established, observable disk cleanup"
+    );
+    assert!(
+        test_job.find(cleanup_name) < test_job.find(cache_name),
+        "runner cleanup must happen before restoring the multi-gigabyte target cache"
+    );
+}
+
 /// Issue #812: nothing validated the pipeline definitions themselves, and
 /// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
 /// is set to `warn` -- so clippy printed findings and exited 0.
@@ -372,8 +401,12 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let lint = job_block(&workflow, "lint");
 
     assert!(
-        lint.contains("cargo clippy --all-targets --all-features -- -D warnings"),
-        "clippy must fail the job on findings, not just print them (issue #812)"
+        lint.contains("cargo clippy --lib --bins --tests --all-features -- -D warnings"),
+        "clippy must lint executable test targets and fail the job on findings"
+    );
+    assert!(
+        lint.contains("cargo check --examples --all-features"),
+        "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
         lint.contains("actionlint"),
@@ -382,6 +415,98 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     assert!(
         lint.contains("shellcheck --severity=warning"),
         "standalone shell scripts must be linted (issue #812)"
+    );
+}
+
+/// The real Agent CLI ships a network-backed `websearch` tool. A temporary
+/// outage of that provider used to abort both meaning-detail scenarios before
+/// Formal AI could observe the search result, making this repository's gate
+/// depend on an unrelated hosted service. Keep the complete research recipe,
+/// but execute its search and fetch through the repository-owned MCP fixture.
+#[test]
+fn meaning_detail_e2e_uses_the_local_research_fixture() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+    let fixture = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/mock-meaning-mcp.mjs"
+    ))
+    .expect("meaning research MCP fixture");
+
+    for step_name in [
+        "Run agent CLI E2E — tomato meaning (search → fetch → write → verify)",
+        "Run agent CLI E2E — potato meaning (different wording, same recipe)",
+    ] {
+        let step = workflow_step_block(agent_e2e, step_name);
+        assert!(
+            step.contains("RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs"),
+            "{step_name} must not depend on Agent's hosted websearch provider"
+        );
+    }
+    assert!(harness.contains("config.tools = { websearch: false, webfetch: false }"));
+    assert!(harness.contains("command: [\"node\", process.argv[2]]"));
+    for lexeme in ["L170542.json", "L3784.json"] {
+        assert!(
+            fixture.contains(&format!("sourcePath(\"{lexeme}\")")),
+            "fixture must serve the committed {lexeme} evidence"
+        );
+    }
+}
+
+/// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
+/// between tool turns. If that unrelated provider is unavailable, the client
+/// exits before returning the tool result to Formal AI.
+#[test]
+fn agent_cli_e2e_disables_hosted_session_summarization() {
+    let workflow = release_workflow();
+    let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .expect("Agent CLI E2E harness");
+
+    assert!(harness.contains(
+        "--no-summarize-session \\\n    --compaction-model same \\\n    --model \"formal-ai/formal-ai\""
+    ));
+    assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
+
+    for script in ["run_issue_687.sh", "run_issue_771.sh", "run_issue_781.sh"] {
+        let research_harness =
+            fs::read_to_string(format!("{manifest_dir}/experiments/agent_cli_e2e/{script}"))
+                .expect("research E2E harness should be readable");
+
+        assert!(
+            research_harness.contains("mock-research-mcp.mjs")
+                && research_harness.contains("\"websearch\": false")
+                && research_harness.contains("\"webfetch\": false"),
+            "{script} must disable Agent's hosted research tools"
+        );
+    }
+}
+
+#[test]
+fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
+    // Run 29911330673 completed the self-AST recipe and wrote its validated
+    // artifact, then the external Agent CLI tried to summarize the session
+    // through `opencode/big-pickle`. That unrelated provider was unavailable,
+    // turning a successful formal-ai round-trip into exit code 1. Keep the
+    // harness focused on the provider under test and preserve its strict
+    // zero-exit assertion by disabling the optional post-run summary.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let harness = fs::read_to_string(format!(
+        "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+    ))
+    .unwrap();
+
+    assert_eq!(
+        harness.matches("\n    --no-summarize-session \\\n").count(),
+        1,
+        "Agent CLI E2E must pass --no-summarize-session to the Agent invocation"
     );
 }
 

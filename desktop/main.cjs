@@ -149,6 +149,7 @@ const engineManager = createEngineManager({
 });
 let desktopStatus = {
   shell: "Electron",
+  platform: process.platform,
   appVersion: updateController.status().currentVersion,
   mode: "in-process",
   apiBase: "",

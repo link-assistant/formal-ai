@@ -11,12 +11,15 @@ pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
 pub mod change_request;
+pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod context_capacity;
+pub mod conversation_context;
 pub mod cue_lexicon;
+pub mod dialog_conversation;
 pub mod dialog_log;
 pub mod document_formats;
 pub mod dreaming;
@@ -27,12 +30,15 @@ pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
 pub mod external_benchmarks;
+pub mod fact_checking;
+pub mod formal_system;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
 pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod intent_formalization;
+pub mod issue_report;
 pub mod json_lino;
 pub mod knowledge;
 pub mod language;
@@ -69,6 +75,7 @@ pub mod proxy;
 pub mod question_generation;
 pub mod rebuild_plan;
 pub mod recipe_interpreter;
+pub mod recursive_execution;
 pub mod relative_meta_logic;
 pub mod repair_strategy;
 pub mod requirement_contradiction;
@@ -116,6 +123,9 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 pub mod world_model;
+pub mod world_model_atoms;
+pub mod world_model_context;
+pub mod world_model_dialog;
 
 pub use agent::{
     parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
@@ -136,6 +146,10 @@ pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
+pub use client_contract_learning::{
+    learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
+    ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
+};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
@@ -163,6 +177,11 @@ pub use engine::{
     SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
+pub use fact_checking::{
+    AuditScope, ContextAudit, EvidenceTrace, FactCheckError, FactChecker, ProbabilityBasis,
+    RefutationAttempt, RefutationOutcome, RefutationStage, StatementVerification,
+};
+pub use formal_system::FormalSystem;
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
@@ -186,7 +205,8 @@ pub use knowledge::{
 };
 pub use language::{detect as detect_language, Language};
 pub use learning_ledger::{
-    canonical_ledger, HumanApproval, LearningLedger, LedgerEntry, PromotionRejected,
+    approved_lesson_for, canonical_ledger, HumanApproval, LearningLedger, LedgerEntry,
+    PromotionRejected,
 };
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
@@ -267,8 +287,9 @@ pub use self_healing::{
     canonical_case, canonical_failure_trace, RepairCase, RepairOutcome, SourceRoundTrip,
 };
 pub use self_improvement::{
-    learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,
-    LearningRejection, LearningRun, UnknownTrace,
+    learn_from_reported_conversation, learn_rules_from_unknown_traces,
+    learning_trace_from_symbolic_answer, BenchmarkGateReport, LearnedRuleAdoption,
+    LearnedRuleProposal, LearningRejection, LearningRun, ReportedLearning, UnknownTrace,
 };
 pub use self_source_links::{
     owned_file_count, owned_manifest, owned_manifest_content_id, owned_manifest_notation,
@@ -331,8 +352,9 @@ pub use telegram_runtime::{
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
-    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
-    normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    assess_arithmetic_claim, detect_language as detect_prompt_language,
+    evaluate_arithmetic_expression, normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
@@ -341,6 +363,15 @@ pub use web_search_core::{
     WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
 pub use world_model::{
-    Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,
-    Statement as WorldStatement, StatementChange, WorldModel,
+    Action, Context, ContextAccessEvent, ContextAccessEventKind, ContextDiff, Dependency,
+    GeneralMemoryCommitError, GeneralMemoryPermission, LinkConflict, Prediction, RecalculatedLink,
+    RecalculationReport, Statement as WorldStatement, StatementChange, WorldModel,
+};
+pub use world_model_atoms::{classify as classify_utterance, state_atom, UtteranceKind};
+pub use world_model_context::{
+    ContextHierarchy, ContextHierarchyError, ExternalLookup, InheritancePolicy, ParentContext,
+    ReferenceResolution, ReferenceResolutionKind,
+};
+pub use world_model_dialog::{
+    ActionForecast, DialogueWorldModel, SyncEvent, SyncEventKind, WorldModelMode,
 };

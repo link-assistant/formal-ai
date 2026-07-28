@@ -1,0 +1,30 @@
+E2E Tests (agent CLI ↔ formal-ai)	Run agent CLI E2E — research, report, recall, and learn (issue #687)	﻿2026-07-22T20:12:29.3696937Z ##[group]Run experiments/agent_cli_e2e/run_issue_687.sh
+^[[36;1mexperiments/agent_cli_e2e/run_issue_687.sh^[[0m
+shell: /usr/bin/bash -e {0}
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: init.defaultBranch
+  GIT_CONFIG_VALUE_0: main
+  CARGO_NET_RETRY: 10
+  CARGO_HTTP_MULTIPLEXING: false
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  CARGO_REGISTRY_TOKEN: ***
+  CARGO_TOKEN: ***
+  GHCR_IMAGE: ghcr.io/link-assistant/formal-ai
+  DOCKERHUB_IMAGE: 
+  LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: false
+  CARGO_HOME: /home/runner/.cargo
+  CARGO_INCREMENTAL: 0
+  PORT: 8776
+##[endgroup]
+== research: When are the next elections in the USA? ==
+== report: Report this problem ==
+== report_destination: GitHub issue ==
+== report_context: Both logs ==
+== recall: What were we talking about? ==
+== follow_up: Learn about it. ==
+!! expected at least 11 chat rounds, got 10
+== Agent CLI log ==
+{
+  "type": "message.updated",

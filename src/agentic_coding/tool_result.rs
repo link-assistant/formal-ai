@@ -2,10 +2,12 @@
 
 use serde_json::Value;
 
+use super::local_search;
 use crate::protocol::ChatMessage;
 use crate::seed::{
-    ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FIRST_REFERENCE,
-    ROLE_TOOL_RESULT_LINE_REQUEST, ROLE_TOOL_RESULT_SECOND_REFERENCE, ROLE_TOOL_RESULT_URL_REQUEST,
+    ROLE_TOOL_RESULT_DETAIL_REQUEST, ROLE_TOOL_RESULT_FAILURE_SIGNAL,
+    ROLE_TOOL_RESULT_FIRST_REFERENCE, ROLE_TOOL_RESULT_LINE_REQUEST,
+    ROLE_TOOL_RESULT_SECOND_REFERENCE, ROLE_TOOL_RESULT_URL_REQUEST,
 };
 
 struct NormalizedResult {
@@ -23,10 +25,10 @@ pub(super) fn normalized_payload(raw: &str) -> Option<String> {
 }
 
 fn looks_like_error(text: &str) -> bool {
-    let lower = text.to_lowercase();
-    ["error", "failed", "not found", "404"]
-        .iter()
-        .any(|needle| lower.contains(needle))
+    crate::seed::lexicon().mentions_role(
+        ROLE_TOOL_RESULT_FAILURE_SIGNAL,
+        &crate::engine::normalize_prompt(text),
+    )
 }
 
 pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
@@ -36,7 +38,9 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
         return fill("tool_result_failed", language, label, "", "", &error);
     }
     if result.payload.trim().is_empty() {
-        let intent = if is_listing(label) {
+        let intent = if local_search::request_for(prompt).is_some() {
+            "tool_result_empty_local_path_search"
+        } else if is_listing(label) {
             "tool_result_empty_list"
         } else if is_search(label) {
             "tool_result_empty_search"
@@ -208,7 +212,21 @@ fn normalize(raw: &str) -> NormalizedResult {
 }
 
 fn from_payload(payload: &str, error: Option<String>) -> NormalizedResult {
-    let trimmed = payload.trim().to_owned();
+    let trimmed = payload.trim();
+    let trimmed = if matches!(
+        trimmed.to_ascii_lowercase().as_str(),
+        "(empty)"
+            | "(no output)"
+            | "(bash completed with no output)"
+            | "no output"
+            | "command completed with no output"
+            | "command completed without output"
+            | "command produced no output"
+    ) {
+        String::new()
+    } else {
+        trimmed.to_owned()
+    };
     if let Ok(json) = serde_json::from_str::<Value>(&trimmed) {
         if let Some(text) = mcp_text_content(&json) {
             return NormalizedResult {
@@ -259,7 +277,11 @@ fn mcp_text_content(value: &Value) -> Option<String> {
     Some(text.join("\n"))
 }
 
-fn strip_transport_envelope(text: &str) -> String {
+/// Drop the wrapper a client puts around a shell result — Codex's
+/// `exec_command` prefixes `Chunk ID` / `Wall time` / `Process exited with code`
+/// lines before the real `Output:` — so a recipe that answers with the command's
+/// output quotes the file, not the transport (issue #671).
+pub(super) fn strip_transport_envelope(text: &str) -> String {
     let inner = text
         .split_once("<untrusted_context>")
         .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))

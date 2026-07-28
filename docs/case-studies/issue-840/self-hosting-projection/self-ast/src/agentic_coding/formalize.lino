@@ -1,0 +1,119 @@
+self_ast_census
+  target src/agentic_coding/formalize.rs
+  language rust
+  fidelity full_ast
+  byte_len 20700
+  line_count 599
+  content_id source_module_0841b6b93be1278d
+  symbol_count 23
+  symbols
+    const CANONICAL_FISHERMAN_SYNOPSIS 40 41
+    const FISHERMAN_DOC_ID 45 45
+    const PRIMITIVE_KINDS 48 48
+    struct FormalizationSummary 64 77
+    function covers_all_nine 81 83
+    function total_records 86 97
+    struct FormalizedKnowledgeBase 102 105
+    function formalize_text_to_links 112 426
+    function record_count 428 441
+    function resolve_doc_id 443 449
+    function push_record 451 457
+    struct Sentence 463 467
+    function segment_sentences 469 498
+    function has_cyrillic 500 503
+    function slugify 505 520
+    struct Assertion 526 537
+    struct Annotation 539 546
+    struct ConceptDecl 548 553
+    struct Temporal 555 559
+    function from_expression 562 568
+    struct Modal 571 575
+    function from_raw 578 585
+    function coverage_line 590 599
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 15013
+    named_node_count 3011
+    distinct_node_kinds 78
+    node_kinds
+      arguments 222
+      array_expression 10
+      array_type 1
+      assignment_expression 3
+      attribute 6
+      attribute_item 6
+      base_field_initializer 1
+      binary_expression 15
+      block 54
+      boolean_literal 3
+      call_expression 222
+      char_literal 10
+      closure_expression 12
+      closure_parameters 12
+      const_item 3
+      continue_expression 1
+      crate 1
+      declaration_list 3
+      doc_comment 45
+      else_clause 4
+      expression_statement 77
+      field_declaration 42
+      field_declaration_list 8
+      field_expression 282
+      field_identifier 378
+      field_initializer 54
+      field_initializer_list 13
+      for_expression 16
+      function_item 12
+      function_modifiers 2
+      generic_function 1
+      generic_type 19
+      identifier 541
+      if_expression 18
+      impl_item 3
+      inner_doc_comment_marker 25
+      integer_literal 7
+      let_condition 5
+      let_declaration 44
+      line_comment 55
+      macro_invocation 16
+      match_arm 15
+      match_block 3
+      match_expression 3
+      match_pattern 15
+      mutable_specifier 29
+      outer_doc_comment_marker 20
+      parameter 14
+      parameters 12
+      parenthesized_expression 2
+      primitive_type 31
+      range_expression 1
+      reference_expression 50
+      reference_type 20
+      return_expression 1
+      scoped_identifier 33
+      scoped_use_list 1
+      self 12
+      self_parameter 2
+      shorthand_field_initializer 8
+      source_file 1
+      string_content 106
+      string_literal 107
+      struct_expression 13
+      struct_item 8
+      super 1
+      token_tree 34
+      tuple_expression 49
+      tuple_pattern 6
+      tuple_struct_pattern 6
+      tuple_type 1
+      type_arguments 20
+      type_identifier 100
+      unary_expression 7
+      use_as_clause 1
+      use_declaration 4
+      use_list 1
+      visibility_modifier 22

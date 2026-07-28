@@ -1,0 +1,102 @@
+self_ast_census
+  target src/agentic_coding/self_ast.rs
+  language rust
+  fidelity full_ast
+  byte_len 11266
+  line_count 256
+  content_id source_module_9104c8097027e9ae
+  symbol_count 19
+  symbols
+    const RUST_GRAMMAR_LABEL 32 32
+    const TARGET_MODULE_PATH 39 39
+    const TARGET_MODULE_SOURCE 42 42
+    const AST_PATH 45 45
+    const AST_TASK 50 58
+    const AST_KEYWORDS 58 58
+    function is_self_ast_task 67 78
+    struct AstNodeCount 83 88
+    struct AstCensus 93 104
+    function ast_census 114 144
+    function ast_census 149 157
+    function render_ast_document 166 187
+    function reconstruct_source 200 203
+    function reconstruct_source 208 210
+    function round_trips 219 221
+    function render_document 225 227
+    function target_census 233 235
+    function target_source 241 243
+    function final_answer 248 256
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5369
+    named_node_count 1065
+    distinct_node_kinds 65
+    node_kinds
+      arguments 41
+      array_expression 1
+      array_type 1
+      attribute 19
+      attribute_item 19
+      binary_expression 10
+      block 15
+      boolean_literal 2
+      call_expression 41
+      closure_expression 2
+      closure_parameters 2
+      compound_assignment_expr 1
+      const_item 6
+      continue_expression 1
+      doc_comment 86
+      escape_sequence 10
+      expression_statement 6
+      field_declaration 7
+      field_declaration_list 2
+      field_expression 30
+      field_identifier 45
+      field_initializer 8
+      field_initializer_list 3
+      field_pattern 2
+      for_expression 2
+      function_item 11
+      function_modifiers 2
+      generic_type 2
+      identifier 205
+      if_expression 2
+      inner_doc_comment_marker 21
+      integer_literal 5
+      let_condition 1
+      let_declaration 25
+      lifetime 1
+      line_comment 92
+      macro_invocation 17
+      mutable_specifier 2
+      outer_doc_comment_marker 65
+      parameter 9
+      parameters 11
+      parenthesized_expression 1
+      primitive_type 24
+      reference_expression 1
+      reference_type 16
+      scoped_identifier 13
+      scoped_use_list 1
+      shorthand_field_identifier 2
+      shorthand_field_initializer 4
+      source_file 1
+      string_content 43
+      string_literal 37
+      struct_expression 3
+      struct_item 2
+      struct_pattern 1
+      token_tree 30
+      tuple_pattern 1
+      tuple_struct_pattern 1
+      type_arguments 2
+      type_identifier 19
+      unary_expression 2
+      use_as_clause 1
+      use_declaration 3
+      use_list 1
+      visibility_modifier 23

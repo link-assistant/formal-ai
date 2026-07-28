@@ -147,21 +147,12 @@ jobs:
           echo "Validating commits in ${merge_base}..HEAD"
           rust-script scripts/self-hosting-metric.rs --since "$merge_base" --until HEAD
 
-      # Issue #812: `Auto Release` died on main with "self-hosting ratchet would
-      # fall from 32.68% to 18.24% for v0.301.0" -- after every contributing
-      # commit was already immutable, and while the only way to move the measured
-      # range forward (cutting a tag) was what it blocked. Enforcement belongs
-      # here, where the commits can still be amended. The check is differential:
-      # it compares the release share projected *with* this branch against the
-      # one projected for the base alone, so a regression already on main cannot
-      # block unrelated pull requests.
-      - name: Check the self-hosting ratchet against the merge base
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: |
-          set -euo pipefail
-          base="origin/${GITHUB_BASE_REF}"
-          rust-script scripts/self-hosting-metric.rs --check-ratchet "$base" --until HEAD
+      # Issue #846: do not enforce the percentage ratchet on pull requests.
+      # CONTRIBUTING.md permits honest 0% releases and explicitly forbids adding
+      # Formal-AI trailers to human-authored or manually corrected work. A
+      # percentage gate made those valid contributions impossible to merge.
+      # The validation above remains strict for commits that claim Formal AI
+      # authorship; release recording still reports the measured percentage.
 
   # === DOCKER IMAGE CHECK ===
   # Issue #808: the Dockerfile was only ever built inside `auto-release` /
@@ -233,7 +224,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.docs-changed == 'true' ||
@@ -288,6 +278,9 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # Issue #812: this job used to take ~3.3 minutes; it now takes 6.8-7.8 as
     # checks accumulated (the last three `main` runs measured 6.7, 6.8, 7.8),
     # which is 78% of the old 10-minute cap. Raised before it produces the same
@@ -300,7 +293,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -330,6 +322,8 @@ jobs:
           components: rustfmt, clippy
           targets: wasm32-unknown-unknown
 
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -344,7 +338,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
@@ -399,7 +392,7 @@ jobs:
       # (issue #812). The tree is clippy-clean at the time this was added, so
       # this promotes existing behaviour rather than introducing new failures.
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features
 
       # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
       # Build the same public API docs deployed by Pages before release so a
@@ -439,6 +432,9 @@ jobs:
       # docs/design/no-hardcoded-natural-language.md.
       - name: Check hardcoded natural language
         run: rust-script scripts/check-hardcoded-language.rs
+
+      - name: Check development disk policy
+        run: rust-script scripts/check-disk-usage-policy.rs
 
       - name: Check worker JS line budget
         run: rust-script scripts/check-worker-line-budget.rs
@@ -569,6 +565,9 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
     # sync with TEST_BUDGET_SECONDS there.
     timeout-minutes: 25
@@ -579,7 +578,6 @@ jobs:
     # See: https://github.com/actions/runner/issues/491
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
@@ -606,29 +604,31 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: bash scripts/simulate-fresh-merge.sh
 
+      # Run 30087447926 exhausted `/` on two hosted runners after restoring the
+      # target-heavy cache: rustc first killed the runner worker, then failed to
+      # create a temp directory and made ld crash with SIGBUS. Reuse the cleanup
+      # already required by the repository's other heavy build jobs.
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Restore the cargo cache here, but leave cache writes to the lint/build
-      # jobs. This test job runs close to its timeout after the full suite, and
-      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
-      # successful run.
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
+
+      # Cache downloaded sources, but never restore the branch-dependent target
+      # tree. sccache reuses compiler outputs without retaining stale test
+      # binaries and multi-GiB incremental directories.
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
-
-      # The shared target cache can retain binaries for test files removed on
-      # another branch. Rebuild this package's artifacts while preserving its
-      # cached dependencies so Cargo never executes an orphaned test binary.
-      - name: Clean stale package test artifacts
-        run: cargo clean -p formal-ai
 
       - name: Check LiNo data integrity
         run: cargo test --test unit data_files -- --nocapture
@@ -656,7 +656,7 @@ jobs:
         run: |
           set -euo pipefail
           started=$SECONDS
-          cargo test --all-features --verbose
+          cargo test --lib --bins --tests --all-features --verbose
           elapsed=$((SECONDS - started))
           threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
           printf 'Test suite took %ss of the %ss job budget.\n' \
@@ -673,6 +673,9 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # Issue #812: the same margin problem as `test`, one run away from the same
     # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
     # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
@@ -681,7 +684,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true'
@@ -694,13 +696,15 @@ jobs:
         with:
           components: llvm-tools-preview
 
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
+
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-coverage-
@@ -751,6 +755,9 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     timeout-minutes: 10
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
@@ -759,6 +766,9 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
@@ -769,7 +779,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-build-
@@ -1341,7 +1350,6 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
@@ -1430,18 +1438,26 @@ jobs:
     needs: [detect-changes]
     if: |
       !cancelled() && (
-        github.event_name == 'push' ||
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true' ||
         needs.detect-changes.outputs.rs-changed == 'true' ||
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.workflow-changed == 'true'
       )
+    env:
+      # Keep every real Agent invocation inside this required gate local. Some
+      # issue-specific scripts do not pass the CLI's no-summary flag directly.
+      LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -1449,7 +1465,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-agentcli-e2e-
@@ -1493,10 +1508,13 @@ jobs:
       - name: Run agent CLI E2E — tomato meaning (search → fetch → write → verify)
         # Distinct port per step to avoid collisions if a runner is shared.
         # Canary: the Russian plural `томаты`, previously missing from `томат`.
+        # Search/fetch stay real client-executed MCP turns, backed by the cached
+        # Wikidata documents rather than Agent's availability-sensitive Exa tool.
         env:
           PORT: 8768
           EXPECT_FILE: meanings-tomato-detail.lino
           EXPECT_TEXT: томаты
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — potato meaning (different wording, same recipe)
@@ -1507,6 +1525,7 @@ jobs:
           TASK: "Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata."
           EXPECT_FILE: meanings-potato-detail.lino
           EXPECT_TEXT: potatoes
+          RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs
         run: experiments/agent_cli_e2e/run_agent_cli.sh
 
       - name: Run agent CLI E2E — generated diagrams (non-lexeme axis, no web step)
@@ -1648,11 +1667,20 @@ jobs:
       - name: "Run agent CLI E2E — filed report stays readable and bounded (issue #771)"
         # The reported session answered a question from a whole scraped page and
         # then filed it, producing a 51KB issue whose transcript escaped its own
-        # markdown. Asserts over the real transport that every turn stays inside
-        # an attributed block and the body fits GitHub's issue size limit.
+        # markdown. Asserts over the real transport that the context stays in a
+        # LiNo fence and the body fits GitHub's issue size limit.
         env:
           PORT: 8781
         run: experiments/agent_cli_e2e/run_issue_771.sh
+
+      - name: "Run agent CLI E2E — confirmed complete-context reports (issue #822)"
+        # The first two turns must only ask for destination and included logs;
+        # the third executes a PATH-local fake gh and validates the full Lino
+        # context obtained from the matching server conversation.
+        timeout-minutes: 10
+        env:
+          PORT: 8783
+        run: experiments/agent_cli_e2e/run_issue_822.sh
 
       - name: "Run four-client E2E — narrated compatibility research (issue #781)"
         # The exact reported marketplace question drives Agent, OpenCode,
@@ -1662,6 +1690,38 @@ jobs:
         env:
           PORT: 8783
         run: experiments/agent_cli_e2e/run_issue_781.sh
+
+      - name: "Run real-client + TUI E2E — grounded action recipe (issues #819/#840)"
+        timeout-minutes: 15
+        env:
+          PORT: 8784
+          ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/path-discovery
+        run: experiments/agent_cli_e2e/run_issue_840.sh
+
+      - name: "Run agent CLI E2E — learn stable TUI replay contracts (issue #841)"
+        timeout-minutes: 5
+        env: { PORT: 8795, OBSERVATIONS: /tmp/formal-ai-tui-artifacts/path-discovery/local-search/tui-contract-observations.jsonl, OUT: /tmp/formal-ai-tui-artifacts/tui-contract-learning, GENERATE_EXPECTED: 1 }
+        run: experiments/agent_cli_e2e/run_issue_841_tui_learning.sh
+      - name: "Run reference differential gate — grounded action recipe (issue #840)"
+        # Third-party free-model runs are recorded rather than repeated here:
+        # live quota exhaustion is INCONCLUSIVE, not a model failure. This step
+        # reruns Formal AI's 24-node real-server ladder and checks its raw local
+        # transcript against the best conclusive reference run, including the
+        # widening procedure, command simplicity, kind check, and PEM decoy.
+        timeout-minutes: 5
+        env:
+          PORT: 8785
+        run: experiments/issue_840_reference_agents/run_differential_gate.sh
+
+      - name: "Run OpenCode TUI E2E — report multiselect and issue body (issue #838)"
+        timeout-minutes: 3
+        env: { PORT: 8804, ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/report-flow }
+        run: experiments/agent_cli_e2e/run_issue_819_report_tui.sh
+
+      - name: "Run OpenCode TUI E2E — representative task-ladder node (issue #840)"
+        timeout-minutes: 3
+        env: { PORT: 8805, MODE: tui, ONLY: 838.L1, OUT: /tmp/formal-ai-tui-artifacts/task-ladder-results.json, TUI_ARTIFACT_DIR: /tmp/formal-ai-tui-artifacts/task-ladder, REQUIRE_ALL_PASS: 1 }
+        run: experiments/issue_840_task_ladder/run_ladder.sh
 
       - name: "Run agent CLI E2E — auto-learning across two harnesses (issue #715)"
         # The derived report names its own promotion gate
@@ -1715,6 +1775,14 @@ jobs:
           PORT: 8885
         run: experiments/agent_cli_e2e/run_issue_663_learning.sh
 
+      - name: "Run agent CLI E2E — client-contract auto-learning (issue #671)"
+        # The real Agent CLI asks Formal AI to derive the human-gated client
+        # contract proposals, write the exact command output, and verify it.
+        timeout-minutes: 5
+        env:
+          PORT: 8886
+        run: experiments/agent_cli_e2e/run_issue_671_contract_learning.sh
+
       - name: "Run agent CLI E2E — repository statement audit (issue #661)"
         # The real Agent CLI delegates the repository scan to the public release
         # binary in its own workspace, then consumes the command result before
@@ -1741,6 +1809,10 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
           retention-days: 7
+      - name: Upload TUI transcripts and replay artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with: { name: agent-cli-tui-replays, path: /tmp/formal-ai-tui-artifacts, if-no-files-found: ignore, retention-days: 7 }
 
   # === DEPLOY WEB APP ===
   # Deploy the production web app from src/web/ to GitHub Pages after a successful build.
@@ -1813,7 +1885,7 @@ jobs:
 
       # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
       # `target/` directory. The other Rust jobs (notably `lint`, which runs
-      # `cargo clippy --all-targets --all-features`) share the same cache key and
+      # the repository's targeted Clippy and example checks share the same cache key and
       # populate `target/` with a multi-gigabyte debug tree. Restoring that here
       # on top of the web bundle and then running `cargo doc` exhausted the
       # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)

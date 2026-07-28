@@ -11,7 +11,6 @@
 use crate::seed::{self, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
-
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
 /// Two data-driven strategies, in order of specificity:
@@ -33,7 +32,8 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
     let vocab = seed::terminal_command_vocabulary();
-    let intent = intent_shell_command(prompt, &seed::shell_intent_vocabulary());
+    let intent_vocab = seed::shell_intent_vocabulary();
+    let intent = intent_shell_command(prompt, &intent_vocab);
     let listing = asks_for_directory_listing(prompt);
     let web_search = crate::solver_handlers::web_search_query_for(prompt).is_some();
     let semantic = listing.then(|| String::from("ls")).or(intent);
@@ -64,6 +64,16 @@ pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     semantic
         .or_else(|| named_shell_command(prompt, &vocab))
         .or_else(|| bare_shell_command(prompt, &vocab))
+}
+
+/// Resolve only the seed-backed natural-language shell intent.
+///
+/// The interactive solver uses this narrower entry point after its explicit
+/// terminal syntax checks, so ordinary Chat requests and the agentic planner
+/// share one semantic intent table without broadening Chat detection to every
+/// named shell token.
+pub fn semantic_shell_command_for_task(prompt: &str) -> Option<String> {
+    intent_shell_command(prompt, &seed::shell_intent_vocabulary())
 }
 
 fn strip_balanced_outer_quotes(prompt: &str) -> &str {

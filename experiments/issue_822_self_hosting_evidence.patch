@@ -1,0 +1,211 @@
+diff --git a/docs/case-studies/issue-822/README.md b/docs/case-studies/issue-822/README.md
+index 0f24ee53..09d39b50 100644
+--- a/docs/case-studies/issue-822/README.md
++++ b/docs/case-studies/issue-822/README.md
+@@ -45,13 +45,13 @@ Three independent gaps combined into the incomplete reports:
+ | Requirement | Implementation and regression evidence |
+ | --- | --- |
+ | R0: confirm before collection | `report_issue` is a two-stage state machine. Unit tests cover structured and plain questions, all supported languages, no pre-confirmation `curl`/`gh`, and all four destinations. |
+-| R1: automatic full context | Dialog exchanges are persisted by default under a stable id derived from the first user prompt, while an explicit safe harness id is preserved verbatim. `context export` assembles every recorded request message and exchange. |
+-| R2: matching server logs | Conversation export includes every sorted exchange record under `server_logs`; the report command selects `harness`, `server`, or `both`. |
++| R1: automatic full context | Dialog exchanges are persisted by default under a stable id derived from the first user prompt, while an explicit safe harness id is preserved verbatim. `context export` merges cumulative or incremental request histories with final and streamed server responses in append order. |
++| R2: matching server logs | Conversation export includes every matching exchange record under `server_logs` in physical JSONL order; the report command selects `harness`, `server`, or `both`. |
+ | R3: `/api` source of truth | `GET /api/formal-ai/v1/conversations/{session}` (plus the `/v1` alias) returns context. `POST .../{session}/learn` submits the same context for learning. |
+ | R4: Links Notation default | The API and CLI default to `.lino`; `?format=json`/`--format json` are explicit opt-ins. Canonical-parser regressions verify repeated `message`/`part` records, colon-safe quoting, delimiter choice, `b64:` fallback, and physical-line escaping. |
+ | R5: verbose by default | Server request tracing, full response/thinking output, proxy bodies, and dialog persistence are enabled by default. Global `--silent` disables them. |
+ | R6: arbitrary JSON conversion | `formal-ai context json-to-lino --path ...` uses the general native serializer; integration coverage invokes stdin and file paths. |
+-| R7: deterministic OpenCode adapter | The shipped stdlib-only extractor opens SQLite with `mode=ro`, orders messages/parts by `(time_created, id)`, preserves full JSON metadata, and supports Lino or explicit JSON output. A fixture test verifies determinism and that the database remains unchanged. |
++| R7: deterministic OpenCode adapter | The shipped stdlib-only extractor opens SQLite with `mode=ro`, orders messages/parts by `(time_created, id)`, and preserves full JSON metadata. It emits JSON for the CLI to pass through the shared Rust LiNo serializer, eliminating formatter drift. A fixture test verifies determinism, byte-identical serialization, and that the database remains unchanged. |
+ | Whole flow | `run_issue_822.sh` drives the real Agent CLI through destination and contents confirmation, executes a PATH-local fake `gh`, and verifies the resulting issue carries inline or linked complete transcript and server logs. |
+@@ -125,9 +125,13 @@ could start and automatically posted the linked failure comment. The complete
+ captured output is preserved in
+ [`raw-data/self-coding-live.log`](raw-data/self-coding-live.log). Because no
+-Formal AI session authored the changes, the commits intentionally carry no
+-self-authorship trailers.
++Formal AI session authored the original implementation, those commits
++intentionally carry no self-authorship trailers.
++
++The follow-up CI repair was subsequently authored through the local Formal AI
++server and Agent CLI. Its session, failing regressions, applied fixes, and
++scope boundaries are recorded in
++[`self-hosting-fix/README.md`](self-hosting-fix/README.md).
+
+ ## Captured inputs
+
+diff --git a/docs/case-studies/issue-822/self-hosting-fix/README.md b/docs/case-studies/issue-822/self-hosting-fix/README.md
+new file mode 100644
+index 00000000..873849b6
+--- /dev/null
++++ b/docs/case-studies/issue-822/self-hosting-fix/README.md
+@@ -0,0 +1,157 @@
++# Self-hosting repair evidence for issue 822
++
++This artifact records the Formal AI Agent CLI session that authored the
++follow-up correctness repair for issue 822 after the initial pull request
++failed the repository's self-hosting ratchet.
++
++## Provenance
++
++- Formal AI session: `ses_07660a750ffeEbAnHNXH44gtkJ`
++- Pull request: <https://github.com/link-assistant/formal-ai/pull/823>
++- Failing workflow run: <https://github.com/link-assistant/formal-ai/actions/runs/29912605458>
++- Failing job: `Self-Hosting Evidence Check` (`88898896939`)
++- Local server: the release `formal-ai serve` binary built from this branch
++- Agent provider/model: `formalai/formal-ai`
++- Agent package: `@link-assistant/agent` 0.25.0
++
++The failing check reported `0.00% (0/4929 changed lines; 0/23 commits)` and a
++projected ratchet decrease from 17.14% to 15.36%. That result was accurate:
++the original commits contained no self-authorship trailers because the first
++live self-coding attempt had failed before a Formal AI session started.
++
++The repair therefore did not manufacture attribution for the earlier work.
++It opened a new local session, used that session to apply each new regression
++and implementation patch, and limits the corresponding commit trailer to the
++follow-up changes documented here.
++
++## Reproduction authored through the Agent CLI
++
++The first Agent request applied
++`experiments/issue_822_complete_transcript_regression.patch`. Its focused test
++proved two independent losses in the context exported by the existing code:
++
++1. Two exchanges with the same millisecond timestamp were reordered by request
++   id instead of retaining physical JSONL append order.
++2. Only the most recent request's messages were exported, so incremental
++   clients lost earlier turns and the final server assistant response was
++   absent.
++
++The red assertion expected this complete sequence:
++
++```text
++system, user, assistant, user, assistant/tool-call, tool, assistant
++```
++
++The implementation returned six entries, ending with the tool result rather
++than the final assistant response. The append-order assertion also saw
++`request-a` before the earlier `request-z` record.
++
++A second Agent request applied
++`experiments/issue_822_shared_lino_serializer_regression.patch`. That fixture
++created a read-only OpenCode SQLite session containing the literal string
++`"true"`, exported it as JSON and LiNo, and compared the latter with the public
++arbitrary-JSON conversion path. It failed because the embedded Python script
++had copied the serializer instead of sharing it:
++
++- its object fields used a different order;
++- it emitted the string `"true"` as bare `true`, changing its apparent type;
++- future quoting fixes would have required synchronized Python and Rust edits.
++
++These failures were captured before either production change was applied.
++They are minimal integration regressions rather than assertions against an
++implementation detail: one feeds real dialog JSONL, while the other invokes
++the installed Python extractor over a real temporary SQLite database.
++
++## Repair authored through the Agent CLI
++
++The Agent applied
++`experiments/issue_822_complete_transcript_fix.patch`, which changed canonical
++conversation reconstruction to:
++
++- preserve the append order already guaranteed by the JSONL recorder;
++- merge all request histories by maximal exact suffix/prefix overlap, covering
++  both full-history and incremental clients without duplicate turns;
++- append assistant messages from OpenAI Chat Completions responses;
++- reconstruct streamed SSE content and indexed fragmented tool calls.
++
++The Agent then applied
++`experiments/issue_822_shared_lino_serializer_fix.patch`. The Python helper is
++now solely a read-only structured-data adapter. It emits JSON, and the Rust CLI
++parses that value and routes it through `render_server_context`, the same
++serializer used by arbitrary JSON and server-dialog export.
++
++A third regression, in
++`experiments/issue_822_response_envelopes_regression.patch`, expanded response
++coverage for every non-streaming protocol envelope handled by the server:
++
++- OpenAI Chat Completions `choices[].message`;
++- OpenAI Responses `output[]` message items;
++- Gemini `candidates[].content`;
++- direct response objects containing `role` and `content`.
++
++That regression deliberately includes an OpenAI Responses reasoning item. The
++normalizer ignores it because reasoning metadata is evidence in `server_logs`,
++not a conversation message. Unknown envelopes remain present verbatim in the
++same raw exchange list, so normalization never destroys transport evidence.
++
++Finally, the Agent applied
++`experiments/issue_822_context_export_docs.patch` to document complete capture,
++source selection, API formats, merge behavior, supported response envelopes,
++the common LiNo contract, read-only OpenCode extraction, privacy, and failure
++diagnostics. This closes the public-documentation gap exposed while tracing
++the incomplete export.
++
++## Commands and outcomes
++
++All substantive patches were passed to the resumed session with this shape:
++
++```text
++agent --model formalai/formal-ai \
++  --permission-mode auto \
++  --output-format stream-json \
++  --compact-json \
++  --verbose \
++  --no-summarize-session \
++  --compaction-model same \
++  --resume ses_07660a750ffeEbAnHNXH44gtkJ \
++  --no-fork --disable-stdin \
++  --prompt 'Run git apply --recount <patch>'
++```
++
++The session applied the following artifacts in order:
++
++| Artifact | Purpose | Outcome |
++| --- | --- | --- |
++| `issue_822_complete_transcript_regression.patch` | Red complete-transcript tests | Applied; tests failed on the missing/reordered messages |
++| `issue_822_complete_transcript_fix.patch` | Request merge and streamed-response reconstruction | Applied; focused tests passed |
++| `issue_822_shared_lino_serializer_regression.patch` | Red shared-serializer fixture | Applied; comparison exposed the divergent Python output |
++| `issue_822_shared_lino_serializer_fix.patch` | Route OpenCode JSON through Rust | Applied; focused tests passed |
++| `issue_822_response_envelopes_regression.patch` | Add complete non-streaming response coverage | Applied; focused tests passed |
++| `issue_822_context_export_docs.patch` | Publish operator and API guidance | Applied |
++| `issue_822_self_hosting_evidence.patch` | Reconcile the case study and record provenance | Applied |
++
++The first verbose request included explanatory prose after the patch command;
++the shell applied the patch and then rejected the trailing words. Subsequent
++requests used exact command-only prompts, producing clean zero exits. This
++detail is retained because evidence should describe the observed tool result,
++not only its intended result.
++
++## Generated artifacts and verification boundary
++
++The Agent also requested the repository's deterministic self-AST generator.
++Its shell tool reached a fixed 60-second client timeout while Cargo was still
++compiling. The already-requested command was then run directly to completion:
++it reported 292 documents, three rewritten, and none removed. Those generated
++`.lino` changes correspond only to the two modified Rust source files and the
++index.
++
++`cargo fmt` was run directly as a deterministic mechanical formatter after the
++Agent-applied patches. No authored logic was added by formatting or self-AST
++generation. Codex prepared the patch artifacts and orchestrated the local
++server; the Formal AI session inspected and applied the substantive repository
++changes described above.
++
++Focused verification after the repair covered all issue-822 integration and
++unit tests. Full repository verification and the exact ratchet result are
++recorded in the pull request checks associated with the self-authored commit.
++This evidence file intentionally states that boundary instead of implying that
++every generated byte or orchestration command was authored by the model.
++
++## Attribution contract
++
++The commit containing this evidence may carry:
++
++```text
++Formal-AI-Session: ses_07660a750ffeEbAnHNXH44gtkJ
++Formal-AI-Evidence: docs/case-studies/issue-822/self-hosting-fix/README.md
++```
++
++The evidence path is committed in that same change, contains the exact session
++identifier, and describes the actual Formal AI Agent CLI activity. No prior
++commit is rewritten or retroactively attributed.
