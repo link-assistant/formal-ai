@@ -98,6 +98,42 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 }
 
 #[test]
+fn repository_work_item_completion_is_seeded_for_every_supported_language() {
+    struct LocalizedCase {
+        language: &'static str,
+        expected_fragment: &'static str,
+    }
+
+    for case in [
+        LocalizedCase {
+            language: "en",
+            expected_fragment: "Recorded and verified",
+        },
+        LocalizedCase {
+            language: "ru",
+            expected_fragment: "записан и проверен",
+        },
+        LocalizedCase {
+            language: "hi",
+            expected_fragment: "दर्ज और सत्यापित",
+        },
+        LocalizedCase {
+            language: "zh",
+            expected_fragment: "已记录并验证",
+        },
+    ] {
+        let response =
+            formal_ai::seed::response_for("general_plan_repository_complete", case.language)
+                .unwrap_or_else(|| panic!("missing repository completion for {}", case.language));
+        assert!(
+            response.contains(case.expected_fragment),
+            "repository completion is not localized for {}: {response}",
+            case.language
+        );
+    }
+}
+
+#[test]
 fn agentic_general_planner_rejects_non_referential_payload() {
     // A "save it to FILE" / "write this to FILE" request names no literal
     // content: the pronoun points back at content a keyword recipe must still
