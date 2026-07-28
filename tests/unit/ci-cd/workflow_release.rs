@@ -401,8 +401,12 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let lint = job_block(&workflow, "lint");
 
     assert!(
-        lint.contains("cargo clippy --all-targets --all-features -- -D warnings"),
-        "clippy must fail the job on findings, not just print them (issue #812)"
+        lint.contains("cargo clippy --lib --bins --tests --all-features -- -D warnings"),
+        "clippy must lint executable test targets and fail the job on findings"
+    );
+    assert!(
+        lint.contains("cargo check --examples --all-features"),
+        "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
         lint.contains("actionlint"),
