@@ -196,7 +196,7 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
         }
         let target = suffix_tokens.iter().enumerate().find_map(|(index, token)| {
             let cleaned = clean_path_token(token.text);
-            let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+            let looks_like_file = looks_like_file_path(cleaned);
             let previous = index
                 .checked_sub(1)
                 .map(|position| &suffix_tokens[position])?;
@@ -305,7 +305,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // incidental dotted token (a version, an abbreviation) out of the write path.
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if !looks_like_file || !safe_relative_path(cleaned) {
             return None;
         }
@@ -475,7 +475,7 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         // `is_source_links_task` — in which case the workspace self-AST census
         // (issue #673) resolves it to the module that actually declares it.
         let resolved = resolve_census_target(cleaned);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if resolved.is_none() && (!looks_like_file || !safe_relative_path(cleaned)) {
             return None;
         }
@@ -579,6 +579,22 @@ fn bare_surfaces(role: &str) -> Vec<String> {
 fn clean_path_token(word: &str) -> &str {
     word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
         .trim_end_matches(['.', '!', '?'])
+}
+
+/// Whether a safe-looking token names a file rather than merely using the
+/// conventional `./` prefix for a directory.
+///
+/// Checking the whole token for a dot made policy prose such as "keep examples
+/// in ./examples" file-shaped. When a later sentence contained a write-content
+/// marker, the generic planner consequently tried to overwrite that directory.
+/// File shape belongs to the final path component; dots in parent components or
+/// in the relative-path prefix do not make the target a file.
+fn looks_like_file_path(path: &str) -> bool {
+    !path.contains("://")
+        && path
+            .rsplit('/')
+            .next()
+            .is_some_and(|file_name| file_name.contains('.'))
 }
 
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.

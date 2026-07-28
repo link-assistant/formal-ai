@@ -41,6 +41,18 @@ fn agentic_general_planner_rejects_unsafe_or_ambiguous_requests() {
 }
 
 #[test]
+fn agentic_general_planner_does_not_treat_dot_relative_directories_as_files() {
+    let issue_policy = "When you create debug or example scripts while fixing an issue, \
+                        keep them in ./examples and/or ./experiments. Continue with the \
+                        following investigation details and solve the issue completely.";
+
+    assert!(
+        compose_general_change_plan(issue_policy).is_none(),
+        "a dot-relative policy directory must not become a literal file-write target",
+    );
+}
+
+#[test]
 fn agentic_general_planner_rejects_non_referential_payload() {
     // A "save it to FILE" / "write this to FILE" request names no literal
     // content: the pronoun points back at content a keyword recipe must still
