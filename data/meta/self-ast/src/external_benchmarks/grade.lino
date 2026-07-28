@@ -2,25 +2,29 @@ self_ast_census
   target src/external_benchmarks/grade.rs
   language rust
   fidelity signature
-  byte_len 8816
-  line_count 275
-  content_id source_module_af5770f1c7d2231c
-  symbol_count 17
+  byte_len 17479
+  line_count 533
+  content_id source_module_8be20e75252ac555
+  symbol_count 21
   symbols
-    const PYTHON_TIMEOUT_SECONDS 16 16
-    struct CaseOutcome 20 25
-    function grade_case 29 64
-    function grade_value 66 91
-    function normalize_diff 95 102
-    function failure 104 110
-    function python_available 114 119
-    function run_python 121 154
-    function extract_python 159 164
-    function fenced_block 166 174
-    function final_number 179 197
-    function normalize_number 199 216
-    function final_answer 221 232
-    function last_boxed 234 252
-    function normalize 256 265
-    function truncate 267 275
-    const LIMIT 268 268
+    const PYTHON_TIMEOUT_SECONDS 18 18
+    struct CaseOutcome 22 27
+    function grade_case 31 72
+    function grade_value 74 98
+    function grade_swebench 107 257
+    function fnv1a64 259 266
+    function ensure_swebench_runtime 268 297
+    function outcomes_from_swebench_report 299 350
+    function extract_diff 355 360
+    function failure 362 368
+    function python_available 372 377
+    function run_python 379 412
+    function extract_python 417 422
+    function fenced_block 424 432
+    function final_number 437 455
+    function normalize_number 457 474
+    function final_answer 479 490
+    function last_boxed 492 510
+    function normalize 514 523
+    function truncate 525 533
+    const LIMIT 526 526

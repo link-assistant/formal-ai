@@ -5,12 +5,14 @@
 //! answer, editing suites compare the produced text with the gold edit. A case
 //! passes only when the upstream criterion is met, so a 0% score stays 0%.
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
 
 use super::cases::{BenchmarkCase, Expectation};
 use super::manifest::Grading;
+use super::vocabulary;
 
 /// Wall-clock ceiling for one upstream Python test run.
 const PYTHON_TIMEOUT_SECONDS: &str = "20";
@@ -51,6 +53,12 @@ pub fn grade_case(
             run_python(&program, workspace, &case.id)
         }
         Expectation::Value { expected } => grade_value(grading, expected, answer),
+        Expectation::SweBench { .. } => {
+            return failure(
+                case,
+                "SWE-bench instances must be graded together by the official harness",
+            );
+        }
     };
     CaseOutcome {
         id: case.id.clone(),
@@ -74,11 +82,10 @@ fn grade_value(grading: Grading, expected: &str, answer: &str) -> (bool, String)
             let gold = normalize(expected);
             normalize(answer) == gold || normalize(&final_answer(answer)) == gold
         }
-        Grading::UnifiedDiff => {
-            let produced = extract_python(answer).unwrap_or_else(|| answer.to_string());
-            normalize_diff(&produced) == normalize_diff(expected)
-        }
-        Grading::PythonUnitTest | Grading::PythonAsserts | Grading::NotApplicable => false,
+        Grading::PythonUnitTest
+        | Grading::PythonAsserts
+        | Grading::SweBenchTests
+        | Grading::NotApplicable => false,
     };
     (
         matched,
@@ -90,15 +97,266 @@ fn grade_value(grading: Grading, expected: &str, answer: &str) -> (bool, String)
     )
 }
 
-/// A unified diff compares equal when its non-empty content lines do, so
-/// hunk-header line numbers and trailing whitespace do not decide the score.
-fn normalize_diff(patch: &str) -> Vec<String> {
-    patch
-        .lines()
-        .map(str::trim_end)
-        .filter(|line| !line.is_empty() && !line.starts_with("@@") && !line.starts_with("index "))
-        .map(ToString::to_string)
-        .collect()
+/// Grade candidate patches with the pinned official SWE-bench evaluator.
+///
+/// Empty/non-diff replies are rejected using the evaluator's own empty-patch
+/// criterion without starting Docker. If any real candidate patch exists, the
+/// official harness applies it to the upstream image and runs the instance
+/// tests; a harness or Docker failure is returned as infrastructure
+/// unavailability rather than counted as a model failure.
+pub fn grade_swebench(
+    cases: &[BenchmarkCase],
+    answers: &[String],
+    workspace: &Path,
+) -> Result<Vec<CaseOutcome>, String> {
+    if cases.len() != answers.len() {
+        return Err("SWE-bench cases and answers have different lengths".to_string());
+    }
+    let patches: Vec<Option<String>> = answers.iter().map(|answer| extract_diff(answer)).collect();
+    if patches.iter().all(Option::is_none) {
+        return Ok(cases
+            .iter()
+            .map(|case| {
+                failure(
+                    case,
+                    "empty patch rejected by the official SWE-bench criterion",
+                )
+            })
+            .collect());
+    }
+
+    ensure_swebench_runtime()?;
+    fs::create_dir_all(workspace)
+        .map_err(|error| format!("failed to create {}: {error}", workspace.display()))?;
+    let dataset_path = workspace.join("dataset.json");
+    let dataset: Result<Vec<serde_json::Value>, String> = cases
+        .iter()
+        .map(|case| match &case.expectation {
+            Expectation::SweBench { record } => serde_json::from_str(record).map_err(|error| {
+                vocabulary::render(
+                    "external_benchmark_swe_record_error",
+                    &[("case", &case.id), ("error", &error.to_string())],
+                )
+            }),
+            _ => Err(vocabulary::render(
+                "external_benchmark_not_swe_case",
+                &[("case", &case.id)],
+            )),
+        })
+        .collect();
+    let dataset_bytes = serde_json::to_vec(&dataset?).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_encode_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
+    fs::write(&dataset_path, &dataset_bytes).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_slice_write_error",
+            &[
+                ("path", &dataset_path.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
+    let predictions_path = workspace.join("predictions.jsonl");
+    let mut predictions = String::new();
+    for (case, patch) in cases.iter().zip(&patches) {
+        let row = serde_json::json!({
+            "instance_id": case.id,
+            "model_name_or_path": "formal-ai",
+            "model_patch": patch.as_deref().unwrap_or(""),
+        });
+        predictions.push_str(&row.to_string());
+        predictions.push('\n');
+    }
+    fs::write(&predictions_path, &predictions).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_predictions_write_error",
+            &[
+                ("path", &predictions_path.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
+
+    let run_id = format!(
+        "formal_ai_{:016x}",
+        fnv1a64(dataset_bytes.iter().copied().chain(predictions.bytes()))
+    );
+    let prior_logs = workspace.join("logs").join("run_evaluation").join(&run_id);
+    if prior_logs.exists() {
+        fs::remove_dir_all(&prior_logs).map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_swe_clear_logs_error",
+                &[
+                    ("path", &prior_logs.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
+    }
+    let report_path = workspace.join(format!("formal-ai.{run_id}.json"));
+    if report_path.exists() {
+        fs::remove_file(&report_path).map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_swe_remove_report_error",
+                &[
+                    ("path", &report_path.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
+    }
+    let mut command = Command::new("python3");
+    command
+        .args(["-m", "swebench.harness.run_evaluation", "--dataset_name"])
+        .arg(&dataset_path)
+        .arg("--predictions_path")
+        .arg(&predictions_path)
+        .args([
+            "--max_workers",
+            "1",
+            "--run_id",
+            &run_id,
+            "--timeout",
+            "900",
+            "--cache_level",
+            "none",
+            "--instance_ids",
+        ]);
+    for case in cases {
+        command.arg(&case.id);
+    }
+    let output = command.current_dir(workspace).output().map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_start_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
+    if !output.status.success() {
+        return Err(vocabulary::render(
+            "external_benchmark_swe_exit_error",
+            &[
+                ("status", &output.status.to_string()),
+                ("error", &truncate(&String::from_utf8_lossy(&output.stderr))),
+            ],
+        ));
+    }
+
+    let report = fs::read_to_string(&report_path).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_missing_report",
+            &[
+                ("path", &report_path.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })?;
+    outcomes_from_swebench_report(cases, &report)
+}
+
+fn fnv1a64(bytes: impl IntoIterator<Item = u8>) -> u64 {
+    let mut hash = 0xcbf2_9ce4_8422_2325_u64;
+    for byte in bytes {
+        hash ^= u64::from(byte);
+        hash = hash.wrapping_mul(0x0100_0000_01b3);
+    }
+    hash
+}
+
+fn ensure_swebench_runtime() -> Result<(), String> {
+    let module = Command::new("python3")
+        .args(["-c", "import swebench.harness.run_evaluation"])
+        .output()
+        .map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_swe_inspect_error",
+                &[("error", &error.to_string())],
+            )
+        })?;
+    if !module.status.success() {
+        return Err("the pinned official `swebench` Python harness is not installed".to_string());
+    }
+    let docker = Command::new("docker")
+        .arg("info")
+        .output()
+        .map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_swe_docker_error",
+                &[("error", &error.to_string())],
+            )
+        })?;
+    if !docker.status.success() {
+        return Err(vocabulary::render(
+            "external_benchmark_swe_docker_error",
+            &[("error", &truncate(&String::from_utf8_lossy(&docker.stderr)))],
+        ));
+    }
+    Ok(())
+}
+
+fn outcomes_from_swebench_report(
+    cases: &[BenchmarkCase],
+    report: &str,
+) -> Result<Vec<CaseOutcome>, String> {
+    let report: serde_json::Value = serde_json::from_str(report).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_swe_report_error",
+            &[("error", &error.to_string())],
+        )
+    })?;
+    let ids = |field: &str| -> BTreeSet<String> {
+        report
+            .get(field)
+            .and_then(serde_json::Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(serde_json::Value::as_str)
+            .map(ToString::to_string)
+            .collect()
+    };
+    let errors = ids("error_ids");
+    if !errors.is_empty() {
+        return Err(vocabulary::render(
+            "external_benchmark_swe_infrastructure_error",
+            &[("cases", &errors.into_iter().collect::<Vec<_>>().join(", "))],
+        ));
+    }
+    let resolved = ids("resolved_ids");
+    let empty = ids("empty_patch_ids");
+    Ok(cases
+        .iter()
+        .map(|case| {
+            if resolved.contains(&case.id) {
+                CaseOutcome {
+                    id: case.id.clone(),
+                    passed: true,
+                    detail: String::new(),
+                }
+            } else if empty.contains(&case.id) {
+                failure(
+                    case,
+                    "empty patch rejected by the official SWE-bench criterion",
+                )
+            } else {
+                failure(
+                    case,
+                    "candidate patch did not resolve the official SWE-bench tests",
+                )
+            }
+        })
+        .collect())
+}
+
+/// Extract a candidate unified diff without ever falling back to prose or a
+/// language code block.
+#[must_use]
+pub fn extract_diff(answer: &str) -> Option<String> {
+    let candidate = fenced_block(answer).unwrap_or_else(|| answer.trim().to_string());
+    let start = candidate.find("diff --git")?;
+    let patch = candidate[start..].trim();
+    (!patch.is_empty()).then(|| patch.to_string())
 }
 
 fn failure(case: &BenchmarkCase, detail: &str) -> CaseOutcome {

@@ -10,9 +10,11 @@
 pub mod cases;
 pub mod fetch;
 pub mod grade;
+pub mod learning;
 pub mod ledger;
 pub mod manifest;
 pub mod ratchet;
+pub mod vocabulary;
 
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
@@ -106,30 +108,64 @@ pub fn run_suite(
             "no python3 interpreter is available to execute the upstream tests",
         ));
     }
+    if let Some(reason) = fetch::unavailable_reason(manifest) {
+        return Ok(unavailable_run(manifest, slice, &solver_version, &reason));
+    }
 
     let cache_root = fetch::cache_root(repository_root);
-    let records = fetch::fetch_records(manifest, slice, &cache_root)?;
-    let cases = cases::parse_cases(manifest, &records, slice)?;
+    let records = match fetch::fetch_records(manifest, slice, &cache_root) {
+        Ok(records) => records,
+        Err(reason) => {
+            return Ok(unavailable_run(manifest, slice, &solver_version, &reason));
+        }
+    };
+    let cases = match cases::parse_cases(manifest, &records, slice) {
+        Ok(cases) => cases,
+        Err(reason) => {
+            return Ok(unavailable_run(manifest, slice, &solver_version, &reason));
+        }
+    };
     if cases.len() < slice {
-        return Err(format!(
-            "{} provided only {} upstream cases, {slice} were requested",
-            manifest.id,
-            cases.len()
+        return Ok(unavailable_run(
+            manifest,
+            slice,
+            &solver_version,
+            &format!(
+                "{} provided only {} upstream cases, {slice} were requested",
+                manifest.id,
+                cases.len()
+            ),
         ));
     }
 
     let workspace = cache_root.join("run").join(manifest.id);
     let solver = benchmark_solver();
-    let mut outcomes = Vec::with_capacity(cases.len());
-    for case in &cases {
-        let answer = solver.solve(&case.prompt).answer;
-        outcomes.push(grade::grade_case(
-            case,
-            manifest.grading,
-            &answer,
-            &workspace,
-        ));
-    }
+    let answers: Vec<String> = cases
+        .iter()
+        .map(|case| solver.solve(&case.prompt).answer)
+        .collect();
+    let outcomes = if manifest.grading == Grading::SweBenchTests {
+        match grade::grade_swebench(&cases, &answers, &workspace) {
+            Ok(outcomes) => outcomes,
+            Err(reason) => {
+                return Ok(unavailable_run(
+                    manifest,
+                    slice,
+                    &solver_version,
+                    &vocabulary::render(
+                        "external_benchmark_swe_unavailable",
+                        &[("reason", &reason)],
+                    ),
+                ));
+            }
+        }
+    } else {
+        cases
+            .iter()
+            .zip(&answers)
+            .map(|(case, answer)| grade::grade_case(case, manifest.grading, answer, &workspace))
+            .collect()
+    };
 
     let passed = outcomes.iter().filter(|outcome| outcome.passed).count();
     let total = outcomes.len();

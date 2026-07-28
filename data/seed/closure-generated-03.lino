@@ -1,4 +1,169 @@
 meanings
+  pattern_concept_prefix_nazovi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix nazovi"
+  pattern_concept_prefix_obyasni
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix obyasni"
+  pattern_concept_prefix_opishi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opishi"
+  pattern_concept_prefix_opredelenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opredelenie"
+  pattern_concept_prefix_rasskazhi_mne_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne o"
+  pattern_concept_prefix_rasskazhi_mne_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne pro"
+  pattern_concept_prefix_rasskazhi_mne_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne za"
+  pattern_concept_prefix_rasskazhi_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi o"
+  pattern_concept_prefix_rasskazhi_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi pro"
+  pattern_concept_prefix_rasskazhi_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi za"
+  pattern_concept_prefix_shenmejiao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmejiao"
+  pattern_concept_prefix_shenmeshi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi simplified"
+  pattern_concept_prefix_shenmeshi_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi traditional"
+  pattern_concept_prefix_shuoshuo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shuoshuo"
+  pattern_concept_prefix_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix smysl"
+  pattern_concept_prefix_tell_me_about
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me about"
+  pattern_concept_prefix_tell_me_what
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me what"
+  pattern_concept_prefix_v_chem_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl"
+  pattern_concept_prefix_v_chem_smysl_alt
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl alt"
+  pattern_concept_prefix_what_do
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what do"
+  pattern_concept_prefix_what_does
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does"
+  pattern_concept_prefix_what_does_mean
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does mean"
+  pattern_concept_prefix_what_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is"
+  pattern_concept_prefix_what_is_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is a"
+  pattern_concept_prefix_what_is_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is an"
+  pattern_concept_prefix_what_is_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is the"
+  pattern_concept_prefix_whats
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats"
+  pattern_concept_prefix_whats_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats a"
+  pattern_concept_prefix_whats_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats an"
+  pattern_concept_prefix_whats_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats the"
+  pattern_concept_prefix_who_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who is"
+  pattern_concept_prefix_who_was
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who was"
+  pattern_concept_prefix_znachenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix znachenie"
   pattern_concept_suffix_de_yisi_shi_shenme_simplified
     defined-by prompt_pattern
     lexeme en
@@ -1229,168 +1394,3 @@ meanings
     lexeme en
       surface
         text "response capabilities en"
-  response_capabilities_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities hi"
-  response_capabilities_more_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more en"
-  response_capabilities_more_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more hi"
-  response_capabilities_more_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more ru"
-  response_capabilities_more_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more zh"
-  response_capabilities_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities ru"
-  response_capabilities_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities zh"
-  response_clarification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification en"
-  response_clarification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification hi"
-  response_clarification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification ru"
-  response_clarification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification zh"
-  response_client_contract_missing_evidence_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error en"
-  response_client_contract_missing_evidence_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error hi"
-  response_client_contract_missing_evidence_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error ru"
-  response_client_contract_missing_evidence_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error zh"
-  response_client_contract_parse_observation_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error en"
-  response_client_contract_parse_observation_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error hi"
-  response_client_contract_parse_observation_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error ru"
-  response_client_contract_parse_observation_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error zh"
-  response_client_contract_parse_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error en"
-  response_client_contract_parse_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error hi"
-  response_client_contract_parse_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error ru"
-  response_client_contract_parse_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse transcript error zh"
-  response_client_contract_read_observations_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error en"
-  response_client_contract_read_observations_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error hi"
-  response_client_contract_read_observations_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error ru"
-  response_client_contract_read_observations_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read observations error zh"
-  response_client_contract_read_transcript_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error en"
-  response_client_contract_read_transcript_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error hi"
-  response_client_contract_read_transcript_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error ru"
-  response_client_contract_read_transcript_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract read transcript error zh"
-  response_client_integration_invalid_typed_json_setting_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting en"
-  response_client_integration_invalid_typed_json_setting_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client integration invalid typed json setting hi"

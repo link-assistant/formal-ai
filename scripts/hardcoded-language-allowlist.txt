@@ -297,16 +297,12 @@ src/external_benchmarks/cases.rs	{}: record {index} is missing the string array 
 src/external_benchmarks/cases.rs	{}: record {index} is missing the string field `{field}`
 src/external_benchmarks/cases.rs	{}: record {index} is not valid JSON: {error}
 src/external_benchmarks/fetch.rs	curl failed for {url} with status {status}
-src/external_benchmarks/fetch.rs	datasets-server request failed for {dataset} ({}): {}
-src/external_benchmarks/fetch.rs	datasets-server response for {dataset} has no `rows`
-src/external_benchmarks/fetch.rs	datasets-server returned invalid JSON: {error}
 src/external_benchmarks/fetch.rs	failed to create cache directory {}: {error}
 src/external_benchmarks/fetch.rs	failed to create {}: {error}
 src/external_benchmarks/fetch.rs	failed to publish {}: {error}
 src/external_benchmarks/fetch.rs	failed to read cached payload {}: {error}
 src/external_benchmarks/fetch.rs	failed to start curl for {url}: {error}
 src/external_benchmarks/fetch.rs	failed to start gzip for {}: {error}
-src/external_benchmarks/fetch.rs	failed to write cache file {}: {error}
 src/external_benchmarks/fetch.rs	gzip failed for {} with status {status}
 src/external_benchmarks/fetch.rs	{} has no fetchable payload
 src/external_benchmarks/fetch.rs	{} task.json has no `examples` array

@@ -1009,6 +1009,151 @@ meanings
     lexeme en
       surface
         text "expression language"
+  external_benchmark_baseline_read_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark baseline read error"
+  external_benchmark_failure_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark failure observation"
+  external_benchmark_learning_event
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning event"
+  external_benchmark_learning_lesson
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning lesson"
+  external_benchmark_learning_task
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark learning task"
+  external_benchmark_not_swe_case
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark not swe case"
+  external_benchmark_parquet_decode_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet decode error"
+  external_benchmark_parquet_module_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet module unavailable"
+  external_benchmark_parquet_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet start error"
+  external_benchmark_parquet_utf8_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark parquet utf8 error"
+  external_benchmark_provenance
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark provenance"
+  external_benchmark_provenance_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark provenance write error"
+  external_benchmark_python_import
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark python import"
+  external_benchmark_ratchet_reference_suffix
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark ratchet reference suffix"
+  external_benchmark_swe_clear_logs_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe clear logs error"
+  external_benchmark_swe_docker_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe docker error"
+  external_benchmark_swe_encode_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe encode error"
+  external_benchmark_swe_exit_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe exit error"
+  external_benchmark_swe_infrastructure_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe infrastructure error"
+  external_benchmark_swe_inspect_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe inspect error"
+  external_benchmark_swe_missing_report
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe missing report"
+  external_benchmark_swe_predictions_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe predictions write error"
+  external_benchmark_swe_record_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe record error"
+  external_benchmark_swe_remove_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe remove report error"
+  external_benchmark_swe_report_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe report error"
+  external_benchmark_swe_slice_write_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe slice write error"
+  external_benchmark_swe_start_error
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe start error"
+  external_benchmark_swe_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark swe unavailable"
+  external_benchmark_unavailable_observation
+    defined-by intent
+    lexeme en
+      surface
+        text "external benchmark unavailable observation"
   external_trusted
     defined-by concept
     lexeme en
@@ -1164,6 +1309,26 @@ meanings
     lexeme en
       surface
         text "general plan command verification evidence"
+  general_plan_repository_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository action"
+  general_plan_repository_complete
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository complete"
+  general_plan_repository_evidence
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository evidence"
+  general_plan_repository_verify_action
+    defined-by intent
+    lexeme en
+      surface
+        text "general plan repository verify action"
   genuine
     defined-by word_surface
     lexeme en
@@ -1229,168 +1394,3 @@ meanings
     lexeme en
       surface
         text "has"
-  head
-    defined-by token
-    lexeme en
-      surface
-        text "head"
-  hive-mind
-    defined-by name
-    lexeme en
-      surface
-        text "hive mind"
-  home
-    defined-by concept
-    lexeme en
-      surface
-        text "home"
-  how_it_works
-    defined-by intent
-    lexeme en
-      surface
-        text "how it works"
-  how_to_guide
-    defined-by kind
-    lexeme en
-      surface
-        text "how to guide"
-  http_server
-    defined-by environment
-    lexeme en
-      surface
-        text "http server"
-  human-language
-    defined-by name
-    lexeme en
-      surface
-        text "human language"
-  import_memory
-    defined-by name
-    lexeme en
-      surface
-        text "import memory"
-  inappropriate_content
-    defined-by intent
-    lexeme en
-      surface
-        text "inappropriate content"
-  indent
-    defined-by concept
-    lexeme en
-      surface
-        text "indent"
-  indent_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "indent lines"
-  intent_algorithm
-    defined-by intent
-    lexeme en
-      surface
-        text "intent algorithm"
-  intent_assistant_free_time
-    defined-by intent
-    lexeme en
-      surface
-        text "intent assistant free time"
-  intent_assistant_name
-    defined-by intent
-    lexeme en
-      surface
-        text "intent assistant name"
-  intent_clarification
-    defined-by intent
-    lexeme en
-      surface
-        text "intent clarification"
-  intent_concept_lookup
-    defined-by intent
-    lexeme en
-      surface
-        text "intent concept lookup"
-  intent_concept_lookup_in_context
-    defined-by intent
-    lexeme en
-      surface
-        text "intent concept lookup in context"
-  intent_courtesy_response
-    defined-by intent
-    lexeme en
-      surface
-        text "intent courtesy response"
-  intent_farewell
-    defined-by intent
-    lexeme en
-      surface
-        text "intent farewell"
-  intent_greeting
-    defined-by intent
-    lexeme en
-      surface
-        text "intent greeting"
-  intent_http_fetch
-    defined-by intent
-    lexeme en
-      surface
-        text "intent http fetch"
-  intent_identity
-    defined-by intent
-    lexeme en
-      surface
-        text "intent identity"
-  intent_learn_from_source
-    defined-by intent
-    lexeme en
-      surface
-        text "intent learn from source"
-  intent_meta_explanation
-    defined-by intent
-    lexeme en
-      surface
-        text "intent meta explanation"
-  intent_recall_name
-    defined-by intent
-    lexeme en
-      surface
-        text "intent recall name"
-  intent_routing
-    defined-by name
-    lexeme en
-      surface
-        text "intent routing"
-  intent_software_project_implementation
-    defined-by intent
-    lexeme en
-      surface
-        text "intent software project implementation"
-  intent_software_project_plan
-    defined-by intent
-    lexeme en
-      surface
-        text "intent software project plan"
-  intent_test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "intent test status"
-  intent_translation
-    defined-by intent
-    lexeme en
-      surface
-        text "intent translation"
-  intent_unknown
-    defined-by intent
-    lexeme en
-      surface
-        text "intent unknown"
-  intent_url_navigate
-    defined-by intent
-    lexeme en
-      surface
-        text "intent url navigate"
-  intent_web_search
-    defined-by intent
-    lexeme en
-      surface
-        text "intent web search"

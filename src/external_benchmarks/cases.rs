@@ -18,6 +18,10 @@ pub enum Expectation {
     PythonAsserts { setup: String, asserts: Vec<String> },
     /// The gold answer as an upstream string (number, boxed expression, text).
     Value { expected: String },
+    /// The official SWE-bench harness owns the expected tests and repository
+    /// state for this instance; retain the pinned upstream record so the
+    /// harness never reloads a mutable dataset name.
+    SweBench { record: String },
 }
 
 /// One upstream case, ready to run.
@@ -147,8 +151,8 @@ fn parse_case(
                 prompt: format!(
                     "Repository {repository}. Resolve this issue and reply with the fix as a unified diff patch.\n\n{statement}"
                 ),
-                expectation: Expectation::Value {
-                    expected: string_field(value, "patch", manifest, index)?,
+                expectation: Expectation::SweBench {
+                    record: value.to_string(),
                 },
             })
         }

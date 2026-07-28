@@ -6,8 +6,6 @@
 //! repository, which keeps the `docs/benchmarks.md` "no vendored datasets"
 //! policy while still executing real upstream cases.
 
-use std::fmt::Write as _;
-
 /// Where a suite's cases come from and in which wire format.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SuiteSource {
@@ -22,12 +20,10 @@ pub enum SuiteSource {
         url: &'static str,
         cache_file: &'static str,
     },
-    /// The Hugging Face datasets-server `rows` API, used for datasets that are
-    /// published only as parquet (which this crate cannot decode).
-    DatasetsServerRows {
-        dataset: &'static str,
-        config: &'static str,
-        split: &'static str,
+    /// A pinned upstream parquet payload, converted to JSON records at run
+    /// time by the Python environment used by the official evaluator.
+    ParquetRows {
+        url: &'static str,
         cache_file: &'static str,
     },
     /// No payload is reachable under the permissive-only policy.
@@ -58,8 +54,8 @@ pub enum Grading {
     BoxedAnswer,
     /// Compare the produced text with the gold edited text.
     ExactText,
-    /// Compare the produced unified diff with the gold patch.
-    UnifiedDiff,
+    /// Apply the candidate patch and run the upstream SWE-bench tests.
+    SweBenchTests,
     /// Nothing to grade: the suite cannot run.
     NotApplicable,
 }
@@ -73,14 +69,17 @@ impl Grading {
             Self::NumericAnswer => "numeric_answer",
             Self::BoxedAnswer => "boxed_answer",
             Self::ExactText => "exact_text",
-            Self::UnifiedDiff => "unified_diff",
+            Self::SweBenchTests => "swebench_tests",
             Self::NotApplicable => "not_applicable",
         }
     }
 
     #[must_use]
     pub const fn needs_python(self) -> bool {
-        matches!(self, Self::PythonUnitTest | Self::PythonAsserts)
+        matches!(
+            self,
+            Self::PythonUnitTest | Self::PythonAsserts | Self::SweBenchTests
+        )
     }
 }
 
@@ -113,15 +112,7 @@ impl SuiteManifest {
             SuiteSource::JsonLines { url, .. } | SuiteSource::BigBenchTask { url, .. } => {
                 Some((*url).to_string())
             }
-            SuiteSource::DatasetsServerRows {
-                dataset,
-                config,
-                split,
-                ..
-            } => Some(format!(
-                "https://datasets-server.huggingface.co/rows?dataset={}&config={config}&split={split}",
-                encode_component(dataset)
-            )),
+            SuiteSource::ParquetRows { url, .. } => Some((*url).to_string()),
             SuiteSource::Unavailable => None,
         }
     }
@@ -131,27 +122,10 @@ impl SuiteManifest {
         match &self.source {
             SuiteSource::JsonLines { cache_file, .. }
             | SuiteSource::BigBenchTask { cache_file, .. }
-            | SuiteSource::DatasetsServerRows { cache_file, .. } => Some(cache_file),
+            | SuiteSource::ParquetRows { cache_file, .. } => Some(cache_file),
             SuiteSource::Unavailable => None,
         }
     }
-}
-
-/// Percent-encode the parts of a dataset id that appear in a query string.
-#[must_use]
-pub fn encode_component(value: &str) -> String {
-    let mut encoded = String::with_capacity(value.len());
-    for byte in value.bytes() {
-        match byte {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
-                encoded.push(byte as char);
-            }
-            _ => {
-                let _ = write!(encoded, "%{byte:02X}");
-            }
-        }
-    }
-    encoded
 }
 
 /// Directory (relative to the repository root) that caches fetched payloads.
@@ -163,6 +137,9 @@ pub const LEDGER_PATH: &str = "data/benchmarks/external-results.lino";
 
 /// Licenses this harness is allowed to fetch (issue #698 requirement 5).
 pub const PERMISSIVE_LICENSES: [&str; 3] = ["MIT", "Apache-2.0", "CC-BY-4.0"];
+
+/// Official SWE-bench harness revision used to grade candidate patches.
+pub const SWEBENCH_HARNESS_REF: &str = "f7bbbb2ccdf479001d6467c9e34af59e44a840f9";
 
 /// Every upstream suite, in the order issue #698 lists them.
 pub const SUITES: &[SuiteManifest] = &[
@@ -252,14 +229,13 @@ pub const SUITES: &[SuiteManifest] = &[
         title: "CoEdIT",
         task_family: "instructed_text_editing",
         license: "Apache-2.0",
-        license_url: "https://huggingface.co/datasets/grammarly/coedit/blob/main/README.md",
+        license_url: "https://huggingface.co/datasets/grammarly/coedit/blob/e9a255c33ef910bc33a9d2b522653fa87521583e/README.md",
         source_url: "https://huggingface.co/datasets/grammarly/coedit",
         source_ref: "huggingface:e9a255c33ef910bc33a9d2b522653fa87521583e",
-        source: SuiteSource::DatasetsServerRows {
-            dataset: "grammarly/coedit",
-            config: "default",
-            split: "validation",
+        source: SuiteSource::JsonLines {
+            url: "https://huggingface.co/datasets/grammarly/coedit/resolve/e9a255c33ef910bc33a9d2b522653fa87521583e/validation.jsonl",
             cache_file: "coedit-validation.jsonl",
+            gzip: false,
         },
         grading: Grading::ExactText,
         availability: Availability::Runnable,
@@ -269,9 +245,9 @@ pub const SUITES: &[SuiteManifest] = &[
         title: "EditEval",
         task_family: "instructed_text_editing",
         license: "CC0-1.0 (harness code only)",
-        license_url: "https://raw.githubusercontent.com/facebookresearch/EditEval/main/LICENSE",
+        license_url: "https://raw.githubusercontent.com/facebookresearch/EditEval/013cd20aa73be0016041201454b3fcd7c2250fb4/LICENSE",
         source_url: "https://github.com/facebookresearch/EditEval",
-        source_ref: "github:main",
+        source_ref: "github:013cd20aa73be0016041201454b3fcd7c2250fb4",
         source: SuiteSource::Unavailable,
         grading: Grading::NotApplicable,
         availability: Availability::Unavailable {
@@ -283,16 +259,14 @@ pub const SUITES: &[SuiteManifest] = &[
         title: "SWE-bench Lite (dev split)",
         task_family: "agentic_repository_patch",
         license: "MIT",
-        license_url: "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE",
+        license_url: "https://raw.githubusercontent.com/SWE-bench/SWE-bench/f7bbbb2ccdf479001d6467c9e34af59e44a840f9/LICENSE",
         source_url: "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite",
         source_ref: "huggingface:6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2",
-        source: SuiteSource::DatasetsServerRows {
-            dataset: "princeton-nlp/SWE-bench_Lite",
-            config: "default",
-            split: "dev",
-            cache_file: "swebench-lite-dev.jsonl",
+        source: SuiteSource::ParquetRows {
+            url: "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite/resolve/6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2/data/dev-00000-of-00001.parquet",
+            cache_file: "swebench-lite-dev.parquet",
         },
-        grading: Grading::UnifiedDiff,
+        grading: Grading::SweBenchTests,
         availability: Availability::Runnable,
     },
 ];

@@ -1,27 +1,26 @@
 //! Download-on-run payload cache for upstream benchmark slices (issue #698).
 //!
-//! Payloads land under `target/formal-ai-benchmarks`, are reused on the next
-//! run, and are never written into `data/`. Downloads go through `curl` and
-//! `gzip`, the same tools the issue #362 download-on-test benchmark already
-//! depends on.
+//! Payloads land under `target/formal-ai-benchmarks`, are reused only while
+//! their content and immutable upstream provenance still match, and are never
+//! written into `data/`. Downloads go through `curl` and `gzip`, the same tools
+//! the issue #362 download-on-test benchmark already depends on.
 
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use super::manifest::{encode_component, SuiteManifest, SuiteSource, CACHE_DIR};
-
-/// The datasets-server `rows` endpoint returns at most 100 rows per request.
-const ROWS_PAGE_SIZE: usize = 100;
+use super::{
+    manifest::{SuiteManifest, SuiteSource, CACHE_DIR},
+    vocabulary,
+};
 
 /// Fetch (or reuse) the payload for `manifest`, returning newline-delimited
 /// JSON records — one upstream case per line.
 ///
-/// `slice` is only used by the paged datasets-server sources, where fetching
-/// the whole dataset would be wasteful; file-backed sources are cached whole.
+/// File-backed sources are cached whole; `slice` is applied after parsing.
 pub fn fetch_records(
     manifest: &SuiteManifest,
-    slice: usize,
+    _slice: usize,
     cache_root: &Path,
 ) -> Result<Vec<String>, String> {
     match &manifest.source {
@@ -31,20 +30,22 @@ pub fn fetch_records(
             gzip,
         } => {
             let path = cache_root.join(cache_file);
-            if !path.exists() {
+            if !cache_is_valid(&path, manifest, url) {
                 if *gzip {
                     download_gzip(url, &path)?;
                 } else {
                     download(url, &path)?;
                 }
+                write_provenance(&path, manifest, url)?;
             }
             let text = read_cached(&path)?;
             Ok(non_empty_lines(&text))
         }
         SuiteSource::BigBenchTask { url, cache_file } => {
             let path = cache_root.join(cache_file);
-            if !path.exists() {
+            if !cache_is_valid(&path, manifest, url) {
                 download(url, &path)?;
+                write_provenance(&path, manifest, url)?;
             }
             let text = read_cached(&path)?;
             let document: serde_json::Value = serde_json::from_str(&text)
@@ -55,19 +56,13 @@ pub fn fetch_records(
                 .ok_or_else(|| format!("{} task.json has no `examples` array", manifest.id))?;
             Ok(examples.iter().map(ToString::to_string).collect())
         }
-        SuiteSource::DatasetsServerRows {
-            dataset,
-            config,
-            split,
-            cache_file,
-        } => {
-            let path = cache_root.join(format!("{cache_file}.{slice}"));
-            if !path.exists() {
-                let rows = download_rows(dataset, config, split, slice)?;
-                write_cached(&path, &rows.join("\n"))?;
+        SuiteSource::ParquetRows { url, cache_file } => {
+            let path = cache_root.join(cache_file);
+            if !cache_is_valid(&path, manifest, url) {
+                download(url, &path)?;
+                write_provenance(&path, manifest, url)?;
             }
-            let text = read_cached(&path)?;
-            Ok(non_empty_lines(&text))
+            parquet_records(&path, manifest)
         }
         SuiteSource::Unavailable => Err(format!("{} has no fetchable payload", manifest.id)),
     }
@@ -89,12 +84,6 @@ fn non_empty_lines(text: &str) -> Vec<String> {
 fn read_cached(path: &Path) -> Result<String, String> {
     fs::read_to_string(path)
         .map_err(|error| format!("failed to read cached payload {}: {error}", path.display()))
-}
-
-fn write_cached(path: &Path, contents: &str) -> Result<(), String> {
-    create_parent(path)?;
-    fs::write(path, contents)
-        .map_err(|error| format!("failed to write cache file {}: {error}", path.display()))
 }
 
 fn create_parent(path: &Path) -> Result<(), String> {
@@ -147,47 +136,126 @@ fn download_gzip(url: &str, destination: &Path) -> Result<(), String> {
         .map_err(|error| format!("failed to publish {}: {error}", destination.display()))
 }
 
-fn download_rows(
-    dataset: &str,
-    config: &str,
-    split: &str,
-    slice: usize,
-) -> Result<Vec<String>, String> {
-    let mut rows = Vec::new();
-    let mut offset = 0;
-    while rows.len() < slice {
-        let length = ROWS_PAGE_SIZE.min(slice - rows.len());
-        let url = format!(
-            "https://datasets-server.huggingface.co/rows?dataset={}&config={}&split={}&offset={offset}&length={length}",
-            encode_component(dataset),
-            encode_component(config),
-            encode_component(split),
-        );
-        let output = Command::new("curl")
-            .args(["-fsSL", "--retry", "3", "--retry-delay", "2", &url])
-            .output()
-            .map_err(|error| format!("failed to start curl for {url}: {error}"))?;
-        if !output.status.success() {
-            return Err(format!(
-                "datasets-server request failed for {dataset} ({}): {}",
-                output.status,
-                String::from_utf8_lossy(&output.stderr).trim(),
-            ));
-        }
-        let body: serde_json::Value = serde_json::from_slice(&output.stdout)
-            .map_err(|error| format!("datasets-server returned invalid JSON: {error}"))?;
-        let page = body
-            .get("rows")
-            .and_then(serde_json::Value::as_array)
-            .ok_or_else(|| format!("datasets-server response for {dataset} has no `rows`"))?;
-        if page.is_empty() {
-            break;
-        }
-        for entry in page {
-            let row = entry.get("row").unwrap_or(entry);
-            rows.push(row.to_string());
-        }
-        offset += length;
+/// Why a payload cannot be decoded in this environment, if anything.
+#[must_use]
+pub fn unavailable_reason(manifest: &SuiteManifest) -> Option<String> {
+    if matches!(manifest.source, SuiteSource::ParquetRows { .. })
+        && !python_module_available("pyarrow.parquet")
+    {
+        return Some(vocabulary::text(
+            "external_benchmark_parquet_module_unavailable",
+        ));
     }
-    Ok(rows)
+    None
+}
+
+fn python_module_available(module: &str) -> bool {
+    let import = vocabulary::render("external_benchmark_python_import", &[("module", module)]);
+    Command::new("python3")
+        .args(["-c", &import])
+        .output()
+        .is_ok_and(|output| output.status.success())
+}
+
+fn parquet_records(path: &Path, manifest: &SuiteManifest) -> Result<Vec<String>, String> {
+    let script = concat!(
+        "import json, sys\n",
+        "import pyarrow.parquet as parquet\n",
+        "for row in parquet.read_table(sys.argv[1]).to_pylist():\n",
+        "    print(json.dumps(row, default=str, separators=(',', ':')))\n",
+    );
+    let output = Command::new("python3")
+        .args(["-c", script])
+        .arg(path)
+        .output()
+        .map_err(|error| {
+            vocabulary::render(
+                "external_benchmark_parquet_start_error",
+                &[
+                    ("path", &path.display().to_string()),
+                    ("error", &error.to_string()),
+                ],
+            )
+        })?;
+    if !output.status.success() {
+        return Err(vocabulary::render(
+            "external_benchmark_parquet_decode_error",
+            &[
+                ("suite", manifest.id),
+                ("path", &path.display().to_string()),
+                ("error", String::from_utf8_lossy(&output.stderr).trim()),
+            ],
+        ));
+    }
+    let text = String::from_utf8(output.stdout).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_parquet_utf8_error",
+            &[("suite", manifest.id), ("error", &error.to_string())],
+        )
+    })?;
+    Ok(non_empty_lines(&text))
+}
+
+fn provenance_path(payload: &Path) -> PathBuf {
+    let mut name = payload.as_os_str().to_os_string();
+    name.push(".provenance.lino");
+    PathBuf::from(name)
+}
+
+fn cache_is_valid(path: &Path, manifest: &SuiteManifest, url: &str) -> bool {
+    let Ok(payload) = fs::read(path) else {
+        return false;
+    };
+    let Ok(provenance) = fs::read_to_string(provenance_path(path)) else {
+        return false;
+    };
+    let payload_bytes = payload.len().to_string();
+    let content_id = format!("{:016x}", fnv1a64(&payload));
+    provenance
+        == vocabulary::render(
+            "external_benchmark_provenance",
+            &[
+                ("suite", manifest.id),
+                ("source_ref", manifest.source_ref),
+                ("url", url),
+                ("payload_bytes", &payload_bytes),
+                ("content_id", &content_id),
+            ],
+        )
+}
+
+fn write_provenance(path: &Path, manifest: &SuiteManifest, url: &str) -> Result<(), String> {
+    let payload = fs::read(path)
+        .map_err(|error| format!("failed to read cached payload {}: {error}", path.display()))?;
+    let payload_bytes = payload.len().to_string();
+    let content_id = format!("{:016x}", fnv1a64(&payload));
+    let provenance = vocabulary::render(
+        "external_benchmark_provenance",
+        &[
+            ("suite", manifest.id),
+            ("source_ref", manifest.source_ref),
+            ("url", url),
+            ("payload_bytes", &payload_bytes),
+            ("content_id", &content_id),
+        ],
+    );
+    let destination = provenance_path(path);
+    fs::write(&destination, provenance).map_err(|error| {
+        vocabulary::render(
+            "external_benchmark_provenance_write_error",
+            &[
+                ("path", &destination.display().to_string()),
+                ("error", &error.to_string()),
+            ],
+        )
+    })
+}
+
+fn fnv1a64(bytes: &[u8]) -> u64 {
+    let mut hash = 0xcbf2_9ce4_8422_2325_u64;
+    for byte in bytes {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x0100_0000_01b3);
+    }
+    hash
 }

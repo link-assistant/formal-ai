@@ -15,13 +15,14 @@ measured — even when that number is zero.
 | Piece | Path |
 | --- | --- |
 | Suite registry with pinned upstream revisions and licenses | `src/external_benchmarks/manifest.rs` |
-| Run-time download into the build-artifact cache | `src/external_benchmarks/fetch.rs` |
+| Pinned, content-verified run-time cache | `src/external_benchmarks/fetch.rs` |
 | Upstream record → gradable case mapping | `src/external_benchmarks/cases.rs` |
-| Per-suite grading (Python execution, numeric, boxed, text, diff) | `src/external_benchmarks/grade.rs` |
+| Per-suite grading (Python execution, numeric, boxed, text, official SWE-bench tests) | `src/external_benchmarks/grade.rs` |
 | Committed results ledger | `src/external_benchmarks/ledger.rs`, `data/benchmarks/external-results.lino` |
 | Monotonic per-suite ratchet | `src/external_benchmarks/ratchet.rs` |
 | CLI (`formal-ai benchmark list \| run \| ratchet`) | `src/cli_benchmark.rs` |
-| Weekly scheduled job | `.github/workflows/external-benchmarks.yml` |
+| PR base ratchet and weekly scheduled job | `.github/workflows/external-benchmarks.yml` |
+| Failure-derived, review-gated auto-learning | `src/external_benchmarks/learning.rs`, `src/agentic_coding/external_benchmark_learning.rs` |
 | Requirement tests | `tests/unit/specification/external_benchmarks.rs` |
 | Published numbers | `docs/benchmarks.md` § "External (upstream) results" |
 
@@ -38,16 +39,20 @@ suite=math passed=0 failed=20 total=20
 suite=object_counting passed=0 failed=20 total=20
 suite=coedit passed=0 failed=20 total=20
 suite=editeval benchmark_unavailable: …
-suite=swebench_lite passed=0 failed=20 total=20
+suite=swebench_lite benchmark_unavailable: legacy proxy score withdrawn …
 ```
 
-These are the real numbers. GSM8K's `2 / 20` comes from two word problems whose
+The first seven lines are the retained real measurements. GSM8K's `2 / 20`
+comes from two word problems whose
 final number the solver produced correctly; everything else the offline solver
 does not currently answer. The failures are ordinary solver output, not harness
 artifacts — on HumanEval the solver echoes the prompt and appends its
 "cannot infer a verified answer" message, which is then executed against the
 upstream test and fails (see `raw-data/humaneval-first-run.log` and the produced
-files under `target/formal-ai-benchmarks/run/humaneval/`).
+files under `target/formal-ai-benchmarks/run/humaneval/`). The original
+SWE-bench `0 / 20` was not retained: review found that it compared with the gold
+patch rather than running upstream tests, so the ledger explicitly marks that
+capture unavailable until the official evaluator produces a valid score.
 
 ## Timeline
 
@@ -66,12 +71,21 @@ files under `target/formal-ai-benchmarks/run/humaneval/`).
      as unavailable rather than approximated.
 3. **Built the harness** as `manifest → fetch → cases → grade → ledger`, with no
    new dependency: downloads shell out to `curl`/`gzip` exactly as the issue
-   #362 benchmark does, and parquet-only datasets (CoEdIT, SWE-bench Lite) are
-   read through the Hugging Face datasets-server `rows` API, the same route
-   issue #482 uses.
+   #362 benchmark does. CoEdIT comes from a revision-pinned JSONL URL;
+   SWE-bench Lite comes from a revision-pinned parquet file decoded by the
+   Python environment used by its official evaluator. Every cache payload has
+   a source-ref/URL/length/content-id sidecar.
 4. **Ran it for real** and recorded the numbers above, including the
    `benchmark_unavailable` row for EditEval.
-5. **Added the ratchet, the schedule, the tests, and the documentation**, then
+5. **Corrected the semantic boundary during review.** Gold-patch equality is
+   not SWE-bench. The harness now installs the official evaluator at
+   `f7bbbb2…`, applies candidate patches in its containers, and treats evaluator
+   failures as unavailable infrastructure.
+6. **Connected failure evidence to Formal AI learning.** Failed case ids and
+   evaluator details are converted into the shared associative-memory format,
+   ranked into proposal-only reports, and held behind human review plus the
+   benchmark/Agent-CLI gate.
+7. **Added the base-aware ratchet, the schedule, tests, and documentation**, then
    confirmed the acceptance criterion:
    `cargo test --test unit external_benchmarks -- --ignored --nocapture` prints
    `suite=humaneval passed=0 failed=20 total=20`
@@ -89,4 +103,22 @@ files under `target/formal-ai-benchmarks/run/humaneval/`).
 - **Unavailability is data, not silence.** `Availability::Unavailable { reason }`
   flows into a `benchmark_unavailable` ledger row with the concrete blocker.
 - **Nothing is vendored.** Payloads land in `target/formal-ai-benchmarks`; the
-  test asserts `data/benchmarks/` contains only `.lino` and `.md` files.
+  test recursively rejects the exact upstream cache artifacts while allowing
+  self-authored nested benchmark definitions.
+- **Learning cannot rewrite the score.** Failure reports carry
+  `decision "awaiting_human_review"` and are uploaded as workflow artifacts.
+  Only a later reviewed change may alter behavior, and the base-aware ratchet
+  still forbids lower recorded results.
+
+## Real Agent CLI evidence
+
+The same issue-solver task was sent through the repository's real Agent CLI
+surface. The first two attempts exposed a general planner bug: a policy mention
+of `./examples` was treated as a file and produced `EISDIR`. A reproducing unit
+test led to the shared file-shaped-path predicate and a successful retry past
+that failure. The next retry exposed a second general routing defect: a phrase
+inside the long issue transcript (“how Formal AI works”) hijacked the compound
+coding task into the self-explanation recipe. That now has a reproducing test
+and a structural repository-work-item guard. The benchmark learning task is
+also replayed separately through the real local Formal AI binary so its written
+artifact can be compared byte-for-byte with the shared renderer.

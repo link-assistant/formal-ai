@@ -39,6 +39,22 @@ fn committed_ledger() -> Ledger {
     Ledger::parse(&read(LEDGER_PATH)).expect("the committed ledger should parse")
 }
 
+fn files_below(root: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    let Ok(entries) = fs::read_dir(root) else {
+        return files;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            files.extend(files_below(&path));
+        } else {
+            files.push(path);
+        }
+    }
+    files
+}
+
 /// R698-01: every runnable suite fetches a real upstream payload at run time
 /// into the build-artifact cache, and nothing is vendored into the repository.
 #[test]
@@ -72,6 +88,20 @@ fn upstream_slices_are_downloaded_at_test_time_and_never_vendored() {
                     "{}: the cache file must stay inside the cache directory, got {cache_file}",
                     suite.id
                 );
+                assert!(
+                    !url.contains("datasets-server.huggingface.co"),
+                    "{}: the datasets-server API ignores the pinned dataset revision",
+                    suite.id
+                );
+                let revision = suite
+                    .source_ref
+                    .split_once(':')
+                    .map_or(suite.source_ref, |(_, revision)| revision);
+                assert!(
+                    url.contains(revision),
+                    "{}: download URL must embed pinned revision {revision}, got {url}",
+                    suite.id
+                );
             }
         }
     }
@@ -84,23 +114,22 @@ fn upstream_slices_are_downloaded_at_test_time_and_never_vendored() {
         Path::new("/tmp/checkout").join(manifest::CACHE_DIR)
     );
 
-    // No upstream payload is committed: `data/benchmarks/` holds only the
-    // reviewable `.lino` fixtures and the license provenance.
-    let entries = fs::read_dir(repo_root().join("data/benchmarks")).expect("data/benchmarks");
-    for entry in entries {
-        let path = entry.expect("directory entry").path();
+    // No upstream payload is committed. Local benchmark definitions may use
+    // nested directories, so reject the exact cache artifacts recursively
+    // instead of confusing a directory with a downloaded dataset.
+    let cache_files: BTreeSet<&str> = manifest::SUITES
+        .iter()
+        .filter_map(SuiteManifest::cache_file)
+        .collect();
+    for path in files_below(&repo_root().join("data/benchmarks")) {
         let name = path
             .file_name()
             .and_then(|name| name.to_str())
-            .unwrap_or_default()
-            .to_string();
-        let extension = path
-            .extension()
-            .and_then(|extension| extension.to_str())
-            .unwrap_or_default();
+            .unwrap_or("");
         assert!(
-            matches!(extension, "lino" | "md"),
-            "no upstream dataset payload may be vendored, found {name}"
+            !cache_files.contains(name),
+            "no upstream dataset payload may be vendored, found {}",
+            path.display()
         );
     }
 }
@@ -189,6 +218,16 @@ fn scheduled_workflow_publishes_to_the_committed_ledger() {
     assert!(
         workflow.contains("benchmark ratchet"),
         "the scheduled run must verify the ratchet"
+    );
+    assert!(
+        workflow.contains("pull_request:")
+            && workflow.contains("fetch-depth: 0")
+            && workflow.contains("--base-ref"),
+        "pull requests must compare the ledger with the fetched base revision"
+    );
+    assert!(
+        workflow.contains("cargo run --locked --bin formal-ai -- benchmark ratchet"),
+        "the ratchet job must select the formal-ai binary in this multi-binary crate"
     );
     assert!(
         workflow.contains("timeout-minutes:") && workflow.contains("set -euo pipefail"),
@@ -367,6 +406,10 @@ fn only_permissively_licensed_suites_are_fetched_and_licenses_are_recorded() {
 #[test]
 fn an_unrunnable_suite_is_recorded_as_benchmark_unavailable() {
     let editeval = manifest::suite("editeval").expect("editeval must stay in the manifest");
+    assert_ne!(
+        editeval.source_ref, "github:main",
+        "even unavailable-suite provenance must be immutable"
+    );
     let Availability::Unavailable { reason } = &editeval.availability else {
         panic!("editeval has no permissively licensed payload, so it must be unavailable");
     };
@@ -408,6 +451,73 @@ fn an_unrunnable_suite_is_recorded_as_benchmark_unavailable() {
     let coedit = manifest::suite("coedit").expect("coedit must stay in the manifest");
     assert_eq!(coedit.task_family, editeval.task_family);
     assert!(coedit.is_runnable());
+}
+
+/// Runtime acquisition failures are unavailable evidence too. The scheduled
+/// runner must be able to append their concrete reason instead of aborting
+/// before the ledger can explain why no upstream score exists.
+#[test]
+fn a_runtime_payload_failure_is_reported_as_benchmark_unavailable() {
+    let missing_payload = SuiteManifest {
+        id: "runtime_payload_failure",
+        title: "Synthetic unavailable payload",
+        task_family: "test_only",
+        license: "MIT",
+        license_url: "https://example.com/LICENSE",
+        source_url: "https://example.com",
+        source_ref: "test:unavailable",
+        source: SuiteSource::Unavailable,
+        grading: Grading::NotApplicable,
+        availability: Availability::Runnable,
+    };
+
+    let run = external_benchmarks::run_suite(&missing_payload, 1, &repo_root())
+        .expect("runtime acquisition failures should become an unavailable run");
+    assert_eq!(run.total, 0);
+    assert_eq!(run.passed, 0);
+    assert_eq!(run.failed, 0);
+    assert!(run
+        .unavailable
+        .as_deref()
+        .is_some_and(|reason| reason.contains("has no fetchable payload")));
+    assert!(run
+        .summary()
+        .starts_with("suite=runtime_payload_failure benchmark_unavailable:"));
+}
+
+/// SWE-bench is passed only when the official harness applies the candidate
+/// patch and runs the instance's tests. Comparing with the gold patch is a
+/// different and much stricter task, and must never be reported as SWE-bench.
+#[test]
+fn swebench_uses_the_pinned_official_test_harness() {
+    let swebench = manifest::suite("swebench_lite").expect("SWE-bench Lite manifest");
+    assert_eq!(swebench.grading.as_str(), "swebench_tests");
+
+    let workflow = read(".github/workflows/external-benchmarks.yml");
+    assert!(
+        workflow.contains(manifest::SWEBENCH_HARNESS_REF),
+        "the workflow must install an immutable revision of the official SWE-bench harness"
+    );
+    assert!(
+        workflow.contains("SWE_BENCH_SLICE"),
+        "the container-heavy SWE-bench slice needs its own bounded setting"
+    );
+    let grader = read("src/external_benchmarks/grade.rs");
+    assert!(
+        grader.contains("workspace.join(\"dataset.json\")")
+            && grader.contains(".arg(&dataset_path)"),
+        "the official evaluator must consume the locally cached pinned slice, not reload a mutable dataset name"
+    );
+    assert!(
+        !grader.contains("\"princeton-nlp/SWE-bench_Lite\""),
+        "the official evaluator must not reload SWE-bench by mutable dataset name"
+    );
+    assert!(
+        grader.contains("fnv1a64")
+            && grader.contains("external_benchmark_swe_clear_logs_error")
+            && grader.contains("fs::remove_dir_all(&prior_logs)"),
+        "each solver/dataset combination must execute without reusing a stale evaluator report"
+    );
 }
 
 /// Whole task: the harness, the ledger, the schedule, and the documentation all
@@ -529,6 +639,13 @@ fn humaneval_slice_of_twenty_real_upstream_cases_runs_end_to_end() {
     // The cases are the real upstream ones, in upstream order.
     assert_eq!(run.outcomes[0].id, "HumanEval/0");
     assert_eq!(run.outcomes[19].id, "HumanEval/19");
+    let payload = repo_root()
+        .join(manifest::CACHE_DIR)
+        .join(humaneval.cache_file().expect("HumanEval cache file"));
+    let provenance = fs::read_to_string(format!("{}.provenance.lino", payload.display()))
+        .expect("downloaded payload must carry reusable provenance");
+    assert!(provenance.contains(humaneval.source_ref));
+    assert!(provenance.contains("content_id fnv1a64:"));
 
     println!("{}", run.report());
     assert!(run.summary().contains(&format!(
@@ -593,4 +710,22 @@ fn upstream_records_are_parsed_into_gradable_cases() {
         .passed,
         "a wrong number must not pass"
     );
+
+    let swebench = manifest::suite("swebench_lite").expect("SWE-bench manifest");
+    let records = vec![serde_json::json!({
+        "instance_id": "astropy__astropy-12907",
+        "problem_statement": "Fix the upstream regression.",
+        "repo": "astropy/astropy",
+        "patch": "diff --git a/gold.py b/gold.py\n+gold-only solution",
+    })
+    .to_string()];
+    let cases = external_benchmarks::cases::parse_cases(swebench, &records, 1).expect("cases");
+    let outcomes = external_benchmarks::grade::grade_swebench(
+        &cases,
+        &["No repository patch can be inferred.".to_string()],
+        &workspace,
+    )
+    .expect("an empty patch is an honest model failure, not unavailable infrastructure");
+    assert!(!outcomes[0].passed);
+    assert!(outcomes[0].detail.contains("official SWE-bench criterion"));
 }

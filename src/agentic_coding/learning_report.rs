@@ -29,7 +29,10 @@
 use std::fmt::Write as _;
 
 use super::planner::{plan_document_recipe, AgenticPlan, DocumentRecipe};
-use super::{associative_learning, code_rewrite_learning, execution_learning, routing_learning};
+use super::{
+    associative_learning, code_rewrite_learning, execution_learning, external_benchmark_learning,
+    routing_learning,
+};
 use crate::associative_persistence::AssociativeMemory;
 use crate::links_format::format_lino_value_verbatim;
 use crate::memory::parse_links_notation;
@@ -49,6 +52,7 @@ pub static REPORTS: &[&LearningReport] = &[
     &hardcoded_language_learning::REPORT,
     &lexeme_import_learning::REPORT,
     &handler_precedence_learning::REPORT,
+    &external_benchmark_learning::REPORT,
 ];
 
 pub mod context_hierarchy_learning;

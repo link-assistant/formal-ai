@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/mod.rs
   language rust
   fidelity full_ast
-  byte_len 5349
-  line_count 129
-  content_id source_module_a981aa90d9940255
-  symbol_count 41
+  byte_len 5457
+  line_count 131
+  content_id source_module_0fd36d5dfa29d30e
+  symbol_count 42
   symbols
     module associative_learning 21 21
     module capability_router 22 22
@@ -21,51 +21,52 @@ self_ast_census
     module driver 32 32
     module execution_learning 33 33
     module explain 34 34
-    module file_read 35 35
-    module formalize 36 36
-    module general_planner 37 37
-    module google_trends_catalog 38 38
-    module google_trends_learning 39 39
-    module intent_router 40 40
-    module learning_report 41 41
-    module ledger 42 42
-    module lexicon 43 43
-    module local_search 44 44
-    module meaning_detail 45 45
-    module narration 46 46
-    module planner 47 47
-    module progress 48 48
-    module question_catalog 49 49
-    module rebuild_plan 50 50
-    module repair_strategy 51 51
-    module report_issue 52 52
-    module report_script 53 53
-    module routing_learning 54 54
-    module self_ast 55 55
-    module self_heal 56 56
-    module shell_command 57 57
-    module source_links 58 58
-    module statement_audit 59 59
-    module tool_result 60 60
-    module web_research 61 61
+    module external_benchmark_learning 35 35
+    module file_read 36 36
+    module formalize 37 37
+    module general_planner 38 38
+    module google_trends_catalog 39 39
+    module google_trends_learning 40 40
+    module intent_router 41 41
+    module learning_report 42 42
+    module ledger 43 43
+    module lexicon 44 44
+    module local_search 45 45
+    module meaning_detail 46 46
+    module narration 47 47
+    module planner 48 48
+    module progress 49 49
+    module question_catalog 50 50
+    module rebuild_plan 51 51
+    module repair_strategy 52 52
+    module report_issue 53 53
+    module report_script 54 54
+    module routing_learning 55 55
+    module self_ast 56 56
+    module self_heal 57 57
+    module shell_command 58 58
+    module source_links 59 59
+    module statement_audit 60 60
+    module tool_result 61 61
+    module web_research 62 62
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2616
-    named_node_count 434
+    total_link_count 2663
+    named_node_count 442
     distinct_node_kinds 12
     node_kinds
       crate 5
       doc_comment 19
-      identifier 176
+      identifier 179
       inner_doc_comment_marker 19
       line_comment 19
-      mod_item 41
-      scoped_identifier 8
+      mod_item 42
+      scoped_identifier 9
       scoped_use_list 28
       source_file 1
-      use_declaration 31
+      use_declaration 32
       use_list 28
-      visibility_modifier 59
+      visibility_modifier 61

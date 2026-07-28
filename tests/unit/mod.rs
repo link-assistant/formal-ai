@@ -86,6 +86,7 @@ mod issue_681;
 mod issue_686_agent_cli;
 mod issue_686_associative_persistence;
 mod issue_687;
+mod issue_698_external_benchmark_learning;
 mod issue_702_nested_contexts;
 mod issue_702_world_model_dialog;
 mod issue_702_world_state_chat;
