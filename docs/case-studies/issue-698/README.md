@@ -122,3 +122,9 @@ coding task into the self-explanation recipe. That now has a reproducing test
 and a structural repository-work-item guard. The benchmark learning task is
 also replayed separately through the real local Formal AI binary so its written
 artifact can be compared byte-for-byte with the shared renderer.
+
+The final exact full-task replay completed in three turns and two tool calls:
+it wrote and read back a bounded repository-work-item plan, preserved the issue
+URL, and ended without claiming source edits that the deterministic sandbox had
+not observed. The separate learning replay ranked seven failure-derived
+expressions and kept the resulting proposal at `awaiting_human_review`.

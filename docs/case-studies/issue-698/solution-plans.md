@@ -49,13 +49,14 @@ floor equals its best measured pass count.
 ## R698-03 — scheduled job publishing to a committed ledger
 
 **Approach.** `.github/workflows/external-benchmarks.yml` runs weekly
-(`17 4 * * 1`) and on `workflow_dispatch` with `slice`, `suite`, and `commit`
-inputs. It builds the release binary, installs Python plus the official
-SWE-bench harness at `f7bbbb2…`, runs a configurable core slice and a separately
-bounded (default one-case) SWE-bench slice, appends the `suite=` lines to the job
-summary, verifies the ratchet, uploads logs and proposal-only learning reports,
-and commits the refreshed ledger. Each result row carries `date`, `suite`,
-`slice`, `passed`, `failed`, `total`, `solver_version`, `runner`, and a note.
+(`17 4 * * 1`) and on `workflow_dispatch` with `slice`, `swebench_slice`,
+`suite`, and `commit` inputs. It builds the release binary, installs Python plus
+the official SWE-bench harness at `f7bbbb2…`, runs a configurable core slice and
+a separately bounded (default one-case) SWE-bench slice, appends the `suite=`
+lines to the job summary, verifies the ratchet, uploads logs and proposal-only
+learning reports, and commits the refreshed ledger. Each result row carries
+`date`, `suite`, `slice`, `passed`, `failed`, `total`, `solver_version`,
+`runner`, and a note.
 
 **Rejected.** Publishing to a build artifact only. The issue asks for a
 *committed* ledger so history is reviewable in the repository.

@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 48
   signature_module_count 274
   symbol_count 6641
-  content_id self_ast_census_index_fe75938a77203a95
+  content_id self_ast_census_index_b546c9ed407d4da9
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -120,7 +120,7 @@ self_ast_census_index
     src/external_benchmarks/learning.rs signature 4 source_module_a037c30f7747ea40
     src/external_benchmarks/ledger.rs signature 20 source_module_fa26bdd451651673
     src/external_benchmarks/manifest.rs signature 16 source_module_7800df666e4d5357
-    src/external_benchmarks/mod.rs signature 19 source_module_1b5112adf135fd36
+    src/external_benchmarks/mod.rs signature 19 source_module_fb234b1109ca41df
     src/external_benchmarks/ratchet.rs signature 5 source_module_cc2d4bbd74682fad
     src/external_benchmarks/vocabulary.rs signature 2 source_module_75ca460ff8e87bc2
     src/fact_checking.rs signature 33 source_module_4f1b8b6430d36281

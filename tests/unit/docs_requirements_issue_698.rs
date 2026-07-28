@@ -28,14 +28,16 @@ fn issue_698_case_study_and_external_benchmark_contract_are_traceable() {
         register.contains("## Issue #698 Real External Benchmark Harness"),
         "REQUIREMENTS.md has no issue #698 section"
     );
-    for id in ["R528", "R529", "R530", "R531", "R532", "R533"] {
+    for id in [
+        "R528", "R529", "R530", "R531", "R532", "R533", "R534", "R535",
+    ] {
         assert!(register.contains(id), "REQUIREMENTS.md missing {id}");
     }
 
     let requirements = read("docs/case-studies/issue-698/requirements.md");
     for id in [
         "R698-01", "R698-02", "R698-03", "R698-04", "R698-05", "R698-06", "R698-07", "R698-08",
-        "R698-09", "R698-10", "R698-11", "R698-12",
+        "R698-09", "R698-10", "R698-11", "R698-12", "R698-13", "R698-14",
     ] {
         assert!(requirements.contains(id), "requirements missing {id}");
     }

@@ -87,10 +87,9 @@ impl SuiteRun {
 
 /// Run `slice` upstream cases of `manifest` against the solver.
 ///
-/// Network and payload failures are returned as errors; a suite that is
-/// structurally unrunnable (unavailable upstream payload, missing Python
-/// interpreter) comes back as a `SuiteRun` with `unavailable` set, so callers
-/// can record the honest reason.
+/// Network, payload, and structural runtime failures (for example, an
+/// unavailable upstream payload or missing Python interpreter) come back as a
+/// `SuiteRun` with `unavailable` set, so callers can record the honest reason.
 pub fn run_suite(
     manifest: &SuiteManifest,
     slice: usize,

@@ -1,8 +1,8 @@
 # Issue #698 — real external benchmark harness
 
-Session: `issue-698-claude-20260720`
+Sessions: `issue-698-claude-20260720`, `issue-698-codex-20260728`
 Pull request: https://github.com/link-assistant/formal-ai/pull/816
-Authored by: formal-ai (Claude Code session, autonomous issue solver)
+Authored by: formal-ai autonomous issue-solver sessions
 
 This document is the committed evidence referenced by the
 `Formal-AI-Session` / `Formal-AI-Evidence` trailers on the issue implementation
@@ -30,7 +30,7 @@ findings changed the design rather than being worked around:
 | Hugging Face datasets-server requests do not carry the recorded dataset revision | CoEdIT and SWE-bench Lite use immutable revision-pinned payload URLs with cache provenance sidecars |
 | Gold-patch equality is not the SWE-bench semantic criterion | the invalid proxy result was withdrawn; the scheduled harness pins the official evaluator, applies candidate patches, and executes repository tests |
 
-Both are the honest outcome the issue asks for: a suite that cannot run is
+These are the honest outcomes the issue asks for: a suite that cannot run is
 declared unavailable, never quietly replaced by a repository-local proxy.
 
 ## 3. The honest first measurement
