@@ -4,16 +4,16 @@ Session: `issue-698-claude-20260720`
 Pull request: https://github.com/link-assistant/formal-ai/pull/816
 Authored by: formal-ai (Claude Code session, autonomous issue solver)
 
-This document is the committed evidence behind the `Formal-AI-Session` /
-`Formal-AI-Evidence` trailers on every commit of branch
-`issue-698-5abc758210fb`. It records what was measured, what was decided, and
-which decisions were rejected — so the numbers published by this pull request
-can be audited without re-running anything.
+This document is the committed evidence referenced by the
+`Formal-AI-Session` / `Formal-AI-Evidence` trailers on the issue implementation
+commits. It records what was measured, what was decided, and which decisions
+were rejected — so the numbers published by this pull request can be audited
+without re-running anything.
 
 ## 1. What the issue asked for
 
 Not another repository-authored slice: the *unmodified upstream* case set, run
-end to end, with the resulting score published exactly as measured. Twelve
+end to end, with the resulting score published exactly as measured. Fourteen
 requirements were extracted and are traced one-by-one in
 `docs/case-studies/issue-698/requirements.md` (R698-01 … R698-14) and mirrored
 into the repository-wide register as R528 … R535.
@@ -108,5 +108,7 @@ Formal-AI-Session: issue-698-codex-20260728
 Formal-AI-Evidence: dev/log/issues/698/pulls/816/analysis.md
 ```
 
-on every commit. The share is corrected by attributing work that was in fact
-machine-authored, not by shrinking the diff.
+on the original implementation commits. Later merge commits and failed Agent
+CLI recovery commits are not represented as attributed implementation work.
+The share is corrected by attributing work that was in fact machine-authored,
+not by shrinking the diff.

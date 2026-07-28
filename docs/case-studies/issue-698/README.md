@@ -42,8 +42,8 @@ suite=editeval benchmark_unavailable: …
 suite=swebench_lite benchmark_unavailable: legacy proxy score withdrawn …
 ```
 
-The first seven lines are the retained real measurements. GSM8K's `2 / 20`
-comes from two word problems whose
+The first six scored lines are the retained real measurements. GSM8K's
+`2 / 20` comes from two word problems whose
 final number the solver produced correctly; everything else the offline solver
 does not currently answer. The failures are ordinary solver output, not harness
 artifacts — on HumanEval the solver echoes the prompt and appends its
