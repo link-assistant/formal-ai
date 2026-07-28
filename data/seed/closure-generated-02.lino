@@ -1,4 +1,44 @@
 meanings
+  intent_routing
+    defined-by name
+    lexeme en
+      surface
+        text "intent routing"
+  intent_software_project_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "intent software project implementation"
+  intent_software_project_plan
+    defined-by intent
+    lexeme en
+      surface
+        text "intent software project plan"
+  intent_test_status
+    defined-by intent
+    lexeme en
+      surface
+        text "intent test status"
+  intent_translation
+    defined-by intent
+    lexeme en
+      surface
+        text "intent translation"
+  intent_unknown
+    defined-by intent
+    lexeme en
+      surface
+        text "intent unknown"
+  intent_url_navigate
+    defined-by intent
+    lexeme en
+      surface
+        text "intent url navigate"
+  intent_web_search
+    defined-by intent
+    lexeme en
+      surface
+        text "intent web search"
   intent_wellbeing
     defined-by intent
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix what is an"
-  pattern_concept_prefix_what_is_the
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is the"
-  pattern_concept_prefix_whats
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats"
-  pattern_concept_prefix_whats_a
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats a"
-  pattern_concept_prefix_whats_an
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats an"
-  pattern_concept_prefix_whats_the
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats the"
-  pattern_concept_prefix_who_is
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix who is"
-  pattern_concept_prefix_who_was
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix who was"
-  pattern_concept_prefix_znachenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix znachenie"

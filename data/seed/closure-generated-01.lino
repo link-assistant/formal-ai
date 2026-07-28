@@ -99,6 +99,36 @@ meanings
     lexeme en
       surface
         text "advertising platform"
+  agent_procedure_executed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure executed"
+  agent_procedure_execution_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure execution failed"
+  agent_procedure_readback_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure readback unavailable"
+  agent_procedure_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verification failed"
+  agent_procedure_verified
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verified"
+  agent_procedure_write_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure write unavailable"
   agent_suggestion
     defined-by intent
     lexeme en
@@ -579,6 +609,16 @@ meanings
     lexeme en
       surface
         text "comparison decomposed no evidence"
+  compiled_procedure
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure"
+  compiled_procedure_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure explanation"
   concept_lookup
     defined-by intent
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "intent recall name"
-  intent_routing
-    defined-by name
-    lexeme en
-      surface
-        text "intent routing"
-  intent_software_project_implementation
-    defined-by intent
-    lexeme en
-      surface
-        text "intent software project implementation"
-  intent_software_project_plan
-    defined-by intent
-    lexeme en
-      surface
-        text "intent software project plan"
-  intent_test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "intent test status"
-  intent_translation
-    defined-by intent
-    lexeme en
-      surface
-        text "intent translation"
-  intent_unknown
-    defined-by intent
-    lexeme en
-      surface
-        text "intent unknown"
-  intent_url_navigate
-    defined-by intent
-    lexeme en
-      surface
-        text "intent url navigate"
-  intent_web_search
-    defined-by intent
-    lexeme en
-      surface
-        text "intent web search"

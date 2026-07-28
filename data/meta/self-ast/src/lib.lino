@@ -2,10 +2,10 @@ self_ast_census
   target src/lib.rs
   language rust
   fidelity signature
-  byte_len 16495
-  line_count 376
-  content_id source_module_65661177f99ff657
-  symbol_count 125
+  byte_len 17141
+  line_count 386
+  content_id source_module_35b3215e7a9d2168
+  symbol_count 126
   symbols
     module agent 3 3
     module agentic_coding 4 4
@@ -100,35 +100,36 @@ self_ast_census
     module shared_memory 93 93
     module skill_compiler 94 94
     module skill_ledger 95 95
-    module solution_evidence 96 96
-    module solver 97 97
-    module solver_diagnostics 98 98
-    module solver_dispatch 99 99
-    module solver_formalization 100 100
-    module solver_handler_docs 101 101
-    module solver_handler_how 102 102
-    module solver_handler_oracle 103 103
-    module solver_handler_units 104 104
-    module solver_handlers 105 105
-    module solver_handlers_policy 106 106
-    module solver_helpers 107 107
-    module solver_search 108 108
-    module solver_synthesis 109 109
-    module solver_terminal 110 110
-    module solver_unknown_reasoning 111 111
-    module statement_audit 112 112
-    module statement_verification 113 113
-    module storage_policy 114 114
-    module substitution 115 115
-    module summarization 116 116
-    module telegram 117 117
-    module telegram_runtime 118 118
-    module thinking 119 119
-    module translation 120 120
-    module unknown_opener 121 121
-    module web_engine_core 122 122
-    module web_search_core 123 123
-    module world_model 124 124
-    module world_model_atoms 125 125
-    module world_model_context 126 126
-    module world_model_dialog 127 127
+    module skill_procedure 96 96
+    module solution_evidence 97 97
+    module solver 98 98
+    module solver_diagnostics 99 99
+    module solver_dispatch 100 100
+    module solver_formalization 101 101
+    module solver_handler_docs 102 102
+    module solver_handler_how 103 103
+    module solver_handler_oracle 104 104
+    module solver_handler_units 105 105
+    module solver_handlers 106 106
+    module solver_handlers_policy 107 107
+    module solver_helpers 108 108
+    module solver_search 109 109
+    module solver_synthesis 110 110
+    module solver_terminal 111 111
+    module solver_unknown_reasoning 112 112
+    module statement_audit 113 113
+    module statement_verification 114 114
+    module storage_policy 115 115
+    module substitution 116 116
+    module summarization 117 117
+    module telegram 118 118
+    module telegram_runtime 119 119
+    module thinking 120 120
+    module translation 121 121
+    module unknown_opener 122 122
+    module web_engine_core 123 123
+    module web_search_core 124 124
+    module world_model 125 125
+    module world_model_atoms 126 126
+    module world_model_context 127 127
+    module world_model_dialog 128 128

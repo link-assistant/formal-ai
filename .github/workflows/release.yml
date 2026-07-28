@@ -278,9 +278,6 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: sccache
     # Issue #812: this job used to take ~3.3 minutes; it now takes 6.8-7.8 as
     # checks accumulated (the last three `main` runs measured 6.7, 6.8, 7.8),
     # which is 78% of the old 10-minute cap. Raised before it produces the same
@@ -322,8 +319,8 @@ jobs:
           components: rustfmt, clippy
           targets: wasm32-unknown-unknown
 
-      - name: Cache Rust compiler outputs
-        uses: mozilla-actions/sccache-action@v0.0.10
+      - uses: ./.github/actions/setup-sccache
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -565,9 +562,6 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: sccache
     # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
     # sync with TEST_BUDGET_SECONDS there.
     timeout-minutes: 25
@@ -604,18 +598,15 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: bash scripts/simulate-fresh-merge.sh
 
-      # Run 30087447926 exhausted `/` on two hosted runners after restoring the
-      # target-heavy cache: rustc first killed the runner worker, then failed to
-      # create a temp directory and made ld crash with SIGBUS. Reuse the cleanup
-      # already required by the repository's other heavy build jobs.
+      # Run 30087447926 exhausted `/` after restoring the target-heavy cache;
+      # reuse the cleanup already required by the other heavy build jobs.
       - name: Free up runner disk space
         run: bash scripts/free-runner-disk.sh
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache Rust compiler outputs
-        uses: mozilla-actions/sccache-action@v0.0.10
+      - uses: ./.github/actions/setup-sccache
 
       # Cache downloaded sources, but never restore the branch-dependent target
       # tree. sccache reuses compiler outputs without retaining stale test
@@ -673,9 +664,6 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: sccache
     # Issue #812: the same margin problem as `test`, one run away from the same
     # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
     # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
@@ -696,8 +684,7 @@ jobs:
         with:
           components: llvm-tools-preview
 
-      - name: Cache Rust compiler outputs
-        uses: mozilla-actions/sccache-action@v0.0.10
+      - uses: ./.github/actions/setup-sccache
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -755,9 +742,6 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: sccache
     timeout-minutes: 10
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
@@ -767,8 +751,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache Rust compiler outputs
-        uses: mozilla-actions/sccache-action@v0.0.10
+      - uses: ./.github/actions/setup-sccache
 
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
@@ -1448,16 +1431,13 @@ jobs:
       # Keep every real Agent invocation inside this required gate local. Some
       # issue-specific scripts do not pass the CLI's no-summary flag directly.
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: sccache
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Cache Rust compiler outputs
-        uses: mozilla-actions/sccache-action@v0.0.10
+      - uses: ./.github/actions/setup-sccache
 
       - name: Cache cargo registry
         uses: actions/cache@v5

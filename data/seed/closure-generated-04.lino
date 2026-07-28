@@ -1,4 +1,164 @@
 meanings
+  response_capabilities_more_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more en"
+  response_capabilities_more_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more hi"
+  response_capabilities_more_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more ru"
+  response_capabilities_more_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more zh"
+  response_capabilities_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities ru"
+  response_capabilities_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities zh"
+  response_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification en"
+  response_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification hi"
+  response_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification ru"
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
+  response_client_contract_missing_evidence_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error en"
+  response_client_contract_missing_evidence_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error hi"
+  response_client_contract_missing_evidence_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error ru"
+  response_client_contract_missing_evidence_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error zh"
+  response_client_contract_parse_observation_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error en"
+  response_client_contract_parse_observation_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error hi"
+  response_client_contract_parse_observation_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error ru"
+  response_client_contract_parse_observation_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error zh"
+  response_client_contract_parse_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error en"
+  response_client_contract_parse_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error hi"
+  response_client_contract_parse_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error ru"
+  response_client_contract_parse_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse transcript error zh"
+  response_client_contract_read_observations_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error en"
+  response_client_contract_read_observations_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error hi"
+  response_client_contract_read_observations_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error ru"
+  response_client_contract_read_observations_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read observations error zh"
+  response_client_contract_read_transcript_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error en"
+  response_client_contract_read_transcript_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error hi"
+  response_client_contract_read_transcript_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error ru"
+  response_client_contract_read_transcript_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract read transcript error zh"
+  response_client_integration_invalid_typed_json_setting_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting en"
+  response_client_integration_invalid_typed_json_setting_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client integration invalid typed json setting hi"
   response_client_integration_invalid_typed_json_setting_ru
     defined-by response_template
     lexeme en
@@ -49,6 +209,46 @@ meanings
     lexeme en
       surface
         text "response comparison decomposed no evidence zh"
+  response_compiled_procedure_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure en"
+  response_compiled_procedure_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation en"
+  response_compiled_procedure_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation hi"
+  response_compiled_procedure_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation ru"
+  response_compiled_procedure_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation zh"
+  response_compiled_procedure_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure hi"
+  response_compiled_procedure_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure ru"
+  response_compiled_procedure_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -1194,203 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface missing en"
-  response_lexeme_import_surface_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing hi"
-  response_lexeme_import_surface_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing ru"
-  response_lexeme_import_surface_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing zh"
-  response_lexeme_import_wrong_genus_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus en"
-  response_lexeme_import_wrong_genus_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus hi"
-  response_lexeme_import_wrong_genus_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus ru"
-  response_lexeme_import_wrong_genus_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus zh"
-  response_local_search_contents_listing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing en"
-  response_local_search_contents_listing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing hi"
-  response_local_search_contents_listing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing ru"
-  response_local_search_contents_listing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing zh"
-  response_local_search_found_closest_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest en"
-  response_local_search_found_closest_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest hi"
-  response_local_search_found_closest_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest ru"
-  response_local_search_found_closest_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest zh"
-  response_local_search_found_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory en"
-  response_local_search_found_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory hi"
-  response_local_search_found_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory ru"
-  response_local_search_found_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory zh"
-  response_local_search_found_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file en"
-  response_local_search_found_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file hi"
-  response_local_search_found_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file ru"
-  response_local_search_found_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file zh"
-  response_local_search_found_path_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path en"
-  response_local_search_found_path_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path hi"
-  response_local_search_found_path_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path ru"
-  response_local_search_found_path_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path zh"
-  response_local_search_mismatch_requested_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory en"
-  response_local_search_mismatch_requested_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory hi"
-  response_local_search_mismatch_requested_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory ru"
-  response_local_search_mismatch_requested_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory zh"
-  response_local_search_mismatch_requested_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file en"
-  response_local_search_mismatch_requested_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file hi"
-  response_local_search_mismatch_requested_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file ru"
-  response_local_search_mismatch_requested_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file zh"
-  response_local_search_not_found_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found en"
-  response_local_search_not_found_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found hi"
-  response_local_search_not_found_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found ru"
-  response_local_search_not_found_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search not found zh"
-  response_local_search_route_local_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search route local en"
