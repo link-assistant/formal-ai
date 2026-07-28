@@ -1,4 +1,29 @@
 meanings
+  response_client_contract_missing_evidence_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error en"
+  response_client_contract_missing_evidence_error_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error hi"
+  response_client_contract_missing_evidence_error_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error ru"
+  response_client_contract_missing_evidence_error_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract missing evidence error zh"
+  response_client_contract_parse_observation_error_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response client contract parse observation error en"
   response_client_contract_parse_observation_error_hi
     defined-by response_template
     lexeme en
@@ -294,6 +319,106 @@ meanings
     lexeme en
       surface
         text "response document originality check sample present zh"
+  response_fact_check_arithmetic_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample en"
+  response_fact_check_arithmetic_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample hi"
+  response_fact_check_arithmetic_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample ru"
+  response_fact_check_arithmetic_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check arithmetic counterexample zh"
+  response_fact_check_current_dialogue_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue en"
+  response_fact_check_current_dialogue_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue hi"
+  response_fact_check_current_dialogue_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue ru"
+  response_fact_check_current_dialogue_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check current dialogue zh"
+  response_fact_check_no_statements_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements en"
+  response_fact_check_no_statements_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements hi"
+  response_fact_check_no_statements_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements ru"
+  response_fact_check_no_statements_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check no statements zh"
+  response_fact_check_statement_counterexample_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample en"
+  response_fact_check_statement_counterexample_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample hi"
+  response_fact_check_statement_counterexample_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample ru"
+  response_fact_check_statement_counterexample_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement counterexample zh"
+  response_fact_check_statement_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement en"
+  response_fact_check_statement_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement hi"
+  response_fact_check_statement_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement ru"
+  response_fact_check_statement_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response fact check statement zh"
   response_farewell_en
     defined-by response_template
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "response local search contents listing ru"
-  response_local_search_contents_listing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing zh"
-  response_local_search_found_closest_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest en"
-  response_local_search_found_closest_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest hi"
-  response_local_search_found_closest_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest ru"
-  response_local_search_found_closest_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found closest zh"
-  response_local_search_found_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory en"
-  response_local_search_found_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory hi"
-  response_local_search_found_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory ru"
-  response_local_search_found_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found directory zh"
-  response_local_search_found_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file en"
-  response_local_search_found_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file hi"
-  response_local_search_found_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file ru"
-  response_local_search_found_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found file zh"
-  response_local_search_found_path_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path en"
-  response_local_search_found_path_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path hi"
-  response_local_search_found_path_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path ru"
-  response_local_search_found_path_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search found path zh"
-  response_local_search_mismatch_requested_directory_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory en"
-  response_local_search_mismatch_requested_directory_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory hi"
-  response_local_search_mismatch_requested_directory_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory ru"
-  response_local_search_mismatch_requested_directory_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested directory zh"
-  response_local_search_mismatch_requested_file_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file en"
-  response_local_search_mismatch_requested_file_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file hi"
-  response_local_search_mismatch_requested_file_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file ru"
-  response_local_search_mismatch_requested_file_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search mismatch requested file zh"

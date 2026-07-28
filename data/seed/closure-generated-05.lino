@@ -1,4 +1,129 @@
 meanings
+  response_local_search_contents_listing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing zh"
+  response_local_search_found_closest_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest en"
+  response_local_search_found_closest_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest hi"
+  response_local_search_found_closest_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest ru"
+  response_local_search_found_closest_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found closest zh"
+  response_local_search_found_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory en"
+  response_local_search_found_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory hi"
+  response_local_search_found_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory ru"
+  response_local_search_found_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found directory zh"
+  response_local_search_found_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file en"
+  response_local_search_found_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file hi"
+  response_local_search_found_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file ru"
+  response_local_search_found_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found file zh"
+  response_local_search_found_path_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path en"
+  response_local_search_found_path_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path hi"
+  response_local_search_found_path_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path ru"
+  response_local_search_found_path_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search found path zh"
+  response_local_search_mismatch_requested_directory_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory en"
+  response_local_search_mismatch_requested_directory_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory hi"
+  response_local_search_mismatch_requested_directory_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory ru"
+  response_local_search_mismatch_requested_directory_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested directory zh"
+  response_local_search_mismatch_requested_file_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file en"
+  response_local_search_mismatch_requested_file_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file hi"
+  response_local_search_mismatch_requested_file_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file ru"
+  response_local_search_mismatch_requested_file_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search mismatch requested file zh"
   response_local_search_not_found_en
     defined-by response_template
     lexeme en
@@ -1269,128 +1394,3 @@ meanings
     lexeme en
       surface
         text "tue"
-  two_paths
-    defined-by concept
-    lexeme en
-      surface
-        text "two paths"
-  ui
-    defined-by concept
-    lexeme en
-      surface
-        text "ui"
-  uname
-    defined-by token
-    lexeme en
-      surface
-        text "uname"
-  uncomment_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "uncomment lines"
-  uniqueness
-    defined-by word_surface
-    lexeme en
-      surface
-        text "uniqueness"
-  unknown_reasoning_question
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning question"
-  unknown_reasoning_trace
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning trace"
-  usd
-    defined-by word_surface
-    lexeme en
-      surface
-        text "usd"
-  veracity
-    defined-by word_surface
-    lexeme en
-      surface
-        text "veracity"
-  verbose
-    defined-by concept
-    lexeme en
-      surface
-        text "verbose"
-  versus
-    defined-by word_surface
-    lexeme en
-      surface
-        text "versus"
-  views
-    defined-by word_surface
-    lexeme en
-      surface
-        text "views"
-  visited
-    defined-by word_surface
-    lexeme en
-      surface
-        text "visited"
-  visitor
-    defined-by word_surface
-    lexeme en
-      surface
-        text "visitor"
-  visitors
-    defined-by word_surface
-    lexeme en
-      surface
-        text "visitors"
-  visual-property
-    defined-by category
-    lexeme en
-      surface
-        text "visual property"
-  vs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "vs"
-  vscode
-    defined-by environment
-    lexeme en
-      surface
-        text "vscode"
-  vscode_local_sync
-    defined-by flow
-    lexeme en
-      surface
-        text "vscode local sync"
-  was
-    defined-by concept
-    lexeme en
-      surface
-        text "was"
-  web-search
-    defined-by word_surface
-    lexeme en
-      surface
-        text "web search"
-  web_research_no_content
-    defined-by field
-    lexeme en
-      surface
-        text "web research no content"
-  web_research_source_label
-    defined-by field
-    lexeme en
-      surface
-        text "web research source label"
-  webvm
-    defined-by word_surface
-    lexeme en
-      surface
-        text "webvm"
-  wellbeing
-    defined-by intent
-    lexeme en
-      surface
-        text "wellbeing"

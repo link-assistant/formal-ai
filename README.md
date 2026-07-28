@@ -944,8 +944,9 @@ training data.
 
 ```bash
 cargo fmt --all -- --check
-cargo clippy --all-targets --all-features
-cargo test --all-features --verbose
+cargo clippy --lib --bins --tests --all-features
+cargo check --examples --all-features
+cargo test --lib --bins --tests --all-features --verbose
 cargo test --doc --verbose
 rust-script scripts/check-file-size.rs
 ```

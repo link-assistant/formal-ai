@@ -655,3 +655,83 @@ multilingual_responses
     intent world_state_reached
     language zh
     text "没有剩余：每一条目标陈述在当前状态中都已成立。\n差异：{diff_id}"
+  response response_fact_check_current_dialogue_en
+    intent fact_check_current_dialogue
+    language en
+    text "Checked all {count} statements in the current dialogue relative to {formal_system}.\n{summary}"
+  response response_fact_check_current_dialogue_ru
+    intent fact_check_current_dialogue
+    language ru
+    text "Проверены все утверждения текущего диалога ({count}) относительно системы {formal_system}.\n{summary}"
+  response response_fact_check_current_dialogue_hi
+    intent fact_check_current_dialogue
+    language hi
+    text "वर्तमान संवाद के सभी {count} कथनों की {formal_system} के सापेक्ष जाँच की गई।\n{summary}"
+  response response_fact_check_current_dialogue_zh
+    intent fact_check_current_dialogue
+    language zh
+    text "已相对于 {formal_system} 核查当前对话中的全部 {count} 条陈述。\n{summary}"
+  response response_fact_check_statement_en
+    intent fact_check_statement
+    language en
+    text "{statement}: probability {probability} ({basis})."
+  response response_fact_check_statement_ru
+    intent fact_check_statement
+    language ru
+    text "{statement}: вероятность {probability} ({basis})."
+  response response_fact_check_statement_hi
+    intent fact_check_statement
+    language hi
+    text "{statement}: प्रायिकता {probability} ({basis})।"
+  response response_fact_check_statement_zh
+    intent fact_check_statement
+    language zh
+    text "{statement}：概率 {probability}（{basis}）。"
+  response response_fact_check_statement_counterexample_en
+    intent fact_check_statement_counterexample
+    language en
+    text "{statement}: probability {probability} ({basis}); counterexample: {counterexample}."
+  response response_fact_check_statement_counterexample_ru
+    intent fact_check_statement_counterexample
+    language ru
+    text "{statement}: вероятность {probability} ({basis}); контрпример: {counterexample}."
+  response response_fact_check_statement_counterexample_hi
+    intent fact_check_statement_counterexample
+    language hi
+    text "{statement}: प्रायिकता {probability} ({basis}); प्रतिउदाहरण: {counterexample}।"
+  response response_fact_check_statement_counterexample_zh
+    intent fact_check_statement_counterexample
+    language zh
+    text "{statement}：概率 {probability}（{basis}）；反例：{counterexample}。"
+  response response_fact_check_arithmetic_counterexample_en
+    intent fact_check_arithmetic_counterexample
+    language en
+    text "Evaluated values: {left} = {left_value}, {right} = {right_value}. The relation {relation} does not hold"
+  response response_fact_check_arithmetic_counterexample_ru
+    intent fact_check_arithmetic_counterexample
+    language ru
+    text "Вычисленные значения: {left} = {left_value}, {right} = {right_value}. Отношение {relation} не выполняется"
+  response response_fact_check_arithmetic_counterexample_hi
+    intent fact_check_arithmetic_counterexample
+    language hi
+    text "परिकलित मान: {left} = {left_value}, {right} = {right_value}। संबंध {relation} सत्य नहीं है"
+  response response_fact_check_arithmetic_counterexample_zh
+    intent fact_check_arithmetic_counterexample
+    language zh
+    text "计算值：{left} = {left_value}，{right} = {right_value}。关系 {relation} 不成立"
+  response response_fact_check_no_statements_en
+    intent fact_check_no_statements
+    language en
+    text "There are no declarative statements to check."
+  response response_fact_check_no_statements_ru
+    intent fact_check_no_statements
+    language ru
+    text "В диалоге нет утверждений для проверки."
+  response response_fact_check_no_statements_hi
+    intent fact_check_no_statements
+    language hi
+    text "जाँचने के लिए कोई घोषणात्मक कथन नहीं है।"
+  response response_fact_check_no_statements_zh
+    intent fact_check_no_statements
+    language zh
+    text "没有可核查的陈述。"

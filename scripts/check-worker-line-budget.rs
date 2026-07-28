@@ -33,10 +33,10 @@ const TARGET_TOTAL_LINES: usize = 3_000;
 /// The ratchet stops *this* migration from silently regrowing the mirror; it
 /// does not veto merging upstream `main`. When a merge brings in legitimate
 /// worker changes from other PRs, re-baseline this ceiling to the merged count
-/// Issue #840's local-scope guard then removed a net 2 lines from the browser
-/// mirror, lowering the ratchet from 26_809 to 26_807.
+/// Issue #845's Rust→WASM dialogue fact checker then removed a net 2 lines
+/// from the browser mirror, lowering the ratchet from 26_807 to 26_805.
 #[cfg(not(test))]
-const CEILING_TOTAL_LINES: usize = 26_807;
+const CEILING_TOTAL_LINES: usize = 26_805;
 
 const WORKER_DIR: &str = "src/web/worker";
 

@@ -583,6 +583,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     // passes in to count substitution occurrences. Mirrors try_memory_write
     // running inside the conversation-memory path in the Rust runtime.
     { name: "tryMemoryWrite", run: () => tryMemoryWrite(prompt, normalized, memory) },
+    { name: "tryCurrentDialogueFactChecking", run: () => tryCurrentDialogueFactChecking(prompt, normalized, language, history) },
     { name: "tryLinkNativeSynthesis", run: () => tryLinkNativeSynthesis(prompt, normalized) },
     { name: "tryHistorical", run: () => tryHistorical(prompt, history) },
     {

@@ -28,6 +28,13 @@ pub const ROLE_CAPABILITY_QUERY_MORE: &str = "capability_query_more";
 /// "facts about yourself", "факты о себе", "自我事实", …. Checked before the
 /// broader self-introduction and known-facts queries so it wins the overlap.
 pub const ROLE_SELF_FACT_QUERY: &str = "self_fact_query";
+/// Semantic role: a request to audit every statement in the current dialogue.
+///
+/// The complete multilingual surfaces ("fact-check this dialogue", "проверь
+/// факты в диалоге", …) live in `data/seed/meanings-intent.lino`. A dedicated
+/// role keeps this dialog-scoped operation distinct from document originality
+/// checks and from open-ended web fact searches.
+pub const ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY: &str = "fact_check_current_dialogue_query";
 /// Semantic role: the user asking the assistant to introduce itself.
 ///
 /// A get-acquainted request ("tell me about yourself", "расскажи о себе",

@@ -1,4 +1,129 @@
 meanings
+  two_paths
+    defined-by concept
+    lexeme en
+      surface
+        text "two paths"
+  ui
+    defined-by concept
+    lexeme en
+      surface
+        text "ui"
+  uname
+    defined-by token
+    lexeme en
+      surface
+        text "uname"
+  uncomment_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "uncomment lines"
+  uniqueness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "uniqueness"
+  unknown_reasoning_question
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning question"
+  unknown_reasoning_trace
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning trace"
+  usd
+    defined-by word_surface
+    lexeme en
+      surface
+        text "usd"
+  veracity
+    defined-by word_surface
+    lexeme en
+      surface
+        text "veracity"
+  verbose
+    defined-by concept
+    lexeme en
+      surface
+        text "verbose"
+  versus
+    defined-by word_surface
+    lexeme en
+      surface
+        text "versus"
+  views
+    defined-by word_surface
+    lexeme en
+      surface
+        text "views"
+  visited
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visited"
+  visitor
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitor"
+  visitors
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitors"
+  visual-property
+    defined-by category
+    lexeme en
+      surface
+        text "visual property"
+  vs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "vs"
+  vscode
+    defined-by environment
+    lexeme en
+      surface
+        text "vscode"
+  vscode_local_sync
+    defined-by flow
+    lexeme en
+      surface
+        text "vscode local sync"
+  was
+    defined-by concept
+    lexeme en
+      surface
+        text "was"
+  web-search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "web search"
+  web_research_no_content
+    defined-by field
+    lexeme en
+      surface
+        text "web research no content"
+  web_research_source_label
+    defined-by field
+    lexeme en
+      surface
+        text "web research source label"
+  webvm
+    defined-by word_surface
+    lexeme en
+      surface
+        text "webvm"
+  wellbeing
+    defined-by intent
+    lexeme en
+      surface
+        text "wellbeing"
   were
     defined-by concept
     lexeme en

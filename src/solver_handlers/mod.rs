@@ -13,6 +13,7 @@ mod conversation_memory;
 mod definition_merge;
 mod document_originality;
 mod document_request;
+mod fact_checking;
 mod feature_capability;
 mod github_repository_traffic;
 mod installation_conversion;
@@ -52,6 +53,7 @@ pub use conversation_memory::{
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_originality::try_document_originality_check;
 pub use document_request::try_document_request;
+pub use fact_checking::try_fact_checking;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::try_installation_conversion;

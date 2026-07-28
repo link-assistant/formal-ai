@@ -29,6 +29,8 @@ pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
+pub mod fact_checking;
+pub mod formal_system;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
@@ -175,6 +177,11 @@ pub use engine::{
     SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
+pub use fact_checking::{
+    AuditScope, ContextAudit, EvidenceTrace, FactCheckError, FactChecker, ProbabilityBasis,
+    RefutationAttempt, RefutationOutcome, RefutationStage, StatementVerification,
+};
+pub use formal_system::FormalSystem;
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
@@ -353,8 +360,9 @@ pub use telegram_runtime::{
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
-    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
-    normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    assess_arithmetic_claim, detect_language as detect_prompt_language,
+    evaluate_arithmetic_expression, normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
@@ -363,9 +371,9 @@ pub use web_search_core::{
     WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
 pub use world_model::{
-    Action, Context, ContextDiff, Dependency, GeneralMemoryCommitError, GeneralMemoryPermission,
-    LinkConflict, Prediction, RecalculationReport, Statement as WorldStatement, StatementChange,
-    WorldModel,
+    Action, Context, ContextAccessEvent, ContextAccessEventKind, ContextDiff, Dependency,
+    GeneralMemoryCommitError, GeneralMemoryPermission, LinkConflict, Prediction, RecalculatedLink,
+    RecalculationReport, Statement as WorldStatement, StatementChange, WorldModel,
 };
 pub use world_model_atoms::{classify as classify_utterance, state_atom, UtteranceKind};
 pub use world_model_context::{

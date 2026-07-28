@@ -278,6 +278,9 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # Issue #812: this job used to take ~3.3 minutes; it now takes 6.8-7.8 as
     # checks accumulated (the last three `main` runs measured 6.7, 6.8, 7.8),
     # which is 78% of the old 10-minute cap. Raised before it produces the same
@@ -319,6 +322,8 @@ jobs:
           components: rustfmt, clippy
           targets: wasm32-unknown-unknown
 
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -333,7 +338,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
@@ -388,7 +392,7 @@ jobs:
       # (issue #812). The tree is clippy-clean at the time this was added, so
       # this promotes existing behaviour rather than introducing new failures.
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --lib --bins --tests --all-features -- -D warnings && cargo check --examples --all-features
 
       # rustdoc-only lints are not exercised by rustc, clippy, or doctests.
       # Build the same public API docs deployed by Pages before release so a
@@ -428,6 +432,9 @@ jobs:
       # docs/design/no-hardcoded-natural-language.md.
       - name: Check hardcoded natural language
         run: rust-script scripts/check-hardcoded-language.rs
+
+      - name: Check development disk policy
+        run: rust-script scripts/check-disk-usage-policy.rs
 
       - name: Check worker JS line budget
         run: rust-script scripts/check-worker-line-budget.rs
@@ -558,6 +565,9 @@ jobs:
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # 25 minutes, not 15: see the note on the "Run tests" step. Keep this in
     # sync with TEST_BUDGET_SECONDS there.
     timeout-minutes: 25
@@ -604,26 +614,21 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Restore the cargo cache here, but leave cache writes to the lint/build
-      # jobs. This test job runs close to its timeout after the full suite, and
-      # saving a target-heavy cache in post-job cleanup can cancel an otherwise
-      # successful run.
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
+
+      # Cache downloaded sources, but never restore the branch-dependent target
+      # tree. sccache reuses compiler outputs without retaining stale test
+      # binaries and multi-GiB incremental directories.
       - name: Restore cargo registry cache
         uses: actions/cache/restore@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
-
-      # The shared target cache can retain binaries for test files removed on
-      # another branch. Rebuild this package's artifacts while preserving its
-      # cached dependencies so Cargo never executes an orphaned test binary.
-      - name: Clean stale package test artifacts
-        run: cargo clean -p formal-ai
 
       - name: Check LiNo data integrity
         run: cargo test --test unit data_files -- --nocapture
@@ -651,7 +656,7 @@ jobs:
         run: |
           set -euo pipefail
           started=$SECONDS
-          cargo test --all-features --verbose
+          cargo test --lib --bins --tests --all-features --verbose
           elapsed=$((SECONDS - started))
           threshold=$((TEST_BUDGET_SECONDS * TEST_WARN_RATIO_PERCENT / 100))
           printf 'Test suite took %ss of the %ss job budget.\n' \
@@ -668,6 +673,9 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     # Issue #812: the same margin problem as `test`, one run away from the same
     # false failure. Measured on the last eight `main` runs: 11.2, 11.5, 11.4,
     # 11.9, 12.6, 12.7, 13.5, 14.1 minutes -- the worst case used 94% of the old
@@ -688,13 +696,15 @@ jobs:
         with:
           components: llvm-tools-preview
 
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
+
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-coverage-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-coverage-
@@ -745,6 +755,9 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     timeout-minutes: 10
     needs: [lint, test]
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' }}
@@ -753,6 +766,9 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
@@ -763,7 +779,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-build-
@@ -1433,11 +1448,16 @@ jobs:
       # Keep every real Agent invocation inside this required gate local. Some
       # issue-specific scripts do not pass the CLI's no-summary flag directly.
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: sccache
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust compiler outputs
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -1445,7 +1465,6 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
           key: ${{ runner.os }}-cargo-agentcli-e2e-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-agentcli-e2e-
@@ -1866,7 +1885,7 @@ jobs:
 
       # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
       # `target/` directory. The other Rust jobs (notably `lint`, which runs
-      # `cargo clippy --all-targets --all-features`) share the same cache key and
+      # the repository's targeted Clippy and example checks share the same cache key and
       # populate `target/` with a multi-gigabyte debug tree. Restoring that here
       # on top of the web bundle and then running `cargo doc` exhausted the
       # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)

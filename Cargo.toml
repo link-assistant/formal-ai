@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.307.1"
+version = "0.308.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -96,6 +96,20 @@ path = "tests/integration/mod.rs"
 [[test]]
 name = "source"
 path = "tests/source/mod.rs"
+
+# This crate embeds large language dictionaries and compiles dozens of parser
+# grammars. Cargo's defaults retain full debuginfo plus incremental state for
+# every test/example binary, which made ordinary development workspaces grow
+# past 10 GiB. Keep fast debug assertions, but do not retain those two largest
+# classes of recomputable artifacts. Developers who need debugger symbols can
+# opt in with `CARGO_PROFILE_DEV_DEBUG=2` for that run.
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false
 
 [profile.release]
 lto = true

@@ -1,4 +1,29 @@
 meanings
+  pattern_concept_prefix_whats_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats a"
+  pattern_concept_prefix_whats_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats an"
+  pattern_concept_prefix_whats_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats the"
+  pattern_concept_prefix_who_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who is"
+  pattern_concept_prefix_who_was
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who was"
   pattern_concept_prefix_znachenie
     defined-by prompt_pattern
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "response clarification zh"
-  response_client_contract_missing_evidence_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error en"
-  response_client_contract_missing_evidence_error_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error hi"
-  response_client_contract_missing_evidence_error_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error ru"
-  response_client_contract_missing_evidence_error_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract missing evidence error zh"
-  response_client_contract_parse_observation_error_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response client contract parse observation error en"
