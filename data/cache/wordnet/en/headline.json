@@ -1,0 +1,29 @@
+{
+  "lemma": "headline",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06355831-n",
+      "partOfSpeech": "n",
+      "definition": "the heading or caption of a newspaper article",
+      "synonyms": [
+        "newspaper headline"
+      ]
+    },
+    {
+      "id": "oewn-00978256-v",
+      "partOfSpeech": "v",
+      "definition": "publicize widely or highly, as if with a headline"
+    },
+    {
+      "id": "oewn-02337441-v",
+      "partOfSpeech": "v",
+      "definition": "provide (a newspaper page or a story) with a headline"
+    }
+  ]
+}

@@ -1,4 +1,164 @@
 meanings
+  response_agentic_report_contents_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options hi"
+  response_agentic_report_contents_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options ru"
+  response_agentic_report_contents_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents options zh"
+  response_agentic_report_contents_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question en"
+  response_agentic_report_contents_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question hi"
+  response_agentic_report_contents_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question ru"
+  response_agentic_report_contents_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report contents question zh"
+  response_agentic_report_exported_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported en"
+  response_agentic_report_exported_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported hi"
+  response_agentic_report_exported_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported ru"
+  response_agentic_report_exported_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report exported zh"
+  response_agentic_report_target_options_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options en"
+  response_agentic_report_target_options_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options hi"
+  response_agentic_report_target_options_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options ru"
+  response_agentic_report_target_options_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target options zh"
+  response_agentic_report_target_question_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question en"
+  response_agentic_report_target_question_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question hi"
+  response_agentic_report_target_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question ru"
+  response_agentic_report_target_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agentic report target question zh"
+  response_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time en"
+  response_assistant_free_time_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time hi"
+  response_assistant_free_time_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time ru"
+  response_assistant_free_time_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time zh"
+  response_assistant_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name en"
+  response_assistant_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name hi"
+  response_assistant_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name ru"
+  response_assistant_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant name zh"
+  response_budget_search_solution_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution en"
+  response_budget_search_solution_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution hi"
+  response_budget_search_solution_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution ru"
+  response_budget_search_solution_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response budget search solution zh"
+  response_capabilities_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities en"
   response_capabilities_hi
     defined-by response_template
     lexeme en
@@ -214,6 +374,46 @@ meanings
     lexeme en
       surface
         text "response comparison decomposed no evidence zh"
+  response_compiled_procedure_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure en"
+  response_compiled_procedure_explanation_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation en"
+  response_compiled_procedure_explanation_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation hi"
+  response_compiled_procedure_explanation_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation ru"
+  response_compiled_procedure_explanation_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure explanation zh"
+  response_compiled_procedure_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure hi"
+  response_compiled_procedure_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure ru"
+  response_compiled_procedure_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response compiled procedure zh"
   response_concept_lookup_in_context_en
     defined-by response_template
     lexeme en
@@ -1194,203 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import fetch failed ru"
-  response_lexeme_import_fetch_failed_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch failed zh"
-  response_lexeme_import_fetch_invalid_json_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json en"
-  response_lexeme_import_fetch_invalid_json_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json hi"
-  response_lexeme_import_fetch_invalid_json_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json ru"
-  response_lexeme_import_fetch_invalid_json_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import fetch invalid json zh"
-  response_lexeme_import_grounding_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost en"
-  response_lexeme_import_grounding_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost hi"
-  response_lexeme_import_grounding_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost ru"
-  response_lexeme_import_grounding_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import grounding lost zh"
-  response_lexeme_import_invalid_provenance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance en"
-  response_lexeme_import_invalid_provenance_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance hi"
-  response_lexeme_import_invalid_provenance_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance ru"
-  response_lexeme_import_invalid_provenance_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid provenance zh"
-  response_lexeme_import_invalid_qid_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid en"
-  response_lexeme_import_invalid_qid_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid hi"
-  response_lexeme_import_invalid_qid_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid ru"
-  response_lexeme_import_invalid_qid_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid qid zh"
-  response_lexeme_import_invalid_slug_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug en"
-  response_lexeme_import_invalid_slug_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug hi"
-  response_lexeme_import_invalid_slug_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug ru"
-  response_lexeme_import_invalid_slug_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid slug zh"
-  response_lexeme_import_invalid_surface_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid surface en"
-  response_lexeme_import_invalid_surface_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid surface hi"
-  response_lexeme_import_invalid_surface_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid surface ru"
-  response_lexeme_import_invalid_surface_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import invalid surface zh"
-  response_lexeme_import_lexeme_lost_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import lexeme lost en"
-  response_lexeme_import_lexeme_lost_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import lexeme lost hi"
-  response_lexeme_import_lexeme_lost_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import lexeme lost ru"
-  response_lexeme_import_lexeme_lost_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import lexeme lost zh"
-  response_lexeme_import_missing_cached_label_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing cached label en"
-  response_lexeme_import_missing_cached_label_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing cached label hi"
-  response_lexeme_import_missing_cached_label_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing cached label ru"
-  response_lexeme_import_missing_cached_label_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing cached label zh"
-  response_lexeme_import_missing_label_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing label en"
-  response_lexeme_import_missing_label_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing label hi"
-  response_lexeme_import_missing_label_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing label ru"
-  response_lexeme_import_missing_label_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing label zh"
-  response_lexeme_import_missing_provenance_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing provenance en"
-  response_lexeme_import_missing_provenance_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing provenance hi"
-  response_lexeme_import_missing_provenance_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import missing provenance ru"

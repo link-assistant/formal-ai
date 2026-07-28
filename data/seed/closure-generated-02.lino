@@ -1,4 +1,44 @@
 meanings
+  gives
+    defined-by word_surface
+    lexeme en
+      surface
+        text "gives"
+  golang
+    defined-by word_surface
+    lexeme en
+      surface
+        text "golang"
+  google_trends
+    defined-by source
+    lexeme en
+      surface
+        text "google trends"
+  google_trends_learning
+    defined-by concept
+    lexeme en
+      surface
+        text "google trends learning"
+  goto
+    defined-by word_surface
+    lexeme en
+      surface
+        text "goto"
+  grammar_context
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "grammar context"
+  grep
+    defined-by concept
+    lexeme en
+      surface
+        text "grep"
+  has
+    defined-by concept
+    lexeme en
+      surface
+        text "has"
   head
     defined-by token
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix explain"
-  pattern_concept_prefix_explanation_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix explanation of"
-  pattern_concept_prefix_jieshao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshao"
-  pattern_concept_prefix_jieshi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi"
-  pattern_concept_prefix_jieshi_yixia
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi yixia"
-  pattern_concept_prefix_kto_eto
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto eto"
-  pattern_concept_prefix_kto_takaya
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takaya"
-  pattern_concept_prefix_kto_takoy
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takoy"
-  pattern_concept_prefix_meaning_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix meaning of"

@@ -99,6 +99,36 @@ meanings
     lexeme en
       surface
         text "advertising platform"
+  agent_procedure_executed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure executed"
+  agent_procedure_execution_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure execution failed"
+  agent_procedure_readback_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure readback unavailable"
+  agent_procedure_verification_failed
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verification failed"
+  agent_procedure_verified
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure verified"
+  agent_procedure_write_unavailable
+    defined-by intent
+    lexeme en
+      surface
+        text "agent procedure write unavailable"
   agent_suggestion
     defined-by intent
     lexeme en
@@ -579,6 +609,16 @@ meanings
     lexeme en
       surface
         text "comparison decomposed no evidence"
+  compiled_procedure
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure"
+  compiled_procedure_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "compiled procedure explanation"
   concept_lookup
     defined-by intent
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "github repository traffic"
-  gives
-    defined-by word_surface
-    lexeme en
-      surface
-        text "gives"
-  golang
-    defined-by word_surface
-    lexeme en
-      surface
-        text "golang"
-  google_trends
-    defined-by source
-    lexeme en
-      surface
-        text "google trends"
-  google_trends_learning
-    defined-by concept
-    lexeme en
-      surface
-        text "google trends learning"
-  goto
-    defined-by word_surface
-    lexeme en
-      surface
-        text "goto"
-  grammar_context
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "grammar context"
-  grep
-    defined-by concept
-    lexeme en
-      surface
-        text "grep"
-  has
-    defined-by concept
-    lexeme en
-      surface
-        text "has"

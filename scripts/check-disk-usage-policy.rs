@@ -8,6 +8,7 @@ fn main() -> ExitCode {
     let workflows = [
         ".github/workflows/release.yml",
         ".github/workflows/desktop-release.yml",
+        ".github/actions/setup-sccache/action.yml",
     ]
     .into_iter()
     .map(|path| fs::read_to_string(path).unwrap_or_else(|error| panic!("read {path}: {error}")))
@@ -54,9 +55,7 @@ fn main() -> ExitCode {
     }
 
     if errors.is_empty() {
-        println!(
-            "disk usage policy: bounded profiles, targeted validation, and no target/ cache"
-        );
+        println!("disk usage policy: bounded profiles, targeted validation, and no target/ cache");
         ExitCode::SUCCESS
     } else {
         for error in errors {

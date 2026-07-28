@@ -12,6 +12,7 @@ mod cli_context;
 mod cli_import;
 mod cli_improve;
 mod cli_memory;
+mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
@@ -22,6 +23,7 @@ use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
@@ -176,6 +178,8 @@ enum Command {
     StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
+    /// Execute and inspect persisted natural-language procedure artifacts.
+    Procedure(ProcedureArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
@@ -590,6 +594,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
+        Command::Procedure(args) => run_procedure(args)?,
         Command::Agent {
             task,
             transcript,

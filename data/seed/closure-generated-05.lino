@@ -1,4 +1,204 @@
 meanings
+  response_lexeme_import_fetch_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch failed zh"
+  response_lexeme_import_fetch_invalid_json_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json en"
+  response_lexeme_import_fetch_invalid_json_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json hi"
+  response_lexeme_import_fetch_invalid_json_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json ru"
+  response_lexeme_import_fetch_invalid_json_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import fetch invalid json zh"
+  response_lexeme_import_grounding_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost en"
+  response_lexeme_import_grounding_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost hi"
+  response_lexeme_import_grounding_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost ru"
+  response_lexeme_import_grounding_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import grounding lost zh"
+  response_lexeme_import_invalid_provenance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance en"
+  response_lexeme_import_invalid_provenance_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance hi"
+  response_lexeme_import_invalid_provenance_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance ru"
+  response_lexeme_import_invalid_provenance_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid provenance zh"
+  response_lexeme_import_invalid_qid_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid en"
+  response_lexeme_import_invalid_qid_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid hi"
+  response_lexeme_import_invalid_qid_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid ru"
+  response_lexeme_import_invalid_qid_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid qid zh"
+  response_lexeme_import_invalid_slug_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug en"
+  response_lexeme_import_invalid_slug_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug hi"
+  response_lexeme_import_invalid_slug_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug ru"
+  response_lexeme_import_invalid_slug_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid slug zh"
+  response_lexeme_import_invalid_surface_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface en"
+  response_lexeme_import_invalid_surface_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface hi"
+  response_lexeme_import_invalid_surface_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface ru"
+  response_lexeme_import_invalid_surface_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import invalid surface zh"
+  response_lexeme_import_lexeme_lost_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost en"
+  response_lexeme_import_lexeme_lost_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost hi"
+  response_lexeme_import_lexeme_lost_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost ru"
+  response_lexeme_import_lexeme_lost_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import lexeme lost zh"
+  response_lexeme_import_missing_cached_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label en"
+  response_lexeme_import_missing_cached_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label hi"
+  response_lexeme_import_missing_cached_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label ru"
+  response_lexeme_import_missing_cached_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing cached label zh"
+  response_lexeme_import_missing_label_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label en"
+  response_lexeme_import_missing_label_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label hi"
+  response_lexeme_import_missing_label_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label ru"
+  response_lexeme_import_missing_label_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing label zh"
+  response_lexeme_import_missing_provenance_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance en"
+  response_lexeme_import_missing_provenance_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance hi"
+  response_lexeme_import_missing_provenance_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import missing provenance ru"
   response_lexeme_import_missing_provenance_zh
     defined-by response_template
     lexeme en
@@ -624,6 +824,46 @@ meanings
     lexeme en
       surface
         text "response shared dialog capture unsupported zh"
+  response_skill_gap_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap en"
+  response_skill_gap_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap hi"
+  response_skill_gap_name_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name en"
+  response_skill_gap_name_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name hi"
+  response_skill_gap_name_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name ru"
+  response_skill_gap_name_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap name zh"
+  response_skill_gap_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap ru"
+  response_skill_gap_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response skill gap zh"
   response_statement_audit_capture_field_en
     defined-by response_template
     lexeme en
@@ -1149,248 +1389,8 @@ meanings
     lexeme en
       surface
         text "signal processing"
-  slang-dictionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "slang dictionary"
-  snake
-    defined-by concept
-    lexeme en
-      surface
-        text "snake"
-  snake_case
-    defined-by phrase
-    lexeme en
-      surface
-        text "snake case"
-  software-design
-    defined-by category
-    lexeme en
-      surface
-        text "software design"
-  software_docs
-    defined-by kind
-    lexeme en
-      surface
-        text "software docs"
-  software_project_implementation
-    defined-by concept
-    lexeme en
-      surface
-        text "software project implementation"
-  software_project_plan
-    defined-by concept
-    lexeme en
-      surface
-        text "software project plan"
-  sort_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "sort lines"
-  sort_words
-    defined-by operation
-    lexeme en
-      surface
-        text "sort words"
-  sqrt
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sqrt"
-  ssh
-    defined-by token
-    lexeme en
-      surface
-        text "ssh"
-  stackexchange
-    defined-by source
-    lexeme en
-      surface
-        text "stackexchange"
-  standard
-    defined-by concept
-    lexeme en
-      surface
-        text "standard"
-  stat
-    defined-by concept
-    lexeme en
-      surface
-        text "stat"
-  statement
-    defined-by word_surface
-    lexeme en
-      surface
-        text "statement"
-  statement_audit_capture_field
+  skill_gap
     defined-by intent
     lexeme en
       surface
-        text "statement audit capture field"
-  statement_audit_claim_predicate
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim predicate"
-  statement_audit_claim_subject
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit claim subject"
-  statement_audit_invalid_json
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid json"
-  statement_audit_invalid_temperature
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit invalid temperature"
-  statement_audit_nonempty
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit nonempty"
-  statement_audit_selector_exclusive
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit selector exclusive"
-  statement_audit_selector_required
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit selector required"
-  statement_audit_strength_range
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit strength range"
-  statement_audit_temperature_range
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit temperature range"
-  statement_audit_unknown_stance
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit unknown stance"
-  statement_audit_unknown_tier
-    defined-by intent
-    lexeme en
-      surface
-        text "statement audit unknown tier"
-  stdout
-    defined-by word_surface
-    lexeme en
-      surface
-        text "stdout"
-  strip_empty_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "strip empty lines"
-  structured-knowledge
-    defined-by category
-    lexeme en
-      surface
-        text "structured knowledge"
-  structured_knowledge
-    defined-by kind
-    lexeme en
-      surface
-        text "structured knowledge"
-  submission
-    defined-by word_surface
-    lexeme en
-      surface
-        text "submission"
-  submit
-    defined-by word_surface
-    lexeme en
-      surface
-        text "submit"
-  substitute
-    defined-by word_surface
-    lexeme en
-      surface
-        text "substitute"
-  sudo
-    defined-by token
-    lexeme en
-      surface
-        text "sudo"
-  sum_to_ten
-    defined-by task
-    lexeme en
-      surface
-        text "sum to ten"
-  summarize_conversation
-    defined-by name
-    lexeme en
-      surface
-        text "summarize conversation"
-  supplied_file_contents
-    defined-by intent
-    lexeme en
-      surface
-        text "supplied file contents"
-  supplied_file_first_line
-    defined-by intent
-    lexeme en
-      surface
-        text "supplied file first line"
-  supported_languages
-    defined-by field
-    lexeme en
-      surface
-        text "supported languages"
-  symbolic-ai
-    defined-by category
-    lexeme en
-      surface
-        text "symbolic ai"
-  tabler
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler"
-  tabler-icons
-    defined-by concept
-    lexeme en
-      surface
-        text "tabler icons"
-  tail
-    defined-by token
-    lexeme en
-      surface
-        text "tail"
-  tar
-    defined-by token
-    lexeme en
-      surface
-        text "tar"
-  test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "test status"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
+        text "skill gap"

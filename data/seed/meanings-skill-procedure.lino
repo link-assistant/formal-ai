@@ -1,0 +1,325 @@
+meanings
+  skill_procedure_trigger
+    defined-by relation
+    defined-by inquiry
+    role skill_procedure_trigger_lead
+    lexeme en
+      surface
+        text "when i "
+      surface
+        text "whenever i "
+      surface
+        text "each time i "
+      surface
+        text "every time i "
+    lexeme ru
+      surface
+        text "когда я "
+      surface
+        text "каждый раз когда я "
+      surface
+        text "всякий раз когда я "
+    lexeme hi
+      surface
+        text "जब मैं "
+      surface
+        text "हर बार जब मैं "
+    lexeme zh
+      surface
+        text 当我
+      surface
+        text 每当我
+  skill_procedure_separator
+    defined-by relation
+    defined-by concept
+    role skill_procedure_clause_separator
+    lexeme en
+      surface
+        text and
+      surface
+        text then
+      surface
+        text "after that"
+    lexeme ru
+      surface
+        text и
+      surface
+        text затем
+      surface
+        text потом
+      surface
+        text "после этого"
+    lexeme hi
+      surface
+        text और
+      surface
+        text फिर
+      surface
+        text "उसके बाद"
+    lexeme zh
+      surface
+        text 然后
+      surface
+        text 接着
+      surface
+        text 并且
+  skill_procedure_fetch
+    defined-by action
+    defined-by knowledge
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text fetch
+      surface
+        text "look up"
+      surface
+        text retrieve
+      surface
+        text "get the"
+      surface
+        text "get its"
+    lexeme ru
+      surface
+        text получи
+      surface
+        text достань
+      surface
+        text извлеки
+      surface
+        text загрузи
+    lexeme hi
+      surface
+        text "प्राप्त कर"
+      surface
+        text "ले आओ"
+      surface
+        text लाओ
+    lexeme zh
+      surface
+        text 获取
+      surface
+        text 抓取
+  skill_procedure_transform
+    defined-by action
+    defined-by concept
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text shorten
+      surface
+        text summarize
+      surface
+        text "clean up"
+    lexeme ru
+      surface
+        text сократи
+      surface
+        text очисти
+    lexeme hi
+      surface
+        text "संक्षेप कर"
+      surface
+        text "छोटा कर"
+    lexeme zh
+      surface
+        text 缩短
+      surface
+        text 摘要
+  skill_procedure_translate
+    defined-by action
+    defined-by concept
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text translate
+    lexeme ru
+      surface
+        text перевед
+      surface
+        text переводи
+    lexeme hi
+      surface
+        text "अनुवाद कर"
+    lexeme zh
+      surface
+        text 翻译
+  skill_procedure_store
+    defined-by action
+    defined-by knowledge
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text store
+      surface
+        text save
+      surface
+        text remember
+    lexeme ru
+      surface
+        text сохрани
+      surface
+        text запомни
+    lexeme hi
+      surface
+        text "सहेज"
+      surface
+        text "याद रख"
+    lexeme zh
+      surface
+        text 保存
+      surface
+        text 记住
+  skill_procedure_reply
+    defined-by action
+    defined-by answer
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text reply
+      surface
+        text respond
+      surface
+        text "answer with"
+      surface
+        text "show me"
+    lexeme ru
+      surface
+        text ответь
+      surface
+        text отвечай
+      surface
+        text покажи
+    lexeme hi
+      surface
+        text "जवाब दो"
+      surface
+        text "उत्तर दो"
+    lexeme zh
+      surface
+        text 回复
+      surface
+        text 回答
+  skill_procedure_condition
+    defined-by relation
+    defined-by concept
+    role skill_procedure_step_verb
+    lexeme en
+      surface
+        text "only if"
+      surface
+        text "if it is"
+    lexeme ru
+      surface
+        text "только если"
+      surface
+        text "если это"
+    lexeme hi
+      surface
+        text "केवल यदि"
+    lexeme zh
+      surface
+        text 仅当
+  skill_procedure_object_link
+    defined-by concept
+    defined-by relation
+    role skill_procedure_step_object
+    lexeme en
+      surface
+        text link
+      surface
+        text url
+      surface
+        text address
+    lexeme ru
+      surface
+        text ссылк
+      surface
+        text адрес
+    lexeme hi
+      surface
+        text लिंक
+      surface
+        text पता
+    lexeme zh
+      surface
+        text 链接
+      surface
+        text 网址
+  skill_procedure_object_title
+    defined-by concept
+    defined-by knowledge
+    role skill_procedure_step_object
+    lexeme en
+      surface
+        text title
+      surface
+        text headline
+    lexeme ru
+      surface
+        text заголов
+      surface
+        text названи
+    lexeme hi
+      surface
+        text शीर्षक
+    lexeme zh
+      surface
+        text 标题
+  skill_procedure_object_content
+    defined-by concept
+    defined-by knowledge
+    role skill_procedure_step_object
+    lexeme en
+      surface
+        text content
+      surface
+        text text
+      surface
+        text body
+    lexeme ru
+      surface
+        text содержим
+      surface
+        text текст
+    lexeme hi
+      surface
+        text सामग्री
+    lexeme zh
+      surface
+        text 内容
+  skill_procedure_object_translation
+    defined-by concept
+    defined-by knowledge
+    role skill_procedure_step_object
+    lexeme en
+      surface
+        text translation
+    lexeme ru
+      surface
+        text перевод
+    lexeme hi
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 译文
+  skill_procedure_object_both
+    defined-by concept
+    defined-by relation
+    role skill_procedure_step_object
+    lexeme en
+      surface
+        text both
+      surface
+        text "the two"
+    lexeme ru
+      surface
+        text оба
+      surface
+        text обоих
+    lexeme hi
+      surface
+        text दोनों
+    lexeme zh
+      surface
+        text 两者

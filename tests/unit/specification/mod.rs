@@ -32,6 +32,7 @@
 
 mod agent_isolation;
 mod agentic_meta_algorithm;
+mod arbitrary_skill_compilation;
 mod associative_packages;
 mod behavior_rules;
 mod benchmarks;

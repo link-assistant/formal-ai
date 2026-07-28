@@ -155,7 +155,7 @@ following Rust modules:
 | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
 | 7. Append to memory | `event_log::EventLog`, `memory::export_full_memory` | Implemented |
 | 8. Render user-facing answer | `SymbolicAnswer` projection in `src/engine.rs` | Implemented |
-| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge | Implemented for deterministic trigger/response skill packages |
+| 9. Natural-language skill compilation | `src/skill_compiler.rs` plus the `behavior_rules` replay bridge, and `src/skill_procedure.rs` plus `src/solver_handlers/procedure_rules.rs` for freely phrased procedures | Implemented for deterministic trigger/response skill packages and for multi-step procedures stated in ordinary prose |
 
 The pipeline runs the same way for every prompt — greetings, identity,
 concept lookup, math, code generation, idioms, refusals, agent actions —
@@ -792,6 +792,32 @@ explicit `Permission` records for package/tool capabilities such as
 before falling back to behavior-rule re-derivation; a replay appends
 `compiled_skill:replay` and `cache_hit:<compiled_skill_id>` to the trace.
 
+`src/skill_procedure.rs` covers the prose that falls outside that typed shape
+(E55, issue #674). It reuses `intent_formalization::ordered_requirement_spans`
+to decompose a request such as "when I paste a link, fetch its title, translate
+it to Russian, save both, and reply with the translation", then maps each
+source-grounded requirement onto a step verb seeded in
+`data/seed/meanings-skill-procedure.lino`. Two guards keep ordinary prompts out:
+the request needs a seeded trigger lead and at least two recognized steps. The
+canonical program contains meaning slugs only, so English, Russian, Hindi, and
+Chinese phrasings content-address to the same id and `LinkRecord`s.
+
+The durable artifact adds the formalized impulse id, ordered requirements,
+source spans, trigger, and typed steps. Parsing it recomputes its canonical
+program and ids and validates its provenance before the generic
+`ProcedureHost` interpreter may walk it. The solver publishes this artifact,
+the later *"why did you do that?"* handler restores it without recompiling
+conversation prose, and the Agent planner writes and reads back the same bytes
+before claiming success.
+
+A clause with no vocabulary entry compiles nothing at all:
+`src/solver_handlers/procedure_rules.rs` answers with the named gap, appends a
+`skill_gap` event, and emits a review-only learning proposal rather than
+dropping the step. A proposal can add multilingual aliases to the durable
+capability ledger only for an existing typed operation, after a green
+regression gate and explicit human approval; it cannot silently authorize a new
+side effect.
+
 `src/associative_package.rs` is the R65 package boundary. It models
 Deep.Foundation-inspired packages in the local doublet architecture with
 package metadata, dependency links, handler records, trigger records, and
@@ -1229,11 +1255,20 @@ sources and drives 30 deterministic local variations per source through a
 each source has a 3-check repository-local 10% floor and must pass the stronger
 30/30 local ratchet.
 
-A still-open lower-priority question carried over from the E20 batch: arbitrary
-natural-language programming (executing reviewed generated stubs in sandboxed
-runtimes) remains outside the current supported subset of
-`src/skill_compiler.rs`; the spec-driven, test-verified slice of it is built by
-E30 above.
+Arbitrary natural-language programming beyond the trigger/response subset of
+`src/skill_compiler.rs` is closed by E55 (issue #674): the shared intent
+formalizer decomposes freely phrased procedures into ordered source-grounded
+requirements; `src/skill_procedure.rs` lowers all of them into typed operations,
+persists an integrity-checked executable artifact, and interprets it through a
+permissioned host. Canonical slugs give equivalent en/ru/hi/zh procedures one
+set of skill links. Unknown steps produce a named gap and an inert,
+human-gated learning proposal with no partial compile. Observations pair each
+unsupported multilingual surface with a successful seeded paraphrase, allowing
+the learner to infer one typed candidate while conflicting meanings fail
+closed; promotion still requires green tests and explicit human approval. The
+solver, explanation handler, public conformance CLI, and Agent CLI route all use
+the same persisted artifact, and Agent verifies the interpreter's execution
+record before it reports success.
 
 Pull requests that close any of these should update the corresponding row in
 the table in Section 2 and link the new module.

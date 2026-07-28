@@ -1,0 +1,160 @@
+{
+  "lemma": "address",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06367922-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) the code that identifies where a piece of information is stored",
+      "synonyms": [
+        "computer address",
+        "reference"
+      ]
+    },
+    {
+      "id": "oewn-08508037-n",
+      "partOfSpeech": "n",
+      "definition": "the place where a person or organization can be found or communicated with"
+    },
+    {
+      "id": "oewn-07253354-n",
+      "partOfSpeech": "n",
+      "definition": "the act of delivering a formal spoken communication to an audience",
+      "examples": [
+        "he listened to an address on minor Roman poets"
+      ],
+      "synonyms": [
+        "speech"
+      ]
+    },
+    {
+      "id": "oewn-07081631-n",
+      "partOfSpeech": "n",
+      "definition": "the manner of speaking to another individual",
+      "examples": [
+        "he failed in his manner of address to the captain"
+      ]
+    },
+    {
+      "id": "oewn-06807073-n",
+      "partOfSpeech": "n",
+      "definition": "a sign in front of a house or business carrying the conventional form by which its location is described"
+    },
+    {
+      "id": "oewn-06800007-n",
+      "partOfSpeech": "n",
+      "definition": "written directions for finding some location; written on letters or packages that are to be delivered to that location",
+      "synonyms": [
+        "destination",
+        "name and address"
+      ]
+    },
+    {
+      "id": "oewn-05089855-n",
+      "partOfSpeech": "n",
+      "definition": "the stance assumed by a golfer in preparation for hitting a golf ball"
+    },
+    {
+      "id": "oewn-04849463-n",
+      "partOfSpeech": "n",
+      "definition": "the ability to do or say what is appropriate for the occasion",
+      "synonyms": [
+        "savoir-faire"
+      ]
+    },
+    {
+      "id": "oewn-00899077-v",
+      "partOfSpeech": "v",
+      "definition": "speak to",
+      "examples": [
+        "He addressed the crowd outside the window"
+      ],
+      "synonyms": [
+        "turn to"
+      ]
+    },
+    {
+      "id": "oewn-00991233-v",
+      "partOfSpeech": "v",
+      "definition": "give a speech to",
+      "examples": [
+        "The chairman addressed the board of trustees"
+      ],
+      "synonyms": [
+        "speak"
+      ]
+    },
+    {
+      "id": "oewn-00992844-v",
+      "partOfSpeech": "v",
+      "definition": "put an address on (an envelope)",
+      "synonyms": [
+        "direct"
+      ]
+    },
+    {
+      "id": "oewn-01153447-v",
+      "partOfSpeech": "v",
+      "definition": "direct a question at someone"
+    },
+    {
+      "id": "oewn-01163215-v",
+      "partOfSpeech": "v",
+      "definition": "address or apply oneself to something, direct one's efforts towards something, such as a question"
+    },
+    {
+      "id": "oewn-02607453-v",
+      "partOfSpeech": "v",
+      "definition": "greet, as with a prescribed form, title, or name",
+      "examples": [
+        "He always addresses me with ‘Sir’",
+        "Call me Mister",
+        "She calls him by first name"
+      ],
+      "synonyms": [
+        "call"
+      ]
+    },
+    {
+      "id": "oewn-02253826-v",
+      "partOfSpeech": "v",
+      "definition": "access or locate by address"
+    },
+    {
+      "id": "oewn-01035399-v",
+      "partOfSpeech": "v",
+      "definition": "act on verbally or in some form of artistic expression",
+      "examples": [
+        "This book deals with incest",
+        "The course covered all of Western Civilization",
+        "The new book treats the history of China"
+      ],
+      "synonyms": [
+        "cover",
+        "treat",
+        "handle",
+        "plow",
+        "deal"
+      ]
+    },
+    {
+      "id": "oewn-00992687-v",
+      "partOfSpeech": "v",
+      "definition": "speak to someone",
+      "synonyms": [
+        "accost",
+        "come up to"
+      ]
+    },
+    {
+      "id": "oewn-00465600-v",
+      "partOfSpeech": "v",
+      "definition": "adjust and aim (a golf ball) at in preparation of hitting"
+    }
+  ]
+}

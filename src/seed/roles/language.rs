@@ -19,6 +19,16 @@ pub const ROLE_TRANSLATION_SOURCE_MARKER: &str = "translation_source_marker";
 /// relation; the handler resolves the target language the same way it resolves a
 /// source: by following `defined_by` to the language meaning.
 pub const ROLE_TRANSLATION_TARGET_MARKER: &str = "translation_target_marker";
+/// Semantic role: a human language named in a prompt.
+///
+/// Carried by the `language_*` meanings themselves ("russian", "русский", "रूसी",
+/// "俄语", …), each of which is `grounded-in` its Wikidata entity. Where
+/// [`ROLE_TRANSLATION_TARGET_MARKER`] recognises a whole directional phrase, this
+/// role recognises the bare language *name*, which is what the arbitrary-procedure
+/// compiler needs: "translate it to Russian" and "переведи его на русский" both
+/// resolve to the `language_russian` slug, so the two phrasings canonicalise — and
+/// content-address — identically.
+pub const ROLE_TRANSLATION_LANGUAGE: &str = "translation_language";
 /// Semantic role: a marker that names the language a non-translation answer
 /// should be rendered in.
 ///

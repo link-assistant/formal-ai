@@ -46,6 +46,7 @@ mod local_search;
 pub mod meaning_detail;
 pub(crate) mod narration;
 pub mod planner;
+pub mod procedure;
 mod progress;
 pub mod question_catalog;
 pub mod rebuild_plan;
@@ -116,6 +117,7 @@ pub use meaning_detail::{
 pub use planner::{
     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
 };
+pub use procedure::{compile_task as compile_procedure_task, COMPILED_PROCEDURE_PATH};
 pub use question_catalog::{
     is_question_catalog_task, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
 };

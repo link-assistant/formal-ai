@@ -737,6 +737,23 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
 }
 
 #[test]
+fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+
+    assert!(
+        !build.contains("uses: actions/cache@"),
+        "desktop builds must not register a post-job Cargo dependency archive: \
+         a cold Windows x64 build already completed and uploaded every artifact, \
+         then timed out compressing this redundant cache"
+    );
+    assert!(
+        build.contains("mozilla-actions/sccache-action@"),
+        "desktop builds should retain the compiler-output cache"
+    );
+}
+
+#[test]
 fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
     // Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
     // commit (its first parent is the completed CI head SHA) and is pushed with
