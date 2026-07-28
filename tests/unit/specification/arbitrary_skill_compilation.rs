@@ -17,9 +17,9 @@ use formal_ai::intent_formalization::impulse_id_for;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use formal_ai::{
     compile_procedure, compile_procedure_with_ledger, extract_compiled_procedure_artifact,
-    CompiledProcedure, ProcedureCapabilityLedger, ProcedureCapabilityLesson, ProcedureCompileError,
-    ProcedureHost, ProcedureLearningApproval, ProcedureLearningGate, ProcedureLearningProposal,
-    ProcedureStep, UniversalSolver,
+    CompiledProcedure, ProcedureCapabilityLedger, ProcedureCompileError, ProcedureHost,
+    ProcedureLearningApproval, ProcedureLearningGate, ProcedureLearningObservation,
+    ProcedureLearningProposal, ProcedureStep, UniversalSolver, PROCEDURE_CONFORMANCE_TRIGGER,
 };
 
 /// The English procedure under test: five clauses, four of them steps, phrased as
@@ -337,23 +337,67 @@ fn named_gap_proposes_human_gated_learning_and_an_approved_lesson_generalizes() 
     assert_eq!(proposal.missing_step, "archive it");
     assert!(proposal.links_notation().contains("human_review_required"));
 
-    let lesson = ProcedureCapabilityLesson::new(
-        "skill_procedure_store",
+    let candidate = proposal
+        .infer_candidate([
+            ProcedureLearningObservation::new("en", "archive", "save"),
+            ProcedureLearningObservation::new("ru", "архивируй", "сохрани"),
+            ProcedureLearningObservation::new("hi", "आर्काइव करो", "सहेजो"),
+            ProcedureLearningObservation::new("zh", "归档", "保存"),
+        ])
+        .expect("supported paraphrases should infer one canonical mapping");
+    assert_eq!(
+        candidate.lesson.canonical_kind, "skill_procedure_store",
+        "learning should infer the typed operation instead of receiving it manually"
+    );
+    assert!(
+        candidate
+            .links_notation()
+            .contains("supported_paraphrase \"save\""),
+        "the inferred mapping must remain inspectable with its evidence"
+    );
+    assert_eq!(
+        candidate.lesson.surfaces,
         [
             ("en", "archive"),
-            ("ru", "архивируй"),
             ("hi", "आर्काइव करो"),
+            ("ru", "архивируй"),
             ("zh", "归档"),
-        ],
-    )
-    .expect("the lesson covers every supported language");
+        ]
+        .into_iter()
+        .map(|(language, text)| formal_ai::ProcedureLearnedSurface {
+            language: language.to_owned(),
+            text: text.to_owned(),
+        })
+        .collect::<Vec<_>>()
+    );
+    assert!(
+        proposal
+            .infer_candidate([
+                ProcedureLearningObservation::new("en", "archive", "save"),
+                ProcedureLearningObservation::new("ru", "архивируй", "сохрани"),
+                ProcedureLearningObservation::new("hi", "आर्काइव करो", "सहेजो"),
+                ProcedureLearningObservation::new("zh", "归档", "回复"),
+            ])
+            .is_err(),
+        "paraphrases that resolve to different typed operations must fail closed"
+    );
+    assert!(
+        proposal
+            .infer_candidate([
+                ProcedureLearningObservation::new("en", "unrelated", "save"),
+                ProcedureLearningObservation::new("ru", "архивируй", "сохрани"),
+                ProcedureLearningObservation::new("hi", "आर्काइव करो", "सहेजो"),
+                ProcedureLearningObservation::new("zh", "归档", "保存"),
+            ])
+            .is_err(),
+        "at least one observed missing surface must belong to the named gap"
+    );
 
     let mut rejected = ProcedureCapabilityLedger::new();
     assert!(
         rejected
-            .promote(
-                &proposal,
-                lesson.clone(),
+            .promote_candidate(
+                &candidate,
                 ProcedureLearningGate::failed("arbitrary_skill_compilation", 7, 1),
                 ProcedureLearningApproval::granted("maintainer"),
             )
@@ -362,9 +406,8 @@ fn named_gap_proposes_human_gated_learning_and_an_approved_lesson_generalizes() 
     );
     assert!(
         rejected
-            .promote(
-                &proposal,
-                lesson.clone(),
+            .promote_candidate(
+                &candidate,
                 ProcedureLearningGate::passed("arbitrary_skill_compilation", 8),
                 ProcedureLearningApproval::declined("maintainer"),
             )
@@ -374,18 +417,30 @@ fn named_gap_proposes_human_gated_learning_and_an_approved_lesson_generalizes() 
 
     let mut ledger = ProcedureCapabilityLedger::new();
     ledger
-        .promote(
-            &proposal,
-            lesson,
+        .promote_candidate(
+            &candidate,
             ProcedureLearningGate::passed("arbitrary_skill_compilation", 8),
             ProcedureLearningApproval::granted("maintainer"),
         )
         .expect("a reviewed green lesson should be promotable");
     let durable = ledger.links_notation();
+    assert!(
+        durable.contains("candidate_evidence"),
+        "the promoted ledger must preserve why the mapping was inferred"
+    );
     let tampered_ledger = durable.replacen(&ledger.lessons[0].id, "approved_lesson_tampered", 1);
     assert!(
         ProcedureCapabilityLedger::from_links_notation(&tampered_ledger).is_err(),
         "a durable lesson must retain its review-derived identity"
+    );
+    let tampered_evidence = durable.replacen(
+        "supported_paraphrase \"save\"",
+        "supported_paraphrase \"reply\"",
+        1,
+    );
+    assert!(
+        ProcedureCapabilityLedger::from_links_notation(&tampered_evidence).is_err(),
+        "a durable inferred mapping must remain bound to its supporting paraphrases"
     );
     let restored = ProcedureCapabilityLedger::from_links_notation(&durable)
         .expect("approved vocabulary growth must survive a process restart");
@@ -497,11 +552,36 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
         &procedure.artifact_links_notation(),
     );
 
+    let Some(AgenticPlan::ToolCalls(execute)) = plan_chat_step(&messages, &tools) else {
+        panic!("the verified Agent CLI artifact should be executed");
+    };
+    assert_eq!(execute.len(), 1);
+    assert_eq!(execute[0].tool, "run_command");
+    assert!(
+        execute[0]
+            .arguments
+            .contains("formal-ai procedure conformance"),
+        "execution should use the public Formal AI CLI: {:?}",
+        execute[0]
+    );
+    assert!(
+        execute[0].arguments.contains(PROCEDURE_CONFORMANCE_TRIGGER),
+        "the conformance trigger should be explicit and replayable"
+    );
+    let execution = procedure.conformance_links_notation(PROCEDURE_CONFORMANCE_TRIGGER);
+    answer_tool_call(
+        &mut messages,
+        &execute[0].tool,
+        &execute[0].arguments,
+        &execution,
+    );
+
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
-        panic!("the verified Agent CLI task should finish");
+        panic!("the executed Agent CLI task should finish");
     };
     assert!(answer.contains(&procedure.id));
     assert!(answer.contains(&procedure.restate_steps()));
+    assert!(answer.contains(&execution));
 
     let run = run_agentic_task(ENGLISH_PROCEDURE).expect("in-repo Agent CLI replay");
     assert_eq!(
@@ -509,7 +589,7 @@ fn agentic_planner_writes_verifies_and_returns_the_same_compiled_artifact() {
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["write_file", "run_command"]
+        ["write_file", "run_command", "run_command"]
     );
     assert!(!run.hit_turn_cap);
     assert!(run.final_answer.contains(&procedure.id));
@@ -551,6 +631,86 @@ fn agentic_planner_rejects_a_corrupted_artifact_readback() {
         !answer.contains("was written and verified"),
         "a corrupted readback must never be called verified: {answer}"
     );
+}
+
+#[test]
+fn agentic_planner_reports_a_failed_conformance_execution_honestly() {
+    let tools = ["write_file", "run_command"];
+    let mut messages = vec![ChatMessage::user(ENGLISH_PROCEDURE)];
+    let procedure = compile(ENGLISH_PROCEDURE);
+
+    let Some(AgenticPlan::ToolCalls(write)) = plan_chat_step(&messages, &tools) else {
+        panic!("the Formal AI agent path should author the procedure artifact");
+    };
+    answer_tool_call(
+        &mut messages,
+        &write[0].tool,
+        &write[0].arguments,
+        "wrote compiled-procedure.lino",
+    );
+    let Some(AgenticPlan::ToolCalls(readback)) = plan_chat_step(&messages, &tools) else {
+        panic!("the Formal AI agent path should read the artifact back");
+    };
+    answer_tool_call(
+        &mut messages,
+        &readback[0].tool,
+        &readback[0].arguments,
+        &procedure.artifact_links_notation(),
+    );
+    let Some(AgenticPlan::ToolCalls(execute)) = plan_chat_step(&messages, &tools) else {
+        panic!("the verified artifact should enter conformance execution");
+    };
+    answer_tool_call(
+        &mut messages,
+        &execute[0].tool,
+        &execute[0].arguments,
+        "command exited with status 1\nstderr:\nconformance host failed",
+    );
+
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("a failed execution should stop with an honest final answer");
+    };
+    assert!(answer.contains("conformance execution failed"), "{answer}");
+    assert!(
+        !answer.contains("executed end to end"),
+        "a failed run must never be called executed: {answer}"
+    );
+}
+
+#[test]
+fn public_cli_executes_the_persisted_artifact_with_the_same_interpreter() {
+    let procedure = compile(ENGLISH_PROCEDURE);
+    let workspace = std::env::temp_dir().join(format!(
+        "formal-ai-procedure-cli-{}-{}",
+        std::process::id(),
+        procedure.id
+    ));
+    std::fs::create_dir_all(&workspace).expect("temporary CLI workspace");
+    let artifact = workspace.join("compiled-procedure.lino");
+    std::fs::write(&artifact, procedure.artifact_links_notation()).expect("write CLI artifact");
+
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "--silent",
+            "procedure",
+            "conformance",
+            "--artifact",
+            artifact.to_str().expect("UTF-8 artifact path"),
+            "--trigger",
+            PROCEDURE_CONFORMANCE_TRIGGER,
+        ])
+        .output()
+        .expect("run the public procedure CLI");
+    assert!(
+        output.status.success(),
+        "CLI stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8(output.stdout).expect("UTF-8 CLI output"),
+        procedure.conformance_links_notation(PROCEDURE_CONFORMANCE_TRIGGER)
+    );
+    std::fs::remove_dir_all(workspace).expect("remove temporary CLI workspace");
 }
 
 #[test]

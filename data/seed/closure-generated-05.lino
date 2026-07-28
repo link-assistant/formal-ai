@@ -1,4 +1,54 @@
 meanings
+  response_lexeme_import_surface_missing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing hi"
+  response_lexeme_import_surface_missing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing ru"
+  response_lexeme_import_surface_missing_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import surface missing zh"
+  response_lexeme_import_wrong_genus_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus en"
+  response_lexeme_import_wrong_genus_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus hi"
+  response_lexeme_import_wrong_genus_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus ru"
+  response_lexeme_import_wrong_genus_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response lexeme import wrong genus zh"
+  response_local_search_contents_listing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing en"
+  response_local_search_contents_listing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing hi"
+  response_local_search_contents_listing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response local search contents listing ru"
   response_local_search_contents_listing_zh
     defined-by response_template
     lexeme en
@@ -1344,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "total"
-  touch
-    defined-by concept
-    lexeme en
-      surface
-        text "touch"
-  trace_
-    defined-by identifier
-    lexeme en
-      surface
-        text "trace"
-  traffic
-    defined-by word_surface
-    lexeme en
-      surface
-        text "traffic"
-  travel_guide
-    defined-by category
-    lexeme en
-      surface
-        text "travel guide"
-  trim
-    defined-by concept
-    lexeme en
-      surface
-        text "trim"
-  trim_whitespace
-    defined-by operation
-    lexeme en
-      surface
-        text "trim whitespace"
-  true
-    defined-by concept
-    lexeme en
-      surface
-        text "true"
-  truthfulness
-    defined-by word_surface
-    lexeme en
-      surface
-        text "truthfulness"
-  ts
-    defined-by word_surface
-    lexeme en
-      surface
-        text "ts"
-  tue
-    defined-by word_surface
-    lexeme en
-      surface
-        text "tue"

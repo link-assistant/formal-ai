@@ -1,4 +1,54 @@
 meanings
+  touch
+    defined-by concept
+    lexeme en
+      surface
+        text "touch"
+  trace_
+    defined-by identifier
+    lexeme en
+      surface
+        text "trace"
+  traffic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "traffic"
+  travel_guide
+    defined-by category
+    lexeme en
+      surface
+        text "travel guide"
+  trim
+    defined-by concept
+    lexeme en
+      surface
+        text "trim"
+  trim_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "trim whitespace"
+  true
+    defined-by concept
+    lexeme en
+      surface
+        text "true"
+  truthfulness
+    defined-by word_surface
+    lexeme en
+      surface
+        text "truthfulness"
+  ts
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ts"
+  tue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "tue"
   two_paths
     defined-by concept
     lexeme en

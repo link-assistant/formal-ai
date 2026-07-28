@@ -1,4 +1,14 @@
 meanings
+  intent_routing
+    defined-by name
+    lexeme en
+      surface
+        text "intent routing"
+  intent_software_project_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "intent software project implementation"
   intent_software_project_plan
     defined-by intent
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix what is an"
-  pattern_concept_prefix_what_is_the
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is the"
-  pattern_concept_prefix_whats
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats"

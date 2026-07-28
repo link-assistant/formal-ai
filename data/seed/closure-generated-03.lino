@@ -1,4 +1,14 @@
 meanings
+  pattern_concept_prefix_what_is_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is the"
+  pattern_concept_prefix_whats
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats"
   pattern_concept_prefix_whats_a
     defined-by prompt_pattern
     lexeme en
@@ -774,6 +784,46 @@ meanings
     lexeme en
       surface
         text "reserved role"
+  response_agent_procedure_executed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed en"
+  response_agent_procedure_executed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed hi"
+  response_agent_procedure_executed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed ru"
+  response_agent_procedure_executed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure executed zh"
+  response_agent_procedure_execution_failed_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed en"
+  response_agent_procedure_execution_failed_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed hi"
+  response_agent_procedure_execution_failed_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed ru"
+  response_agent_procedure_execution_failed_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent procedure execution failed zh"
   response_agent_procedure_readback_unavailable_en
     defined-by response_template
     lexeme en
@@ -1344,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "response capabilities hi"
-  response_capabilities_more_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more en"
-  response_capabilities_more_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more hi"
-  response_capabilities_more_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more ru"
-  response_capabilities_more_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities more zh"
-  response_capabilities_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities ru"
-  response_capabilities_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities zh"
-  response_clarification_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification en"
-  response_clarification_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification hi"
-  response_clarification_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification ru"
-  response_clarification_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response clarification zh"

@@ -127,3 +127,35 @@ multilingual_responses
     intent agent_procedure_verified
     language zh
     text "流程制品 `{path}` 已写入并验证。\n\n```links\n{artifact}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_executed_en
+    intent agent_procedure_executed
+    language en
+    text "Procedure artifact `{path}` was written, read back, and executed end to end with the side-effect-free conformance host.\n\n```links\n{artifact}```\n\nExecution evidence:\n\n```links\n{execution}```\n\nCompiled steps:\n\n{steps}"
+  response response_agent_procedure_executed_ru
+    intent agent_procedure_executed
+    language ru
+    text "Артефакт процедуры `{path}` записан, считан и полностью выполнен в среде проверки без побочных эффектов.\n\n```links\n{artifact}```\n\nСвидетельство выполнения:\n\n```links\n{execution}```\n\nСкомпилированные шаги:\n\n{steps}"
+  response response_agent_procedure_executed_hi
+    intent agent_procedure_executed
+    language hi
+    text "Procedure artifact `{path}` लिखा गया, वापस पढ़ा गया और side-effect-free conformance host में शुरू से अंत तक चलाया गया.\n\n```links\n{artifact}```\n\nExecution evidence:\n\n```links\n{execution}```\n\nCompile किए गए steps:\n\n{steps}"
+  response response_agent_procedure_executed_zh
+    intent agent_procedure_executed
+    language zh
+    text "流程制品 `{path}` 已写入、回读，并在无副作用的一致性主机中端到端执行。\n\n```links\n{artifact}```\n\n执行证据：\n\n```links\n{execution}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_execution_failed_en
+    intent agent_procedure_execution_failed
+    language en
+    text "Procedure artifact `{path}` was written and verified, but its end-to-end conformance execution failed. I will not claim the procedure was executed."
+  response response_agent_procedure_execution_failed_ru
+    intent agent_procedure_execution_failed
+    language ru
+    text "Артефакт процедуры `{path}` записан и проверен, но его сквозное проверочное выполнение завершилось неудачно. Я не буду утверждать, что процедура выполнена."
+  response response_agent_procedure_execution_failed_hi
+    intent agent_procedure_execution_failed
+    language hi
+    text "Procedure artifact `{path}` लिखा और verify किया गया, लेकिन उसका end-to-end conformance execution विफल रहा. मैं procedure के execute होने का दावा नहीं करूँगा."
+  response response_agent_procedure_execution_failed_zh
+    intent agent_procedure_execution_failed
+    language zh
+    text "流程制品 `{path}` 已写入并验证，但端到端一致性执行失败。我不会声称该流程已执行。"

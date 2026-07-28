@@ -51,8 +51,9 @@ pub use artifact::extract_compiled_procedure_artifact;
 use learning::default_capability_ledger;
 pub use learning::{
     ApprovedProcedureLesson, ProcedureCapabilityLedger, ProcedureCapabilityLesson,
-    ProcedureLearnedSurface, ProcedureLearningApproval, ProcedureLearningError,
-    ProcedureLearningGate, ProcedureLearningProposal,
+    ProcedureLearnedSurface, ProcedureLearningApproval, ProcedureLearningCandidate,
+    ProcedureLearningError, ProcedureLearningGate, ProcedureLearningObservation,
+    ProcedureLearningProposal,
 };
 
 /// A procedure needs at least this many recognised steps before the compiler claims
@@ -62,6 +63,11 @@ pub use learning::{
 /// single imperative clause after a "when I …" lead is ordinary conversation and must
 /// stay with the regular solver pipeline, so one recognised step is not a program.
 const MINIMUM_STEPS: usize = 2;
+
+/// Explicit fixture used by the Agent CLI to prove that a persisted artifact
+/// walks the same interpreter as the symbolic solver before real side effects
+/// are requested.
+pub const PROCEDURE_CONFORMANCE_TRIGGER: &str = "https://example.com/article";
 
 const PROCEDURE_MEANINGS_LINO: &str = include_str!("../../data/seed/meanings-skill-procedure.lino");
 
@@ -342,6 +348,28 @@ impl ProcedureRun {
     pub fn answer(&self) -> &str {
         self.outcomes.last().map_or("", |last| last.output.as_str())
     }
+
+    /// Render an inspectable record of one complete interpreter walk.
+    #[must_use]
+    pub fn links_notation(&self, trigger_value: &str) -> String {
+        let run_id = stable_id(
+            "procedure_run",
+            &format!("{}:{trigger_value}", self.package_id),
+        );
+        let mut out = String::new();
+        push_lino_node(&mut out, 0, "procedure_run", Some(&run_id));
+        push_lino_node(&mut out, 2, "status", Some("completed"));
+        push_lino_node(&mut out, 2, "package_id", Some(&self.package_id));
+        push_lino_node(&mut out, 2, "trigger_value", Some(trigger_value));
+        for (index, outcome) in self.outcomes.iter().enumerate() {
+            push_lino_node(&mut out, 2, "step_outcome", Some(&outcome.step_id));
+            push_lino_node(&mut out, 4, "index", Some(&(index + 1).to_string()));
+            push_lino_node(&mut out, 4, "kind", Some(&outcome.kind));
+            push_lino_node(&mut out, 4, "output", Some(&outcome.output));
+        }
+        push_lino_node(&mut out, 2, "answer", Some(self.answer()));
+        out
+    }
 }
 
 /// A step failed while executing.
@@ -439,6 +467,16 @@ impl CompiledProcedure {
         })
     }
 
+    /// Execute every step with the deterministic conformance host and return
+    /// the complete run as Links Notation.
+    #[must_use]
+    pub fn conformance_links_notation(&self, trigger_value: &str) -> String {
+        let mut host = ProcedureConformanceHost;
+        self.execute(trigger_value, &mut host)
+            .expect("the conformance host performs every typed step")
+            .links_notation(trigger_value)
+    }
+
     /// Re-state the compiled steps, each quoting the sentence span it came from.
     ///
     /// This is what *"why did you do that?"* answers with: every line names the
@@ -522,6 +560,14 @@ impl CompiledProcedure {
             ));
         }
         records
+    }
+}
+
+struct ProcedureConformanceHost;
+
+impl ProcedureHost for ProcedureConformanceHost {
+    fn perform(&mut self, step: &ProcedureStep, input: &str) -> Result<String, String> {
+        Ok(format!("{}({input})", step.kind))
     }
 }
 

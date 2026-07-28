@@ -14,9 +14,11 @@ use crate::protocol::ChatMessage;
 use crate::seed;
 use crate::skill_procedure::{
     compile_procedure, extract_compiled_procedure_artifact, CompiledProcedure,
+    PROCEDURE_CONFORMANCE_TRIGGER,
 };
 
 pub const COMPILED_PROCEDURE_PATH: &str = "compiled-procedure.lino";
+const EXECUTION_PLACEHOLDER: &str = concat!("{", "execution", "}");
 
 #[must_use]
 pub fn compile_task(task: &str) -> Option<CompiledProcedure> {
@@ -39,11 +41,12 @@ pub(super) fn plan_step(
             "agent_procedure_write_unavailable",
             procedure,
             &document,
+            "",
         ));
     }
 
     let run_tool = tool_for(tool_names, Capability::Run);
-    if let Some(tool) = run_tool.filter(|_| !progress.done(Capability::Run)) {
+    if let Some(tool) = run_tool.filter(|_| progress.run_outputs.is_empty()) {
         let mut command = String::from("cat");
         command.push(' ');
         command.push_str(COMPILED_PROCEDURE_PATH);
@@ -54,30 +57,68 @@ pub(super) fn plan_step(
             "agent_procedure_readback_unavailable",
             procedure,
             &document,
+            "",
         ));
     }
 
-    let verified = progress
+    let artifact_verified = progress
         .run_outputs
-        .last()
+        .first()
         .and_then(|output| extract_compiled_procedure_artifact(output).ok())
         .is_some_and(|restored| restored == *procedure);
-    if !verified {
+    if !artifact_verified {
         return AgenticPlan::Final(render_response(
             "agent_procedure_verification_failed",
             procedure,
             &document,
+            "",
+        ));
+    }
+
+    let expected_execution = procedure.conformance_links_notation(PROCEDURE_CONFORMANCE_TRIGGER);
+    if progress.run_outputs.len() == 1 {
+        let command = [
+            "formal-ai",
+            "procedure",
+            "conformance",
+            "--artifact",
+            COMPILED_PROCEDURE_PATH,
+            "--trigger",
+            PROCEDURE_CONFORMANCE_TRIGGER,
+        ]
+        .join(" ");
+        return plan_one(
+            run_tool.expect("run tool was checked above"),
+            json!({ "command": command }).to_string(),
+        );
+    }
+    let execution_verified = progress
+        .run_outputs
+        .get(1)
+        .is_some_and(|output| output.trim() == expected_execution.trim());
+    if !execution_verified {
+        return AgenticPlan::Final(render_response(
+            "agent_procedure_execution_failed",
+            procedure,
+            &document,
+            "",
         ));
     }
 
     AgenticPlan::Final(render_response(
-        "agent_procedure_verified",
+        "agent_procedure_executed",
         procedure,
         &document,
+        &expected_execution,
     ))
 }
 
-fn render_response(intent: &str, procedure: &CompiledProcedure, document: &str) -> String {
+fn render_response(
+    intent: &str,
+    procedure: &CompiledProcedure,
+    document: &str,
+    execution: &str,
+) -> String {
     let language = detect_language(&procedure.source_description);
     seed::response_for(intent, language.slug())
         .or_else(|| seed::response_for(intent, "en"))
@@ -85,5 +126,6 @@ fn render_response(intent: &str, procedure: &CompiledProcedure, document: &str) 
         .replace("{path}", COMPILED_PROCEDURE_PATH)
         .replace("{procedure_id}", &procedure.id)
         .replace("{artifact}", document)
+        .replace(EXECUTION_PLACEHOLDER, execution)
         .replace("{steps}", &procedure.restate_steps())
 }

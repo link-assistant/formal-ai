@@ -44,7 +44,8 @@ curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   "http://127.0.0.1:$PORT/health" >/dev/null
 
 config="$(printf '{"provider":{"formalai":{"name":"Formal AI","npm":"@ai-sdk/openai-compatible","options":{"baseURL":"http://127.0.0.1:%s/api/openai/v1","apiKey":"local"},"models":{"formal-ai":{"name":"Formal AI"}}}},"model":"formalai/formal-ai"}' "$PORT")"
-(cd "$work" && FORMAL_AI_API_KEY=local LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
+(cd "$work" && PATH="$(dirname "$BIN"):$PATH" FORMAL_AI_API_KEY=local \
+  LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
   "$AGENT" --model formalai/formal-ai --permission-mode auto \
   --output-format stream-json --compact-json --disable-stdin --prompt "$TASK" \
   >"$OUT/agent-stream.raw.log" 2>"$OUT/agent-stderr.log")
@@ -55,11 +56,12 @@ rm "$OUT/agent-stream.raw.log" "$OUT/agent-stderr.log"
 
 cmp "$work/compiled-procedure.lino" "$EXPECTED"
 cp "$work/compiled-procedure.lino" "$OUT/agent-authored-compiled-procedure.lino"
+rg -q 'formal-ai procedure conformance' "$OUT/agent-stream.jsonl"
 "$BIN" agent --task "$TASK" --session-json "$OUT/session.json" >/dev/null
 
 posts="$(grep -c 'POST /api/openai/v1/chat/completions' "$OUT/formal-ai.log")"
-[[ "$posts" -ge 3 ]] || {
-  echo "expected at least three Agent/Formal-AI chat rounds, got $posts" >&2
+[[ "$posts" -ge 4 ]] || {
+  echo "expected at least four Agent/Formal-AI chat rounds, got $posts" >&2
   exit 1
 }
 session_id="$(rg -o 'ses_[A-Za-z0-9]+' "$OUT/agent-stream.jsonl" | head -n 1)"

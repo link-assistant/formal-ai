@@ -70,6 +70,31 @@ pub struct ProcedureLearnedSurface {
     pub text: String,
 }
 
+/// One observed unsupported surface paired with a seeded paraphrase that
+/// already compiles. The learner resolves the paraphrase to a typed operation;
+/// callers do not supply a canonical kind.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ProcedureLearningObservation {
+    pub language: String,
+    pub missing_surface: String,
+    pub supported_paraphrase: String,
+}
+
+impl ProcedureLearningObservation {
+    #[must_use]
+    pub fn new(
+        language: impl Into<String>,
+        missing_surface: impl Into<String>,
+        supported_paraphrase: impl Into<String>,
+    ) -> Self {
+        Self {
+            language: language.into(),
+            missing_surface: missing_surface.into(),
+            supported_paraphrase: supported_paraphrase.into(),
+        }
+    }
+}
+
 /// The content a reviewer may promote after a gap. The canonical kind must
 /// already be a typed step meaning; learning adds surfaces, never executable
 /// Rust behavior.
@@ -112,6 +137,105 @@ impl ProcedureCapabilityLesson {
                 .into_iter()
                 .map(|(language, text)| ProcedureLearnedSurface { language, text })
                 .collect(),
+        })
+    }
+}
+
+/// An automatically inferred, evidence-bearing mapping that still requires a
+/// green regression gate and explicit human approval before promotion.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ProcedureLearningCandidate {
+    pub id: String,
+    pub proposal_id: String,
+    pub lesson: ProcedureCapabilityLesson,
+    pub observations: Vec<ProcedureLearningObservation>,
+}
+
+impl ProcedureLearningCandidate {
+    #[must_use]
+    pub fn links_notation(&self) -> String {
+        let mut out = String::new();
+        push_lino_node(&mut out, 0, "procedure_learning_candidate", Some(&self.id));
+        push_lino_node(&mut out, 2, "status", Some("human_review_required"));
+        push_lino_node(&mut out, 2, "proposal_id", Some(&self.proposal_id));
+        push_lino_node(
+            &mut out,
+            2,
+            "canonical_kind",
+            Some(&self.lesson.canonical_kind),
+        );
+        for observation in &self.observations {
+            push_observation(&mut out, 2, observation);
+        }
+        out
+    }
+}
+
+impl ProcedureLearningProposal {
+    /// Infer one typed multilingual mapping from successful, already-supported
+    /// paraphrases. Conflicting operation meanings fail closed.
+    pub fn infer_candidate<I>(
+        &self,
+        observations: I,
+    ) -> Result<ProcedureLearningCandidate, ProcedureLearningError>
+    where
+        I: IntoIterator<Item = ProcedureLearningObservation>,
+    {
+        let mut normalized = Vec::new();
+        let mut surfaces = Vec::new();
+        let mut canonical_kind: Option<String> = None;
+        let missing_step = self.missing_step.to_lowercase();
+        let mut matches_proposal = false;
+
+        for observation in observations {
+            let language = observation.language.trim().to_lowercase();
+            let missing_surface = observation.missing_surface.trim().to_lowercase();
+            let supported_paraphrase = observation.supported_paraphrase.trim().to_lowercase();
+            if missing_surface.is_empty() {
+                return Err(ProcedureLearningError::EmptySurface);
+            }
+            if supported_paraphrase.is_empty() {
+                return Err(ProcedureLearningError::EmptySupportedParaphrase);
+            }
+            let found =
+                super::first_procedure_match(&supported_paraphrase, ROLE_SKILL_PROCEDURE_STEP_VERB)
+                    .ok_or_else(|| {
+                        ProcedureLearningError::UnknownSupportedParaphrase(
+                            supported_paraphrase.clone(),
+                        )
+                    })?;
+            if canonical_kind
+                .as_ref()
+                .is_some_and(|current| current != &found.slug)
+            {
+                return Err(ProcedureLearningError::ConflictingCandidateKinds);
+            }
+            canonical_kind = Some(found.slug);
+            matches_proposal |=
+                missing_step
+                    .match_indices(&missing_surface)
+                    .any(|(start, matched)| {
+                        super::is_standalone(&missing_step, start, start + matched.len())
+                    });
+            surfaces.push((language.clone(), missing_surface.clone()));
+            normalized.push(ProcedureLearningObservation {
+                language,
+                missing_surface,
+                supported_paraphrase,
+            });
+        }
+        if !matches_proposal {
+            return Err(ProcedureLearningError::EvidenceDoesNotMatchProposal);
+        }
+        let canonical_kind = canonical_kind.ok_or(ProcedureLearningError::MissingLanguageParity)?;
+        let lesson = ProcedureCapabilityLesson::new(canonical_kind, surfaces)?;
+        normalized.sort_by(|left, right| left.language.cmp(&right.language));
+        let id = candidate_identity(&self.id, &lesson, &normalized);
+        Ok(ProcedureLearningCandidate {
+            id,
+            proposal_id: self.id.clone(),
+            lesson,
+            observations: normalized,
         })
     }
 }
@@ -178,7 +302,9 @@ impl ProcedureLearningApproval {
 pub struct ApprovedProcedureLesson {
     pub id: String,
     pub proposal_id: String,
+    pub candidate_id: Option<String>,
     pub lesson: ProcedureCapabilityLesson,
+    pub candidate_evidence: Vec<ProcedureLearningObservation>,
     pub gate: ProcedureLearningGate,
     pub reviewer: String,
 }
@@ -206,6 +332,47 @@ impl ProcedureCapabilityLedger {
         gate: ProcedureLearningGate,
         approval: ProcedureLearningApproval,
     ) -> Result<(), ProcedureLearningError> {
+        self.promote_lesson(&proposal.id, None, lesson, Vec::new(), gate, approval)
+    }
+
+    /// Promote an automatically inferred mapping while preserving the
+    /// paraphrase evidence that selected its canonical operation.
+    pub fn promote_candidate(
+        &mut self,
+        candidate: &ProcedureLearningCandidate,
+        gate: ProcedureLearningGate,
+        approval: ProcedureLearningApproval,
+    ) -> Result<(), ProcedureLearningError> {
+        let expected = candidate_identity(
+            &candidate.proposal_id,
+            &candidate.lesson,
+            &candidate.observations,
+        );
+        if candidate.id != expected || candidate.observations.is_empty() {
+            return Err(ProcedureLearningError::InvalidCandidate(
+                candidate.id.clone(),
+            ));
+        }
+        validate_candidate_evidence(&candidate.lesson, &candidate.observations)?;
+        self.promote_lesson(
+            &candidate.proposal_id,
+            Some(candidate.id.clone()),
+            candidate.lesson.clone(),
+            candidate.observations.clone(),
+            gate,
+            approval,
+        )
+    }
+
+    fn promote_lesson(
+        &mut self,
+        proposal_id: &str,
+        candidate_id: Option<String>,
+        lesson: ProcedureCapabilityLesson,
+        candidate_evidence: Vec<ProcedureLearningObservation>,
+        gate: ProcedureLearningGate,
+        approval: ProcedureLearningApproval,
+    ) -> Result<(), ProcedureLearningError> {
         if !gate.is_green() {
             return Err(ProcedureLearningError::RegressionGateFailed);
         }
@@ -223,23 +390,25 @@ impl ProcedureCapabilityLedger {
         if self
             .lessons
             .iter()
-            .any(|entry| entry.proposal_id == proposal.id)
+            .any(|entry| entry.proposal_id == proposal_id)
         {
             return Err(ProcedureLearningError::DuplicateProposal(
-                proposal.id.clone(),
+                proposal_id.to_owned(),
             ));
         }
         let id = stable_id(
             "approved_procedure_lesson",
             &format!(
                 "{}:{}:{}",
-                proposal.id, lesson.canonical_kind, approval.reviewer
+                proposal_id, lesson.canonical_kind, approval.reviewer
             ),
         );
         self.lessons.push(ApprovedProcedureLesson {
             id,
-            proposal_id: proposal.id.clone(),
+            proposal_id: proposal_id.to_owned(),
+            candidate_id,
             lesson,
+            candidate_evidence,
             gate,
             reviewer: approval.reviewer,
         });
@@ -250,11 +419,14 @@ impl ProcedureCapabilityLedger {
     pub fn links_notation(&self) -> String {
         let mut out = String::new();
         push_lino_node(&mut out, 0, "procedure_capability_ledger", None);
-        push_lino_node(&mut out, 2, "schema_version", Some("1"));
+        push_lino_node(&mut out, 2, "schema_version", Some("2"));
         push_lino_node(&mut out, 2, "human_gated", Some("true"));
         for entry in &self.lessons {
             push_lino_node(&mut out, 2, "lesson", Some(&entry.id));
             push_lino_node(&mut out, 4, "proposal_id", Some(&entry.proposal_id));
+            if let Some(candidate_id) = &entry.candidate_id {
+                push_lino_node(&mut out, 4, "candidate_id", Some(candidate_id));
+            }
             push_lino_node(
                 &mut out,
                 4,
@@ -269,6 +441,9 @@ impl ProcedureCapabilityLedger {
                 push_lino_node(&mut out, 4, "surface", None);
                 push_lino_node(&mut out, 6, "language", Some(&surface.language));
                 push_lino_node(&mut out, 6, "text", Some(&surface.text));
+            }
+            for observation in &entry.candidate_evidence {
+                push_observation(&mut out, 4, observation);
             }
         }
         out
@@ -286,7 +461,7 @@ impl ProcedureCapabilityLedger {
                     "missing procedure_capability_ledger root".to_owned(),
                 )
             })?;
-        if root.find_child_value("schema_version") != "1" {
+        if !matches!(root.find_child_value("schema_version"), "1" | "2") {
             return Err(ProcedureLearningError::InvalidLedger(
                 "unsupported procedure capability ledger schema".to_owned(),
             ));
@@ -301,6 +476,12 @@ impl ProcedureCapabilityLedger {
         for node in root.children.iter().filter(|node| node.name == "lesson") {
             let canonical_kind = required_child(node, "canonical_kind")?;
             let proposal_id = required_child(node, "proposal_id")?;
+            let candidate_id = node
+                .children
+                .iter()
+                .find(|child| child.name == "candidate_id")
+                .map(|child| child.id.clone())
+                .filter(|value| !value.is_empty());
             let reviewer = required_child(node, "reviewer")?;
             let suite = required_child(node, "suite")?;
             let passed = parse_usize(node, "passed")?;
@@ -323,6 +504,34 @@ impl ProcedureCapabilityLedger {
                 })
                 .collect::<Result<Vec<_>, ProcedureLearningError>>()?;
             let lesson = ProcedureCapabilityLesson::new(canonical_kind, surfaces)?;
+            let candidate_evidence = node
+                .children
+                .iter()
+                .filter(|child| child.name == "candidate_evidence")
+                .map(|evidence| {
+                    Ok(ProcedureLearningObservation {
+                        language: required_child(evidence, "language")?,
+                        missing_surface: required_child(evidence, "missing_surface")?,
+                        supported_paraphrase: required_child(evidence, "supported_paraphrase")?,
+                    })
+                })
+                .collect::<Result<Vec<_>, ProcedureLearningError>>()?;
+            match &candidate_id {
+                Some(id) => {
+                    validate_candidate_evidence(&lesson, &candidate_evidence)?;
+                    let expected = candidate_identity(&proposal_id, &lesson, &candidate_evidence);
+                    if id != &expected {
+                        return Err(ProcedureLearningError::InvalidCandidate(id.clone()));
+                    }
+                }
+                None if !candidate_evidence.is_empty() => {
+                    return Err(ProcedureLearningError::InvalidLedger(format!(
+                        "candidate_evidence_without_identity:{}",
+                        node.id
+                    )));
+                }
+                None => {}
+            }
             let is_typed_kind = procedure_lexicon()
                 .meanings_with_role(ROLE_SKILL_PROCEDURE_STEP_VERB)
                 .any(|meaning| meaning.slug == lesson.canonical_kind);
@@ -347,7 +556,9 @@ impl ProcedureCapabilityLedger {
             ledger.lessons.push(ApprovedProcedureLesson {
                 id: expected_id,
                 proposal_id,
+                candidate_id,
                 lesson,
+                candidate_evidence,
                 gate: ProcedureLearningGate {
                     suite,
                     passed,
@@ -363,8 +574,13 @@ impl ProcedureCapabilityLedger {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ProcedureLearningError {
     EmptySurface,
+    EmptySupportedParaphrase,
     DuplicateLanguage(String),
     MissingLanguageParity,
+    UnknownSupportedParaphrase(String),
+    ConflictingCandidateKinds,
+    EvidenceDoesNotMatchProposal,
+    InvalidCandidate(String),
     RegressionGateFailed,
     HumanApprovalRequired,
     UnknownCanonicalKind(String),
@@ -379,6 +595,87 @@ impl fmt::Display for ProcedureLearningError {
 }
 
 impl Error for ProcedureLearningError {}
+
+fn candidate_identity(
+    proposal_id: &str,
+    lesson: &ProcedureCapabilityLesson,
+    observations: &[ProcedureLearningObservation],
+) -> String {
+    let evidence = observations
+        .iter()
+        .map(|observation| {
+            format!(
+                "{}:{}=>{}",
+                observation.language,
+                observation.missing_surface.to_lowercase(),
+                observation.supported_paraphrase.to_lowercase()
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("|");
+    stable_id(
+        "procedure_learning_candidate",
+        &format!("{proposal_id}:{}:{evidence}", lesson.canonical_kind),
+    )
+}
+
+fn validate_candidate_evidence(
+    lesson: &ProcedureCapabilityLesson,
+    observations: &[ProcedureLearningObservation],
+) -> Result<(), ProcedureLearningError> {
+    if observations.len() != lesson.surfaces.len() {
+        return Err(ProcedureLearningError::InvalidCandidate(
+            "candidate_evidence_surface_mismatch".to_owned(),
+        ));
+    }
+    for surface in &lesson.surfaces {
+        let observation = observations
+            .iter()
+            .find(|observation| observation.language == surface.language)
+            .ok_or_else(|| {
+                ProcedureLearningError::InvalidCandidate(format!(
+                    "missing_evidence_language:{}",
+                    surface.language
+                ))
+            })?;
+        if observation.missing_surface.to_lowercase() != surface.text {
+            return Err(ProcedureLearningError::InvalidCandidate(format!(
+                "surface_evidence_mismatch:{}",
+                surface.language
+            )));
+        }
+        let found = super::first_procedure_match(
+            &observation.supported_paraphrase.to_lowercase(),
+            ROLE_SKILL_PROCEDURE_STEP_VERB,
+        )
+        .ok_or_else(|| {
+            ProcedureLearningError::UnknownSupportedParaphrase(
+                observation.supported_paraphrase.clone(),
+            )
+        })?;
+        if found.slug != lesson.canonical_kind {
+            return Err(ProcedureLearningError::ConflictingCandidateKinds);
+        }
+    }
+    Ok(())
+}
+
+fn push_observation(out: &mut String, indent: usize, observation: &ProcedureLearningObservation) {
+    push_lino_node(out, indent, "candidate_evidence", None);
+    push_lino_node(out, indent + 2, "language", Some(&observation.language));
+    push_lino_node(
+        out,
+        indent + 2,
+        "missing_surface",
+        Some(&observation.missing_surface),
+    );
+    push_lino_node(
+        out,
+        indent + 2,
+        "supported_paraphrase",
+        Some(&observation.supported_paraphrase),
+    );
+}
 
 fn required_child(node: &LinoNode, name: &str) -> Result<String, ProcedureLearningError> {
     let value = node.find_child_value(name);

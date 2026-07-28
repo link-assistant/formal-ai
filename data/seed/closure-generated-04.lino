@@ -1,4 +1,54 @@
 meanings
+  response_capabilities_more_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more en"
+  response_capabilities_more_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more hi"
+  response_capabilities_more_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more ru"
+  response_capabilities_more_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities more zh"
+  response_capabilities_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities ru"
+  response_capabilities_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response capabilities zh"
+  response_clarification_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification en"
+  response_clarification_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification hi"
+  response_clarification_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification ru"
+  response_clarification_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response clarification zh"
   response_client_contract_missing_evidence_error_en
     defined-by response_template
     lexeme en
@@ -1344,53 +1394,3 @@ meanings
     lexeme en
       surface
         text "response lexeme import surface missing en"
-  response_lexeme_import_surface_missing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing hi"
-  response_lexeme_import_surface_missing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing ru"
-  response_lexeme_import_surface_missing_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import surface missing zh"
-  response_lexeme_import_wrong_genus_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus en"
-  response_lexeme_import_wrong_genus_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus hi"
-  response_lexeme_import_wrong_genus_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus ru"
-  response_lexeme_import_wrong_genus_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response lexeme import wrong genus zh"
-  response_local_search_contents_listing_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing en"
-  response_local_search_contents_listing_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing hi"
-  response_local_search_contents_listing_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response local search contents listing ru"

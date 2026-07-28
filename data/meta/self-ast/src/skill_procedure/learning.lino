@@ -2,33 +2,43 @@ self_ast_census
   target src/skill_procedure/learning.rs
   language rust
   fidelity signature
-  byte_len 14025
-  line_count 410
-  content_id source_module_f4d26fa2e9c8b0d4
-  symbol_count 25
+  byte_len 25245
+  line_count 707
+  content_id source_module_ce5d7b9382197721
+  symbol_count 35
   symbols
     struct ProcedureLearningProposal 16 21
     function from_compile_error 27 41
     function links_notation 44 63
     struct ProcedureLearnedSurface 68 71
-    struct ProcedureCapabilityLesson 77 80
-    function new 84 116
-    struct ProcedureLearningGate 121 125
-    function passed 129 135
-    function failed 138 144
-    function is_green 146 148
-    struct ProcedureLearningApproval 153 156
-    function granted 160 165
-    function declined 168 173
-    struct ApprovedProcedureLesson 178 184
-    struct ProcedureCapabilityLedger 188 190
-    function new 194 198
-    function promote 202 247
-    function links_notation 250 275
-    function from_links_notation 278 360
-    enum ProcedureLearningError 364 373
-    function fmt 376 378
-    function required_child 383 393
-    function parse_usize 395 399
-    function default_capability_ledger 401 410
-    static LEDGER 402 402
+    struct ProcedureLearningObservation 77 81
+    function new 85 95
+    struct ProcedureCapabilityLesson 102 105
+    function new 109 141
+    struct ProcedureLearningCandidate 147 152
+    function links_notation 156 171
+    function infer_candidate 177 240
+    struct ProcedureLearningGate 245 249
+    function passed 253 259
+    function failed 262 268
+    function is_green 270 272
+    struct ProcedureLearningApproval 277 280
+    function granted 284 289
+    function declined 292 297
+    struct ApprovedProcedureLesson 302 310
+    struct ProcedureCapabilityLedger 314 316
+    function new 320 324
+    function promote 328 336
+    function promote_candidate 340 365
+    function promote_lesson 367 416
+    function links_notation 419 450
+    function from_links_notation 453 571
+    enum ProcedureLearningError 575 589
+    function fmt 592 594
+    function candidate_identity 599 620
+    function validate_candidate_evidence 622 661
+    function push_observation 663 678
+    function required_child 680 690
+    function parse_usize 692 696
+    function default_capability_ledger 698 707
+    static LEDGER 699 699

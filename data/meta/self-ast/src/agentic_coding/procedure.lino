@@ -2,63 +2,66 @@ self_ast_census
   target src/agentic_coding/procedure.rs
   language rust
   fidelity full_ast
-  byte_len 3077
-  line_count 89
-  content_id source_module_82f64621230a0d8b
-  symbol_count 4
+  byte_len 4279
+  line_count 131
+  content_id source_module_c2f74e9ef41a4ed2
+  symbol_count 5
   symbols
-    const COMPILED_PROCEDURE_PATH 19 19
-    function compile_task 22 24
-    function plan_step 26 78
-    function render_response 80 89
+    const COMPILED_PROCEDURE_PATH 20 20
+    const EXECUTION_PLACEHOLDER 21 21
+    function compile_task 24 26
+    function plan_step 28 114
+    function render_response 116 131
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2282
-    named_node_count 459
-    distinct_node_kinds 47
+    total_link_count 3043
+    named_node_count 599
+    distinct_node_kinds 49
     node_kinds
-      arguments 43
+      arguments 56
+      array_expression 1
       array_type 2
       attribute 1
       attribute_item 1
-      binary_expression 1
-      block 8
-      call_expression 43
+      binary_expression 3
+      block 10
+      call_expression 56
       char_literal 1
-      closure_expression 5
-      closure_parameters 5
-      const_item 1
+      closure_expression 6
+      closure_parameters 6
+      const_item 2
       crate 4
       doc_comment 5
-      expression_statement 12
-      field_expression 26
-      field_identifier 26
+      expression_statement 16
+      field_expression 39
+      field_identifier 39
       function_item 3
       generic_type 1
-      identifier 123
-      if_expression 5
+      identifier 150
+      if_expression 7
       inner_doc_comment_marker 5
+      integer_literal 2
       let_condition 2
-      let_declaration 7
+      let_declaration 10
       line_comment 5
-      macro_invocation 1
+      macro_invocation 3
       mutable_specifier 1
-      parameter 7
+      parameter 8
       parameters 3
-      primitive_type 5
-      reference_expression 8
-      reference_type 9
-      return_expression 5
+      primitive_type 7
+      reference_expression 10
+      reference_type 11
+      return_expression 7
       scoped_identifier 24
       scoped_use_list 2
       source_file 1
-      string_content 12
-      string_literal 12
+      string_content 24
+      string_literal 28
       super 4
-      token_tree 2
+      token_tree 5
       tuple_struct_pattern 2
       type_arguments 1
       type_identifier 7
