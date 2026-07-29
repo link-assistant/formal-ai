@@ -470,7 +470,7 @@ fn structurally_complete_prose(evidence: &str) -> String {
     }
 }
 
-fn is_sentence_terminal(character: char) -> bool {
+const fn is_sentence_terminal(character: char) -> bool {
     matches!(character, '.' | '!' | '?' | '。' | '…' | '।' | '॥')
 }
 
