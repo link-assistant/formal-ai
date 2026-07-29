@@ -400,9 +400,13 @@ impl CapturedGatheringReport {
         for failure in &self.failures {
             log.append(
                 "error:fetch",
-                format!(
-                    "url={} depth={} error={}",
-                    failure.url, failure.depth, failure.error
+                format_lino_record(
+                    "source_failure",
+                    &[
+                        ("url", failure.url.clone()),
+                        ("depth", failure.depth.to_string()),
+                        ("diagnostic", failure.error.to_string()),
+                    ],
                 ),
             );
         }

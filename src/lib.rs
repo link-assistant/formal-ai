@@ -128,6 +128,7 @@ pub mod web_search_core;
 pub mod world_model;
 pub mod world_model_atoms;
 pub mod world_model_context;
+pub(crate) mod world_model_cycles;
 pub mod world_model_dialog;
 
 pub use agent::{

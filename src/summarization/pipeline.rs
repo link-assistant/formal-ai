@@ -69,13 +69,18 @@ impl MultiSourceSummaryExecution {
         self.gathering.record(log);
         log.append(
             "fact_check:context",
-            format!(
-                "context={} formal_system={} statements={} presentable={} withheld={}",
-                self.audit.context_id,
-                self.audit.formal_system_id,
-                self.audit.statements.len(),
-                self.presentable_statement_ids.len(),
-                self.withheld_statement_ids.len(),
+            format_lino_record(
+                "fact_check_context",
+                &[
+                    ("context", self.audit.context_id.clone()),
+                    ("formal_system", self.audit.formal_system_id.clone()),
+                    ("statements", self.audit.statements.len().to_string()),
+                    (
+                        "presentable",
+                        self.presentable_statement_ids.len().to_string(),
+                    ),
+                    ("withheld", self.withheld_statement_ids.len().to_string()),
+                ],
             ),
         );
     }
