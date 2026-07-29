@@ -2,10 +2,10 @@ self_ast_census
   target src/relative_meta_logic.rs
   language rust
   fidelity signature
-  byte_len 15486
-  line_count 423
-  content_id source_module_a46ee6a1fb1a1f12
-  symbol_count 33
+  byte_len 15886
+  line_count 434
+  content_id source_module_f361e94a4465cd56
+  symbol_count 34
   symbols
     const TRUTH_VALUE_DECIMALS 34 34
     const ASSUMED_TRUE_PRIOR 43 43
@@ -25,18 +25,19 @@ self_ast_census
     function probabilistic_sum 169 174
     enum SourceTier 186 198
     function slug 203 210
-    function weight 216 223
-    function is_original 228 230
-    enum Stance 235 242
-    function slug 247 253
-    struct RelativeEvidence 258 267
-    function new 272 284
-    function effective_mass 290 295
-    function is_ignored 300 302
-    function trace_payload 306 316
-    struct StatementAssessment 333 346
-    function assess 351 385
-    function assess_assumed_true 389 394
-    function is_probable 398 400
-    function trace_payload 404 413
-    function round_decimal 418 423
+    function weight_percent 218 225
+    function weight 232 234
+    function is_original 239 241
+    enum Stance 246 253
+    function slug 258 264
+    struct RelativeEvidence 269 278
+    function new 283 295
+    function effective_mass 301 306
+    function is_ignored 311 313
+    function trace_payload 317 327
+    struct StatementAssessment 344 357
+    function assess 362 396
+    function assess_assumed_true 400 405
+    function is_probable 409 411
+    function trace_payload 415 424
+    function round_decimal 429 434
