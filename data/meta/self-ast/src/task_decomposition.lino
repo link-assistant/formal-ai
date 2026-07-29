@@ -1,0 +1,49 @@
+self_ast_census
+  target src/task_decomposition.rs
+  language rust
+  fidelity signature
+  byte_len 23115
+  line_count 671
+  content_id source_module_45093599dd4c0f1a
+  symbol_count 40
+  symbols
+    module artifact 38 38
+    module learning 39 39
+    module strategy 40 40
+    struct SubTask 56 76
+    function is_independently_checkable 82 86
+    function collect_leaves 89 97
+    function node_count 101 103
+    function has_depth_bound_leaf 112 117
+    function collect_rows 121 133
+    function to_links_notation 137 156
+    function to_recursive_task 161 167
+    struct Decomposition 172 179
+    function is_atomic 186 188
+    function depth_bound_reached 193 195
+    function leaves 199 203
+    function rows 208 212
+    function numbered_lines 218 240
+    function to_links_notation 244 246
+    function to_recursive_task 250 252
+    function decompose_task 261 263
+    function decompose_task_with_ledger 271 285
+    function build 287 385
+    function child_path 388 395
+    function leaf 397 416
+    function split_once_checkable 425 427
+    function split_once_checkable_with_ledger 429 440
+    function is_checkable 448 450
+    function completion_criterion_for 452 463
+    function segment 467 473
+    function split_sentences 477 492
+    function split_clauses 497 506
+    function split_on_markers 510 520
+    function split_piece_on_marker 522 548
+    function distribute_head_action 558 576
+    function head_action 579 588
+    function merge_uncheckable 595 615
+    function join 617 624
+    function push_trimmed 626 631
+    function record_task_decomposition 638 657
+    function emit_sub_impulses 659 671

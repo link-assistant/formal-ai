@@ -67,14 +67,15 @@ def add(tid, level, seed, prompt, verify, note, expect=None, family="misc"):
 
 # --------------------------------------------------------------------------
 # L1 — whole issue -> pull request. The Hive Mind `solve` shape.
-# Verified by a real branch existing, never by narration.
+# Verified by a real branch appearing during the task, never by narration and
+# never by a branch that already existed (see new_branch_for.sh).
 # --------------------------------------------------------------------------
 for num, title in ISSUES.items():
     add(
         f"{num}.L1", 1, num,
         f"Solve GitHub issue https://github.com/link-assistant/formal-ai/issues/{num} "
         f"in this repository and open a pull request with the fix.",
-        f'git branch -a | grep -q "issue-{num}"',
+        f'experiments/issue_847_coding_ladder/new_branch_for.sh {num}',
         f"Ceiling case for #{num} ({title}).",
         family="issue_to_pr",
     )

@@ -731,6 +731,14 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
                 || looks_like_latest_news_search(normalized)
                 || looks_like_records_information_search(normalized),
         ),
+        // Issue #847: a question *about* a task — split it, is it atomic, what
+        // is the first step — must reach decomposition rather than the how-to
+        // or text-manipulation readings of the same verbs, so it is promoted
+        // ahead of both.
+        (
+            "handler:task_decomposition",
+            crate::solver_handlers::looks_like_task_decomposition(normalized),
+        ),
         (
             "handler:procedural_how_to",
             cue_lexicon::matches("procedural_how_to", normalized)

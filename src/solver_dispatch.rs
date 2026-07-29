@@ -28,10 +28,10 @@ use crate::solver_handlers::{
     try_research_comparison_table, try_research_result_followup, try_response_language_followup,
     try_roleplay_request, try_shell_command_transform, try_shell_command_transform_with_history,
     try_shell_refusal, try_software_project_followup, try_software_project_request,
-    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
-    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
-    try_web_search_with_offline, try_who_is_question, try_world_state, try_write_script,
-    SelfAwarenessRuntime,
+    try_source_conflict, try_source_refresh, try_summarization_request,
+    try_task_decomposition_with_depth, try_text_manipulation, try_text_manipulation_with_history,
+    try_translation, try_url_navigate, try_web_search, try_web_search_with_offline,
+    try_who_is_question, try_world_state, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -132,6 +132,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "numeric_list",
     "shell_command_transform",
     "text_manipulation",
+    "task_decomposition",
     "response_language_followup",
     "fact_checking",
     "world_state",
@@ -199,6 +200,15 @@ pub fn try_contextual_override(
             try_shell_command_transform_with_history(prompt, normalized, log, history)
         }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
+        // Issue #847: the recursion has to stop at the configured
+        // `max_decomposition_depth` and say so, which means the handler needs
+        // the live solver config rather than the shipped default.
+        "task_decomposition" => try_task_decomposition_with_depth(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.max_decomposition_depth,
+        ),
         "response_language_followup" => {
             try_response_language_followup(prompt, normalized, log, history, runtime.solver_config)
         }

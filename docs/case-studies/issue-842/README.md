@@ -95,6 +95,10 @@ After the final Clippy correction changed the owned source, session
 CLI. A separate session, `ses_0528b8463ffeTZ6UPSJy5tLHmI`, reran the
 self-healing axis whose repair-case source map also depends on the planner.
 `self-hosting-census-refresh/` retains both final-source streams, Formal AI
-traces, focused artifacts, and the census renderer summary. The workspace
-snapshot and legacy planner-derived fixtures were regenerated from that same
-live source state; the byte-for-byte tests fail if either drifts again.
+traces, focused artifacts, and the census renderer summary. The historical
+workspace snapshot and legacy planner-derived fixtures were generated from that
+same source state. Its ratchet checks that the recorded census index still
+resolves the recorded module by content ID, without rewriting history when a
+later change adds source modules. The independent whole-workspace census tests
+regenerate every current document from live source and fail byte-for-byte on
+present-source drift.

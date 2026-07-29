@@ -18,6 +18,8 @@ pub const MULTILINGUAL_RESPONSES_LINO: &str =
     include_str!("../../data/seed/multilingual-responses.lino");
 pub const MULTILINGUAL_RESPONSES_AGENTIC_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-agentic.lino");
+pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
+    include_str!("../../data/seed/multilingual-responses-decomposition.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../data/seed/multilingual-responses-procedure.lino");
 pub const MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO: &str =
@@ -97,6 +99,8 @@ pub const MEANINGS_FEATURE_CAPABILITY_LINO: &str =
     include_str!("../../data/seed/meanings-feature-capability.lino");
 pub const MEANINGS_FILE_WRITE_LINO: &str = include_str!("../../data/seed/meanings-file-write.lino");
 pub const MEANINGS_FILE_EDIT_LINO: &str = include_str!("../../data/seed/meanings-file-edit.lino");
+pub const MEANINGS_DECOMPOSITION_LINO: &str =
+    include_str!("../../data/seed/meanings-decomposition.lino");
 pub const MEANINGS_AGENT_ACTIONS_LINO: &str =
     include_str!("../../data/seed/meanings-agent-actions.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
@@ -151,6 +155,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-agentic.lino",
             MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-decomposition.lino",
+            MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
         ),
         (
             "data/seed/multilingual-responses-procedure.lino",
@@ -288,6 +296,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/meanings-file-edit.lino", MEANINGS_FILE_EDIT_LINO),
         (
+            "data/seed/meanings-decomposition.lino",
+            MEANINGS_DECOMPOSITION_LINO,
+        ),
+        (
             "data/seed/meanings-agent-actions.lino",
             MEANINGS_AGENT_ACTIONS_LINO,
         ),
@@ -358,6 +370,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_LINO,
     MULTILINGUAL_RESPONSES_AGENTIC_LINO,
+    MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_SUMMARIZATION_LINO,
 ];
@@ -401,6 +414,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_FEATURE_CAPABILITY_LINO,
     MEANINGS_FILE_WRITE_LINO,
     MEANINGS_FILE_EDIT_LINO,
+    MEANINGS_DECOMPOSITION_LINO,
     MEANINGS_AGENT_ACTIONS_LINO,
     MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_PLAYWRIGHT_LINO,
