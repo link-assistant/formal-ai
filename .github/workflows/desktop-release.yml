@@ -193,9 +193,14 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache Rust compiler outputs
+        # Cargo can use a response file for web-sys's generated feature-check
+        # arguments on Windows, but sccache respawns rustc with the expanded
+        # command and hits CreateProcess's command-line limit (os error 206).
+        if: runner.os != 'Windows'
         uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Enable Rust compiler cache
+        if: runner.os != 'Windows'
         run: |
           echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
           echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
@@ -204,8 +209,9 @@ jobs:
       # completes inside the job budget, while actions/cache registers a
       # post-job archive of Cargo home: on run 30398883119 all product work and
       # uploads passed, then compressing 194 MB consumed the remaining 3m40 and
-      # GitHub cancelled the otherwise-successful job. sccache above retains the
-      # expensive compiler outputs without that post-packaging failure mode.
+      # GitHub cancelled the otherwise-successful job. Unix runners retain
+      # expensive compiler outputs through sccache without that post-packaging
+      # failure mode; Windows uses Cargo's direct rustc response-file path.
       - name: Build formal-ai binary (release)
         run: cargo build --release --bin formal-ai
 
