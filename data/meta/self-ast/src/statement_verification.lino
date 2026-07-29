@@ -2,10 +2,10 @@ self_ast_census
   target src/statement_verification.rs
   language rust
   fidelity signature
-  byte_len 21145
-  line_count 580
-  content_id source_module_0618c9720f310243
-  symbol_count 36
+  byte_len 22522
+  line_count 617
+  content_id source_module_71bca433ce0f537a
+  symbol_count 38
   symbols
     const SENTENCE_TERMINATORS 28 28
     const MIN_STATEMENT_WORDS 32 32
@@ -21,25 +21,27 @@ self_ast_census
     function source_quote_currency 160 170
     function new 178 191
     struct StatementVerificationPlan 196 199
-    struct StatementVerificationExecution 204 207
-    function from_sample 213 219
-    function is_empty 223 225
-    function len 229 231
-    function execute 239 268
-    function extract_statements 274 287
-    function extract_market_price_claims 296 311
-    function assess_market_price_claims 315 320
-    function assess_market_price_claim 322 359
-    function market_price_fragments 361 382
-    function asset_positions 390 412
-    function parse_market_price_claim 414 431
-    function alias_occurs 433 442
-    function alias_occurs_at 444 460
-    function extract_year 462 482
-    function extract_currency_amount 484 507
-    function parse_number_after 509 511
-    function parse_number_before 513 524
-    function parse_number 526 543
-    function push_statement 545 559
-    function grounding_query 565 568
-    function stance_for_agreement 574 580
+    struct StatementVerificationExecution 204 208
+    struct CapturedStatementEvidence 212 216
+    function audit_evidence 222 236
+    function from_sample 243 249
+    function is_empty 253 255
+    function len 259 261
+    function execute 269 305
+    function extract_statements 311 324
+    function extract_market_price_claims 333 348
+    function assess_market_price_claims 352 357
+    function assess_market_price_claim 359 396
+    function market_price_fragments 398 419
+    function asset_positions 427 449
+    function parse_market_price_claim 451 468
+    function alias_occurs 470 479
+    function alias_occurs_at 481 497
+    function extract_year 499 519
+    function extract_currency_amount 521 544
+    function parse_number_after 546 548
+    function parse_number_before 550 561
+    function parse_number 563 580
+    function push_statement 582 596
+    function grounding_query 602 605
+    function stance_for_agreement 611 617

@@ -10,6 +10,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use sha2::{Digest, Sha256};
@@ -17,8 +18,10 @@ use sha2::{Digest, Sha256};
 use crate::event_log::EventLog;
 use crate::translation::cache::cache_key;
 
-const CACHE_FORMAT_VERSION: &str = "source-capture-v1";
+const CACHE_FORMAT_VERSION: &str = "source-capture-v2";
+const LEGACY_CACHE_FORMAT_VERSION: &str = "source-capture-v1";
 const DEFAULT_TTL_SECONDS: u64 = 60 * 60 * 24 * 60;
+static TEMP_FILE_ID: AtomicU64 = AtomicU64::new(0);
 const USER_AGENT: &str = concat!(
     "formal-ai/",
     env!("CARGO_PKG_VERSION"),
@@ -193,8 +196,8 @@ impl<T: SourceTransport> CachedSourceClient<T> {
 
     pub fn fetch(&self, url: &str) -> Result<SourceCapture, FetchError> {
         validate_url(url)?;
-        let (body_path, metadata_path) = self.paths(url);
-        match read_capture(url, &body_path, &metadata_path) {
+        let (cache_root, metadata_path) = self.paths(url);
+        match read_capture(url, &cache_root, &metadata_path) {
             Ok(Some(mut capture)) => {
                 let fetched_at = capture.fetched_at.parse::<u64>().unwrap_or(0);
                 let age = (self.now)().saturating_sub(fetched_at);
@@ -218,17 +221,15 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             cached: false,
             bytes,
         };
-        write_capture(&capture, &body_path, &metadata_path)?;
+        write_capture(&capture, &cache_root, &metadata_path)?;
         Ok(capture)
     }
 
     fn paths(&self, url: &str) -> (PathBuf, PathBuf) {
         let root = self.cache_dir.join("source-cache");
         let key = cache_key(url);
-        (
-            root.join(format!("{key}.body")),
-            root.join(format!("{key}.meta")),
-        )
+        let metadata = root.join(format!("{key}.meta"));
+        (root, metadata)
     }
 }
 
@@ -250,18 +251,20 @@ fn validate_url(url: &str) -> Result<(), FetchError> {
 
 fn read_capture(
     expected_url: &str,
-    body_path: &Path,
+    cache_root: &Path,
     metadata_path: &Path,
 ) -> Result<Option<SourceCapture>, FetchError> {
-    let bytes = match fs::read(body_path) {
-        Ok(bytes) => bytes,
+    let metadata = match fs::read_to_string(metadata_path) {
+        Ok(metadata) => metadata,
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
-        Err(error) => return Err(cache_error(body_path, &error)),
+        Err(error) => return Err(cache_error(metadata_path, &error)),
     };
-    let metadata =
-        fs::read_to_string(metadata_path).map_err(|error| cache_error(metadata_path, &error))?;
     let mut lines = metadata.lines();
-    if lines.next() != Some(CACHE_FORMAT_VERSION) {
+    let version = lines.next();
+    if !matches!(
+        version,
+        Some(CACHE_FORMAT_VERSION | LEGACY_CACHE_FORMAT_VERSION)
+    ) {
         return Err(cache_diagnostic(
             "source_cache_unsupported_metadata",
             metadata_path,
@@ -273,11 +276,23 @@ fn read_capture(
     if source_url != expected_url {
         return Err(cache_diagnostic("source_cache_url_mismatch", metadata_path));
     }
+    if !is_sha256_hex(&recorded_sha256) {
+        return Err(cache_diagnostic(
+            "source_cache_invalid_content_hash",
+            metadata_path,
+        ));
+    }
+    let body_path = if version == Some(CACHE_FORMAT_VERSION) {
+        content_path(cache_root, &recorded_sha256)
+    } else {
+        metadata_path.with_extension("body")
+    };
+    let bytes = fs::read(&body_path).map_err(|error| cache_error(&body_path, &error))?;
     let actual_sha256 = sha256_hex(&bytes);
     if actual_sha256 != recorded_sha256 {
         return Err(cache_diagnostic(
             "source_cache_content_hash_mismatch",
-            body_path,
+            &body_path,
         ));
     }
     Ok(Some(SourceCapture {
@@ -306,13 +321,14 @@ fn field(line: Option<&str>, name: &str, path: &Path) -> Result<String, FetchErr
 
 fn write_capture(
     capture: &SourceCapture,
-    body_path: &Path,
+    cache_root: &Path,
     metadata_path: &Path,
 ) -> Result<(), FetchError> {
-    let parent = body_path.parent().unwrap_or_else(|| Path::new("."));
-    fs::create_dir_all(parent).map_err(|error| cache_error(parent, &error))?;
-    let body_tmp = body_path.with_extension("body.tmp");
-    let metadata_tmp = metadata_path.with_extension("meta.tmp");
+    let body_path = content_path(cache_root, &capture.sha256);
+    let object_root = body_path.parent().unwrap_or_else(|| Path::new("."));
+    fs::create_dir_all(object_root).map_err(|error| cache_error(object_root, &error))?;
+    let body_tmp = unique_temp_path(&body_path);
+    let metadata_tmp = unique_temp_path(metadata_path);
     fs::write(&body_tmp, &capture.bytes).map_err(|error| cache_error(&body_tmp, &error))?;
     let metadata = [
         CACHE_FORMAT_VERSION,
@@ -326,8 +342,28 @@ fn write_capture(
     ]
     .concat();
     fs::write(&metadata_tmp, metadata).map_err(|error| cache_error(&metadata_tmp, &error))?;
-    fs::rename(&body_tmp, body_path).map_err(|error| cache_error(body_path, &error))?;
+    fs::rename(&body_tmp, &body_path).map_err(|error| cache_error(&body_path, &error))?;
     fs::rename(&metadata_tmp, metadata_path).map_err(|error| cache_error(metadata_path, &error))
+}
+
+fn content_path(cache_root: &Path, sha256: &str) -> PathBuf {
+    cache_root.join("objects").join(format!("{sha256}.body"))
+}
+
+fn is_sha256_hex(value: &str) -> bool {
+    value.len() == 64
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+}
+
+fn unique_temp_path(path: &Path) -> PathBuf {
+    let id = TEMP_FILE_ID.fetch_add(1, Ordering::Relaxed);
+    let extension = path
+        .extension()
+        .and_then(|value| value.to_str())
+        .unwrap_or("");
+    path.with_extension(format!("{extension}.{}.{}.tmp", std::process::id(), id))
 }
 
 fn cache_error(path: &Path, error: &io::Error) -> FetchError {

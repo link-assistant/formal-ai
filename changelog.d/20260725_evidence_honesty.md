@@ -1,3 +1,7 @@
+---
+bump: patch
+---
+
 ### Fixed
 
 - Replace fabricated external-source and cache-hit evidence with an opt-in,

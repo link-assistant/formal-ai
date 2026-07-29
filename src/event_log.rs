@@ -418,6 +418,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "language_from" => format!("language_from:{}", event.payload),
             "language_to" => format!("language_to:{}", event.payload),
             "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
+            "definition_merge:source_declared" => {
+                format!("definition_merge:source_declared:{}", event.payload)
+            }
             "meaning" => format!("meaning:{}", event.payload),
             "translation_gap" => format!("translation_gap:{}", event.payload),
             "wikidata" => format!("wikidata:{}", event.payload),
@@ -489,8 +492,14 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "web_search:request" => format!("web_search:request:{}", event.payload),
             "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
             "web_search:provider" => format!("web_search:provider:{}", event.payload),
+            "web_search:provider_planned" => {
+                format!("web_search:provider_planned:{}", event.payload)
+            }
             "web_search:language" => format!("web_search:language:{}", event.payload),
             "web_search:combined" => format!("web_search:combined:{}", event.payload),
+            "web_search:fusion_planned" => {
+                format!("web_search:fusion_planned:{}", event.payload)
+            }
             "web_search:rank" => format!("web_search:rank:{}", event.payload),
             "web_search:fused" => format!("web_search:fused:{}", event.payload),
             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),

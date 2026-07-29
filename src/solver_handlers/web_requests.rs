@@ -11,10 +11,14 @@ use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
 };
 
+mod live_search;
+
 use super::curated_project_fetch::try_curated_http_fetch;
 use super::finalize_simple;
 use super::installation_conversion::is_install_conversion_request;
 use super::web_search_intent::{extract_web_search_request, WebSearchQueryKind};
+
+pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
 /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
@@ -172,9 +176,12 @@ pub fn answer_web_search_query(
     log.append("web_search:request", query.to_owned());
     log.append("web_search:query_kind", query_kind.as_str());
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let language = detect_language(prompt).slug();
     let is_latest_news_request = matches!(query_kind, WebSearchQueryKind::LatestNews);
@@ -474,9 +481,12 @@ fn render_project_lookup(
     log.append("summarization:language", language.to_owned());
     log.append("web_search:request", display_name.to_owned());
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
 
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let promoted_orgs = PROMOTED_PROJECT_ORGS.join(", ");

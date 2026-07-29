@@ -994,8 +994,8 @@ src/solver_handlers/mod.rs	{expression} = {formatted}
 src/solver_handlers/mod.rs	{intro}\n\n{summary}
 src/solver_handlers/mod.rs	{term} ({category}): {summary}\n\nSource: {source_markup} ({source_kind}).
 src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
-src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
 src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
+src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
 src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
@@ -1240,6 +1240,9 @@ src/solver_unknown_reasoning.rs	Missing localized response seed: {intent}/{langu
 src/solver_unknown_reasoning.rs	gave up after {} reasoning steps; legacy_unknown_fallback
 src/solver_unknown_reasoning.rs	language={} local_search=complete prompt_state={} questioning_rigor={:.2}
 src/solver_unknown_reasoning.rs	{term} ({category}): {summary}\n\nSource: {source} ({source_kind}).
+src/source_research.rs	provider={} rank={} url={}
+src/source_research.rs	rrf:k={WEB_SEARCH_RRF_K} results={}
+src/source_research.rs	url={} error={}
 src/statement_verification.rs	\"{condensed}\" fact check source
 src/statement_verification.rs	asset={} period={} claimed={:.2} status={} source={} min={:.2} min_date={} max={:.2} max_date={} posterior={}
 src/statement_verification.rs	{} is contradicted: {} reports {} {} daily candles in {} stayed between ${:.2} on {} and ${:.2} on {}.

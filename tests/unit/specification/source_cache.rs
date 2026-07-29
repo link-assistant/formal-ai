@@ -16,7 +16,7 @@ fn answer_with_config(prompt: &str, config: SolverConfig) -> SymbolicAnswer {
 }
 
 // ---------------------------------------------------------------------------
-// Active expectations: the implementation does not yet hit external sources.
+// Local and offline paths must never imply that an external fetch occurred.
 // ---------------------------------------------------------------------------
 
 #[test]
@@ -32,7 +32,7 @@ fn implementation_does_not_advertise_external_fetches_for_local_prompts() {
 }
 
 // ---------------------------------------------------------------------------
-// full-scope expectations.
+// Source policy and provenance expectations.
 // ---------------------------------------------------------------------------
 
 #[test]

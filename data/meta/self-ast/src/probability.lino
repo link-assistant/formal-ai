@@ -2,57 +2,62 @@ self_ast_census
   target src/probability.rs
   language rust
   fidelity signature
-  byte_len 30740
-  line_count 837
-  content_id source_module_3f3c6886898f65a7
-  symbol_count 49
+  byte_len 31607
+  line_count 871
+  content_id source_module_00112242017176e8
+  symbol_count 54
   symbols
     enum ProbabilityModel 20 27
     function slug 31 36
-    struct ProbabilitySourceProvenance 41 46
-    function trace_payload 50 55
-    struct ProbabilityEvidence 60 70
-    function symbolic 74 94
-    function with_model 97 101
-    function with_source 104 108
-    function with_transition_from 111 115
-    function trace_payload 118 138
-    function to_links_notation 141 163
-    function stable_record_id 165 186
-    function usable_offline 188 193
-    function applies_to_markov_state 195 200
-    struct ProbabilityStore 205 207
-    function new 211 215
-    function from_records 218 220
-    function record 222 226
-    function update 228 243
-    function reinforce_transition_path 261 287
-    function records 290 292
-    function target_weight 295 303
-    function target_evidence_count 315 327
-    function nearest_similar_evidence 339 380
-    function to_links_notation 383 394
-    function replay_into_event_log 396 416
-    function append_to_link_store 418 439
-    struct SimilarEvidence 444 453
-    struct ProbabilityCandidate 457 460
-    function new 464 469
-    struct ProbabilityRankingConfig 481 505
-    function with_decision_policy 514 520
-    function decision_policy 524 531
-    struct ProbabilityDecisionPolicy 546 556
-    struct RankedProbabilityCandidate 566 578
-    struct ProbabilityRanking 582 585
-    function probability_for 589 594
-    function trace_summary 597 608
-    function rank_probability_candidates 612 720
-    function softmax_scores 722 744
-    function highest_score_index 746 752
-    function finite_or_zero 754 760
-    function finite_clamped 762 768
-    function usize_to_f32 770 773
-    function count_to_f32 779 781
-    function symbolic_cosine_similarity 790 810
-    function tokenize_symbolic 812 818
-    function bag_of_words 820 826
-    function vector_norm 828 837
+    struct ProbabilitySourceProvenance 44 49
+    function from_source_capture 54 61
+    function source_url 64 66
+    function fetched_at 69 71
+    function sha256 74 76
+    function cached 79 81
+    function trace_payload 84 89
+    struct ProbabilityEvidence 94 104
+    function symbolic 108 128
+    function with_model 131 135
+    function with_source 138 142
+    function with_transition_from 145 149
+    function trace_payload 152 172
+    function to_links_notation 175 197
+    function stable_record_id 199 220
+    function usable_offline 222 227
+    function applies_to_markov_state 229 234
+    struct ProbabilityStore 239 241
+    function new 245 249
+    function from_records 252 254
+    function record 256 260
+    function update 262 277
+    function reinforce_transition_path 295 321
+    function records 324 326
+    function target_weight 329 337
+    function target_evidence_count 349 361
+    function nearest_similar_evidence 373 414
+    function to_links_notation 417 428
+    function replay_into_event_log 430 450
+    function append_to_link_store 452 473
+    struct SimilarEvidence 478 487
+    struct ProbabilityCandidate 491 494
+    function new 498 503
+    struct ProbabilityRankingConfig 515 539
+    function with_decision_policy 548 554
+    function decision_policy 558 565
+    struct ProbabilityDecisionPolicy 580 590
+    struct RankedProbabilityCandidate 600 612
+    struct ProbabilityRanking 616 619
+    function probability_for 623 628
+    function trace_summary 631 642
+    function rank_probability_candidates 646 754
+    function softmax_scores 756 778
+    function highest_score_index 780 786
+    function finite_or_zero 788 794
+    function finite_clamped 796 802
+    function usize_to_f32 804 807
+    function count_to_f32 813 815
+    function symbolic_cosine_similarity 824 844
+    function tokenize_symbolic 846 852
+    function bag_of_words 854 860
+    function vector_norm 862 871

@@ -30,7 +30,8 @@ use crate::solver_handlers::{
     try_shell_refusal, try_software_project_followup, try_software_project_request,
     try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_world_state, try_write_script, SelfAwarenessRuntime,
+    try_web_search_with_offline, try_who_is_question, try_world_state, try_write_script,
+    SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -134,6 +135,7 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "response_language_followup",
     "fact_checking",
     "world_state",
+    "web_search",
 ];
 
 /// Method names that run before the regular handler table.
@@ -160,6 +162,18 @@ pub fn try_contextual_override(
 ) -> ContextualOutcome {
     let answer = match name {
         "http_fetch" => try_http_fetch_with_offline(
+            prompt,
+            normalized,
+            log,
+            runtime.solver_config.offline
+                || !std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
+                    matches!(
+                        value.trim().to_ascii_lowercase().as_str(),
+                        "1" | "true" | "yes" | "on"
+                    )
+                }),
+        ),
+        "web_search" => try_web_search_with_offline(
             prompt,
             normalized,
             log,

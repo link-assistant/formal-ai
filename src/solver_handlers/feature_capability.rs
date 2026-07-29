@@ -62,9 +62,12 @@ pub fn try_feature_capability(
     let body = if feature.slug == "web_search" {
         if availability.available {
             for provider in WEB_SEARCH_PROVIDERS {
-                log.append("web_search:provider", (*provider).to_owned());
+                log.append("web_search:provider_planned", (*provider).to_owned());
             }
-            log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+            log.append(
+                "web_search:fusion_planned",
+                format!("rrf:k={WEB_SEARCH_RRF_K}"),
+            );
         }
         web_search_capability_body(
             language.slug(),
