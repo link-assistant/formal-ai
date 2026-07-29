@@ -1,7 +1,7 @@
 //! Regression coverage for the task-ladder false greens found by issue #842.
 
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
-use formal_ai::protocol::ChatMessage;
+use formal_ai::protocol::{ChatMessage, ToolCall};
 
 fn one_call(prompt: &str) -> PlannedToolCall {
     let plan = plan_chat_step(
@@ -48,4 +48,33 @@ fn isolated_contextual_pronoun_question_does_not_search_the_web() {
         panic!("an unresolved contextual pronoun should ask for context: {plan:?}");
     };
     assert!(answer.to_lowercase().contains("имеете в виду"), "{answer}");
+}
+
+#[test]
+fn web_synthesis_discards_short_page_furniture_without_a_phrase_blocklist() {
+    let prompt = "Что такое фуфломицин?";
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let call = one_call(prompt);
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "search",
+        call.tool.clone(),
+        call.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "search",
+        call.tool,
+        "Фуфломицин — развернуть\nЧто такое рок — развернуть\n\n\
+         Фуфломицин — название препаратов с недоказанной эффективностью: \
+         их эффективность не подтверждена качественными исследованиями.\n\n\
+         Читайте также — развернуть",
+    ));
+
+    let plan = plan_chat_step(&messages, &["websearch"]).expect("research synthesis");
+    let AgenticPlan::Final(answer) = plan else {
+        panic!("search evidence should complete without a fetch tool: {plan:?}");
+    };
+    assert!(answer.contains("недоказанной эффективностью"), "{answer}");
+    for furniture in ["развернуть", "Что такое рок", "Читайте также"] {
+        assert!(!answer.contains(furniture), "{furniture}: {answer}");
+    }
 }

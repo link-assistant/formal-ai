@@ -407,7 +407,8 @@ fn final_answer(query: &str, progress: &Progress) -> String {
 /// so it works in every supported language — see [`relevance`] for how the
 /// space-less scripts are handled.
 fn extract_answer(query: &str, evidence: &str) -> String {
-    let sentences = crate::summarization::formalize(evidence);
+    let evidence = structurally_complete_prose(evidence);
+    let sentences = crate::summarization::formalize(&evidence);
     let mut scored: Vec<(usize, f32, &str)> = sentences
         .iter()
         .enumerate()
@@ -423,7 +424,7 @@ fn extract_answer(query: &str, evidence: &str) -> String {
     if scored.is_empty() {
         // Nothing overlaps the query: fall back to the head of the document
         // rather than the whole of it, so the answer stays bounded either way.
-        return truncate_chars(evidence, MAX_EXTRACT_CHARS);
+        return truncate_chars(&evidence, MAX_EXTRACT_CHARS);
     }
     // Rank by relevance, keep the best few, then restore document order.
     scored.sort_by(|left, right| {
@@ -440,6 +441,42 @@ fn extract_answer(query: &str, evidence: &str) -> String {
         .map(|(_, _, text)| *text)
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// Prefer complete prose blocks when evidence mixes prose with page furniture.
+///
+/// Search providers often flatten headings, controls, and neighbouring links
+/// into short newline-delimited blocks beside the useful snippet. A complete
+/// sentence has a script-level terminal; navigation fragments generally do
+/// not. The structural signal works across languages and avoids maintaining a
+/// blocklist of provider-specific button labels. If the provider returns no
+/// complete block, preserve all evidence so terse but legitimate answers are
+/// still available to the ordinary relevance ranker.
+fn structurally_complete_prose(evidence: &str) -> String {
+    let blocks: Vec<&str> = evidence
+        .split("\n\n")
+        .map(str::trim)
+        .filter(|block| !block.is_empty())
+        .collect();
+    let prose: Vec<&str> = blocks
+        .iter()
+        .copied()
+        .filter(|block| {
+            block
+                .chars()
+                .next_back()
+                .is_some_and(is_sentence_terminal)
+        })
+        .collect();
+    if prose.is_empty() {
+        evidence.trim().to_owned()
+    } else {
+        prose.join("\n")
+    }
+}
+
+fn is_sentence_terminal(character: char) -> bool {
+    matches!(character, '.' | '!' | '?' | '。' | '…' | '।' | '॥')
 }
 
 /// How much `sentence` bears on `query`, in `0.0..=1.0`.
