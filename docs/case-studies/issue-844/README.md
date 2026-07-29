@@ -200,6 +200,14 @@ decomposition. Four implementation leaves are human-authored; the invariant is
 Agent-CLI-authored: one of five leaves, or 20%. The reproducible harness is
 [`experiments/issue_844_self_authoring/run.sh`](../../../experiments/issue_844_self_authoring/run.sh).
 
+After the final source tree was fixed, a separate real Agent CLI self-AST run
+(`ses_050ca60f5ffeXLhV1fH0Q2l0qW`) regenerated the exhaustive 343-document
+census through the same deterministic AST engine. Its client stream, server
+trace, focused artifact, and session record are under
+[`self-hosting-census/`](self-hosting-census/). That final-source evidence also
+advances issue #842's complete workspace-census ratchet; it is not counted as a
+second same-task implementation leaf.
+
 [`experiments/issue-844-self-hosting-evidence/run.sh`](../../../experiments/issue-844-self-hosting-evidence/run.sh)
 is a thin wrapper over #839's harness — it only picks the axes and the output
 directory, because that harness already accepts `OUT`, `ONLY`, `LOG` and `PORT`
