@@ -20,21 +20,22 @@ fn one_call(prompt: &str) -> PlannedToolCall {
 
 #[test]
 fn definition_example_requests_route_to_research_in_every_supported_language() {
-    for (prompt, subject) in [
-        ("Give one example of a flarb", "flarb"),
+    for (language, prompt, subject) in [
+        ("English", "Give one example of a flarb", "flarb"),
         (
+            "Russian",
             "Приведи один пример препарата, который называют фуфломицином",
             "фуфломицин",
         ),
-        ("फ्लार्ब का एक उदाहरण दें", "फ्लार्ब"),
-        ("举一个弗拉布的例子", "弗拉布"),
+        ("Hindi", "फ्लार्ब का एक उदाहरण दें", "फ्लार्ब"),
+        ("Chinese", "举一个弗拉布的例子", "弗拉布"),
     ] {
         let call = one_call(prompt);
-        assert_eq!(call.tool, "websearch", "{prompt}: {call:?}");
+        assert_eq!(call.tool, "websearch", "{language}: {prompt}: {call:?}");
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("search arguments");
         let query = arguments["query"].as_str().expect("search query");
-        assert!(query.contains(subject), "{prompt}: {query}");
+        assert!(query.contains(subject), "{language}: {prompt}: {query}");
     }
 }
 
