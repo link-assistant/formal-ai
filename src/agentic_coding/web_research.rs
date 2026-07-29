@@ -461,12 +461,7 @@ fn structurally_complete_prose(evidence: &str) -> String {
     let prose: Vec<&str> = blocks
         .iter()
         .copied()
-        .filter(|block| {
-            block
-                .chars()
-                .next_back()
-                .is_some_and(is_sentence_terminal)
-        })
+        .filter(|block| block.chars().next_back().is_some_and(is_sentence_terminal))
         .collect();
     if prose.is_empty() {
         evidence.trim().to_owned()

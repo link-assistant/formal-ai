@@ -1,5 +1,7 @@
 //! Regression coverage for the task-ladder false greens found by issue #842.
 
+use std::{fs, path::Path};
+
 use formal_ai::agentic_coding::{plan_chat_step, AgenticPlan, PlannedToolCall};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
@@ -74,7 +76,42 @@ fn web_synthesis_discards_short_page_furniture_without_a_phrase_blocklist() {
         panic!("search evidence should complete without a fetch tool: {plan:?}");
     };
     assert!(answer.contains("недоказанной эффективностью"), "{answer}");
-    for furniture in ["развернуть", "Что такое рок", "Читайте также"] {
+    for furniture in ["развернуть", "Что такое рок", "Читайте также"]
+    {
         assert!(!answer.contains(furniture), "{furniture}: {answer}");
     }
+}
+
+#[test]
+fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let stream_path = root.join("docs/case-studies/issue-842/self-hosting/agent-stream.jsonl");
+    let stream = fs::read_to_string(&stream_path)
+        .unwrap_or_else(|error| panic!("{}: {error}", stream_path.display()));
+    assert!(stream.contains("ses_052c4f066ffecNc3GC3Dk13wJ9"));
+    assert!(stream.contains("task-ladder-authored-invariant.lino"));
+
+    let generated = fs::read(
+        root.join("docs/case-studies/issue-842/self-hosting/task-ladder-authored-invariant.lino"),
+    )
+    .expect("Agent CLI generated invariant");
+    let canonical = fs::read(root.join("data/meta/task-ladder-authored-invariant.lino"))
+        .expect("canonical task-ladder invariant");
+    assert_eq!(
+        canonical, generated,
+        "the promoted bytes must be Agent-authored"
+    );
+
+    let decomposition = fs::read_to_string(
+        root.join("docs/case-studies/issue-842/self-hosting/decomposition.lino"),
+    )
+    .expect("reviewed issue #842 decomposition");
+    assert_eq!(decomposition.matches("issue_842_smallest_leaf_").count(), 5);
+    assert_eq!(
+        decomposition
+            .matches("authorship formal_ai_agent_cli")
+            .count(),
+        1
+    );
+    assert!(decomposition.contains("formal_ai_authored_percent 20"));
 }
