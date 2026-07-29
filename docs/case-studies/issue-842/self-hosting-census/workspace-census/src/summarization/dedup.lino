@@ -1,0 +1,36 @@
+self_ast_census
+  target src/summarization/dedup.rs
+  language rust
+  fidelity signature
+  byte_len 15182
+  line_count 410
+  content_id source_module_5a9b15426d331b77
+  symbol_count 27
+  symbols
+    enum Polarity 35 41
+    function slug 46 51
+    function flipped 55 60
+    struct StatementSignature 66 71
+    function of 82 94
+    function negated 98 103
+    function key 108 110
+    function id 115 117
+    function is_empty 123 125
+    struct SourcedStatement 130 137
+    function new 142 148
+    function from_sentence 153 160
+    struct StatementVariant 165 172
+    struct MergedStatement 176 188
+    function sources 195 203
+    function evidence 208 216
+    function source_count 220 222
+    function prior 226 228
+    struct MergeLink 233 242
+    struct Contradiction 246 253
+    struct DedupReport 257 266
+    function statement 271 273
+    function justification 278 283
+    function is_contradicted 287 291
+    function split 300 326
+    function deduplicate 335 392
+    function find_contradictions 394 410

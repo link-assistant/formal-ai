@@ -1,0 +1,28 @@
+self_ast_census
+  target src/summarization/importance.rs
+  language rust
+  fidelity signature
+  byte_len 10638
+  line_count 284
+  content_id source_module_29f2832f90c5912d
+  symbol_count 19
+  symbols
+    const INTENT_EVIDENCE_SUMMARY 43 43
+    const INTENT_EVIDENCE_DENIED 44 44
+    const INTENT_DISPUTED_STATEMENT 45 45
+    const ASSERTED_PLACEHOLDER 46 46
+    const TOTAL_PLACEHOLDER 47 47
+    const DENIED_PLACEHOLDER 48 48
+    const STATEMENT_PLACEHOLDER 49 49
+    const EVIDENCE_PLACEHOLDER 50 50
+    struct ImportanceScore 56 67
+    function blend 72 84
+    struct RankedStatement 89 103
+    function evidence_summary 109 111
+    function evidence_summary_in 116 138
+    function is_contested 142 144
+    function rank 155 181
+    function score 185 233
+    function percentage 236 242
+    function to_statements 251 253
+    function to_statements_in 258 284
