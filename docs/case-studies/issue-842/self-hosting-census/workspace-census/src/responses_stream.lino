@@ -1,0 +1,18 @@
+self_ast_census
+  target src/responses_stream.rs
+  language rust
+  fidelity signature
+  byte_len 10374
+  line_count 304
+  content_id source_module_ca16c71d79b370b0
+  symbol_count 9
+  symbols
+    function responses_sse_response 9 59
+    function push_response_output_item_events 61 114
+    function push_response_message_events 116 172
+    function push_response_function_call_events 174 202
+    function push_response_reasoning_events 204 260
+    function response_output_item_started 262 278
+    function response_snapshot 280 289
+    function next_response_sequence 291 295
+    function push_response_stream_event 297 304

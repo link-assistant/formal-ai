@@ -1,0 +1,11 @@
+self_ast_census
+  target src/seed/handler_precedence.rs
+  language rust
+  fidelity signature
+  byte_len 1972
+  line_count 44
+  content_id source_module_0153cbdf1badb1d6
+  symbol_count 2
+  symbols
+    function handler_precedence 24 26
+    function handler_precedence_from 33 44

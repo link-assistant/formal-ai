@@ -1,0 +1,15 @@
+self_ast_census
+  target src/seed/grounding_overrides.rs
+  language rust
+  fidelity signature
+  byte_len 4074
+  line_count 113
+  content_id source_module_e1e4f825307e3b33
+  symbol_count 6
+  symbols
+    struct OverrideFact 21 25
+    function parse_record 30 32
+    function override_reason 36 43
+    function override_facts 48 63
+    function cache_contains 68 76
+    function resolve 82 113

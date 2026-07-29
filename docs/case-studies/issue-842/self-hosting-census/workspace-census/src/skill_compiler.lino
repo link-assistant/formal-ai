@@ -1,0 +1,35 @@
+self_ast_census
+  target src/skill_compiler.rs
+  language rust
+  fidelity signature
+  byte_len 28955
+  line_count 757
+  content_id source_module_9d5cf71a7e6517b6
+  symbol_count 26
+  symbols
+    module structured 17 17
+    struct CompiledSkillPackage 26 59
+    struct CompiledSkillInput 63 67
+    struct CompiledSkillPrecondition 71 74
+    struct CompiledSkillStep 78 82
+    struct CompiledSkillEffect 86 89
+    struct CompiledSkillExpectedTest 93 100
+    struct CompiledSkillPermission 104 108
+    struct CompiledSkillHandlerStub 112 117
+    struct CompiledSkillReplay 121 132
+    enum SkillCompileError 136 143
+    function fmt 146 161
+    function compile_natural_language_skill 171 181
+    function natural_language_skill_compiler_record 184 199
+    function new 204 236
+    function from_structured 238 377
+    function replay 381 406
+    function links_notation 410 491
+    function link_records 495 615
+    function extract_trigger_response 618 632
+    function looks_like_skill_description 649 672
+    function explicit_teaching_form 688 693
+    function code_spans 695 707
+    function link_record 709 739
+    function push_field 741 749
+    function push_doublet 751 757

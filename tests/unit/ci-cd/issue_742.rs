@@ -2,6 +2,8 @@
 
 use std::fs;
 
+use toml_edit::DocumentMut;
+
 fn manifest() -> String {
     fs::read_to_string(format!("{}/Cargo.toml", env!("CARGO_MANIFEST_DIR")))
         .expect("Cargo.toml should be readable")
@@ -18,9 +20,13 @@ fn release_workflow() -> String {
 #[test]
 fn docs_rs_profile_excludes_the_broken_lindera_build_script() {
     let manifest = manifest();
+    let document = manifest
+        .parse::<DocumentMut>()
+        .expect("Cargo.toml should be valid TOML");
+    let meta_language = &document["dependencies"]["meta-language"];
 
     assert!(
-        manifest.contains("meta-language = { version = \"0.45.0\", optional = true }"),
+        meta_language["optional"].as_bool() == Some(true),
         "the transitive lindera build script can only be avoided when meta-language is optional"
     );
     assert!(manifest.contains("default = [\"doublets-native\", \"meta-language\"]"));

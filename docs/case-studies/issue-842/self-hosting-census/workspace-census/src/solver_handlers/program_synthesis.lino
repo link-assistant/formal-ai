@@ -1,0 +1,42 @@
+self_ast_census
+  target src/solver_handlers/program_synthesis.rs
+  language rust
+  fidelity signature
+  byte_len 21923
+  line_count 658
+  content_id source_module_681d648dadbec66c
+  symbol_count 33
+  symbols
+    struct PythonCandidate 10 15
+    struct PythonFunctionTree 17 20
+    enum PythonStatement 22 43
+    function new 46 48
+    function render 50 54
+    function links_notation 56 67
+    function render_statements 69 73
+    function assign 77 87
+    function return_expr 89 94
+    function if_return 96 106
+    function for_loop 108 120
+    function render 122 149
+    function links_line 151 198
+    function try_program_synthesis 201 257
+    function looks_like_python_function_request 266 273
+    function synthesis_task_evidenced 280 299
+    function match_synthesis_task 304 309
+    function extract_function_name 311 324
+    function declared_function_name_from_signature 326 352
+    function is_ascii_identifier_start 354 356
+    function is_ascii_identifier_continue 358 360
+    function is_reserved_python_identifier 362 382
+    function synthesize_python_candidate 384 499
+    function verify_python_candidate 501 514
+    function verification_script 516 530
+    function append_agent_run 532 550
+    function render_python_answer 552 560
+    function identifier_after_ascii_marker 562 578
+    function declared_signature 580 594
+    function return_annotation_end 596 627
+    function next_non_whitespace 629 633
+    function is_return_annotation_char 635 641
+    function matching_close_paren 643 658

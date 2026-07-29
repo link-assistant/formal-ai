@@ -1,0 +1,48 @@
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/docs.yml:73:          ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') &&
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/docs.yml:80:          ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') &&
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/docs.yml:86:          ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') &&
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/docs.yml:95:      ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') &&
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:46:  detect-changes:
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:56:      mjs-changed: ${{ steps.changes.outputs.mjs-changed }}
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:57:      docs-changed: ${{ steps.changes.outputs.docs-changed }}
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:59:      any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:104:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:105:    if: github.event_name == 'pull_request' && needs.detect-changes.outputs.any-code-changed == 'true'
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:158:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:159:    # detect-changes is intentionally skipped for workflow_dispatch. Without a
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:160:    # status-check function, GitHub adds an implicit success() on detect-changes
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:165:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:167:        needs.detect-changes.outputs.cs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:168:        needs.detect-changes.outputs.csproj-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:169:        needs.detect-changes.outputs.sln-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:170:        needs.detect-changes.outputs.props-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:171:        needs.detect-changes.outputs.mjs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:172:        needs.detect-changes.outputs.docs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:173:        needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:232:    needs: [detect-changes]
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:238:        github.event_name == 'push' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:240:        needs.detect-changes.outputs.any-code-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:241:        needs.detect-changes.outputs.cs-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:242:        needs.detect-changes.outputs.csproj-changed == 'true' ||
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:243:        needs.detect-changes.outputs.workflow-changed == 'true'
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:357:    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.build.result == 'success'
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/.github/workflows/release.yml:578:    # detect-changes (an upstream skip) propagated through the needs graph.
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/docs-workflow-policy.test.mjs:6:  "(github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'";
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:18: * - experiments/ folder (experimental scripts)
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:34: *   - mjs-changed: 'true' if any .mjs files changed (scripts)
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:35: *   - docs-changed: 'true' if any .md files changed
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:37: *   - any-code-changed: 'true' if any code files changed (excludes docs, changesets, experiments, examples)
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:137:    'experiments/',
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:141:    prefixCsharpRoot('experiments/'),
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:188:  setOutput('mjs-changed', mjsChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:192:  setOutput('docs-changed', docsChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/detect-code-changes.mjs:216:  setOutput('any-code-changed', codeChanged ? 'true' : 'false');
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:7:  ['detect-changes', 5],
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:21:// Jobs whose `needs` graph includes detect-changes, which is intentionally
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:174:    expect(testJob).toContain('needs: [detect-changes]');
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:175:    expect(testJob).not.toContain('needs: [detect-changes, changeset-check]');
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:178:    expect(condition).toContain("github.event_name == 'push'");
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:180:    expect(condition).toContain("needs.detect-changes.outputs.any-code-changed == 'true'");
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:181:    expect(condition).toContain("needs.detect-changes.outputs.cs-changed == 'true'");
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:182:    expect(condition).toContain("needs.detect-changes.outputs.csproj-changed == 'true'");
+/tmp/tmp.La44QvWGNf/csharp-ai-driven-development-pipeline-template/scripts/release-workflow-policy.test.mjs:183:    expect(condition).toContain("needs.detect-changes.outputs.workflow-changed == 'true'");

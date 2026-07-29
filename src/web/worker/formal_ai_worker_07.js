@@ -41,11 +41,9 @@ function numericListProgramLinks(program) {
 // src/solver_handlers/numeric_list/codegen.rs.
 // CODING_IDIOMS_LINO is loaded from synced seed/*.lino data during loadSeed().
 
-// Safety caps mirroring MAX_EXPANSION_DEPTH / MAX_INHERITANCE_DEPTH in
-// src/solver_handlers/numeric_list/codegen.rs: anything deeper is a
-// definition cycle in the seed data and must fail composition.
+// Safety cap mirroring MAX_EXPANSION_DEPTH in numeric-list codegen; inheritance
+// has no fixed depth cap because a visited set ends malformed cycles.
 const CODING_IDIOMS_MAX_EXPANSION_DEPTH = 8;
-const CODING_IDIOMS_MAX_INHERITANCE_DEPTH = 4;
 
 let cachedCodingIdiomCatalog;
 // Parsed root of the coding-idioms knowledge base, loaded once per worker.
@@ -73,8 +71,10 @@ function codingChildValue(node, name) {
 // language_chain.
 function codingLanguageChain(catalog, slug) {
   const chain = [];
+  const seen = new Set();
   let current = slug;
-  while (chain.length < CODING_IDIOMS_MAX_INHERITANCE_DEPTH) {
+  while (!seen.has(current)) {
+    seen.add(current);
     const node = catalog.children.find(
       (child) => child.name === "language" && child.value === current,
     );

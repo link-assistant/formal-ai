@@ -1,4 +1,20 @@
 multilingual_responses
+  response response_client_integration_invalid_typed_json_setting_en
+    intent client_integration_invalid_typed_json_setting
+    language en
+    text "invalid typed JSON setting `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_ru
+    intent client_integration_invalid_typed_json_setting
+    language ru
+    text "недопустимая типизированная настройка JSON `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_hi
+    intent client_integration_invalid_typed_json_setting
+    language hi
+    text "अमान्य टाइप की गई JSON सेटिंग `{rendered}`: {error}"
+  response response_client_integration_invalid_typed_json_setting_zh
+    intent client_integration_invalid_typed_json_setting
+    language zh
+    text "无效的带类型 JSON 设置 `{rendered}`：{error}"
   response response_agentic_report_target_question_en
     intent agentic_report_target_question
     language en

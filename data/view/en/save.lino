@@ -1,0 +1,53 @@
+view
+  id M-db1d30ac443b
+  lemma save
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(sports) the act of preventing the opposition from scoring"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "save from ruin, destruction, or harm"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to keep up and reserve for personal or special use"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring into safety"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "spend less; buy at a reduced price"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "accumulate money for future use"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make unnecessary an expenditure or effort"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "save from sins"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "refrain from harming"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "spend sparingly, avoid the waste of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "retain rights to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "record data on a computer"
+    provenance (wordnet)

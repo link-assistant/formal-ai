@@ -1,0 +1,19 @@
+self_ast_census
+  target src/links_substitution_query/text.rs
+  language rust
+  fidelity signature
+  byte_len 8111
+  line_count 233
+  content_id source_module_54590acf88bfa6d5
+  symbol_count 10
+  symbols
+    struct Operand 15 18
+    function substitution_effect 25 35
+    function parse_substitution_query 45 64
+    function render_substitution_query 72 104
+    function render_side 106 117
+    function pair_operands 120 156
+    function rule 158 165
+    function parse_side 168 190
+    function parse_operand 192 208
+    function parse_operand_name 212 232

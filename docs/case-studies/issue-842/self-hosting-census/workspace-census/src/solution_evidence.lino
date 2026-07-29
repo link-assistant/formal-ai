@@ -1,0 +1,18 @@
+self_ast_census
+  target src/solution_evidence.rs
+  language rust
+  fidelity signature
+  byte_len 7810
+  line_count 192
+  content_id source_module_5531e73e2678ee78
+  symbol_count 9
+  symbols
+    struct EvidenceTrail 24 46
+    function to_links_notation 50 71
+    struct SolutionEvidence 76 81
+    function assemble 88 121
+    function accounted_for 126 128
+    function fully_resolved 133 139
+    function resolved_to_method 143 148
+    function to_links_notation 152 170
+    function record_solution_evidence 179 192

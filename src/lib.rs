@@ -11,6 +11,7 @@ pub(crate) mod calculation;
 pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
 pub mod change_request;
+pub mod client_contract_learning;
 pub mod client_integrations;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
@@ -28,6 +29,9 @@ pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
+pub mod external_benchmarks;
+pub mod fact_checking;
+pub mod formal_system;
 pub(crate) mod fuzzy;
 pub mod gemini;
 pub mod github_logs;
@@ -90,6 +94,7 @@ pub mod shared_dialog;
 pub mod shared_memory;
 pub mod skill_compiler;
 pub mod skill_ledger;
+pub mod skill_procedure;
 pub mod solution_evidence;
 pub mod solver;
 pub(crate) mod solver_diagnostics;
@@ -106,6 +111,8 @@ pub(crate) mod solver_search;
 pub(crate) mod solver_synthesis;
 pub(crate) mod solver_terminal;
 pub(crate) mod solver_unknown_reasoning;
+pub mod source_fetch;
+pub mod source_research;
 pub mod statement_audit;
 pub mod statement_verification;
 pub mod storage_policy;
@@ -120,6 +127,9 @@ pub(crate) mod unknown_opener;
 pub mod web_engine_core;
 pub mod web_search_core;
 pub mod world_model;
+pub mod world_model_atoms;
+pub mod world_model_context;
+pub mod world_model_dialog;
 
 pub use agent::{
     parse_agent_plan, run_agent_plan, AgentAction, AgentActionKind, AgentActionStatus,
@@ -140,6 +150,10 @@ pub use associative_persistence::{
     AssociativeMemory, PersistedExpression, RetentionWeights, ScoredExpression,
 };
 pub use change_request::{canonical_change_request, AcceptedChange, ChangeRejected, ChangeRequest};
+pub use client_contract_learning::{
+    learn_client_contracts, load_observations, observe_proxy_transcript, ClientContractFinding,
+    ClientContractLearningReport, ClientContractObservation, ClientContractProposal, DeliveryMode,
+};
 pub use client_integrations::{run_with_formal_ai, ClientProtocol, WithFormalAiArgs};
 pub use document_formats::{
     canonical_document_format_label, convert_document_format, cross_format_document_concepts,
@@ -167,6 +181,11 @@ pub use engine::{
     SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
+pub use fact_checking::{
+    AuditScope, ContextAudit, EvidenceTrace, FactCheckError, FactChecker, ProbabilityBasis,
+    RefutationAttempt, RefutationOutcome, RefutationStage, StatementVerification,
+};
+pub use formal_system::FormalSystem;
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
     render_github_log_plan, GithubLogCapture, GithubLogCapturedFile, GithubLogCollectionSummary,
@@ -296,15 +315,35 @@ pub use skill_compiler::{
     CompiledSkillHandlerStub, CompiledSkillInput, CompiledSkillPackage, CompiledSkillPermission,
     CompiledSkillPrecondition, CompiledSkillReplay, CompiledSkillStep, SkillCompileError,
 };
+pub use skill_procedure::{
+    compile_procedure, compile_procedure_with_ledger, extract_compiled_procedure_artifact,
+    ApprovedProcedureLesson, CompiledProcedure, ProcedureArtifactError, ProcedureCapabilityLedger,
+    ProcedureCapabilityLesson, ProcedureCompileError, ProcedureHost, ProcedureLearnedSurface,
+    ProcedureLearningApproval, ProcedureLearningCandidate, ProcedureLearningError,
+    ProcedureLearningGate, ProcedureLearningObservation, ProcedureLearningProposal,
+    ProcedureRequirement, ProcedureRun, ProcedureRunError, ProcedureStep, ProcedureTrigger,
+    StepOutcome, PROCEDURE_CONFORMANCE_TRIGGER,
+};
 pub use solver::{
     solve, solve_with_history, BlueprintComposition, ConversationRole, ConversationTurn,
     ExecutionSurface, SolverConfig, UniversalSolver,
 };
-pub use solver_handlers::{answer_memory_recall, execute_memory_query, MemoryQueryExecution};
+pub use solver_handlers::{
+    answer_memory_recall, execute_memory_query, try_web_search_with_client, MemoryQueryExecution,
+};
 pub use solver_helpers::humanize_url;
+pub use source_fetch::{
+    sha256_hex, CachedSourceClient, CurlSourceTransport, FetchError, SourceCapture, SourceTransport,
+};
+pub use source_research::{
+    execute_option_research, execute_source_research, execute_statement_research,
+    OptionResearchExecution, ResearchFailure, ResearchPage, SourceResearchExecution,
+    StatementResearchExecution,
+};
 pub use statement_verification::{
-    assess_market_price_claims, extract_market_price_claims, MarketPriceAssessment,
-    MarketPriceClaim,
+    assess_market_price_claims, extract_market_price_claims, CapturedStatementEvidence,
+    MarketPriceAssessment, MarketPriceClaim, StatementVerificationExecution,
+    StatementVerificationPlan,
 };
 pub use storage_policy::{
     apply_auto_free_space_for_write, apply_auto_free_space_with_snapshot, auto_free_space_choice,
@@ -337,16 +376,27 @@ pub use telegram_runtime::{
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
-    detect_language as detect_prompt_language, evaluate_arithmetic_expression,
-    normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    assess_arithmetic_claim, detect_language as detect_prompt_language,
+    evaluate_arithmetic_expression, normalize_prompt as normalize_prompt_text, tokenize_prompt,
+    ArithmeticClaimAssessment, ArithmeticClaimOutcome,
 };
 pub use web_search_core::{
     build_request_evidence as build_web_search_request_evidence, default_search_plan_ids,
-    parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output, FusedEntry, ProviderCategory,
-    ProviderRanking, ProviderSpec, WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS,
-    WEB_SEARCH_PROVIDER_LIMIT, WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
+    execute_duckduckgo_search, parse_rrf_input, reciprocal_rank_fusion, serialize_rrf_output,
+    FusedEntry, ProviderCategory, ProviderRanking, ProviderSpec, SearchExecution,
+    WEB_SEARCH_CONCURRENCY_PER_CATEGORY, WEB_SEARCH_PROVIDERS, WEB_SEARCH_PROVIDER_LIMIT,
+    WEB_SEARCH_PROVIDER_REGISTRY, WEB_SEARCH_RRF_K,
 };
 pub use world_model::{
-    Action, Context, ContextDiff, Dependency, LinkConflict, Prediction, RecalculationReport,
-    Statement as WorldStatement, StatementChange, WorldModel,
+    Action, Context, ContextAccessEvent, ContextAccessEventKind, ContextDiff, Dependency,
+    GeneralMemoryCommitError, GeneralMemoryPermission, LinkConflict, Prediction, RecalculatedLink,
+    RecalculationReport, Statement as WorldStatement, StatementChange, WorldModel,
+};
+pub use world_model_atoms::{classify as classify_utterance, state_atom, UtteranceKind};
+pub use world_model_context::{
+    ContextHierarchy, ContextHierarchyError, ExternalLookup, InheritancePolicy, ParentContext,
+    ReferenceResolution, ReferenceResolutionKind,
+};
+pub use world_model_dialog::{
+    ActionForecast, DialogueWorldModel, SyncEvent, SyncEventKind, WorldModelMode,
 };

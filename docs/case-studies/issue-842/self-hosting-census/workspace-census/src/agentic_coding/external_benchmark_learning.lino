@@ -1,0 +1,56 @@
+self_ast_census
+  target src/agentic_coding/external_benchmark_learning.rs
+  language rust
+  fidelity full_ast
+  byte_len 1473
+  line_count 38
+  content_id source_module_143122bfd70dcc0e
+  symbol_count 5
+  symbols
+    const EXTERNAL_BENCHMARK_LEARNING_PATH 11 11
+    function task 15 17
+    static REPORT 19 27
+    function render_document 30 32
+    function render_document_from 36 38
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 709
+    named_node_count 133
+    distinct_node_kinds 33
+    node_kinds
+      arguments 4
+      attribute 3
+      attribute_item 3
+      block 3
+      call_expression 4
+      const_item 1
+      crate 1
+      doc_comment 9
+      field_expression 2
+      field_identifier 9
+      field_initializer 7
+      field_initializer_list 1
+      function_item 3
+      identifier 21
+      inner_doc_comment_marker 7
+      line_comment 9
+      macro_invocation 1
+      outer_doc_comment_marker 2
+      parameter 1
+      parameters 3
+      primitive_type 2
+      reference_type 2
+      scoped_identifier 5
+      source_file 1
+      static_item 1
+      string_content 7
+      string_literal 7
+      struct_expression 1
+      super 1
+      token_tree 1
+      type_identifier 5
+      use_declaration 1
+      visibility_modifier 5

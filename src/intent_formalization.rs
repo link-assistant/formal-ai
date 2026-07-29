@@ -25,6 +25,9 @@ use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 use crate::{concepts, cue_lexicon};
 
+mod requirements;
+pub use requirements::{ordered_requirement_spans, OrderedRequirementSpan};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
     Task,
@@ -744,6 +747,17 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         (
             "handler:proof_request",
             cue_lexicon::matches("proof_request", normalized),
+        ),
+        (
+            "handler:fact_checking",
+            crate::seed::lexicon().mentions_role_raw(
+                crate::seed::ROLE_FACT_CHECK_CURRENT_DIALOGUE_QUERY,
+                normalized,
+            ),
+        ),
+        (
+            "handler:world_state",
+            cue_lexicon::matches(crate::world_model_atoms::QUERY_CUES, normalized),
         ),
         (
             "handler:write_script",

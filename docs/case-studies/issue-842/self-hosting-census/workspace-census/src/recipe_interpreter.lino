@@ -1,0 +1,32 @@
+self_ast_census
+  target src/recipe_interpreter.rs
+  language rust
+  fidelity signature
+  byte_len 17308
+  line_count 440
+  content_id source_module_94db3b3b0da83e24
+  symbol_count 23
+  symbols
+    const RECIPE_LINO 43 43
+    struct RecipeStep 47 60
+    function is_executable 65 67
+    struct RecipeProgram 72 75
+    function from_lino 80 84
+    function from_repo 88 90
+    function step_count 94 96
+    function recorder_sequence 103 108
+    function execute 124 167
+    function reproduces_pipeline 177 204
+    function to_links_notation 209 236
+    struct ExecutionTrace 241 248
+    struct ExecutionContext 252 263
+    function run_recorder 269 345
+    function require_problem_frame 347 351
+    function require_work_unit_root 353 357
+    function require_need_ledger 359 363
+    function require_method_registry 365 369
+    function require_solution_evidence 371 375
+    function dependency_error 379 381
+    function parse_steps 385 404
+    function step_from_block 408 425
+    function field_value 429 440

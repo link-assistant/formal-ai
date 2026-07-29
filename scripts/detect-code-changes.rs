@@ -9,7 +9,8 @@
 //!   HEAD^..HEAD^2 to cover the complete pull request.
 //! - For pushes: compares the event's `before` SHA against HEAD, covering every
 //!   commit in a multi-commit push.
-//! - Excludes certain folders and file types from "code changes" detection
+//! - Excludes CI evidence and scratch folders from every job-gating output
+//! - Excludes additional documentation/example paths from "code changes"
 //!
 //! Excluded from code changes (don't require changelog fragments):
 //! - Markdown files (*.md) in any folder
@@ -17,6 +18,11 @@
 //! - docs/ folder (documentation)
 //! - experiments/ folder (experimental scripts)
 //! - examples/ folder (example scripts)
+//!
+//! Excluded from every job-gating output:
+//! - experiments/ folder
+//! - dev/log/ folder
+//! - docs/case-studies/ folder
 //!
 //! Usage: rust-script scripts/detect-code-changes.rs
 //!
@@ -27,10 +33,9 @@
 //! Outputs (written to `GITHUB_OUTPUT`):
 //!   - rs-changed: 'true' if any .rs files changed
 //!   - toml-changed: 'true' if any .toml files changed
-//!   - mjs-changed: 'true' if any .mjs files changed
 //!   - docs-changed: 'true' if any .md files changed
 //!   - workflow-changed: 'true' if any .github/workflows/ files changed
-//!   - any-code-changed: 'true' if any code files changed (excludes docs, changelog.d, experiments, examples)
+//!   - any-code-changed: 'true' if any non-ignored code files changed
 //!
 //! ```cargo
 //! [dependencies]
@@ -43,6 +48,10 @@ use std::fs;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
+
+// These paths are CI evidence or non-shipping scratch work. No output used to
+// gate a job may be set by a file below one of these prefixes.
+const CI_IGNORED_PATH_PREFIXES: &[&str] = &["experiments/", "dev/log/", "docs/case-studies/"];
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
@@ -145,6 +154,12 @@ fn get_changed_files() -> Vec<String> {
         .collect()
 }
 
+fn is_ignored_by_ci(file_path: &str) -> bool {
+    CI_IGNORED_PATH_PREFIXES
+        .iter()
+        .any(|prefix| file_path.starts_with(prefix))
+}
+
 fn is_excluded_from_code_changes(file_path: &str) -> bool {
     // Exclude markdown files in any folder
     if has_extension(file_path, "md") {
@@ -152,7 +167,7 @@ fn is_excluded_from_code_changes(file_path: &str) -> bool {
     }
 
     // Exclude specific folders from code changes
-    let excluded_folders = ["changelog.d/", "docs/", "experiments/", "examples/"];
+    let excluded_folders = ["changelog.d/", "docs/", "examples/"];
 
     for folder in &excluded_folders {
         if file_path.starts_with(folder) {
@@ -167,6 +182,42 @@ fn has_extension(file_path: &str, expected: &str) -> bool {
     Path::new(file_path)
         .extension()
         .is_some_and(|extension| extension.eq_ignore_ascii_case(expected))
+}
+
+#[derive(Debug, Default, Eq, PartialEq)]
+// Each boolean maps directly to one GitHub Actions output. Replacing these
+// independent flags with a state machine would incorrectly make them exclusive.
+#[allow(clippy::struct_excessive_bools)]
+struct ChangeFlags {
+    rs_changed: bool,
+    toml_changed: bool,
+    docs_changed: bool,
+    workflow_changed: bool,
+    any_code_changed: bool,
+}
+
+fn classify_changes(changed_files: &[String]) -> ChangeFlags {
+    let relevant_files: Vec<&String> = changed_files
+        .iter()
+        .filter(|file| !is_ignored_by_ci(file))
+        .collect();
+    let code_pattern =
+        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
+
+    ChangeFlags {
+        rs_changed: relevant_files.iter().any(|file| has_extension(file, "rs")),
+        toml_changed: relevant_files
+            .iter()
+            .any(|file| has_extension(file, "toml")),
+        docs_changed: relevant_files.iter().any(|file| has_extension(file, "md")),
+        workflow_changed: relevant_files
+            .iter()
+            .any(|file| file.starts_with(".github/workflows/")),
+        any_code_changed: relevant_files
+            .iter()
+            .filter(|file| !is_excluded_from_code_changes(file))
+            .any(|file| code_pattern.is_match(file)),
+    }
 }
 
 fn main() {
@@ -184,35 +235,33 @@ fn main() {
     }
     println!();
 
-    // Detect .rs file changes (Rust source)
-    let rs_changed = changed_files.iter().any(|f| has_extension(f, "rs"));
-    set_output("rs-changed", if rs_changed { "true" } else { "false" });
-
-    // Detect .toml file changes (Cargo.toml, Cargo.lock, etc.)
-    let toml_changed = changed_files.iter().any(|f| has_extension(f, "toml"));
-    set_output("toml-changed", if toml_changed { "true" } else { "false" });
-
-    // Detect .mjs file changes (scripts)
-    let mjs_changed = changed_files.iter().any(|f| has_extension(f, "mjs"));
-    set_output("mjs-changed", if mjs_changed { "true" } else { "false" });
-
-    // Detect documentation changes (any .md file)
-    let docs_changed = changed_files.iter().any(|f| has_extension(f, "md"));
-    set_output("docs-changed", if docs_changed { "true" } else { "false" });
-
-    // Detect workflow changes
-    let workflow_changed = changed_files
-        .iter()
-        .any(|f| f.starts_with(".github/workflows/"));
+    let flags = classify_changes(&changed_files);
+    set_output(
+        "rs-changed",
+        if flags.rs_changed { "true" } else { "false" },
+    );
+    set_output(
+        "toml-changed",
+        if flags.toml_changed { "true" } else { "false" },
+    );
+    set_output(
+        "docs-changed",
+        if flags.docs_changed { "true" } else { "false" },
+    );
     set_output(
         "workflow-changed",
-        if workflow_changed { "true" } else { "false" },
+        if flags.workflow_changed {
+            "true"
+        } else {
+            "false"
+        },
     );
 
-    // Detect code changes (excluding docs, changelog.d, experiments, examples folders, and markdown files)
+    // Show code changes after both the CI-wide ignored paths and the broader
+    // any-code documentation/example exclusions have been applied.
     let code_changed_files: Vec<&String> = changed_files
         .iter()
-        .filter(|f| !is_excluded_from_code_changes(f))
+        .filter(|file| !is_ignored_by_ci(file) && !is_excluded_from_code_changes(file))
         .collect();
 
     println!("\nFiles considered as code changes:");
@@ -231,12 +280,13 @@ fn main() {
     // trigger lint/test. .lino covers seed lexicons and language resources such
     // as src/web/i18n-catalog.lino: the language-change-parity guard watches
     // those files, so editing one must run lint/test that enforces the guard.
-    let code_pattern =
-        Regex::new(r"\.(rs|toml|mjs|cjs|js|lino|yml|yaml)$|\.github/workflows/").unwrap();
-    let code_changed = code_changed_files.iter().any(|f| code_pattern.is_match(f));
     set_output(
         "any-code-changed",
-        if code_changed { "true" } else { "false" },
+        if flags.any_code_changed {
+            "true"
+        } else {
+            "false"
+        },
     );
 
     println!("\nChange detection completed.");
@@ -244,7 +294,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::comparison_for_event;
+    use super::{classify_changes, comparison_for_event, ChangeFlags};
 
     #[test]
     fn pull_requests_compare_the_complete_base_to_head_range() {
@@ -280,6 +330,43 @@ mod tests {
                 "HEAD".to_string(),
                 "previous commit diff"
             )
+        );
+    }
+
+    #[test]
+    fn ignored_only_changes_set_no_flags_for_pushes_or_pull_requests() {
+        for event_name in ["push", "pull_request"] {
+            for path in [
+                "experiments/repro.rs",
+                "experiments/README.md",
+                "experiments/repro.mjs",
+                "dev/log/run.rs",
+                "docs/case-studies/issue-846/repro.rs",
+            ] {
+                assert_eq!(
+                    classify_changes(&[path.to_string()]),
+                    ChangeFlags::default(),
+                    "{path} must be ignored on {event_name}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn shipping_changes_still_set_their_flags() {
+        assert_eq!(
+            classify_changes(&[
+                "src/lib.rs".to_string(),
+                "guide.md".to_string(),
+                ".github/workflows/release.yml".to_string(),
+            ]),
+            ChangeFlags {
+                rs_changed: true,
+                docs_changed: true,
+                workflow_changed: true,
+                any_code_changed: true,
+                ..ChangeFlags::default()
+            }
         );
     }
 }

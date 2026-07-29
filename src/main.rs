@@ -6,18 +6,24 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_benchmark;
+mod cli_clients;
 mod cli_context;
 mod cli_import;
 mod cli_improve;
 mod cli_memory;
+mod cli_procedure;
 mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_benchmark::{run_benchmark, BenchmarkAction};
+use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
 use cli_improve::{run_improve, ImproveArgs};
 use cli_memory::{load_memory_or_empty, run_memory};
+use cli_procedure::{run_procedure, ProcedureArgs};
 use cli_report::{run_report, ReportArgs};
 use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use cli_statement_audit::{run_statement_audit, StatementAuditArgs};
@@ -138,6 +144,17 @@ enum Command {
     /// every interface the agent supports and how to migrate memory between
     /// them.
     Environments,
+    /// Print the seed-baked registry of external agentic CLI clients that
+    /// `formal-ai with` can drive, including each client's protocols, endpoints,
+    /// headless invocation, and persistent-config location. `--format json`
+    /// makes the registry machine-readable so the multi-CLI end-to-end matrix
+    /// (issue #671) derives its legs from the same data the wrapper uses.
+    Clients {
+        #[arg(long, value_enum, default_value_t = ClientsFormat::Text)]
+        format: ClientsFormat,
+        #[command(subcommand)]
+        action: Option<ClientsAction>,
+    },
     /// Import lexical semantics in bulk from external sources (issue #660,
     /// R378). Generalises `scripts/ground-meanings.rs` into a deterministic,
     /// validate-then-write pipeline.
@@ -151,10 +168,18 @@ enum Command {
         #[command(subcommand)]
         action: GithubLogsAction,
     },
+    /// Run real upstream benchmark suites (issue #698) and record honest
+    /// `passed/total` scores in `data/benchmarks/external-results.lino`.
+    Benchmark {
+        #[command(subcommand)]
+        action: BenchmarkAction,
+    },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
     /// Run or permanently configure external CLIs against a local Formal AI server.
     With(WithFormalAiArgs),
+    /// Execute and inspect persisted natural-language procedure artifacts.
+    Procedure(ProcedureArgs),
     /// Drive the full agentic-coding loop offline (issue #468). The in-repo
     /// driver plays the role of an external agentic CLI against our
     /// OpenAI-compatible server: it advertises tools, executes every emitted
@@ -563,10 +588,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
+        Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
+        Command::Procedure(args) => run_procedure(args)?,
         Command::Agent {
             task,
             transcript,

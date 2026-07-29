@@ -1,0 +1,22 @@
+self_ast_census
+  target src/coding/catalog/types.rs
+  language rust
+  fidelity signature
+  byte_len 3900
+  line_count 127
+  content_id source_module_8db09cc11dc61920
+  symbol_count 13
+  symbols
+    struct ProgramLanguage 15 28
+    struct ProgramTask 31 35
+    function output_for_language 39 42
+    struct ProgramTemplate 46 50
+    struct ProgramSpec 53 57
+    function response_link 61 66
+    function parameter_summary 69 74
+    function legacy_intent 77 83
+    function expected_output 86 88
+    function list_files_sample_output 91 103
+    struct ProgramExecution 106 112
+    enum ExecutionStatus 115 118
+    function label 121 126

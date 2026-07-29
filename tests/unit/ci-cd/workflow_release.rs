@@ -262,9 +262,10 @@ fn test_job_skips_non_code_changes() {
         "test job should run when the CI workflow itself changed"
     );
     assert!(
-        test.contains("github.event_name == 'push'")
+        !test.contains("github.event_name == 'push'")
             && test.contains("github.event_name == 'workflow_dispatch'"),
-        "test job should still always run on push and manual dispatch"
+        "issue #846 requires pushes to obey detect-changes while manual \
+         dispatch remains unconditional"
     );
     assert!(
         // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs
@@ -400,8 +401,12 @@ fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
     let lint = job_block(&workflow, "lint");
 
     assert!(
-        lint.contains("cargo clippy --all-targets --all-features -- -D warnings"),
-        "clippy must fail the job on findings, not just print them (issue #812)"
+        lint.contains("cargo clippy --lib --bins --tests --all-features -- -D warnings"),
+        "clippy must lint executable test targets and fail the job on findings"
+    );
+    assert!(
+        lint.contains("cargo check --examples --all-features"),
+        "examples must be compile-checked without linking every standalone binary (issue #534)"
     );
     assert!(
         lint.contains("actionlint"),
@@ -728,6 +733,48 @@ fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
     assert!(
         deploy.contains("url=formal_ai/index.html"),
         "a redirect should point /docs/api/ at the crate root"
+    );
+}
+
+#[test]
+fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
+    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
+
+    assert!(
+        !build.contains("uses: actions/cache@"),
+        "desktop builds must not register a post-job Cargo dependency archive: \
+         a cold Windows x64 build already completed and uploaded every artifact, \
+         then timed out compressing this redundant cache"
+    );
+    assert!(
+        build.contains("mozilla-actions/sccache-action@"),
+        "desktop builds should retain the compiler-output cache"
+    );
+    for step in [install_sccache, enable_sccache] {
+        assert!(
+            step.contains("if: runner.os != 'Windows'"),
+            "desktop builds must bypass sccache on Windows: wrapping rustc makes \
+             web-sys's generated feature-check command exceed CreateProcess's \
+             command-line limit (os error 206)"
+        );
+    }
+    assert!(
+        install_sccache.contains("version: v0.16.0"),
+        "desktop builds must pin the last known-good sccache version: v0.17.0 \
+         expands Rust response files and exceeds the Windows command-line limit"
+    );
+
+    let shared_setup = fs::read_to_string(format!(
+        "{}/.github/actions/setup-sccache/action.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("read shared sccache setup action");
+    assert!(
+        shared_setup.contains("version: v0.16.0"),
+        "the shared setup action must pin sccache instead of silently tracking its latest release"
     );
 }
 

@@ -177,6 +177,22 @@ fn dispatch_api_request_with_auth(
             body: String::new(),
             deprecated: false,
         },
+        // Reachability preflight. Claude Code opens every session with
+        // `HEAD <base-url>` before its first `/v1/messages` POST; the issue-#671
+        // matrix recorded that probe coming back 404 from `/api/anthropic` while
+        // the conversation itself worked, which reads in a transcript exactly
+        // like a misconfigured base URL. A base path we serve is reachable, and
+        // saying so costs one branch.
+        (
+            "HEAD",
+            "/" | "/health" | "/api/anthropic" | "/api/openai" | "/api/gemini" | "/api/formal-ai"
+            | "/api/vertex",
+        ) => ApiHttpResponse {
+            status_code: 200,
+            content_type: "application/json",
+            body: String::new(),
+            deprecated: false,
+        },
         ("GET", "/health") => json_response(
             200,
             &json!({
@@ -428,8 +444,13 @@ fn handle_gemini_generate_content_request(
     stream: bool,
     body: &str,
 ) -> ApiHttpResponse {
-    let model = normalize_protocol_model_id(model);
-    if let Some(response) = unsupported_model_response(Some(&model)) {
+    let mut model = normalize_protocol_model_id(model);
+    if is_vendor_hardcoded_gemini_model(&model) {
+        // Answer as ourselves, not as the model the CLI asked for: a transcript
+        // that echoed `gemini-3-flash-preview` back would claim a provenance
+        // this server does not have.
+        canonical_model_id().clone_into(&mut model);
+    } else if let Some(response) = unsupported_model_response(Some(&model)) {
         return response;
     }
     match serde_json::from_str::<GeminiGenerateContentRequest>(body) {
@@ -553,6 +574,26 @@ fn parse_bearer_token(value: &str) -> Option<&str> {
         return None;
     }
     Some(token)
+}
+
+/// Whether a Gemini-protocol model id is one Gemini CLI hardcodes for its own
+/// internal calls.
+///
+/// The CLI routes the *user's* turns through whatever `with-formal-ai`
+/// configures (`models/formal-ai:streamGenerateContent` in the transcripts), but
+/// its utility calls — the next-speaker check and the web-search fallback —
+/// name a flash model no setting overrides. Rejecting those with a 400 broke the
+/// CLI mid-conversation while the main channel looked healthy; the issue-#671
+/// matrix caught it on the `gemini` leg's "search online" prompt, where
+/// `gemini-3-flash-preview:generateContent` came back with an
+/// `unsupported model` error naming `formal-ai` as the only allowed id.
+///
+/// We are the only backend behind that base URL, so the honest answer is to
+/// serve the request with the canonical model rather than to fail it. The prefix
+/// keeps the exception to ids the vendor itself ships, and it survives the next
+/// flash release; a mistyped or foreign id on this path is still a 400.
+fn is_vendor_hardcoded_gemini_model(model: &str) -> bool {
+    model.trim().to_ascii_lowercase().starts_with("gemini-")
 }
 
 fn unsupported_model_response(model: Option<&str>) -> Option<ApiHttpResponse> {

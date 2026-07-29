@@ -32,6 +32,7 @@
 
 mod agent_isolation;
 mod agentic_meta_algorithm;
+mod arbitrary_skill_compilation;
 mod associative_packages;
 mod behavior_rules;
 mod benchmarks;
@@ -50,9 +51,11 @@ mod definition_fusion;
 mod desktop_surface;
 mod document_verification_meta_algorithm;
 mod dreaming_meta_algorithm;
+mod external_benchmarks;
 mod forced_language_seam;
 mod formalization;
 mod github_repository_traffic;
+mod grounded_action_meta_algorithm;
 mod intent_formalization;
 mod issue_146;
 mod issue_402;
@@ -113,3 +116,4 @@ mod transparent_state;
 mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;
+mod world_state_benchmarks;

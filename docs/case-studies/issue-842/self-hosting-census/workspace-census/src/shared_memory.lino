@@ -1,0 +1,15 @@
+self_ast_census
+  target src/shared_memory.rs
+  language rust
+  fidelity signature
+  byte_len 1733
+  line_count 63
+  content_id source_module_953c77c78b3ed0f1
+  symbol_count 6
+  symbols
+    const MEMORY_PATH_ENV 6 6
+    const MEMORY_DIRECTORY_NAME 7 7
+    const MEMORY_FILE_NAME 8 8
+    function resolve_memory_path_from 11 35
+    function shared_memory_path 38 45
+    function ensure_shared_memory_file 47 63

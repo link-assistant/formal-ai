@@ -57,19 +57,19 @@ fn local_find_without_matches_is_explained_in_every_supported_language() {
         // language: "en"
         (
             "Find willow-archive folder on my desktop",
-            "No matching file or folder was found in the requested location. Check the name, or ask me to search a wider location.",
+            "willow-archive was not found after exact, substring, and nearby-name checks within ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. No wider location was searched.",
         ),
         (
             "Найди папку willow-archive на моём рабочем столе",
-            "В указанном месте не найдено подходящего файла или папки. Проверьте имя или попросите поискать в более широком месте.",
+            "willow-archive не найден после точной проверки, поиска по части имени и проверки близких имён в ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}. За пределами этой области поиск не выполнялся.",
         ),
         (
             "मेरे डेस्कटॉप पर willow-archive फ़ोल्डर खोजें",
-            "बताए गए स्थान पर कोई मिलता हुआ फ़ाइल या फ़ोल्डर नहीं मिला। नाम जाँचें या मुझे किसी बड़े स्थान में खोजने को कहें।",
+            "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} में सटीक, आंशिक और निकटतम नाम की जाँच के बाद willow-archive नहीं मिला। इसके बाहर खोज नहीं की गई।",
         ),
         (
             "在我的桌面上查找 willow-archive 文件夹",
-            "在指定位置未找到匹配的文件或文件夹。请检查名称，或让我扩大搜索范围。",
+            "在 ${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop} 内完成精确、子串和近似名称检查后仍未找到 willow-archive。未搜索更大的范围。",
         ),
     ];
     for (prompt, expected) in cases {
@@ -79,14 +79,16 @@ fn local_find_without_matches_is_explained_in_every_supported_language() {
             "(Bash completed with no output)",
         ] {
             let mut messages = vec![ChatMessage::user(prompt)];
-            let find = one_call(&messages, &["bash", "websearch"]);
-            assert_eq!(find.tool, "bash");
-            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                "find_empty".to_owned(),
-                find.tool,
-                find.arguments,
-            )]));
-            messages.push(ChatMessage::tool_result("find_empty", "bash", empty_result));
+            for stage in ["exact_empty", "substring_empty", "inventory_empty"] {
+                let find = one_call(&messages, &["bash", "websearch"]);
+                assert_eq!(find.tool, "bash");
+                messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                    stage.to_owned(),
+                    find.tool,
+                    find.arguments,
+                )]));
+                messages.push(ChatMessage::tool_result(stage, "bash", empty_result));
+            }
 
             let Some(AgenticPlan::Final(answer)) =
                 plan_chat_step(&messages, &["bash", "websearch"])

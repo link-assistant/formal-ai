@@ -1,0 +1,10 @@
+self_ast_census
+  target src/coding/catalog/languages.rs
+  language rust
+  fidelity signature
+  byte_len 7061
+  line_count 160
+  content_id source_module_bbb778031347f349
+  symbol_count 1
+  symbols
+    const PROGRAM_LANGUAGES 9 24

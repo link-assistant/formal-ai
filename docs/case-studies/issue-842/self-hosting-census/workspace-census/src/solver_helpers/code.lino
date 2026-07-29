@@ -1,0 +1,28 @@
+self_ast_census
+  target src/solver_helpers/code.rs
+  language rust
+  fidelity signature
+  byte_len 13457
+  line_count 339
+  content_id source_module_da127d9d69b86a44
+  symbol_count 19
+  symbols
+    function detect_program_languages 13 36
+    enum CodeMeaning 50 59
+    function slug 66 75
+    function formalize_code_meaning 83 89
+    function render_code_meaning 95 109
+    function render_binary_add 113 123
+    function code_comment_prefix 126 131
+    function translate_program 136 139
+    function normalize_code_meaning 145 147
+    function is_binary_add_function 149 159
+    function normalize_meaning 167 174
+    function canonical_meaning_token 181 183
+    function infer_source_from_prompt 185 209
+    function infer_program_languages_from_code 211 240
+    function translate_surface_detailed 247 253
+    function extract_concept_from_query 255 262
+    function detect_algorithm_language 264 283
+    function build_sorting_algorithm_answer 285 313
+    function extract_javascript_program 319 339

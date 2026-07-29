@@ -1,8 +1,12 @@
 {
   "_comment": "Task ladder for issue #840. Three seed tasks (#838, #827, #826) decomposed 4 levels deep; each task splits into >=2 subtasks. L1 = original seed, L4 = smallest atomic step. Used by run_ladder.sh to drive formal-ai and record pass/fail per node. `expect` is a list of substrings ALL of which must appear in the answer; `forbid` is a list NONE of which may appear.",
   "sandbox": {
-    "dirs": ["Desktop/Archive/hive-control-center"],
-    "files": ["Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem"]
+    "dirs": [
+      "Desktop/Archive/hive-control-center"
+    ],
+    "files": [
+      "Desktop/Archive/hive-mind-bot.2025-12-26.private-key.pem"
+    ]
   },
   "tasks": [
     {
@@ -12,9 +16,26 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on my desktop",
-      "expect": ["hive-control-center"],
-      "forbid": ["private-key.pem", "hivemind-os"],
-      "note": "Ground truth Desktop/Archive/hive-control-center. Must not return the .pem decoy, must not web-search."
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "private-key.pem",
+        "hivemind-os"
+      ],
+      "note": "Ground truth Desktop/Archive/hive-control-center. Must not return the .pem decoy, must not web-search.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L2.a",
@@ -23,9 +44,18 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Is the request 'Find hive-mind-control center folder on my desktop' a local filesystem search or a web search?",
-      "expect": ["local"],
-      "forbid": ["web search"],
-      "note": "Routing decision in isolation."
+      "expect": [
+        "local"
+      ],
+      "forbid": [
+        "web search"
+      ],
+      "note": "Routing decision in isolation.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     },
     {
       "id": "838.L2.b",
@@ -34,9 +64,23 @@
       "seed": "838",
       "lang": "en",
       "prompt": "List the folders on my desktop",
-      "expect": ["Archive"],
+      "expect": [
+        "Archive"
+      ],
       "forbid": [],
-      "note": "The observe step, alone."
+      "note": "The observe step, alone.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L3.a",
@@ -45,9 +89,25 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Search hive-mind-control-center on my desktop",
-      "expect": ["hive-control-center"],
-      "forbid": ["hivemind-os"],
-      "note": "Verb 'Search' must route local exactly like 'Find'."
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Verb 'Search' must route local exactly like 'Find'.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L3.b",
@@ -56,9 +116,25 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Find hive-mind-control center folder on desktop",
-      "expect": ["hive-control-center"],
-      "forbid": ["hivemind-os"],
-      "note": "Dropping the possessive 'my' must not change the route (the #838 flip)."
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Dropping the possessive 'my' must not change the route (the #838 flip).",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L3.c",
@@ -67,9 +143,23 @@
       "seed": "838",
       "lang": "en",
       "prompt": "What is inside the Archive folder on my desktop?",
-      "expect": ["hive-control-center"],
+      "expect": [
+        "hive-control-center"
+      ],
       "forbid": [],
-      "note": "One level of recursion; both entries should be visible."
+      "note": "One level of recursion; both entries should be visible.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L4.a",
@@ -78,9 +168,25 @@
       "seed": "838",
       "lang": "ru",
       "prompt": "Найди папку hive-mind-control center на моём рабочем столе",
-      "expect": ["hive-control-center"],
-      "forbid": ["hivemind-os"],
-      "note": "Same intent in Russian must route identically (#386 convention)."
+      "expect": [
+        "hive-control-center"
+      ],
+      "forbid": [
+        "hivemind-os"
+      ],
+      "note": "Same intent in Russian must route identically (#386 convention).",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L4.b",
@@ -89,9 +195,23 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Is there a folder named exactly 'hive-mind-control-center' on my desktop? Answer yes or no and say what the closest match is.",
-      "expect": ["hive-control-center"],
+      "expect": [
+        "hive-control-center"
+      ],
       "forbid": [],
-      "note": "Fuzzy near-match must be named, not silently substituted (standard 3.3)."
+      "note": "Fuzzy near-match must be named, not silently substituted (standard 3.3).",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L4.c",
@@ -100,9 +220,23 @@
       "seed": "838",
       "lang": "en",
       "prompt": "On my desktop, is hive-control-center a file or a folder?",
-      "expect": ["folder"],
+      "expect": [
+        "folder"
+      ],
       "forbid": [],
-      "note": "Type discrimination (standard 3.4) - the .pem decoy is a file."
+      "note": "Type discrimination (standard 3.4) - the .pem decoy is a file.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ]
     },
     {
       "id": "838.L4.d",
@@ -111,11 +245,32 @@
       "seed": "838",
       "lang": "en",
       "prompt": "Find a folder called zzz-nonexistent-folder on my desktop",
-      "expect": ["not"],
-      "forbid": ["hive-control-center"],
-      "note": "True negative: absence must be reported honestly, scoped, without inventing a match."
+      "expect": [],
+      "forbid": [
+        "hive-control-center"
+      ],
+      "note": "True negative: absence must be reported honestly, scoped, without inventing a match. Any of the wordings in expect_any counts; a bare 'not' matched too much.",
+      "expect_tool": [
+        "bash"
+      ],
+      "forbid_tool": [
+        "websearch"
+      ],
+      "command_forbid": [
+        "-quit",
+        "&&",
+        "||",
+        ";"
+      ],
+      "expect_any": [
+        "no matching",
+        "not found",
+        "nothing",
+        "no folder",
+        "did not find",
+        "no such"
+      ]
     },
-
     {
       "id": "827.L1",
       "level": 1,
@@ -123,9 +278,20 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Что такое фуфломицин?",
-      "expect": ["эффективност"],
-      "forbid": ["развернуть", "Что такое рок"],
-      "note": "Must synthesize a definition (drugs without proven efficacy), not echo page titles."
+      "expect": [
+        "эффективност"
+      ],
+      "forbid": [
+        "развернуть",
+        "Что такое рок"
+      ],
+      "note": "Must synthesize a definition (drugs without proven efficacy), not echo page titles.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "827.L2.a",
@@ -134,9 +300,19 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Дай определение слова фуфломицин одним предложением",
-      "expect": ["эффективност"],
-      "forbid": ["развернуть"],
-      "note": "Synthesis step alone, explicitly one sentence."
+      "expect": [
+        "эффективност"
+      ],
+      "forbid": [
+        "развернуть"
+      ],
+      "note": "Synthesis step alone, explicitly one sentence.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "827.L2.b",
@@ -145,9 +321,20 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Что такое фуфломицин? Затем: так что это такое то?",
-      "expect": ["эффективност"],
-      "forbid": ["Приветствия", "Hello World"],
-      "note": "Follow-up must resolve against the antecedent, never fall back to the capability menu."
+      "expect": [
+        "эффективност"
+      ],
+      "forbid": [
+        "Приветствия",
+        "Hello World"
+      ],
+      "note": "Follow-up must resolve against the antecedent, never fall back to the capability menu.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "827.L3.a",
@@ -156,9 +343,17 @@
       "seed": "827",
       "lang": "en",
       "prompt": "What is a fufloмицин (фуфломицин)? Answer in English.",
-      "expect": ["efficacy"],
+      "expect": [
+        "efficacy"
+      ],
       "forbid": [],
-      "note": "Cross-language synthesis of the same concept."
+      "note": "Cross-language synthesis of the same concept.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "827.L3.b",
@@ -167,9 +362,19 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Так что это такое то?",
-      "expect": [],
-      "forbid": ["Приветствия", "Hello World"],
-      "note": "Bare follow-up with NO antecedent: must ask what is meant, never print the capability menu."
+      "expect": [
+        "имеете в виду"
+      ],
+      "forbid": [
+        "Приветствия",
+        "Hello World"
+      ],
+      "note": "Bare follow-up with NO antecedent: must ask what is meant, never print the capability menu.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     },
     {
       "id": "827.L4.a",
@@ -178,9 +383,19 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Приведи один пример препарата, который называют фуфломицином",
-      "expect": [],
-      "forbid": ["развернуть"],
-      "note": "Instantiation: needs a concrete example, not page furniture."
+      "expect": [
+        "арбидол"
+      ],
+      "forbid": [
+        "развернуть"
+      ],
+      "note": "Instantiation: needs a concrete example, not page furniture.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "827.L4.b",
@@ -189,11 +404,19 @@
       "seed": "827",
       "lang": "ru",
       "prompt": "Что означает слово это в предложении: так что это такое то?",
-      "expect": [],
-      "forbid": ["Приветствия"],
-      "note": "Pure anaphora resolution, isolated from any lookup."
+      "expect": [
+        "имеете в виду"
+      ],
+      "forbid": [
+        "Приветствия"
+      ],
+      "note": "Pure anaphora resolution, isolated from any lookup.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     },
-
     {
       "id": "826.L1",
       "level": 1,
@@ -201,9 +424,19 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "ФБС vs ФБО",
-      "expect": ["склад"],
-      "forbid": ["не смог определить"],
-      "note": "Comparison of two marketplace fulfilment models; refusal is a failure."
+      "expect": [
+        "склад"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "Comparison of two marketplace fulfilment models; refusal is a failure.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "826.L2.a",
@@ -212,9 +445,19 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "Что такое ФБО?",
-      "expect": [],
-      "forbid": ["не смог определить"],
-      "note": "One half of the comparison; decomposition target."
+      "expect": [
+        "склад"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "One half of the comparison; decomposition target.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "826.L2.b",
@@ -223,9 +466,18 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "Зарепорти баг",
-      "expect": [],
-      "forbid": ["не смог определить"],
-      "note": "Russian report intent must be recognized without falling back to English."
+      "expect": [
+        "выберите"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "Russian report intent must be recognized without falling back to English.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     },
     {
       "id": "826.L3.a",
@@ -234,9 +486,19 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "Что такое ФБС?",
-      "expect": [],
-      "forbid": ["не смог определить"],
-      "note": "The other half."
+      "expect": [
+        "склад"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "The other half.",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "826.L3.b",
@@ -245,9 +507,18 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "Сообщи об ошибке",
-      "expect": [],
-      "forbid": ["не смог определить"],
-      "note": "Second Russian phrasing of the same report intent."
+      "expect": [
+        "выберите"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "Second Russian phrasing of the same report intent.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     },
     {
       "id": "826.L4.a",
@@ -256,9 +527,19 @@
       "seed": "826",
       "lang": "ru",
       "prompt": "Чем отличается ФБС от ФБО одним предложением?",
-      "expect": ["склад"],
-      "forbid": ["не смог определить"],
-      "note": "The comparison reduced to its single distinguishing axis (who stores the goods)."
+      "expect": [
+        "склад"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "The comparison reduced to its single distinguishing axis (who stores the goods).",
+      "expect_tool": [
+        "websearch"
+      ],
+      "forbid_tool": [
+        "bash"
+      ]
     },
     {
       "id": "826.L4.b",
@@ -267,9 +548,18 @@
       "seed": "826",
       "lang": "en",
       "prompt": "Report a bug",
-      "expect": [],
-      "forbid": ["не смог определить"],
-      "note": "English baseline for the same intent; must behave identically to the Russian forms."
+      "expect": [
+        "select"
+      ],
+      "forbid": [
+        "не смог определить"
+      ],
+      "note": "English baseline for the same intent; must behave identically to the Russian forms.",
+      "expect_tool": [],
+      "forbid_tool": [
+        "bash",
+        "websearch"
+      ]
     }
   ]
 }

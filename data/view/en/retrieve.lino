@@ -1,0 +1,21 @@
+view
+  id M-f04ee1b80f06
+  lemma retrieve
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get or find back; recover the use of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go for and bring back"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "run after, pick up, and bring to the master"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "recall knowledge from memory; have a recollection"
+    provenance (wordnet)

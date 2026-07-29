@@ -1,0 +1,22 @@
+self_ast_census
+  target src/meta_construction.rs
+  language rust
+  fidelity signature
+  byte_len 9337
+  line_count 256
+  content_id source_module_da0a9566309dca10
+  symbol_count 13
+  symbols
+    enum RecursionMode 40 48
+    function emits_downward 53 55
+    function emits_upward 59 61
+    function slug 65 71
+    function from_slug 75 82
+    struct ConstructionStep 87 103
+    struct UpwardConstruction 107 112
+    function for_unit 118 125
+    function step_count 129 131
+    function to_links_notation 135 150
+    function to_links_notation 156 172
+    function visit_post_order 176 231
+    function record_upward_construction 240 256

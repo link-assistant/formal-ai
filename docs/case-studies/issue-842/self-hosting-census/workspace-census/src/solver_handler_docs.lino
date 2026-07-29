@@ -1,0 +1,16 @@
+self_ast_census
+  target src/solver_handler_docs.rs
+  language rust
+  fidelity signature
+  byte_len 10867
+  line_count 195
+  content_id source_module_2a605c8e0cac31e2
+  symbol_count 7
+  symbols
+    const PANDAS_DATAFRAME_JOIN_DOCS_URL 9 10
+    function try_docs_method_explanation 14 39
+    function is_pandas_dataframe_join_prompt 57 75
+    function is_explicit_web_search 90 112
+    function is_explanation_request 125 133
+    function has_word 135 137
+    function render_pandas_dataframe_join_answer 139 195

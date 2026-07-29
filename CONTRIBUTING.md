@@ -216,8 +216,9 @@ Removal from a public thread is not approval to retain another copy.
    # Format code
    cargo fmt
 
-   # Run Clippy lints
-   cargo clippy --all-targets --all-features
+   # Lint executable test targets; compile-check examples without linking 100+ binaries
+   cargo clippy --lib --bins --tests --all-features
+   cargo check --examples --all-features
 
    # Check file sizes (requires rust-script)
    rust-script scripts/check-file-size.rs
@@ -226,7 +227,7 @@ Removal from a public thread is not approval to retain another copy.
    rust-script scripts/check-hardcoded-language.rs
 
    # Run all checks together
-   cargo fmt --check && cargo clippy --all-targets --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
+   cargo fmt --check && cargo clippy --lib --bins --tests --all-features && cargo check --examples --all-features && rust-script scripts/check-file-size.rs && rust-script scripts/check-hardcoded-language.rs
    ```
 
 4. **Run tests**

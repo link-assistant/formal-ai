@@ -1,0 +1,33 @@
+self_ast_census
+  target src/solver_handlers/user_intent.rs
+  language rust
+  fidelity signature
+  byte_len 23777
+  line_count 609
+  content_id source_module_16bead8f2595412c
+  symbol_count 24
+  symbols
+    function prefix_literals 19 26
+    function suffix_literals 31 38
+    function bare_literals 43 50
+    function try_clarification 52 78
+    function is_clarification_request 89 94
+    function try_punctuation_only_prompt 96 119
+    function try_ill_formed 121 144
+    function is_more_capabilities_prompt 155 160
+    function is_capability_query 172 177
+    function is_assistant_free_time_prompt 179 186
+    function prior_history_mentions_web_search 188 196
+    function localized_seed_response 198 202
+    function try_capabilities 204 237
+    function try_shell_refusal 238 267
+    function try_opinion_question 269 307
+    function try_proof_request 320 326
+    function try_proof_request_with_config 341 432
+    function is_known_unsolved_bounded_proof_request 434 444
+    function extract_claim_from_prompt 450 474
+    function is_claim_intro_boundary 476 482
+    function strip_claim_prefix_noise 484 486
+    function pipeline_footer 488 507
+    function try_who_is_question 515 560
+    function suggest_correction 565 609

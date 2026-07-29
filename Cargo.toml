@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.304.0"
+version = "0.311.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -39,25 +39,26 @@ name = "formal-ai"
 path = "src/main.rs"
 
 [dependencies]
-base64 = "0.22"
+base64 = "0.23"
 clap = { version = "4.6", features = ["derive", "env"] }
 doublets = { version = "0.4.0", optional = true }
 lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
 links-notation = "0.13.0"
-link-calculator = "0.19.0"
+link-calculator = "0.20.3"
 # CST/AST engine: the link-foundation meta-language links network. It ships
 # real tree-sitter grammars for every language we target and exposes a single
 # mutable links-network representation, so it is the sole CST/AST engine here
 # (https://github.com/link-foundation/meta-language).
-meta-language = { version = "0.45.0", optional = true }
+meta-language = { version = "0.54.0", optional = true }
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.10"
 fs2 = "0.4"
-thread-priority = "1"
-toml_edit = "0.25.11"
+thread-priority = "3.1.1"
+toml_edit = "0.25.13"
 
 [features]
 default = ["doublets-native", "meta-language"]
@@ -96,6 +97,20 @@ path = "tests/integration/mod.rs"
 [[test]]
 name = "source"
 path = "tests/source/mod.rs"
+
+# This crate embeds large language dictionaries and compiles dozens of parser
+# grammars. Cargo's defaults retain full debuginfo plus incremental state for
+# every test/example binary, which made ordinary development workspaces grow
+# past 10 GiB. Keep fast debug assertions, but do not retain those two largest
+# classes of recomputable artifacts. Developers who need debugger symbols can
+# opt in with `CARGO_PROFILE_DEV_DEBUG=2` for that run.
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false
 
 [profile.release]
 lto = true

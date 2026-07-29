@@ -1,0 +1,32 @@
+self_ast_census
+  target src/proxy/summary.rs
+  language rust
+  fidelity signature
+  byte_len 14138
+  line_count 409
+  content_id source_module_6dddae79e5dd994e
+  symbol_count 23
+  symbols
+    struct ResponseSummary 15 19
+    struct StreamingChatAccumulator 22 26
+    struct StreamingAnthropicAccumulator 38 42
+    struct StreamingToolCall 45 48
+    struct SseEvent 51 53
+    function summarize_sse_response 55 91
+    function parse_sse_events 93 110
+    function apply_chunk 113 152
+    function finish 154 168
+    function apply_event 175 232
+    function finish 234 248
+    function summarize_response_value 251 255
+    function merge_response_summary 257 263
+    function apply_response_value 265 308
+    function set_model 310 314
+    function apply_chat_message 316 328
+    function apply_response_item 330 349
+    function apply_gemini_part 351 361
+    function apply_anthropic_content_block 363 376
+    function append_function_call 378 385
+    function append_content_value 387 397
+    function arguments_from_value 399 405
+    function arguments_from_str 407 409

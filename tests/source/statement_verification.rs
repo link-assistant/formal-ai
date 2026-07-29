@@ -10,11 +10,10 @@
 //! it splits the sample into statements across scripts, builds a grounding
 //! web-search query for each, and produces an assumed-true
 //! [`StatementAssessment`](crate::relative_meta_logic::StatementAssessment) plus
-//! the trusted-source tier policy that governs how live evidence would move each
-//! statement. The solver runs offline and deterministically, so no network call
-//! is made here; instead the plan records exactly what would be checked and how
-//! the resulting evidence would be weighed, which the handler replays into the
-//! append-only event log.
+//! the trusted-source tier policy that governs how captured evidence would move
+//! each statement. This source fixture covers the pure planning layer; the live
+//! crate also exposes explicit provider-backed execution that binds every
+//! classification to its exact source capture.
 
 use crate::relative_meta_logic::{
     RelativeEvidence, SourceTier, Stance, StatementAssessment, TruthValue, ASSUMED_TRUE_PRIOR,

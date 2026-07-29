@@ -1,0 +1,17 @@
+self_ast_census
+  target src/summarization/markdown.rs
+  language rust
+  fidelity signature
+  byte_len 6568
+  line_count 201
+  content_id source_module_79a013e3b965de81
+  symbol_count 8
+  symbols
+    function strip_markdown_noise 26 60
+    function strip_html_comments 62 86
+    function is_badge_only_line 88 114
+    function consume_link_segment 116 132
+    function consume_until_unbalanced 134 151
+    function strip_inline_code_and_html 153 172
+    function formalize_markdown 179 181
+    function describe_readme 191 201

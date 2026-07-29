@@ -65,7 +65,7 @@ fn definition_merge_for_term(
         log.append("definition_merge:language", language);
     }
     for source in source_urls(&fragments) {
-        log.append("source:http", source);
+        log.append("definition_merge:source_declared", source);
     }
     let facts = merged_definition_facts(&fragments);
     log.append("definition_merge:facts", facts.len().to_string());

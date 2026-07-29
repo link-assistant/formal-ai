@@ -61,9 +61,12 @@ pub fn try_document_originality_check(
         WebSearchQueryKind::DocumentOriginalityCheck.as_str(),
     );
     for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider", (*provider).to_owned());
+        log.append("web_search:provider_planned", (*provider).to_owned());
     }
-    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+    log.append(
+        "web_search:fusion_planned",
+        format!("rrf:k={WEB_SEARCH_RRF_K}"),
+    );
 
     let market_assessments = log_statement_verification(prompt, log);
 

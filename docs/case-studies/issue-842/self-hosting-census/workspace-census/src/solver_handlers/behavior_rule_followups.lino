@@ -1,0 +1,15 @@
+self_ast_census
+  target src/solver_handlers/behavior_rule_followups.rs
+  language rust
+  fidelity signature
+  byte_len 4566
+  line_count 102
+  content_id source_module_cf699c3b9b5ea7c2
+  symbol_count 6
+  symbols
+    function behavior_rule_response_language 5 9
+    function render_behavior_rule_count 11 38
+    function render_behavior_rules_brief 40 67
+    function response_language_from_prompt 69 74
+    function language_code_of 76 87
+    function localized_text 89 102
