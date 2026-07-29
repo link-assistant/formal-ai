@@ -2,40 +2,48 @@ self_ast_census
   target src/task_decomposition.rs
   language rust
   fidelity signature
-  byte_len 18307
-  line_count 518
-  content_id source_module_aa5e92f1136cfd1b
-  symbol_count 32
+  byte_len 23028
+  line_count 670
+  content_id source_module_44adacd5aaabf459
+  symbol_count 40
   symbols
-    struct SubTask 39 56
-    function collect_leaves 60 68
-    function node_count 72 74
-    function has_depth_bound_leaf 83 88
-    function collect_rows 92 103
-    function is_unsplittable 107 109
-    function to_links_notation 113 131
-    struct Decomposition 136 143
-    function is_atomic 150 152
-    function depth_bound_reached 157 159
-    function leaves 163 167
-    function rows 172 176
-    function numbered_lines 182 193
-    function to_links_notation 197 199
-    function decompose_task 208 218
-    function build 220 255
-    function child_path 258 265
-    function leaf 267 277
-    function split_once_checkable 286 297
-    function is_checkable 305 310
-    function segment 314 320
-    function split_sentences 324 339
-    function split_clauses 344 353
-    function split_on_markers 357 367
-    function split_piece_on_marker 369 395
-    function distribute_head_action 405 423
-    function head_action 426 435
-    function merge_uncheckable 442 462
-    function join 464 471
-    function push_trimmed 473 478
-    function record_task_decomposition 485 504
-    function emit_sub_impulses 506 518
+    module artifact 38 38
+    module learning 39 39
+    module strategy 40 40
+    struct SubTask 55 75
+    function is_independently_checkable 81 85
+    function collect_leaves 88 96
+    function node_count 100 102
+    function has_depth_bound_leaf 111 116
+    function collect_rows 120 132
+    function to_links_notation 136 155
+    function to_recursive_task 160 166
+    struct Decomposition 171 178
+    function is_atomic 185 187
+    function depth_bound_reached 192 194
+    function leaves 198 202
+    function rows 207 211
+    function numbered_lines 217 239
+    function to_links_notation 243 245
+    function to_recursive_task 249 251
+    function decompose_task 260 262
+    function decompose_task_with_ledger 270 284
+    function build 286 384
+    function child_path 387 394
+    function leaf 396 415
+    function split_once_checkable 424 426
+    function split_once_checkable_with_ledger 428 439
+    function is_checkable 447 449
+    function completion_criterion_for 451 462
+    function segment 466 472
+    function split_sentences 476 491
+    function split_clauses 496 505
+    function split_on_markers 509 519
+    function split_piece_on_marker 521 547
+    function distribute_head_action 557 575
+    function head_action 578 587
+    function merge_uncheckable 594 614
+    function join 616 623
+    function push_trimmed 625 630
+    function record_task_decomposition 637 656
+    function emit_sub_impulses 658 670

@@ -23,7 +23,6 @@ use crate::seed::{
     ROLE_SUBTASK_UNIT_NOUN, ROLE_TASK_ATOMICITY_PREDICATE, ROLE_TASK_DECOMPOSITION_ACTION,
     ROLE_TASK_FIRST_STEP_CUE,
 };
-use crate::solver::SolverConfig;
 use crate::task_decomposition::{record_task_decomposition, Decomposition};
 
 use super::finalize_simple;
@@ -50,21 +49,6 @@ enum DecompositionQuestion {
 #[must_use]
 pub fn looks_like_task_decomposition(normalized: &str) -> bool {
     classify(normalized).is_some()
-}
-
-/// Entry point used by the regular handler table, at the depth bound shipped in
-/// the default solver configuration.
-pub fn try_task_decomposition(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    try_task_decomposition_with_depth(
-        prompt,
-        normalized,
-        log,
-        SolverConfig::default().max_decomposition_depth,
-    )
 }
 
 /// Entry point used by the contextual dispatch path, where the configured

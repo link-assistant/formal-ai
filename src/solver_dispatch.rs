@@ -28,7 +28,7 @@ use crate::solver_handlers::{
     try_research_comparison_table, try_research_result_followup, try_response_language_followup,
     try_roleplay_request, try_shell_command_transform, try_shell_command_transform_with_history,
     try_shell_refusal, try_software_project_followup, try_software_project_request,
-    try_source_conflict, try_source_refresh, try_summarization_request, try_task_decomposition,
+    try_source_conflict, try_source_refresh, try_summarization_request,
     try_task_decomposition_with_depth, try_text_manipulation, try_text_manipulation_with_history,
     try_translation, try_url_navigate, try_web_search, try_web_search_with_offline,
     try_who_is_question, try_world_state, try_write_script, SelfAwarenessRuntime,
@@ -259,12 +259,6 @@ const HANDLER_FUNCTIONS: &[(&str, SpecializedHandler)] = &[
     // and above the general lookups. It only fires when the previous user turn
     // was itself a how-to request, so unrelated prompts are untouched.
     ("procedural_how_to_followup", try_procedural_how_to_followup),
-    // Issue #847: "split this task into subtasks" and "is this task atomic?"
-    // are questions about a task, not requests to perform it. The handler sits
-    // above `text_manipulation` (which would otherwise claim the verb "split")
-    // and above the general lookups, and is self-gated on the seed-declared
-    // decomposition roles, so an unrelated prompt is untouched.
-    ("task_decomposition", try_task_decomposition),
     ("conversation_memory", try_conversation_memory),
     // Issue #341: a decomposed agent step like "test it by scraping
     // wikipedia.org and show me the top 10 most frequent words" must stay

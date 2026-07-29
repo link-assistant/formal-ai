@@ -10,7 +10,6 @@ handler_precedence
   docs_method_explanation
   procedural_how_to
   procedural_how_to_followup # issue 444 a bare follow-up rebinds to the prior how-to procedure
-  task_decomposition # issue 847 splitting a task and judging its atomicity beat the text_manipulation reading of split
   conversation_memory
   software_project_followup # issue 341 a decomposed step stays bound to the active software-project dialogue
   summarization

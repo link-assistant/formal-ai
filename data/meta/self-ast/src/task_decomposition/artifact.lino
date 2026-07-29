@@ -1,0 +1,18 @@
+self_ast_census
+  target src/task_decomposition/artifact.rs
+  language rust
+  fidelity signature
+  byte_len 6989
+  line_count 202
+  content_id source_module_4cf652d1c804efc9
+  symbol_count 9
+  symbols
+    struct TaskDecompositionArtifactError 18 21
+    function from_links_notation 26 84
+    function artifact_links_notation 86 101
+    function restore_node 104 144
+    function validate_tree 146 171
+    function required 173 179
+    function parse_reason 181 189
+    function artifact_id 191 196
+    function error 198 202

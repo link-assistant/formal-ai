@@ -26,11 +26,13 @@ fn main() {
     }
     for leaf in decomposition.leaves() {
         println!(
-            "leaf {} reason={} checkable={} :: {}",
+            "leaf {} reason={} checkable={} contracted={} :: {}",
             leaf.path,
             leaf.reason.slug(),
             is_checkable(&leaf.text),
+            leaf.is_independently_checkable(),
             leaf.text
         );
     }
+    println!("\nlinks_notation:\n{}", decomposition.to_links_notation());
 }

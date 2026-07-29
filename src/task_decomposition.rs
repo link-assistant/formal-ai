@@ -10,17 +10,18 @@
 //!   atomic?" is answerable standalone: a task is atomic exactly when the
 //!   splitter cannot produce two independently checkable children from it.
 //!
-//! Children are *independently checkable* by construction ([`is_checkable`]): a
-//! segment counts only when it names an action whose completion a reader can
-//! observe. The issue names "Understand the codebase" as the child a
-//! decomposition must never emit; such a fragment is merged into a neighbour
-//! instead of being promoted to a sub-task.
+//! Children are *independently checkable* by construction: direct operations
+//! derive an observable target through [`is_checkable`], while approved
+//! data-backed strategies supply an explicit completion predicate. The issue
+//! names "Understand the codebase" as a child a decomposition must never emit;
+//! such a fragment is merged into a neighbour instead of being promoted.
 //!
-//! Every surface this module reasons over comes from
+//! Every natural-language surface this module reasons over comes from
 //! `data/seed/meanings-decomposition.lino` through a semantic role (issue
-//! #386); no natural-language word appears here. Splitting is therefore the
-//! same operation in every supported language, and the whole module is a pure
-//! function of (task text, depth bound, seed), which is what makes a
+//! #386), and reusable strategies live in
+//! `data/meta/task-decomposition-strategies.lino`. Splitting is therefore the
+//! same operation in every supported language. The shipped entry point is a
+//! pure function of task text, depth bound, and reviewed data, which makes a
 //! decomposition deterministic.
 
 use crate::coding::contains_cjk;
@@ -28,9 +29,24 @@ use crate::engine::{normalize_prompt, stable_id};
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
 use crate::meta_frame::AtomicityReason;
+use crate::recursive_execution::RecursiveTask;
 use crate::seed::{
     self, ROLE_CLAUSE_CONTINUATION_MARKER, ROLE_OBSERVABLE_TASK_ACTION,
     ROLE_UNOBSERVABLE_TASK_ACTION,
+};
+
+mod artifact;
+mod learning;
+mod strategy;
+
+pub use artifact::TaskDecompositionArtifactError;
+pub use learning::{
+    TaskLearningApproval, TaskLearningError, TaskLearningGate, TaskStrategyLedger,
+    TaskStrategyProposal,
+};
+pub use strategy::{
+    strategies as task_decomposition_strategies, TaskDecompositionStrategy, TaskStrategyStage,
+    STRATEGIES_LINO,
 };
 
 /// A node of a task decomposition: the task itself at the root, one sub-task at
@@ -39,11 +55,14 @@ use crate::seed::{
 pub struct SubTask {
     /// Content-addressed identifier, stable for a given path and text.
     pub id: String,
-    /// Dotted position in the tree — `1`, `1.2`, `1.2.1`, … — used both as the
-    /// numbering of the rendered list and as the parent link in the trace.
+    /// Dotted position in the tree — `1`, `1.2`, `1.2.1`, … — used as the
+    /// numbering of the rendered list; durable child links use content ids.
     pub path: String,
     /// The sub-task text, carrying its own observable completion criterion.
     pub text: String,
+    /// A language-independent predicate that can be checked without completing
+    /// a sibling first.
+    pub completion_criterion: String,
     /// Recursion depth (0 at the root).
     pub depth: u8,
     /// Whether this node is a recursion leaf.
@@ -56,6 +75,15 @@ pub struct SubTask {
 }
 
 impl SubTask {
+    /// Whether this leaf has a concrete completion contract and was not merely
+    /// stopped by a recursion guard.
+    #[must_use]
+    pub fn is_independently_checkable(&self) -> bool {
+        self.atomic
+            && self.children.is_empty()
+            && !self.completion_criterion.starts_with("unresolved_")
+    }
+
     /// Collect every leaf of this subtree, in source order.
     pub fn collect_leaves<'a>(&'a self, out: &mut Vec<&'a Self>) {
         if self.children.is_empty() {
@@ -82,30 +110,25 @@ impl SubTask {
     #[must_use]
     pub fn has_depth_bound_leaf(&self) -> bool {
         if self.children.is_empty() {
-            return self.reason == AtomicityReason::DepthBound && !self.is_unsplittable();
+            return self.reason == AtomicityReason::DepthBound;
         }
         self.children.iter().any(Self::has_depth_bound_leaf)
     }
 
-    /// Append this node and its descendants to `out` as `(path, text, bounded)`
-    /// rows, skipping the root (which is the task, not a sub-task).
-    fn collect_rows(&self, out: &mut Vec<(String, String, bool)>) {
+    /// Append this node and its descendants to `out` as
+    /// `(path, text, completion criterion, bounded)` rows, skipping the root.
+    fn collect_rows(&self, out: &mut Vec<(String, String, String, bool)>) {
         if self.depth > 0 {
             out.push((
                 self.path.clone(),
                 self.text.clone(),
-                self.reason == AtomicityReason::DepthBound && !self.is_unsplittable(),
+                self.completion_criterion.clone(),
+                self.reason == AtomicityReason::DepthBound,
             ));
         }
         for child in &self.children {
             child.collect_rows(out);
         }
-    }
-
-    /// A depth-bounded leaf that could not have been split anyway is not really
-    /// bounded — it is atomic, and marking it would misreport the bound.
-    fn is_unsplittable(&self) -> bool {
-        split_once_checkable(&self.text).is_empty()
     }
 
     /// Render this node and its descendants as Links Notation records.
@@ -115,12 +138,13 @@ impl SubTask {
             ("record_type", "sub_task".to_owned()),
             ("path", self.path.clone()),
             ("text", self.text.clone()),
+            ("completion_criterion", self.completion_criterion.clone()),
             ("depth", self.depth.to_string()),
             ("atomic", self.atomic.to_string()),
             ("atomicity_reason", self.reason.slug().to_owned()),
         ];
         for child in &self.children {
-            pairs.push(("child", child.path.clone()));
+            pairs.push(("child", child.id.clone()));
         }
         let mut out = format_lino_record(&self.id, &pairs);
         for child in &self.children {
@@ -128,6 +152,17 @@ impl SubTask {
             out.push_str(&child.to_links_notation());
         }
         out
+    }
+
+    /// Convert this inspectable plan node into the existing failure-driven
+    /// recursive executor's input without rebuilding or re-splitting it.
+    #[must_use]
+    pub fn to_recursive_task(&self) -> RecursiveTask {
+        RecursiveTask {
+            id: self.id.clone(),
+            goal: self.text.clone(),
+            children: self.children.iter().map(Self::to_recursive_task).collect(),
+        }
     }
 }
 
@@ -166,10 +201,10 @@ impl Decomposition {
         out
     }
 
-    /// The sub-tasks as `(path, text, bounded)` rows, in source order and
-    /// excluding the root. `bounded` marks a row the depth bound cut short.
+    /// The sub-tasks as `(path, text, completion criterion, bounded)` rows, in
+    /// source order and excluding the root.
     #[must_use]
-    pub fn rows(&self) -> Vec<(String, String, bool)> {
+    pub fn rows(&self) -> Vec<(String, String, String, bool)> {
         let mut out = Vec::new();
         self.root.collect_rows(&mut out);
         out
@@ -182,11 +217,22 @@ impl Decomposition {
     pub fn numbered_lines(&self, marker: &str) -> Vec<String> {
         self.rows()
             .into_iter()
-            .map(|(path, text, bounded)| {
+            .map(|(path, text, criterion, bounded)| {
                 if bounded {
-                    format!("{}. {} {}", path.as_str(), text.as_str(), marker)
+                    format!(
+                        "{}. {} [{}] {}",
+                        path.as_str(),
+                        text.as_str(),
+                        criterion.as_str(),
+                        marker
+                    )
                 } else {
-                    format!("{}. {}", path.as_str(), text.as_str())
+                    format!(
+                        "{}. {} [{}]",
+                        path.as_str(),
+                        text.as_str(),
+                        criterion.as_str()
+                    )
                 }
             })
             .collect()
@@ -195,7 +241,13 @@ impl Decomposition {
     /// Render the whole decomposition as Links Notation records.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
-        self.root.to_links_notation()
+        self.artifact_links_notation()
+    }
+
+    /// Reuse the exact inspected tree for execution.
+    #[must_use]
+    pub fn to_recursive_task(&self) -> RecursiveTask {
+        self.root.to_recursive_task()
     }
 }
 
@@ -206,10 +258,24 @@ impl Decomposition {
 /// so the same task and configuration always produce the same decomposition.
 #[must_use]
 pub fn decompose_task(task: &str, max_depth: u8) -> Decomposition {
+    decompose_task_with_ledger(task, max_depth, &TaskStrategyLedger::shipped())
+}
+
+/// Decompose with an explicit review-gated strategy ledger.
+///
+/// An empty ledger is useful for observing and learning from a missing
+/// operation contract; the shipped ledger contains only strategies promoted in
+/// `data/meta/task-decomposition-strategies.lino`.
+#[must_use]
+pub fn decompose_task_with_ledger(
+    task: &str,
+    max_depth: u8,
+    ledger: &TaskStrategyLedger,
+) -> Decomposition {
     let text = task.trim();
     // The root carries no number of its own: it is the task, and the numbering
     // a reader sees starts at its children.
-    let root = build(text, "", 0, max_depth);
+    let root = build(text, "", 0, max_depth, ledger);
     Decomposition {
         task: text.to_owned(),
         max_depth,
@@ -217,36 +283,99 @@ pub fn decompose_task(task: &str, max_depth: u8) -> Decomposition {
     }
 }
 
-fn build(text: &str, path: &str, depth: u8, max_depth: u8) -> SubTask {
+fn build(text: &str, path: &str, depth: u8, max_depth: u8, ledger: &TaskStrategyLedger) -> SubTask {
     let id = stable_id("sub_task", &format!("{path}:{depth}:{text}"));
-    if depth >= max_depth {
-        return leaf(id, path, text, depth, AtomicityReason::DepthBound);
-    }
-
-    let parts: Vec<String> = split_once_checkable(text)
+    let parts: Vec<String> = split_once_checkable_with_ledger(text, ledger)
         .into_iter()
         .filter(|part| part != text)
         .collect();
-    if parts.len() < 2 {
-        // The base case: nothing splits off that a reader could check on its
-        // own, so the task is as small as it usefully gets.
-        let reason = if is_checkable(text) {
-            AtomicityReason::DirectMethod
-        } else {
-            AtomicityReason::SingleNeed
+    let planned = (parts.len() < 2)
+        .then(|| strategy::plans_for(text, ledger))
+        .flatten();
+    let needs_children = parts.len() >= 2 || planned.is_some();
+
+    if depth >= max_depth && needs_children {
+        return leaf(
+            id,
+            path,
+            text,
+            "unresolved_depth_bound",
+            depth,
+            false,
+            AtomicityReason::DepthBound,
+        );
+    }
+
+    if let Some(stages) = planned {
+        let children = stages
+            .iter()
+            .enumerate()
+            .map(|(index, stage)| {
+                let child_path = child_path(path, index);
+                leaf(
+                    stable_id(
+                        "sub_task",
+                        &format!(
+                            "{child_path}:{}:{}:{}",
+                            depth + 1,
+                            stage.strategy_id,
+                            stage.stage_id
+                        ),
+                    ),
+                    &child_path,
+                    &stage.text,
+                    &stage.completion_criterion,
+                    depth + 1,
+                    true,
+                    AtomicityReason::DirectMethod,
+                )
+            })
+            .collect();
+        return SubTask {
+            id,
+            path: path.to_owned(),
+            text: text.to_owned(),
+            completion_criterion: "all_children_pass".to_owned(),
+            depth,
+            atomic: false,
+            reason: AtomicityReason::NotAtomic,
+            children,
         };
-        return leaf(id, path, text, depth, reason);
+    }
+
+    if parts.len() < 2 {
+        if let Some(criterion) = completion_criterion_for(text) {
+            return leaf(
+                id,
+                path,
+                text,
+                &criterion,
+                depth,
+                true,
+                AtomicityReason::DirectMethod,
+            );
+        }
+        return leaf(
+            id,
+            path,
+            text,
+            "unresolved_single_need",
+            depth,
+            false,
+            AtomicityReason::SingleNeed,
+        );
     }
 
     let children = parts
         .iter()
         .enumerate()
-        .map(|(index, part)| build(part, &child_path(path, index), depth + 1, max_depth))
+        .map(|(index, part)| build(part, &child_path(path, index), depth + 1, max_depth, ledger))
         .collect();
     SubTask {
         id,
         path: path.to_owned(),
         text: text.to_owned(),
+        completion_criterion: "all_children_pass".to_owned(),
         depth,
         atomic: false,
         reason: AtomicityReason::NotAtomic,
@@ -264,13 +393,22 @@ fn child_path(parent: &str, index: usize) -> String {
     }
 }
 
-fn leaf(id: String, path: &str, text: &str, depth: u8, reason: AtomicityReason) -> SubTask {
+fn leaf(
+    id: String,
+    path: &str,
+    text: &str,
+    completion_criterion: &str,
+    depth: u8,
+    atomic: bool,
+    reason: AtomicityReason,
+) -> SubTask {
     SubTask {
         id,
         path: path.to_owned(),
         text: text.to_owned(),
+        completion_criterion: completion_criterion.to_owned(),
         depth,
-        atomic: true,
+        atomic,
         reason,
         children: Vec::new(),
     }
@@ -284,12 +422,16 @@ fn leaf(id: String, path: &str, text: &str, depth: u8, reason: AtomicityReason) 
 /// never hand back a child no one can verify.
 #[must_use]
 pub fn split_once_checkable(task: &str) -> Vec<String> {
+    split_once_checkable_with_ledger(task, &TaskStrategyLedger::shipped())
+}
+
+fn split_once_checkable_with_ledger(task: &str, ledger: &TaskStrategyLedger) -> Vec<String> {
     let segments = segment(task);
     if segments.len() < 2 {
         return Vec::new();
     }
     let distributed = distribute_head_action(&segments);
-    let merged = merge_uncheckable(&distributed);
+    let merged = merge_uncheckable(&distributed, ledger);
     if merged.len() < 2 {
         return Vec::new();
     }
@@ -303,10 +445,20 @@ pub fn split_once_checkable(task: &str) -> Vec<String> {
 /// same in every supported language.
 #[must_use]
 pub fn is_checkable(segment: &str) -> bool {
+    completion_criterion_for(segment).is_some()
+}
+
+fn completion_criterion_for(segment: &str) -> Option<String> {
     let normalized = normalize_prompt(segment);
     let lexicon = seed::lexicon();
-    lexicon.mentions_role(ROLE_OBSERVABLE_TASK_ACTION, &normalized)
-        && !lexicon.mentions_role(ROLE_UNOBSERVABLE_TASK_ACTION, &normalized)
+    let observable = lexicon.mentions_role(ROLE_OBSERVABLE_TASK_ACTION, &normalized);
+    let unobservable = lexicon.mentions_role(ROLE_UNOBSERVABLE_TASK_ACTION, &normalized);
+    if !observable || unobservable || strategy::missing_operation_contract(segment) {
+        return None;
+    }
+    let target =
+        strategy::concrete_target(segment).unwrap_or_else(|| stable_id("task_result", &normalized));
+    Some(format!("observable_result:{target}"))
 }
 
 /// Split a task into raw segments: sentences when there is more than one,
@@ -439,14 +591,14 @@ fn head_action(segment: &str) -> Option<String> {
 /// A leading fragment ("In the file scripts/detect-code-changes.rs") belongs to
 /// the segment that follows it; a trailing fragment belongs to the one before
 /// it. Nothing is dropped, so the children still cover the whole task.
-fn merge_uncheckable(segments: &[String]) -> Vec<String> {
+fn merge_uncheckable(segments: &[String], ledger: &TaskStrategyLedger) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     let mut pending: Option<String> = None;
     for segment in segments {
         let text = pending
             .take()
             .map_or_else(|| segment.clone(), |prefix| join(&prefix, segment));
-        if is_checkable(segment) {
+        if is_checkable(segment) || strategy::plans_for(segment, ledger).is_some() {
             out.push(text);
         } else {
             pending = Some(text);

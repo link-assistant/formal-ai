@@ -1,0 +1,34 @@
+# Reviewed decomposition strategies are data, not parser branches.
+#
+# The first strategy was inferred from the issue-847 false-green observation:
+# an issue-sized implementation request with one grammatical clause was
+# incorrectly certified as atomic. The four stage contracts are general
+# lifecycle invariants, not issue-specific source edits. Promotion records both
+# the green regression gate and the human-review requirement so a runtime
+# learning proposal cannot silently change decomposition behavior.
+task_decomposition_strategies
+  schema_version 1
+  strategy task_strategy_verified_change
+    activation missing_operation_contract
+    learned_from issue_847_atomicity_false_green
+    regression_gate task_decomposition_specification
+    human_review maintainer_approved
+    stage requirements
+      text_intent task_plan_stage_requirements
+      completion_criterion requirements_are_independently_checkable
+    stage regression
+      text_intent task_plan_stage_regression
+      completion_criterion regression_test_reproduces_failure
+    stage implementation
+      text_intent task_plan_stage_implementation
+      completion_criterion requested_behavior_passes
+    stage verification
+      text_intent task_plan_stage_verification
+      completion_criterion acceptance_checks_pass
+  approved_strategy task_strategy_verified_change
+    failed_task_id issue_847_atomicity_false_green
+    failure_evidence single_clause_issue_was_certified_atomic_without_an_operation_contract
+    suite task_decomposition_issue_sized_false_green
+    passed 1
+    failed 0
+    reviewer pull_request_review

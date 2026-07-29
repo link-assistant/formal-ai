@@ -1,4 +1,84 @@
 meanings
+  response_unknown_reasoning_trace_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace ru"
+  response_unknown_reasoning_trace_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace unknown"
+  response_unknown_reasoning_trace_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace zh"
+  response_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown ru"
+  response_unknown_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown zh"
+  response_web_search_live_results_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results en"
+  response_web_search_live_results_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results hi"
+  response_web_search_live_results_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results ru"
+  response_web_search_live_results_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search live results zh"
+  response_web_search_unavailable_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable en"
+  response_web_search_unavailable_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable hi"
+  response_web_search_unavailable_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable ru"
+  response_web_search_unavailable_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response web search unavailable zh"
+  response_wellbeing_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing en"
+  response_wellbeing_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing hi"
+  response_wellbeing_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response wellbeing ru"
   response_wellbeing_zh
     defined-by response_template
     lexeme en
@@ -469,6 +549,26 @@ meanings
     lexeme en
       surface
         text "task first step lead"
+  task_plan_stage_implementation
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage implementation"
+  task_plan_stage_regression
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage regression"
+  task_plan_stage_requirements
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage requirements"
+  task_plan_stage_verification
+    defined-by intent
+    lexeme en
+      surface
+        text "task plan stage verification"
   test_status
     defined-by intent
     lexeme en

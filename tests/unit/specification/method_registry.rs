@@ -50,6 +50,22 @@ fn registry_covers_all_dispatch_surfaces() {
 }
 
 #[test]
+fn task_decomposition_has_one_configured_contextual_dispatch_path() {
+    let registry = MethodRegistry::from_dispatch();
+    let entries = registry
+        .methods
+        .iter()
+        .filter(|method| method.name == "task_decomposition")
+        .collect::<Vec<_>>();
+    assert_eq!(
+        entries.len(),
+        1,
+        "the depth-aware handler must not also live in the regular specialized table"
+    );
+    assert_eq!(entries[0].surface, MethodSurface::Contextual);
+}
+
+#[test]
 fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
     let registry = MethodRegistry::from_dispatch();
     let source = dispatch_source();

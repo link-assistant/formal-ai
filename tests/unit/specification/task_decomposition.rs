@@ -6,7 +6,11 @@
 //! checklist, and the multilingual tests pin it in all four supported
 //! languages so recognition can only come from the seed lexicon (issue #386).
 
-use formal_ai::task_decomposition::{decompose_task, is_checkable, split_once_checkable};
+use formal_ai::recursive_execution::{solve_recursively, RecursiveTask, TaskAttempt, TaskExecutor};
+use formal_ai::task_decomposition::{
+    decompose_task, decompose_task_with_ledger, is_checkable, split_once_checkable, Decomposition,
+    TaskLearningApproval, TaskLearningGate, TaskStrategyLedger, TaskStrategyProposal,
+};
 use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 /// A task with two independent halves, in each supported language. Every
@@ -335,6 +339,13 @@ fn a_single_clause_issue_is_not_misreported_as_an_atomic_operation() {
             .contains("completion_criterion"),
         "every planned child must expose its verification contract"
     );
+    assert!(
+        decomposition
+            .leaves()
+            .iter()
+            .all(|leaf| leaf.is_independently_checkable()),
+        "an approved strategy must reduce the issue to contracted leaves"
+    );
 }
 
 /// Reaching the recursion guard creates an unresolved leaf, not an atomic one.
@@ -351,4 +362,167 @@ fn a_depth_bounded_unsolved_root_is_not_reported_as_atomic() {
         "the depth guard cannot certify work it did not inspect"
     );
     assert_eq!(bounded.root.reason.slug(), "depth_bound");
+}
+
+#[test]
+fn the_inspected_tree_round_trips_and_changed_artifacts_are_rejected() {
+    let decomposition = decompose_task(
+        "Implement task decomposition for \
+         https://github.com/link-assistant/formal-ai/issues/847",
+        6,
+    );
+    let artifact = decomposition.to_links_notation();
+    let restored = Decomposition::from_links_notation(&artifact)
+        .expect("an unchanged decomposition artifact should round-trip");
+    assert_eq!(restored, decomposition);
+
+    let tampered = artifact.replacen(
+        "requirements_are_independently_checkable",
+        "requirements_look_plausible",
+        1,
+    );
+    assert!(
+        Decomposition::from_links_notation(&tampered).is_err(),
+        "a changed completion contract must invalidate the inspected artifact"
+    );
+}
+
+#[derive(Default)]
+struct RecordingExecutor {
+    attempted_ids: Vec<String>,
+    root_attempts: usize,
+}
+
+impl TaskExecutor for RecordingExecutor {
+    fn attempt(&mut self, task: &RecursiveTask) -> TaskAttempt {
+        self.attempted_ids.push(task.id.clone());
+        if !task.children.is_empty() {
+            self.root_attempts += 1;
+            if self.root_attempts == 1 {
+                return TaskAttempt::failed("whole-task acceptance check failed");
+            }
+        }
+        TaskAttempt::passed(format!("{} acceptance check passed", task.id))
+    }
+
+    fn extend_for(&mut self, _task: &RecursiveTask, _failure: &TaskAttempt) -> bool {
+        false
+    }
+}
+
+#[test]
+fn recursive_execution_reuses_the_exact_inspected_tree() {
+    let inspected = decompose_task(
+        "Implement task decomposition for \
+         https://github.com/link-assistant/formal-ai/issues/847",
+        6,
+    );
+    let restored = Decomposition::from_links_notation(&inspected.to_links_notation())
+        .expect("the inspected artifact should be executable");
+    let expected_leaf_ids = restored
+        .leaves()
+        .iter()
+        .map(|leaf| leaf.id.clone())
+        .collect::<Vec<_>>();
+    let executable = restored.to_recursive_task();
+    let mut executor = RecordingExecutor::default();
+
+    let run = solve_recursively(&executable, &mut executor);
+
+    assert!(run.is_passed());
+    assert_eq!(run.executed_leaf_count(), expected_leaf_ids.len());
+    assert_eq!(
+        &executor.attempted_ids[1..=expected_leaf_ids.len()],
+        expected_leaf_ids,
+        "execution must consume the reviewed child identities without re-splitting"
+    );
+    assert_eq!(
+        executor.attempted_ids.last(),
+        Some(&restored.root.id),
+        "the same parent must be retried after its children pass"
+    );
+}
+
+#[derive(Default)]
+struct BlockingExecutor;
+
+impl TaskExecutor for BlockingExecutor {
+    fn attempt(&mut self, _task: &RecursiveTask) -> TaskAttempt {
+        TaskAttempt::failed("missing executable operation contract")
+    }
+
+    fn extend_for(&mut self, _task: &RecursiveTask, _failure: &TaskAttempt) -> bool {
+        false
+    }
+}
+
+#[test]
+fn failed_execution_can_propose_a_strategy_but_only_reviewed_green_learning_activates_it() {
+    let task = "Implement task decomposition for \
+                https://github.com/link-assistant/formal-ai/issues/847";
+    let empty = TaskStrategyLedger::new();
+    let unresolved = decompose_task_with_ledger(task, 6, &empty);
+    assert!(unresolved.root.children.is_empty());
+    assert!(!unresolved.is_atomic());
+    let mut executor = BlockingExecutor;
+    let failed = solve_recursively(&unresolved.to_recursive_task(), &mut executor);
+    let proposal = TaskStrategyProposal::from_failed_run(&unresolved, &failed)
+        .expect("a blocked uncontracted task should yield a typed strategy proposal");
+    assert!(proposal.links_notation().contains("human_review_required"));
+
+    let mut red = TaskStrategyLedger::new();
+    assert!(red
+        .promote(
+            &proposal,
+            TaskLearningGate::failed("task_decomposition_specification", 12, 1),
+            TaskLearningApproval::granted("maintainer"),
+        )
+        .is_err());
+    assert!(red
+        .promote(
+            &proposal,
+            TaskLearningGate::passed("task_decomposition_specification", 13),
+            TaskLearningApproval::declined("maintainer"),
+        )
+        .is_err());
+
+    let mut reviewed = TaskStrategyLedger::new();
+    reviewed
+        .promote(
+            &proposal,
+            TaskLearningGate::passed("task_decomposition_specification", 13),
+            TaskLearningApproval::granted("maintainer"),
+        )
+        .expect("green evidence plus explicit human approval should promote the strategy");
+    let learned = decompose_task_with_ledger(task, 6, &reviewed);
+    assert_eq!(learned.leaves().len(), 4);
+
+    let durable = reviewed.links_notation();
+    assert!(durable.contains("missing executable operation contract"));
+    assert!(durable.contains("task_decomposition_specification"));
+    assert!(durable.contains("reviewer \"maintainer\""));
+    let restored = TaskStrategyLedger::from_links_notation(&durable)
+        .expect("reviewed learning should survive a process restart");
+    assert_eq!(
+        decompose_task_with_ledger(task, 6, &restored),
+        learned,
+        "recalled learning must produce the same canonical plan"
+    );
+    let tampered = durable.replacen(
+        "task_strategy_verified_change",
+        "task_strategy_unreviewed_change",
+        1,
+    );
+    assert!(
+        TaskStrategyLedger::from_links_notation(&tampered).is_err(),
+        "the durable learning record must be content-addressed"
+    );
+
+    let shipped = TaskStrategyLedger::shipped();
+    let recalled = TaskStrategyLedger::from_links_notation(&shipped.links_notation())
+        .expect("the repository-reviewed strategy evidence should also round-trip");
+    assert_eq!(
+        recalled.approved_strategy_ids(),
+        shipped.approved_strategy_ids()
+    );
 }

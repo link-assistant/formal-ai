@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 37041
-  line_count 947
-  content_id source_module_acde6e68a3be0ac0
+  byte_len 37010
+  line_count 945
+  content_id source_module_5245ad93b6b7086b
   symbol_count 59
   symbols
     module agent_workspace 3 3
@@ -47,22 +47,22 @@ self_ast_census
     module web_requests 40 40
     module web_search_intent 41 41
     module world_state 42 42
-    function try_arithmetic 122 238
-    function render_calculation_reasoning_step 240 246
-    function try_concept_lookup 248 250
-    function try_concept_lookup_with_response_language 259 328
-    function render_concept_plain 333 356
-    function render_source_link 361 368
-    function render_concept_in_context 385 431
-    function try_javascript_execution 433 456
-    function try_network_query 458 514
-    function try_translation 516 679
-    function render_translation_gap 681 693
-    function try_write_script 695 731
-    function try_algorithm 733 757
-    function try_execution_failure 759 788
-    function try_source_refresh 790 815
-    function try_learn_from_source 828 856
-    function learning_source_summary 863 882
-    function try_source_conflict 884 910
-    function finalize_simple 912 947
+    function try_arithmetic 120 236
+    function render_calculation_reasoning_step 238 244
+    function try_concept_lookup 246 248
+    function try_concept_lookup_with_response_language 257 326
+    function render_concept_plain 331 354
+    function render_source_link 359 366
+    function render_concept_in_context 383 429
+    function try_javascript_execution 431 454
+    function try_network_query 456 512
+    function try_translation 514 677
+    function render_translation_gap 679 691
+    function try_write_script 693 729
+    function try_algorithm 731 755
+    function try_execution_failure 757 786
+    function try_source_refresh 788 813
+    function try_learn_from_source 826 854
+    function learning_source_summary 861 880
+    function try_source_conflict 882 908
+    function finalize_simple 910 945

@@ -111,3 +111,67 @@ multilingual_responses
     intent task_decomposition_depth_marker
     language zh
     text "[已达深度上限]"
+  response response_task_plan_stage_requirements_en
+    intent task_plan_stage_requirements
+    language en
+    text "Record independently checkable requirements for {task}"
+  response response_task_plan_stage_requirements_ru
+    intent task_plan_stage_requirements
+    language ru
+    text "Зафиксируй независимо проверяемые требования для {task}"
+  response response_task_plan_stage_requirements_hi
+    intent task_plan_stage_requirements
+    language hi
+    text "{task} के लिए स्वतंत्र रूप से जाँच योग्य आवश्यकताएँ दर्ज करें"
+  response response_task_plan_stage_requirements_zh
+    intent task_plan_stage_requirements
+    language zh
+    text "记录 {task} 的可独立检查需求"
+  response response_task_plan_stage_regression_en
+    intent task_plan_stage_regression
+    language en
+    text "Add a regression test that reproduces {task}"
+  response response_task_plan_stage_regression_ru
+    intent task_plan_stage_regression
+    language ru
+    text "Добавь регрессионный тест, воспроизводящий {task}"
+  response response_task_plan_stage_regression_hi
+    intent task_plan_stage_regression
+    language hi
+    text "{task} को पुनरुत्पादित करने वाला प्रतिगमन परीक्षण जोड़ें"
+  response response_task_plan_stage_regression_zh
+    intent task_plan_stage_regression
+    language zh
+    text "添加可复现 {task} 的回归测试"
+  response response_task_plan_stage_implementation_en
+    intent task_plan_stage_implementation
+    language en
+    text "Implement the smallest general change that satisfies {task}"
+  response response_task_plan_stage_implementation_ru
+    intent task_plan_stage_implementation
+    language ru
+    text "Реализуй минимальное общее изменение, выполняющее {task}"
+  response response_task_plan_stage_implementation_hi
+    intent task_plan_stage_implementation
+    language hi
+    text "{task} को पूरा करने वाला सबसे छोटा सामान्य परिवर्तन लागू करें"
+  response response_task_plan_stage_implementation_zh
+    intent task_plan_stage_implementation
+    language zh
+    text "实现满足 {task} 的最小通用改动"
+  response response_task_plan_stage_verification_en
+    intent task_plan_stage_verification
+    language en
+    text "Run the acceptance checks for {task}"
+  response response_task_plan_stage_verification_ru
+    intent task_plan_stage_verification
+    language ru
+    text "Запусти приёмочные проверки для {task}"
+  response response_task_plan_stage_verification_hi
+    intent task_plan_stage_verification
+    language hi
+    text "{task} के लिए स्वीकृति जाँच चलाएँ"
+  response response_task_plan_stage_verification_zh
+    intent task_plan_stage_verification
+    language zh
+    text "运行 {task} 的验收检查"
