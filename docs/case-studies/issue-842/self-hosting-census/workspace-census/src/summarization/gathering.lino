@@ -2,9 +2,9 @@ self_ast_census
   target src/summarization/gathering.rs
   language rust
   fidelity signature
-  byte_len 23782
-  line_count 678
-  content_id source_module_fd83ff7c30762289
+  byte_len 23950
+  line_count 682
+  content_id source_module_089251f60b9fc774
   symbol_count 40
   symbols
     const FETCH_RECORD 36 36
@@ -39,11 +39,11 @@ self_ast_census
     function is_closed 340 342
     function trace 351 376
     struct CapturedGatheringReport 381 392
-    function record 396 409
-    function learning_proposal 417 464
-    function research_tier 470 476
-    struct LoadedSource 478 482
-    function gather 492 510
-    function execute_captured_gathering 518 570
-    function run_gathering 572 666
-    function dedupe_urls 669 678
+    function record 396 413
+    function learning_proposal 421 468
+    function research_tier 474 480
+    struct LoadedSource 482 486
+    function gather 496 514
+    function execute_captured_gathering 522 574
+    function run_gathering 576 670
+    function dedupe_urls 673 682

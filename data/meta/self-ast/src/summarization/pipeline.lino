@@ -2,15 +2,15 @@ self_ast_census
   target src/summarization/pipeline.rs
   language rust
   fidelity signature
-  byte_len 8166
-  line_count 208
-  content_id source_module_5187b95dfc03587f
+  byte_len 8387
+  line_count 213
+  content_id source_module_7436071879e680a6
   symbol_count 7
   symbols
     struct MultiSourceSummaryExecution 35 46
     function checked_summary 51 65
-    function record 68 81
-    function learning_proposal 88 146
-    function execute_multi_source_summary 154 194
-    function is_presentable 196 204
-    function world_id 206 208
+    function record 68 86
+    function learning_proposal 93 151
+    function execute_multi_source_summary 159 199
+    function is_presentable 201 209
+    function world_id 211 213
