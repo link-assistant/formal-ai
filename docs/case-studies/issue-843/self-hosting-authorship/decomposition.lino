@@ -1,0 +1,32 @@
+issue_843_smallest_leaf_1
+  parent evidence_honesty
+  leaf "store exact fetched bytes by their SHA-256 digest"
+  implementation src/source_fetch.rs
+  authorship human
+issue_843_smallest_leaf_2
+  parent evidence_honesty
+  leaf "fuse only rankings parsed from a captured provider response"
+  implementation src/source_research.rs
+  authorship human
+issue_843_smallest_leaf_3
+  parent evidence_honesty
+  leaf "observe option attributes only from captured result pages"
+  implementation src/source_research.rs
+  authorship human
+issue_843_smallest_leaf_4
+  parent evidence_honesty
+  leaf "bind statement classifications and audits to exact captures"
+  implementation src/statement_verification.rs
+  authorship human
+issue_843_smallest_leaf_5
+  parent evidence_honesty
+  leaf "record the capture-before-evidence invariant"
+  implementation data/meta/source-evidence-honesty-invariant.lino
+  authorship formal_ai_agent_cli
+  session ses_052d57d6affe1f2GYFodXhrqPl
+  evidence docs/case-studies/issue-843/self-hosting-authorship/agent-cli.log
+
+issue_843_self_authorship_measurement
+  reviewed_smallest_leaves 5
+  formal_ai_authored_leaves 1
+  formal_ai_authored_percent 20
