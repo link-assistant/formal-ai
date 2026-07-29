@@ -5,6 +5,16 @@ use formal_ai::protocol::{ChatMessage, ToolCall};
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
 const EN_TASK_ALT: &str = "Write file artifacts/unseen-case.md with text capability composed plan";
 const RU_TASK: &str = "Создай файл output/пример.txt с текстом общий план работает";
+const ISSUE_698_WORK_ITEM: &str = "\
+You are an AI issue solver using OpenAI Codex.
+Issue to solve: https://github.com/link-assistant/formal-ai/issues/698
+Continue pull request https://github.com/link-assistant/formal-ai/pull/816.
+Implement a real external benchmark harness with pinned permissive upstream suites, honest \
+passed/failed totals, a scheduled committed ledger, and a monotonic per-suite ratchet.
+Record benchmark_unavailable instead of proxy scores, grade SWE-bench with its official tests, \
+and derive review-gated learning only from observed failures.
+Read the repository, reproduce the requirement with tests, implement the change, and verify it \
+through the Formal AI Agent CLI.";
 
 #[test]
 fn agentic_general_planner_composes_capability_steps_and_verification() {
@@ -38,6 +48,89 @@ fn agentic_general_planner_accepts_three_unpinned_phrasings_in_two_languages() {
 fn agentic_general_planner_rejects_unsafe_or_ambiguous_requests() {
     assert!(compose_general_change_plan("Create file ../escape.txt containing no").is_none());
     assert!(compose_general_change_plan("Please improve the repository").is_none());
+}
+
+#[test]
+fn agentic_general_planner_does_not_treat_dot_relative_directories_as_files() {
+    let issue_policy = "When you create debug or example scripts while fixing an issue, \
+                        keep them in ./examples and/or ./experiments. Continue with the \
+                        following investigation details and solve the issue completely.";
+
+    assert!(
+        compose_general_change_plan(issue_policy).is_none(),
+        "a dot-relative policy directory must not become a literal file-write target",
+    );
+}
+
+#[test]
+fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() {
+    let messages = vec![ChatMessage::user(ISSUE_698_WORK_ITEM)];
+    let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+    let AgenticPlan::ToolCalls(calls) =
+        plan_chat_step(&messages, &tools).expect("compound work item must have an agentic plan")
+    else {
+        panic!("the first work-item step must persist its plan")
+    };
+
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "write_file");
+    assert!(calls[0].arguments.contains(PLAN_PATH));
+    assert!(
+        calls[0].arguments.contains("repository_work_item"),
+        "the plan must preserve the work-item execution boundary"
+    );
+
+    let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
+    assert!(!outcome.hit_turn_cap);
+    assert_eq!(
+        outcome
+            .steps
+            .iter()
+            .map(|step| step.tool.as_str())
+            .collect::<Vec<_>>(),
+        ["write_file", "run_command"]
+    );
+    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
+    assert!(outcome
+        .final_answer
+        .contains("without claiming unobserved source edits"));
+    assert!(!outcome.final_answer.contains("project lookup"));
+}
+
+#[test]
+fn repository_work_item_completion_is_seeded_for_every_supported_language() {
+    struct LocalizedCase {
+        language: &'static str,
+        expected_fragment: &'static str,
+    }
+
+    for case in [
+        LocalizedCase {
+            language: "en",
+            expected_fragment: "Recorded and verified",
+        },
+        LocalizedCase {
+            language: "ru",
+            expected_fragment: "записан и проверен",
+        },
+        LocalizedCase {
+            language: "hi",
+            expected_fragment: "दर्ज और सत्यापित",
+        },
+        LocalizedCase {
+            language: "zh",
+            expected_fragment: "已记录并验证",
+        },
+    ] {
+        let response =
+            formal_ai::seed::response_for("general_plan_repository_complete", case.language)
+                .unwrap_or_else(|| panic!("missing repository completion for {}", case.language));
+        assert!(
+            response.contains(case.expected_fragment),
+            "repository completion is not localized for {}: {response}",
+            case.language
+        );
+    }
 }
 
 #[test]

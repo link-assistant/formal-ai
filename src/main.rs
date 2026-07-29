@@ -6,6 +6,7 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_benchmark;
 mod cli_clients;
 mod cli_context;
 mod cli_import;
@@ -16,6 +17,7 @@ mod cli_report;
 mod cli_shared_dialog;
 mod cli_statement_audit;
 
+use cli_benchmark::{run_benchmark, BenchmarkAction};
 use cli_clients::{run_clients, ClientsAction, ClientsFormat};
 use cli_context::{run_context, ContextArgs};
 use cli_import::{run_import, ImportAction};
@@ -165,6 +167,12 @@ enum Command {
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
+    },
+    /// Run real upstream benchmark suites (issue #698) and record honest
+    /// `passed/total` scores in `data/benchmarks/external-results.lino`.
+    Benchmark {
+        #[command(subcommand)]
+        action: BenchmarkAction,
     },
     /// Weigh statement-bearing repository text against captured provenance.
     StatementAudit(StatementAuditArgs),
@@ -583,6 +591,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Clients { format, action } => run_clients(format, action)?,
         Command::Import { action } => run_import(action)?,
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Benchmark { action } => run_benchmark(action)?,
         Command::StatementAudit(args) => run_statement_audit(&args)?,
         Command::With(args) => run_with_formal_ai(&args)?,
         Command::Procedure(args) => run_procedure(args)?,

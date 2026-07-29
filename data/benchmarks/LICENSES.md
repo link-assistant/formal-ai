@@ -85,6 +85,45 @@ offsets and provenance URLs in
 `docs/case-studies/issue-482/raw-data/nemotron-random-samples.json` and never
 downloads upstream parquet files or full splits.
 
+## Issue #698 External (Upstream) Benchmark Harness
+
+The issue #698 harness runs the *unmodified upstream* case set at run time. It
+vendors nothing: every payload is fetched into `target/formal-ai-benchmarks`
+(a build artifact) and only the honest `passed/total` score is committed, to
+`data/benchmarks/external-results.lino`. Only permissively licensed suites are
+fetched; the harness refuses to substitute a repository-local proxy for a suite
+it may not or cannot fetch.
+
+| Suite id | Source | License | Upstream revision | Download mode |
+| --- | --- | --- | --- | --- |
+| `humaneval` | [openai/human-eval](https://github.com/openai/human-eval) | MIT | `6d43fb980f9fee3c892a914eda09951f772ad10d` | gzipped JSONL over HTTPS |
+| `mbpp` | [google-research/mbpp](https://github.com/google-research/google-research/tree/master/mbpp) | Apache-2.0 | `1fa17414f56c3703d5adb3818338b6e35e0fd550` | JSONL over HTTPS |
+| `gsm8k` | [openai/grade-school-math](https://github.com/openai/grade-school-math) | MIT | `3101c7d5072418e28b9008a6636bde82a006892c` | JSONL over HTTPS |
+| `math` | [openai/prm800k](https://github.com/openai/prm800k) 500-problem split | MIT | `7ecc794703b2877f63226f2477a49b34f9b25163` | JSONL over HTTPS (Git LFS media endpoint) |
+| `object_counting` | [google/BIG-bench](https://github.com/google/BIG-bench/tree/main/bigbench/benchmark_tasks/object_counting) | Apache-2.0 | `092b196c1f8f14a54bbc62f24759d43bde46dd3b` | BIG-bench `task.json` over HTTPS |
+| `coedit` | [grammarly/coedit](https://huggingface.co/datasets/grammarly/coedit) | Apache-2.0 | HF `e9a255c33ef910bc33a9d2b522653fa87521583e` | pinned validation JSONL |
+| `swebench_lite` | [princeton-nlp/SWE-bench_Lite](https://huggingface.co/datasets/princeton-nlp/SWE-bench_Lite) dev split | MIT | HF `6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2`; evaluator `f7bbbb2ccdf479001d6467c9e34af59e44a840f9` | pinned parquet; official container evaluator |
+| `editeval` | [facebookresearch/EditEval](https://github.com/facebookresearch/EditEval) | CC0-1.0 (harness code only) | `013cd20aa73be0016041201454b3fcd7c2250fb4` | **not fetched** — recorded as `benchmark_unavailable` |
+
+License texts:
+
+- HumanEval MIT: <https://raw.githubusercontent.com/openai/human-eval/6d43fb980f9fee3c892a914eda09951f772ad10d/LICENSE>
+- MBPP Apache-2.0: <https://raw.githubusercontent.com/google-research/google-research/1fa17414f56c3703d5adb3818338b6e35e0fd550/LICENSE>
+- GSM8K MIT: <https://raw.githubusercontent.com/openai/grade-school-math/3101c7d5072418e28b9008a6636bde82a006892c/LICENSE>
+- MATH / prm800k MIT: <https://raw.githubusercontent.com/openai/prm800k/7ecc794703b2877f63226f2477a49b34f9b25163/LICENSE>
+- BIG-bench Apache-2.0: <https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/LICENSE>
+- CoEdIT Apache-2.0: <https://huggingface.co/datasets/grammarly/coedit/blob/e9a255c33ef910bc33a9d2b522653fa87521583e/README.md>
+- SWE-bench MIT: <https://raw.githubusercontent.com/SWE-bench/SWE-bench/f7bbbb2ccdf479001d6467c9e34af59e44a840f9/LICENSE>
+- EditEval CC0-1.0 (harness code only): <https://raw.githubusercontent.com/facebookresearch/EditEval/013cd20aa73be0016041201454b3fcd7c2250fb4/LICENSE>
+
+**Why EditEval is not fetched.** The upstream repository ships an evaluation
+harness with no task payload (`configs/dataset_paths.json` points at per-corpus
+download directories), and its constituent corpora fail the permissive-only
+policy: ASSET is CC BY-NC 4.0 and JFLEG is CC BY-NC-SA 4.0. The harness records
+this as an explicit `benchmark_unavailable` entry with the reason. The
+Apache-2.0 CoEdIT suite independently covers the instructed-text-editing task
+family; its score is not attributed to EditEval.
+
 ## Issue #702 World-State Tracking Slice
 
 | Source | License | Upstream revision | Vendored payload |

@@ -527,6 +527,70 @@ multilingual_responses
     intent general_plan_command_verification_evidence
     language zh
     text "明确指定的命令的 stdout 已保存到 {target}"
+  response response_general_plan_repository_action_en
+    intent general_plan_repository_action
+    language en
+    text "append the bounded repository work-item plan to {target}"
+  response response_general_plan_repository_action_ru
+    intent general_plan_repository_action
+    language ru
+    text "добавить ограниченный план работы над репозиторием в {target}"
+  response response_general_plan_repository_action_hi
+    intent general_plan_repository_action
+    language hi
+    text "सीमित रिपॉज़िटरी कार्य योजना को {target} में जोड़ें"
+  response response_general_plan_repository_action_zh
+    intent general_plan_repository_action
+    language zh
+    text "将有界仓库工作项计划追加到 {target}"
+  response response_general_plan_repository_evidence_en
+    intent general_plan_repository_evidence
+    language en
+    text "the exact repository work-item goal and execution boundary"
+  response response_general_plan_repository_evidence_ru
+    intent general_plan_repository_evidence
+    language ru
+    text "точная цель задачи репозитория и граница выполнения"
+  response response_general_plan_repository_evidence_hi
+    intent general_plan_repository_evidence
+    language hi
+    text "सटीक रिपॉज़िटरी कार्य लक्ष्य और निष्पादन सीमा"
+  response response_general_plan_repository_evidence_zh
+    intent general_plan_repository_evidence
+    language zh
+    text "准确的仓库工作项目标和执行边界"
+  response response_general_plan_repository_verify_action_en
+    intent general_plan_repository_verify_action
+    language en
+    text "read back the persisted work-item plan"
+  response response_general_plan_repository_verify_action_ru
+    intent general_plan_repository_verify_action
+    language ru
+    text "прочитать сохранённый план работы"
+  response response_general_plan_repository_verify_action_hi
+    intent general_plan_repository_verify_action
+    language hi
+    text "सहेजी गई कार्य योजना को वापस पढ़ें"
+  response response_general_plan_repository_verify_action_zh
+    intent general_plan_repository_verify_action
+    language zh
+    text "读回已保存的工作项计划"
+  response response_general_plan_repository_complete_en
+    intent general_plan_repository_complete
+    language en
+    text "Recorded and verified the bounded repository work-item plan for {target}.\n\nThe deterministic sandbox preserved the requested goal without claiming unobserved source edits. Plan event ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_ru
+    intent general_plan_repository_complete
+    language ru
+    text "Ограниченный план работы над репозиторием для {target} записан и проверен.\n\nДетерминированная песочница сохранила запрошенную цель, не заявляя о ненаблюдавшихся изменениях исходного кода. Событие плана ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_hi
+    intent general_plan_repository_complete
+    language hi
+    text "{target} के लिए सीमित रिपॉज़िटरी कार्य योजना दर्ज और सत्यापित की गई।\n\nनियतात्मक सैंडबॉक्स ने अनदेखे स्रोत परिवर्तनों का दावा किए बिना अनुरोधित लक्ष्य सुरक्षित रखा। योजना घटना ({plan_path}):\n\n{plan}"
+  response response_general_plan_repository_complete_zh
+    intent general_plan_repository_complete
+    language zh
+    text "已记录并验证 {target} 的有界仓库工作项计划。\n\n确定性沙箱保留了请求的目标，且未声称存在未经观察的源代码编辑。计划事件（{plan_path}）：\n\n{plan}"
   response response_client_contract_read_observations_error_en
     intent client_contract_read_observations_error
     language en
@@ -735,3 +799,119 @@ multilingual_responses
     intent fact_check_no_statements
     language zh
     text "没有可核查的陈述。"
+  response response_external_benchmark_learning_task_en
+    intent external_benchmark_learning_task
+    language en
+    text "Use Formal AI auto-learning to inspect the persisted issue 698 external benchmark failures as an associative links network, rank the evidence and general evaluator-boundary amendments, keep promotion human-review gated, and write external-benchmark-learning-report.lino."
+  response response_external_benchmark_ratchet_reference_suffix_en
+    intent external_benchmark_ratchet_reference_suffix
+    language en
+    text " against {reference}"
+  response response_external_benchmark_baseline_read_error_en
+    intent external_benchmark_baseline_read_error
+    language en
+    text "failed to read benchmark baseline {object}: {error}"
+  response response_external_benchmark_provenance_en
+    intent external_benchmark_provenance
+    language en
+    text "external_benchmark_cache\n  suite {suite}\n  source_ref {source_ref}\n  download_url {url}\n  payload_bytes {payload_bytes}\n  content_id fnv1a64:{content_id}\n"
+  response response_external_benchmark_parquet_module_unavailable_en
+    intent external_benchmark_parquet_module_unavailable
+    language en
+    text "python3 module `pyarrow.parquet` is unavailable, so the pinned upstream parquet payload cannot be decoded"
+  response response_external_benchmark_python_import_en
+    intent external_benchmark_python_import
+    language en
+    text "import {module}"
+  response response_external_benchmark_parquet_start_error_en
+    intent external_benchmark_parquet_start_error
+    language en
+    text "failed to start Python parquet decoder for {path}: {error}"
+  response response_external_benchmark_parquet_decode_error_en
+    intent external_benchmark_parquet_decode_error
+    language en
+    text "{suite}: failed to decode pinned parquet payload {path}: {error}"
+  response response_external_benchmark_parquet_utf8_error_en
+    intent external_benchmark_parquet_utf8_error
+    language en
+    text "{suite} parquet decoder emitted non-UTF-8: {error}"
+  response response_external_benchmark_provenance_write_error_en
+    intent external_benchmark_provenance_write_error
+    language en
+    text "failed to write cache provenance {path}: {error}"
+  response response_external_benchmark_swe_record_error_en
+    intent external_benchmark_swe_record_error
+    language en
+    text "pinned SWE-bench record for {case} is invalid JSON: {error}"
+  response response_external_benchmark_not_swe_case_en
+    intent external_benchmark_not_swe_case
+    language en
+    text "{case} is not a SWE-bench case"
+  response response_external_benchmark_swe_encode_error_en
+    intent external_benchmark_swe_encode_error
+    language en
+    text "failed to encode pinned SWE-bench slice: {error}"
+  response response_external_benchmark_swe_slice_write_error_en
+    intent external_benchmark_swe_slice_write_error
+    language en
+    text "failed to write pinned SWE-bench slice {path}: {error}"
+  response response_external_benchmark_swe_predictions_write_error_en
+    intent external_benchmark_swe_predictions_write_error
+    language en
+    text "failed to write SWE-bench predictions {path}: {error}"
+  response response_external_benchmark_swe_clear_logs_error_en
+    intent external_benchmark_swe_clear_logs_error
+    language en
+    text "failed to clear stale SWE-bench logs {path}: {error}"
+  response response_external_benchmark_swe_remove_report_error_en
+    intent external_benchmark_swe_remove_report_error
+    language en
+    text "failed to remove stale SWE-bench report {path}: {error}"
+  response response_external_benchmark_swe_start_error_en
+    intent external_benchmark_swe_start_error
+    language en
+    text "failed to start the official SWE-bench evaluator: {error}"
+  response response_external_benchmark_swe_exit_error_en
+    intent external_benchmark_swe_exit_error
+    language en
+    text "official SWE-bench evaluator exited with {status}: {error}"
+  response response_external_benchmark_swe_missing_report_en
+    intent external_benchmark_swe_missing_report
+    language en
+    text "official SWE-bench evaluator did not publish {path}: {error}"
+  response response_external_benchmark_swe_inspect_error_en
+    intent external_benchmark_swe_inspect_error
+    language en
+    text "failed to inspect the SWE-bench Python environment: {error}"
+  response response_external_benchmark_swe_docker_error_en
+    intent external_benchmark_swe_docker_error
+    language en
+    text "Docker is unavailable for SWE-bench evaluation: {error}"
+  response response_external_benchmark_swe_report_error_en
+    intent external_benchmark_swe_report_error
+    language en
+    text "official SWE-bench report is invalid JSON: {error}"
+  response response_external_benchmark_swe_infrastructure_error_en
+    intent external_benchmark_swe_infrastructure_error
+    language en
+    text "official SWE-bench evaluator reported infrastructure errors for: {cases}"
+  response response_external_benchmark_unavailable_observation_en
+    intent external_benchmark_unavailable_observation
+    language en
+    text "suite={suite} benchmark_unavailable evaluator_detail={reason}"
+  response response_external_benchmark_failure_observation_en
+    intent external_benchmark_failure_observation
+    language en
+    text "suite={suite} case={case} evaluator_detail={detail}"
+  response response_external_benchmark_learning_event_en
+    intent external_benchmark_learning_event
+    language en
+    text "  event lesson:evaluator-grounded-repair\n"
+  response response_external_benchmark_learning_lesson_en
+    intent external_benchmark_learning_lesson
+    language en
+    text "Retain each failed upstream case and evaluator detail as evidence; propose a general repair at the solver/evaluator boundary, and do not promote it until the benchmark ratchet and Agent CLI replay pass under human review."
+  response response_external_benchmark_swe_unavailable_en
+    intent external_benchmark_swe_unavailable
+    language en
+    text "official SWE-bench evaluation unavailable: {reason}"

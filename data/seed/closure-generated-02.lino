@@ -1,4 +1,169 @@
 meanings
+  gives
+    defined-by word_surface
+    lexeme en
+      surface
+        text "gives"
+  golang
+    defined-by word_surface
+    lexeme en
+      surface
+        text "golang"
+  google_trends
+    defined-by source
+    lexeme en
+      surface
+        text "google trends"
+  google_trends_learning
+    defined-by concept
+    lexeme en
+      surface
+        text "google trends learning"
+  goto
+    defined-by word_surface
+    lexeme en
+      surface
+        text "goto"
+  grammar_context
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "grammar context"
+  grep
+    defined-by concept
+    lexeme en
+      surface
+        text "grep"
+  has
+    defined-by concept
+    lexeme en
+      surface
+        text "has"
+  head
+    defined-by token
+    lexeme en
+      surface
+        text "head"
+  hive-mind
+    defined-by name
+    lexeme en
+      surface
+        text "hive mind"
+  home
+    defined-by concept
+    lexeme en
+      surface
+        text "home"
+  how_it_works
+    defined-by intent
+    lexeme en
+      surface
+        text "how it works"
+  how_to_guide
+    defined-by kind
+    lexeme en
+      surface
+        text "how to guide"
+  http_server
+    defined-by environment
+    lexeme en
+      surface
+        text "http server"
+  human-language
+    defined-by name
+    lexeme en
+      surface
+        text "human language"
+  import_memory
+    defined-by name
+    lexeme en
+      surface
+        text "import memory"
+  inappropriate_content
+    defined-by intent
+    lexeme en
+      surface
+        text "inappropriate content"
+  indent
+    defined-by concept
+    lexeme en
+      surface
+        text "indent"
+  indent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "indent lines"
+  intent_algorithm
+    defined-by intent
+    lexeme en
+      surface
+        text "intent algorithm"
+  intent_assistant_free_time
+    defined-by intent
+    lexeme en
+      surface
+        text "intent assistant free time"
+  intent_assistant_name
+    defined-by intent
+    lexeme en
+      surface
+        text "intent assistant name"
+  intent_clarification
+    defined-by intent
+    lexeme en
+      surface
+        text "intent clarification"
+  intent_concept_lookup
+    defined-by intent
+    lexeme en
+      surface
+        text "intent concept lookup"
+  intent_concept_lookup_in_context
+    defined-by intent
+    lexeme en
+      surface
+        text "intent concept lookup in context"
+  intent_courtesy_response
+    defined-by intent
+    lexeme en
+      surface
+        text "intent courtesy response"
+  intent_farewell
+    defined-by intent
+    lexeme en
+      surface
+        text "intent farewell"
+  intent_greeting
+    defined-by intent
+    lexeme en
+      surface
+        text "intent greeting"
+  intent_http_fetch
+    defined-by intent
+    lexeme en
+      surface
+        text "intent http fetch"
+  intent_identity
+    defined-by intent
+    lexeme en
+      surface
+        text "intent identity"
+  intent_learn_from_source
+    defined-by intent
+    lexeme en
+      surface
+        text "intent learn from source"
+  intent_meta_explanation
+    defined-by intent
+    lexeme en
+      surface
+        text "intent meta explanation"
+  intent_recall_name
+    defined-by intent
+    lexeme en
+      surface
+        text "intent recall name"
   intent_routing
     defined-by name
     lexeme en
@@ -1229,168 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix explain"
-  pattern_concept_prefix_explanation_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix explanation of"
-  pattern_concept_prefix_jieshao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshao"
-  pattern_concept_prefix_jieshi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi"
-  pattern_concept_prefix_jieshi_yixia
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi yixia"
-  pattern_concept_prefix_kto_eto
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto eto"
-  pattern_concept_prefix_kto_takaya
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takaya"
-  pattern_concept_prefix_kto_takoy
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takoy"
-  pattern_concept_prefix_meaning_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix meaning of"
-  pattern_concept_prefix_nazovi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix nazovi"
-  pattern_concept_prefix_obyasni
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix obyasni"
-  pattern_concept_prefix_opishi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opishi"
-  pattern_concept_prefix_opredelenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opredelenie"
-  pattern_concept_prefix_rasskazhi_mne_o
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne o"
-  pattern_concept_prefix_rasskazhi_mne_pro
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne pro"
-  pattern_concept_prefix_rasskazhi_mne_za
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne za"
-  pattern_concept_prefix_rasskazhi_o
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi o"
-  pattern_concept_prefix_rasskazhi_pro
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi pro"
-  pattern_concept_prefix_rasskazhi_za
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi za"
-  pattern_concept_prefix_shenmejiao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmejiao"
-  pattern_concept_prefix_shenmeshi_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmeshi simplified"
-  pattern_concept_prefix_shenmeshi_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmeshi traditional"
-  pattern_concept_prefix_shuoshuo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shuoshuo"
-  pattern_concept_prefix_smysl
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix smysl"
-  pattern_concept_prefix_tell_me_about
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix tell me about"
-  pattern_concept_prefix_tell_me_what
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix tell me what"
-  pattern_concept_prefix_v_chem_smysl
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix v chem smysl"
-  pattern_concept_prefix_v_chem_smysl_alt
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix v chem smysl alt"
-  pattern_concept_prefix_what_do
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what do"
-  pattern_concept_prefix_what_does
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what does"
-  pattern_concept_prefix_what_does_mean
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what does mean"
-  pattern_concept_prefix_what_is
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is"
-  pattern_concept_prefix_what_is_a
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is a"
-  pattern_concept_prefix_what_is_an
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is an"

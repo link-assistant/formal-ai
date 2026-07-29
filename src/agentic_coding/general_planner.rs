@@ -18,6 +18,27 @@ use super::planner::Capability;
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
 
+/// What the bounded general planner can truthfully execute.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GeneralPlanMode {
+    /// Write literal request content to a workspace-relative file.
+    LiteralFile,
+    /// Capture the output of an explicitly quoted command in a file.
+    CommandOutput,
+    /// Persist a referenced repository work item without fabricating a patch.
+    RepositoryWorkItem,
+}
+
+impl GeneralPlanMode {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::LiteralFile => "literal_file",
+            Self::CommandOutput => "command_output",
+            Self::RepositoryWorkItem => "repository_work_item",
+        }
+    }
+}
+
 /// One ordered, capability-tagged operation in a general change plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralPlanStep {
@@ -31,6 +52,7 @@ pub struct GeneralPlanStep {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneralChangePlan {
     pub id: String,
+    pub mode: GeneralPlanMode,
     pub goal: String,
     pub target: String,
     pub content: String,
@@ -44,6 +66,7 @@ impl GeneralChangePlan {
     pub fn links_notation(&self) -> String {
         let mut out = String::from("general_change_plan\n");
         field(&mut out, "id", &self.id);
+        field(&mut out, "execution_mode", self.mode.slug());
         field(&mut out, "goal", &self.goal);
         field(&mut out, "target", &self.target);
         for (index, step) in self.steps.iter().enumerate() {
@@ -60,13 +83,16 @@ impl GeneralChangePlan {
     }
 }
 
-/// Compose a safe file-creation plan from arbitrary wording in any supported
+/// Compose a safe, bounded plan from arbitrary wording in any supported
 /// language (issue #680).
 ///
 /// The universal intent formalizer supplies the stable impulse identity.  The
-/// decomposition is deliberately bounded to requests that state both a relative
-/// target file and literal content; ambiguous requests continue to the ordinary
-/// solver instead of inventing a patch or shell command.
+/// executable decomposition accepts either a relative target plus literal
+/// content, an explicit command-output capture, or a software-authoring request
+/// attached to a concrete GitHub issue/pull reference. The last shape persists
+/// and verifies a work-item plan, but deliberately does not invent source edits:
+/// arbitrary repository implementation remains outside this deterministic
+/// sandbox's evidence boundary.
 ///
 /// The target, the content, and the write *intent* itself are all recognised
 /// from the seed lexicon (the `file_write_*` roles in
@@ -76,10 +102,13 @@ impl GeneralChangePlan {
 #[must_use]
 pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
     let command_output = parse_command_output_request(request);
-    let (target, content) = command_output.as_ref().map_or_else(
+    let file_request = command_output.as_ref().map_or_else(
         || parse_write_request(request),
         |(target, _)| Some((target.clone(), String::new())),
-    )?;
+    );
+    let Some((target, content)) = file_request else {
+        return compose_repository_work_plan(request);
+    };
     if !safe_relative_path(&target) {
         return None;
     }
@@ -141,11 +170,91 @@ pub fn compose_general_change_plan(request: &str) -> Option<GeneralChangePlan> {
                     .map_or("", |(_, command)| command.as_str())
             ),
         ),
+        mode: if command_output.is_some() {
+            GeneralPlanMode::CommandOutput
+        } else {
+            GeneralPlanMode::LiteralFile
+        },
         goal: intent.source_text,
         target,
         content,
         steps,
         verification_command,
+    })
+}
+
+fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
+    let target = repository_work_reference(request)?;
+    if !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+        return None;
+    }
+
+    let response_language = language(request);
+    let intent = formalize_intent(request, response_language, None);
+    let verification_command = ["cat", PLAN_PATH].join(" ");
+    Some(GeneralChangePlan {
+        id: stable_id(
+            "repository_work_item_plan",
+            &format!("{}:{target}", intent.impulse_id),
+        ),
+        mode: GeneralPlanMode::RepositoryWorkItem,
+        goal: intent.source_text,
+        target,
+        content: String::new(),
+        steps: vec![
+            GeneralPlanStep {
+                capability: Capability::Write,
+                action: command_plan_text(
+                    "general_plan_repository_action",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                expected_evidence: format!("written plan event {}", intent.impulse_id),
+                command: None,
+            },
+            GeneralPlanStep {
+                capability: Capability::Run,
+                action: command_plan_text(
+                    "general_plan_repository_verify_action",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                expected_evidence: command_plan_text(
+                    "general_plan_repository_evidence",
+                    response_language,
+                    PLAN_PATH,
+                ),
+                command: Some(verification_command.clone()),
+            },
+        ],
+        verification_command,
+    })
+}
+
+/// Extract a concrete GitHub issue or pull-request URL structurally.
+///
+/// The software action itself comes from the multilingual seed. URL host/path
+/// segments are protocol identifiers, not natural-language routing phrases.
+fn repository_work_reference(request: &str) -> Option<String> {
+    request.split_whitespace().find_map(|token| {
+        let url = token.trim_matches(|character: char| {
+            matches!(
+                character,
+                '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | ',' | ';' | '.' | '"' | '\''
+            )
+        });
+        let path = url
+            .strip_prefix("https://github.com/")
+            .or_else(|| url.strip_prefix("http://github.com/"))?;
+        let segments: Vec<&str> = path.split('/').collect();
+        (segments.len() == 4
+            && !segments[0].is_empty()
+            && !segments[1].is_empty()
+            && matches!(segments[2], "issues" | "pull")
+            && segments[3]
+                .chars()
+                .all(|character| character.is_ascii_digit()))
+        .then(|| url.to_owned())
     })
 }
 
@@ -196,7 +305,7 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
         }
         let target = suffix_tokens.iter().enumerate().find_map(|(index, token)| {
             let cleaned = clean_path_token(token.text);
-            let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+            let looks_like_file = looks_like_file_path(cleaned);
             let previous = index
                 .checked_sub(1)
                 .map(|position| &suffix_tokens[position])?;
@@ -305,7 +414,7 @@ fn parse_write_request(request: &str) -> Option<(String, String)> {
     // incidental dotted token (a version, an abbreviation) out of the write path.
     let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
         let cleaned = clean_path_token(token.text);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if !looks_like_file || !safe_relative_path(cleaned) {
             return None;
         }
@@ -475,7 +584,7 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         // `is_source_links_task` — in which case the workspace self-AST census
         // (issue #673) resolves it to the module that actually declares it.
         let resolved = resolve_census_target(cleaned);
-        let looks_like_file = cleaned.contains('.') && !cleaned.contains("://");
+        let looks_like_file = looks_like_file_path(cleaned);
         if resolved.is_none() && (!looks_like_file || !safe_relative_path(cleaned)) {
             return None;
         }
@@ -579,6 +688,22 @@ fn bare_surfaces(role: &str) -> Vec<String> {
 fn clean_path_token(word: &str) -> &str {
     word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
         .trim_end_matches(['.', '!', '?'])
+}
+
+/// Whether a safe-looking token names a file rather than merely using the
+/// conventional `./` prefix for a directory.
+///
+/// Checking the whole token for a dot made policy prose such as "keep examples
+/// in ./examples" file-shaped. When a later sentence contained a write-content
+/// marker, the generic planner consequently tried to overwrite that directory.
+/// File shape belongs to the final path component; dots in parent components or
+/// in the relative-path prefix do not make the target a file.
+fn looks_like_file_path(path: &str) -> bool {
+    !path.contains("://")
+        && path
+            .rsplit('/')
+            .next()
+            .is_some_and(|file_name| file_name.contains('.'))
 }
 
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.

@@ -2,33 +2,33 @@ self_ast_census
   target src/agentic_coding/learning_report.rs
   language rust
   fidelity full_ast
-  byte_len 9841
-  line_count 254
-  content_id source_module_6cc180506059157f
+  byte_len 9923
+  line_count 258
+  content_id source_module_f5d9ff8926f7572b
   symbol_count 15
   symbols
-    static REPORTS 42 52
-    module context_hierarchy_learning 54 54
-    module handler_precedence_learning 55 55
-    module hardcoded_language_learning 56 56
-    module lexeme_import_learning 57 57
-    module self_hosting_learning 58 58
-    function route 62 64
-    struct LearningReport 69 87
-    function render_document 92 94
-    function render_document_from 101 103
-    function matches 107 109
-    function plan_step 112 125
-    function final_answer 129 144
-    function render 153 233
-    function field 247 254
+    static REPORTS 45 56
+    module context_hierarchy_learning 58 58
+    module handler_precedence_learning 59 59
+    module hardcoded_language_learning 60 60
+    module lexeme_import_learning 61 61
+    module self_hosting_learning 62 62
+    function route 66 68
+    struct LearningReport 73 91
+    function render_document 96 98
+    function render_document_from 105 107
+    function matches 111 113
+    function plan_step 116 129
+    function final_answer 133 148
+    function render 157 237
+    function field 251 258
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5501
-    named_node_count 1145
+    total_link_count 5534
+    named_node_count 1150
     distinct_node_kinds 69
     node_kinds
       arguments 65
@@ -58,7 +58,7 @@ self_ast_census
       function_item 8
       generic_function 2
       generic_type 3
-      identifier 201
+      identifier 204
       if_expression 3
       impl_item 1
       inner_doc_comment_marker 27
@@ -74,10 +74,10 @@ self_ast_census
       parameter 12
       parameters 8
       primitive_type 18
-      reference_expression 36
+      reference_expression 37
       reference_type 22
       remaining_field_pattern 1
-      scoped_identifier 22
+      scoped_identifier 23
       scoped_use_list 2
       self 15
       self_parameter 5

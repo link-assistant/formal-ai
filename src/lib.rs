@@ -29,6 +29,7 @@ pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod event_log;
+pub mod external_benchmarks;
 pub mod fact_checking;
 pub mod formal_system;
 pub(crate) mod fuzzy;

@@ -1,4 +1,169 @@
 meanings
+  pattern_concept_prefix_explanation_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix explanation of"
+  pattern_concept_prefix_jieshao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshao"
+  pattern_concept_prefix_jieshi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshi"
+  pattern_concept_prefix_jieshi_yixia
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshi yixia"
+  pattern_concept_prefix_kto_eto
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto eto"
+  pattern_concept_prefix_kto_takaya
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto takaya"
+  pattern_concept_prefix_kto_takoy
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto takoy"
+  pattern_concept_prefix_meaning_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix meaning of"
+  pattern_concept_prefix_nazovi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix nazovi"
+  pattern_concept_prefix_obyasni
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix obyasni"
+  pattern_concept_prefix_opishi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opishi"
+  pattern_concept_prefix_opredelenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opredelenie"
+  pattern_concept_prefix_rasskazhi_mne_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne o"
+  pattern_concept_prefix_rasskazhi_mne_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne pro"
+  pattern_concept_prefix_rasskazhi_mne_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne za"
+  pattern_concept_prefix_rasskazhi_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi o"
+  pattern_concept_prefix_rasskazhi_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi pro"
+  pattern_concept_prefix_rasskazhi_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi za"
+  pattern_concept_prefix_shenmejiao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmejiao"
+  pattern_concept_prefix_shenmeshi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi simplified"
+  pattern_concept_prefix_shenmeshi_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi traditional"
+  pattern_concept_prefix_shuoshuo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shuoshuo"
+  pattern_concept_prefix_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix smysl"
+  pattern_concept_prefix_tell_me_about
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me about"
+  pattern_concept_prefix_tell_me_what
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me what"
+  pattern_concept_prefix_v_chem_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl"
+  pattern_concept_prefix_v_chem_smysl_alt
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl alt"
+  pattern_concept_prefix_what_do
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what do"
+  pattern_concept_prefix_what_does
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does"
+  pattern_concept_prefix_what_does_mean
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does mean"
+  pattern_concept_prefix_what_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is"
+  pattern_concept_prefix_what_is_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is a"
+  pattern_concept_prefix_what_is_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is an"
   pattern_concept_prefix_what_is_the
     defined-by prompt_pattern
     lexeme en
@@ -1229,168 +1394,3 @@ meanings
     lexeme en
       surface
         text "response agentic report contents options en"
-  response_agentic_report_contents_options_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents options hi"
-  response_agentic_report_contents_options_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents options ru"
-  response_agentic_report_contents_options_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents options zh"
-  response_agentic_report_contents_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents question en"
-  response_agentic_report_contents_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents question hi"
-  response_agentic_report_contents_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents question ru"
-  response_agentic_report_contents_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report contents question zh"
-  response_agentic_report_exported_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report exported en"
-  response_agentic_report_exported_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report exported hi"
-  response_agentic_report_exported_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report exported ru"
-  response_agentic_report_exported_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report exported zh"
-  response_agentic_report_target_options_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target options en"
-  response_agentic_report_target_options_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target options hi"
-  response_agentic_report_target_options_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target options ru"
-  response_agentic_report_target_options_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target options zh"
-  response_agentic_report_target_question_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target question en"
-  response_agentic_report_target_question_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target question hi"
-  response_agentic_report_target_question_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target question ru"
-  response_agentic_report_target_question_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response agentic report target question zh"
-  response_assistant_free_time_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time en"
-  response_assistant_free_time_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time hi"
-  response_assistant_free_time_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time ru"
-  response_assistant_free_time_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant free time zh"
-  response_assistant_name_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name en"
-  response_assistant_name_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name hi"
-  response_assistant_name_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name ru"
-  response_assistant_name_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response assistant name zh"
-  response_budget_search_solution_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response budget search solution en"
-  response_budget_search_solution_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response budget search solution hi"
-  response_budget_search_solution_ru
-    defined-by response_template
-    lexeme en
-      surface
-        text "response budget search solution ru"
-  response_budget_search_solution_zh
-    defined-by response_template
-    lexeme en
-      surface
-        text "response budget search solution zh"
-  response_capabilities_en
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities en"
-  response_capabilities_hi
-    defined-by response_template
-    lexeme en
-      surface
-        text "response capabilities hi"
