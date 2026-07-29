@@ -6,7 +6,7 @@ self_ast_census_index
   full_ast_module_count 49
   signature_module_count 290
   symbol_count 6976
-  content_id self_ast_census_index_03985dde70b747ba
+  content_id self_ast_census_index_cac6f4828938d8af
   modules
     src/agent.rs signature 50 source_module_d6dc0c5386fb1128
     src/agentic_coding/associative_learning.rs full_ast 7 source_module_926e3e97b31fa30a
@@ -321,8 +321,8 @@ self_ast_census_index
     src/summarization/mod.rs signature 35 source_module_4beb55fffbd47c28
     src/summarization/resource.rs signature 19 source_module_843175b39873000f
     src/task_decomposition.rs signature 40 source_module_45093599dd4c0f1a
-    src/task_decomposition/artifact.rs signature 9 source_module_4cf652d1c804efc9
-    src/task_decomposition/learning.rs signature 27 source_module_c9aee7d0530cf4eb
+    src/task_decomposition/artifact.rs signature 9 source_module_b03830849be5aeca
+    src/task_decomposition/learning.rs signature 27 source_module_4c14eb0a63548849
     src/task_decomposition/strategy.rs signature 20 source_module_126bb2553a930089
     src/telegram.rs signature 58 source_module_e89425cdf4910b35
     src/telegram_runtime.rs signature 19 source_module_25a895fab176ea65

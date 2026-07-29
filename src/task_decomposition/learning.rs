@@ -341,13 +341,18 @@ impl TaskStrategyReview {
         passed: usize,
         reviewer: String,
     ) -> Self {
-        let id = stable_id(
-            "task_strategy_review",
-            &format!(
-                "{strategy_id}\n{proposal_id}\n{failed_task_id}\n{failure_evidence}\n\
-                 {suite}\n{passed}\n{reviewer}"
-            ),
-        );
+        let passed_identity = passed.to_string();
+        let identity = [
+            strategy_id.as_str(),
+            proposal_id.as_str(),
+            failed_task_id.as_str(),
+            failure_evidence.as_str(),
+            suite.as_str(),
+            passed_identity.as_str(),
+            reviewer.as_str(),
+        ]
+        .join("\n");
+        let id = stable_id("task_strategy_review", &identity);
         Self {
             id,
             strategy_id,
@@ -375,10 +380,8 @@ fn error(reason: &str) -> TaskLearningError {
 }
 
 fn proposal_id(strategy_id: &str, failed_task_id: &str, failure_evidence: &str) -> String {
-    stable_id(
-        "task_strategy_proposal",
-        &format!("{strategy_id}\n{failed_task_id}\n{failure_evidence}"),
-    )
+    let identity = [strategy_id, failed_task_id, failure_evidence].join("\n");
+    stable_id("task_strategy_proposal", &identity)
 }
 
 fn required(node: &LinoNode, name: &str) -> Result<String, TaskLearningError> {

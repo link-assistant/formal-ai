@@ -2,9 +2,9 @@ self_ast_census
   target src/task_decomposition/learning.rs
   language rust
   fidelity signature
-  byte_len 12605
-  line_count 396
-  content_id source_module_c9aee7d0530cf4eb
+  byte_len 12770
+  line_count 399
+  content_id source_module_4c14eb0a63548849
   symbol_count 27
   symbols
     struct TaskStrategyProposal 17 22
@@ -28,9 +28,9 @@ self_ast_census
     function links_notation 229 238
     function from_links_notation 242 310
     function review_body 312 331
-    function new 335 361
-    function first_blocked_leaf 364 369
-    function error 371 375
-    function proposal_id 377 382
-    function required 384 390
-    function parse_usize 392 396
+    function new 335 366
+    function first_blocked_leaf 369 374
+    function error 376 380
+    function proposal_id 382 385
+    function required 387 393
+    function parse_usize 395 399

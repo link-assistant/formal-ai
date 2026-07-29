@@ -2,9 +2,9 @@ self_ast_census
   target src/task_decomposition/artifact.rs
   language rust
   fidelity signature
-  byte_len 6989
-  line_count 202
-  content_id source_module_4cf652d1c804efc9
+  byte_len 7059
+  line_count 201
+  content_id source_module_b03830849be5aeca
   symbol_count 9
   symbols
     struct TaskDecompositionArtifactError 18 21
@@ -14,5 +14,5 @@ self_ast_census
     function validate_tree 146 171
     function required 173 179
     function parse_reason 181 189
-    function artifact_id 191 196
-    function error 198 202
+    function artifact_id 191 195
+    function error 197 201

@@ -97,7 +97,7 @@ impl Decomposition {
                 ("tree_digest", tree_digest),
             ],
         );
-        format!("{header}\n{tree}")
+        [header.as_str(), tree.as_str()].join("\n")
     }
 }
 
@@ -189,10 +189,9 @@ fn parse_reason(value: &str) -> Result<AtomicityReason, TaskDecompositionArtifac
 }
 
 fn artifact_id(task: &str, max_depth: u8, tree_digest: &str) -> String {
-    stable_id(
-        "task_decomposition",
-        &format!("{task}\n{max_depth}\n{tree_digest}"),
-    )
+    let max_depth = max_depth.to_string();
+    let identity = [task, max_depth.as_str(), tree_digest].join("\n");
+    stable_id("task_decomposition", &identity)
 }
 
 fn error(reason: &str) -> TaskDecompositionArtifactError {
