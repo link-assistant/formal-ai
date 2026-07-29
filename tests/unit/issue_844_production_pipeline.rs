@@ -274,3 +274,45 @@ fn a_capture_failure_is_diagnostic_and_never_becomes_evidence() {
         "a transport failure must not be persisted as a capture"
     );
 }
+
+#[test]
+fn same_task_agent_cli_authorship_is_preserved_for_issue_844() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let read = |path: &str| {
+        fs::read_to_string(root.join(path)).unwrap_or_else(|error| panic!("{path}: {error}"))
+    };
+    let session = "ses_050f9a572ffefpehWRjysug6cv";
+    let generated = read(
+        "docs/case-studies/issue-844/self-hosting-authorship/multi-source-summary-honesty-invariant.lino",
+    );
+    let canonical = read("data/meta/multi-source-summary-honesty-invariant.lino");
+    assert_eq!(generated, canonical);
+
+    let agent_log = read("docs/case-studies/issue-844/self-hosting-authorship/agent-cli.log");
+    assert!(agent_log.contains(session));
+    let formal_ai_log = read("docs/case-studies/issue-844/self-hosting-authorship/formal-ai.log");
+    for transition in [
+        "planned ToolCalls",
+        "tool=write",
+        "tool: \"bash\"",
+        "planned Final",
+        "multi-source-summary-honesty-invariant.lino",
+    ] {
+        assert!(
+            formal_ai_log.contains(transition),
+            "server trace is missing {transition}"
+        );
+    }
+
+    let decomposition =
+        read("docs/case-studies/issue-844/self-hosting-authorship/decomposition.lino");
+    assert_eq!(decomposition.matches("issue_844_smallest_leaf_").count(), 5);
+    assert_eq!(
+        decomposition
+            .matches("authorship formal_ai_agent_cli")
+            .count(),
+        1
+    );
+    assert!(decomposition.contains(&format!("session {session}")));
+    assert!(decomposition.contains("formal_ai_authored_percent 20"));
+}

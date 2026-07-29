@@ -5,7 +5,9 @@ const CASE_STUDY: &str = "docs/case-studies/issue-844/README.md";
 const REQUIREMENTS: &str = "docs/case-studies/issue-844/requirements.md";
 const EXAMPLE_LOG: &str = "docs/case-studies/issue-844/test-logs/example-output.txt";
 const EXAMPLE: &str = "examples/issue_844_statement_merge.rs";
+const CAPTURED_EXAMPLE: &str = "examples/issue_844_captured_pipeline.rs";
 const REGRESSIONS: &str = "tests/unit/issue_844_statement_merge.rs";
+const PRODUCTION_REGRESSIONS: &str = "tests/unit/issue_844_production_pipeline.rs";
 const GLOBAL_REQUIREMENTS: &str = "REQUIREMENTS.md";
 
 fn root() -> PathBuf {
@@ -28,7 +30,7 @@ fn assert_contains_all(relative: &str, needles: &[&str]) {
 }
 
 #[test]
-fn the_case_study_explains_the_merge_its_blockers_and_the_defects_it_uncovered() {
+fn the_case_study_explains_the_merge_its_production_boundaries_and_the_defects_it_uncovered() {
     assert_contains_all(
         CASE_STUDY,
         &[
@@ -38,11 +40,13 @@ fn the_case_study_explains_the_merge_its_blockers_and_the_defects_it_uncovered()
             "recheck",
             "context, not a list",
             "identifier rung",
-            // The honest scope: the two open blockers and the seam that keeps
-            // this change self-contained.
+            // The former blockers and the real boundaries now composed.
             "#702",
             "#843",
             "sourceprovider",
+            "cachedsourceclient",
+            "factchecker",
+            "human-gated learning proposal",
             // The three defects the acceptance suite found outside the new code.
             "cache",
             "oscillat",
@@ -54,7 +58,7 @@ fn the_case_study_explains_the_merge_its_blockers_and_the_defects_it_uncovered()
 #[test]
 fn every_issue_844_requirement_maps_to_a_regression_test_that_exists() {
     let requirements = read(REQUIREMENTS);
-    let regressions = read(REGRESSIONS);
+    let regressions = [read(REGRESSIONS), read(PRODUCTION_REGRESSIONS)].join("\n");
     let mut ids = Vec::new();
     let mut named_tests = Vec::new();
     for line in requirements.lines() {
@@ -78,10 +82,10 @@ fn every_issue_844_requirement_maps_to_a_regression_test_that_exists() {
 
     assert_eq!(
         ids,
-        (1..=10)
+        (1..=14)
             .map(|index| format!("R844-{index:02}"))
             .collect::<Vec<String>>(),
-        "the requirement table must cover R844-01..R844-10 in order"
+        "the requirement table must cover R844-01..R844-14 in order"
     );
     assert!(
         named_tests.len() >= ids.len(),
@@ -91,7 +95,7 @@ fn every_issue_844_requirement_maps_to_a_regression_test_that_exists() {
         let declaration = format!("fn {name}(");
         assert!(
             regressions.contains(&declaration),
-            "requirements.md names {name}, which {REGRESSIONS} does not declare"
+            "requirements.md names {name}, which neither regression file declares"
         );
     }
 }
@@ -115,6 +119,15 @@ fn the_worked_example_and_release_metadata_are_committed() {
     assert_contains_all(
         EXAMPLE,
         &["stackoverflow.com", "merge_into_context", "checked_summary"],
+    );
+    assert_contains_all(
+        CAPTURED_EXAMPLE,
+        &[
+            "cachedsourceclient",
+            "execute_multi_source_summary",
+            "factchecker",
+            "learning_proposal",
+        ],
     );
     // The example's real output, kept as evidence rather than described.
     assert_contains_all(

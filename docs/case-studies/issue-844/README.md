@@ -12,22 +12,32 @@ node, a `Contradicts` edge wherever the sources disagree, and a retractable link
 recording every sentence that was folded into which fact. Everything else in the
 issue follows from that container.
 
-## Scope, and the two open blockers
+## From blocker seam to production composition
 
-The issue declares itself blocked by [#702](https://github.com/link-assistant/formal-ai/issues/702)
-(retrieval planning) and [#843](https://github.com/link-assistant/formal-ai/issues/843)
-(real HTTP fetching), both still open. Waiting for them would have blocked the
-five deliverables that need no network at all, so this change draws the seam at
-the fetch:
+The first draft stopped at a mock `SourceProvider` seam because issue
+[#702](https://github.com/link-assistant/formal-ai/issues/702) (retrieval
+planning) and issue [#843](https://github.com/link-assistant/formal-ai/issues/843)
+(exact HTTP capture) were open. Both blockers are now closed. Issue
+[#845](https://github.com/link-assistant/formal-ai/issues/845) also supplied the
+named, disproof-first `FactChecker`. This branch therefore retains the mock seam
+for small unit fixtures but no longer presents it as production behavior.
 
-- `SourceProvider` is a one-method trait (`fetch(url) -> Option<FetchedSource>`).
-  The gathering loop, its depth bound, its fixpoint test, and its
-  content-addressed cache are shipped and tested against it.
-- `#843` will supply an HTTP implementation of that trait. Nothing in this change
-  performs network I/O, so the whole pipeline is testable and byte-for-byte
-  reproducible today.
-- The merge target is the existing `world_model::Context`, not a new engine, so
-  the JTMS fixpoint and the relative-meta-logic evidence rules apply unchanged.
+`execute_multi_source_summary` is the production composition:
+
+1. `CachedSourceClient` captures exact response bytes, URL, timestamp, and
+   SHA-256; live access is opt-in and the same call replays offline.
+2. A classifier that receives that exact `SourceCapture` extracts text, trust
+   tier, supplied attributes, and outgoing links. A failed capture remains a
+   diagnostic and contributes no statement or evidence.
+3. The shared recursive kernel gathers until the unmet difference is empty, a
+   citation fixpoint is reached, or the explicit depth bound stops it.
+4. The observations are deduplicated into one `Context` with an explicit
+   `FormalSystem`, reversible provenance links, and contradiction edges.
+5. `FactChecker` audits that named context before presentation. Unsupported
+   statements remain inspectable in the context but are withheld.
+6. The operation renders a deterministic human-gated learning proposal from the
+   captures, merge receipts, contradictions, and fact-check audit. It never
+   promotes itself into durable memory.
 
 ## What was built
 
@@ -35,9 +45,10 @@ the fetch:
 | --- | --- |
 | `src/summarization/dedup.rs` | Statement-level merge: a `StatementSignature` over content terms and polarity, one `MergedStatement` per fact, a `MergeLink` per absorbed sentence, a `Contradiction` per asserted/denied pair, and `DedupReport::split` to undo a merge. |
 | `src/summarization/importance.rs` | Evidence-weighted ranking: the kind prior blended with observed frequency (how many sources assert it) and stance (at what tier, and who denies it). |
-| `src/summarization/gathering.rs` | The unmet-difference loop: fetch a seed, read what it supplies, follow what it links, stop at the depth bound, at the fixpoint, or when nothing is missing. `SourceCache` stores bodies content-addressed with one entry per URL. |
-| `src/summarization/recheck.rs` | The fact-checking gate: each ranked fact is re-assessed from its evidence and gets a `Verdict`; unsupported facts are withheld from the rendered summary but stay in the context. |
-| `src/summarization/context.rs` | The translation layer: ranked facts → `world_model::Context`, with `variant:`/`source:` receipt links and mutual `Contradicts` edges. |
+| `src/summarization/gathering.rs` | The shared unmet-difference traversal plus the production adapter over exact `SourceCapture`s. `SourceProvider`/`SourceCache` remain fixture seams; `CachedSourceClient` is the real capture boundary. |
+| `src/summarization/recheck.rs` | A compatibility preflight for callers that already have observations but no captures. It is deliberately not described as the production fact checker. |
+| `src/summarization/context.rs` | The translation layer: ranked facts → a named `world_model::Context`, with `variant:`/`source:` receipt links and mutual `Contradicts` edges. |
+| `src/summarization/pipeline.rs` | The production composition: exact gathering → named context → `FactChecker` audit → checked presentation → deterministic review-gated learning proposal. |
 | `src/summarization/identifier.rs` | The identifier rung: `to_identifier` under a `NamingConvention` and an `IdentifierBudget`, rejecting reserved words and honouring the length budget. |
 
 ## Conservative on purpose
@@ -133,6 +144,15 @@ The label rungs come from the top-ranked fact, because the ranking is the merge'
 total order — asking `to_topic` to pick a maximum among equal weights would name
 the context after whichever tied fact happened to sort last.
 
+`cargo run --example issue_844_captured_pipeline` exercises the production
+boundary rather than the fixture seam. Its transport returns exact bytes; the
+classifier extracts text and links from each `SourceCapture`; the operation
+merges into the `captured_parser_reports` formal system, runs `FactChecker`,
+renders both prose and the identifier rung, and emits the human-gated learning
+proposal. It then creates an offline client over the warm cache and asserts that
+the checked summary and complete learning proposal are byte-identical with zero
+new transport requests.
+
 ## Determinism
 
 There is no neural inference anywhere in the path (`NON-GOALS.md:7`), and the
@@ -140,7 +160,9 @@ result does not depend on the order sources arrived in: signatures are
 content-addressed, ranking breaks ties on the signature key, and posteriors are
 rounded to `TRUTH_VALUE_DECIMALS`, so two runs agree to the last digit
 (`the_merge_is_deterministic_and_independent_of_source_order`, which compares
-probabilities bit-for-bit).
+probabilities bit-for-bit). The production regression goes further: it compares
+the recursive trace, checked summary, named-context audit, and learning proposal
+between a live fixture execution and offline cache replay.
 
 ## Wording is data, traces are machine records
 
@@ -162,20 +184,29 @@ The two kinds of line in that output are governed by different rules
 
 ## Self-hosting evidence
 
-Every commit that implements the merge is hand-authored, so none of them carries
-a `Formal-AI-Session` trailer: `CONTRIBUTING.md` forbids attaching those trailers
-to human work and says plainly that "an honest 0% release is valid". Keeping that
-honest is what makes the differential ratchet in `Self-Hosting Evidence Check`
-fall on this branch, and the answer issue #839 established is to let Formal AI
-author release work of its own here rather than to relabel ours.
+The implementation remains honestly human-authored. One smallest leaf of this
+same issue task was authored by Formal AI through the external Agent CLI:
+session `ses_050f9a572ffefpehWRjysug6cv` planned the requested literal change,
+used the client-owned write tool to create
+`multi-source-summary-honesty-invariant.lino`, used the shell tool to verify it,
+and reported completion in four chat rounds.
+
+The canonical
+[`data/meta/multi-source-summary-honesty-invariant.lino`](../../../data/meta/multi-source-summary-honesty-invariant.lino)
+is byte-for-byte equal to the generated artifact under
+[`self-hosting-authorship/`](self-hosting-authorship/). That directory also
+contains the raw Agent CLI log, Formal AI server trace, and reviewed
+decomposition. Four implementation leaves are human-authored; the invariant is
+Agent-CLI-authored: one of five leaves, or 20%. The reproducible harness is
+[`experiments/issue_844_self_authoring/run.sh`](../../../experiments/issue_844_self_authoring/run.sh).
 
 [`experiments/issue-844-self-hosting-evidence/run.sh`](../../../experiments/issue-844-self-hosting-evidence/run.sh)
 is a thin wrapper over #839's harness — it only picks the axes and the output
 directory, because that harness already accepts `OUT`, `ONLY`, `LOG` and `PORT`
-so a branch can record its own sessions without rewriting transcripts that are
-already committed. Three real Agent CLI sessions (Agent CLI → local Formal AI
-server, private empty memory, no dreaming) ran against *this* branch's tree, and
-[`self-hosting-evidence/`](self-hosting-evidence/) holds what they produced:
+so a branch can record its own sessions without rewriting committed transcripts.
+The three earlier sessions under [`self-hosting-evidence/`](self-hosting-evidence/)
+remain useful whole-tree self-model evidence, but they are not counted as
+same-task authorship:
 
 | Session | Recipe | Formal AI's artifacts |
 | --- | --- | --- |
@@ -184,17 +215,15 @@ server, private empty memory, no dreaming) ran against *this* branch's tree, and
 | `ses_0676bc5a4ffe0RbQFKLUvNTh78` | grounded self-explanation (#558) | `how-formal-ai-works.lino`, resolved against this branch's own source manifest (`source_tree_8a22e53f3473e9d1`) |
 
 None of it is prose about the work: each artifact is a deterministic function of
-the source tree this branch leaves behind, so re-running the script reproduces
-every `.lino` byte-for-byte. The `.jsonl` transcripts and `.log` server traces are
-the excluded evidence bundle
+the source tree captured by its session. The `.jsonl` transcripts and `.log`
+server traces are the excluded evidence bundle
 (`scripts/self-hosting-metric.rs::CAPTURED_ARTIFACT_EXTENSIONS`) that binds each
 artifact to the session id that authored it.
 
 ## Traceability
 
-[`requirements.md`](requirements.md) maps R844-01…R844-10 to named regression
+[`requirements.md`](requirements.md) maps R844-01…R844-14 to named regression
 tests, and `tests/unit/docs_requirements_issue_844.rs` parses that table: a
 requirement whose test does not exist fails the build. Test logs are in
 [`test-logs/`](test-logs/); the issue and pull-request conversations at the time
-of implementation, plus both blockers, are preserved in
-[`raw-data/`](raw-data/).
+of implementation, plus the former blockers, are preserved in [`raw-data/`](raw-data/).
